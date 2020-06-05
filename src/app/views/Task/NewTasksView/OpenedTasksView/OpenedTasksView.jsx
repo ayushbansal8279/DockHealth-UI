@@ -6,16 +6,16 @@ import { isEmpty } from 'ramda';
 
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import EmptyListImage from 'img/empty-list';
-import { TaskGroupsContainer } from './styled';
-import TasksGroup from './TasksGroup/TasksGroup';
-import GroupNameSection from './GroupNameSection/GroupNameSection';
-import messages from './AddGroupNameButton/messages';
-import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
-import EmptyTaskAddView from './EmptyTaskAddView/EmptyTaskAddView';
-import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
-import { onDragEndTask } from './DragDrop.helpers';
-import EmptyListResult from './EmptyListResult/EmptyListResult';
-import { getRandomEmptySearchResultImage } from './EmptyListResult/helpers';
+import TasksGroup from '../TasksGroup/TasksGroup';
+import GroupNameSection from '../GroupNameSection/GroupNameSection';
+import messages from '../AddGroupNameButton/messages';
+import AddGroupNameButton from '../AddGroupNameButton/AddGroupNameButton';
+import EmptyTaskAddView from '../EmptyTaskAddView/EmptyTaskAddView';
+import TasksViewLoader from '../TasksViewLoader/TasksViewLoader';
+import { onDragEndTask } from '../DragDrop.helpers';
+import EmptyListResult from '../EmptyListResult/EmptyListResult';
+import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
+import { TaskGroupsContainer } from '../styled';
 
 const OpenedTasksView = ({
   openDrawer,

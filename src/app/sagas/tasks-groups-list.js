@@ -1,4 +1,11 @@
-import { put, call, takeEvery } from 'redux-saga/effects';
+import {
+  put,
+  call,
+  takeEvery,
+  all,
+  takeLatest,
+  select,
+} from 'redux-saga/effects';
 import {
   getGroupsByListId,
   createGroupAssignedToList,
@@ -7,18 +14,32 @@ import {
   sortGroups,
 } from 'api/task-group-list-api';
 import {
+  reorderTasksInGroup,
+  getListTasksByUser,
+  reorderSubtasksForTask,
+  reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
+} from 'api/task-api';
+import {
   TASK_GROUP_LIST_REQUEST,
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
+  GET_TASKS_SUCCESS,
+  GET_COMPLETED_TASKS_SUCCESS,
 } from 'actions/action-types';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { locationParametersSelector } from '../location/selectors';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
 export const DO_EDIT_TASKS_GROUP_NAME = 'DO_EDIT_TASKS_GROUP_NAME';
 export const DO_DELETE_TASKS_GROUP = 'DO_DELETE_TASKS_GROUP';
 export const DO_SORT_TASKS_GROUPS = 'DO_SORT_TASKS_GROUPS';
+export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
+export const DO_SORT_SUBTASKS_IN_GROUPS = 'DO_SORT_SUBTASKS_IN_GROUPS';
+export const DO_ON_ENTER_TASKS_GROUPS_LIST = 'DO_ON_ENTER_TASKS_GROUPS_LIST';
+export const DO_REASSIGN_TASKS_TO_ANOTHER_GROUP =
+  'DO_REASSIGN_TASKS_TO_ANOTHER_GROUP';
 
 export const getTasksGroupsList = payload => ({
   type: DO_GET_TASKS_GROUPS_LIST,
@@ -45,35 +66,80 @@ export const sortTasksGroups = payload => ({
   ...payload,
 });
 
+export const sortTasksInGroup = payload => ({
+  type: DO_SORT_TASKS_IN_GROUPS,
+  ...payload,
+});
+
+export const sortSubtasksInGroup = payload => ({
+  type: DO_SORT_SUBTASKS_IN_GROUPS,
+  ...payload,
+});
+
+export const reassignTasksToAnotherGroup = payload => ({
+  type: DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
+  ...payload,
+});
+
+export const onEnterTasksGroupsList = payload => ({
+  type: DO_ON_ENTER_TASKS_GROUPS_LIST,
+  ...payload,
+});
+
 export const TasksGroupsListActions = {
   getTasksGroupsList,
   createTaskGroupList,
   editTasksGroupName,
   deleteTasksGroup,
   sortTasksGroups,
+  sortTasksInGroup,
 };
 
 export function* doGetTasksGroupsList(payload) {
-  const { shouldSetRequestState = true, taskListIdentifier } = payload;
+  const { shouldSetRequestState = true } = payload;
   try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+
     if (shouldSetRequestState) {
       yield put({ type: TASK_GROUP_LIST_REQUEST });
     }
-
-    const data = yield call(getGroupsByListId, taskListIdentifier);
+    const groups = yield call(getGroupsByListId, taskListIdentifier);
     yield put({
       type: TASK_GROUP_LIST_SUCCESS,
-      groupList: data,
+      groupList: groups,
     });
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
 }
 
+export function* doGetTasksList(payload) {
+  const { status = 'INCOMPLETE' } = payload;
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    const tasksActionType =
+      status === 'INCOMPLETE' ? GET_TASKS_SUCCESS : GET_COMPLETED_TASKS_SUCCESS;
+
+    const tasks = yield call(
+      getListTasksByUser,
+      taskListIdentifier,
+      status,
+      undefined,
+      undefined,
+      0,
+    );
+
+    yield put({ type: tasksActionType, tasks });
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export function* doCreateTasksGroupList(payload) {
-  const { taskListIdentifier, groupName } = payload;
+  const { groupName } = payload;
 
   try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
     yield call(createGroupAssignedToList, { taskListIdentifier, groupName });
     yield call(doGetTasksGroupsList, {
@@ -87,9 +153,10 @@ export function* doCreateTasksGroupList(payload) {
 }
 
 export function* doEditTasksGroupName(payload) {
-  const { taskListIdentifier, groupId, newGroupName } = payload;
+  const { groupId, newGroupName } = payload;
 
   try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
     yield call(editGroupName, taskListIdentifier, groupId, newGroupName);
     yield call(doGetTasksGroupsList, {
@@ -103,14 +170,18 @@ export function* doEditTasksGroupName(payload) {
 }
 
 export function* doDeleteTasksGroup(payload) {
-  const { groupId, taskListIdentifier } = payload;
+  const { groupId } = payload;
 
   try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
     yield call(deleteGroup, groupId);
     yield call(doGetTasksGroupsList, {
       taskListIdentifier,
       shouldSetRequestState: false,
+    });
+    yield call(doGetTasksList, {
+      taskListIdentifier,
     });
     yield put(showGlobalAlert(AlertMessages.DELETED));
   } catch (error) {
@@ -119,9 +190,10 @@ export function* doDeleteTasksGroup(payload) {
 }
 
 export function* doSortTasksGroups(payload) {
-  const { taskGroupIdentifiers, taskListIdentifier } = payload;
+  const { taskGroupIdentifiers } = payload;
 
   try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
     yield call(sortGroups, { taskGroupIdentifiers, taskListIdentifier });
     yield call(doGetTasksGroupsList, {
@@ -134,10 +206,103 @@ export function* doSortTasksGroups(payload) {
   }
 }
 
+export function* doSortTasksInGroup(payload) {
+  const { orderedTaskIds, taskGroupIdentifier } = payload;
+
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield put({ type: TASK_GROUP_LIST_REQUEST });
+    yield call(reorderTasksInGroup, {
+      orderedTaskIds,
+      taskGroupIdentifier,
+    });
+    yield call(doGetTasksList, {
+      taskListIdentifier,
+    });
+
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
+export function* doSortSubtasksInGroup(payload) {
+  const {
+    orderedSubtaskIds,
+    taskGroupIdentifier,
+    parentTaskIdentifier,
+  } = payload;
+
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield put({ type: TASK_GROUP_LIST_REQUEST });
+    yield call(
+      reorderSubtasksForTask,
+      orderedSubtaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    );
+    yield call(doGetTasksGroupsList, {
+      taskListIdentifier,
+      shouldSetRequestState: false,
+    });
+
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
+export function* doReassignTasksToAnotherGroup(payload) {
+  const { taskIdentifiers, taskGroupIdentifier } = payload;
+
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield put({ type: TASK_GROUP_LIST_REQUEST });
+
+    yield call(
+      reassignTasksToAnotherGroupApi,
+      taskGroupIdentifier,
+      taskIdentifiers,
+    );
+
+    yield call(doGetTasksList, {
+      taskListIdentifier,
+    });
+
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
+export function* doOnEnterTasksGroupsList() {
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield put({ type: TASK_GROUP_LIST_REQUEST });
+
+    if (taskListIdentifier) {
+      yield all([
+        call(doGetTasksGroupsList, { taskListIdentifier }),
+        call(doGetTasksList, { taskListIdentifier }),
+      ]);
+    }
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export default function* watchTasksGroupsList() {
+  yield takeLatest(DO_ON_ENTER_TASKS_GROUPS_LIST, doOnEnterTasksGroupsList);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
   yield takeEvery(DO_EDIT_TASKS_GROUP_NAME, doEditTasksGroupName);
   yield takeEvery(DO_DELETE_TASKS_GROUP, doDeleteTasksGroup);
   yield takeEvery(DO_SORT_TASKS_GROUPS, doSortTasksGroups);
+  yield takeEvery(DO_SORT_TASKS_IN_GROUPS, doSortTasksInGroup);
+  yield takeEvery(DO_SORT_SUBTASKS_IN_GROUPS, doSortSubtasksInGroup);
+  yield takeEvery(
+    DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
+    doReassignTasksToAnotherGroup,
+  );
 }

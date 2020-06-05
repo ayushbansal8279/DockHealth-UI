@@ -1040,26 +1040,6 @@ export const reorderTasksInGroup = (orderedTaskIds, taskGroupIdentifier) => {
   };
 };
 
-export const reorderSubtasksForTask = (
-  orderedSubtaskIds,
-  taskGroupIdentifier,
-  parentTaskIdentifier,
-) => {
-  return dispatch => {
-    return TaskApi.reorderSubtasksForTask(
-      orderedSubtaskIds,
-      taskGroupIdentifier,
-      parentTaskIdentifier,
-    )
-      .then(() => {
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-};
-
 export function reassignTasksToAnotherGroup(
   taskIdentifiers,
   taskGroupIdentifier,

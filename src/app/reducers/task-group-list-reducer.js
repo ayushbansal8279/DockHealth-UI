@@ -4,7 +4,7 @@ const initialState = {
   groupList: [],
   isFetching: false,
   error: '',
-  groupsInitialized: false,
+  listInitialized: false,
 };
 
 const TaskGroupListReducer = (state = initialState, { type, groupList }) => {

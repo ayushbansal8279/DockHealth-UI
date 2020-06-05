@@ -49,6 +49,7 @@ const TaskWorkflowStatus = ({
             <StatusList>
               {STATUSES?.map(({ value, label, color }) => (
                 <StatusLabelContainer
+                  key={value}
                   onClick={() => {
                     updateWorkflowStatus(task, value);
                     openPopover(false);

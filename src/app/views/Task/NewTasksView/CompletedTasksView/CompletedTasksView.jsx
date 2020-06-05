@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import EmptyListImage from 'img/empty-list';
 
-import { TaskGroupsContainer } from './styled';
-import TasksGroup from './TasksGroup/TasksGroup';
-import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
-import EmptyListResult from './EmptyListResult/EmptyListResult';
-import { getRandomEmptySearchResultImage } from './EmptyListResult/helpers';
+import TasksGroup from '../TasksGroup/TasksGroup';
+import TasksViewLoader from '../TasksViewLoader/TasksViewLoader';
+import EmptyListResult from '../EmptyListResult/EmptyListResult';
+import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
+import { TaskGroupsContainer } from '../styled';
 
 const CompletedTasksView = ({
   tasks,

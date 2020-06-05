@@ -18,6 +18,7 @@ import TaskReducer from './task-reducer';
 import TaskListReducer from './tasklist-reducer';
 import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
+import LocationReducer from '../location/reducers';
 
 export default combineReducers({
   taskState: TaskReducer,
@@ -39,4 +40,5 @@ export default combineReducers({
   taskGroupList: TaskGroupListReducer,
   alertChip: AlertChipReducer,
   megaFilter: MegaFilterReducer,
+  location: LocationReducer,
 });

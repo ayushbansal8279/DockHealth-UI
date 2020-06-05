@@ -3,6 +3,7 @@ import { isEmpty } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { hashHistory } from 'react-router';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
@@ -10,18 +11,24 @@ import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
-import * as TaskLabelActions from 'actions/task-label-actions';
 import { TasksGroupsListActions } from 'sagas/tasks-groups-list';
 import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { arrayMove } from 'helpers/sorting-helper';
-import { hashHistory } from 'react-router';
-import TasksView from './Task/NewTasksView/TasksView';
+import {
+  taskListSelector,
+  taskListMembersSelector,
+} from 'selectors/task-list-selectors';
+import { completedTasksSelector } from 'selectors/task-selectors';
+import { userSelector } from 'selectors/user-selectors';
+import {
+  selectedFiltersInMegaFilterSelector,
+  availableFiltersInInMegaFilterSelector,
+} from 'selectors/mega-filter-selectors';
 
-const ASSIGNED_BY_ME = 'assigned_by_me';
-const ASSIGNED_TO_ME = 'assigned_to_me';
+import TasksView from './Task/NewTasksView/TasksView';
 
 class Home extends Component {
   async componentDidMount() {
@@ -30,8 +37,6 @@ class Home extends Component {
       routeParams,
       taskListActions,
       patientActions,
-      invitationActions,
-      taskLabelActions: { getTaskListLabels },
       setHeader,
     } = this.props;
 
@@ -53,28 +58,18 @@ class Home extends Component {
 
     this.initTable();
 
+    // TODO: Move to saga
     taskListActions.getOrganizationUsersNotInTaskList(
       routeParams.taskListIdentifier,
     );
     patientActions.getAllPatients();
 
-    await invitationActions.findPendingTaskListsForUser();
-
-    const { pendingTasklists } = this.props;
-
-    await Promise.all(
-      pendingTasklists.map(tasklist =>
-        invitationActions.acceptInviteToTaskList(tasklist),
-      ),
-    );
-
     this.refreshAccessToken(user);
 
+    // TODO: Move to saga
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
-
-    getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
   }
 
   componentWillUpdate(nextProps) {
@@ -183,8 +178,14 @@ class Home extends Component {
     return this.refreshIncompleteTasks(withLoader);
   };
 
+  // TODO: Move to saga
   refreshIncompleteTasks = (withLoader = true) => {
-    const { actions, routeParams, taskListActions } = this.props;
+    const {
+      actions,
+      routeParams,
+      taskListActions,
+      selectedFilters,
+    } = this.props;
 
     const status = 'INCOMPLETE';
 
@@ -200,19 +201,21 @@ class Home extends Component {
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(filters, status);
+    if (filters && !isEmpty(selectedFilters)) {
+      return this.getFilteredTasks(selectedFilters, status);
     }
 
     return this.getTasksList(routeParams.taskListIdentifier, status);
   };
 
+  // TODO: Move to saga
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
     const {
       actions,
       taskListActions,
       completedTasks,
       routeParams: { taskListIdentifier },
+      selectedFilters,
     } = this.props;
 
     let queryStartPosition = 0;
@@ -236,8 +239,8 @@ class Home extends Component {
       `filter-${taskListIdentifier}-${status}`,
     );
 
-    if (filters && !isEmpty(filters)) {
-      this.getFilteredTasks(filters, status);
+    if (filters && !isEmpty(selectedFilters)) {
+      this.getFilteredTasks(selectedFilters, status);
     } else {
       this.getTasksList(
         taskListIdentifier,
@@ -266,6 +269,7 @@ class Home extends Component {
     );
   };
 
+  // TODO: Move to saga
   getFilteredTasks = (filters, taskStatus) => {
     const {
       routeParams: { taskListIdentifier },
@@ -279,6 +283,7 @@ class Home extends Component {
     );
   };
 
+  // TODO: Move to saga
   handleFilterChange = updatedFilters => {
     const {
       routeParams: { tabName, taskListIdentifier },
@@ -408,40 +413,31 @@ class Home extends Component {
     const {
       tasksGroupsListActions,
       members,
-      tasklists,
-      taskListMembers,
-      pendingTasklists,
+      taskLists,
       membersNotInTaskList,
       routeParams,
-      megaFilter: { selectedFilters },
-      routeParams: { listName, taskListIdentifier },
+      selectedFilters,
+      routeParams: { taskListIdentifier },
     } = this.props;
 
     const { createTaskGroupList } = tasksGroupsListActions;
 
-    const allTaskLists = [...(pendingTasklists ?? []), ...(tasklists ?? [])];
-
-    const loadedTasklist = allTaskLists.find(
+    const loadedTasklist = taskLists.find(
       t => t.taskListIdentifier === taskListIdentifier,
     );
-
-    const isSpecialList = [ASSIGNED_BY_ME, ASSIGNED_TO_ME].includes(listName);
 
     const taskViewProps = {
       members,
       refreshTab: this.refreshTab,
       downloadPDF: this.downloadPDF,
       navigateToTab: this.navigateToTab,
-      createListGroup: groupName =>
-        createTaskGroupList({ groupName, taskListIdentifier }),
+      createListGroup: groupName => createTaskGroupList({ groupName }),
       quickAddTask: this.quickAddTask,
       deleteGroup: this.deleteGroup,
       editGroupName: this.editGroupName,
       changeGroupsOrder: this.changeGroupsOrder,
       handleFilterChange: this.handleFilterChange,
-      isSpecialList,
       taskList: loadedTasklist || undefined,
-      taskListMembers,
       membersNotInTaskList,
       routeParams,
       hasFiltersApplied: !isEmpty(selectedFilters),
@@ -451,21 +447,18 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = store => ({
-  tasklists: store.taskListState.tasklist,
-  pendingTasklists: store.invitationState.pendingTasklists,
-  members: store.taskListState.tasklistmembers,
-  membersNotInTaskList: store.taskListState.orgusersnotintasklist,
-  completedTasks: store.taskState.completedTasks,
-  user: store.userState.user,
-  taskListMembers: store.taskListState.tasklistmembers,
-  megaFilter: store.megaFilter,
+const mapStateToProps = state => ({
+  taskLists: taskListSelector(state),
+  completedTasks: completedTasksSelector(state),
+  user: userSelector(state),
+  selectedFilters: selectedFiltersInMegaFilterSelector(state),
+  filters: availableFiltersInInMegaFilterSelector(state),
+  members: taskListMembersSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
-  taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
   tasksGroupsListActions: bindActionCreators(TasksGroupsListActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),

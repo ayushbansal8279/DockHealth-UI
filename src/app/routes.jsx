@@ -15,7 +15,7 @@ import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'components/patient/PatientDetailsView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { storeAsCurrentTask } from './actions/task-actions';
-import { getTasksGroupsList } from './sagas/tasks-groups-list';
+import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
 import { getMembersByTaskListId } from './actions/tasklist-actions';
 import {
   getFiltersForMegaFilter,
@@ -73,6 +73,8 @@ import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubsc
 import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
 import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
 // import { onLogin } from './helpers/ga-event-helper';
+
+import { setLocationAndParameters } from './location/actions';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -177,13 +179,19 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskIdentifier));
   };
 
+  const onEnterApp = ({ location, params }) => {
+    dispatch(setLocationAndParameters({ location, params }));
+  };
+
+  const onChangeApp = (_, { location, params }) => {
+    dispatch(setLocationAndParameters({ location, params }));
+  };
+
   const onEnterTaskGroups = nextState => {
     const { params } = nextState;
 
     if (params?.taskListIdentifier) {
-      dispatch(
-        getTasksGroupsList({ taskListIdentifier: params?.taskListIdentifier }),
-      );
+      dispatch(onEnterTasksGroupsList());
       dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
       dispatch(
         getFiltersForMegaFilter(
@@ -212,18 +220,19 @@ export const Routes = ({ store }) => {
   };
 
   return (
-    <Router history={hashHistory} onUpdate={() => {}}>
-      <Route path="/" component={App}>
+    <Router history={hashHistory}>
+      <Route
+        path="/"
+        component={App}
+        onEnter={onEnterApp}
+        onChange={onChangeApp}
+      >
         <Route
           component={TemplateCore}
           onEnter={() => {
             checkUserIsAuthenticated();
           }}
         >
-          <IndexRoute
-            component={ListDetailsView}
-            onEnter={checkFeatureToggles}
-          />
           <IndexRedirect to="/tasks" />
           <Route
             path="/userprofile"
@@ -334,11 +343,6 @@ export const Routes = ({ store }) => {
                 onEnterTaskGroups(nextState);
               }}
               onLeave={dispatch(clearFiltersForMegaFilter())}
-            />
-            <Route
-              path="filtered/:listName/:taskStatus/:filterBy"
-              component={ListDetailsView}
-              onEnter={checkFeatureToggles}
             />
           </Route>
         </Route>

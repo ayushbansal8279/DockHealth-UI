@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -7,14 +7,13 @@ import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 
-import Toolbar from 'components/taskView/Toolbar/NewToolbar';
+import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
-import { groupTasksSelector } from 'selectors/task-group-list-selectors';
 
 import { TaskViewContainer } from './styled';
-import OpenedTasksView from './OpenedTasksView';
-import CompletedTasksView from './CompletedTasksView';
+import OpenedTasksView from './OpenedTasksView/OpenedTasksViewContainer';
+import CompletedTasksView from './CompletedTasksView/CompletedTasksViewContainer';
 
 const Priority = {
   High: 'HIGH',
@@ -23,58 +22,42 @@ const Priority = {
 
 const TaskView = ({
   currentUser,
-  isSpecialList,
   members,
-  membersNotInTaskList,
-  showMembers = true,
   taskDrawerActions,
   taskActions,
   modalActions,
-  taskGroupList,
-  taskList = {},
-  taskListMembers,
-  isFetchingTasks,
-  isCompletedTasksFetching,
-  openedTasks,
-  completedTasks,
   routeParams,
   refreshTab,
-  isFetchingMoreTasks,
-  defaultGroupName,
-  dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
   taskCounters,
+  // Only opened
+  defaultGroupName,
+  dragAndDropDisabled = false,
   createListGroup,
   quickAddTask,
   deleteGroup,
   editGroupName,
   changeGroupsOrder,
+  // Only toolbar
+  taskList = {},
   showNotificationAction = true,
   handleFilterChange,
-  hasFiltersApplied,
-  selectedTask,
-  tasks,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
 
-  const groupedTasks = useMemo(() => groupTasksSelector(tasks), [tasks]);
-
   const { openDrawer } = taskDrawerActions;
   const {
     toggleTaskPriority,
-    reorderTasksInGroup,
-    reorderSubtasksForTask,
     toggleCompleteTask,
-    reassignTasksToAnotherGroup,
     reassignTask,
     updateDueDate,
     updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
-  const { groupList } = taskGroupList;
 
+  // TODO: Move to routing logic
   const handleTabsNavigation = routeParameters => {
     switch (routeParameters.tabName) {
       case TaskListTabName.COMPLETE:
@@ -89,6 +72,7 @@ const TaskView = ({
 
   handleTabsNavigation(routeParams);
 
+  // TODO: Move to saga
   const toggleSingleTaskPriority = task => {
     toggleTaskPriority(
       task,
@@ -96,50 +80,21 @@ const TaskView = ({
     );
   };
 
+  // TODO: Move to saga
   const invokeToggleCompleteAction = task => {
     toggleCompleteTask(task, selectedTab, currentUser)
       .then(() => refreshTab())
       .catch(() => refreshTab());
   };
 
+  // TODO: Move to saga
   const handleReassignTask = (taskIdentifier, userId) => {
     reassignTask(taskIdentifier, userId)
       .then(() => refreshTab())
       .catch(() => refreshTab());
   };
 
-  const handleReassignTasksToAnotherGroup = (
-    taskIdentifiers,
-    taskGroupIdentifier,
-  ) => {
-    reassignTasksToAnotherGroup(taskIdentifiers, taskGroupIdentifier)
-      .then(() => refreshTab())
-      .catch(() => refreshTab());
-  };
-
-  const handleReorderSubtasksForTask = (
-    orderedSubtaskIds,
-    taskGroupIdentifier,
-    parentTaskIdentifier,
-  ) => {
-    reorderSubtasksForTask(
-      orderedSubtaskIds,
-      taskGroupIdentifier,
-      parentTaskIdentifier,
-    )
-      .then(() => refreshTab())
-      .catch(() => refreshTab());
-  };
-
-  const handleReorderTasksInGroup = (
-    newSourceTasksOrder,
-    taskGroupIdentifier,
-  ) => {
-    reorderTasksInGroup(newSourceTasksOrder, taskGroupIdentifier)
-      .then(() => refreshTab())
-      .catch(() => refreshTab());
-  };
-
+  // TODO: Move to saga
   const toggleTaskCompletedStatus = task => {
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
@@ -157,66 +112,18 @@ const TaskView = ({
     }
   };
 
-  const filteredGroupsWithTasks = !searchValue
-    ? groupedTasks
-    : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
-        const filteredTasks = groupedTasks[
-          currentKey
-        ].filter(({ description }) =>
-          description.toLowerCase().includes(searchValue.toLowerCase()),
-        );
-
-        if (filteredTasks.length === 0) return groupObject;
-
-        return { ...groupObject, [currentKey]: filteredTasks };
-      }, {});
-
-  const filteredGroupsList = !searchValue
-    ? groupList
-    : groupList.filter(
-        ({ taskGroupIdentifier, groupType }) =>
-          Object.keys(filteredGroupsWithTasks).includes(taskGroupIdentifier) ||
-          Object.keys(filteredGroupsWithTasks).includes(groupType),
-      );
-
-  const filteredCompletedTasks = !searchValue
-    ? completedTasks
-    : completedTasks.filter(({ description }) =>
-        description.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-
-  const haveTasks =
-    (openedTasks && openedTasks.length > 0) ||
-    (completedTasks && completedTasks.length > 0);
-
-  // const closeTaskDrawer = () => {
-  //   console.log('in closeTaskDrawer');
-  //   const { storeAsCurrentTask, taskDrawerActions } = this.props;
-  //   taskDrawerActions.closeDrawer();
-  //   storeAsCurrentTask(null);
-  // };
-
   return (
     <TaskViewContainer>
       <Toolbar
-        isSpecialList={isSpecialList}
         members={members}
-        membersNotInTaskList={membersNotInTaskList}
         onSelectTab={navigateToTab}
-        printData={{
-          openedTasks,
-          completedTasks,
-          taskListMembers,
-        }}
         selectedTab={selectedTab}
-        showMembers={showMembers}
         taskList={taskList}
         openTasksAmount={taskCounters.incomplete}
         completedTasksAmount={taskCounters.complete}
         onSearchChange={setSearchValue}
         showNotifications={showNotificationAction}
         searchValue={searchValue}
-        haveTasks={haveTasks}
         onSelectFilters={handleFilterChange}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
@@ -226,17 +133,12 @@ const TaskView = ({
           currentUser={currentUser}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           toggleCompleteTask={toggleTaskCompletedStatus}
-          tasks={filteredCompletedTasks}
-          isFetchingData={isCompletedTasksFetching}
           summaryTasksCount={taskCounters.complete}
           reassignTask={handleReassignTask}
           showMoreTasks={() => refreshTab(false, true)}
-          isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
           listNameVisible={listNameVisible}
-          isSearchApplied={!!searchValue}
-          hasFiltersApplied={hasFiltersApplied}
-          selectedTask={selectedTask}
+          searchValue={searchValue}
         />
       ) : (
         <OpenedTasksView
@@ -245,31 +147,19 @@ const TaskView = ({
           currentUser={currentUser}
           toggleCompleteTask={toggleTaskCompletedStatus}
           storeAsCurrentTask={storeAsCurrentTask}
-          groupedTasks={filteredGroupsWithTasks}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           editGroupName={editGroupName}
           quickAddTask={quickAddTask}
           deleteGroup={deleteGroup}
-          changeGroupsOrder={(oldTaskIndex, newTaskIndex) =>
-            changeGroupsOrder(oldTaskIndex, newTaskIndex, groupList)
-          }
-          groupList={filteredGroupsList}
-          reorderTasksInGroup={handleReorderTasksInGroup}
-          reorderSubtasksForTask={handleReorderSubtasksForTask}
-          reassignTasksToAnotherGroup={handleReassignTasksToAnotherGroup}
+          changeGroupsOrder={changeGroupsOrder}
           reassignTask={handleReassignTask}
-          isFetchingData={
-            (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
-            (isFetchingTasks && openedTasks?.length === 0)
-          }
           members={members}
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}
           defaultGroupName={defaultGroupName}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
-          isSearchApplied={!!searchValue}
-          selectedTask={selectedTask}
+          searchValue={searchValue}
         />
       )}
       <NewTaskDrawer modalActions={modalActions} />
@@ -285,13 +175,6 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
-  taskGroupList: store.taskGroupList,
-  isFetchingTasks: store.taskState.isFetching,
-  isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
-  openedTasks: store.taskState.tasks,
-  completedTasks: store.taskState.completedTasks,
-  tasks: store.taskState.tasks,
-  isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
   taskCounters: store.taskState.taskCounters,
   selectedTask: store.taskState.selectedTask,
 });

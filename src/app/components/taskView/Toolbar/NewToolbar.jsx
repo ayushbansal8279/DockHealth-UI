@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Grid } from '@material-ui/core';
 import { splitAt } from 'ramda';
 import { toggleListNotifications } from 'actions/tasklist-actions';
@@ -91,13 +91,11 @@ const getMembersNames = ({ members }) =>
   });
 
 const Toolbar = ({
-  isSpecialList,
   members,
   membersNotInTaskList,
   onSelectTab,
-  printData: { tasks = [], completedTasks = [], taskListMembers = [] },
+  printData: { openedTasks = [], completedTasks = [], taskListMembers = [] },
   selectedTab,
-  showMembers = true,
   showNotifications = true,
   taskList,
   openTasksAmount,
@@ -177,50 +175,45 @@ const Toolbar = ({
                 color={palette.brightBlue}
               />
             </Button>
-            {!isSpecialList && showMembers && (
+            <Spacing horizontal={4} />
+            {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
+            {hiddenMembersCount > 0 && (
               <>
-                <Spacing horizontal={4} />
-                {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
-                {hiddenMembersCount > 0 && (
-                  <>
-                    <Spacing horizontal={1} />
-                    <UniversalTooltip
-                      placement="bottom"
-                      open={isShowMoreMembersTooltipOpen}
-                      anchorEl={moreMembersButtonReference.current}
-                    >
-                      {getMembersNames({ members: hiddenMembers })}
-                    </UniversalTooltip>
-                    <MoreMembersButtonContainer
-                      onMouseEnter={showMoreMembersTooltip}
-                      onMouseLeave={hideMoreMembersTooltip}
-                      ref={moreMembersButtonReference}
-                    >
-                      +{hiddenMembersCount}
-                    </MoreMembersButtonContainer>
-                  </>
-                )}
-                <Spacing horizontal={2} />
-                <InviteMemberPopoverWithButton
-                  size={40}
-                  members={members}
-                  membersNotInTaskList={membersNotInTaskList}
-                  taskList={taskList}
-                />
+                <Spacing horizontal={1} />
+                <UniversalTooltip
+                  placement="bottom"
+                  open={isShowMoreMembersTooltipOpen}
+                  anchorEl={moreMembersButtonReference.current}
+                >
+                  {getMembersNames({ members: hiddenMembers })}
+                </UniversalTooltip>
+                <MoreMembersButtonContainer
+                  onMouseEnter={showMoreMembersTooltip}
+                  onMouseLeave={hideMoreMembersTooltip}
+                  ref={moreMembersButtonReference}
+                >
+                  +{hiddenMembersCount}
+                </MoreMembersButtonContainer>
               </>
             )}
+            <Spacing horizontal={2} />
+            <InviteMemberPopoverWithButton
+              size={40}
+              members={members}
+              membersNotInTaskList={membersNotInTaskList}
+              taskList={taskList}
+            />
           </HeaderActionButtonsGrid>
         </Grid>
         <MorePopover
           moreButtonReference={moreButtonReference}
           closeMorePopover={closeMorePopover}
           isMorePopoverOpen={isMorePopoverOpen}
-          tasks={tasks}
+          tasks={openedTasks}
           completedTasks={completedTasks}
           taskListMembers={taskListMembers}
           notificationsEnabled={notificationsEnabled}
           toggleNotifications={toggleNotifications}
-          isSpecialList={isSpecialList}
           showNotifications={showNotifications}
         />
       </Grid>
@@ -259,8 +252,4 @@ const Toolbar = ({
   );
 };
 
-const mapStateToProps = store => ({
-  megaFilter: store.megaFilter,
-});
-
-export default connect(mapStateToProps)(Toolbar);
+export default Toolbar;
