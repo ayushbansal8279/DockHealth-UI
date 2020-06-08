@@ -12,8 +12,8 @@ export const ListDetailsContainer = styled.div`
 `;
 
 export const ListDetailsHeader = styled.div`
-  align-items: center;
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
   padding-bottom: ${spacing.regular};
 `;
@@ -33,11 +33,13 @@ export const ListNameSection = styled.p`
 
 export const ViewIcon = styled.img`
   margin-left: ${spacing.regularPlus};
+  margin-bottom: ${spacing.tiny};
   visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
   cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
 `;
 
 export const Arrow = styled.img`
+  margin-bottom: 10px;
   transform: ${props => props.isOpen && 'rotateX(180deg)'};
   -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
   padding-left: ${spacing.tiny};

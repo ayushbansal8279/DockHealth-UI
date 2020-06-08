@@ -16,11 +16,10 @@ const PatientCompleteTasksListView = ({
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
 
-  console.log('lists', patientLists);
   return patientLists.map(list => (
     <TaskListDetailsDropdown
       key={list.taskListIdentifier}
-      listName={list.listName}
+      list={list}
       tasks={list.tasks}
       currentUser={currentUser}
       isCompleteTab

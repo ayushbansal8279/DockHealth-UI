@@ -5,6 +5,7 @@ import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 import Task from 'views/Task/NewTasksView/TaskItem/TaskItem';
+import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 
 import {
   Arrow,
@@ -19,7 +20,7 @@ const FULL_VIEW = 'FULL_VIEW';
 const SLIM_VIEW = 'SLIM_VIEW';
 
 const TaskListDetailsDropdown = ({
-  listName,
+  list,
   tasks,
   currentUser,
   selectedTask,
@@ -31,6 +32,10 @@ const TaskListDetailsDropdown = ({
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
 
+  const { listName, listIdentifier, memberUsers, adminUsers } = list;
+
+  const listMembers = adminUsers.concat(memberUsers).concat([currentUser]);
+
   return (
     <ListDetailsContainer>
       <ListDetailsHeader>
@@ -41,6 +46,12 @@ const TaskListDetailsDropdown = ({
           src={ArrowIcon}
         />
         <ListNameSection>{listName}</ListNameSection>
+        {listMembers?.length > 0 && (
+          <TaskListMembers
+            members={listMembers}
+            taskList={{ listIdentifier }}
+          />
+        )}
         <div>
           <ViewIcon
             alt="slim-view"
