@@ -39,6 +39,14 @@ const EditableLabel = ({
   useEffect(() => {
     if (isEditing) {
       enableForceOpen();
+
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(labelContentFieldReference.current);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      // eslint-disable-next-line no-unused-expressions
       labelContentFieldReference.current.focus();
     }
   }, [enableForceOpen, isEditing]);
