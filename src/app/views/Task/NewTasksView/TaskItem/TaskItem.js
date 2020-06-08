@@ -33,6 +33,7 @@ import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import palette from 'styles/palette';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
@@ -125,6 +126,32 @@ const getCalendarIcon = (value, isHovered, isOverDue) =>
   isOverDue
     ? CalendarOverDueIcon
     : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered)];
+
+const getToolTipMultiLabelDetails = labels => {
+  let toolTipMultiLabelDetails = '';
+  if (labels.length === 1) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}`;
+  } else if (labels.length === 2) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}, ${labels[1].labelName}`;
+  } else if (labels.length > 2) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}, ${
+      labels[1].labelName
+    } + ${labels.length - 2}`;
+  }
+  return toolTipMultiLabelDetails;
+};
+
+const getToolTipAttachmentsLabelDetails = attachments => {
+  let attachmentLabelDetails = '';
+  if (attachments.length === 1) {
+    attachmentLabelDetails = `${attachments[0].fileName}`;
+  } else if (attachments.length > 1) {
+    attachmentLabelDetails = `${
+      attachments[0].fileName
+    } + ${attachments.length - 1}`;
+  }
+  return attachmentLabelDetails;
+};
 
 const TaskItem = ({
   isOpen,
@@ -268,10 +295,19 @@ const TaskItem = ({
         <TaskItemCell width="200px">
           <Grid container>
             <GridImg item xs={3}>
-              <img
-                alt="comments"
-                src={getItemIcon(COMMENTS, comments, isHovered)}
-              />
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(comments) === REGULAR
+                    ? `${comments?.length} comments`
+                    : 'Add a new comment'
+                }
+              >
+                <img
+                  alt="comments"
+                  src={getItemIcon(COMMENTS, comments, isHovered)}
+                />
+              </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
               <PopoverDatepicker
@@ -290,31 +326,63 @@ const TaskItem = ({
                     onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                     ref={elementReference}
                   >
-                    <DueDateContainer>
-                      <DueDate>
-                        {dueDate && moment(dueDate).format('MM/DD')}
-                      </DueDate>
-                      <img
-                        alt="due-date"
-                        src={getCalendarIcon(
-                          dueDate,
-                          isHovered,
-                          !!(dueDate && moment(dueDate).isBefore(moment())),
-                        )}
-                      />
-                    </DueDateContainer>
+                    <UniversalTooltipContainer
+                      placement="top"
+                      label={
+                        getItemIconVersion(dueDate) === REGULAR
+                          ? 'Edit due date'
+                          : 'Add due date'
+                      }
+                    >
+                      <DueDateContainer>
+                        <DueDate>
+                          {dueDate && moment(dueDate).format('MM/DD')}
+                        </DueDate>
+                        <img
+                          alt="due-date"
+                          src={getCalendarIcon(
+                            dueDate,
+                            isHovered,
+                            !!(dueDate && moment(dueDate).isBefore(moment())),
+                          )}
+                        />
+                      </DueDateContainer>
+                    </UniversalTooltipContainer>
                   </button>
                 )}
               </PopoverDatepicker>
             </GridImg>
             <GridImg item xs={3}>
-              <img alt="labels" src={getItemIcon(LABELS, labels, isHovered)} />
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(labels) === REGULAR
+                    ? getToolTipMultiLabelDetails(labels)
+                    : 'Add label'
+                }
+              >
+                {' '}
+                <img
+                  alt="labels"
+                  src={getItemIcon(LABELS, labels, isHovered)}
+                />
+              </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
-              <img
-                alt="attachments"
-                src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
-              />
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(attachments) === REGULAR
+                    ? getToolTipAttachmentsLabelDetails(attachments)
+                    : 'Add file'
+                }
+              >
+                {' '}
+                <img
+                  alt="attachments"
+                  src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
+                />
+              </UniversalTooltipContainer>
             </GridImg>
           </Grid>
         </TaskItemCell>
