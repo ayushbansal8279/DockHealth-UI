@@ -365,6 +365,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   isInbox={isInbox}
                   parentFormSubmit={parentFormSubmit}
                   setAutoSaveVisible={setAutoSaveVisible}
+                  setSelectedLabelsValue={setValue}
                 />
               </Grid>
               <Grid item xs={12} style={styleFullRow}>

@@ -13,6 +13,7 @@ const LabelsSection = ({
   isInbox,
   parentFormSubmit,
   setAutoSaveVisible,
+  setSelectedLabelsValue,
 }) => {
   const {
     labels,
@@ -23,6 +24,7 @@ const LabelsSection = ({
     isInbox,
     parentFormSubmit,
     setAutoSaveVisible,
+    setSelectedLabelsValue,
   });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;

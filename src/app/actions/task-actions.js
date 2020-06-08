@@ -894,6 +894,7 @@ export const refreshTask = selectedTask => dispatch =>
         task,
       });
       reloadTaskListStats(dispatch, selectedTask);
+      return task;
     })
     .catch(error => {
       throw error;
@@ -906,6 +907,7 @@ export const refreshAndStoreAsCurrentTask = taskIdentifier => dispatch =>
         type: ActionTypes.SET_AS_CURRENT_TASK,
         task,
       });
+      return task;
     })
     .catch(error => {
       throw error;

@@ -7,6 +7,8 @@ import {
   removeLabelForTask,
   getTaskListLabels,
 } from 'actions/task-label-actions';
+import { refreshTask } from 'actions/task-actions';
+import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 
 const labelAddOrRemovePromise = ({
   dispatch,
@@ -51,6 +53,7 @@ const initializeLabelsSectionHooks = ({
   isInbox,
   parentFormSubmit,
   setAutoSaveVisible,
+  setSelectedLabelsValue,
 }) => {
   const { selectedTask, labels, areLabelsRequested } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
@@ -92,11 +95,18 @@ const initializeLabelsSectionHooks = ({
       ),
     );
 
-    await getTaskListLabels({
+    setAutoSaveVisible();
+
+    getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
     })(dispatch);
 
-    setAutoSaveVisible();
+    const refreshedTask = await refreshTask(selectedTask)(dispatch);
+
+    setSelectedLabelsValue(
+      'labels',
+      getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
+    );
   };
 
   const saveEditLabel = async (selectedLabel, newValue) => {
@@ -114,11 +124,18 @@ const initializeLabelsSectionHooks = ({
       taskIdentifier,
     })(dispatch);
 
-    await getTaskListLabels({
+    setAutoSaveVisible();
+
+    getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
     })(dispatch);
 
-    setAutoSaveVisible();
+    const refreshedTask = await refreshTask(selectedTask)(dispatch);
+
+    setSelectedLabelsValue(
+      'labels',
+      getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
+    );
   };
 
   const saveAddLabel = async newValue => {
@@ -136,11 +153,13 @@ const initializeLabelsSectionHooks = ({
       taskIdentifier,
     })(dispatch);
 
-    await getTaskListLabels({
+    setAutoSaveVisible();
+
+    getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
     })(dispatch);
 
-    setAutoSaveVisible();
+    await refreshTask(selectedTask)(dispatch);
   };
 
   const saveTaskOnFocus = async () => {
