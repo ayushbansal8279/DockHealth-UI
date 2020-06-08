@@ -54,7 +54,6 @@ const TasksGroup = ({
   showMoreTasks,
   isFetchingMoreTasks,
   hasMoreTasks,
-  members,
   updateDueDate,
   updateWorkflowStatus,
   dragAndDropDisabled,
@@ -166,7 +165,6 @@ const TasksGroup = ({
           draggedId={draggedId}
           reorderSubtasksForTask={reorderSubtasksForTask}
           isCompletedGroup={isCompletedGroup}
-          members={members}
           reassignTask={reassignTask}
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}

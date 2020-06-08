@@ -1,3 +1,4 @@
+import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
@@ -42,4 +43,9 @@ export const Arrow = styled.img`
   padding-left: ${spacing.tiny};
   padding-right: ${spacing.smallPlus};
   transition: all 0.5s ease-in-out;
+`;
+
+export const Tasks = styled(Collapse)`
+  height: 300px;
+  padding-left: ${props => props.issubtasks && spacing.giga};
 `;

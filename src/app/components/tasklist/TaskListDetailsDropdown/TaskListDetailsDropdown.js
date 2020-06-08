@@ -4,9 +4,11 @@ import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
+import Task from 'views/Task/NewTasksView/TaskItem/TaskItem';
 
 import {
   Arrow,
+  Tasks,
   ListDetailsContainer,
   ListDetailsHeader,
   ListNameSection,
@@ -16,7 +18,15 @@ import {
 const FULL_VIEW = 'FULL_VIEW';
 const SLIM_VIEW = 'SLIM_VIEW';
 
-const TaskListDetailsDropdown = ({ listName, tasks }) => {
+const TaskListDetailsDropdown = ({
+  listName,
+  tasks,
+  currentUser,
+  selectedTask,
+  openDrawer,
+  storeAsCurrentTask,
+  isCompleteTab,
+}) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
@@ -46,6 +56,31 @@ const TaskListDetailsDropdown = ({ listName, tasks }) => {
           />
         </div>
       </ListDetailsHeader>
+      <Tasks timeout={150} in={isOpen}>
+        <div>
+          {tasks?.map(task => (
+            <Task
+              key={task.taskIdentifier}
+              currentUser={currentUser}
+              isFullView={isFullView}
+              openDrawer={openDrawer}
+              storeAsCurrentTask={storeAsCurrentTask}
+              toggleTaskPriority={() => {}}
+              task={task}
+              groupId={tasks.taskIdentifier}
+              draggableProvided={{}}
+              isCompletedGroup={isCompleteTab}
+              toggleCompleteTask={() => {}}
+              reassignTask={() => {}}
+              updateDueDate={() => {}}
+              updateWorkflowStatus={() => {}}
+              dragAndDropDisabled
+              selectedTask={selectedTask}
+              patientVisible={false}
+            />
+          ))}
+        </div>
+      </Tasks>
     </ListDetailsContainer>
   );
 };
