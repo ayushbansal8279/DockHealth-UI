@@ -35,7 +35,7 @@ const PatientDetailsView = ({
         openTasksAmount={1}
         completedTasksAmount={1}
         onSearchChange={() => {}}
-        showNotifications={() => {}}
+        showNotifications={false}
         searchValue={null}
         onSelectFilters={() => {}}
         showMembers={false}

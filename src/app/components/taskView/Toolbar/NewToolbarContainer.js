@@ -8,7 +8,7 @@ import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import NewToolbar from './NewToolbar';
 
 const mapStateToProps = (state, ownProps) => {
-  const { members } = ownProps;
+  const { members, showMembers } = ownProps;
   const completedTasks = completedTasksSelector(state);
   const openedTasks = tasksSelector(state);
   const haveTasks =
@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
       openedTasks,
       completedTasks,
       taskListMembers: members,
+      showMembers,
     },
     membersNotInTaskList: membersNotInTaskListSelector(state),
     megaFilter: megaFilterSelector(state),

@@ -92,6 +92,7 @@ const getMembersNames = ({ members }) =>
 
 const Toolbar = ({
   members,
+  showMembers = true,
   membersNotInTaskList,
   onSelectTab,
   printData: { openedTasks = [], completedTasks = [], taskListMembers = [] },
@@ -176,33 +177,37 @@ const Toolbar = ({
               />
             </Button>
             <Spacing horizontal={4} />
-            {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
-            {hiddenMembersCount > 0 && (
+            {showMembers && (
               <>
-                <Spacing horizontal={1} />
-                <UniversalTooltip
-                  placement="bottom"
-                  open={isShowMoreMembersTooltipOpen}
-                  anchorEl={moreMembersButtonReference.current}
-                >
-                  {getMembersNames({ members: hiddenMembers })}
-                </UniversalTooltip>
-                <MoreMembersButtonContainer
-                  onMouseEnter={showMoreMembersTooltip}
-                  onMouseLeave={hideMoreMembersTooltip}
-                  ref={moreMembersButtonReference}
-                >
-                  +{hiddenMembersCount}
-                </MoreMembersButtonContainer>
+                {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
+                {hiddenMembersCount > 0 && (
+                  <>
+                    <Spacing horizontal={1} />
+                    <UniversalTooltip
+                      placement="bottom"
+                      open={isShowMoreMembersTooltipOpen}
+                      anchorEl={moreMembersButtonReference.current}
+                    >
+                      {getMembersNames({ members: hiddenMembers })}
+                    </UniversalTooltip>
+                    <MoreMembersButtonContainer
+                      onMouseEnter={showMoreMembersTooltip}
+                      onMouseLeave={hideMoreMembersTooltip}
+                      ref={moreMembersButtonReference}
+                    >
+                      +{hiddenMembersCount}
+                    </MoreMembersButtonContainer>
+                  </>
+                )}
+                <Spacing horizontal={2} />
+                <InviteMemberPopoverWithButton
+                  size={40}
+                  members={members}
+                  membersNotInTaskList={membersNotInTaskList}
+                  taskList={taskList}
+                />
               </>
             )}
-            <Spacing horizontal={2} />
-            <InviteMemberPopoverWithButton
-              size={40}
-              members={members}
-              membersNotInTaskList={membersNotInTaskList}
-              taskList={taskList}
-            />
           </HeaderActionButtonsGrid>
         </Grid>
         <MorePopover
