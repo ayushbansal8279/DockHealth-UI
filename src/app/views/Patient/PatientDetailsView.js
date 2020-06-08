@@ -5,6 +5,8 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 
+import { PatientListsContainer } from './styled';
+
 const PatientDetailsView = ({
   children,
   routeParams: { patientIdentifier },
@@ -34,7 +36,9 @@ const PatientDetailsView = ({
         onSelectFilters={() => {}}
         showMembers={false}
       />
-      <ViewLoader isFetchingData={isFetching}>{children}</ViewLoader>
+      <ViewLoader isFetchingData={isFetching}>
+        <PatientListsContainer>{children}</PatientListsContainer>
+      </ViewLoader>
     </>
   );
 };

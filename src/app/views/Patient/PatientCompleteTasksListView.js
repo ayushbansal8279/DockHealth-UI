@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ListDropdown from 'components/lists/list-dropdown/list-dropdown';
+import TaskListDetailsDropdown from 'components/tasklist/TaskListDetailsDropdown/TaskListDetailsDropdown';
 
 const PatientCompleteTasksListView = ({ patientTasks: { lists } }) => {
   return lists.map(list => (
-    <ListDropdown key={list.taskListIdentifier} list={list} />
+    <TaskListDetailsDropdown key={list.taskListIdentifier} list={list} />
   ));
 };
 

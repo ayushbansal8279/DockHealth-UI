@@ -1,16 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ListDropdown from 'components/lists/list-dropdown/list-dropdown';
+import TaskListDetailsDropdown from 'components/tasklist/TaskListDetailsDropdown/TaskListDetailsDropdown';
 
-const PatientOpenTasksListView = ({ patientTasks: { lists } }) => {
-  console.log('lists', lists);
-  return lists.map(list => (
-    <ListDropdown key={list.taskListIdentifier} list={list} />
+const PatientOpenTasksListView = ({ patientLists }) => {
+  console.log('lists', patientLists);
+  return patientLists.map(list => (
+    <TaskListDetailsDropdown
+      key={list.taskListIdentifier}
+      listName={list.listName}
+      tasks={list.tasks}
+    />
   ));
 };
 
 const mapStateToProps = store => ({
-  patientTasks: store.patientTasks,
+  patientLists: store.patientTasks.lists,
 });
 
 export default connect(mapStateToProps)(PatientOpenTasksListView);
