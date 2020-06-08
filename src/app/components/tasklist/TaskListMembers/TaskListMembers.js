@@ -24,12 +24,7 @@ const getMembersNames = ({ members }) =>
     );
   });
 
-const TaskListMembers = ({
-  members,
-  taskList,
-  limit = 4,
-  membersNotInTaskList = [],
-}) => {
+const TaskListMembers = ({ members, limit = 4 }) => {
   const moreMembersButtonReference = useRef(null);
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -66,13 +61,6 @@ const TaskListMembers = ({
           </MoreMembersButtonContainer>
         </>
       )}
-      {/* <Spacing horizontal={2} />
-      <InviteMemberPopoverWithButton
-        size={40}
-        members={members}
-        membersNotInTaskList={membersNotInTaskList}
-        taskList={taskList}
-      /> */}
     </>
   );
 };

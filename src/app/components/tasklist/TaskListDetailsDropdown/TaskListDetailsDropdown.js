@@ -34,7 +34,7 @@ const TaskListDetailsDropdown = ({
 
   const { listName, listIdentifier, memberUsers, adminUsers } = list;
 
-  const listMembers = adminUsers.concat(memberUsers).concat([currentUser]);
+  const listMembers = [currentUser].concat(adminUsers).concat(memberUsers);
 
   return (
     <ListDetailsContainer>
