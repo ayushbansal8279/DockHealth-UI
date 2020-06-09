@@ -189,6 +189,7 @@ const TaskItem = ({
     completedDt,
     completedBy,
     taskList,
+    parentTaskIdentifier,
   } = task;
 
   const listName = taskList?.listName;
@@ -197,6 +198,9 @@ const TaskItem = ({
   const [isHovered, setIsHoverd] = useState(false);
 
   const isCompleted = task.status === 'COMPLETE';
+
+  const isSubtask = !!parentTaskIdentifier;
+  const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
 
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
@@ -229,7 +233,10 @@ const TaskItem = ({
         <TaskItemCell bolded paddingLeft="huge">
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
-            onClick={() => toggleCompleteTask(task)}
+            isClickable={isTaskStatusTogglingEnabled}
+            onClick={() =>
+              isTaskStatusTogglingEnabled && toggleCompleteTask(task)
+            }
           />
           <DescriptionBox>
             <Description
