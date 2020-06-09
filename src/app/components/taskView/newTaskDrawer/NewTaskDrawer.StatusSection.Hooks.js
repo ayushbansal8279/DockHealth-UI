@@ -8,7 +8,7 @@ import { updateWorkflowStatus } from 'actions/task-actions';
 
 export const STATUSES = [
   {
-    value: 'NONE',
+    value: '',
     label: 'No status',
     color: 'transparent',
   },
