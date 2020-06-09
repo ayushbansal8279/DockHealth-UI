@@ -19,9 +19,14 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
-import { storeAsCurrentTask } from './actions/task-actions';
-import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
-import { getMembersByTaskListId } from './actions/tasklist-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
+import { getMembersByTaskListId } from 'actions/tasklist-actions';
+import {
+  fetchStatsForPatientTasks,
+  fetchPatientTasks,
+} from 'sagas/patient-tasks';
+import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list';
+
 import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
@@ -239,20 +244,19 @@ export const Routes = ({ store }) => {
       params: { patientIdentifier },
     } = nextState;
 
+    dispatch(fetchStatsForPatientTasks(patientIdentifier));
     dispatch(PatientTasksActions.setActiveTab(TaskListTabName.OPEN));
-    dispatch(
-      PatientTasksActions.fetchPatientTasks(patientIdentifier, 'INCOMPLETE'),
-    );
+    dispatch(fetchPatientTasks(patientIdentifier, 'INCOMPLETE'));
   };
 
   const onEnterPatientCompleteTasksListView = nextState => {
     const {
       params: { patientIdentifier },
     } = nextState;
+
+    dispatch(fetchStatsForPatientTasks(patientIdentifier));
     dispatch(PatientTasksActions.setActiveTab(TaskListTabName.COMPLETE));
-    dispatch(
-      PatientTasksActions.fetchPatientTasks(patientIdentifier, 'COMPLETE'),
-    );
+    dispatch(fetchPatientTasks(patientIdentifier, 'COMPLETE'));
   };
 
   return (
@@ -323,6 +327,9 @@ export const Routes = ({ store }) => {
             onEnter={nextState => {
               checkFeatureToggles(nextState);
               onEnterPatientDetailsView();
+            }}
+            onLeave={() => {
+              dispatch(PatientTasksActions.clearPatientTasksState());
             }}
           >
             <IndexRoute

@@ -13,6 +13,10 @@ export const fetchPatientTasksByPatientIdentifier = (
       throw error;
     });
 
-export default {
-  fetchPatientTasksByPatientIdentifier,
-};
+export const fetchStatsForPatientTasks = patientIdentifier =>
+  axios
+    .get(`/task/stats/getTaskStatsForPatient/${patientIdentifier}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });

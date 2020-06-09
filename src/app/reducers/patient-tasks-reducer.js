@@ -3,11 +3,16 @@ import {
   REQUEST_PATIENT_TASKS,
   REQUEST_PATIENT_TASKS_SUCCESS,
   REQUEST_PATIENT_TASKS_FAILURE,
+  REQUEST_PATIENT_STATS_SUCCESS,
+  REQUEST_PATIENT_STATS_FAILURE,
+  CLEAR_PATIENT_TASKS,
 } from 'actions/action-types';
 
 const INITIAL_STATE = {
   activeTab: null,
   lists: [],
+  incompleteTasksCount: null,
+  completeTasksCount: null,
   isFetching: false,
   error: false,
 };
@@ -17,6 +22,10 @@ export default function(state = INITIAL_STATE, action = {}) {
 
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (type) {
+    case CLEAR_PATIENT_TASKS:
+      return {
+        ...INITIAL_STATE,
+      };
     case SET_ACTIVE_TAB:
       return {
         ...state,
@@ -40,6 +49,19 @@ export default function(state = INITIAL_STATE, action = {}) {
         isFetching: false,
         error: true,
       };
+    case REQUEST_PATIENT_STATS_SUCCESS:
+      return {
+        ...state,
+        incompleteTasksCount: payload?.incompleteTasksCount,
+        completeTasksCount: payload?.completeTasksCount,
+      };
+    case REQUEST_PATIENT_STATS_FAILURE:
+      return {
+        ...state,
+        incompleteTasksCount: null,
+        completeTasksCount: null,
+      };
+
     default:
       return state;
   }

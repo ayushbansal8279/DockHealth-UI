@@ -4,6 +4,7 @@ import { all } from 'redux-saga/effects';
 import thunk from 'redux-thunk';
 import reducers from './reducers/root-reducer';
 import watchTasksGroupsList from './sagas/tasks-groups-list';
+import watchPatientTasks from './sagas/patient-tasks';
 
 // eslint-disable-next-line no-underscore-dangle
 const composeEnhancers =
@@ -25,7 +26,7 @@ function setupStore() {
 const store = setupStore();
 
 function* rootSaga() {
-  yield all([watchTasksGroupsList()]);
+  yield all([watchTasksGroupsList(), watchPatientTasks()]);
 }
 
 saga.run(rootSaga);

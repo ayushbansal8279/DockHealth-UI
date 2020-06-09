@@ -13,7 +13,12 @@ import { PatientListsContainer } from './styled';
 const PatientDetailsView = ({
   children,
   routeParams: { patientIdentifier },
-  patientTasks: { isFetching, activeTab },
+  patientTasks: {
+    isFetching,
+    activeTab,
+    incompleteTasksCount,
+    completeTasksCount,
+  },
   modalActions,
 }) => {
   console.count('main view');
@@ -32,8 +37,8 @@ const PatientDetailsView = ({
         onSelectTab={navigateToTab}
         selectedTab={activeTab}
         printData={{}}
-        openTasksAmount={1}
-        completedTasksAmount={1}
+        openTasksAmount={incompleteTasksCount}
+        completedTasksAmount={completeTasksCount}
         onSearchChange={() => {}}
         showNotifications={false}
         searchValue={null}
