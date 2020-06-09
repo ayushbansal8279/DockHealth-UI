@@ -17,7 +17,11 @@ const PatientOpenTasksListView = ({
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
-  const { toggleTaskStatus } = patientTasksActions;
+  const {
+    toggleTaskStatus,
+    toggleTaskPriority,
+    reassignTask,
+  } = patientTasksActions;
 
   return patientLists.map(list => (
     <TaskListDetailsDropdown
@@ -29,6 +33,8 @@ const PatientOpenTasksListView = ({
       openDrawer={openDrawer}
       storeAsCurrentTask={storeAsCurrentTask}
       toggleTaskStatus={toggleTaskStatus}
+      toggleTaskPriority={toggleTaskPriority}
+      reassignTask={reassignTask}
     />
   ));
 };

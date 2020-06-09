@@ -428,6 +428,7 @@ const Subtasks = ({
   reassignTask,
   currentUser,
   parentHasPatient,
+  taskList,
   ...restProps
 }) => {
   const [draggedId, setDraggableId] = useState(false);
@@ -475,7 +476,7 @@ const Subtasks = ({
                         <TaskItem
                           dragHandleProps={dragHandleProps}
                           key={subtask.taskId}
-                          task={subtask}
+                          task={{ ...subtask, taskList }}
                           isDragging={isDraggingSubtask}
                           currentUser={currentUser}
                           reassignTask={reassignTask}
@@ -562,6 +563,7 @@ const Task = ({
           currentUser={currentUser}
           reassignTask={reassignTask}
           parentHasPatient={!!patient}
+          taskList={task?.taskList}
           {...restProps}
         />
       )}

@@ -6,7 +6,7 @@ import {
   REQUEST_PATIENT_STATS_SUCCESS,
   REQUEST_PATIENT_STATS_FAILURE,
   CLEAR_PATIENT_TASKS,
-  TOGGLE_TASK_STATUS,
+  UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
 } from 'actions/action-types';
 
@@ -85,7 +85,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         incompleteTasksCount: null,
         completeTasksCount: null,
       };
-    case TOGGLE_TASK_STATUS: {
+    case UPDATE_PATIENT_TASK: {
       const { newTaskData, taskIdentifier } = payload;
 
       const newTaskLists = state.lists.map(list => {

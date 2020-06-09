@@ -28,6 +28,8 @@ const TaskListDetailsDropdown = ({
   storeAsCurrentTask,
   isCompleteTab,
   toggleTaskStatus,
+  toggleTaskPriority,
+  reassignTask,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -77,13 +79,13 @@ const TaskListDetailsDropdown = ({
               isFullView={isFullView}
               openDrawer={openDrawer}
               storeAsCurrentTask={storeAsCurrentTask}
-              toggleTaskPriority={() => {}}
+              toggleTaskPriority={toggleTaskPriority}
               task={task}
               groupId={tasks.taskIdentifier}
               draggableProvided={{}}
               isCompletedGroup={isCompleteTab}
               toggleCompleteTask={toggleTaskStatus}
-              reassignTask={() => {}}
+              reassignTask={reassignTask}
               updateDueDate={() => {}}
               updateWorkflowStatus={() => {}}
               dragAndDropDisabled
