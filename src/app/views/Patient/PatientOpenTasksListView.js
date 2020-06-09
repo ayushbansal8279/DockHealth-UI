@@ -5,6 +5,7 @@ import TaskListDetailsDropdown from 'components/tasklist/TaskListDetailsDropdown
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
+import { PatientTasksActions } from 'sagas/patient-tasks';
 
 const PatientOpenTasksListView = ({
   patientLists,
@@ -12,9 +13,11 @@ const PatientOpenTasksListView = ({
   selectedTask,
   taskDrawerActions,
   taskActions,
+  patientTasksActions,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
+  const { toggleTaskStatus } = patientTasksActions;
 
   return patientLists.map(list => (
     <TaskListDetailsDropdown
@@ -25,6 +28,7 @@ const PatientOpenTasksListView = ({
       selectedTask={selectedTask}
       openDrawer={openDrawer}
       storeAsCurrentTask={storeAsCurrentTask}
+      toggleTaskStatus={toggleTaskStatus}
     />
   ));
 };
@@ -32,6 +36,7 @@ const PatientOpenTasksListView = ({
 const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
+  patientTasksActions: bindActionCreators(PatientTasksActions, dispatch),
 });
 
 const mapStateToProps = store => ({

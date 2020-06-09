@@ -228,7 +228,11 @@ export const Routes = ({ store }) => {
     }
   };
 
-  const onEnterPatientDetailsView = () => {
+  const onEnterPatientDetailsView = nextState => {
+    const {
+      params: { patientIdentifier },
+    } = nextState;
+
     setHeader(dispatch)({
       layout: [
         {
@@ -237,26 +241,19 @@ export const Routes = ({ store }) => {
         },
       ],
     });
+    dispatch(PatientTasksActions.initializePatient(patientIdentifier));
   };
 
-  const onEnterPatientOpenTasksListView = nextState => {
-    const {
-      params: { patientIdentifier },
-    } = nextState;
-
-    dispatch(fetchStatsForPatientTasks(patientIdentifier));
+  const onEnterPatientOpenTasksListView = () => {
+    dispatch(fetchStatsForPatientTasks());
     dispatch(PatientTasksActions.setActiveTab(TaskListTabName.OPEN));
-    dispatch(fetchPatientTasks(patientIdentifier, 'INCOMPLETE'));
+    dispatch(fetchPatientTasks());
   };
 
-  const onEnterPatientCompleteTasksListView = nextState => {
-    const {
-      params: { patientIdentifier },
-    } = nextState;
-
-    dispatch(fetchStatsForPatientTasks(patientIdentifier));
+  const onEnterPatientCompleteTasksListView = () => {
+    dispatch(fetchStatsForPatientTasks());
     dispatch(PatientTasksActions.setActiveTab(TaskListTabName.COMPLETE));
-    dispatch(fetchPatientTasks(patientIdentifier, 'COMPLETE'));
+    dispatch(fetchPatientTasks());
   };
 
   return (
@@ -326,7 +323,7 @@ export const Routes = ({ store }) => {
             component={PatientDetailsView}
             onEnter={nextState => {
               checkFeatureToggles(nextState);
-              onEnterPatientDetailsView();
+              onEnterPatientDetailsView(nextState);
             }}
             onLeave={() => {
               dispatch(PatientTasksActions.clearPatientTasksState());

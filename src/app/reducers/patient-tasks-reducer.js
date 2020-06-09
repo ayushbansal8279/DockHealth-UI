@@ -6,10 +6,13 @@ import {
   REQUEST_PATIENT_STATS_SUCCESS,
   REQUEST_PATIENT_STATS_FAILURE,
   CLEAR_PATIENT_TASKS,
+  TOGGLE_TASK_STATUS,
+  INITIALIZE_PATIENT,
 } from 'actions/action-types';
 
 const INITIAL_STATE = {
   activeTab: null,
+  patientIdentifier: null,
   lists: [],
   incompleteTasksCount: null,
   completeTasksCount: null,
@@ -17,10 +20,26 @@ const INITIAL_STATE = {
   error: false,
 };
 
+const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
+  return tasks.map(task => {
+    let updatedSubtasks = [];
+    if (task.subtasks?.length > 0) {
+      updatedSubtasks = updateTaskOrSubtask(
+        task.subtasks,
+        taskIdentifier,
+        newTaskData,
+      );
+    }
+    if (taskIdentifier === task.taskIdentifier) {
+      return { ...task, subtasks: updatedSubtasks, ...newTaskData };
+    }
+    return { ...task, subtasks: updatedSubtasks };
+  });
+};
+
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
 
-  // eslint-disable-next-line sonarjs/no-small-switch
   switch (type) {
     case CLEAR_PATIENT_TASKS:
       return {
@@ -30,6 +49,11 @@ export default function(state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         activeTab: payload?.activeTab,
+      };
+    case INITIALIZE_PATIENT:
+      return {
+        ...state,
+        patientIdentifier: payload?.patientIdentifier,
       };
     case REQUEST_PATIENT_TASKS:
       return {
@@ -61,7 +85,22 @@ export default function(state = INITIAL_STATE, action = {}) {
         incompleteTasksCount: null,
         completeTasksCount: null,
       };
+    case TOGGLE_TASK_STATUS: {
+      const { newTaskData, taskIdentifier } = payload;
 
+      const newTaskLists = state.lists.map(list => {
+        const newTasks = updateTaskOrSubtask(
+          list.tasks,
+          taskIdentifier,
+          newTaskData,
+        );
+        return { ...list, tasks: newTasks };
+      });
+      return {
+        ...state,
+        lists: newTaskLists,
+      };
+    }
     default:
       return state;
   }
