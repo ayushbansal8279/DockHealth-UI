@@ -30,6 +30,8 @@ const TaskListDetailsDropdown = ({
   toggleTaskStatus,
   toggleTaskPriority,
   reassignTask,
+  updateDueDate,
+  updateWorkflowStatus,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -86,8 +88,8 @@ const TaskListDetailsDropdown = ({
               isCompletedGroup={isCompleteTab}
               toggleCompleteTask={toggleTaskStatus}
               reassignTask={reassignTask}
-              updateDueDate={() => {}}
-              updateWorkflowStatus={() => {}}
+              updateDueDate={updateDueDate}
+              updateWorkflowStatus={updateWorkflowStatus}
               dragAndDropDisabled
               selectedTask={selectedTask}
               patientVisible={false}

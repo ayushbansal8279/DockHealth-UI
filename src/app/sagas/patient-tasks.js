@@ -22,6 +22,9 @@ export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_TOGGLE_PATIENT_TASK_PRIORITY =
   'DO_TOGGLE_PATIENT_TASK_PRIORITY';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
+export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_DUE_DATE';
+export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
+  'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
 
 const getActiveTab = state => state.patientTasks.activeTab;
 const getCurrentUser = state => state.userState.userProfile;
@@ -39,14 +42,14 @@ export const refreshPatientTasks = () => ({
   type: DO_REFRESH_PATIENT_TASKS,
 });
 
-export const toggleTaskStatus = task => ({
+export const togglePatientTaskStatus = task => ({
   type: DO_TOGGLE_PATIENT_TASK_STATUS,
   payload: {
     task,
   },
 });
 
-export const toggleTaskPriority = task => ({
+export const togglePatientTaskPriority = task => ({
   type: DO_TOGGLE_PATIENT_TASK_PRIORITY,
   payload: { task },
 });
@@ -59,7 +62,7 @@ export const updatePatientTask = (taskIdentifier, newTaskData) => ({
   },
 });
 
-export const reassignTask = (taskIdentifier, userId) => ({
+export const reassignPatientTask = (taskIdentifier, userId) => ({
   type: DO_REASSIGN_TASK,
   payload: {
     taskIdentifier,
@@ -67,14 +70,32 @@ export const reassignTask = (taskIdentifier, userId) => ({
   },
 });
 
+export const updatePatientTaskDueDate = (task, dueDate) => ({
+  type: DO_UPDATE_DUE_DATE,
+  payload: {
+    task,
+    dueDate,
+  },
+});
+
+export const updatePatientTaskWorkflowStatus = (task, workflowStatus) => ({
+  type: DO_UPDATE_PATIENT_WORKFLOW_STATUS,
+  payload: {
+    task,
+    workflowStatus,
+  },
+});
+
 export const PatientTasksActions = {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
   refreshPatientTasks,
-  toggleTaskStatus,
-  toggleTaskPriority,
+  togglePatientTaskStatus,
+  togglePatientTaskPriority,
   updatePatientTask,
-  reassignTask,
+  reassignPatientTask,
+  updatePatientTaskDueDate,
+  updatePatientTaskWorkflowStatus,
 };
 
 function* doFetchPatientTasks() {
@@ -198,6 +219,7 @@ function* doToggleTaskPriority({ payload }) {
 
   try {
     yield call(TaskApi[apiEndpoint], taskIdentifier);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   } catch (error) {
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
@@ -208,6 +230,35 @@ function* doReassignTask({ payload }) {
   const { taskIdentifier, userId } = payload;
   try {
     yield call(TaskApi.assignOrReassignTask, { taskIdentifier }, userId);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  } catch (error) {
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  }
+}
+
+function* doUpdateDueDate({ payload }) {
+  const { task, dueDate } = payload;
+  yield put(updatePatientTask(task?.taskIdentifier, { dueDate }));
+  try {
+    yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  } catch (error) {
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  }
+}
+
+function* doUpdatePatientTaskWorkflowStatus({ payload }) {
+  const { workflowStatus, task } = payload;
+  yield put(updatePatientTask(task?.taskIdentifier, { workflowStatus }));
+  try {
+    yield call(
+      TaskApi.updateWorkflowStatus,
+      task.taskIdentifier,
+      workflowStatus,
+    );
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   } catch (error) {
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
@@ -224,4 +275,9 @@ export default function* watchPatientTasks() {
   yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_PRIORITY, doToggleTaskPriority);
   yield takeLatest(DO_REASSIGN_TASK, doReassignTask);
+  yield takeLatest(DO_UPDATE_DUE_DATE, doUpdateDueDate);
+  yield takeLatest(
+    DO_UPDATE_PATIENT_WORKFLOW_STATUS,
+    doUpdatePatientTaskWorkflowStatus,
+  );
 }

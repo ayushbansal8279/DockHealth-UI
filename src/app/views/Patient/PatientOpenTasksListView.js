@@ -18,9 +18,11 @@ const PatientOpenTasksListView = ({
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
-    toggleTaskStatus,
-    toggleTaskPriority,
-    reassignTask,
+    togglePatientTaskStatus,
+    togglePatientTaskPriority,
+    reassignPatientTask,
+    updatePatientTaskDueDate,
+    updatePatientTaskWorkflowStatus,
   } = patientTasksActions;
 
   return patientLists.map(list => (
@@ -32,9 +34,11 @@ const PatientOpenTasksListView = ({
       selectedTask={selectedTask}
       openDrawer={openDrawer}
       storeAsCurrentTask={storeAsCurrentTask}
-      toggleTaskStatus={toggleTaskStatus}
-      toggleTaskPriority={toggleTaskPriority}
-      reassignTask={reassignTask}
+      toggleTaskStatus={togglePatientTaskStatus}
+      toggleTaskPriority={togglePatientTaskPriority}
+      reassignTask={reassignPatientTask}
+      updateDueDate={updatePatientTaskDueDate}
+      updateWorkflowStatus={updatePatientTaskWorkflowStatus}
     />
   ));
 };
