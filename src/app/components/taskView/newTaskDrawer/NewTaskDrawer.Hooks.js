@@ -267,9 +267,10 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         newTaskList,
       )(dispatch)
         .then(() => {
-          toggleAlert(
-            `Task moved successfully to list ${newTaskList.listName}`,
-            'success',
+          dispatch(
+            AlertActions.showGlobalAlert(
+              `${AlertMessages.TASK_MOVED} to list ${newTaskList.listName}`,
+            ),
           );
           storeAsCurrentTask(null)(dispatch);
           closeDrawer();
