@@ -6,8 +6,10 @@ import TaskListDetailsDropdown from 'components/tasklist/TaskListDetailsDropdown
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { PatientTasksActions } from 'sagas/patient-tasks';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 
-const PatientOpenTasksListView = ({
+const PatientTasksListView = ({
+  activeTab,
   patientLists,
   currentUser,
   selectedTask,
@@ -32,6 +34,7 @@ const PatientOpenTasksListView = ({
       tasks={list.tasks}
       currentUser={currentUser}
       selectedTask={selectedTask}
+      isCompleteTab={activeTab === TaskListTabName.COMPLETE}
       openDrawer={openDrawer}
       storeAsCurrentTask={storeAsCurrentTask}
       toggleTaskStatus={togglePatientTaskStatus}
@@ -51,6 +54,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = store => ({
   patientLists: store.patientTasks.lists,
+  activeTab: store.patientTasks.activeTab,
   currentUser: store.userState.userProfile,
   selectedTask: store.taskState.selectedTask,
 });
@@ -58,4 +62,4 @@ const mapStateToProps = store => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(PatientOpenTasksListView);
+)(PatientTasksListView);

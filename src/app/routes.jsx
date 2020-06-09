@@ -13,8 +13,7 @@ import {
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'views/Patient/PatientDetailsView';
-import PatientOpenTasksListView from 'views/Patient/PatientOpenTasksListView';
-import PatientCompleteTasksListView from 'views/Patient/PatientCompleteTasksListView';
+import PatientTasksListView from 'views/Patient/PatientTasksListView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
@@ -330,12 +329,12 @@ export const Routes = ({ store }) => {
             }}
           >
             <IndexRoute
-              component={PatientOpenTasksListView}
+              component={PatientTasksListView}
               onEnter={onEnterPatientOpenTasksListView}
             />
             <Route
               path="complete"
-              component={PatientCompleteTasksListView}
+              component={PatientTasksListView}
               onEnter={onEnterPatientCompleteTasksListView}
             />
           </Route>
