@@ -1,21 +1,20 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { fontWeights } from 'styles/font';
 
 export const MoreMembersButtonContainer = styled.div`
-  align-items: center;
-  border: 0.125rem solid ${palette.brightBlue};
-  border-radius: 2.5rem;
-  color: ${palette.brightBlue};
   display: flex;
-  font-size: 0.875rem;
-  font-weight: 300;
   height: 2.5rem;
-  justify-content: center;
-  line-height: 1;
-  min-height: 2.5rem;
-  min-width: 2.5rem;
-  padding: 0;
   width: 2.5rem;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: 2px solid ${palette.coolGrey1};
+  border-radius: 2.5rem;
+  color: ${palette.coolGrey1};
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.875rem;
+  font-weight: ${fontWeights.bold};
 `;
 
 export default { MoreMembersButtonContainer };
