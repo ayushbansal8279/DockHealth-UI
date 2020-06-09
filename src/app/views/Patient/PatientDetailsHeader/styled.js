@@ -3,13 +3,45 @@ import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
-// eslint-disable-next-line import/prefer-default-export
-export const PatientDetailsHeaderContainer = styled.div`
+export const PatientDetailsContainer = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
   display: flex;
   background-color: white;
+  flex-direction: column;
   align-items: center;
+`;
+
+export const PatientDetailsNotesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 720px; // per design
+  max-height: 240px;
+  overflow-y: scroll;
+  padding: ${spacing.regular} 0 ${spacing.largePlus};
+`;
+
+export const PatientDetailsNotesGroupContainer = styled.div`
+  display: flex;
+`;
+
+export const PatientDetailsNoteDate = styled.div`
+  color: ${palette.lightGrey};
+  margin-right: ${spacing.regularPlus};
+  padding: ${spacing.regular} 0 ${spacing.smallPlus};
+`;
+
+export const PatientDetailsNoteDescription = styled.div`
+  padding: ${spacing.regular} 0 ${spacing.smallPlus} ${spacing.regularPlus};
+  border-bottom: 1px solid ${palette.blueGrey};
+  width: 100%;
+`;
+
+export const PatientDetailsInformationContainer = styled.div`
+  display: flex;
   padding: ${spacing.huge};
+  align-items: center;
+  width: 100%;
 `;
 
 export const PatientName = styled.div`

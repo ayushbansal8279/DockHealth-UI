@@ -1,16 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { patientDetailsSelector } from 'selectors/patient-selectors';
-import {
-  PatientDetailsHeaderContainer,
-  PatientName,
-  PatientInfo,
-  PatientInfoDivider,
-} from './styled';
+import PatientDetailsInformation from './PatientDetailsInformation';
+import PatientDetailsNotes from './PatientDetailsNotes';
+import { PatientDetailsContainer } from './styled';
 
 const PatientDetailsHeader = ({ patientDetails = {} }) => {
   const {
+    allNotes,
     firstName,
     lastName,
     email,
@@ -20,44 +17,18 @@ const PatientDetailsHeader = ({ patientDetails = {} }) => {
     patientIdentifier,
   } = patientDetails;
   return (
-    <PatientDetailsHeaderContainer>
-      <PatientName>
-        {firstName} {lastName}
-      </PatientName>
-      {email && (
-        <>
-          <PatientInfo>{email}</PatientInfo>
-          <PatientInfoDivider />
-        </>
-      )}
-      {phoneMobile && (
-        <>
-          <PatientInfo>M {phoneMobile}</PatientInfo>
-          <PatientInfoDivider />
-        </>
-      )}
-      {phoneHome && (
-        <>
-          <PatientInfo>H {phoneHome}</PatientInfo>
-          <PatientInfoDivider />
-        </>
-      )}
-      {dob && (
-        <>
-          <PatientInfo>
-            {moment().diff(moment(dob), 'years')} y/o{' '}
-            {moment(dob).format('MM/DD/YYYY')}
-          </PatientInfo>
-          <PatientInfoDivider />
-        </>
-      )}
-      {patientIdentifier && (
-        <>
-          <PatientInfo>ID# {patientIdentifier}</PatientInfo>
-          <PatientInfoDivider />
-        </>
-      )}
-    </PatientDetailsHeaderContainer>
+    <PatientDetailsContainer>
+      <PatientDetailsInformation
+        firstName={firstName}
+        lastName={lastName}
+        email={email}
+        phoneMobile={phoneMobile}
+        phoneHome={phoneHome}
+        dob={dob}
+        patientIdentifier={patientIdentifier}
+      />
+      <PatientDetailsNotes allNotes={allNotes} />
+    </PatientDetailsContainer>
   );
 };
 
