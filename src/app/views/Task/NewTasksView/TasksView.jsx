@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useMount } from 'react-use';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -47,7 +48,7 @@ const TaskView = ({
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
 
-  const { openDrawer } = taskDrawerActions;
+  const { openDrawer, closeDrawer } = taskDrawerActions;
   const {
     toggleTaskPriority,
     toggleCompleteTask,
@@ -56,6 +57,14 @@ const TaskView = ({
     updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
+
+  useMount(() => {
+    closeDrawer();
+  });
+
+  useEffect(() => {
+    closeDrawer();
+  }, [closeDrawer, taskList]);
 
   // TODO: Move to routing logic
   const handleTabsNavigation = routeParameters => {
