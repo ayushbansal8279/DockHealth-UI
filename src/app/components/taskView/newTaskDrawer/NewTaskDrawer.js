@@ -91,6 +91,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     moment(selectedTask.dueDate).isBefore(moment());
   const overDueColor = isOverDue ? palette.red : palette.black;
 
+  const enteredDescription = watch('description');
+
   const {
     patientInputReference,
     isPatientPopoverOpen,
@@ -157,7 +159,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   InputProps={{
                     type: 'text',
                     startAdornment:
-                      selectedTask && selectedTask.description !== '' ? (
+                      (selectedTask && selectedTask.description !== '') ||
+                      enteredDescription !== '' ? (
                         ''
                       ) : (
                         <AdornmentContainer>+</AdornmentContainer>
