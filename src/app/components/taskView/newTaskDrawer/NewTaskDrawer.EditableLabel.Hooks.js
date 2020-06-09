@@ -10,6 +10,8 @@ const initializeEditableLabelHooks = ({
   setCurrentlyEditedOption,
   setEditing,
   enableForceOpen,
+  setAutoSaveVisible,
+  refreshLabels,
 }) => {
   const dispatch = useDispatch();
 
@@ -25,17 +27,29 @@ const initializeEditableLabelHooks = ({
   );
 
   const onDeleteClick = useCallback(
-    event => {
+    async event => {
       event.preventDefault();
       event.stopPropagation();
 
       setCurrentlyEditedOption(null);
 
-      removeLabelFromDatabase({ labelIdentifier: option?.value, isInbox })(
-        dispatch,
-      );
+      await removeLabelFromDatabase({
+        labelIdentifier: option?.value,
+        isInbox,
+      })(dispatch);
+
+      setAutoSaveVisible();
+
+      refreshLabels();
     },
-    [dispatch, isInbox, option, setCurrentlyEditedOption],
+    [
+      dispatch,
+      isInbox,
+      option,
+      refreshLabels,
+      setAutoSaveVisible,
+      setCurrentlyEditedOption,
+    ],
   );
 
   return {

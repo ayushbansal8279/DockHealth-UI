@@ -20,6 +20,7 @@ const LabelsSection = ({
     saveAddOrRemoveLabel,
     saveEditLabel,
     saveTaskOnFocus,
+    refreshLabels,
   } = initializeLabelsSectionHooks({
     isInbox,
     parentFormSubmit,
@@ -65,6 +66,8 @@ const LabelsSection = ({
           enableForceOpen={enableForceOpen}
           disableForceOpen={disableForceOpen}
           saveEditLabel={saveEditLabel}
+          setAutoSaveVisible={setAutoSaveVisible}
+          refreshLabels={refreshLabels}
         />
       )}
       // getOptionDisabled={option => {

@@ -20,6 +20,8 @@ const EditableLabel = ({
   enableForceOpen,
   disableForceOpen,
   saveEditLabel,
+  setAutoSaveVisible,
+  refreshLabels,
 }) => {
   const [editingFlag, setEditing, unsetEditing] = useBoolean(false);
 
@@ -29,6 +31,8 @@ const EditableLabel = ({
     setCurrentlyEditedOption,
     setEditing,
     enableForceOpen,
+    setAutoSaveVisible,
+    refreshLabels,
   });
 
   const labelContentFieldReference = useRef(null);

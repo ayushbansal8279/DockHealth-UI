@@ -67,6 +67,19 @@ const initializeLabelsSectionHooks = ({
 
   const dispatch = useDispatch();
 
+  const refreshLabels = async () => {
+    getTaskListLabels({
+      taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
+    })(dispatch);
+
+    const refreshedTask = await refreshTask(selectedTask)(dispatch);
+
+    setSelectedLabelsValue(
+      'labels',
+      getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
+    );
+  };
+
   const saveAddOrRemoveLabel = async selectedLabels => {
     const currentLabels = selectedTask?.labels ?? [];
     const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
@@ -97,16 +110,7 @@ const initializeLabelsSectionHooks = ({
 
     setAutoSaveVisible();
 
-    getTaskListLabels({
-      taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
-    })(dispatch);
-
-    const refreshedTask = await refreshTask(selectedTask)(dispatch);
-
-    setSelectedLabelsValue(
-      'labels',
-      getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
-    );
+    refreshLabels();
   };
 
   const saveEditLabel = async (selectedLabel, newValue) => {
@@ -126,16 +130,7 @@ const initializeLabelsSectionHooks = ({
 
     setAutoSaveVisible();
 
-    getTaskListLabels({
-      taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
-    })(dispatch);
-
-    const refreshedTask = await refreshTask(selectedTask)(dispatch);
-
-    setSelectedLabelsValue(
-      'labels',
-      getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
-    );
+    refreshLabels();
   };
 
   const saveAddLabel = async newValue => {
@@ -155,11 +150,7 @@ const initializeLabelsSectionHooks = ({
 
     setAutoSaveVisible();
 
-    getTaskListLabels({
-      taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
-    })(dispatch);
-
-    await refreshTask(selectedTask)(dispatch);
+    refreshLabels();
   };
 
   const saveTaskOnFocus = async () => {
@@ -175,6 +166,7 @@ const initializeLabelsSectionHooks = ({
     saveEditLabel,
     saveAddLabel,
     saveTaskOnFocus,
+    refreshLabels,
   };
 };
 
