@@ -11,6 +11,33 @@ import {
 export const DAYS_OF_WEEK = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 export const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 
+const checkIfDayIsInSelectedRange = (
+  momentCurrentDay,
+  momentSelectedDate,
+  minDate,
+  maxDate,
+) => {
+  if (
+    minDate &&
+    momentSelectedDate &&
+    momentCurrentDay.isSameOrAfter(moment(minDate, DATE_ISO_FORMAT), 'days') &&
+    momentCurrentDay.isBefore(momentSelectedDate, 'days')
+  ) {
+    return true;
+  }
+
+  if (
+    maxDate &&
+    momentSelectedDate &&
+    momentCurrentDay.isSameOrBefore(moment(maxDate, DATE_ISO_FORMAT), 'days') &&
+    momentCurrentDay.isAfter(momentSelectedDate, 'days')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 export const renderDayOfWeekHeaderLabel = dayOfWeek => (
   <MontserratTypography
     key={dayOfWeek}
@@ -62,11 +89,18 @@ export const renderDayLabels = ({
       isOutOfRange = true;
     }
 
+    const isDayInSelectedRange = checkIfDayIsInSelectedRange(
+      dayMoment,
+      momentSelectedDate,
+      minDate,
+      maxDate,
+    );
+
     return (
       <CalendarIconWrapper isToday={dayMoment.isSame(moment(), 'days')}>
         <CalendarIconButton
           key={dayMoment.format(DATE_ISO_FORMAT)}
-          color={isDaySelected ? 'primary' : 'default'}
+          color={isDaySelected || isDayInSelectedRange ? 'primary' : 'default'}
           size="small"
           onClick={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
           disabled={isOutOfRange}
@@ -74,7 +108,7 @@ export const renderDayLabels = ({
           <CalendarDayLabel
             isDisabled={isOutOfRange}
             isCurrentMonth={isCurrentMonth}
-            isDaySelected={isDaySelected}
+            isDaySelected={isDaySelected || isDayInSelectedRange}
           >
             <MontserratTypography variant="h6" color="inherit" align="center">
               {dayMoment.format('D')}
