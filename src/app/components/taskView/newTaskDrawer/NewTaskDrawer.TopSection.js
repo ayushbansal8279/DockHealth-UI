@@ -2,6 +2,8 @@ import React from 'react';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
 import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
+import { RobotoTypography } from 'styles/theme';
 import InputPopover from './NewTaskDrawer.InputPopover';
 import {
   FiledInSelect,
@@ -13,7 +15,6 @@ import {
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
 import initializeTaskDrawerTopSectionHooks from './NewTaskDrawer.TopSection.Hooks';
-import palette from '../../../styles/palette';
 
 const renderTaskList = ({
   closePopover,
@@ -86,6 +87,8 @@ const TopSection = ({
     selectedTask,
   });
 
+  const moreTaskListsAvailable = !!(taskLists && taskLists.length > 1);
+
   return (
     <>
       <Grid
@@ -106,20 +109,29 @@ const TopSection = ({
           {selectedTask && !selectedTask.parentTaskIdentifier && (
             <>
               <input type="hidden" name="newTaskListId" ref={register} />
-              <HorizontalLabel>FILED IN:</HorizontalLabel>
-              <div ref={filedInInputReference} onClick={openFiledInPopover}>
-                <FiledInSelect>
+              <HorizontalLabel>FILED IN: </HorizontalLabel>
+              <div
+                ref={filedInInputReference}
+                onClick={
+                  moreTaskListsAvailable ? openFiledInPopover : undefined
+                }
+              >
+                <FiledInSelect enableDropDown={moreTaskListsAvailable}>
                   {selectedTask ? (
-                    <span>
+                    <RobotoTypography condensed color="inherit">
                       {isInbox
                         ? 'Inbox'
                         : filedInInputValue || taskList?.listName}
-                    </span>
+                    </RobotoTypography>
                   ) : (
-                    <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
+                    <RobotoTypography condensed color="inherit">
+                      {isInbox ? 'Inbox' : taskList?.listName}
+                    </RobotoTypography>
                   )}
                 </FiledInSelect>
-                <SmallSwitchChevronDown color={palette.orangeJulius} />
+                {moreTaskListsAvailable && (
+                  <SmallSwitchChevronDown color={palette.orangeJulius} />
+                )}
               </div>
               <InputPopover
                 anchorElement={filedInInputReference}

@@ -92,6 +92,7 @@ export const BlockButton = styled.button`
 export const HorizontalLabel = styled.span`
   color: ${palette.coolGrey2};
   fontfamily: ${FONT_FAMILY};
+  margin-right: 5px;
   & > * {
     font-size: 1rem;
     margin-right: 5px;
@@ -100,7 +101,7 @@ export const HorizontalLabel = styled.span`
 
 export const FiledInSelect = styled.div`
   align-items: center;
-  cursor: pointer;
+  cursor: ${props => (props.enableDropDown ? 'pointer' : '')};
   display: inline-flex;
   flex-flow: row nowrap;
   width: 200px;
