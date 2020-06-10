@@ -1,6 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import { groupBy } from 'ramda';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import PatientDetailsNoteInput from './PatientDetailsNoteInput/PatientDetailsNoteInput';
+// import InputWithDynamicText from 'components/common/InputWithDynamicText/InputWithDynamicText';
 import {
   PatientDetailsNotesContainer,
   PatientDetailsNotesGroupContainer,
@@ -8,6 +11,7 @@ import {
   PatientDetailsNoteDescription,
   PatientNote,
   PatientNoteAuthor,
+  AddNotePlaceholder,
 } from './styled';
 
 const PatientDetailsNotesGroup = ({ date, notes, dateUpdated }) => {
@@ -28,7 +32,13 @@ const PatientDetailsNotesGroup = ({ date, notes, dateUpdated }) => {
   );
 };
 
-const PatientDetailsNotes = ({ allNotes }) => {
+const AddPatientNote = () => (
+  <MontserratTypography>
+    <AddNotePlaceholder>+ Add note</AddNotePlaceholder>
+  </MontserratTypography>
+);
+
+const PatientDetailsNotes = ({ allNotes, currentUser, addPatientNote }) => {
   const groupedNotes = groupBy(
     ({ dateCreated }) => moment(dateCreated).format('M/DD/YYYY'),
     allNotes ?? [],
@@ -43,6 +53,15 @@ const PatientDetailsNotes = ({ allNotes }) => {
           notes={groupedNotes[key]}
         />
       ))}
+
+      <PatientDetailsNoteInput
+        onEnterClick={value => addPatientNote({ note: value })}
+        closeOnEnter
+        placeholder="Leave a note"
+        currentUser={currentUser}
+      >
+        <AddPatientNote />
+      </PatientDetailsNoteInput>
     </PatientDetailsNotesContainer>
   );
 };
