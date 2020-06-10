@@ -15,13 +15,15 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible }) => {
   const saveDueDate = useCallback(
     ({ updatedDueDate, updatedDueTime }) => {
       if (selectedTask && selectedTask.taskIdentifier != null) {
-        const dueDate =
+        const dueDate = updatedDueDate ? moment(`${updatedDueDate}`) : null;
+
+        const dueDateTime =
           updatedDueDate && updatedDueTime
             ? moment(`${updatedDueDate} ${updatedDueTime}`)
-            : null;
+            : dueDate;
         updateDueDate(
           selectedTask,
-          dueDate,
+          dueDateTime,
         )(dispatch)
           .then(() => {
             setAutoSaveVisible();
