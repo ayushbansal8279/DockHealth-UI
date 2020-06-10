@@ -6,6 +6,7 @@ import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 import Task from 'views/Task/NewTasksView/TaskItem/TaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 
 import {
   Arrow,
@@ -32,12 +33,13 @@ const TaskListDetailsDropdown = ({
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
+  quickAddTask,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
 
-  const { listName, listIdentifier, memberUsers, adminUsers } = list;
+  const { listName, taskListIdentifier, memberUsers, adminUsers } = list;
 
   const listMembers = [currentUser].concat(adminUsers).concat(memberUsers);
 
@@ -51,12 +53,7 @@ const TaskListDetailsDropdown = ({
           src={ArrowIcon}
         />
         <ListNameSection>{listName}</ListNameSection>
-        {listMembers?.length > 0 && (
-          <TaskListMembers
-            members={listMembers}
-            taskList={{ listIdentifier }}
-          />
-        )}
+        {listMembers?.length > 0 && <TaskListMembers members={listMembers} />}
         <div>
           <ViewIcon
             alt="slim-view"
@@ -73,6 +70,9 @@ const TaskListDetailsDropdown = ({
         </div>
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
+        <QuickAddTaskInput
+          quickAddTask={taskName => quickAddTask(taskName, taskListIdentifier)}
+        />
         <div>
           {tasks?.map(task => (
             <Task

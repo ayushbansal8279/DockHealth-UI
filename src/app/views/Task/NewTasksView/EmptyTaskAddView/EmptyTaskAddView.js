@@ -1,8 +1,8 @@
 import React from 'react';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import EmptyListWrapper from './styled';
-import { AddTaskInputWrapper } from '../styled';
 
 const EmptyTaskAddView = ({ quickAddTask }) => {
   return (
@@ -11,15 +11,7 @@ const EmptyTaskAddView = ({ quickAddTask }) => {
         Create your first task
       </MontserratTypography>
       <Spacing vertical={3} />
-      <AddTaskInputWrapper>
-        <input
-          type="text"
-          placeholder="Add task"
-          onKeyDown={event =>
-            event.keyCode === 13 && quickAddTask(event.target.value)
-          }
-        />
-      </AddTaskInputWrapper>
+      <QuickAddTaskInput quickAddTask={quickAddTask} />
     </EmptyListWrapper>
   );
 };

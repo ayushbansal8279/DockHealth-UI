@@ -27,6 +27,7 @@ const PatientTasksListView = ({
     reassignPatientTask,
     updatePatientTaskDueDate,
     updatePatientTaskWorkflowStatus,
+    quickAddPatientTask,
   } = patientTasksActions;
 
   const handleToggleTaskStatus = task => {
@@ -61,6 +62,7 @@ const PatientTasksListView = ({
       reassignTask={reassignPatientTask}
       updateDueDate={updatePatientTaskDueDate}
       updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+      quickAddTask={quickAddPatientTask}
     />
   ));
 };

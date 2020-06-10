@@ -1,5 +1,12 @@
 import moment from 'moment';
-import { put, call, takeLatest, select, all } from 'redux-saga/effects';
+import {
+  put,
+  call,
+  takeLatest,
+  select,
+  all,
+  takeEvery,
+} from 'redux-saga/effects';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
@@ -25,10 +32,19 @@ export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
 export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
+export const DO_QUICK_ADD_PATIENT_TASK = 'DO_QUICK_ADD_PATIENT_TASK';
 
 const getActiveTab = state => state.patientTasks.activeTab;
 const getCurrentUser = state => state.userState.userProfile;
 const getCurrentPatient = state => state.patientTasks.patientIdentifier;
+
+export const quickAddPatientTask = (description, taskListIdentifier) => ({
+  type: DO_QUICK_ADD_PATIENT_TASK,
+  payload: {
+    description,
+    taskListIdentifier,
+  },
+});
 
 export const fetchStatsForPatientTasks = () => ({
   type: DO_FETCH_STATS_FOR_PATIENT_TASKS,
@@ -96,6 +112,7 @@ export const PatientTasksActions = {
   reassignPatientTask,
   updatePatientTaskDueDate,
   updatePatientTaskWorkflowStatus,
+  quickAddPatientTask,
 };
 
 function* doFetchPatientTasks() {
@@ -265,6 +282,23 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
   }
 }
 
+function* doQuickAddPatientTask({ payload }) {
+  const { description, taskListIdentifier } = payload;
+  const patientIdentifier = yield select(getCurrentPatient);
+
+  try {
+    yield call(TaskApi.addTask, {
+      description,
+      taskListIdentifier,
+      patientIdentifier,
+    });
+    yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  } catch (error) {
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  }
+}
+
 export default function* watchPatientTasks() {
   yield takeLatest(
     DO_FETCH_STATS_FOR_PATIENT_TASKS,
@@ -280,4 +314,5 @@ export default function* watchPatientTasks() {
     DO_UPDATE_PATIENT_WORKFLOW_STATUS,
     doUpdatePatientTaskWorkflowStatus,
   );
+  yield takeEvery(DO_QUICK_ADD_PATIENT_TASK, doQuickAddPatientTask);
 }
