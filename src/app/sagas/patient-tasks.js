@@ -116,14 +116,14 @@ export const PatientTasksActions = {
 };
 
 function* doFetchPatientTasks() {
-  yield put({ type: REQUEST_PATIENT_TASKS });
-  const patientIdentifier = yield select(getCurrentPatient);
-  const activeTab = yield select(getActiveTab);
-
-  const status =
-    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
   try {
+    yield put({ type: REQUEST_PATIENT_TASKS });
+    const patientIdentifier = yield select(getCurrentPatient);
+    const activeTab = yield select(getActiveTab);
+
+    const status =
+      activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
     const lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifier,
       patientIdentifier,
@@ -141,9 +141,9 @@ function* doFetchPatientTasks() {
 }
 
 function* doFetchStatsForPatientTasks() {
-  const patientIdentifier = yield select(getCurrentPatient);
-
   try {
+    const patientIdentifier = yield select(getCurrentPatient);
+
     const stats = yield call(
       PatientTasksApi.fetchStatsForPatientTasks,
       patientIdentifier,
@@ -163,12 +163,12 @@ function* doFetchStatsForPatientTasks() {
 }
 
 function* doRefreshPatientTasks() {
-  const patientIdentifier = yield select(getCurrentPatient);
-  const activeTab = yield select(getActiveTab);
-  const status =
-    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
   try {
+    const patientIdentifier = yield select(getCurrentPatient);
+    const activeTab = yield select(getActiveTab);
+    const status =
+      activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
     const lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifier,
       patientIdentifier,
@@ -187,32 +187,32 @@ function* doRefreshPatientTasks() {
 
 function* doToggleTaskCompleteStatus({ payload }) {
   const { task } = payload;
-  const currentUser = yield select(getCurrentUser);
-
-  const { apiEndpoint, newStatus, successMessage } =
-    task.status === 'INCOMPLETE'
-      ? {
-          apiEndpoint: 'markComplete',
-          newStatus: 'COMPLETE',
-          successMessage: AlertMessages.TASK_COMPLETED,
-        }
-      : {
-          apiEndpoint: 'markIncomplete',
-          newStatus: 'INCOMPLETE',
-          successMessage: AlertMessages.TASK_REACTIVATED,
-        };
-
-  const newTaskData = {
-    status: newStatus,
-    completedBy: newStatus === 'COMPLETE' ? currentUser : null,
-    completedDt:
-      newStatus === 'COMPLETE'
-        ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-        : null,
-  };
-  yield put(updatePatientTask(task.taskIdentifier, newTaskData));
 
   try {
+    const currentUser = yield select(getCurrentUser);
+    const { apiEndpoint, newStatus, successMessage } =
+      task.status === 'INCOMPLETE'
+        ? {
+            apiEndpoint: 'markComplete',
+            newStatus: 'COMPLETE',
+            successMessage: AlertMessages.TASK_COMPLETED,
+          }
+        : {
+            apiEndpoint: 'markIncomplete',
+            newStatus: 'INCOMPLETE',
+            successMessage: AlertMessages.TASK_REACTIVATED,
+          };
+
+    const newTaskData = {
+      status: newStatus,
+      completedBy: newStatus === 'COMPLETE' ? currentUser : null,
+      completedDt:
+        newStatus === 'COMPLETE'
+          ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+          : null,
+    };
+    yield put(updatePatientTask(task.taskIdentifier, newTaskData));
+
     yield call(TaskApi[apiEndpoint], task);
     yield put(AlertActions.showGlobalAlert(successMessage));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
@@ -232,9 +232,9 @@ function* doToggleTaskPriority({ payload }) {
       : { newPriority: 'LOW', apiEndpoint: 'markLowPriority' };
 
   const newTaskData = { priority: newPriority };
-  yield put(updatePatientTask(taskIdentifier, newTaskData));
-
   try {
+    yield put(updatePatientTask(taskIdentifier, newTaskData));
+
     yield call(TaskApi[apiEndpoint], taskIdentifier);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
@@ -245,6 +245,7 @@ function* doToggleTaskPriority({ payload }) {
 
 function* doReassignTask({ payload }) {
   const { taskIdentifier, userId } = payload;
+
   try {
     yield call(TaskApi.assignOrReassignTask, { taskIdentifier }, userId);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
@@ -256,8 +257,10 @@ function* doReassignTask({ payload }) {
 
 function* doUpdateDueDate({ payload }) {
   const { task, dueDate } = payload;
-  yield put(updatePatientTask(task?.taskIdentifier, { dueDate }));
+
   try {
+    yield put(updatePatientTask(task?.taskIdentifier, { dueDate }));
+
     yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
@@ -268,8 +271,9 @@ function* doUpdateDueDate({ payload }) {
 
 function* doUpdatePatientTaskWorkflowStatus({ payload }) {
   const { workflowStatus, task } = payload;
-  yield put(updatePatientTask(task?.taskIdentifier, { workflowStatus }));
   try {
+    yield put(updatePatientTask(task?.taskIdentifier, { workflowStatus }));
+
     yield call(
       TaskApi.updateWorkflowStatus,
       task.taskIdentifier,
@@ -284,9 +288,10 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
 
 function* doQuickAddPatientTask({ payload }) {
   const { description, taskListIdentifier } = payload;
-  const patientIdentifier = yield select(getCurrentPatient);
 
   try {
+    const patientIdentifier = yield select(getCurrentPatient);
+
     yield call(TaskApi.addTask, {
       description,
       taskListIdentifier,

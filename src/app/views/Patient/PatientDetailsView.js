@@ -21,7 +21,6 @@ const PatientDetailsView = ({
   },
   modalActions,
 }) => {
-  console.count('main view');
   const navigateToTab = tabName => {
     hashHistory.push(
       `/patient/${patientIdentifier}${

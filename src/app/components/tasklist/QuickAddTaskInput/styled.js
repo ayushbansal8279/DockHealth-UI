@@ -13,7 +13,7 @@ export const AddTaskInputWrapper = styled.div`
     padding: ${spacing.regular} ${spacing.huge};
     margin-bottom: 0;
     border-color: ${palette.coolGrey3};
-    font-size: 1em;
+    font-size: ${fontSizes.regular};
 
     &:focus {
       box-shadow: none;
@@ -28,7 +28,7 @@ export const AddTaskInputWrapper = styled.div`
     content: '+';
     transform: translateY(-50%);
     color: ${palette.orange};
-    font-size: 1em;
+    font-size: ${fontSizes.regular};
   }
 `;
 

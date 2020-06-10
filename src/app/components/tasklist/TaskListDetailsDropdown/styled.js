@@ -24,7 +24,6 @@ export const ListNameSection = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
-  // padding-right: ${spacing.tiny};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

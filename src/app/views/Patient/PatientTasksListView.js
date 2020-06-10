@@ -8,6 +8,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksActions } from 'sagas/patient-tasks';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { patientTaskListsSelector } from 'selectors/patient-tasks-selectors';
 
 const PatientTasksListView = ({
   activeTab,
@@ -74,11 +75,11 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-const mapStateToProps = store => ({
-  patientLists: store.patientTasks.lists,
-  activeTab: store.patientTasks.activeTab,
-  currentUser: store.userState.userProfile,
-  selectedTask: store.taskState.selectedTask,
+const mapStateToProps = state => ({
+  patientLists: patientTaskListsSelector(state),
+  activeTab: state.patientTasks.activeTab,
+  currentUser: state.userState.userProfile,
+  selectedTask: state.taskState.selectedTask,
 });
 
 export default connect(
