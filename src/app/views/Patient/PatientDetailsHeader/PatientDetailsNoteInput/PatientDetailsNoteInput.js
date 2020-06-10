@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import useBoolean from 'hooks/useBoolean';
 import Member from 'components/members/Member';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import Input from './Input';
+
 import { ButtonWrapper, InputBox } from './styled';
 
 const PatientDetailsNoteInput = ({
@@ -39,7 +41,7 @@ const PatientDetailsNoteInput = ({
 
   return (
     <ButtonWrapper type="button" onClick={() => !disabled && showInput()}>
-      {children}
+      <MontserratTypography>{children}</MontserratTypography>
     </ButtonWrapper>
   );
 };

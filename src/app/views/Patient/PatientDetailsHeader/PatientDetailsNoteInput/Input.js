@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { MontserratTypography } from 'styles/theme-montserrat';
 
 import { StyledInput } from './styled';
 
@@ -32,18 +31,16 @@ const Input = ({ onBlur, onChange, onEnter, placeholder, width, value }) => {
   }, [wrapperReference, handleClickOutside]);
 
   return (
-    <MontserratTypography>
-      <StyledInput
-        onBlur={onBlur}
-        onChange={({ target }) => onChange(target?.value)}
-        onKeyDown={event => event.keyCode === 13 && onEnter()}
-        placeholder={placeholder}
-        width={width}
-        value={value}
-        ref={wrapperReference}
-        required
-      />
-    </MontserratTypography>
+    <StyledInput
+      onBlur={onBlur}
+      onChange={({ target }) => onChange(target?.value)}
+      onKeyDown={event => event.keyCode === 13 && onEnter()}
+      placeholder={placeholder}
+      width={width}
+      value={value}
+      ref={wrapperReference}
+      required
+    />
   );
 };
 
