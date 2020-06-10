@@ -14,10 +14,10 @@ const PatientDetailsNoteInput = ({
   currentUser,
 }) => {
   const [shouldShowInput, showInput, hideInput] = useBoolean(false);
-  const [groupName, setGroupName] = useState('');
+  const [note, setNote] = useState('');
 
   useEffect(() => {
-    setGroupName(initialValue || '');
+    setNote(initialValue || '');
   }, [shouldShowInput, initialValue]);
 
   if (shouldShowInput)
@@ -26,13 +26,13 @@ const PatientDetailsNoteInput = ({
         <Member member={currentUser} size={40} />
         <Input
           onBlur={hideInput}
-          onChange={setGroupName}
+          onChange={setNote}
           onEnter={() => {
             if (closeOnEnter) hideInput();
-            return onEnterClick(groupName);
+            return onEnterClick(note);
           }}
           placeholder={placeholder}
-          value={groupName}
+          value={note}
         />
       </InputBox>
     );

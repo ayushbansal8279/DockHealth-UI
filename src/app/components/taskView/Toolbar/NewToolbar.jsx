@@ -208,13 +208,6 @@ const Toolbar = ({
                 />
               </>
             )}
-            <Spacing horizontal={2} />
-            <InviteMemberPopoverWithButton
-              size={40}
-              members={members}
-              membersNotInTaskList={membersNotInTaskList}
-              taskList={taskList}
-            />
           </HeaderActionButtonsGrid>
         </Grid>
         <MorePopover
