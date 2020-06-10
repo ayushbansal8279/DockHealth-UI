@@ -123,6 +123,13 @@ const TaskView = ({
     closeDrawer();
   }, [closeDrawer, resetHeader, taskList]);
 
+  // unmount
+  useEffect(() => {
+    return () => {
+      closeDrawer();
+    };
+  }, [closeDrawer]);
+
   // TODO: Move to routing logic
   const handleTabsNavigation = routeParameters => {
     switch (routeParameters.tabName) {
