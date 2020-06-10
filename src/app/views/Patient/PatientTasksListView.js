@@ -12,6 +12,7 @@ import {
   patientTaskListsSelector,
   patientTaskListsActiveTabSelector,
 } from 'selectors/patient-tasks-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 const PatientTasksListView = ({
   activeTab,
@@ -81,7 +82,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   patientLists: patientTaskListsSelector(state),
   activeTab: patientTaskListsActiveTabSelector(state),
-  currentUser: state.userState.userProfile,
+  currentUser: userProfileSelector(state),
   selectedTask: state.taskState.selectedTask,
 });
 

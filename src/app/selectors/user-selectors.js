@@ -6,3 +6,8 @@ export const userSelector = createSelector(
   userStateSelector,
   ({ user }) => user,
 );
+
+export const userProfileSelector = createSelector(
+  userStateSelector,
+  ({ userProfile }) => userProfile,
+);
