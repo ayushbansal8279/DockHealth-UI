@@ -16,19 +16,20 @@ export const PatientDetailsNotesContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 720px; // per design
-  max-height: 240px;
-  overflow-y: scroll;
   padding: ${spacing.regular} 0 ${spacing.largePlus};
 `;
 
 export const PatientDetailsNotesGroupContainer = styled.div`
   display: flex;
+  overflow-y: scroll;
+  max-height: 240px;
 `;
 
 export const PatientDetailsNoteDate = styled.div`
   color: ${palette.lightGrey};
   margin-right: ${spacing.regularPlus};
   padding: ${spacing.regular} 0 ${spacing.smallPlus};
+  width: 100px;
 `;
 
 export const PatientDetailsNoteDescription = styled.div`
@@ -76,4 +77,16 @@ export const PatientNote = styled.div`
 
 export const PatientNoteAuthor = styled.span`
   color: ${palette.coolGrey2};
+`;
+export const AddNotePlaceholder = styled.div`
+  color: ${palette.brightBlue};
+  text-transform: uppercase;
+  font-weight: ${fontWeights.regularPlus};
+  margin-top: ${spacing.largePlus};
+  margin-left: 100px; // per design
+  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+
+  &::first-letter {
+    color: ${palette.orange};
+  }
 `;
