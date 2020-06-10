@@ -6,3 +6,8 @@ export const patientTaskListsSelector = createSelector(
   patientTasksStateSelector,
   ({ lists }) => lists,
 );
+
+export const patientTaskListsActiveTabSelector = createSelector(
+  patientTasksStateSelector,
+  ({ activeTab }) => activeTab,
+);

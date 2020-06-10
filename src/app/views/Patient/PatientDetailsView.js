@@ -7,6 +7,7 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import * as ModalActions from 'modal/actions';
+import { patientTasksStateSelector } from 'selectors/patient-tasks-selectors';
 
 import { PatientListsContainer } from './styled';
 
@@ -57,8 +58,8 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-const mapStateToProps = store => ({
-  patientTasks: store.patientTasks,
+const mapStateToProps = state => ({
+  patientTasks: patientTasksStateSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);
