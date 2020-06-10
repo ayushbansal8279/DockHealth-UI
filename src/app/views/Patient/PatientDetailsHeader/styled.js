@@ -8,7 +8,6 @@ export const PatientDetailsContainer = styled.div`
   display: flex;
   background-color: white;
   flex-direction: column;
-  align-items: center;
 `;
 
 export const PatientDetailsNotesContainer = styled.div`
@@ -21,8 +20,27 @@ export const PatientDetailsNotesContainer = styled.div`
 
 export const PatientDetailsNotesGroupContainer = styled.div`
   display: flex;
-  overflow-y: scroll;
+`;
+
+export const PatientDetailsNotesGroups = styled.div`
   max-height: 240px;
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+  }
 `;
 
 export const PatientDetailsNoteDate = styled.div`
@@ -33,7 +51,6 @@ export const PatientDetailsNoteDate = styled.div`
 `;
 
 export const PatientDetailsNoteDescription = styled.div`
-  padding: ${spacing.regular} 0 ${spacing.smallPlus} ${spacing.regularPlus};
   border-bottom: 1px solid ${palette.blueGrey};
   width: 100%;
 `;
@@ -62,31 +79,5 @@ export const PatientInfoDivider = styled.div`
 
   &:last-child {
     visibility: hidden;
-  }
-`;
-
-export const PatientNote = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: ${spacing.regular};
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-export const PatientNoteAuthor = styled.span`
-  color: ${palette.coolGrey2};
-`;
-export const AddNotePlaceholder = styled.div`
-  color: ${palette.brightBlue};
-  text-transform: uppercase;
-  font-weight: ${fontWeights.regularPlus};
-  margin-top: ${spacing.largePlus};
-  margin-left: 100px; // per design
-  padding: ${spacing.smallPlus} ${spacing.regularPlus};
-
-  &::first-letter {
-    color: ${palette.orange};
   }
 `;

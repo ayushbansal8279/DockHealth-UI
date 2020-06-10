@@ -35,10 +35,11 @@ export const StyledInput = styled.input`
   margin-top: ${spacing.largePlus};
   margin-left: ${spacing.regular};
   font-sizes: ${fontSizes.smallPlus};
+  max-width: 700px; //per design
 `;
 
 export const InputBox = styled.div`
-  margin-left: 120px; // per design
   display: flex;
   align-items: baseline;
+  width: 100%;
 `;

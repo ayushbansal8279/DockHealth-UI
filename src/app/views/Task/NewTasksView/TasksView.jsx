@@ -155,7 +155,6 @@ const TaskView = ({
           deleteGroup={deleteGroup}
           changeGroupsOrder={changeGroupsOrder}
           reassignTask={handleReassignTask}
-          members={members}
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}
           defaultGroupName={defaultGroupName}
