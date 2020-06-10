@@ -119,9 +119,12 @@ const TaskView = ({
   });
 
   useEffect(() => {
-    resetHeader();
-    closeDrawer();
-  }, [closeDrawer, resetHeader, taskList]);
+    if (taskList?.taskListIdentifier) {
+      resetHeader();
+      closeDrawer();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskList]);
 
   // unmount
   useEffect(() => {
