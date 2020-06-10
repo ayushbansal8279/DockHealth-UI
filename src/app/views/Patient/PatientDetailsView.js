@@ -7,8 +7,14 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import * as ModalActions from 'modal/actions';
-import { patientTasksStateSelector } from 'selectors/patient-tasks-selectors';
+import { PatientTasksSagaActions } from 'sagas/patient-tasks';
+import {
+  patientTasksStateSelector,
+  patientListHasTasksSelector,
+} from 'selectors/patient-tasks-selectors';
+import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
+
 import { PatientListsContainer } from './styled';
 
 const PatientDetailsView = ({
@@ -21,6 +27,9 @@ const PatientDetailsView = ({
     completeTasksCount,
   },
   modalActions,
+  megaFilter,
+  hasTasks,
+  patientTasksSagaActions,
 }) => {
   const navigateToTab = tabName => {
     hashHistory.push(
@@ -29,6 +38,8 @@ const PatientDetailsView = ({
       }`,
     );
   };
+
+  const { patientTasksFilterChange } = patientTasksSagaActions;
 
   return (
     <>
@@ -42,9 +53,10 @@ const PatientDetailsView = ({
         onSearchChange={() => {}}
         showNotifications={false}
         searchValue={null}
-        onSelectFilters={() => {}}
+        onSelectFilters={patientTasksFilterChange}
         showMembers={false}
-        megaFilter={{}}
+        megaFilter={megaFilter}
+        haveTasks={hasTasks}
       />
       <ViewLoader isFetchingData={isFetching}>
         <PatientListsContainer>{children}</PatientListsContainer>
@@ -56,10 +68,16 @@ const PatientDetailsView = ({
 
 const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
+  patientTasksSagaActions: bindActionCreators(
+    PatientTasksSagaActions,
+    dispatch,
+  ),
 });
 
 const mapStateToProps = state => ({
   patientTasks: patientTasksStateSelector(state),
+  megaFilter: megaFilterSelector(state),
+  hasTasks: patientListHasTasksSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);

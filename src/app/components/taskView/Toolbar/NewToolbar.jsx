@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Grid } from '@material-ui/core';
-import { splitAt } from 'ramda';
+import { splitAt, isEmpty } from 'ramda';
 import { toggleListNotifications } from 'actions/tasklist-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
@@ -25,7 +25,7 @@ import {
   HeaderActionButtonsGrid,
   SearchWrapper,
 } from './styled';
-import { TABS_CONFIG } from './config';
+import { TABS_CONFIG, TaskListTabName } from './config';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -222,24 +222,25 @@ const Toolbar = ({
           showNotifications={showNotifications}
         />
       </Grid>
-      {haveTasks && (
+      {(haveTasks ||
+        searchValue ||
+        selectedFilters ||
+        !isEmpty(selectedFilters)) && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
-          {megaFilter.isInitialized && (
-            <MegaFilter
-              filters={filters}
-              selectedFilters={selectedFilters}
-              onSelectFilters={onSelectFilters}
-              taskList={taskList}
-              taskStatus={
-                selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'
-              }
-              activeItemsAmount={
-                selectedTab === 'incomplete'
-                  ? openTasksAmount
-                  : completedTasksAmount
-              }
-            />
-          )}
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={onSelectFilters}
+            taskList={taskList}
+            taskStatus={
+              selectedTab === TaskListTabName.OPEN ? 'INCOMPLETE' : 'COMPLETE'
+            }
+            activeItemsAmount={
+              selectedTab === TaskListTabName.OPEN
+                ? openTasksAmount
+                : completedTasksAmount
+            }
+          />
           <Spacing horizontal={5} />
           <SearchWrapper>
             <Search

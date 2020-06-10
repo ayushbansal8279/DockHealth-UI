@@ -18,14 +18,16 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
-import { storeAsCurrentTask } from './actions/task-actions';
-import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
-import { getPatient } from './sagas/patient';
+import { storeAsCurrentTask } from 'actions/task-actions';
+import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list';
+import { getPatient } from 'sagas/patient';
 import {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
-} from './sagas/patient-tasks';
-import { getMembersByTaskListId } from './actions/tasklist-actions';
+  fetchPatientFilters,
+  initalizeSavedFilters,
+} from 'sagas/patient-tasks';
+import { getMembersByTaskListId } from 'actions/tasklist-actions';
 
 import {
   getFiltersForMegaFilter,
@@ -247,13 +249,17 @@ export const Routes = ({ store }) => {
   const onEnterPatientOpenTasksListView = () => {
     dispatch(fetchStatsForPatientTasks());
     dispatch(PatientTasksActions.setActiveTab(TaskListTabName.OPEN));
+    dispatch(initalizeSavedFilters());
     dispatch(fetchPatientTasks());
+    dispatch(fetchPatientFilters());
   };
 
   const onEnterPatientCompleteTasksListView = () => {
     dispatch(fetchStatsForPatientTasks());
     dispatch(PatientTasksActions.setActiveTab(TaskListTabName.COMPLETE));
+    dispatch(initalizeSavedFilters());
     dispatch(fetchPatientTasks());
+    dispatch(fetchPatientFilters());
   };
 
   return (

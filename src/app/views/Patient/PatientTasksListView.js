@@ -6,7 +6,7 @@ import TaskListDetailsDropdown from 'components/tasklist/TaskListDetailsDropdown
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
-import { PatientTasksActions } from 'sagas/patient-tasks';
+import { PatientTasksSagaActions } from 'sagas/patient-tasks';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import {
   patientTaskListsSelector,
@@ -21,7 +21,7 @@ const PatientTasksListView = ({
   selectedTask,
   taskDrawerActions,
   taskActions,
-  patientTasksActions,
+  patientTasksSagaActions,
   modalActions,
 }) => {
   const { openDrawer } = taskDrawerActions;
@@ -33,7 +33,7 @@ const PatientTasksListView = ({
     updatePatientTaskDueDate,
     updatePatientTaskWorkflowStatus,
     quickAddPatientTask,
-  } = patientTasksActions;
+  } = patientTasksSagaActions;
 
   const handleToggleTaskStatus = task => {
     const hasIncompletedSubtasks = task.subtasks.find(
@@ -75,7 +75,10 @@ const PatientTasksListView = ({
 const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
-  patientTasksActions: bindActionCreators(PatientTasksActions, dispatch),
+  patientTasksSagaActions: bindActionCreators(
+    PatientTasksSagaActions,
+    dispatch,
+  ),
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 

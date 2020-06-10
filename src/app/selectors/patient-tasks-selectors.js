@@ -12,7 +12,12 @@ export const patientTaskListsActiveTabSelector = createSelector(
   ({ activeTab }) => activeTab,
 );
 
-export const patientTasksSelector = createSelector(
+export const patientListHasTasksSelector = createSelector(
   patientTasksStateSelector,
-  patientTasks => patientTasks,
+  ({ lists }) => lists?.length > 0,
+);
+
+export const currentPatientIdentifierSelector = createSelector(
+  patientTasksStateSelector,
+  ({ patientIdentifier }) => patientIdentifier,
 );

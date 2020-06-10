@@ -10,6 +10,7 @@ import {
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   REQUEST_PATIENT_STATS_SUCCESS,
@@ -18,8 +19,18 @@ import {
   REQUEST_PATIENT_TASKS_SUCCESS,
   REQUEST_PATIENT_TASKS_FAILURE,
   UPDATE_PATIENT_TASK,
+  FETCH_MEGA_FILTERS_SUCCESS,
+  FETCH_MEGA_FILTERS_FAILURE,
 } from 'actions/action-types';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  patientTaskListsActiveTabSelector,
+  currentPatientIdentifierSelector,
+} from 'selectors/patient-tasks-selectors';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import { isEmpty } from 'ramda';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
   'DO_FETCH_STATS_FOR_PATIENT_TASKS';
@@ -33,10 +44,11 @@ export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
 export const DO_QUICK_ADD_PATIENT_TASK = 'DO_QUICK_ADD_PATIENT_TASK';
-
-const getActiveTab = state => state.patientTasks.activeTab;
-const getCurrentUser = state => state.userState.userProfile;
-const getCurrentPatient = state => state.patientTasks.patientIdentifier;
+export const DO_FETCH_PATIENT_FILTERS = 'DO_FETCH_PATIENT_FILTERS';
+export const DO_UPDATE_PATIENT_TASKS_FILTERS =
+  'DO_UPDATE_PATIENT_TASKS_FILTERS';
+export const DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT =
+  'DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT';
 
 export const quickAddPatientTask = (description, taskListIdentifier) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -48,6 +60,10 @@ export const quickAddPatientTask = (description, taskListIdentifier) => ({
 
 export const fetchStatsForPatientTasks = () => ({
   type: DO_FETCH_STATS_FOR_PATIENT_TASKS,
+});
+
+export const fetchPatientFilters = () => ({
+  type: DO_FETCH_PATIENT_FILTERS,
 });
 
 export const fetchPatientTasks = () => ({
@@ -102,7 +118,18 @@ export const updatePatientTaskWorkflowStatus = (task, workflowStatus) => ({
   },
 });
 
-export const PatientTasksActions = {
+export const patientTasksFilterChange = selectedFilters => ({
+  type: DO_UPDATE_PATIENT_TASKS_FILTERS,
+  payload: {
+    selectedFilters,
+  },
+});
+
+export const initalizeSavedFilters = () => ({
+  type: DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
+});
+
+export const PatientTasksSagaActions = {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
   refreshPatientTasks,
@@ -113,22 +140,54 @@ export const PatientTasksActions = {
   updatePatientTaskDueDate,
   updatePatientTaskWorkflowStatus,
   quickAddPatientTask,
+  patientTasksFilterChange,
+  initalizeSavedFilters,
 };
 
-function* doFetchPatientTasks() {
-  try {
-    yield put({ type: REQUEST_PATIENT_TASKS });
-    const patientIdentifier = yield select(getCurrentPatient);
-    const activeTab = yield select(getActiveTab);
+function* getPatientLists() {
+  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const activeTab = yield select(patientTaskListsActiveTabSelector);
+  const status =
+    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
-    const status =
-      activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-    const lists = yield call(
+  let lists;
+  if (!selectedFilters || !isEmpty(selectedFilters)) {
+    lists = yield call(
+      PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
+      patientIdentifier,
+      selectedFilters,
+      status,
+    );
+  } else {
+    lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifier,
       patientIdentifier,
       status,
     );
+  }
+  return lists;
+}
+
+function* doFetchPatientTasks() {
+  try {
+    yield put({ type: REQUEST_PATIENT_TASKS });
+    const lists = yield getPatientLists();
+    yield put({
+      type: REQUEST_PATIENT_TASKS_SUCCESS,
+      payload: { lists },
+    });
+  } catch (error) {
+    yield put({
+      type: REQUEST_PATIENT_TASKS_FAILURE,
+    });
+  }
+}
+
+function* doRefreshPatientTasks() {
+  try {
+    const lists = yield getPatientLists();
+
     yield put({
       type: REQUEST_PATIENT_TASKS_SUCCESS,
       payload: { lists },
@@ -142,7 +201,7 @@ function* doFetchPatientTasks() {
 
 function* doFetchStatsForPatientTasks() {
   try {
-    const patientIdentifier = yield select(getCurrentPatient);
+    const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
     const stats = yield call(
       PatientTasksApi.fetchStatsForPatientTasks,
@@ -162,25 +221,25 @@ function* doFetchStatsForPatientTasks() {
   }
 }
 
-function* doRefreshPatientTasks() {
-  try {
-    const patientIdentifier = yield select(getCurrentPatient);
-    const activeTab = yield select(getActiveTab);
-    const status =
-      activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+function* doFetchPatientFilters() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const activeTab = yield select(patientTaskListsActiveTabSelector);
+  const status =
+    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
-    const lists = yield call(
-      PatientTasksApi.fetchPatientTasksByPatientIdentifier,
+  try {
+    const filters = yield call(
+      PatientTasksApi.fetchPatientFilters,
       patientIdentifier,
       status,
     );
     yield put({
-      type: REQUEST_PATIENT_TASKS_SUCCESS,
-      payload: { lists },
+      type: FETCH_MEGA_FILTERS_SUCCESS,
+      filters,
     });
   } catch (error) {
     yield put({
-      type: REQUEST_PATIENT_TASKS_FAILURE,
+      type: FETCH_MEGA_FILTERS_FAILURE,
     });
   }
 }
@@ -189,7 +248,7 @@ function* doToggleTaskCompleteStatus({ payload }) {
   const { task } = payload;
 
   try {
-    const currentUser = yield select(getCurrentUser);
+    const currentUser = yield select(userProfileSelector);
     const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
         ? {
@@ -290,7 +349,7 @@ function* doQuickAddPatientTask({ payload }) {
   const { description, taskListIdentifier } = payload;
 
   try {
-    const patientIdentifier = yield select(getCurrentPatient);
+    const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
     yield call(TaskApi.addTask, {
       description,
@@ -302,6 +361,33 @@ function* doQuickAddPatientTask({ payload }) {
   } catch (error) {
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   }
+}
+
+function* doUpdatePatientTasksFilters({ payload }) {
+  const { selectedFilters } = payload;
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const activeTab = yield select(patientTaskListsActiveTabSelector);
+  const status =
+    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+  yield put(
+    MegaFilterActions.selectFiltersForMegaFilter(
+      selectedFilters,
+      patientIdentifier,
+      status,
+    ),
+  );
+  yield put(refreshPatientTasks());
+}
+
+function* doInitializeSavedFiltersForPatient() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const activeTab = yield select(patientTaskListsActiveTabSelector);
+  const status =
+    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+  yield put(
+    MegaFilterActions.selectFiltersFromLocalStorage(patientIdentifier, status),
+  );
 }
 
 export default function* watchPatientTasks() {
@@ -320,4 +406,13 @@ export default function* watchPatientTasks() {
     doUpdatePatientTaskWorkflowStatus,
   );
   yield takeEvery(DO_QUICK_ADD_PATIENT_TASK, doQuickAddPatientTask);
+  yield takeLatest(DO_FETCH_PATIENT_FILTERS, doFetchPatientFilters);
+  yield takeLatest(
+    DO_UPDATE_PATIENT_TASKS_FILTERS,
+    doUpdatePatientTasksFilters,
+  );
+  yield takeLatest(
+    DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
+    doInitializeSavedFiltersForPatient,
+  );
 }
