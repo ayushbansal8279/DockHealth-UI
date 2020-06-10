@@ -2,13 +2,13 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
-import Toolbar from 'components/taskView/Toolbar/NewToolbar';
+import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import * as ModalActions from 'modal/actions';
 import { patientTasksStateSelector } from 'selectors/patient-tasks-selectors';
-
+import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import { PatientListsContainer } from './styled';
 
 const PatientDetailsView = ({
@@ -32,7 +32,7 @@ const PatientDetailsView = ({
 
   return (
     <>
-      <div>PatientForm</div>
+      <PatientDetailsHeader />
       <Toolbar
         onSelectTab={navigateToTab}
         selectedTab={activeTab}

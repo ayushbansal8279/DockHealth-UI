@@ -105,7 +105,7 @@ const Toolbar = ({
   searchValue,
   haveTasks,
   onSelectFilters,
-  megaFilter,
+  megaFilter = {},
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);

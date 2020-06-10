@@ -18,13 +18,14 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
-import { storeAsCurrentTask } from 'actions/task-actions';
-import { getMembersByTaskListId } from 'actions/tasklist-actions';
+import { storeAsCurrentTask } from './actions/task-actions';
+import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
+import { getPatient } from './sagas/patient';
 import {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
-} from 'sagas/patient-tasks';
-import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list';
+} from './sagas/patient-tasks';
+import { getMembersByTaskListId } from './actions/tasklist-actions';
 
 import {
   getFiltersForMegaFilter,
@@ -241,6 +242,7 @@ export const Routes = ({ store }) => {
       ],
     });
     dispatch(PatientTasksActions.initializePatient(patientIdentifier));
+    dispatch(getPatient());
   };
 
   const onEnterPatientOpenTasksListView = () => {
