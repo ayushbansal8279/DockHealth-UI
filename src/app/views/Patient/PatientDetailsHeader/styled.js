@@ -63,3 +63,17 @@ export const PatientInfoDivider = styled.div`
     visibility: hidden;
   }
 `;
+
+export const PatientNote = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: ${spacing.regular};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+export const PatientNoteAuthor = styled.span`
+  color: ${palette.coolGrey2};
+`;

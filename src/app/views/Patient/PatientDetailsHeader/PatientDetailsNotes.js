@@ -6,17 +6,22 @@ import {
   PatientDetailsNotesGroupContainer,
   PatientDetailsNoteDate,
   PatientDetailsNoteDescription,
+  PatientNote,
+  PatientNoteAuthor,
 } from './styled';
 
-const PatientDetailsNotesGroup = ({ date, notes }) => {
+const PatientDetailsNotesGroup = ({ date, notes, dateUpdated }) => {
   return (
     <PatientDetailsNotesGroupContainer>
       <PatientDetailsNoteDate>{date}</PatientDetailsNoteDate>
       <PatientDetailsNoteDescription>
-        {notes?.map(({ description }) => (
-          <>
+        {notes?.map(({ description, creator: { firstName, lastName } }) => (
+          <PatientNote>
             <span>{description}</span>
-          </>
+            <PatientNoteAuthor>
+              {firstName} {lastName} {moment(dateUpdated).format('h:mm a')}
+            </PatientNoteAuthor>
+          </PatientNote>
         ))}
       </PatientDetailsNoteDescription>
     </PatientDetailsNotesGroupContainer>
