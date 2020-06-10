@@ -441,6 +441,7 @@ class Home extends Component {
       membersNotInTaskList,
       routeParams,
       hasFiltersApplied: !isEmpty(selectedFilters),
+      title: loadedTasklist?.listName,
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
