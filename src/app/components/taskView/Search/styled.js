@@ -38,7 +38,7 @@ export const StyledTextField = styled(TextField)`
       height: 100%;
       padding: 0 0.25rem 0 0.5rem;
       transition: all 0.25s ease-in-out;
-      width: ${props => (props.fullWidth ? '100%' : '8rem')};
+      width: ${props => (props.fullWidth ? '100%' : '9rem')};
 
       &::after,
       &::before {

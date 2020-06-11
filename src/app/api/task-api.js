@@ -349,7 +349,6 @@ export function markComplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=COMPLETE`)
     .then(response => {
-      // toggleAlert('Task completed. Great job!', 'success');
       return response;
     })
     .catch(error => {
@@ -361,7 +360,6 @@ export function markIncomplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=INCOMPLETE`)
     .then(response => {
-      // toggleAlert('You have re-activated a task.', 'success');
       return response;
     })
     .catch(error => {
@@ -378,7 +376,6 @@ export function updateTaskDescription(task, description) {
       description,
     })
     .then(response => {
-      // toggleAlert('Task description updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {

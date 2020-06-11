@@ -221,20 +221,21 @@ const MegaFilter = ({
             </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>
-            {filters
-              ?.filter(filter => !isEmpty(filter.list))
-              .map(filter => (
-                <FilterColumn
-                  key={filter.filterKey}
-                  filter={{ ...filter, key: filter.filterKey }}
-                  selectedFilters={selectedFilters}
-                  onSelectFilters={onSelectFilters}
-                  taskList={taskList}
-                  taskStatus={taskStatus}
-                  filters={filters}
-                  searchedFilterQuery={searchedFilterQuery}
-                />
-              ))}
+            {!isEmpty(filters) &&
+              filters
+                ?.filter(filter => !isEmpty(filter.list))
+                .map(filter => (
+                  <FilterColumn
+                    key={filter.filterKey}
+                    filter={{ ...filter, key: filter.filterKey }}
+                    selectedFilters={selectedFilters}
+                    onSelectFilters={onSelectFilters}
+                    taskList={taskList}
+                    taskStatus={taskStatus}
+                    filters={filters}
+                    searchedFilterQuery={searchedFilterQuery}
+                  />
+                ))}
           </Filters>
         </Container>
       </MegaFilterPopover>

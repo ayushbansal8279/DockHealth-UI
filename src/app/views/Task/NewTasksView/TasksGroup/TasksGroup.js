@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -7,6 +7,7 @@ import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
@@ -24,7 +25,6 @@ import {
   TasksGroupLabelCounter,
   PaginationButton,
 } from './styled';
-import { AddTaskInputWrapper } from '../styled';
 
 const FULL_VIEW = 'FULL_VIEW';
 const SLIM_VIEW = 'SLIM_VIEW';
@@ -54,7 +54,6 @@ const TasksGroup = ({
   showMoreTasks,
   isFetchingMoreTasks,
   hasMoreTasks,
-  members,
   updateDueDate,
   updateWorkflowStatus,
   dragAndDropDisabled,
@@ -67,15 +66,6 @@ const TasksGroup = ({
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
-
-  const addTaskInput = useRef();
-
-  const handleInputEnterDown = taskName => {
-    if (taskName) {
-      quickAddTask(taskName, groupId);
-      addTaskInput.current.value = '';
-    }
-  };
 
   return (
     <TasksGroupContainer>
@@ -142,17 +132,9 @@ const TasksGroup = ({
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <AddTaskInputWrapper>
-            <input
-              name="newTask"
-              type="text"
-              ref={addTaskInput}
-              placeholder="Add task"
-              onKeyDown={event =>
-                event.keyCode === 13 && handleInputEnterDown(event.target.value)
-              }
-            />
-          </AddTaskInputWrapper>
+          <QuickAddTaskInput
+            quickAddTask={taskName => quickAddTask(taskName, groupId)}
+          />
         )}
         <DragAndDropGroupList
           groupId={groupId}
@@ -166,7 +148,6 @@ const TasksGroup = ({
           draggedId={draggedId}
           reorderSubtasksForTask={reorderSubtasksForTask}
           isCompletedGroup={isCompletedGroup}
-          members={members}
           reassignTask={reassignTask}
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}

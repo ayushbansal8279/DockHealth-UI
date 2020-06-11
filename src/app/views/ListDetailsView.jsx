@@ -180,12 +180,7 @@ class Home extends Component {
 
   // TODO: Move to saga
   refreshIncompleteTasks = (withLoader = true) => {
-    const {
-      actions,
-      routeParams,
-      taskListActions,
-      selectedFilters,
-    } = this.props;
+    const { actions, routeParams, taskListActions } = this.props;
 
     const status = 'INCOMPLETE';
 
@@ -201,8 +196,8 @@ class Home extends Component {
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    if (filters && !isEmpty(selectedFilters)) {
-      return this.getFilteredTasks(selectedFilters, status);
+    if (filters && !isEmpty(filters)) {
+      return this.getFilteredTasks(filters, status);
     }
 
     return this.getTasksList(routeParams.taskListIdentifier, status);
@@ -215,7 +210,6 @@ class Home extends Component {
       taskListActions,
       completedTasks,
       routeParams: { taskListIdentifier },
-      selectedFilters,
     } = this.props;
 
     let queryStartPosition = 0;
@@ -239,8 +233,8 @@ class Home extends Component {
       `filter-${taskListIdentifier}-${status}`,
     );
 
-    if (filters && !isEmpty(selectedFilters)) {
-      this.getFilteredTasks(selectedFilters, status);
+    if (filters && !isEmpty(filters)) {
+      this.getFilteredTasks(filters, status);
     } else {
       this.getTasksList(
         taskListIdentifier,

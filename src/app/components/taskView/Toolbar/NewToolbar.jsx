@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Grid } from '@material-ui/core';
-import { splitAt } from 'ramda';
+import { splitAt, isEmpty } from 'ramda';
 import { toggleListNotifications } from 'actions/tasklist-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
@@ -25,7 +25,7 @@ import {
   HeaderActionButtonsGrid,
   SearchWrapper,
 } from './styled';
-import { TABS_CONFIG } from './config';
+import { TABS_CONFIG, TaskListTabName } from './config';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -92,6 +92,7 @@ const getMembersNames = ({ members }) =>
 
 const Toolbar = ({
   members,
+  showMembers = true,
   membersNotInTaskList,
   onSelectTab,
   printData: { openedTasks = [], completedTasks = [], taskListMembers = [] },
@@ -104,7 +105,7 @@ const Toolbar = ({
   searchValue,
   haveTasks,
   onSelectFilters,
-  megaFilter,
+  megaFilter = {},
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -176,33 +177,37 @@ const Toolbar = ({
               />
             </Button>
             <Spacing horizontal={4} />
-            {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
-            {hiddenMembersCount > 0 && (
+            {showMembers && (
               <>
-                <Spacing horizontal={1} />
-                <UniversalTooltip
-                  placement="bottom"
-                  open={isShowMoreMembersTooltipOpen}
-                  anchorEl={moreMembersButtonReference.current}
-                >
-                  {getMembersNames({ members: hiddenMembers })}
-                </UniversalTooltip>
-                <MoreMembersButtonContainer
-                  onMouseEnter={showMoreMembersTooltip}
-                  onMouseLeave={hideMoreMembersTooltip}
-                  ref={moreMembersButtonReference}
-                >
-                  +{hiddenMembersCount}
-                </MoreMembersButtonContainer>
+                {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
+                {hiddenMembersCount > 0 && (
+                  <>
+                    <Spacing horizontal={1} />
+                    <UniversalTooltip
+                      placement="bottom"
+                      open={isShowMoreMembersTooltipOpen}
+                      anchorEl={moreMembersButtonReference.current}
+                    >
+                      {getMembersNames({ members: hiddenMembers })}
+                    </UniversalTooltip>
+                    <MoreMembersButtonContainer
+                      onMouseEnter={showMoreMembersTooltip}
+                      onMouseLeave={hideMoreMembersTooltip}
+                      ref={moreMembersButtonReference}
+                    >
+                      +{hiddenMembersCount}
+                    </MoreMembersButtonContainer>
+                  </>
+                )}
+                <Spacing horizontal={2} />
+                <InviteMemberPopoverWithButton
+                  size={40}
+                  members={members}
+                  membersNotInTaskList={membersNotInTaskList}
+                  taskList={taskList}
+                />
               </>
             )}
-            <Spacing horizontal={2} />
-            <InviteMemberPopoverWithButton
-              size={40}
-              members={members}
-              membersNotInTaskList={membersNotInTaskList}
-              taskList={taskList}
-            />
           </HeaderActionButtonsGrid>
         </Grid>
         <MorePopover
@@ -217,24 +222,25 @@ const Toolbar = ({
           showNotifications={showNotifications}
         />
       </Grid>
-      {haveTasks && (
+      {(haveTasks ||
+        searchValue ||
+        selectedFilters ||
+        !isEmpty(selectedFilters)) && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
-          {megaFilter.isInitialized && (
-            <MegaFilter
-              filters={filters}
-              selectedFilters={selectedFilters}
-              onSelectFilters={onSelectFilters}
-              taskList={taskList}
-              taskStatus={
-                selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'
-              }
-              activeItemsAmount={
-                selectedTab === 'incomplete'
-                  ? openTasksAmount
-                  : completedTasksAmount
-              }
-            />
-          )}
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={onSelectFilters}
+            taskList={taskList}
+            taskStatus={
+              selectedTab === TaskListTabName.OPEN ? 'INCOMPLETE' : 'COMPLETE'
+            }
+            activeItemsAmount={
+              selectedTab === TaskListTabName.OPEN
+                ? openTasksAmount
+                : completedTasksAmount
+            }
+          />
           <Spacing horizontal={5} />
           <SearchWrapper>
             <Search

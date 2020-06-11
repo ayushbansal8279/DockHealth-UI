@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { isEmpty } from 'ramda';
+import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
 import * as MegaFilterApi from 'api/mega-filter-api';
 import * as ActionTypes from './action-types';
 
@@ -9,32 +10,16 @@ export function clearFiltersForMegaFilter() {
   };
 }
 
-const getFiltersFromLocalStorage = (identifier, status) =>
-  sessionStorage[`filter-${identifier}-${status}`]
-    ? JSON.parse(sessionStorage[`filter-${identifier}-${status}`])
-    : null;
+export function selectFiltersFromLocalStorage(id, status) {
+  return dispatch => {
+    const initialFilters = getFiltersFromLocalStorage(id, status);
 
-const handleFiltersLoadSuccess = (id, status, data, dispatch) => {
-  const initialFilters = getFiltersFromLocalStorage(id, status);
-
-  if (initialFilters)
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
-      selectedFilters: initialFilters,
+      selectedFilters: initialFilters || [],
     });
-  else {
-    dispatch(clearFiltersForMegaFilter());
-  }
-
-  dispatch({
-    type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-    filters: data,
-  });
-
-  dispatch({
-    type: ActionTypes.INITIALIZE_MEGA_FILTER,
-  });
-};
+  };
+}
 
 export function getFiltersForMegaFilter(listId, status) {
   return dispatch => {
@@ -42,7 +27,11 @@ export function getFiltersForMegaFilter(listId, status) {
 
     MegaFilterApi.getFiltersForTaskListMegaFilter(listId, status)
       .then(data => {
-        handleFiltersLoadSuccess(listId, status, data, dispatch);
+        dispatch(selectFiltersFromLocalStorage(listId, status));
+        dispatch({
+          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
+          filters: data,
+        });
       })
       .catch(error => {
         dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
@@ -56,7 +45,11 @@ export function getFiltersForPeopleListMegaFilter(userId, status) {
 
     MegaFilterApi.getFiltersForPeopleListMegaFilter(userId, status)
       .then(data => {
-        handleFiltersLoadSuccess(userId, status, data, dispatch);
+        dispatch(selectFiltersFromLocalStorage(userId, status));
+        dispatch({
+          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
+          filters: data,
+        });
       })
       .catch(error => {
         dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });

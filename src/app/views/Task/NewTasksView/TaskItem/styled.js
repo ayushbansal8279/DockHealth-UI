@@ -53,6 +53,7 @@ export const AddCrossIcon = styled.img`
 `;
 
 export const CircleIcon = styled.img`
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};
 `;
 

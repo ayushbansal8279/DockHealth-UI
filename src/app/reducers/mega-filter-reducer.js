@@ -62,7 +62,6 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
 
 const INITIAL_STATE = {
   isLoading: false,
-  isInitialized: false,
   filters: {},
   selectedFilters: {},
   error: null,
@@ -85,8 +84,6 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     case types.FETCH_MEGA_FILTERS_FAILURE:
       return { ...state, error, isLoading: false };
-    case types.INITIALIZE_MEGA_FILTER:
-      return { ...state, isInitialized: true };
     case types.SELECT_FILTERS_FROM_MEGA_FILTER:
       return { ...state, selectedFilters };
     case types.CLEAR_MEGA_FILTERS:

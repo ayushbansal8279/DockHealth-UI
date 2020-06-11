@@ -5,13 +5,13 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
+import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import EmptyListImage from 'img/empty-list';
 import TasksGroup from '../TasksGroup/TasksGroup';
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import messages from '../AddGroupNameButton/messages';
 import AddGroupNameButton from '../AddGroupNameButton/AddGroupNameButton';
 import EmptyTaskAddView from '../EmptyTaskAddView/EmptyTaskAddView';
-import TasksViewLoader from '../TasksViewLoader/TasksViewLoader';
 import { onDragEndTask } from '../DragDrop.helpers';
 import EmptyListResult from '../EmptyListResult/EmptyListResult';
 import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
@@ -35,7 +35,6 @@ const OpenedTasksView = ({
   reassignTasksToAnotherGroup,
   reassignTask,
   isFetchingData,
-  members,
   updateDueDate,
   updateWorkflowStatus,
   defaultGroupName,
@@ -77,7 +76,7 @@ const OpenedTasksView = ({
   };
 
   return (
-    <TasksViewLoader isFetchingData={isFetchingData}>
+    <ViewLoader isFetchingData={isFetchingData}>
       {!isEmpty(groupedTasks) ? (
         <TaskGroupsContainer>
           <DragDropContext
@@ -131,7 +130,6 @@ const OpenedTasksView = ({
                   reassignTask={reassignTask}
                   draggedId={draggedId}
                   toggleCompleteTask={toggleCompleteTask}
-                  members={members}
                   updateDueDate={updateDueDate}
                   updateWorkflowStatus={updateWorkflowStatus}
                   dragAndDropDisabled={dragAndDropDisabled}
@@ -155,7 +153,7 @@ const OpenedTasksView = ({
       ) : (
         renderEmptyState()
       )}
-    </TasksViewLoader>
+    </ViewLoader>
   );
 };
 

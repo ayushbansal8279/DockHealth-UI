@@ -2,7 +2,7 @@ import React from 'react';
 import Loader from 'components/common/Loader/Loader';
 import { FadeContainer, StyledFade } from './styled';
 
-const TasksViewLoader = ({ children, isFetchingData }) =>
+const ViewLoader = ({ children, isFetchingData }) =>
   isFetchingData ? (
     <FadeContainer>
       <StyledFade in unmountOnExit>
@@ -13,4 +13,4 @@ const TasksViewLoader = ({ children, isFetchingData }) =>
     children
   );
 
-export default TasksViewLoader;
+export default ViewLoader;

@@ -164,7 +164,6 @@ const TaskItem = ({
   dragHandleProps,
   isDragging,
   isCompletedGroup,
-  members,
   currentUser,
   reassignTask,
   updateDueDate,
@@ -172,6 +171,7 @@ const TaskItem = ({
   subtasks,
   dragAndDropDisabled,
   listNameVisible,
+  patientVisible = true,
   selectedTask,
   parentHasPatient,
 }) => {
@@ -189,6 +189,7 @@ const TaskItem = ({
     completedDt,
     completedBy,
     taskList,
+    parentTaskIdentifier,
   } = task;
 
   const listName = taskList?.listName;
@@ -197,6 +198,9 @@ const TaskItem = ({
   const [isHovered, setIsHoverd] = useState(false);
 
   const isCompleted = task.status === 'COMPLETE';
+
+  const isSubtask = !!parentTaskIdentifier;
+  const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
 
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
@@ -229,7 +233,10 @@ const TaskItem = ({
         <TaskItemCell bolded paddingLeft="huge">
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
-            onClick={() => toggleCompleteTask(task)}
+            isClickable={isTaskStatusTogglingEnabled}
+            onClick={() =>
+              isTaskStatusTogglingEnabled && toggleCompleteTask(task)
+            }
           />
           <DescriptionBox>
             <Description
@@ -259,21 +266,23 @@ const TaskItem = ({
             )}
           </DescriptionBox>
         </TaskItemCell>
-        <TaskItemCell width="164px">
-          <ClickablePatient
-            onClick={() => {
-              openDrawer();
-              storeAsCurrentTask(task);
-            }}
-          >
-            {task.status !== 'COMPLETE' && !patient && (
-              <AddPlaceholder>+ Add Patient</AddPlaceholder>
-            )}
-            {patient &&
-              !parentHasPatient &&
-              `${patient.firstName} ${patient.lastName}`}
-          </ClickablePatient>
-        </TaskItemCell>
+        {patientVisible && (
+          <TaskItemCell width="164px">
+            <ClickablePatient
+              onClick={() => {
+                openDrawer();
+                storeAsCurrentTask(task);
+              }}
+            >
+              {task.status !== 'COMPLETE' && !patient && (
+                <AddPlaceholder>+ Add Patient</AddPlaceholder>
+              )}
+              {patient &&
+                !parentHasPatient &&
+                `${patient.firstName} ${patient.lastName}`}
+            </ClickablePatient>
+          </TaskItemCell>
+        )}
         <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           <TaskWorkflowStatus
             task={task}
@@ -388,7 +397,6 @@ const TaskItem = ({
         </TaskItemCell>
         <TaskItemCell width="80px" justify="center">
           <TaskAssignMember
-            members={members}
             currentUser={currentUser}
             reassignTask={reassignTask}
             task={task}
@@ -426,8 +434,8 @@ const Subtasks = ({
   reorderSubtasksForTask,
   reassignTask,
   currentUser,
-  members,
   parentHasPatient,
+  taskList,
   ...restProps
 }) => {
   const [draggedId, setDraggableId] = useState(false);
@@ -475,10 +483,9 @@ const Subtasks = ({
                         <TaskItem
                           dragHandleProps={dragHandleProps}
                           key={subtask.taskId}
-                          task={subtask}
+                          task={{ ...subtask, taskList }}
                           isDragging={isDraggingSubtask}
                           currentUser={currentUser}
-                          members={members}
                           reassignTask={reassignTask}
                           parentHasPatient={parentHasPatient}
                           {...restProps}
@@ -510,7 +517,6 @@ const Task = ({
   isDragging,
   draggableProvided,
   groupId,
-  members,
   currentUser,
   reassignTask,
   ...restProps
@@ -546,7 +552,6 @@ const Task = ({
         switchOpen={switchOpen}
         dragHandleProps={dragHandleProps}
         isDragging={isDragging}
-        members={members}
         currentUser={currentUser}
         reassignTask={reassignTask}
         subtasks={renderedSubtasks}
@@ -563,9 +568,9 @@ const Task = ({
           groupId={groupId}
           parentTaskId={task.taskIdentifier}
           currentUser={currentUser}
-          members={members}
           reassignTask={reassignTask}
           parentHasPatient={!!patient}
+          taskList={task?.taskList}
           {...restProps}
         />
       )}

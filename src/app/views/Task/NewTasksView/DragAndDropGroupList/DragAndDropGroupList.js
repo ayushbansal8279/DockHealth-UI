@@ -16,7 +16,6 @@ const DragAndDropGroupList = ({
   reorderSubtasksForTask,
   reassignTask,
   isCompletedGroup,
-  members,
   updateDueDate,
   updateWorkflowStatus,
   dragAndDropDisabled,
@@ -56,10 +55,8 @@ const DragAndDropGroupList = ({
                     groupId={groupId}
                     draggableProvided={draggableProvided}
                     reorderSubtasksForTask={reorderSubtasksForTask}
-                    isCompleted={isCompletedGroup}
                     isCompletedGroup={isCompletedGroup}
                     toggleCompleteTask={toggleCompleteTask}
-                    members={members}
                     reassignTask={reassignTask}
                     updateDueDate={updateDueDate}
                     updateWorkflowStatus={updateWorkflowStatus}

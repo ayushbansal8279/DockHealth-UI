@@ -12,11 +12,23 @@ import {
   Router,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
-import PatientDetailsView from 'components/patient/PatientDetailsView';
+import PatientDetailsView from 'views/Patient/PatientDetailsView';
+import PatientTasksListView from 'views/Patient/PatientTasksListView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
-import { storeAsCurrentTask } from './actions/task-actions';
-import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
-import { getMembersByTaskListId } from './actions/tasklist-actions';
+import GenericHeader from 'components/common/GenericHeader';
+import { setHeader } from 'actions/header-actions';
+import * as PatientTasksActions from 'actions/patient-tasks-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
+import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list';
+import { getPatient } from 'sagas/patient';
+import {
+  fetchStatsForPatientTasks,
+  fetchPatientTasks,
+  fetchPatientFilters,
+  initalizeSavedFilters,
+} from 'sagas/patient-tasks';
+import { getMembersByTaskListId } from 'actions/tasklist-actions';
+
 import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
@@ -72,8 +84,6 @@ import TemplateCore from './views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
 import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
-// import { onLogin } from './helpers/ga-event-helper';
-
 import { setLocationAndParameters } from './location/actions';
 
 const transformPathname = pathname =>
@@ -219,6 +229,39 @@ export const Routes = ({ store }) => {
     }
   };
 
+  const onEnterPatientDetailsView = nextState => {
+    const {
+      params: { patientIdentifier },
+    } = nextState;
+
+    setHeader(dispatch)({
+      layout: [
+        {
+          key: 'patient-header',
+          component: <GenericHeader>Patient</GenericHeader>,
+        },
+      ],
+    });
+    dispatch(PatientTasksActions.initializePatient(patientIdentifier));
+    dispatch(getPatient());
+  };
+
+  const onEnterPatientOpenTasksListView = () => {
+    dispatch(fetchStatsForPatientTasks());
+    dispatch(PatientTasksActions.setActiveTab(TaskListTabName.OPEN));
+    dispatch(initalizeSavedFilters());
+    dispatch(fetchPatientTasks());
+    dispatch(fetchPatientFilters());
+  };
+
+  const onEnterPatientCompleteTasksListView = () => {
+    dispatch(fetchStatsForPatientTasks());
+    dispatch(PatientTasksActions.setActiveTab(TaskListTabName.COMPLETE));
+    dispatch(initalizeSavedFilters());
+    dispatch(fetchPatientTasks());
+    dispatch(fetchPatientFilters());
+  };
+
   return (
     <Router history={hashHistory}>
       <Route
@@ -284,8 +327,24 @@ export const Routes = ({ store }) => {
           <Route
             path="/patient/:patientIdentifier"
             component={PatientDetailsView}
-            onEnter={checkFeatureToggles}
-          />
+            onEnter={nextState => {
+              checkFeatureToggles(nextState);
+              onEnterPatientDetailsView(nextState);
+            }}
+            onLeave={() => {
+              dispatch(PatientTasksActions.clearPatientTasksState());
+            }}
+          >
+            <IndexRoute
+              component={PatientTasksListView}
+              onEnter={onEnterPatientOpenTasksListView}
+            />
+            <Route
+              path="complete"
+              component={PatientTasksListView}
+              onEnter={onEnterPatientCompleteTasksListView}
+            />
+          </Route>
           <Route
             path="/editPatient/:patientIdentifier"
             component={PatientEditView}

@@ -33,6 +33,7 @@ const Priority = {
 const TaskView = ({
   currentUser,
   members,
+  showMembers = true,
   taskDrawerActions,
   taskActions,
   modalActions,
@@ -192,6 +193,7 @@ const TaskView = ({
     <TaskViewContainer>
       <Toolbar
         members={members}
+        showMembers={showMembers}
         onSelectTab={navigateToTab}
         selectedTab={selectedTab}
         taskList={taskList}
@@ -229,7 +231,6 @@ const TaskView = ({
           deleteGroup={deleteGroup}
           changeGroupsOrder={changeGroupsOrder}
           reassignTask={handleReassignTask}
-          members={members}
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}
           defaultGroupName={defaultGroupName}
