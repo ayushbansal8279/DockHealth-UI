@@ -36,6 +36,8 @@ const sendEvent = (data: SendEventProps) => {
     captureEvent = false;
   }
   if (captureEvent) {
+    addAuthorizationHeader();
+
     axios({
       method: 'post',
       url: '/usage/event',
@@ -48,6 +50,11 @@ const sendEvent = (data: SendEventProps) => {
     action: data.eventAction,
     label: data.eventLabel,
   });
+};
+
+const addAuthorizationHeader = () => {
+  const currentAccessToken = sessionStorage.getItem('accessToken');
+  axios.defaults.headers.common.Authorization = `Bearer ${currentAccessToken}`;
 };
 
 export default sendEvent;

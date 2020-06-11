@@ -1,6 +1,7 @@
 import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
+  addAuthorizationHeader();
   return axios({
     url: 'list/findTaskListsByUserId',
     method: 'get',
@@ -13,6 +14,7 @@ export function getTaskListForUser() {
 }
 
 export function findPendingTaskListsForUser() {
+  addAuthorizationHeader();
   return axios
     .get('list/findPendingTaskListsForUser')
     .then(response => response?.data)
@@ -238,6 +240,7 @@ export function toggleListNotifications(
 }
 
 export function findGenericListCountsForUser() {
+  addAuthorizationHeader();
   return axios
     .get('list/getGenericListCountsForUser')
     .then(response => response?.data)
@@ -275,4 +278,9 @@ export const getTaskListStats = async ({ taskListIdentifier }) => {
     console.log(error);
     throw new Error(error?.response?.data);
   }
+};
+
+const addAuthorizationHeader = () => {
+  const currentAccessToken = sessionStorage.getItem('accessToken');
+  axios.defaults.headers.common.Authorization = `Bearer ${currentAccessToken}`;
 };

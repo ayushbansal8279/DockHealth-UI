@@ -85,6 +85,9 @@ OnSubmitProps) => async ({
   lastName,
   firstName,
 }: FormProps) => {
+  const referral = locationParameters.referral
+    ? locationParameters.referral
+    : '';
   try {
     await registerAction({
       username: email,
@@ -93,7 +96,7 @@ OnSubmitProps) => async ({
       phone_number: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
-      'custom:referral': locationParameters.referral,
+      'custom:referral': referral,
     });
     setDialogTitle(`Confirm your email`);
     setDialogMessage(
