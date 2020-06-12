@@ -320,7 +320,7 @@ export function duplicateTask(taskIdentifier) {
   return axios
     .put(`task/duplicateTask/${taskIdentifier}`)
     .then(response => {
-      toggleAlert('Task duplicated', 'success');
+      // toggleAlert('Task duplicated', 'success');
       return response.data;
     })
     .catch(error => {
@@ -333,7 +333,7 @@ export function sortSubTask(taskIdentifier, direction) {
   return axios
     .put(`task/sortSubTask/${taskIdentifier}/${direction}`)
     .then(response => {
-      toggleAlert('Sub Task order changed', 'success');
+      // toggleAlert('Sub Task order changed', 'success');
       return response.data;
     })
     .catch(error => {
@@ -462,7 +462,7 @@ export function deleteComment(commentIdentifier) {
   return axios
     .delete(`task/comment/deleteCommentById/${commentIdentifier}`)
     .then(response => {
-      toggleAlert('Comment deleted', 'success');
+      // toggleAlert('Comment deleted', 'success');
       return response;
     })
     .catch(error => {
@@ -475,7 +475,7 @@ export function updateComment(comment) {
   return axios
     .put('task/comment', comment)
     .then(response => {
-      toggleAlert('Comment updated', 'success');
+      // toggleAlert('Comment updated', 'success');
       return response;
     })
     .catch(error => {
@@ -591,7 +591,7 @@ export function addTaskAttachment(
       ...additionalConfig,
     })
     .then(response => {
-      toggleAlert('Attachment added successfully!', 'success');
+      // toggleAlert('Attachment added successfully!', 'success');
       return response;
     })
     .catch(error => {
@@ -608,7 +608,7 @@ export function removeTaskAttachment(taskAttachmentId) {
   return axios
     .delete(`task/attachment/${taskAttachmentId}`)
     .then(response => {
-      toggleAlert('Attachment removed successfully!', 'success');
+      // toggleAlert('Attachment removed successfully!', 'success');
       return response;
     })
     .catch(error => {

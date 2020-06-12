@@ -453,6 +453,7 @@ export function duplicateTask(task) {
       .then(duplicatedTask => {
         dispatch({ type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask });
         reloadTaskListStats(dispatch, task);
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
         return duplicatedTask;
       })
       .catch(error => {
@@ -626,6 +627,7 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
         workflowStatus,
       });
       reloadTaskListStats(dispatch, task);
+      dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     })
     .catch(error => {
       throw error;
@@ -650,6 +652,8 @@ export function toggleTaskPriority(task, priority) {
           priority: newPriority,
         });
         reloadTaskListStats(dispatch, task);
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+
         return task;
       })
       .catch(error => {
@@ -862,6 +866,8 @@ export const addTaskAttachment = (
         taskIdentifier,
         taskAttachment: response.data,
       });
+      dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
+
       return response.data;
     })
     .catch(error => {
@@ -879,6 +885,7 @@ export const removeTaskAttachment = (
         taskIdentifier,
         taskAttachmentId,
       });
+      dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_REMOVED));
     })
     .catch(error => {
       throw error;

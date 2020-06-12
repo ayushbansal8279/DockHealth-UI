@@ -10,4 +10,7 @@ export default {
   TASK_MOVED: 'Task moved',
   SUBTASK_CREATED: 'Subtask created',
   COMMENT_ADDED: 'Comment added',
+  ATTACHMENT_ADDED: 'Attachment added',
+  ATTACHMENT_REMOVED: 'Attachment removed',
+  TASK_DUPLICATED: 'Task duplicted',
 };
