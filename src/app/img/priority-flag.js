@@ -5,14 +5,11 @@ const PriorityFlag = ({ color }) => (
   <svg
     width="17"
     height="21"
-    viewBox="0 0 25 17"
+    viewBox="0 0 17 21"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M0.960938 0H24.6936V10.5V21H0.960938L8.14115 10.5L0.960938 0Z"
-      fill={color}
-    />
+    <path d="M0 0H17V10.5V21H0L5.14328 10.5L0 0Z" fill={color} />
   </svg>
 );
 
