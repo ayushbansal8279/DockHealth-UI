@@ -34,6 +34,16 @@ export const AdornmentContainer = styled.div`
   width: 2ch;
 `;
 
+export const EndAdornmentContainer = styled.div`
+  align-items: center;
+  align-self: flex-end;
+  color: ${palette.orange};
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.7rem;
+  width: 2ch;
+`;
+
 export const PatientLabelContainer = styled.div`
   display: grid;
   grid-gap: 0.5rem;

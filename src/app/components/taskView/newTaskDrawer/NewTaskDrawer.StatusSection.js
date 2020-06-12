@@ -11,7 +11,7 @@ import {
   StatusFlagContainer,
 } from './NewTaskDrawer.StatusSection.Styled';
 import {
-  AdornmentContainer,
+  EndAdornmentContainer,
   BlockButton,
   CondensedH4,
 } from './NewTaskDrawer.Styled';
@@ -71,9 +71,9 @@ const StatusSection = ({ setAutoSaveVisible }) => {
         placeholder="Is there a status?"
         InputProps={{
           endAdornment: (
-            <AdornmentContainer style={{ paddingBotton: '10px' }}>
+            <EndAdornmentContainer>
               <SmallSwitchChevron color={palette.orangeJulius} />
-            </AdornmentContainer>
+            </EndAdornmentContainer>
           ),
           // startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}

@@ -12,7 +12,7 @@ import {
   PriorityFlagContainer,
 } from './NewTaskDrawer.PrioritySection.Styled';
 import {
-  AdornmentContainer,
+  EndAdornmentContainer,
   BlockButton,
   CondensedH4,
 } from './NewTaskDrawer.Styled';
@@ -72,9 +72,9 @@ const PrioritySection = ({ setAutoSaveVisible }) => {
         placeholder="Is there a priority?"
         InputProps={{
           endAdornment: (
-            <AdornmentContainer style={{ paddingBotton: '10px' }}>
+            <EndAdornmentContainer>
               <SmallSwitchChevron color={palette.orangeJulius} />
-            </AdornmentContainer>
+            </EndAdornmentContainer>
           ),
           // startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
