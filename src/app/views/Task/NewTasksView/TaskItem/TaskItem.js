@@ -44,6 +44,7 @@ import {
   AddPlaceholder,
   CircleIcon,
   ClickablePatient,
+  ClickableTaskItemIcon,
   Description,
   DescriptionBox,
   DueDate,
@@ -312,10 +313,17 @@ const TaskItem = ({
                     : 'Add a new comment'
                 }
               >
-                <img
-                  alt="comments"
-                  src={getItemIcon(COMMENTS, comments, isHovered)}
-                />
+                <ClickableTaskItemIcon
+                  onClick={() => {
+                    openDrawer();
+                    storeAsCurrentTask(task);
+                  }}
+                >
+                  <img
+                    alt="comments"
+                    src={getItemIcon(COMMENTS, comments, isHovered)}
+                  />
+                </ClickableTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
@@ -370,11 +378,18 @@ const TaskItem = ({
                     : 'Add label'
                 }
               >
-                {' '}
-                <img
-                  alt="labels"
-                  src={getItemIcon(LABELS, labels, isHovered)}
-                />
+                <ClickableTaskItemIcon
+                  onClick={() => {
+                    openDrawer();
+                    storeAsCurrentTask(task);
+                  }}
+                >
+                  {' '}
+                  <img
+                    alt="labels"
+                    src={getItemIcon(LABELS, labels, isHovered)}
+                  />
+                </ClickableTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
@@ -386,11 +401,18 @@ const TaskItem = ({
                     : 'Add file'
                 }
               >
-                {' '}
-                <img
-                  alt="attachments"
-                  src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
-                />
+                <ClickableTaskItemIcon
+                  onClick={() => {
+                    openDrawer();
+                    storeAsCurrentTask(task);
+                  }}
+                >
+                  {' '}
+                  <img
+                    alt="attachments"
+                    src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
+                  />
+                </ClickableTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
           </Grid>

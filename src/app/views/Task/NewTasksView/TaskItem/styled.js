@@ -127,6 +127,10 @@ export const ClickablePatient = styled.span`
   cursor: pointer;
 `;
 
+export const ClickableTaskItemIcon = styled.span`
+  cursor: pointer;
+`;
+
 export const TaskItemContainer = styled.div`
   position: relative;
   background-color: ${props =>
