@@ -57,9 +57,7 @@ const useToggleNotifications = ({
       )(dispatch);
       onNotificationsToggled(newNotificationStatus);
       toggleAlert(
-        `Notifications are now ${
-          newNotificationStatus ? 'enabled' : 'disabled'
-        }`,
+        `Notifications are now ${newNotificationStatus ? 'on' : 'off'}`,
         'success',
       );
     } catch {

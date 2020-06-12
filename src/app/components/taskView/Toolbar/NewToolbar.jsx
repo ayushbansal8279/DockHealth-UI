@@ -60,9 +60,7 @@ const useToggleNotifications = ({
       onNotificationsToggled(newNotificationStatus);
       dispatch(
         showGlobalAlert(
-          `Notifications are now ${
-            newNotificationStatus ? 'enabled' : 'disabled'
-          }`,
+          `Notifications are now ${newNotificationStatus ? 'on' : 'off'}`,
         ),
       );
     } catch {
