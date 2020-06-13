@@ -113,6 +113,44 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
+  const saveAddLabel = async selectedLabel => {
+    const labelIdentifier = selectedLabel?.value;
+    const labelName = selectedLabel?.displayLabel;
+    const taskIdentifier = selectedTask?.taskIdentifier;
+
+    if (!labelName || labelName === null || labelName === '') {
+      return;
+    }
+
+    await addLabel({
+      labelName,
+      labelIdentifier,
+      taskIdentifier,
+    })(dispatch);
+
+    setAutoSaveVisible();
+    refreshLabels();
+  };
+
+  const saveAddLabelWithNewValue = async newValue => {
+    const labelIdentifier = undefined;
+    const labelName = newValue;
+    const taskIdentifier = selectedTask?.taskIdentifier;
+
+    if (!labelName || labelName === null || labelName === '') {
+      return;
+    }
+
+    await addLabel({
+      labelName,
+      labelIdentifier,
+      taskIdentifier,
+    })(dispatch);
+
+    setAutoSaveVisible();
+    refreshLabels();
+  };
+
   const saveEditLabel = async (selectedLabel, newValue) => {
     const labelIdentifier = selectedLabel.value;
     const labelName = newValue;
@@ -129,27 +167,21 @@ const initializeLabelsSectionHooks = ({
     })(dispatch);
 
     setAutoSaveVisible();
-
     refreshLabels();
   };
 
-  const saveAddLabel = async newValue => {
-    const labelIdentifier = undefined;
-    const labelName = newValue;
+  const removeLabelFromTask = async selectedLabel => {
+    const labelIdentifier = selectedLabel?.value;
+    const labelName = selectedLabel?.displayLabel;
     const taskIdentifier = selectedTask?.taskIdentifier;
 
-    if (!labelName || labelName === null || labelName === '') {
-      return;
-    }
-
-    await addLabel({
+    await removeLabelForTask({
       labelName,
       labelIdentifier,
       taskIdentifier,
     })(dispatch);
 
     setAutoSaveVisible();
-
     refreshLabels();
   };
 
@@ -163,8 +195,10 @@ const initializeLabelsSectionHooks = ({
     labels,
     areLabelsRequested,
     saveAddOrRemoveLabel,
-    saveEditLabel,
     saveAddLabel,
+    saveAddLabelWithNewValue,
+    saveEditLabel,
+    removeLabelFromTask,
     saveTaskOnFocus,
     refreshLabels,
   };

@@ -107,17 +107,18 @@ export const getFormattedMembers = ({ members, currentUser }) => {
   return formattedMembers;
 };
 
-export const getFormattedLabels = ({ labels }) =>
-  (labels ?? []).map(label => {
-    const { labelIdentifier, labelName } = label;
+export const getFormattedLabel = label => {
+  const { labelIdentifier, labelName } = label;
+  return {
+    key: labelIdentifier,
+    value: labelIdentifier,
+    label: <CondensedH4>{labelName}</CondensedH4>,
+    displayLabel: labelName,
+  };
+};
 
-    return {
-      key: labelIdentifier,
-      value: labelIdentifier,
-      label: <CondensedH4>{labelName}</CondensedH4>,
-      displayLabel: labelName,
-    };
-  });
+export const getFormattedLabels = ({ labels }) =>
+  (labels ?? []).map(label => getFormattedLabel(label));
 
 export const renderPartsWithHighlighting = (optionValue, inputValue) => {
   const matches = match(optionValue, inputValue);

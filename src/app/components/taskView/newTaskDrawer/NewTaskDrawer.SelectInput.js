@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-no-duplicate-props */
+/* eslint-disable sonarjs/cognitive-complexity */
 import { Chip, NoSsr } from '@material-ui/core';
 import useAutocomplete from '@material-ui/lab/useAutocomplete';
 import {
@@ -36,32 +37,33 @@ const onChange = ({
   name,
   setValue,
   onItemSelected,
+  onItemRemoved,
+  formatTagItem,
   closeAutocomplete,
-}) => (_event, option) => {
+}) => (_event, option, reason, details) => {
   if (multiple && Array.isArray(option)) {
+    // reason = select-option, remove-option
     const newOptions = option?.map(value => {
       if (typeof value === 'string') {
-        return {
-          key: value,
-          value: null,
-          label: <CondensedH4>{value}</CondensedH4>,
-          displayLabel: value,
-        };
+        return formatTagItem(null, value);
       }
-
       return value;
     });
 
     setValue(name, newOptions);
     closeAutocomplete();
-    if (onItemSelected) {
-      onItemSelected(option, _event);
+    if (reason === 'select-option' && onItemSelected) {
+      onItemSelected(newOptions, details.option, _event);
+    } else if (reason === 'remove-option' && onItemRemoved) {
+      onItemRemoved(newOptions, details.option, _event);
     }
   } else {
     setValue(name, option?.value);
     closeAutocomplete();
-    if (onItemSelected) {
-      onItemSelected(option, _event);
+    if (reason === 'select-option' && onItemSelected) {
+      onItemSelected(option, details.option, _event);
+    } else if (reason === 'remove-option' && onItemRemoved) {
+      onItemRemoved(option, details.option, _event);
     }
   }
 };
@@ -142,6 +144,8 @@ const SelectInput = React.forwardRef(
       getOptionDisabled,
       onInputChange,
       onItemSelected,
+      onItemRemoved,
+      formatTagItem,
       multiple,
       freeSolo,
       disableClearable,
@@ -241,6 +245,8 @@ const SelectInput = React.forwardRef(
         setValue,
         name,
         onItemSelected,
+        onItemRemoved,
+        formatTagItem,
         closeAutocomplete,
       }),
       getOptionSelected: (option, selected) => selected.value === option.value,
@@ -263,22 +269,16 @@ const SelectInput = React.forwardRef(
 
           const { value: targetValue } = event.target;
 
-          const newOptions = [
-            ...currentValue,
-            {
-              key: targetValue,
-              value: null,
-              label: <CondensedH4>{targetValue}</CondensedH4>,
-              displayLabel: targetValue,
-            },
-          ];
+          const selectedOption = formatTagItem(null, targetValue);
+
+          const newOptions = [...currentValue, selectedOption];
 
           setValue(name, newOptions);
-          onItemSelected(newOptions, event);
+          onItemSelected(newOptions, selectedOption, event);
           event.target.value = '';
         }
       },
-      [currentValue, multiple, name, setValue, onItemSelected],
+      [multiple, formatTagItem, currentValue, setValue, name, onItemSelected],
     );
 
     const onTagCreate = useCallback(
@@ -289,21 +289,15 @@ const SelectInput = React.forwardRef(
             event.target.parentElement.childElementCount - 2
           ].value;
 
-        const newOptions = [
-          ...currentValue,
-          {
-            key: targetValue,
-            value: null,
-            label: <CondensedH4>{targetValue}</CondensedH4>,
-            displayLabel: targetValue,
-          },
-        ];
+        const selectedOption = formatTagItem(null, targetValue);
+
+        const newOptions = [...currentValue, selectedOption];
 
         setValue(name, newOptions);
-        onItemSelected(newOptions);
+        onItemSelected(newOptions, selectedOption, event);
         event.target.value = '';
       },
-      [currentValue, name, setValue, onItemSelected],
+      [formatTagItem, currentValue, setValue, name, onItemSelected],
     );
 
     let startAdornment = <AdornmentContainer>+</AdornmentContainer>;
@@ -458,6 +452,8 @@ SelectInput.propTypes = {
   getOptionDisabled: func,
   onInputChange: func,
   onItemSelected: func,
+  onItemRemoved: func,
+  formatTagItem: func,
   multiple: bool,
   freeSolo: bool,
   disableClearable: bool,
@@ -481,6 +477,8 @@ SelectInput.defaultProps = {
   getOptionDisabled: undefined,
   onInputChange: undefined,
   onItemSelected: undefined,
+  onItemRemoved: undefined,
+  formatTagItem: undefined,
   multiple: false,
   freeSolo: false,
   disableClearable: true,

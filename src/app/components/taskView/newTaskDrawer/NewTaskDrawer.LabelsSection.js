@@ -5,7 +5,10 @@ import { Grid } from '@material-ui/core';
 import useBoolean from 'hooks/useBoolean';
 import EditableLabel from './NewTaskDrawer.EditableLabel';
 import SelectInput from './NewTaskDrawer.SelectInput';
-import { getFormattedLabels } from './NewTaskDrawer.Utilities';
+import {
+  getFormattedLabels,
+  getFormattedLabel,
+} from './NewTaskDrawer.Utilities';
 import initializeLabelsSectionHooks from './NewTaskDrawer.LabelsSection.Hooks';
 
 const LabelsSection = ({
@@ -17,8 +20,9 @@ const LabelsSection = ({
 }) => {
   const {
     labels,
-    saveAddOrRemoveLabel,
+    saveAddLabel,
     saveEditLabel,
+    removeLabelFromTask,
     saveTaskOnFocus,
     refreshLabels,
   } = initializeLabelsSectionHooks({
@@ -73,11 +77,21 @@ const LabelsSection = ({
       // getOptionDisabled={option => {
       //   return false;
       // }}
-      onItemSelected={options => {
-        // console.log('Label Selected');
+      onItemSelected={(options, selectedOption) => {
         if (selectedTask && selectedTask?.taskIdentifier !== '') {
-          saveAddOrRemoveLabel(options);
+          saveAddLabel(selectedOption);
         }
+      }}
+      onItemRemoved={(options, removedOption) => {
+        if (selectedTask && selectedTask?.taskIdentifier !== '') {
+          removeLabelFromTask(removedOption);
+        }
+      }}
+      formatTagItem={(key, value) => {
+        return getFormattedLabel({
+          labelIdentifier: key,
+          labelName: value,
+        });
       }}
       InputProps={{}}
       createTagActionLabel="Create Label"
