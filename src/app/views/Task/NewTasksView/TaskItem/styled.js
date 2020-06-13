@@ -61,6 +61,7 @@ export const Description = styled.div`
   cursor: pointer;
   width: 100%;
   margin-right: ${spacing.regularPlus};
+  padding-right: ${spacing.smallPlus};
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
 `;
 
