@@ -271,7 +271,7 @@ const TaskItem = ({
           <TaskItemCell width="164px">
             <ClickablePatient
               onClick={() => {
-                openDrawer();
+                openDrawer('patient');
                 storeAsCurrentTask(task);
               }}
             >
@@ -315,7 +315,7 @@ const TaskItem = ({
               >
                 <ClickableTaskItemIcon
                   onClick={() => {
-                    openDrawer();
+                    openDrawer('comment');
                     storeAsCurrentTask(task);
                   }}
                 >
@@ -380,7 +380,7 @@ const TaskItem = ({
               >
                 <ClickableTaskItemIcon
                   onClick={() => {
-                    openDrawer();
+                    openDrawer('label');
                     storeAsCurrentTask(task);
                   }}
                 >
@@ -403,7 +403,7 @@ const TaskItem = ({
               >
                 <ClickableTaskItemIcon
                   onClick={() => {
-                    openDrawer();
+                    openDrawer('attachment');
                     storeAsCurrentTask(task);
                   }}
                 >

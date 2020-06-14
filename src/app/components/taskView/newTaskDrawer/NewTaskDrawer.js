@@ -48,6 +48,7 @@ import {
 const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const {
     taskDrawerOpen,
+    taskDrawerFocusField,
     top,
     onSubmit,
     formMethods,
@@ -369,6 +370,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   parentFormSubmit={parentFormSubmit}
                   setAutoSaveVisible={setAutoSaveVisible}
                   setSelectedLabelsValue={setValue}
+                  taskDrawerFocusField={taskDrawerFocusField}
                 />
               </Grid>
               <Grid item xs={12} style={styleFullRow}>
@@ -378,7 +380,10 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                 />
               </Grid>
               <Grid item xs={12} style={styleFullRow}>
-                <CommentSection parentFormSubmit={parentFormSubmit} />
+                <CommentSection
+                  parentFormSubmit={parentFormSubmit}
+                  taskDrawerFocusField={taskDrawerFocusField}
+                />
               </Grid>
               {newTaskFlag && (
                 <Grid

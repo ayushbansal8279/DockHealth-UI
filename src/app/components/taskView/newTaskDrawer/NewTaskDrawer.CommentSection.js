@@ -5,7 +5,7 @@ import { CommentSectionContainer } from './NewTaskDrawer.CommentSection.Styled';
 import initializeCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
 import { renderCommentGroup } from './NewTaskDrawer.CommentSection.Utilities';
 
-const CommentSection = ({ parentFormSubmit }) => {
+const CommentSection = ({ parentFormSubmit, taskDrawerFocusField }) => {
   const {
     groupedComments,
     currentTaskListMemberData,
@@ -16,7 +16,11 @@ const CommentSection = ({ parentFormSubmit }) => {
 
   return (
     <CommentSectionContainer>
-      <AddComment addComment={addComment} parentFormSubmit={parentFormSubmit} />
+      <AddComment
+        addComment={addComment}
+        parentFormSubmit={parentFormSubmit}
+        taskDrawerFocusField={taskDrawerFocusField}
+      />
       {Object.entries(groupedComments).map(
         renderCommentGroup({
           currentUser: currentTaskListMemberData,

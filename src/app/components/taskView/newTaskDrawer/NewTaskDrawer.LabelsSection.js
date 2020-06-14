@@ -17,6 +17,7 @@ const LabelsSection = ({
   parentFormSubmit,
   setAutoSaveVisible,
   setSelectedLabelsValue,
+  taskDrawerFocusField,
 }) => {
   const {
     labels,
@@ -99,6 +100,7 @@ const LabelsSection = ({
       onFocusCallback={() => {
         saveTaskOnFocus();
       }}
+      autoFocusEnabled={taskDrawerFocusField === 'label'}
     >
       {formattedLabels}
     </SelectInput>

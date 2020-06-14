@@ -114,6 +114,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   const {
     patients,
     taskDrawerOpen,
+    taskDrawerFocusField,
     selectedTask,
     addingNewSubtask,
     tasks,
@@ -123,6 +124,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     currentUser,
   } = useSelector(store => ({
     taskDrawerOpen: store.taskDrawerState.open,
+    taskDrawerFocusField: store.taskDrawerState.focusField,
     patients: store.patientState.allPatients,
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
@@ -422,6 +424,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     labels,
     areLabelsRequested,
     taskDrawerOpen,
+    taskDrawerFocusField,
     top,
     onSubmit: onSubmit({
       selectedTask,

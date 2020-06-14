@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Loader from 'components/common/Loader/Loader';
 import Member from 'components/members/Member';
 
@@ -9,7 +9,7 @@ import {
   AddCommentLoaderContainer,
 } from './NewTaskDrawer.AddComment.Styled';
 
-const AddComment = ({ addComment, parentFormSubmit }) => {
+const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   const {
     currentUser,
     commentContent,
@@ -18,6 +18,14 @@ const AddComment = ({ addComment, parentFormSubmit }) => {
     onCommentFocus,
     isAddingComment,
   } = initializeAddCommentHooks({ addComment, parentFormSubmit });
+
+  const addCommentReference = useRef();
+
+  useEffect(() => {
+    if (taskDrawerFocusField === 'comment') {
+      addCommentReference.current.focus();
+    }
+  }, [taskDrawerFocusField]);
 
   return (
     <AddCommentContainer>
@@ -28,6 +36,7 @@ const AddComment = ({ addComment, parentFormSubmit }) => {
         onFocus={onCommentFocus}
         value={commentContent}
         placeholder="Leave a comment"
+        ref={addCommentReference}
       />
       {isAddingComment && (
         <AddCommentLoaderContainer>

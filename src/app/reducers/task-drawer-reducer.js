@@ -9,6 +9,7 @@ const reducer = (state = initialState, { type, payload }) => {
     return {
       ...state,
       open: payload.open,
+      focusField: payload.focusField,
     };
   }
 

@@ -156,6 +156,7 @@ const SelectInput = React.forwardRef(
       createTagActionLabel,
       onFocusCallback,
       disabled,
+      autoFocusEnabled,
     },
     reference,
   ) => {
@@ -387,6 +388,7 @@ const SelectInput = React.forwardRef(
                 disableFocus();
               }}
               onKeyDown={onKeyDown}
+              autoFocusEnabled={autoFocusEnabled}
             />
           </StyledAutoComplete>
           {groupedOptions.length === 0 &&
@@ -464,6 +466,7 @@ SelectInput.propTypes = {
   createTagActionLabel: string,
   onFocusCallback: func,
   disabled: bool,
+  autoFocusEnabled: bool,
 };
 
 SelectInput.defaultProps = {
@@ -489,6 +492,7 @@ SelectInput.defaultProps = {
   createTagActionLabel: undefined,
   onFocusCallback: undefined,
   disabled: false,
+  autoFocusEnabled: false,
 };
 
 export default SelectInput;
