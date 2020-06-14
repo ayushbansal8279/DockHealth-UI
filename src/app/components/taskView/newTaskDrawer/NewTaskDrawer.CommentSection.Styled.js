@@ -15,12 +15,14 @@ export const CommentGroupContainer = styled.div`
 `;
 
 export const CommentActionLabel = styled.button`
+  color: ${palette.lightGrey};
   cursor: pointer;
   opacity: 0;
   text-decoration: none;
   transition: all 0.25s ease-out;
   &:hover {
     text-decoration: underline;
+    color: ${palette.darkGrey};
   }
 `;
 
