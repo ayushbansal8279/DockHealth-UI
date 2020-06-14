@@ -8,7 +8,7 @@ import { renderCommentGroup } from './NewTaskDrawer.CommentSection.Utilities';
 const CommentSection = ({ parentFormSubmit, taskDrawerFocusField }) => {
   const {
     groupedComments,
-    currentTaskListMemberData,
+    currentUser,
     removeComment,
     updateComment,
     addComment,
@@ -23,7 +23,7 @@ const CommentSection = ({ parentFormSubmit, taskDrawerFocusField }) => {
       />
       {Object.entries(groupedComments).map(
         renderCommentGroup({
-          currentUser: currentTaskListMemberData,
+          currentUser,
           removeComment,
           updateComment,
         }),

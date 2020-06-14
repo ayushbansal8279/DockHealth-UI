@@ -11,15 +11,15 @@ import {
 import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
 
 const initializeCommentSectionHooks = () => {
-  const { selectedTask, currentUser, taskListMembers } = useSelector(store => ({
+  const { selectedTask, currentUser } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
     currentUser: store.userState.userProfile,
-    taskListMembers: store.taskListState.tasklistmembers,
+    // taskListMembers: store.taskListState.tasklistmembers,
   }));
 
-  const [currentTaskListMemberData, setCurrentTaskListMemberData] = useState(
-    null,
-  );
+  // const [currentTaskListMemberData, setCurrentTaskListMemberData] = useState(
+  //   null,
+  // );
   const [groupedComments, setGroupedComments] = useState([]);
 
   const { comments = [], taskIdentifier: selectedTaskIdentifier } =
@@ -28,15 +28,15 @@ const initializeCommentSectionHooks = () => {
   useEffect(() => {
     if (isEmpty(comments)) {
       setGroupedComments([]);
-      setCurrentTaskListMemberData(null);
+      // setCurrentTaskListMemberData(null);
       return;
     }
 
-    setCurrentTaskListMemberData(
-      taskListMembers?.find(
-        ({ userIdentifier }) => currentUser?.userIdentifier === userIdentifier,
-      ) ?? null,
-    );
+    // setCurrentTaskListMemberData(
+    //   taskListMembers?.find(
+    //     ({ userIdentifier }) => currentUser?.userIdentifier === userIdentifier,
+    //   ) ?? null,
+    // );
 
     const newGroupedComments = getGroupedComments({ comments });
 
@@ -90,7 +90,8 @@ const initializeCommentSectionHooks = () => {
   );
 
   return {
-    currentTaskListMemberData,
+    // currentTaskListMemberData,
+    currentUser,
     groupedComments,
     removeComment: boundRemoveComment,
     updateComment: boundUpdateComment,
