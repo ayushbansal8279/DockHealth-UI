@@ -22,17 +22,17 @@ const DeleteTaskModal = ({ closeModal, confirm }) => {
         </Typography>
         <Spacing vertical={5} />
         <Typography variant="body1">
-          Are you sure you want to delete this task? If you delete this task and
-          there are subtasks attached to the task, the subtasks will be deleted.
+          Are you sure you want to delete this task? This action cannot be
+          undone.
         </Typography>
         <Spacing vertical={4} />
         <ButtonsContainer>
           <Button variant="outlined" type="button" onClick={closeModal}>
-            No, do not delete
+            Cancel
           </Button>
           <Spacing horizontal={3} />
           <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Yes
+            Delete Permanently
           </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>

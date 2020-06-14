@@ -234,7 +234,10 @@ const TopSection = ({
                 selectedTask.status !== 'COMPLETE' && (
                   <ListItem
                     key="action_delete"
-                    onClick={openDeleteConfirmationModal}
+                    onClick={() => {
+                      closeTaskMenuPopover();
+                      openDeleteConfirmationModal();
+                    }}
                     button
                     style={{
                       borderBottom: `none`,
