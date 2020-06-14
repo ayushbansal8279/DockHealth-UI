@@ -619,12 +619,15 @@ export const updateReminder = (task, reminderDt) => dispatch =>
 
 export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
   const { taskIdentifier } = task;
+  const taskWorkflowStatus =
+    workflowStatus === 'NO_STATUS' ? '' : workflowStatus;
+
   return TaskApi.updateWorkflowStatus(taskIdentifier, workflowStatus)
     .then(() => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_WORKFLOW_STATUS,
         taskIdentifier,
-        workflowStatus,
+        taskWorkflowStatus,
       });
       reloadTaskListStats(dispatch, task);
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));

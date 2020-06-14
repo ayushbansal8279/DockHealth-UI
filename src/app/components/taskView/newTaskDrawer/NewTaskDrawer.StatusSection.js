@@ -37,7 +37,7 @@ const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
   <BlockButton
     type="button"
     onClick={() => {
-      if (value === 'NONE') {
+      if (value === 'NO_STATUS') {
         setValue(null); // default to null since we just clear the selection
       } else {
         setValue(value);
