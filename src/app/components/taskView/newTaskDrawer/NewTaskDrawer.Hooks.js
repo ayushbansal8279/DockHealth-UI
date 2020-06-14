@@ -212,7 +212,12 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
 
     if (dueDateMoment.isValid()) {
       setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
-      setValue('dueTime', dueDateMoment.format(TIME_24H_FORMAT));
+      const dueTimeValue = dueDateMoment.format(TIME_24H_FORMAT);
+      if (dueTimeValue === '00:00') {
+        setValue('dueTime', null);
+      } else {
+        setValue('dueTime', dueTimeValue);
+      }
     } else {
       setValue('dueDate', null);
       setValue('dueTime', null);

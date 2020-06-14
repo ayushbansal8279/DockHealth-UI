@@ -360,7 +360,10 @@ const TaskItem = ({
                           src={getCalendarIcon(
                             dueDate,
                             isHovered,
-                            !!(dueDate && moment(dueDate).isBefore(moment())),
+                            !!(
+                              dueDate &&
+                              moment(dueDate).isBefore(moment().startOf('day'))
+                            ),
                           )}
                         />
                       </DueDateContainer>

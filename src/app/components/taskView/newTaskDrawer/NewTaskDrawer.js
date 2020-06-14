@@ -87,9 +87,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const dueTimeValue = watch('dueTime');
 
   const isOverDue =
-    selectedTask &&
-    selectedTask.dueDate &&
-    moment(selectedTask.dueDate).isBefore(moment());
+    dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
   const overDueColor = isOverDue ? palette.red : palette.black;
 
   const enteredDescription = watch('description');
@@ -328,7 +326,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                       type: 'time',
                     }}
                     inputProps={{
-                      step: 300, // 5 min
+                      step: 900, // 15 min
                       style: {
                         color: dueTimeValue ? overDueColor : palette.coolGrey3,
                         paddingTop: '1.65rem',
