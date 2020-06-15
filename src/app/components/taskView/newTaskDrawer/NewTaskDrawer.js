@@ -90,6 +90,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
   const overDueColor = isOverDue ? palette.red : palette.black;
 
+  const selectedPatientIdentifier = watch('patientIdentifier');
+
   const enteredDescription = watch('description');
 
   const {
@@ -231,7 +233,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   }
                   InputProps={{
                     endAdornment:
-                      selectedTask && selectedTask.patient ? (
+                      selectedTask && selectedPatientIdentifier ? (
                         <AdornmentClear onClick={clearSelectedPatient} />
                       ) : (
                         ''
