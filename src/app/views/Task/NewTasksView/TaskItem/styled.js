@@ -135,7 +135,7 @@ export const ClickableTaskItemIcon = styled.span`
 export const TaskItemContainer = styled.div`
   position: relative;
   background-color: ${props =>
-    props.isSelected ? palette.blueGrey : palette.white};
+    props.isSelected ? palette.brightBlueWithAlpha : palette.white};
   border: 1px solid ${palette.coolGrey3};
   display: flex;
   justify-content: flex-end;

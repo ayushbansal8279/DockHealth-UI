@@ -6,6 +6,7 @@ const palette = {
   midnightBlue: '#213a56',
   brightBlue: '#00a2e5',
   darkBlue: '#074a86',
+  brightBlueWithAlpha: '#00a2e520',
 
   // old primary
   accentYellow: '#feb52b',
