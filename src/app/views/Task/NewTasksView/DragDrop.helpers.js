@@ -81,10 +81,7 @@ export const onDragEndTask = ({
       });
     }
 
-    if (
-      destination?.droppableId !== source?.droppableId &&
-      destination?.index !== source?.index
-    ) {
+    if (destination?.droppableId !== source?.droppableId) {
       const destinationGroup = groupList?.find(
         ({ taskGroupIdentifier, groupType }) =>
           destination.droppableId === taskGroupIdentifier ||
