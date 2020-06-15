@@ -190,7 +190,11 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   }, [taskList]);
 
   useEffect(() => {
-    if (taskDrawerOpen && taskList !== undefined) {
+    if (
+      taskDrawerOpen &&
+      taskList !== undefined &&
+      taskList?.taskListIdentifier
+    ) {
       getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
         dispatch,
       );
@@ -383,8 +387,6 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   };
 
   const clearSelectedPatient = async () => {
-    console.log('clearSelectedPatient');
-
     setValue('patientIdentifier', null);
     setValue('patientName', null);
     if (selectedTask && selectedTask.taskIdentifier != null) {

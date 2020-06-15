@@ -68,9 +68,11 @@ const initializeLabelsSectionHooks = ({
   const dispatch = useDispatch();
 
   const refreshLabels = async () => {
-    getTaskListLabels({
-      taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
-    })(dispatch);
+    if (selectedTask?.taskList?.taskListIdentifier) {
+      getTaskListLabels({
+        taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
+      })(dispatch);
+    }
 
     const refreshedTask = await refreshTask(selectedTask)(dispatch);
 
