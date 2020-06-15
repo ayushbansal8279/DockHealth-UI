@@ -13,6 +13,7 @@ import {
   sortSubtasksInGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
 } from 'sagas/tasks-groups-list';
+import { pluck } from 'ramda';
 import OpenedTasksView from './OpenedTasksView';
 
 const mapStateToProps = (state, ownProps) => {
@@ -22,8 +23,15 @@ const mapStateToProps = (state, ownProps) => {
   const searchedGroupsWithTasks = !searchValue
     ? tasks
     : Object.keys(tasks).reduce((groupObject, currentKey) => {
-        const filteredTasks = tasks[currentKey].filter(({ description }) =>
-          description.toLowerCase().includes(searchValue.toLowerCase()),
+        const filteredTasks = tasks[currentKey].filter(
+          ({ description, comments, subtasks }) =>
+            description.toLowerCase().includes(searchValue.toLowerCase()) ||
+            pluck('comment', comments).filter(s =>
+              new RegExp(searchValue.toLowerCase(), 'ig').test(s),
+            ).length > 0 ||
+            pluck('description', subtasks).filter(s =>
+              new RegExp(searchValue.toLowerCase(), 'ig').test(s),
+            ).length > 0,
         );
 
         if (filteredTasks.length === 0) return groupObject;
