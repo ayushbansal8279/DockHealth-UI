@@ -54,6 +54,7 @@ export const StyledTextField = styled(TextField)`
     & input {
       caret-color: ${palette.coolGrey1};
       color: ${palette.coolGrey1};
+      font-family: 'Montserrat', sans-serif;
       height: 100%;
       border: none;
       box-shadow: none;

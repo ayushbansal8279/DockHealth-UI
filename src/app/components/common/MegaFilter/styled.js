@@ -17,6 +17,7 @@ export const MegaFilterPopover = withStyles({
 
 export const FilterButtonLabel = withStyles({
   root: {
+    fontFamily: 'Montserrat, sans-serif',
     color: palette.coolGrey1,
     display: 'inline-block',
     marginRight: spacing.tiny,

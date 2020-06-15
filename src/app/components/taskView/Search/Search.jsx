@@ -35,7 +35,7 @@ const Search = ({
         searchReference.current.style.backgroundColor = 'white';
       }}
       placeholder="Search"
-      className={className}
+      classes={className}
       fullWidth={fullWidth}
       variant={variant}
       noBackground={!value && noBackground}
