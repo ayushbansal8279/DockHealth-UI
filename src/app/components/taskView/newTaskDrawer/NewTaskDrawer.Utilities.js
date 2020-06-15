@@ -70,8 +70,8 @@ export const getFormattedMembers = ({ members, currentUser }) => {
   });
 
   formattedMembers.unshift({
-    key: null,
-    value: null,
+    key: 'UNASSIGNED',
+    value: 'UNASSIGNED',
     label: (
       <MemberLabelContainer>
         <CondensedH4>Unassigned</CondensedH4>
