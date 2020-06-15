@@ -18,8 +18,6 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import {
   tasksIsFetchingSelector,
   completedTasksIsFetchingSelector,
-  tasksSelector,
-  completedTasksSelector,
 } from 'selectors/task-selectors';
 import { TaskViewContainer } from './styled';
 import OpenedTasksView from './OpenedTasksView/OpenedTasksViewContainer';
@@ -54,9 +52,6 @@ const TaskView = ({
   taskList = {},
   showNotificationAction = true,
   handleFilterChange,
-  tasks,
-  completedTasks,
-  // isFetching,
   hasTitle = true,
   title,
   isSpecialList,
@@ -77,16 +72,12 @@ const TaskView = ({
   } = taskActions;
 
   const resetHeader = useCallback(() => {
-    const allTasks = [...(tasks ?? []), ...(completedTasks ?? [])];
-    const allTasksCount = allTasks.length;
-
     const headerComponent = isSpecialList ? (
       <GenericHeader>{title}</GenericHeader>
     ) : (
       <Header
         isFetching={false}
         title={title}
-        taskCount={allTasksCount}
         taskList={taskList}
         resetHeader={resetHeader}
         hasTitle={hasTitle}
@@ -104,16 +95,7 @@ const TaskView = ({
         ],
       });
     }
-  }, [
-    taskList,
-    tasks,
-    completedTasks,
-    // isFetching,
-    hasTitle,
-    title,
-    isSpecialList,
-    dispatchedSetHeader,
-  ]);
+  }, [taskList, hasTitle, title, isSpecialList, dispatchedSetHeader]);
 
   useMount(() => {
     resetHeader();
@@ -258,8 +240,6 @@ const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   taskCounters: store.taskState.taskCounters,
   selectedTask: store.taskState.selectedTask,
-  tasks: tasksSelector(store),
-  completedTasks: completedTasksSelector(store),
   isFetching: tasksIsFetchingSelector(store),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(store),
 });
