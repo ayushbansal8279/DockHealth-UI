@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateDueDate } from 'actions/task-actions';
 import moment from 'moment';
 
-const initializeDueDateSectionHooks = ({ setAutoSaveVisible }) => {
+const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
   const dispatch = useDispatch();
 
   const { selectedTask } = useSelector(store => ({
@@ -40,8 +40,22 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible }) => {
     [selectedTaskIdentifier],
   );
 
+  const clearDueDate = async event => {
+    event.stopPropagation();
+    setValue('dueDate', null);
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        await updateDueDate(selectedTask, null)(dispatch);
+        setAutoSaveVisible();
+      } catch {
+        toggleAlert('Error updating due date, please try again later', 'error');
+      }
+    }
+  };
+
   return {
     saveDueDate,
+    clearDueDate,
   };
 };
 

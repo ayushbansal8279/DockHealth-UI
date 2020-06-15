@@ -10,6 +10,7 @@ import { RobotoTypography } from 'styles/theme';
 import palette from 'styles/palette';
 import Calendar from './NewTaskDrawer.Calendar';
 import DropdownInput from './NewTaskDrawer.DropdownInput';
+import { AdornmentClear } from './NewTaskDrawer.Styled';
 import { DueDateLabelContainer } from './NewTaskDrawer.DueDateSection.Styled';
 import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
 
@@ -119,7 +120,12 @@ const DueDateSection = ({ selectedTask, isOverDue, setAutoSaveVisible }) => {
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier ?? null;
 
-  const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
+  const { saveDueDate, clearDueDate } = initializeDueDateSectionHooks({
+    setAutoSaveVisible,
+    setValue,
+  });
+
+  const dueDateValue = watch('dueDate');
 
   useEffect(() => {
     closeCalendar();
@@ -155,16 +161,20 @@ const DueDateSection = ({ selectedTask, isOverDue, setAutoSaveVisible }) => {
       name={dateFieldName}
       label="Due date"
       placeholder="Set a due date?"
-      InputProps={
-        {
-          // startAdornment:
-          //   selectedTask && selectedTask.dueDate != null ? (
-          //     ''
-          //   ) : (
-          //     <AdornmentContainer>+</AdornmentContainer>
-          //   ),
-        }
-      }
+      InputProps={{
+        // startAdornment:
+        //   selectedTask && selectedTask.dueDate != null ? (
+        //     ''
+        //   ) : (
+        //     <AdornmentContainer>+</AdornmentContainer>
+        //   ),
+        endAdornment:
+          selectedTask && dueDateValue ? (
+            <AdornmentClear onClick={clearDueDate} />
+          ) : (
+            ''
+          ),
+      }}
       inputProps={{
         value: currentDueDate
           ? moment(currentDueDate).format(DATE_US_FORMAT)
