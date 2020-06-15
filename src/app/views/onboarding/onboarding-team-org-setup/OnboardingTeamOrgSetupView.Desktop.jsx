@@ -156,9 +156,6 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
         <OnboardingDivider />
         <Spacing vertical={4} />
         <Grid container justify="flex-end">
-          <OnboardingButton onClick={goToProfile} variant="outlined">
-            Skip
-          </OnboardingButton>
           <Spacing horizontal={4} />
           <OnboardingButton variant="contained" type="submit" size="small">
             Continue
