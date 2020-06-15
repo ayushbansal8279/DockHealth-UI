@@ -663,7 +663,7 @@ class TaskListView extends PureComponent {
                   <Grid item xs={9}>
                     {isFetching ? (
                       <LoaderContainer>
-                        <Loader size={40} />
+                        <Loader />
                       </LoaderContainer>
                     ) : (
                       <div className="item-list-wrapper list-wrapper-all-lists">

@@ -10,7 +10,7 @@ import {
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import { noop, showAlert } from 'helpers/utility-functions';
@@ -140,7 +140,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
         size="small"
         disabled={processingPayment}
       >
-        {processingPayment ? <Loader size={32} /> : 'Subscribe'}
+        {processingPayment ? <Loader size={LoaderSizes.medium} /> : 'Subscribe'}
       </Button>
     </Grid>
   </>

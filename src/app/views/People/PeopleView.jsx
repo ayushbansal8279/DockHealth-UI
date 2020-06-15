@@ -93,7 +93,7 @@ class PeopleView extends PureComponent {
           <Grid item xs={9}>
             {isFetching ? (
               <LoaderContainer>
-                <Loader size={40} />
+                <Loader />
               </LoaderContainer>
             ) : (
               <PeopleContainer

@@ -1265,7 +1265,7 @@ class TaskView extends Component {
                           isFetching || isSearching ? '800ms' : '0ms',
                       }}
                     >
-                      <Loader size={40} />
+                      <Loader />
                     </Fade>
                   </FadeContainer>
                 ) : (

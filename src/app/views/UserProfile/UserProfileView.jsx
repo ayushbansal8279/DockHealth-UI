@@ -2,7 +2,7 @@ import { Button, Grid, List, ListItem } from '@material-ui/core';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import StyledSwitch from 'components/userProfileView/StyledSwitch';
 import {
   UniversalInput,
@@ -133,7 +133,11 @@ const UserProfileView = ({
                     disabled={isSubmitting}
                     {...otherSaveButtonProps}
                   >
-                    {isSubmitting ? <Loader size={24} /> : saveButtonLabel}
+                    {isSubmitting ? (
+                      <Loader size={LoaderSizes.medium} />
+                    ) : (
+                      saveButtonLabel
+                    )}
                   </Button>
                 </Grid>
               </Grid>

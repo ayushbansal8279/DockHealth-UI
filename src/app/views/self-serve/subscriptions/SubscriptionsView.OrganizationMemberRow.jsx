@@ -109,7 +109,7 @@ export const MemberAvatar = ({
 
   return loading ? (
     <LoaderContainer>
-      <Loader size={40} />
+      <Loader />
     </LoaderContainer>
   ) : (
     <Avatar size={55}>{avatarContent}</Avatar>

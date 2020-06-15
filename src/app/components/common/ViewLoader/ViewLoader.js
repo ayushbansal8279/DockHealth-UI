@@ -6,7 +6,7 @@ const ViewLoader = ({ children, isFetchingData }) =>
   isFetchingData ? (
     <FadeContainer>
       <StyledFade in unmountOnExit>
-        <Loader size={40} />
+        <Loader />
       </StyledFade>
     </FadeContainer>
   ) : (

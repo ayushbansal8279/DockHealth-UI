@@ -5,7 +5,7 @@ import { noop } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import ArrowUpIcon from 'img/arrow-up.svg';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import { PaddedButtonLabel } from './UserProfileView.Styled';
 
 const getSmallButtonContent = ({
@@ -14,7 +14,7 @@ const getSmallButtonContent = ({
   fileLoading,
 }) => () => {
   if (fileLoading) {
-    return <Loader size={20} />;
+    return <Loader size={LoaderSizes.medium} />;
   }
 
   if (fileLoaded) {

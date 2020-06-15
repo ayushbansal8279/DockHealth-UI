@@ -102,7 +102,7 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
         <Grid item xs={12} container alignContent="center">
           {attachmentsLoading ? (
             <>
-              <Loader size={40} />
+              <Loader />
               <Spacing horizontal={3} />
             </>
           ) : (

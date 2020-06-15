@@ -23,7 +23,7 @@ export const InputBox = styled.div`
 `;
 
 export const Box = styled.div`
-  max-height: 260px;
+  height: 264px;
   overflow-y: scroll;
 `;
 

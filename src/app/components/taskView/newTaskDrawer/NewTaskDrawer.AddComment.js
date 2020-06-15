@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member';
 
 import initializeAddCommentHooks from './NewTaskDrawer.AddComment.Hooks';
@@ -40,7 +40,7 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
       />
       {isAddingComment && (
         <AddCommentLoaderContainer>
-          <Loader size={24} />
+          <Loader size={LoaderSizes.medium} />
         </AddCommentLoaderContainer>
       )}
     </AddCommentContainer>

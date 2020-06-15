@@ -2,6 +2,12 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import palette from 'styles/palette';
 
+export const LoaderSizes = {
+  big: 64,
+  medium: 48,
+  small: 32,
+};
+
 const DOTS_COLORS = [
   palette.lightBlue,
   palette.brightBlue,
@@ -71,7 +77,7 @@ const LoaderItem = styled.div`
   }
 `;
 
-export default ({ size = 48, speed = 2.4 }) => {
+export default ({ size = LoaderSizes.big, speed = 2.4 }) => {
   return (
     <LoaderContainer size={size}>
       <LoaderItem size={size} speed={speed} />

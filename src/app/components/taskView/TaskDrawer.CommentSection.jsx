@@ -17,7 +17,7 @@ import {
   updateComment as updateCommentAction,
 } from 'actions/task-actions';
 import { noop } from 'helpers/utility-functions';
-import Loader from '../common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import initializeTaskDrawerCommentSectionHooks from './TaskDrawer.CommentSection.Hooks';
 import {
   AddCommentButtonContainer,
@@ -251,7 +251,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
             </AddCommentButtonContainer>
             {isPublishingComment && (
               <LoaderContainer>
-                <Loader size={16} />
+                <Loader size={LoaderSizes.small} />
               </LoaderContainer>
             )}
           </CommentSectionInputFieldContainer>
