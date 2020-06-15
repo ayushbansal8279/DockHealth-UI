@@ -346,20 +346,16 @@ class Home extends Component {
     );
   };
 
-  quickAddTask = (taskName, taskGroupIdentifier, reloadGroups = false) => {
-    const {
-      actions,
-      routeParams: { taskListIdentifier },
-    } = this.props;
+  quickAddTask = (taskName, taskGroupIdentifier) => {
+    const { tasksGroupsListActions } = this.props;
 
     if (taskName) {
       const payload = {
         description: taskName,
-        taskListIdentifier,
         taskGroupIdentifier,
       };
 
-      actions.saveTask(payload, reloadGroups);
+      tasksGroupsListActions.createTask(payload);
     }
   };
 

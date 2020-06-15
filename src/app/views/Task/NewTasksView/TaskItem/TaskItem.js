@@ -582,13 +582,16 @@ const Task = ({
         subtasks={renderedSubtasks}
         {...restProps}
       />
-      {!isEmpty(comments) && !isStartedDnD && (
-        <TaskComments isOpen={isFullView} comments={comments} />
+      {!isEmpty(comments) && (
+        <TaskComments
+          isOpen={isFullView && !isStartedDnD}
+          comments={comments}
+        />
       )}
-      {!isEmpty(subtasks) && !isStartedDnD && (
+      {!isEmpty(subtasks) && (
         <Subtasks
           subtasks={renderedSubtasks}
-          isOpen={isOpen}
+          isOpen={isOpen && !isStartedDnD}
           isFullView={isFullView}
           groupId={groupId}
           parentTaskId={task.taskIdentifier}
