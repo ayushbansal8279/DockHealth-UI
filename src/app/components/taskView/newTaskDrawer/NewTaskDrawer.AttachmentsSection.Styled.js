@@ -40,6 +40,7 @@ export const AttachmentButton = styled.a`
 
     ${RemoveAttachmentButtonContainer} {
       margin-left: ${spacing.small};
+      padding: 0px 10px;
       width: 1rem;
     }
   }
