@@ -34,6 +34,10 @@ const Search = ({
       onFocus={() => {
         searchReference.current.style.backgroundColor = 'white';
       }}
+      onBlur={() => {
+        if (!searchReference.current.value)
+          searchReference.current.style.backgroundColor = null;
+      }}
       placeholder="Search"
       classes={className}
       fullWidth={fullWidth}
