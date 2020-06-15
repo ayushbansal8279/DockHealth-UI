@@ -64,7 +64,7 @@ const SupportVideoContainer = ({ title, url }) => {
       <AnimatePresence>
         {!isLoaded && (
           <SupportVideoOverlay {...animationProperties}>
-            <Loader size={40} />
+            <Loader />
           </SupportVideoOverlay>
         )}
       </AnimatePresence>

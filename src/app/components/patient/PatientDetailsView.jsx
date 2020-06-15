@@ -163,7 +163,7 @@ const PatientDetailsView = ({ routeParams }) => {
       <PatientProfileHeader patient={details} />
       {isLoading ? (
         <Grid container justify="center">
-          <Loader size={64} />
+          <Loader />
         </Grid>
       ) : (
         <>

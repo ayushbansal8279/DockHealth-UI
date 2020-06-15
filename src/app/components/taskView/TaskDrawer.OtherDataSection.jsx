@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import Loader from '../common/Loader/Loader';
+import Loader, { LoaderSizes } from '../common/Loader/Loader';
 import TaskDrawerAttachmentsList from './TaskDrawer.AttachmentsList';
 import TaskDrawerOtherDataDueDate from './TaskDrawer.OtherDataDueDate';
 import initializeTaskDrawerOtherDataSectionHooks from './TaskDrawer.OtherDataSectionHooks';
@@ -265,7 +265,11 @@ export default ({
         <SectionRow>
           <SectionLabel />
           <SectionButtonContainer>
-            {isHistoryLoading ? <Loader size={16} /> : renderHistory(history)}
+            {isHistoryLoading ? (
+              <Loader size={LoaderSizes.small} />
+            ) : (
+              renderHistory(history)
+            )}
           </SectionButtonContainer>
         </SectionRow>
       )}

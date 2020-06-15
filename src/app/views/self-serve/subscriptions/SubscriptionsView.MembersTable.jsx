@@ -176,7 +176,7 @@ const SubscriptionsViewMembersTable = ({
   return (
     <MembersTableContainer>
       {isFetching ? (
-        <Loader size={40} />
+        <Loader />
       ) : (
         <>
           {showTableHeader && (

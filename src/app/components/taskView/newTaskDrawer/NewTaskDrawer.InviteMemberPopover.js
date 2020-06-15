@@ -3,7 +3,7 @@ import { shape, string, func } from 'prop-types';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { noop } from 'helpers/utility-functions';
 import { RobotoTypography } from 'styles/theme';
@@ -100,7 +100,7 @@ const InviteMemberPopover = ({
                     {isInviting && (
                       <>
                         <Spacing horizontal={3} />
-                        <Loader size={16} />
+                        <Loader size={LoaderSizes.small} />
                       </>
                     )}
                   </Grid>

@@ -62,11 +62,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { changeGroupsOrder, ...restOwnProps } = ownProps;
 
   return {
-    changeGroupsOrder: (oldTaskIndex, newTaskIndex) =>
-      changeGroupsOrder(oldTaskIndex, newTaskIndex, groupList),
     ...restOwnProps,
     ...stateProps,
     ...dispatchProps,
+    changeGroupsOrder: (oldTaskIndex, newTaskIndex) =>
+      changeGroupsOrder(oldTaskIndex, newTaskIndex, groupList),
   };
 };
 

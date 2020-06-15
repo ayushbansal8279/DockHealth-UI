@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 import styled from 'styled-components';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { themeMontserratNormal } from 'styles/theme-montserrat';
-import Loader from './Loader/Loader';
+import Loader, { LoaderSizes } from './Loader/Loader';
 
 const GenericHeaderContainer = styled.div`
   align-items: center;
@@ -43,7 +43,7 @@ const GenericHeader = ({
       <GenericHeaderContainer>
         <Grid container alignItems="center">
           <ChildrenWrapperComponent>
-            {isFetching ? <Loader size={32} /> : children}
+            {isFetching ? <Loader size={LoaderSizes.medium} /> : children}
           </ChildrenWrapperComponent>
         </Grid>
         <Link to="/">

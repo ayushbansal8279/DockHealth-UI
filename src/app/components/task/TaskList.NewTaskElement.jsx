@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import Loader from '../common/Loader/Loader';
+import Loader, { LoaderSizes } from '../common/Loader/Loader';
 import TaskCheckbox from './TaskCheckbox';
 
 const NewTaskContainer = styled.div`
@@ -36,7 +36,7 @@ export default props => {
         <TaskCheckbox />
       </NewTaskCheckboxContainer>
       <NewTaskLoaderContainer>
-        <Loader size={32} />
+        <Loader size={LoaderSizes.medium} />
       </NewTaskLoaderContainer>
     </NewTaskContainer>
   );

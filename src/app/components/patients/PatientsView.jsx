@@ -28,7 +28,7 @@ const PatientsListSpinner = ({ isFetching }) => (
       unmountOnExit
       style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
     >
-      <Loader size={40} />
+      <Loader />
     </Fade>
   </FadeContainer>
 );

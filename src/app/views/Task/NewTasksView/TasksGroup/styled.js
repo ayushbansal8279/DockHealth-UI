@@ -105,6 +105,7 @@ export const MoveUpIcon = styled.img`
 
 export const PaginationButton = styled.button`
   display: flex;
+  align-items: center;
   margin-top: ${spacing.regular};
   margin-left: ${spacing.huge};
   color: ${props => (props.disabled ? palette.coolGrey2 : palette.brightBlue)};

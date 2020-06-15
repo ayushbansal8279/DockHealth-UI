@@ -178,7 +178,7 @@ const InvoicesList = () => {
         </InvoicesTable>
       ) : (
         <Grid container justify="center">
-          <Loader size={48} />
+          <Loader />
         </Grid>
       )}
     </InvoicesListContainer>

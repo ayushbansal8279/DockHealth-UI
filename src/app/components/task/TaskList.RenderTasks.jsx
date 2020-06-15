@@ -2,7 +2,7 @@ import { Button, Collapse, Grid } from '@material-ui/core';
 import { isEmpty, partition } from 'ramda';
 import React, { useCallback } from 'react';
 import useBoolean from 'hooks/useBoolean';
-import Loader from '../common/Loader/Loader';
+import Loader, { LoaderSizes } from '../common/Loader/Loader';
 import Spacing from '../common/Spacing';
 import Task from './Task';
 import { EmptyListElementContainer } from './TaskList.styled';
@@ -51,7 +51,7 @@ const getCompletedTasksLabel = ({
     return (
       <>
         <Spacing horizontal={3} />
-        <Loader size={24} />
+        <Loader size={LoaderSizes.medium} />
       </>
     );
   }

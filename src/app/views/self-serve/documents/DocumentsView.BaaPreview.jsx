@@ -100,7 +100,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
       <AttachmentPreviewContent>
         {data.loading && (
           <Grid container justify="center" alignItems="center">
-            <Loader size={48} />
+            <Loader />
           </Grid>
         )}
         {!data.loading && !data.error && (

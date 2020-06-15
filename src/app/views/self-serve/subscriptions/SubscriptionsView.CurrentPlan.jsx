@@ -21,7 +21,7 @@ const AsyncElement = ({
   fetching,
 }) => {
   if (fetching) {
-    return <Loader size={48} />;
+    return <Loader />;
   }
 
   if (error) {

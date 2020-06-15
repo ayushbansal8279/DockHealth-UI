@@ -3,7 +3,7 @@ import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
@@ -420,7 +420,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                     disabled={isSaving}
                   >
                     <MontserratTypography variant="h4" weight="600">
-                      {isSaving ? <Loader size={32} /> : 'SAVE'}
+                      {isSaving ? <Loader size={LoaderSizes.medium} /> : 'SAVE'}
                     </MontserratTypography>
                   </Button>
                 </Grid>

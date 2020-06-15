@@ -5,7 +5,7 @@ import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
-import Loader from 'components/common/Loader/Loader';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 
@@ -165,7 +165,7 @@ const TasksGroup = ({
             {isFetchingMoreTasks && (
               <>
                 <Spacing horizontal={4} />
-                <Loader size={16} />
+                <Loader size={LoaderSizes.small} />
               </>
             )}
           </PaginationButton>
