@@ -496,8 +496,8 @@ const Subtasks = ({
               {!isEmpty(orderedSubtasks) &&
                 orderedSubtasks?.map((subtask, index) => (
                   <Draggable
-                    key={subtask.taskId}
-                    draggableId={String(subtask.taskId)}
+                    key={subtask.taskIdentifier}
+                    draggableId={String(subtask.taskIdentifier)}
                     index={index}
                   >
                     {(
@@ -507,7 +507,7 @@ const Subtasks = ({
                       <div ref={innerRef} {...draggableProps}>
                         <TaskItem
                           dragHandleProps={dragHandleProps}
-                          key={subtask.taskId}
+                          key={subtask.taskIdentifier}
                           task={{ ...subtask, taskList }}
                           isDragging={isDraggingSubtask}
                           currentUser={currentUser}
@@ -515,7 +515,7 @@ const Subtasks = ({
                           parentHasPatient={parentHasPatient}
                           {...restProps}
                         />
-                        {draggedId !== String(subtask.taskId) &&
+                        {draggedId !== String(subtask.taskIdentifier) &&
                           !isEmpty(subtask.comments) && (
                             <TaskComments
                               isOpen={isFullView}

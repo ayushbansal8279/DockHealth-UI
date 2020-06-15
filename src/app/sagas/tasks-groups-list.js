@@ -14,6 +14,7 @@ import {
   sortGroups,
 } from 'api/task-group-list-api';
 import {
+  addTask as createTaskApi,
   reorderTasksInGroup,
   getListTasksByUser,
   reorderSubtasksForTask,
@@ -38,6 +39,8 @@ export const DO_SORT_TASKS_GROUPS = 'DO_SORT_TASKS_GROUPS';
 export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
 export const DO_SORT_SUBTASKS_IN_GROUPS = 'DO_SORT_SUBTASKS_IN_GROUPS';
 export const DO_ON_ENTER_TASKS_GROUPS_LIST = 'DO_ON_ENTER_TASKS_GROUPS_LIST';
+export const DO_CREATE_TASK = 'DO_CREATE_TASK';
+
 export const DO_REASSIGN_TASKS_TO_ANOTHER_GROUP =
   'DO_REASSIGN_TASKS_TO_ANOTHER_GROUP';
 
@@ -81,6 +84,11 @@ export const reassignTasksToAnotherGroup = payload => ({
   ...payload,
 });
 
+export const createTask = payload => ({
+  type: DO_CREATE_TASK,
+  ...payload,
+});
+
 export const onEnterTasksGroupsList = payload => ({
   type: DO_ON_ENTER_TASKS_GROUPS_LIST,
   ...payload,
@@ -93,6 +101,7 @@ export const TasksGroupsListActions = {
   deleteTasksGroup,
   sortTasksGroups,
   sortTasksInGroup,
+  createTask,
 };
 
 export function* doGetTasksGroupsList(payload) {
@@ -242,10 +251,14 @@ export function* doSortSubtasksInGroup(payload) {
       taskGroupIdentifier,
       parentTaskIdentifier,
     );
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+
+    yield all([
+      call(doGetTasksGroupsList, {
+        taskListIdentifier,
+        shouldSetRequestState: false,
+      }),
+      call(doGetTasksList, { taskListIdentifier }),
+    ]);
 
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
@@ -254,7 +267,7 @@ export function* doSortSubtasksInGroup(payload) {
 }
 
 export function* doReassignTasksToAnotherGroup(payload) {
-  const { taskIdentifiers, taskGroupIdentifier } = payload;
+  const { taskIdentifiers, taskGroupIdentifier, orderedTaskIds } = payload;
 
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
@@ -265,6 +278,11 @@ export function* doReassignTasksToAnotherGroup(payload) {
       taskGroupIdentifier,
       taskIdentifiers,
     );
+
+    yield call(doSortTasksInGroup, {
+      orderedTaskIds,
+      taskGroupIdentifier,
+    });
 
     yield call(doGetTasksList, {
       taskListIdentifier,
@@ -292,6 +310,32 @@ export function* doOnEnterTasksGroupsList() {
   }
 }
 
+export function* doCreateTask(payload) {
+  try {
+    const { taskGroupIdentifier, description } = payload;
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield put({ type: TASK_GROUP_LIST_REQUEST });
+
+    if (taskListIdentifier) {
+      yield call(createTaskApi, {
+        taskGroupIdentifier,
+        taskListIdentifier,
+        description,
+      });
+
+      yield all([
+        call(doGetTasksGroupsList, {
+          taskListIdentifier,
+          shouldSetRequestState: false,
+        }),
+        call(doGetTasksList, { taskListIdentifier }),
+      ]);
+    }
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export default function* watchTasksGroupsList() {
   yield takeLatest(DO_ON_ENTER_TASKS_GROUPS_LIST, doOnEnterTasksGroupsList);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
@@ -301,6 +345,7 @@ export default function* watchTasksGroupsList() {
   yield takeEvery(DO_SORT_TASKS_GROUPS, doSortTasksGroups);
   yield takeEvery(DO_SORT_TASKS_IN_GROUPS, doSortTasksInGroup);
   yield takeEvery(DO_SORT_SUBTASKS_IN_GROUPS, doSortSubtasksInGroup);
+  yield takeLatest(DO_CREATE_TASK, doCreateTask);
   yield takeEvery(
     DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
     doReassignTasksToAnotherGroup,

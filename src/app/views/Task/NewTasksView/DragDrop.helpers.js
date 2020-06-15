@@ -1,5 +1,22 @@
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 
+const moveItemInArrayFromIndexToIndex = (array, fromIndex, toIndex) => {
+  if (fromIndex === toIndex) return array;
+
+  const newArray = [...array];
+
+  const target = newArray[fromIndex];
+  const inc = toIndex < fromIndex ? -1 : 1;
+
+  for (let i = fromIndex; i !== toIndex; i += inc) {
+    newArray[i] = newArray[i + inc];
+  }
+
+  newArray[toIndex] = target;
+
+  return newArray;
+};
+
 export const onDragEndTask = ({
   eventBundle,
   groupList,
@@ -64,10 +81,7 @@ export const onDragEndTask = ({
       });
     }
 
-    if (
-      destination?.droppableId !== source?.droppableId &&
-      destination?.index !== source?.index
-    ) {
+    if (destination?.droppableId !== source?.droppableId) {
       const destinationGroup = groupList?.find(
         ({ taskGroupIdentifier, groupType }) =>
           destination.droppableId === taskGroupIdentifier ||
@@ -123,6 +137,7 @@ export const onDragEndTask = ({
 
       reassignTasksToAnotherGroup({
         taskIdentifiers: [sourceTaskIdentifier],
+        orderedTaskIds: newDestinationTasksOrder,
         taskGroupIdentifier,
       });
     }
@@ -143,23 +158,22 @@ export const onDragEndSubtask = ({
   setDraggableId(null);
 
   if (destination && destination?.index !== source?.index) {
-    const newSubtasksOrder = [...subtasksOrder];
-    newSubtasksOrder.splice(
+    const newSubtasksOrder = moveItemInArrayFromIndexToIndex(
+      subtasksOrder,
+      source.index,
       destination.index,
-      0,
-      newSubtasksOrder.splice(source.index, 1)[0],
     );
-
-    reorderSubtasksForTask({
-      orderedSubtaskIds: newSubtasksOrder,
-      taskGroupIdentifier: groupId,
-      parentTaskIdentifier: parentTaskId,
-    });
 
     const reorderedTasks = newSubtasksOrder.map(taskId =>
       orderedSubtasks.find(({ taskIdentifier }) => taskIdentifier === taskId),
     );
 
     reorderSubtasksInState(reorderedTasks);
+
+    reorderSubtasksForTask({
+      orderedSubtaskIds: newSubtasksOrder,
+      taskGroupIdentifier: groupId,
+      parentTaskIdentifier: parentTaskId,
+    });
   }
 };
