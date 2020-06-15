@@ -242,10 +242,14 @@ export function* doSortSubtasksInGroup(payload) {
       taskGroupIdentifier,
       parentTaskIdentifier,
     );
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+
+    yield all([
+      call(doGetTasksGroupsList, {
+        taskListIdentifier,
+        shouldSetRequestState: false,
+      }),
+      call(doGetTasksList, { taskListIdentifier }),
+    ]);
 
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
