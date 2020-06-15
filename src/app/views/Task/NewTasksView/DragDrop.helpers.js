@@ -137,6 +137,7 @@ export const onDragEndTask = ({
 
       reassignTasksToAnotherGroup({
         taskIdentifiers: [sourceTaskIdentifier],
+        orderedTaskIds: newDestinationTasksOrder,
         taskGroupIdentifier,
       });
     }

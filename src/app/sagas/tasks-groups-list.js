@@ -267,7 +267,7 @@ export function* doSortSubtasksInGroup(payload) {
 }
 
 export function* doReassignTasksToAnotherGroup(payload) {
-  const { taskIdentifiers, taskGroupIdentifier } = payload;
+  const { taskIdentifiers, taskGroupIdentifier, orderedTaskIds } = payload;
 
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
@@ -278,6 +278,11 @@ export function* doReassignTasksToAnotherGroup(payload) {
       taskGroupIdentifier,
       taskIdentifiers,
     );
+
+    yield call(doSortTasksInGroup, {
+      orderedTaskIds,
+      taskGroupIdentifier,
+    });
 
     yield call(doGetTasksList, {
       taskListIdentifier,
