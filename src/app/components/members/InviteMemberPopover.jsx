@@ -1,6 +1,6 @@
+import React, { useRef } from 'react';
 import { IconButton } from '@material-ui/core';
 import clsx from 'clsx';
-import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import InvitingContent from './InviteMemberPopover.InvitingContent';
@@ -16,7 +16,6 @@ const InviteMemberPopover = ({
   closeMemberPopover,
   taskList,
   members,
-  membersNotInTaskList,
 }) => {
   const [isInviting, setInviting, unsetInviting] = useBoolean(false);
 
@@ -45,7 +44,6 @@ const InviteMemberPopover = ({
         <NotInvitingContent
           closeMemberPopover={closeMemberPopover}
           members={members}
-          membersNotInTaskList={membersNotInTaskList}
           setInviting={setInviting}
           isAdmin={isAdmin}
           currentUser={currentUser}
@@ -60,7 +58,6 @@ export const InviteMemberPopoverWithButton = ({
   size = 54,
   taskList,
   members,
-  membersNotInTaskList,
 }) => {
   const addMemberButtonReference = useRef(null);
   const addMemberButtonStyles = useAddMemberButtonStyles({ size });
@@ -87,7 +84,6 @@ export const InviteMemberPopoverWithButton = ({
         closeMemberPopover={closeMemberPopover}
         taskList={taskList}
         members={members}
-        membersNotInTaskList={membersNotInTaskList}
       />
     </>
   );

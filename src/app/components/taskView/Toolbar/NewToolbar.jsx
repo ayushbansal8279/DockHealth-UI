@@ -91,7 +91,6 @@ const getMembersNames = ({ members }) =>
 const Toolbar = ({
   members,
   showMembers = true,
-  membersNotInTaskList,
   onSelectTab,
   printData: { openedTasks = [], completedTasks = [], taskListMembers = [] },
   selectedTab,
@@ -201,7 +200,6 @@ const Toolbar = ({
                 <InviteMemberPopoverWithButton
                   size={40}
                   members={members}
-                  membersNotInTaskList={membersNotInTaskList}
                   taskList={taskList}
                 />
               </>

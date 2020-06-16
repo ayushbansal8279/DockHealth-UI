@@ -3,7 +3,6 @@ import {
   completedTasksSelector,
   tasksSelector,
 } from 'selectors/task-selectors';
-import { membersNotInTaskListSelector } from 'selectors/task-list-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import NewToolbar from './NewToolbar';
 
@@ -22,7 +21,6 @@ const mapStateToProps = (state, ownProps) => {
       taskListMembers: members,
       showMembers,
     },
-    membersNotInTaskList: membersNotInTaskListSelector(state),
     megaFilter: megaFilterSelector(state),
     haveTasks,
     ...ownProps,

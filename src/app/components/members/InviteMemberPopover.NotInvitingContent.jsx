@@ -1,7 +1,14 @@
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+} from 'react';
 import { List, ListItem } from '@material-ui/core';
+import * as TaskListApi from 'api/tasklist-api';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { isEmpty, prop, sortBy, uniqBy } from 'ramda';
-import React, { useCallback, useRef, useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   cancelInviteToTaskList,
@@ -13,6 +20,7 @@ import {
 import useBoolean from 'hooks/useBoolean';
 import TickIcon from 'img/tick-icon';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import {
   HeaderSearch,
   HeaderSearchContainer,
@@ -31,6 +39,7 @@ import {
   PopoverHeaderCloseButton,
   StyledMember,
   TickIconContainer,
+  LoaderContainer,
 } from './InviteMemberPopover.Styled';
 
 const getFormattedMemberRole = ({ memberRole, invitationPending }) => {
@@ -338,13 +347,34 @@ const getMembersData = ({ members, membersNotInTaskList, searchTerm }) => {
 const NotInvitingContent = ({
   closeMemberPopover,
   members,
-  membersNotInTaskList,
   setInviting,
   isAdmin,
   currentUser,
   taskList,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [membersNotInTaskList, setMembersNotInTaskList] = useState([]);
+  const [isFetchingMembers, setIsFetchingMembers] = useState(false);
+
+  const fetchMembersNotInTaskList = useCallback(
+    taskListIdentifier => {
+      setIsFetchingMembers(true);
+      TaskListApi.getOrganizationUsersNotInTaskList(taskListIdentifier)
+        .then(users => {
+          setMembersNotInTaskList(users);
+          setIsFetchingMembers(false);
+        })
+        .catch(() => {
+          setIsFetchingMembers(false);
+        });
+      setMembersNotInTaskList([]);
+    },
+    [setMembersNotInTaskList],
+  );
+
+  useEffect(() => {
+    fetchMembersNotInTaskList(taskList.taskListIdentifier);
+  }, [fetchMembersNotInTaskList, taskList]);
 
   const { allMembersSorted, membersNotInTaskListIdentifiers } = useMemo(
     () =>
@@ -372,37 +402,45 @@ const NotInvitingContent = ({
           value={searchTerm}
         />
       </HeaderSearchContainer>
-      <MembersContainer>
-        {allMembersSorted.map(
-          renderMemberItemElement({
-            currentUser,
-            taskList,
-            membersNotInTaskListIdentifiers,
-          }),
-        )}
-        {isEmpty(allMembersSorted) && (
-          <NoMembersElement>
+      {!isFetchingMembers ? (
+        <>
+          <MembersContainer>
+            {allMembersSorted.map(
+              renderMemberItemElement({
+                currentUser,
+                taskList,
+                membersNotInTaskListIdentifiers,
+              }),
+            )}
+            {isEmpty(allMembersSorted) && (
+              <NoMembersElement>
+                <MontserratTypography variant="h4">
+                  No members found.
+                </MontserratTypography>
+              </NoMembersElement>
+            )}
+          </MembersContainer>
+          <PopoverDivider />
+          <PopoverBottomSection>
             <MontserratTypography variant="h4">
-              No members found.
+              <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
+              {isAdmin ? (
+                <InviteLink onClick={setInviting}>
+                  Invite them to this list.
+                </InviteLink>
+              ) : (
+                <span>
+                  Ask an organizational admin to invite people to this list.
+                </span>
+              )}
             </MontserratTypography>
-          </NoMembersElement>
-        )}
-      </MembersContainer>
-      <PopoverDivider />
-      <PopoverBottomSection>
-        <MontserratTypography variant="h4">
-          <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
-          {isAdmin ? (
-            <InviteLink onClick={setInviting}>
-              Invite them to this list.
-            </InviteLink>
-          ) : (
-            <span>
-              Ask an organizational admin to invite people to this list.
-            </span>
-          )}
-        </MontserratTypography>
-      </PopoverBottomSection>
+          </PopoverBottomSection>
+        </>
+      ) : (
+        <LoaderContainer>
+          <Loader size={LoaderSizes.medium} />
+        </LoaderContainer>
+      )}
     </>
   );
 };

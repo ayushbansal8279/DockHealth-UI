@@ -58,10 +58,6 @@ class Home extends Component {
 
     this.initTable();
 
-    // TODO: Move to saga
-    taskListActions.getOrganizationUsersNotInTaskList(
-      routeParams.taskListIdentifier,
-    );
     patientActions.getAllPatients();
 
     this.refreshAccessToken(user);
@@ -408,7 +404,6 @@ class Home extends Component {
       tasksGroupsListActions,
       members,
       taskLists,
-      membersNotInTaskList,
       routeParams,
       selectedFilters,
       routeParams: { taskListIdentifier },
@@ -432,7 +427,6 @@ class Home extends Component {
       changeGroupsOrder: this.changeGroupsOrder,
       handleFilterChange: this.handleFilterChange,
       taskList: loadedTasklist || undefined,
-      membersNotInTaskList,
       routeParams,
       hasFiltersApplied: !isEmpty(selectedFilters),
       title: loadedTasklist?.listName,

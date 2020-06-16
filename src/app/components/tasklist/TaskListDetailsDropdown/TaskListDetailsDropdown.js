@@ -53,7 +53,12 @@ const TaskListDetailsDropdown = ({
           src={ArrowIcon}
         />
         <ListNameSection>{listName}</ListNameSection>
-        {listMembers?.length > 0 && <TaskListMembers members={listMembers} />}
+        {listMembers?.length > 0 && (
+          <TaskListMembers
+            members={listMembers}
+            taskListIdentifier={taskListIdentifier}
+          />
+        )}
         <div>
           <ViewIcon
             alt="slim-view"

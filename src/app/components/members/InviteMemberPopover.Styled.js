@@ -5,9 +5,16 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import Search from 'components/taskView/Search/Search';
+import spacing from 'styles/spacing';
 import Member from './Member';
 
 const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
+
+export const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: ${spacing.giga} 0;
+`;
 
 export const useAddMemberButtonStyles = makeStyles({
   root: {
@@ -27,6 +34,7 @@ export const useAddMemberButtonStyles = makeStyles({
 export const AddMemberPopover = withStyles({
   paper: {
     border: 0,
+    height: '31rem',
     maxWidth: '31.25rem',
     width: '31.25rem',
   },
