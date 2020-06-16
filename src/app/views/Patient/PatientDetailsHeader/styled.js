@@ -57,9 +57,11 @@ export const PatientDetailsNoteDescription = styled.div`
 
 export const PatientDetailsInformationContainer = styled.div`
   display: flex;
-  padding: ${spacing.huge};
-  align-items: center;
+  padding: ${spacing.huge} ${spacing.largePlus};
+  justify-content: center;
+  flex-direction: column;
   width: 100%;
+  border-bottom: 3px solid #f5f8fa;
 `;
 
 export const PatientName = styled.div`
@@ -68,16 +70,26 @@ export const PatientName = styled.div`
 `;
 
 export const PatientInfo = styled.div`
-  padding: 0 ${spacing.huge};
+  padding: 0 ${spacing.large};
   color: ${palette.mediumGrey};
+
+  &:first-child {
+    padding-left: 0;
+  }
 `;
 
 export const PatientInfoDivider = styled.div`
   height: 13px; // per design
-  width: 1px; // per design
-  background-color: ${palette.mediumGrey};
+  width: 2px; // per design
+  background-color: ${palette.coolGrey3};
 
   &:last-child {
     visibility: hidden;
   }
+`;
+
+export const PatientDetails = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: ${spacing.small};
 `;
