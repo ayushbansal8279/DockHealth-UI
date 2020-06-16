@@ -33,7 +33,7 @@ export const UniversalFormControl = withStyles({
     backgroundColor: palette.white,
   },
   error: {
-    backgroundColor: palette.lightGrey,
+    backgroundColor: palette.coolGrey4,
   },
 })(({ classes, whiteBackground, error, ...props }) => {
   const className = clsx(
@@ -90,7 +90,9 @@ export const UniversalInputBase = withStyles({
     borderRadius: 0,
     boxShadow: 'none',
     paddingBottom: 0,
-    padding: '1.25rem 1rem',
+    // padding: '1.25rem 1rem',
+    marginTop: '1.25rem',
+    marginLeft: '1rem',
     '&:focus': {
       backgroundColor: opacify(palette.lightGrey, 0),
       border: 0,
