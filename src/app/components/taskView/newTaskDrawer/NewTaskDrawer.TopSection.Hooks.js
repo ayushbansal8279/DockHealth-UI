@@ -5,6 +5,7 @@ import useBoolean from 'hooks/useBoolean';
 const initializeTaskDrawerTopSectionHooks = ({
   modalActions,
   onDelete,
+  onDuplicate,
   closeTaskDrawer,
   selectedTask,
 }) => {
@@ -47,6 +48,23 @@ const initializeTaskDrawerTopSectionHooks = ({
     modalActions.openModal('DeleteTask', modalProps);
   };
 
+  const duplicateTask = async () => {
+    await onDuplicate({
+      afterDuplicate: () => {
+        modalActions.closeModal();
+        closeTaskDrawer();
+      },
+      selectedTask,
+    });
+  };
+
+  const openDuplicateConfirmationModal = () => {
+    const modalProps = {
+      confirm: () => duplicateTask(),
+    };
+    modalActions.openModal('DuplicateTask', modalProps);
+  };
+
   return {
     filedInInputReference,
     isFiledInPopoverOpen,
@@ -61,6 +79,7 @@ const initializeTaskDrawerTopSectionHooks = ({
     closeTaskMenuPopover,
 
     openDeleteConfirmationModal,
+    openDuplicateConfirmationModal,
   };
 };
 

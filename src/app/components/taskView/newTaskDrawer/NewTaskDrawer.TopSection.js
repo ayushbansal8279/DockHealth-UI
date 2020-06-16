@@ -80,9 +80,11 @@ const TopSection = ({
     openTaskMenuPopover,
     closeTaskMenuPopover,
     openDeleteConfirmationModal,
+    openDuplicateConfirmationModal,
   } = initializeTaskDrawerTopSectionHooks({
     modalActions,
     onDelete,
+    onDuplicate,
     closeTaskDrawer,
     selectedTask,
   });
@@ -215,13 +217,10 @@ const TopSection = ({
               </ListItem>
               <ListItem
                 key="action_duplicate"
-                onClick={onDuplicate({
-                  afterDuplicate: () => {
-                    closeTaskMenuPopover();
-                    closeTaskDrawer();
-                  },
-                  selectedTask,
-                })}
+                onClick={() => {
+                  closeTaskMenuPopover();
+                  openDuplicateConfirmationModal();
+                }}
                 button
                 style={{
                   borderBottom: `1px solid ${palette.coolGrey3}`,
