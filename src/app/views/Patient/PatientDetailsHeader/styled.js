@@ -15,7 +15,7 @@ export const PatientDetailsNotesContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 720px; // per design
-  padding: ${spacing.regular} 0 ${spacing.largePlus};
+  padding-top: ${spacing.regular};
 `;
 
 export const PatientDetailsNotesGroupContainer = styled.div`
