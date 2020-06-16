@@ -10,6 +10,7 @@ import {
   getMembersByTaskListId,
   getOrganizationUsersNotInTaskList,
 } from 'actions/tasklist-actions';
+import { openModal, closeModal } from 'modal/actions';
 import useBoolean from 'hooks/useBoolean';
 import Loader from 'components/common/Loader/Loader';
 import ListPopover from 'components/common/ListPopover';
@@ -187,11 +188,6 @@ const ListsComponent = props => {
     false,
   );
   const [
-    isDeletePopoverOpen,
-    openDeletePopover,
-    closeDeletePopover,
-  ] = useBoolean(false);
-  const [
     isInvitePopoverOpen,
     openInvitePopover,
     closeInvitePopover,
@@ -246,6 +242,17 @@ const ListsComponent = props => {
     unsetMembersLoading,
   ]);
 
+  const deleteTaskList = async () => {
+    deleteList(currentListIdentifier).then(dispatch(closeModal()));
+  };
+
+  const openDeleteConfirmationModal = () => {
+    const modalProps = {
+      confirm: () => deleteTaskList(),
+    };
+    dispatch(openModal('DeleteList', modalProps));
+  };
+
   const menuItems = isAdminForCurrentList
     ? [
         {
@@ -262,7 +269,7 @@ const ListsComponent = props => {
           button: true,
           label: 'Delete',
           onClick: () => {
-            openDeletePopover();
+            openDeleteConfirmationModal();
             closeListMenu();
           },
         },
@@ -349,59 +356,6 @@ const ListsComponent = props => {
           vertical: 'top',
         }}
       />
-      <ListsDialog
-        open={isDeletePopoverOpen}
-        onClose={closeDeletePopover}
-        PaperProps={{
-          elevation: 0,
-          square: true,
-        }}
-      >
-        <Grid container justify="space-between" alignItems="center">
-          <TitleLabel>
-            <RobotoTypography variant="h4" color="inherit">
-              DELETE LIST
-            </RobotoTypography>
-          </TitleLabel>
-          <CloseButtonContainer>
-            <IconButton size="small" edge="end" onClick={closeDeletePopover}>
-              <Close />
-            </IconButton>
-          </CloseButtonContainer>
-        </Grid>
-        <Spacing vertical={4} />
-        <DialogDivider />
-        <Spacing vertical={5} />
-        <Grid container justify="center">
-          <MontserratTypography variant="h4">
-            <span>You are about to delete </span>
-            <b>{currentList?.listName}.</b>
-            <span> Are you sure you want to delete this list?</span>
-          </MontserratTypography>
-        </Grid>
-        <Spacing vertical={5} />
-        <Grid container justify="flex-end">
-          <Button variant="text" size="small" onClick={closeDeletePopover}>
-            <MontserratTypography
-              variant="h4"
-              textDecoration="underline"
-              weight="600"
-            >
-              NO, CANCEL
-            </MontserratTypography>
-          </Button>
-          <Spacing horizontal={4} />
-          <ListsButton
-            variant="contained"
-            size="small"
-            onClick={() => {
-              deleteList(currentListIdentifier).then(closeDeletePopover);
-            }}
-          >
-            YES, DELETE LIST
-          </ListsButton>
-        </Grid>
-      </ListsDialog>
       <ListsDialog
         open={isLeavePopoverOpen}
         onClose={closeLeavePopover}
