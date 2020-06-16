@@ -11,8 +11,19 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import {
   patientTaskListsSelector,
   patientTaskListsActiveTabSelector,
+  patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+
+const searchTaskInPatientLists = (patientLists, searchValue) =>
+  patientLists.reduce((accumulator, currentValue) => {
+    const filteredTasks = currentValue.tasks.filter(task =>
+      task.description.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+    if (filteredTasks.length === 0) return accumulator;
+
+    return [...accumulator, { ...currentValue, tasks: filteredTasks }];
+  }, []);
 
 const PatientTasksListView = ({
   activeTab,
@@ -23,6 +34,7 @@ const PatientTasksListView = ({
   taskActions,
   patientTasksSagaActions,
   modalActions,
+  taskSearch,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
@@ -34,6 +46,12 @@ const PatientTasksListView = ({
     updatePatientTaskWorkflowStatus,
     quickAddPatientTask,
   } = patientTasksSagaActions;
+
+  const renderEmptyListView = () => {
+    if (taskSearch) return <div>No results were found for your search</div>;
+
+    return <div>This patient has no tasks</div>;
+  };
 
   const handleToggleTaskStatus = task => {
     const hasIncompletedSubtasks = task.subtasks.find(
@@ -52,24 +70,30 @@ const PatientTasksListView = ({
     }
   };
 
-  return patientLists.map(list => (
-    <TaskListDetailsDropdown
-      key={list.taskListIdentifier}
-      list={list}
-      tasks={list.tasks}
-      currentUser={currentUser}
-      selectedTask={selectedTask}
-      isCompleteTab={activeTab === TaskListTabName.COMPLETE}
-      openDrawer={openDrawer}
-      storeAsCurrentTask={storeAsCurrentTask}
-      toggleTaskStatus={handleToggleTaskStatus}
-      toggleTaskPriority={togglePatientTaskPriority}
-      reassignTask={reassignPatientTask}
-      updateDueDate={updatePatientTaskDueDate}
-      updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-      quickAddTask={quickAddPatientTask}
-    />
-  ));
+  const filteredLists = taskSearch
+    ? searchTaskInPatientLists(patientLists, taskSearch)
+    : patientLists;
+
+  return filteredLists?.length > 0
+    ? patientLists.map(list => (
+        <TaskListDetailsDropdown
+          key={list.taskListIdentifier}
+          list={list}
+          tasks={list.tasks}
+          currentUser={currentUser}
+          selectedTask={selectedTask}
+          isCompleteTab={activeTab === TaskListTabName.COMPLETE}
+          openDrawer={openDrawer}
+          storeAsCurrentTask={storeAsCurrentTask}
+          toggleTaskStatus={handleToggleTaskStatus}
+          toggleTaskPriority={togglePatientTaskPriority}
+          reassignTask={reassignPatientTask}
+          updateDueDate={updatePatientTaskDueDate}
+          updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+          quickAddTask={quickAddPatientTask}
+        />
+      ))
+    : renderEmptyListView();
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -87,6 +111,7 @@ const mapStateToProps = state => ({
   activeTab: patientTaskListsActiveTabSelector(state),
   currentUser: userProfileSelector(state),
   selectedTask: state.taskState.selectedTask,
+  taskSearch: patientTaskSearchSelector(state),
 });
 
 export default connect(

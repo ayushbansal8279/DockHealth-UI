@@ -21,3 +21,8 @@ export const currentPatientIdentifierSelector = createSelector(
   patientTasksStateSelector,
   ({ patientIdentifier }) => patientIdentifier,
 );
+
+export const patientTaskSearchSelector = createSelector(
+  patientTasksStateSelector,
+  ({ taskSearch }) => taskSearch,
+);

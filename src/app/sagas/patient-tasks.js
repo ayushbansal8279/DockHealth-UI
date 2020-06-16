@@ -21,6 +21,7 @@ import {
   UPDATE_PATIENT_TASK,
   FETCH_MEGA_FILTERS_SUCCESS,
   FETCH_MEGA_FILTERS_FAILURE,
+  SET_PATIENT_TASK_SEARCH_VALUE,
 } from 'actions/action-types';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 
@@ -49,6 +50,8 @@ export const DO_UPDATE_PATIENT_TASKS_FILTERS =
   'DO_UPDATE_PATIENT_TASKS_FILTERS';
 export const DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT =
   'DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT';
+export const DO_SET_PATIENT_TASK_SEARCH_VALUE =
+  'DO_SET_PATIENT_TASK_SEARCH_VALUE';
 
 export const quickAddPatientTask = (description, taskListIdentifier) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -129,6 +132,13 @@ export const initalizeSavedFilters = () => ({
   type: DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
 });
 
+export const setPatientTaskSearch = value => ({
+  type: DO_SET_PATIENT_TASK_SEARCH_VALUE,
+  payload: {
+    value,
+  },
+});
+
 export const PatientTasksSagaActions = {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
@@ -142,6 +152,7 @@ export const PatientTasksSagaActions = {
   quickAddPatientTask,
   patientTasksFilterChange,
   initalizeSavedFilters,
+  setPatientTaskSearch,
 };
 
 function* getPatientLists() {
@@ -390,6 +401,10 @@ function* doInitializeSavedFiltersForPatient() {
   );
 }
 
+function* doSetPatientTaskSearch({ payload }) {
+  yield put({ type: SET_PATIENT_TASK_SEARCH_VALUE, payload });
+}
+
 export default function* watchPatientTasks() {
   yield takeLatest(
     DO_FETCH_STATS_FOR_PATIENT_TASKS,
@@ -415,4 +430,5 @@ export default function* watchPatientTasks() {
     DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
     doInitializeSavedFiltersForPatient,
   );
+  yield takeLatest(DO_SET_PATIENT_TASK_SEARCH_VALUE, doSetPatientTaskSearch);
 }

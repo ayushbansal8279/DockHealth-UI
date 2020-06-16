@@ -11,6 +11,7 @@ import { PatientTasksSagaActions } from 'sagas/patient-tasks';
 import {
   patientTasksStateSelector,
   patientListHasTasksSelector,
+  patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
@@ -30,6 +31,7 @@ const PatientDetailsView = ({
   megaFilter,
   hasTasks,
   patientTasksSagaActions,
+  taskSearch,
 }) => {
   const navigateToTab = tabName => {
     hashHistory.push(
@@ -39,7 +41,10 @@ const PatientDetailsView = ({
     );
   };
 
-  const { patientTasksFilterChange } = patientTasksSagaActions;
+  const {
+    patientTasksFilterChange,
+    setPatientTaskSearch,
+  } = patientTasksSagaActions;
 
   return (
     <>
@@ -50,9 +55,9 @@ const PatientDetailsView = ({
         printData={{}}
         openTasksAmount={incompleteTasksCount}
         completedTasksAmount={completeTasksCount}
-        onSearchChange={() => {}}
+        onSearchChange={setPatientTaskSearch}
         showNotifications={false}
-        searchValue={null}
+        searchValue={taskSearch}
         onSelectFilters={patientTasksFilterChange}
         showMembers={false}
         megaFilter={megaFilter}
@@ -78,6 +83,7 @@ const mapStateToProps = state => ({
   patientTasks: patientTasksStateSelector(state),
   megaFilter: megaFilterSelector(state),
   hasTasks: patientListHasTasksSelector(state),
+  taskSearch: patientTaskSearchSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);
