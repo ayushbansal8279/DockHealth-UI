@@ -6,7 +6,6 @@ import {
   select,
   all,
   takeEvery,
-  debounce,
 } from 'redux-saga/effects';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskApi from 'api/task-api';
@@ -431,5 +430,5 @@ export default function* watchPatientTasks() {
     DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
     doInitializeSavedFiltersForPatient,
   );
-  yield debounce(200, DO_SET_PATIENT_TASK_SEARCH_VALUE, doSetPatientTaskSearch);
+  yield takeLatest(DO_SET_PATIENT_TASK_SEARCH_VALUE, doSetPatientTaskSearch);
 }
