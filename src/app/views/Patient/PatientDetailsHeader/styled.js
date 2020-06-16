@@ -67,6 +67,7 @@ export const PatientDetailsInformationContainer = styled.div`
 export const PatientName = styled.div`
   font-weight: ${fontWeights.bold};
   text-transform: uppercase;
+  position: relative;
 `;
 
 export const PatientInfo = styled.div`
@@ -92,4 +93,11 @@ export const PatientDetails = styled.div`
   display: flex;
   align-items: center;
   margin-top: ${spacing.small};
+`;
+
+export const NavigationBackIcon = styled.img`
+  position: absolute;
+  left: -${spacing.regularPlus};
+  top: 50%;
+  transform: translateY(-50%);
 `;

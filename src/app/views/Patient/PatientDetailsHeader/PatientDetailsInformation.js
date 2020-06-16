@@ -1,11 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router';
 import moment from 'moment';
+import ArrowLeftIcon from 'img/arrow-left.svg';
 import {
   PatientDetailsInformationContainer,
   PatientName,
   PatientInfo,
   PatientInfoDivider,
   PatientDetails,
+  NavigationBackIcon,
 } from './styled';
 
 const PatientDetailsInformation = ({
@@ -20,7 +23,12 @@ const PatientDetailsInformation = ({
   gender,
 }) => (
   <PatientDetailsInformationContainer>
-    <PatientName>{[firstName, middleName, lastName].join(' ')}</PatientName>
+    <PatientName>
+      <Link to="/patients">
+        <NavigationBackIcon src={ArrowLeftIcon} />
+      </Link>
+      {[firstName, middleName, lastName].join(' ')}
+    </PatientName>
     <PatientDetails>
       {dob && gender && (
         <>
