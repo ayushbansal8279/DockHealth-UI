@@ -14,11 +14,12 @@ import {
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import PatientEmptyList from './PatientEmptyList/PatientEmptyList';
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
-    const filteredTasks = currentValue.tasks.filter(task =>
-      task.description.toLowerCase().includes(searchValue.toLowerCase()),
+    const filteredTasks = currentValue.tasks.filter(({ description }) =>
+      description.toLowerCase().includes(searchValue.toLowerCase()),
     );
     if (filteredTasks.length === 0) return accumulator;
 
@@ -48,9 +49,14 @@ const PatientTasksListView = ({
   } = patientTasksSagaActions;
 
   const renderEmptyListView = () => {
-    if (taskSearch) return <div>No results were found for your search</div>;
+    if (taskSearch)
+      return (
+        <PatientEmptyList>
+          No results were found for your search
+        </PatientEmptyList>
+      );
 
-    return <div>This patient has no tasks</div>;
+    return <PatientEmptyList>This patient has no tasks</PatientEmptyList>;
   };
 
   const handleToggleTaskStatus = task => {
@@ -75,7 +81,7 @@ const PatientTasksListView = ({
     : patientLists;
 
   return filteredLists?.length > 0
-    ? patientLists.map(list => (
+    ? filteredLists.map(list => (
         <TaskListDetailsDropdown
           key={list.taskListIdentifier}
           list={list}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -11,7 +11,6 @@ import { PatientTasksSagaActions } from 'sagas/patient-tasks';
 import {
   patientTasksStateSelector,
   patientListHasTasksSelector,
-  patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
@@ -31,8 +30,8 @@ const PatientDetailsView = ({
   megaFilter,
   hasTasks,
   patientTasksSagaActions,
-  taskSearch,
 }) => {
+  const [searchValue, setSearchValue] = useState(null);
   const navigateToTab = tabName => {
     hashHistory.push(
       `/patient/${patientIdentifier}${
@@ -46,6 +45,11 @@ const PatientDetailsView = ({
     setPatientTaskSearch,
   } = patientTasksSagaActions;
 
+  const handleSearchValueChange = value => {
+    setSearchValue(value);
+    setPatientTaskSearch(value);
+  };
+
   return (
     <>
       <PatientDetailsHeader />
@@ -55,9 +59,9 @@ const PatientDetailsView = ({
         printData={{}}
         openTasksAmount={incompleteTasksCount}
         completedTasksAmount={completeTasksCount}
-        onSearchChange={setPatientTaskSearch}
+        onSearchChange={handleSearchValueChange}
         showNotifications={false}
-        searchValue={taskSearch}
+        searchValue={searchValue}
         onSelectFilters={patientTasksFilterChange}
         showMembers={false}
         megaFilter={megaFilter}
@@ -83,7 +87,6 @@ const mapStateToProps = state => ({
   patientTasks: patientTasksStateSelector(state),
   megaFilter: megaFilterSelector(state),
   hasTasks: patientListHasTasksSelector(state),
-  taskSearch: patientTaskSearchSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);
