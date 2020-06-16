@@ -97,6 +97,11 @@ const PatientTasksListView = ({
           updateDueDate={updatePatientTaskDueDate}
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
+          // connect to saga
+          cancelInviteToTaskList={() => {}}
+          removeUserFromTaskList={() => {}}
+          inviteUserToTaskList={() => {}}
+          changeUserRoleForList={() => {}}
         />
       ))
     : renderEmptyListView();

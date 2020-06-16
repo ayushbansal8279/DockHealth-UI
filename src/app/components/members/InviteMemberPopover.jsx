@@ -16,6 +16,10 @@ const InviteMemberPopover = ({
   closeMemberPopover,
   taskList,
   members,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const [isInviting, setInviting, unsetInviting] = useBoolean(false);
 
@@ -48,6 +52,10 @@ const InviteMemberPopover = ({
           isAdmin={isAdmin}
           currentUser={currentUser}
           taskList={taskList}
+          cancelInviteToTaskList={cancelInviteToTaskList}
+          removeUserFromTaskList={removeUserFromTaskList}
+          inviteUserToTaskList={inviteUserToTaskList}
+          changeUserRoleForList={changeUserRoleForList}
         />
       )}
     </AddMemberPopover>
@@ -58,6 +66,10 @@ export const InviteMemberPopoverWithButton = ({
   size = 54,
   taskList,
   members,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const addMemberButtonReference = useRef(null);
   const addMemberButtonStyles = useAddMemberButtonStyles({ size });
@@ -84,6 +96,10 @@ export const InviteMemberPopoverWithButton = ({
         closeMemberPopover={closeMemberPopover}
         taskList={taskList}
         members={members}
+        cancelInviteToTaskList={cancelInviteToTaskList}
+        removeUserFromTaskList={removeUserFromTaskList}
+        inviteUserToTaskList={inviteUserToTaskList}
+        changeUserRoleForList={changeUserRoleForList}
       />
     </>
   );

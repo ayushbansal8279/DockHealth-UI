@@ -9,14 +9,6 @@ import { List, ListItem } from '@material-ui/core';
 import * as TaskListApi from 'api/tasklist-api';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { isEmpty, prop, sortBy, uniqBy } from 'ramda';
-import { useDispatch } from 'react-redux';
-import {
-  cancelInviteToTaskList,
-  changeUserRoleForList,
-  // invitePersonToTaskList,
-  inviteUserToTaskList,
-  removeUserFromTaskList,
-} from 'actions/tasklist-actions';
 import useBoolean from 'hooks/useBoolean';
 import TickIcon from 'img/tick-icon';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -57,51 +49,37 @@ const getFormattedMemberRole = ({ memberRole, invitationPending }) => {
   }
 };
 
-const inviteUserMethod = ({
-  closeItemPopover,
-  dispatch,
-  member,
-  taskListIdentifier,
-}) => () => {
-  inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(dispatch);
-  closeItemPopover();
-};
-
 const getMemberItemPopoverData = ({
-  dispatch,
   invitationPending,
-  isSignedUp,
   isUserListMember,
   member,
   taskListIdentifier,
   closeItemPopover,
   notInTaskList,
+  inviteUserToTaskList,
+  cancelInviteToTaskList,
+  changeUserRoleForList,
+  removeUserFromTaskList,
 }) => {
   if (notInTaskList) {
     return {
-      topButtonOnClick: inviteUserMethod({
-        closeItemPopover,
-        dispatch,
-        isSignedUp,
-        member,
-        taskListIdentifier,
-      }),
+      topButtonOnClick: () => {
+        inviteUserToTaskList(taskListIdentifier, member?.userIdentifier);
+        closeItemPopover();
+      },
       topButtonLabel: 'Invite to list',
     };
   }
 
   if (invitationPending) {
     return {
-      topButtonOnClick: inviteUserMethod({
-        closeItemPopover,
-        dispatch,
-        isSignedUp,
-        member,
-        taskListIdentifier,
-      }),
+      topButtonOnClick: () => {
+        inviteUserToTaskList(taskListIdentifier, member?.userIdentifier);
+        closeItemPopover();
+      },
       topButtonLabel: 'Resend invitation',
       bottomButtonOnClick: () => {
-        cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
+        cancelInviteToTaskList(taskListIdentifier, member?.email);
         closeItemPopover();
       },
       bottomButtonLabel: 'Cancel invitation',
@@ -114,13 +92,13 @@ const getMemberItemPopoverData = ({
         taskListIdentifier,
         member,
         isUserListMember ? 'ADMIN' : 'MEMBER',
-      )(dispatch);
+      );
 
       closeItemPopover();
     },
     topButtonLabel: isUserListMember ? 'Make an admin' : 'Remove as admin',
     bottomButtonOnClick: () => {
-      removeUserFromTaskList(taskListIdentifier, member)(dispatch);
+      removeUserFromTaskList(taskListIdentifier, member);
       closeItemPopover();
     },
     bottomButtonLabel: 'Remove from list',
@@ -132,9 +110,12 @@ const MemberItemElement = ({
   currentUser,
   taskList,
   notInTaskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const moreIconButtonReference = useRef(null);
-  const dispatch = useDispatch();
   const invitationPending = member.status === 'PENDING';
 
   const [isItemPopoverOpen, openItemPopover, closeItemPopover] = useBoolean(
@@ -175,7 +156,6 @@ const MemberItemElement = ({
     bottomButtonOnClick,
     bottomButtonLabel,
   } = getMemberItemPopoverData({
-    dispatch,
     invitationPending,
     isSignedUp,
     isUserListMember,
@@ -183,6 +163,10 @@ const MemberItemElement = ({
     taskListIdentifier,
     closeItemPopover,
     notInTaskList,
+    inviteUserToTaskList,
+    cancelInviteToTaskList,
+    changeUserRoleForList,
+    removeUserFromTaskList,
   });
 
   const isCurrentUser = currentUser?.userIdentifier === member?.userIdentifier;
@@ -193,30 +177,24 @@ const MemberItemElement = ({
     }
 
     if (notInTaskList) {
-      inviteUserMethod({
-        closeItemPopover,
-        dispatch,
-        isSignedUp,
-        member,
-        taskListIdentifier,
-      })();
+      inviteUserToTaskList(taskListIdentifier, member?.userIdentifier);
     } else {
       if (invitationPending) {
-        cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
-      } else {
-        removeUserFromTaskList(taskListIdentifier, member)(dispatch);
+        cancelInviteToTaskList(taskListIdentifier, member?.email);
+        removeUserFromTaskList(taskListIdentifier, member);
       }
       closeItemPopover();
     }
   }, [
+    inviteUserToTaskList,
+    cancelInviteToTaskList,
+    removeUserFromTaskList,
     closeItemPopover,
-    dispatch,
     invitationPending,
-    isCurrentUser,
-    isSignedUp,
-    member,
-    notInTaskList,
     taskListIdentifier,
+    member,
+    isCurrentUser,
+    notInTaskList,
   ]);
 
   const hasUserAcceptedInvitation = isSignedUp && !invitationPending;
@@ -288,24 +266,6 @@ const MemberItemElement = ({
   );
 };
 
-const renderMemberItemElement = ({
-  currentUser,
-  taskList,
-  membersNotInTaskListIdentifiers,
-}) => member => {
-  const memberIdentifier = member?.userIdentifier ?? member?.email;
-
-  return (
-    <MemberItemElement
-      key={memberIdentifier}
-      member={member}
-      currentUser={currentUser}
-      taskList={taskList}
-      notInTaskList={membersNotInTaskListIdentifiers.includes(memberIdentifier)}
-    />
-  );
-};
-
 const memberFilterIteratee = ({ searchTerm }) => ({ firstName, lastName }) =>
   searchTerm
     ? firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -351,6 +311,10 @@ const NotInvitingContent = ({
   isAdmin,
   currentUser,
   taskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [membersNotInTaskList, setMembersNotInTaskList] = useState([]);
@@ -405,13 +369,25 @@ const NotInvitingContent = ({
       {!isFetchingMembers ? (
         <>
           <MembersContainer>
-            {allMembersSorted.map(
-              renderMemberItemElement({
-                currentUser,
-                taskList,
-                membersNotInTaskListIdentifiers,
-              }),
-            )}
+            {allMembersSorted.map(member => {
+              const memberIdentifier = member?.userIdentifier ?? member?.email;
+
+              return (
+                <MemberItemElement
+                  key={memberIdentifier}
+                  member={member}
+                  currentUser={currentUser}
+                  taskList={taskList}
+                  notInTaskList={membersNotInTaskListIdentifiers.includes(
+                    memberIdentifier,
+                  )}
+                  cancelInviteToTaskList={cancelInviteToTaskList}
+                  removeUserFromTaskList={removeUserFromTaskList}
+                  inviteUserToTaskList={inviteUserToTaskList}
+                  changeUserRoleForList={changeUserRoleForList}
+                />
+              );
+            })}
             {isEmpty(allMembersSorted) && (
               <NoMembersElement>
                 <MontserratTypography variant="h4">

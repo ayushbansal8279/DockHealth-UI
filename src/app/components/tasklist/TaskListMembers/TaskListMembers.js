@@ -24,7 +24,15 @@ const getMembersNames = ({ members }) =>
     );
   });
 
-const TaskListMembers = ({ members, taskListIdentifier, limit = 4 }) => {
+const TaskListMembers = ({
+  members,
+  taskListIdentifier,
+  inviteUserToTaskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  changeUserRoleForList,
+  limit = 4,
+}) => {
   const moreMembersButtonReference = useRef(null);
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -66,6 +74,10 @@ const TaskListMembers = ({ members, taskListIdentifier, limit = 4 }) => {
         size={40}
         members={members}
         taskList={{ taskListIdentifier }}
+        cancelInviteToTaskList={cancelInviteToTaskList}
+        removeUserFromTaskList={removeUserFromTaskList}
+        inviteUserToTaskList={inviteUserToTaskList}
+        changeUserRoleForList={changeUserRoleForList}
       />
     </>
   );

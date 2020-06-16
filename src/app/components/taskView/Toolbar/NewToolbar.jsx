@@ -14,7 +14,6 @@ import UniversalTooltip from 'components/common/UniversalTooltip';
 import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
-import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
 import Member from 'components/members/Member';
 import { showGlobalAlert } from 'alert/actions';
 import MorePopover from '../Toolbar.MorePopover';
@@ -26,6 +25,7 @@ import {
   SearchWrapper,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
+import TaskListInviteMemberContainer from '../TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -197,7 +197,7 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                <InviteMemberPopoverWithButton
+                <TaskListInviteMemberContainer
                   size={40}
                   members={members}
                   taskList={taskList}
