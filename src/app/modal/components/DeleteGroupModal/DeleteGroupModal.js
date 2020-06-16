@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-import File from 'img/modals/file';
+import Folder from 'img/modals/folder';
 import { redTheme } from '../../themes/red-theme';
 
 import {
@@ -10,15 +10,16 @@ import {
   ModalMainIcon,
   ButtonsContainer,
   ConfirmButton,
+  CancelButton,
 } from '../styled';
 
 const DeleteGroupModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={File} alt="file" />
+        <ModalMainIcon src={Folder} alt="Task Group" />
         <Typography color="textPrimary" variant="h2">
-          Delete group
+          DELETE GROUP
         </Typography>
         <Spacing vertical={5} />
         <Typography variant="body1">
@@ -27,9 +28,9 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
         </Typography>
         <Spacing vertical={4} />
         <ButtonsContainer>
-          <Button variant="outlined" type="button" onClick={closeModal}>
+          <CancelButton variant="outlined" type="button" onClick={closeModal}>
             No, do not delete
-          </Button>
+          </CancelButton>
           <Spacing horizontal={3} />
           <ConfirmButton variant="contained" type="button" onClick={confirm}>
             Yes

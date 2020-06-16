@@ -6,7 +6,7 @@ export const ModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 420px;
+  width: 480px;
   max-width: 100vw;
   padding: ${spacing.largePlus};
   font-family: 'Roboto Condensed', sans-serif;
@@ -24,6 +24,12 @@ export const ButtonsContainer = styled.div`
   padding: 0 ${spacing.small};
 `;
 
+export const CancelButton = styled(Button)`
+  min-width: 170px;
+  flex: 1;
+`;
+
 export const ConfirmButton = styled(Button)`
+  min-width: 170px;
   flex: 1;
 `;

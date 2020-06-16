@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import CircleCompletedGrey from 'img/circle-completed-grey';
@@ -10,6 +10,7 @@ import {
   ModalMainIcon,
   ButtonsContainer,
   ConfirmButton,
+  CancelButton,
 } from '../styled';
 
 const CompleteAllTasksModal = ({ closeModal, confirm }) => {
@@ -28,9 +29,9 @@ const CompleteAllTasksModal = ({ closeModal, confirm }) => {
         </Typography>
         <Spacing vertical={4} />
         <ButtonsContainer>
-          <Button variant="outlined" type="button" onClick={closeModal}>
+          <CancelButton variant="outlined" type="button" onClick={closeModal}>
             No, don&apos;t complete
-          </Button>
+          </CancelButton>
           <Spacing horizontal={3} />
           <ConfirmButton variant="contained" type="button" onClick={confirm}>
             Yes, complete all
