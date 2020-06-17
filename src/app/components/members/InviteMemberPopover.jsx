@@ -62,15 +62,7 @@ const InviteMemberPopover = ({
   );
 };
 
-export const InviteMemberPopoverWithButton = ({
-  size = 54,
-  taskList,
-  members,
-  cancelInviteToTaskList,
-  removeUserFromTaskList,
-  inviteUserToTaskList,
-  changeUserRoleForList,
-}) => {
+export const InviteMemberButton = ({ size = 54, children }) => {
   const addMemberButtonReference = useRef(null);
   const addMemberButtonStyles = useAddMemberButtonStyles({ size });
 
@@ -90,17 +82,11 @@ export const InviteMemberPopoverWithButton = ({
           +
         </IconButton>
       </div>
-      <InviteMemberPopover
-        addMemberButtonReference={addMemberButtonReference}
-        isMemberPopoverOpen={isMemberPopoverOpen}
-        closeMemberPopover={closeMemberPopover}
-        taskList={taskList}
-        members={members}
-        cancelInviteToTaskList={cancelInviteToTaskList}
-        removeUserFromTaskList={removeUserFromTaskList}
-        inviteUserToTaskList={inviteUserToTaskList}
-        changeUserRoleForList={changeUserRoleForList}
-      />
+      {children({
+        isMemberPopoverOpen,
+        closeMemberPopover,
+        addMemberButtonReference,
+      })}
     </>
   );
 };

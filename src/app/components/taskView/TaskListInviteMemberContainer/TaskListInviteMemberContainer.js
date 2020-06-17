@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
+import InviteMemberPopover from 'components/members/InviteMemberPopover';
 import {
   cancelInviteToTaskList,
   changeUserRoleForList,
@@ -23,4 +23,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(InviteMemberPopoverWithButton);
+)(InviteMemberPopover);

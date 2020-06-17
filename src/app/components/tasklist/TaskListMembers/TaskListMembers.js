@@ -4,7 +4,9 @@ import { splitAt } from 'ramda';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltip from 'components/common/UniversalTooltip';
 import Member from 'components/members/Member';
-import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
+import InviteMemberPopover, {
+  InviteMemberButton,
+} from 'components/members/InviteMemberPopover';
 import useBoolean from 'hooks/useBoolean';
 
 import { MoreMembersButtonContainer } from './styled';
@@ -70,15 +72,19 @@ const TaskListMembers = ({
         </>
       )}
       <Spacing horizontal={2} />
-      <InviteMemberPopoverWithButton
-        size={40}
-        members={members}
-        taskList={{ taskListIdentifier }}
-        cancelInviteToTaskList={cancelInviteToTaskList}
-        removeUserFromTaskList={removeUserFromTaskList}
-        inviteUserToTaskList={inviteUserToTaskList}
-        changeUserRoleForList={changeUserRoleForList}
-      />
+      <InviteMemberButton size={40}>
+        {props => (
+          <InviteMemberPopover
+            {...props}
+            members={members}
+            taskList={{ taskListIdentifier }}
+            cancelInviteToTaskList={cancelInviteToTaskList}
+            removeUserFromTaskList={removeUserFromTaskList}
+            inviteUserToTaskList={inviteUserToTaskList}
+            changeUserRoleForList={changeUserRoleForList}
+          />
+        )}
+      </InviteMemberButton>
     </>
   );
 };

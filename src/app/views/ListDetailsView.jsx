@@ -115,9 +115,6 @@ class Home extends Component {
             'ALL',
           );
         }
-        taskListActions.getOrganizationUsersNotInTaskList(
-          nextProps.routeParams.taskListIdentifier,
-        );
 
         // Start with no selected tasks
         actions.storeAsCurrentTask(null);

@@ -15,6 +15,7 @@ import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import Member from 'components/members/Member';
+import { InviteMemberButton } from 'components/members/InviteMemberPopover';
 import { showGlobalAlert } from 'alert/actions';
 import MorePopover from '../Toolbar.MorePopover';
 import {
@@ -197,11 +198,15 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                <TaskListInviteMemberContainer
-                  size={40}
-                  members={members}
-                  taskList={taskList}
-                />
+                <InviteMemberButton size={40}>
+                  {props => (
+                    <TaskListInviteMemberContainer
+                      members={members}
+                      taskList={taskList}
+                      {...props}
+                    />
+                  )}
+                </InviteMemberButton>
               </>
             )}
           </HeaderActionButtonsGrid>

@@ -64,7 +64,7 @@ const getMemberItemPopoverData = ({
   if (notInTaskList) {
     return {
       topButtonOnClick: () => {
-        inviteUserToTaskList(taskListIdentifier, member?.userIdentifier);
+        inviteUserToTaskList(taskListIdentifier, member);
         closeItemPopover();
       },
       topButtonLabel: 'Invite to list',
@@ -74,7 +74,7 @@ const getMemberItemPopoverData = ({
   if (invitationPending) {
     return {
       topButtonOnClick: () => {
-        inviteUserToTaskList(taskListIdentifier, member?.userIdentifier);
+        inviteUserToTaskList(taskListIdentifier, member);
         closeItemPopover();
       },
       topButtonLabel: 'Resend invitation',
@@ -98,7 +98,7 @@ const getMemberItemPopoverData = ({
     },
     topButtonLabel: isUserListMember ? 'Make an admin' : 'Remove as admin',
     bottomButtonOnClick: () => {
-      removeUserFromTaskList(taskListIdentifier, member);
+      removeUserFromTaskList(taskListIdentifier, member.userIdentifier);
       closeItemPopover();
     },
     bottomButtonLabel: 'Remove from list',
@@ -177,11 +177,11 @@ const MemberItemElement = ({
     }
 
     if (notInTaskList) {
-      inviteUserToTaskList(taskListIdentifier, member?.userIdentifier);
+      inviteUserToTaskList(taskListIdentifier, member);
     } else {
       if (invitationPending) {
         cancelInviteToTaskList(taskListIdentifier, member?.email);
-        removeUserFromTaskList(taskListIdentifier, member);
+        removeUserFromTaskList(taskListIdentifier, member.userIdentifier);
       }
       closeItemPopover();
     }
@@ -318,27 +318,28 @@ const NotInvitingContent = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [membersNotInTaskList, setMembersNotInTaskList] = useState([]);
-  const [isFetchingMembers, setIsFetchingMembers] = useState(false);
+  const [membersInitialized, setMembersInitialized] = useState(false);
+
+  const { taskListIdentifier } = taskList;
 
   const fetchMembersNotInTaskList = useCallback(
-    taskListIdentifier => {
-      setIsFetchingMembers(true);
-      TaskListApi.getOrganizationUsersNotInTaskList(taskListIdentifier)
+    listId => {
+      TaskListApi.getOrganizationUsersNotInTaskList(listId)
         .then(users => {
           setMembersNotInTaskList(users);
-          setIsFetchingMembers(false);
+          setMembersInitialized(true);
         })
         .catch(() => {
-          setIsFetchingMembers(false);
+          setMembersInitialized(true);
+          setMembersNotInTaskList([]);
         });
-      setMembersNotInTaskList([]);
     },
     [setMembersNotInTaskList],
   );
 
   useEffect(() => {
-    fetchMembersNotInTaskList(taskList.taskListIdentifier);
-  }, [fetchMembersNotInTaskList, taskList]);
+    fetchMembersNotInTaskList(taskListIdentifier);
+  }, [fetchMembersNotInTaskList, taskListIdentifier, members]);
 
   const { allMembersSorted, membersNotInTaskListIdentifiers } = useMemo(
     () =>
@@ -366,7 +367,7 @@ const NotInvitingContent = ({
           value={searchTerm}
         />
       </HeaderSearchContainer>
-      {!isFetchingMembers ? (
+      {membersInitialized ? (
         <>
           <MembersContainer>
             {allMembersSorted.map(member => {

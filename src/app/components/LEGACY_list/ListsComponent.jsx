@@ -6,19 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
   clearMembersInTaskList,
-  clearMembersNotInTaskList,
   getMembersByTaskListId,
-  getOrganizationUsersNotInTaskList,
 } from 'actions/tasklist-actions';
 import useBoolean from 'hooks/useBoolean';
 import Loader from 'components/common/Loader/Loader';
 import ListPopover from 'components/common/ListPopover';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
-import InviteMemberPopover from '../members/InviteMemberPopover';
 
 const RowContainer = styled.div`
   align-items: center;
@@ -217,20 +215,18 @@ const ListsComponent = props => {
     [currentListIdentifier, taskLists],
   );
 
-  const { members, membersNotInTaskList } = useSelector(store => ({
+  const { members } = useSelector(store => ({
     members: store.taskListState.tasklistmembers,
-    membersNotInTaskList: store.taskListState.orgusersnotintasklist,
   }));
 
   const onInviteMenuItemClick = useCallback(() => {
     setMembersLoading();
     clearMembersInTaskList()(dispatch);
-    clearMembersNotInTaskList()(dispatch);
 
-    Promise.all([
-      getMembersByTaskListId(currentListIdentifier, 'ALL')(dispatch),
-      getOrganizationUsersNotInTaskList(currentListIdentifier)(dispatch),
-    ])
+    getMembersByTaskListId(
+      currentListIdentifier,
+      'ALL',
+    )(dispatch)
       .then(() => {
         unsetMembersLoading();
         openInvitePopover();
@@ -327,13 +323,12 @@ const ListsComponent = props => {
           onClick,
         }),
       )}
-      <InviteMemberPopover
+      <TaskListInviteMemberContainer
         addMemberButtonReference={currentListMenuAnchor}
         isMemberPopoverOpen={isInvitePopoverOpen}
         closeMemberPopover={closeInvitePopover}
         taskList={currentList}
         members={members ?? []}
-        membersNotInTaskList={membersNotInTaskList ?? []}
       />
       <ListPopover
         anchorEl={currentListMenuAnchor?.current}

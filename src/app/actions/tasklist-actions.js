@@ -1,7 +1,9 @@
 import * as TaskListApi from 'api/tasklist-api';
 import * as UserApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
-import * as ActionTypes from './action-types';
+import * as AlertActions from 'alert/actions';
+import * as ActionTypes from 'actions/action-types';
+import AlertMessages from '../alert/AlertMessages';
 
 export function getTaskListForUser() {
   return dispatch => {
@@ -119,29 +121,6 @@ export function invitePersonToTaskList(
       });
 }
 
-export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
-  return dispatch =>
-    TaskListApi.getOrganizationUsersNotInTaskList(taskListIdentifier)
-      .then(users => {
-        dispatch({
-          type: ActionTypes.GET_ORGUSERSNOTINTASKLIST_SUCCESS,
-          users,
-        });
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
-export function clearMembersNotInTaskList() {
-  return dispatch => {
-    dispatch({
-      type: ActionTypes.GET_ORGUSERSNOTINTASKLIST_SUCCESS,
-      users: [],
-    });
-  };
-}
-
 export function clearMembersInTaskList() {
   return dispatch => {
     dispatch({
@@ -151,15 +130,12 @@ export function clearMembersInTaskList() {
   };
 }
 
-export const inviteUserToTaskList = (
-  taskListIdentifier,
-  userIdentifier,
-) => dispatch =>
-  TaskListApi.inviteUserToTaskList(taskListIdentifier, userIdentifier)
+export const inviteUserToTaskList = (taskListIdentifier, user) => dispatch =>
+  TaskListApi.inviteUserToTaskList(taskListIdentifier, user.userIdentifier)
     .then(() => {
       dispatch({
         type: ActionTypes.INVITE_USER_TO_TASKLIST_SUCCESS,
-        userIdentifier,
+        user,
       });
     })
     .catch(error => {
@@ -228,6 +204,7 @@ export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
           markedUser,
           role,
         });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(error => {
         toggleAlert('Error in updating user role', 'error');
@@ -252,19 +229,16 @@ export function deleteTaskListById(taskListIdentifier) {
       });
 }
 
-export function removeUserFromTaskList(taskListIdentifier, removedUser) {
+export function removeUserFromTaskList(taskListIdentifier, removedUserId) {
   return dispatch =>
-    TaskListApi.removeUserFromTaskList(
-      taskListIdentifier,
-      removedUser.userIdentifier,
-    )
+    TaskListApi.removeUserFromTaskList(taskListIdentifier, removedUserId)
       .then(response => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
           response,
-          removedUser,
+          removedUserId,
         });
-        toggleAlert('User removed successfully', 'success');
+        dispatch(AlertActions.showGlobalAlert('User removed successfully'));
       })
       .catch(error => {
         toggleAlert('Error in removing User from Task List', 'error');
@@ -281,7 +255,9 @@ export function cancelInviteToTaskList(taskListIdentifier, email) {
           response,
           removedUserEmail: email,
         });
-        toggleAlert('Invitation canceled successfully', 'success');
+        dispatch(
+          AlertActions.showGlobalAlert('Invitation canceled successfully'),
+        );
       })
       .catch(error => {
         toggleAlert('Error in canceling invitation', 'error');
