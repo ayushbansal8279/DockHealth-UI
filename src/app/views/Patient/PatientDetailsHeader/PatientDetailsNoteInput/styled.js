@@ -31,15 +31,16 @@ export const StyledInput = styled.input`
   border-radius: 4px;
   outline: none;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
-  width: 100%;
   margin-top: ${spacing.largePlus};
   margin-left: ${spacing.regular};
+  margin-right: ${spacing.regularPlus};
   font-sizes: ${fontSizes.smallPlus};
-  max-width: 700px; //per design
+  width: 100%;
 `;
 
 export const InputBox = styled.div`
+  padding-left: ${spacing.largePlus};
+  max-width: 716px; // per design
   display: flex;
   align-items: baseline;
-  width: 100%;
 `;

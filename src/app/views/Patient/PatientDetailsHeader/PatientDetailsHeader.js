@@ -23,28 +23,11 @@ const PatientDetailsHeader = ({
   editPatientNote,
   deletePatientNote,
 }) => {
-  const {
-    allNotes,
-    firstName,
-    lastName,
-    email,
-    phoneMobile,
-    phoneHome,
-    dob,
-    patientIdentifier,
-  } = patientDetails;
+  const { allNotes } = patientDetails;
   return (
     <PatientDetailsContainer>
       <ViewLoader isFetchingData={patientIsLoading}>
-        <PatientDetailsInformation
-          firstName={firstName}
-          lastName={lastName}
-          email={email}
-          phoneMobile={phoneMobile}
-          phoneHome={phoneHome}
-          dob={dob}
-          patientIdentifier={patientIdentifier}
-        />
+        <PatientDetailsInformation {...patientDetails} />
         <PatientDetailsNotes
           allNotes={allNotes}
           currentUser={currentUser}

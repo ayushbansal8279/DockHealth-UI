@@ -28,23 +28,28 @@ const PatientNote = ({
   }, [isEditable]);
 
   return (
-    <StyledPatientNote isEditable={isEditable} contentEditable>
+    <StyledPatientNote isEditable={isEditable}>
       <PatientNoteInformation>
         <PatientNoteDescription
           onChange={event => setUpdatedDescription(event.target.value)}
-          onKeyDown={event =>
-            event.keyCode === 13 &&
-            editPatientNote({ note: updatedDescription, patientNoteIdentifier })
-          }
+          onKeyDown={async event => {
+            if (event.keyCode === 13) {
+              await editPatientNote({
+                note: updatedDescription,
+                patientNoteIdentifier,
+              });
+              setEditableNote(null);
+            }
+          }}
           value={isEditable ? updatedDescription : description}
           disabled={!isEditable}
         />
-        <PatientNoteAuthor contentEditable={false}>
-          {firstName} {lastName} {moment(dateUpdated).format('h:mm a')}
+        <PatientNoteAuthor>
+          {firstName} {lastName} {moment(dateUpdated).format('h:mma M/DD/YY')}
         </PatientNoteAuthor>
       </PatientNoteInformation>
       {currentUserIdentifier === creatorUserIdentifier && (
-        <PatientNoteOptions contentEditable={false}>
+        <PatientNoteOptions>
           <PatientNoteOption
             onClick={() => {
               setEditableNote(isEditable ? null : patientNoteIdentifier);
