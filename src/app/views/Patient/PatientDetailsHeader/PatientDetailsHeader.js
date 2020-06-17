@@ -10,6 +10,7 @@ import {
   deletePatientNote as deletePatientNoteAction,
 } from 'sagas/patient';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
+import { openModal as openModalAction } from 'modal/actions';
 
 import PatientDetailsInformation from './PatientDetailsInformation';
 import PatientDetailsNotes from './PatientDetailsNotes/PatientDetailsNotes';
@@ -23,28 +24,12 @@ const PatientDetailsHeader = ({
   editPatientNote,
   deletePatientNote,
 }) => {
-  const {
-    allNotes,
-    firstName,
-    lastName,
-    email,
-    phoneMobile,
-    phoneHome,
-    dob,
-    patientIdentifier,
-  } = patientDetails;
+  const { allNotes } = patientDetails;
+
   return (
     <PatientDetailsContainer>
       <ViewLoader isFetchingData={patientIsLoading}>
-        <PatientDetailsInformation
-          firstName={firstName}
-          lastName={lastName}
-          email={email}
-          phoneMobile={phoneMobile}
-          phoneHome={phoneHome}
-          dob={dob}
-          patientIdentifier={patientIdentifier}
-        />
+        <PatientDetailsInformation {...patientDetails} />
         <PatientDetailsNotes
           allNotes={allNotes}
           currentUser={currentUser}
@@ -67,9 +52,27 @@ const mapDispatchToProps = {
   addPatientNote: addPatientNoteAction,
   editPatientNote: editPatientNoteAction,
   deletePatientNote: deletePatientNoteAction,
+  openModal: openModalAction,
+};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { deletePatientNote, openModal, ...restDispatchProps } = dispatchProps;
+
+  return {
+    ...restDispatchProps,
+    ...stateProps,
+    ...ownProps,
+    deletePatientNote: patientNoteIdentifier => {
+      const modalProps = {
+        confirm: () => deletePatientNote({ patientNoteIdentifier }),
+      };
+      openModal('DeleteNote', modalProps);
+    },
+  };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  mergeProps,
 )(PatientDetailsHeader);

@@ -3,6 +3,7 @@ import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAl
 import DeleteTaskModal from './components/DeleteTaskModal/DeleteTaskModal';
 import DuplicateTaskModal from './components/DuplicateTaskModal/DuplicateTaskModal';
 import DeleteListModal from './components/DeleteListModal/DeleteListModal';
+import DeleteNoteModal from './components/DeleteNoteModal/DeleteNoteModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -10,6 +11,7 @@ const MODAL_MAP = {
   DeleteTask: DeleteTaskModal,
   DuplicateTask: DuplicateTaskModal,
   DeleteList: DeleteListModal,
+  DeleteNote: DeleteNoteModal,
 };
 
 export default MODAL_MAP;

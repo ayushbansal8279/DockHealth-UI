@@ -3,49 +3,35 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
+export const Arrow = styled.img`
+  transform: ${props => props.isOpen && 'rotateX(180deg)'};
+  -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
+  padding-left: ${spacing.tiny};
+  padding-right: ${spacing.smallPlus};
+  transition: all 0.5s ease-in-out;
+`;
+
 export const PatientDetailsNotesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 800px; // per design
+  width: 716px; // per design
   padding: ${spacing.regular} 0 ${spacing.largePlus};
-  margin-left: 110px; //per design
 `;
 
-export const PatientDetailsNotesGroupContainer = styled.div`
+export const PatientDetailsNotesHeader = styled.div`
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
+  padding-left: ${spacing.giga};
+  & > span {
+    margin-right: ${spacing.tiny};
+  }
+`;
+
+export const PatientDetailsNotesListContainer = styled.div`
   display: flex;
-`;
-
-export const PatientDetailsNotesGroups = styled.div`
-  max-height: 240px;
-  overflow: scroll;
-
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-  }
-  &::-webkit-scrollbar:vertical {
-    width: 11px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    border: 2px solid white;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #fff;
-    border-radius: 8px;
-  }
-`;
-
-export const PatientDetailsNoteDate = styled.div`
-  color: ${palette.lightGrey};
-  margin-right: ${spacing.regularPlus};
-  padding: ${spacing.regular} 0 ${spacing.smallPlus};
-  width: 100px; // per design
-`;
-
-export const PatientDetailsNoteDescription = styled.div`
-  border-bottom: 1px solid ${palette.blueGrey};
-  width: 100%;
+  flex-direction: column;
+  max-height: 225px;
+  overflow-y: scroll;
 `;
 
 export const PatientNoteInformation = styled.div`
@@ -77,12 +63,15 @@ export const PatientNoteOption = styled.label`
 export const PatientNote = styled.div`
   display: flex;
   flex-direction: row;
-  padding: ${spacing.regular} ${spacing.regular} ${spacing.small};
+  padding: ${spacing.regular} ${spacing.regular};
+  margin: 0 ${spacing.regularPlus};
   justify-content: space-between;
   background-color: ${props => (props.isEditable ? '#F5F8FA' : 'white')};
+  border-bottom: 1px solid #c1ccda;
 
   &:last-child {
     margin-bottom: 0;
+    border-bottom: 0;
   }
 
   &:hover {
@@ -104,7 +93,7 @@ export const PatientNoteDescription = styled.input`
   border: none;
   background-color: transparent;
   outline: none;
-  width: 100%;
+  padding: 0;
 
   &:disabled {
     border: none;
@@ -115,13 +104,15 @@ export const PatientNoteDescription = styled.input`
 `;
 
 export const AddNotePlaceholder = styled.div`
-  color: ${palette.brightBlue};
+  color: ${palette.coolGrey2};
   text-transform: uppercase;
   font-weight: ${fontWeights.regularPlus};
-  margin-top: ${spacing.largePlus};
-  margin-left: 100px; // per design
-  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+  padding: ${spacing.regularPlus} ${spacing.large} 0;
   cursor: pointer;
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
 
   &::first-letter {
     color: ${palette.orange};

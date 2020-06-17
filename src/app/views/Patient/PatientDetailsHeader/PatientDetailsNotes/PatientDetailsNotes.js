@@ -1,43 +1,17 @@
-import React, { useState } from 'react';
-import moment from 'moment';
-import { groupBy } from 'ramda';
+import React, { useState, useRef } from 'react';
+import { Collapse } from '@material-ui/core';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import ArrowIcon from 'img/arrow';
+
 import PatientDetailsNoteInput from '../PatientDetailsNoteInput/PatientDetailsNoteInput';
 import PatientNote from './PatientNote';
 import {
+  Arrow,
   PatientDetailsNotesContainer,
-  PatientDetailsNotesGroupContainer,
-  PatientDetailsNotesGroups,
-  PatientDetailsNoteDate,
-  PatientDetailsNoteDescription,
+  PatientDetailsNotesHeader,
+  PatientDetailsNotesListContainer,
   AddNotePlaceholder,
 } from './styled';
-
-const PatientDetailsNotesGroup = ({
-  date,
-  notes,
-  setEditableNote,
-  editableNote,
-  editPatientNote,
-  deletePatientNote,
-  currentUser,
-}) => (
-  <PatientDetailsNotesGroupContainer>
-    <PatientDetailsNoteDate>{date}</PatientDetailsNoteDate>
-    <PatientDetailsNoteDescription>
-      {notes?.map(note => (
-        <PatientNote
-          {...note}
-          setEditableNote={setEditableNote}
-          isEditable={note.patientNoteIdentifier === editableNote}
-          editPatientNote={editPatientNote}
-          deletePatientNote={deletePatientNote}
-          currentUser={currentUser}
-        />
-      ))}
-    </PatientDetailsNoteDescription>
-  </PatientDetailsNotesGroupContainer>
-);
 
 const AddPatientNote = () => (
   <MontserratTypography>
@@ -52,33 +26,47 @@ const PatientDetailsNotes = ({
   editPatientNote,
   deletePatientNote,
 }) => {
+  const [isOpenedNotes, setIsOpenedNotes] = useState(true);
   const [editableNote, setEditableNote] = useState(null);
-
-  const groupedNotes = groupBy(
-    ({ dateCreated }) => moment(dateCreated).format('M/DD/YYYY'),
-    allNotes ?? [],
-  );
+  const listReference = useRef(null);
 
   return (
     <PatientDetailsNotesContainer>
-      {allNotes?.length > 0 && (
-        <PatientDetailsNotesGroups>
-          {Object.keys(groupedNotes)?.map(key => (
-            <PatientDetailsNotesGroup
-              key={key}
-              date={key}
-              notes={groupedNotes[key]}
+      <PatientDetailsNotesHeader>
+        <span>NOTES</span>
+        {allNotes?.length > 0 && (
+          <Arrow
+            alt="arrow"
+            isOpen={isOpenedNotes}
+            onClick={() => setIsOpenedNotes(!isOpenedNotes)}
+            src={ArrowIcon}
+          />
+        )}
+      </PatientDetailsNotesHeader>
+      <Collapse timeout={150} in={isOpenedNotes}>
+        <PatientDetailsNotesListContainer ref={listReference}>
+          {allNotes?.map(note => (
+            <PatientNote
+              {...note}
               setEditableNote={setEditableNote}
-              editableNote={editableNote}
+              isEditable={note.patientNoteIdentifier === editableNote}
               editPatientNote={editPatientNote}
               deletePatientNote={deletePatientNote}
               currentUser={currentUser}
             />
           ))}
-        </PatientDetailsNotesGroups>
-      )}
+        </PatientDetailsNotesListContainer>
+      </Collapse>
+
       <PatientDetailsNoteInput
-        onEnterClick={value => addPatientNote({ note: value })}
+        onEnterClick={value => {
+          addPatientNote({ note: value });
+          listReference.current.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth',
+          });
+        }}
         closeOnEnter
         placeholder="Leave a note"
         currentUser={currentUser}
