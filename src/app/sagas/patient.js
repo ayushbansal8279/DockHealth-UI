@@ -10,6 +10,7 @@ import {
   FETCH_PATIENT_SUCCESS,
   FETCH_PATIENT_ERROR,
 } from 'actions/action-types';
+import { closeModal } from 'modal/actions';
 import { locationParametersSelector } from '../location/selectors';
 
 export const DO_GET_PATIENT = 'DO_GET_PATIENT';
@@ -98,6 +99,7 @@ export function* doDeletePatientNote(payload) {
   try {
     const { patientIdentifier } = yield select(locationParametersSelector);
     yield call(deletePatientNoteApi, patientNoteIdentifier);
+    yield put(closeModal());
 
     yield put({ type: FETCH_PATIENT });
     const details = yield call(getPatientById, patientIdentifier);
@@ -107,6 +109,8 @@ export function* doDeletePatientNote(payload) {
       details,
     });
   } catch (error) {
+    yield put(closeModal());
+
     yield put({ type: FETCH_PATIENT_ERROR, error });
   }
 }

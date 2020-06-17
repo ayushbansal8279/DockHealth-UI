@@ -22,6 +22,10 @@ export const ButtonsContainer = styled.div`
   display: flex;
   width: 100%;
   padding: 0 ${spacing.small};
+
+  & > button {
+    width: 165px; // per design
+  }
 `;
 
 export const ConfirmButton = styled(Button)`
