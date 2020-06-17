@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { Link, hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import {
   getUserAvatar,
@@ -12,6 +12,8 @@ import ConfirmationDialog from 'components/modals/ConfirmationDialog';
 import { formatPhoneNumber, noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import ArrowLeftIcon from 'img/arrow-left';
+import Spacing from 'components/common/Spacing';
 import {
   ArchivePersonButton,
   InfoPanelContainer,
@@ -86,6 +88,10 @@ const PersonInfoPanel = ({ personData }) => {
 
   return (
     <InfoPanelContainer>
+      <Link to="/people">
+        <img src={ArrowLeftIcon} alt="back-navigation" />
+      </Link>
+      <Spacing horizontal={3} />
       <Avatar color={palette.unknownGrey5} size={50}>
         {avatarContent}
       </Avatar>
