@@ -362,6 +362,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                 <CommentSection
                   parentFormSubmit={parentFormSubmit}
                   taskDrawerFocusField={taskDrawerFocusField}
+                  modalActions={modalActions}
                 />
               </Grid>
               {newTaskFlag && (

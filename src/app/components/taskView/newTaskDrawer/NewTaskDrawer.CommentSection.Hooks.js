@@ -10,7 +10,7 @@ import {
 } from 'actions/task-actions';
 import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
 
-const initializeCommentSectionHooks = () => {
+const initializeCommentSectionHooks = ({ modalActions }) => {
   const { selectedTask, currentUser } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
     currentUser: store.userState.userProfile,
@@ -60,9 +60,10 @@ const initializeCommentSectionHooks = () => {
         });
 
         setGroupedComments(newGroupedComments);
+        modalActions.closeModal();
       });
     },
-    [comments, dispatch, selectedTask],
+    [comments, dispatch, selectedTask, modalActions],
   );
 
   const boundUpdateComment = useCallback(
@@ -89,11 +90,18 @@ const initializeCommentSectionHooks = () => {
     [comments, currentUser, dispatch, selectedTask],
   );
 
+  const openDeleteCommentConfirmationModal = comment => {
+    const modalProps = {
+      confirm: () => boundRemoveComment(comment),
+    };
+    modalActions.openModal('DeleteComment', modalProps);
+  };
+
   return {
     // currentTaskListMemberData,
     currentUser,
     groupedComments,
-    removeComment: boundRemoveComment,
+    removeComment: openDeleteCommentConfirmationModal,
     updateComment: boundUpdateComment,
     addComment: boundAddComment,
   };
