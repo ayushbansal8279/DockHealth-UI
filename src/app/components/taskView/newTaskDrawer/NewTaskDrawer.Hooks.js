@@ -1,6 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import moment from 'moment';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -32,15 +38,15 @@ import { noop } from '../../../helpers/utility-functions';
 // const REQUIRED_MESSAGE = 'This field is required';
 // const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-// const TIME_12H_FORMAT = 'h:mm A';
-const TIME_24H_FORMAT = 'HH:mm';
+const TIME_12H_FORMAT = 'hh:mm A';
+// const TIME_24H_FORMAT = 'HH:mm';
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
 const validationSchema = object().shape({
   description: string().required('Task description is required'),
   // dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
-  // excludeEmptyString: true,
-  // message: 'Time should be provided in HH:MM PM/AM format',
+  //   excludeEmptyString: true,
+  //   message: 'Time should be provided in HH:MM PM/AM format',
   // }),
 });
 
@@ -76,7 +82,7 @@ const onSubmit = ({
   };
 
   const dueDate = moment(requestData.dueDate);
-  const dueTime = moment(requestData.dueTime, TIME_24H_FORMAT);
+  const dueTime = moment(requestData.dueTime, TIME_12H_FORMAT);
 
   if (dueTime.isValid()) {
     dueDate.set({
@@ -145,6 +151,8 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   const taskList = selectedTask?.taskList;
 
   const [isSaving, setSaving] = useState(false);
+
+  const dueTimeReference = useRef();
 
   const formMethods = useForm({
     validationSchema,
@@ -216,15 +224,18 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
 
     if (dueDateMoment.isValid()) {
       setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
-      const dueTimeValue = dueDateMoment.format(TIME_24H_FORMAT);
-      if (dueTimeValue === '00:00') {
+      const dueTimeValue = dueDateMoment.format(TIME_12H_FORMAT);
+      if (dueTimeValue === '00:00 AM' || dueTimeValue === '12:00 AM') {
         setValue('dueTime', null);
+        dueTimeReference.current.value = null;
       } else {
         setValue('dueTime', dueTimeValue);
+        dueTimeReference.current.value = dueTimeValue;
       }
     } else {
       setValue('dueDate', null);
       setValue('dueTime', null);
+      dueTimeReference.current.value = null;
     }
 
     setValue('priority', selectedTask?.priority ?? null);
@@ -460,6 +471,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     members,
     isFetchingMembers,
     clearSelectedPatient,
+    dueTimeReference,
   };
 };
 

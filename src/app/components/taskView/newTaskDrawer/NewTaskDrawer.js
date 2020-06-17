@@ -13,6 +13,7 @@ import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
+import DueTimeSection from './NewTaskDrawer.DueTimeSection';
 import initializeTaskDrawerHooks from './NewTaskDrawer.Hooks';
 import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
@@ -70,6 +71,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     setAutoSaveVisible,
     members,
     clearSelectedPatient,
+    dueTimeReference,
   } = initializeTaskDrawerHooks({ isInbox });
 
   const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
@@ -84,11 +86,10 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
   });
 
   const dueDateValue = watch('dueDate');
-  const dueTimeValue = watch('dueTime');
+  // const dueTimeValue = watch('dueTime');
 
   const isOverDue =
     dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
-  const overDueColor = isOverDue ? palette.red : palette.black;
 
   const selectedPatientIdentifier = watch('patientIdentifier');
 
@@ -318,36 +319,14 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <HiddenFieldContainer visible={dueDateValue}>
-                  <TextInput
-                    name="dueTime"
-                    label="Due Time"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    InputProps={{
-                      type: 'time',
-                    }}
-                    inputProps={{
-                      step: 900, // 15 min
-                      style: {
-                        color: dueTimeValue ? overDueColor : palette.coolGrey3,
-                        paddingTop: '1.65rem',
-                      },
-                      onFocus: event => {
-                        // eslint-disable-next-line no-param-reassign
-                        event.target.style.color = '#000000';
-                      },
-                      onChange: event => {
-                        // eslint-disable-next-line no-param-reassign
-                        event.target.style.color = '#000000';
-                      },
-                      onBlur: event => {
-                        saveDueDate({
-                          updatedDueDate: dueDateValue,
-                          updatedDueTime: event.target.value,
-                        });
-                      },
-                    }}
+                  <DueTimeSection
+                    dueTimeReference={dueTimeReference}
+                    selectedTask={selectedTask}
+                    dueDateValue={dueDateValue}
+                    isOverDue={isOverDue}
+                    setDueTimeValue={setValue}
+                    saveDueDate={saveDueDate}
+                    setAutoSaveVisible={setAutoSaveVisible}
                   />
                 </HiddenFieldContainer>
               </Grid>
