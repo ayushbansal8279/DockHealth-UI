@@ -58,7 +58,7 @@ const PatientNote = ({
             {isEditable ? 'Cancel' : 'Edit'}
           </PatientNoteOption>
           <PatientNoteOption
-            onClick={() => deletePatientNote({ patientNoteIdentifier })}
+            onClick={() => deletePatientNote(patientNoteIdentifier)}
           >
             Delete
           </PatientNoteOption>
