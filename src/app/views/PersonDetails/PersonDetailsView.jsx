@@ -8,6 +8,7 @@ import * as PeopleActions from 'actions/people-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
+import * as ModalActions from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
@@ -15,6 +16,7 @@ import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import TasksView from 'views/Task/NewTasksView/TasksView';
+import { getTaskListForUser } from 'api/tasklist-api';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
 
 class PersonDetailsView extends PureComponent {
@@ -244,6 +246,23 @@ class PersonDetailsView extends PureComponent {
     );
   };
 
+  handleQuickAddTask = taskName => {
+    const { modalActions, taskActions } = this.props;
+
+    modalActions.openModal('ListPicker', {
+      // TODO: substitute for person available lists endpoint
+      fetchMethod: getTaskListForUser,
+      confirm: taskListIdentifier => {
+        const payload = {
+          description: taskName,
+          taskListIdentifier,
+        };
+
+        taskActions.saveTask(payload);
+      },
+    });
+  };
+
   render() {
     const { personData, routeParams } = this.props;
     const { fetching } = this.state;
@@ -254,6 +273,7 @@ class PersonDetailsView extends PureComponent {
       refreshTab: this.refreshTab,
       handleFilterChange: this.handleFilterChange,
       listNameVisible: true,
+      quickAddTask: this.handleQuickAddTask,
     };
 
     return (
@@ -290,6 +310,7 @@ function mapDispatchToProps(dispatch) {
     closeTaskDrawer: () => closeDrawer()(dispatch),
     clearTask: () => TaskActions.storeAsCurrentTask(null)(dispatch),
     megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
+    modalActions: bindActionCreators(ModalActions, dispatch),
   };
 }
 

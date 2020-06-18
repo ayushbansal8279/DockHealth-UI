@@ -439,7 +439,13 @@ const TaskItem = ({
             width="168px"
           >
             {listName && taskListIdentifier ? (
-              <Link to={`/tasks/${taskListIdentifier}`}>{listName}</Link>
+              <Link
+                to={`/tasks/${taskListIdentifier}${
+                  task.status === 'COMPLETE' ? '/complete' : ''
+                }`}
+              >
+                {listName}
+              </Link>
             ) : (
               'Unfiled'
             )}

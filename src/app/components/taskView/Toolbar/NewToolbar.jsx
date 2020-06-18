@@ -223,10 +223,7 @@ const Toolbar = ({
           showNotifications={showNotifications}
         />
       </Grid>
-      {(haveTasks ||
-        searchValue ||
-        selectedFilters ||
-        !isEmpty(selectedFilters)) && (
+      {(haveTasks || searchValue || !isEmpty(selectedFilters)) && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
           <MegaFilter
             filters={filters}

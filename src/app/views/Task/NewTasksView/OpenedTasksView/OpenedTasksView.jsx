@@ -6,15 +6,14 @@ import { isEmpty } from 'ramda';
 
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
-import EmptyListImage from 'img/empty-list';
+import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
+import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import TasksGroup from '../TasksGroup/TasksGroup';
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import messages from '../AddGroupNameButton/messages';
 import AddGroupNameButton from '../AddGroupNameButton/AddGroupNameButton';
 import EmptyTaskAddView from '../EmptyTaskAddView/EmptyTaskAddView';
 import { onDragEndTask } from '../DragDrop.helpers';
-import EmptyListResult from '../EmptyListResult/EmptyListResult';
-import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
 import { TaskGroupsContainer } from '../styled';
 
 const OpenedTasksView = ({
@@ -45,20 +44,13 @@ const OpenedTasksView = ({
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
-  const [emptySearchResultImage] = useState(getRandomEmptySearchResultImage());
 
   useEffect(() => {
     updateTaskGroups(groupedTasks);
   }, [groupedTasks]);
 
   const renderEmptyState = () => {
-    if (isSearchApplied)
-      return (
-        <EmptyListResult
-          imageSrc={emptySearchResultImage}
-          text="No results were found for your search"
-        />
-      );
+    if (isSearchApplied) return <NoSearchResultsView />;
 
     if (quickAddTask)
       return (
@@ -67,12 +59,7 @@ const OpenedTasksView = ({
         />
       );
 
-    return (
-      <EmptyListResult
-        imageSrc={EmptyListImage}
-        text="This list has no tasks"
-      />
-    );
+    return <EmptyListView>This list has no tasks</EmptyListView>;
   };
 
   return (

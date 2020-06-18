@@ -14,8 +14,9 @@ import {
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import PatientEmptyList from './PatientEmptyList/PatientEmptyList';
-import PatientNoSearchResults from './PatientEmptyList/PatientNoSearchResults';
+import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
+import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
+import { getTaskListForUser } from 'api/tasklist-api';
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
@@ -53,10 +54,22 @@ const PatientTasksListView = ({
     changeMemberRole,
   } = patientTasksSagaActions;
 
-  const renderEmptyListView = () => {
-    if (taskSearch) return <PatientNoSearchResults />;
+  const handleQuickAddTask = taskName => {
+    modalActions.openModal('ListPicker', {
+      fetchMethod: getTaskListForUser,
+      confirm: taskListIdentifier =>
+        quickAddPatientTask(taskName, taskListIdentifier),
+    });
+  };
 
-    return <PatientEmptyList quickAddTask={quickAddPatientTask} />;
+  const renderEmptyListView = () => {
+    if (taskSearch) return <NoSearchResultsView />;
+
+    return (
+      <EmptyListViewWithQuickAddTask quickAddTask={handleQuickAddTask}>
+        This patient has no tasks
+      </EmptyListViewWithQuickAddTask>
+    );
   };
 
   const handleToggleTaskStatus = task => {

@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import EmptyListImage from 'img/empty-list';
-
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
+import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
+import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import TasksGroup from '../TasksGroup/TasksGroup';
-import EmptyListResult from '../EmptyListResult/EmptyListResult';
-import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
 import { TaskGroupsContainer } from '../styled';
 
 const CompletedTasksView = ({
@@ -28,23 +26,10 @@ const CompletedTasksView = ({
   hasFiltersApplied,
   selectedTask,
 }) => {
-  const [emptySearchResultImage] = useState(getRandomEmptySearchResultImage());
-
   const renderEmptyState = () => {
-    if (isSearchApplied)
-      return (
-        <EmptyListResult
-          imageSrc={emptySearchResultImage}
-          text="No results were found for your search"
-        />
-      );
+    if (isSearchApplied) return <NoSearchResultsView />;
 
-    return (
-      <EmptyListResult
-        imageSrc={EmptyListImage}
-        text="This list has no tasks"
-      />
-    );
+    return <EmptyListView>This list has no tasks</EmptyListView>;
   };
   return (
     <ViewLoader isFetchingData={isFetchingData}>
