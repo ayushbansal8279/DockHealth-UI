@@ -352,7 +352,9 @@ class Home extends Component {
         taskGroupIdentifier,
       };
 
-      actions.saveTask(payload, reloadGroups);
+      actions.saveTask(payload, reloadGroups).then(() => {
+        actions.getTaskStatsForList(taskListIdentifier);
+      });
     }
   };
 
@@ -427,6 +429,7 @@ class Home extends Component {
       routeParams,
       hasFiltersApplied: !isEmpty(selectedFilters),
       title: loadedTasklist?.listName,
+      isMainListView: true,
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;

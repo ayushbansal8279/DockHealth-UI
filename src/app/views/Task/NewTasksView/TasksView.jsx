@@ -57,6 +57,7 @@ const TaskView = ({
   isSpecialList,
   dispatchedSetHeader,
   selectedTask,
+  isMainListView = false,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -224,6 +225,7 @@ const TaskView = ({
           listNameVisible={listNameVisible}
           searchValue={searchValue}
           selectedTask={selectedTask}
+          isMainListView={isMainListView}
         />
       )}
       <NewTaskDrawer modalActions={modalActions} />

@@ -247,7 +247,11 @@ class PersonDetailsView extends PureComponent {
   };
 
   handleQuickAddTask = taskName => {
-    const { modalActions, taskActions } = this.props;
+    const {
+      modalActions,
+      taskActions,
+      routeParams: { userIdentifier },
+    } = this.props;
 
     modalActions.openModal('ListPicker', {
       // TODO: substitute for person available lists endpoint
@@ -256,9 +260,12 @@ class PersonDetailsView extends PureComponent {
         const payload = {
           description: taskName,
           taskListIdentifier,
+          assignedToIdentifier: userIdentifier,
         };
 
-        taskActions.saveTask(payload);
+        taskActions.saveTask(payload).then(() => {
+          taskActions.getTaskStatsForUser(userIdentifier);
+        });
       },
     });
   };
