@@ -64,7 +64,7 @@ const OpenedTasksView = ({
 
       return (
         <EmptyListViewWithQuickAddTask quickAddTask={quickAddTask}>
-          This list has no task
+          This list has no tasks
         </EmptyListViewWithQuickAddTask>
       );
     }

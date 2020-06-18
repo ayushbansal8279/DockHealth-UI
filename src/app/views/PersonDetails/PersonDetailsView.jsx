@@ -16,7 +16,7 @@ import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import TasksView from 'views/Task/NewTasksView/TasksView';
-import { getTaskListForUser } from 'api/tasklist-api';
+import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
 
 class PersonDetailsView extends PureComponent {
@@ -254,8 +254,7 @@ class PersonDetailsView extends PureComponent {
     } = this.props;
 
     modalActions.openModal('ListPicker', {
-      // TODO: substitute for person available lists endpoint
-      fetchMethod: getTaskListForUser,
+      fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
       confirm: taskListIdentifier => {
         const payload = {
           description: taskName,
