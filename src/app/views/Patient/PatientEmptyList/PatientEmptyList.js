@@ -6,14 +6,15 @@ import Spacing from 'components/common/Spacing';
 import { getTaskListForUser } from 'api/tasklist-api';
 import { PatientEmptyListContainer } from './styled';
 
-const PatientEmptyList = () => {
+const PatientEmptyList = ({ quickAddTask }) => {
   const dispatch = useDispatch();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleQuickAddTask = taskName => {
     dispatch(
       openModal('ListPicker', {
         fetchMethod: getTaskListForUser,
+        confirm: taskListIdentifier =>
+          quickAddTask(taskName, taskListIdentifier),
       }),
     );
   };

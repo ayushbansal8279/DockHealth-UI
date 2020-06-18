@@ -30,6 +30,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientTaskListsActiveTabSelector,
   currentPatientIdentifierSelector,
+  patientListHasTasksSelector,
 } from 'selectors/patient-tasks-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
@@ -404,6 +405,12 @@ function* doQuickAddPatientTask({ payload }) {
 
   try {
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+    const isFirstTask = !(yield select(patientListHasTasksSelector));
+
+    if (isFirstTask) {
+      yield put({ type: REQUEST_PATIENT_TASKS });
+    }
 
     yield call(TaskApi.addTask, {
       description,

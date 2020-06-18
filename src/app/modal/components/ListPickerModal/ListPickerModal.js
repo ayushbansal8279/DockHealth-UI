@@ -22,7 +22,8 @@ const ListPickerModal = ({ closeModal, confirm, fetchMethod }) => {
   const handleSave = () => {
     if (!selectedList) return;
 
-    confirm(selectedList);
+    confirm(selectedList.taskListIdentifier);
+    closeModal();
   };
 
   useEffect(() => {

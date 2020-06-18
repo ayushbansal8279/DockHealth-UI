@@ -56,7 +56,7 @@ const PatientTasksListView = ({
   const renderEmptyListView = () => {
     if (taskSearch) return <PatientNoSearchResults />;
 
-    return <PatientEmptyList />;
+    return <PatientEmptyList quickAddTask={quickAddPatientTask} />;
   };
 
   const handleToggleTaskStatus = task => {
