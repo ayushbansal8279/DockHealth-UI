@@ -15,6 +15,7 @@ import {
 } from 'selectors/patient-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import PatientEmptyList from './PatientEmptyList/PatientEmptyList';
+import PatientNoSearchResults from './PatientEmptyList/PatientNoSearchResults';
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
@@ -53,14 +54,9 @@ const PatientTasksListView = ({
   } = patientTasksSagaActions;
 
   const renderEmptyListView = () => {
-    if (taskSearch)
-      return (
-        <PatientEmptyList>
-          No results were found for your search
-        </PatientEmptyList>
-      );
+    if (taskSearch) return <PatientNoSearchResults />;
 
-    return <PatientEmptyList>This patient has no tasks</PatientEmptyList>;
+    return <PatientEmptyList />;
   };
 
   const handleToggleTaskStatus = task => {

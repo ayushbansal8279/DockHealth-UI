@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -33,6 +33,7 @@ const PatientDetailsView = ({
   patientTasksSagaActions,
   taskSearch,
 }) => {
+  const [searchValue, setSearchValue] = useState(taskSearch);
   const navigateToTab = tabName => {
     hashHistory.push(
       `/patient/${patientIdentifier}${
@@ -46,24 +47,31 @@ const PatientDetailsView = ({
     setPatientTaskSearch,
   } = patientTasksSagaActions;
 
+  const handleSearchValueChange = value => {
+    setSearchValue(value);
+    setPatientTaskSearch(value);
+  };
+
   return (
     <>
       <PatientDetailsHeader />
-      <Toolbar
-        onSelectTab={navigateToTab}
-        selectedTab={activeTab}
-        printData={{}}
-        openTasksAmount={incompleteTasksCount}
-        completedTasksAmount={completeTasksCount}
-        onSearchChange={setPatientTaskSearch}
-        showNotifications={false}
-        searchValue={taskSearch}
-        onSelectFilters={patientTasksFilterChange}
-        showMembers={false}
-        megaFilter={megaFilter}
-        haveTasks={hasTasks}
-      />
       <ViewLoader isFetchingData={isFetching}>
+        {(incompleteTasksCount > 0 || completeTasksCount > 0) && (
+          <Toolbar
+            onSelectTab={navigateToTab}
+            selectedTab={activeTab}
+            printData={{}}
+            openTasksAmount={incompleteTasksCount}
+            completedTasksAmount={completeTasksCount}
+            onSearchChange={handleSearchValueChange}
+            showNotifications={false}
+            searchValue={searchValue}
+            onSelectFilters={patientTasksFilterChange}
+            showMembers={false}
+            megaFilter={megaFilter}
+            haveTasks={hasTasks}
+          />
+        )}
         <PatientListsContainer>{children}</PatientListsContainer>
         <NewTaskDrawer modalActions={modalActions} />
       </ViewLoader>
