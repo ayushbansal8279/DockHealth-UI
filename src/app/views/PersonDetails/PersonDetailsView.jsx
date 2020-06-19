@@ -157,10 +157,13 @@ class PersonDetailsView extends PureComponent {
   refreshIncompleteTasks = (withLoader = true) => {
     const {
       taskActions,
+      megaFilterActions,
       routeParams: { userIdentifier },
     } = this.props;
 
     const status = 'INCOMPLETE';
+
+    megaFilterActions.getFiltersForPeopleListMegaFilter(userIdentifier, status);
 
     const filters = sessionStorageHelper.getItem(
       `filter-${userIdentifier}-${status}`,
@@ -178,10 +181,13 @@ class PersonDetailsView extends PureComponent {
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
     const {
       taskActions,
+      megaFilterActions,
       routeParams: { userIdentifier },
     } = this.props;
 
     const status = 'COMPLETE';
+
+    megaFilterActions.getFiltersForPeopleListMegaFilter(userIdentifier, status);
 
     const filters = sessionStorageHelper.getItem(
       `filter-${userIdentifier}-${status}`,

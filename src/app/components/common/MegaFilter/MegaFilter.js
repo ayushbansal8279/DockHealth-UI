@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { isEmpty, isNil, partition } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
@@ -183,6 +183,39 @@ const MegaFilter = ({
   const clearFilters = () => {
     onSelectFilters({});
   };
+
+  useEffect(() => {
+    // checking if selected filters keys are present on filters list
+    if (!isEmpty(filters) && !isEmpty(selectedFilters)) {
+      let shouldUpdate = false;
+      const updatedSelectedFilters = {};
+
+      Object.keys(selectedFilters).forEach(key => {
+        return selectedFilters[key].forEach(selectedFilterKeyValue => {
+          const foundFilterColumn = filters.find(
+            filter => filter.filterKey === key,
+          );
+          if (
+            foundFilterColumn.list
+              .map(listElement => listElement.key)
+              .includes(selectedFilterKeyValue)
+          ) {
+            if (!updatedSelectedFilters[key]) {
+              updatedSelectedFilters[key] = [];
+            }
+            updatedSelectedFilters[key].push(selectedFilterKeyValue);
+          } else {
+            shouldUpdate = true;
+          }
+        });
+      });
+
+      if (shouldUpdate) {
+        onSelectFilters(updatedSelectedFilters);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
 
   return (
     <>

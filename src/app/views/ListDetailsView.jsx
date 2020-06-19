@@ -173,12 +173,19 @@ class Home extends Component {
 
   // TODO: Move to saga
   refreshIncompleteTasks = (withLoader = true) => {
-    const { actions, routeParams, taskListActions } = this.props;
+    const {
+      actions,
+      megaFilterActions,
+      routeParams: { taskListIdentifier },
+      taskListActions,
+    } = this.props;
 
     const status = 'INCOMPLETE';
 
+    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
+
     const filters = sessionStorageHelper.getItem(
-      `filter-${routeParams.taskListIdentifier}-${status}`,
+      `filter-${taskListIdentifier}-${status}`,
     );
 
     if (withLoader) {
@@ -186,20 +193,21 @@ class Home extends Component {
     }
 
     taskListActions.getTaskListStats({
-      taskListIdentifier: routeParams.taskListIdentifier,
+      taskListIdentifier,
     });
 
     if (filters && !isEmpty(filters)) {
       return this.getFilteredTasks(filters, status);
     }
 
-    return this.getTasksList(routeParams.taskListIdentifier, status);
+    return this.getTasksList(taskListIdentifier, status);
   };
 
   // TODO: Move to saga
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
     const {
       actions,
+      megaFilterActions,
       taskListActions,
       completedTasks,
       routeParams: { taskListIdentifier },
@@ -218,9 +226,11 @@ class Home extends Component {
       actions.loadingCompletedTasks();
     }
 
-    taskListActions.getTaskListStats({ taskListIdentifier });
-
     const status = 'COMPLETE';
+
+    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
+
+    taskListActions.getTaskListStats({ taskListIdentifier });
 
     const filters = sessionStorageHelper.getItem(
       `filter-${taskListIdentifier}-${status}`,

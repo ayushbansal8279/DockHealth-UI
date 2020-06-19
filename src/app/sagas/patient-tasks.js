@@ -243,6 +243,7 @@ function* doRefreshPatientTasks() {
   try {
     const lists = yield getPatientLists();
 
+    yield put(fetchPatientFilters());
     yield put({
       type: REQUEST_PATIENT_TASKS_SUCCESS,
       payload: { lists },
