@@ -6,6 +6,39 @@ import palette from 'styles/palette';
 import { Close } from '@material-ui/icons';
 import { fontSizes } from 'styles/font';
 
+export const AddListInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  font-size: ${fontSizes.smallPlus};
+
+  &:before {
+    position: absolute;
+    top: 50%;
+    left: ${spacing.regularPlus};
+    display: block;
+    content: '+';
+    transform: translateY(-50%);
+    color: ${palette.orange};
+    font-size: ${fontSizes.regular};
+  }
+`;
+
+export const AddListInput = styled.input`
+  height: auto;
+  padding: ${spacing.smallPlus} ${spacing.huge};
+  margin-bottom: 0;
+  border-color: ${palette.coolGrey2};
+  border-top: none;
+  font-size: ${fontSizes.regular};
+  box-shadow: none;
+
+  &:focus {
+    border-top: none;
+    border-color: ${palette.coolGrey2};
+    box-shadow: none;
+  }
+`;
+
 export const Title = styled.h2`
   margin-bottom: ${spacing.small};
   font-size: ${fontSizes.regularPlus};
