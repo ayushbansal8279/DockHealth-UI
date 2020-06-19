@@ -7,7 +7,7 @@ import spacing from 'styles/spacing';
 export const PatientDetailsInputContainer = styled.div`
   max-width: 320px;
   width: 100%;
-  margin-right: ${spacing.huge}
+  margin-right: ${spacing.huge};
   position: relative;
   padding-bottom: ${spacing.large};
 `;
@@ -65,7 +65,7 @@ export const PatientDetailsInputLabel = styled.label`
 
 export const PatientDetailsForm = styled.form`
   padding: ${spacing.largePlus} 0;
-  border-bottom: 3px solid #f5f8fa;
+  border-bottom: 3px solid ${palette.blueGrey};
 `;
 
 export const PatientDetailsFormRow = styled.div`
@@ -85,7 +85,7 @@ export const PatientDetailsButton = styled.button`
 `;
 
 export const PatientDetailsCancelButton = styled(PatientDetailsButton)`
-  color: #c1ccda;
+  color: ${palette.coolGrey2};
   height: fit-content;
   padding: 0 54px; // per design
 `;
