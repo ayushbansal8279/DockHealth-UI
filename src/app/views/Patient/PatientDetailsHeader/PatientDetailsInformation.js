@@ -14,7 +14,7 @@ import {
 } from './styled';
 
 const formatInformation = (information, width) => {
-  if (width <= 1152) {
+  if (width <= 1152 && information?.length > 24) {
     return `${information.slice(0, 24)}...`;
   }
 
@@ -76,7 +76,7 @@ const PatientDetailsInformation = ({
             <>
               <PatientInfo>
                 {moment(dob).format('MM/DD/YYYY')}{' '}
-                {moment().diff(moment(dob), 'years')} {'y/o '}
+                {moment().diff(moment(dob), 'years')} {'yo '}
                 {gender?.charAt(0)?.toUpperCase()}
               </PatientInfo>
               <PatientInfoDivider />
@@ -84,7 +84,7 @@ const PatientDetailsInformation = ({
           )}
           {mrn && (
             <>
-              <PatientInfo>MRN# {formatInformation(mrn, width)}</PatientInfo>
+              <PatientInfo>MRN# {mrn}</PatientInfo>
               <PatientInfoDivider />
             </>
           )}
