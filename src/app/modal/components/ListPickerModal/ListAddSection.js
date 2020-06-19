@@ -71,12 +71,7 @@ const ListAddSection = ({
             </StyledButton>
           </Grid>
           <Grid item xs={6}>
-            <StyledButton
-              variant="contained"
-              type="submit"
-              size="small"
-              onClick={() => {}}
-            >
+            <StyledButton variant="contained" type="submit" size="small">
               Save
             </StyledButton>
           </Grid>
