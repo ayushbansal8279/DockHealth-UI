@@ -44,10 +44,16 @@ export const PatientInfoDivider = styled.div`
   }
 `;
 
-export const PatientDetails = styled.div`
+export const PatientDetailsInformations = styled.div`
   display: flex;
   align-items: center;
   margin-top: ${spacing.small};
+`;
+
+export const PatientDetails = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 `;
 
 export const NavigationBackIcon = styled.img`

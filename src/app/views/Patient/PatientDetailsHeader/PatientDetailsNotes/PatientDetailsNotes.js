@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Collapse } from '@material-ui/core';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import ArrowIcon from 'img/arrow';
 
+import Arrow from 'components/common/Arrow/Arrow';
 import PatientDetailsNoteInput from '../PatientDetailsNoteInput/PatientDetailsNoteInput';
 import PatientNote from './PatientNote';
 import {
-  Arrow,
   PatientDetailsNotesContainer,
-  PatientDetailsNotesHeader,
   PatientDetailsNotesListContainer,
   AddNotePlaceholder,
 } from './styled';
@@ -32,17 +30,13 @@ const PatientDetailsNotes = ({
 
   return (
     <PatientDetailsNotesContainer>
-      <PatientDetailsNotesHeader>
+      <Arrow
+        isOpen={isOpenedNotes}
+        setOpen={setIsOpenedNotes}
+        showArrow={allNotes?.length > 0}
+      >
         <span>NOTES</span>
-        {allNotes?.length > 0 && (
-          <Arrow
-            alt="arrow"
-            isOpen={isOpenedNotes}
-            onClick={() => setIsOpenedNotes(!isOpenedNotes)}
-            src={ArrowIcon}
-          />
-        )}
-      </PatientDetailsNotesHeader>
+      </Arrow>
       <Collapse timeout={150} in={isOpenedNotes}>
         <PatientDetailsNotesListContainer ref={listReference}>
           {allNotes?.map(note => (

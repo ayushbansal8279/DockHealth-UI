@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
   patientDetailsSelector,
@@ -8,12 +8,14 @@ import {
   addPatientNote as addPatientNoteAction,
   editPatientNote as editPatientNoteAction,
   deletePatientNote as deletePatientNoteAction,
+  updatePatient as updatePatientAction,
 } from 'sagas/patient';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { openModal as openModalAction } from 'modal/actions';
 
 import PatientDetailsInformation from './PatientDetailsInformation';
 import PatientDetailsNotes from './PatientDetailsNotes/PatientDetailsNotes';
+import PatientDetails from './PatientDetails/PatientDetails';
 import { PatientDetailsContainer } from './styled';
 
 const PatientDetailsHeader = ({
@@ -23,13 +25,26 @@ const PatientDetailsHeader = ({
   addPatientNote,
   editPatientNote,
   deletePatientNote,
+  updatePatient,
 }) => {
-  const { allNotes } = patientDetails;
+  const [isOpenedDetails, setIsOpenedDetails] = useState(false);
+
+  const { allNotes, patientIdentifier } = patientDetails;
 
   return (
     <PatientDetailsContainer>
       <ViewLoader isFetchingData={patientIsLoading}>
-        <PatientDetailsInformation {...patientDetails} />
+        <PatientDetailsInformation
+          {...patientDetails}
+          setIsOpenedDetails={setIsOpenedDetails}
+          isOpenedDetails={isOpenedDetails}
+        />
+        <PatientDetails
+          {...patientDetails}
+          isOpenedDetails={isOpenedDetails}
+          updatePatient={updatePatient}
+          patientIdentifier={patientIdentifier}
+        />
         <PatientDetailsNotes
           allNotes={allNotes}
           currentUser={currentUser}
@@ -53,6 +68,7 @@ const mapDispatchToProps = {
   editPatientNote: editPatientNoteAction,
   deletePatientNote: deletePatientNoteAction,
   openModal: openModalAction,
+  updatePatient: updatePatientAction,
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
