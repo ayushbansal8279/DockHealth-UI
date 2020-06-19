@@ -10,51 +10,6 @@ export const PatientDetailsContainer = styled.div`
   flex-direction: column;
 `;
 
-export const PatientDetailsNotesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 720px; // per design
-  padding-top: ${spacing.regular};
-`;
-
-export const PatientDetailsNotesGroupContainer = styled.div`
-  display: flex;
-`;
-
-export const PatientDetailsNotesGroups = styled.div`
-  max-height: 240px;
-  overflow: scroll;
-
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-  }
-  &::-webkit-scrollbar:vertical {
-    width: 11px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    border: 2px solid white;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #fff;
-    border-radius: 8px;
-  }
-`;
-
-export const PatientDetailsNoteDate = styled.div`
-  color: ${palette.lightGrey};
-  margin-right: ${spacing.regularPlus};
-  padding: ${spacing.regular} 0 ${spacing.smallPlus};
-  width: 100px;
-`;
-
-export const PatientDetailsNoteDescription = styled.div`
-  border-bottom: 1px solid ${palette.blueGrey};
-  width: 100%;
-`;
-
 export const PatientDetailsInformationContainer = styled.div`
   display: flex;
   padding: ${spacing.huge} ${spacing.largePlus};
