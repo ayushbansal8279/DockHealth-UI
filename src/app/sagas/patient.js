@@ -1,6 +1,7 @@
 import { put, call, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import {
   getPatientById,
+  updatePatient as updatePatientApi,
   createPatientNote,
   deletePatientNote as deletePatientNoteApi,
   updatePatientNote as updatePatientNoteApi,
@@ -17,6 +18,7 @@ export const DO_GET_PATIENT = 'DO_GET_PATIENT';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_EDIT_PATIENT_NOTE = 'DO_EDIT_PATIENT_NOTE';
 export const DO_DELETE_PATIENT_NOTE = 'DO_DELETE_PATIENT_NOTE';
+export const DO_UPDATE_PATIENT = 'DO_UPDATE_PATIENT';
 
 export const getPatient = () => ({
   type: DO_GET_PATIENT,
@@ -34,6 +36,11 @@ export const editPatientNote = payload => ({
 
 export const deletePatientNote = payload => ({
   type: DO_DELETE_PATIENT_NOTE,
+  ...payload,
+});
+
+export const updatePatient = payload => ({
+  type: DO_UPDATE_PATIENT,
   ...payload,
 });
 
@@ -115,9 +122,30 @@ export function* doDeletePatientNote(payload) {
   }
 }
 
+export function* doUpdatePatient(payload) {
+  const { patient } = payload;
+  try {
+    const { patientIdentifier } = yield select(locationParametersSelector);
+
+    yield put({ type: FETCH_PATIENT });
+
+    yield call(updatePatientApi, patient);
+
+    const details = yield call(getPatientById, patientIdentifier);
+
+    yield put({
+      type: FETCH_PATIENT_SUCCESS,
+      details,
+    });
+  } catch (error) {
+    yield put({ type: FETCH_PATIENT_ERROR, error });
+  }
+}
+
 export default function* watchPatient() {
   yield takeEvery(DO_GET_PATIENT, doGetPatient);
   yield takeLatest(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeLatest(DO_EDIT_PATIENT_NOTE, doEditPatientNote);
   yield takeLatest(DO_DELETE_PATIENT_NOTE, doDeletePatientNote);
+  yield takeLatest(DO_UPDATE_PATIENT, doUpdatePatient);
 }

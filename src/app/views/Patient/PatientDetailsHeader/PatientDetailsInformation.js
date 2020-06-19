@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import moment from 'moment';
 import ArrowLeftIcon from 'img/arrow-left.svg';
+import Arrow from 'components/common/Arrow/Arrow';
 import {
   PatientDetailsInformationContainer,
   PatientName,
   PatientInfo,
   PatientInfoDivider,
+  PatientDetailsInformations,
   PatientDetails,
   NavigationBackIcon,
 } from './styled';
@@ -55,6 +57,8 @@ const PatientDetailsInformation = ({
   dob,
   mrn,
   gender,
+  isOpenedDetails,
+  setIsOpenedDetails,
 }) => {
   const { width } = useWindowDimensions();
 
@@ -67,43 +71,45 @@ const PatientDetailsInformation = ({
         {[firstName, middleName, lastName].join(' ')}
       </PatientName>
       <PatientDetails>
-        {dob && gender && (
-          <>
-            <PatientInfo>
-              {moment(dob).format('MM/DD/YYYY')}{' '}
-              {moment().diff(moment(dob), 'years')} {'y/o '}
-              {gender?.charAt(0)?.toUpperCase()}
-            </PatientInfo>
-            <PatientInfoDivider />
-          </>
-        )}
-        {mrn && (
-          <>
-            <PatientInfo>
-              MRN#
-              {formatInformation(mrn, width)}
-            </PatientInfo>
-            <PatientInfoDivider />
-          </>
-        )}
-        {email && (
-          <>
-            <PatientInfo>{formatInformation(email, width)}</PatientInfo>
-            <PatientInfoDivider />
-          </>
-        )}
-        {phoneMobile && (
-          <>
-            <PatientInfo>M {phoneMobile}</PatientInfo>
-            <PatientInfoDivider />
-          </>
-        )}
-        {phoneHome && (
-          <>
-            <PatientInfo>H {phoneHome}</PatientInfo>
-            <PatientInfoDivider />
-          </>
-        )}
+        <PatientDetailsInformations>
+          {dob && gender && (
+            <>
+              <PatientInfo>
+                {moment(dob).format('MM/DD/YYYY')}{' '}
+                {moment().diff(moment(dob), 'years')} {'y/o '}
+                {gender?.charAt(0)?.toUpperCase()}
+              </PatientInfo>
+              <PatientInfoDivider />
+            </>
+          )}
+          {mrn && (
+            <>
+              <PatientInfo>MRN# {formatInformation(mrn, width)}</PatientInfo>
+              <PatientInfoDivider />
+            </>
+          )}
+          {email && (
+            <>
+              <PatientInfo>{formatInformation(email, width)}</PatientInfo>
+              <PatientInfoDivider />
+            </>
+          )}
+          {phoneMobile && (
+            <>
+              <PatientInfo>M {phoneMobile}</PatientInfo>
+              <PatientInfoDivider />
+            </>
+          )}
+          {phoneHome && (
+            <>
+              <PatientInfo>H {phoneHome}</PatientInfo>
+              <PatientInfoDivider />
+            </>
+          )}
+        </PatientDetailsInformations>
+        <Arrow isOpen={isOpenedDetails} setOpen={setIsOpenedDetails}>
+          <span style={{ color: '#00A2E5' }}>DETAILS</span>
+        </Arrow>
       </PatientDetails>
     </PatientDetailsInformationContainer>
   );

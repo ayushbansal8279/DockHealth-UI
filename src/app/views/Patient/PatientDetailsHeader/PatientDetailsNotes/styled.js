@@ -3,28 +3,11 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
-export const Arrow = styled.img`
-  transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  padding-left: ${spacing.tiny};
-  padding-right: ${spacing.smallPlus};
-  transition: all 0.5s ease-in-out;
-`;
-
 export const PatientDetailsNotesContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 716px; // per design
   padding: ${spacing.regular} 0 ${spacing.largePlus};
-`;
-
-export const PatientDetailsNotesHeader = styled.div`
-  color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.bold};
-  padding-left: ${spacing.giga};
-  & > span {
-    margin-right: ${spacing.tiny};
-  }
 `;
 
 export const PatientDetailsNotesListContainer = styled.div`
