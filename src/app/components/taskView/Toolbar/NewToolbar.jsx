@@ -14,8 +14,8 @@ import UniversalTooltip from 'components/common/UniversalTooltip';
 import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
-import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
 import Member from 'components/members/Member';
+import { InviteMemberButton } from 'components/members/InviteMemberPopover';
 import { showGlobalAlert } from 'alert/actions';
 import MorePopover from '../Toolbar.MorePopover';
 import {
@@ -26,6 +26,7 @@ import {
   SearchWrapper,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
+import TaskListInviteMemberContainer from '../TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -91,7 +92,6 @@ const getMembersNames = ({ members }) =>
 const Toolbar = ({
   members,
   showMembers = true,
-  membersNotInTaskList,
   onSelectTab,
   printData: { openedTasks = [], completedTasks = [], taskListMembers = [] },
   selectedTab,
@@ -198,12 +198,15 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                <InviteMemberPopoverWithButton
-                  size={40}
-                  members={members}
-                  membersNotInTaskList={membersNotInTaskList}
-                  taskList={taskList}
-                />
+                <InviteMemberButton size={40}>
+                  {props => (
+                    <TaskListInviteMemberContainer
+                      members={members}
+                      taskList={taskList}
+                      {...props}
+                    />
+                  )}
+                </InviteMemberButton>
               </>
             )}
           </HeaderActionButtonsGrid>
@@ -220,10 +223,7 @@ const Toolbar = ({
           showNotifications={showNotifications}
         />
       </Grid>
-      {(haveTasks ||
-        searchValue ||
-        selectedFilters ||
-        !isEmpty(selectedFilters)) && (
+      {(haveTasks || searchValue || !isEmpty(selectedFilters)) && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
           <MegaFilter
             filters={filters}

@@ -32,7 +32,8 @@ const Search = ({
       ref={searchReference}
       onChange={onChange}
       onFocus={() => {
-        searchReference.current.style.backgroundColor = 'white';
+        if (searchReference.current)
+          searchReference.current.style.backgroundColor = 'white';
       }}
       onBlur={() => {
         if (!searchReference.current.value)

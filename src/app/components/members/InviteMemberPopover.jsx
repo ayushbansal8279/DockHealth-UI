@@ -1,6 +1,6 @@
+import React, { useRef } from 'react';
 import { IconButton } from '@material-ui/core';
 import clsx from 'clsx';
-import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import InvitingContent from './InviteMemberPopover.InvitingContent';
@@ -16,7 +16,10 @@ const InviteMemberPopover = ({
   closeMemberPopover,
   taskList,
   members,
-  membersNotInTaskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const [isInviting, setInviting, unsetInviting] = useBoolean(false);
 
@@ -45,23 +48,21 @@ const InviteMemberPopover = ({
         <NotInvitingContent
           closeMemberPopover={closeMemberPopover}
           members={members}
-          membersNotInTaskList={membersNotInTaskList}
           setInviting={setInviting}
           isAdmin={isAdmin}
           currentUser={currentUser}
           taskList={taskList}
+          cancelInviteToTaskList={cancelInviteToTaskList}
+          removeUserFromTaskList={removeUserFromTaskList}
+          inviteUserToTaskList={inviteUserToTaskList}
+          changeUserRoleForList={changeUserRoleForList}
         />
       )}
     </AddMemberPopover>
   );
 };
 
-export const InviteMemberPopoverWithButton = ({
-  size = 54,
-  taskList,
-  members,
-  membersNotInTaskList,
-}) => {
+export const InviteMemberButton = ({ size = 54, children }) => {
   const addMemberButtonReference = useRef(null);
   const addMemberButtonStyles = useAddMemberButtonStyles({ size });
 
@@ -81,14 +82,11 @@ export const InviteMemberPopoverWithButton = ({
           +
         </IconButton>
       </div>
-      <InviteMemberPopover
-        addMemberButtonReference={addMemberButtonReference}
-        isMemberPopoverOpen={isMemberPopoverOpen}
-        closeMemberPopover={closeMemberPopover}
-        taskList={taskList}
-        members={members}
-        membersNotInTaskList={membersNotInTaskList}
-      />
+      {children({
+        isMemberPopoverOpen,
+        closeMemberPopover,
+        addMemberButtonReference,
+      })}
     </>
   );
 };

@@ -34,6 +34,10 @@ const TaskListDetailsDropdown = ({
   updateDueDate,
   updateWorkflowStatus,
   quickAddTask,
+  inviteUserToTaskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  changeUserRoleForList,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -53,7 +57,16 @@ const TaskListDetailsDropdown = ({
           src={ArrowIcon}
         />
         <ListNameSection>{listName}</ListNameSection>
-        {listMembers?.length > 0 && <TaskListMembers members={listMembers} />}
+        {listMembers?.length > 0 && (
+          <TaskListMembers
+            members={listMembers}
+            taskListIdentifier={taskListIdentifier}
+            cancelInviteToTaskList={cancelInviteToTaskList}
+            removeUserFromTaskList={removeUserFromTaskList}
+            inviteUserToTaskList={inviteUserToTaskList}
+            changeUserRoleForList={changeUserRoleForList}
+          />
+        )}
         <div>
           <ViewIcon
             alt="slim-view"

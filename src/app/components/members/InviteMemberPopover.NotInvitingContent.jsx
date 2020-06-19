@@ -1,18 +1,18 @@
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+} from 'react';
 import { List, ListItem } from '@material-ui/core';
+import * as TaskListApi from 'api/tasklist-api';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { isEmpty, prop, sortBy, uniqBy } from 'ramda';
-import React, { useCallback, useRef, useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  cancelInviteToTaskList,
-  changeUserRoleForList,
-  // invitePersonToTaskList,
-  inviteUserToTaskList,
-  removeUserFromTaskList,
-} from 'actions/tasklist-actions';
 import useBoolean from 'hooks/useBoolean';
 import TickIcon from 'img/tick-icon';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import {
   HeaderSearch,
   HeaderSearchContainer,
@@ -31,6 +31,7 @@ import {
   PopoverHeaderCloseButton,
   StyledMember,
   TickIconContainer,
+  LoaderContainer,
 } from './InviteMemberPopover.Styled';
 
 const getFormattedMemberRole = ({ memberRole, invitationPending }) => {
@@ -48,51 +49,37 @@ const getFormattedMemberRole = ({ memberRole, invitationPending }) => {
   }
 };
 
-const inviteUserMethod = ({
-  closeItemPopover,
-  dispatch,
-  member,
-  taskListIdentifier,
-}) => () => {
-  inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(dispatch);
-  closeItemPopover();
-};
-
 const getMemberItemPopoverData = ({
-  dispatch,
   invitationPending,
-  isSignedUp,
   isUserListMember,
   member,
   taskListIdentifier,
   closeItemPopover,
   notInTaskList,
+  inviteUserToTaskList,
+  cancelInviteToTaskList,
+  changeUserRoleForList,
+  removeUserFromTaskList,
 }) => {
   if (notInTaskList) {
     return {
-      topButtonOnClick: inviteUserMethod({
-        closeItemPopover,
-        dispatch,
-        isSignedUp,
-        member,
-        taskListIdentifier,
-      }),
+      topButtonOnClick: () => {
+        inviteUserToTaskList(taskListIdentifier, member);
+        closeItemPopover();
+      },
       topButtonLabel: 'Invite to list',
     };
   }
 
   if (invitationPending) {
     return {
-      topButtonOnClick: inviteUserMethod({
-        closeItemPopover,
-        dispatch,
-        isSignedUp,
-        member,
-        taskListIdentifier,
-      }),
+      topButtonOnClick: () => {
+        inviteUserToTaskList(taskListIdentifier, member);
+        closeItemPopover();
+      },
       topButtonLabel: 'Resend invitation',
       bottomButtonOnClick: () => {
-        cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
+        cancelInviteToTaskList(taskListIdentifier, member?.email);
         closeItemPopover();
       },
       bottomButtonLabel: 'Cancel invitation',
@@ -105,13 +92,13 @@ const getMemberItemPopoverData = ({
         taskListIdentifier,
         member,
         isUserListMember ? 'ADMIN' : 'MEMBER',
-      )(dispatch);
+      );
 
       closeItemPopover();
     },
     topButtonLabel: isUserListMember ? 'Make an admin' : 'Remove as admin',
     bottomButtonOnClick: () => {
-      removeUserFromTaskList(taskListIdentifier, member)(dispatch);
+      removeUserFromTaskList(taskListIdentifier, member.userIdentifier);
       closeItemPopover();
     },
     bottomButtonLabel: 'Remove from list',
@@ -123,9 +110,12 @@ const MemberItemElement = ({
   currentUser,
   taskList,
   notInTaskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const moreIconButtonReference = useRef(null);
-  const dispatch = useDispatch();
   const invitationPending = member.status === 'PENDING';
 
   const [isItemPopoverOpen, openItemPopover, closeItemPopover] = useBoolean(
@@ -166,7 +156,6 @@ const MemberItemElement = ({
     bottomButtonOnClick,
     bottomButtonLabel,
   } = getMemberItemPopoverData({
-    dispatch,
     invitationPending,
     isSignedUp,
     isUserListMember,
@@ -174,6 +163,10 @@ const MemberItemElement = ({
     taskListIdentifier,
     closeItemPopover,
     notInTaskList,
+    inviteUserToTaskList,
+    cancelInviteToTaskList,
+    changeUserRoleForList,
+    removeUserFromTaskList,
   });
 
   const isCurrentUser = currentUser?.userIdentifier === member?.userIdentifier;
@@ -184,30 +177,24 @@ const MemberItemElement = ({
     }
 
     if (notInTaskList) {
-      inviteUserMethod({
-        closeItemPopover,
-        dispatch,
-        isSignedUp,
-        member,
-        taskListIdentifier,
-      })();
+      inviteUserToTaskList(taskListIdentifier, member);
     } else {
       if (invitationPending) {
-        cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
-      } else {
-        removeUserFromTaskList(taskListIdentifier, member)(dispatch);
+        cancelInviteToTaskList(taskListIdentifier, member?.email);
+        removeUserFromTaskList(taskListIdentifier, member.userIdentifier);
       }
       closeItemPopover();
     }
   }, [
+    inviteUserToTaskList,
+    cancelInviteToTaskList,
+    removeUserFromTaskList,
     closeItemPopover,
-    dispatch,
     invitationPending,
-    isCurrentUser,
-    isSignedUp,
-    member,
-    notInTaskList,
     taskListIdentifier,
+    member,
+    isCurrentUser,
+    notInTaskList,
   ]);
 
   const hasUserAcceptedInvitation = isSignedUp && !invitationPending;
@@ -279,24 +266,6 @@ const MemberItemElement = ({
   );
 };
 
-const renderMemberItemElement = ({
-  currentUser,
-  taskList,
-  membersNotInTaskListIdentifiers,
-}) => member => {
-  const memberIdentifier = member?.userIdentifier ?? member?.email;
-
-  return (
-    <MemberItemElement
-      key={memberIdentifier}
-      member={member}
-      currentUser={currentUser}
-      taskList={taskList}
-      notInTaskList={membersNotInTaskListIdentifiers.includes(memberIdentifier)}
-    />
-  );
-};
-
 const memberFilterIteratee = ({ searchTerm }) => ({ firstName, lastName }) =>
   searchTerm
     ? firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -338,13 +307,39 @@ const getMembersData = ({ members, membersNotInTaskList, searchTerm }) => {
 const NotInvitingContent = ({
   closeMemberPopover,
   members,
-  membersNotInTaskList,
   setInviting,
   isAdmin,
   currentUser,
   taskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  inviteUserToTaskList,
+  changeUserRoleForList,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [membersNotInTaskList, setMembersNotInTaskList] = useState([]);
+  const [membersInitialized, setMembersInitialized] = useState(false);
+
+  const { taskListIdentifier } = taskList;
+
+  const fetchMembersNotInTaskList = useCallback(
+    listId => {
+      TaskListApi.getOrganizationUsersNotInTaskList(listId)
+        .then(users => {
+          setMembersNotInTaskList(users);
+          setMembersInitialized(true);
+        })
+        .catch(() => {
+          setMembersInitialized(true);
+          setMembersNotInTaskList([]);
+        });
+    },
+    [setMembersNotInTaskList],
+  );
+
+  useEffect(() => {
+    fetchMembersNotInTaskList(taskListIdentifier);
+  }, [fetchMembersNotInTaskList, taskListIdentifier, members]);
 
   const { allMembersSorted, membersNotInTaskListIdentifiers } = useMemo(
     () =>
@@ -372,37 +367,57 @@ const NotInvitingContent = ({
           value={searchTerm}
         />
       </HeaderSearchContainer>
-      <MembersContainer>
-        {allMembersSorted.map(
-          renderMemberItemElement({
-            currentUser,
-            taskList,
-            membersNotInTaskListIdentifiers,
-          }),
-        )}
-        {isEmpty(allMembersSorted) && (
-          <NoMembersElement>
+      {membersInitialized ? (
+        <>
+          <MembersContainer>
+            {allMembersSorted.map(member => {
+              const memberIdentifier = member?.userIdentifier ?? member?.email;
+
+              return (
+                <MemberItemElement
+                  key={memberIdentifier}
+                  member={member}
+                  currentUser={currentUser}
+                  taskList={taskList}
+                  notInTaskList={membersNotInTaskListIdentifiers.includes(
+                    memberIdentifier,
+                  )}
+                  cancelInviteToTaskList={cancelInviteToTaskList}
+                  removeUserFromTaskList={removeUserFromTaskList}
+                  inviteUserToTaskList={inviteUserToTaskList}
+                  changeUserRoleForList={changeUserRoleForList}
+                />
+              );
+            })}
+            {isEmpty(allMembersSorted) && (
+              <NoMembersElement>
+                <MontserratTypography variant="h4">
+                  No members found.
+                </MontserratTypography>
+              </NoMembersElement>
+            )}
+          </MembersContainer>
+          <PopoverDivider />
+          <PopoverBottomSection>
             <MontserratTypography variant="h4">
-              No members found.
+              <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
+              {isAdmin ? (
+                <InviteLink onClick={setInviting}>
+                  Invite them to this list.
+                </InviteLink>
+              ) : (
+                <span>
+                  Ask an organizational admin to invite people to this list.
+                </span>
+              )}
             </MontserratTypography>
-          </NoMembersElement>
-        )}
-      </MembersContainer>
-      <PopoverDivider />
-      <PopoverBottomSection>
-        <MontserratTypography variant="h4">
-          <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
-          {isAdmin ? (
-            <InviteLink onClick={setInviting}>
-              Invite them to this list.
-            </InviteLink>
-          ) : (
-            <span>
-              Ask an organizational admin to invite people to this list.
-            </span>
-          )}
-        </MontserratTypography>
-      </PopoverBottomSection>
+          </PopoverBottomSection>
+        </>
+      ) : (
+        <LoaderContainer>
+          <Loader size={LoaderSizes.medium} />
+        </LoaderContainer>
+      )}
     </>
   );
 };

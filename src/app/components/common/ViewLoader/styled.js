@@ -4,7 +4,7 @@ import { Fade } from '@material-ui/core';
 export const FadeContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding-top: 100px;
+  padding: 100px 0;
 `;
 
 export const StyledFade = styled(Fade)`

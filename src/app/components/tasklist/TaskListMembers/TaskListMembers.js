@@ -4,7 +4,9 @@ import { splitAt } from 'ramda';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltip from 'components/common/UniversalTooltip';
 import Member from 'components/members/Member';
-import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
+import InviteMemberPopover, {
+  InviteMemberButton,
+} from 'components/members/InviteMemberPopover';
 import useBoolean from 'hooks/useBoolean';
 
 import { MoreMembersButtonContainer } from './styled';
@@ -24,7 +26,15 @@ const getMembersNames = ({ members }) =>
     );
   });
 
-const TaskListMembers = ({ members, limit = 4 }) => {
+const TaskListMembers = ({
+  members,
+  taskListIdentifier,
+  inviteUserToTaskList,
+  cancelInviteToTaskList,
+  removeUserFromTaskList,
+  changeUserRoleForList,
+  limit = 4,
+}) => {
   const moreMembersButtonReference = useRef(null);
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -61,6 +71,20 @@ const TaskListMembers = ({ members, limit = 4 }) => {
           </MoreMembersButtonContainer>
         </>
       )}
+      <Spacing horizontal={2} />
+      <InviteMemberButton size={40}>
+        {props => (
+          <InviteMemberPopover
+            {...props}
+            members={members}
+            taskList={{ taskListIdentifier }}
+            cancelInviteToTaskList={cancelInviteToTaskList}
+            removeUserFromTaskList={removeUserFromTaskList}
+            inviteUserToTaskList={inviteUserToTaskList}
+            changeUserRoleForList={changeUserRoleForList}
+          />
+        )}
+      </InviteMemberButton>
     </>
   );
 };

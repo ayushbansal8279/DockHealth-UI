@@ -1,17 +1,4 @@
-import {
-  lensProp,
-  map,
-  propEq,
-  set,
-  when,
-  pickBy,
-  isNil,
-  partition,
-  sortBy,
-  prop,
-  pipe,
-  toLower,
-} from 'ramda';
+import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
 
 import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
@@ -22,7 +9,6 @@ import {
   GET_AUDITS_BY_ALLUSERLIST_SUCCESS,
   GET_AUDITS_BY_TASKLIST_SUCCESS,
   GET_NONORGUSERSINTASKLIST_SUCCESS,
-  GET_ORGUSERSNOTINTASKLIST_SUCCESS,
   GET_TASKLIST_STATS_FAILURE,
   GET_TASKLIST_STATS_SUCCESS,
   GET_TASKLIST_SUCCESS,
@@ -70,17 +56,9 @@ const inviteUserMapper = user => ({
   taskListUserRole: DEFAULT_USER_ROLE,
 });
 
-const inviteUser = (state, { userIdentifier }) => ({
+const inviteUser = (state, { user }) => ({
   ...state,
-  tasklistmembers: [
-    ...state.tasklistmembers,
-    ...state.orgusersnotintasklist
-      .filter(user => user.userIdentifier === userIdentifier)
-      .map(inviteUserMapper),
-  ],
-  orgusersnotintasklist: state.orgusersnotintasklist.filter(
-    user => user.userIdentifier !== userIdentifier,
-  ),
+  tasklistmembers: [...state.tasklistmembers, inviteUserMapper(user)],
 });
 
 const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
@@ -113,7 +91,6 @@ const TaskListReducer = (state = initialState, action) => {
     case INVITE_PERSON_TASKLIST_SUCCESS:
       return {
         ...state,
-        orgusersnotintasklist: [...state.orgusersnotintasklist],
       };
 
     case ADD_TASKLIST_SUCCESS:
@@ -180,12 +157,6 @@ const TaskListReducer = (state = initialState, action) => {
         ),
       };
     }
-
-    case GET_ORGUSERSNOTINTASKLIST_SUCCESS:
-      return {
-        ...state,
-        orgusersnotintasklist: action.users,
-      };
 
     case GET_NONORGUSERSINTASKLIST_SUCCESS:
       return {
@@ -280,37 +251,17 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.userIdentifier !== action.removedUser.userIdentifier,
+          member => member.userIdentifier !== action.removedUserId,
         ),
-        orgusersnotintasklist: [
-          ...state.orgusersnotintasklist,
-          action.removedUser,
-        ],
       };
 
-    case CANCEL_TASKLIST_INVITE_SUCCESS: {
-      const [
-        [memberWithCanceledInvitation],
-        remainingTaskListMembers,
-      ] = partition(
-        member => member.email === action.removedUserEmail,
-        state.tasklistmembers,
-      );
-
-      if (memberWithCanceledInvitation) {
-        memberWithCanceledInvitation.taskListUserRole = null;
-        memberWithCanceledInvitation.status = null;
-      }
-
+    case CANCEL_TASKLIST_INVITE_SUCCESS:
       return {
         ...state,
-        tasklistmembers: remainingTaskListMembers,
-        orgusersnotintasklist: sortBy(pipe(prop('firstName'), toLower), [
-          ...state.orgusersnotintasklist,
-          memberWithCanceledInvitation,
-        ]),
+        tasklistmembers: state.tasklistmembers.filter(
+          member => member.email !== action.removedUserEmail,
+        ),
       };
-    }
 
     case CHANGEUSERROLE_TASKLIST_SUCCESS:
       return {

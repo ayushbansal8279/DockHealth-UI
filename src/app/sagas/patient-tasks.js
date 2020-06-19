@@ -8,6 +8,7 @@ import {
   takeEvery,
 } from 'redux-saga/effects';
 import * as PatientTasksApi from 'api/patient-tasks-api';
+import * as TaskListApi from 'api/tasklist-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
@@ -21,6 +22,7 @@ import {
   UPDATE_PATIENT_TASK,
   FETCH_MEGA_FILTERS_SUCCESS,
   FETCH_MEGA_FILTERS_FAILURE,
+  SET_PATIENT_TASK_SEARCH_VALUE,
 } from 'actions/action-types';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 
@@ -28,6 +30,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientTaskListsActiveTabSelector,
   currentPatientIdentifierSelector,
+  patientListHasTasksSelector,
 } from 'selectors/patient-tasks-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
@@ -49,6 +52,13 @@ export const DO_UPDATE_PATIENT_TASKS_FILTERS =
   'DO_UPDATE_PATIENT_TASKS_FILTERS';
 export const DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT =
   'DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT';
+export const DO_SET_PATIENT_TASK_SEARCH_VALUE =
+  'DO_SET_PATIENT_TASK_SEARCH_VALUE';
+export const DO_INVITE_USER_TO_TASKLIST = 'DO_INVITE_USER_TO_TASKLIST';
+export const DO_REMOVE_USER_FROM_TASKLIST = 'DO_REMOVE_USER_FROM_TASKLIST';
+export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
+  'DO_CANCEL_USER_INVITE_TO_TASKLIST';
+export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 
 export const quickAddPatientTask = (description, taskListIdentifier) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -129,6 +139,46 @@ export const initalizeSavedFilters = () => ({
   type: DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
 });
 
+export const setPatientTaskSearch = value => ({
+  type: DO_SET_PATIENT_TASK_SEARCH_VALUE,
+  payload: {
+    value,
+  },
+});
+
+export const inviteUserToTaskList = (taskListIdentifier, user) => ({
+  type: DO_INVITE_USER_TO_TASKLIST,
+  payload: {
+    taskListIdentifier,
+    user,
+  },
+});
+
+export const removeUserFromTaskList = (taskListIdentifier, member) => ({
+  type: DO_REMOVE_USER_FROM_TASKLIST,
+  payload: {
+    taskListIdentifier,
+    member,
+  },
+});
+
+export const cancelUserInviteToTaskList = (taskListIdentifier, userEmail) => ({
+  type: DO_CANCEL_USER_INVITE_TO_TASKLIST,
+  payload: {
+    taskListIdentifier,
+    userEmail,
+  },
+});
+
+export const changeMemberRole = (taskListIdentifier, member, role) => ({
+  type: DO_CHANGE_MEMBER_ROLE,
+  payload: {
+    taskListIdentifier,
+    member,
+    role,
+  },
+});
+
 export const PatientTasksSagaActions = {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
@@ -142,6 +192,11 @@ export const PatientTasksSagaActions = {
   quickAddPatientTask,
   patientTasksFilterChange,
   initalizeSavedFilters,
+  setPatientTaskSearch,
+  inviteUserToTaskList,
+  removeUserFromTaskList,
+  cancelUserInviteToTaskList,
+  changeMemberRole,
 };
 
 function* getPatientLists() {
@@ -188,6 +243,7 @@ function* doRefreshPatientTasks() {
   try {
     const lists = yield getPatientLists();
 
+    yield put(fetchPatientFilters());
     yield put({
       type: REQUEST_PATIENT_TASKS_SUCCESS,
       payload: { lists },
@@ -351,6 +407,12 @@ function* doQuickAddPatientTask({ payload }) {
   try {
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
+    const isFirstTask = !(yield select(patientListHasTasksSelector));
+
+    if (isFirstTask) {
+      yield put({ type: REQUEST_PATIENT_TASKS });
+    }
+
     yield call(TaskApi.addTask, {
       description,
       taskListIdentifier,
@@ -390,6 +452,70 @@ function* doInitializeSavedFiltersForPatient() {
   );
 }
 
+function* doSetPatientTaskSearch({ payload }) {
+  yield put({ type: SET_PATIENT_TASK_SEARCH_VALUE, payload });
+}
+
+function* doInviteUserToTaskList({ payload }) {
+  const {
+    taskListIdentifier,
+    user: { userIdentifier },
+  } = payload;
+  try {
+    yield call(
+      TaskListApi.inviteUserToTaskList,
+      taskListIdentifier,
+      userIdentifier,
+    );
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield put(refreshPatientTasks());
+  } catch (error) {
+    yield put(refreshPatientTasks());
+  }
+}
+
+function* doRemoveUserFromTaskList({ payload }) {
+  const { taskListIdentifier, member } = payload;
+  try {
+    yield call(TaskListApi.removeUserFromTaskList, taskListIdentifier, member);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield put(refreshPatientTasks());
+  } catch (error) {
+    yield put(refreshPatientTasks());
+  }
+}
+
+function* doCancelUserInviteToTaskList({ payload }) {
+  const { taskListIdentifier, userEmail } = payload;
+  try {
+    yield call(
+      TaskListApi.cancelInviteToTaskList,
+      taskListIdentifier,
+      userEmail,
+    );
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield put(refreshPatientTasks());
+  } catch (error) {
+    yield put(refreshPatientTasks());
+  }
+}
+
+function* doChangeMemberRole({ payload }) {
+  const { taskListIdentifier, member, role } = payload;
+  try {
+    yield call(
+      TaskListApi.changeUserRoleForList,
+      taskListIdentifier,
+      member.userIdentifier,
+      role,
+    );
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield put(refreshPatientTasks());
+  } catch (error) {
+    yield put(refreshPatientTasks());
+  }
+}
+
 export default function* watchPatientTasks() {
   yield takeLatest(
     DO_FETCH_STATS_FOR_PATIENT_TASKS,
@@ -415,4 +541,12 @@ export default function* watchPatientTasks() {
     DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
     doInitializeSavedFiltersForPatient,
   );
+  yield takeLatest(DO_SET_PATIENT_TASK_SEARCH_VALUE, doSetPatientTaskSearch);
+  yield takeEvery(DO_INVITE_USER_TO_TASKLIST, doInviteUserToTaskList);
+  yield takeEvery(DO_REMOVE_USER_FROM_TASKLIST, doRemoveUserFromTaskList);
+  yield takeEvery(
+    DO_CANCEL_USER_INVITE_TO_TASKLIST,
+    doCancelUserInviteToTaskList,
+  );
+  yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
 }

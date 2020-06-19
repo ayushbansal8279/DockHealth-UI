@@ -9,13 +9,14 @@ import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import Search from 'components/taskView/Search/Search';
+import { InviteMemberButton } from 'components/members/InviteMemberPopover';
+import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 import TipsButton from '../common/TipsButton';
 import UniversalTooltip from '../common/UniversalTooltip';
-import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
@@ -99,7 +100,6 @@ export default ({
   taskDrawerOpen,
   taskList,
   members,
-  membersNotInTaskList,
   clearFilter,
   isInbox,
   filterBy,
@@ -273,12 +273,15 @@ export default ({
                     </>
                   )}
                   <Spacing horizontal={2} />
-                  <InviteMemberPopoverWithButton
-                    size={40}
-                    members={members}
-                    membersNotInTaskList={membersNotInTaskList}
-                    taskList={taskList}
-                  />
+                  <InviteMemberButton size={40}>
+                    {props => (
+                      <TaskListInviteMemberContainer
+                        members={members}
+                        taskList={taskList}
+                        {...props}
+                      />
+                    )}
+                  </InviteMemberButton>
                 </>
               )}
             </>

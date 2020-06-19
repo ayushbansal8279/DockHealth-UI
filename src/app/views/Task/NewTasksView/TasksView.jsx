@@ -57,6 +57,7 @@ const TaskView = ({
   isSpecialList,
   dispatchedSetHeader,
   selectedTask,
+  isMainListView = false,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -174,19 +175,21 @@ const TaskView = ({
 
   return (
     <TaskViewContainer>
-      <Toolbar
-        members={members}
-        showMembers={showMembers}
-        onSelectTab={navigateToTab}
-        selectedTab={selectedTab}
-        taskList={taskList}
-        openTasksAmount={taskCounters.incomplete}
-        completedTasksAmount={taskCounters.complete}
-        onSearchChange={setSearchValue}
-        showNotifications={showNotificationAction}
-        searchValue={searchValue}
-        onSelectFilters={handleFilterChange}
-      />
+      {(taskCounters?.incomplete > 0 || taskCounters?.complete > 0) && (
+        <Toolbar
+          members={members}
+          showMembers={showMembers}
+          onSelectTab={navigateToTab}
+          selectedTab={selectedTab}
+          taskList={taskList}
+          openTasksAmount={taskCounters.incomplete}
+          completedTasksAmount={taskCounters.complete}
+          onSearchChange={setSearchValue}
+          showNotifications={showNotificationAction}
+          searchValue={searchValue}
+          onSelectFilters={handleFilterChange}
+        />
+      )}
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
           openDrawer={openDrawer}
@@ -222,6 +225,7 @@ const TaskView = ({
           listNameVisible={listNameVisible}
           searchValue={searchValue}
           selectedTask={selectedTask}
+          isMainListView={isMainListView}
         />
       )}
       <NewTaskDrawer modalActions={modalActions} />

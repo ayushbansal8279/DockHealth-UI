@@ -11,6 +11,17 @@ export function getTaskListForUser() {
     });
 }
 
+export function getSharedTaskListsWithCurrentUser(userIdentifier) {
+  return axios({
+    url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}`,
+    method: 'get',
+  })
+    .then(response => response?.data)
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
+}
+
 export function findPendingTaskListsForUser() {
   return axios
     .get('list/findPendingTaskListsForUser')

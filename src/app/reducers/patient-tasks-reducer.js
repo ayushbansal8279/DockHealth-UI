@@ -8,12 +8,14 @@ import {
   CLEAR_PATIENT_TASKS,
   UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
+  SET_PATIENT_TASK_SEARCH_VALUE,
 } from 'actions/action-types';
 
 const INITIAL_STATE = {
   activeTab: null,
   patientIdentifier: null,
   lists: [],
+  taskSearch: null,
   incompleteTasksCount: null,
   completeTasksCount: null,
   isFetching: false,
@@ -101,6 +103,11 @@ export default function(state = INITIAL_STATE, action = {}) {
         lists: newTaskLists,
       };
     }
+    case SET_PATIENT_TASK_SEARCH_VALUE:
+      return {
+        ...state,
+        taskSearch: payload?.value,
+      };
     default:
       return state;
   }
