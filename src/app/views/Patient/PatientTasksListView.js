@@ -13,10 +13,12 @@ import {
   patientTaskListsActiveTabSelector,
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
+import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import { getTaskListForUser } from 'api/tasklist-api';
+import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
@@ -38,6 +40,7 @@ const PatientTasksListView = ({
   patientTasksSagaActions,
   modalActions,
   taskSearch,
+  areFiltersApplied,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
@@ -64,6 +67,8 @@ const PatientTasksListView = ({
 
   const renderEmptyListView = () => {
     if (taskSearch) return <NoSearchResultsView />;
+
+    if (areFiltersApplied) return <NoFilterResultsView />;
 
     return (
       <EmptyListViewWithQuickAddTask quickAddTask={handleQuickAddTask}>
@@ -110,7 +115,6 @@ const PatientTasksListView = ({
           updateDueDate={updatePatientTaskDueDate}
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
-          // connect to saga
           cancelInviteToTaskList={cancelUserInviteToTaskList}
           removeUserFromTaskList={removeUserFromTaskList}
           inviteUserToTaskList={inviteUserToTaskList}
@@ -136,6 +140,7 @@ const mapStateToProps = state => ({
   currentUser: userProfileSelector(state),
   selectedTask: state.taskState.selectedTask,
   taskSearch: patientTaskSearchSelector(state),
+  areFiltersApplied: hasFiltersAppliedSelector(state),
 });
 
 export default connect(

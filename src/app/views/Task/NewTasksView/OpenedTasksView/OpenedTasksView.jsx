@@ -9,6 +9,7 @@ import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from '../TasksGroup/TasksGroup';
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import messages from '../AddGroupNameButton/messages';
@@ -41,6 +42,7 @@ const OpenedTasksView = ({
   dragAndDropDisabled,
   listNameVisible,
   isSearchApplied,
+  areFiltersApplied,
   selectedTask,
   isMainListView,
 }) => {
@@ -53,6 +55,8 @@ const OpenedTasksView = ({
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
+
+    if (areFiltersApplied) return <NoFilterResultsView />;
 
     if (quickAddTask) {
       if (isMainListView)

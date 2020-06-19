@@ -4,9 +4,11 @@ import {
   completedTasksIsFetchingSelector,
   completedTasksIsFetchingMoreSelector,
 } from 'selectors/task-selectors';
+import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import CompletedTasksView from './CompletedTasksView';
 
 const mapStateToProps = (state, ownProps) => {
+  const areFiltersApplied = hasFiltersAppliedSelector(state);
   const completedTasks = completedTasksSelector(state);
   const { searchValue, ...restOwnProps } = ownProps;
 
@@ -19,6 +21,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isFetchingData: completedTasksIsFetchingSelector(state),
     isFetchingMoreTasks: completedTasksIsFetchingMoreSelector(state),
+    areFiltersApplied,
     tasks: filteredCompletedTasks,
     isSearchApplied: !!searchValue,
     ...restOwnProps,

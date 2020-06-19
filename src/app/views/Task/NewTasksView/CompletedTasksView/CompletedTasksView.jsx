@@ -3,6 +3,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from '../TasksGroup/TasksGroup';
 import { TaskGroupsContainer } from '../styled';
 
@@ -22,12 +23,15 @@ const CompletedTasksView = ({
   dragAndDropDisabled,
   listNameVisible,
   isSearchApplied,
+  areFiltersApplied,
   reassignTask,
   hasFiltersApplied,
   selectedTask,
 }) => {
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
+
+    if (areFiltersApplied) return <NoFilterResultsView />;
 
     return <EmptyListView>This list has no tasks</EmptyListView>;
   };

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { isEmpty } from 'ramda';
 
 export const megaFilterStateSelector = state => state.megaFilter;
 
@@ -15,4 +16,9 @@ export const selectedFiltersInMegaFilterSelector = createSelector(
 export const availableFiltersInInMegaFilterSelector = createSelector(
   megaFilterStateSelector,
   ({ filters }) => filters,
+);
+
+export const hasFiltersAppliedSelector = createSelector(
+  megaFilterStateSelector,
+  ({ selectedFilters }) => !isEmpty(selectedFilters),
 );
