@@ -5,14 +5,18 @@ import { CommentSectionContainer } from './NewTaskDrawer.CommentSection.Styled';
 import initializeCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
 import { renderCommentGroup } from './NewTaskDrawer.CommentSection.Utilities';
 
-const CommentSection = ({ parentFormSubmit, taskDrawerFocusField }) => {
+const CommentSection = ({
+  parentFormSubmit,
+  taskDrawerFocusField,
+  modalActions,
+}) => {
   const {
     groupedComments,
     currentUser,
     removeComment,
     updateComment,
     addComment,
-  } = initializeCommentSectionHooks();
+  } = initializeCommentSectionHooks({ modalActions });
 
   return (
     <CommentSectionContainer>

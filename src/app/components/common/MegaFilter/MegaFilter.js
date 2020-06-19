@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { isEmpty, isNil, partition } from 'ramda';
-import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
 import palette from 'styles/palette';
 import {
@@ -12,7 +11,10 @@ import MegaFilterSearch from './MegaFilterSearch';
 import {
   MegaFilterPopover,
   Container,
+  FilterButtonWrapper,
   FilterButtonLabel,
+  FilterClearButtonWrapper,
+  FilterClearButtonLabel,
   MegaFilterHeader,
   MegaFilterLabel,
   MegaFilterBoldedLabel,
@@ -23,6 +25,7 @@ import {
   FilterSelected,
   FilterSearched,
   ClearButton,
+  MegaFilterLeftOptions,
   MegaFilterOptions,
 } from './styled';
 
@@ -30,13 +33,42 @@ const UNASSIGNED = 'UNASSIGNED';
 
 const SEARCH_EXCLUDE_KEYS = ['DUE_DATE_RANGE'];
 
-const FilterButton = ({ isOpen, openPopover }) => (
-  <Button variant="text" onClick={() => openPopover(!isOpen)} size="small">
-    <FilterButtonLabel variant="body1" component="span">
-      FILTER
+const FilterButton = ({
+  isOpen,
+  openPopover,
+  isFilterApplied,
+  selectedFilters,
+}) => (
+  <FilterButtonWrapper
+    variant="text"
+    onClick={() => openPopover(!isOpen)}
+    size="small"
+    isFilterApplied={isFilterApplied}
+  >
+    <FilterButtonLabel
+      variant="body1"
+      component="span"
+      isFilterApplied={isFilterApplied}
+    >
+      FILTER {isFilterApplied ? `(${Object.keys(selectedFilters).length})` : ''}
     </FilterButtonLabel>
-    <RotatableChevron rotated={isOpen} color={palette.brightBlue} />
-  </Button>
+    <RotatableChevron
+      rotated={isOpen}
+      color={isFilterApplied ? palette.orangeJulius : palette.brightBlue}
+    />
+  </FilterButtonWrapper>
+);
+
+const FilterClearButton = ({ clearFilters }) => (
+  <FilterClearButtonWrapper
+    variant="text"
+    onClick={() => clearFilters()}
+    size="small"
+  >
+    <FilterClearButtonLabel variant="body1" component="span">
+      CLEAR
+    </FilterClearButtonLabel>
+  </FilterClearButtonWrapper>
 );
 
 const FilterColumn = ({
@@ -217,10 +249,19 @@ const MegaFilter = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
+  const isFilterApplied = !isEmpty(selectedFilters);
   return (
     <>
       <div ref={megaFilterReference}>
-        {children || <FilterButton isOpen={isOpen} openPopover={openPopover} />}
+        {children || (
+          <FilterButton
+            isOpen={isOpen}
+            openPopover={openPopover}
+            isFilterApplied={isFilterApplied}
+            selectedFilters={selectedFilters}
+          />
+        )}
+        {isFilterApplied && <FilterClearButton clearFilters={clearFilters} />}
       </div>
       <MegaFilterPopover
         anchorEl={megaFilterReference?.current}
@@ -237,20 +278,22 @@ const MegaFilter = ({
       >
         <Container>
           <MegaFilterHeader>
-            <MegaFilterLabel>
-              <MegaFilterBoldedLabel>
-                FILTER ACTIVE TASKS{' '}
-              </MegaFilterBoldedLabel>
-              {activeItemsAmount} ITEMS
-            </MegaFilterLabel>
+            <MegaFilterLeftOptions>
+              <MegaFilterLabel>
+                <MegaFilterBoldedLabel>
+                  FILTER ACTIVE TASKS{' '}
+                </MegaFilterBoldedLabel>
+                {activeItemsAmount} ITEMS
+              </MegaFilterLabel>
+              <ClearButton type="button" onClick={clearFilters}>
+                CLEAR ALL
+              </ClearButton>
+            </MegaFilterLeftOptions>
             <MegaFilterOptions>
               <MegaFilterSearch
                 onSearch={setSearchedFilterQuery}
                 value={searchedFilterQuery}
               />
-              <ClearButton type="button" onClick={clearFilters}>
-                CLEAR ALL
-              </ClearButton>
             </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>

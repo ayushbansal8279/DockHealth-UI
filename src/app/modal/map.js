@@ -5,6 +5,7 @@ import DuplicateTaskModal from './components/DuplicateTaskModal/DuplicateTaskMod
 import DeleteListModal from './components/DeleteListModal/DeleteListModal';
 import DeleteNoteModal from './components/DeleteNoteModal/DeleteNoteModal';
 import ListPickerModal from './components/ListPickerModal/ListPickerModal';
+import DeleteCommentModal from './components/DeleteCommentModal/DeleteCommentModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -14,6 +15,7 @@ const MODAL_MAP = {
   DeleteList: DeleteListModal,
   DeleteNote: DeleteNoteModal,
   ListPicker: ListPickerModal,
+  DeleteComment: DeleteCommentModal,
 };
 
 export default MODAL_MAP;

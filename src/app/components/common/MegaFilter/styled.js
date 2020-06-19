@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography, Popover } from '@material-ui/core';
+import { Typography, Popover, Button } from '@material-ui/core';
 import InputMask from 'react-input-mask';
 import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
@@ -15,10 +15,47 @@ export const MegaFilterPopover = withStyles({
   },
 })(Popover);
 
+export const FilterButtonWrapper = styled(Button)`
+  && {
+    background-color: ${props =>
+      props.isFilterApplied ? palette.blueOcean : 'transparent'};
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    :hover {
+      background-color: ${props =>
+        props.isFilterApplied ? palette.blueOcean : 'transparent'};
+    }
+  }
+`;
+
 export const FilterButtonLabel = withStyles({
   root: {
     fontFamily: 'Montserrat, sans-serif',
-    color: palette.coolGrey1,
+    color: props => (props.isFilterApplied ? palette.white : palette.coolGrey1),
+    fontWeight: props =>
+      props.isFilterApplied ? fontWeights.bold : fontWeights.regular,
+    display: 'inline-block',
+    marginRight: spacing.tiny,
+  },
+})(Typography);
+
+export const FilterClearButtonWrapper = styled(Button)`
+  && {
+    background-color: ${palette.darkBlue};
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    :hover {
+      background-color: ${palette.darkBlue};
+    }
+  }
+`;
+
+export const FilterClearButtonLabel = withStyles({
+  root: {
+    fontFamily: 'Montserrat, sans-serif',
+    color: palette.white,
+    fontSize: fontSizes.small,
+    fontWeight: fontWeights.regular,
     display: 'inline-block',
     marginRight: spacing.tiny,
   },
@@ -34,6 +71,10 @@ export const MegaFilterHeader = styled.div`
   display: flex;
   margin-bottom: ${spacing.largePlus};
   justify-content: space-between;
+`;
+
+export const MegaFilterLeftOptions = styled.div`
+  display: flex;
 `;
 
 export const MegaFilterLabel = styled.label`
