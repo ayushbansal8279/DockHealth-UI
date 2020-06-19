@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000;
+  z-index: 1200;
 
   background-color: rgba(29, 46, 64, 0.5); /*Dark grey*/
   display: flex;

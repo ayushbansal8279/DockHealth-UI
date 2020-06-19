@@ -8,6 +8,7 @@ import * as PeopleActions from 'actions/people-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import * as ModalActions from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/common/GenericHeader';
@@ -257,10 +258,15 @@ class PersonDetailsView extends PureComponent {
       modalActions,
       taskActions,
       routeParams: { userIdentifier },
+      currentUser,
     } = this.props;
 
     modalActions.openModal('ListPicker', {
       fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
+      listCreationPayload: {
+        memberIdentifiers:
+          currentUser.userIdentifier !== userIdentifier ? [userIdentifier] : [],
+      },
       confirm: taskListIdentifier => {
         const payload = {
           description: taskName,
@@ -310,6 +316,7 @@ function mapStateToProps(state) {
     isFetching: state.taskState.isFetching,
     personData: state.peopleState.personData,
     megaFilter: state.megaFilter,
+    currentUser: userProfileSelector(state),
   };
 }
 

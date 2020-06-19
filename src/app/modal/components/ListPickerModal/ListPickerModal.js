@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CloseIconButton, CloseIcon } from './styled';
+import { CloseIconButton, CloseIcon, ListPickerModalWrapper } from './styled';
 import { ModalWrapper } from '../styled';
 import ListSelectSection from './ListSelectSection';
 import ListAddSection from './ListAddSection';
@@ -9,14 +9,19 @@ const MODAL_MODE = {
   CREATE: 'create',
 };
 
-const ListPickerModal = ({ closeModal, confirm, fetchMethod }) => {
+const ListPickerModal = ({
+  closeModal,
+  confirm,
+  fetchMethod,
+  listCreationPayload = {},
+}) => {
   const [selectedList, setSelectedList] = useState(null);
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [lists, setLists] = useState(null);
   const [newListName, setNewListName] = useState('');
   const [modalMode, setModalMode] = useState(MODAL_MODE.SELECT);
 
-  const handleSave = taskListIdentifier => {
+  const handleListSelectSave = taskListIdentifier => {
     confirm(taskListIdentifier);
     closeModal();
   };
@@ -44,25 +49,29 @@ const ListPickerModal = ({ closeModal, confirm, fetchMethod }) => {
 
   return (
     <ModalWrapper>
-      <CloseIconButton onClick={closeModal} size="small" color="secondary">
-        <CloseIcon />
-      </CloseIconButton>
-      {modalMode === MODAL_MODE.SELECT ? (
-        <ListSelectSection
-          lists={lists}
-          selectedList={selectedList}
-          isFetchingLists={isFetchingLists}
-          onListSelection={setSelectedList}
-          onAddList={handleNavigateToAddList}
-          onSave={handleSave}
-          onCancel={closeModal}
-        />
-      ) : (
-        <ListAddSection
-          listName={newListName}
-          onCancel={handleNavigateToSelectList}
-        />
-      )}
+      <ListPickerModalWrapper>
+        <CloseIconButton onClick={closeModal} size="small" color="secondary">
+          <CloseIcon />
+        </CloseIconButton>
+        {modalMode === MODAL_MODE.SELECT ? (
+          <ListSelectSection
+            lists={lists}
+            selectedList={selectedList}
+            isFetchingLists={isFetchingLists}
+            onListSelection={setSelectedList}
+            onAddList={handleNavigateToAddList}
+            onSave={handleListSelectSave}
+            onCancel={closeModal}
+          />
+        ) : (
+          <ListAddSection
+            addListPayload={listCreationPayload}
+            initialListName={newListName}
+            onCancel={handleNavigateToSelectList}
+            listSelectSave={handleListSelectSave}
+          />
+        )}
+      </ListPickerModalWrapper>
     </ModalWrapper>
   );
 };

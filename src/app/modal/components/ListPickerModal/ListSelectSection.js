@@ -65,6 +65,7 @@ const ListSelectSection = ({
           onKeyDown={event =>
             event.keyCode === 13 && handleInputEnterDown(event.target.value)
           }
+          onFocus={() => onListSelection(null)}
         />
       </AddListInputWrapper>
       <Spacing vertical={4} />
