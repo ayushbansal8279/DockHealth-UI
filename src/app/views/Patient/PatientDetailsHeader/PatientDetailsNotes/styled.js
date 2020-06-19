@@ -31,7 +31,27 @@ export const PatientDetailsNotesListContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 225px;
+
   overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+  }
 `;
 
 export const PatientNoteInformation = styled.div`
