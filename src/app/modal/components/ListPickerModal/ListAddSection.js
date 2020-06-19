@@ -3,16 +3,8 @@ import { useForm } from 'react-hook-form';
 import { addTaskList } from 'api/tasklist-api';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
-import {
-  Title,
-  Description,
-  StyledButton,
-  AddListFormInput,
-  AddListFormInputWrapper,
-  AddListFormInputLabel,
-  AddListForm,
-  InputErrorLabel,
-} from './styled';
+import ModalFormInput from './ModalFormInput/ModalFormInput';
+import { Title, Description, StyledButton, AddListForm } from './styled';
 
 const ListAddSection = ({
   initialListName,
@@ -47,32 +39,24 @@ const ListAddSection = ({
       <Spacing vertical={5} />
       <AddListForm onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <AddListFormInputWrapper>
-            <AddListFormInputLabel hasError={errors.listName}>
-              Add list
-            </AddListFormInputLabel>
-            <AddListFormInput
-              name="listName"
-              placeholder="What would you like to name your list?"
-              defaultValue={initialListName}
-              disabled={isSavingList}
-              ref={register({ required: true })}
-              hasError={errors.listName}
-            />
-            {errors.listName?.type === 'required' && (
-              <InputErrorLabel>This field is required</InputErrorLabel>
-            )}
-          </AddListFormInputWrapper>
+          <ModalFormInput
+            name="listName"
+            label="Add list"
+            placeholder="What would you like to name your list?"
+            initialValue={initialListName}
+            disabled={isSavingList}
+            reference={register({ required: true })}
+            errors={errors.listName}
+          />
           <Spacing vertical={4} />
-          <AddListFormInputWrapper>
-            <AddListFormInputLabel>Description</AddListFormInputLabel>
-            <AddListFormInput
-              name="listDescription"
-              placeholder="Add a description for your new list"
-              disabled={isSavingList}
-              ref={register}
-            />
-          </AddListFormInputWrapper>
+          <ModalFormInput
+            name="listDescription"
+            label="Description"
+            placeholder="Add a description for your new list"
+            disabled={isSavingList}
+            reference={register}
+            errors={errors.listDescription}
+          />
         </div>
         <Grid container direction="row" spacing={2}>
           <Grid item xs={6}>
