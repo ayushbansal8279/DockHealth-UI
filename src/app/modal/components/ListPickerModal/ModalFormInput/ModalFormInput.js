@@ -1,5 +1,11 @@
 import React from 'react';
-import { Input, InputLabel, InputErrorLabel, InputWrapper } from './styled';
+import {
+  Input,
+  InputLabel,
+  InputErrorLabel,
+  InputWrapper,
+  RequiredLabel,
+} from './styled';
 
 const ModalFormInput = ({
   errors,
@@ -7,17 +13,21 @@ const ModalFormInput = ({
   name,
   initialValue,
   disabled,
-  reference,
+  register,
   placeholder,
+  required,
 }) => (
   <InputWrapper>
-    <InputLabel hasError={errors}>{label}</InputLabel>
+    <InputLabel hasError={errors}>
+      {label}
+      {required && <RequiredLabel>(required)</RequiredLabel>}
+    </InputLabel>
     <Input
       name={name}
       placeholder={placeholder}
       defaultValue={initialValue}
       disabled={disabled}
-      ref={reference}
+      ref={register({ required })}
       hasError={errors}
     />
     {errors?.type === 'required' && (

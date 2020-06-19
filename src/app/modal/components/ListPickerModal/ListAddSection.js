@@ -45,7 +45,8 @@ const ListAddSection = ({
             placeholder="What would you like to name your list?"
             initialValue={initialListName}
             disabled={isSavingList}
-            reference={register({ required: true })}
+            register={register}
+            required
             errors={errors.listName}
           />
           <Spacing vertical={4} />
@@ -54,7 +55,7 @@ const ListAddSection = ({
             label="Description"
             placeholder="Add a description for your new list"
             disabled={isSavingList}
-            reference={register}
+            register={register}
             errors={errors.listDescription}
           />
         </div>
