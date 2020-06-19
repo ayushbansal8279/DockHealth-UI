@@ -24,15 +24,18 @@ const getInputBorderBottom = ({ isActive, hasError }) => {
   return '1px solid transparent';
 };
 
+export const InputBox = styled.div`
+  border-bottom: ${props => getInputBorderBottom(props)};
+  transition: border-bottom 0.3s ease-in;
+`;
+
 export const StyledPatientDetailsInput = styled.input`
   border: 0;
   width: 100%;
-  border-bottom: ${props => getInputBorderBottom(props)};
   color: ${palette.darkGrey};
   font-weight: ${fontWeights.bold};
   padding: ${spacing.small} 0;
   outline: none;
-  transition: border-bottom 0.3s ease-in;
 
   &:disabled {
     background: transparent;
@@ -43,12 +46,10 @@ export const StyledPatientDetailsInput = styled.input`
 export const StyledPatientDetailsInputMask = styled(InputMask)`
   border: 0;
   width: 100%;
-  border-bottom: ${props => getInputBorderBottom(props)};
   color: ${palette.darkGrey};
   font-weight: ${fontWeights.bold};
   padding: ${spacing.small} 0;
   outline: none;
-  transition: border-bottom 0.3s ease-in;
 
   &:disabled {
     background: transparent;

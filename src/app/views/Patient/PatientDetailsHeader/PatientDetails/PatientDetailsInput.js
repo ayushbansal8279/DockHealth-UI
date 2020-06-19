@@ -2,6 +2,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
+  InputBox,
   PatientDetailsInputContainer,
   PatientDetailsInputLabel,
   StyledPatientDetailsInputMask,
@@ -16,15 +17,16 @@ const InputComponent = ({
   control,
   defaultValue,
   hasError,
+  isRequired,
   ...rest
 }) => {
-  const { isActive, disabled } = rest;
+  const { disabled } = rest;
   if (options?.length > 0) {
     return (
       <Controller
         name={name}
         onChange={value => (value ? value[1] : null)}
-        rules={{ required: true }}
+        rules={{ required: isRequired }}
         control={control}
         defaultValue={defaultValue}
         as={props => (
@@ -34,17 +36,11 @@ const InputComponent = ({
             getOptionLabel={option => option}
             disabled={disabled}
             openOnFocus
-            renderInput={parameters => {
-              return (
-                <div ref={parameters.InputProps.ref}>
-                  <StyledPatientDetailsInput
-                    {...parameters.inputProps}
-                    isActive={isActive}
-                    hasError={hasError}
-                  />
-                </div>
-              );
-            }}
+            renderInput={parameters => (
+              <div ref={parameters.InputProps.ref}>
+                <StyledPatientDetailsInput {...parameters.inputProps} />
+              </div>
+            )}
           />
         )}
       />
@@ -54,7 +50,7 @@ const InputComponent = ({
   return (
     <StyledPatientDetailsInputMask
       inputRef={register({
-        required: true,
+        required: isRequired,
       })}
       name={name}
       defaultValue={defaultValue}
@@ -75,6 +71,7 @@ const PatientDetailsInput = ({
   defaultValue,
   control,
   error,
+  isRequired,
 }) => {
   const hasError = !!error;
   return (
@@ -82,18 +79,21 @@ const PatientDetailsInput = ({
       <PatientDetailsInputLabel hasError={hasError}>
         {label}
       </PatientDetailsInputLabel>
-      <InputComponent
-        placeholder={placeholder}
-        isActive={isActive}
-        disabled={!isActive}
-        mask={mask}
-        options={options}
-        name={name}
-        register={register}
-        defaultValue={defaultValue}
-        control={control}
-        hasError={hasError}
-      />
+      <InputBox isActive={isActive} hasError={hasError}>
+        <InputComponent
+          placeholder={placeholder}
+          isActive={isActive}
+          disabled={!isActive}
+          mask={mask}
+          options={options}
+          name={name}
+          register={register}
+          defaultValue={defaultValue}
+          control={control}
+          hasError={hasError}
+          isRequired={isRequired}
+        />
+      </InputBox>
       <PatientDetailsInputError hasError={hasError}>
         {error}
       </PatientDetailsInputError>

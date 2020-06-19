@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { useForm } from 'react-hook-form';
 import { Button, Collapse } from '@material-ui/core';
 import PatientDetailsInput from './PatientDetailsInput';
@@ -39,6 +40,7 @@ const PatientDetails = ({
   updatePatient,
   patientIdentifier,
 }) => {
+  const formattedDob = moment(dob).format('MM/DD/YYYY');
   const defaultValues = {
     firstName,
     middleName,
@@ -46,10 +48,11 @@ const PatientDetails = ({
     email,
     phoneMobile,
     phoneHome,
-    dob,
+    dob: formattedDob,
     gender,
     mrn,
   };
+
   const [isActive, setIsActive] = useState(false);
   const {
     register,
@@ -74,7 +77,7 @@ const PatientDetails = ({
     setValue('email', email);
     setValue('phoneMobile', phoneMobile);
     setValue('phoneHome', phoneHome);
-    setValue('dob', dob);
+    setValue('dob', formattedDob);
     setValue('gender', gender);
     setValue('mrn', mrn);
   }, [
@@ -127,6 +130,7 @@ const PatientDetails = ({
             name="firstName"
             register={register}
             error={errorMessages?.firstName}
+            isRequired
           />
           <PatientDetailsInput
             label="middle name"
@@ -135,6 +139,7 @@ const PatientDetails = ({
             name="middleName"
             register={register}
             error={errorMessages?.middleName}
+            isRequired={false}
           />
           <PatientDetailsInput
             label="last name"
@@ -143,6 +148,7 @@ const PatientDetails = ({
             name="lastName"
             register={register}
             error={errorMessages?.lastName}
+            isRequired
           />
         </PatientDetailsFormRow>
         <PatientDetailsFormRow>
@@ -155,15 +161,18 @@ const PatientDetails = ({
             defaultValue={genderValue}
             control={control}
             error={errorMessages?.gender}
+            isRequired={false}
           />
           <PatientDetailsInput
             label="birthday"
             isActive={isActive}
             placeholder="- -"
-            mask="99/99/9999"
+            mask={isActive && '99/99/9999'}
             name="dob"
             register={register}
             error={errorMessages?.dob}
+            isRequired={false}
+            defaultValue={moment(dob).format('MM/DD/YYYY')}
           />
           <PatientDetailsInput
             label="mrn"
@@ -172,6 +181,7 @@ const PatientDetails = ({
             name="mrn"
             register={register}
             error={errorMessages?.mrn}
+            isRequired={false}
           />
         </PatientDetailsFormRow>
         <PatientDetailsFormRow>
@@ -181,8 +191,10 @@ const PatientDetails = ({
             placeholder="- -"
             name="phoneMobile"
             register={register}
-            mask="(999) 999-999"
+            mask={isActive && '(999) 999-9999'}
             error={errorMessages?.phoneMobile}
+            isRequired={false}
+            defaultValue={phoneMobile}
           />
           <PatientDetailsInput
             label="home phone"
@@ -190,7 +202,10 @@ const PatientDetails = ({
             placeholder="- -"
             name="phoneHome"
             register={register}
+            mask={isActive && '(999) 999-9999'}
             error={errorMessages?.phoneHome}
+            isRequired={false}
+            defaultValue={phoneHome}
           />
           <PatientDetailsInput
             label="email"
@@ -199,6 +214,7 @@ const PatientDetails = ({
             name="email"
             register={register}
             error={errorMessages?.email}
+            isRequired={false}
           />
         </PatientDetailsFormRow>
         {!isActive && (
