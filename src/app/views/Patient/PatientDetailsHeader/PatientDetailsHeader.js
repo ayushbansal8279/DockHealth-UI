@@ -29,7 +29,7 @@ const PatientDetailsHeader = ({
 }) => {
   const [isOpenedDetails, setIsOpenedDetails] = useState(false);
 
-  const { allNotes } = patientDetails;
+  const { allNotes, patientIdentifier } = patientDetails;
 
   return (
     <PatientDetailsContainer>
@@ -43,6 +43,7 @@ const PatientDetailsHeader = ({
           {...patientDetails}
           isOpenedDetails={isOpenedDetails}
           updatePatient={updatePatient}
+          patientIdentifier={patientIdentifier}
         />
         <PatientDetailsNotes
           allNotes={allNotes}

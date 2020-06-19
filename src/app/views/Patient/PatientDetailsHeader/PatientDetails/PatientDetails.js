@@ -37,6 +37,7 @@ const PatientDetails = ({
   mrn,
   isOpenedDetails,
   updatePatient,
+  patientIdentifier,
 }) => {
   const defaultValues = {
     firstName,
@@ -115,7 +116,7 @@ const PatientDetails = ({
       <PatientDetailsForm
         onSubmit={handleSubmit(data => {
           setIsActive(false);
-          updatePatient({ patient: data });
+          updatePatient({ patient: { ...data, patientIdentifier } });
         })}
       >
         <PatientDetailsFormRow>

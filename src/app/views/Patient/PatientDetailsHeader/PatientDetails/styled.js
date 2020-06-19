@@ -70,7 +70,7 @@ export const PatientDetailsForm = styled.form`
 
 export const PatientDetailsFormRow = styled.div`
   display: flex;
-  padding: 0 ${spacing.giga} ${spacing.regularPlus};
+  padding: 0 ${spacing.giga} ${spacing.small};
 `;
 
 export const PatientDetailsButton = styled.button`
