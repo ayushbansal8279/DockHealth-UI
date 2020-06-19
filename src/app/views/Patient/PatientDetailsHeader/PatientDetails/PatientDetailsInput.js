@@ -22,7 +22,7 @@ const InputComponent = ({
   if (options?.length > 0) {
     return (
       <Controller
-        name="gender"
+        name={name}
         onChange={value => (value ? value[1] : null)}
         rules={{ required: true }}
         control={control}
