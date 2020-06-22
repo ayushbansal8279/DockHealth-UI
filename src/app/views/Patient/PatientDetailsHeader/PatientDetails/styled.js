@@ -75,7 +75,7 @@ export const PatientDetailsFormRow = styled.div`
 `;
 
 export const PatientDetailsButton = styled.button`
-  color: ${palette.darkBlue};
+  color: ${props => (props.isEdit ? palette.darkBlue : palette.coolGrey2)};
   width: fit-content;
   font-weight: ${fontWeights.regularPlus};
   margin-left: ${spacing.giga};
