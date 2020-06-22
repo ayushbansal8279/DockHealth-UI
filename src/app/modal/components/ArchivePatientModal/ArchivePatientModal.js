@@ -12,13 +12,13 @@ import {
   ConfirmButton,
 } from '../styled';
 
-const ArchievePatientModal = ({ closeModal, confirm }) => {
+const ArchivePatientModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalMainIcon src={RedFolder} alt="red-folder" />
         <Typography color="textPrimary" variant="h2">
-          Archievie Patient
+          Archivie Patient
         </Typography>
         <Spacing vertical={5} />
         <Typography variant="body1">
@@ -40,4 +40,4 @@ const ArchievePatientModal = ({ closeModal, confirm }) => {
   );
 };
 
-export default ArchievePatientModal;
+export default ArchivePatientModal;

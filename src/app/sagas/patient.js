@@ -1,10 +1,12 @@
 import { put, call, takeEvery, takeLatest, select } from 'redux-saga/effects';
+import { hashHistory } from 'react-router';
 import {
   getPatientById,
   createPatientNote,
   deletePatientNote as deletePatientNoteApi,
   updatePatientNote as updatePatientNoteApi,
   updatePatientWithoutAlert,
+  archivePatient as archivePatientApi,
 } from 'api/patient-api';
 import {
   FETCH_PATIENT,
@@ -21,7 +23,7 @@ export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_EDIT_PATIENT_NOTE = 'DO_EDIT_PATIENT_NOTE';
 export const DO_DELETE_PATIENT_NOTE = 'DO_DELETE_PATIENT_NOTE';
 export const DO_UPDATE_PATIENT = 'DO_UPDATE_PATIENT';
-export const DO_ARCHIEVE_PATIENT = 'DO_ARCHIEVE_PATIENT';
+export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
 
 export const getPatient = () => ({
   type: DO_GET_PATIENT,
@@ -47,8 +49,8 @@ export const updatePatient = payload => ({
   ...payload,
 });
 
-export const archievePatient = () => ({
-  type: DO_ARCHIEVE_PATIENT,
+export const archivePatient = () => ({
+  type: DO_ARCHIVE_PATIENT,
 });
 
 export function* doGetPatient() {
@@ -153,14 +155,13 @@ export function* doUpdatePatient(payload) {
   }
 }
 
-// eslint-disable-next-line sonarjs/no-identical-functions
-export function* doArchievePatient() {
+export function* doArchivePatient() {
   try {
     const { patientIdentifier } = yield select(locationParametersSelector);
 
     yield put({ type: FETCH_PATIENT });
 
-    // yield call(archievePatientApi, patientIdentifier);
+    yield call(archivePatientApi, patientIdentifier);
 
     const details = yield call(getPatientById, patientIdentifier);
 
@@ -168,7 +169,11 @@ export function* doArchievePatient() {
       type: FETCH_PATIENT_SUCCESS,
       details,
     });
+    yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    yield put(closeModal());
+    yield put(hashHistory.push('/patients'));
   } catch (error) {
+    yield put(closeModal());
     yield put({ type: FETCH_PATIENT_ERROR, error });
   }
 }
@@ -179,5 +184,5 @@ export default function* watchPatient() {
   yield takeLatest(DO_EDIT_PATIENT_NOTE, doEditPatientNote);
   yield takeLatest(DO_DELETE_PATIENT_NOTE, doDeletePatientNote);
   yield takeLatest(DO_UPDATE_PATIENT, doUpdatePatient);
-  yield takeLatest(DO_ARCHIEVE_PATIENT, doArchievePatient);
+  yield takeLatest(DO_ARCHIVE_PATIENT, doArchivePatient);
 }

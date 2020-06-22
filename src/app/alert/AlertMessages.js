@@ -13,4 +13,5 @@ export default {
   ATTACHMENT_ADDED: 'Attachment added',
   ATTACHMENT_REMOVED: 'Attachment removed',
   TASK_DUPLICATED: 'Task duplicted',
+  PATIENT_ARCHIVED: 'Patient has been archived succesfully!',
 };

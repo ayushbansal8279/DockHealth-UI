@@ -39,7 +39,7 @@ const PatientDetails = ({
   isOpenedDetails,
   updatePatient,
   patientIdentifier,
-  archievePatient,
+  archivePatient,
 }) => {
   const formattedDob = dob ? moment(dob).format('MM/DD/YYYY') : null;
   const defaultValues = {
@@ -224,8 +224,8 @@ const PatientDetails = ({
           </PatientDetailsButton>
         )}
         {!isActive && (
-          <PatientDetailsButton type="button" onClick={archievePatient}>
-            ARCHIEVE
+          <PatientDetailsButton type="button" onClick={archivePatient}>
+            ARCHIVE
           </PatientDetailsButton>
         )}
         {isActive && (
