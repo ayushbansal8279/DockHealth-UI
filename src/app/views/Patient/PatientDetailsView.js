@@ -26,6 +26,7 @@ const PatientDetailsView = ({
     activeTab,
     incompleteTasksCount,
     completeTasksCount,
+    lists,
   },
   modalActions,
   megaFilter,
@@ -59,7 +60,16 @@ const PatientDetailsView = ({
         <Toolbar
           onSelectTab={navigateToTab}
           selectedTab={activeTab}
-          printData={{}}
+          printData={{
+            completedTasks:
+              activeTab === TaskListTabName.COMPLETE
+                ? lists.flatMap(({ tasks }) => tasks)
+                : [],
+            openedTasks:
+              activeTab === TaskListTabName.OPEN
+                ? lists.flatMap(({ tasks }) => tasks)
+                : [],
+          }}
           openTasksAmount={incompleteTasksCount}
           completedTasksAmount={completeTasksCount}
           onSearchChange={handleSearchValueChange}
