@@ -67,6 +67,8 @@ const TopSection = ({
 }) => {
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+  const selectedTaskStatus = selectedTask?.status;
+  const isCompleted = selectedTaskStatus === 'COMPLETE';
 
   const {
     filedInInputReference,
@@ -200,21 +202,23 @@ const TopSection = ({
                 paddingBottom: '0',
               }}
             >
-              <ListItem
-                key="action_add_subtask"
-                onClick={onAddSubTask({
-                  afterAddSubTask: () => {
-                    closeTaskMenuPopover();
-                  },
-                  selectedTask,
-                })}
-                button
-                style={{
-                  borderBottom: `1px solid ${palette.coolGrey3}`,
-                }}
-              >
-                <CondensedH4>Add Subtask</CondensedH4>
-              </ListItem>
+              {!isCompleted && (
+                <ListItem
+                  key="action_add_subtask"
+                  onClick={onAddSubTask({
+                    afterAddSubTask: () => {
+                      closeTaskMenuPopover();
+                    },
+                    selectedTask,
+                  })}
+                  button
+                  style={{
+                    borderBottom: `1px solid ${palette.coolGrey3}`,
+                  }}
+                >
+                  <CondensedH4>Add Subtask</CondensedH4>
+                </ListItem>
+              )}
               <ListItem
                 key="action_duplicate"
                 onClick={() => {
