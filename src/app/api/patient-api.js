@@ -161,3 +161,14 @@ export const deletePatientNote = patientNoteIdentifier =>
     .catch(error => {
       throw new Error(error?.response?.data);
     });
+
+export function updatePatientWithoutAlert(patient) {
+  return axios
+    .put('patient', patient)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
+}
