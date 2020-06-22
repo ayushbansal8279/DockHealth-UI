@@ -9,4 +9,8 @@ export const EmptyListContainer = styled.div`
   font-weight: ${fontWeights.bold};
 `;
 
-export default { EmptyListContainer };
+export const EmptyFilteredListContainer = styled.div`
+  text-align: left;
+  font-size: ${fontSizes.huge};
+  font-weight: ${fontWeights.bold};
+`;

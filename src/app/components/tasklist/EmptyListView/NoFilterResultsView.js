@@ -1,11 +1,11 @@
 import React from 'react';
-import { EmptyListContainer } from './styled';
+import { EmptyFilteredListContainer } from './styled';
 
 const NoFilterResultsView = () => {
   return (
-    <EmptyListContainer>
-      <p>No results were found for your filters</p>
-    </EmptyListContainer>
+    <EmptyFilteredListContainer>
+      <p>No results for your filter criteria.</p>
+    </EmptyFilteredListContainer>
   );
 };
 
