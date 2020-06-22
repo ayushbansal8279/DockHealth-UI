@@ -1,3 +1,4 @@
+import { isEmpty } from 'ramda';
 import {
   put,
   call,
@@ -17,6 +18,7 @@ import {
   addTask as createTaskApi,
   reorderTasksInGroup,
   getListTasksByUser,
+  getFilteredTasksForList,
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
 } from 'api/task-api';
@@ -27,6 +29,7 @@ import {
   GET_TASKS_SUCCESS,
   GET_COMPLETED_TASKS_SUCCESS,
 } from 'actions/action-types';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { locationParametersSelector } from '../location/selectors';
@@ -129,14 +132,27 @@ export function* doGetTasksList(payload) {
     const tasksActionType =
       status === 'INCOMPLETE' ? GET_TASKS_SUCCESS : GET_COMPLETED_TASKS_SUCCESS;
 
-    const tasks = yield call(
-      getListTasksByUser,
-      taskListIdentifier,
-      status,
-      undefined,
-      undefined,
-      0,
-    );
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+
+    let tasks;
+
+    if (!selectedFilters || isEmpty(selectedFilters)) {
+      tasks = yield call(
+        getListTasksByUser,
+        taskListIdentifier,
+        status,
+        undefined,
+        undefined,
+        0,
+      );
+    } else {
+      tasks = yield call(
+        getFilteredTasksForList,
+        taskListIdentifier,
+        status,
+        selectedFilters,
+      );
+    }
 
     yield put({ type: tasksActionType, tasks });
   } catch (error) {
@@ -300,10 +316,7 @@ export function* doOnEnterTasksGroupsList() {
     yield put({ type: TASK_GROUP_LIST_REQUEST });
 
     if (taskListIdentifier) {
-      yield all([
-        call(doGetTasksGroupsList, { taskListIdentifier }),
-        call(doGetTasksList, { taskListIdentifier }),
-      ]);
+      yield call(doGetTasksGroupsList, { taskListIdentifier });
     }
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
