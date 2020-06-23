@@ -16,3 +16,8 @@ export const membersNotInTaskListSelector = createSelector(
   taskListStateSelector,
   ({ orgusersnotintasklist }) => orgusersnotintasklist,
 );
+
+export const listsSelector = createSelector(
+  taskListStateSelector,
+  ({ tasklist }) => tasklist,
+);

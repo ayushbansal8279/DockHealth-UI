@@ -38,6 +38,7 @@ export const ListItem = styled.div`
   position: relative;
   display: flex;
   padding: ${spacing.small} ${spacing.large} ${spacing.small} 42px;
+  color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;

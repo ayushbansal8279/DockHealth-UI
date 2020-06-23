@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { listsSelector } from 'selectors/task-list-selectors';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import {
@@ -17,7 +19,7 @@ import {
   InfoDot,
 } from './styled';
 
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ lists }) => {
   return (
     <DashboardSidebarWrapper>
       <TopSection>
@@ -30,48 +32,38 @@ const DashboardSidebar = () => {
           <ListsHeader>Lists</ListsHeader>
         </Link>
         <ListItemsWrapper>
-          <ListItem>
-            <PrivateListIcon src={LockIcon} alt="private" />
-            <ListItemTitle>
-              <TitleText>
-                Item with very long text that is taking more space
-              </TitleText>
-            </ListItemTitle>
-            <ListItemInfo>
-              <InfoDot />
-              32
-            </ListItemInfo>
-          </ListItem>
-          <ListItem>
-            <PrivateListIcon src={LockIcon} alt="private" />
-            <ListItemTitle>
-              <TitleText>Item 1</TitleText>
-            </ListItemTitle>
-            <ListItemInfo>32</ListItemInfo>
-          </ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
-          <ListItem>Item 2</ListItem>
+          {lists.map(
+            ({
+              listName,
+              taskListIdentifier,
+              numberOfUnreadTasks,
+              isPrivate,
+              numberOfTasks = 0,
+            }) => (
+              <Link to={`/tasks/${taskListIdentifier}`}>
+                <ListItem>
+                  {isPrivate && (
+                    <PrivateListIcon src={LockIcon} alt="private" />
+                  )}
+                  <ListItemTitle>
+                    <TitleText>{listName}</TitleText>
+                  </ListItemTitle>
+                  <ListItemInfo>
+                    {!!numberOfUnreadTasks && <InfoDot />}
+                    {numberOfTasks}
+                  </ListItemInfo>
+                </ListItem>
+              </Link>
+            ),
+          )}
         </ListItemsWrapper>
       </ListsSection>
     </DashboardSidebarWrapper>
   );
 };
 
-export default DashboardSidebar;
+const mapStateToProps = state => ({
+  lists: listsSelector(state),
+});
+
+export default connect(mapStateToProps)(DashboardSidebar);
