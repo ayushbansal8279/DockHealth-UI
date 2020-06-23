@@ -275,7 +275,7 @@ const TaskItem = ({
                 storeAsCurrentTask(task);
               }}
             >
-              {task.status !== 'COMPLETE' && !patient && (
+              {task.status !== 'COMPLETE' && !isSubtask && !patient && (
                 <AddPlaceholder>+ Add Patient</AddPlaceholder>
               )}
               {patient &&
