@@ -33,7 +33,9 @@ const InputComponent = ({
           <Autocomplete
             {...props}
             options={options}
-            getOptionLabel={option => option}
+            getOptionLabel={option =>
+              option?.charAt(0).toUpperCase() + option?.slice(1)
+            }
             disabled={disabled}
             openOnFocus
             renderInput={parameters => (

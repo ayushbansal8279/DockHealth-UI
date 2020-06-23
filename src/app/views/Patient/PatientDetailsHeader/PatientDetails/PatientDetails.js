@@ -40,7 +40,7 @@ const PatientDetails = ({
   updatePatient,
   patientIdentifier,
 }) => {
-  const formattedDob = moment(dob).format('MM/DD/YYYY');
+  const formattedDob = dob ? moment(dob).format('MM/DD/YYYY') : null;
   const defaultValues = {
     firstName,
     middleName,
@@ -156,7 +156,7 @@ const PatientDetails = ({
             label="gender"
             isActive={isActive}
             placeholder="- -"
-            options={['male', 'female', 'other']}
+            options={['male', 'female', 'non binary']}
             name="gender"
             defaultValue={genderValue}
             control={control}
@@ -172,7 +172,7 @@ const PatientDetails = ({
             register={register}
             error={errorMessages?.dob}
             isRequired={false}
-            defaultValue={moment(dob).format('MM/DD/YYYY')}
+            defaultValue={dob ? moment(dob).format('MM/DD/YYYY') : null}
           />
           <PatientDetailsInput
             label="mrn"

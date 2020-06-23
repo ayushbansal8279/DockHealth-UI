@@ -1,10 +1,10 @@
 import { put, call, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import {
   getPatientById,
-  updatePatient as updatePatientApi,
   createPatientNote,
   deletePatientNote as deletePatientNoteApi,
   updatePatientNote as updatePatientNoteApi,
+  updatePatientWithoutAlert,
 } from 'api/patient-api';
 import {
   FETCH_PATIENT,
@@ -12,6 +12,8 @@ import {
   FETCH_PATIENT_ERROR,
 } from 'actions/action-types';
 import { closeModal } from 'modal/actions';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import { locationParametersSelector } from '../location/selectors';
 
 export const DO_GET_PATIENT = 'DO_GET_PATIENT';
@@ -74,6 +76,7 @@ export function* doAddPatientNote(payload) {
       type: FETCH_PATIENT_SUCCESS,
       details,
     });
+    yield put(showGlobalAlert(AlertMessages.CREATED));
   } catch (error) {
     yield put({ type: FETCH_PATIENT_ERROR, error });
   }
@@ -96,6 +99,7 @@ export function* doEditPatientNote(payload) {
       type: FETCH_PATIENT_SUCCESS,
       details,
     });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put({ type: FETCH_PATIENT_ERROR, error });
   }
@@ -115,6 +119,7 @@ export function* doDeletePatientNote(payload) {
       type: FETCH_PATIENT_SUCCESS,
       details,
     });
+    yield put(showGlobalAlert(AlertMessages.DELETED));
   } catch (error) {
     yield put(closeModal());
 
@@ -129,7 +134,7 @@ export function* doUpdatePatient(payload) {
 
     yield put({ type: FETCH_PATIENT });
 
-    yield call(updatePatientApi, patient);
+    yield call(updatePatientWithoutAlert, patient);
 
     const details = yield call(getPatientById, patientIdentifier);
 
@@ -137,6 +142,7 @@ export function* doUpdatePatient(payload) {
       type: FETCH_PATIENT_SUCCESS,
       details,
     });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put({ type: FETCH_PATIENT_ERROR, error });
   }
