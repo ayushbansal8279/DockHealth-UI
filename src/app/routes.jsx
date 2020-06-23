@@ -3,14 +3,7 @@ import { equals, pick } from 'ramda';
 import React from 'react';
 import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
-import {
-  hashHistory,
-  IndexRedirect,
-  IndexRoute,
-  Redirect,
-  Route,
-  Router,
-} from 'react-router';
+import { hashHistory, IndexRoute, Redirect, Route, Router } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'views/Patient/PatientDetailsView';
 import PatientTasksListView from 'views/Patient/PatientTasksListView';
@@ -19,14 +12,15 @@ import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
-import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list';
-import { getPatient } from 'sagas/patient';
+import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list-saga';
+import { getPatient } from 'sagas/patient-saga';
 import {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
   fetchPatientFilters,
   initalizeSavedFilters,
-} from 'sagas/patient-tasks';
+} from 'sagas/patient-tasks-saga';
+import DashboardView from 'views/Dashboard/DashboardView';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
 
 import {
@@ -276,7 +270,7 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated();
           }}
         >
-          <IndexRedirect to="/tasks" />
+          <IndexRoute component={DashboardView} onEnter={() => {}} />
           <Route
             path="/userprofile"
             component={UserProfileViewWrapper}

@@ -11,7 +11,7 @@ import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
-import { TasksGroupsListActions } from 'sagas/tasks-groups-list';
+import { TasksGroupsListActions } from 'sagas/tasks-groups-list-saga';
 import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';

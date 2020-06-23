@@ -20,8 +20,10 @@ import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 import LocationReducer from '../location/reducers';
 import PatientTasksReducer from './patient-tasks-reducer';
+import TemplateReducer from './template-reducer';
 
 export default combineReducers({
+  templateState: TemplateReducer,
   taskState: TaskReducer,
   patientState: PatientReducer,
   userState: UserReducer,
