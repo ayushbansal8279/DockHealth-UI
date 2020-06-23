@@ -8,9 +8,13 @@ import NewToolbar from './NewToolbar';
 import { TaskListTabName } from './config';
 
 const mapStateToProps = (state, ownProps) => {
-  const { members, showMembers } = ownProps;
-  const completedTasks = completedTasksSelector(state);
-  const openedTasks = tasksSelector(state);
+  const { members, showMembers, selectedTab } = ownProps;
+  const completedTasks =
+    selectedTab === TaskListTabName.COMPLETE
+      ? completedTasksSelector(state)
+      : [];
+  const openedTasks =
+    selectedTab === TaskListTabName.OPEN ? tasksSelector(state) : [];
   const haveTasks =
     (openedTasks &&
       openedTasks.length > 0 &&

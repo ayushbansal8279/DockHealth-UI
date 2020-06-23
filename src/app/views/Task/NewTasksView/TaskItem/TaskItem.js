@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router';
 import moment from 'moment';
 import { isEmpty, pick } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -60,6 +59,7 @@ import {
   CompletedBy,
   InfoText,
   PriorityHoverIcon,
+  ListLink,
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
@@ -439,13 +439,13 @@ const TaskItem = ({
             width="168px"
           >
             {listName && taskListIdentifier ? (
-              <Link
+              <ListLink
                 to={`/tasks/${taskListIdentifier}${
                   task.status === 'COMPLETE' ? '/complete' : ''
                 }`}
               >
                 {listName}
-              </Link>
+              </ListLink>
             ) : (
               'Unfiled'
             )}

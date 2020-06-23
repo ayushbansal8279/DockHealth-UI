@@ -1,8 +1,14 @@
 import styled from 'styled-components';
+import { Link } from 'react-router';
 import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
+
+export const ListLink = styled(Link)`
+  max-height: 2.6rem;
+  overflow: hidden;
+`;
 
 export const CompletedBy = styled.div`
   width: 100%;
@@ -111,6 +117,7 @@ export const TaskItemCell = styled.div`
   font-weight: ${props =>
     props.bolded ? fontWeights.bold : fontWeights.light};
   min-width: ${props => props.width};
+  max-width: ${props => props.width};
   padding: ${spacing.smallPlus} 0;
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
