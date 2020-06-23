@@ -172,3 +172,10 @@ export function updatePatientWithoutAlert(patient) {
       throw new Error(error?.response?.data);
     });
 }
+export const archivePatient = patientNoteIdentifier =>
+  axios
+    .delete(`/patient/archivePatient/${patientNoteIdentifier}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });

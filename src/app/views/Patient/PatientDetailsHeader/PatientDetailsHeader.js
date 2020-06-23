@@ -9,6 +9,7 @@ import {
   editPatientNote as editPatientNoteAction,
   deletePatientNote as deletePatientNoteAction,
   updatePatient as updatePatientAction,
+  archivePatient as archivePatientAction,
 } from 'sagas/patient';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { openModal as openModalAction } from 'modal/actions';
@@ -26,6 +27,7 @@ const PatientDetailsHeader = ({
   editPatientNote,
   deletePatientNote,
   updatePatient,
+  archivePatient,
 }) => {
   const [isOpenedDetails, setIsOpenedDetails] = useState(false);
 
@@ -44,6 +46,7 @@ const PatientDetailsHeader = ({
           isOpenedDetails={isOpenedDetails}
           updatePatient={updatePatient}
           patientIdentifier={patientIdentifier}
+          archivePatient={archivePatient}
         />
         <PatientDetailsNotes
           allNotes={allNotes}
@@ -69,10 +72,16 @@ const mapDispatchToProps = {
   deletePatientNote: deletePatientNoteAction,
   openModal: openModalAction,
   updatePatient: updatePatientAction,
+  archivePatient: archivePatientAction,
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { deletePatientNote, openModal, ...restDispatchProps } = dispatchProps;
+  const {
+    deletePatientNote,
+    openModal,
+    archivePatient,
+    ...restDispatchProps
+  } = dispatchProps;
 
   return {
     ...restDispatchProps,
@@ -83,6 +92,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         confirm: () => deletePatientNote({ patientNoteIdentifier }),
       };
       openModal('DeleteNote', modalProps);
+    },
+    archivePatient: patientIdentifier => {
+      const modalProps = {
+        confirm: () => archivePatient({ patientIdentifier }),
+      };
+      openModal('ArchivePatient', modalProps);
     },
   };
 };
