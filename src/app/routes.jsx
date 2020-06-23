@@ -271,6 +271,9 @@ export const Routes = ({ store }) => {
 
   const onLeaveDashboard = () => {
     dispatch(TemplateActions.showHeader());
+    dispatch(TemplateActions.disableNavbarFullMode());
+    dispatch(TemplateActions.showNavbarSettings());
+    dispatch(TemplateActions.resetCustomNavbarWidth());
   };
 
   return (

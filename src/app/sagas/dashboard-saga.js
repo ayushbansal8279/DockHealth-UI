@@ -1,5 +1,5 @@
 import { put, takeEvery } from 'redux-saga/effects';
-import { hideHeader } from 'actions/template-actions';
+import * as TemplateActions from 'actions/template-actions';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 
@@ -8,7 +8,10 @@ export const initializeDashboardView = () => ({
 });
 
 function* doInitializeDashboardView() {
-  yield put(hideHeader());
+  yield put(TemplateActions.hideHeader());
+  yield put(TemplateActions.enableNavbarFullMode());
+  yield put(TemplateActions.hideNavbarSettings());
+  yield put(TemplateActions.setCustomNavbarWidth(380));
 }
 
 export default function* watchDashboard() {

@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { isHeaderVisibleSelector } from 'selectors/template-selectors';
+import { templateStateSelector } from 'selectors/template-selectors';
 import { getBillingDetails } from 'actions/organization-actions';
 import useBoolean from 'hooks/useBoolean';
 import {
@@ -24,13 +24,18 @@ const initializeDrawerHooks = () => {
   const [bannerMessageLinkFlag, setBannerMessageLinkFlag] = useState(false);
 
   const {
-    isHeaderVisible,
     organization,
     billingDetails,
     messageBannerBar,
     user,
     lists,
     header,
+    templateState: {
+      isHeaderVisible,
+      isNavbarInFullMode,
+      areNavbarSettingsVisible,
+      navbarFullWidth,
+    },
   } = useSelector(store => ({
     ...store.organizationState,
     organizationIdentifier:
@@ -39,7 +44,7 @@ const initializeDrawerHooks = () => {
     user: store.userState.userProfile,
     lists: store.taskListState.tasklist,
     header: store.header,
-    isHeaderVisible: isHeaderVisibleSelector(store),
+    templateState: templateStateSelector(store),
   }));
 
   const intercomUser = {
@@ -134,7 +139,8 @@ const initializeDrawerHooks = () => {
 
   const drawerClasses = useDrawerClasses({
     header,
-    isOpen,
+    isOpen: isNavbarInFullMode || isOpen,
+    navbarFullWidth,
     bannerVisible: bannerVisibleFlag || hasCreditCardExpirationMessage,
   });
 
@@ -185,6 +191,8 @@ const initializeDrawerHooks = () => {
     hasCreditCardExpirationMessage,
     drawerClasses,
     isHeaderVisible,
+    isNavbarInFullMode,
+    areNavbarSettingsVisible,
   };
 };
 

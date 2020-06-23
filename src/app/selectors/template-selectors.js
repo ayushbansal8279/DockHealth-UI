@@ -6,3 +6,13 @@ export const isHeaderVisibleSelector = createSelector(
   templateStateSelector,
   ({ isHeaderVisible }) => isHeaderVisible,
 );
+
+export const isNavbarInFullModeSelector = createSelector(
+  templateStateSelector,
+  ({ isNavbarInFullMode }) => isNavbarInFullMode,
+);
+
+export const areNavbarSettingsVisibleSelector = createSelector(
+  templateStateSelector,
+  ({ areNavbarSettingsVisible }) => areNavbarSettingsVisible,
+);

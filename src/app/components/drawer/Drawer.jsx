@@ -39,6 +39,8 @@ const Drawer = ({ children }) => {
     bannerVisibleFlag,
     bannerMessageLinkFlag,
     isHeaderVisible,
+    isNavbarInFullMode,
+    areNavbarSettingsVisible,
   } = initializeDrawerHooks();
 
   return (
@@ -104,14 +106,19 @@ const Drawer = ({ children }) => {
           setActiveId={setActiveId}
           onMouseEnter={open}
           onMouseLeave={close}
-          open={isOpen}
+          open={isNavbarInFullMode || isOpen}
           user={user}
           lists={lists}
           bannerVisible={bannerVisibleFlag}
+          settingsVisible={areNavbarSettingsVisible}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
-      <ContentContainer id="content-container" open={isOpen}>
+      <ContentContainer
+        id="content-container"
+        isFullView={isNavbarInFullMode}
+        open={isOpen}
+      >
         <GlobalAlertChip />
         {children}
       </ContentContainer>
