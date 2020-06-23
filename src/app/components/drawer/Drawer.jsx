@@ -38,6 +38,7 @@ const Drawer = ({ children }) => {
     drawerClasses,
     bannerVisibleFlag,
     bannerMessageLinkFlag,
+    isHeaderVisible,
   } = initializeDrawerHooks();
 
   return (
@@ -49,43 +50,47 @@ const Drawer = ({ children }) => {
         overflow: 'hidden',
       }}
     >
-      <AppBar
-        className={clsx(
-          drawerClasses.appBar,
-          isOpen && drawerClasses.appBarOpen,
-        )}
-        position="fixed"
-      >
-        <div className={drawerClasses.appBarBorder} />
-        <Grid container item xs={12}>
-          {header?.layout?.map(renderHeaderColumn)}
-        </Grid>
-        <TrialBannerContainer
-          item
-          xs={12}
-          container
-          justify="center"
-          alignItems="center"
+      {isHeaderVisible && (
+        <AppBar
+          className={clsx(
+            drawerClasses.appBar,
+            isOpen && drawerClasses.appBarOpen,
+          )}
+          position="fixed"
         >
-          <TrialBanner
-            bannerVisible={bannerVisibleFlag}
-            hasCreditCardExpirationMessage={hasCreditCardExpirationMessage}
+          <div className={drawerClasses.appBarBorder} />
+          <Grid container item xs={12}>
+            {header?.layout?.map(renderHeaderColumn)}
+          </Grid>
+          <TrialBannerContainer
+            item
+            xs={12}
+            container
+            justify="center"
+            alignItems="center"
           >
-            <MontserratTypography weight="600" variant="h4">
-              <span>
-                {creditCardExpirationMessage ||
-                  messageBannerBar ||
-                  trialEndLabel}
-              </span>
-              {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
-                <TrialBannerLink to="/subscriptions">
-                  {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
-                </TrialBannerLink>
-              )}
-            </MontserratTypography>
-          </TrialBanner>
-        </TrialBannerContainer>
-      </AppBar>
+            <TrialBanner
+              bannerVisible={bannerVisibleFlag}
+              hasCreditCardExpirationMessage={hasCreditCardExpirationMessage}
+            >
+              <MontserratTypography weight="600" variant="h4">
+                <span>
+                  {creditCardExpirationMessage ||
+                    messageBannerBar ||
+                    trialEndLabel}
+                </span>
+                {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
+                  <TrialBannerLink to="/subscriptions">
+                    {hasMinimalUsagePeriodPassed
+                      ? 'Subscribe Now'
+                      : 'Learn more'}
+                  </TrialBannerLink>
+                )}
+              </MontserratTypography>
+            </TrialBanner>
+          </TrialBannerContainer>
+        </AppBar>
+      )}
       <MaterialDrawer
         classes={{
           root: drawerClasses.drawer,

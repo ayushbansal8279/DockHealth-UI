@@ -20,9 +20,11 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
+import { initializeDashboardView } from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
 
+import * as TemplateActions from 'actions/template-actions';
 import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
@@ -256,6 +258,14 @@ export const Routes = ({ store }) => {
     dispatch(fetchPatientFilters());
   };
 
+  const onEnterDashboard = () => {
+    dispatch(initializeDashboardView());
+  };
+
+  const onLeaveDashboard = () => {
+    dispatch(TemplateActions.showHeader());
+  };
+
   return (
     <Router history={hashHistory}>
       <Route
@@ -270,7 +280,11 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated();
           }}
         >
-          <IndexRoute component={DashboardView} onEnter={() => {}} />
+          <IndexRoute
+            component={DashboardView}
+            onEnter={onEnterDashboard}
+            onLeave={onLeaveDashboard}
+          />
           <Route
             path="/userprofile"
             component={UserProfileViewWrapper}

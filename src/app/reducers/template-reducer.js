@@ -1,7 +1,7 @@
-import {} from 'actions/action-types';
-
-const SHOW_TEMPLATE_HEADER = 'SHOW_TEMPLATE_HEADER';
-const HIDE_TEMPLATE_HEADER = 'HIDE_TEMPLATE_HEADER';
+import {
+  SHOW_TEMPLATE_HEADER,
+  HIDE_TEMPLATE_HEADER,
+} from 'actions/action-types';
 
 const initialState = {
   isHeaderVisible: true,

@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
+import { isHeaderVisibleSelector } from 'selectors/template-selectors';
 import { getBillingDetails } from 'actions/organization-actions';
 import useBoolean from 'hooks/useBoolean';
 import {
@@ -23,6 +24,7 @@ const initializeDrawerHooks = () => {
   const [bannerMessageLinkFlag, setBannerMessageLinkFlag] = useState(false);
 
   const {
+    isHeaderVisible,
     organization,
     billingDetails,
     messageBannerBar,
@@ -37,6 +39,7 @@ const initializeDrawerHooks = () => {
     user: store.userState.userProfile,
     lists: store.taskListState.tasklist,
     header: store.header,
+    isHeaderVisible: isHeaderVisibleSelector(store),
   }));
 
   const intercomUser = {
@@ -181,6 +184,7 @@ const initializeDrawerHooks = () => {
     creditCardExpirationMessage,
     hasCreditCardExpirationMessage,
     drawerClasses,
+    isHeaderVisible,
   };
 };
 
