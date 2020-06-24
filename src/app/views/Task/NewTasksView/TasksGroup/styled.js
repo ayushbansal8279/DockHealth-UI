@@ -42,7 +42,6 @@ export const ViewIcon = styled.img`
 
 export const TasksGroupContainer = styled.div`
   display: flex;
-  flex: 1;
   flex-direction: column;
   justify-content: center;
   margin-bottom: ${spacing.giga};

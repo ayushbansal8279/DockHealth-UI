@@ -3,9 +3,6 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 
 export const TaskGroupsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   margin: ${spacing.large} ${spacing.huge};
 `;
 
