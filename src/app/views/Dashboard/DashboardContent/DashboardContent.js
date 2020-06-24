@@ -1,7 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import {
+  dashboardTasksSelector,
+  dashboardTasksIsLoadingSelector,
+} from 'selectors/dashboard-tasks-selectors';
 
-const DashboardContent = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const DashboardContent = ({ dashboardTasks, dashboardTasksIsLoading }) => {
   return <div>Content</div>;
 };
 
-export default DashboardContent;
+const mapStateToProps = state => ({
+  dashboardTasks: dashboardTasksSelector(state),
+  dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
+});
+
+export default connect(mapStateToProps)(DashboardContent);

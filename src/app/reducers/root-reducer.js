@@ -21,6 +21,7 @@ import UserReducer from './user-reducer';
 import LocationReducer from '../location/reducers';
 import PatientTasksReducer from './patient-tasks-reducer';
 import TemplateReducer from './template-reducer';
+import DashboardTasksReducer from './dashboard-tasks-reducer';
 
 export default combineReducers({
   templateState: TemplateReducer,
@@ -45,4 +46,5 @@ export default combineReducers({
   megaFilter: MegaFilterReducer,
   location: LocationReducer,
   patientTasks: PatientTasksReducer,
+  dashboardTasks: DashboardTasksReducer,
 });

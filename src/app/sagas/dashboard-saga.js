@@ -1,8 +1,15 @@
-import { all, put, takeEvery } from 'redux-saga/effects';
+import { all, put, call, takeEvery } from 'redux-saga/effects';
+import {
+  REQUEST_DASHBOARD_TASKS,
+  REQUEST_DASHBOARD_TASKS_SUCCESS,
+  REQUEST_DASHBOARD_TASKS_FAILURE,
+} from 'actions/action-types';
 import * as TemplateActions from 'actions/template-actions';
+import { getDashboardTasks } from 'api/dashboard-api';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 const LEAVE_DASHBOARD_VIEW = 'LEAVE_DASHBOARD_VIEW';
+const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -12,6 +19,23 @@ export const leaveDashboardView = () => ({
   type: LEAVE_DASHBOARD_VIEW,
 });
 
+export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
+
+function* doFetchDashboardTasks() {
+  try {
+    yield put({ type: REQUEST_DASHBOARD_TASKS });
+    const tasksList = yield getDashboardTasks();
+    yield put({
+      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
+      tasksList,
+    });
+  } catch (error) {
+    yield put({
+      type: REQUEST_DASHBOARD_TASKS_FAILURE,
+    });
+  }
+}
+
 function* doInitializeDashboardView() {
   yield all([
     put(TemplateActions.hideHeader()),
@@ -19,6 +43,7 @@ function* doInitializeDashboardView() {
     put(TemplateActions.hideNavbarSettings()),
     put(TemplateActions.setCustomNavbarWidth(380)),
     put(TemplateActions.hideNavbar()),
+    call(doFetchDashboardTasks),
   ]);
 }
 
@@ -35,4 +60,5 @@ function* doLeaveDashboardView() {
 export default function* watchDashboard() {
   yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
   yield takeEvery(LEAVE_DASHBOARD_VIEW, doLeaveDashboardView);
+  yield takeEvery(FETCH_DASHBOARD_TASKS, doFetchDashboardTasks);
 }
