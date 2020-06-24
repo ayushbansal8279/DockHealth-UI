@@ -41,6 +41,7 @@ const Drawer = ({ children }) => {
     isHeaderVisible,
     isNavbarInFullMode,
     areNavbarSettingsVisible,
+    hideNavbar,
   } = initializeDrawerHooks();
 
   return (
@@ -105,7 +106,7 @@ const Drawer = ({ children }) => {
           activeId={activeId}
           setActiveId={setActiveId}
           onMouseEnter={open}
-          onMouseLeave={close}
+          onMouseLeave={isNavbarInFullMode ? hideNavbar : close}
           open={isNavbarInFullMode || isOpen}
           user={user}
           lists={lists}

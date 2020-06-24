@@ -11,6 +11,7 @@ import {
   getSubscriptionIsTrial,
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import * as TemplateActions from 'actions/template-actions';
 import { TrialBannerLink, useDrawerClasses } from './Drawer.Styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
@@ -195,6 +196,7 @@ const initializeDrawerHooks = () => {
     isHeaderVisible,
     isNavbarInFullMode,
     areNavbarSettingsVisible,
+    hideNavbar: () => dispatch(TemplateActions.hideNavbar()),
   };
 };
 
