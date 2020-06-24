@@ -13,4 +13,5 @@ export const TaskViewContainer = styled.div`
   justify-content: flex-start;
   height: 100%;
   background-color: ${palette.coolGrey4};
+  overflow: auto;
 `;
