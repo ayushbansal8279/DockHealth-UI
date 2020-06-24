@@ -7,6 +7,8 @@ import {
   HIDE_NAVBAR_SETTINGS,
   SET_CUSTOM_NAVBAR_FULL_WIDTH,
   RESET_CUSTOM_NAVBAR_FULL_WIDTH,
+  SHOW_NAVBAR,
+  HIDE_NAVBAR,
 } from 'actions/action-types';
 
 const initialState = {
@@ -14,6 +16,7 @@ const initialState = {
   isNavbarInFullMode: false,
   areNavbarSettingsVisible: true,
   navbarFullWidth: null,
+  isNavbarVisible: true,
 };
 
 const TemplateReducer = (state = initialState, action) => {
@@ -40,8 +43,16 @@ const TemplateReducer = (state = initialState, action) => {
       const { width } = action.payload;
       return { ...state, navbarFullWidth: width };
     }
+
+    case HIDE_NAVBAR:
+      return { ...state, isNavbarVisible: false };
+
+    case SHOW_NAVBAR:
+      return { ...state, isNavbarVisible: true };
+
     case RESET_CUSTOM_NAVBAR_FULL_WIDTH:
       return { ...state, navbarFullWidth: null };
+
     default: {
       return { ...state };
     }

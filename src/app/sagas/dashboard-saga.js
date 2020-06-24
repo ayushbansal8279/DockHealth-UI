@@ -12,6 +12,7 @@ function* doInitializeDashboardView() {
   yield put(TemplateActions.enableNavbarFullMode());
   yield put(TemplateActions.hideNavbarSettings());
   yield put(TemplateActions.setCustomNavbarWidth(380));
+  yield put(TemplateActions.hideNavbar());
 }
 
 export default function* watchDashboard() {

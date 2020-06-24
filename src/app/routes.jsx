@@ -274,6 +274,7 @@ export const Routes = ({ store }) => {
     dispatch(TemplateActions.disableNavbarFullMode());
     dispatch(TemplateActions.showNavbarSettings());
     dispatch(TemplateActions.resetCustomNavbarWidth());
+    dispatch(TemplateActions.showNavbar());
   };
 
   return (

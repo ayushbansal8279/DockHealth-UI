@@ -35,6 +35,7 @@ const initializeDrawerHooks = () => {
       isNavbarInFullMode,
       areNavbarSettingsVisible,
       navbarFullWidth,
+      isNavbarVisible,
     },
   } = useSelector(store => ({
     ...store.organizationState,
@@ -140,7 +141,8 @@ const initializeDrawerHooks = () => {
   const drawerClasses = useDrawerClasses({
     header,
     isOpen: isNavbarInFullMode || isOpen,
-    navbarFullWidth,
+    navbarFullWidth: navbarFullWidth || 260,
+    isNavbarVisible,
     bannerVisible: bannerVisibleFlag || hasCreditCardExpirationMessage,
   });
 

@@ -7,7 +7,17 @@ import {
   HIDE_NAVBAR_SETTINGS,
   SET_CUSTOM_NAVBAR_FULL_WIDTH,
   RESET_CUSTOM_NAVBAR_FULL_WIDTH,
+  SHOW_NAVBAR,
+  HIDE_NAVBAR,
 } from 'actions/action-types';
+
+export const showNavbar = () => ({
+  type: SHOW_NAVBAR,
+});
+
+export const hideNavbar = () => ({
+  type: HIDE_NAVBAR,
+});
 
 export const hideHeader = () => ({
   type: HIDE_TEMPLATE_HEADER,

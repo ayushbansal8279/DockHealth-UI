@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { listsSelector } from 'selectors/task-list-selectors';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
+import * as TemplateActions from 'actions/template-actions';
 import {
   TopSection,
   MenuButton,
@@ -19,11 +20,11 @@ import {
   InfoDot,
 } from './styled';
 
-const DashboardSidebar = ({ lists }) => {
+const DashboardSidebar = ({ lists, showNavbar }) => {
   return (
     <DashboardSidebarWrapper>
       <TopSection>
-        <MenuButton>
+        <MenuButton onClick={showNavbar}>
           <img src={MenuIcon} alt="menu" />
         </MenuButton>
       </TopSection>
@@ -62,8 +63,12 @@ const DashboardSidebar = ({ lists }) => {
   );
 };
 
+const mapDispatchToProps = {
+  showNavbar: TemplateActions.showNavbar,
+};
+
 const mapStateToProps = state => ({
   lists: listsSelector(state),
 });
 
-export default connect(mapStateToProps)(DashboardSidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardSidebar);

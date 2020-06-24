@@ -18,8 +18,8 @@ export const useDrawerClasses = makeStyles({
     width: 'calc(100% - 85px)',
   },
   appBarOpen: {
-    marginLeft: ({ navbarFullWidth = 260 }) => navbarFullWidth,
-    width: ({ navbarFullWidth = 260 }) => `calc(100% - ${navbarFullWidth}px)`,
+    marginLeft: ({ navbarFullWidth }) => navbarFullWidth,
+    width: ({ navbarFullWidth }) => `calc(100% - ${navbarFullWidth}px)`,
   },
   appBarBorder: {
     backgroundColor: palette.coolGrey2,
@@ -35,12 +35,13 @@ export const useDrawerClasses = makeStyles({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
+    transform: ({ isNavbarVisible }) =>
+      isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)',
     backgroundColor: palette.midnightBlue,
     border: 0,
     overflow: 'initial',
-    width: ({ isOpen, navbarFullWidth = 260 }) =>
-      isOpen ? navbarFullWidth : 85,
-    transition: 'width 0.2s ease-out',
+    width: ({ isOpen, navbarFullWidth }) => (isOpen ? navbarFullWidth : 85),
+    transition: 'width 0.2s ease-out, transform 0.2s ease-out',
   },
 });
 
