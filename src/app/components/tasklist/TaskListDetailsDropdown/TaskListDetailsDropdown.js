@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -7,6 +7,10 @@ import SlimViewActiveIcon from 'img/slim-view-active';
 import Task from 'views/Task/NewTasksView/TaskItem/TaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import listSectionSavedState, {
+  FULL_VIEW,
+  SLIM_VIEW,
+} from 'helpers/list-secition-saved-state';
 
 import {
   Arrow,
@@ -16,9 +20,6 @@ import {
   ListNameSection,
   ViewIcon,
 } from './styled';
-
-const FULL_VIEW = 'FULL_VIEW';
-const SLIM_VIEW = 'SLIM_VIEW';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -39,8 +40,12 @@ const TaskListDetailsDropdown = ({
   removeUserFromTaskList,
   changeUserRoleForList,
 }) => {
-  const [isOpen, switchOpen] = useState(true);
-  const [viewType, setViewType] = useState(FULL_VIEW);
+  const sessionStorageKey = `${list.taskListIdentifier}-patient`;
+
+  const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
+    sessionStorageKey,
+  );
+
   const isFullView = viewType === FULL_VIEW;
 
   const { listName, taskListIdentifier, memberUsers, adminUsers } = list;

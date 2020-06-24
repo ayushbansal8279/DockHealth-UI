@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -8,6 +8,10 @@ import SlimViewActiveIcon from 'img/slim-view-active';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import listSectionSavedState, {
+  FULL_VIEW,
+  SLIM_VIEW,
+} from 'helpers/list-secition-saved-state';
 
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
@@ -25,9 +29,6 @@ import {
   TasksGroupLabelCounter,
   PaginationButton,
 } from './styled';
-
-const FULL_VIEW = 'FULL_VIEW';
-const SLIM_VIEW = 'SLIM_VIEW';
 
 const TasksGroup = ({
   isDefaultGroup,
@@ -62,9 +63,16 @@ const TasksGroup = ({
   hasFiltersApplied,
   isSearchApplied,
   selectedTask,
+  taskGroupIdentifier,
+  listUniqueKey,
 }) => {
-  const [isOpen, switchOpen] = useState(true);
-  const [viewType, setViewType] = useState(FULL_VIEW);
+  const groupSessionStorageKey =
+    taskGroupIdentifier || `${listUniqueKey}-default`;
+
+  const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
+    groupSessionStorageKey,
+  );
+
   const isFullView = viewType === FULL_VIEW;
 
   return (

@@ -27,6 +27,7 @@ const CompletedTasksView = ({
   reassignTask,
   hasFiltersApplied,
   selectedTask,
+  listUniqueKey,
 }) => {
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -62,6 +63,7 @@ const CompletedTasksView = ({
               hasFiltersApplied={hasFiltersApplied}
               isSearchApplied={isSearchApplied}
               selectedTask={selectedTask}
+              listUniqueKey={listUniqueKey}
             />
           </DragDropContext>
         </TaskGroupsContainer>

@@ -45,6 +45,7 @@ const OpenedTasksView = ({
   areFiltersApplied,
   selectedTask,
   isMainListView,
+  listUniqueKey,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -128,6 +129,7 @@ const OpenedTasksView = ({
                           : TASKGROUP_DEFAULT_TYPE
                       ] || []
                     }
+                    taskGroupIdentifier={taskGroupIdentifier}
                     reorderSubtasksForTask={reorderSubtasksForTask}
                     reassignTask={reassignTask}
                     draggedId={draggedId}
@@ -138,6 +140,7 @@ const OpenedTasksView = ({
                     listNameVisible={listNameVisible}
                     isSearchApplied={isSearchApplied}
                     selectedTask={selectedTask}
+                    listUniqueKey={listUniqueKey}
                   />
                 ),
               )}

@@ -437,6 +437,7 @@ class Home extends Component {
       hasFiltersApplied: !isEmpty(selectedFilters),
       title: loadedTasklist?.listName,
       isMainListView: true,
+      listUniqueKey: taskListIdentifier,
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
