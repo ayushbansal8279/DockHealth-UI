@@ -27,11 +27,12 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import { initializeDashboardView } from 'sagas/dashboard-saga';
+import {
+  initializeDashboardView,
+  leaveDashboardView,
+} from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
-
-import * as TemplateActions from 'actions/template-actions';
 import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
@@ -270,11 +271,7 @@ export const Routes = ({ store }) => {
   };
 
   const onLeaveDashboard = () => {
-    dispatch(TemplateActions.showHeader());
-    dispatch(TemplateActions.disableNavbarFullMode());
-    dispatch(TemplateActions.showNavbarSettings());
-    dispatch(TemplateActions.resetCustomNavbarWidth());
-    dispatch(TemplateActions.showNavbar());
+    dispatch(leaveDashboardView());
   };
 
   return (
