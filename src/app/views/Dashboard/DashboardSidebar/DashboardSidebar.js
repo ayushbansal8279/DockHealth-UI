@@ -33,7 +33,7 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
           <ListsHeader>Lists</ListsHeader>
         </Link>
         <ListItemsWrapper>
-          {lists.map(
+          {lists?.map(
             ({
               listName,
               taskListIdentifier,
