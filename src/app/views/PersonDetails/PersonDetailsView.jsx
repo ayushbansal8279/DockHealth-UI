@@ -304,6 +304,7 @@ class PersonDetailsView extends PureComponent {
             defaultGroupName="All tasks"
             showMembers={false}
             showNotificationAction={false}
+            members={[personData]}
           />
         </>
       )
