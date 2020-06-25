@@ -104,6 +104,8 @@ const Toolbar = ({
   haveTasks,
   onSelectFilters,
   megaFilter = {},
+  listNameColumnVisible = false,
+  patientColumnVisible = true,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -221,6 +223,8 @@ const Toolbar = ({
           notificationsEnabled={notificationsEnabled}
           toggleNotifications={toggleNotifications}
           showNotifications={showNotifications}
+          listNameColumnVisible={listNameColumnVisible}
+          patientColumnVisible={patientColumnVisible}
         />
       </Grid>
       {(haveTasks || searchValue || !isEmpty(selectedFilters)) && (

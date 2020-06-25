@@ -79,6 +79,8 @@ const PatientDetailsView = ({
           showMembers={false}
           megaFilter={megaFilter}
           haveTasks={hasTasks}
+          patientColumnVisible={false}
+          listNameColumnVisible
         />
       )}
       <ViewLoader isFetchingData={isFetching}>

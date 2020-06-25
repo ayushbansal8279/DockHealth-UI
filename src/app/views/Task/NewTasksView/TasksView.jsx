@@ -189,6 +189,7 @@ const TaskView = ({
           showNotifications={showNotificationAction}
           searchValue={searchValue}
           onSelectFilters={handleFilterChange}
+          listNameColumnVisible={listNameVisible}
         />
       )}
       {selectedTab === TaskListTabName.COMPLETE ? (
