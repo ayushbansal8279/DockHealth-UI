@@ -2,7 +2,7 @@ import React, { cloneElement } from 'react';
 import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
-import TaskItemStatus from 'views/Task/NewTasksView/TaskItem/TaskItemStatus';
+import TaskItemStatus from 'components/common/TaskItem/StandardTaskItem/TaskItemStatus';
 import DueDateRangePicker from './DueDateRangePicker';
 import {
   StyledFilterRow,

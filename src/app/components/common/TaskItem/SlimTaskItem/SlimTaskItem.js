@@ -6,17 +6,17 @@ import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import {
   CircleIcon,
   OverdueBar,
-  DashboardTaskItemContainer,
-  DashboardTaskItemRow,
-  DashboardTaskItemDescription,
-  DashboardTaskItemParentTaskLabel,
-  DashboardTaskItemRightSide,
-  DashboardTaskItemListLink,
+  SlimTaskItemContainer,
+  SlimTaskItemRow,
+  SlimTaskItemDescription,
+  SlimTaskItemParentTaskLabel,
+  SlimTaskItemRightSide,
+  SlimTaskItemListLink,
   PrioritySwitch,
   PriorityHoverIcon,
-} from './styled';
+} from '../styled';
 
-const DashboardTaskItem = ({
+const SlimTaskItem = ({
   description,
   taskList,
   dueDate,
@@ -24,8 +24,8 @@ const DashboardTaskItem = ({
   parentTask,
 }) => {
   return (
-    <DashboardTaskItemContainer>
-      <PrioritySwitch onClick={() => {}}>
+    <SlimTaskItemContainer>
+      <PrioritySwitch left="-24px" onClick={() => {}}>
         {priority === 'HIGH' ? (
           <img src={HighPriorityLabel} alt="Priority icon" />
         ) : (
@@ -37,30 +37,28 @@ const DashboardTaskItem = ({
         )}
       </PrioritySwitch>
       <CircleIcon src={Circle} />
-      <DashboardTaskItemRow>
-        <DashboardTaskItemDescription>
+      <SlimTaskItemRow>
+        <SlimTaskItemDescription>
           <span>{description}</span>
           {parentTask && (
-            <DashboardTaskItemParentTaskLabel>
+            <SlimTaskItemParentTaskLabel>
               Subtask of <span>{parentTask.description}</span>
-            </DashboardTaskItemParentTaskLabel>
+            </SlimTaskItemParentTaskLabel>
           )}
-        </DashboardTaskItemDescription>
-        <DashboardTaskItemRightSide>
+        </SlimTaskItemDescription>
+        <SlimTaskItemRightSide>
           {taskList && (
-            <DashboardTaskItemListLink
-              to={`tasks/${taskList?.taskListIdentifier}`}
-            >
+            <SlimTaskItemListLink to={`tasks/${taskList?.taskListIdentifier}`}>
               {taskList?.listName}
-            </DashboardTaskItemListLink>
+            </SlimTaskItemListLink>
           )}
           {dueDate && moment(new Date()).isAfter(dueDate) && (
             <OverdueBar>Overdue</OverdueBar>
           )}
-        </DashboardTaskItemRightSide>
-      </DashboardTaskItemRow>
-    </DashboardTaskItemContainer>
+        </SlimTaskItemRightSide>
+      </SlimTaskItemRow>
+    </SlimTaskItemContainer>
   );
 };
 
-export default DashboardTaskItem;
+export default SlimTaskItem;

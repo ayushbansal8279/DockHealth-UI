@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardTaskItem from './DashboardTaskItem';
+import SlimTaskItem from 'components/common/TaskItem/SlimTaskItem/SlimTaskItem';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -15,7 +15,7 @@ const DashboardTasksGroup = ({ dashboardTasksGroup }) => {
       </DashboardTasksGroupLabel>
       <DashboardTasksGroupList>
         {tasks?.map(task => (
-          <DashboardTaskItem {...task} />
+          <SlimTaskItem {...task} />
         ))}
       </DashboardTasksGroupList>
     </DashboardTasksGroupContainer>

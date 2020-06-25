@@ -33,7 +33,7 @@ export const CompletedBy = styled.div`
 export const PrioritySwitch = styled.button`
   position: absolute;
   top: 50%;
-  left: -12px;
+  left: ${props => props.left || '-12px'};
   transform: translateY(-50%);
   cursor: pointer;
 `;
@@ -107,7 +107,7 @@ export const SubtasksGroupLabel = styled.span`
   cursor: pointer;
 `;
 
-export const TaskItemCell = styled.div`
+export const StandardTaskItemCell = styled.div`
   position: relative;
   align-items: center;
   border-right: 1px solid ${palette.coolGrey3};
@@ -135,11 +135,11 @@ export const ClickablePatient = styled.span`
   cursor: pointer;
 `;
 
-export const ClickableTaskItemIcon = styled.span`
+export const ClickableStandardTaskItemIcon = styled.span`
   cursor: pointer;
 `;
 
-export const TaskItemContainer = styled.div`
+export const StandardTaskItemContainer = styled.div`
   position: relative;
   background-color: ${props =>
     props.isSelected ? palette.brightBlueWithAlpha : palette.white};
@@ -177,19 +177,80 @@ export const ThreeDots = styled.img`
   }
 `;
 
-export const TaskItemPanel = styled.div`
+export const StandardTaskItemPanel = styled.div`
   position: relative;
   ${props =>
-    props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'}
+    props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'};
+
   &:hover {
-    & ${ThreeDots},
-    & ${AddPlaceholder},
-    & ${PriorityHoverIcon} {
+    & ${ThreeDots}, & ${AddPlaceholder}, & ${PriorityHoverIcon} {
       opacity: 1;
+    }
   }
 `;
 
 export const InfoText = styled.p`
   cursor: initial;
   margin-bottom: 0;
+`;
+
+// SlimTaskItem
+export const SlimTaskItemContainer = styled.div`
+  display: flex;
+  height: 70px;
+  align-ttems: center;
+  width: 100%;
+  position: relative;
+
+  &:hover {
+    & ${PriorityHoverIcon} {
+      opacity: 1;
+    }
+  }
+`;
+
+export const SlimTaskItemRow = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+`;
+
+export const SlimTaskItemDescription = styled.div`
+  color: ${palette.mediumGrey};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.bold};
+  min-width: 400px;
+`;
+
+export const SlimTaskItemParentTaskLabel = styled.div`
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey2};
+
+  & > span {
+    color: ${palette.brightBlue};
+  }
+`;
+
+export const SlimTaskItemRightSide = styled.div`
+  max-width: 240px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const SlimTaskItemListLink = styled(Link)`
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.small};
+`;
+
+export const OverdueBar = styled.div`
+  background-image: linear-gradient(29deg, #ec4f3e 53%, #fb7c06 115%);
+  padding: 2px 10px; // per design
+  display: flex;
+  justify-content: flex-end;
+  border-radius: 81px; // per design
+  font-size: ${fontSizes.tiny};
+  color: white;
+  height: fit-content;
 `;
