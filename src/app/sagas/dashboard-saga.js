@@ -1,4 +1,4 @@
-import { all, put, call, takeEvery } from 'redux-saga/effects';
+import { all, put, call, takeEvery, takeLatest } from 'redux-saga/effects';
 import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
@@ -6,10 +6,14 @@ import {
 } from 'actions/action-types';
 import * as TemplateActions from 'actions/template-actions';
 import { getDashboardTasks } from 'api/dashboard-api';
+import * as TaskApi from 'api/task-api';
+import * as AlertActions from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 const LEAVE_DASHBOARD_VIEW = 'LEAVE_DASHBOARD_VIEW';
 const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
+const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -20,6 +24,11 @@ export const leaveDashboardView = () => ({
 });
 
 export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
+
+export const toggleDashboardTaskComplete = task => ({
+  type: TOGGLE_DASHBOARD_TASK_COMPLETE,
+  task,
+});
 
 function* doFetchDashboardTasks() {
   try {
@@ -33,6 +42,17 @@ function* doFetchDashboardTasks() {
     yield put({
       type: REQUEST_DASHBOARD_TASKS_FAILURE,
     });
+  }
+}
+
+function* doToggleDashboardTaskComplete({ task }) {
+  try {
+    yield call(TaskApi.markComplete, task);
+    yield call(doFetchDashboardTasks);
+
+    yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
+  } catch (error) {
+    yield call(doFetchDashboardTasks);
   }
 }
 
@@ -61,4 +81,8 @@ export default function* watchDashboard() {
   yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
   yield takeEvery(LEAVE_DASHBOARD_VIEW, doLeaveDashboardView);
   yield takeEvery(FETCH_DASHBOARD_TASKS, doFetchDashboardTasks);
+  yield takeLatest(
+    TOGGLE_DASHBOARD_TASK_COMPLETE,
+    doToggleDashboardTaskComplete,
+  );
 }

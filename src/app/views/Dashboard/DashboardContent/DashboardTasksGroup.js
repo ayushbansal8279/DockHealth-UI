@@ -6,7 +6,10 @@ import {
   DashboardTasksGroupList,
 } from './styled';
 
-const DashboardTasksGroup = ({ dashboardTasksGroup }) => {
+const DashboardTasksGroup = ({
+  dashboardTasksGroup,
+  toggleDashboardTaskComplete,
+}) => {
   const { groupName, tasks } = dashboardTasksGroup;
   return (
     <DashboardTasksGroupContainer>
@@ -15,7 +18,10 @@ const DashboardTasksGroup = ({ dashboardTasksGroup }) => {
       </DashboardTasksGroupLabel>
       <DashboardTasksGroupList>
         {tasks?.map(task => (
-          <SlimTaskItem {...task} />
+          <SlimTaskItem
+            {...task}
+            toggleTaskComplete={() => toggleDashboardTaskComplete(task)}
+          />
         ))}
       </DashboardTasksGroupList>
     </DashboardTasksGroupContainer>

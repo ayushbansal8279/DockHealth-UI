@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import Circle from 'img/circle';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
-import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import {
   CircleIcon,
   OverdueBar,
@@ -13,7 +12,6 @@ import {
   SlimTaskItemRightSide,
   SlimTaskItemListLink,
   PrioritySwitch,
-  PriorityHoverIcon,
 } from '../styled';
 
 const SlimTaskItem = ({
@@ -22,21 +20,16 @@ const SlimTaskItem = ({
   dueDate,
   priority,
   parentTask,
+  toggleTaskComplete,
 }) => {
   return (
     <SlimTaskItemContainer>
-      <PrioritySwitch left="-24px" onClick={() => {}}>
-        {priority === 'HIGH' ? (
+      <PrioritySwitch left="-24px" onClick={() => {}} isClickable={false}>
+        {priority === 'HIGH' && (
           <img src={HighPriorityLabel} alt="Priority icon" />
-        ) : (
-          <PriorityHoverIcon
-            className="low"
-            src={LowPriorityHoverLabel}
-            alt="No priority"
-          />
         )}
       </PrioritySwitch>
-      <CircleIcon src={Circle} />
+      <CircleIcon src={Circle} onClick={toggleTaskComplete} />
       <SlimTaskItemRow>
         <SlimTaskItemDescription>
           <span>{description}</span>

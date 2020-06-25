@@ -35,7 +35,7 @@ export const PrioritySwitch = styled.button`
   top: 50%;
   left: ${props => props.left || '-12px'};
   transform: translateY(-50%);
-  cursor: pointer;
+  cursor: ${({ isClickable = true }) => (isClickable ? 'pointer' : 'initial')};
 `;
 
 export const PriorityHoverIcon = styled.img`

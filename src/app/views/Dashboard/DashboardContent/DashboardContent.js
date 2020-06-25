@@ -4,14 +4,18 @@ import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
 } from 'selectors/dashboard-tasks-selectors';
+import { toggleDashboardTaskComplete as toggleDashboardTaskCompleteAction } from 'sagas/dashboard-saga';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import { DashboardContainer } from './styled';
 
-const DashboardContent = ({ dashboardTasks }) => {
+const DashboardContent = ({ dashboardTasks, toggleDashboardTaskComplete }) => {
   return (
     <DashboardContainer>
       {dashboardTasks?.map(item => (
-        <DashboardTasksGroup dashboardTasksGroup={item} />
+        <DashboardTasksGroup
+          dashboardTasksGroup={item}
+          toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+        />
       ))}
     </DashboardContainer>
   );
@@ -22,4 +26,8 @@ const mapStateToProps = state => ({
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
 });
 
-export default connect(mapStateToProps)(DashboardContent);
+const mapDispatchToProps = {
+  toggleDashboardTaskComplete: toggleDashboardTaskCompleteAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);
