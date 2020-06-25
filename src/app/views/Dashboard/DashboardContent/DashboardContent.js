@@ -4,10 +4,17 @@ import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
 } from 'selectors/dashboard-tasks-selectors';
+import DashboardTasksGroup from './DashboardTasksGroup';
+import { DashboardContainer } from './styled';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DashboardContent = ({ dashboardTasks, dashboardTasksIsLoading }) => {
-  return <div>Content</div>;
+const DashboardContent = ({ dashboardTasks }) => {
+  return (
+    <DashboardContainer>
+      {dashboardTasks?.map(item => (
+        <DashboardTasksGroup dashboardTasksGroup={item} />
+      ))}
+    </DashboardContainer>
+  );
 };
 
 const mapStateToProps = state => ({
