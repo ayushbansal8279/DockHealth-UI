@@ -229,7 +229,10 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 
   & > span {
     color: ${palette.brightBlue};
+<<<<<<< HEAD:src/app/components/task-item/styled.js
     cursor: pointer;
+=======
+>>>>>>> Move taskitem to common components:src/app/components/common/TaskItem/styled.js
   }
 `;
 
