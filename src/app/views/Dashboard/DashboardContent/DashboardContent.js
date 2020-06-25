@@ -17,6 +17,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
+import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import { DashboardContainer, SearchGrid } from './styled';
 import DashboardHeader from '../DashboardHeader/DashboardHeader';
@@ -36,7 +37,12 @@ const DashboardContent = ({
   dashboardTasksIsLoading,
   currentUser,
   modalActions,
-  dashboardActions: { toggleDashboardTaskComplete, quickAddDashboardTask },
+  storeAsCurrentTask,
+  dashboardActions: {
+    redirectToParentTask,
+    toggleDashboardTaskComplete,
+    quickAddDashboardTask,
+  },
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -89,6 +95,8 @@ const DashboardContent = ({
               <DashboardTasksGroup
                 dashboardTasksGroup={item}
                 toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+                redirectToParentTask={redirectToParentTask}
+                storeAsCurrentTask={storeAsCurrentTask}
               />
             ))
           : renderEmptyState()}
@@ -106,6 +114,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   dashboardActions: bindActionCreators(DashboardActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
+  storeAsCurrentTask: storeAsCurrentTaskAction,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);

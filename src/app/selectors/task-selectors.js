@@ -85,3 +85,8 @@ export const groupTasksSelector = createSelector(taskSelector, ({ tasks }) => {
     return groupsObject;
   }, {});
 });
+
+export const taskIsSelectedSelector = createSelector(
+  taskSelector,
+  ({ selectedTask, selectedTaskId }) => !!selectedTask && !!selectedTaskId,
+);

@@ -9,6 +9,8 @@ import {
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
   toggleDashboardTaskComplete,
+  redirectToParentTask,
+  storeAsCurrentTask,
 }) => {
   const { groupName, tasks } = dashboardTasksGroup;
   return (
@@ -20,6 +22,8 @@ const DashboardTasksGroup = ({
         {tasks?.map(task => (
           <SlimTaskItem
             {...task}
+            redirectToParentTask={redirectToParentTask}
+            storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskComplete={() => toggleDashboardTaskComplete(task)}
           />
         ))}

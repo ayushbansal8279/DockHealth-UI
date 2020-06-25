@@ -1,4 +1,5 @@
 import { all, put, call, takeEvery, takeLatest } from 'redux-saga/effects';
+import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
@@ -16,6 +17,7 @@ const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
 const RELOAD_DASHBOARD_TASKS = 'RELOAD_DASHBOARD_TASKS';
 const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
 const QUICK_ADD_DASHBOARD_TASK = 'QUICK_ADD_DASHBOARD_TASK';
+const REDIRECT_TO_PARENT_TASK = 'REDIRECT_TO_PARENT_TASK';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -26,6 +28,10 @@ export const leaveDashboardView = () => ({
 });
 
 export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
+export const redirectToParentTask = taskListIdentifier => ({
+  type: REDIRECT_TO_PARENT_TASK,
+  taskListIdentifier,
+});
 
 export const toggleDashboardTaskComplete = task => ({
   type: TOGGLE_DASHBOARD_TASK_COMPLETE,
@@ -85,6 +91,14 @@ function* doToggleDashboardTaskComplete({ task }) {
   }
 }
 
+function* doRedirectToParentTask({ taskListIdentifier }) {
+  try {
+    yield call(hashHistory.push, `tasks/${taskListIdentifier}`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function* doInitializeDashboardView() {
   yield all([
     put(TemplateActions.hideHeader()),
@@ -132,4 +146,5 @@ export default function* watchDashboard() {
     TOGGLE_DASHBOARD_TASK_COMPLETE,
     doToggleDashboardTaskComplete,
   );
+  yield takeEvery(REDIRECT_TO_PARENT_TASK, doRedirectToParentTask);
 }

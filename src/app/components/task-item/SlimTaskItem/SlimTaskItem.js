@@ -21,6 +21,8 @@ const SlimTaskItem = ({
   priority,
   parentTask,
   toggleTaskComplete,
+  storeAsCurrentTask,
+  redirectToParentTask,
 }) => {
   return (
     <SlimTaskItemContainer>
@@ -35,7 +37,17 @@ const SlimTaskItem = ({
           <span>{description}</span>
           {parentTask && (
             <SlimTaskItemParentTaskLabel>
-              Subtask of <span>{parentTask.description}</span>
+              Subtask of{' '}
+              <span
+                onClick={() => {
+                  storeAsCurrentTask(parentTask);
+                  redirectToParentTask(
+                    parentTask?.taskList?.taskListIdentifier,
+                  );
+                }}
+              >
+                {parentTask.description}
+              </span>
             </SlimTaskItemParentTaskLabel>
           )}
         </SlimTaskItemDescription>
