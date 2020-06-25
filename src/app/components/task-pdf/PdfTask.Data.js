@@ -38,6 +38,7 @@ const getPdfTaskData = props => {
     completedBy,
     completedDt,
     taskList,
+    columnsWidth,
   } = props;
 
   const isComplete = status === 'COMPLETE';
@@ -47,7 +48,9 @@ const getPdfTaskData = props => {
   const isSubtask = Boolean(parentTaskIdentifier);
   const listName = taskList?.listName;
 
-  const mainContainerWidth = isSubtask ? 218 : 230;
+  const mainContainerWidth = isSubtask
+    ? columnsWidth.task - 42
+    : columnsWidth.task - 30;
 
   const {
     color: workflowStatusColor,

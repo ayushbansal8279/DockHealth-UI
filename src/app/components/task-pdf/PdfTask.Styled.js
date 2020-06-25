@@ -1,6 +1,11 @@
 import styled from '@react-pdf/styled-components';
 import palette from 'styles/palette';
 
+const addWidth = ({ width }) => `
+  max-width: ${width}pt;
+  width: ${width}pt;
+`;
+
 export const TaskContainer = styled.View`
   position: relative;
   display: flex;
@@ -146,8 +151,7 @@ export const MainInnerContainer = styled(InnerContainer)`
 
 export const PatientContainer = styled(InnerContainer)`
   justify-content: center;
-  max-width: 90pt;
-  width: 90pt;
+  ${addWidth}
   padding-top: 4pt;
   border-left: 1pt solid ${palette.coolGrey3};
 `;
@@ -190,8 +194,7 @@ export const DueDateContainer = styled(InnerContainer)`
 `;
 
 export const ListNameContainer = styled(InnerContainer)`
-  max-width: 62pt;
-  width: 62pt;
+  ${addWidth}
   padding-top: 4pt;
   border-left: 1pt solid ${palette.coolGrey3};
 `;

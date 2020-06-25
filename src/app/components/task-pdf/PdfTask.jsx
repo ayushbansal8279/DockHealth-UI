@@ -32,16 +32,17 @@ import {
   DueDateContainer,
 } from './PdfTask.Styled';
 
-const renderSubtask = ({ taskListMembers, taskListMembersAvatars }) => (
-  { taskIdentifier, ...props },
-  subtaskOrder,
-) => (
+const renderSubtask = ({
+  taskListMembers,
+  taskListMembersAvatars,
+  columnsWidth,
+}) => ({ taskIdentifier, ...props }) => (
   <PdfTask
     key={taskIdentifier}
     taskListMembers={taskListMembers}
     taskListMembersAvatars={taskListMembersAvatars}
     taskIdentifier={taskIdentifier}
-    oneBasedSubtaskOrder={subtaskOrder + 1}
+    columnsWidth={columnsWidth}
     {...props}
   />
 );
@@ -53,6 +54,7 @@ const PdfTask = props => {
     assignedTo,
     taskListMembers,
     taskListMembersAvatars,
+    columnsWidth,
   } = props;
 
   const avatarContent = assignedTo?.userIdentifier ? (
@@ -116,9 +118,13 @@ const PdfTask = props => {
               undefined
             )}
           </MainInnerContainer>
-          <PatientContainer>
-            <TextLabel>{patientName}</TextLabel>
-          </PatientContainer>
+          {columnsWidth.patient ? (
+            <PatientContainer width={columnsWidth.patient}>
+              <TextLabel>{patientName}</TextLabel>
+            </PatientContainer>
+          ) : (
+            undefined
+          )}
           <StatusContainer>
             {!isComplete && (
               <StatusColorContainer color={workflowStatusColor} />
@@ -135,15 +141,23 @@ const PdfTask = props => {
           <DueDateContainer>
             <TextLabel isRed={isOverdue}>{dueDateLabel}</TextLabel>
           </DueDateContainer>
-          <ListNameContainer>
-            <TextLabel>{listName}</TextLabel>
-          </ListNameContainer>
+          {columnsWidth.listName ? (
+            <ListNameContainer width={columnsWidth.listName}>
+              <TextLabel>{listName}</TextLabel>
+            </ListNameContainer>
+          ) : (
+            undefined
+          )}
         </TaskInnerContainer>
       </TaskContainer>
       {subtasks?.length > 0 ? (
         <SubtasksContainer>
           {subtasks.map(
-            renderSubtask({ taskListMembers, taskListMembersAvatars }),
+            renderSubtask({
+              taskListMembers,
+              taskListMembersAvatars,
+              columnsWidth,
+            }),
           )}
         </SubtasksContainer>
       ) : (
