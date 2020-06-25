@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { getPatientName } from 'helpers/utility-functions';
-import { getPriorityColor } from 'styles/palette';
+import { getWorkflowStatusConfig } from 'views/Task/NewTasksView/TaskItem/TaskItemStatus';
 
 const getDueDateData = ({ dueDate }) => {
   const dueDateMoment = moment(dueDate ?? null);
@@ -24,7 +24,6 @@ const getPdfTaskData = props => {
   const {
     comments,
     subtasks,
-    creator,
     createdDateTime,
     updatedDateTime,
     status,
@@ -36,6 +35,9 @@ const getPdfTaskData = props => {
     workflowStatus,
     parentTaskIdentifier,
     taskListMembers,
+    completedBy,
+    completedDt,
+    taskList,
   } = props;
 
   const isComplete = status === 'COMPLETE';
@@ -43,28 +45,34 @@ const getPdfTaskData = props => {
   const isEdited = createdDateTime !== updatedDateTime && updatedDateTime;
   const hasAttachments = attachments?.length > 0;
   const isSubtask = Boolean(parentTaskIdentifier);
+  const listName = taskList?.listName;
 
-  const mainContainerWidth = isSubtask ? 212 : 240;
+  const mainContainerWidth = isSubtask ? 218 : 230;
+
+  const {
+    color: workflowStatusColor,
+    label: workflowStatusLabel,
+  } = getWorkflowStatusConfig(workflowStatus);
 
   const assignedMemberColor =
     (taskListMembers ?? []).find(
       ({ userIdentifier }) => userIdentifier === assignedTo?.userIdentifier,
     )?.bubbleColor ?? null;
 
-  const assignerName = `${creator?.firstName?.charAt(0)?.toUpperCase() ??
-    ''}. ${creator?.lastName ?? ''}`
+  const completedName = `${completedBy?.firstName?.charAt(0)?.toUpperCase() ??
+    ''}. ${completedBy?.lastName ?? ''}`
     .trim()
     .replace(/^\.$/, '');
 
-  const assignedDateMoment = moment(createdDateTime ?? null);
+  const completedDateMoment = moment(completedDt ?? null);
 
-  const assignedDateLabel = assignedDateMoment.isValid()
-    ? assignedDateMoment.format('MM/DD/YYYY')
+  const completedDateLabel = completedDateMoment.isValid()
+    ? completedDateMoment.format('MM/DD/YYYY')
     : '';
 
-  const assignedByLabel =
-    assignerName && assignedDateLabel
-      ? `Assigned by ${assignerName} on ${assignedDateLabel}`
+  const completedByLabel =
+    completedName && completedDateLabel
+      ? `Completed by ${completedName} on ${completedDateLabel}`
       : '';
 
   const bottomLabelsArray = [
@@ -78,8 +86,6 @@ const getPdfTaskData = props => {
 
   const { dueDateLabel, isOverdue } = getDueDateData({ dueDate });
 
-  const currentPriorityColor = getPriorityColor(workflowStatus ?? '');
-
   return {
     isSubtask,
     isComplete,
@@ -88,12 +94,14 @@ const getPdfTaskData = props => {
     hasAttachments,
     mainContainerWidth,
     assignedMemberColor,
-    assignedByLabel,
     bottomLabel,
     patientName,
     dueDateLabel,
     isOverdue,
-    currentPriorityColor,
+    completedByLabel,
+    workflowStatusColor,
+    workflowStatusLabel,
+    listName,
   };
 };
 

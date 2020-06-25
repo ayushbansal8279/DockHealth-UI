@@ -2,7 +2,7 @@ import React from 'react';
 import palette from 'styles/palette';
 import { StatusBar } from './styled';
 
-const getWorkflowStatusConfig = workflowStatus => {
+export const getWorkflowStatusConfig = workflowStatus => {
   switch (workflowStatus) {
     case 'IN_PROGRESS':
       return { label: 'In Progress', color: palette.inProgressGreen };
