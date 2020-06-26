@@ -171,10 +171,10 @@ const NestedItem = ({
 
 const getDrawerItems = ({ lists }) => [
   {
-    id: 'dashboard',
-    label: 'Dashboard',
+    id: 'home',
+    label: 'Home',
     icon: DashboardIcon,
-    to: 'dashboard',
+    to: 'Home',
   },
   {
     id: 'lists',

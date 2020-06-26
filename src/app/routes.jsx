@@ -288,9 +288,9 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated();
           }}
         >
-          <IndexRedirect to="/dashboard" />
+          <IndexRedirect to="/home" />
           <Route
-            path="/dashboard"
+            path="/home"
             component={DashboardView}
             onEnter={onEnterDashboard}
             onLeave={onLeaveDashboard}
