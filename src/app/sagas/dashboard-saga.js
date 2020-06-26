@@ -14,6 +14,7 @@ const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 const LEAVE_DASHBOARD_VIEW = 'LEAVE_DASHBOARD_VIEW';
 const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
 const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
+const QUICK_ADD_DASHBOARD_TASK = 'QUICK_ADD_DASHBOARD_TASK';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -28,6 +29,19 @@ export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
 export const toggleDashboardTaskComplete = task => ({
   type: TOGGLE_DASHBOARD_TASK_COMPLETE,
   task,
+});
+
+export const quickAddDashboardTask = (
+  taskName,
+  taskListIdentifier,
+  assignedToIdentifier,
+) => ({
+  type: QUICK_ADD_DASHBOARD_TASK,
+  payload: {
+    description: taskName,
+    taskListIdentifier,
+    assignedToIdentifier,
+  },
 });
 
 function* doFetchDashboardTasks() {
@@ -77,10 +91,27 @@ function* doLeaveDashboardView() {
   ]);
 }
 
+function* doQuickAddDahboardTask({ payload }) {
+  const { description, taskListIdentifier, assignedToIdentifier } = payload;
+
+  try {
+    yield call(TaskApi.addTask, {
+      description,
+      taskListIdentifier,
+      assignedToIdentifier,
+    });
+    yield call(doFetchDashboardTasks);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield call(doFetchDashboardTasks);
+  }
+}
+
 export default function* watchDashboard() {
   yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
   yield takeEvery(LEAVE_DASHBOARD_VIEW, doLeaveDashboardView);
   yield takeEvery(FETCH_DASHBOARD_TASKS, doFetchDashboardTasks);
+  yield takeEvery(QUICK_ADD_DASHBOARD_TASK, doQuickAddDahboardTask);
   yield takeLatest(
     TOGGLE_DASHBOARD_TASK_COMPLETE,
     doToggleDashboardTaskComplete,
