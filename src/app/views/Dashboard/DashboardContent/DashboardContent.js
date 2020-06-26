@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Spacing from 'components/common/Spacing';
+import * as ModalActions from 'modal/actions';
+import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
 import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
@@ -16,16 +19,28 @@ const DashboardContent = ({
   dashboardTasks,
   toggleDashboardTaskComplete,
   currentUser,
+  modalActions,
 }) => {
+  const handleQuickAddTask = taskName => {
+    const { userIdentifier } = currentUser;
+
+    modalActions.openModal('ListPicker', {
+      fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
+      listCreationPayload: {
+        memberIdentifiers:
+          currentUser.userIdentifier !== userIdentifier ? [userIdentifier] : [],
+      },
+      confirm: taskListIdentifier => {
+        console.log(taskListIdentifier, taskName);
+      },
+    });
+  };
+
   return (
     <DashboardContainer>
       <DashboardHeader currentUser={currentUser} />
       <Spacing vertical={6} />
-      <QuickAddTaskInput
-        quickAddTask={out => {
-          console.log('output', out);
-        }}
-      />
+      <QuickAddTaskInput quickAddTask={handleQuickAddTask} />
       {dashboardTasks?.map(item => (
         <DashboardTasksGroup
           dashboardTasksGroup={item}
@@ -42,8 +57,9 @@ const mapStateToProps = state => ({
   currentUser: userProfileSelector(state),
 });
 
-const mapDispatchToProps = {
+const mapDispatchToProps = dispatch => ({
   toggleDashboardTaskComplete: toggleDashboardTaskCompleteAction,
-};
+  modalActions: bindActionCreators(ModalActions, dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);
