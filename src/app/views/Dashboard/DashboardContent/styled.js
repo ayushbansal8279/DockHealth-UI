@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
+import { Grid } from '@material-ui/core';
+
+export const SearchGrid = styled(Grid)`
+  width: ${({ isFocused }) => (isFocused ? 300 : 110)}px;
+  transition: width 0.2s ease-out;
+`;
 
 export const DashboardContainer = styled.div`
   height: 100%;

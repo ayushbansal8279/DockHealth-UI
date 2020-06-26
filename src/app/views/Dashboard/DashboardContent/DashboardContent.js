@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { connect } from 'react-redux';
+import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
+import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
@@ -10,17 +12,35 @@ import {
 } from 'selectors/dashboard-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
+import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import ViewLoader from 'components/common/ViewLoader/ViewLoader';
+import Search from 'components/taskView/Search/Search';
 import DashboardTasksGroup from './DashboardTasksGroup';
-import { DashboardContainer } from './styled';
+import { DashboardContainer, SearchGrid } from './styled';
 import DashboardHeader from '../DashboardHeader/DashboardHeader';
+
+const searchDashboardTasks = (dashboardTasks, searchValue) =>
+  dashboardTasks.reduce((accumulator, currentValue) => {
+    const filteredTasks = currentValue.tasks.filter(({ description }) =>
+      description.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+    if (filteredTasks.length === 0) return accumulator;
+
+    return [...accumulator, { ...currentValue, tasks: filteredTasks }];
+  }, []);
 
 const DashboardContent = ({
   dashboardTasks,
+  dashboardTasksIsLoading,
   currentUser,
   modalActions,
   dashboardActions: { toggleDashboardTaskComplete, quickAddDashboardTask },
 }) => {
+  const [searchValue, setSearchValue] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+
   const handleQuickAddTask = taskName => {
     const { userIdentifier } = currentUser;
 
@@ -36,17 +56,43 @@ const DashboardContent = ({
     });
   };
 
+  const renderEmptyState = () => {
+    if (searchValue) return <NoSearchResultsView />;
+
+    return <EmptyListView />;
+  };
+  const searchedDashboardTasks = useMemo(() => {
+    return searchValue
+      ? searchDashboardTasks(dashboardTasks, searchValue)
+      : dashboardTasks;
+  }, [searchValue, dashboardTasks]);
+
   return (
     <DashboardContainer>
       <DashboardHeader currentUser={currentUser} />
-      <Spacing vertical={6} />
+      <Grid container direction="row" justify="flex-end">
+        <SearchGrid isFocused={searchFocused || searchValue} item>
+          <Search
+            fullWidth
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            value={searchValue}
+            onChange={event => setSearchValue(event?.target?.value)}
+          />
+        </SearchGrid>
+      </Grid>
+      <Spacing vertical={3} />
       <QuickAddTaskInput quickAddTask={handleQuickAddTask} />
-      {dashboardTasks?.map(item => (
-        <DashboardTasksGroup
-          dashboardTasksGroup={item}
-          toggleDashboardTaskComplete={toggleDashboardTaskComplete}
-        />
-      ))}
+      <ViewLoader isFetchingData={dashboardTasksIsLoading}>
+        {!isEmpty(searchedDashboardTasks)
+          ? searchedDashboardTasks?.map(item => (
+              <DashboardTasksGroup
+                dashboardTasksGroup={item}
+                toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+              />
+            ))
+          : renderEmptyState()}
+      </ViewLoader>
     </DashboardContainer>
   );
 };
