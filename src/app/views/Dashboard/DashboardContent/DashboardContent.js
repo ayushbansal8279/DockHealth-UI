@@ -114,7 +114,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   dashboardActions: bindActionCreators(DashboardActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
-  storeAsCurrentTask: storeAsCurrentTaskAction,
+  storeAsCurrentTask: bindActionCreators(storeAsCurrentTaskAction, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);

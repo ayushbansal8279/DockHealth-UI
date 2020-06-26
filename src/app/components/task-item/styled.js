@@ -229,6 +229,7 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 
   & > span {
     color: ${palette.brightBlue};
+    cursor: pointer;
   }
 `;
 
