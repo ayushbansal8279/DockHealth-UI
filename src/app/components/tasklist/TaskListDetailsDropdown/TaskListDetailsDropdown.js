@@ -4,7 +4,7 @@ import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
-import Task from 'components/common/TaskItem/StandardTaskItem/TaskItem';
+import Task from 'components/task-item/StandardTaskItem/TaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import listSectionSavedState, {

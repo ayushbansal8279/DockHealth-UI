@@ -1,5 +1,5 @@
 import React from 'react';
-import SlimTaskItem from 'components/common/TaskItem/SlimTaskItem/SlimTaskItem';
+import SlimTaskItem from 'components/task-item/SlimTaskItem/SlimTaskItem';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
