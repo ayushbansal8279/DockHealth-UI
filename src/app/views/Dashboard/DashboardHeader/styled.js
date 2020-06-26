@@ -14,10 +14,6 @@ export const HeaderTextContainer = styled.div`
   overflow: hidden;
 `;
 
-export const DashboardHeaderContainer = styled.div`
-  padding: 28px 55px 0; // per design
-`;
-
 export const HeaderLogo = styled.img`
   width: 110px;
 `;

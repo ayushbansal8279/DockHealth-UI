@@ -6,10 +6,15 @@ import { fontWeights, fontSizes } from 'styles/font';
 export const DashboardContainer = styled.div`
   height: 100%;
   overflow-y: scroll;
+  padding: 28px 55px;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
-  padding: 28px 55px 68px; // per design
+  padding: 28px 0 68px; // per design
+
+  &:last-child {
+    padding-bottom: 0;
+  }
 `;
 
 export const DashboardTasksGroupLabel = styled.div`

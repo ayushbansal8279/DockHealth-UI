@@ -9,7 +9,6 @@ import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 
 import {
-  DashboardHeaderContainer,
   HeaderLogo,
   HeaderTitle,
   PersonImage,
@@ -38,7 +37,7 @@ const DashboardHeader = ({ currentUser }) => {
   }, [currentUser, setAvatarContent]);
 
   return (
-    <DashboardHeaderContainer>
+    <>
       <Grid
         container
         direction="row"
@@ -62,7 +61,7 @@ const DashboardHeader = ({ currentUser }) => {
           <HeaderLogo src={AppLogo} />
         </Grid>
       </Grid>
-    </DashboardHeaderContainer>
+    </>
   );
 };
 
