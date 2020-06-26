@@ -19,7 +19,11 @@ import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
 import DashboardTasksGroup from './DashboardTasksGroup';
-import { DashboardContainer, SearchGrid } from './styled';
+import {
+  DashboardContainer,
+  SearchGrid,
+  DashboardHeaderContainer,
+} from './styled';
 import DashboardHeader from '../DashboardHeader/DashboardHeader';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
@@ -42,6 +46,7 @@ const DashboardContent = ({
     redirectToParentTask,
     toggleDashboardTaskComplete,
     quickAddDashboardTask,
+    sortDashboardTasks,
   },
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -75,20 +80,22 @@ const DashboardContent = ({
 
   return (
     <DashboardContainer>
-      <DashboardHeader currentUser={currentUser} />
-      <Grid container direction="row" justify="flex-end">
-        <SearchGrid isFocused={searchFocused || searchValue} item>
-          <Search
-            fullWidth
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-            value={searchValue}
-            onChange={event => setSearchValue(event?.target?.value)}
-          />
-        </SearchGrid>
-      </Grid>
-      <Spacing vertical={3} />
-      <QuickAddTaskInput quickAddTask={handleQuickAddTask} />
+      <DashboardHeaderContainer>
+        <DashboardHeader currentUser={currentUser} />
+        <Grid container direction="row" justify="flex-end">
+          <SearchGrid isFocused={searchFocused || searchValue} item>
+            <Search
+              fullWidth
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              value={searchValue}
+              onChange={event => setSearchValue(event?.target?.value)}
+            />
+          </SearchGrid>
+        </Grid>
+        <Spacing vertical={3} />
+        <QuickAddTaskInput quickAddTask={handleQuickAddTask} />
+      </DashboardHeaderContainer>
       <ViewLoader isFetchingData={dashboardTasksIsLoading}>
         {!isEmpty(searchedDashboardTasks)
           ? searchedDashboardTasks?.map(item => (
@@ -97,6 +104,7 @@ const DashboardContent = ({
                 toggleDashboardTaskComplete={toggleDashboardTaskComplete}
                 redirectToParentTask={redirectToParentTask}
                 storeAsCurrentTask={storeAsCurrentTask}
+                sortDashboardTasks={sortDashboardTasks}
               />
             ))
           : renderEmptyState()}

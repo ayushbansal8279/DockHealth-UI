@@ -18,6 +18,7 @@ const RELOAD_DASHBOARD_TASKS = 'RELOAD_DASHBOARD_TASKS';
 const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
 const QUICK_ADD_DASHBOARD_TASK = 'QUICK_ADD_DASHBOARD_TASK';
 const REDIRECT_TO_PARENT_TASK = 'REDIRECT_TO_PARENT_TASK';
+const SORT_DASHBOARD_TASKS = 'SORT_DASHBOARD_TASKS';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -36,6 +37,12 @@ export const redirectToParentTask = taskListIdentifier => ({
 export const toggleDashboardTaskComplete = task => ({
   type: TOGGLE_DASHBOARD_TASK_COMPLETE,
   task,
+});
+
+export const sortDashboardTasks = (taskListIdentifier, tasksOrder) => ({
+  type: SORT_DASHBOARD_TASKS,
+  taskListIdentifier,
+  tasksOrder,
 });
 
 export const quickAddDashboardTask = (
@@ -99,6 +106,16 @@ function* doRedirectToParentTask({ taskListIdentifier }) {
   }
 }
 
+function* doSortDashboardTasks({ taskListIdentifier, tasksOrder }) {
+  try {
+    console.log(taskListIdentifier, tasksOrder);
+    // call here request to endpoint
+    yield call(doReloadDashboardTasks);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function* doInitializeDashboardView() {
   yield all([
     put(TemplateActions.hideHeader()),
@@ -147,4 +164,5 @@ export default function* watchDashboard() {
     doToggleDashboardTaskComplete,
   );
   yield takeEvery(REDIRECT_TO_PARENT_TASK, doRedirectToParentTask);
+  yield takeEvery(SORT_DASHBOARD_TASKS, doSortDashboardTasks);
 }

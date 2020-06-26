@@ -12,7 +12,7 @@ export const SearchGrid = styled(Grid)`
 export const DashboardContainer = styled.div`
   height: 100%;
   overflow-y: scroll;
-  padding: 28px 55px;
+  padding: 28px 20px;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
@@ -30,9 +30,19 @@ export const DashboardTasksGroupLabel = styled.div`
   padding-bottom: ${spacing.large};
   border-bottom: 1px solid ${palette.coolGrey2};
   width: 100%;
+  margin: 0 55px;
 `;
 
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+export const DashboardHeaderContainer = styled.div`
+  padding: 0 55px;
+`;
+
+export const DroppableBox = styled.div`
+  background-color: ${palette.coolGrey2};
+  border-radius: 4px;
 `;

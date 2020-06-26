@@ -2,6 +2,8 @@ import React from 'react';
 import moment from 'moment';
 import Circle from 'img/circle';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
+import ThreeDotsIcon from 'img/three-dots';
+
 import {
   CircleIcon,
   OverdueBar,
@@ -12,6 +14,7 @@ import {
   SlimTaskItemRightSide,
   SlimTaskItemListLink,
   PrioritySwitch,
+  ThreeDots,
 } from '../styled';
 
 const SlimTaskItem = ({
@@ -23,15 +26,19 @@ const SlimTaskItem = ({
   toggleTaskComplete,
   storeAsCurrentTask,
   redirectToParentTask,
+  isDragging,
+  isDraggable,
+  dragHandleProps,
 }) => {
   return (
-    <SlimTaskItemContainer>
-      <PrioritySwitch left="-24px" onClick={() => {}} isClickable={false}>
+    <SlimTaskItemContainer isDragging={isDragging}>
+      {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
+      <PrioritySwitch left="34px" onClick={() => {}} isClickable={false}>
         {priority === 'HIGH' && (
           <img src={HighPriorityLabel} alt="Priority icon" />
         )}
       </PrioritySwitch>
-      <CircleIcon src={Circle} onClick={toggleTaskComplete} />
+      <CircleIcon src={Circle} onClick={toggleTaskComplete} isClickable />
       <SlimTaskItemRow>
         <SlimTaskItemDescription>
           <span>{description}</span>
