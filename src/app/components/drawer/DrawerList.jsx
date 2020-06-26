@@ -174,7 +174,7 @@ const getDrawerItems = ({ lists }) => [
     id: 'home',
     label: 'Home',
     icon: DashboardIcon,
-    to: 'Home',
+    to: 'home',
   },
   {
     id: 'lists',
