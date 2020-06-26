@@ -17,5 +17,6 @@ export const DashboardSidebarWrapper = styled.div`
 export const DashboardContentWrapper = styled.div`
   flex: 1;
   height: 100%;
+  overflow: hidden;
   background-color: ${palette.white};
 `;
