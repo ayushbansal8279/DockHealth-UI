@@ -3,22 +3,22 @@ import { createSelector } from 'reselect';
 import { sort } from 'ramda';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 
-export const taskSelector = state => state.taskState;
+export const listTasksSelector = state => state.listTasks;
 export const tasksIsFetchingSelector = createSelector(
-  taskSelector,
+  listTasksSelector,
   ({ isFetching }) => isFetching,
 );
 
 export const completedTasksSelector = createSelector(
-  taskSelector,
+  listTasksSelector,
   ({ completedTasks }) => completedTasks,
 );
 export const completedTasksIsFetchingSelector = createSelector(
-  taskSelector,
+  listTasksSelector,
   ({ isCompletedTasksFetching }) => isCompletedTasksFetching,
 );
 export const completedTasksIsFetchingMoreSelector = createSelector(
-  taskSelector,
+  listTasksSelector,
   ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
 );
 
@@ -51,37 +51,43 @@ const sortByOrderProperty = (a, b) => {
   return a.taskOrderProp - b.taskOrderProp;
 };
 
-export const tasksSelector = createSelector(taskSelector, ({ tasks }) => tasks);
+export const tasksSelector = createSelector(
+  listTasksSelector,
+  ({ tasks }) => tasks,
+);
 
-export const groupTasksSelector = createSelector(taskSelector, ({ tasks }) => {
-  if (!tasks) {
-    return {};
-  }
-  const groupedTasks = {};
-
-  tasks.forEach(task => {
-    if (!task.taskGroups || task.taskGroups.length === 0) {
-      addTaskToDefaultGroup(groupedTasks, task);
-    } else {
-      task.taskGroups.forEach(taskGroup => {
-        if (taskGroup.groupType !== TASKGROUP_DEFAULT_TYPE) {
-          addGroupIfNotExists(groupedTasks, taskGroup.taskGroupIdentifier);
-          groupedTasks[taskGroup.taskGroupIdentifier].push({
-            ...task,
-            taskOrderProp: taskGroup.sortIndexOfTaskInGroup,
-          });
-        } else {
-          addTaskToDefaultGroup(groupedTasks, {
-            ...task,
-            taskOrderProp: taskGroup.sortIndexOfTaskInGroup,
-          });
-        }
-      });
+export const groupTasksSelector = createSelector(
+  listTasksSelector,
+  ({ tasks }) => {
+    if (!tasks) {
+      return {};
     }
-  });
+    const groupedTasks = {};
 
-  return Object.keys(groupedTasks).reduce((groupsObject, key) => {
-    groupsObject[key] = sort(sortByOrderProperty, groupedTasks[key]);
-    return groupsObject;
-  }, {});
-});
+    tasks.forEach(task => {
+      if (!task.taskGroups || task.taskGroups.length === 0) {
+        addTaskToDefaultGroup(groupedTasks, task);
+      } else {
+        task.taskGroups.forEach(taskGroup => {
+          if (taskGroup.groupType !== TASKGROUP_DEFAULT_TYPE) {
+            addGroupIfNotExists(groupedTasks, taskGroup.taskGroupIdentifier);
+            groupedTasks[taskGroup.taskGroupIdentifier].push({
+              ...task,
+              taskOrderProp: taskGroup.sortIndexOfTaskInGroup,
+            });
+          } else {
+            addTaskToDefaultGroup(groupedTasks, {
+              ...task,
+              taskOrderProp: taskGroup.sortIndexOfTaskInGroup,
+            });
+          }
+        });
+      }
+    });
+
+    return Object.keys(groupedTasks).reduce((groupsObject, key) => {
+      groupsObject[key] = sort(sortByOrderProperty, groupedTasks[key]);
+      return groupsObject;
+    }, {});
+  },
+);

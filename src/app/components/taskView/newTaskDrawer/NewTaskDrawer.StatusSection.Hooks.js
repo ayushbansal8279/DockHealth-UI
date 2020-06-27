@@ -39,8 +39,9 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible }) => {
   const currentValue = watch('workflowStatus');
   const dispatch = useDispatch();
 
-  const { selectedTask } = useSelector(store => ({
+  const { selectedTask, taskContext } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
+    taskContext: store.taskState.selectedTaskContext,
   }));
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
@@ -50,6 +51,7 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible }) => {
         updateWorkflowStatus(
           selectedTask,
           newTaskStatus,
+          taskContext,
         )(dispatch)
           .then(() => {
             setAutoSaveVisible();

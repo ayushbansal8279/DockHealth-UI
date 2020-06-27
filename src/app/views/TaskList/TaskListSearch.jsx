@@ -202,8 +202,8 @@ class TaskListSearch extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    tasks: state.taskState.tasks,
-    isFetching: state.taskState.isFetching,
+    tasks: state.listTasks.tasks,
+    isFetching: state.listTasks.isFetching,
   };
 }
 

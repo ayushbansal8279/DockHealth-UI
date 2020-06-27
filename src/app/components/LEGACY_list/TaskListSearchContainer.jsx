@@ -46,7 +46,7 @@ const TaskListLayout = ({
     selectedTaskId,
     storeAsCurrentTask: taskActions.storeAsCurrentTask,
     markAsUnread: taskActions.markAsUnread,
-    addTaskComment: taskActions.addTaskComment,
+    addComment: taskActions.addComment,
     toggleTaskPriority: (task, priority) =>
       taskActions.toggleTaskPriority(task, userIdentifier, priority),
     showToolbar,
@@ -134,11 +134,11 @@ const TaskListSearchContainer = ({
 function mapStateToProps(state) {
   return {
     tasklists: state.taskListState.tasklist,
-    tasks: state.taskState.tasks,
-    completedTasks: state.taskState.completedTasks,
-    isFetching: state.taskState.isFetching,
-    isCompletedTasksFetching: state.taskState.isCompletedTasksFetching,
-    showingCompletedTasks: state.taskState.showingCompletedTasks,
+    tasks: state.listTasks.tasks,
+    completedTasks: state.listTasks.completedTasks,
+    isFetching: state.listTasks.isFetching,
+    isCompletedTasksFetching: state.listTasks.isCompletedTasksFetching,
+    showingCompletedTasks: state.listTasks.showingCompletedTasks,
     user: state.userState.user,
     userIdentifier: state.userState.userProfile.userIdentifier,
     selectedTaskId: state.taskState.selectedTaskId,

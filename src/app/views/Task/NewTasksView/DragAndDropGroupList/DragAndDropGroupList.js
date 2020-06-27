@@ -65,6 +65,7 @@ const DragAndDropGroupList = ({
                     }
                     listNameVisible={listNameVisible}
                     selectedTask={selectedTask}
+                    taskContext="list"
                   />
                 )}
               </Draggable>

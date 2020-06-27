@@ -23,8 +23,9 @@ const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
   const currentValue = watch('priority');
   const dispatch = useDispatch();
 
-  const { selectedTask } = useSelector(store => ({
+  const { selectedTask, taskContext } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
+    taskContext: store.taskState.selectedTaskContext,
   }));
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
@@ -34,6 +35,7 @@ const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
         toggleTaskPriority(
           selectedTask,
           newTaskPriority,
+          taskContext,
         )(dispatch)
           .then(() => {
             setAutoSaveVisible();

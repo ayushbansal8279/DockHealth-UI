@@ -12,7 +12,7 @@ import {
 import React from 'react';
 import { useUnmount } from 'react-use';
 import {
-  addTaskComment,
+  addComment as addCommentAction,
   deleteComment as deleteCommentAction,
   updateComment as updateCommentAction,
 } from 'actions/task-actions';
@@ -74,7 +74,7 @@ const addTaskPromise = async ({
     let data;
 
     if (commentContent?.trim().length > 0) {
-      const commentResponse = await addTaskComment(newTask, {
+      const commentResponse = await addCommentAction(newTask, {
         comment: commentContent?.trim(),
       })(dispatch);
 

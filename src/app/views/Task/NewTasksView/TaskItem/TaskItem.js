@@ -174,6 +174,7 @@ const TaskItem = ({
   listNameVisible,
   patientVisible = true,
   selectedTask,
+  taskContext,
   parentHasPatient,
 }) => {
   const {
@@ -244,7 +245,7 @@ const TaskItem = ({
               isCrossedOut={!isCompletedGroup && isCompleted}
               onClick={() => {
                 openDrawer();
-                storeAsCurrentTask(task);
+                storeAsCurrentTask(task, taskContext);
               }}
             >
               {description}
@@ -272,7 +273,7 @@ const TaskItem = ({
             <ClickablePatient
               onClick={() => {
                 openDrawer('patient');
-                storeAsCurrentTask(task);
+                storeAsCurrentTask(task, taskContext);
               }}
             >
               {task.status !== 'COMPLETE' && !isSubtask && !patient && (
@@ -316,7 +317,7 @@ const TaskItem = ({
                 <ClickableTaskItemIcon
                   onClick={() => {
                     openDrawer('comment');
-                    storeAsCurrentTask(task);
+                    storeAsCurrentTask(task, taskContext);
                   }}
                 >
                   <img
@@ -384,7 +385,7 @@ const TaskItem = ({
                 <ClickableTaskItemIcon
                   onClick={() => {
                     openDrawer('label');
-                    storeAsCurrentTask(task);
+                    storeAsCurrentTask(task, taskContext);
                   }}
                 >
                   {' '}
@@ -407,7 +408,7 @@ const TaskItem = ({
                 <ClickableTaskItemIcon
                   onClick={() => {
                     openDrawer('attachment');
-                    storeAsCurrentTask(task);
+                    storeAsCurrentTask(task, taskContext);
                   }}
                 >
                   {' '}

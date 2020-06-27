@@ -193,8 +193,8 @@ export default ({
   const { register, setValue } = useFormContext();
   const selectedTask = useSelector(store => store.taskState.selectedTask);
 
-  const incompleteTasks = useSelector(store => store.taskState.tasks);
-  const completeTasks = useSelector(store => store.taskState.completedTasks);
+  const incompleteTasks = useSelector(store => store.listTasks.tasks);
+  const completeTasks = useSelector(store => store.listTasks.completedTasks);
   const currentUser = useSelector(store => store.userState.userProfile);
   const dispatch = useDispatch();
 

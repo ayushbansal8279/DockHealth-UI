@@ -109,6 +109,7 @@ const TaskListDetailsDropdown = ({
               updateWorkflowStatus={updateWorkflowStatus}
               dragAndDropDisabled
               selectedTask={selectedTask}
+              taskContext="patient"
               patientVisible={false}
             />
           ))}

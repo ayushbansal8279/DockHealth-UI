@@ -52,6 +52,7 @@ const validationSchema = object().shape({
 
 const onSubmit = ({
   selectedTask,
+  taskContext,
   taskList,
   dispatch,
   setSaving,
@@ -98,12 +99,15 @@ const onSubmit = ({
 
   setSaving(true);
 
-  saveTask(requestData)(dispatch)
+  saveTask(
+    requestData,
+    taskContext,
+  )(dispatch)
     .then(async response => {
       const taskIdentifier = response?.taskIdentifier;
 
       if (!taskIdentifier) return;
-      storeAsCurrentTask(response)(dispatch);
+      storeAsCurrentTask(response, taskContext)(dispatch);
 
       setSaving(false);
       setAutoSaveVisible();
@@ -122,6 +126,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     taskDrawerOpen,
     taskDrawerFocusField,
     selectedTask,
+    taskContext,
     addingNewSubtask,
     tasks,
     taskLists,
@@ -133,8 +138,9 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     taskDrawerFocusField: store.taskDrawerState.focusField,
     patients: store.patientState.allPatients,
     selectedTask: store.taskState.selectedTask,
+    taskContext: store.taskState.selectedTaskContext,
     addingNewSubtask: store.taskState.addingNewSubtask,
-    tasks: store.taskState.tasks,
+    tasks: store.listTasks.tasks,
     taskLists: store.taskListState.tasklist,
     labels: isInbox
       ? store.taskLabelState.data.inboxLabels
@@ -287,6 +293,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
       moveTask(
         selectedTask,
         newTaskList,
+        taskContext,
       )(dispatch)
         .then(() => {
           dispatch(
@@ -311,7 +318,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   const onDelete = async ({ afterDelete }) => {
     if (selectedTask) {
       try {
-        await deleteTask(selectedTask)(dispatch);
+        await deleteTask(selectedTask, taskContext)(dispatch);
         storeAsCurrentTask(null)(dispatch);
         afterDelete();
         onButtonClicked('Delete task');
@@ -327,8 +334,11 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        const newTask = await duplicateTask(selectedTask)(dispatch);
-        storeAsCurrentTask(newTask)(dispatch);
+        const newTask = await duplicateTask(
+          selectedTask,
+          taskContext,
+        )(dispatch);
+        storeAsCurrentTask(newTask, taskContext)(dispatch);
         afterDuplicate({ newTask });
         onButtonClicked('Duplicate task');
       } catch {
@@ -366,6 +376,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         await assignOrReassignTask(
           selectedTask,
           member?.userIdentifier,
+          taskContext,
         )(dispatch);
         setAutoSaveVisible();
       } catch {
@@ -389,7 +400,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await updatePatient(selectedTask, patient)(dispatch);
+        await updatePatient(selectedTask, patient, taskContext)(dispatch);
         setAutoSaveVisible();
       } catch {
         toggleAlert('Error updating patient, please try again later', 'error');
@@ -402,7 +413,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     setValue('patientName', null);
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await updatePatient(selectedTask, null)(dispatch);
+        await updatePatient(selectedTask, null, taskContext)(dispatch);
         setAutoSaveVisible();
       } catch {
         toggleAlert('Error updating patient, please try again later', 'error');
@@ -425,6 +436,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         await updateTaskDescription(
           selectedTask,
           updatedTaskDescription,
+          taskContext,
         )(dispatch);
         setAutoSaveVisible();
       } catch {
@@ -446,6 +458,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     top,
     onSubmit: onSubmit({
       selectedTask,
+      taskContext,
       taskList,
       dispatch,
       setSaving,
