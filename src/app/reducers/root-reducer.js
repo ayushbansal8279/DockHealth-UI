@@ -19,6 +19,7 @@ import TaskListReducer from './tasklist-reducer';
 import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 import LocationReducer from '../location/reducers';
+import ListTasksReducer from './list-tasks-reducer';
 import PatientTasksReducer from './patient-tasks-reducer';
 
 export default combineReducers({
@@ -42,5 +43,6 @@ export default combineReducers({
   alertChip: AlertChipReducer,
   megaFilter: MegaFilterReducer,
   location: LocationReducer,
+  listTasks: ListTasksReducer,
   patientTasks: PatientTasksReducer,
 });

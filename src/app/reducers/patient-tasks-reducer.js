@@ -9,7 +9,11 @@ import {
   UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
+  MARK_TASK_STATUS_SUCCESS,
+  MARK_COMPLETE_TASK_STATUS_SUCCESS,
+  TASK_ARCHIVED,
 } from 'actions/action-types';
+import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
   activeTab: null,
@@ -37,6 +41,19 @@ const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
     }
     return { ...task, subtasks: updatedSubtasks };
   });
+};
+
+const updateTaskInList = (lists, updateTaskCallback) =>
+  lists.map(list => {
+    const updatedTasks = updateTaskCallback(list.tasks);
+    return { ...list, tasks: updatedTasks };
+  });
+
+const updateTasksStateCallback = (state, updateTaskFromAction) => {
+  return {
+    ...state,
+    lists: updateTaskInList(state.lists, updateTaskFromAction),
+  };
 };
 
 export default function(state = INITIAL_STATE, action = {}) {
@@ -108,7 +125,18 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         taskSearch: payload?.value,
       };
-    default:
+
+    case MARK_TASK_STATUS_SUCCESS:
+    case MARK_COMPLETE_TASK_STATUS_SUCCESS:
+    case TASK_ARCHIVED:
       return state;
+
+    default:
+      return TaskBaseReducer(
+        state,
+        action,
+        'patient',
+        updateTasksStateCallback,
+      );
   }
 }
