@@ -15,7 +15,7 @@ const DashboardTasksGroup = ({
   storeAsCurrentTask,
   sortDashboardTasks,
 }) => {
-  const { groupName, tasks: dashboardTasks } = dashboardTasksGroup;
+  const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const DashboardTasksGroup = ({
             const newTasksOrder = newTasks.map(
               ({ taskIdentifier }) => taskIdentifier,
             );
-            sortDashboardTasks(null, newTasksOrder);
+            sortDashboardTasks(groupType, newTasksOrder);
           }}
         >
           <Droppable droppableId={groupName}>

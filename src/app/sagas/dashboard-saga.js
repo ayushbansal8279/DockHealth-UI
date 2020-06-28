@@ -6,7 +6,7 @@ import {
   REQUEST_DASHBOARD_TASKS_FAILURE,
 } from 'actions/action-types';
 import * as TemplateActions from 'actions/template-actions';
-import { getDashboardTasks } from 'api/dashboard-api';
+import { getDashboardTasks, reorderTasksInGroup } from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -39,9 +39,9 @@ export const toggleDashboardTaskComplete = task => ({
   task,
 });
 
-export const sortDashboardTasks = (taskListIdentifier, tasksOrder) => ({
+export const sortDashboardTasks = (taskGroupImplicitType, tasksOrder) => ({
   type: SORT_DASHBOARD_TASKS,
-  taskListIdentifier,
+  taskGroupImplicitType,
   tasksOrder,
 });
 
@@ -106,10 +106,11 @@ function* doRedirectToParentTask({ taskListIdentifier }) {
   }
 }
 
-function* doSortDashboardTasks({ taskListIdentifier, tasksOrder }) {
+function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   try {
-    console.log(taskListIdentifier, tasksOrder);
+    console.log(taskGroupImplicitType, tasksOrder);
     // call here request to endpoint
+    yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
     yield call(doReloadDashboardTasks);
   } catch (error) {
     console.log(error);
