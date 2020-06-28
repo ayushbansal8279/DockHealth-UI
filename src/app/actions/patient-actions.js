@@ -7,7 +7,6 @@ import {
   GET_PATIENTS_SUCCESS,
   ADD_PATIENT_SUCCESS,
   UPDATE_PATIENT_SUCCESS,
-  ADD_PATIENT_TO_TASK_SUCCESS,
   REQUEST_EMR_PATIENTS,
   CLEAR_EMR_PATIENTS,
   GET_EMR_PATIENTS_SUCCESS,
@@ -110,21 +109,6 @@ export const updatePatient = newPatient => async dispatch => {
   dispatch({
     type: UPDATE_PATIENT_SUCCESS,
     patient,
-  });
-};
-
-export const addPatientToTask = (
-  patientIdentifier,
-  taskIdentifier,
-) => async dispatch => {
-  const patient = await PatientApi.addPatientToTask(
-    patientIdentifier,
-    taskIdentifier,
-  );
-  dispatch({
-    type: ADD_PATIENT_TO_TASK_SUCCESS,
-    patient,
-    taskIdentifier,
   });
 };
 

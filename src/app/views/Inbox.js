@@ -133,7 +133,7 @@ class Inbox extends PureComponent {
         storeAsCurrentTask,
         markAsUnread,
         toggleTaskPriority,
-        addTaskComment,
+        addComment,
       },
     } = this.props;
 
@@ -148,7 +148,7 @@ class Inbox extends PureComponent {
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,
-      addTaskComment,
+      addComment,
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userIdentifier, priority),
       pullCompletedTasks: this.pullCompletedTasks,
@@ -169,11 +169,11 @@ class Inbox extends PureComponent {
 
 const mapStateToProps = store => ({
   members: store.taskListState.tasklistmembers,
-  tasks: store.taskState.tasks,
-  completedTasks: store.taskState.completedTasks,
-  isFetching: store.taskState.isFetching,
-  isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
-  showingCompletedTasks: store.taskState.showingCompletedTasks,
+  tasks: store.listTasks.tasks,
+  completedTasks: store.listTasks.completedTasks,
+  isFetching: store.listTasks.isFetching,
+  isCompletedTasksFetching: store.listTasks.isCompletedTasksFetching,
+  showingCompletedTasks: store.listTasks.showingCompletedTasks,
   user: store.userState.user,
   userIdentifier: store.userState.userProfile.userIdentifier,
   selectedTaskId: store.taskState.selectedTaskId,

@@ -46,8 +46,8 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
 
   const userProfile = useSelector(store => store.userState.userProfile);
   const { task, parentTask, subtaskOrder, subscription } = useSelector(
-    ({ taskState, taskListState, userState, organizationState }) => {
-      const tasks = [...taskState.tasks, ...taskState.completedTasks];
+    ({ taskState, listTasks, taskListState, userState, organizationState }) => {
+      const tasks = [...listTasks.tasks, ...listTasks.completedTasks];
       const { selectedTask } = taskState;
 
       const isSubtask = Boolean(selectedTask?.parentTaskIdentifier);

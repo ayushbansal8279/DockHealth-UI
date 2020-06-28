@@ -3,16 +3,13 @@ import { isEmpty } from 'ramda';
 import { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import {
-  deleteComment,
-  updateComment,
-  addTaskComment,
-} from 'actions/task-actions';
+import { deleteComment, updateComment, addComment } from 'actions/task-actions';
 import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
 
 const initializeCommentSectionHooks = ({ modalActions }) => {
-  const { selectedTask, currentUser } = useSelector(store => ({
+  const { selectedTask, taskContext, currentUser } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
+    taskContext: store.taskState.selectedTaskContext,
     currentUser: store.userState.userProfile,
     // taskListMembers: store.taskListState.tasklistmembers,
   }));
@@ -51,6 +48,7 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
       deleteComment(
         selectedTask,
         comment,
+        taskContext,
       )(dispatch).then(() => {
         const newGroupedComments = getGroupedComments({
           comments: comments.filter(
@@ -63,22 +61,26 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         modalActions.closeModal();
       });
     },
-    [comments, dispatch, selectedTask, modalActions],
+    [selectedTask, taskContext, dispatch, comments, modalActions],
   );
 
   const boundUpdateComment = useCallback(
     comment => {
-      updateComment(selectedTask, comment)(dispatch);
+      updateComment(selectedTask, comment, taskContext)(dispatch);
     },
-    [dispatch, selectedTask],
+    [dispatch, selectedTask, taskContext],
   );
 
   const boundAddComment = useCallback(
     comment =>
-      addTaskComment(selectedTask, {
-        comment,
-        creator: currentUser,
-      })(dispatch).then(newComment => {
+      addComment(
+        selectedTask,
+        {
+          comment,
+          creator: currentUser,
+        },
+        taskContext,
+      )(dispatch).then(newComment => {
         const newGroupedComments = getGroupedComments({
           comments: [newComment.data, ...comments],
         });
@@ -87,7 +89,7 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
 
         return newComment;
       }),
-    [comments, currentUser, dispatch, selectedTask],
+    [comments, currentUser, dispatch, selectedTask, taskContext],
   );
 
   const openDeleteCommentConfirmationModal = comment => {

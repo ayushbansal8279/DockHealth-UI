@@ -1315,7 +1315,7 @@ const mapStateToProps = store => ({
   addingNewTask: store.taskState.addingNewTask,
   addingNewSubtask: store.taskState.addingNewSubtask,
   subscription: store.organizationState?.organization?.subscriptionDetails,
-  taskCountStats: store.taskState?.taskCountStats,
+  taskCountStats: store.listTasks?.taskCountStats,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

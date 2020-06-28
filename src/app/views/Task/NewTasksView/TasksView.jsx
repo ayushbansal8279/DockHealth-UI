@@ -246,7 +246,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
-  taskCounters: store.taskState.taskCounters,
+  taskCounters: store.listTasks.taskCounters,
   selectedTask: store.taskState.selectedTask,
   isFetching: tasksIsFetchingSelector(store),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(store),

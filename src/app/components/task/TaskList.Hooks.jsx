@@ -38,7 +38,7 @@ export default ({
 
   const addingNewTask = useSelector(store => store.taskState.addingNewTask);
   const newlyAddedTaskIds = useSelector(
-    store => store.taskState.newlyAddedTaskIds,
+    store => store.listTasks.newlyAddedTaskIds,
   );
 
   const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(store => ({

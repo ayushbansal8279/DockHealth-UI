@@ -55,15 +55,18 @@ const initializeLabelsSectionHooks = ({
   setAutoSaveVisible,
   setSelectedLabelsValue,
 }) => {
-  const { selectedTask, labels, areLabelsRequested } = useSelector(store => ({
-    selectedTask: store.taskState.selectedTask,
-    labels: isInbox
-      ? store.taskLabelState.data.inboxLabels
-      : store.taskLabelState.data.listLabels,
-    areLabelsRequested: isInbox
-      ? store.taskLabelState.requesting.inboxLabels
-      : store.taskLabelState.requesting.listLabels,
-  }));
+  const { selectedTask, taskContext, labels, areLabelsRequested } = useSelector(
+    store => ({
+      selectedTask: store.taskState.selectedTask,
+      taskContext: store.taskState.selectedTaskContext,
+      labels: isInbox
+        ? store.taskLabelState.data.inboxLabels
+        : store.taskLabelState.data.listLabels,
+      areLabelsRequested: isInbox
+        ? store.taskLabelState.requesting.inboxLabels
+        : store.taskLabelState.requesting.listLabels,
+    }),
+  );
 
   const dispatch = useDispatch();
 
@@ -74,7 +77,10 @@ const initializeLabelsSectionHooks = ({
       })(dispatch);
     }
 
-    const refreshedTask = await refreshTask(selectedTask)(dispatch);
+    const refreshedTask = await refreshTask(
+      selectedTask,
+      taskContext,
+    )(dispatch);
 
     setSelectedLabelsValue(
       'labels',

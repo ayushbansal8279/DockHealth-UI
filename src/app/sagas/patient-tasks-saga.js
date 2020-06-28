@@ -46,6 +46,7 @@ export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
 export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
+export const DO_UPDATE_PATIENT_TASK = 'DO_UPDATE_PATIENT_TASK';
 export const DO_QUICK_ADD_PATIENT_TASK = 'DO_QUICK_ADD_PATIENT_TASK';
 export const DO_FETCH_PATIENT_FILTERS = 'DO_FETCH_PATIENT_FILTERS';
 export const DO_UPDATE_PATIENT_TASKS_FILTERS =
@@ -125,6 +126,13 @@ export const updatePatientTaskWorkflowStatus = (task, workflowStatus) => ({
   payload: {
     task,
     workflowStatus,
+  },
+});
+
+export const updatePatientTaskInList = task => ({
+  type: DO_UPDATE_PATIENT_TASK,
+  payload: {
+    task,
   },
 });
 
@@ -401,6 +409,17 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
   }
 }
 
+function* doUpdatePatientTaskInList({ payload }) {
+  const { task } = payload;
+
+  try {
+    yield put(updatePatientTask(task?.taskIdentifier, task));
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  } catch (error) {
+    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+  }
+}
+
 function* doQuickAddPatientTask({ payload }) {
   const { description, taskListIdentifier } = payload;
 
@@ -531,6 +550,7 @@ export default function* watchPatientTasks() {
     DO_UPDATE_PATIENT_WORKFLOW_STATUS,
     doUpdatePatientTaskWorkflowStatus,
   );
+  yield takeLatest(DO_UPDATE_PATIENT_TASK, doUpdatePatientTaskInList);
   yield takeEvery(DO_QUICK_ADD_PATIENT_TASK, doQuickAddPatientTask);
   yield takeLatest(DO_FETCH_PATIENT_FILTERS, doFetchPatientFilters);
   yield takeLatest(

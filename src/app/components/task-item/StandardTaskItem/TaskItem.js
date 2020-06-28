@@ -176,6 +176,7 @@ const TaskItem = ({
   listNameVisible,
   patientVisible = true,
   selectedTask,
+  taskContext,
   parentHasPatient,
 }) => {
   const {
@@ -252,7 +253,13 @@ const TaskItem = ({
             }}
           />
           <DescriptionBox>
-            <Description isCrossedOut={!isCompletedGroup && isCompleted}>
+            <Description
+              isCrossedOut={!isCompletedGroup && isCompleted}
+              onClick={() => {
+                openDrawer();
+                storeAsCurrentTask(task, taskContext);
+              }}
+            >
               {description}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
@@ -283,7 +290,7 @@ const TaskItem = ({
             <ClickablePatient
               onClick={() => {
                 openDrawer('patient');
-                storeAsCurrentTask(task);
+                storeAsCurrentTask(task, taskContext);
               }}
             >
               {task.status !== 'COMPLETE' && !isSubtask && !patient && (
@@ -331,7 +338,7 @@ const TaskItem = ({
                 <ClickableStandardTaskItemIcon
                   onClick={() => {
                     openDrawer('comment');
-                    storeAsCurrentTask(task);
+                    storeAsCurrentTask(task, taskContext);
                   }}
                 >
                   <img
@@ -399,7 +406,7 @@ const TaskItem = ({
                 <ClickableStandardTaskItemIcon
                   onClick={() => {
                     openDrawer('label');
-                    storeAsCurrentTask(task);
+                    storeAsCurrentTask(task, taskContext);
                   }}
                 >
                   {' '}
@@ -422,7 +429,7 @@ const TaskItem = ({
                 <ClickableStandardTaskItemIcon
                   onClick={() => {
                     openDrawer('attachment');
-                    storeAsCurrentTask(task);
+                    storeAsCurrentTask(task, taskContext);
                   }}
                 >
                   {' '}

@@ -20,6 +20,7 @@ import {
   UPDATE_PATIENT_SUCCESS,
 } from 'actions/action-types';
 import TaskReducer from './task-reducer';
+import ListTasksReducer from './list-tasks-reducer';
 
 const initialState = {
   details: {},
@@ -119,15 +120,13 @@ const reducer = (state = initialState, action) => {
 
     default: {
       const { tasks, completedTasks, selectedTaskId } = state;
-      const taskState = TaskReducer(
-        { tasks, completedTasks, selectedTaskId },
-        action,
-      );
+      const taskState = TaskReducer({ selectedTaskId }, action);
+      const listTasks = ListTasksReducer({ tasks, completedTasks }, action);
 
       return {
         ...state,
-        tasks: taskState.tasks,
-        completedTasks: taskState.completedTasks,
+        tasks: listTasks.tasks,
+        completedTasks: listTasks.completedTasks,
         selectedTaskId: taskState.selectedTaskId,
       };
     }

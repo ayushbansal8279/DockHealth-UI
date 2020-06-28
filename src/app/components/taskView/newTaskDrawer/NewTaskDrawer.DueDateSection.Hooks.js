@@ -7,8 +7,9 @@ import moment from 'moment';
 const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
   const dispatch = useDispatch();
 
-  const { selectedTask } = useSelector(store => ({
+  const { selectedTask, taskContext } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
+    taskContext: store.taskState.selectedTaskContext,
   }));
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
@@ -24,6 +25,8 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
         updateDueDate(
           selectedTask,
           dueDateTime,
+          false,
+          taskContext,
         )(dispatch)
           .then(() => {
             setAutoSaveVisible();
@@ -45,7 +48,7 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
     setValue('dueDate', null);
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await updateDueDate(selectedTask, null)(dispatch);
+        await updateDueDate(selectedTask, null, false, taskContext)(dispatch);
         setAutoSaveVisible();
       } catch {
         toggleAlert('Error updating due date, please try again later', 'error');

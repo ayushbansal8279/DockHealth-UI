@@ -2,10 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState, useCallback, useRef } from 'react';
 
-import {
-  removeTaskAttachment,
-  addTaskAttachment,
-} from 'actions/task-actions';
+import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
 
 import { getMemoTaskAttachment } from './NewTaskDrawer.AttachmentsSection.Utilities';
@@ -13,8 +10,9 @@ import { getMemoTaskAttachment } from './NewTaskDrawer.AttachmentsSection.Utilit
 const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   const attachmentFileInputReference = useRef(null);
 
-  const { selectedTask } = useSelector(store => ({
+  const { selectedTask, taskContext } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
+    taskContext: store.taskState.selectedTaskContext,
   }));
 
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
@@ -143,6 +141,7 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
       removeTaskAttachment(
         selectedTaskIdentifier,
         attachmentIdentifier,
+        taskContext,
       )(dispatch).then(() => {
         setCurrentTaskAttachments(
           currentTaskAttachments.filter(
@@ -158,7 +157,7 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
         // });
       });
     },
-    [dispatch, selectedTaskIdentifier, currentTaskAttachments],
+    [selectedTaskIdentifier, taskContext, dispatch, currentTaskAttachments],
   );
 
   const onAddAttachmentButtonClicked = useCallback(
@@ -200,11 +199,16 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
 
       setCurrentlyUploadedAttachment(newAttachment);
       setUploadProgress(0);
-      addTaskAttachment(selectedTaskIdentifier, newAttachment, {
-        onUploadProgress: ({ loaded, total }) => {
-          setUploadProgress(Math.round((loaded * 100) / total));
+      addTaskAttachment(
+        selectedTaskIdentifier,
+        newAttachment,
+        {
+          onUploadProgress: ({ loaded, total }) => {
+            setUploadProgress(Math.round((loaded * 100) / total));
+          },
         },
-      })(dispatch)
+        taskContext,
+      )(dispatch)
         .then(addedAttachment => {
           setCurrentlyUploadedAttachment(null);
           setCurrentTaskAttachments([
@@ -219,7 +223,7 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
           setCurrentlyUploadedAttachment(null);
         });
     }
-  }, [dispatch, selectedTaskIdentifier, currentTaskAttachments]);
+  }, [selectedTaskIdentifier, taskContext, dispatch, currentTaskAttachments]);
 
   return {
     attachmentsSources,

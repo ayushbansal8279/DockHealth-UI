@@ -259,6 +259,7 @@ class PersonDetailsView extends PureComponent {
       taskActions,
       routeParams: { userIdentifier },
       currentUser,
+      selectedTaskContext,
     } = this.props;
 
     modalActions.openModal('ListPicker', {
@@ -274,7 +275,7 @@ class PersonDetailsView extends PureComponent {
           assignedToIdentifier: userIdentifier,
         };
 
-        taskActions.saveTask(payload).then(() => {
+        taskActions.saveTask(payload, selectedTaskContext).then(() => {
           taskActions.getTaskStatsForUser(userIdentifier);
         });
       },
@@ -314,8 +315,9 @@ class PersonDetailsView extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    tasks: state.taskState.tasks,
-    isFetching: state.taskState.isFetching,
+    tasks: state.listTasks.tasks,
+    selectedTaskContext: state.taskState.selectedTaskContext,
+    isFetching: state.listTasks.isFetching,
     personData: state.peopleState.personData,
     megaFilter: state.megaFilter,
     currentUser: userProfileSelector(state),
