@@ -353,7 +353,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        prepareSubtask(selectedTask.taskIdentifier)(dispatch);
+        prepareSubtask(selectedTask.taskIdentifier, taskContext)(dispatch);
         afterAddSubTask();
         onButtonClicked('Add subtask');
       } catch {

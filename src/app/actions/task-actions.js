@@ -295,7 +295,7 @@ export const reloadTaskListStats = (dispatch, task) => {
   }
 };
 
-export function saveTask(newTask, shouldReloadGroups = false, taskContext) {
+export function saveTask(newTask, taskContext, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
       TaskApi.updateTask(newTask)
@@ -880,7 +880,10 @@ export function storeAllTasks(tasks, completedTasks) {
     return [];
   };
 }
-export const prepareSubtask = parentTaskIdentifier => dispatch => {
+export const prepareSubtask = (
+  parentTaskIdentifier,
+  taskContext,
+) => dispatch => {
   const subtaskShape = {
     taskIdentifier: null,
     parentTaskIdentifier,
@@ -894,7 +897,7 @@ export const prepareSubtask = parentTaskIdentifier => dispatch => {
     addingNewSubtaskParentId: parentTaskIdentifier,
     subtaskShape,
   });
-  storeAsCurrentTask(subtaskShape)(dispatch);
+  storeAsCurrentTask(subtaskShape, taskContext)(dispatch);
 };
 
 export function getTaskHistory(task) {
