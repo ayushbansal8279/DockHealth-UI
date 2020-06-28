@@ -9,3 +9,18 @@ export function getDashboardTasks(status = 'INCOMPLETE') {
       throw new Error(error?.response?.data);
     });
 }
+
+export function reorderTasksInGroup({
+  tasksOrder: orderedTaskIds,
+  taskGroupImplicitType,
+}) {
+  return axios
+    .put('task/sortTasksInImplicitTaskGroup', {
+      taskIdentifiers: orderedTaskIds,
+      taskGroupImplicitType,
+    })
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}

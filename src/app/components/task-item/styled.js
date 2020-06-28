@@ -201,9 +201,14 @@ export const SlimTaskItemContainer = styled.div`
   align-ttems: center;
   width: 100%;
   position: relative;
+  background-color: white;
+  padding: 0 55px;
+  border-radius: ${props => (props.isDragging ? '4px' : '0px')};
+  box-shadow: ${props =>
+    props.isDragging ? '0px 0px 20px rgba(204, 204, 204, 0.8)' : '0px'};
 
   &:hover {
-    & ${PriorityHoverIcon} {
+    & ${PriorityHoverIcon}, ${ThreeDots} {
       opacity: 1;
     }
   }
@@ -229,7 +234,10 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 
   & > span {
     color: ${palette.brightBlue};
+<<<<<<< HEAD:src/app/components/task-item/styled.js
     cursor: pointer;
+=======
+>>>>>>> Move taskitem to common components:src/app/components/common/TaskItem/styled.js
   }
 `;
 
