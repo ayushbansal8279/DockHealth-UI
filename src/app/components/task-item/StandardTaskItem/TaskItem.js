@@ -233,22 +233,26 @@ const TaskItem = ({
             />
           )}
         </PrioritySwitch>
-        <StandardTaskItemCell bolded paddingLeft="huge">
+        <StandardTaskItemCell
+          bolded
+          paddingLeft="huge"
+          onClick={() => {
+            openDrawer();
+            storeAsCurrentTask(task);
+          }}
+        >
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
             isClickable={isTaskStatusTogglingEnabled}
-            onClick={() =>
-              isTaskStatusTogglingEnabled && toggleCompleteTask(task)
-            }
+            onClick={event => {
+              if (isTaskStatusTogglingEnabled) {
+                toggleCompleteTask(task);
+              }
+              event.stopPropagation();
+            }}
           />
           <DescriptionBox>
-            <Description
-              isCrossedOut={!isCompletedGroup && isCompleted}
-              onClick={() => {
-                openDrawer();
-                storeAsCurrentTask(task);
-              }}
-            >
+            <Description isCrossedOut={!isCompletedGroup && isCompleted}>
               {description}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
@@ -262,7 +266,12 @@ const TaskItem = ({
                 `}</span>
             </CompletedBy>
             {!isEmpty(subtasks) && subtasks?.length > 0 && (
-              <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
+              <SubtasksGroupLabel
+                onClick={event => {
+                  event.stopPropagation();
+                  switchOpen(!isOpen);
+                }}
+              >
                 <span>{subtasks?.length} subtasks</span>
                 <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
               </SubtasksGroupLabel>
