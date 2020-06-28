@@ -18,8 +18,8 @@ export const useDrawerClasses = makeStyles({
     width: 'calc(100% - 85px)',
   },
   appBarOpen: {
-    marginLeft: 260,
-    width: 'calc(100% - 260px)',
+    marginLeft: ({ navbarFullWidth }) => navbarFullWidth,
+    width: ({ navbarFullWidth }) => `calc(100% - ${navbarFullWidth}px)`,
   },
   appBarBorder: {
     backgroundColor: palette.coolGrey2,
@@ -35,19 +35,27 @@ export const useDrawerClasses = makeStyles({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
+    transform: ({ isNavbarVisible }) =>
+      isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)',
     backgroundColor: palette.midnightBlue,
     border: 0,
     overflow: 'initial',
-    width: ({ isOpen }) => (isOpen ? 260 : 85),
-    transition: 'width 0.2s ease-out',
+    width: ({ isOpen, navbarFullWidth }) => (isOpen ? navbarFullWidth : 85),
+    transition: 'width 0.2s ease-out, transform 0.2s ease-out',
   },
 });
 
 export const ContentContainer = styled.div`
-  ${({ open }) =>
-    open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
-  ${({ open }) =>
-    open ? 'margin-left: 260px;' : 'margin-left: 85px;'}
+  ${({ isFullView, open }) =>
+    !isFullView
+      ? `
+      ${open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
+      ${open ? 'margin-left: 260px;' : 'margin-left: 85px;'}
+    `
+      : `
+      width: 100%;
+      margin-left: 0;
+    `}
   height: 100%;
   overflow-y: auto;
   position: relative;

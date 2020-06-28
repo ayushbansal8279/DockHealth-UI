@@ -8,6 +8,8 @@ import { StyledTextField, StyledAdornment, ClearButton } from './styled';
 const Search = ({
   className,
   onChange,
+  onFocus,
+  onBlur,
   initialValue,
   variant,
   autoFocus,
@@ -32,12 +34,16 @@ const Search = ({
       ref={searchReference}
       onChange={onChange}
       onFocus={() => {
-        if (searchReference.current)
+        if (searchReference.current) {
+          onFocus();
           searchReference.current.style.backgroundColor = 'white';
+        }
       }}
       onBlur={() => {
-        if (!searchReference.current.value)
+        if (!searchReference.current.value) {
           searchReference.current.style.backgroundColor = null;
+          onBlur();
+        }
       }}
       placeholder="Search"
       classes={className}

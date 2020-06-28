@@ -88,10 +88,10 @@ export const StyledAdornment = withStyles({
     margin: '0 0.25rem',
   },
   visible: {
-    visibility: 'initial',
+    display: 'block',
   },
   invisible: {
-    visibility: 'hidden',
+    display: 'none',
   },
 })(({ position, visible = true, classes, ...props }) => {
   const className = clsx(

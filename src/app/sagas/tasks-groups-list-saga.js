@@ -30,8 +30,10 @@ import {
   GET_COMPLETED_TASKS_SUCCESS,
 } from 'actions/action-types';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import { taskIsSelectedSelector } from 'selectors/task-selectors';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { openDrawer } from 'actions/task-drawer-actions';
 import { locationParametersSelector } from '../location/selectors';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
@@ -317,6 +319,10 @@ export function* doOnEnterTasksGroupsList() {
 
     if (taskListIdentifier) {
       yield call(doGetTasksGroupsList, { taskListIdentifier });
+    }
+    const isSelectedTask = yield select(taskIsSelectedSelector);
+    if (isSelectedTask) {
+      yield put(openDrawer());
     }
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import Task from '../TaskItem/TaskItem';
+import Task from 'components/task-item/StandardTaskItem/TaskItem';
 import { DroppablePlaceholder } from './styled';
 
 const DragAndDropGroupList = ({

@@ -1,6 +1,6 @@
 import React from 'react';
 import palette from 'styles/palette';
-import { StatusBar } from './styled';
+import { StatusBar } from '../styled';
 
 export const getWorkflowStatusConfig = workflowStatus => {
   switch (workflowStatus) {

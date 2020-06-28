@@ -3,9 +3,10 @@ import createSagaMiddleware from 'redux-saga';
 import { all } from 'redux-saga/effects';
 import thunk from 'redux-thunk';
 import reducers from './reducers/root-reducer';
-import watchTasksGroupsList from './sagas/tasks-groups-list';
-import watchPatientTasks from './sagas/patient-tasks';
-import watchPatient from './sagas/patient';
+import watchTasksGroupsList from './sagas/tasks-groups-list-saga';
+import watchPatientTasks from './sagas/patient-tasks-saga';
+import watchPatient from './sagas/patient-saga';
+import watchDashboard from './sagas/dashboard-saga';
 
 // eslint-disable-next-line no-underscore-dangle
 const composeEnhancers =
@@ -27,7 +28,12 @@ function setupStore() {
 const store = setupStore();
 
 function* rootSaga() {
-  yield all([watchTasksGroupsList(), watchPatientTasks(), watchPatient()]);
+  yield all([
+    watchTasksGroupsList(),
+    watchPatientTasks(),
+    watchPatient(),
+    watchDashboard(),
+  ]);
 }
 
 saga.run(rootSaga);

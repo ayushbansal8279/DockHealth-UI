@@ -61,8 +61,8 @@ TemplateCore.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const mapStateToProps = store => ({
-  user: store.userState.user,
+const mapStateToProps = state => ({
+  user: state.userState.user,
 });
 
 const mapDispatchToProps = dispatch => ({

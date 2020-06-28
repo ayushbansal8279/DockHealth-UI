@@ -4,12 +4,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
+import { templateStateSelector } from 'selectors/template-selectors';
 import { getBillingDetails } from 'actions/organization-actions';
 import useBoolean from 'hooks/useBoolean';
 import {
   getSubscriptionIsTrial,
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import * as TemplateActions from 'actions/template-actions';
 import { TrialBannerLink, useDrawerClasses } from './Drawer.Styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
@@ -29,6 +31,13 @@ const initializeDrawerHooks = () => {
     user,
     lists,
     header,
+    templateState: {
+      isHeaderVisible,
+      isNavbarInFullMode,
+      areNavbarSettingsVisible,
+      navbarFullWidth,
+      isNavbarVisible,
+    },
   } = useSelector(store => ({
     ...store.organizationState,
     organizationIdentifier:
@@ -37,6 +46,7 @@ const initializeDrawerHooks = () => {
     user: store.userState.userProfile,
     lists: store.taskListState.tasklist,
     header: store.header,
+    templateState: templateStateSelector(store),
   }));
 
   const intercomUser = {
@@ -131,7 +141,9 @@ const initializeDrawerHooks = () => {
 
   const drawerClasses = useDrawerClasses({
     header,
-    isOpen,
+    isOpen: isNavbarInFullMode || isOpen,
+    navbarFullWidth: navbarFullWidth || 260,
+    isNavbarVisible,
     bannerVisible: bannerVisibleFlag || hasCreditCardExpirationMessage,
   });
 
@@ -181,6 +193,10 @@ const initializeDrawerHooks = () => {
     creditCardExpirationMessage,
     hasCreditCardExpirationMessage,
     drawerClasses,
+    isHeaderVisible,
+    isNavbarInFullMode,
+    areNavbarSettingsVisible,
+    hideNavbar: () => dispatch(TemplateActions.hideNavbar()),
   };
 };
 

@@ -12,7 +12,7 @@ import {
   sortTasksInGroup,
   sortSubtasksInGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
-} from 'sagas/tasks-groups-list';
+} from 'sagas/tasks-groups-list-saga';
 import { pluck } from 'ramda';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import OpenedTasksView from './OpenedTasksView';

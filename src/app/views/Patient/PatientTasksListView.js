@@ -6,7 +6,7 @@ import TaskListDetailsDropdown from 'components/tasklist/TaskListDetailsDropdown
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
-import { PatientTasksSagaActions } from 'sagas/patient-tasks';
+import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import {
   patientTaskListsSelector,

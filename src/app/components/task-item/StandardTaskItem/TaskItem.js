@@ -33,17 +33,21 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import palette from 'styles/palette';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import TaskComments from 'views/Task/NewTasksView/TaskComments/TaskComments';
+import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
+import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
+import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
+import {
+  Tasks as SubtasksContainer,
+  Arrow,
+} from 'views/Task/NewTasksView/TasksGroup/styled';
 import TaskItemStatus from './TaskItemStatus';
-import TaskComments from '../TaskComments/TaskComments';
-import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
-import TaskWorkflowStatus from '../TaskWorkflowStatus/TaskWorkflowStatus';
-import { onDragEndSubtask } from '../DragDrop.helpers';
 import {
   AddCrossIcon,
   AddPlaceholder,
   CircleIcon,
   ClickablePatient,
-  ClickableTaskItemIcon,
+  ClickableStandardTaskItemIcon,
   Description,
   DescriptionBox,
   DueDate,
@@ -51,18 +55,16 @@ import {
   GridImg,
   SubtasksGroupLabel,
   SmallText,
-  TaskItemCell,
-  TaskItemContainer,
-  TaskItemPanel,
+  StandardTaskItemCell,
+  StandardTaskItemContainer,
+  StandardTaskItemPanel,
   ThreeDots,
   PrioritySwitch,
   CompletedBy,
   InfoText,
   PriorityHoverIcon,
   ListLink,
-} from './styled';
-
-import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
+} from '../styled';
 
 const dueDateQuickSelectOptions = [
   {
@@ -210,12 +212,12 @@ const TaskItem = ({
       .replace(/^\.$/, '') || 'Unknown';
 
   return (
-    <TaskItemPanel
+    <StandardTaskItemPanel
       isDragging={isDragging}
       onMouseEnter={() => setIsHoverd(true)}
       onMouseLeave={() => setIsHoverd(false)}
     >
-      <TaskItemContainer
+      <StandardTaskItemContainer
         isSelected={selectedTask?.taskIdentifier === taskIdentifier}
       >
         {!dragAndDropDisabled && (
@@ -232,13 +234,23 @@ const TaskItem = ({
             />
           )}
         </PrioritySwitch>
-        <TaskItemCell bolded paddingLeft="huge">
+        <StandardTaskItemCell
+          bolded
+          paddingLeft="huge"
+          onClick={() => {
+            openDrawer();
+            storeAsCurrentTask(task);
+          }}
+        >
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
             isClickable={isTaskStatusTogglingEnabled}
-            onClick={() =>
-              isTaskStatusTogglingEnabled && toggleCompleteTask(task)
-            }
+            onClick={event => {
+              if (isTaskStatusTogglingEnabled) {
+                toggleCompleteTask(task);
+              }
+              event.stopPropagation();
+            }}
           />
           <DescriptionBox>
             <Description
@@ -261,15 +273,20 @@ const TaskItem = ({
                 `}</span>
             </CompletedBy>
             {!isEmpty(subtasks) && subtasks?.length > 0 && (
-              <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
+              <SubtasksGroupLabel
+                onClick={event => {
+                  event.stopPropagation();
+                  switchOpen(!isOpen);
+                }}
+              >
                 <span>{subtasks?.length} subtasks</span>
                 <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
               </SubtasksGroupLabel>
             )}
           </DescriptionBox>
-        </TaskItemCell>
+        </StandardTaskItemCell>
         {patientVisible && (
-          <TaskItemCell width="164px">
+          <StandardTaskItemCell width="164px">
             <ClickablePatient
               onClick={() => {
                 openDrawer('patient');
@@ -283,9 +300,13 @@ const TaskItem = ({
                 !parentHasPatient &&
                 `${patient.firstName} ${patient.lastName}`}
             </ClickablePatient>
-          </TaskItemCell>
+          </StandardTaskItemCell>
         )}
-        <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
+        <StandardTaskItemCell
+          width="110px"
+          paddingLeft="smallPlus"
+          paddingRight="tiny"
+        >
           <TaskWorkflowStatus
             task={task}
             isCompletedGroup={isCompletedGroup}
@@ -302,8 +323,8 @@ const TaskItem = ({
               <AddPlaceholder>+ Add Status</AddPlaceholder>
             )}
           </TaskWorkflowStatus>
-        </TaskItemCell>
-        <TaskItemCell width="200px">
+        </StandardTaskItemCell>
+        <StandardTaskItemCell width="200px">
           <Grid container>
             <GridImg item xs={3}>
               <UniversalTooltipContainer
@@ -314,7 +335,7 @@ const TaskItem = ({
                     : 'Add a new comment'
                 }
               >
-                <ClickableTaskItemIcon
+                <ClickableStandardTaskItemIcon
                   onClick={() => {
                     openDrawer('comment');
                     storeAsCurrentTask(task, taskContext);
@@ -324,7 +345,7 @@ const TaskItem = ({
                     alt="comments"
                     src={getItemIcon(COMMENTS, comments, isHovered)}
                   />
-                </ClickableTaskItemIcon>
+                </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
@@ -382,7 +403,7 @@ const TaskItem = ({
                     : 'Add label'
                 }
               >
-                <ClickableTaskItemIcon
+                <ClickableStandardTaskItemIcon
                   onClick={() => {
                     openDrawer('label');
                     storeAsCurrentTask(task, taskContext);
@@ -393,7 +414,7 @@ const TaskItem = ({
                     alt="labels"
                     src={getItemIcon(LABELS, labels, isHovered)}
                   />
-                </ClickableTaskItemIcon>
+                </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
@@ -405,7 +426,7 @@ const TaskItem = ({
                     : 'Add file'
                 }
               >
-                <ClickableTaskItemIcon
+                <ClickableStandardTaskItemIcon
                   onClick={() => {
                     openDrawer('attachment');
                     storeAsCurrentTask(task, taskContext);
@@ -416,12 +437,12 @@ const TaskItem = ({
                     alt="attachments"
                     src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
                   />
-                </ClickableTaskItemIcon>
+                </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
           </Grid>
-        </TaskItemCell>
-        <TaskItemCell width="80px" justify="center">
+        </StandardTaskItemCell>
+        <StandardTaskItemCell width="80px" justify="center">
           <TaskAssignMember
             currentUser={currentUser}
             reassignTask={reassignTask}
@@ -433,9 +454,9 @@ const TaskItem = ({
               <AddCrossIcon src={CrossIcon} size="34px" />
             )}
           </TaskAssignMember>
-        </TaskItemCell>
+        </StandardTaskItemCell>
         {listNameVisible && (
-          <TaskItemCell
+          <StandardTaskItemCell
             color={listName ? palette.brightBlue : palette.coolGrey2}
             width="168px"
           >
@@ -450,10 +471,10 @@ const TaskItem = ({
             ) : (
               'Unfiled'
             )}
-          </TaskItemCell>
+          </StandardTaskItemCell>
         )}
-      </TaskItemContainer>
-    </TaskItemPanel>
+      </StandardTaskItemContainer>
+    </StandardTaskItemPanel>
   );
 };
 
@@ -577,18 +598,21 @@ const Task = ({
       : subtasks;
 
   return (
-    <div ref={innerRef} {...draggableProps}>
-      <TaskItem
-        task={task}
-        isOpen={isOpen}
-        switchOpen={switchOpen}
-        dragHandleProps={dragHandleProps}
-        isDragging={isDragging}
-        currentUser={currentUser}
-        reassignTask={reassignTask}
-        subtasks={renderedSubtasks}
-        {...restProps}
-      />
+    <div {...draggableProps}>
+      <div ref={innerRef}>
+        <TaskItem
+          task={task}
+          isOpen={isOpen}
+          switchOpen={switchOpen}
+          dragHandleProps={dragHandleProps}
+          isDragging={isDragging}
+          currentUser={currentUser}
+          reassignTask={reassignTask}
+          subtasks={renderedSubtasks}
+          {...restProps}
+        />
+      </div>
+
       {!isEmpty(comments) && !isStartedDnD && (
         <TaskComments isOpen={isFullView} comments={comments} />
       )}

@@ -5,8 +5,8 @@ import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
 import {
   hashHistory,
-  IndexRedirect,
   IndexRoute,
+  IndexRedirect,
   Redirect,
   Route,
   Router,
@@ -19,16 +19,20 @@ import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
-import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list';
-import { getPatient } from 'sagas/patient';
+import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list-saga';
+import { getPatient } from 'sagas/patient-saga';
 import {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
   fetchPatientFilters,
   initalizeSavedFilters,
-} from 'sagas/patient-tasks';
+} from 'sagas/patient-tasks-saga';
+import {
+  initializeDashboardView,
+  leaveDashboardView,
+} from 'sagas/dashboard-saga';
+import DashboardView from 'views/Dashboard/DashboardView';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
-
 import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
@@ -262,6 +266,14 @@ export const Routes = ({ store }) => {
     dispatch(fetchPatientFilters());
   };
 
+  const onEnterDashboard = () => {
+    dispatch(initializeDashboardView());
+  };
+
+  const onLeaveDashboard = () => {
+    dispatch(leaveDashboardView());
+  };
+
   return (
     <Router history={hashHistory}>
       <Route
@@ -276,7 +288,13 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated();
           }}
         >
-          <IndexRedirect to="/tasks" />
+          <IndexRedirect to="/home" />
+          <Route
+            path="/home"
+            component={DashboardView}
+            onEnter={onEnterDashboard}
+            onLeave={onLeaveDashboard}
+          />
           <Route
             path="/userprofile"
             component={UserProfileViewWrapper}

@@ -10,7 +10,7 @@ import {
   deletePatientNote as deletePatientNoteAction,
   updatePatient as updatePatientAction,
   archivePatient as archivePatientAction,
-} from 'sagas/patient';
+} from 'sagas/patient-saga';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { openModal as openModalAction } from 'modal/actions';
 

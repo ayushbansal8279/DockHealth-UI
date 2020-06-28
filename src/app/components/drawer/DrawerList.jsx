@@ -1,14 +1,15 @@
+/* eslint-disable import/no-unresolved */
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router';
 import useBoolean from 'hooks/useBoolean';
-import InboxIcon from 'img/drawer/InboxIcon';
 import ListsIcon from 'img/drawer/ListsIcon';
 import LogoutIcon from 'img/drawer/LogoutIcon';
 import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
-import SearchIcon from 'img/drawer/SearchIcon';
 import SupportIcon from 'img/drawer/SupportIcon';
+import DashboardIcon from 'img/drawer/DashboardIcon';
+
 import DrawerHeader from './DrawerHeader';
 import {
   ActiveIconRim,
@@ -170,16 +171,10 @@ const NestedItem = ({
 
 const getDrawerItems = ({ lists }) => [
   {
-    id: 'search',
-    label: 'Search',
-    icon: SearchIcon,
-    to: 'taskSearch',
-  },
-  {
-    id: 'inbox',
-    label: 'Inbox',
-    icon: InboxIcon,
-    to: 'tasks/Inbox',
+    id: 'home',
+    label: 'Home',
+    icon: DashboardIcon,
+    to: 'home',
   },
   {
     id: 'lists',
@@ -197,16 +192,16 @@ const getDrawerItems = ({ lists }) => [
     }),
   },
   {
-    id: 'patients',
-    label: 'Patients',
-    icon: PatientsIcon,
-    to: 'patients',
-  },
-  {
     id: 'people',
     label: 'People',
     icon: PeopleIcon,
     to: 'people',
+  },
+  {
+    id: 'patients',
+    label: 'Patients',
+    icon: PatientsIcon,
+    to: 'patients',
   },
   {
     id: 'support',
@@ -231,6 +226,7 @@ const DrawerList = ({
   onMouseEnter,
   onMouseLeave,
   bannerVisible,
+  settingsVisible,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
@@ -269,6 +265,7 @@ const DrawerList = ({
           setActiveId={setActiveId}
           user={user}
           onMouseEnter={onMouseEnter}
+          settingsVisible={settingsVisible}
         />
         <StandardListContainer bannerVisible={bannerVisible}>
           {drawerItems.map(

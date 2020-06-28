@@ -21,8 +21,11 @@ import UserReducer from './user-reducer';
 import LocationReducer from '../location/reducers';
 import ListTasksReducer from './list-tasks-reducer';
 import PatientTasksReducer from './patient-tasks-reducer';
+import TemplateReducer from './template-reducer';
+import DashboardTasksReducer from './dashboard-tasks-reducer';
 
 export default combineReducers({
+  templateState: TemplateReducer,
   taskState: TaskReducer,
   patientState: PatientReducer,
   userState: UserReducer,
@@ -45,4 +48,5 @@ export default combineReducers({
   location: LocationReducer,
   listTasks: ListTasksReducer,
   patientTasks: PatientTasksReducer,
+  dashboardTasks: DashboardTasksReducer,
 });

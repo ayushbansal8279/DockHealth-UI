@@ -38,6 +38,10 @@ const Drawer = ({ children }) => {
     drawerClasses,
     bannerVisibleFlag,
     bannerMessageLinkFlag,
+    isHeaderVisible,
+    isNavbarInFullMode,
+    areNavbarSettingsVisible,
+    hideNavbar,
   } = initializeDrawerHooks();
 
   return (
@@ -49,43 +53,47 @@ const Drawer = ({ children }) => {
         overflow: 'hidden',
       }}
     >
-      <AppBar
-        className={clsx(
-          drawerClasses.appBar,
-          isOpen && drawerClasses.appBarOpen,
-        )}
-        position="fixed"
-      >
-        <div className={drawerClasses.appBarBorder} />
-        <Grid container item xs={12}>
-          {header?.layout?.map(renderHeaderColumn)}
-        </Grid>
-        <TrialBannerContainer
-          item
-          xs={12}
-          container
-          justify="center"
-          alignItems="center"
+      {isHeaderVisible && (
+        <AppBar
+          className={clsx(
+            drawerClasses.appBar,
+            isOpen && drawerClasses.appBarOpen,
+          )}
+          position="fixed"
         >
-          <TrialBanner
-            bannerVisible={bannerVisibleFlag}
-            hasCreditCardExpirationMessage={hasCreditCardExpirationMessage}
+          <div className={drawerClasses.appBarBorder} />
+          <Grid container item xs={12}>
+            {header?.layout?.map(renderHeaderColumn)}
+          </Grid>
+          <TrialBannerContainer
+            item
+            xs={12}
+            container
+            justify="center"
+            alignItems="center"
           >
-            <MontserratTypography weight="600" variant="h4">
-              <span>
-                {creditCardExpirationMessage ||
-                  messageBannerBar ||
-                  trialEndLabel}
-              </span>
-              {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
-                <TrialBannerLink to="/subscriptions">
-                  {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
-                </TrialBannerLink>
-              )}
-            </MontserratTypography>
-          </TrialBanner>
-        </TrialBannerContainer>
-      </AppBar>
+            <TrialBanner
+              bannerVisible={bannerVisibleFlag}
+              hasCreditCardExpirationMessage={hasCreditCardExpirationMessage}
+            >
+              <MontserratTypography weight="600" variant="h4">
+                <span>
+                  {creditCardExpirationMessage ||
+                    messageBannerBar ||
+                    trialEndLabel}
+                </span>
+                {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
+                  <TrialBannerLink to="/subscriptions">
+                    {hasMinimalUsagePeriodPassed
+                      ? 'Subscribe Now'
+                      : 'Learn more'}
+                  </TrialBannerLink>
+                )}
+              </MontserratTypography>
+            </TrialBanner>
+          </TrialBannerContainer>
+        </AppBar>
+      )}
       <MaterialDrawer
         classes={{
           root: drawerClasses.drawer,
@@ -98,15 +106,20 @@ const Drawer = ({ children }) => {
           activeId={activeId}
           setActiveId={setActiveId}
           onMouseEnter={open}
-          onMouseLeave={close}
-          open={isOpen}
+          onMouseLeave={isNavbarInFullMode ? hideNavbar : close}
+          open={isNavbarInFullMode || isOpen}
           user={user}
           lists={lists}
           bannerVisible={bannerVisibleFlag}
+          settingsVisible={areNavbarSettingsVisible}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
-      <ContentContainer id="content-container" open={isOpen}>
+      <ContentContainer
+        id="content-container"
+        isFullView={isNavbarInFullMode}
+        open={isOpen}
+      >
         <GlobalAlertChip />
         {children}
       </ContentContainer>

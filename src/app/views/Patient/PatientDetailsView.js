@@ -7,7 +7,7 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import * as ModalActions from 'modal/actions';
-import { PatientTasksSagaActions } from 'sagas/patient-tasks';
+import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
   patientTasksStateSelector,
   patientListHasTasksSelector,

@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
+import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
@@ -140,7 +141,12 @@ const renderListElement = ({ onLinkClicked, linkComponent }) => ({
   </DropdownListItem>
 );
 
-const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
+const DrawerHeader = ({
+  onMouseEnter,
+  setActiveId,
+  user,
+  settingsVisible = true,
+}) => {
   const { access: userProfileAccess, orgUserRole } = useSelector(
     state => state.userState.userProfile || {},
   );
@@ -189,16 +195,24 @@ const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
           />
         </ListItemIcon>
       </StyledListItem>
-      <StyledDropdown
-        open={isPopoverOpen}
-        onMouseEnter={userProfileEnabled && openPopover}
-        onMouseLeave={closePopover}
-        timeout={250}
-        dropdownHeight={dropdownHeight}
-      >
-        {listElements.map(renderListElement({ onLinkClicked, linkComponent }))}
-      </StyledDropdown>
-      <DropdownBorder />
+      {settingsVisible ? (
+        <>
+          <StyledDropdown
+            open={isPopoverOpen}
+            onMouseEnter={userProfileEnabled && openPopover}
+            onMouseLeave={closePopover}
+            timeout={250}
+            dropdownHeight={dropdownHeight}
+          >
+            {listElements.map(
+              renderListElement({ onLinkClicked, linkComponent }),
+            )}
+          </StyledDropdown>
+          <DropdownBorder />
+        </>
+      ) : (
+        <Spacing vertical={5} />
+      )}
     </>
   );
 };

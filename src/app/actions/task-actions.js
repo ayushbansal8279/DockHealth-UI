@@ -3,7 +3,7 @@ import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
-import { getTasksGroupsList } from 'sagas/tasks-groups-list';
+import { getTasksGroupsList } from 'sagas/tasks-groups-list-saga';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
 import AlertMessages from '../alert/AlertMessages';
