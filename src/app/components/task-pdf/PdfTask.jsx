@@ -1,45 +1,48 @@
 import React from 'react';
 import ClipIcon from 'img/clip.png';
-import PdfCheckboxOff from 'img/pdf/pdf-checkbox-off.png';
-import PdfCheckboxOn from 'img/pdf/pdf-checkbox-on.png';
+import Circle from 'img/pdf/pdf-circle.png';
+import CircleCompleted from 'img/pdf/pdf-circle-completed.png';
+import PriorityIcon from 'img/pdf/priority-icon.png';
 import ProfileIcon from 'img/profile.png';
+import palette from 'styles/palette';
 import getPdfTaskData from './PdfTask.Data';
 import {
   Avatar,
   AvatarContainer,
   CheckboxContainer,
-  DueDateLabel,
   EditedLabel,
   InitialSpacing,
   InlineContainer,
   InnerContainer,
   MainInnerContainer,
   PatientContainer,
-  PatientLabel,
+  TextLabel,
+  PriorityStripContainer,
   PriorityStrip,
-  SideContainer,
+  ListNameContainer,
   StatusContainer,
-  StatusDot,
   StyledClipIcon,
   StyledProfileIcon,
-  SubtaskOrderContainer,
-  SubtaskOrderLabel,
   TaskContainer,
   TaskDescription,
   TaskSubLabel,
   SubtasksContainer,
+  TaskInnerContainer,
+  StatusColorContainer,
+  DueDateContainer,
 } from './PdfTask.Styled';
 
-const renderSubtask = ({ taskListMembers, taskListMembersAvatars }) => (
-  { taskIdentifier, ...props },
-  subtaskOrder,
-) => (
+const renderSubtask = ({
+  taskListMembers,
+  taskListMembersAvatars,
+  columnsWidth,
+}) => ({ taskIdentifier, ...props }) => (
   <PdfTask
     key={taskIdentifier}
     taskListMembers={taskListMembers}
     taskListMembersAvatars={taskListMembersAvatars}
     taskIdentifier={taskIdentifier}
-    oneBasedSubtaskOrder={subtaskOrder + 1}
+    columnsWidth={columnsWidth}
     {...props}
   />
 );
@@ -51,7 +54,7 @@ const PdfTask = props => {
     assignedTo,
     taskListMembers,
     taskListMembersAvatars,
-    oneBasedSubtaskOrder = 1,
+    columnsWidth,
   } = props;
 
   const avatarContent = assignedTo?.userIdentifier ? (
@@ -68,67 +71,93 @@ const PdfTask = props => {
     hasAttachments,
     mainContainerWidth,
     assignedMemberColor,
-    assignedByLabel,
     bottomLabel,
     patientName,
     dueDateLabel,
     isOverdue,
-    currentPriorityColor,
+    completedByLabel,
+    workflowStatusLabel,
+    workflowStatusColor,
+    listName,
   } = getPdfTaskData(props);
 
   return (
     <>
       <TaskContainer wrap={false} isSubtask={isSubtask}>
-        {isHighPriority ? <PriorityStrip /> : undefined}
-        {isSubtask ? (
-          <SubtaskOrderContainer>
-            <SubtaskOrderLabel>{oneBasedSubtaskOrder}.</SubtaskOrderLabel>
-          </SubtaskOrderContainer>
-        ) : (
+        <TaskInnerContainer>
+          {isHighPriority && (
+            <PriorityStripContainer>
+              <PriorityStrip src={PriorityIcon} />
+            </PriorityStripContainer>
+          )}
           <InitialSpacing />
-        )}
-        <InnerContainer>
-          <CheckboxContainer
-            src={isComplete ? PdfCheckboxOn : PdfCheckboxOff}
-          />
-        </InnerContainer>
-        <InnerContainer>
-          <AvatarContainer color={assignedMemberColor}>
-            <Avatar color={assignedMemberColor}>{avatarContent}</Avatar>
-          </AvatarContainer>
-        </InnerContainer>
-        <MainInnerContainer mainContainerWidth={mainContainerWidth}>
-          <InlineContainer>
-            {hasAttachments ? <StyledClipIcon src={ClipIcon} /> : undefined}
-            <TaskDescription
-              mainContainerWidth={mainContainerWidth}
-              isEdited={isEdited}
-            >
-              {description}
-            </TaskDescription>
-            {isEdited ? <EditedLabel>(edited)</EditedLabel> : undefined}
-          </InlineContainer>
-          {assignedByLabel ? (
-            <TaskSubLabel>{assignedByLabel}</TaskSubLabel>
+          <InnerContainer>
+            <CheckboxContainer src={isComplete ? CircleCompleted : Circle} />
+          </InnerContainer>
+          <MainInnerContainer mainContainerWidth={mainContainerWidth}>
+            <InlineContainer>
+              {hasAttachments ? <StyledClipIcon src={ClipIcon} /> : undefined}
+              <TaskDescription
+                mainContainerWidth={mainContainerWidth}
+                isEdited={isEdited}
+              >
+                {description}
+              </TaskDescription>
+              {isEdited ? <EditedLabel>(edited)</EditedLabel> : undefined}
+            </InlineContainer>
+            {completedByLabel ? (
+              <TaskSubLabel color={palette.brightBlue}>
+                {completedByLabel}
+              </TaskSubLabel>
+            ) : (
+              undefined
+            )}
+            {bottomLabel ? (
+              <TaskSubLabel>{bottomLabel}</TaskSubLabel>
+            ) : (
+              undefined
+            )}
+          </MainInnerContainer>
+          {columnsWidth.patient ? (
+            <PatientContainer width={columnsWidth.patient}>
+              <TextLabel>{patientName}</TextLabel>
+            </PatientContainer>
           ) : (
             undefined
           )}
-          {bottomLabel ? <TaskSubLabel>{bottomLabel}</TaskSubLabel> : undefined}
-        </MainInnerContainer>
-        <PatientContainer>
-          <PatientLabel>{patientName}</PatientLabel>
-        </PatientContainer>
-        <SideContainer>
-          <DueDateLabel isOverdue={isOverdue}>{dueDateLabel}</DueDateLabel>
-        </SideContainer>
-        <StatusContainer>
-          <StatusDot color={currentPriorityColor} />
-        </StatusContainer>
+          <StatusContainer>
+            {!isComplete && (
+              <StatusColorContainer color={workflowStatusColor} />
+            )}
+            <TextLabel>
+              {isComplete ? 'Completed' : workflowStatusLabel}
+            </TextLabel>
+          </StatusContainer>
+          <InnerContainer>
+            <AvatarContainer color={assignedMemberColor}>
+              <Avatar color={assignedMemberColor}>{avatarContent}</Avatar>
+            </AvatarContainer>
+          </InnerContainer>
+          <DueDateContainer>
+            <TextLabel isRed={isOverdue}>{dueDateLabel}</TextLabel>
+          </DueDateContainer>
+          {columnsWidth.listName ? (
+            <ListNameContainer width={columnsWidth.listName}>
+              <TextLabel>{listName}</TextLabel>
+            </ListNameContainer>
+          ) : (
+            undefined
+          )}
+        </TaskInnerContainer>
       </TaskContainer>
       {subtasks?.length > 0 ? (
         <SubtasksContainer>
           {subtasks.map(
-            renderSubtask({ taskListMembers, taskListMembersAvatars }),
+            renderSubtask({
+              taskListMembers,
+              taskListMembersAvatars,
+              columnsWidth,
+            }),
           )}
         </SubtasksContainer>
       ) : (

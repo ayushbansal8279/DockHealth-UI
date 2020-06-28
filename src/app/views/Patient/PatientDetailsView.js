@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -14,6 +14,7 @@ import {
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
@@ -33,6 +34,7 @@ const PatientDetailsView = ({
   hasTasks,
   patientTasksSagaActions,
   taskSearch,
+  currentUser,
 }) => {
   const [searchValue, setSearchValue] = useState(taskSearch);
   const navigateToTab = tabName => {
@@ -42,6 +44,25 @@ const PatientDetailsView = ({
       }`,
     );
   };
+
+  const allMembers = useMemo(() => {
+    const allListsMembers = [];
+    lists.forEach(list => {
+      const { adminUsers, memberUsers } = list;
+      const listMembers = [currentUser].concat(adminUsers).concat(memberUsers);
+
+      listMembers.forEach(member => {
+        if (
+          !allListsMembers.find(
+            ({ userIdentifier }) => userIdentifier === member.userIdentifier,
+          )
+        ) {
+          allListsMembers.push(member);
+        }
+      });
+    });
+    return allListsMembers;
+  }, [lists, currentUser]);
 
   const {
     patientTasksFilterChange,
@@ -69,6 +90,7 @@ const PatientDetailsView = ({
               activeTab === TaskListTabName.OPEN
                 ? lists.flatMap(({ tasks }) => tasks)
                 : [],
+            taskListMembers: allMembers,
           }}
           openTasksAmount={incompleteTasksCount}
           completedTasksAmount={completeTasksCount}
@@ -79,6 +101,8 @@ const PatientDetailsView = ({
           showMembers={false}
           megaFilter={megaFilter}
           haveTasks={hasTasks}
+          patientColumnVisible={false}
+          listNameColumnVisible
         />
       )}
       <ViewLoader isFetchingData={isFetching}>
@@ -102,6 +126,7 @@ const mapStateToProps = state => ({
   megaFilter: megaFilterSelector(state),
   hasTasks: patientListHasTasksSelector(state),
   taskSearch: patientTaskSearchSelector(state),
+  currentUser: userProfileSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);

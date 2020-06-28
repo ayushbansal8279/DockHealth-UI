@@ -15,7 +15,12 @@ const setItem = (key, item) => {
   sessionStorage[key] = JSON.stringify(item);
 };
 
+const removeItem = key => {
+  sessionStorage.removeItem(key);
+};
+
 export default {
   getItem,
   setItem,
+  removeItem,
 };

@@ -58,6 +58,7 @@ const TaskView = ({
   dispatchedSetHeader,
   selectedTask,
   isMainListView = false,
+  listUniqueKey,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -188,6 +189,7 @@ const TaskView = ({
           showNotifications={showNotificationAction}
           searchValue={searchValue}
           onSelectFilters={handleFilterChange}
+          listNameColumnVisible={listNameVisible}
         />
       )}
       {selectedTab === TaskListTabName.COMPLETE ? (
@@ -204,6 +206,7 @@ const TaskView = ({
           listNameVisible={listNameVisible}
           searchValue={searchValue}
           selectedTask={selectedTask}
+          listUniqueKey={listUniqueKey}
         />
       ) : (
         <OpenedTasksView
@@ -226,6 +229,7 @@ const TaskView = ({
           searchValue={searchValue}
           selectedTask={selectedTask}
           isMainListView={isMainListView}
+          listUniqueKey={listUniqueKey}
         />
       )}
       <NewTaskDrawer modalActions={modalActions} />

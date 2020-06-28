@@ -293,6 +293,7 @@ class PersonDetailsView extends PureComponent {
       handleFilterChange: this.handleFilterChange,
       listNameVisible: true,
       quickAddTask: this.handleQuickAddTask,
+      listUniqueKey: routeParams.userIdentifier,
     };
 
     return (
@@ -304,6 +305,7 @@ class PersonDetailsView extends PureComponent {
             defaultGroupName="All tasks"
             showMembers={false}
             showNotificationAction={false}
+            members={[personData]}
           />
         </>
       )

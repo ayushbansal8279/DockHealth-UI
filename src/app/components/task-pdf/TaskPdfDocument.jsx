@@ -26,15 +26,17 @@ const StyledPage = styled.Page`
 
 const HeaderView = styled.View`
   align-items: center;
-  background-color: ${palette.unknownGrey6};
   display: flex;
   flex-flow: row nowrap;
   height: 12pt;
   margin-top: 12pt;
   width: 96vw;
+  padding-left: 10pt;
 `;
 
 const HeaderText = styled.Text`
+  min-height: 14pt;
+  background-color: ${palette.unknownGrey6};
   color: ${palette.black};
   font-family: 'Open Sans';
   font-size: 8pt;
@@ -43,39 +45,73 @@ const HeaderText = styled.Text`
   width: ${props => props.width}pt;
 `;
 
-const renderTask = ({ taskListMembers, taskListMembersAvatars }) => ({
-  taskIdentifier,
-  ...props
-}) => (
+const renderTask = ({
+  taskListMembers,
+  taskListMembersAvatars,
+  columnsWidth,
+}) => ({ taskIdentifier, ...props }) => (
   <PdfTask
     key={taskIdentifier}
     taskIdentifier={taskIdentifier}
     taskListMembers={taskListMembers}
     taskListMembersAvatars={taskListMembersAvatars}
+    columnsWidth={columnsWidth}
     {...props}
   />
 );
+
+const getColumnWidths = (isPatientVisible, isListNameVisible) => {
+  const basicTaskWidth = 412;
+  const basicPatientWidth = 90;
+  const basicListNameWidth = 62;
+
+  const patientWidth = isPatientVisible ? basicPatientWidth : 0;
+  const listNameWidth = isListNameVisible ? basicListNameWidth : 0;
+
+  const taskWidth = basicTaskWidth - patientWidth - listNameWidth;
+
+  return { task: taskWidth, patient: patientWidth, listName: listNameWidth };
+};
 
 export const TaskPdfDocument = ({
   tasks,
   taskListMembers,
   taskListMembersAvatars,
+  isPatientVisible,
+  isListNameVisible,
 }) => {
+  const columnsWidth = getColumnWidths(isPatientVisible, isListNameVisible);
+
   return (
     <Document>
       <StyledPage size="A4" wrap>
         <HeaderView fixed>
-          <HeaderText width={60} textAlign="right">
-            ASSIGNED
-          </HeaderText>
-          <HeaderText width={240}>TASK</HeaderText>
-          <HeaderText width={128}>PATIENT</HeaderText>
-          <HeaderText width={68}>DUE</HeaderText>
-          <HeaderText width={48} textAlign="right">
+          <HeaderText width={columnsWidth.task}>TASK</HeaderText>
+          {columnsWidth.patient ? (
+            <HeaderText width={columnsWidth.patient} textAlign="center">
+              PATIENT
+            </HeaderText>
+          ) : (
+            undefined
+          )}
+          <HeaderText width={55} textAlign="center">
             STATUS
           </HeaderText>
+          <HeaderText width={38} textAlign="center" />
+          <HeaderText width={57} textAlign="center">
+            DUE
+          </HeaderText>
+          {columnsWidth.listName ? (
+            <HeaderText width={columnsWidth.listName} textAlign="center">
+              LIST
+            </HeaderText>
+          ) : (
+            undefined
+          )}
         </HeaderView>
-        {tasks?.map(renderTask({ taskListMembers, taskListMembersAvatars }))}
+        {tasks?.map(
+          renderTask({ taskListMembers, taskListMembersAvatars, columnsWidth }),
+        )}
       </StyledPage>
     </Document>
   );
@@ -139,7 +175,12 @@ const downloadPdf = ({ url, tasks }) => {
   link.click();
 };
 
-export const printTaskPdf = async ({ tasks, taskListMembers }) => {
+export const printTaskPdf = async ({
+  tasks,
+  taskListMembers,
+  isPatientVisible = true,
+  isListNameVisible = false,
+}) => {
   const taskListMembersAvatars = await getAllMembersAvatars({
     taskListMembers,
   });
@@ -149,6 +190,8 @@ export const printTaskPdf = async ({ tasks, taskListMembers }) => {
       tasks={tasks}
       taskListMembers={taskListMembers}
       taskListMembersAvatars={taskListMembersAvatars}
+      isPatientVisible={isPatientVisible}
+      isListNameVisible={isListNameVisible}
     />,
   ).toBlob();
   const pdfObjectUrl = URL.createObjectURL(pdfBlob);

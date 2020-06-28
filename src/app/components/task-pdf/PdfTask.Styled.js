@@ -1,31 +1,43 @@
 import styled from '@react-pdf/styled-components';
 import palette from 'styles/palette';
 
+const addWidth = ({ width }) => `
+  max-width: ${width}pt;
+  width: ${width}pt;
+`;
+
 export const TaskContainer = styled.View`
-  align-items: center;
+  position: relative;
   display: flex;
+  align-items: center;
   flex-flow: row wrap;
+  width: 100vw;
+  padding-right: 33pt;
+
+  ${props => props.isSubtask && 'padding-right: 45pt;'}
+`;
+
+export const TaskInnerContainer = styled.View`
+  display: flex;
+  align-items: center;
+  flex-flow: row wrap;
+  width: 100%;
   height: 36pt;
   position: relative;
-  border-color: ${palette.unknownGrey6};
+  margin-left: 10pt;
+  border-color: ${palette.coolGrey3};
   border-style: solid;
-  border-width: 0;
-
-  ${props =>
-    props.isSubtask
-      ? 'border-width: 1pt; margin-top: 2pt; margin-right: 17pt;'
-      : 'width: 100vw;'}
+  border-width: 1pt;
 `;
 
 export const SubtasksContainer = styled.View`
-  border: 1pt solid ${palette.white};
   padding-left: 12pt;
   padding-right: 5pt;
 `;
 
 export const InitialSpacing = styled.View`
   height: 100%;
-  width: 4pt;
+  width: 5pt;
 `;
 
 export const InnerContainer = styled.View`
@@ -53,7 +65,7 @@ export const TaskDescription = styled.Text`
 `;
 
 export const TaskSubLabel = styled.Text`
-  color: ${palette.unknownGrey7};
+  color: ${({ color }) => color || palette.unknownGrey7};
   font-family: 'Open Sans';
   font-size: 7pt;
 `;
@@ -70,13 +82,19 @@ export const CheckboxContainer = styled.Image`
   width: 14pt;
 `;
 
-export const PriorityStrip = styled.View`
-  background-color: ${palette.orangeJulius};
-  height: 100%;
-  left: 0;
+export const PriorityStrip = styled.Image`
+  height: 14pt;
+  width: 8pt;
+`;
+
+export const PriorityStripContainer = styled.View`
   position: absolute;
+  left: -8pt;
   top: 0;
-  width: 2pt;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  height: 100%;
 `;
 
 export const AvatarContainer = styled.View`
@@ -87,7 +105,7 @@ export const AvatarContainer = styled.View`
   height: 28pt;
   justify-content: center;
   overflow: hidden;
-  margin: 3pt;
+  margin-left: 1pt;
   width: 28pt;
 `;
 
@@ -132,62 +150,51 @@ export const MainInnerContainer = styled(InnerContainer)`
 `;
 
 export const PatientContainer = styled(InnerContainer)`
-  justify-content: flex-end;
-  margin-bottom: 8pt;
-  max-width: 120pt;
-  width: 120pt;
+  justify-content: center;
+  ${addWidth}
+  padding-top: 4pt;
+  border-left: 1pt solid ${palette.coolGrey3};
 `;
 
-export const SideContainer = styled(PatientContainer)`
-  max-width: 60pt;
-  width: 60pt;
-`;
-
-export const PatientLabel = styled.Text`
-  color: ${palette.lighterCyanBlue};
+export const TextLabel = styled.Text`
+  display: flex;
+  flex: 1;
+  color: ${props => (props.isRed ? palette.error : palette.unknownGrey7)};
   font-family: 'Open Sans';
   font-size: 7pt;
   max-height: 14pt;
-  margin-bottom: 4pt;
-`;
-
-export const DueDateLabel = styled.Text`
-  color: ${props => (props.isOverdue ? palette.error : palette.unknownGrey1)};
-  font-family: 'Open Sans';
-  font-size: 7pt;
-  max-height: 14pt;
-  margin-bottom: 4pt;
+  margin-top: 1pt;
+  padding-left: 4pt;
+  text-align: left;
 `;
 
 export const StatusContainer = styled.View`
-  align-items: flex-end;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
-  height: 100%;
-  max-width: 40pt;
-  margin-left: 4pt;
-  margin-bottom: 20pt;
-  width: 40pt;
-`;
-
-export const StatusDot = styled.View`
-  background-color: ${props => props.color};
-  border-radius: 4px;
-  height: 4px;
-  width: 4px;
-`;
-
-export const SubtaskOrderContainer = styled.View`
+  flex-flow: row no-wrap;
+  justify-content: flex-start;
   align-items: center;
-  display: flex;
   height: 100%;
-  justify-content: center;
-  width: 18pt;
+  width: 55pt;
+  max-width: 55pt;
+  border-left: 1pt solid ${palette.coolGrey3};
+  border-right: 1pt solid ${palette.coolGrey3};
 `;
 
-export const SubtaskOrderLabel = styled.Text`
-  font-family: 'Open Sans';
-  font-size: 8pt;
-  font-weight: bold;
+export const StatusColorContainer = styled.View`
+  height: 100%;
+  width: 5pt;
+  background-color: ${({ color }) => color};
+`;
+
+export const DueDateContainer = styled(InnerContainer)`
+  width: 50pt;
+  max-width: 50pt;
+  padding-top: 4pt;
+  border-left: 1pt solid ${palette.coolGrey3};
+`;
+
+export const ListNameContainer = styled(InnerContainer)`
+  ${addWidth}
+  padding-top: 4pt;
+  border-left: 1pt solid ${palette.coolGrey3};
 `;
