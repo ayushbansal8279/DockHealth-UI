@@ -10,6 +10,7 @@ import {
   SlimTaskItemContainer,
   SlimTaskItemRow,
   SlimTaskItemDescription,
+  SlimTaskItemDescriptionDetails,
   SlimTaskItemParentTaskLabel,
   SlimTaskItemRightSide,
   SlimTaskItemListLink,
@@ -18,18 +19,16 @@ import {
 } from '../styled';
 
 const SlimTaskItem = ({
-  description,
-  taskList,
-  dueDate,
-  priority,
-  parentTask,
+  task,
   toggleTaskComplete,
   storeAsCurrentTask,
   redirectToParentTask,
   isDragging,
   isDraggable,
   dragHandleProps,
+  openDrawer,
 }) => {
+  const { description, taskList, dueDate, priority, parentTask } = task;
   return (
     <SlimTaskItemContainer isDragging={isDragging}>
       {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
@@ -40,8 +39,15 @@ const SlimTaskItem = ({
       </PrioritySwitch>
       <CircleIcon src={Circle} onClick={toggleTaskComplete} isClickable />
       <SlimTaskItemRow>
-        <SlimTaskItemDescription>
-          <span>{description}</span>
+        <SlimTaskItemDescription
+          onClick={() => {
+            openDrawer();
+            storeAsCurrentTask(task, 'home');
+          }}
+        >
+          <SlimTaskItemDescriptionDetails>
+            {description}
+          </SlimTaskItemDescriptionDetails>
           {parentTask && (
             <SlimTaskItemParentTaskLabel>
               Subtask of{' '}

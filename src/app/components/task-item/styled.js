@@ -105,6 +105,7 @@ export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
   font-size: ${fontSizes.small};
   cursor: pointer;
+  width: 150px;
 `;
 
 export const StandardTaskItemCell = styled.div`
@@ -222,9 +223,14 @@ export const SlimTaskItemRow = styled.div`
 `;
 
 export const SlimTaskItemDescription = styled.div`
+  cursor: pointer;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
+  min-width: 400px;
+`;
+
+export const SlimTaskItemDescriptionDetails = styled.div`
   min-width: 400px;
 `;
 
@@ -234,10 +240,7 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 
   & > span {
     color: ${palette.brightBlue};
-<<<<<<< HEAD:src/app/components/task-item/styled.js
     cursor: pointer;
-=======
->>>>>>> Move taskitem to common components:src/app/components/common/TaskItem/styled.js
   }
 `;
 

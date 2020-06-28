@@ -14,6 +14,7 @@ const DashboardTasksGroup = ({
   redirectToParentTask,
   storeAsCurrentTask,
   sortDashboardTasks,
+  openDrawer,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -66,7 +67,7 @@ const DashboardTasksGroup = ({
                           {...draggableProvided.draggableProps}
                         >
                           <SlimTaskItem
-                            {...task}
+                            task={task}
                             toggleTaskComplete={() =>
                               toggleDashboardTaskComplete(task)
                             }
@@ -75,6 +76,7 @@ const DashboardTasksGroup = ({
                             isDragging={isDragging}
                             dragHandleProps={draggableProvided.dragHandleProps}
                             isDraggable
+                            openDrawer={openDrawer}
                           />
                         </div>
                       )}

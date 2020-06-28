@@ -18,6 +18,8 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
+import { openDrawer as openDrawerAction } from 'actions/task-drawer-actions';
+import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   DashboardContainer,
@@ -42,6 +44,7 @@ const DashboardContent = ({
   currentUser,
   modalActions,
   storeAsCurrentTask,
+  openDrawer,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -105,10 +108,12 @@ const DashboardContent = ({
                 redirectToParentTask={redirectToParentTask}
                 storeAsCurrentTask={storeAsCurrentTask}
                 sortDashboardTasks={sortDashboardTasks}
+                openDrawer={openDrawer}
               />
             ))
           : renderEmptyState()}
       </ViewLoader>
+      <NewTaskDrawer modalActions={modalActions} />
     </DashboardContainer>
   );
 };
@@ -123,6 +128,7 @@ const mapDispatchToProps = dispatch => ({
   dashboardActions: bindActionCreators(DashboardActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   storeAsCurrentTask: bindActionCreators(storeAsCurrentTaskAction, dispatch),
+  openDrawer: bindActionCreators(openDrawerAction, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);
