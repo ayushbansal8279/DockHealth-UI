@@ -41,7 +41,8 @@ const config = (environment, options) => {
 
   return {
     entry: ['@babel/polyfill', `${APP_DIR}/index.jsx`],
-    devtool: isDevelopment ? 'inline-cheap-source-map' : false,
+    // devtool: isDevelopment ? 'inline-cheap-source-map' : false,
+    devtool: isDevelopment ? 'eval-source-map' : false,
     output: {
       path: BUILD_DIR,
       filename: 'bundle.js',
@@ -139,6 +140,10 @@ const config = (environment, options) => {
       disableHostCheck: true,
       hot: false,
       liveReload: true,
+    },
+    watchOptions: {
+      poll: 1000,
+      ignored: ['node_modules'],
     },
   };
 };

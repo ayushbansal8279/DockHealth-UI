@@ -1,15 +1,22 @@
 import * as types from 'actions/action-types';
 
+import TaskBaseReducer from './task-base-reducer';
+
 const initialState = {
   tasksList: [],
   isLoading: false,
   error: '',
 };
 
-const DashboardTasksReducer = (
-  state = initialState,
-  { type, tasksList, error },
-) => {
+const updateTasksStateCallback = (state, updateTaskFromAction) => {
+  return {
+    ...state,
+    tasksList: updateTaskFromAction(state.tasksList),
+  };
+};
+
+const DashboardTasksReducer = (state = initialState, action) => {
+  const { type, tasksList, error } = action;
   switch (type) {
     case types.REQUEST_DASHBOARD_TASKS:
       return {
@@ -31,7 +38,7 @@ const DashboardTasksReducer = (
       };
 
     default:
-      return state;
+      return TaskBaseReducer(state, action, 'home', updateTasksStateCallback);
   }
 };
 
