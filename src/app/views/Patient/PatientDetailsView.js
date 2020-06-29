@@ -34,7 +34,6 @@ const PatientDetailsView = ({
   hasTasks,
   patientTasksSagaActions,
   taskSearch,
-  currentUser,
 }) => {
   const [searchValue, setSearchValue] = useState(taskSearch);
   const navigateToTab = tabName => {
@@ -48,8 +47,8 @@ const PatientDetailsView = ({
   const allMembers = useMemo(() => {
     const allListsMembers = [];
     lists.forEach(list => {
-      const { adminUsers, memberUsers } = list;
-      const listMembers = [currentUser].concat(adminUsers).concat(memberUsers);
+      const { listUsers } = list;
+      const listMembers = listUsers;
 
       listMembers.forEach(member => {
         if (
@@ -62,7 +61,7 @@ const PatientDetailsView = ({
       });
     });
     return allListsMembers;
-  }, [lists, currentUser]);
+  }, [lists]);
 
   const {
     patientTasksFilterChange,

@@ -48,9 +48,9 @@ const TaskListDetailsDropdown = ({
 
   const isFullView = viewType === FULL_VIEW;
 
-  const { listName, taskListIdentifier, memberUsers, adminUsers } = list;
+  const { listName, taskListIdentifier, listUsers } = list;
 
-  const listMembers = [currentUser].concat(adminUsers).concat(memberUsers);
+  const listMembers = listUsers;
 
   return (
     <ListDetailsContainer>
