@@ -104,7 +104,7 @@ export const Listbox = styled('ul')`
   }
 `;
 
-export const TagCreateActionButton = styled.div`
+export const EndAdornmentActionButton = styled.div`
   color: ${palette.blueOcean};
   font-size: ${fontSizes.smallPlus};
   min-width: 80px;
@@ -113,4 +113,10 @@ export const TagCreateActionButton = styled.div`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+export const EndAdornmentContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;

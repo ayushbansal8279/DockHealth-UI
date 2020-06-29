@@ -6,12 +6,6 @@ import useBoolean from 'hooks/useBoolean';
 const initializeTaskDrawerPopoverHooks = () => {
   // patient input
   const patientInputReference = useRef(null);
-  const [
-    isPatientPopoverOpen,
-    openPatientPopover,
-    closePatientPopover,
-  ] = useBoolean(false);
-
   const [patientInputValue, setPatientInputValue] = useState('');
 
   const onPatientInputChange = useCallback((_event, value, reason) => {
@@ -38,12 +32,8 @@ const initializeTaskDrawerPopoverHooks = () => {
 
   return {
     patientInputReference,
-    isPatientPopoverOpen,
-    openPatientPopover,
-    closePatientPopover,
     patientInputValue,
     onPatientInputChange,
-
     assignedToInputReference,
     isInvitePopoverOpen,
     openInvitePopover,

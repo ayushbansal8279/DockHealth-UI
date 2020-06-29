@@ -95,7 +95,7 @@ const LabelsSection = ({
         });
       }}
       InputProps={{}}
-      createTagActionLabel="Create Label"
+      endAdornmentEnabled
       forceOpen={forceOpen}
       onFocusCallback={() => {
         saveTaskOnFocus();

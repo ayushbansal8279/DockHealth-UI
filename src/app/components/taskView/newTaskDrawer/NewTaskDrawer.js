@@ -3,13 +3,15 @@ import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
+import { addPatient, getAllPatients } from 'actions/patient-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
+import { useDispatch } from 'react-redux';
+import { noop } from 'helpers/utility-functions';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
@@ -97,10 +99,6 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
 
   const {
     patientInputReference,
-    isPatientPopoverOpen,
-    openPatientPopover,
-    closePatientPopover,
-    patientInputValue,
     onPatientInputChange,
     assignedToInputReference,
     isInvitePopoverOpen,
@@ -115,6 +113,21 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
 
   const taskDrawerReference = useRef();
+  const dispatch = useDispatch();
+
+  const handleAddPatient = patient => {
+    const [firstName, ...lastNames] = patient.split(' ');
+
+    const data = { firstName, lastName: lastNames.join(' ') };
+
+    addPatient(data)(dispatch)
+      .then(async response => {
+        await getAllPatients()(dispatch);
+
+        setValue('patientIdentifier', response?.patientIdentifier);
+      })
+      .catch(noop);
+  };
 
   return (
     <>
@@ -219,17 +232,6 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                       <RobotoTypography condensed variant="h4" color="inherit">
                         No record found
                       </RobotoTypography>
-                      <Spacing vertical={3} />
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        size="small"
-                        onMouseDown={openPatientPopover}
-                      >
-                        <RobotoTypography condensed variant="h4">
-                          Add patient
-                        </RobotoTypography>
-                      </Button>
                     </Grid>
                   }
                   InputProps={{
@@ -240,17 +242,12 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                         ''
                       ),
                   }}
-                  endAdornmentEnabled={false}
+                  endAdornmentActionLabel="Add patient"
+                  onEndAdornmentAcionClick={handleAddPatient}
+                  endAdornmentEnabled
                 >
                   {formattedPatients}
                 </SelectInput>
-                <AddPatientPopover
-                  anchorElement={patientInputReference}
-                  isPopoverOpen={isPatientPopoverOpen}
-                  closePopover={closePatientPopover}
-                  initialValue={patientInputValue}
-                  setParentFormValue={setValue}
-                />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <SelectInput

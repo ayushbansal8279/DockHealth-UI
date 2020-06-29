@@ -25,7 +25,8 @@ import {
   DrawerAddChip,
   StyledAutoComplete,
   Listbox,
-  TagCreateActionButton,
+  EndAdornmentActionButton,
+  EndAdornmentContainer,
 } from './NewTaskDrawer.SelectInput.Styled';
 import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
@@ -153,10 +154,12 @@ const SelectInput = React.forwardRef(
       inputProps,
       InputLabelProps,
       forceOpen,
-      createTagActionLabel,
+      endAdornmentActionLabel,
       onFocusCallback,
       disabled,
       autoFocusEnabled,
+      endAdornmentEnabled,
+      onEndAdornmentAcionClick,
     },
     reference,
   ) => {
@@ -278,16 +281,34 @@ const SelectInput = React.forwardRef(
           onItemSelected(newOptions, selectedOption, event);
           event.target.value = '';
         }
+
+        if (
+          !multiple &&
+          groupedOptions.length === 0 &&
+          event.key === 'Enter' &&
+          onEndAdornmentAcionClick
+        ) {
+          onEndAdornmentAcionClick(event.target.value);
+        }
       },
-      [multiple, formatTagItem, currentValue, setValue, name, onItemSelected],
+      [
+        multiple,
+        formatTagItem,
+        currentValue,
+        setValue,
+        name,
+        onItemSelected,
+        onEndAdornmentAcionClick,
+        groupedOptions,
+      ],
     );
 
     const onTagCreate = useCallback(
       event => {
         // TODO find a better way
         const targetValue =
-          event.target.parentElement.children[
-            event.target.parentElement.childElementCount - 2
+          event.target.parentElement.parentElement.children[
+            event.target.parentElement.parentElement.childElementCount - 2
           ].value;
 
         const selectedOption = formatTagItem(null, targetValue);
@@ -331,16 +352,27 @@ const SelectInput = React.forwardRef(
       startAdornment = '';
     }
 
-    let endAdornment = '';
-    if (!multiple) {
-      endAdornment = InputProps.endAdornment;
-    } else if (multiple && groupedOptions.length === 0 && inputValue !== '') {
-      endAdornment = (
-        <TagCreateActionButton onClick={onTagCreate}>
-          {createTagActionLabel}
-        </TagCreateActionButton>
-      );
-    }
+    const endAdornment = (
+      <EndAdornmentContainer>
+        {endAdornmentEnabled &&
+          groupedOptions.length === 0 &&
+          inputValue !== '' &&
+          focusState &&
+          (multiple ? (
+            <EndAdornmentActionButton onClick={onTagCreate}>
+              Create label
+            </EndAdornmentActionButton>
+          ) : (
+            <EndAdornmentActionButton
+              onClick={() => onEndAdornmentAcionClick(inputValue)}
+            >
+              {endAdornmentActionLabel}
+            </EndAdornmentActionButton>
+          ))}
+
+        {InputProps.endAdornment}
+      </EndAdornmentContainer>
+    );
 
     return (
       <NoSsr>
@@ -467,7 +499,8 @@ SelectInput.propTypes = {
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
   forceOpen: bool,
-  createTagActionLabel: string,
+  endAdornmentActionLabel: string,
+  onEndAdornmentAcionClick: func,
   onFocusCallback: func,
   disabled: bool,
   autoFocusEnabled: bool,
@@ -484,6 +517,7 @@ SelectInput.defaultProps = {
   getOptionDisabled: undefined,
   onInputChange: undefined,
   onItemSelected: undefined,
+  onEndAdornmentAcionClick: undefined,
   onItemRemoved: undefined,
   formatTagItem: undefined,
   multiple: false,
@@ -493,7 +527,7 @@ SelectInput.defaultProps = {
   InputProps: {},
   InputLabelProps: {},
   forceOpen: false,
-  createTagActionLabel: undefined,
+  endAdornmentActionLabel: undefined,
   onFocusCallback: undefined,
   disabled: false,
   autoFocusEnabled: false,

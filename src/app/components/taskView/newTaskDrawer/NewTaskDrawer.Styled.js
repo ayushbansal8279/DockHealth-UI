@@ -218,7 +218,7 @@ export const AdornmentClear = styled(Close)`
   && {
     width: 20px;
     height: 20px;
-    margin-top: 10px;
     color: ${palette.coolGrey2};
+    cursor: pointer;
   }
 `;
