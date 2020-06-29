@@ -109,12 +109,18 @@ const DateFilterRowComponent = ({
     </StyledFilterRow>
   );
 
-export const FilterRowUnassigned = ({ hasAvatars, isSelected, onClick }) => (
+export const FilterRowUnassigned = ({
+  hasAvatars,
+  isSelected,
+  taskCount,
+  onClick,
+}) => (
   <StyledFilterRow isSelected={isSelected} onClick={onClick}>
     {hasAvatars && (
       <StyledUnassignedIcon src={UnassignedIcon} alt="Unassigned" />
     )}
-    <span>Unassigned</span>
+    <OptionLabel>Unassigned</OptionLabel>
+    <OptionCount>{taskCount || '0'}</OptionCount>
   </StyledFilterRow>
 );
 
