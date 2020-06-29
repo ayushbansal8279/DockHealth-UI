@@ -13,6 +13,7 @@ import {
   patientListHasTasksSelector,
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
+import { patientDetailsSelector } from 'selectors/patient-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
@@ -34,6 +35,7 @@ const PatientDetailsView = ({
   hasTasks,
   patientTasksSagaActions,
   taskSearch,
+  patientDetails,
 }) => {
   const [searchValue, setSearchValue] = useState(taskSearch);
   const navigateToTab = tabName => {
@@ -75,7 +77,7 @@ const PatientDetailsView = ({
 
   return (
     <>
-      <PatientDetailsHeader />
+      <PatientDetailsHeader patientDetails={patientDetails} />
       {(incompleteTasksCount > 0 || completeTasksCount > 0) && (
         <Toolbar
           onSelectTab={navigateToTab}
@@ -102,6 +104,11 @@ const PatientDetailsView = ({
           haveTasks={hasTasks}
           patientColumnVisible={false}
           listNameColumnVisible
+          pdfTitle={
+            patientDetails
+              ? `Patient: ${patientDetails.firstName} ${patientDetails.lastName}`
+              : null
+          }
         />
       )}
       <ViewLoader isFetchingData={isFetching}>
@@ -126,6 +133,7 @@ const mapStateToProps = state => ({
   hasTasks: patientListHasTasksSelector(state),
   taskSearch: patientTaskSearchSelector(state),
   currentUser: userProfileSelector(state),
+  patientDetails: patientDetailsSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);

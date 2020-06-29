@@ -24,6 +24,12 @@ const StyledPage = styled.Page`
   margin: 0 12pt 12pt;
 `;
 
+const Title = styled.Text`
+  margin: 20pt 0 5pt;
+  font-size: 20pt;
+  text-align: center;
+`;
+
 const HeaderView = styled.View`
   align-items: center;
   display: flex;
@@ -75,6 +81,7 @@ const getColumnWidths = (isPatientVisible, isListNameVisible) => {
 
 export const TaskPdfDocument = ({
   tasks,
+  title,
   taskListMembers,
   taskListMembersAvatars,
   isPatientVisible,
@@ -85,6 +92,7 @@ export const TaskPdfDocument = ({
   return (
     <Document>
       <StyledPage size="A4" wrap>
+        {title && <Title>{title}</Title>}
         <HeaderView fixed>
           <HeaderText width={columnsWidth.task}>TASK</HeaderText>
           {columnsWidth.patient ? (
@@ -110,7 +118,11 @@ export const TaskPdfDocument = ({
           )}
         </HeaderView>
         {tasks?.map(
-          renderTask({ taskListMembers, taskListMembersAvatars, columnsWidth }),
+          renderTask({
+            taskListMembers,
+            taskListMembersAvatars,
+            columnsWidth,
+          }),
         )}
       </StyledPage>
     </Document>
@@ -177,6 +189,7 @@ const downloadPdf = ({ url, tasks }) => {
 
 export const printTaskPdf = async ({
   tasks,
+  title = null,
   taskListMembers,
   isPatientVisible = true,
   isListNameVisible = false,
@@ -188,6 +201,7 @@ export const printTaskPdf = async ({
   const pdfBlob = await pdf(
     <TaskPdfDocument
       tasks={tasks}
+      title={title}
       taskListMembers={taskListMembers}
       taskListMembersAvatars={taskListMembersAvatars}
       isPatientVisible={isPatientVisible}
@@ -200,7 +214,13 @@ export const printTaskPdf = async ({
   newWindow.focus();
 };
 
-export const TaskPdfPreview = ({ tasks, taskListMembers }) => {
+export const TaskPdfPreview = ({
+  tasks,
+  taskListMembers,
+  isPatientVisible = true,
+  isListNameVisible = false,
+  title,
+}) => {
   const membersAvatarsData = useAsync(async () => {
     return getAllMembersAvatars({ taskListMembers });
   }, [taskListMembers]);
@@ -215,6 +235,9 @@ export const TaskPdfPreview = ({ tasks, taskListMembers }) => {
         tasks={tasks}
         taskListMembers={taskListMembers}
         taskListMembersAvatars={membersAvatarsData.value}
+        isPatientVisible={isPatientVisible}
+        isListNameVisible={isListNameVisible}
+        title={title}
       />
     </PDFViewer>
   );

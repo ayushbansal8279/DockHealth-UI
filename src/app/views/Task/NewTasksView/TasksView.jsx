@@ -59,6 +59,7 @@ const TaskView = ({
   selectedTask,
   isMainListView = false,
   listUniqueKey,
+  pdfTitle,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -190,6 +191,7 @@ const TaskView = ({
           searchValue={searchValue}
           onSelectFilters={handleFilterChange}
           listNameColumnVisible={listNameVisible}
+          pdfTitle={pdfTitle}
         />
       )}
       {selectedTab === TaskListTabName.COMPLETE ? (

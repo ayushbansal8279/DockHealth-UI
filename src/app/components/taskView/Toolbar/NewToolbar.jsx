@@ -103,6 +103,7 @@ const Toolbar = ({
   searchValue,
   haveTasks,
   onSelectFilters,
+  pdfTitle,
   megaFilter = {},
   listNameColumnVisible = false,
   patientColumnVisible = true,
@@ -225,6 +226,7 @@ const Toolbar = ({
           showNotifications={showNotifications}
           listNameColumnVisible={listNameColumnVisible}
           patientColumnVisible={patientColumnVisible}
+          pdfTitle={pdfTitle}
         />
       </Grid>
       {(haveTasks || searchValue || !isEmpty(selectedFilters)) && (

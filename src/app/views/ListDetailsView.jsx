@@ -438,6 +438,7 @@ class Home extends Component {
       title: loadedTasklist?.listName,
       isMainListView: true,
       listUniqueKey: taskListIdentifier,
+      pdfTitle: `${loadedTasklist?.listName}`,
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;

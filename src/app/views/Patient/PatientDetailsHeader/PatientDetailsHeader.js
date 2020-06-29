@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import {
-  patientDetailsSelector,
-  patientIsInitialyLoadingSelector,
-} from 'selectors/patient-selectors';
+import { patientIsInitialyLoadingSelector } from 'selectors/patient-selectors';
 import {
   addPatientNote as addPatientNoteAction,
   editPatientNote as editPatientNoteAction,
@@ -61,7 +58,6 @@ const PatientDetailsHeader = ({
 };
 
 const mapStateToProps = store => ({
-  patientDetails: patientDetailsSelector(store),
   patientIsLoading: patientIsInitialyLoadingSelector(store),
   currentUser: store.userState.userProfile,
 });

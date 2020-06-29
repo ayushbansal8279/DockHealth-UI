@@ -294,6 +294,9 @@ class PersonDetailsView extends PureComponent {
       listNameVisible: true,
       quickAddTask: this.handleQuickAddTask,
       listUniqueKey: routeParams.userIdentifier,
+      pdfTitle: personData
+        ? `${personData.firstName} ${personData.lastName}`
+        : null,
     };
 
     return (

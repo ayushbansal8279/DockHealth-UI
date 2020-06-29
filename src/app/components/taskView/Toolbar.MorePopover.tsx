@@ -15,6 +15,7 @@ interface OnPrintClickProps {
   listNameColumnVisible: boolean;
   patientColumnVisible: boolean;
   closeMorePopover: () => void;
+  pdfTitle?: string;
 }
 
 interface MorePopoverProps extends OnPrintClickProps {
@@ -33,10 +34,12 @@ const onPrintClick = ({
   taskListMembers,
   listNameColumnVisible,
   patientColumnVisible,
+  pdfTitle,
 }: OnPrintClickProps) => () => {
   closeMorePopover();
 
   return printTaskPdf({
+    title: pdfTitle,
     tasks: [...tasks, ...completedTasks],
     taskListMembers,
     isListNameVisible: listNameColumnVisible,
@@ -57,6 +60,7 @@ const MorePopover = ({
   showNotifications,
   listNameColumnVisible,
   patientColumnVisible,
+  pdfTitle,
 }: MorePopoverProps) => {
   const { left: filterButtonX = 0, top: filterButtonY = 0 } =
     moreButtonReference?.current?.getBoundingClientRect() || {};
@@ -101,6 +105,7 @@ const MorePopover = ({
         taskListMembers,
         listNameColumnVisible,
         patientColumnVisible,
+        pdfTitle,
       }),
     },
     isSpecialList || !showNotifications
