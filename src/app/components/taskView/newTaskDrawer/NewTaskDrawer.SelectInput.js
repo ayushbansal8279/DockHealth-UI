@@ -301,7 +301,11 @@ const SelectInput = React.forwardRef(
       [formatTagItem, currentValue, setValue, name, onItemSelected],
     );
 
-    let startAdornment = <AdornmentContainer>+</AdornmentContainer>;
+    let startAdornment = !focusState ? (
+      <AdornmentContainer>+</AdornmentContainer>
+    ) : (
+      ''
+    );
     if (multiple && currentOption && currentOption.length > 0) {
       const getCustomizedTagProps = parameters => ({
         ...getTagProps(parameters),
