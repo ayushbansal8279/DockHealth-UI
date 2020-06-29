@@ -11,6 +11,7 @@ const ListAddSection = ({
   onCancel,
   addListPayload,
   listSelectSave,
+  refreshLists,
 }) => {
   const [isSavingList, setSavingList] = useState(false);
   const { register, handleSubmit, errors } = useForm();
@@ -26,6 +27,7 @@ const ListAddSection = ({
       .then(({ taskListIdentifier }) => {
         setSavingList(true);
         listSelectSave(taskListIdentifier);
+        refreshLists();
       })
       .catch(() => {
         setSavingList(false);

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getTaskListForUser } from 'actions/tasklist-actions';
 import { CloseIconButton, CloseIcon, ListPickerModalWrapper } from './styled';
 import { ModalWrapper } from '../styled';
 import ListSelectSection from './ListSelectSection';
@@ -20,6 +22,7 @@ const ListPickerModal = ({
   const [lists, setLists] = useState(null);
   const [newListName, setNewListName] = useState('');
   const [modalMode, setModalMode] = useState(MODAL_MODE.SELECT);
+  const dispatch = useDispatch();
 
   const handleListSelectSave = taskListIdentifier => {
     confirm(taskListIdentifier);
@@ -69,6 +72,7 @@ const ListPickerModal = ({
             initialListName={newListName}
             onCancel={handleNavigateToSelectList}
             listSelectSave={handleListSelectSave}
+            refreshLists={() => dispatch(getTaskListForUser())}
           />
         )}
       </ListPickerModalWrapper>
