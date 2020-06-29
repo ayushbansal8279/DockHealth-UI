@@ -121,10 +121,13 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     const data = { firstName, lastName: lastNames.join(' ') };
 
     addPatient(data)(dispatch)
-      .then(async response => {
+      .then(async ({ patientIdentifier, firstName: name, lastName }) => {
         await getAllPatients()(dispatch);
 
-        setValue('patientIdentifier', response?.patientIdentifier);
+        handlePatientSelect({
+          value: patientIdentifier,
+          displayLabel: `${name} ${lastName}`,
+        });
       })
       .catch(noop);
   };

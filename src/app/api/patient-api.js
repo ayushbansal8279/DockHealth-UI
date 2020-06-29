@@ -65,7 +65,6 @@ export function addPatient(patient) {
   return axios
     .post('patient', patient)
     .then(response => {
-      toggleAlert('Patient added successfully!', 'success');
       return response.data;
     })
     .catch(error => {
