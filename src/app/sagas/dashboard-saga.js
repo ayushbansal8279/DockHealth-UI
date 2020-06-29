@@ -103,7 +103,7 @@ function* doRedirectToParentTask({ taskListIdentifier, taskIdentifer }) {
   try {
     yield call(
       hashHistory.push,
-      `tasks/${taskListIdentifier}/INCOMPLETE/${taskIdentifer}`,
+      `tasks/${taskListIdentifier}/incomplete/${taskIdentifer}`,
     );
   } catch (error) {
     console.log(error);
