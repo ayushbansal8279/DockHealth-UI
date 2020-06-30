@@ -14,17 +14,19 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
 import { openDrawer as openDrawerAction } from 'actions/task-drawer-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import { MontserratTypography } from 'styles/theme-montserrat';
+
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   DashboardContainer,
   SearchGrid,
   DashboardHeaderContainer,
+  EmptyDashboard,
 } from './styled';
 import DashboardHeader from '../DashboardHeader/DashboardHeader';
 
@@ -54,6 +56,9 @@ const DashboardContent = ({
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const filteredDashboardTasks = dashboardTasks.filter(
+    ({ tasks }) => tasks.length !== 0,
+  );
 
   const handleQuickAddTask = taskName => {
     const { userIdentifier } = currentUser;
@@ -73,13 +78,19 @@ const DashboardContent = ({
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
 
-    return <EmptyListView />;
+    return (
+      <EmptyDashboard>
+        <MontserratTypography>
+          Way to go! You have no tasks!
+        </MontserratTypography>
+      </EmptyDashboard>
+    );
   };
   const searchedDashboardTasks = useMemo(() => {
     return searchValue
-      ? searchDashboardTasks(dashboardTasks, searchValue)
-      : dashboardTasks;
-  }, [searchValue, dashboardTasks]);
+      ? searchDashboardTasks(filteredDashboardTasks, searchValue)
+      : filteredDashboardTasks;
+  }, [searchValue, filteredDashboardTasks]);
 
   return (
     <DashboardContainer>

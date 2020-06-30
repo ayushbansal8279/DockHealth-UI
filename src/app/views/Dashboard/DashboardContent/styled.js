@@ -46,3 +46,13 @@ export const DroppableBox = styled.div`
   background-color: ${palette.coolGrey2};
   border-radius: 4px;
 `;
+
+export const EmptyDashboard = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 48px;
+
+  & > p {
+    font-weight: ${fontWeights.regularPlus};
+  }
+`;
