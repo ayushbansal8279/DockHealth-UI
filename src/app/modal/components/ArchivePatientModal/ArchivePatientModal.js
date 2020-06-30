@@ -18,21 +18,21 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalMainIcon src={RedFolder} alt="red-folder" />
         <Typography color="textPrimary" variant="h2">
-          Archivie Patient
+          Archive Patient
         </Typography>
         <Spacing vertical={5} />
         <Typography variant="body1">
-          Are you sure you want to delete this patient? This action cannot be
+          Are you sure you want to archive this patient? This action cannot be
           undone.
         </Typography>
         <Spacing vertical={4} />
         <ButtonsContainer>
           <Button variant="outlined" type="button" onClick={closeModal}>
-            No, do not delete
+            No, do not archive
           </Button>
           <Spacing horizontal={3} />
           <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Delete
+            Archive
           </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
