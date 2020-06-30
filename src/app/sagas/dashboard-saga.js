@@ -29,9 +29,15 @@ export const leaveDashboardView = () => ({
 });
 
 export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
-export const redirectToParentTask = taskListIdentifier => ({
+export const redirectToParentTask = (
+  taskListIdentifier,
+  taskIdentifer,
+  taskStatus,
+) => ({
   type: REDIRECT_TO_PARENT_TASK,
   taskListIdentifier,
+  taskIdentifer,
+  taskStatus,
 });
 
 export const toggleDashboardTaskComplete = task => ({
@@ -98,9 +104,16 @@ function* doToggleDashboardTaskComplete({ task }) {
   }
 }
 
-function* doRedirectToParentTask({ taskListIdentifier }) {
+function* doRedirectToParentTask({
+  taskListIdentifier,
+  taskIdentifer,
+  taskStatus,
+}) {
   try {
-    yield call(hashHistory.push, `tasks/${taskListIdentifier}`);
+    yield call(
+      hashHistory.push,
+      `tasks/${taskListIdentifier}/${taskStatus}/${taskIdentifer}`,
+    );
   } catch (error) {
     console.log(error);
   }
@@ -108,8 +121,6 @@ function* doRedirectToParentTask({ taskListIdentifier }) {
 
 function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   try {
-    console.log(taskGroupImplicitType, tasksOrder);
-    // call here request to endpoint
     yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
     yield call(doReloadDashboardTasks);
   } catch (error) {

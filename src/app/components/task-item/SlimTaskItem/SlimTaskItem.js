@@ -39,13 +39,13 @@ const SlimTaskItem = ({
       </PrioritySwitch>
       <CircleIcon src={Circle} onClick={toggleTaskComplete} isClickable />
       <SlimTaskItemRow>
-        <SlimTaskItemDescription
-          onClick={() => {
-            openDrawer();
-            storeAsCurrentTask(task, 'home');
-          }}
-        >
-          <SlimTaskItemDescriptionDetails>
+        <SlimTaskItemDescription>
+          <SlimTaskItemDescriptionDetails
+            onClick={() => {
+              openDrawer();
+              storeAsCurrentTask(task, 'home');
+            }}
+          >
             {description}
           </SlimTaskItemDescriptionDetails>
           {parentTask && (
@@ -56,6 +56,8 @@ const SlimTaskItem = ({
                   storeAsCurrentTask(parentTask);
                   redirectToParentTask(
                     parentTask?.taskList?.taskListIdentifier,
+                    parentTask?.taskIdentifier,
+                    parentTask?.status,
                   );
                 }}
               >

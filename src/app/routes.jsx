@@ -17,6 +17,7 @@ import PatientTasksListView from 'views/Patient/PatientTasksListView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
+import { closeDrawer } from 'actions/task-drawer-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list-saga';
@@ -201,12 +202,21 @@ export const Routes = ({ store }) => {
     dispatch(setLocationAndParameters({ location, params }));
   };
 
+  const handleRedirection = nextState => {
+    const { params } = nextState;
+
+    if (!params?.taskIdentifier) {
+      dispatch(storeAsCurrentTask(null));
+    }
+  };
+
   const onEnterTaskGroups = nextState => {
     const { params } = nextState;
 
     if (params?.taskListIdentifier) {
       dispatch(onEnterTasksGroupsList());
       dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
+
       dispatch(
         getFiltersForMegaFilter(
           params?.taskListIdentifier,
@@ -271,6 +281,7 @@ export const Routes = ({ store }) => {
   };
 
   const onLeaveDashboard = () => {
+    dispatch(closeDrawer());
     dispatch(leaveDashboardView());
   };
 
@@ -385,7 +396,10 @@ export const Routes = ({ store }) => {
               checkFeatureToggles(nextState);
               onEnterPeopleView(nextState);
             }}
-            onLeave={dispatch(clearFiltersForMegaFilter())}
+            onLeave={() => {
+              dispatch(clearFiltersForMegaFilter());
+              dispatch(closeDrawer());
+            }}
           />
           <Route
             path="/people"
@@ -413,13 +427,15 @@ export const Routes = ({ store }) => {
             <Route
               path=":taskListIdentifier(/:tabName)(/:taskIdentifier)"
               component={ListDetailsView}
-              onChange={preselectTask}
               onEnter={nextState => {
+                handleRedirection(nextState);
                 checkFeatureToggles(nextState);
-                preselectTask(null, nextState);
                 onEnterTaskGroups(nextState);
               }}
-              onLeave={dispatch(clearFiltersForMegaFilter())}
+              onLeave={() => {
+                dispatch(clearFiltersForMegaFilter());
+                dispatch(closeDrawer());
+              }}
             />
           </Route>
         </Route>

@@ -4,6 +4,8 @@ import { sort } from 'ramda';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 
 export const listTasksSelector = state => state.listTasks;
+export const taskSelector = state => state.taskState;
+
 export const tasksIsFetchingSelector = createSelector(
   listTasksSelector,
   ({ isFetching }) => isFetching,
@@ -90,4 +92,9 @@ export const groupTasksSelector = createSelector(
       return groupsObject;
     }, {});
   },
+);
+
+export const taskIsSelectedSelector = createSelector(
+  taskSelector,
+  ({ selectedTask }) => !!selectedTask,
 );

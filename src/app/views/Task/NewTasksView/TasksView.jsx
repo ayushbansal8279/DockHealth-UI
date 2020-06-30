@@ -64,7 +64,7 @@ const TaskView = ({
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
 
-  const { openDrawer, closeDrawer } = taskDrawerActions;
+  const { openDrawer } = taskDrawerActions;
   const {
     toggleTaskPriority,
     toggleCompleteTask,
@@ -102,38 +102,14 @@ const TaskView = ({
 
   useMount(() => {
     resetHeader();
-    closeDrawer();
   });
 
   useEffect(() => {
     if (taskList?.taskListIdentifier) {
       resetHeader();
-      closeDrawer();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList]);
-
-  // unmount
-  useEffect(() => {
-    return () => {
-      closeDrawer();
-    };
-  }, [closeDrawer]);
-
-  // TODO: Move to routing logic
-  const handleTabsNavigation = routeParameters => {
-    switch (routeParameters.tabName) {
-      case TaskListTabName.COMPLETE:
-        break;
-      case undefined:
-      case TaskListTabName.OPEN:
-        break;
-      default:
-        navigateToTab(TaskListTabName.OPEN);
-    }
-  };
-
-  handleTabsNavigation(routeParams);
 
   // TODO: Move to saga
   const toggleSingleTaskPriority = task => {
