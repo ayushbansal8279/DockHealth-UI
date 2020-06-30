@@ -68,7 +68,7 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 const updateCompletedTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    tasks: updateTaskFromAction(state.completedTasks),
+    completedTasks: updateTaskFromAction(state.completedTasks),
   };
 };
 
