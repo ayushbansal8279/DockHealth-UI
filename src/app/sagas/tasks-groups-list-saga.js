@@ -239,15 +239,18 @@ export function* doSortTasksInGroup(payload) {
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
+
     yield call(reorderTasksInGroup, {
       orderedTaskIds,
       taskGroupIdentifier,
     });
-    yield call(doGetTasksList, {
-      taskListIdentifier,
-    });
 
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield all([
+      call(doGetTasksList, {
+        taskListIdentifier,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+    ]);
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
@@ -263,6 +266,7 @@ export function* doSortSubtasksInGroup(payload) {
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
+
     yield call(
       reorderSubtasksForTask,
       orderedSubtaskIds,
@@ -276,9 +280,8 @@ export function* doSortSubtasksInGroup(payload) {
         shouldSetRequestState: false,
       }),
       call(doGetTasksList, { taskListIdentifier }),
+      yield put(showGlobalAlert(AlertMessages.UPDATED)),
     ]);
-
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
@@ -302,11 +305,12 @@ export function* doReassignTasksToAnotherGroup(payload) {
       taskGroupIdentifier,
     });
 
-    yield call(doGetTasksList, {
-      taskListIdentifier,
-    });
-
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield all([
+      call(doGetTasksList, {
+        taskListIdentifier,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+    ]);
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
@@ -320,6 +324,7 @@ export function* doOnEnterTasksGroupsList() {
     if (taskListIdentifier) {
       yield call(doGetTasksGroupsList, { taskListIdentifier });
     }
+
     const isSelectedTask = yield select(taskIsSelectedSelector);
     if (isSelectedTask) {
       yield put(openDrawer());
