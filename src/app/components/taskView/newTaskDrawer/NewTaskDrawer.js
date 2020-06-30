@@ -214,7 +214,6 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   name="patientIdentifier"
                   label="Patient"
                   placeholder="Who is the patient?"
-                  disabled={isAddingOrEditingSubtask}
                   onInputChange={onPatientInputChange}
                   onItemSelected={(option, event) => {
                     handlePatientSelect(option);

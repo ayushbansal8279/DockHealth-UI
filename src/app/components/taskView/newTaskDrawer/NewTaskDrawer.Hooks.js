@@ -388,6 +388,19 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     }
   };
 
+  const handleUpdatePatient = async (patient = null) => {
+    try {
+      await updatePatient(
+        !isAddingOrEditingSubtask ? selectedTask : selectedTaskParent,
+        patient,
+        taskContext,
+      )(dispatch);
+      setAutoSaveVisible();
+    } catch {
+      toggleAlert('Error updating patient, please try again later', 'error');
+    }
+  };
+
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handlePatientSelect = async selectedOption => {
     const patient = {
@@ -399,12 +412,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     // closePatientPopover();
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
-      try {
-        await updatePatient(selectedTask, patient, taskContext)(dispatch);
-        setAutoSaveVisible();
-      } catch {
-        toggleAlert('Error updating patient, please try again later', 'error');
-      }
+      await handleUpdatePatient(patient);
     }
   };
 
@@ -412,12 +420,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     setValue('patientIdentifier', null);
     setValue('patientName', null);
     if (selectedTask && selectedTask.taskIdentifier != null) {
-      try {
-        await updatePatient(selectedTask, null, taskContext)(dispatch);
-        setAutoSaveVisible();
-      } catch {
-        toggleAlert('Error updating patient, please try again later', 'error');
-      }
+      await handleUpdatePatient();
     }
   };
 

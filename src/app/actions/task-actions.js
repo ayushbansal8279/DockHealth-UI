@@ -623,11 +623,9 @@ export const updatePatient = (task, patient, taskContext) => dispatch =>
       //     response.parentTaskIdentifier || response.taskIdentifier,
       //   patient: response.patient,
       // });
-      const newTask = task;
-      newTask.patient = response.patient;
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: newTask,
+        task: response,
         taskContext,
       });
     })

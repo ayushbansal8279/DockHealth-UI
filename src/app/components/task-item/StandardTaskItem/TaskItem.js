@@ -239,7 +239,7 @@ const TaskItem = ({
           paddingLeft="huge"
           onClick={() => {
             openDrawer();
-            storeAsCurrentTask(task);
+            storeAsCurrentTask(task, taskContext);
           }}
         >
           <CircleIcon
@@ -253,13 +253,7 @@ const TaskItem = ({
             }}
           />
           <DescriptionBox>
-            <Description
-              isCrossedOut={!isCompletedGroup && isCompleted}
-              onClick={() => {
-                openDrawer();
-                storeAsCurrentTask(task, taskContext);
-              }}
-            >
+            <Description isCrossedOut={!isCompletedGroup && isCompleted}>
               {description}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
