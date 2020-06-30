@@ -29,10 +29,15 @@ export const leaveDashboardView = () => ({
 });
 
 export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
-export const redirectToParentTask = (taskListIdentifier, taskIdentifer) => ({
+export const redirectToParentTask = (
+  taskListIdentifier,
+  taskIdentifer,
+  taskStatus,
+) => ({
   type: REDIRECT_TO_PARENT_TASK,
   taskListIdentifier,
   taskIdentifer,
+  taskStatus,
 });
 
 export const toggleDashboardTaskComplete = task => ({
@@ -99,11 +104,15 @@ function* doToggleDashboardTaskComplete({ task }) {
   }
 }
 
-function* doRedirectToParentTask({ taskListIdentifier, taskIdentifer }) {
+function* doRedirectToParentTask({
+  taskListIdentifier,
+  taskIdentifer,
+  taskStatus,
+}) {
   try {
     yield call(
       hashHistory.push,
-      `tasks/${taskListIdentifier}/incomplete/${taskIdentifer}`,
+      `tasks/${taskListIdentifier}/${taskStatus}/${taskIdentifer}`,
     );
   } catch (error) {
     console.log(error);

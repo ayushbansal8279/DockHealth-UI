@@ -57,6 +57,7 @@ const SlimTaskItem = ({
                   redirectToParentTask(
                     parentTask?.taskList?.taskListIdentifier,
                     parentTask?.taskIdentifier,
+                    parentTask?.status,
                   );
                 }}
               >
