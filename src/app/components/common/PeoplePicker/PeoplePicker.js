@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useState, useEffect, useRef } from 'react';
 import { isEmpty } from 'ramda';
 import { Grid } from '@material-ui/core';
 import TickIcon from 'img/tick-icon';
@@ -144,6 +145,7 @@ const PeoplePicker = ({
   const [searchValue, setSearchValue] = useState('');
   const [showInviteForm, openInviteForm, closeInviteForm] = useBoolean(false);
   const [invitedPeople, addInvitedPeople] = useState([]);
+  const searchInputReference = useRef(null);
 
   useEffect(() => {
     if (showInviteForm) {
@@ -156,6 +158,12 @@ const PeoplePicker = ({
       setSearchValue('');
     }
   }, [isOpen, showInviteForm]);
+
+  useEffect(() => {
+    if (searchInputReference && isOpen) {
+      searchInputReference.current.focus();
+    }
+  }, [searchInputReference, isOpen]);
 
   const filteredPeople = Array.isArray(availablePeopleList)
     ? availablePeopleList.filter(
@@ -228,6 +236,7 @@ const PeoplePicker = ({
       </PeoplePickerBox>
       <PeopleListBox timeout={150} in={isOpen || showInviteForm}>
         <Input
+          ref={searchInputReference}
           label={messages.peoplePicker.search.label}
           onChange={event => setSearchValue(event.target.value)}
           value={searchValue}

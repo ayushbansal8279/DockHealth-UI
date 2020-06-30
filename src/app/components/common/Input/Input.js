@@ -51,7 +51,7 @@ const Input = React.forwardRef(
       errorComponent: Error,
     } = components[styling];
     const hasError = showError && error;
-    const simpleInput = reference ? {} : { onChange, value };
+    const simpleInput = onChange ? { onChange, value } : {};
     return (
       <Box fullWidth={fullWidth}>
         <Label htmlFor={name}>
