@@ -507,6 +507,7 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
       type: action,
       task,
       ...newTaskData,
+      taskContext: 'list',
     });
 
     return TaskApi[apiEndpoint](task)
