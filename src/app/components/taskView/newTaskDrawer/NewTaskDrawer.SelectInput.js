@@ -356,7 +356,7 @@ const SelectInput = React.forwardRef(
       <EndAdornmentContainer>
         {endAdornmentEnabled &&
           groupedOptions.length === 0 &&
-          !inputValue &&
+          !!inputValue &&
           focusState &&
           (multiple ? (
             <EndAdornmentActionButton onClick={onTagCreate}>
