@@ -215,8 +215,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   label="Patient"
                   placeholder="Who is the patient?"
                   onInputChange={onPatientInputChange}
-                  onItemSelected={(option, event) => {
-                    handlePatientSelect(option);
+                  onItemSelected={async (option, event) => {
+                    await handlePatientSelect(option);
                     patientInputReference.current.querySelector('input').blur();
                     if (event.key === 'Enter') {
                       assignedToInputReference.current
@@ -257,8 +257,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   label="Assigned To"
                   placeholder="Who would you like to assign this task to?"
                   onInputChange={onAssignedToInputChange}
-                  onItemSelected={option => {
-                    handleAssignedToSelect(option);
+                  onItemSelected={async option => {
+                    await handleAssignedToSelect(option);
                     assignedToInputReference.current
                       .querySelector('input')
                       .blur();
