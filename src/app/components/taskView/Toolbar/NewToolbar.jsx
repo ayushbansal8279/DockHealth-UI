@@ -201,15 +201,17 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                <InviteMemberButton size={40}>
-                  {props => (
-                    <TaskListInviteMemberContainer
-                      members={members}
-                      taskList={taskList}
-                      {...props}
-                    />
-                  )}
-                </InviteMemberButton>
+                {taskList?.listType !== 'INBOX' && (
+                  <InviteMemberButton size={40}>
+                    {props => (
+                      <TaskListInviteMemberContainer
+                        members={members}
+                        taskList={taskList}
+                        {...props}
+                      />
+                    )}
+                  </InviteMemberButton>
+                )}
               </>
             )}
           </HeaderActionButtonsGrid>
