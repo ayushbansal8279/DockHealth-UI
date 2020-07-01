@@ -57,6 +57,12 @@ const GlobalSearchReducer = (state = initialState, action) => {
         isLoading: false,
       };
 
+    case types.RESET_GLOBAL_SEARCH:
+      return {
+        ...state,
+        ...initialState,
+      };
+
     default:
       return TaskBaseReducer(state, action, 'search', updateTasksStateCallback);
   }

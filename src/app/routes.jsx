@@ -20,6 +20,7 @@ import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
+import * as GlobalSearchActions from 'actions/global-search-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list-saga';
 import { getPatient } from 'sagas/patient-saga';
@@ -293,6 +294,7 @@ export const Routes = ({ store }) => {
   };
 
   const onLeaveGlobalSearch = () => {
+    dispatch(GlobalSearchActions.resetGlobalSearch());
     dispatch(removeHiddenNavbarTemplate());
   };
 
