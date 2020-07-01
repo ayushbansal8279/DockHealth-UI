@@ -33,8 +33,12 @@ function* doSearchTasks() {
     const searchValue = yield select(searchValueSelector);
 
     const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
-    const response = yield call(TaskApi.searchTasks, searchValue, status);
-    yield put(GlobalSearchActions.requestGlobalSearchSuccess(response));
+    if (searchValue) {
+      const response = yield call(TaskApi.searchTasks, searchValue, status);
+      yield put(GlobalSearchActions.requestGlobalSearchSuccess(response));
+    } else {
+      yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
+    }
   } catch (error) {
     yield put(GlobalSearchActions.requestGlobalSearchFailure());
     console.error('error', error);
