@@ -9,6 +9,7 @@ import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
 import SupportIcon from 'img/drawer/SupportIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
+import SearchIcon from 'img/drawer/SearchIcon';
 
 import DrawerHeader from './DrawerHeader';
 import {
@@ -174,6 +175,12 @@ const NestedItem = ({
 };
 
 const getDrawerItems = ({ lists }) => [
+  {
+    id: 'search',
+    label: 'Search',
+    icon: SearchIcon,
+    to: 'search',
+  },
   {
     id: 'home',
     label: 'Home',

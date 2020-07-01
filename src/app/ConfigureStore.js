@@ -7,6 +7,7 @@ import watchTasksGroupsList from './sagas/tasks-groups-list-saga';
 import watchPatientTasks from './sagas/patient-tasks-saga';
 import watchPatient from './sagas/patient-saga';
 import watchDashboard from './sagas/dashboard-saga';
+import watchTemplate from './sagas/template-saga';
 
 // eslint-disable-next-line no-underscore-dangle
 const composeEnhancers =
@@ -33,6 +34,7 @@ function* rootSaga() {
     watchPatientTasks(),
     watchPatient(),
     watchDashboard(),
+    watchTemplate(),
   ]);
 }
 

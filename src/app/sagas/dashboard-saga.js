@@ -1,18 +1,16 @@
-import { all, put, call, takeEvery, takeLatest } from 'redux-saga/effects';
+import { put, call, takeEvery, takeLatest } from 'redux-saga/effects';
 import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
   REQUEST_DASHBOARD_TASKS_FAILURE,
 } from 'actions/action-types';
-import * as TemplateActions from 'actions/template-actions';
 import { getDashboardTasks, reorderTasksInGroup } from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
-const LEAVE_DASHBOARD_VIEW = 'LEAVE_DASHBOARD_VIEW';
 const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
 const RELOAD_DASHBOARD_TASKS = 'RELOAD_DASHBOARD_TASKS';
 const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
@@ -22,10 +20,6 @@ const SORT_DASHBOARD_TASKS = 'SORT_DASHBOARD_TASKS';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
-});
-
-export const leaveDashboardView = () => ({
-  type: LEAVE_DASHBOARD_VIEW,
 });
 
 export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
@@ -129,24 +123,7 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
 }
 
 function* doInitializeDashboardView() {
-  yield all([
-    put(TemplateActions.hideHeader()),
-    put(TemplateActions.enableNavbarFullMode()),
-    put(TemplateActions.hideNavbarSettings()),
-    put(TemplateActions.setCustomNavbarWidth(380)),
-    put(TemplateActions.hideNavbar()),
-    call(doFetchDashboardTasks),
-  ]);
-}
-
-function* doLeaveDashboardView() {
-  yield all([
-    put(TemplateActions.showHeader()),
-    put(TemplateActions.disableNavbarFullMode()),
-    put(TemplateActions.showNavbarSettings()),
-    put(TemplateActions.resetCustomNavbarWidth()),
-    put(TemplateActions.showNavbar()),
-  ]);
+  yield call(doFetchDashboardTasks);
 }
 
 function* doQuickAddDahboardTask({ payload }) {
@@ -167,7 +144,6 @@ function* doQuickAddDahboardTask({ payload }) {
 
 export default function* watchDashboard() {
   yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
-  yield takeEvery(LEAVE_DASHBOARD_VIEW, doLeaveDashboardView);
   yield takeEvery(FETCH_DASHBOARD_TASKS, doFetchDashboardTasks);
   yield takeEvery(RELOAD_DASHBOARD_TASKS, doReloadDashboardTasks);
   yield takeEvery(QUICK_ADD_DASHBOARD_TASK, doQuickAddDahboardTask);

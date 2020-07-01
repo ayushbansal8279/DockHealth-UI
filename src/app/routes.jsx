@@ -14,6 +14,7 @@ import {
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'views/Patient/PatientDetailsView';
 import PatientTasksListView from 'views/Patient/PatientTasksListView';
+import GlobalSearchView from 'views/GlobalSearch/GlobalSearchView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
@@ -28,10 +29,7 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import {
-  initializeDashboardView,
-  leaveDashboardView,
-} from 'sagas/dashboard-saga';
+import { initializeDashboardView } from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
 import {
@@ -90,6 +88,10 @@ import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubsc
 import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
 import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
 import { setLocationAndParameters } from './location/actions';
+import {
+  initializeHiddenNavbarTemplate,
+  removeHiddenNavbarTemplate,
+} from './sagas/template-saga';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -277,12 +279,21 @@ export const Routes = ({ store }) => {
   };
 
   const onEnterDashboard = () => {
+    dispatch(initializeHiddenNavbarTemplate());
     dispatch(initializeDashboardView());
   };
 
   const onLeaveDashboard = () => {
+    dispatch(removeHiddenNavbarTemplate());
     dispatch(closeDrawer());
-    dispatch(leaveDashboardView());
+  };
+
+  const onEnterGlobalSearch = () => {
+    dispatch(initializeHiddenNavbarTemplate());
+  };
+
+  const onLeaveGlobalSearch = () => {
+    dispatch(removeHiddenNavbarTemplate());
   };
 
   return (
@@ -305,6 +316,12 @@ export const Routes = ({ store }) => {
             component={DashboardView}
             onEnter={onEnterDashboard}
             onLeave={onLeaveDashboard}
+          />
+          <Route
+            path="/search"
+            component={GlobalSearchView}
+            onEnter={onEnterGlobalSearch}
+            onLeave={onLeaveGlobalSearch}
           />
           <Route
             path="/userprofile"
