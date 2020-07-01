@@ -5,7 +5,7 @@ import TaskBaseReducer from './task-base-reducer';
 const initialState = {
   isSearchingCompletedTasks: false,
   searchValue: '',
-  lists: [],
+  tasks: [],
   isLoading: false,
   error: '',
 };
@@ -47,7 +47,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
     case types.GLOBAL_SEARCH_REQUEST_SUCCESS:
       return {
         ...state,
-        lists: payload?.tasks,
+        tasks: payload?.tasks,
         isLoading: false,
       };
 

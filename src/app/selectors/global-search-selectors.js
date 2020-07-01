@@ -16,3 +16,8 @@ export const isLoadingGlobalSearchSelector = createSelector(
   globalSearchStateSelector,
   ({ isLoading }) => isLoading,
 );
+
+export const globalSearchTasksSelector = createSelector(
+  globalSearchStateSelector,
+  ({ tasks }) => tasks,
+);
