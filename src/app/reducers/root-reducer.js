@@ -23,6 +23,7 @@ import ListTasksReducer from './list-tasks-reducer';
 import PatientTasksReducer from './patient-tasks-reducer';
 import TemplateReducer from './template-reducer';
 import DashboardTasksReducer from './dashboard-tasks-reducer';
+import GlobalSearchReducer from './global-search-reducer';
 
 export default combineReducers({
   templateState: TemplateReducer,
@@ -49,4 +50,5 @@ export default combineReducers({
   listTasks: ListTasksReducer,
   patientTasks: PatientTasksReducer,
   dashboardTasks: DashboardTasksReducer,
+  globalSearch: GlobalSearchReducer,
 });
