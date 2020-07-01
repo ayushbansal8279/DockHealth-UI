@@ -132,12 +132,24 @@ const DueDateSection = ({ selectedTask, isOverDue, setAutoSaveVisible }) => {
   }, [closeCalendar, selectedTaskIdentifier]);
 
   const setDueDateValue = useCallback(
-    value => {
+    async value => {
       setValue(dateFieldName, value);
+      await saveDueDate({
+        updatedDueDate: value,
+        updatedDueTime: currentDueTime || '',
+      });
       closeCalendar();
       closePopover();
+      setAutoSaveVisible();
     },
-    [closeCalendar, closePopover, setValue],
+    [
+      closeCalendar,
+      closePopover,
+      currentDueTime,
+      saveDueDate,
+      setAutoSaveVisible,
+      setValue,
+    ],
   );
 
   const options = [
