@@ -296,6 +296,7 @@ export const Routes = ({ store }) => {
   const onLeaveGlobalSearch = () => {
     dispatch(GlobalSearchActions.resetGlobalSearch());
     dispatch(removeHiddenNavbarTemplate());
+    dispatch(closeDrawer());
   };
 
   return (
