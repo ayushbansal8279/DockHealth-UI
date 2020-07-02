@@ -27,6 +27,7 @@ import {
   SearchGrid,
   DashboardHeaderContainer,
   EmptyDashboard,
+  StickyHeader,
 } from './styled';
 import DashboardHeader from '../DashboardHeader/DashboardHeader';
 
@@ -96,6 +97,8 @@ const DashboardContent = ({
     <DashboardContainer>
       <DashboardHeaderContainer>
         <DashboardHeader currentUser={currentUser} />
+      </DashboardHeaderContainer>
+      <StickyHeader>
         <Grid container direction="row" justify="flex-end">
           <SearchGrid isFocused={searchFocused || searchValue} item>
             <Search
@@ -109,7 +112,7 @@ const DashboardContent = ({
         </Grid>
         <Spacing vertical={3} />
         <QuickAddTaskInput quickAddTask={handleQuickAddTask} />
-      </DashboardHeaderContainer>
+      </StickyHeader>
       <ViewLoader isFetchingData={dashboardTasksIsLoading}>
         {!isEmpty(searchedDashboardTasks)
           ? searchedDashboardTasks?.map(item => (

@@ -10,13 +10,23 @@ export const SearchGrid = styled(Grid)`
 `;
 
 export const DashboardContainer = styled.div`
+  position: relative;
   height: 100%;
   overflow-y: scroll;
-  padding: 28px 20px;
+  padding: 0 ${spacing.regularPlus};
+  margin-top: ${spacing.largePlus};
+`;
+
+export const StickyHeader = styled.div`
+  position: sticky;
+  top: 0;
+  padding-bottom: ${spacing.largePlus};
+  z-index: 100;
+  background-color: ${palette.white};
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
-  padding: 28px 0 68px; // per design
+  padding: 0 0 96px; // per design
 
   &:last-child {
     padding-bottom: 0;
@@ -29,7 +39,7 @@ export const DashboardTasksGroupLabel = styled.div`
   font-weight: ${fontWeights.regularPlus};
   padding-bottom: ${spacing.large};
   border-bottom: 1px solid ${palette.coolGrey2};
-  width: 100%;
+  width: calc(100% - 110px);
   margin: 0 55px;
 `;
 
