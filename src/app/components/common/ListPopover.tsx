@@ -16,6 +16,7 @@ type PopoverListItem = {
 interface ListPopoverProps extends Omit<PopoverProps, 'children'> {
   items: Array<PopoverListItem>;
   maxItems?: number;
+  customRenderItem: Function;
 }
 
 const usePopoverClasses = makeStyles({
@@ -96,9 +97,10 @@ const renderItem = ({
 };
 
 const ListPopover = (allProps: ListPopoverProps) => {
-  const { items, ...props } = allProps;
+  const { items, customRenderItem, ...props } = allProps;
   const listItemClasses = useListItemClasses();
   const popoverClasses = usePopoverClasses(allProps);
+  const renderItemMethod = customRenderItem || renderItem;
 
   return (
     <Popover
@@ -109,7 +111,7 @@ const ListPopover = (allProps: ListPopoverProps) => {
       }}
       {...omit(['maxItems'], props)}
     >
-      {items.map(renderItem({ listItemClasses }))}
+      {items.map(renderItemMethod({ listItemClasses }))}
     </Popover>
   );
 };

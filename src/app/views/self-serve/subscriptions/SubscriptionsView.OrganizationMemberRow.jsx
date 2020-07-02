@@ -3,6 +3,7 @@ import moment from 'moment';
 import { memoizeWith } from 'ramda';
 import React from 'react';
 import { useAsync } from 'react-use';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { getUserAvatar } from 'api/people-api';
 import Avatar from 'components/common/Avatar';
@@ -13,6 +14,7 @@ import TaskCheckbox from 'components/task/TaskCheckbox';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { openModal as openModalAction } from 'modal/actions';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
 const LoaderContainer = styled.div`
@@ -34,18 +36,24 @@ const StyledAnchorDiv = styled.div`
 
 const USER_TYPES = new Proxy(
   {
-    MEMBER: {
-      label: 'Member',
-      selectable: true,
-      changeable: true,
+    OWNER: {
+      label: 'Owner',
+      description:
+        'Has full access to the platform, can edit payment information and accepts or declines paying users',
     },
     ADMIN: {
       label: 'Admin',
       selectable: true,
       changeable: true,
+      description:
+        'Has full access to the platform but cannot access payment information or accept/decline new paid users to the account',
     },
-    OWNER: {
-      label: 'Owner',
+    MEMBER: {
+      label: 'Member',
+      selectable: true,
+      changeable: true,
+      description:
+        'Has access to the list and can ask to invite others to the List',
     },
     DEFAULT: {
       label: 'Invited',
@@ -141,9 +149,10 @@ const OrganizationMemberRow = ({
   isSmallScreen,
   showJoined,
   showSubscription,
-  openDialog,
-  setRemovedUserData,
   subscriptionPlanData,
+  openRemoveSubscriptionModal,
+  organizationMembers,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const derivedOrgUserRole =
     ['ACTIVE', 'INACTIVE'].includes(userStatus) && eulaAcknowledged
@@ -152,15 +161,39 @@ const OrganizationMemberRow = ({
 
   const userType = USER_TYPES[derivedOrgUserRole];
 
+  const removeSubscription = () => {
+    openRemoveSubscriptionModal({
+      userIdentifier,
+      email,
+      orgUserRole,
+      confirm: () =>
+        toggleSelectedUser({ userIdentifier, email })({
+          target: { checked: false },
+        }),
+    });
+  };
+  const adminCount =
+    organizationMembers?.filter(
+      ({ orgUserRole: memberUserRole }) =>
+        memberUserRole === 'ADMIN' || memberUserRole === 'OWNER',
+    )?.length ?? 0;
+
+  const hasOneUserRemaining = organizationMembers.length === 1;
+
+  const isDisabledRemovingSubscription =
+    hasOneUserRemaining ||
+    (adminCount <= 1 && (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')) ||
+    userIdentifier === sessionStorage.userIdentifier;
+
   const checkboxElement = (
     <TaskCheckbox
+      disabled={isDisabledRemovingSubscription}
       checked={isUserSelected({ userIdentifier, email })}
       onChange={event => {
         if (event.target.checked) {
           toggleSelectedUser({ userIdentifier, email })(event);
         } else {
-          setRemovedUserData({ userIdentifier, email, orgUserRole });
-          openDialog();
+          removeSubscription();
         }
       }}
       color={palette.coolGrey1}
@@ -218,6 +251,14 @@ const OrganizationMemberRow = ({
                   userIdentifier={userIdentifier}
                   userType={userType}
                   userTypes={USER_TYPES}
+                  orgUserRole={orgUserRole}
+                  removeSubscription={removeSubscription}
+                  userHasSubscription={
+                    !!isUserSelected({
+                      userIdentifier,
+                      email,
+                    })
+                  }
                 />
                 {showJoined && (
                   <>
@@ -277,6 +318,15 @@ const OrganizationMemberRow = ({
           userIdentifier={userIdentifier}
           userType={userType}
           userTypes={USER_TYPES}
+          removeSubscription={removeSubscription}
+          orgUserRole={orgUserRole}
+          isDisabledRemovingSubscription={isDisabledRemovingSubscription}
+          userHasSubscription={
+            !!isUserSelected({
+              userIdentifier,
+              email,
+            })
+          }
         />
       </td>
       {showJoined && (
@@ -297,4 +347,9 @@ const OrganizationMemberRow = ({
   );
 };
 
-export default OrganizationMemberRow;
+const mapDispatchToProps = {
+  openRemoveSubscriptionModal: props =>
+    openModalAction('RemoveActiveUser', { ...props }),
+};
+
+export default connect(null, mapDispatchToProps)(OrganizationMemberRow);
