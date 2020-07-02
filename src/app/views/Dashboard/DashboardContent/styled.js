@@ -23,6 +23,7 @@ export const StickyHeader = styled.div`
   padding-bottom: ${spacing.largePlus};
   z-index: 100;
   background-color: ${palette.white};
+  padding: 28px 0;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
@@ -39,7 +40,6 @@ export const DashboardTasksGroupLabel = styled.div`
   font-weight: ${fontWeights.regularPlus};
   padding-bottom: ${spacing.large};
   border-bottom: 1px solid ${palette.coolGrey2};
-  width: calc(100% - 110px);
   margin: 0 55px;
 `;
 
