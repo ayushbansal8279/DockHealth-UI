@@ -13,6 +13,7 @@ import {
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   TASK_ARCHIVED,
 } from 'actions/action-types';
+import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
@@ -24,23 +25,6 @@ const INITIAL_STATE = {
   completeTasksCount: null,
   isFetching: false,
   error: false,
-};
-
-const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
-  return tasks.map(task => {
-    let updatedSubtasks = [];
-    if (task.subtasks?.length > 0) {
-      updatedSubtasks = updateTaskOrSubtask(
-        task.subtasks,
-        taskIdentifier,
-        newTaskData,
-      );
-    }
-    if (taskIdentifier === task.taskIdentifier) {
-      return { ...task, subtasks: updatedSubtasks, ...newTaskData };
-    }
-    return { ...task, subtasks: updatedSubtasks };
-  });
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
@@ -106,18 +90,13 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     case UPDATE_PATIENT_TASK: {
       const { newTaskData, taskIdentifier } = payload;
-
-      const newTaskLists = state.lists.map(list => {
-        const newTasks = updateTaskOrSubtask(
-          list.tasks,
-          taskIdentifier,
-          newTaskData,
-        );
-        return { ...list, tasks: newTasks };
-      });
       return {
         ...state,
-        lists: newTaskLists,
+        lists: updateTaskOrSubtaskInListsArray(
+          state.lists,
+          newTaskData,
+          taskIdentifier,
+        ),
       };
     }
     case SET_PATIENT_TASK_SEARCH_VALUE:
