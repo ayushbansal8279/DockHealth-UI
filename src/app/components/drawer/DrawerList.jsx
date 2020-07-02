@@ -8,7 +8,7 @@ import LogoutIcon from 'img/drawer/LogoutIcon';
 import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
 import SupportIcon from 'img/drawer/SupportIcon';
-import DashboardIcon from 'img/drawer/DashboardIcon';
+import HomeIcon from 'img/drawer/HomeIcon';
 
 import DrawerHeader from './DrawerHeader';
 import {
@@ -60,6 +60,7 @@ const Item = ({
   rolloverPopoverAnchor,
   setRolloverLabel,
   setRolloverPopoverAnchor,
+  isIconFilled = true,
   ...otherProps
 }) => {
   const active = id === activeId;
@@ -77,7 +78,10 @@ const Item = ({
       open={open}
       {...otherProps}
     >
-      <StyledListItemIcon active={childOrSelfActive}>
+      <StyledListItemIcon
+        active={childOrSelfActive}
+        isIconFilled={isIconFilled}
+      >
         <Icon color="inherit" />
         <ActiveIconRim active={childOrSelfActive} />
       </StyledListItemIcon>
@@ -173,8 +177,9 @@ const getDrawerItems = ({ lists }) => [
   {
     id: 'home',
     label: 'Home',
-    icon: DashboardIcon,
+    icon: HomeIcon,
     to: 'home',
+    isIconFilled: false,
   },
   {
     id: 'lists',
