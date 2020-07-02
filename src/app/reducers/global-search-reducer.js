@@ -1,6 +1,4 @@
 import * as types from 'actions/action-types';
-import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
-
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -11,10 +9,16 @@ const initialState = {
   error: '',
 };
 
+const updateTaskInList = (lists, updateTaskCallback) =>
+  lists.map(list => {
+    const updatedTasks = updateTaskCallback(list.tasks);
+    return { ...list, tasks: updatedTasks };
+  });
+
 const updateTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    tasksList: updateTaskFromAction(state.tasksList),
+    lists: updateTaskInList(state.lists, updateTaskFromAction),
   };
 };
 
@@ -57,18 +61,6 @@ const GlobalSearchReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
       };
-
-    case types.UPDATE_GLOBAL_SEARCH_TASK: {
-      const { task } = payload;
-      return {
-        ...state,
-        lists: updateTaskOrSubtaskInListsArray(
-          state.lists,
-          task,
-          task.taskIdentifier,
-        ),
-      };
-    }
 
     case types.RESET_GLOBAL_SEARCH:
       return {

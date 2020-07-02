@@ -10,6 +10,7 @@ import {
   isSearchingCompletedTasksSelector,
   searchValueSelector,
 } from 'selectors/global-search-selectors';
+import * as types from 'actions/action-types';
 import * as GlobalSearchActions from 'actions/global-search-actions';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
@@ -120,7 +121,11 @@ function* doToggleTaskCompleteStatus({ payload }) {
             apiEndpoint: 'markIncomplete',
             successMessage: AlertMessages.TASK_REACTIVATED,
           };
-    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
+    yield put({
+      type: types.UPDATE_TASK_SUCCESS,
+      task: updatedTask,
+      taskContext: 'search',
+    });
     yield call(TaskApi[apiEndpoint], task);
 
     yield put(AlertActions.showGlobalAlert(successMessage));
@@ -138,7 +143,11 @@ function* doToggleTaskPriority({ payload }) {
     updatedTask.priority === 'HIGH' ? 'markHighPriority' : 'markLowPriority';
 
   try {
-    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
+    yield put({
+      type: types.UPDATE_TASK_SUCCESS,
+      task: updatedTask,
+      taskContext: 'search',
+    });
 
     yield call(TaskApi[apiEndpoint], updatedTask.taskIdentifier);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));

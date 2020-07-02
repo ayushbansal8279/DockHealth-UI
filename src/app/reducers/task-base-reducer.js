@@ -29,19 +29,6 @@ import {
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
 
-// const updateTaskOrSubtask = (tasks, taskIdentifier, update) => {
-//   return tasks.map(t =>
-//     t.taskIdentifier === taskIdentifier
-//       ? update(t)
-//       : {
-//           ...t,
-//           subtasks: t.subtasks.map(st =>
-//             st.taskIdentifier === taskIdentifier ? update(st) : st,
-//           ),
-//         },
-//   );
-// };
-
 const TASK_COMPLETE = 'COMPLETE';
 
 const updateMainTask = taskData =>
