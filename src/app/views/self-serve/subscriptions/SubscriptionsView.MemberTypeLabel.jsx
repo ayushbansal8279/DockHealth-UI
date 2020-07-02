@@ -12,6 +12,11 @@ import { showAlert, showToast } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { MemberTypeLabelButton } from './SubscriptionsView.MemberTypeLabel.Components';
+import {
+  ListPopoverItem,
+  ListPopoverItemLabel,
+  ListPopoverItemDescription,
+} from './SubscriptionsView.Styled';
 
 const renderUserTypesOptions = ({
   changeUserRole,
@@ -19,36 +24,62 @@ const renderUserTypesOptions = ({
   userTypes,
   closePopover,
   reloadUsers,
+  removeSubscription,
+  userHasSubscription,
+  isDisabledRemovingSubscription,
+  orgUserRole,
 }) => {
-  return Object.entries(userTypes)
-    .filter(pathEq(['1', 'selectable'], true))
-    .map(([role, { label }]) => ({
-      key: role,
-      button: true,
-      label,
-      onClick: () => {
-        changeUserRole({ userIdentifier, role })
-          .then(() => {
-            showToast({
-              status: 'success',
-              title: `User's role changed successfully`,
-            });
-            reloadUsers();
-            closePopover();
-          })
-          .catch(error => {
-            showAlert({
-              status: 'error',
-              title: 'Error',
-              text:
-                error?.errorMessage ??
-                `User's role could not be changed, please try again later`,
-            });
+  let renderedArray = [
+    ...Object.entries(userTypes)
+      .filter(pathEq(['1', 'selectable'], true))
+      .map(([role, { label, description }]) => ({
+        key: role,
+        button: true,
+        isSelected: orgUserRole === role,
+        label,
+        description,
+        onClick: () => {
+          changeUserRole({ userIdentifier, role })
+            .then(() => {
+              showToast({
+                status: 'success',
+                title: `User's role changed successfully`,
+              });
+              reloadUsers();
+              closePopover();
+            })
+            .catch(error => {
+              showAlert({
+                status: 'error',
+                title: 'Error',
+                text:
+                  error?.errorMessage ??
+                  `User's role could not be changed, please try again later`,
+              });
 
-            closePopover();
-          });
+              closePopover();
+            });
+        },
+      })),
+  ];
+
+  if (userHasSubscription && !isDisabledRemovingSubscription) {
+    renderedArray = [
+      ...renderedArray,
+      {
+        key: 'disactivate_user',
+        label: 'Remove as an Active User',
+        selectable: true,
+        changeable: true,
+        onClick: () => {
+          closePopover();
+          removeSubscription();
+        },
       },
-    }));
+    ];
+  }
+
+  return renderedArray;
 };
 
 const renderInvitations = ({
@@ -56,12 +87,15 @@ const renderInvitations = ({
   closePopover,
   resendInvite,
   cancelInvite,
+  reloadUsers,
 }) => {
   return [
     {
       key: 'resend',
       button: true,
       label: 'Resend invitation',
+      description:
+        'Resend invite to this user to remind them to create an account',
       onClick: () => {
         resendInvite({ email })
           .then(() => {
@@ -69,7 +103,7 @@ const renderInvitations = ({
               status: 'success',
               title: 'Invitation resent successfully',
             });
-
+            reloadUsers();
             closePopover();
           })
           .catch(error => {
@@ -89,6 +123,8 @@ const renderInvitations = ({
       key: 'cancel',
       button: true,
       label: 'Cancel invitation',
+      description:
+        'Cancel this invitation and remove this person from the user list',
       onClick: () => {
         cancelInvite({ email })
           .then(() => {
@@ -96,7 +132,7 @@ const renderInvitations = ({
               status: 'success',
               title: 'Invitation cancelled successfully',
             });
-
+            reloadUsers();
             closePopover();
           })
           .catch(error => {
@@ -115,11 +151,22 @@ const renderInvitations = ({
   ];
 };
 
+const renderItem = ({ label, description, onClick, isSelected }) => (
+  <ListPopoverItem onClick={onClick} isSelected={isSelected}>
+    <ListPopoverItemLabel isSelected={isSelected}>{label}</ListPopoverItemLabel>
+    <ListPopoverItemDescription>{description}</ListPopoverItemDescription>
+  </ListPopoverItem>
+);
+
 const MemberTypeLabel = ({
   email,
   userIdentifier,
   userType: { label, changeable, invitationModifiable },
   userTypes,
+  removeSubscription,
+  userHasSubscription,
+  isDisabledRemovingSubscription,
+  orgUserRole,
 }) => {
   const labelReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -181,6 +228,7 @@ const MemberTypeLabel = ({
             vertical: 'center',
             horizontal: 'center',
           }}
+          customRenderItem={() => item => renderItem(item)}
           onClose={closePopover}
           open={isPopoverOpen}
           items={renderOptionsMethod({
@@ -192,6 +240,10 @@ const MemberTypeLabel = ({
             resendInvite,
             cancelInvite,
             reloadUsers,
+            removeSubscription,
+            userHasSubscription,
+            isDisabledRemovingSubscription,
+            orgUserRole,
           })}
         />
       )}

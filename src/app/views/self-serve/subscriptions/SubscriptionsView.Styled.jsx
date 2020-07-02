@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -159,4 +161,31 @@ export const PriceLabel = styled.span`
 export const BigPriceLabel = styled.span`
   font-size: 2.25rem;
   letter-spacing: -0.125rem;
+`;
+
+export const ListPopoverItem = styled.div`
+  width: 550px;
+  border-bottom: 1px solid ${palette.coolGrey2};
+  padding: ${spacing.regular} ${spacing.large} ${spacing.large};
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  background-color: ${props =>
+    props.isSelected ? 'rgba(0, 162, 229, 0.07)' : palette.coolGrey4};
+
+  &:hover {
+    background-color: rgba(0, 162, 229, 0.07);
+  }
+`;
+
+export const ListPopoverItemLabel = styled.span`
+  color: ${props =>
+    props.isSelected ? palette.brightBlue : palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
+`;
+
+export const ListPopoverItemDescription = styled.span`
+  color: ${palette.mediumGrey};
+  font-size: ${fontSizes.smallPlus};
+  font-family: 'Roboto Condensed', sans-serif;
 `;

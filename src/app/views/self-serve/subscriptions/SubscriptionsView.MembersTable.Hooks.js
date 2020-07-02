@@ -2,7 +2,7 @@
 import { equals, find, uniq } from 'ramda';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createBreakpoint, useSetState, useToggle } from 'react-use';
+import { createBreakpoint, useToggle } from 'react-use';
 import {
   addUserToOrganization,
   cancelInviteToOrganization,
@@ -107,36 +107,6 @@ const initializeMembersTableHooks = ({
     [selectedUsers],
   );
 
-  const [removeDialogState, setRemoveDialogState] = useSetState({
-    open: false,
-    userIdentifier: null,
-    email: null,
-    orgUserRole: null,
-  });
-
-  const openDialog = useCallback(() => {
-    setRemoveDialogState({
-      open: true,
-    });
-  }, [setRemoveDialogState]);
-
-  const closeDialog = useCallback(() => {
-    setRemoveDialogState({
-      open: false,
-    });
-  }, [setRemoveDialogState]);
-
-  const setRemovedUserData = useCallback(
-    ({ userIdentifier, email, orgUserRole }) => {
-      setRemoveDialogState({
-        userIdentifier,
-        email,
-        orgUserRole,
-      });
-    },
-    [setRemoveDialogState],
-  );
-
   const setSortingProperty = useCallback(
     sortingProperty => {
       if (currentSortingProperty === sortingProperty) {
@@ -156,10 +126,7 @@ const initializeMembersTableHooks = ({
     isFetching,
     toggleSelectedUser,
     isUserSelected,
-    closeDialog,
-    removeDialogState,
-    openDialog,
-    setRemovedUserData,
+
     currentSearch,
     setCurrentSearch,
     isAllUsersSelected,

@@ -59,7 +59,7 @@ export function invitePersonToOrganization(person) {
       return response?.data;
     })
     .catch(error => {
-      throw error;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -69,7 +69,9 @@ export function resendInviteToOrganization(person) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error?.response?.data);
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
 }
 
 export function changeUserRoleForOrg(markedUserIdentifier, role) {
@@ -95,7 +97,9 @@ export function cancelInviteToOrganization(markedUserEmail) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error?.response?.data);
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
 }
 
 export function removeUserFromOrganization(removedUserIdentifier) {

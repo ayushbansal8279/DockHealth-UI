@@ -17,7 +17,6 @@ import Search from 'components/taskView/Search/Search';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
-import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
 import SortingColumn, {
   SORTING_PROPERTIES,
   SORTING_PROPERTIES_PREDICATES,
@@ -41,10 +40,9 @@ const renderOrganizationMemberRow = ({
   isSmallScreen,
   showJoined,
   showSubscription,
-  openDialog,
-  setRemovedUserData,
   chosenSubscriptionPlan,
   subscriptionPlanData,
+  organizationMembers,
 }) => props => {
   const { firstName, lastName, email, userIdentifier } = props;
   const key = `${firstName}${lastName}${userIdentifier}${email}`;
@@ -57,10 +55,9 @@ const renderOrganizationMemberRow = ({
       isSmallScreen={isSmallScreen}
       showJoined={showJoined}
       showSubscription={showSubscription}
-      openDialog={openDialog}
-      setRemovedUserData={setRemovedUserData}
       chosenSubscriptionPlan={chosenSubscriptionPlan}
       subscriptionPlanData={subscriptionPlanData}
+      organizationMembers={organizationMembers}
       {...props}
     />
   );
@@ -139,10 +136,6 @@ const SubscriptionsViewMembersTable = ({
     isFetching,
     toggleSelectedUser,
     isUserSelected,
-    closeDialog,
-    removeDialogState,
-    openDialog,
-    setRemovedUserData,
     currentSearch,
     setCurrentSearch,
     currentSortingProperty,
@@ -271,10 +264,9 @@ const SubscriptionsViewMembersTable = ({
                     showJoined,
                     showSubscription,
                     selectedUsers,
-                    openDialog,
-                    setRemovedUserData,
                     subscriptionPlanData,
                     chosenSubscriptionPlan,
+                    organizationMembers,
                   }),
                 )
               )}
@@ -282,12 +274,6 @@ const SubscriptionsViewMembersTable = ({
           </MemberTable>
         </>
       )}
-      <RemoveModal
-        closeDialog={closeDialog}
-        toggleSelectedUser={toggleSelectedUser}
-        organizationMembers={organizationMembers}
-        {...removeDialogState}
-      />
     </MembersTableContainer>
   );
 };
