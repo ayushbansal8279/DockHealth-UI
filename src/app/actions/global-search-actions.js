@@ -25,9 +25,9 @@ export const requestGlobalSearch = () => ({
   type: GLOBAL_SEARCH_REQUEST,
 });
 
-export const requestGlobalSearchSuccess = tasks => ({
+export const requestGlobalSearchSuccess = lists => ({
   type: GLOBAL_SEARCH_REQUEST_SUCCESS,
-  payload: { tasks },
+  payload: { lists },
 });
 
 export const requestGlobalSearchFailure = () => ({

@@ -113,8 +113,8 @@ const PatientDetailsView = ({
       )}
       <ViewLoader isFetchingData={isFetching}>
         <PatientListsContainer>{children}</PatientListsContainer>
-        <NewTaskDrawer modalActions={modalActions} />
       </ViewLoader>
+      <NewTaskDrawer modalActions={modalActions} />
     </>
   );
 };

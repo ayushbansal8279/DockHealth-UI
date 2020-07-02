@@ -1,17 +1,36 @@
 import React from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   isLoadingGlobalSearchSelector,
-  globalSearchTasksSelector,
+  globalSearchListsSelector,
   searchValueSelector,
 } from 'selectors/global-search-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
+import * as TaskDrawerActions from 'actions/task-drawer-actions';
+import * as TaskActions from 'actions/task-actions';
+import * as ModalActions from 'modal/actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
+import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { GlobalSearchWrapper } from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
+import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
 
-const GlobalSearchView = ({ isLoadingView, tasks, searchValue }) => {
+const GlobalSearchView = ({
+  isLoadingView,
+  lists,
+  searchValue,
+  currentUser,
+  selectedTask,
+  taskDrawerActions,
+  taskActions,
+  modalActions,
+}) => {
+  const { openDrawer } = taskDrawerActions;
+  const { storeAsCurrentTask } = taskActions;
+
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
 
@@ -22,16 +41,41 @@ const GlobalSearchView = ({ isLoadingView, tasks, searchValue }) => {
     <GlobalSearchWrapper>
       <GlobalSearchHeader />
       <ViewLoader isFetchingData={isLoadingView}>
-        {!isEmpty(tasks) ? <div>Global search list</div> : renderEmptyState()}
+        {!isEmpty(lists)
+          ? lists?.map(list => (
+              <GlobalSearchList
+                list={list}
+                tasks={list.tasks}
+                currentUser={currentUser}
+                selectedTask={selectedTask}
+                openDrawer={openDrawer}
+                storeAsCurrentTask={storeAsCurrentTask}
+                toggleTaskStatus={() => {}}
+                toggleTaskPriority={() => {}}
+                reassignTask={() => {}}
+                updateDueDate={() => {}}
+                updateWorkflowStatus={() => {}}
+              />
+            ))
+          : renderEmptyState()}
       </ViewLoader>
+      <NewTaskDrawer modalActions={modalActions} />
     </GlobalSearchWrapper>
   );
 };
 
-const mapStateToProps = store => ({
-  isLoadingView: isLoadingGlobalSearchSelector(store),
-  tasks: globalSearchTasksSelector(store),
-  searchValue: searchValueSelector(store),
+const mapDispatchToProps = dispatch => ({
+  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
+  taskActions: bindActionCreators(TaskActions, dispatch),
+  modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-export default connect(mapStateToProps)(GlobalSearchView);
+const mapStateToProps = store => ({
+  isLoadingView: isLoadingGlobalSearchSelector(store),
+  lists: globalSearchListsSelector(store),
+  searchValue: searchValueSelector(store),
+  currentUser: userProfileSelector(store),
+  selectedTask: store.taskState.selectedTask,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GlobalSearchView);
