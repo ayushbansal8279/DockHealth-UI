@@ -1,4 +1,5 @@
 import * as types from 'actions/action-types';
+import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -56,11 +57,17 @@ const GlobalSearchReducer = (state = initialState, action) => {
         isLoading: false,
       };
 
-    case types.GLOBAL_SEARCH_REQUEST_FAILURE:
+    case types.UPDATE_GLOBAL_SEARCH_TASK: {
+      const { task } = payload;
       return {
         ...state,
-        isLoading: false,
+        lists: updateTaskOrSubtaskInListsArray(
+          state.lists,
+          task,
+          task.taskIdentifier,
+        ),
       };
+    }
 
     case types.RESET_GLOBAL_SEARCH:
       return {
