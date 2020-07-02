@@ -131,15 +131,6 @@ const TaskBaseReducer = (state, action, mode, updateStateCallback) => {
       };
 
       return updateStateCallback(state, updateTaskFromAction);
-
-      // return {
-      //   ...state,
-      //   tasks: updateTaskFromAction(state.tasks),
-      //   // newlyAddedTaskIds: [
-      //   //   addedTask.taskIdentifier,
-      //   //   ...(state.newlyAddedTaskIds || []),
-      //   // ],
-      // };
     }
 
     case DELETE_TASK_COMMENT_SUCCESS: {
@@ -209,15 +200,6 @@ const TaskBaseReducer = (state, action, mode, updateStateCallback) => {
         tasks.concat([action.duplicatedTask]);
 
       return updateStateCallback(state, updateTaskFromAction);
-
-      // return {
-      //   ...state,
-      //   tasks: updateTaskFromAction(state.tasks),
-      //   // newlyAddedTaskIds: [
-      //   //   action.duplicatedTask.taskIdentifier,
-      //   //   ...(state.newlyAddedTaskIds || []),
-      //   // ],
-      // };
     }
 
     case MARK_TASK_STATUS_SUCCESS: {
