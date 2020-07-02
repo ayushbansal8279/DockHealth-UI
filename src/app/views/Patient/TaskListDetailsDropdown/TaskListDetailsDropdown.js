@@ -19,7 +19,8 @@ import {
   ListDetailsHeader,
   ListNameSection,
   ViewIcon,
-} from './styled';
+  ListNameContainer,
+} from 'components/tasklist/DropdownListSection/styled';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -55,13 +56,15 @@ const TaskListDetailsDropdown = ({
   return (
     <ListDetailsContainer>
       <ListDetailsHeader>
-        <Arrow
-          alt="arrow"
-          isOpen={isOpen}
-          onClick={() => switchOpen(!isOpen)}
-          src={ArrowIcon}
-        />
-        <ListNameSection>{listName}</ListNameSection>
+        <ListNameContainer>
+          <Arrow
+            alt="arrow"
+            isOpen={isOpen}
+            onClick={() => switchOpen(!isOpen)}
+            src={ArrowIcon}
+          />
+          <ListNameSection>{listName}</ListNameSection>
+        </ListNameContainer>
         {listMembers?.length > 0 && (
           <TaskListMembers
             members={listMembers}

@@ -12,18 +12,19 @@ import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
 } from 'helpers/list-secition-saved-state';
+import {
+  ViewIcon,
+  Arrow,
+} from 'components/tasklist/DropdownListSection/styled';
 
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import DragAndDropGroupList from '../DragAndDropGroupList/DragAndDropGroupList';
-
 import {
-  Arrow,
   TasksGroupContainer,
   TasksGroupHeader,
   TasksGroupLabel,
   Tasks,
-  ViewIcon,
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,

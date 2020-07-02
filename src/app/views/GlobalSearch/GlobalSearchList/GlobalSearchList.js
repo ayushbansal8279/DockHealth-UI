@@ -8,7 +8,8 @@ import {
   ListDetailsContainer,
   ListDetailsHeader,
   ListNameSection,
-} from 'components/tasklist/TaskListDetailsDropdown/styled';
+  ListNameContainer,
+} from 'components/tasklist/DropdownListSection/styled';
 
 const GlobalSearchList = ({
   list,
@@ -30,15 +31,22 @@ const GlobalSearchList = ({
   return (
     <ListDetailsContainer>
       <ListDetailsHeader>
-        <Arrow
-          alt="arrow"
-          isOpen={isOpen}
-          onClick={() => switchOpen(!isOpen)}
-          src={ArrowIcon}
-        />
-        <ListNameSection>
-          {listName} ({tasks?.length || 0})
-        </ListNameSection>
+        <ListNameContainer
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+        >
+          <Arrow
+            alt="arrow"
+            isOpen={isOpen}
+            onClick={() => switchOpen(!isOpen)}
+            src={ArrowIcon}
+          />
+          <ListNameSection>
+            {listName} ({tasks?.length || 0})
+          </ListNameSection>
+        </ListNameContainer>
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (

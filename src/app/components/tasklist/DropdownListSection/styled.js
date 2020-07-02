@@ -18,6 +18,12 @@ export const ListDetailsHeader = styled.div`
   padding-bottom: ${spacing.regular};
 `;
 
+export const ListNameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
+`;
+
 export const ListNameSection = styled.p`
   flex: 1;
   margin-bottom: 0;
@@ -38,7 +44,6 @@ export const ViewIcon = styled.img`
 `;
 
 export const Arrow = styled.img`
-  margin-bottom: 10px;
   transform: ${props => props.isOpen && 'rotateX(180deg)'};
   -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
   padding-left: ${spacing.tiny};

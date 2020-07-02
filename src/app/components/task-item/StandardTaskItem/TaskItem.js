@@ -37,10 +37,7 @@ import TaskComments from 'views/Task/NewTasksView/TaskComments/TaskComments';
 import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
 import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
 import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
-import {
-  Tasks as SubtasksContainer,
-  Arrow,
-} from 'views/Task/NewTasksView/TasksGroup/styled';
+import { Tasks as SubtasksContainer } from 'views/Task/NewTasksView/TasksGroup/styled';
 import TaskItemStatus from './TaskItemStatus';
 import {
   AddCrossIcon,
@@ -64,6 +61,7 @@ import {
   InfoText,
   PriorityHoverIcon,
   ListLink,
+  Arrow,
 } from '../styled';
 
 const dueDateQuickSelectOptions = [
