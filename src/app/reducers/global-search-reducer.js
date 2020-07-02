@@ -59,13 +59,13 @@ const GlobalSearchReducer = (state = initialState, action) => {
       };
 
     case types.UPDATE_GLOBAL_SEARCH_TASK: {
-      const { newTaskData, taskIdentifier } = payload;
+      const { task } = payload;
       return {
         ...state,
         lists: updateTaskOrSubtaskInListsArray(
           state.lists,
-          newTaskData,
-          taskIdentifier,
+          task,
+          task.taskIdentifier,
         ),
       };
     }

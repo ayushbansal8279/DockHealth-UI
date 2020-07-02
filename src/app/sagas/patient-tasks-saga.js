@@ -1,4 +1,3 @@
-import moment from 'moment';
 import {
   put,
   call,
@@ -34,6 +33,10 @@ import {
 } from 'selectors/patient-tasks-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
+import {
+  toggleTaskPriority,
+  toggleTaskCompletedStatus,
+} from 'helpers/task-update-helper';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
   'DO_FETCH_STATS_FOR_PATIENT_TASKS';
@@ -313,28 +316,20 @@ function* doToggleTaskCompleteStatus({ payload }) {
 
   try {
     const currentUser = yield select(userProfileSelector);
-    const { apiEndpoint, newStatus, successMessage } =
-      task.status === 'INCOMPLETE'
+
+    const updatedTask = toggleTaskCompletedStatus(task, currentUser);
+
+    const { apiEndpoint, successMessage } =
+      updatedTask.status === 'COMPLETE'
         ? {
             apiEndpoint: 'markComplete',
-            newStatus: 'COMPLETE',
             successMessage: AlertMessages.TASK_COMPLETED,
           }
         : {
             apiEndpoint: 'markIncomplete',
-            newStatus: 'INCOMPLETE',
             successMessage: AlertMessages.TASK_REACTIVATED,
           };
-
-    const newTaskData = {
-      status: newStatus,
-      completedBy: newStatus === 'COMPLETE' ? currentUser : null,
-      completedDt:
-        newStatus === 'COMPLETE'
-          ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-          : null,
-    };
-    yield put(updatePatientTask(task.taskIdentifier, newTaskData));
+    yield put(updatePatientTask(updatedTask.taskIdentifier, updatedTask));
 
     yield call(TaskApi[apiEndpoint], task);
     yield put(AlertActions.showGlobalAlert(successMessage));
@@ -345,20 +340,17 @@ function* doToggleTaskCompleteStatus({ payload }) {
 }
 
 function* doToggleTaskPriority({ payload }) {
-  const {
-    task: { taskIdentifier, priority },
-  } = payload;
+  const { task } = payload;
 
-  const { newPriority, apiEndpoint } =
-    !priority || priority === 'NONE' || priority === 'LOW' || priority === null
-      ? { newPriority: 'HIGH', apiEndpoint: 'markHighPriority' }
-      : { newPriority: 'LOW', apiEndpoint: 'markLowPriority' };
+  const updatedTask = toggleTaskPriority(task);
 
-  const newTaskData = { priority: newPriority };
+  const apiEndpoint =
+    updatedTask.priority === 'HIGH' ? 'markHighPriority' : 'markLowPriority';
+
   try {
-    yield put(updatePatientTask(taskIdentifier, newTaskData));
+    yield put(updatePatientTask(updatedTask.taskIdentifier, updatedTask));
 
-    yield call(TaskApi[apiEndpoint], taskIdentifier);
+    yield call(TaskApi[apiEndpoint], updatedTask.taskIdentifier);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   } catch (error) {

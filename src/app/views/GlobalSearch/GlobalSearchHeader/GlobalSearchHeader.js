@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import MenuIcon from 'img/menu-icon';
 import { isSearchingCompletedTasksSelector } from 'selectors/global-search-selectors';
-import * as GlobalSearchSagaActions from 'sagas/global-search-saga';
+import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import * as TemplateActions from 'actions/template-actions';
 import Spacing from 'components/common/Spacing';
 import TaskCheckbox from 'components/task/TaskCheckbox';

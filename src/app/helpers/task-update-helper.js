@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
   return tasks.map(task => {
     let updatedSubtasks = [];
@@ -29,6 +31,26 @@ export const updateTaskOrSubtaskInListsArray = (
     return { ...list, tasks: newTasks };
   });
 
-export default {
-  updateTaskOrSubtask,
+export const toggleTaskPriority = task => {
+  const { priority } = task;
+  const newPriority =
+    !priority || priority === 'NONE' || priority === 'LOW' || priority === null
+      ? 'HIGH'
+      : 'LOW';
+
+  return { ...task, priority: newPriority };
+};
+
+export const toggleTaskCompletedStatus = (task, currentUser) => {
+  const newStatus = task.status === 'INCOMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
+
+  return {
+    ...task,
+    status: newStatus,
+    completedBy: newStatus === 'COMPLETE' ? currentUser : null,
+    completedDt:
+      newStatus === 'COMPLETE'
+        ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+        : null,
+  };
 };

@@ -11,6 +11,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
+import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
@@ -27,9 +28,14 @@ const GlobalSearchView = ({
   taskDrawerActions,
   taskActions,
   modalActions,
+  globalSearchSagaActions,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
+  const {
+    toggleGlobalSearchTaskPriority,
+    toggleGlobalSearchTaskStatus,
+  } = globalSearchSagaActions;
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
@@ -45,13 +51,12 @@ const GlobalSearchView = ({
           ? lists?.map(list => (
               <GlobalSearchList
                 list={list}
-                tasks={list.tasks}
                 currentUser={currentUser}
                 selectedTask={selectedTask}
                 openDrawer={openDrawer}
                 storeAsCurrentTask={storeAsCurrentTask}
-                toggleTaskStatus={() => {}}
-                toggleTaskPriority={() => {}}
+                toggleTaskStatus={toggleGlobalSearchTaskStatus}
+                toggleTaskPriority={toggleGlobalSearchTaskPriority}
                 reassignTask={() => {}}
                 updateDueDate={() => {}}
                 updateWorkflowStatus={() => {}}
@@ -68,6 +73,10 @@ const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
+  globalSearchSagaActions: bindActionCreators(
+    GlobalSearchSagaActions,
+    dispatch,
+  ),
 });
 
 const mapStateToProps = store => ({

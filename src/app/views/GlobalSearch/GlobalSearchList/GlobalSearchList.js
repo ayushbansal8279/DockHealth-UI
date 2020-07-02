@@ -13,7 +13,6 @@ import {
 
 const GlobalSearchList = ({
   list,
-  tasks,
   currentUser,
   selectedTask,
   openDrawer,
@@ -24,7 +23,7 @@ const GlobalSearchList = ({
   updateDueDate,
   updateWorkflowStatus,
 }) => {
-  const { listName, taskListIdentifier } = list;
+  const { listName, tasks } = list;
 
   const [isOpen, switchOpen] = useState(true);
 

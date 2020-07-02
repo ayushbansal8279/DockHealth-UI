@@ -6,6 +6,7 @@ import {
   GLOBAL_SEARCH_REQUEST_SUCCESS,
   GLOBAL_SEARCH_REQUEST_FAILURE,
   RESET_GLOBAL_SEARCH,
+  UPDATE_GLOBAL_SEARCH_TASK,
 } from 'actions/action-types';
 
 export const searchCompletedTasks = () => ({
@@ -36,4 +37,9 @@ export const requestGlobalSearchFailure = () => ({
 
 export const resetGlobalSearch = () => ({
   type: RESET_GLOBAL_SEARCH,
+});
+
+export const updateGlobalSearchTask = task => ({
+  type: UPDATE_GLOBAL_SEARCH_TASK,
+  payload: { task },
 });
