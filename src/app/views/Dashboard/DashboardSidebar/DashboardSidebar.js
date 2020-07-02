@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { listsSelector } from 'selectors/task-list-selectors';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
+import ArrowIcon from 'img/arrow';
 import * as TemplateActions from 'actions/template-actions';
 import {
   TopSection,
@@ -18,6 +19,7 @@ import {
   PrivateListIcon,
   ListsSection,
   InfoDot,
+  Arrow,
 } from './styled';
 
 const DashboardSidebar = ({ lists, showNavbar }) => {
@@ -30,7 +32,10 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
       </TopSection>
       <ListsSection>
         <Link to="/tasks">
-          <ListsHeader>Lists</ListsHeader>
+          <ListsHeader>
+            Lists
+            <Arrow src={ArrowIcon} alt="arrow" />
+          </ListsHeader>
         </Link>
         <ListItemsWrapper>
           {lists?.map(

@@ -44,9 +44,19 @@ export const ListItem = styled.div`
 `;
 
 export const ListsHeader = styled(ListItem)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.regularPlus};
+`;
+
+export const Arrow = styled.img`
+  height: 18px;
+  width: 18px;
+  margin-right: ${spacing.tiny};
+  transform: rotate(-90deg);
 `;
 
 export const ListItemTitle = styled.div`
