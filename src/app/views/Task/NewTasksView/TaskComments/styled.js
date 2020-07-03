@@ -32,7 +32,7 @@ export const TaskCommentsDate = styled.div`
 export const TaskCommentContainer = styled.div`
   display: flex;
   margin-bottom: ${spacing.regular};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
 
   &:last-of-type {
     margin-bottom: 0;
@@ -60,7 +60,7 @@ export const TaskCommentAvatarContainer = styled.div`
 export const ShowMoreButton = styled.button`
   cursor: pointer;
   color: ${palette.brightBlue};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   margin-top: ${spacing.regularPlus};
   margin-left: 180px; // per design
   width: fit-content;

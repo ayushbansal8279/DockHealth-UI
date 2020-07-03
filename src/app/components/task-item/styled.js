@@ -14,7 +14,7 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1 : 0)}rem;
+  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
   overflow: hidden;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
@@ -103,7 +103,7 @@ export const SmallText = styled.span`
 
 export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.regular};
   cursor: pointer;
   width: 150px;
 `;
@@ -114,7 +114,7 @@ export const StandardTaskItemCell = styled.div`
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
-  font-size: 14px; //per design
+  font-size: ${fontSizes.regular};
   font-weight: ${props =>
     props.bolded ? fontWeights.bold : fontWeights.light};
   min-width: ${props => props.width};
@@ -225,7 +225,7 @@ export const SlimTaskItemRow = styled.div`
 export const SlimTaskItemDescription = styled.div`
   cursor: pointer;
   color: ${palette.mediumGrey};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   min-width: 400px;
 `;
@@ -253,7 +253,7 @@ export const SlimTaskItemRightSide = styled.div`
 
 export const SlimTaskItemListLink = styled(Link)`
   color: ${palette.brightBlue};
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.regular};
 `;
 
 export const OverdueBar = styled.div`
@@ -262,7 +262,7 @@ export const OverdueBar = styled.div`
   display: flex;
   justify-content: flex-end;
   border-radius: 81px; // per design
-  font-size: ${fontSizes.tiny};
+  font-size: ${fontSizes.regular};
   color: white;
   height: fit-content;
 `;
