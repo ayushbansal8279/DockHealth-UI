@@ -21,9 +21,13 @@ export const TaskCommentsGroupedDay = styled.div`
   &:last-of-type {
     margin-bottom: 0;
   }
+
+  & > div {
+    cursor: pointer;
+  }
 `;
 
-export const TaskCommentsDate = styled.div`
+export const TaskCommentsDate = styled.span`
   color: ${palette.lightGrey};
   padding-top: 6px; //per design
   font-size: ${fontSizes.smallPlus};
