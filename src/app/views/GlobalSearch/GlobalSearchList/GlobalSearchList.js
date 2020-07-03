@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ArrowIcon from 'img/arrow';
+import Spacing from 'components/common/Spacing';
 import Task from 'components/task-item/StandardTaskItem/TaskItem';
-
 import {
   Arrow,
   Tasks,
@@ -49,24 +49,28 @@ const GlobalSearchList = ({
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
-          <Task
-            key={task.taskIdentifier}
-            currentUser={currentUser}
-            openDrawer={openDrawer}
-            storeAsCurrentTask={storeAsCurrentTask}
-            toggleTaskPriority={toggleTaskPriority}
-            task={task}
-            groupId={tasks.taskIdentifier}
-            draggableProvided={{}}
-            isCompletedGroup={false}
-            toggleCompleteTask={toggleTaskStatus}
-            reassignTask={reassignTask}
-            updateDueDate={updateDueDate}
-            updateWorkflowStatus={updateWorkflowStatus}
-            dragAndDropDisabled
-            selectedTask={selectedTask}
-            taskContext="search"
-          />
+          <>
+            <Task
+              key={task.taskIdentifier}
+              currentUser={currentUser}
+              openDrawer={openDrawer}
+              storeAsCurrentTask={storeAsCurrentTask}
+              toggleTaskPriority={toggleTaskPriority}
+              task={task}
+              groupId={tasks.taskIdentifier}
+              draggableProvided={{}}
+              isCompletedGroup={false}
+              toggleCompleteTask={toggleTaskStatus}
+              reassignTask={reassignTask}
+              updateDueDate={updateDueDate}
+              updateWorkflowStatus={updateWorkflowStatus}
+              dragAndDropDisabled
+              selectedTask={selectedTask}
+              taskContext="search"
+              isFullView
+            />
+            <Spacing vertical={3} />
+          </>
         ))}
       </Tasks>
     </ListDetailsContainer>

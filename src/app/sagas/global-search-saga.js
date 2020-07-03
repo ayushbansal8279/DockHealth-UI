@@ -21,6 +21,7 @@ import {
 import { userProfileSelector } from '../selectors/user-selectors';
 
 const DO_SEARCH_TASKS = 'DO_SEARCH_TASKS';
+const DO_REFRESH_TASKS = 'DO_REFRESH_TASKS';
 const DO_SET_SEARCH_COMPLETED_TASKS = 'DO_SET_SEARCH_COMPLETED_TASKS';
 const DO_SET_SEARCH_VALUE = 'DO_SET_SEARCH_VALUE';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS =
@@ -30,6 +31,10 @@ export const DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY =
 
 const searchTasks = () => ({
   type: DO_SEARCH_TASKS,
+});
+
+const refreshTasks = () => ({
+  type: DO_REFRESH_TASKS,
 });
 
 const setSearchValue = value => ({
@@ -56,15 +61,15 @@ const toggleGlobalSearchTaskPriority = task => ({
 
 export const GlobalSearchSagaActions = {
   searchTasks,
+  refreshTasks,
   setSearchValue,
   setSearchCompletedTasks,
   toggleGlobalSearchTaskPriority,
   toggleGlobalSearchTaskStatus,
 };
 
-function* doSearchTasks() {
+function* doRefreshTasks() {
   try {
-    yield put(GlobalSearchActions.requestGlobalSearch());
     const isSearchingCompletedTasks = yield select(
       isSearchingCompletedTasksSelector,
     );
@@ -81,6 +86,11 @@ function* doSearchTasks() {
     yield put(GlobalSearchActions.requestGlobalSearchFailure());
     console.error('error', error);
   }
+}
+
+function* doSearchTasks() {
+  yield put(GlobalSearchActions.requestGlobalSearch());
+  yield call(doRefreshTasks);
 }
 
 function* doSetSearchValue({ payload }) {
@@ -125,7 +135,8 @@ function* doToggleTaskCompleteStatus({ payload }) {
 
     yield put(AlertActions.showGlobalAlert(successMessage));
   } catch (error) {
-    // todo: refresh
+    console.error('error', error);
+    yield put(refreshTasks());
   }
 }
 
@@ -143,13 +154,15 @@ function* doToggleTaskPriority({ payload }) {
     yield call(TaskApi[apiEndpoint], updatedTask.taskIdentifier);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
-    // todo: refresh
+    console.error('error', error);
+    yield put(refreshTasks());
   }
 }
 
 export default function* watchGlobalSearch() {
   yield debounce(250, DO_SET_SEARCH_VALUE, doSetSearchValue);
   yield takeEvery(DO_SEARCH_TASKS, doSearchTasks);
+  yield takeEvery(DO_REFRESH_TASKS, doRefreshTasks);
   yield takeEvery(DO_SET_SEARCH_COMPLETED_TASKS, doSetSearchCompletedTasks);
   yield takeLatest(DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY, doToggleTaskPriority);
   yield takeLatest(
