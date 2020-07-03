@@ -76,7 +76,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
       };
 
     default:
-      return TaskBaseReducer(state, action, 'search', updateTasksStateCallback);
+      return TaskBaseReducer(state, action, updateTasksStateCallback);
   }
 };
 

@@ -10,10 +10,7 @@ import { getMemoTaskAttachment } from './NewTaskDrawer.AttachmentsSection.Utilit
 const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   const attachmentFileInputReference = useRef(null);
 
-  const { selectedTask, taskContext } = useSelector(store => ({
-    selectedTask: store.taskState.selectedTask,
-    taskContext: store.taskState.selectedTaskContext,
-  }));
+  const selectedTask = useSelector(store => store.taskState.selectedTask);
 
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
@@ -40,50 +37,6 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   const [previewedAttachment, setPreviewedAttachment] = useState(null);
 
   const dispatch = useDispatch();
-
-  // const reloadAttachments = useCallback(
-  //   ({ attachmentsToReload }) => {
-  //     setAttachmentsLoading();
-
-  //     Promise.all(
-  //       attachmentsToReload.map(
-  //         async ({ attachmentIdentifier, fileName, contentType }) => {
-  //           const { data } = await getMemoTaskAttachment(attachmentIdentifier);
-
-  //           const fileSource = await new Promise((resolve, reject) => {
-  //             const reader = new FileReader();
-
-  //             reader.onloadend = () => {
-  //               // replace base64 type with content type from server
-  //               resolve(
-  //                 reader.result.replace(
-  //                   /data:[^;]+;base64/,
-  //                   `data:${contentType};base64`,
-  //                 ),
-  //               );
-  //             };
-
-  //             reader.addEventListener('error', reject);
-
-  //             reader.readAsDataURL(data);
-  //           });
-
-  //           return {
-  //             attachmentIdentifier,
-  //             fileName,
-  //             fileSource,
-  //             contentType,
-  //           };
-  //         },
-  //       ),
-  //     ).then(downloadedAttachments => {
-  //       unsetAttachmentsLoading();
-  //       setAttachmentSources(downloadedAttachments);
-  //       setCurrentTaskAttachments(attachmentsToReload);
-  //     });
-  //   },
-  //   [setAttachmentsLoading, unsetAttachmentsLoading],
-  // );
 
   const loadAttachmentsContent = useCallback(
     ({ attachmentsToReload }) => {
@@ -141,7 +94,6 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
       removeTaskAttachment(
         selectedTaskIdentifier,
         attachmentIdentifier,
-        taskContext,
       )(dispatch).then(() => {
         setCurrentTaskAttachments(
           currentTaskAttachments.filter(
@@ -149,22 +101,14 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
               attachmentIdentifier !== currentAttachmentIdentifier,
           ),
         );
-        // reloadAttachments({
-        //   attachmentsToReload: currentTaskAttachments.filter(
-        //     ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
-        //       attachmentIdentifier !== currentAttachmentIdentifier,
-        //   ),
-        // });
       });
     },
-    [selectedTaskIdentifier, taskContext, dispatch, currentTaskAttachments],
+    [selectedTaskIdentifier, dispatch, currentTaskAttachments],
   );
 
   const onAddAttachmentButtonClicked = useCallback(
     event => {
-      // console.log('on add attachment');
       if (!selectedTask || !selectedTask.taskIdentifier) {
-        // console.log('saving task');
         parentFormSubmit();
       }
 
@@ -199,31 +143,23 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
 
       setCurrentlyUploadedAttachment(newAttachment);
       setUploadProgress(0);
-      addTaskAttachment(
-        selectedTaskIdentifier,
-        newAttachment,
-        {
-          onUploadProgress: ({ loaded, total }) => {
-            setUploadProgress(Math.round((loaded * 100) / total));
-          },
+      addTaskAttachment(selectedTaskIdentifier, newAttachment, {
+        onUploadProgress: ({ loaded, total }) => {
+          setUploadProgress(Math.round((loaded * 100) / total));
         },
-        taskContext,
-      )(dispatch)
+      })(dispatch)
         .then(addedAttachment => {
           setCurrentlyUploadedAttachment(null);
           setCurrentTaskAttachments([
             ...currentTaskAttachments,
             addedAttachment,
           ]);
-          // reloadAttachments({
-          //   attachmentsToReload: [...currentTaskAttachments, addedAttachment],
-          // });
         })
         .catch(() => {
           setCurrentlyUploadedAttachment(null);
         });
     }
-  }, [selectedTaskIdentifier, taskContext, dispatch, currentTaskAttachments]);
+  }, [selectedTaskIdentifier, dispatch, currentTaskAttachments]);
 
   return {
     attachmentsSources,

@@ -66,7 +66,6 @@ const GlobalSearchList = ({
               updateWorkflowStatus={updateWorkflowStatus}
               dragAndDropDisabled
               selectedTask={selectedTask}
-              taskContext="search"
               isFullView
             />
             <Spacing vertical={3} />

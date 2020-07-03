@@ -13,7 +13,6 @@ const initialState = {
   historyError: null,
   currentTaskHistory: null,
   selectedTask: null,
-  selectedTaskContext: null,
   selectedTaskId: null,
   addingNewSubtask: false,
   addingNewSubtaskParentId: null,
@@ -47,7 +46,6 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedTask: action.task,
-        selectedTaskContext: action.taskContext,
         selectedTaskId: action.task != null ? action.task.taskIdentifier : null,
       };
 

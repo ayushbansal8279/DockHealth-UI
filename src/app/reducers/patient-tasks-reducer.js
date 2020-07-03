@@ -111,11 +111,6 @@ export default function(state = INITIAL_STATE, action = {}) {
       return state;
 
     default:
-      return TaskBaseReducer(
-        state,
-        action,
-        'patient',
-        updateTasksStateCallback,
-      );
+      return TaskBaseReducer(state, action, updateTasksStateCallback);
   }
 }

@@ -30,26 +30,6 @@ const initialState = {
   taskCounters: {},
 };
 
-// const TASK_COMPLETE = 'COMPLETE';
-
-// const updateMainTask = taskData =>
-//   evolve({
-//     ...map(always, taskData),
-//     subtasks: map(
-//       unless(propEq('status', TASK_COMPLETE), mergeDeepLeft(taskData)),
-//     ),
-//   });
-
-// const updateSubTask = (taskData, subtask) =>
-//   evolve({
-//     subtasks: map(
-//       when(
-//         propEq('taskIdentifier', subtask.taskIdentifier),
-//         mergeDeepLeft(taskData),
-//       ),
-//     ),
-//   });
-
 const mapTasksSuccess = task => ({
   ...task,
   subtasks: task.subtasks?.map(subtask => ({
@@ -61,14 +41,14 @@ const mapTasksSuccess = task => ({
 const updateTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    tasks: updateTaskFromAction(state.tasks),
+    tasks: updateTaskFromAction(state.tasks || []),
   };
 };
 
 const updateCompletedTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    completedTasks: updateTaskFromAction(state.completedTasks),
+    completedTasks: updateTaskFromAction(state.completedTasks || []),
   };
 };
 
@@ -177,29 +157,22 @@ const TaskReducer = (state = initialState, action) => {
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS:
     case TASK_ARCHIVED: {
-      return TaskBaseReducer(
-        state,
-        action,
-        'list',
-        updateCompletedTasksStateCallback,
-      );
+      return TaskBaseReducer(state, action, updateCompletedTasksStateCallback);
     }
 
     case UPDATE_TASK_SUCCESS: {
-      const mode = 'list';
       if (action.task.status === 'COMPLETE') {
         return TaskBaseReducer(
           state,
           action,
-          mode,
           updateCompletedTasksStateCallback,
         );
       }
-      return TaskBaseReducer(state, action, mode, updateTasksStateCallback);
+      return TaskBaseReducer(state, action, updateTasksStateCallback);
     }
 
     default:
-      return TaskBaseReducer(state, action, 'list', updateTasksStateCallback);
+      return TaskBaseReducer(state, action, updateTasksStateCallback);
   }
 };
 

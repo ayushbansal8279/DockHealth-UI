@@ -7,16 +7,11 @@ import { deleteComment, updateComment, addComment } from 'actions/task-actions';
 import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
 
 const initializeCommentSectionHooks = ({ modalActions }) => {
-  const { selectedTask, taskContext, currentUser } = useSelector(store => ({
+  const { selectedTask, currentUser } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
-    taskContext: store.taskState.selectedTaskContext,
     currentUser: store.userState.userProfile,
-    // taskListMembers: store.taskListState.tasklistmembers,
   }));
 
-  // const [currentTaskListMemberData, setCurrentTaskListMemberData] = useState(
-  //   null,
-  // );
   const [groupedComments, setGroupedComments] = useState([]);
 
   const { comments = [], taskIdentifier: selectedTaskIdentifier } =
@@ -25,15 +20,8 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
   useEffect(() => {
     if (isEmpty(comments)) {
       setGroupedComments([]);
-      // setCurrentTaskListMemberData(null);
       return;
     }
-
-    // setCurrentTaskListMemberData(
-    //   taskListMembers?.find(
-    //     ({ userIdentifier }) => currentUser?.userIdentifier === userIdentifier,
-    //   ) ?? null,
-    // );
 
     const newGroupedComments = getGroupedComments({ comments });
 
@@ -48,7 +36,6 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
       deleteComment(
         selectedTask,
         comment,
-        taskContext,
       )(dispatch).then(() => {
         const newGroupedComments = getGroupedComments({
           comments: comments.filter(
@@ -61,26 +48,22 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         modalActions.closeModal();
       });
     },
-    [selectedTask, taskContext, dispatch, comments, modalActions],
+    [selectedTask, dispatch, comments, modalActions],
   );
 
   const boundUpdateComment = useCallback(
     comment => {
-      updateComment(selectedTask, comment, taskContext)(dispatch);
+      updateComment(selectedTask, comment)(dispatch);
     },
-    [dispatch, selectedTask, taskContext],
+    [dispatch, selectedTask],
   );
 
   const boundAddComment = useCallback(
     comment =>
-      addComment(
-        selectedTask,
-        {
-          comment,
-          creator: currentUser,
-        },
-        taskContext,
-      )(dispatch).then(newComment => {
+      addComment(selectedTask, {
+        comment,
+        creator: currentUser,
+      })(dispatch).then(newComment => {
         const newGroupedComments = getGroupedComments({
           comments: [newComment.data, ...comments],
         });
@@ -89,7 +72,7 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
 
         return newComment;
       }),
-    [comments, currentUser, dispatch, selectedTask, taskContext],
+    [comments, currentUser, dispatch, selectedTask],
   );
 
   const openDeleteCommentConfirmationModal = comment => {
@@ -100,7 +83,6 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
   };
 
   return {
-    // currentTaskListMemberData,
     currentUser,
     groupedComments,
     removeComment: openDeleteCommentConfirmationModal,

@@ -38,7 +38,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
 
     default:
-      return TaskBaseReducer(state, action, 'home', updateTasksStateCallback);
+      return TaskBaseReducer(state, action, updateTasksStateCallback);
   }
 };
 

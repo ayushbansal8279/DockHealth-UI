@@ -70,12 +70,8 @@ const isParentOfAddedTask = addedTask => ({ taskIdentifier }) =>
   taskIdentifier === addedTask.parentTaskIdentifier;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const TaskBaseReducer = (state, action, mode, updateStateCallback) => {
+const TaskBaseReducer = (state, action, updateStateCallback) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
-  if (action.taskContext !== mode) {
-    return state;
-  }
-
   switch (action.type) {
     case ADD_TASK_COMMENT_SUCCESS: {
       const mainTaskId = getMainTaskId(action.task);
