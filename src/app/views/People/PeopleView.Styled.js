@@ -25,7 +25,7 @@ export const InvitePeopleButton = styled.button`
 `;
 
 export const InvitePeoplePopoverContainer = styled.div`
-  background-color: ${palette.lightGrey};
+  background-color: ${palette.coolGrey3};
 `;
 
 export const InvitePeoplePopoverSection = styled.div`

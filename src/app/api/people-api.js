@@ -59,7 +59,7 @@ export function invitePersonToOrganization(person) {
       return response?.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw error;
     });
 }
 
