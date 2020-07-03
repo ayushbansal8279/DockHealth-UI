@@ -37,6 +37,8 @@ import {
   toggleTaskPriority,
   toggleTaskCompletedStatus,
   assignTask as assignTaskHelper,
+  setDueDate as setDueDateHelper,
+  setWorkflowStatus as setWorkflowStatusHelper,
 } from 'helpers/task-update-helper';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
@@ -382,7 +384,8 @@ function* doUpdateDueDate({ payload }) {
   const { task, dueDate } = payload;
 
   try {
-    yield put(updatePatientTask(task?.taskIdentifier, { dueDate }));
+    const updatedTask = setDueDateHelper(task, dueDate);
+    yield put(updatePatientTask(task?.taskIdentifier, updatedTask));
 
     yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
@@ -395,7 +398,8 @@ function* doUpdateDueDate({ payload }) {
 function* doUpdatePatientTaskWorkflowStatus({ payload }) {
   const { workflowStatus, task } = payload;
   try {
-    yield put(updatePatientTask(task?.taskIdentifier, { workflowStatus }));
+    const updatedTask = setWorkflowStatusHelper(task, workflowStatus);
+    yield put(updatePatientTask(task?.taskIdentifier, updatedTask));
 
     yield call(
       TaskApi.updateWorkflowStatus,

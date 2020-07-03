@@ -47,10 +47,10 @@ const TaskListMembers = ({
   return (
     <>
       {shownMembers?.map(member => (
-        <>
+        <div key={member.userIdentifier}>
           <Spacing horizontal={2} />
           <Member member={member} size={40} />
-        </>
+        </div>
       ))}
       {hiddenMembersCount > 0 && (
         <>
