@@ -28,6 +28,7 @@ import {
   TASK_GROUP_LIST_FAILURE,
   GET_TASKS_SUCCESS,
   GET_COMPLETED_TASKS_SUCCESS,
+  SET_AS_CURRENT_TASK,
 } from 'actions/action-types';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-selectors';
@@ -154,6 +155,20 @@ export function* doGetTasksList(payload) {
         status,
         selectedFilters,
       );
+    }
+
+    const { taskIdentifier } = yield select(locationParametersSelector);
+    const isSelectedTask = yield select(taskIsSelectedSelector);
+
+    if (!isSelectedTask && taskIdentifier) {
+      const storedTask = tasks?.find(
+        taskItem => taskIdentifier === taskItem.taskIdentifier,
+      );
+      yield put({
+        type: SET_AS_CURRENT_TASK,
+        task: storedTask,
+        taskContext: 'list',
+      });
     }
 
     yield put({ type: tasksActionType, tasks });
@@ -323,6 +338,7 @@ export function* doOnEnterTasksGroupsList() {
 
     if (taskListIdentifier) {
       yield call(doGetTasksGroupsList, { taskListIdentifier });
+      yield call(doGetTasksList, { taskListIdentifier });
     }
 
     const isSelectedTask = yield select(taskIsSelectedSelector);
