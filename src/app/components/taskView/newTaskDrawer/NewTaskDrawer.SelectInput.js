@@ -357,7 +357,7 @@ const SelectInput = React.forwardRef(
         {endAdornmentEnabled &&
           groupedOptions.length === 0 &&
           !!inputValue &&
-          focusState &&
+          popupOpen &&
           (multiple ? (
             <EndAdornmentActionButton onClick={onTagCreate}>
               Create label
