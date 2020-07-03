@@ -53,7 +53,7 @@ export const DashboardHeaderContainer = styled.div`
 `;
 
 export const DroppableBox = styled.div`
-  background-color: ${palette.coolGrey2};
+  background-color: ${palette.coolGrey3};
   border-radius: 4px;
 `;
 
