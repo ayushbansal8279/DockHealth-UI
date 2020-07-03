@@ -127,8 +127,8 @@ const TaskView = ({
   };
 
   // TODO: Move to saga
-  const handleReassignTask = (taskIdentifier, userId) => {
-    reassignTask(taskIdentifier, userId)
+  const handleReassignTask = (task, assignee) => {
+    reassignTask(task.taskIdentifier, assignee?.userIdentifier)
       .then(() => refreshTab())
       .catch(() => refreshTab());
   };

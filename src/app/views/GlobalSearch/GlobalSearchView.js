@@ -33,8 +33,11 @@ const GlobalSearchView = ({
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
-    toggleGlobalSearchTaskPriority,
-    toggleGlobalSearchTaskStatus,
+    toggleTaskPriority,
+    toggleTaskStatus,
+    setDueDate,
+    setWorkflowStatus,
+    assignTask,
   } = globalSearchSagaActions;
 
   const renderEmptyState = () => {
@@ -55,11 +58,11 @@ const GlobalSearchView = ({
                 selectedTask={selectedTask}
                 openDrawer={openDrawer}
                 storeAsCurrentTask={storeAsCurrentTask}
-                toggleTaskStatus={toggleGlobalSearchTaskStatus}
-                toggleTaskPriority={toggleGlobalSearchTaskPriority}
-                reassignTask={() => {}}
-                updateDueDate={() => {}}
-                updateWorkflowStatus={() => {}}
+                toggleTaskStatus={toggleTaskStatus}
+                toggleTaskPriority={toggleTaskPriority}
+                reassignTask={assignTask}
+                updateDueDate={setDueDate}
+                updateWorkflowStatus={setWorkflowStatus}
               />
             ))
           : renderEmptyState()}

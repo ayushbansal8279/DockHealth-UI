@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -48,20 +49,26 @@ const PatientDetailsView = ({
 
   const allMembers = useMemo(() => {
     const allListsMembers = [];
-    lists.forEach(list => {
-      const { listUsers } = list;
-      const listMembers = listUsers;
+    if (lists) {
+      lists.forEach(list => {
+        const { listUsers } = list;
+        const listMembers = listUsers;
 
-      listMembers.forEach(member => {
-        if (
-          !allListsMembers.find(
-            ({ userIdentifier }) => userIdentifier === member.userIdentifier,
-          )
-        ) {
-          allListsMembers.push(member);
+        if (!listMembers) {
+          return;
         }
+
+        listMembers.forEach(member => {
+          if (
+            !allListsMembers.find(
+              ({ userIdentifier }) => userIdentifier === member.userIdentifier,
+            )
+          ) {
+            allListsMembers.push(member);
+          }
+        });
       });
-    });
+    }
     return allListsMembers;
   }, [lists]);
 

@@ -36,6 +36,7 @@ import { isEmpty } from 'ramda';
 import {
   toggleTaskPriority,
   toggleTaskCompletedStatus,
+  assignTask as assignTaskHelper,
 } from 'helpers/task-update-helper';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
@@ -108,11 +109,11 @@ export const updatePatientTask = (taskIdentifier, newTaskData) => ({
   },
 });
 
-export const reassignPatientTask = (taskIdentifier, userId) => ({
+export const reassignPatientTask = (task, assignee) => ({
   type: DO_REASSIGN_TASK,
   payload: {
-    taskIdentifier,
-    userId,
+    task,
+    assignee,
   },
 });
 
@@ -359,10 +360,17 @@ function* doToggleTaskPriority({ payload }) {
 }
 
 function* doReassignTask({ payload }) {
-  const { taskIdentifier, userId } = payload;
+  const { assignee, task } = payload;
 
   try {
-    yield call(TaskApi.assignOrReassignTask, { taskIdentifier }, userId);
+    const currentUser = yield select(userProfileSelector);
+    const updatedTask = assignTaskHelper(task, assignee, currentUser);
+    yield put(updatePatientTask(updatedTask.taskIdentifier, updatedTask));
+    yield call(
+      TaskApi.assignOrReassignTask,
+      { taskIdentifier: task.taskIdentifier },
+      assignee?.userIdentifier,
+    );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   } catch (error) {

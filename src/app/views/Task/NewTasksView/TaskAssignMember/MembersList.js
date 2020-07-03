@@ -22,8 +22,6 @@ const MembersList = ({
   currentUser,
   isFetchingMembers = false,
 }) => {
-  const { taskIdentifier } = task;
-
   const membersWithoutCurrentUser = members?.filter(
     ({ userId }) => userId !== currentUser.userId,
   );
@@ -42,7 +40,7 @@ const MembersList = ({
         <AssignToMeBox>
           <MemberRow
             onClick={() => {
-              reassignTask(taskIdentifier, currentUser.userId);
+              reassignTask(task, currentUser);
             }}
           >
             <Member member={currentUser} size={30} />
@@ -55,7 +53,7 @@ const MembersList = ({
               <MemberRow
                 key="unassigned"
                 onClick={() => {
-                  reassignTask(taskIdentifier, null);
+                  reassignTask(task, null);
                 }}
               >
                 <RemoveCircleOutlineRounded
@@ -68,7 +66,7 @@ const MembersList = ({
                 <MemberRow
                   key={member.userId}
                   onClick={() => {
-                    reassignTask(taskIdentifier, member.userId);
+                    reassignTask(task, member);
                   }}
                 >
                   <Member member={member} size={30} />

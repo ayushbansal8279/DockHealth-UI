@@ -16,7 +16,10 @@ import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
-  toggleTaskPriority,
+  toggleTaskPriority as toggleTaskPriorityHelper,
+  setDueDate as setDueDateHelper,
+  setWorkflowStatus as setWorkflowStatusHelper,
+  assignTask as assignTaskHelper,
 } from 'helpers/task-update-helper';
 import { userProfileSelector } from '../selectors/user-selectors';
 
@@ -28,6 +31,10 @@ export const DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS =
   'DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY =
   'DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY';
+export const DO_SET_GLOBAL_SEARCH_DUE_DATE = 'DO_SET_GLOBAL_SEARCH_DUE_DATE';
+export const DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS =
+  'DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS';
+export const DO_ASSIGN_GLOBAL_SEARCH_TASK = 'DO_ASSIGN_GLOBAL_SEARCH_TASK';
 
 const searchTasks = () => ({
   type: DO_SEARCH_TASKS,
@@ -47,16 +54,40 @@ const setSearchCompletedTasks = isSearchingCompletedTasks => ({
   payload: { isSearchingCompletedTasks },
 });
 
-const toggleGlobalSearchTaskStatus = task => ({
+const toggleTaskStatus = task => ({
   type: DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS,
   payload: {
     task,
   },
 });
 
-const toggleGlobalSearchTaskPriority = task => ({
+const toggleTaskPriority = task => ({
   type: DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY,
   payload: { task },
+});
+
+const setDueDate = (task, dueDate) => ({
+  type: DO_SET_GLOBAL_SEARCH_DUE_DATE,
+  payload: {
+    task,
+    dueDate,
+  },
+});
+
+const setWorkflowStatus = (task, workflowStatus) => ({
+  type: DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS,
+  payload: {
+    task,
+    workflowStatus,
+  },
+});
+
+const assignTask = (task, assignee) => ({
+  type: DO_ASSIGN_GLOBAL_SEARCH_TASK,
+  payload: {
+    task,
+    assignee,
+  },
 });
 
 export const GlobalSearchSagaActions = {
@@ -64,8 +95,11 @@ export const GlobalSearchSagaActions = {
   refreshTasks,
   setSearchValue,
   setSearchCompletedTasks,
-  toggleGlobalSearchTaskPriority,
-  toggleGlobalSearchTaskStatus,
+  toggleTaskPriority,
+  toggleTaskStatus,
+  setDueDate,
+  setWorkflowStatus,
+  assignTask,
 };
 
 function* doRefreshTasks() {
@@ -143,7 +177,7 @@ function* doToggleTaskCompleteStatus({ payload }) {
 function* doToggleTaskPriority({ payload }) {
   const { task } = payload;
 
-  const updatedTask = toggleTaskPriority(task);
+  const updatedTask = toggleTaskPriorityHelper(task);
 
   const apiEndpoint =
     updatedTask.priority === 'HIGH' ? 'markHighPriority' : 'markLowPriority';
@@ -159,6 +193,54 @@ function* doToggleTaskPriority({ payload }) {
   }
 }
 
+function* doSetDueDate({ payload }) {
+  const { task, dueDate } = payload;
+  try {
+    const updatedTask = setDueDateHelper(task, dueDate);
+    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
+
+    yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put(refreshTasks());
+  }
+}
+
+function* doSetWorkflowStatus({ payload }) {
+  const { workflowStatus, task } = payload;
+  try {
+    const updatedTask = setWorkflowStatusHelper(task, workflowStatus);
+    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
+
+    yield call(
+      TaskApi.updateWorkflowStatus,
+      task.taskIdentifier,
+      workflowStatus,
+    );
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put(refreshTasks);
+  }
+}
+
+function* doAssignTask({ payload }) {
+  const { task, assignee } = payload;
+
+  try {
+    const currentUser = yield select(userProfileSelector);
+    const updatedTask = assignTaskHelper(task, assignee, currentUser);
+    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
+    yield call(
+      TaskApi.assignOrReassignTask,
+      { taskIdentifier: task.taskIdentifier },
+      assignee?.userIdentifier,
+    );
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put(refreshTasks());
+  }
+}
+
 export default function* watchGlobalSearch() {
   yield debounce(250, DO_SET_SEARCH_VALUE, doSetSearchValue);
   yield takeEvery(DO_SEARCH_TASKS, doSearchTasks);
@@ -169,4 +251,7 @@ export default function* watchGlobalSearch() {
     DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS,
     doToggleTaskCompleteStatus,
   );
+  yield takeLatest(DO_SET_GLOBAL_SEARCH_DUE_DATE, doSetDueDate);
+  yield takeLatest(DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS, doSetWorkflowStatus);
+  yield takeLatest(DO_ASSIGN_GLOBAL_SEARCH_TASK, doAssignTask);
 }
