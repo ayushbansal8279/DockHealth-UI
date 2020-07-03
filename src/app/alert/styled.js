@@ -5,10 +5,9 @@ import spacing from 'styles/spacing';
 
 export const GlobalChipWrapper = styled.div`
   position: fixed;
-  top: ${props => (props.isSideBarAlert ? '6.0rem' : '6.5rem')};
-  left: ${props => (props.isSideBarAlert ? '' : '50%')};
-  right: ${props => (props.isSideBarAlert ? '250px' : '')};
-  z-index: 1000;
+  top: '2.0rem';
+  right: '140px';
+  z-index: 5000;
   width: auto;
   height: auto;
   transform: translateX(-50%);
