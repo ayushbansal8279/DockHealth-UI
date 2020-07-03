@@ -113,22 +113,24 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
               }),
             )
           )}
-          {currentlyUploadedAttachment ? (
-            <UploadBarOuterContainer>
-              <UploadBarContainer>
-                <UploadBar progress={uploadProgress} />
-              </UploadBarContainer>
-            </UploadBarOuterContainer>
-          ) : (
-            <AddAttachmentButton
-              onClick={onAddAttachmentButtonClicked}
-              type="button"
-            >
-              <RobotoTypography condensed variant="h4" color="inherit">
-                +
-              </RobotoTypography>
-            </AddAttachmentButton>
+          {currentlyUploadedAttachment && (
+            <>
+              <UploadBarOuterContainer>
+                <UploadBarContainer>
+                  <UploadBar progress={uploadProgress} />
+                </UploadBarContainer>
+              </UploadBarOuterContainer>
+              <Spacing horizontal={3} />
+            </>
           )}
+          <AddAttachmentButton
+            onClick={onAddAttachmentButtonClicked}
+            type="button"
+          >
+            <RobotoTypography condensed variant="h4" color="inherit">
+              +
+            </RobotoTypography>
+          </AddAttachmentButton>
         </Grid>
       </Grid>
     </AttachmentsContainer>
