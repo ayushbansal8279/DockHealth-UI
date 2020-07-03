@@ -159,7 +159,7 @@ function* doQuickAddDahboardTask({ payload }) {
       assignedToIdentifier,
     });
     yield call(doReloadDashboardTasks);
-    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
   } catch (error) {
     yield call(doReloadDashboardTasks);
   }
