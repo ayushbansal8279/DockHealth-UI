@@ -5,7 +5,7 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
 import { getTasksGroupsList } from 'sagas/tasks-groups-list-saga';
 import * as ActionTypes from './action-types';
-import * as TaskListActions from './tasklist-actions';
+// import * as TaskListActions from './tasklist-actions';
 import AlertMessages from '../alert/AlertMessages';
 
 const shapeTask = task => {
@@ -291,7 +291,8 @@ export const clearPreparedSubtask = curry(dispatch =>
 
 export const reloadTaskListStats = (dispatch, task) => {
   if (task.taskList) {
-    TaskListActions.getTaskListStats(task.taskList)(dispatch);
+    // Do Nothing
+    // TaskListActions.getTaskListStats(task.taskList)(dispatch);
   }
 };
 
