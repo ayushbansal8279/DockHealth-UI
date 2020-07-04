@@ -14,7 +14,7 @@ export const DashboardContainer = styled.div`
   height: 100%;
   overflow-y: scroll;
   padding: 0 ${spacing.regularPlus};
-  margin-top: ${spacing.largePlus};
+  margin-top: ${spacing.large};
 `;
 
 export const StickyHeader = styled.div`
