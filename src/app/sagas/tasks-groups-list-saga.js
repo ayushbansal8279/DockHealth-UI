@@ -363,13 +363,7 @@ export function* doCreateTask(payload) {
         description,
       });
 
-      yield all([
-        call(doGetTasksGroupsList, {
-          taskListIdentifier,
-          shouldSetRequestState: false,
-        }),
-        call(doGetTasksList, { taskListIdentifier }),
-      ]);
+      yield all([call(doGetTasksList, { taskListIdentifier })]);
     }
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
