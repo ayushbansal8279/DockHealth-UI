@@ -15,6 +15,7 @@ export const MemberTable = styled.table`
     font-size: 0.875rem;
     margin-bottom: 0;
     margin-top: 0.75rem;
+    width: 100%;
 
     & th,
     & td {

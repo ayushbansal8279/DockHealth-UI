@@ -9,6 +9,7 @@ export const InvoicesTable = styled.table`
   && {
     border: 0;
     border-spacing: 0;
+    width: 100%;
 
     & th,
     & td {

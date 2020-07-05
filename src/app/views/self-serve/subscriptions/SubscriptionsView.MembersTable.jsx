@@ -210,7 +210,7 @@ const SubscriptionsViewMembersTable = ({
                 <tr>
                   <th>&nbsp;</th>
                   <th>&nbsp;</th>
-                  <th>
+                  <th style={{ minWidth: '200px' }}>
                     <SortingColumn
                       currentSortingOrder={currentSortingOrder}
                       currentSortingProperty={currentSortingProperty}
@@ -220,7 +220,7 @@ const SubscriptionsViewMembersTable = ({
                       NAME
                     </SortingColumn>
                   </th>
-                  <th>
+                  <th style={{ maxWidth: '120px' }}>
                     <SortingColumn
                       currentSortingOrder={currentSortingOrder}
                       currentSortingProperty={currentSortingProperty}
@@ -231,7 +231,7 @@ const SubscriptionsViewMembersTable = ({
                     </SortingColumn>
                   </th>
                   {showJoined && (
-                    <th>
+                    <th style={{ maxWidth: '120px' }}>
                       <SortingColumn
                         currentSortingOrder={currentSortingOrder}
                         currentSortingProperty={currentSortingProperty}
@@ -243,7 +243,7 @@ const SubscriptionsViewMembersTable = ({
                     </th>
                   )}
                   {showSubscription && (
-                    <th>
+                    <th style={{ maxWidth: '120px' }}>
                       <MontserratTypography variant="h4">
                         SUBSCRIPTION
                       </MontserratTypography>
