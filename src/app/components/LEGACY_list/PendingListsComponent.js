@@ -5,7 +5,6 @@ class PendingListsComponent extends PureComponent {
   componentWillUnmount() {
     if (this.props.taskLists) {
       this.props.taskLists.map((taskList, index) => {
-        removeRevealComponent(`#leave-task-${taskList.taskListIdentifier}`);
       });
     }
   }

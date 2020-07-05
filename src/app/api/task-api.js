@@ -43,7 +43,6 @@ export function getListTasksByUser(
   filterBy,
   queryStartPosition = 0,
 ) {
-
   return axios
     .get(`task/findListTasksByUser/${taskListIdentifier}`, {
       params: {
@@ -218,7 +217,6 @@ export function getTasksAssignedByMe(
   sortBy,
   filterBy,
 ) {
-
   return axios({
     method: 'get',
     url: `task/findTasksAssignedByUser`,

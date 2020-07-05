@@ -116,13 +116,11 @@ class FormPatient extends PureComponent {
     }
 
     hashHistory.push(`/patient/${this.props.patient.patientIdentifier}`);
-    
   }
 
   cancelEdit = event => {
     if (this.props.patient && this.props.patient.patientIdentifier) {
       hashHistory.push(`/patient/${this.props.patient.patientIdentifier}`);
-      
     } else {
       event.preventDefault();
     }
