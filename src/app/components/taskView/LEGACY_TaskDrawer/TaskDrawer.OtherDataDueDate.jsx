@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import DateTimeSelect from '../common/DateTimeSelect';
+import DateTimeSelect from '../../common/DateTimeSelect';
 
 const DueDateClearButton = styled.div`
   align-items: center;

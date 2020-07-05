@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Loader, { LoaderSizes } from '../common/Loader/Loader';
-import TaskDrawer from '../taskView/TaskDrawer';
+import TaskDrawer from '../taskView/LEGACY_TaskDrawer/TaskDrawer';
 import Heading from './TaskList.Heading';
 import initializeTaskListHooks from './TaskList.Hooks';
 import NewTaskElement from './TaskList.NewTaskElement';

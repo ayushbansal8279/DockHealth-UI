@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import Loader, { LoaderSizes } from '../common/Loader/Loader';
+import Loader, { LoaderSizes } from '../../common/Loader/Loader';
 import TaskDrawerAttachmentsList from './TaskDrawer.AttachmentsList';
 import TaskDrawerOtherDataDueDate from './TaskDrawer.OtherDataDueDate';
 import initializeTaskDrawerOtherDataSectionHooks from './TaskDrawer.OtherDataSectionHooks';

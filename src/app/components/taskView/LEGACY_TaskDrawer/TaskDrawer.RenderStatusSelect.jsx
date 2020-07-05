@@ -1,7 +1,7 @@
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import React from 'react';
 import { onTaskStatusChanged } from 'helpers/ga-event-helper';
-import { PriorityDot } from '../common/Priority';
+import { PriorityDot } from '../../common/Priority';
 
 export default ({
   closeStatusPopover,

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { invitePersonToOrganization } from 'actions/people-actions';
 import palette from 'styles/palette';
-import StyledInput from '../userProfileView/StyledInput';
+import StyledInput from '../../userProfileView/StyledInput';
 import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
 
 const BottomFormLabel = styled.button`

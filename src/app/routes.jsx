@@ -59,7 +59,7 @@ import ResetPasswordSuccess from './views/auth/ResetPasswordSuccess';
 import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
 import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
-import Inbox from './views/Inbox';
+// import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetailsView';
 import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
@@ -80,7 +80,7 @@ import SubscriptionPaymentView from './views/self-serve/subscription-payment/Sub
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
 import SupportView from './views/Support/SupportView';
 import TaskListActivityFeedView from './views/TaskList/TaskListActivityFeedView';
-import TaskListSearch from './views/TaskList/TaskListSearch';
+// import TaskListSearch from './views/TaskList/TaskListSearch';
 import TaskListView from './views/TaskList/TaskListView';
 import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase/TemplateAuthBase';
@@ -404,11 +404,11 @@ export const Routes = ({ store }) => {
             component={TaskListActivityFeedView}
             onEnter={checkFeatureToggles}
           />
-          <Route
+          {/* <Route
             path="/taskSearch"
             component={TaskListSearch}
             onEnter={checkFeatureToggles}
-          />
+          /> */}
           <Route
             path="/assignedToPerson/:userIdentifier(/:tabName)"
             component={PersonDetailsView}
@@ -426,19 +426,19 @@ export const Routes = ({ store }) => {
             component={PeopleView}
             onEnter={checkFeatureToggles}
           />
-          <Route
+          {/* <Route
             path="/tasks/inbox(/:taskIdentifier)"
             component={Inbox}
             onChange={preselectTask}
             onEnter={checkFeatureToggles}
-          />
+          /> */}
           {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
-          <Route
+          {/* <Route
             path="/tasks/Inbox(/:taskIdentifier)"
             component={Inbox}
             onChange={preselectTask}
             onEnter={checkFeatureToggles}
-          />
+          /> */}
           <Route path="/tasks">
             <IndexRoute
               component={TaskListView}

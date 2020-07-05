@@ -5,7 +5,7 @@ import { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import { onTaskPriorityChanged } from 'helpers/ga-event-helper';
-import { PriorityDot } from '../common/Priority';
+import { PriorityDot } from '../../common/Priority';
 import TaskDrawerForm from './TaskDrawer.Form';
 import renderStatusSelectOption from './TaskDrawer.RenderStatusSelect';
 import {
@@ -16,7 +16,7 @@ import {
   StatusSelect,
   TopLabel,
 } from './TaskDrawer.Styled';
-import PriorityFlag from './PriorityFlag';
+import PriorityFlag from '../PriorityFlag';
 
 export default ({
   addingTaskOrSubtask,
