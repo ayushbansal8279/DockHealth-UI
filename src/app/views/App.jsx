@@ -45,13 +45,6 @@ ReactModal.setAppElement('#app');
 class App extends PureComponent {
   idleTimer = null;
 
-  componentDidMount() {
-    this.renderFoundationComponents();
-  }
-
-  componentDidUpdate() {
-    this.renderFoundationComponents();
-  }
 
   onAction = () => {};
 
@@ -73,11 +66,6 @@ class App extends PureComponent {
 
     hashHistory.push('/login');
   };
-
-  // eslint-disable-next-line class-methods-use-this
-  renderFoundationComponents() {
-    renderFoundationComponentsJquery();
-  }
 
   render() {
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);

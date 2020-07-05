@@ -47,7 +47,6 @@ class PeopleView extends PureComponent {
       this.setState({
         searchTerm: searchName,
       });
-      toggleSearch();
     }
 
     this.resetHeader();

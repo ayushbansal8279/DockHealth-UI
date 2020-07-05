@@ -163,7 +163,6 @@ class TaskListView extends PureComponent {
     const { tipsOpen } = this.state;
 
     // needed for contextual menu
-    enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
 
     if (tipsOpen !== previousTipsOpen) {
       localStorage.setItem(STORAGE_TASK_LIST_TIPS_OPEN, tipsOpen);
@@ -464,7 +463,7 @@ class TaskListView extends PureComponent {
                         <Loader />
                       </LoaderContainer>
                     ) : (
-                      <div className="item-list-wrapper list-wrapper-all-lists">
+                      <div style={{marginTop: '0px', padding: '0px'}}>
                         <PendingListsComponent
                           taskLists={pendingTaskLists}
                           acceptInviteToTaskList={this.acceptInviteToTaskList}

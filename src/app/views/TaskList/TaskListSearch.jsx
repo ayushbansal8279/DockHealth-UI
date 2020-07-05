@@ -89,7 +89,6 @@ class TaskListSearch extends PureComponent {
   handleAddTask = () => {
     const { taskActions } = this.props;
     taskActions.taskToState(null);
-    openAddForm();
   };
 
   handleSearch = event => {
