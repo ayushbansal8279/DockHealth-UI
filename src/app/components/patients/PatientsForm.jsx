@@ -4,22 +4,22 @@ import {
   Grid,
   MenuItem,
   Select,
-  // Typography,
+  Typography,
 } from '@material-ui/core';
-// import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { addPatientNote } from 'actions/patient-actions';
 import { onPatientNoteAdded } from 'helpers/ga-event-helper';
 import useBoolean from 'hooks/useBoolean';
-// import themeMontserrat from 'styles/theme-montserrat';
+import themeMontserrat from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import {
   UniversalBirthdayInputComponent,
   UniversalMobileInputComponent,
 } from '../userProfileView/UniversalInput';
-// import PatientNotes from './PatientNotes';
+import PatientNotes from './PatientNotes';
 import {
   PanelActionContainer,
   PatientInput,

@@ -6,28 +6,28 @@ import {
   abortPatientCreation,
 } from 'actions/patient-actions';
 import { findUserTasksByPatient } from 'api/patient-api';
-// import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
-// import { Flag } from 'helpers/flags';
+import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
+import { Flag } from 'helpers/flags';
 import PatientEdit from './PatientEdit';
-// import PatientsSidebarSection from './PatientsSidebar.Section';
+import PatientsSidebarSection from './PatientsSidebar.Section';
 import {
   PatientsSidebarCloseButton,
   PatientsSidebarContainer,
   PatientsSidebarHeader,
   PatientsSidebarName,
 } from './PatientsSidebar.Styled';
-// import PatientsTasklist from './PatientsTasklist';
+import PatientsTasklist from './PatientsTasklist';
 
-// const renderTaskList = ({
-//   listName,
-//   tasks,
-//   completedTasks,
-//   taskListIdentifier,
-// }) => (
-//   <PatientsSidebarSection key={taskListIdentifier} heading={listName}>
-//     <PatientsTasklist tasks={tasks} completedTasks={completedTasks} />
-//   </PatientsSidebarSection>
-// );
+const renderTaskList = ({
+  listName,
+  tasks,
+  completedTasks,
+  taskListIdentifier,
+}) => (
+  <PatientsSidebarSection key={taskListIdentifier} heading={listName}>
+    <PatientsTasklist tasks={tasks} completedTasks={completedTasks} />
+  </PatientsSidebarSection>
+);
 
 const PatientsSidebar = ({ patient }) => {
   const { mrn, firstName, lastName, patientIdentifier } = patient ?? {};
@@ -52,7 +52,7 @@ const PatientsSidebar = ({ patient }) => {
     }
   }, [patientIdentifier]);
 
-  // const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
+  const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
   const patientHeaderLabel = patient
     ? `${firstName || ''} ${lastName || ''} ${mrn || ''}`.trim()
