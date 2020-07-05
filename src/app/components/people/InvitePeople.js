@@ -22,8 +22,6 @@ class InvitePeople extends PureComponent {
   }
 
   cancelEdit = event => {
-    toggleTaskForm();
-    scrollToTop();
     event.preventDefault();
   };
 
@@ -39,7 +37,6 @@ class InvitePeople extends PureComponent {
         } else {
           component.props.peopleActions.findAllUsersByOrganizationId();
           component.setState({ invitePeopleResult: 'Invitation sent' });
-          closeAddForm();
           component.props.formActions.reset('InvitePeopleForm');
         }
       })

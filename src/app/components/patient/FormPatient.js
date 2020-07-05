@@ -78,7 +78,6 @@ class FormPatient extends PureComponent {
         .updatePatient(formProps)
         .then(res => {
           // this.setState({saveMessage: 'Patient updated succesfully'})
-          closeAddForm();
         })
         .catch(error => {
           // this.setState({saveMessage: e.message})
@@ -94,7 +93,6 @@ class FormPatient extends PureComponent {
           const patientName = `${res.firstName} ${formProps.lastName}`;
           const { patientIdentifier } = res;
           if (!this.props.modalForm) {
-            closeAddForm();
           } else {
             const isProps = this.props;
             this.props.formActions.change(
@@ -118,15 +116,14 @@ class FormPatient extends PureComponent {
     }
 
     hashHistory.push(`/patient/${this.props.patient.patientIdentifier}`);
-    scrollToTop();
+    
   }
 
   cancelEdit = event => {
     if (this.props.patient && this.props.patient.patientIdentifier) {
       hashHistory.push(`/patient/${this.props.patient.patientIdentifier}`);
-      scrollToTop();
+      
     } else {
-      toggleTaskForm();
       event.preventDefault();
     }
   };

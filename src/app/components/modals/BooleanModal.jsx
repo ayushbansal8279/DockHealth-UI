@@ -8,12 +8,12 @@ class BooleanModal extends React.Component {
 
   componentWillUnmount() {
     const { uniqueModalId } = this.props;
-    removeRevealComponent(`#${uniqueModalId}`);
+    // removeRevealComponent(`#${uniqueModalId}`);
   }
 
   closeDialog() {
     const { uniqueModalId } = this.props;
-    closePopup(`#${uniqueModalId}`);
+    // closePopup(`#${uniqueModalId}`);
   }
 
   render() {

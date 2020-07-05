@@ -43,7 +43,6 @@ export function getListTasksByUser(
   filterBy,
   queryStartPosition = 0,
 ) {
-  closeAddForm();
 
   return axios
     .get(`task/findListTasksByUser/${taskListIdentifier}`, {
@@ -84,7 +83,6 @@ export function getTasksAssignedToMe(
   sortBy,
   filterBy,
 ) {
-  closeAddForm();
   if (taskListIdentifier != undefined) {
     if (sortBy != undefined || filterBy != undefined) {
       return axios
@@ -151,7 +149,6 @@ export function getTasksAssignedToSpecificUser(
   sortBy,
   filterBy,
 ) {
-  closeAddForm();
   if (taskListIdentifier != undefined) {
     if (sortBy != undefined || filterBy != undefined) {
       return axios
@@ -221,7 +218,6 @@ export function getTasksAssignedByMe(
   sortBy,
   filterBy,
 ) {
-  closeAddForm();
 
   return axios({
     method: 'get',

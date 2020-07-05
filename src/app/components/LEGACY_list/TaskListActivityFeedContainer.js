@@ -16,13 +16,8 @@ class TaskListActivityFeedContainer extends PureComponent {
     this.props.findActivityFeedForAllTaskListsByUserId(0);
   }
 
-  componentDidUpdate(previousProps, previousState) {
-    enableFoundationAccordionComponent('.wrapper');
-  }
-
   handleClick = (e, taskListIdentifier) => {
     e.preventDefault();
-    toggleDropDown(`activityList${taskListIdentifier}`);
   };
 
   renderList = auditlist =>

@@ -35,7 +35,6 @@ export function addTaskList(tasklist) {
   return axios
     .post('list/', tasklist)
     .then(response => {
-      toggleTaskForm();
       return response?.data;
     })
     .catch(error => {
@@ -57,7 +56,6 @@ export function updateTaskList(taskList) {
   return axios
     .put('list/', taskList)
     .then(response => {
-      toggleTaskForm();
       return response?.data;
     })
     .catch(error => {
