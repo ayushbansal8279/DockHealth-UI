@@ -4,22 +4,22 @@ import {
   Grid,
   MenuItem,
   Select,
-  Typography,
+  // Typography,
 } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
+// import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { addPatientNote } from 'actions/patient-actions';
 import { onPatientNoteAdded } from 'helpers/ga-event-helper';
 import useBoolean from 'hooks/useBoolean';
-import themeMontserrat from 'styles/theme-montserrat';
+// import themeMontserrat from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import {
   UniversalBirthdayInputComponent,
   UniversalMobileInputComponent,
 } from '../userProfileView/UniversalInput';
-import PatientNotes from './PatientNotes';
+// import PatientNotes from './PatientNotes';
 import {
   PanelActionContainer,
   PatientInput,
@@ -153,7 +153,7 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
         <Spacing vertical={4} />
         <Divider />
         <Spacing vertical={4} />
-        <ThemeProvider theme={themeMontserrat}>
+        {/* <ThemeProvider theme={themeMontserrat}>
           <Typography color="primary" variant="h4">
             Notes
           </Typography>
@@ -168,7 +168,7 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
           handleCancel={handleCancel}
           handleSubmit={handleNewNoteSubmit}
           startCreating={startCreating}
-        />
+        /> */}
       </PatientsSidebarSection>
     </form>
   );
