@@ -213,8 +213,6 @@ const TaskItem = ({
     matchPatient,
   } = searchMetaData;
 
-  console.log('task', task);
-
   const listName = taskList?.listName;
   const taskListIdentifier = taskList?.taskListIdentifier;
 
