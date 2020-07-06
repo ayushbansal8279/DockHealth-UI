@@ -34,7 +34,7 @@ const TaskItemStatus = ({
         {isMatching ? (
           <Highlighter
             highlightClassName="list-highlight"
-            searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+            searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
             autoEscape
             textToHighlight={label}
           />

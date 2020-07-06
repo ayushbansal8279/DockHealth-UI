@@ -30,7 +30,7 @@ const TaskComment = ({
           {highlightedValue ? (
             <Highlighter
               highlightClassName="list-highlight"
-              searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+              searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
               autoEscape
               textToHighlight={comment}
             />

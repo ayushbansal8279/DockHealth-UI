@@ -276,7 +276,7 @@ const TaskItem = ({
               {matchDescription && highlightedValue ? (
                 <Highlighter
                   highlightClassName="list-highlight"
-                  searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+                  searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
                   autoEscape
                   textToHighlight={description}
                 />
@@ -325,7 +325,7 @@ const TaskItem = ({
                   {matchPatient && highlightedValue ? (
                     <Highlighter
                       highlightClassName="list-highlight"
-                      searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+                      searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
                       autoEscape
                       textToHighlight={`${patient.firstName} ${patient.lastName}`}
                     />
