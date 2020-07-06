@@ -1,4 +1,5 @@
 import React from 'react';
+import Highlighter from 'react-highlight-words';
 import palette from 'styles/palette';
 import { StatusBar } from '../styled';
 
@@ -19,12 +20,28 @@ export const getWorkflowStatusConfig = workflowStatus => {
   }
 };
 
-const TaskItemStatus = ({ workflowStatus, labelWidth }) => {
+const TaskItemStatus = ({
+  workflowStatus,
+  labelWidth,
+  isMatching,
+  highlightedValue,
+}) => {
   const { label, color } = getWorkflowStatusConfig(workflowStatus);
   return (
     <>
       <StatusBar color={color} />
-      <span style={{ width: labelWidth }}>{label}</span>
+      <span style={{ width: labelWidth }}>
+        {isMatching ? (
+          <Highlighter
+            highlightClassName="list-highlight"
+            searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+            autoEscape
+            textToHighlight={label}
+          />
+        ) : (
+          label
+        )}
+      </span>
     </>
   );
 };

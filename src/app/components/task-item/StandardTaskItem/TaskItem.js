@@ -212,6 +212,7 @@ const TaskItem = ({
     matchDescription,
     matchLabels,
     matchPatient,
+    matchWorkflowStatus,
   } = searchMetaData;
 
   const listName = taskList?.listName;
@@ -350,6 +351,8 @@ const TaskItem = ({
             {task.status !== 'COMPLETE' && workflowStatus && (
               <TaskItemStatus
                 workflowStatus={workflowStatus}
+                isMatching={matchWorkflowStatus}
+                highlightedValue={highlightedValue}
                 labelWidth="100px"
               />
             )}
