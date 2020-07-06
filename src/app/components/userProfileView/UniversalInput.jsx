@@ -222,7 +222,7 @@ export const UniversalInput = ({
           placeholder={placeholder}
           inputRef={register}
           inputProps={{
-            value,
+            // value,
             setValue,
             name,
             register,

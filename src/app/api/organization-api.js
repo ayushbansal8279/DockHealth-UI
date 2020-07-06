@@ -1,14 +1,15 @@
 import { memoizeWith, identity } from 'ramda';
 import axios from './axios-heydoc';
 
-export const get = ({ organizationIdentifier }) =>
-  axios.get(`/organization/${organizationIdentifier}`).then(response => {
+export const get = ({ organizationIdentifier }) => {
+  return axios.get(`/organization/${organizationIdentifier}`).then(response => {
     if (response.data) {
       return response.data;
     }
 
     throw new Error('Organization not found');
   });
+};
 
 export const saveBillingDetails = ({ billingData, token }) =>
   axios({
@@ -41,12 +42,12 @@ export const getBillingEstimate = ({ subscriptionPlan, billingFrequency }) =>
     },
   }).then(response => response.data);
 
-export const getBillingDetails = () =>
-  axios({
+export const getBillingDetails = () => {
+  return axios({
     method: 'get',
     url: `/organization/getBillingDetails`,
   }).then(response => response.data);
-
+};
 export const getInvoiceDetails = () =>
   axios({
     method: 'get',
@@ -139,3 +140,8 @@ export const getConfigurationForReferral = referralCode =>
     }
     throw new Error('Referral config not found');
   });
+
+// const addAuthorizationHeader = () => {
+//   const currentAccessToken = sessionStorage.getItem('accessToken');
+//   axios.defaults.headers.common.Authorization = `Bearer ${currentAccessToken}`;
+// };

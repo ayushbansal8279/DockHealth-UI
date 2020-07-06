@@ -36,6 +36,7 @@ const sendEvent = (data: SendEventProps) => {
     captureEvent = false;
   }
   if (captureEvent) {
+
     axios({
       method: 'post',
       url: '/usage/event',
@@ -49,5 +50,6 @@ const sendEvent = (data: SendEventProps) => {
     label: data.eventLabel,
   });
 };
+
 
 export default sendEvent;
