@@ -17,6 +17,7 @@ import {
   TopLabel,
 } from './TaskDrawer.Styled';
 import PriorityFlag from '../PriorityFlag';
+import * as AlertActions from 'alert/actions';
 
 export default ({
   addingTaskOrSubtask,
@@ -58,7 +59,7 @@ export default ({
           setAutoSaveVisible();
         })
         .catch(() => {
-          toggleAlert('Error updating status, please try again later', 'error');
+          dispatch(AlertActions.showGlobalAlert('Error updating status, please try again later', 'error'));
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

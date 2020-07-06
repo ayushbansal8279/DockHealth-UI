@@ -27,6 +27,7 @@ import {
   SmallPatientInput,
 } from './PatientsForm.Styled';
 import PatientsSidebarSection from './PatientsSidebar.Section';
+import AlertMessages from 'alert/AlertMessages';
 
 const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
@@ -58,11 +59,11 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
       .then(newNote => {
         handleCancel();
         onPatientNoteAdded();
-        toggleAlert('Note added successfully', 'success');
+        dispatch(AlertActions.showGlobalAlert('Note added successfully', 'success'));
         return newNote;
       })
       .catch(() => {
-        toggleAlert('Error adding note. Please try again.', 'error');
+        dispatch(AlertActions.showGlobalAlert('Error adding note. Please try again.', 'error'));
       });
   }, [dispatch, handleCancel, note, patientIdentifier]);
 

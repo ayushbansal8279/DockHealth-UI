@@ -31,6 +31,7 @@ import {
 } from './TaskDrawer.CommentSection.Styled';
 import renderComment from './TaskDrawer.RenderComment';
 import { FormSectionDivider } from './TaskDrawer.Styled';
+import AlertMessages from '../alert/AlertMessages';
 
 const getGroupedComments = ({ comments }) => {
   // const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
@@ -80,7 +81,7 @@ const addTaskPromise = async ({
 
       data = commentResponse.data;
 
-      toggleAlert('Comment added successfully', 'success');
+      dispatch(AlertActions.showGlobalAlert('Comment added successfully', 'success'));
 
       clearCommentContent();
     }
@@ -91,7 +92,7 @@ const addTaskPromise = async ({
     return data;
   } catch (error) {
     unsetPublishingComment();
-    toggleAlert('Error adding comment, please try again later', 'error');
+    dispatch(AlertActions.showGlobalAlert('Error adding comment, please try again later', 'error'));
     return null;
   }
 };
@@ -216,10 +217,10 @@ export default ({ addDeferredCommentToQueue, task }) => {
       commentData,
     )(dispatch)
       .then(() => {
-        toggleAlert('Comment updated successfully', 'success');
+        dispatch(AlertActions.showGlobalAlert('Comment updated successfully', 'success'));
       })
       .catch(() => {
-        toggleAlert('Error updating comment, please try again later', 'error');
+        dispatch(AlertActions.showGlobalAlert('Error updating comment, please try again later', 'error'));
       });
   };
 

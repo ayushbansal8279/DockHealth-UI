@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form';
 
 import palette from 'styles/palette';
 import { updateWorkflowStatus } from 'actions/task-actions';
+import * as AlertActions from 'alert/actions';
 
 export const STATUSES = [
   {
@@ -53,10 +54,10 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible }) => {
             setAutoSaveVisible();
           })
           .catch(() => {
-            toggleAlert(
+            dispatch(AlertActions.showGlobalAlert(
               'Error updating status, please try again later',
               'error',
-            );
+            ));
           });
       }
     },

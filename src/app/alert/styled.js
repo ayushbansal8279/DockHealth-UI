@@ -31,7 +31,7 @@ export const ChipBackground = styled.div`
   top: 0;
   right: 0;
   height: 100%;
-  background-color: ${palette.accentYellow};
+  background-color: ${props => (props.type === 'error' ? palette.oPlusRed : palette.accentYellow)};
   border-radius: 1rem;
   z-index: -1;
   transition: width 0.2s ease-out;

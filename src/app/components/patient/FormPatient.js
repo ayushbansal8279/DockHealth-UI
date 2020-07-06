@@ -17,6 +17,7 @@ import {
 import * as PatientActions from 'actions/patient-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import BasicField from 'components/common/BasicField';
+import { showAlert } from 'helpers/utility-functions';
 
 class FormPatient extends PureComponent {
   constructor(props) {
@@ -81,14 +82,13 @@ class FormPatient extends PureComponent {
         })
         .catch(error => {
           // this.setState({saveMessage: e.message})
-          toggleAlert(error.message, 'error');
+          showAlert({status: 'error', title: 'Error', text: error.message});
         });
     } else {
       this.props.actions
         .addPatient(formProps)
         .then(res => {
           // this.setState({saveMessage: 'Patient created succesfully'})
-          toggleAlert('Patient created succesfully!', 'success');
           const currentProps = this.props;
           const patientName = `${res.firstName} ${formProps.lastName}`;
           const { patientIdentifier } = res;
@@ -111,7 +111,7 @@ class FormPatient extends PureComponent {
         })
         .catch(error => {
           // this.setState({saveMessage: e.message})
-          toggleAlert(error.message, 'error');
+          showAlert({status: 'error', title: 'Error', text: error.message});
         });
     }
 

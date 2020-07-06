@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import * as PeopleApi from 'api/people-api';
 import * as ActionTypes from './action-types';
+import * as AlertActions from 'alert/actions';
 
 export function findAllUsersByOrganizationId() {
   return dispatch =>
@@ -55,7 +56,7 @@ export function resendInviteToOrganization(email) {
     PeopleApi.resendInviteToOrganization(personInfo)
       .then(response => {
         dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, response });
-        toggleAlert('Invitation resent!', 'success');
+        dispatch(AlertActions.showGlobalAlert('Invitation resent!'))
       })
       .catch(error => {
         throw error;

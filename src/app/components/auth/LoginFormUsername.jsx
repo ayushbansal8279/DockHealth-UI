@@ -9,6 +9,7 @@ import Spacing from 'components/common/Spacing';
 import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
+import { showAlert } from 'helpers/utility-functions';
 
 const validationSchema = object().shape({
   username: string()
@@ -41,7 +42,7 @@ const LoginFormUsername = ({ onSubmit }) => {
             setShowLoginMessage(false);
           })
           .catch(error => {
-            toggleAlert(error.message, 'error');
+            showAlert({status: 'error', title: 'Error', text: error.message});
           });
       }
     }

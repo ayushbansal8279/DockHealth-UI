@@ -7,6 +7,7 @@ import { invitePersonToOrganization } from 'actions/people-actions';
 import palette from 'styles/palette';
 import StyledInput from '../../userProfileView/StyledInput';
 import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
+import AlertMessages from '../alert/AlertMessages';
 
 const BottomFormLabel = styled.button`
   align-items: center;
@@ -67,11 +68,11 @@ const onSubmit = ({ dispatch, handlePersonSelect, toggleAddingNewPerson }) => {
   return async data => {
     try {
       await invitePersonToOrganization(data)(dispatch);
-      toggleAlert('New person invited successfully', 'success');
+      dispatch(AlertActions.showGlobalAlert('New person invited successfully', 'success'));
       toggleAddingNewPerson();
       handlePersonSelect(data)();
     } catch {
-      toggleAlert('Error inviting new person, please try again later', 'error');
+      dispatch(AlertActions.showGlobalAlert('Error inviting new person, please try again later', 'error'));
     }
   };
 };

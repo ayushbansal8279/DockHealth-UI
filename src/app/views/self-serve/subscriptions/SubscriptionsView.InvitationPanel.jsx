@@ -20,6 +20,7 @@ import {
   StyledInputBase,
   StyledInputLabel,
 } from './SubscriptionsView.InvitationPanel.Styled';
+import * as AlertActions from 'alert/actions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -37,7 +38,7 @@ const animationProperties = {
 const onSubmit = ({ closeInvitationPanel, dispatch, getAllUsers }) => data => {
   invitePersonToOrganization(data)(dispatch)
     .then(() => {
-      toggleAlert('User added successfully', 'success');
+      dispatch(AlertActions.showGlobalAlert('User added successfully', 'success'));
       getAllUsers();
       closeInvitationPanel();
     })

@@ -12,6 +12,7 @@ import {
   formSwitchDefinitions,
 } from './UserProfileView.FormDefinitions';
 import validationSchema from './UserProfileView.ValidationSchema';
+import * as AlertActions from 'alert/actions';
 
 const onFormSubmit = ({ userProfile, dispatch }) => async data => {
   const {
@@ -65,14 +66,14 @@ const onFormSubmit = ({ userProfile, dispatch }) => async data => {
       pushNotificationsEnabled,
     );
 
-    toggleAlert('Profile updated successfully!', 'success');
+    dispatch(AlertActions.showGlobalAlert('Profile updated successfully!', 'success'));
 
     userApi.getUserById();
     userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
   } catch (error) {
     console.log(error);
-    toggleAlert('Error updating profile', 'error');
+    dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
   }
 };
 

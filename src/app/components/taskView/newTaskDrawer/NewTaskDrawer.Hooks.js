@@ -298,10 +298,10 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
           closeDrawer();
         })
         .catch(() => {
-          toggleAlert(
+          dispatch(AlertActions.showGlobalAlert(
             `Error moving task to list ${newTaskList.listName}, please try again later`,
             'error',
-          );
+          ));
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -369,10 +369,10 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         )(dispatch);
         setAutoSaveVisible();
       } catch {
-        toggleAlert(
+        dispatch(AlertActions.showGlobalAlert(
           'Error updating assignment, please try again later',
           'error',
-        );
+        ));
       }
     }
   };
@@ -385,7 +385,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
       )(dispatch);
       setAutoSaveVisible();
     } catch {
-      toggleAlert('Error updating patient, please try again later', 'error');
+      dispatch(AlertActions.showGlobalAlert('Error updating patient, please try again later', 'error'));
     }
   };
 
@@ -430,10 +430,10 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         )(dispatch);
         setAutoSaveVisible();
       } catch {
-        toggleAlert(
+        dispatch(AlertActions.showGlobalAlert(
           'Error updating task description, please try again later',
           'error',
-        );
+        ));
       }
     }
   };

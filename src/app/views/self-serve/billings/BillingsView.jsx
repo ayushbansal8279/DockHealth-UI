@@ -21,9 +21,10 @@ import {
   ErrorContainer,
   StyledCollapse,
 } from './BillingsView.Styled';
+import { showAlert } from 'helpers/utility-functions';
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ setError }) => ({
+const onSubmit = ({ setError, dispatch }) => ({
   stripe,
   unsetUpdatingBilling,
 }) => data => {
@@ -42,7 +43,7 @@ const onSubmit = ({ setError }) => ({
       })
         .then(() => {
           unsetUpdatingBilling();
-          toggleAlert('Billing information updated successfully!', 'success');
+          dispatch(AlertActions.showGlobalAlert('Billing information updated successfully!', 'success'));
         })
         .catch(error => {
           setError(
@@ -122,7 +123,7 @@ const BillingsView = () => {
             setUpdatingBilling={setUpdatingBilling}
             unsetUpdatingBilling={unsetUpdatingBilling}
             cancelUpdateBilling={cancelUpdateBilling}
-            onSubmit={onSubmit({ setError })}
+            onSubmit={onSubmit({ setError, dispatch })}
           />
         </Elements>
         <InvoicesList />

@@ -10,6 +10,11 @@ export const showGlobalAlert = (text, type = AlertTypes.SUCCESS) => ({
   payload: { text, type },
 });
 
+export const showGlobalErrorAlert = (text, type = AlertTypes.ERROR) => ({
+  type: SHOW_GLOBAL_ALERT,
+  payload: { text, type },
+});
+
 export const showSideBarAlert = (text, type = AlertTypes.SUCCESS) => ({
   type: SHOW_SIDEBAR_ALERT,
   payload: { text, type },

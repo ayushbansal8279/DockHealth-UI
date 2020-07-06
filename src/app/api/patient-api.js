@@ -1,5 +1,6 @@
 import { fixList } from 'helpers/inbox-fix';
 import axios from './axios-heydoc';
+import { showAlert } from 'helpers/utility-functions';
 
 export function getAllPatients() {
   return axios
@@ -69,7 +70,7 @@ export function addPatient(patient) {
     })
     .catch(error => {
       console.log(error);
-      toggleAlert('Error in adding patient. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in adding patient. Please try again.'});
       throw new Error(error?.response?.data);
     });
 }
@@ -78,12 +79,11 @@ export function updatePatient(patient) {
   return axios
     .put('patient', patient)
     .then(response => {
-      toggleAlert('Patient updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {
       console.log(error);
-      toggleAlert('Error in updating patient. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in updating patient. Please try again.'});
       throw new Error(error?.response?.data);
     });
 }

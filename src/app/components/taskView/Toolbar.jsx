@@ -25,6 +25,7 @@ import {
   SlimViewToggle,
   ToolbarLabel,
 } from './Toolbar.Styled';
+import AlertMessages from '../alert/AlertMessages';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -57,10 +58,10 @@ const useToggleNotifications = ({
         newNotificationStatus,
       )(dispatch);
       onNotificationsToggled(newNotificationStatus);
-      toggleAlert(
+      dispatch(AlertActions.showGlobalAlert(
         `Notifications are now ${newNotificationStatus ? 'on' : 'off'}`,
         'success',
-      );
+      ));
     } catch {
       showAlert({
         status: 'error',

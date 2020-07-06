@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateDueDate } from 'actions/task-actions';
 import moment from 'moment';
+import * as AlertActions from 'alert/actions';
 
 const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
   const dispatch = useDispatch();
@@ -28,10 +29,10 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
             setAutoSaveVisible();
           })
           .catch(() => {
-            toggleAlert(
+            dispatch(AlertActions.showGlobalAlert(
               'Error updating due date, please try again later',
               'error',
-            );
+            ));
           });
       }
     },
@@ -47,7 +48,7 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
         await updateDueDate(selectedTask, null, false)(dispatch);
         setAutoSaveVisible();
       } catch {
-        toggleAlert('Error updating due date, please try again later', 'error');
+        dispatch(AlertActions.showGlobalAlert('Error updating due date, please try again later', 'error'));
       }
     }
   };

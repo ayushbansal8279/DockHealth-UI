@@ -15,6 +15,7 @@ import {
   InvitePopoverCloseButton,
   InvitePopoverDivider,
 } from './PeopleView.Styled';
+import * as AlertActions from 'alert/actions';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   email,
@@ -28,7 +29,7 @@ const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   })(dispatch)
     .then(() => {
       closePopover();
-      toggleAlert('Invitation sent successfully', 'success');
+      dispatch(AlertActions.showGlobalAlert('Invitation sent successfully', 'success'));
       getAllUsers();
     })
     .catch(error => {

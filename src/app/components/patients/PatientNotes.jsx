@@ -13,6 +13,7 @@ import palette, { opacify } from 'styles/palette';
 import { themeMontserratNormal } from 'styles/theme-montserrat';
 import EditableDescription from '../common/EditableDescription';
 import Spacing from '../common/Spacing';
+import AlertMessages from 'alert/AlertMessages';
 
 const NoteTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -183,10 +184,10 @@ const PatientNotes = ({
     dispatch(editPatientNote(patientIdentifier, modifiedNote, description))
       .then(() => {
         onPatientNoteEdited();
-        toggleAlert('Note updated successfully', 'success');
+        dispatch(AlertActions.showGlobalAlert('Note updated successfully', 'success'));
       })
       .catch(() => {
-        toggleAlert('Error updating note. Please try again.', 'error');
+        dispatch(AlertActions.showGlobalAlert('Error updating note. Please try again.', 'error'));
       });
   };
 

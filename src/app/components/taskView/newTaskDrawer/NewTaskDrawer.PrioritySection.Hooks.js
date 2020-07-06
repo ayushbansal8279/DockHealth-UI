@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import palette from 'styles/palette';
 import { toggleTaskPriority } from 'actions/task-actions';
+import * as AlertActions from 'alert/actions';
 
 export const PRIORITIES = [
   {
@@ -37,10 +38,10 @@ const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
             setAutoSaveVisible();
           })
           .catch(() => {
-            toggleAlert(
+            dispatch(AlertActions.showGlobalAlert(
               'Error updating priority, please try again later',
               'error',
-            );
+            ));
           });
       }
     },

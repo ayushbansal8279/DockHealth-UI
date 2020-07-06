@@ -23,6 +23,7 @@ import {
 } from './styled';
 import initializeListFormHooks from './hooks';
 import messages from './messages';
+import * as AlertActions from 'alert/actions';
 
 const ADMIN_PICKER = 'ADMIN_PICKER';
 const MEMBER_PICKER = 'MEMBER_PICKER';
@@ -54,7 +55,7 @@ const onSubmit = ({
 
   saveTaskList(taskList)(dispatch)
     .then(() => {
-      toggleAlert(messages.submit.success, 'success');
+      dispatch(AlertActions.showGlobalAlert(messages.submit.success));
       setListFormOpen(false);
     })
     .catch(error => {

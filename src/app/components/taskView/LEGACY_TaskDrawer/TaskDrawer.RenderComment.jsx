@@ -6,6 +6,7 @@ import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import BubbleFinishIcon from 'img/bubble-finish';
 import RemoveCommentIcon from 'img/remove-comment-icon.svg';
 import palette from 'styles/palette';
+import { showAlert } from 'helpers/utility-functions';
 
 const RemoveCommentButton = styled.img`
   align-items: center;
@@ -213,7 +214,7 @@ class SingleComment extends Component {
         { members, value: newComment },
       );
     } else {
-      toggleAlert('Empty comment is not allowed, please try again', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Empty comment is not allowed, please try again'});
       const oldCommentContent = previousNewComment || comment;
       this.commentBubbleTextRef.current.textContent = oldCommentContent;
     }

@@ -51,15 +51,17 @@ class GlobalAlertChip extends Component {
 
   render = () => {
     const {
-      alertState: { isGlobalOpen, isSideBarAlert, text },
+      alertState: { isGlobalOpen, isSideBarAlert, text, type },
     } = this.props;
 
     return (
       <GlobalChipWrapper isSideBarAlert={isSideBarAlert}>
         <ChipContainer isOpen={isGlobalOpen} onClick={this.handleCloseAlert}>
-          <CheckCircleIcon src={CheckmarkYellow} isOpen={isGlobalOpen} />
+          {type === 'success' &&
+            <CheckCircleIcon src={CheckmarkYellow} isOpen={isGlobalOpen} />
+          }
           <ChipLabel>{text}</ChipLabel>
-          <ChipBackground />
+          <ChipBackground type={type}/>
         </ChipContainer>
       </GlobalChipWrapper>
     );

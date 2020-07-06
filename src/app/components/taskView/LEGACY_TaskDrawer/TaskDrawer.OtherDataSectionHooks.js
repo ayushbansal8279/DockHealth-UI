@@ -10,6 +10,7 @@ import {
   updateDueDate,
 } from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
+import * as AlertActions from 'alert/actions';
 
 export default ({ task, setAutoSaveVisible, closeDrawer }) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
@@ -98,10 +99,10 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
           setAutoSaveVisible();
         })
         .catch(() => {
-          toggleAlert(
+          dispatch(AlertActions.showGlobalAlert(
             'Error updating due date, please try again later',
             'error',
-          );
+          ));
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,18 +116,18 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
         newTaskList,
       )(dispatch)
         .then(() => {
-          toggleAlert(
+          dispatch(AlertActions.showGlobalAlert(
             `Task moved successfully to list ${newTaskList.listName}`,
             'success',
-          );
+          ));
           storeAsCurrentTask(null)(dispatch);
           closeDrawer();
         })
         .catch(() => {
-          toggleAlert(
+          dispatch(AlertActions.showGlobalAlert(
             `Error moving task to list ${newTaskList.listName}, please try again later`,
             'error',
-          );
+          ));
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

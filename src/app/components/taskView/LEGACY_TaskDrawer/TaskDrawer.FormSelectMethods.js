@@ -1,3 +1,5 @@
+import * as AlertActions from 'alert/actions';
+
 export default ({
   setValue,
   setCurrentMember,
@@ -27,7 +29,7 @@ export default ({
         )(dispatch);
         setAutoSaveVisible();
       } catch {
-        toggleAlert(
+        dispatch(AlertActions.showGlobalAlert(
           'Error updating assignment, please try again later',
           'error',
         );
@@ -47,7 +49,7 @@ export default ({
         await updatePatient(defaultValues, patient)(dispatch);
         setAutoSaveVisible();
       } catch {
-        toggleAlert('Error updating patient, please try again later', 'error');
+        dispatch(AlertActions.showGlobalAlert('Error updating patient, please try again later', 'error'));
       }
     }
   };

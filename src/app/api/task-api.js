@@ -2,6 +2,7 @@
 import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import URLS from '../urls';
+import { showAlert } from 'helpers/utility-functions';
 
 const ERROR_RETRIEVING_TASKS_MESSAGE =
   'Error in retrieving tasks. Please try again.';
@@ -280,7 +281,7 @@ export function addTask(task) {
       return response.data;
     })
     .catch(error => {
-      toggleAlert('Error in creating task. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in creating task. Please try again.'});
       throw error;
     });
 }
@@ -314,11 +315,10 @@ export function duplicateTask(taskIdentifier) {
   return axios
     .put(`task/duplicateTask/${taskIdentifier}`)
     .then(response => {
-      // toggleAlert('Task duplicated', 'success');
       return response.data;
     })
     .catch(error => {
-      toggleAlert('Error in duplicating comment. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in duplicating comment. Please try again.'});
       throw error;
     });
 }
@@ -327,14 +327,10 @@ export function sortSubTask(taskIdentifier, direction) {
   return axios
     .put(`task/sortSubTask/${taskIdentifier}/${direction}`)
     .then(response => {
-      // toggleAlert('Sub Task order changed', 'success');
       return response.data;
     })
     .catch(error => {
-      toggleAlert(
-        'Error in changing sub task order. Please try again.',
-        'error',
-      );
+      showAlert({status: 'error', title: 'Error', text: 'Error in changing sub task order. Please try again.'});
       throw error;
     });
 }
@@ -436,7 +432,7 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      toggleAlert('Error in task assignment. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in task assignment. Please try again.'});
       throw error;
     });
 }
@@ -456,11 +452,10 @@ export function deleteComment(commentIdentifier) {
   return axios
     .delete(`task/comment/deleteCommentById/${commentIdentifier}`)
     .then(response => {
-      // toggleAlert('Comment deleted', 'success');
       return response;
     })
     .catch(error => {
-      toggleAlert('Error in deleting comment. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in deleting comment. Please try again.'});
       throw error;
     });
 }
@@ -469,11 +464,10 @@ export function updateComment(comment) {
   return axios
     .put('task/comment', comment)
     .then(response => {
-      // toggleAlert('Comment updated', 'success');
       return response;
     })
     .catch(error => {
-      toggleAlert('Error in updating comment. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in updating comment. Please try again.'});
       throw error;
     });
 }
@@ -483,7 +477,7 @@ export function getHighPriorityTasksByTaskList(taskListIdentifier) {
     .get(`task/findHighPriorityListTasks/${taskListIdentifier}?startPosition=0`)
     .then(response => response.data)
     .catch(error => {
-      toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
+      showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
       throw error;
     });
 }
@@ -499,7 +493,7 @@ export function getListTasksByPatient(
     )
     .then(response => response.data)
     .catch(error => {
-      toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
+      showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
       throw error;
     });
 }
@@ -517,7 +511,7 @@ export function getAllTasksByPatient(
       )
       .then(response => response.data)
       .catch(error => {
-        toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
+        showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
         throw error;
       });
   }
@@ -525,7 +519,7 @@ export function getAllTasksByPatient(
     .get(`task/findAllListTasksByPatient/${patientIdentifier}?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
+      showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
       throw error;
     });
 }
@@ -585,14 +579,13 @@ export function addTaskAttachment(
       ...additionalConfig,
     })
     .then(response => {
-      // toggleAlert('Attachment added successfully!', 'success');
       return response;
     })
     .catch(error => {
       if (error.response && error.response.status === 413) {
-        toggleAlert('File exceeded the allowed size of 100 MB', 'error');
+        showAlert({status: 'error', title: 'Error', text: 'File exceeded the allowed size of 100 MB'});
       } else {
-        toggleAlert('Error in saving attachment. Please try again.', 'error');
+        showAlert({status: 'error', title: 'Error', text: 'Error in saving attachment. Please try again.'});
       }
       throw error;
     });
@@ -602,11 +595,10 @@ export function removeTaskAttachment(taskAttachmentId) {
   return axios
     .delete(`task/attachment/${taskAttachmentId}`)
     .then(response => {
-      // toggleAlert('Attachment removed successfully!', 'success');
       return response;
     })
     .catch(error => {
-      toggleAlert('Error in removing attachment. Please try again.', 'error');
+      showAlert({status: 'error', title: 'Error', text: 'Error in removing attachment. Please try again.'});
       throw error;
     });
 }

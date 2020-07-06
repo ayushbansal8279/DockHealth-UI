@@ -7,6 +7,7 @@ import {
   DueTimeInputMask,
   DueTimeErrorMessage,
 } from './NewTaskDrawer.DueTimeSection.Styled';
+import * as AlertActions from 'alert/actions';
 
 const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 
@@ -34,10 +35,10 @@ const DueTimeSection = ({
         });
         setAutoSaveVisible();
       } catch {
-        toggleAlert(
+        dispatch(AlertActions.showGlobalAlert(
           'Error updating due date and time, please try again later',
           'error',
-        );
+        ));
       }
     }
   };

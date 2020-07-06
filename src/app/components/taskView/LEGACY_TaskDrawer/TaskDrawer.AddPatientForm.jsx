@@ -9,6 +9,7 @@ import DropdownIcon from 'img/dropdown-icon.svg';
 import palette from 'styles/palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { addPatientValidationSchema } from './TaskDrawer.ValidationSchema';
+import AlertMessages from '../alert/AlertMessages';
 
 const FormLabel = styled.div`
   color: ${palette.lighterCyanBlue};
@@ -217,12 +218,12 @@ const onSubmit = ({
       };
 
       const newPatient = await addPatient(newData)(dispatch);
-      toggleAlert('Patient added successfully', 'success');
+      dispatch(AlertActions.showGlobalAlert('Patient added successfully', 'success'));
       toggleAddingNewPerson();
       handlePersonSelect(newPatient)();
       closePicker();
     } catch {
-      toggleAlert('Error adding new patient, please try again later', 'error');
+      dispatch(AlertActions.showGlobalAlert('Error adding new patient, please try again later', 'error'));
     }
   };
 };
