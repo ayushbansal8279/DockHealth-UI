@@ -5,7 +5,15 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
 
-export const ListLink = styled(Link)`
+export const ListItemLink = styled(Link)`
+  color: ${palette.mediumGrey};
+  &:hover {
+    color: ${palette.brightBlue};
+    text-decoration: underline;
+  }
+`;
+
+export const ListLink = styled(ListItemLink)`
   max-height: 2.6rem;
   overflow: hidden;
 `;

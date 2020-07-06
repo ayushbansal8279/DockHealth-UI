@@ -40,6 +40,7 @@ const MainContainer = styled.main`
     transition: opacity 200ms, transform 200ms;
   }
   mark.list-highlight {
+    color: inherit;
     background-color: ${featurePalette.globalSearchHighlight};
   }
 `;

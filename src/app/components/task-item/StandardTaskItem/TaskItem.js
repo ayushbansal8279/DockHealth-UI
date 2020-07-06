@@ -62,6 +62,7 @@ import {
   InfoText,
   PriorityHoverIcon,
   ListLink,
+  ListItemLink,
   Arrow,
   AssigneeMatchingWrapper,
 } from '../styled';
@@ -309,30 +310,34 @@ const TaskItem = ({
           <StandardTaskItemCell width="164px">
             <ClickablePatient
               onClick={() => {
-                openDrawer('patient');
-                storeAsCurrentTask(task);
+                if (!patient) {
+                  openDrawer('patient');
+                  storeAsCurrentTask(task);
+                }
               }}
             >
               {task.status !== 'COMPLETE' && !isSubtask && !patient && (
                 <AddPlaceholder>+ Add Patient</AddPlaceholder>
               )}
-              {patient &&
-                !parentHasPatient &&
-                (matchPatient && highlightedValue ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={highlightedValue.toLowerCase().split(/\s+/)}
-                    autoEscape
-                    textToHighlight={`${patient.firstName} ${patient.lastName}`}
-                  />
-                ) : (
-                  `${patient.firstName} ${patient.lastName}`
-                ))}
+              {patient && !parentHasPatient && (
+                <ListItemLink to={`patient/${patient.patientIdentifier}`}>
+                  {matchPatient && highlightedValue ? (
+                    <Highlighter
+                      highlightClassName="list-highlight"
+                      searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+                      autoEscape
+                      textToHighlight={`${patient.firstName} ${patient.lastName}`}
+                    />
+                  ) : (
+                    `${patient.firstName} ${patient.lastName}`
+                  )}
+                </ListItemLink>
+              )}
             </ClickablePatient>
           </StandardTaskItemCell>
         )}
         <StandardTaskItemCell
-          width="110px"
+          width="120px"
           paddingLeft="smallPlus"
           paddingRight="tiny"
         >
