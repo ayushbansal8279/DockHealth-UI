@@ -321,13 +321,15 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     }
   };
 
-  const onDuplicate = ({ afterDuplicate }) => async event => {
-    event.preventDefault();
-    event.stopPropagation();
+  const onDuplicate = ({ afterDuplicate, includeAttachments }) => async event => {
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        const newTask = await duplicateTask(selectedTask)(dispatch);
+        const newTask = await duplicateTask(selectedTask, includeAttachments)(dispatch);
         storeAsCurrentTask(newTask)(dispatch);
         afterDuplicate({ newTask });
         onButtonClicked('Duplicate task');
@@ -338,8 +340,10 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   };
 
   const onAddSubTask = ({ afterAddSubTask }) => async event => {
-    event.preventDefault();
-    event.stopPropagation();
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {

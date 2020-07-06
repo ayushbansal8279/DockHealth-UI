@@ -451,9 +451,9 @@ export function deleteTask(task) {
       });
 }
 
-export function duplicateTask(task) {
+export function duplicateTask(task, includeAttachments) {
   return dispatch =>
-    TaskApi.duplicateTask(task.taskIdentifier)
+    TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
       .then(duplicatedTask => {
         dispatch({
           type: ActionTypes.DUPLICATE_TASK_SUCCESS,

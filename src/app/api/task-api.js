@@ -311,14 +311,14 @@ export function deleteTask(taskIdentifier) {
     });
 }
 
-export function duplicateTask(taskIdentifier) {
+export function duplicateTask(taskIdentifier, includeAttachments) {
   return axios
-    .put(`task/duplicateTask/${taskIdentifier}`)
+    .put(`task/duplicateTask/${taskIdentifier}?includeAttachments=${includeAttachments}`)
     .then(response => {
       return response.data;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in duplicating comment. Please try again.'});
+      showAlert({status: 'error', title: 'Error', text: 'Error in duplicating task. Please try again.'});
       throw error;
     });
 }

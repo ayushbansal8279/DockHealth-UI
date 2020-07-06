@@ -48,6 +48,17 @@ const initializeTaskDrawerTopSectionHooks = ({
     modalActions.openModal('DeleteTask', modalProps);
   };
 
+  const duplicateTaskWithAttachments = async () => {
+    await onDuplicate({
+      afterDuplicate: () => {
+        modalActions.closeModal();
+        closeTaskDrawer();
+      },
+      selectedTask,
+      includeAttachments: true,
+    })();
+  };
+
   const duplicateTask = async () => {
     await onDuplicate({
       afterDuplicate: () => {
@@ -55,14 +66,25 @@ const initializeTaskDrawerTopSectionHooks = ({
         closeTaskDrawer();
       },
       selectedTask,
-    });
+      includeAttachments: false,
+    })();
   };
-
   const openDuplicateConfirmationModal = () => {
     const modalProps = {
-      confirm: () => duplicateTask(),
+      confirm: () => duplicateTaskWithAttachments(),
+      skip: () => duplicateTask(),
     };
     modalActions.openModal('DuplicateTask', modalProps);
+  };
+
+  const duplicateTaskWithoutConfirmation = (event) => {
+    onDuplicate({
+      afterDuplicate: () => {
+        closeTaskDrawer();
+      },
+      selectedTask,
+      includeAttachments: false,
+    })(event);
   };
 
   return {
@@ -80,6 +102,7 @@ const initializeTaskDrawerTopSectionHooks = ({
 
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
+    duplicateTaskWithoutConfirmation,
   };
 };
 
