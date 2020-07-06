@@ -588,7 +588,7 @@ const Subtasks = ({
                             {...restProps}
                           />
                           {draggedId !== String(subtask.taskIdentifier) &&
-                            !isEmpty(subtask.comments) && (
+                            !isEmpty(matchedComments) && (
                               <TaskComments
                                 isOpen={isFullView}
                                 comments={matchedComments}
@@ -669,7 +669,7 @@ const Task = ({
         />
       </div>
 
-      {!isEmpty(comments) && !isStartedDnD && (
+      {!isEmpty(matchingComments) && !isStartedDnD && (
         <TaskComments
           isOpen={isFullView}
           comments={matchingComments}
