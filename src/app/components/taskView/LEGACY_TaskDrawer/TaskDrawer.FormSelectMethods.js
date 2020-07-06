@@ -29,9 +29,11 @@ export default ({
         )(dispatch);
         setAutoSaveVisible();
       } catch {
-        dispatch(AlertActions.showGlobalAlert(
-          'Error updating assignment, please try again later',
-          'error',
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating assignment, please try again later',
+            'error',
+          ),
         );
       }
     }
@@ -49,7 +51,12 @@ export default ({
         await updatePatient(defaultValues, patient)(dispatch);
         setAutoSaveVisible();
       } catch {
-        dispatch(AlertActions.showGlobalAlert('Error updating patient, please try again later', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating patient, please try again later',
+            'error',
+          ),
+        );
       }
     }
   };
