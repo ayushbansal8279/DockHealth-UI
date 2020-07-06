@@ -11,6 +11,7 @@ import ReactModal from 'react-modal';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification';
+import { featurePalette } from 'styles/palette';
 import Modal from '../modal/Modal';
 
 const AppContainer = styled.div`
@@ -38,13 +39,15 @@ const MainContainer = styled.main`
     transform: translateY(10px);
     transition: opacity 200ms, transform 200ms;
   }
+  mark.list-highlight {
+    background-color: ${featurePalette.globalSearchHighlight};
+  }
 `;
 
 ReactModal.setAppElement('#app');
 
 class App extends PureComponent {
   idleTimer = null;
-
 
   onAction = () => {};
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchHeadsupIcon from 'img/search-headsup';
 import {
   StyledInput,
@@ -12,16 +12,28 @@ const GlobalSearchInput = React.forwardRef(
   ({ value, onValueChange, onClear }, reference) => {
     const hasValueProps = value !== undefined;
 
+    const [clearVisible, setClearVisible] = useState(value ?? false);
+
     const clearInput = () => {
-      onValueChange('');
       onClear();
+      setClearVisible(false);
 
       // eslint-disable-next-line no-param-reassign
       if (!hasValueProps) reference.current.value = '';
     };
 
+    const onInputChange = event => {
+      const inputValue = event?.target?.value;
+      if (inputValue) {
+        setClearVisible(true);
+      } else {
+        setClearVisible(false);
+      }
+      onValueChange(inputValue);
+    };
+
     const inputProps = {
-      onChange: event => onValueChange(event?.target?.value),
+      onChange: onInputChange,
       placeholder: 'Search',
     };
 
@@ -33,11 +45,13 @@ const GlobalSearchInput = React.forwardRef(
           <img src={SearchHeadsupIcon} alt="search" />
         </InputIconWrapper>
         <StyledInput ref={reference} {...inputProps} />
-        <ClearButtonWrapper>
-          <ClearButton type="button" onClick={clearInput}>
-            Clear
-          </ClearButton>
-        </ClearButtonWrapper>
+        {clearVisible && (
+          <ClearButtonWrapper>
+            <ClearButton type="button" onClick={clearInput}>
+              Clear
+            </ClearButton>
+          </ClearButtonWrapper>
+        )}
       </GlobalSearchInputWrapper>
     );
   },

@@ -22,6 +22,7 @@ const GlobalSearchList = ({
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
+  highlightedValue,
 }) => {
   const { listName, tasks } = list;
 
@@ -67,6 +68,7 @@ const GlobalSearchList = ({
               dragAndDropDisabled
               selectedTask={selectedTask}
               isFullView
+              highlightedValue={highlightedValue}
             />
             <Spacing vertical={3} />
           </>

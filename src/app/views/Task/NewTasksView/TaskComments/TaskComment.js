@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Member from 'components/members/Member';
+import Highlighter from 'react-highlight-words';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -9,7 +10,13 @@ import {
   SmallText,
 } from './styled';
 
-const TaskComment = ({ creator, dateUpdated, comment, dateCreated }) => {
+const TaskComment = ({
+  creator,
+  dateUpdated,
+  comment,
+  dateCreated,
+  highlightedValue,
+}) => {
   const commentDetails = `${creator.firstName} ${creator.lastName} ${moment(
     dateUpdated,
   ).format('h:mma')}`;
@@ -19,7 +26,18 @@ const TaskComment = ({ creator, dateUpdated, comment, dateCreated }) => {
         <Member member={creator} size={38} />
       </TaskCommentAvatarContainer>
       <div>
-        <TaskCommentText>{comment}</TaskCommentText>
+        <TaskCommentText>
+          {highlightedValue ? (
+            <Highlighter
+              highlightClassName="list-highlight"
+              searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+              autoEscape
+              textToHighlight={comment}
+            />
+          ) : (
+            comment
+          )}
+        </TaskCommentText>
         <TaskCommentDetails>
           <span>{commentDetails}</span>
           {dateCreated !== dateUpdated && <SmallText> (Edited)</SmallText>}

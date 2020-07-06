@@ -282,8 +282,7 @@ export const MatchingWrapper = styled.div`
   height: 100%;
   width: 100%;
   ${({ isMatching }) =>
-    isMatching &&
-    `background: ${featurePalette.globalSearchHighlight}; opacity: .5;`}
+    isMatching && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
 export const AssigneeMatchingWrapper = styled(MatchingWrapper)`

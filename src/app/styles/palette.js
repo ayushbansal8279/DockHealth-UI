@@ -64,7 +64,7 @@ const palette = {
 };
 
 export const featurePalette = {
-  globalSearchHighlight: palette.bananaHammock,
+  globalSearchHighlight: 'rgba(254, 205, 33, .5)',
 };
 
 export const getPriorityColor = priority => {

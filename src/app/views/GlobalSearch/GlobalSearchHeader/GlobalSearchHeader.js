@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { connect } from 'react-redux';
 import MenuIcon from 'img/menu-icon';
 import { isSearchingCompletedTasksSelector } from 'selectors/global-search-selectors';
@@ -20,6 +20,7 @@ const GlobalSearchHeader = ({
   isSearchingCompletedTasks,
   setSearchValue,
   setSearchCompletedTasks,
+  clearSearchValue,
 }) => {
   const searchInputReference = useRef(null);
 
@@ -42,7 +43,9 @@ const GlobalSearchHeader = ({
         <GlobalSearchInput
           ref={searchInputReference}
           onValueChange={search}
-          onClear={() => searchInputReference?.current?.focus()}
+          onClear={() =>
+            clearSearchValue() && searchInputReference?.current?.focus()
+          }
         />
       </InputWrapper>
       <Spacing horizontal={5} />
@@ -63,6 +66,7 @@ const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
   setSearchValue: GlobalSearchSagaActions.setSearchValue,
   setSearchCompletedTasks: GlobalSearchSagaActions.setSearchCompletedTasks,
+  clearSearchValue: GlobalSearchSagaActions.clearSearchValue,
 };
 
 const mapStateToProps = store => ({

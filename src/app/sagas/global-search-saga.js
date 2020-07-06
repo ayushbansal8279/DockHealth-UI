@@ -27,6 +27,7 @@ const DO_SEARCH_TASKS = 'DO_SEARCH_TASKS';
 const DO_REFRESH_TASKS = 'DO_REFRESH_TASKS';
 const DO_SET_SEARCH_COMPLETED_TASKS = 'DO_SET_SEARCH_COMPLETED_TASKS';
 const DO_SET_SEARCH_VALUE = 'DO_SET_SEARCH_VALUE';
+const DO_CLEAR_SEARCH_VALUE = 'DO_CLEAR_SEARCH_VALUE';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS =
   'DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY =
@@ -47,6 +48,10 @@ const refreshTasks = () => ({
 const setSearchValue = value => ({
   type: DO_SET_SEARCH_VALUE,
   payload: { value },
+});
+
+const clearSearchValue = () => ({
+  type: DO_CLEAR_SEARCH_VALUE,
 });
 
 const setSearchCompletedTasks = isSearchingCompletedTasks => ({
@@ -94,6 +99,7 @@ export const GlobalSearchSagaActions = {
   searchTasks,
   refreshTasks,
   setSearchValue,
+  clearSearchValue,
   setSearchCompletedTasks,
   toggleTaskPriority,
   toggleTaskStatus,
@@ -131,6 +137,11 @@ function* doSetSearchValue({ payload }) {
   const { value } = payload;
 
   yield put(GlobalSearchActions.setSearchValue(value));
+  yield put(searchTasks());
+}
+
+function* doClearSearchValue() {
+  yield put(GlobalSearchActions.setSearchValue(''));
   yield put(searchTasks());
 }
 
@@ -254,4 +265,5 @@ export default function* watchGlobalSearch() {
   yield takeLatest(DO_SET_GLOBAL_SEARCH_DUE_DATE, doSetDueDate);
   yield takeLatest(DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS, doSetWorkflowStatus);
   yield takeLatest(DO_ASSIGN_GLOBAL_SEARCH_TASK, doAssignTask);
+  yield takeLatest(DO_CLEAR_SEARCH_VALUE, doClearSearchValue);
 }

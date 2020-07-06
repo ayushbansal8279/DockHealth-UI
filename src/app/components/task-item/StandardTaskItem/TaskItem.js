@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { isEmpty, pick } from 'ramda';
+import Highlighter from 'react-highlight-words';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Grid } from '@material-ui/core';
@@ -64,6 +65,13 @@ import {
   Arrow,
   AssigneeMatchingWrapper,
 } from '../styled';
+
+const getMatchedComments = (comments, matchingCommentIdentifiers) =>
+  matchingCommentIdentifiers
+    ? comments.filter(({ commentIdentifier }) =>
+        matchingCommentIdentifiers.includes(commentIdentifier),
+      )
+    : comments;
 
 const dueDateQuickSelectOptions = [
   {
@@ -176,6 +184,7 @@ const TaskItem = ({
   patientVisible = true,
   selectedTask,
   parentHasPatient,
+  highlightedValue,
 }) => {
   const {
     taskIdentifier,
@@ -264,7 +273,16 @@ const TaskItem = ({
           />
           <DescriptionBox>
             <Description isCrossedOut={!isCompletedGroup && isCompleted}>
-              {description}
+              {matchDescription && highlightedValue ? (
+                <Highlighter
+                  highlightClassName="list-highlight"
+                  searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+                  autoEscape
+                  textToHighlight={description}
+                />
+              ) : (
+                description
+              )}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
             <CompletedBy isCompleted={isCompleted}>
@@ -302,7 +320,16 @@ const TaskItem = ({
               )}
               {patient &&
                 !parentHasPatient &&
-                `${patient.firstName} ${patient.lastName}`}
+                (matchPatient && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={highlightedValue.toLowerCase().split(/\s+/)}
+                    autoEscape
+                    textToHighlight={`${patient.firstName} ${patient.lastName}`}
+                  />
+                ) : (
+                  `${patient.firstName} ${patient.lastName}`
+                ))}
             </ClickablePatient>
           </StandardTaskItemCell>
         )}
@@ -501,7 +528,7 @@ const Subtasks = ({
   const [draggedId, setDraggableId] = useState(false);
   const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
   const subtasksOrder = subtasks.map(({ taskIdentifier }) => taskIdentifier);
-  const { openDrawer, storeAsCurrentTask } = restProps;
+  const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
 
   useEffect(() => {
     reorderSubtasksInState(subtasks);
@@ -530,42 +557,50 @@ const Subtasks = ({
           {provided => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {!isEmpty(orderedSubtasks) &&
-                orderedSubtasks?.map((subtask, index) => (
-                  <Draggable
-                    key={subtask.taskIdentifier}
-                    draggableId={String(subtask.taskIdentifier)}
-                    index={index}
-                  >
-                    {(
-                      { innerRef, draggableProps, dragHandleProps },
-                      { isDragging: isDraggingSubtask },
-                    ) => (
-                      <div ref={innerRef} {...draggableProps}>
-                        <TaskItem
-                          dragHandleProps={dragHandleProps}
-                          key={subtask.taskIdentifier}
-                          task={{ ...subtask, taskList }}
-                          isDragging={isDraggingSubtask}
-                          currentUser={currentUser}
-                          reassignTask={reassignTask}
-                          parentHasPatient={parentHasPatient}
-                          {...restProps}
-                        />
-                        {draggedId !== String(subtask.taskIdentifier) &&
-                          !isEmpty(subtask.comments) && (
-                            <TaskComments
-                              isOpen={isFullView}
-                              comments={subtask.comments}
-                              onClickComment={() => {
-                                openDrawer();
-                                storeAsCurrentTask(subtask);
-                              }}
-                            />
-                          )}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
+                orderedSubtasks?.map((subtask, index) => {
+                  const matchedComments = getMatchedComments(
+                    subtask.comments,
+                    subtask.searchMetaData?.matchingCommentIdentifiers,
+                  );
+
+                  return (
+                    <Draggable
+                      key={subtask.taskIdentifier}
+                      draggableId={String(subtask.taskIdentifier)}
+                      index={index}
+                    >
+                      {(
+                        { innerRef, draggableProps, dragHandleProps },
+                        { isDragging: isDraggingSubtask },
+                      ) => (
+                        <div ref={innerRef} {...draggableProps}>
+                          <TaskItem
+                            dragHandleProps={dragHandleProps}
+                            key={subtask.taskIdentifier}
+                            task={{ ...subtask, taskList }}
+                            isDragging={isDraggingSubtask}
+                            currentUser={currentUser}
+                            reassignTask={reassignTask}
+                            parentHasPatient={parentHasPatient}
+                            {...restProps}
+                          />
+                          {draggedId !== String(subtask.taskIdentifier) &&
+                            !isEmpty(subtask.comments) && (
+                              <TaskComments
+                                isOpen={isFullView}
+                                comments={matchedComments}
+                                highlightedValue={highlightedValue}
+                                onClickComment={() => {
+                                  openDrawer();
+                                  storeAsCurrentTask(subtask);
+                                }}
+                              />
+                            )}
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
               {provided.placeholder}
             </div>
           )}
@@ -589,7 +624,7 @@ const Task = ({
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks, patient, searchMetaData } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
-  const { openDrawer, storeAsCurrentTask } = restProps;
+  const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
 
   const {
     addingNewSubtask,
@@ -610,11 +645,10 @@ const Task = ({
       ? [...subtasks, subtaskShape]
       : subtasks;
 
-  const matchingComments = searchMetaData?.matchingCommentIdentifiers
-    ? comments.filter(({ commentIdentifier }) =>
-        searchMetaData.matchingCommentIdentifiers.includes(commentIdentifier),
-      )
-    : comments;
+  const matchingComments = getMatchedComments(
+    comments,
+    searchMetaData?.matchingCommentIdentifiers,
+  );
 
   return (
     <div {...draggableProps}>
@@ -636,6 +670,7 @@ const Task = ({
         <TaskComments
           isOpen={isFullView}
           comments={matchingComments}
+          highlightedValue={highlightedValue}
           onClickComment={() => {
             openDrawer();
             storeAsCurrentTask(task);

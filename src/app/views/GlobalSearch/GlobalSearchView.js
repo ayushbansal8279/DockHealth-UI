@@ -72,6 +72,7 @@ const GlobalSearchView = ({
                   reassignTask={assignTask}
                   updateDueDate={setDueDate}
                   updateWorkflowStatus={setWorkflowStatus}
+                  highlightedValue={searchValue}
                 />
               ))
             : renderEmptyState()}

@@ -9,7 +9,12 @@ import {
 } from './styled';
 import TaskComment from './TaskComment';
 
-const TaskComments = ({ isOpen, comments, onClickComment }) => {
+const TaskComments = ({
+  isOpen,
+  comments,
+  onClickComment,
+  highlightedValue,
+}) => {
   const [showMore, setShowMore] = useState(comments?.length <= 3);
   const limitedComments = showMore ? comments : comments?.slice(0, 3);
   const groupedComments = groupBy(
@@ -24,7 +29,11 @@ const TaskComments = ({ isOpen, comments, onClickComment }) => {
           <TaskCommentsDate>{key}</TaskCommentsDate>
           <div onClick={onClickComment}>
             {groupedComments[key]?.map(comment => (
-              <TaskComment key={comment.commentId} {...comment} />
+              <TaskComment
+                key={comment.commentId}
+                highlightedValue={highlightedValue}
+                {...comment}
+              />
             ))}
           </div>
         </TaskCommentsGroupedDay>
