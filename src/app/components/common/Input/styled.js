@@ -9,6 +9,7 @@ export const PrimaryInputBox = styled.div`
   display: flex;
   flex-direction: column;
   padding: ${spacing.small} ${spacing.regular};
+  height: 72px;
   ${props => props.fullWidth && 'width: 100%;'}
 `;
 
@@ -20,7 +21,10 @@ export const PrimaryInputField = styled.input`
   font-weight: ${props =>
     props.placeholder && !props.value ? fontWeights.light : fontWeights.bold};
   outline: none;
-  padding: ${spacing.tiny} 0 ${spacing.small};
+  padding: ${props =>
+    props.isLabelCenterized ? '0' : `${spacing.tiny} 0 ${spacing.small}`};
+  height: ${props => (props.isLabelCenterized ? '0' : 'initial')};
+  transition: height 0.2s, padding 0.2s;
 
   &:disabled {
     background-color: ${palette.coolGrey4};
@@ -28,9 +32,13 @@ export const PrimaryInputField = styled.input`
 `;
 
 export const PrimaryInputLabel = styled.label`
-  color: ${palette.lightGrey};
-  font-size: ${fontSizes.small};
-  padding: ${spacing.tiny} 0;
+  color: ${props =>
+    props.isLabelCenterized ? palette.mediumGrey : palette.lightGrey};
+  font-size: ${props =>
+    props.isLabelCenterized ? fontSizes.regular : fontSizes.small};
+  padding: ${props =>
+    props.isLabelCenterized ? '19px 0' : `${spacing.tiny} 0`};
+  transition: padding 0.2s, font-size 0.2s;
 `;
 
 export const PrimaryInputError = styled.span`
