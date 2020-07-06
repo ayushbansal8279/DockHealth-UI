@@ -23,6 +23,7 @@ export const initializeDashboardView = () => ({
 });
 
 export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
+export const reloadDashboardTasks = () => ({ type: RELOAD_DASHBOARD_TASKS });
 export const redirectToParentTask = (
   taskListIdentifier,
   taskIdentifer,

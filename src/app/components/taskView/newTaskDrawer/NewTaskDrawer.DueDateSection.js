@@ -104,7 +104,12 @@ const onItemSelection = ({ saveDueDate, currentDueTime }) => value => {
   });
 };
 
-const DueDateSection = ({ selectedTask, isOverDue, setAutoSaveVisible }) => {
+const DueDateSection = ({
+  selectedTask,
+  isOverDue,
+  setAutoSaveVisible,
+  refreshList,
+}) => {
   const dateFieldName = 'dueDate';
   const timeFieldName = 'dueTime';
 
@@ -123,6 +128,7 @@ const DueDateSection = ({ selectedTask, isOverDue, setAutoSaveVisible }) => {
   const { saveDueDate, clearDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
     setValue,
+    refreshList,
   });
 
   const dueDateValue = watch('dueDate');

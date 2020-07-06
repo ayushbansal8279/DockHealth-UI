@@ -5,7 +5,11 @@ import { updateDueDate } from 'actions/task-actions';
 import moment from 'moment';
 import * as AlertActions from 'alert/actions';
 
-const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
+const initializeDueDateSectionHooks = ({
+  setAutoSaveVisible,
+  setValue,
+  refreshList,
+}) => {
   const dispatch = useDispatch();
 
   const selectedTask = useSelector(store => store.taskState.selectedTask);
@@ -27,17 +31,20 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
         )(dispatch)
           .then(() => {
             setAutoSaveVisible();
+            if (refreshList) refreshList();
           })
           .catch(() => {
-            dispatch(AlertActions.showGlobalAlert(
-              'Error updating due date, please try again later',
-              'error',
-            ));
+            dispatch(
+              AlertActions.showGlobalAlert(
+                'Error updating due date, please try again later',
+                'error',
+              ),
+            );
           });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedTaskIdentifier],
+    [selectedTaskIdentifier, refreshList],
   );
 
   const clearDueDate = async event => {
@@ -46,9 +53,15 @@ const initializeDueDateSectionHooks = ({ setAutoSaveVisible, setValue }) => {
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
         await updateDueDate(selectedTask, null, false)(dispatch);
+        if (refreshList) refreshList();
         setAutoSaveVisible();
       } catch {
-        dispatch(AlertActions.showGlobalAlert('Error updating due date, please try again later', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating due date, please try again later',
+            'error',
+          ),
+        );
       }
     }
   };

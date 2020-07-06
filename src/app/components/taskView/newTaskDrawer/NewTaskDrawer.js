@@ -48,7 +48,7 @@ import {
 } from './NewTaskDrawer.Utilities';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const NewTaskDrawer = ({ isInbox, modalActions }) => {
+const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
   const {
     taskDrawerOpen,
     taskDrawerFocusField,
@@ -76,7 +76,10 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     dueTimeReference,
   } = initializeTaskDrawerHooks({ isInbox });
 
-  const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
+  const { saveDueDate } = initializeDueDateSectionHooks({
+    setAutoSaveVisible,
+    refreshList,
+  });
 
   const { handleSubmit, setValue, watch } = formMethods;
 
@@ -314,6 +317,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   selectedTask={selectedTask}
                   isOverDue={isOverDue}
                   setAutoSaveVisible={setAutoSaveVisible}
+                  refreshList={refreshList}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>

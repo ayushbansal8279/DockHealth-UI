@@ -53,6 +53,7 @@ const DashboardContent = ({
     toggleDashboardTaskComplete,
     quickAddDashboardTask,
     sortDashboardTasks,
+    reloadDashboardTasks,
   },
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -127,7 +128,10 @@ const DashboardContent = ({
             ))
           : renderEmptyState()}
       </ViewLoader>
-      <NewTaskDrawer modalActions={modalActions} />
+      <NewTaskDrawer
+        modalActions={modalActions}
+        refreshList={reloadDashboardTasks}
+      />
     </DashboardContainer>
   );
 };
