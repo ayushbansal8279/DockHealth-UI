@@ -21,11 +21,9 @@ const GlobalSearchHeader = ({
   setSearchValue,
   setSearchCompletedTasks,
 }) => {
-  const [searchInputValue, setSearchInputValue] = useState('');
   const searchInputReference = useRef(null);
 
   const search = value => {
-    setSearchInputValue(value);
     setSearchValue(value);
   };
 
@@ -43,7 +41,6 @@ const GlobalSearchHeader = ({
       <InputWrapper>
         <GlobalSearchInput
           ref={searchInputReference}
-          value={searchInputValue}
           onValueChange={search}
           onClear={() => searchInputReference?.current?.focus()}
         />

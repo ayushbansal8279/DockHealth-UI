@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { featurePalette } from 'styles/palette';
 
 export const ListLink = styled(Link)`
   max-height: 2.6rem;
@@ -94,6 +94,9 @@ export const GridImg = styled(Grid)`
   align-items: center;
   display: flex;
   justify-content: center;
+  ${({ isMatching }) =>
+    isMatching &&
+    `background: ${featurePalette.globalSearchHighlight}; opacity: .5;`}
 `;
 
 export const SmallText = styled.span`
@@ -273,4 +276,21 @@ export const Arrow = styled.img`
   padding-left: ${spacing.tiny};
   padding-right: ${spacing.smallPlus};
   transition: all 0.5s ease-in-out;
+`;
+
+export const MatchingWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+  ${({ isMatching }) =>
+    isMatching &&
+    `background: ${featurePalette.globalSearchHighlight}; opacity: .5;`}
+`;
+
+export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 67px;
+  height: 50px;
 `;

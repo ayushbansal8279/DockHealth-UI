@@ -10,22 +10,29 @@ import {
 
 const GlobalSearchInput = React.forwardRef(
   ({ value, onValueChange, onClear }, reference) => {
+    const hasValueProps = value !== undefined;
+
     const clearInput = () => {
       onValueChange('');
       onClear();
+
+      // eslint-disable-next-line no-param-reassign
+      if (!hasValueProps) reference.current.value = '';
     };
+
+    const inputProps = {
+      onChange: event => onValueChange(event?.target?.value),
+      placeholder: 'Search',
+    };
+
+    if (hasValueProps) inputProps.value = value;
 
     return (
       <GlobalSearchInputWrapper>
         <InputIconWrapper>
           <img src={SearchHeadsupIcon} alt="search" />
         </InputIconWrapper>
-        <StyledInput
-          ref={reference}
-          value={value}
-          onChange={event => onValueChange(event?.target?.value)}
-          placeholder="Search"
-        />
+        <StyledInput ref={reference} {...inputProps} />
         <ClearButtonWrapper>
           <ClearButton type="button" onClick={clearInput}>
             Clear

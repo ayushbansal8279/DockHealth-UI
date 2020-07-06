@@ -62,6 +62,7 @@ import {
   PriorityHoverIcon,
   ListLink,
   Arrow,
+  AssigneeMatchingWrapper,
 } from '../styled';
 
 const dueDateQuickSelectOptions = [
@@ -191,7 +192,19 @@ const TaskItem = ({
     completedBy,
     taskList,
     parentTaskIdentifier,
+    searchMetaData = {},
   } = task;
+
+  const {
+    matchAssignedTo,
+    matchAttachments,
+    matchComments,
+    matchDescription,
+    matchLabels,
+    matchPatient,
+  } = searchMetaData;
+
+  console.log('task', task);
 
   const listName = taskList?.listName;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -317,7 +330,7 @@ const TaskItem = ({
         </StandardTaskItemCell>
         <StandardTaskItemCell width="200px">
           <Grid container>
-            <GridImg item xs={3}>
+            <GridImg item xs={3} isMatching={matchComments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -385,7 +398,7 @@ const TaskItem = ({
                 )}
               </PopoverDatepicker>
             </GridImg>
-            <GridImg item xs={3}>
+            <GridImg item xs={3} isMatching={matchLabels}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -408,7 +421,7 @@ const TaskItem = ({
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3}>
+            <GridImg item xs={3} isMatching={matchAttachments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -440,7 +453,10 @@ const TaskItem = ({
             task={task}
           >
             {assignedTo ? (
-              <Member member={assignedTo} size={34} />
+              <>
+                <AssigneeMatchingWrapper isMatching={matchAssignedTo} />
+                <Member member={assignedTo} size={34} />
+              </>
             ) : (
               <AddCrossIcon src={CrossIcon} size="34px" />
             )}
@@ -571,7 +587,7 @@ const Task = ({
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
-  const { comments, subtasks, patient } = task;
+  const { comments, subtasks, patient, searchMetaData } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { openDrawer, storeAsCurrentTask } = restProps;
 
@@ -594,6 +610,12 @@ const Task = ({
       ? [...subtasks, subtaskShape]
       : subtasks;
 
+  const matchingComments = searchMetaData?.matchingCommentIdentifiers
+    ? comments.filter(({ commentIdentifier }) =>
+        searchMetaData.matchingCommentIdentifiers.includes(commentIdentifier),
+      )
+    : comments;
+
   return (
     <div {...draggableProps}>
       <div ref={innerRef}>
@@ -613,7 +635,7 @@ const Task = ({
       {!isEmpty(comments) && !isStartedDnD && (
         <TaskComments
           isOpen={isFullView}
-          comments={comments}
+          comments={matchingComments}
           onClickComment={() => {
             openDrawer();
             storeAsCurrentTask(task);

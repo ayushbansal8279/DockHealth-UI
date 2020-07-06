@@ -63,6 +63,10 @@ const palette = {
   lightBlue: '#5ccced',
 };
 
+export const featurePalette = {
+  globalSearchHighlight: palette.bananaHammock,
+};
+
 export const getPriorityColor = priority => {
   switch (priority) {
     case 'PLANNED':
