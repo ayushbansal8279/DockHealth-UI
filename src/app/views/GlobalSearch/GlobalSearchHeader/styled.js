@@ -6,6 +6,7 @@ import { fontSizes } from 'styles/font';
 
 export const TopSectionGrid = styled(Grid)`
   padding-bottom: ${spacing.largePlus};
+  padding: ${spacing.regularPlus} 43px;
 `;
 
 export const InputWrapper = styled.div`
@@ -17,4 +18,9 @@ export const CheckboxDescription = styled.label`
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
+`;
+
+export const MenuButton = styled.button`
+  cursor: pointer;
+  outline: none;
 `;

@@ -5,7 +5,8 @@ import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const GlobalSearchWrapper = styled.div`
-  padding: 49px 43px; // per design
+  position: relative;
+  padding: 30px 0; // per design
 `;
 
 export const TopSectionGrid = styled(Grid)`
@@ -21,4 +22,17 @@ export const CheckboxDescription = styled.label`
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
+`;
+
+export const GlobalSearchStickyHeader = styled.div`
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  background: ${palette.blueGrey};
+`;
+
+export const ViewSidePadding = styled.div`
+  padding: 0 43px;
 `;

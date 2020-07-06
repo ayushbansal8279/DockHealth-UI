@@ -8,7 +8,12 @@ import Spacing from 'components/common/Spacing';
 import TaskCheckbox from 'components/task/TaskCheckbox';
 import GlobalSearchInput from '../GlobalSearchInput/GlobalSearchInput';
 
-import { TopSectionGrid, InputWrapper, CheckboxDescription } from './styled';
+import {
+  TopSectionGrid,
+  InputWrapper,
+  CheckboxDescription,
+  MenuButton,
+} from './styled';
 
 const GlobalSearchHeader = ({
   showNavbar,
@@ -31,9 +36,9 @@ const GlobalSearchHeader = ({
       justify="flex-start"
       alignItems="center"
     >
-      <button type="button" onClick={showNavbar}>
+      <MenuButton type="button" onClick={showNavbar}>
         <img src={MenuIcon} alt="menu" />
-      </button>
+      </MenuButton>
       <Spacing horizontal={5} />
       <InputWrapper>
         <GlobalSearchInput

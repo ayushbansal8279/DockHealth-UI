@@ -2,6 +2,7 @@ import React from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Spacing from 'components/common/Spacing';
 import {
   isLoadingGlobalSearchSelector,
   globalSearchListsSelector,
@@ -15,7 +16,11 @@ import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { GlobalSearchWrapper } from './styled';
+import {
+  GlobalSearchWrapper,
+  GlobalSearchStickyHeader,
+  ViewSidePadding,
+} from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
 import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
 
@@ -48,24 +53,29 @@ const GlobalSearchView = ({
 
   return (
     <GlobalSearchWrapper>
-      <GlobalSearchHeader />
+      <GlobalSearchStickyHeader>
+        <GlobalSearchHeader />
+      </GlobalSearchStickyHeader>
       <ViewLoader isFetchingData={isLoadingView}>
-        {!isEmpty(lists)
-          ? lists?.map(list => (
-              <GlobalSearchList
-                list={list}
-                currentUser={currentUser}
-                selectedTask={selectedTask}
-                openDrawer={openDrawer}
-                storeAsCurrentTask={storeAsCurrentTask}
-                toggleTaskStatus={toggleTaskStatus}
-                toggleTaskPriority={toggleTaskPriority}
-                reassignTask={assignTask}
-                updateDueDate={setDueDate}
-                updateWorkflowStatus={setWorkflowStatus}
-              />
-            ))
-          : renderEmptyState()}
+        <ViewSidePadding>
+          <Spacing vertical={5} />
+          {!isEmpty(lists)
+            ? lists?.map(list => (
+                <GlobalSearchList
+                  list={list}
+                  currentUser={currentUser}
+                  selectedTask={selectedTask}
+                  openDrawer={openDrawer}
+                  storeAsCurrentTask={storeAsCurrentTask}
+                  toggleTaskStatus={toggleTaskStatus}
+                  toggleTaskPriority={toggleTaskPriority}
+                  reassignTask={assignTask}
+                  updateDueDate={setDueDate}
+                  updateWorkflowStatus={setWorkflowStatus}
+                />
+              ))
+            : renderEmptyState()}
+        </ViewSidePadding>
       </ViewLoader>
       <NewTaskDrawer modalActions={modalActions} />
     </GlobalSearchWrapper>

@@ -27,6 +27,8 @@ export const MenuButton = styled.button`
   position: absolute;
   left: 42px;
   top: 60px;
+  cursor: pointer;
+  outline: none;
 `;
 
 export const ListItemsWrapper = styled.div`
