@@ -31,6 +31,7 @@ import {
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   PaginationButton,
+  IconsBox,
 } from './styled';
 
 const TasksGroup = ({
@@ -125,7 +126,7 @@ const TasksGroup = ({
           />
         )}
         {!changingGroupOrderDisabled && (
-          <div style={{ display: 'flex' }}>
+          <IconsBox>
             <ViewIconBox isHidden={!isOpen || tasks?.length === 0}>
               <UniversalTooltipContainer
                 placement="top-end"
@@ -150,7 +151,7 @@ const TasksGroup = ({
                 />
               </UniversalTooltipContainer>
             </ViewIconBox>
-          </div>
+          </IconsBox>
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>

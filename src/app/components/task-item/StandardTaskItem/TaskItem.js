@@ -485,7 +485,7 @@ const Subtasks = ({
   const [draggedId, setDraggableId] = useState(false);
   const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
   const subtasksOrder = subtasks.map(({ taskIdentifier }) => taskIdentifier);
-  const { openDrawer, storeAsCurrentTask, taskContext } = restProps;
+  const { openDrawer, storeAsCurrentTask } = restProps;
 
   useEffect(() => {
     reorderSubtasksInState(subtasks);
@@ -542,7 +542,7 @@ const Subtasks = ({
                               comments={subtask.comments}
                               onClickComment={() => {
                                 openDrawer();
-                                storeAsCurrentTask(subtask, taskContext);
+                                storeAsCurrentTask(subtask);
                               }}
                             />
                           )}
@@ -573,7 +573,7 @@ const Task = ({
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks, patient } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
-  const { openDrawer, storeAsCurrentTask, taskContext } = restProps;
+  const { openDrawer, storeAsCurrentTask } = restProps;
 
   const {
     addingNewSubtask,
@@ -616,7 +616,7 @@ const Task = ({
           comments={comments}
           onClickComment={() => {
             openDrawer();
-            storeAsCurrentTask(task, taskContext);
+            storeAsCurrentTask(task);
           }}
         />
       )}

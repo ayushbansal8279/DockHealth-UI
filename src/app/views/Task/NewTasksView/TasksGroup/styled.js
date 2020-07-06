@@ -109,3 +109,7 @@ export const PaginationButton = styled.button`
   font-size: ${fontSizes.regular};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
 `;
+
+export const IconsBox = styled.div`
+  display: flex;
+`;
