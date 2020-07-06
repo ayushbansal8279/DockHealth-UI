@@ -8,6 +8,7 @@ import SlimViewActiveIcon from 'img/slim-view-active';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
@@ -25,10 +26,12 @@ import {
   TasksGroupHeader,
   TasksGroupLabel,
   Tasks,
+  ViewIconBox,
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   PaginationButton,
+  IconsBox,
 } from './styled';
 
 const TasksGroup = ({
@@ -123,20 +126,32 @@ const TasksGroup = ({
           />
         )}
         {!changingGroupOrderDisabled && (
-          <div>
-            <ViewIcon
-              alt="slim-view"
-              src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
-              onClick={() => setViewType(SLIM_VIEW)}
-              isHidden={!isOpen || tasks?.length === 0}
-            />
-            <ViewIcon
-              alt="full-view"
-              src={isFullView ? FullViewActiveIcon : FullViewIcon}
-              onClick={() => setViewType(FULL_VIEW)}
-              isHidden={!isOpen || tasks?.length === 0}
-            />
-          </div>
+          <IconsBox>
+            <ViewIconBox isHidden={!isOpen || tasks?.length === 0}>
+              <UniversalTooltipContainer
+                placement="top-end"
+                label="Slim view. Just the task shows"
+              >
+                <ViewIcon
+                  alt="slim-view"
+                  src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
+                  onClick={() => setViewType(SLIM_VIEW)}
+                />
+              </UniversalTooltipContainer>
+            </ViewIconBox>
+            <ViewIconBox isHidden={!isOpen || tasks?.length === 0}>
+              <UniversalTooltipContainer
+                placement="top-end"
+                label="Full view. Task and comments show"
+              >
+                <ViewIcon
+                  alt="full-view"
+                  src={isFullView ? FullViewActiveIcon : FullViewIcon}
+                  onClick={() => setViewType(FULL_VIEW)}
+                />
+              </UniversalTooltipContainer>
+            </ViewIconBox>
+          </IconsBox>
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>

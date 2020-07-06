@@ -42,6 +42,17 @@ const ArrowElementReverse = styled.div`
   z-index: 1;
 `;
 
+const ArrowElementReverseRight = styled.div`
+  background-color: #3a4657;
+  height: 1rem;
+  position: absolute;
+  right: 0;
+  bottom: -0.4rem;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 1rem;
+  z-index: 1;
+`;
+
 const StyledPopper = styled(Popper)`
   && {
     z-index: 10000;
@@ -67,6 +78,26 @@ const UniversalTooltip = ({ children, ...props }: PopperProps) => {
       </StyledPopper>
     );
   }
+
+  if (props?.placement === 'top-end') {
+    return (
+      <StyledPopper {...props} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={250}>
+            <TooltipContainerReverse>
+              <InnerTooltipContainer>
+                <MontserratTypography weight="normal">
+                  {children}
+                </MontserratTypography>
+              </InnerTooltipContainer>
+              <ArrowElementReverseRight />
+            </TooltipContainerReverse>
+          </Fade>
+        )}
+      </StyledPopper>
+    );
+  }
+
   return (
     <StyledPopper {...props} transition>
       {({ TransitionProps }) => (

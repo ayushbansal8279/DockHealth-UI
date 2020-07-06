@@ -30,6 +30,10 @@ export const AddTaskInputWrapper = styled.div`
     color: ${palette.orange};
     font-size: ${fontSizes.regular};
   }
+
+  &:focus-within:before {
+    visibility: hidden;
+  }
 `;
 
 export default {
