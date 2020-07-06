@@ -189,14 +189,6 @@ export const Routes = ({ store }) => {
     checkUserAuthentication({ dispatch });
   };
 
-  const preselectTask = (_, nextState) => {
-    const taskIdentifier = nextState.location?.state?.taskIdentifier;
-    if (!taskIdentifier) {
-      return;
-    }
-    dispatch(storeAsCurrentTask(taskIdentifier));
-  };
-
   const onEnterApp = ({ location, params }) => {
     dispatch(setLocationAndParameters({ location, params }));
   };
@@ -404,11 +396,6 @@ export const Routes = ({ store }) => {
             component={TaskListActivityFeedView}
             onEnter={checkFeatureToggles}
           />
-          {/* <Route
-            path="/taskSearch"
-            component={TaskListSearch}
-            onEnter={checkFeatureToggles}
-          /> */}
           <Route
             path="/assignedToPerson/:userIdentifier(/:tabName)"
             component={PersonDetailsView}
