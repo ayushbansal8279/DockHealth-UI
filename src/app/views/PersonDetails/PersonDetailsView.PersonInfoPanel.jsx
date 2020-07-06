@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, hashHistory } from 'react-router';
 import { useMount } from 'react-use';
@@ -8,9 +8,7 @@ import {
   removeUserFromOrganization,
 } from 'actions/people-actions';
 import Avatar from 'components/common/Avatar';
-import ConfirmationDialog from 'components/modals/ConfirmationDialog';
 import { formatPhoneNumber, noop, showAlert } from 'helpers/utility-functions';
-import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import ArrowLeftIcon from 'img/arrow-left';
 import Spacing from 'components/common/Spacing';
@@ -25,7 +23,7 @@ import {
 
 const NOT_AVAILABLE = 'N/A';
 
-const PersonInfoPanel = ({ personData }) => {
+const PersonInfoPanel = ({ personData, archivePerson }) => {
   const {
     accountPhoneNumber,
     email,
@@ -47,13 +45,6 @@ const PersonInfoPanel = ({ personData }) => {
   );
 
   const dispatch = useDispatch();
-  const archivePersonButtonReference = useRef(null);
-
-  const [isOpen, open, close] = useBoolean(false);
-
-  const onArchivePersonButtonClick = useCallback(() => {
-    open();
-  }, [open]);
 
   const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
@@ -69,7 +60,7 @@ const PersonInfoPanel = ({ personData }) => {
     }
   });
 
-  const onConfirmArchivePersonButtonClick = useCallback(() => {
+  const onConfirmArchive = () =>
     removeUserFromOrganization(userIdentifier)(dispatch)
       .then(() => {
         hashHistory.push('/people');
@@ -83,8 +74,6 @@ const PersonInfoPanel = ({ personData }) => {
             'Could not archive this person, please try again later',
         });
       });
-    close();
-  }, [close, dispatch, userIdentifier]);
 
   return (
     <InfoPanelContainer>
@@ -111,21 +100,11 @@ const PersonInfoPanel = ({ personData }) => {
       </ContactInfoContainer>
       {isAdminOrOwner && userIdentifier && (
         <>
-          <hr />
           <ArchivePersonButton
-            ref={archivePersonButtonReference}
-            onClick={onArchivePersonButtonClick}
+            onClick={() => archivePerson({ confirm: onConfirmArchive })}
           >
             Archive this person
           </ArchivePersonButton>
-          <ConfirmationDialog
-            isOpen={isOpen}
-            close={close}
-            confirm={onConfirmArchivePersonButtonClick}
-            title="Archive person"
-            message="This person will no longer have access to Dock Health. If this user is currently assigned any tasks, those tasks will become unassigned."
-            confirmButtonTitle="Yes, archive person"
-          />
         </>
       )}
     </InfoPanelContainer>
