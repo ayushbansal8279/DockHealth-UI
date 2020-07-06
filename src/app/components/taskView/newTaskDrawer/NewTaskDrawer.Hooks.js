@@ -298,10 +298,12 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
           closeDrawer();
         })
         .catch(() => {
-          dispatch(AlertActions.showGlobalAlert(
-            `Error moving task to list ${newTaskList.listName}, please try again later`,
-            'error',
-          ));
+          dispatch(
+            AlertActions.showGlobalAlert(
+              `Error moving task to list ${newTaskList.listName}, please try again later`,
+              'error',
+            ),
+          );
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -321,15 +323,21 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     }
   };
 
-  const onDuplicate = ({ afterDuplicate, includeAttachments }) => async event => {
-    if(event){
+  const onDuplicate = ({
+    afterDuplicate,
+    includeAttachments,
+  }) => async event => {
+    if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        const newTask = await duplicateTask(selectedTask, includeAttachments)(dispatch);
+        const newTask = await duplicateTask(
+          selectedTask,
+          includeAttachments,
+        )(dispatch);
         storeAsCurrentTask(newTask)(dispatch);
         afterDuplicate({ newTask });
         onButtonClicked('Duplicate task');
@@ -340,7 +348,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   };
 
   const onAddSubTask = ({ afterAddSubTask }) => async event => {
-    if(event){
+    if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -373,10 +381,12 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         )(dispatch);
         setAutoSaveVisible();
       } catch {
-        dispatch(AlertActions.showGlobalAlert(
-          'Error updating assignment, please try again later',
-          'error',
-        ));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating assignment, please try again later',
+            'error',
+          ),
+        );
       }
     }
   };
@@ -389,7 +399,12 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
       )(dispatch);
       setAutoSaveVisible();
     } catch {
-      dispatch(AlertActions.showGlobalAlert('Error updating patient, please try again later', 'error'));
+      dispatch(
+        AlertActions.showGlobalAlert(
+          'Error updating patient, please try again later',
+          'error',
+        ),
+      );
     }
   };
 
@@ -434,10 +449,12 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
         )(dispatch);
         setAutoSaveVisible();
       } catch {
-        dispatch(AlertActions.showGlobalAlert(
-          'Error updating task description, please try again later',
-          'error',
-        ));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating task description, please try again later',
+            'error',
+          ),
+        );
       }
     }
   };

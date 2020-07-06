@@ -94,7 +94,11 @@ const TopSection = ({
 
   const moreTaskListsAvailable = !!(taskLists && taskLists.length > 1);
 
-  const hasAttachments = (selectedTask && selectedTask.attachments && selectedTask.attachments.length > 0) ? true : false;
+  const hasAttachments = !!(
+    selectedTask &&
+    selectedTask.attachments &&
+    selectedTask.attachments.length > 0
+  );
 
   return (
     <>
@@ -224,11 +228,11 @@ const TopSection = ({
               )}
               <ListItem
                 key="action_duplicate"
-                onClick={(event) => {
+                onClick={event => {
                   closeTaskMenuPopover();
-                  if(hasAttachments){
+                  if (hasAttachments) {
                     openDuplicateConfirmationModal();
-                  }else{
+                  } else {
                     duplicateTaskWithoutConfirmation(event);
                   }
                 }}

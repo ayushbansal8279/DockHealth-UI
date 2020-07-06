@@ -77,7 +77,7 @@ const initializeTaskDrawerTopSectionHooks = ({
     modalActions.openModal('DuplicateTask', modalProps);
   };
 
-  const duplicateTaskWithoutConfirmation = (event) => {
+  const duplicateTaskWithoutConfirmation = event => {
     onDuplicate({
       afterDuplicate: () => {
         closeTaskDrawer();
