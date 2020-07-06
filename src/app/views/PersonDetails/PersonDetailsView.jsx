@@ -282,8 +282,9 @@ class PersonDetailsView extends PureComponent {
   };
 
   render() {
-    const { personData, routeParams } = this.props;
+    const { personData, routeParams, modalActions } = this.props;
     const { fetching } = this.state;
+    const { openModal } = modalActions;
 
     const viewProps = {
       routeParams,
@@ -301,7 +302,12 @@ class PersonDetailsView extends PureComponent {
     return (
       !fetching && (
         <>
-          {personData && <PersonInfoPanel personData={personData} />}
+          {personData && (
+            <PersonInfoPanel
+              personData={personData}
+              archivePerson={props => openModal('ArchivePerson', { ...props })}
+            />
+          )}
           <TasksView
             {...viewProps}
             defaultGroupName="All tasks"

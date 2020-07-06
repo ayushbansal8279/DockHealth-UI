@@ -8,6 +8,7 @@ import ListPickerModal from './components/ListPickerModal/ListPickerModal';
 import DeleteCommentModal from './components/DeleteCommentModal/DeleteCommentModal';
 import ArchivePatientModal from './components/ArchivePatientModal/ArchivePatientModal';
 import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActiveUserModal';
+import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -20,6 +21,7 @@ const MODAL_MAP = {
   DeleteComment: DeleteCommentModal,
   ArchivePatient: ArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
+  ArchivePerson: ArchivePersonModal,
 };
 
 export default MODAL_MAP;
