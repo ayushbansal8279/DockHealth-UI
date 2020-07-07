@@ -20,4 +20,6 @@ export const DashboardContentWrapper = styled.div`
   height: 100%;
   overflow: hidden;
   background-color: ${palette.white};
+  padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
+  transition: padding-right 0.3s ease-out;
 `;

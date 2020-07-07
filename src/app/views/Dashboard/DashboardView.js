@@ -15,7 +15,7 @@ const DashboardView = () => {
       <DashboardSidebarWrapper isHidden={isTaskDrawerOpen}>
         <DashboardSidebar />
       </DashboardSidebarWrapper>
-      <DashboardContentWrapper>
+      <DashboardContentWrapper hasRightPadding={isTaskDrawerOpen}>
         <DashboardContent />
       </DashboardContentWrapper>
     </DashboardViewWrapper>
