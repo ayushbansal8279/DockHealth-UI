@@ -46,7 +46,10 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
               isPrivate,
               numberOfTasks = 0,
             }) => (
-              <Link to={`/tasks/${taskListIdentifier}`}>
+              <Link
+                key={taskListIdentifier}
+                to={`/tasks/${taskListIdentifier}`}
+              >
                 <ListItem>
                   {isPrivate && (
                     <PrivateListIcon src={LockIcon} alt="private" />

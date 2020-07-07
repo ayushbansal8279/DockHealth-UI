@@ -2,7 +2,7 @@ import { USER_ACKNOWLEDGED_EULA } from 'actions/action-types';
 
 const initialState = {
   user: false,
-  userProfile: '',
+  userProfile: {},
   userProfilePic: '',
   userNotificationPrefs: '',
   allSpecialties: [],

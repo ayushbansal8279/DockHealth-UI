@@ -46,7 +46,7 @@ const renderHistoryItem = ({
       key={auditId}
       style={{ margin: '10px 0' }}
     >
-      <Grid container xs={9} alignItems="flex-start" justify="flex-start">
+      <Grid container item xs={9} alignItems="flex-start" justify="flex-start">
         <Grid container item xs={12}>
           <PersonNameLabelContainer>
             <RobotoTypography condensed variant="h4" color="inherit">
@@ -151,7 +151,13 @@ const HistorySection = ({ selectedTask }) => {
           alignItems="center"
           justify="space-between"
         >
-          <Grid container xs={9} alignItems="flex-start" justify="flex-start">
+          <Grid
+            container
+            item
+            xs={9}
+            alignItems="flex-start"
+            justify="flex-start"
+          >
             <Grid container item xs={12}>
               <PersonNameLabelContainer>
                 <RobotoTypography condensed variant="h4" color="inherit">

@@ -1,5 +1,5 @@
 import { Popover } from '@material-ui/core';
-import { bool, element, func, node, shape } from 'prop-types';
+import { bool, func, node, shape, object } from 'prop-types';
 import React from 'react';
 import { useCss } from 'react-use';
 
@@ -25,7 +25,7 @@ const InputPopover = ({
 
   return (
     <Popover
-      anchorEl={anchorElement.current}
+      anchorEl={anchorElement?.current}
       anchorOrigin={{
         horizontal: 'left',
         vertical: 'bottom',
@@ -50,7 +50,7 @@ const InputPopover = ({
 
 InputPopover.propTypes = {
   anchorElement: shape({
-    current: element,
+    current: object,
   }).isRequired,
   isPopoverOpen: bool.isRequired,
   closePopover: func.isRequired,

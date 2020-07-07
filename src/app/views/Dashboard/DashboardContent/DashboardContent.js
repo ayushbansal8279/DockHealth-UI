@@ -118,6 +118,7 @@ const DashboardContent = ({
         {!isEmpty(searchedDashboardTasks)
           ? searchedDashboardTasks?.map(item => (
               <DashboardTasksGroup
+                key={item.groupType}
                 dashboardTasksGroup={item}
                 toggleDashboardTaskComplete={toggleDashboardTaskComplete}
                 redirectToParentTask={redirectToParentTask}
