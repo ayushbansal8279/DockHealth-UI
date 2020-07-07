@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';

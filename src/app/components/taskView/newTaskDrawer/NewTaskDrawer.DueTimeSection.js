@@ -1,5 +1,8 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import * as AlertActions from 'alert/actions';
+import useBoolean from 'hooks/useBoolean';
 import { AdornmentClear } from './NewTaskDrawer.Styled';
 import {
   DueTimeLabelContainer,
@@ -7,7 +10,6 @@ import {
   DueTimeInputMask,
   DueTimeErrorMessage,
 } from './NewTaskDrawer.DueTimeSection.Styled';
-import * as AlertActions from 'alert/actions';
 
 const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 
@@ -21,6 +23,9 @@ const DueTimeSection = ({
   setAutoSaveVisible,
 }) => {
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isFocus, setFocus, unsetFocus] = useBoolean(false);
+
+  const dispatch = useDispatch();
 
   const clearDueTime = async () => {
     setDueTimeValue('dueTime', null);
@@ -35,13 +40,21 @@ const DueTimeSection = ({
         });
         setAutoSaveVisible();
       } catch {
-        dispatch(AlertActions.showGlobalAlert(
-          'Error updating due date and time, please try again later',
-          'error',
-        ));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating due date and time, please try again later',
+            'error',
+          ),
+        );
       }
     }
   };
+
+  const isEmpty = !(
+    dueTimeReference?.current?.value &&
+    dueTimeReference?.current?.value !== '' &&
+    dueTimeReference?.current?.value !== '__:__ __'
+  );
 
   return (
     <div>
@@ -74,11 +87,17 @@ const DueTimeSection = ({
               updatedDueDate: dueDateValue,
               updatedDueTime: event.target.value,
             });
+            unsetFocus();
+          }}
+          onFocus={() => {
+            setFocus();
           }}
           onChange={() => {
             setErrorMessage(null);
           }}
           isOverDue={isOverDue}
+          isEmpty={isEmpty}
+          isFocus={isFocus}
         />
         <AdornmentClear
           onClick={clearDueTime}
