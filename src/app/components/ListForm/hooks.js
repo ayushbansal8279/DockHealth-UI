@@ -76,6 +76,8 @@ const initializeAddListFormHooks = () => {
   const {
     adminsValue: allAdminsValue,
     membersValue: allMembersValue,
+    listNameValue,
+    listDescriptionValue,
   } = getFormWatchedValues({ watch });
 
   const adminsValue = take(MAX_VISIBLE_MEMBERS_COUNT, allAdminsValue);
@@ -142,6 +144,8 @@ const initializeAddListFormHooks = () => {
     formContext,
     formLabelContent,
     handleSubmit,
+    listNameValue,
+    listDescriptionValue,
     people,
     peopleListForAdminPicker,
     peopleListForMemberPicker,

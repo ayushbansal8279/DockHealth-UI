@@ -64,7 +64,8 @@ const Input = React.forwardRef(
       };
     }
 
-    const isLabelCenterized = !isFocused && centerizedLabelOnStart;
+    const isLabelCenterized =
+      !isFocused && centerizedLabelOnStart && (!value || value?.length === 0);
 
     return (
       <Box fullWidth={fullWidth}>

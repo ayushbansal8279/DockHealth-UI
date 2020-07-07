@@ -78,6 +78,8 @@ const ListForm = ({ setListFormOpen }) => {
     formContext,
     formLabelContent,
     handleSubmit,
+    listNameValue,
+    listDescriptionValue,
     people,
     peopleListForAdminPicker,
     peopleListForMemberPicker,
@@ -133,6 +135,7 @@ const ListForm = ({ setListFormOpen }) => {
           required
           showError
           centerizedLabelOnStart
+          value={listNameValue}
         />
       </FormContext>
       <FormContext {...formContext}>
@@ -141,6 +144,7 @@ const ListForm = ({ setListFormOpen }) => {
           label={messages.form.description.label}
           name="listDescription"
           centerizedLabelOnStart
+          value={listDescriptionValue}
         />
       </FormContext>
       <PeoplePicker
