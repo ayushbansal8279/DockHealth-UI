@@ -27,7 +27,9 @@ export const AddListInputWrapper = styled.div`
   width: 100%;
   font-size: ${fontSizes.smallPlus};
 
-  &:before {
+  ${({ isFocused }) =>
+    !isFocused &&
+    `&:before {
     position: absolute;
     top: 50%;
     left: ${spacing.regularPlus};
@@ -36,7 +38,7 @@ export const AddListInputWrapper = styled.div`
     transform: translateY(-50%);
     color: ${palette.orange};
     font-size: ${fontSizes.regular};
-  }
+  }`}
 `;
 
 export const AddListInput = styled.input`
@@ -52,6 +54,7 @@ export const AddListInput = styled.input`
     border-top: none;
     border-color: ${palette.coolGrey2};
     box-shadow: none;
+    padding-left: ${spacing.regularPlus};
   }
 `;
 

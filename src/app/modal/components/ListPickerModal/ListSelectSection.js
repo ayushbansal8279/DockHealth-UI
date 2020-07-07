@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
@@ -23,6 +23,7 @@ const ListSelectSection = ({
   onCancel,
 }) => {
   const addListInput = useRef();
+  const [isInputFoucused, setInputFocused] = useState(false);
 
   const handleAddNewList = listName => {
     if (listName) {
@@ -63,15 +64,19 @@ const ListSelectSection = ({
           )}
         </ViewLoader>
       </ListsWrapper>
-      <AddListInputWrapper>
+      <AddListInputWrapper isFocused={isInputFoucused}>
         <AddListInput
           ref={addListInput}
           type="text"
           placeholder="Add list"
+          onFocus={() => {
+            onListSelection(null);
+            setInputFocused(true);
+          }}
+          onBlur={() => setInputFocused(false)}
           onKeyDown={event =>
             event.keyCode === 13 && handleAddNewList(event.target.value)
           }
-          onFocus={() => onListSelection(null)}
         />
       </AddListInputWrapper>
       <Spacing vertical={4} />
