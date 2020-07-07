@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardContent from './DashboardContent/DashboardContent';
 import {
@@ -8,9 +9,10 @@ import {
 } from './styled';
 
 const DashboardView = () => {
+  const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
   return (
     <DashboardViewWrapper>
-      <DashboardSidebarWrapper>
+      <DashboardSidebarWrapper isHidden={isTaskDrawerOpen}>
         <DashboardSidebar />
       </DashboardSidebarWrapper>
       <DashboardContentWrapper>

@@ -9,9 +9,10 @@ export const DashboardViewWrapper = styled.div`
 
 export const DashboardSidebarWrapper = styled.div`
   height: 100%;
-  width: 380px;
+  width: ${({ isHidden }) => (isHidden ? 0 : 380)}px;
   border-right: 1px solid ${palette.coolGrey2};
   background-color: ${palette.coolGrey4};
+  transition: width 0.3s ease-out;
 `;
 
 export const DashboardContentWrapper = styled.div`
