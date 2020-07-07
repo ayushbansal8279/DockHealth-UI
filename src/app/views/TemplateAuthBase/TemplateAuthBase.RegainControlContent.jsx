@@ -16,7 +16,7 @@ const DockLogoImage = styled.img.attrs({
   alt: 'Dock Health logo',
 })`
   object-fit: contain;
-  height: 195px;
+  width: 244px;
 `;
 
 const TemplateAuthBaseRegainControlContent = () => {
@@ -30,9 +30,9 @@ const TemplateAuthBaseRegainControlContent = () => {
       <a href="/#/">
         <DockLogoImage />
       </a>
-      <Spacing vertical={5} />
+      <Spacing vertical={4} />
       <MontserratTypography variant="h3" weight="bold">
-        It&apos;s time to
+        <span style={{ color: '#939AA4' }}> It&apos;s time to</span>
       </MontserratTypography>
       <MontserratTypography variant="h1" weight="bold">
         Regain Control

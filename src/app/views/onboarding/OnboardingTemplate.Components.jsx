@@ -15,11 +15,15 @@ import styled from 'styled-components';
 import clsx from 'clsx';
 import palette, { opacify } from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import WelcomeBackgroundPattern from 'img/Grey_Bubble_Pattern_Bottom.svg';
 
 export const OnboardingBackground = styled.div`
   background-color: ${palette.white};
+  background-image: url(${WelcomeBackgroundPattern});
+  background-position: bottom;
+  background-repeat: repeat-x;
   min-height: 100%;
-  width: 100%;
+  height: fit-content;
 `;
 
 export const OnboardingNavbar = styled.nav`
@@ -413,7 +417,8 @@ const OnboardingDialogComponent = ({
 export const OnboardingDialog = withStyles({
   paper: {
     borderRadius: 0,
-    padding: '1.5rem 2rem',
+    padding: '-1rem 0rem',
+    width: '500px',
   },
   smallPaper: {
     borderRadius: 0,
@@ -425,6 +430,21 @@ export const OnboardingDivider = styled.div`
   background-color: ${palette.brightBlue};
   height: 0.0625rem;
   width: 100%;
+`;
+
+export const OnboardingHeader = styled.div`
+  background: linear-gradient(
+    to top right,
+    ${palette.brightBlue},
+    ${palette.darkBlue}
+  );
+  color: ${palette.white};
+  padding: 1rem;
+`;
+
+export const OnboardingTitle = styled.div`
+  font-weight: 500;
+  line-hight: 20px;
 `;
 
 export const OnboardingAnchorDiv = styled.div`

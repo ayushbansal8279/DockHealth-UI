@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
-import AuthTemplateTopBackground from 'img/auth-template-top-background.svg';
+import AuthTemplateTopBackgroundTop from 'img/Bubble_Pattern_Top.svg';
+import AuthTemplateTopBackgroundBottom from 'img/Bubble_Pattern_Bottom.svg';
 
 const mdBreakpoint = 960;
 
@@ -20,17 +21,19 @@ export const LeftSideMainContainer = styled.div`
   background-color: ${palette.midnightBlue};
   background-image: linear-gradient(
       to bottom,
-      ${opacify(palette.midnightBlue, 0.8)},
-      ${opacify(palette.midnightBlue, 0.8)}
+      ${opacify(palette.midnightBlue, 0.5)},
+      ${opacify(palette.midnightBlue, 0.5)}
     ),
-    url(${AuthTemplateTopBackground});
+    url(${AuthTemplateTopBackgroundTop}),
+    url(${AuthTemplateTopBackgroundBottom});
   background-repeat: repeat-x;
-  display: flex;
+  background-position: bottom, top;
+  display: flex-root;
   max-width: 642px;
   height: 100%;
   justify-content: center;
   min-height: 100%;
-  padding: 2rem;
+  padding: 14rem 7rem 2rem 7rem;
   width: 50%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {

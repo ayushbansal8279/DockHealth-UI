@@ -10,7 +10,7 @@ const DockLogoImage = styled.img.attrs({
   alt: 'Dock Health logo',
 })`
   object-fit: contain;
-  height: 195px;
+  height: 128px;
 `;
 
 const StyledGrid = styled(Grid)`
@@ -21,12 +21,7 @@ const StyledGrid = styled(Grid)`
 
 const TemplateAuthBaseDefaultContent = () => {
   return (
-    <StyledGrid
-      container
-      justify="center"
-      alignItems="center"
-      direction="column"
-    >
+    <StyledGrid container justify="center" alignItems="left" direction="column">
       <a href="/#/">
         <DockLogoImage />
       </a>

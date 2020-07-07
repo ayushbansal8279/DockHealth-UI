@@ -5,20 +5,16 @@ import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
 import { object, string } from 'yup';
-
 import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
 import { updateOrganizationName } from 'actions/organization-actions';
 import { findAllUsers, loading } from 'actions/people-actions';
 import * as userApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
-import InvitationPanel from 'views/self-serve/subscriptions/SubscriptionsView.InvitationPanel';
-import SubscriptionsViewMembersTable from 'views/self-serve/subscriptions/SubscriptionsView.MembersTable';
 import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingButton,
-  OnboardingDivider,
 } from '../OnboardingTemplate.Components';
 
 const goToProfile = () => {
@@ -115,22 +111,26 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
     >
       <FormContext {...formMethods}>
         <Spacing vertical={6} />
-        <MontserratTypography variant="h2" weight="600">
-          Organization
+        <MontserratTypography variant="h1" weight="600">
+          TIME TO CHOOSE A NAME
         </MontserratTypography>
-        <Spacing vertical={4} />
+        <Spacing vertical={5} />
+        <MontserratTypography variant="h3">
+          What would you like to call your group or practice?
+        </MontserratTypography>
+        <MontserratTypography variant="h3">
+          You're Welcome to be creative, or just use your organization's
+          official name.
+        </MontserratTypography>
+        <Spacing vertical={5} />
         <UniversalMontserratInput
-          label="What's the name of your organization?"
+          autoFocus
+          label="What is the name of your group or practice?"
           name="organizationName"
           required
         />
-        <Spacing vertical={2} />
-        <MontserratTypography variant="h4">
-          You’re welcome to provide an organizational name that is different
-          from your formal legal name. This is what you would call your group or
-          practice.
-        </MontserratTypography>
-        <Spacing vertical={6} />
+
+        {/* <Spacing vertical={6} />
         <Grid container justify="space-between">
           <MontserratTypography variant="h2" weight="600">
             Invite your team
@@ -151,13 +151,16 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
           {invitationPanelVisible && (
             <InvitationPanel getAllUsers={getAllUsers} />
           )}
-        </Grid>
-        <Spacing vertical={4} />
-        <OnboardingDivider />
+        </Grid> */}
         <Spacing vertical={4} />
         <Grid container justify="flex-end">
           <Spacing horizontal={4} />
-          <OnboardingButton variant="contained" type="submit" size="small">
+          <OnboardingButton
+            variant="contained"
+            type="submit"
+            size="large"
+            onClick={goToMainPage}
+          >
             Continue
           </OnboardingButton>
         </Grid>
