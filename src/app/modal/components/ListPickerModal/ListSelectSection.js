@@ -24,11 +24,17 @@ const ListSelectSection = ({
 }) => {
   const addListInput = useRef();
 
-  const handleInputEnterDown = listName => {
+  const handleAddNewList = listName => {
     if (listName) {
       onAddList(listName);
       addListInput.current.value = '';
     }
+  };
+
+  const handleSaveClick = () => {
+    if (addListInput?.current?.value)
+      handleAddNewList(addListInput?.current?.value);
+    else onSave(selectedList?.taskListIdentifier);
   };
 
   return (
@@ -63,7 +69,7 @@ const ListSelectSection = ({
           type="text"
           placeholder="Add list"
           onKeyDown={event =>
-            event.keyCode === 13 && handleInputEnterDown(event.target.value)
+            event.keyCode === 13 && handleAddNewList(event.target.value)
           }
           onFocus={() => onListSelection(null)}
         />
@@ -85,9 +91,7 @@ const ListSelectSection = ({
             variant="contained"
             type="button"
             size="small"
-            onClick={() =>
-              selectedList && onSave(selectedList.taskListIdentifier)
-            }
+            onClick={() => handleSaveClick()}
           >
             Save
           </StyledButton>

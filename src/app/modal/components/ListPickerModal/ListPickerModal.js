@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { getTaskListForUser } from 'actions/tasklist-actions';
+import { addTaskList } from 'api/tasklist-api';
 import { CloseIconButton, CloseIcon, ListPickerModalWrapper } from './styled';
 import { ModalWrapper } from '../styled';
 import ListSelectSection from './ListSelectSection';
-import ListAddSection from './ListAddSection';
-
-const MODAL_MODE = {
-  SELECT: 'select',
-  CREATE: 'create',
-};
 
 const ListPickerModal = ({
   closeModal,
@@ -20,23 +15,38 @@ const ListPickerModal = ({
   const [selectedList, setSelectedList] = useState(null);
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [lists, setLists] = useState(null);
-  const [newListName, setNewListName] = useState('');
-  const [modalMode, setModalMode] = useState(MODAL_MODE.SELECT);
+  const [isSavingList, setSavingList] = useState(false);
+
   const dispatch = useDispatch();
 
   const handleListSelectSave = taskListIdentifier => {
+    if (isSavingList || !taskListIdentifier) {
+      return;
+    }
     confirm(taskListIdentifier);
     closeModal();
   };
 
-  const handleNavigateToAddList = listName => {
-    setNewListName(listName);
-    setModalMode(MODAL_MODE.CREATE);
+  const refreshListsInStore = () => {
+    dispatch(getTaskListForUser());
   };
 
-  const handleNavigateToSelectList = () => {
-    setNewListName('');
-    setModalMode(MODAL_MODE.SELECT);
+  const handleAddNewList = listName => {
+    if (isSavingList) return;
+
+    setSavingList(true);
+    addTaskList({
+      ...listCreationPayload,
+      listName,
+    })
+      .then(({ taskListIdentifier }) => {
+        setSavingList(false);
+        handleListSelectSave(taskListIdentifier);
+        refreshListsInStore();
+      })
+      .catch(() => {
+        setSavingList(false);
+      });
   };
 
   useEffect(() => {
@@ -56,25 +66,15 @@ const ListPickerModal = ({
         <CloseIconButton onClick={closeModal} size="small" color="secondary">
           <CloseIcon />
         </CloseIconButton>
-        {modalMode === MODAL_MODE.SELECT ? (
-          <ListSelectSection
-            lists={lists}
-            selectedList={selectedList}
-            isFetchingLists={isFetchingLists}
-            onListSelection={setSelectedList}
-            onAddList={handleNavigateToAddList}
-            onSave={handleListSelectSave}
-            onCancel={closeModal}
-          />
-        ) : (
-          <ListAddSection
-            addListPayload={listCreationPayload}
-            initialListName={newListName}
-            onCancel={handleNavigateToSelectList}
-            listSelectSave={handleListSelectSave}
-            refreshLists={() => dispatch(getTaskListForUser())}
-          />
-        )}
+        <ListSelectSection
+          lists={lists}
+          selectedList={selectedList}
+          isFetchingLists={isFetchingLists}
+          onListSelection={setSelectedList}
+          onSave={handleListSelectSave}
+          onAddList={handleAddNewList}
+          onCancel={closeModal}
+        />
       </ListPickerModalWrapper>
     </ModalWrapper>
   );
