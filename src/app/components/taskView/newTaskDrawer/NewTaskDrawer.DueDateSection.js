@@ -7,8 +7,8 @@ import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
 import { RobotoTypography } from 'styles/theme';
 
+import Datepicker from 'components/common/Datepicker/Datepicker';
 import palette from 'styles/palette';
-import Calendar from './NewTaskDrawer.Calendar';
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import { AdornmentClear } from './NewTaskDrawer.Styled';
 import { DueDateLabelContainer } from './NewTaskDrawer.DueDateSection.Styled';
@@ -131,8 +131,6 @@ const DueDateSection = ({
     refreshList,
   });
 
-  const dueDateValue = watch('dueDate');
-
   useEffect(() => {
     closeCalendar();
   }, [closeCalendar, selectedTaskIdentifier]);
@@ -166,7 +164,10 @@ const DueDateSection = ({
       label: (
         <div>
           <Divider />
-          <Calendar dateFieldName={dateFieldName} setDate={setDueDateValue} />
+          <Datepicker
+            onDateChange={setDueDateValue}
+            selectedDate={currentDueDate ? moment(currentDueDate) : null}
+          />
         </div>
       ),
       displayLabel: '',
@@ -180,14 +181,8 @@ const DueDateSection = ({
       label="Due date"
       placeholder="Set a due date?"
       InputProps={{
-        // startAdornment:
-        //   selectedTask && selectedTask.dueDate != null ? (
-        //     ''
-        //   ) : (
-        //     <AdornmentContainer>+</AdornmentContainer>
-        //   ),
         endAdornment:
-          selectedTask && dueDateValue ? (
+          selectedTask && currentDueDate ? (
             <AdornmentClear onClick={clearDueDate} />
           ) : (
             ''
