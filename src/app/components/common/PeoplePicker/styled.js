@@ -49,7 +49,6 @@ export const SelectedPeopleIcons = styled.div`
 
 export const SelectedPeopleNames = styled.div`
   display: flex;
-  flex-direction: column;
 `;
 
 export const PeopleLabel = styled.div`

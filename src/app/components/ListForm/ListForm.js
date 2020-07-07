@@ -8,6 +8,7 @@ import { showAlert } from 'helpers/utility-functions';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
+import * as AlertActions from 'alert/actions';
 import {
   CancelButton,
   CloseButton,
@@ -23,7 +24,6 @@ import {
 } from './styled';
 import initializeListFormHooks from './hooks';
 import messages from './messages';
-import * as AlertActions from 'alert/actions';
 
 const ADMIN_PICKER = 'ADMIN_PICKER';
 const MEMBER_PICKER = 'MEMBER_PICKER';
@@ -132,6 +132,7 @@ const ListForm = ({ setListFormOpen }) => {
           name="listName"
           required
           showError
+          centerizedLabelOnStart
         />
       </FormContext>
       <FormContext {...formContext}>
@@ -139,7 +140,7 @@ const ListForm = ({ setListFormOpen }) => {
           fullWidth
           label={messages.form.description.label}
           name="listDescription"
-          placeholder={messages.form.description.placeholder}
+          centerizedLabelOnStart
         />
       </FormContext>
       <PeoplePicker

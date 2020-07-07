@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   PrimaryInputBox,
   PrimaryInputLabel,
@@ -41,9 +41,11 @@ const Input = React.forwardRef(
       styling = 'primary',
       type,
       value,
+      centerizedLabelOnStart,
     },
     reference,
   ) => {
+    const [isFocused, setIsFocus] = useState(false);
     const {
       boxComponent: Box,
       labelComponent: Label,
@@ -52,9 +54,21 @@ const Input = React.forwardRef(
     } = components[styling];
     const hasError = showError && error;
     const simpleInput = onChange ? { onChange, value } : {};
+
+    let focusProps = {};
+
+    if (centerizedLabelOnStart) {
+      focusProps = {
+        onFocus: () => setIsFocus(true),
+        onBlur: () => setIsFocus(false),
+      };
+    }
+
+    const isLabelCenterized = !isFocused && centerizedLabelOnStart;
+
     return (
       <Box fullWidth={fullWidth}>
-        <Label htmlFor={name}>
+        <Label isLabelCenterized={isLabelCenterized} htmlFor={name}>
           {label}
           {required && <RedDot>*</RedDot>}
         </Label>
@@ -64,7 +78,9 @@ const Input = React.forwardRef(
           type={type}
           disabled={disabled}
           placeholder={placeholder}
+          isLabelCenterized={isLabelCenterized}
           ref={reference}
+          {...focusProps}
           {...simpleInput}
         />
         {hasError && <Error>{error}</Error>}
