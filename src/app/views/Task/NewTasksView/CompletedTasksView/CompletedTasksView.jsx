@@ -28,6 +28,7 @@ const CompletedTasksView = ({
   hasFiltersApplied,
   selectedTask,
   listUniqueKey,
+  groupPagination,
 }) => {
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -51,7 +52,7 @@ const CompletedTasksView = ({
               toggleCompleteTask={toggleCompleteTask}
               tasks={tasks}
               isCompletedGroup
-              groupPagination
+              groupPagination={groupPagination}
               showMoreTasks={showMoreTasks}
               hasMoreTasks={tasks.length < summaryTasksCount}
               isFetchingMoreTasks={isFetchingMoreTasks}

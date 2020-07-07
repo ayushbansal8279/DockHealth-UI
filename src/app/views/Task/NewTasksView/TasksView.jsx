@@ -60,6 +60,7 @@ const TaskView = ({
   isMainListView = false,
   listUniqueKey,
   pdfTitle,
+  groupPagination = false,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -185,6 +186,7 @@ const TaskView = ({
           searchValue={searchValue}
           selectedTask={selectedTask}
           listUniqueKey={listUniqueKey}
+          groupPagination={groupPagination}
         />
       ) : (
         <OpenedTasksView

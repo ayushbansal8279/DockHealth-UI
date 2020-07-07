@@ -441,6 +441,7 @@ class Home extends Component {
       isMainListView: true,
       listUniqueKey: taskListIdentifier,
       pdfTitle: `${loadedTasklist?.listName}`,
+      groupPagination: true,
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
