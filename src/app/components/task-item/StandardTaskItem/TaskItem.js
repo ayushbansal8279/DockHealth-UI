@@ -215,7 +215,11 @@ const TaskItem = ({
       onMouseLeave={() => setIsHoverd(false)}
     >
       <StandardTaskItemContainer
-        isSelected={selectedTask?.taskIdentifier === taskIdentifier}
+        isSelected={
+          selectedTask?.taskIdentifier === taskIdentifier ||
+          (selectedTask?.taskIdentifier == null &&
+            selectedTask?.parentTaskIdentifier === taskIdentifier)
+        }
       >
         {!dragAndDropDisabled && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
