@@ -12,7 +12,7 @@ export const SearchGrid = styled(Grid)`
 export const DashboardContainer = styled.div`
   position: relative;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 0 ${spacing.regularPlus};
   margin-top: ${spacing.large};
 `;

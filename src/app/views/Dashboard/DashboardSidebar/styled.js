@@ -33,7 +33,7 @@ export const MenuButton = styled.button`
 
 export const ListItemsWrapper = styled.div`
   flex: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ListItem = styled.div`
