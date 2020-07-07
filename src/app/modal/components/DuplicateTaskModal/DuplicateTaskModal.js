@@ -13,7 +13,7 @@ import {
   CancelButton,
 } from '../styled';
 
-const DuplicateTaskModal = ({ closeModal, confirm }) => {
+const DuplicateTaskModal = ({ skip, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -27,7 +27,7 @@ const DuplicateTaskModal = ({ closeModal, confirm }) => {
         </Typography>
         <Spacing vertical={4} />
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
+          <CancelButton variant="outlined" type="button" onClick={skip}>
             No, Do Not Duplicate
           </CancelButton>
           <Spacing horizontal={3} />

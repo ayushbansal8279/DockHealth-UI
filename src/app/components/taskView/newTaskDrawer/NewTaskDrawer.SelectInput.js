@@ -118,14 +118,16 @@ const renderTags = ({
             onDelete={undefined}
           />
         )}
-        {index === currentValueIdentifiers.length - 1 && !popupOpen && (
-          <DrawerAddChip
-            label={<CondensedH4>+</CondensedH4>}
-            onClick={() => {
-              openAutocomplete();
-            }}
-          />
-        )}
+        {index === currentValueIdentifiers.length - 1 &&
+          !popupOpen &&
+          !focusState && (
+            <DrawerAddChip
+              label={<CondensedH4>+</CondensedH4>}
+              onClick={() => {
+                openAutocomplete();
+              }}
+            />
+          )}
       </>
     ))}
   </>

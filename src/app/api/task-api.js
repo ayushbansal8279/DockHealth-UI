@@ -1,8 +1,8 @@
 /* eslint-disable eqeqeq */
 import { noop } from 'helpers/utility-functions';
+import { showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import URLS from '../urls';
-import { showAlert } from 'helpers/utility-functions';
 
 const ERROR_RETRIEVING_TASKS_MESSAGE =
   'Error in retrieving tasks. Please try again.';
@@ -281,7 +281,11 @@ export function addTask(task) {
       return response.data;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in creating task. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in creating task. Please try again.',
+      });
       throw error;
     });
 }
@@ -311,14 +315,20 @@ export function deleteTask(taskIdentifier) {
     });
 }
 
-export function duplicateTask(taskIdentifier) {
+export function duplicateTask(taskIdentifier, includeAttachments) {
   return axios
-    .put(`task/duplicateTask/${taskIdentifier}`)
+    .put(
+      `task/duplicateTask/${taskIdentifier}?includeAttachments=${includeAttachments}`,
+    )
     .then(response => {
       return response.data;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in duplicating comment. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in duplicating task. Please try again.',
+      });
       throw error;
     });
 }
@@ -330,7 +340,11 @@ export function sortSubTask(taskIdentifier, direction) {
       return response.data;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in changing sub task order. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in changing sub task order. Please try again.',
+      });
       throw error;
     });
 }
@@ -432,7 +446,11 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in task assignment. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in task assignment. Please try again.',
+      });
       throw error;
     });
 }
@@ -455,7 +473,11 @@ export function deleteComment(commentIdentifier) {
       return response;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in deleting comment. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in deleting comment. Please try again.',
+      });
       throw error;
     });
 }
@@ -467,7 +489,11 @@ export function updateComment(comment) {
       return response;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in updating comment. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in updating comment. Please try again.',
+      });
       throw error;
     });
 }
@@ -477,7 +503,11 @@ export function getHighPriorityTasksByTaskList(taskListIdentifier) {
     .get(`task/findHighPriorityListTasks/${taskListIdentifier}?startPosition=0`)
     .then(response => response.data)
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: ERROR_RETRIEVING_TASKS_MESSAGE,
+      });
       throw error;
     });
 }
@@ -493,7 +523,11 @@ export function getListTasksByPatient(
     )
     .then(response => response.data)
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: ERROR_RETRIEVING_TASKS_MESSAGE,
+      });
       throw error;
     });
 }
@@ -511,7 +545,11 @@ export function getAllTasksByPatient(
       )
       .then(response => response.data)
       .catch(error => {
-        showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: ERROR_RETRIEVING_TASKS_MESSAGE,
+        });
         throw error;
       });
   }
@@ -519,7 +557,11 @@ export function getAllTasksByPatient(
     .get(`task/findAllListTasksByPatient/${patientIdentifier}?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: ERROR_RETRIEVING_TASKS_MESSAGE });
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: ERROR_RETRIEVING_TASKS_MESSAGE,
+      });
       throw error;
     });
 }
@@ -583,9 +625,17 @@ export function addTaskAttachment(
     })
     .catch(error => {
       if (error.response && error.response.status === 413) {
-        showAlert({status: 'error', title: 'Error', text: 'File exceeded the allowed size of 100 MB'});
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'File exceeded the allowed size of 100 MB',
+        });
       } else {
-        showAlert({status: 'error', title: 'Error', text: 'Error in saving attachment. Please try again.'});
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'Error in saving attachment. Please try again.',
+        });
       }
       throw error;
     });
@@ -598,7 +648,11 @@ export function removeTaskAttachment(taskAttachmentId) {
       return response;
     })
     .catch(error => {
-      showAlert({status: 'error', title: 'Error', text: 'Error in removing attachment. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in removing attachment. Please try again.',
+      });
       throw error;
     });
 }

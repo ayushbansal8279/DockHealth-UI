@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
@@ -83,6 +84,7 @@ const TopSection = ({
     closeTaskMenuPopover,
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
+    duplicateTaskWithoutConfirmation,
   } = initializeTaskDrawerTopSectionHooks({
     modalActions,
     onDelete,
@@ -92,6 +94,12 @@ const TopSection = ({
   });
 
   const moreTaskListsAvailable = !!(taskLists && taskLists.length > 1);
+
+  const hasAttachments = !!(
+    selectedTask &&
+    selectedTask.attachments &&
+    selectedTask.attachments.length > 0
+  );
 
   return (
     <>
@@ -221,9 +229,13 @@ const TopSection = ({
               )}
               <ListItem
                 key="action_duplicate"
-                onClick={() => {
+                onClick={event => {
                   closeTaskMenuPopover();
-                  openDuplicateConfirmationModal();
+                  if (hasAttachments) {
+                    openDuplicateConfirmationModal();
+                  } else {
+                    duplicateTaskWithoutConfirmation(event);
+                  }
                 }}
                 button
                 style={{
