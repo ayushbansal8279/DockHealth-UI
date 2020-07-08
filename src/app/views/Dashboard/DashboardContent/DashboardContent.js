@@ -112,7 +112,15 @@ const DashboardContent = ({
           </SearchGrid>
         </Grid>
         <Spacing vertical={3} />
-        <QuickAddTaskInput quickAddTask={handleQuickAddTask} />
+        <QuickAddTaskInput
+          quickAddTask={handleQuickAddTask}
+          validator={value => {
+            if (value?.length < 2)
+              return 'The task description is too short (min. 2 characters)';
+
+            return null;
+          }}
+        />
       </StickyHeader>
       <ViewLoader isFetchingData={dashboardTasksIsLoading}>
         {!isEmpty(searchedDashboardTasks)
