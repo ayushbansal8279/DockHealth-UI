@@ -187,6 +187,7 @@ const TaskItem = ({
   selectedTask,
   parentHasPatient,
   highlightedValue,
+  isDraggable,
 }) => {
   const {
     taskIdentifier,
@@ -244,7 +245,7 @@ const TaskItem = ({
             selectedTask?.parentTaskIdentifier === taskIdentifier)
         }
       >
-        {!dragAndDropDisabled && (
+        {!dragAndDropDisabled && isDraggable && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
@@ -534,6 +535,7 @@ const Subtasks = ({
   currentUser,
   parentHasPatient,
   taskList,
+  isDraggable,
   ...restProps
 }) => {
   const [draggedId, setDraggableId] = useState(false);
@@ -579,6 +581,7 @@ const Subtasks = ({
                       key={subtask.taskIdentifier}
                       draggableId={String(subtask.taskIdentifier)}
                       index={index}
+                      isDragDisabled={!isDraggable}
                     >
                       {(
                         { innerRef, draggableProps, dragHandleProps },
@@ -593,6 +596,7 @@ const Subtasks = ({
                             currentUser={currentUser}
                             reassignTask={reassignTask}
                             parentHasPatient={parentHasPatient}
+                            isDraggable={isDraggable}
                             {...restProps}
                           />
                           {draggedId !== String(subtask.taskIdentifier) &&
@@ -630,6 +634,7 @@ const Task = ({
   groupId,
   currentUser,
   reassignTask,
+  isDraggable,
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -673,6 +678,7 @@ const Task = ({
           currentUser={currentUser}
           reassignTask={reassignTask}
           subtasks={renderedSubtasks}
+          isDraggable={isDraggable}
           {...restProps}
         />
       </div>
@@ -699,6 +705,7 @@ const Task = ({
           reassignTask={reassignTask}
           parentHasPatient={!!patient}
           taskList={task?.taskList}
+          isDraggable={isDraggable}
           {...restProps}
         />
       )}

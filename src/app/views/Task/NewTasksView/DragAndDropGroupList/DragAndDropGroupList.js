@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Task from 'components/task-item/StandardTaskItem/TaskItem';
 import { DroppablePlaceholder } from './styled';
@@ -23,6 +24,7 @@ const DragAndDropGroupList = ({
   selectedTask,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
+  const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
 
   return (
     <Droppable droppableId={groupId} isDropDisabled={isCompletedGroup}>
@@ -39,7 +41,9 @@ const DragAndDropGroupList = ({
                 key={task.taskIdentifier}
                 draggableId={String(task.taskIdentifier)}
                 index={index}
-                isDragDisabled={isCompletedGroup || dragAndDropDisabled}
+                isDragDisabled={
+                  isCompletedGroup || dragAndDropDisabled || isTaskDrawerOpen
+                }
               >
                 {(draggableProvided, { isDragging }) => (
                   <Task
@@ -65,6 +69,7 @@ const DragAndDropGroupList = ({
                     }
                     listNameVisible={listNameVisible}
                     selectedTask={selectedTask}
+                    isDraggable={!isTaskDrawerOpen}
                   />
                 )}
               </Draggable>
