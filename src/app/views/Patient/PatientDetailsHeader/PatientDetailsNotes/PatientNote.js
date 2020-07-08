@@ -33,7 +33,7 @@ const PatientNote = ({
         <PatientNoteDescription
           onChange={event => setUpdatedDescription(event.target.value)}
           onKeyDown={async event => {
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 && updatedDescription?.length > 0) {
               await editPatientNote({
                 note: updatedDescription,
                 patientNoteIdentifier,
@@ -41,6 +41,7 @@ const PatientNote = ({
               setEditableNote(null);
             }
           }}
+          onBlur={() => setEditableNote(null)}
           value={isEditable ? updatedDescription : description}
           disabled={!isEditable}
         />
