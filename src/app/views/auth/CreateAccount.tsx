@@ -30,9 +30,10 @@ import useBoolean from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import {
   OnboardingDialog,
-  OnboardingDivider,
+  OnboardingHeader,
 } from '../onboarding/OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
@@ -98,14 +99,14 @@ OnSubmitProps) => async ({
       given_name: firstName,
       'custom:referral': referral,
     });
-    setDialogTitle(`Confirm your email`);
+    setDialogTitle(`Please confirm your email.`);
     setDialogMessage(
       `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
     );
     showDialog();
   } catch (error) {
     if (error?.code === 'UsernameExistsException') {
-      setDialogTitle(`User Exists`);
+      setDialogTitle(`User Already Exists.`);
       setDialogMessage(
         `User with ${email} already exists. Please go to your email and click on the link so that we can confirm your email address.`,
       );
@@ -195,6 +196,27 @@ const CreateAccount = () => {
 
   const hasCustomPageTitle = customPageTitle !== '';
 
+  const onboardingDialogStyle = {
+    fontFamily: 'roboto condensed',
+    fontWeight: 300,
+    fontSize: '18px',
+    padding: '0rem 1rem',
+  };
+
+  const onboardingMessageStyle = {
+    fontFamily: 'roboto condensed',
+    fontWeight: 300,
+    fontSize: '18px',
+    padding: '0rem 1rem',
+    display: 'block',
+  };
+
+  const onboardingLinkStyle = {
+    fontFamily: 'roboto condensed',
+    fontWeight: 300,
+    fontSize: '18px',
+  };
+
   return (
     <StyledGrid container alignItems="center" justify="center">
       <StyledForm
@@ -259,37 +281,67 @@ const CreateAccount = () => {
           <NextButton type="submit">Continue</NextButton>
           <Spacing vertical={5} />
           <MontserratTypography variant="h4">
-            <span>I already have an account </span>
-            <StyledLink to="/login">SIGN IN</StyledLink>
+            <span
+              style={{ padding: '0rem 1rem', fontFamily: 'roboto condensed' }}
+            >
+              I already have an account{' '}
+            </span>
+            <StyledLink style={{ fontFamily: 'roboto condensed' }} to="/login">
+              SIGN IN
+            </StyledLink>
           </MontserratTypography>
         </FormContext>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <MontserratTypography variant="h3">{dialogTitle}</MontserratTypography>
-        <Spacing vertical={3} />
-        <OnboardingDivider />
-        <Spacing vertical={3} />
+        <OnboardingHeader>
+          <MontserratTypography variant="h2">
+            <span
+              style={{
+                fontWeight: 500,
+                fontSize: '26px',
+                paddingLeft: '1rem',
+                lineHeight: '45px',
+              }}
+            >
+              {' '}
+              {dialogTitle}{' '}
+            </span>
+            <img
+              src={ConfirmEmailHeaderCheck}
+              style={{ float: 'right', height: '2.7rem' }}
+              alt="Dock Health"
+            />
+          </MontserratTypography>
+        </OnboardingHeader>
+        <Spacing vertical={5} />
         <MontserratTypography variant="h4">
-          {dialogMessage}
+          <span style={onboardingMessageStyle}> {dialogMessage} </span>
         </MontserratTypography>
         <Spacing vertical={5} />
         <MontserratTypography variant="h4">
-          I didn&apos;t get the email
-        </MontserratTypography>
-        <MontserratTypography variant="h4">
-          <StyledAnchorDiv onClick={() => resendEmail(email)}>
+          <span style={onboardingDialogStyle}>
+            I didn&apos;t get the email.{' '}
+          </span>
+          <StyledAnchorDiv
+            style={onboardingLinkStyle}
+            onClick={() => resendEmail(email)}
+          >
             Resend email
           </StyledAnchorDiv>
         </MontserratTypography>
+
         <Spacing vertical={5} />
+
         <MontserratTypography variant="h4">
-          The email address is wrong
-        </MontserratTypography>
-        <MontserratTypography variant="h4">
-          <StyledAnchorDiv onClick={hideDialog}>
+          <span style={onboardingDialogStyle}>
+            {' '}
+            The email address is wrong.{' '}
+          </span>
+          <StyledAnchorDiv onClick={hideDialog} style={onboardingLinkStyle}>
             Change email address
           </StyledAnchorDiv>
         </MontserratTypography>
+        <Spacing vertical={5} />
       </OnboardingDialog>
     </StyledGrid>
   );

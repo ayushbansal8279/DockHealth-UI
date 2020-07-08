@@ -8,7 +8,7 @@ const OnboardingBaaOverviewView = () => {
     <div>
       <Spacing vertical={6} />
       <MontserratTypography variant="h2" weight="600">
-        THAT WAS EASY
+        NOW FOR SOMETHING COMPLETELY SERIOUS.
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h3">

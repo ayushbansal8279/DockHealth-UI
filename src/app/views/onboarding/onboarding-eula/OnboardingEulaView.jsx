@@ -50,13 +50,13 @@ const OnboardingEulaView = () => {
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h3">
-        Creating a great relationship with our customers, protecting patient
-        data and compliance with HIPAA is essential to our work and yours.
+        Securing patient data, being HIPAA compliant, and getting your team
+        ready to work better. Sounds like the start of a great relationship.
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h4">
-        We would love to set up you and your team up to be HIPAA compliant which
-        will require you reviewing and signing a few documents.
+        We would love to set up you and your team set up to be HIPAA compliant
+        which requires signing a few documents.
       </MontserratTypography>
       <Spacing vertical={6} />
       <Grid container>
