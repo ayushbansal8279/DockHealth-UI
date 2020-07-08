@@ -19,6 +19,10 @@ export const FocusDrawerFieldEnum = {
   LABEL: 'label',
 };
 
+export const ContextRefreshTriggers = {
+  DUE_DATE_CHANGE: 1,
+};
+
 const getFormattedAge = ({ dob }) => {
   if (!dob) {
     return '-';

@@ -20,6 +20,7 @@ import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-act
 import { openDrawer as openDrawerAction } from 'actions/task-drawer-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
@@ -36,7 +37,7 @@ const searchDashboardTasks = (dashboardTasks, searchValue) =>
     const filteredTasks = currentValue.tasks.filter(({ description }) =>
       description.toLowerCase().includes(searchValue.toLowerCase()),
     );
-    if (filteredTasks.length === 0) return accumulator;
+    if (filteredTasks?.length === 0) return accumulator;
 
     return [...accumulator, { ...currentValue, tasks: filteredTasks }];
   }, []);
@@ -60,7 +61,7 @@ const DashboardContent = ({
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const filteredDashboardTasks = dashboardTasks.filter(
-    ({ tasks }) => tasks.length !== 0,
+    ({ tasks }) => tasks && tasks.length !== 0,
   );
 
   const handleQuickAddTask = taskName => {
@@ -133,6 +134,7 @@ const DashboardContent = ({
       </ViewLoader>
       <NewTaskDrawer
         modalActions={modalActions}
+        refreshTriggers={[ContextRefreshTriggers.DUE_DATE_CHANGE]}
         refreshList={reloadDashboardTasks}
       />
     </DashboardContainer>

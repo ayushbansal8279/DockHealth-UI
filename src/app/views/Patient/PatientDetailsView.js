@@ -75,6 +75,7 @@ const PatientDetailsView = ({
   const {
     patientTasksFilterChange,
     setPatientTaskSearch,
+    refreshPatientTasks,
   } = patientTasksSagaActions;
 
   const handleSearchValueChange = value => {
@@ -121,7 +122,10 @@ const PatientDetailsView = ({
       <ViewLoader isFetchingData={isFetching}>
         <PatientListsContainer>{children}</PatientListsContainer>
       </ViewLoader>
-      <NewTaskDrawer modalActions={modalActions} />
+      <NewTaskDrawer
+        modalActions={modalActions}
+        refreshList={refreshPatientTasks}
+      />
     </>
   );
 };

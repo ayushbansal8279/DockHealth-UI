@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useRef, useEffect } from 'react';
@@ -46,10 +47,15 @@ import {
   getFormattedPatients,
   renderMemberoptionWithHighlighting,
   FocusDrawerFieldEnum,
+  ContextRefreshTriggers,
 } from './NewTaskDrawer.Utilities';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
+const NewTaskDrawer = ({
+  isInbox,
+  modalActions,
+  refreshList,
+  refreshTriggers = [],
+}) => {
   const {
     taskDrawerOpen,
     taskDrawerFocusField,
@@ -75,7 +81,7 @@ const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
     members,
     clearSelectedPatient,
     dueTimeReference,
-  } = initializeTaskDrawerHooks({ isInbox });
+  } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
   const { saveDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
@@ -330,6 +336,9 @@ const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
                   isOverDue={isOverDue}
                   setAutoSaveVisible={setAutoSaveVisible}
                   refreshList={refreshList}
+                  shouldRefreshContext={refreshTriggers.includes(
+                    ContextRefreshTriggers.DUE_DATE_CHANGE,
+                  )}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>

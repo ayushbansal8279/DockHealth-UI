@@ -109,6 +109,7 @@ const DueDateSection = ({
   isOverDue,
   setAutoSaveVisible,
   refreshList,
+  shouldRefreshContext,
 }) => {
   const dateFieldName = 'dueDate';
   const timeFieldName = 'dueTime';
@@ -129,6 +130,7 @@ const DueDateSection = ({
     setAutoSaveVisible,
     setValue,
     refreshList,
+    shouldRefresh: shouldRefreshContext,
   });
 
   useEffect(() => {

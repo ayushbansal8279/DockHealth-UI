@@ -116,7 +116,7 @@ const onSubmit = ({
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const initializeTaskDrawerHooks = ({ isInbox }) => {
+const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const {
     patients,
     taskDrawerOpen,
@@ -294,6 +294,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
               `${AlertMessages.TASK_MOVED} to list ${newTaskList.listName}`,
             ),
           );
+          refreshList();
           storeAsCurrentTask(null)(dispatch);
           closeDrawer();
         })
@@ -314,6 +315,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask)(dispatch);
+        refreshList();
         storeAsCurrentTask(null)(dispatch);
         afterDelete();
         onButtonClicked('Delete task');
@@ -338,6 +340,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
           selectedTask,
           includeAttachments,
         )(dispatch);
+        refreshList();
         storeAsCurrentTask(newTask)(dispatch);
         afterDuplicate({ newTask });
         onButtonClicked('Duplicate task');

@@ -212,7 +212,7 @@ const TaskView = ({
           listUniqueKey={listUniqueKey}
         />
       )}
-      <NewTaskDrawer modalActions={modalActions} />
+      <NewTaskDrawer modalActions={modalActions} refreshList={refreshTab} />
     </TaskViewContainer>
   );
 };
