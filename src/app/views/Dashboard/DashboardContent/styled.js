@@ -38,7 +38,7 @@ export const DashboardTasksGroupLabel = styled.div`
   font-size: ${fontSizes.regularPlus};
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.regularPlus};
-  padding-bottom: ${spacing.large};
+  padding-bottom: ${spacing.giga};
   border-bottom: 1px solid ${palette.coolGrey2};
   margin: 0 55px;
 `;
@@ -46,6 +46,7 @@ export const DashboardTasksGroupLabel = styled.div`
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: ${spacing.large};
 `;
 
 export const DashboardHeaderContainer = styled.div`
