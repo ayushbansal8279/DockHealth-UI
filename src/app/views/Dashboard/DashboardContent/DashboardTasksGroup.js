@@ -16,6 +16,7 @@ const DashboardTasksGroup = ({
   sortDashboardTasks,
   openDrawer,
   isTaskDrawerOpen,
+  selectedTaskIdentifier,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -61,7 +62,7 @@ const DashboardTasksGroup = ({
                       key={task.taskIdentifier}
                       draggableId={String(task.taskIdentifier)}
                       index={index}
-                      isDragDisabled={isTaskDrawerOpen}
+                      isDragDisabled={isTaskDrawerOpen || tasks?.length < 2}
                     >
                       {(draggableProvided, { isDragging }) => (
                         <div
@@ -77,8 +78,11 @@ const DashboardTasksGroup = ({
                             storeAsCurrentTask={storeAsCurrentTask}
                             isDragging={isDragging}
                             dragHandleProps={draggableProvided.dragHandleProps}
-                            isDraggable={!isTaskDrawerOpen}
+                            isDraggable={!isTaskDrawerOpen && tasks?.length > 1}
                             openDrawer={openDrawer}
+                            isSelected={
+                              selectedTaskIdentifier === task?.taskIdentifier
+                            }
                           />
                         </div>
                       )}

@@ -11,13 +11,17 @@ import {
   dashboardTasksIsLoadingSelector,
 } from 'selectors/dashboard-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
-import { openDrawer as openDrawerAction } from 'actions/task-drawer-actions';
+import {
+  openDrawer as openDrawerAction,
+  closeDrawer as closeDrawerAction,
+} from 'actions/task-drawer-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
@@ -50,6 +54,8 @@ const DashboardContent = ({
   storeAsCurrentTask,
   openDrawer,
   isTaskDrawerOpen,
+  selectedTaskIdentifier,
+  closeDrawer,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -117,6 +123,12 @@ const DashboardContent = ({
         <Spacing vertical={3} />
         <QuickAddTaskInput
           quickAddTask={handleQuickAddTask}
+          onFocus={() => {
+            if (isTaskDrawerOpen) {
+              closeDrawer();
+              storeAsCurrentTask(null);
+            }
+          }}
           validator={value => {
             if (value?.length < 2)
               return 'The task description is too short (min. 2 characters)';
@@ -138,6 +150,7 @@ const DashboardContent = ({
                 sortDashboardTasks={sortDashboardTasks}
                 openDrawer={openDrawer}
                 isTaskDrawerOpen={isTaskDrawerOpen}
+                selectedTaskIdentifier={selectedTaskIdentifier}
               />
             ))
           : renderEmptyState()}
@@ -155,6 +168,7 @@ const mapStateToProps = state => ({
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   currentUser: userProfileSelector(state),
+  selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -162,6 +176,7 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   storeAsCurrentTask: bindActionCreators(storeAsCurrentTaskAction, dispatch),
   openDrawer: bindActionCreators(openDrawerAction, dispatch),
+  closeDrawer: bindActionCreators(closeDrawerAction, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);

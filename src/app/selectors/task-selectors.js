@@ -98,3 +98,8 @@ export const taskIsSelectedSelector = createSelector(
   taskSelector,
   ({ selectedTask }) => !!selectedTask,
 );
+
+export const selectedTaskIdentifierSelector = createSelector(
+  taskSelector,
+  ({ selectedTask }) => selectedTask?.taskIdentifier,
+);

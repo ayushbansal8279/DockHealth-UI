@@ -213,11 +213,13 @@ export const SlimTaskItemContainer = styled.div`
   align-ttems: center;
   width: 100%;
   position: relative;
-  background-color: white;
+  background-color: ${props =>
+    props.isSelected ? palette.brightBlueWithAlpha : 'white'};
   padding: 0 55px;
   border-radius: ${props => (props.isDragging ? '4px' : '0px')};
   box-shadow: ${props =>
     props.isDragging ? '0px 0px 20px rgba(204, 204, 204, 0.8)' : '0px'};
+  transition: background-color linear 0.2s;
 
   &:hover {
     & ${PriorityHoverIcon}, ${ThreeDots} {

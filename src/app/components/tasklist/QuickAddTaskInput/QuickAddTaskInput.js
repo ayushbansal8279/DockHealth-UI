@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { AddTaskInputWrapper, ErrorLabel } from './styled';
 
-const QuickAddTaskInput = ({ quickAddTask, validator }) => {
+const QuickAddTaskInput = ({ quickAddTask, onFocus, validator }) => {
   const addTaskInput = useRef();
   const [error, setError] = useState(null);
 
@@ -31,6 +31,7 @@ const QuickAddTaskInput = ({ quickAddTask, validator }) => {
           type="text"
           ref={addTaskInput}
           placeholder="Add task"
+          onFocus={onFocus}
           onKeyDown={event =>
             event.keyCode === 13 && handleInputEnterDown(event.target.value)
           }

@@ -45,7 +45,7 @@ export const DashboardTasksGroupLabel = styled.div`
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: ${spacing.large};
+  margin-top: ${spacing.giga};
 `;
 
 export const DashboardHeaderContainer = styled.div`
