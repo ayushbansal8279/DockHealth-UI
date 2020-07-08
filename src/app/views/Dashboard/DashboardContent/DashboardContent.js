@@ -48,6 +48,7 @@ const DashboardContent = ({
   modalActions,
   storeAsCurrentTask,
   openDrawer,
+  isTaskDrawerOpen,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -125,6 +126,7 @@ const DashboardContent = ({
                 storeAsCurrentTask={storeAsCurrentTask}
                 sortDashboardTasks={sortDashboardTasks}
                 openDrawer={openDrawer}
+                isTaskDrawerOpen={isTaskDrawerOpen}
               />
             ))
           : renderEmptyState()}
