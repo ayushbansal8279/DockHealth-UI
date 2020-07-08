@@ -18,7 +18,10 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
-import { openDrawer as openDrawerAction } from 'actions/task-drawer-actions';
+import {
+  openDrawer as openDrawerAction,
+  closeDrawer as closeDrawerAction,
+} from 'actions/task-drawer-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
@@ -52,6 +55,7 @@ const DashboardContent = ({
   openDrawer,
   isTaskDrawerOpen,
   selectedTaskIdentifier,
+  closeDrawer,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -118,6 +122,9 @@ const DashboardContent = ({
         <Spacing vertical={3} />
         <QuickAddTaskInput
           quickAddTask={handleQuickAddTask}
+          onFocus={() => {
+            if (isTaskDrawerOpen) closeDrawer();
+          }}
           validator={value => {
             if (value?.length < 2)
               return 'The task description is too short (min. 2 characters)';
@@ -164,6 +171,7 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   storeAsCurrentTask: bindActionCreators(storeAsCurrentTaskAction, dispatch),
   openDrawer: bindActionCreators(openDrawerAction, dispatch),
+  closeDrawer: bindActionCreators(closeDrawerAction, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);
