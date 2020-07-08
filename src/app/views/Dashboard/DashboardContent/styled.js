@@ -20,10 +20,9 @@ export const DashboardContainer = styled.div`
 export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
-  padding-bottom: ${spacing.largePlus};
   z-index: 100;
   background-color: ${palette.white};
-  padding: 28px 55px;
+  padding: 0 55px ${spacing.regular} 55px;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`

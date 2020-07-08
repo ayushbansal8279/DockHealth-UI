@@ -101,6 +101,7 @@ const DashboardContent = ({
       <DashboardHeaderContainer>
         <DashboardHeader currentUser={currentUser} />
       </DashboardHeaderContainer>
+      <Spacing vertical={3} />
       <StickyHeader>
         <Grid container direction="row" justify="flex-end">
           <SearchGrid isFocused={searchFocused || searchValue} item>
@@ -124,6 +125,7 @@ const DashboardContent = ({
           }}
         />
       </StickyHeader>
+      <Spacing vertical={5} />
       <ViewLoader isFetchingData={dashboardTasksIsLoading}>
         {!isEmpty(searchedDashboardTasks)
           ? searchedDashboardTasks?.map(item => (
