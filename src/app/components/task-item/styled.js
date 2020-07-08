@@ -256,7 +256,8 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 `;
 
 export const SlimTaskItemRightSide = styled.div`
-  max-width: 240px;
+  min-width: 240px;
+  max-width: 340px;
   width: 100%;
   display: flex;
   justify-content: space-between;
