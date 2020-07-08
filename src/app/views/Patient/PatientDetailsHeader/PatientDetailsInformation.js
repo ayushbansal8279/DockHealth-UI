@@ -11,6 +11,7 @@ import {
   PatientDetailsInformations,
   PatientDetails,
   NavigationBackIcon,
+  PatientDetailsLabel,
 } from './styled';
 
 const formatInformation = (information, width) => {
@@ -108,7 +109,7 @@ const PatientDetailsInformation = ({
           )}
         </PatientDetailsInformations>
         <Arrow isOpen={isOpenedDetails} setOpen={setIsOpenedDetails}>
-          <span style={{ color: '#00A2E5' }}>DETAILS</span>
+          <PatientDetailsLabel>DETAILS</PatientDetailsLabel>
         </Arrow>
       </PatientDetails>
     </PatientDetailsInformationContainer>

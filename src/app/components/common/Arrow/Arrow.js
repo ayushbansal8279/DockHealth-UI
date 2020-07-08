@@ -5,7 +5,10 @@ import { ArrowImg, ArrowContainer } from './styled';
 const Arrow = ({ showArrow = true, isOpen, setOpen, children }) => {
   return (
     <ArrowContainer>
-      {children}
+      {React.cloneElement(children, {
+        isOpen,
+        onClick: () => setOpen(!isOpen),
+      })}
       {showArrow && (
         <ArrowImg
           alt="arrow"
