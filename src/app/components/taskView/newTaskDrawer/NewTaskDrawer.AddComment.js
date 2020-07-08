@@ -8,6 +8,7 @@ import {
   AddCommentInput,
   AddCommentLoaderContainer,
 } from './NewTaskDrawer.AddComment.Styled';
+import { FocusDrawerFieldEnum } from './NewTaskDrawer.Utilities';
 
 const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   const {
@@ -22,7 +23,7 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   const addCommentReference = useRef();
 
   useEffect(() => {
-    if (taskDrawerFocusField === 'comment') {
+    if (taskDrawerFocusField === FocusDrawerFieldEnum.COMMENT) {
       addCommentReference.current.focus();
     }
   }, [taskDrawerFocusField]);

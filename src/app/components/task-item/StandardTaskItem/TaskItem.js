@@ -39,6 +39,7 @@ import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssig
 import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
 import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
 import { Tasks as SubtasksContainer } from 'views/Task/NewTasksView/TasksGroup/styled';
+import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import TaskItemStatus from './TaskItemStatus';
 import {
   AddCrossIcon,
@@ -316,7 +317,7 @@ const TaskItem = ({
             <ClickablePatient
               onClick={() => {
                 if (!patient) {
-                  openDrawer('patient');
+                  openDrawer(FocusDrawerFieldEnum.PATIENT);
                   storeAsCurrentTask(task);
                 }
               }}
@@ -378,7 +379,7 @@ const TaskItem = ({
               >
                 <ClickableStandardTaskItemIcon
                   onClick={() => {
-                    openDrawer('comment');
+                    openDrawer(FocusDrawerFieldEnum.COMMENT);
                     storeAsCurrentTask(task);
                   }}
                 >
@@ -446,7 +447,7 @@ const TaskItem = ({
               >
                 <ClickableStandardTaskItemIcon
                   onClick={() => {
-                    openDrawer('label');
+                    openDrawer(FocusDrawerFieldEnum.LABEL);
                     storeAsCurrentTask(task);
                   }}
                 >
@@ -469,7 +470,7 @@ const TaskItem = ({
               >
                 <ClickableStandardTaskItemIcon
                   onClick={() => {
-                    openDrawer('attachment');
+                    openDrawer(FocusDrawerFieldEnum.ATTACHMENT);
                     storeAsCurrentTask(task);
                   }}
                 >

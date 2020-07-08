@@ -12,6 +12,13 @@ import {
 } from './NewTaskDrawer.Styled';
 import palette from '../../../styles/palette';
 
+export const FocusDrawerFieldEnum = {
+  PATIENT: 'patient',
+  COMMENT: 'comment',
+  ATTACHMENT: 'attachment',
+  LABEL: 'label',
+};
+
 const getFormattedAge = ({ dob }) => {
   if (!dob) {
     return '-';

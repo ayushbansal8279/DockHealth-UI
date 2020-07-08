@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider } from '@material-ui/core';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
 import { addPatient, getAllPatients } from 'actions/patient-actions';
@@ -45,6 +45,7 @@ import {
   getFormattedMembers,
   getFormattedPatients,
   renderMemberoptionWithHighlighting,
+  FocusDrawerFieldEnum,
 } from './NewTaskDrawer.Utilities';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -91,7 +92,6 @@ const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
   });
 
   const dueDateValue = watch('dueDate');
-  // const dueTimeValue = watch('dueTime');
 
   const isOverDue =
     dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
@@ -110,6 +110,14 @@ const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
     assignedToInputValue,
     onAssignedToInputChange,
   } = initializeTaskDrawerPopoverHooks();
+
+  useEffect(() => {
+    if (
+      patientInputReference?.current &&
+      taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
+    )
+      patientInputReference.current.querySelector('input').focus();
+  }, [taskDrawerFocusField, patientInputReference]);
 
   const parentFormSubmit = handleSubmit(onSubmit);
 
@@ -250,6 +258,10 @@ const NewTaskDrawer = ({ isInbox, modalActions, refreshList }) => {
                   endAdornmentActionLabel="Add patient"
                   onEndAdornmentAcionClick={handleAddPatient}
                   endAdornmentEnabled
+                  autoFocusEnabled={
+                    taskDrawerOpen &&
+                    taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
+                  }
                 >
                   {formattedPatients}
                 </SelectInput>

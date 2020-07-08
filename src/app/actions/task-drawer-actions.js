@@ -16,5 +16,5 @@ export const openDrawer = focusField => dispatch => {
 };
 
 export const closeDrawer = () => dispatch => {
-  setDrawerState({ open: false, focusField: '' })(dispatch);
+  setDrawerState({ open: false, focusField: null })(dispatch);
 };

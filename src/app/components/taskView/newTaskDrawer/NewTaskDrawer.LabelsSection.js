@@ -8,6 +8,7 @@ import SelectInput from './NewTaskDrawer.SelectInput';
 import {
   getFormattedLabels,
   getFormattedLabel,
+  FocusDrawerFieldEnum,
 } from './NewTaskDrawer.Utilities';
 import initializeLabelsSectionHooks from './NewTaskDrawer.LabelsSection.Hooks';
 
@@ -100,7 +101,7 @@ const LabelsSection = ({
       onFocusCallback={() => {
         saveTaskOnFocus();
       }}
-      autoFocusEnabled={taskDrawerFocusField === 'label'}
+      autoFocusEnabled={taskDrawerFocusField === FocusDrawerFieldEnum.LABEL}
     >
       {formattedLabels}
     </SelectInput>

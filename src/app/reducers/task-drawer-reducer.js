@@ -2,6 +2,7 @@ import { SET_TASK_DRAWER_STATE } from 'actions/action-types';
 
 const initialState = {
   open: false,
+  focusField: null,
 };
 
 const reducer = (state = initialState, { type, payload }) => {
