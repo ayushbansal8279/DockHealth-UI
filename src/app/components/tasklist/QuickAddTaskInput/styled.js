@@ -12,11 +12,13 @@ export const AddTaskInputWrapper = styled.div`
     height: auto;
     padding: ${spacing.regular} ${spacing.huge};
     margin-bottom: 0;
-    border-color: ${palette.coolGrey3};
+    border-color: ${props =>
+      props.hasError ? palette.red : palette.coolGrey3};
     font-size: ${fontSizes.regular};
 
     &:focus {
       box-shadow: none;
+      border-color: ${props => props.hasError && palette.red};
     }
   }
 
@@ -34,6 +36,11 @@ export const AddTaskInputWrapper = styled.div`
   &:focus-within:before {
     visibility: hidden;
   }
+`;
+
+export const ErrorLabel = styled.div`
+  color: ${palette.red};
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export default {
