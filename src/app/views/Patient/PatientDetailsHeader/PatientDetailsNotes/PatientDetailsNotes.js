@@ -54,12 +54,14 @@ const PatientDetailsNotes = ({
 
       <PatientDetailsNoteInput
         onEnterClick={value => {
-          addPatientNote({ note: value });
-          listReference.current.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth',
-          });
+          if (value?.length > 0) {
+            addPatientNote({ note: value });
+            listReference.current.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: 'smooth',
+            });
+          }
         }}
         closeOnEnter
         placeholder="Leave a note"
