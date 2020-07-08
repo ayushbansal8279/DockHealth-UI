@@ -11,6 +11,7 @@ import {
   dashboardTasksIsLoadingSelector,
 } from 'selectors/dashboard-tasks-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -50,6 +51,7 @@ const DashboardContent = ({
   storeAsCurrentTask,
   openDrawer,
   isTaskDrawerOpen,
+  selectedTaskIdentifier,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -136,6 +138,7 @@ const DashboardContent = ({
                 sortDashboardTasks={sortDashboardTasks}
                 openDrawer={openDrawer}
                 isTaskDrawerOpen={isTaskDrawerOpen}
+                selectedTaskIdentifier={selectedTaskIdentifier}
               />
             ))
           : renderEmptyState()}
@@ -153,6 +156,7 @@ const mapStateToProps = state => ({
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   currentUser: userProfileSelector(state),
+  selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({

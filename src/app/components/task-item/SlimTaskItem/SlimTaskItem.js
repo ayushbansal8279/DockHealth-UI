@@ -27,10 +27,11 @@ const SlimTaskItem = ({
   isDraggable,
   dragHandleProps,
   openDrawer,
+  isSelected,
 }) => {
   const { description, taskList, dueDate, priority, parentTask } = task;
   return (
-    <SlimTaskItemContainer isDragging={isDragging}>
+    <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
       {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
       <PrioritySwitch left="34px" onClick={() => {}} isClickable={false}>
         {priority === 'HIGH' && (
