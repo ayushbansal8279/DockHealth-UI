@@ -123,7 +123,10 @@ const DashboardContent = ({
         <QuickAddTaskInput
           quickAddTask={handleQuickAddTask}
           onFocus={() => {
-            if (isTaskDrawerOpen) closeDrawer();
+            if (isTaskDrawerOpen) {
+              closeDrawer();
+              storeAsCurrentTask(null);
+            }
           }}
           validator={value => {
             if (value?.length < 2)
