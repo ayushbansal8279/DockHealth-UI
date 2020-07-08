@@ -73,7 +73,7 @@ const SlimTaskItem = ({
               {taskList?.listName}
             </SlimTaskItemListLink>
           )}
-          {dueDate && moment(new Date()).isAfter(dueDate) && (
+          {dueDate && moment().isAfter(moment(dueDate), 'day') && (
             <OverdueBar>Overdue</OverdueBar>
           )}
         </SlimTaskItemRightSide>
