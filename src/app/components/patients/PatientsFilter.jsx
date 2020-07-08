@@ -1,6 +1,6 @@
 import { MenuItem, Select } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { RotatableChevronWithSpacing } from '../common/RotatableChevron';
@@ -25,25 +25,35 @@ const PatientsFilter = ({
   value,
   options,
   disabled,
-}) => (
-  <StyledSelect
-    value={value || 'ALL_PATIENTS'}
-    variant="outlined"
-    disabled={disabled}
-    onClick={stopPropagation}
-    onChange={onChange}
-    name="filter"
-    IconComponent={() => (
-      <RotatableChevronWithSpacing color={palette.brightBlue} />
-    )}
-  >
-    {options.map(({ value: optionValue, description }) => (
-      <MenuItem value={optionValue} key={optionValue}>
-        {description}
-      </MenuItem>
-    ))}
-  </StyledSelect>
-);
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <StyledSelect
+      value={value || 'ALL_PATIENTS'}
+      variant="outlined"
+      disabled={disabled}
+      onClick={stopPropagation}
+      onChange={onChange}
+      onOpen={() => setIsOpen(true)}
+      onClose={() => setIsOpen(false)}
+      open={isOpen}
+      name="filter"
+      IconComponent={() => (
+        <RotatableChevronWithSpacing
+          color={palette.brightBlue}
+          onClick={() => setIsOpen(!isOpen)}
+        />
+      )}
+    >
+      {options.map(({ value: optionValue, description }) => (
+        <MenuItem value={optionValue} key={optionValue}>
+          {description}
+        </MenuItem>
+      ))}
+    </StyledSelect>
+  );
+};
 
 PatientsFilter.propTypes = {
   disabled: PropTypes.bool,

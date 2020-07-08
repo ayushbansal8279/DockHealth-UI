@@ -6,6 +6,7 @@ import palette from 'styles/palette';
 interface RotatableChevronProps {
   color?: string;
   rotated: boolean;
+  onClick: () => void;
 }
 
 const ListSwitchContainer = styled.div<Pick<RotatableChevronProps, 'rotated'>>`
@@ -32,6 +33,7 @@ const RotatableChevronContainer = styled.div`
   justify-content: center;
   min-width: 2rem;
   width: 2rem;
+  cursor: pointer;
 `;
 
 const HeaderChevronContainer = styled(RotatableChevronContainer)`
@@ -55,11 +57,14 @@ const RotatableChevron = ({
   </ListSwitchContainer>
 );
 
-export const RotatableChevronWithSpacing = (props: RotatableChevronProps) => (
-  <RotatableChevronContainer>
-    <RotatableChevron {...props} />
-  </RotatableChevronContainer>
-);
+export const RotatableChevronWithSpacing = (props: RotatableChevronProps) => {
+  const { onClick } = props;
+  return (
+    <RotatableChevronContainer onClick={onClick}>
+      <RotatableChevron {...props} />
+    </RotatableChevronContainer>
+  );
+};
 
 export const RotatableHeaderChevron = React.forwardRef(
   (props: RotatableChevronProps, reference: React.Ref<HTMLDivElement>) => (

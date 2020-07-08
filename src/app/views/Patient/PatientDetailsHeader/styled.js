@@ -62,3 +62,7 @@ export const NavigationBackIcon = styled.img`
   top: 50%;
   transform: translateY(-50%);
 `;
+
+export const PatientDetailsLabel = styled.div`
+  color: ${palette.brightBlue};
+`;
