@@ -43,6 +43,10 @@ export const ListItem = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
 `;
 
 export const ListsHeader = styled(ListItem)`
