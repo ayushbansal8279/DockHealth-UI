@@ -5,6 +5,8 @@ export const DashboardViewWrapper = styled.div`
   display: flex;
   flex-direction: row;
   height: 100%;
+  width: 100%;
+  background-color: ${palette.white};
 `;
 
 export const DashboardSidebarWrapper = styled.div`
@@ -19,7 +21,7 @@ export const DashboardContentWrapper = styled.div`
   flex: 1;
   height: 100%;
   overflow: hidden;
-  background-color: ${palette.white};
   padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
   transition: padding-right 0.3s ease-out;
+  max-width: 1440px;
 `;
