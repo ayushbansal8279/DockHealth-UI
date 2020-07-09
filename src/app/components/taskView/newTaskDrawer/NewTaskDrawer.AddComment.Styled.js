@@ -20,6 +20,8 @@ export const AddCommentInput = styled.textarea`
   margin: 0;
   outline: 0;
   padding: ${spacing.regular};
+  overflow: hidden;
+  min-height: 60px;
 `;
 
 export const AddCommentLoaderContainer = styled.div`
