@@ -176,6 +176,8 @@ export const AutoSaveLabel = styled.div`
   transform: translateX(-50%);
 `;
 
+export const rowHeight = 'fit-content';
+
 export const StyledList = styled(List)`
   max-height: 12.5rem;
   overflow-y: auto;
@@ -187,12 +189,12 @@ export const styleTaskDrawerContainer = {
 
 export const styleFullRow = {
   padding: '1rem 2rem',
-  height: '84px',
+  height: rowHeight,
 };
 
 export const styleFullRowThin = {
   padding: '0rem 2rem',
-  height: '84px',
+  height: rowHeight,
 };
 
 export const styleFirstRow = {
@@ -214,12 +216,12 @@ export const styleCommentRow = {
 
 export const styleLeftColumn = {
   padding: '1rem 1rem 1rem 2rem',
-  height: '84px',
+  height: rowHeight,
 };
 
 export const styleRightColumn = {
   padding: '1rem 2rem 1rem 1rem',
-  height: '84px',
+  height: rowHeight,
 };
 
 export const AdornmentClear = styled(Close)`
