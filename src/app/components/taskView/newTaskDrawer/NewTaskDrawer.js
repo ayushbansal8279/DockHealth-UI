@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider, ClickAwayListener } from '@material-ui/core';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
 import { addPatient, getAllPatients } from 'actions/patient-actions';
@@ -50,6 +50,8 @@ import {
   FocusDrawerFieldEnum,
   ContextRefreshTriggers,
 } from './NewTaskDrawer.Utilities';
+import TaskDrawerTourContent from './TaskDrawerTourContent/TaskDrawerTourContent';
+import TaskDrawerTourPopper from './TaskDrawerTourPopper/TaskDrawerTourPopper';
 
 const NewTaskDrawer = ({
   isInbox,
@@ -83,6 +85,16 @@ const NewTaskDrawer = ({
     clearSelectedPatient,
     dueTimeReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
+
+  const [openedTourStep, setOpenedTourStep] = useState(null);
+
+  const dueDateSectionReference = useRef(null);
+
+  useEffect(() => {
+    if (taskDrawerOpen) {
+      setOpenedTourStep(0);
+    }
+  }, [taskDrawerOpen]);
 
   const { saveDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
@@ -190,6 +202,8 @@ const NewTaskDrawer = ({
                     closeTaskDrawer={closeTaskDrawer}
                     setAutoSaveVisible={setAutoSaveVisible}
                     modalActions={modalActions}
+                openedTourStep={openedTourStep}
+                setTourStep={setOpenedTourStep}
                   />
                   <Spacing vertical={2} />
                   <Grid item xs={12} style={styleFullRow}>
@@ -355,6 +369,7 @@ const NewTaskDrawer = ({
                     />
                   </Grid>
                   <Grid item xs={6} style={styleLeftColumn}>
+                <div ref={dueDateSectionReference}>
                     <DueDateSection
                       selectedTask={selectedTask}
                       isOverDue={isOverDue}
@@ -365,6 +380,7 @@ const NewTaskDrawer = ({
                       )}
                       dueTimeReference={dueTimeReference}
                     />
+                </div>
                   </Grid>
                   <Grid item xs={6} style={styleRightColumn}>
                     <HiddenFieldContainer visible={dueDateValue}>
@@ -482,6 +498,17 @@ const NewTaskDrawer = ({
           </TaskDrawerContainer>
         </ClickAwayListener>
       )}
+      <TaskDrawerTourPopper
+        anchorEl={dueDateSectionReference?.current}
+        position="bottom-start"
+        open={openedTourStep === 1}
+      >
+        <TaskDrawerTourContent
+          stepIndex={1}
+          setStep={setOpenedTourStep}
+          onClose={() => setOpenedTourStep(null)}
+        />
+      </TaskDrawerTourPopper>
     </>
   );
 };

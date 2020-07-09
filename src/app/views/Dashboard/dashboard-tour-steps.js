@@ -10,30 +10,35 @@ import Tour2Step3Icon from 'img/tour/dashboard/step-2-3.svg';
 
 export const FIRST_TOUR_STEPS = [
   {
+    key: 1,
     icon: Tour1Step1Icon,
     title: 'A new place to call Home',
     description:
       'We’ve created a new dashboard we’re simply calling Home. Along with a new look, you’ll also find some new items on your Home dashboard, including the ability to view all of your to-dos, across all of your lists, on a single page.',
   },
   {
+    key: 2,
     icon: Tour1Step2Icon,
     title: 'We’ve organized for you',
     description:
       'Your Home screen only shows the tasks assigned to you. You’ll also notice the it’s organized by due date: Today, Next 7 days and My Tasks. If there aren’t assigned due dates, your view will just show My Tasks.',
   },
   {
+    key: 3,
     icon: Tour1Step3Icon,
     title: 'You can move things around',
     description:
       'We made re-ordering your tasks easier. On the Home screen, you can move a task within a group to order them in the way that works best for you.',
   },
   {
+    key: 4,
     icon: Tour1Step4Icon,
     title: 'Open the drawer',
     description:
       'Simply clicking on a task on your Home screen will show you its details. The drawer will slide out from the right side of the screen to reveal all the nitty gritty. Or you can click on the list name to see all the tasks in the list.',
   },
   {
+    key: 5,
     icon: Tour1Step5Icon,
     title: 'There’s still a List Page',
     description:
@@ -43,18 +48,21 @@ export const FIRST_TOUR_STEPS = [
 
 export const SECOND_TOUR_STEPS = [
   {
+    key: 1,
     icon: Tour2Step1Icon,
     title: 'Quickly add a task',
     description:
       'Adding a new task is now a snap. Simply type in your task in the new box with “+ Add Task,” hit the enter key and the new task is saved to your list.',
   },
   {
+    key: 2,
     icon: Tour2Step2Icon,
     title: 'Getting around your Home',
     description:
       'As you can see, your Home screen has a new look and functionality. To access the rest of the pages that you’re used to, click the icon at the top left of the screen.',
   },
   {
+    key: 3,
     icon: Tour2Step3Icon,
     title: 'Look for the blue dot',
     description:

@@ -33,8 +33,11 @@ const Tour = ({ steps, onClose }) => {
       </StepContent>
       <NavigationContainer>
         <NavigationDotsContainer>
-          {steps.map((step, index) => (
-            <DotNavigationButton onClick={() => setCurrentStep(index)}>
+          {steps.map(({ key }, index) => (
+            <DotNavigationButton
+              key={key}
+              onClick={() => setCurrentStep(index)}
+            >
               <Dot isNext={index > currentStep} />
             </DotNavigationButton>
           ))}

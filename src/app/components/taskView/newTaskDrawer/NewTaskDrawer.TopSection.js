@@ -16,6 +16,8 @@ import {
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
 import initializeTaskDrawerTopSectionHooks from './NewTaskDrawer.TopSection.Hooks';
+import TaskDrawerTourPopper from './TaskDrawerTourPopper/TaskDrawerTourPopper';
+import TaskDrawerTourContent from './TaskDrawerTourContent/TaskDrawerTourContent';
 
 const renderTaskList = ({
   closePopover,
@@ -65,6 +67,8 @@ const TopSection = ({
   isInbox,
   closeTaskDrawer,
   modalActions,
+  openedTourStep,
+  setTourStep,
 }) => {
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -274,6 +278,17 @@ const TopSection = ({
           }}
         />
       )}
+      <TaskDrawerTourPopper
+        anchorEl={taskMenuReference?.current}
+        position="bottom-end"
+        open={openedTourStep === 0}
+      >
+        <TaskDrawerTourContent
+          stepIndex={0}
+          setStep={setTourStep}
+          onClose={() => setTourStep(null)}
+        />
+      </TaskDrawerTourPopper>
     </>
   );
 };
