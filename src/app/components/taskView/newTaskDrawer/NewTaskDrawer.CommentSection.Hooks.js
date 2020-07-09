@@ -38,17 +38,21 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         comment,
       )(dispatch).then(() => {
         const newGroupedComments = getGroupedComments({
-          comments: comments.filter(
+          comments: selectedTask.comments.filter(
             ({ commentIdentifier }) =>
               commentIdentifier !== comment.commentIdentifier,
           ),
         });
+        selectedTask.comments = selectedTask.comments.filter(
+          ({ commentIdentifier }) =>
+            commentIdentifier !== comment.commentIdentifier,
+        );
 
         setGroupedComments(newGroupedComments);
         modalActions.closeModal();
       });
     },
-    [selectedTask, dispatch, comments, modalActions],
+    [selectedTask, dispatch, modalActions],
   );
 
   const boundUpdateComment = useCallback(
@@ -64,15 +68,17 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         comment,
         creator: currentUser,
       })(dispatch).then(newComment => {
+        console.log(selectedTask);
         const newGroupedComments = getGroupedComments({
-          comments: [newComment.data, ...comments],
+          comments: [newComment.data, ...selectedTask.comments],
         });
+        selectedTask.comments = [newComment.data, ...selectedTask.comments];
 
         setGroupedComments(newGroupedComments);
 
         return newComment;
       }),
-    [comments, currentUser, dispatch, selectedTask],
+    [currentUser, dispatch, selectedTask],
   );
 
   const openDeleteCommentConfirmationModal = comment => {

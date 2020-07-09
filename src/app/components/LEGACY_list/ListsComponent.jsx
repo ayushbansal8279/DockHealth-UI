@@ -18,7 +18,7 @@ import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMem
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
-import HighPriorityLabel from 'img/priority-high-label-icon.svg';
+import HighPriorityLabel from 'img/priority-high-flag.svg';
 
 const RowContainer = styled.div`
   align-items: center;
@@ -140,7 +140,11 @@ const TaskListRow = ({
         <UniversalTooltipContainer
           label={`${numberOfHighPriorityTasks} high priority tasks`}
         >
-          <img src={HighPriorityLabel} alt="Priority icon" />
+          <img
+            src={HighPriorityLabel}
+            alt="Priority icon"
+            style={{ width: '16px' }}
+          />
         </UniversalTooltipContainer>
       ) : (
         <div />
