@@ -8,15 +8,18 @@ const axiosInstance = axios.create({
   baseURL: process.env.HEYDOC_SERVICES_BASE_URL,
 });
 
-axiosInstance.interceptors.request.use(function (config) {
-  // Do something before request is sent
-  const currentAccessToken = sessionStorage.getItem('accessToken');
-  config.headers.Authorization = `Bearer ${currentAccessToken}`;
-  return config;
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error);
-});
+axiosInstance.interceptors.request.use(
+  function(config) {
+    // Do something before request is sent
+    const currentAccessToken = sessionStorage.getItem('accessToken');
+    config.headers.Authorization = `Bearer ${currentAccessToken}`;
+    return config;
+  },
+  function(error) {
+    // Do something with request error
+    return Promise.reject(error);
+  },
+);
 
 axiosInstance.interceptors.response.use(identity, error => {
   if (error.response) {
