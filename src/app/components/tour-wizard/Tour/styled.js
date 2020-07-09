@@ -89,8 +89,8 @@ export const DotNavigationButton = styled.button`
 `;
 
 export const Dot = styled.div`
-  width: ${({ isNext }) => (isNext ? '6px' : '100%')};
-  height: ${({ isNext }) => (isNext ? '6px' : '100%')};
+  width: ${({ isNext }) => (isNext ? '6' : '10')}px;
+  height: ${({ isNext }) => (isNext ? '6' : '10')}px;
   margin: 0 auto;
   border-radius: 50%;
   background: ${({ isNext }) => (isNext ? palette.coolGrey2 : palette.white)};
