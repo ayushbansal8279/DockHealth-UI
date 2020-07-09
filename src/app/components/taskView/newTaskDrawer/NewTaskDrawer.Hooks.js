@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable sonarjs/cognitive-complexity */
 import moment from 'moment';
 import React, {
   useCallback,
@@ -24,7 +25,7 @@ import {
   updateTaskDescription,
   prepareSubtask,
 } from 'actions/task-actions';
-import { closeDrawer } from 'actions/task-drawer-actions';
+import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
 import Member from 'components/members/Member';
 
@@ -227,15 +228,21 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       const dueTimeValue = dueDateMoment.format(TIME_12H_FORMAT);
       if (dueTimeValue === '00:00 AM' || dueTimeValue === '12:00 AM') {
         setValue('dueTime', null);
-        dueTimeReference.current.value = null;
+        if (dueTimeReference && dueTimeReference.current) {
+          dueTimeReference.current.value = null;
+        }
       } else {
         setValue('dueTime', dueTimeValue);
-        dueTimeReference.current.value = dueTimeValue;
+        if (dueTimeReference && dueTimeReference.current) {
+          dueTimeReference.current.value = dueTimeValue;
+        }
       }
     } else {
       setValue('dueDate', null);
       setValue('dueTime', null);
-      dueTimeReference.current.value = null;
+      if (dueTimeReference && dueTimeReference.current) {
+        dueTimeReference.current.value = null;
+      }
     }
 
     setValue('priority', selectedTask?.priority ?? null);
@@ -253,6 +260,10 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     getAllPatients()(dispatch);
     setValue('newTaskListId', null);
   });
+
+  const openTaskDrawer = useCallback(() => {
+    openDrawer()(dispatch);
+  }, [dispatch]);
 
   const closeTaskDrawer = useCallback(() => {
     closeDrawer()(dispatch);
@@ -484,6 +495,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     taskLists,
     currentAssignedToAdornment,
     getMemberAdornment,
+    openTaskDrawer,
     closeTaskDrawer,
     isSaving,
     reFileTask,
