@@ -1,25 +1,12 @@
-import {
-  Button,
-  Divider,
-  Grid,
-  MenuItem,
-  Select,
-  Typography,
-} from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Divider, Grid, MenuItem, Select } from '@material-ui/core';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { addPatientNote } from 'actions/patient-actions';
-import { onPatientNoteAdded } from 'helpers/ga-event-helper';
 import useBoolean from 'hooks/useBoolean';
-import themeMontserrat from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import {
   UniversalBirthdayInputComponent,
   UniversalMobileInputComponent,
 } from '../userProfileView/UniversalInput';
-import PatientNotes from './PatientNotes';
 import {
   PanelActionContainer,
   PatientInput,
@@ -27,49 +14,17 @@ import {
   SmallPatientInput,
 } from './PatientsForm.Styled';
 import PatientsSidebarSection from './PatientsSidebar.Section';
-import AlertMessages from 'alert/AlertMessages';
 
-const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
-  const [isCreating, startCreating, stopCreating] = useBoolean(false);
-  const [note, setNote] = useState('');
+const PatientsForm = ({ onSubmit, compact = false, onCancel }) => {
   const [
     isGenderSelectOpen,
     setGenderSelectOpen,
     unsetGenderSelectOpen,
   ] = useBoolean(false);
 
-  const dispatch = useDispatch();
-
   const { handleSubmit, watch, setValue } = useFormContext();
 
   const genderValue = watch('gender') ?? '';
-
-  const patientIdentifier = patient?.patientIdentifier;
-
-  const handleCancel = useCallback(() => {
-    setNote('');
-    stopCreating();
-  }, [stopCreating]);
-
-  const handleNewNoteSubmit = useCallback(() => {
-    addPatientNote(
-      patientIdentifier,
-      note,
-    )(dispatch)
-      .then(newNote => {
-        handleCancel();
-        onPatientNoteAdded();
-        dispatch(AlertActions.showGlobalAlert('Note added successfully', 'success'));
-        return newNote;
-      })
-      .catch(() => {
-        dispatch(AlertActions.showGlobalAlert('Error adding note. Please try again.', 'error'));
-      });
-  }, [dispatch, handleCancel, note, patientIdentifier]);
-
-  useEffect(() => {
-    handleCancel();
-  }, [handleCancel, patientIdentifier]);
 
   const { spacing, gridSize, NameInput } = compact
     ? {
@@ -143,7 +98,7 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
           </Grid>
         </Grid>
         <PanelActionContainer>
-          <Button variant="text" size="small" onClick={resetPatient}>
+          <Button variant="text" size="small" onClick={onCancel}>
             Cancel
           </Button>
           <Spacing horizontal={3} />
@@ -154,22 +109,6 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
         <Spacing vertical={4} />
         <Divider />
         <Spacing vertical={4} />
-        {/* <ThemeProvider theme={themeMontserrat}>
-          <Typography color="primary" variant="h4">
-            Notes
-          </Typography>
-        </ThemeProvider>
-        <Spacing vertical={4} />
-        <PatientNotes
-          notes={patient?.allNotes ?? []}
-          patientIdentifier={patientIdentifier}
-          note={note}
-          setNote={setNote}
-          isCreating={isCreating}
-          handleCancel={handleCancel}
-          handleSubmit={handleNewNoteSubmit}
-          startCreating={startCreating}
-        /> */}
       </PatientsSidebarSection>
     </form>
   );

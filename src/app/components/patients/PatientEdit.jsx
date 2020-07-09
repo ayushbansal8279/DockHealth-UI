@@ -64,7 +64,7 @@ const validationObjectShape = {
 
 const validationSchema = object().shape(validationObjectShape);
 
-const PatientEdit = ({ compact = false, patient }) => {
+const PatientEdit = ({ compact = false, patient, onCancel }) => {
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
     validationSchema,
@@ -88,6 +88,7 @@ const PatientEdit = ({ compact = false, patient }) => {
       patientAction(dispatch)
         .then(() => {
           onPatientEdited();
+          onCancel();
         })
         .catch(error => {
           if (!patient) {
@@ -104,7 +105,7 @@ const PatientEdit = ({ compact = false, patient }) => {
           }
         });
     },
-    [dispatch, patient],
+    [dispatch, patient, onCancel],
   );
 
   useDeepCompareEffect(() => {
@@ -122,7 +123,12 @@ const PatientEdit = ({ compact = false, patient }) => {
 
   return (
     <FormContext {...formMethods}>
-      <PatientsForm onSubmit={onSubmit} compact={compact} patient={patient} />
+      <PatientsForm
+        onSubmit={onSubmit}
+        compact={compact}
+        patient={patient}
+        onCancel={onCancel}
+      />
     </FormContext>
   );
 };
