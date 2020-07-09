@@ -25,3 +25,11 @@ export const DashboardContentWrapper = styled.div`
   transition: padding-right 0.3s ease-out;
   max-width: 1440px;
 `;
+
+export const DashboardTourWrapper = styled.div`
+  position: fixed;
+  top: 150px;
+  left: 50%;
+  z-index: 200;
+  transform: translateX(-40%);
+`;
