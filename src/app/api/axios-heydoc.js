@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { identity } from 'ramda';
-import { showToast } from '../helpers/utility-functions';
+// import { showToast } from '../helpers/utility-functions';
 
 const NETWORK_ERROR = 'NETWORK_ERROR';
 
@@ -35,19 +35,19 @@ axiosInstance.interceptors.response.use(identity, error => {
     return undefined;
   }
 
-  // window.location.href = '/#/login';
-  showToast({
-    status: 'error',
-    title: 'Connection error',
-    text: 'Check your Internet connection and refresh the page',
-    confirmButtonText: 'Refresh page',
-    showConfirmButton: true,
-    showCloseButton: true,
-    timerProgressBar: false,
-    timer: 0,
-  }).then(({ value }) => {
-    if (value) window.location.reload();
-  });
+  window.location.href = '/#/login';
+  // showToast({
+  //   status: 'error',
+  //   title: 'Connection error',
+  //   text: 'Check your Internet connection and refresh the page',
+  //   confirmButtonText: 'Refresh page',
+  //   showConfirmButton: true,
+  //   showCloseButton: true,
+  //   timerProgressBar: false,
+  //   timer: 0,
+  // }).then(({ value }) => {
+  //   if (value) window.location.reload();
+  // });
 });
 
 export default axiosInstance;
