@@ -22,7 +22,9 @@ export function getTasksForCreator() {
 export function getTaskStatsForList(taskListIdentifier) {
   return axios
     .get(`/task/stats/getTaskStatsForList/${taskListIdentifier}`)
-    .then(({ data }) => data)
+    .then((resp) => {
+      return resp?.data;
+    })
     .catch(error => {
       throw error;
     });

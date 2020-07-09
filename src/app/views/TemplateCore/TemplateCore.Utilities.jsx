@@ -108,7 +108,7 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
 
   if (data?.organizationIdentifier === '') {
     hashHistory.push('/unEnrolledUser');
-  } else if (!data?.eulaAcknowledged) {
+  } else if (data && !data.eulaAcknowledged) {
     if (pathname !== EULA_PATH) {
       hashHistory.replace(EULA_PATH);
     }
