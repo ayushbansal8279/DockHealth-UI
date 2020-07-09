@@ -384,9 +384,6 @@ class Home extends Component {
       };
 
       tasksGroupsListActions.createTask(payload);
-      // actions.saveTask(payload, null, reloadGroups).then(() => {
-      //   actions.getTaskStatsForList(taskListIdentifier);
-      // });
     }
   };
 

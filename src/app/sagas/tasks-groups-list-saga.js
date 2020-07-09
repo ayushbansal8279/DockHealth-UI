@@ -30,6 +30,8 @@ import {
   GET_COMPLETED_TASKS_SUCCESS,
   SET_AS_CURRENT_TASK,
 } from 'actions/action-types';
+// eslint-disable-next-line import/no-cycle
+import { getTaskStatsForList } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-selectors';
 import { showGlobalAlert } from 'alert/actions';
@@ -362,6 +364,8 @@ export function* doCreateTask(payload) {
         taskListIdentifier,
         description,
       });
+
+      yield put(getTaskStatsForList(taskListIdentifier));
 
       yield all([call(doGetTasksList, { taskListIdentifier })]);
     }

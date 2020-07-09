@@ -154,23 +154,21 @@ const TaskView = ({
 
   return (
     <TaskViewContainer>
-      {(taskCounters?.incomplete > 0 || taskCounters?.complete > 0) && (
-        <Toolbar
-          members={members}
-          showMembers={showMembers}
-          onSelectTab={navigateToTab}
-          selectedTab={selectedTab}
-          taskList={taskList}
-          openTasksAmount={taskCounters.incomplete}
-          completedTasksAmount={taskCounters.complete}
-          onSearchChange={setSearchValue}
-          showNotifications={showNotificationAction}
-          searchValue={searchValue}
-          onSelectFilters={handleFilterChange}
-          listNameColumnVisible={listNameVisible}
-          pdfTitle={pdfTitle}
-        />
-      )}
+      <Toolbar
+        members={members}
+        showMembers={showMembers}
+        onSelectTab={navigateToTab}
+        selectedTab={selectedTab}
+        taskList={taskList}
+        openTasksAmount={taskCounters.incomplete}
+        completedTasksAmount={taskCounters.complete}
+        onSearchChange={setSearchValue}
+        showNotifications={showNotificationAction}
+        searchValue={searchValue}
+        onSelectFilters={handleFilterChange}
+        listNameColumnVisible={listNameVisible}
+        pdfTitle={pdfTitle}
+      />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
           openDrawer={openDrawer}
