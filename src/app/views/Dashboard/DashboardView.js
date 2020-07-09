@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isNil } from 'ramda';
+import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
@@ -18,30 +20,39 @@ const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
 const DashboardView = () => {
   const [openedTour, setOpenendTour] = useState(null);
   const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
+  const isLoadingDashboard = useSelector(dashboardTasksIsLoadingSelector);
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
       DASHBOARD_FIRST_TIME_KEY,
     );
-    if (dashboardFirstTimeValue === undefined || dashboardFirstTimeValue) {
+    if (isNil(dashboardFirstTimeValue) || dashboardFirstTimeValue) {
       setOpenendTour(1);
-      localStorage.setItem(DASHBOARD_FIRST_TIME_KEY, false);
     } else {
       const dashboardSecondTimeValue = localStorageHelper.getItem(
         DASHBOARD_SECOND_TIME_KEY,
       );
 
-      if (dashboardSecondTimeValue === undefined || dashboardSecondTimeValue) {
+      if (isNil(dashboardSecondTimeValue) || dashboardSecondTimeValue) {
         setOpenendTour(2);
-        localStorage.setItem(DASHBOARD_SECOND_TIME_KEY, false);
       }
     }
   };
 
+  const closeFirstTour = () => {
+    setOpenendTour(null);
+    localStorageHelper.setItem(DASHBOARD_FIRST_TIME_KEY, false);
+  };
+
+  const closeSecondTour = () => {
+    setOpenendTour(null);
+    localStorageHelper.setItem(DASHBOARD_SECOND_TIME_KEY, false);
+  };
+
   useEffect(() => {
-    openTourModal();
+    if (!isLoadingDashboard) openTourModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoadingDashboard]);
 
   return (
     <DashboardViewWrapper>
@@ -54,16 +65,10 @@ const DashboardView = () => {
       {openedTour && (
         <DashboardTourWrapper>
           {openedTour === 1 && (
-            <Tour
-              steps={FIRST_TOUR_STEPS}
-              onClose={() => setOpenendTour(null)}
-            />
+            <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
           )}
           {openedTour === 2 && (
-            <Tour
-              steps={SECOND_TOUR_STEPS}
-              onClose={() => setOpenendTour(null)}
-            />
+            <Tour steps={SECOND_TOUR_STEPS} onClose={closeSecondTour} />
           )}
         </DashboardTourWrapper>
       )}

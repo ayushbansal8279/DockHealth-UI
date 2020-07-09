@@ -1,12 +1,12 @@
-import Tour1Step1Icon from 'img/tips/dashboard/step-1-1.svg';
-import Tour1Step2Icon from 'img/tips/dashboard/step-1-2.svg';
-import Tour1Step3Icon from 'img/tips/dashboard/step-1-3.svg';
-import Tour1Step4Icon from 'img/tips/dashboard/step-1-4.svg';
-import Tour1Step5Icon from 'img/tips/dashboard/step-1-5.svg';
+import Tour1Step1Icon from 'img/tour/dashboard/step-1-1.svg';
+import Tour1Step2Icon from 'img/tour/dashboard/step-1-2.svg';
+import Tour1Step3Icon from 'img/tour/dashboard/step-1-3.svg';
+import Tour1Step4Icon from 'img/tour/dashboard/step-1-4.svg';
+import Tour1Step5Icon from 'img/tour/dashboard/step-1-5.svg';
 
-import Tour2Step1Icon from 'img/tips/dashboard/step-2-1.svg';
-import Tour2Step2Icon from 'img/tips/dashboard/step-2-2.svg';
-import Tour2Step3Icon from 'img/tips/dashboard/step-2-3.svg';
+import Tour2Step1Icon from 'img/tour/dashboard/step-2-1.svg';
+import Tour2Step2Icon from 'img/tour/dashboard/step-2-2.svg';
+import Tour2Step3Icon from 'img/tour/dashboard/step-2-3.svg';
 
 export const FIRST_TOUR_STEPS = [
   {

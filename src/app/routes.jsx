@@ -60,7 +60,7 @@ import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
 import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 // import Inbox from './views/Inbox';
-import ListDetailsView from './views/ListDetailsView';
+import ListDetailsView from './views/ListDetails/ListDetailsView';
 import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';

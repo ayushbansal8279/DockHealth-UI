@@ -1,10 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { isEmpty } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import Tour from 'components/tour-wizard/Tour/Tour';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
@@ -17,6 +18,7 @@ import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { arrayMove } from 'helpers/sorting-helper';
+import localStorageHelper from 'helpers/local-storage-helper';
 import {
   taskListSelector,
   taskListMembersSelector,
@@ -28,9 +30,15 @@ import {
   availableFiltersInInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 
-import TasksView from './Task/NewTasksView/TasksView';
+import { ListTourWrapper } from './ListDetailsView.Styled';
+import TasksView from '../Task/NewTasksView/TasksView';
+import { LIST_TOUR_STEPS } from './list-tour-steps';
+
+const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 class Home extends Component {
+  state = { isTourOpen: false };
+
   async componentDidMount() {
     const {
       user,
@@ -56,7 +64,9 @@ class Home extends Component {
       );
     }
 
-    this.initTable();
+    this.initTable().then(() => {
+      this.openTourModal();
+    });
 
     patientActions.getAllPatients();
 
@@ -128,6 +138,20 @@ class Home extends Component {
     actions.resetTaskCounters();
   }
 
+  openTourModal = () => {
+    const listDatailsFirstTimeValue = localStorageHelper.getItem(
+      LIST_DETAILS_FIRST_TIME_KEY,
+    );
+    if (isNil(listDatailsFirstTimeValue) || listDatailsFirstTimeValue) {
+      this.setState({ isTourOpen: true });
+    }
+  };
+
+  closeTourModal = () => {
+    this.setState({ isTourOpen: false });
+    localStorageHelper.setItem(LIST_DETAILS_FIRST_TIME_KEY, false);
+  };
+
   initTable = () => {
     const {
       actions,
@@ -150,10 +174,9 @@ class Home extends Component {
     );
 
     if (!filters) {
-      this.getTasksList(taskListIdentifier, status);
-    } else {
-      this.getFilteredTasks(filters, status);
+      return this.getTasksList(taskListIdentifier, status);
     }
+    return this.getFilteredTasks(filters, status);
   };
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
@@ -417,6 +440,8 @@ class Home extends Component {
       routeParams: { taskListIdentifier },
     } = this.props;
 
+    const { isTourOpen } = this.state;
+
     const { createTaskGroupList } = tasksGroupsListActions;
 
     const loadedTasklist = taskLists.find(
@@ -444,7 +469,16 @@ class Home extends Component {
       groupPagination: true,
     };
 
-    return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
+    return (
+      <>
+        <TasksView {...taskViewProps} defaultGroupName="New tasks" />
+        <ListTourWrapper>
+          {isTourOpen && (
+            <Tour steps={LIST_TOUR_STEPS} onClose={this.closeTourModal} />
+          )}
+        </ListTourWrapper>
+      </>
+    );
   }
 }
 
