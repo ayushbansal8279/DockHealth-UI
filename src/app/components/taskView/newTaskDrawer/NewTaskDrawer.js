@@ -98,9 +98,12 @@ const NewTaskDrawer = ({
   });
 
   const dueDateValue = watch('dueDate');
+  const duetimeValue = dueTimeReference?.current?.value;
 
   const isOverDue =
-    dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
+    dueDateValue && duetimeValue
+      ? moment(`${dueDateValue} ${duetimeValue}`).isBefore(moment())
+      : dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
 
   const selectedPatientIdentifier = watch('patientIdentifier');
 
@@ -359,6 +362,7 @@ const NewTaskDrawer = ({
                       shouldRefreshContext={refreshTriggers.includes(
                         ContextRefreshTriggers.DUE_DATE_CHANGE,
                       )}
+                      dueTimeReference={dueTimeReference}
                     />
                   </Grid>
                   <Grid item xs={6} style={styleRightColumn}>

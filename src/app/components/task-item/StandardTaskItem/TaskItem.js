@@ -232,6 +232,11 @@ const TaskItem = ({
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
 
+  const isOverdueTask =
+    moment(dueDate).format('HH:mm') !== '00:00'
+      ? moment(dueDate).isBefore(moment())
+      : dueDate && moment(dueDate).isBefore(moment().startOf('day'));
+
   return (
     <StandardTaskItemPanel
       isDragging={isDragging}
@@ -425,10 +430,7 @@ const TaskItem = ({
                           src={getCalendarIcon(
                             dueDate,
                             isHovered,
-                            !!(
-                              dueDate &&
-                              moment(dueDate).isBefore(moment().startOf('day'))
-                            ),
+                            isOverdueTask,
                           )}
                         />
                       </DueDateContainer>
