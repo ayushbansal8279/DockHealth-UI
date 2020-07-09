@@ -314,6 +314,7 @@ class PersonDetailsView extends PureComponent {
             showMembers={false}
             showNotificationAction={false}
             members={[personData]}
+            dragAndDropDisabled
           />
         </>
       )
