@@ -26,6 +26,7 @@ import SafariFixGrid from 'components/common/SafariFixGrid';
 import Spacing from 'components/common/Spacing';
 import TipsButton from 'components/common/TipsButton';
 import TipsContentHeader from 'components/common/TipsContentHeader';
+import GenericHeader from 'components/common/GenericHeader';
 import ListsComponent from 'components/LEGACY_list/ListsComponent';
 import PendingListsComponent from 'components/LEGACY_list/PendingListsComponent';
 import {
@@ -282,6 +283,7 @@ class TaskListView extends PureComponent {
       taskLists,
       currentUser,
       currentTaskList,
+      setHeaderBound,
     } = this.props;
 
     const {
@@ -290,6 +292,15 @@ class TaskListView extends PureComponent {
       tipsOpen,
       tipsModalOpen,
     } = this.state;
+
+    setHeaderBound({
+      layout: [
+        {
+          key: 'tasks-list-header',
+          component: <GenericHeader>Lists</GenericHeader>,
+        },
+      ],
+    });
 
     const taskListsEmpty = isEmpty(taskLists);
 
@@ -463,7 +474,7 @@ class TaskListView extends PureComponent {
                         <Loader />
                       </LoaderContainer>
                     ) : (
-                      <div style={{marginTop: '0px', padding: '0px'}}>
+                      <div style={{ marginTop: '0px', padding: '0px' }}>
                         <PendingListsComponent
                           taskLists={pendingTaskLists}
                           acceptInviteToTaskList={this.acceptInviteToTaskList}
