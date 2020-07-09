@@ -7,7 +7,7 @@ import ListsIcon from 'img/drawer/ListsIcon';
 import LogoutIcon from 'img/drawer/LogoutIcon';
 import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
-import SupportIcon from 'img/drawer/SupportIcon';
+// import SupportIcon from 'img/drawer/SupportIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
 import SearchIcon from 'img/drawer/SearchIcon';
 
@@ -215,12 +215,12 @@ const getDrawerItems = ({ lists }) => [
     icon: PatientsIcon,
     to: 'patients',
   },
-  {
-    id: 'support',
-    label: 'Support',
-    icon: SupportIcon,
-    to: 'support',
-  },
+  // {
+  //   id: 'support',
+  //   label: 'Support',
+  //   icon: SupportIcon,
+  //   to: 'support',
+  // },
 ];
 
 const renderDrawerItem = ({ ...drawerListProps }) => ({
