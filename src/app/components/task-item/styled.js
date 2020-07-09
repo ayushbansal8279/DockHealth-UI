@@ -76,6 +76,7 @@ export const Description = styled.div`
   width: 100%;
   margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
+  overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
 `;
 
