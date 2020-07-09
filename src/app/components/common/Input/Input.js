@@ -8,7 +8,7 @@ import {
   SecondaryInputLabel,
   SecondaryInputField,
   SecondaryInputError,
-  RedDot,
+  RequiredLabel,
 } from './styled';
 
 const components = {
@@ -71,7 +71,7 @@ const Input = React.forwardRef(
       <Box fullWidth={fullWidth}>
         <Label isLabelCenterized={isLabelCenterized} htmlFor={name}>
           {label}
-          {required && <RedDot>*</RedDot>}
+          {required && <RequiredLabel>(required)</RequiredLabel>}
         </Label>
         <Field
           id={name}

@@ -88,3 +88,9 @@ export const RedDot = styled.span`
   color: ${palette.oPlusRed};
   margin-left: ${spacing.tiny};
 `;
+
+// Rest
+export const RequiredLabel = styled.span`
+  color: ${palette.coolGrey2};
+  margin-left: ${spacing.tiny};
+`;

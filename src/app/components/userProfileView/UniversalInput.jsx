@@ -14,6 +14,7 @@ import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import palette, { opacify } from 'styles/palette';
+import { RequiredLabel } from 'components/common/Input/styled';
 
 export const ErrorLabel = styled.h4`
   color: ${palette.error};
@@ -214,8 +215,9 @@ export const UniversalInput = ({
         whiteBackground={whiteBackground}
         fullWidth
       >
-        <UniversalInputLabel required={required} shrink={shrink}>
+        <UniversalInputLabel shrink={shrink}>
           {label}
+          {required && <RequiredLabel>(required)</RequiredLabel>}
         </UniversalInputLabel>
         <UniversalInputBase
           name={name}
