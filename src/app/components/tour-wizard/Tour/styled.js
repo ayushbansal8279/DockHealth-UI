@@ -23,6 +23,7 @@ export const StepContent = styled.div`
 `;
 
 export const StepImage = styled.img`
+  height: 200px;
   width: 200px;
   margin-right: ${spacing.large};
 `;
@@ -67,11 +68,19 @@ export const NavigationContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-top: ${spacing.largePlus};
+  margin-top: ${spacing.regular};
+  padding-left: 224px;
+`;
+
+export const NavigationDotsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 export const DotNavigationButton = styled.button`
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 10px;
   height: 10px;
   margin-right: ${spacing.small};

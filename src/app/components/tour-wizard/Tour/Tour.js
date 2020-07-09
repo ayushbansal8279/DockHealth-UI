@@ -10,6 +10,7 @@ import {
   CloseIcon,
   NavigationContainer,
   DotNavigationButton,
+  NavigationDotsContainer,
   Dot,
   TourButton,
 } from './styled';
@@ -28,24 +29,24 @@ const Tour = ({ steps, onClose }) => {
         <StepTextWrapper>
           <StepTitle>{title}</StepTitle>
           <StepDescription>{description}</StepDescription>
-          <NavigationContainer>
-            <div>
-              {steps.map((step, index) => (
-                <DotNavigationButton onClick={() => setCurrentStep(index)}>
-                  <Dot isNext={index > currentStep} />
-                </DotNavigationButton>
-              ))}
-            </div>
-            {currentStep < steps.length - 1 ? (
-              <TourButton onClick={() => setCurrentStep(currentStep + 1)}>
-                Next
-              </TourButton>
-            ) : (
-              <TourButton onClick={onClose}>Got it</TourButton>
-            )}
-          </NavigationContainer>
         </StepTextWrapper>
       </StepContent>
+      <NavigationContainer>
+        <NavigationDotsContainer>
+          {steps.map((step, index) => (
+            <DotNavigationButton onClick={() => setCurrentStep(index)}>
+              <Dot isNext={index > currentStep} />
+            </DotNavigationButton>
+          ))}
+        </NavigationDotsContainer>
+        {currentStep < steps.length - 1 ? (
+          <TourButton onClick={() => setCurrentStep(currentStep + 1)}>
+            Next
+          </TourButton>
+        ) : (
+          <TourButton onClick={onClose}>Got it</TourButton>
+        )}
+      </NavigationContainer>
     </TourContainer>
   );
 };
