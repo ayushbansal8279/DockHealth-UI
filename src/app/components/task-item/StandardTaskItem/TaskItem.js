@@ -40,6 +40,8 @@ import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskW
 import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
 import { Tasks as SubtasksContainer } from 'views/Task/NewTasksView/TasksGroup/styled';
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import ReactHtmlParser from 'react-html-parser';
+import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import TaskItemStatus from './TaskItemStatus';
 import {
   AddCrossIcon,
@@ -292,7 +294,12 @@ const TaskItem = ({
                   textToHighlight={description}
                 />
               ) : (
-                description
+                ReactHtmlParser(
+                  mentionifyAndLinkifyTaskText({
+                    members: null,
+                    value: description,
+                  }),
+                )
               )}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>

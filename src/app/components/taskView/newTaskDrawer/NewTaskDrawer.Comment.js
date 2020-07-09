@@ -8,6 +8,8 @@ import { RobotoTypography } from 'styles/theme';
 import { useMount } from 'react-use';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import ReactHtmlParser from 'react-html-parser';
+import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import {
   AuthorLabelContainer,
   CommentActionLabel,
@@ -112,7 +114,12 @@ const Comment = ({
                   }
                 }}
               >
-                {commentValue}
+                {ReactHtmlParser(
+                  mentionifyAndLinkifyTaskText({
+                    members: null,
+                    value: commentValue,
+                  }),
+                )}
                 {!isEditing && dateCreated !== dateUpdated && (
                   <span
                     style={{

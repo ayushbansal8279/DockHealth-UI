@@ -2,6 +2,8 @@ import React from 'react';
 import moment from 'moment';
 import Member from 'components/members/Member';
 import Highlighter from 'react-highlight-words';
+import ReactHtmlParser from 'react-html-parser';
+import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -35,7 +37,9 @@ const TaskComment = ({
               textToHighlight={comment}
             />
           ) : (
-            comment
+            ReactHtmlParser(
+              mentionifyAndLinkifyTaskText({ members: null, value: comment }),
+            )
           )}
         </TaskCommentText>
         <TaskCommentDetails>
