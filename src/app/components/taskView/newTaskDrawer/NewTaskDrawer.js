@@ -40,6 +40,7 @@ import {
   styleLeftColumn,
   styleRightColumn,
   styleLastRow,
+  styleCommentRow,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 import {
@@ -406,7 +407,7 @@ const NewTaskDrawer = ({
                       parentFormSubmit={parentFormSubmit}
                     />
                   </Grid>
-                  <Grid item xs={12} style={styleFullRow}>
+                  <Grid item xs={12} style={styleCommentRow}>
                     <CommentSection
                       parentFormSubmit={parentFormSubmit}
                       taskDrawerFocusField={taskDrawerFocusField}

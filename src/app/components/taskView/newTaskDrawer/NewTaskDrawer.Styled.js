@@ -187,10 +187,12 @@ export const styleTaskDrawerContainer = {
 
 export const styleFullRow = {
   padding: '1rem 2rem',
+  height: '84px',
 };
 
 export const styleFullRowThin = {
   padding: '0rem 2rem',
+  height: '84px',
 };
 
 export const styleFirstRow = {
@@ -206,12 +208,18 @@ export const styleEmailRow = {
   backgroundColor: palette.blueGrey,
 };
 
+export const styleCommentRow = {
+  padding: '1rem 2rem',
+};
+
 export const styleLeftColumn = {
   padding: '1rem 1rem 1rem 2rem',
+  height: '84px',
 };
 
 export const styleRightColumn = {
   padding: '1rem 2rem 1rem 1rem',
+  height: '84px',
 };
 
 export const AdornmentClear = styled(Close)`
