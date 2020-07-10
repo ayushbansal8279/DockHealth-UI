@@ -104,11 +104,13 @@ const NewTaskDrawer = ({
       index: 0,
       reference: taskMenuReference,
       position: 'bottom-end',
+      afterScrollPosition: 'start',
     },
     {
       index: 1,
       reference: dueDateSectionReference,
       position: 'bottom-start',
+      afterScrollPosition: 'start',
     },
     {
       index: 2,
@@ -131,6 +133,21 @@ const NewTaskDrawer = ({
       position: 'top-start',
     },
   ];
+
+  useEffect(() => {
+    if (openedTourStep) {
+      const { reference, afterScrollPosition } = tourStepsReferences[
+        openedTourStep
+      ];
+
+      // eslint-disable-next-line no-unused-expressions
+      reference?.current.scrollIntoView({
+        behavior: 'smooth',
+        block: afterScrollPosition || 'center',
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openedTourStep]);
 
   useEffect(() => {
     const taskDrawerFirstTimeValue = localStorageHelper.getItem(
