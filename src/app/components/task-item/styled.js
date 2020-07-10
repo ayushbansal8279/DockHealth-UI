@@ -241,11 +241,12 @@ export const SlimTaskItemDescription = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  min-width: 400px;
-`;
+  min-width: 450px;
+  width: 450px;
 
-export const SlimTaskItemDescriptionDetails = styled.div`
-  min-width: 400px;
+  @media (min-width: 1157px) {
+    min-width: 550px;
+  }
 `;
 
 export const SlimTaskItemParentTaskLabel = styled.div`
@@ -259,16 +260,22 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 `;
 
 export const SlimTaskItemRightSide = styled.div`
-  min-width: 240px;
-  max-width: 340px;
-  width: 100%;
   display: flex;
-  justify-content: space-between;
+  width: 220px;
+  max-width: 230px;
+  margin-left: 50px;
+
+  @media (min-width: 1157px) {
+    margin-left: 75px;
+    width: 280px;
+    max-width: 280px;
+  }
 `;
 
 export const SlimTaskItemListLink = styled(Link)`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
+  margin-right: ${props => props.withMargin && spacing.large};
 `;
 
 export const OverdueBar = styled.div`

@@ -3,6 +3,7 @@ import moment from 'moment';
 import Circle from 'img/circle';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 
 import {
   CircleIcon,
@@ -10,7 +11,6 @@ import {
   SlimTaskItemContainer,
   SlimTaskItemRow,
   SlimTaskItemDescription,
-  SlimTaskItemDescriptionDetails,
   SlimTaskItemParentTaskLabel,
   SlimTaskItemRightSide,
   SlimTaskItemListLink,
@@ -30,6 +30,16 @@ const SlimTaskItem = ({
   isSelected,
 }) => {
   const { description, taskList, dueDate, priority, parentTask } = task;
+  const hasOverdue = dueDate && moment().isAfter(moment(dueDate), 'days');
+  const taskListLength = hasOverdue ? 20 : 24;
+  const formattedTaskListName =
+    taskList?.listName?.length > taskListLength
+      ? taskList?.listName
+          ?.substring(0, taskListLength)
+          .trim()
+          .concat('...')
+      : taskList?.listName;
+
   return (
     <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
       {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
@@ -41,14 +51,14 @@ const SlimTaskItem = ({
       <CircleIcon src={Circle} onClick={toggleTaskComplete} isClickable />
       <SlimTaskItemRow>
         <SlimTaskItemDescription>
-          <SlimTaskItemDescriptionDetails
+          <div
             onClick={() => {
               openDrawer();
               storeAsCurrentTask(task, 'home');
             }}
           >
             {description}
-          </SlimTaskItemDescriptionDetails>
+          </div>
           {parentTask && (
             <SlimTaskItemParentTaskLabel>
               Subtask of{' '}
@@ -69,13 +79,20 @@ const SlimTaskItem = ({
         </SlimTaskItemDescription>
         <SlimTaskItemRightSide>
           {taskList && (
-            <SlimTaskItemListLink to={`tasks/${taskList?.taskListIdentifier}`}>
-              {taskList?.listName}
+            <SlimTaskItemListLink
+              to={`tasks/${taskList?.taskListIdentifier}`}
+              withMargin={hasOverdue}
+            >
+              <UniversalTooltipContainer
+                placement="top"
+                label={taskList?.listName}
+                maxWidth="240px"
+              >
+                {formattedTaskListName}
+              </UniversalTooltipContainer>
             </SlimTaskItemListLink>
           )}
-          {dueDate && moment().isAfter(moment(dueDate), 'days') && (
-            <OverdueBar>Overdue</OverdueBar>
-          )}
+          {hasOverdue && <OverdueBar>Overdue</OverdueBar>}
         </SlimTaskItemRightSide>
       </SlimTaskItemRow>
     </SlimTaskItemContainer>
