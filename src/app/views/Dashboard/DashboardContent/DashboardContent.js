@@ -122,6 +122,7 @@ const DashboardContent = ({
         </Grid>
         <Spacing vertical={3} />
         <QuickAddTaskInput
+          autoComplete="off"
           quickAddTask={handleQuickAddTask}
           onFocus={() => {
             if (isTaskDrawerOpen) {
@@ -130,7 +131,7 @@ const DashboardContent = ({
             }
           }}
           validator={value => {
-            if (value?.length < 2)
+            if ([...value]?.filter(char => char !== ' ').length < 2)
               return 'The task description is too short (min. 2 characters)';
 
             return null;
