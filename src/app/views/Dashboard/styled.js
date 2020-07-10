@@ -16,7 +16,7 @@ export const DashboardSidebarWrapper = styled.div`
   background-color: ${palette.coolGrey4};
   transition: width 0.3s ease-out;
 
-  @media (min-width: 1157px) {
+  @media (min-width: 1153px) {
     width: ${({ isHidden }) => (isHidden ? 0 : 380)}px;
   }
 `;
