@@ -40,6 +40,14 @@ const SlimTaskItem = ({
           .concat('...')
       : taskList?.listName;
 
+  const formattedTaskDescription =
+    description?.length > 100
+      ? description
+          ?.substring(0, 100)
+          .trim()
+          .concat('...')
+      : description;
+
   return (
     <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
       {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
@@ -57,7 +65,7 @@ const SlimTaskItem = ({
               storeAsCurrentTask(task, 'home');
             }}
           >
-            {description}
+            {formattedTaskDescription}
           </div>
           {parentTask && (
             <SlimTaskItemParentTaskLabel>

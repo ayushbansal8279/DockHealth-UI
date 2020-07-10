@@ -252,6 +252,10 @@ export const SlimTaskItemDescription = styled.div`
   @media (min-width: 1157px) {
     min-width: 550px;
   }
+
+  & > div {
+    overflow-wrap: break-word;
+  }
 `;
 
 export const SlimTaskItemParentTaskLabel = styled.div`
