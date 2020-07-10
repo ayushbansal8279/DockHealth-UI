@@ -241,8 +241,13 @@ export const SlimTaskItemDescription = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  min-width: 450px;
-  width: 450px;
+  min-width: 350px;
+  width: 350px;
+
+  @media (min-width: 1025px) {
+    min-width: 450px;
+    width: 450px;
+  }
 
   @media (min-width: 1157px) {
     min-width: 550px;
@@ -261,9 +266,15 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 
 export const SlimTaskItemRightSide = styled.div`
   display: flex;
-  width: 220px;
-  max-width: 230px;
-  margin-left: 50px;
+  width: 180px;
+  max-width: 200px;
+  margin-left: 30px;
+
+  @media (min-width: 1025px) {
+    width: 220px;
+    max-width: 230px;
+    margin-left: 50px;
+  }
 
   @media (min-width: 1157px) {
     margin-left: 75px;
