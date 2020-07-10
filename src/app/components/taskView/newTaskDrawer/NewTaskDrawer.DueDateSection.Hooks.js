@@ -18,12 +18,16 @@ const initializeDueDateSectionHooks = ({
 
   const saveDueDate = useCallback(
     ({ updatedDueDate, updatedDueTime }) => {
+      let updatedDueTimeValue = updatedDueTime;
+      if (updatedDueTimeValue === '__:__ __') {
+        updatedDueTimeValue = '';
+      }
       if (selectedTask && selectedTask.taskIdentifier != null) {
         const dueDate = updatedDueDate ? moment(`${updatedDueDate}`) : null;
 
         const dueDateTime =
-          updatedDueDate && updatedDueTime
-            ? moment(`${updatedDueDate} ${updatedDueTime}`)
+          updatedDueDate && updatedDueTimeValue
+            ? moment(`${updatedDueDate} ${updatedDueTimeValue}`)
             : dueDate;
         updateDueDate(
           selectedTask,
