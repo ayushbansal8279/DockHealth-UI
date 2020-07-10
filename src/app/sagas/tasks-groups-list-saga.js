@@ -365,6 +365,7 @@ export function* doCreateTask(payload) {
         description,
       });
 
+      yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
       yield put(getTaskStatsForList(taskListIdentifier));
 
       yield all([call(doGetTasksList, { taskListIdentifier })]);
