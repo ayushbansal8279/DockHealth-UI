@@ -9,7 +9,6 @@ export const TaskCommentsContainer = styled(Collapse)`
   background-color: white;
   border: 1px solid ${palette.coolGrey3};
   border-top: none;
-  border-bottom: none;
   flex-direction: column;
   padding: ${props => (props.in ? `${spacing.regular} ${spacing.regular}` : 0)};
 `;

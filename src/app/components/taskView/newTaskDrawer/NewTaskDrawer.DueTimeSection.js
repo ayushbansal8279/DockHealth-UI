@@ -58,7 +58,7 @@ const DueTimeSection = ({
 
   return (
     <div>
-      <DueTimeLabelContainer>DUE TIME</DueTimeLabelContainer>
+      <DueTimeLabelContainer>DUE TIME (00:00 AM/PM)</DueTimeLabelContainer>
       <DueTimeInputMaskContainer hasError={!!errorMessage}>
         <DueTimeInputMask
           name="dueTime"
@@ -79,7 +79,9 @@ const DueTimeSection = ({
           onBlur={event => {
             // console.log(event.target.value);
             if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(event.target.value)) {
-              setErrorMessage('Time must be between 12:00 AM and 11:59 PM');
+              setErrorMessage(
+                'Time must be between 12:00 AM and 11:59 PM and include AM/PM',
+              );
               return;
             }
             setErrorMessage(null);
