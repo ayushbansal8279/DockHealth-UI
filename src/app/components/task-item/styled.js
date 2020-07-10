@@ -104,8 +104,7 @@ export const GridImg = styled(Grid)`
   display: flex;
   justify-content: center;
   ${({ isMatching }) =>
-    isMatching &&
-    `background: ${featurePalette.globalSearchHighlight}; opacity: .5;`}
+    isMatching && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
 export const SmallText = styled.span`
