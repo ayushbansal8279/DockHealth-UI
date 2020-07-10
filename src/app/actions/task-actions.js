@@ -558,7 +558,7 @@ export function markComplete(task, status, listName, currentUser = null) {
 }
 
 export const updateTaskDescription = (task, description) => dispatch =>
-  TaskApi.updateTaskDescription(task, description)
+  TaskApi.updateTaskDescription(shapeTask(task), description)
     .then(() => {
       const newTask = task;
       newTask.description = description;

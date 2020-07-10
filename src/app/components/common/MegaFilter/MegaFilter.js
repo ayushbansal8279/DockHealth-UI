@@ -54,7 +54,7 @@ const FilterButton = ({
     </FilterButtonLabel>
     <RotatableChevron
       rotated={isOpen}
-      color={isFilterApplied ? palette.orangeJulius : palette.brightBlue}
+      color={isFilterApplied ? palette.white : palette.brightBlue}
     />
   </FilterButtonWrapper>
 );
