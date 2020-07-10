@@ -92,11 +92,45 @@ const NewTaskDrawer = ({
 
   const [openedTourStep, setOpenedTourStep] = useState(null);
 
+  const taskMenuReference = useRef(null);
   const dueDateSectionReference = useRef(null);
   const statusSectionReference = useRef(null);
   const labelsSectionReference = useRef(null);
   const commentsSectionReference = useRef(null);
   const historySectionReference = useRef(null);
+
+  const tourStepsReferences = [
+    {
+      index: 0,
+      reference: taskMenuReference,
+      position: 'bottom-end',
+    },
+    {
+      index: 1,
+      reference: dueDateSectionReference,
+      position: 'bottom-start',
+    },
+    {
+      index: 2,
+      reference: statusSectionReference,
+      position: 'top-end',
+    },
+    {
+      index: 3,
+      reference: labelsSectionReference,
+      position: 'top-end',
+    },
+    {
+      index: 4,
+      reference: commentsSectionReference,
+      position: 'top-end',
+    },
+    {
+      index: 5,
+      reference: historySectionReference,
+      position: 'top-start',
+    },
+  ];
 
   useEffect(() => {
     const taskDrawerFirstTimeValue = localStorageHelper.getItem(
@@ -227,8 +261,9 @@ const NewTaskDrawer = ({
                     closeTaskDrawer={closeTaskDrawer}
                     setAutoSaveVisible={setAutoSaveVisible}
                     modalActions={modalActions}
-                    openedTourStep={openedTourStep}
-                    setTourStep={setOpenedTourStep}
+                    setTourTaskMenuReference={element => {
+                      taskMenuReference.current = element;
+                    }}
                   />
                   <Spacing vertical={2} />
                   <Grid item xs={12} style={styleFullRow}>
@@ -534,65 +569,21 @@ const NewTaskDrawer = ({
         </ClickAwayListener>
       )}
       {/* Tour popper components */}
-      {openedTourStep !== null && (
-        <>
+      {openedTourStep !== null &&
+        tourStepsReferences.map(({ reference, index, position }) => (
           <TaskDrawerTourPopper
-            anchorEl={dueDateSectionReference?.current}
-            position="bottom-start"
-            open={openedTourStep === 1}
+            key={index}
+            anchorEl={reference?.current}
+            position={position}
+            open={openedTourStep === index}
           >
             <TaskDrawerTourContent
-              stepIndex={1}
+              stepIndex={index}
               setStep={setOpenedTourStep}
               onClose={closeTour}
             />
           </TaskDrawerTourPopper>
-          <TaskDrawerTourPopper
-            anchorEl={statusSectionReference?.current}
-            position="top-end"
-            open={openedTourStep === 2}
-          >
-            <TaskDrawerTourContent
-              stepIndex={2}
-              setStep={setOpenedTourStep}
-              onClose={() => closeTour}
-            />
-          </TaskDrawerTourPopper>
-          <TaskDrawerTourPopper
-            anchorEl={labelsSectionReference?.current}
-            position="top-end"
-            open={openedTourStep === 3}
-          >
-            <TaskDrawerTourContent
-              stepIndex={3}
-              setStep={setOpenedTourStep}
-              onClose={() => closeTour}
-            />
-          </TaskDrawerTourPopper>
-          <TaskDrawerTourPopper
-            anchorEl={commentsSectionReference?.current}
-            position="top-end"
-            open={openedTourStep === 4}
-          >
-            <TaskDrawerTourContent
-              stepIndex={4}
-              setStep={setOpenedTourStep}
-              onClose={() => closeTour}
-            />
-          </TaskDrawerTourPopper>
-          <TaskDrawerTourPopper
-            anchorEl={historySectionReference?.current}
-            position="top-start"
-            open={openedTourStep === 5}
-          >
-            <TaskDrawerTourContent
-              stepIndex={5}
-              setStep={setOpenedTourStep}
-              onClose={closeTour}
-            />
-          </TaskDrawerTourPopper>
-        </>
-      )}
+        ))}
     </>
   );
 };
