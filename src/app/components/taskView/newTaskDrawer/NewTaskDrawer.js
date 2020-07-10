@@ -97,7 +97,12 @@ const NewTaskDrawer = ({
   useEffect(() => {
     if (taskDrawerOpen) {
       setOpenedTourStep(0);
+
+      if (!taskDrawerOpen && openedTourStep !== null) {
+        setOpenedTourStep(null);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskDrawerOpen]);
 
   const { saveDueDate } = initializeDueDateSectionHooks({
