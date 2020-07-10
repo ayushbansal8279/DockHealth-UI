@@ -11,7 +11,15 @@ const EmptyTaskAddView = ({ quickAddTask }) => {
         Create your first task
       </MontserratTypography>
       <Spacing vertical={3} />
-      <QuickAddTaskInput quickAddTask={quickAddTask} />
+      <QuickAddTaskInput
+        quickAddTask={quickAddTask}
+        validator={value => {
+          if ([...value]?.filter(char => char !== ' ').length < 2)
+            return 'The task description is too short (min. 2 characters)';
+
+          return null;
+        }}
+      />
     </EmptyListWrapper>
   );
 };

@@ -1,7 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { AddTaskInputWrapper, ErrorLabel } from './styled';
 
-const QuickAddTaskInput = ({ quickAddTask, onFocus, validator }) => {
+const QuickAddTaskInput = ({
+  quickAddTask,
+  onFocus,
+  validator,
+  autoComplete = 'on',
+}) => {
   const addTaskInput = useRef();
   const [error, setError] = useState(null);
 
@@ -27,6 +32,7 @@ const QuickAddTaskInput = ({ quickAddTask, onFocus, validator }) => {
     <>
       <AddTaskInputWrapper hasError={!!error}>
         <input
+          autoComplete={autoComplete}
           name="newTask"
           type="text"
           ref={addTaskInput}
