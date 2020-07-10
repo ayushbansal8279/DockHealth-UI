@@ -89,6 +89,10 @@ const NewTaskDrawer = ({
   const [openedTourStep, setOpenedTourStep] = useState(null);
 
   const dueDateSectionReference = useRef(null);
+  const statusSectionReference = useRef(null);
+  const labelsSectionReference = useRef(null);
+  const commentsSectionReference = useRef(null);
+  const historySectionReference = useRef(null);
 
   useEffect(() => {
     if (taskDrawerOpen) {
@@ -202,8 +206,8 @@ const NewTaskDrawer = ({
                     closeTaskDrawer={closeTaskDrawer}
                     setAutoSaveVisible={setAutoSaveVisible}
                     modalActions={modalActions}
-                openedTourStep={openedTourStep}
-                setTourStep={setOpenedTourStep}
+                    openedTourStep={openedTourStep}
+                    setTourStep={setOpenedTourStep}
                   />
                   <Spacing vertical={2} />
                   <Grid item xs={12} style={styleFullRow}>
@@ -369,18 +373,18 @@ const NewTaskDrawer = ({
                     />
                   </Grid>
                   <Grid item xs={6} style={styleLeftColumn}>
-                <div ref={dueDateSectionReference}>
-                    <DueDateSection
-                      selectedTask={selectedTask}
-                      isOverDue={isOverDue}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                      refreshList={refreshList}
-                      shouldRefreshContext={refreshTriggers.includes(
-                        ContextRefreshTriggers.DUE_DATE_CHANGE,
-                      )}
-                      dueTimeReference={dueTimeReference}
-                    />
-                </div>
+                    <div ref={dueDateSectionReference}>
+                      <DueDateSection
+                        selectedTask={selectedTask}
+                        isOverDue={isOverDue}
+                        setAutoSaveVisible={setAutoSaveVisible}
+                        refreshList={refreshList}
+                        shouldRefreshContext={refreshTriggers.includes(
+                          ContextRefreshTriggers.DUE_DATE_CHANGE,
+                        )}
+                        dueTimeReference={dueTimeReference}
+                      />
+                    </div>
                   </Grid>
                   <Grid item xs={6} style={styleRightColumn}>
                     <HiddenFieldContainer visible={dueDateValue}>
@@ -402,20 +406,24 @@ const NewTaskDrawer = ({
                     />
                   </Grid>
                   <Grid item xs={6} style={styleRightColumn}>
-                    <StatusSection
-                      selectedTask={selectedTask}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                    />
+                    <div ref={statusSectionReference}>
+                      <StatusSection
+                        selectedTask={selectedTask}
+                        setAutoSaveVisible={setAutoSaveVisible}
+                      />
+                    </div>
                   </Grid>
                   <Grid item xs={12} style={styleFullRow}>
-                    <LabelsSection
-                      selectedTask={selectedTask}
-                      isInbox={isInbox}
-                      parentFormSubmit={parentFormSubmit}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                      setSelectedLabelsValue={setValue}
-                      taskDrawerFocusField={taskDrawerFocusField}
-                    />
+                    <div ref={labelsSectionReference}>
+                      <LabelsSection
+                        selectedTask={selectedTask}
+                        isInbox={isInbox}
+                        parentFormSubmit={parentFormSubmit}
+                        setAutoSaveVisible={setAutoSaveVisible}
+                        setSelectedLabelsValue={setValue}
+                        taskDrawerFocusField={taskDrawerFocusField}
+                      />
+                    </div>
                   </Grid>
                   <Grid item xs={12} style={styleFullRow}>
                     <AtttachmentsSection
@@ -424,11 +432,13 @@ const NewTaskDrawer = ({
                     />
                   </Grid>
                   <Grid item xs={12} style={styleCommentRow}>
-                    <CommentSection
-                      parentFormSubmit={parentFormSubmit}
-                      taskDrawerFocusField={taskDrawerFocusField}
-                      modalActions={modalActions}
-                    />
+                    <div ref={commentsSectionReference}>
+                      <CommentSection
+                        parentFormSubmit={parentFormSubmit}
+                        taskDrawerFocusField={taskDrawerFocusField}
+                        modalActions={modalActions}
+                      />
+                    </div>
                   </Grid>
                   {newTaskFlag && (
                     <Grid
@@ -486,6 +496,10 @@ const NewTaskDrawer = ({
             />
             <Grid container item xs={12} style={styleLastRow}>
               <Spacing vertical={2} />
+              <div>
+                <Spacing horizontal={5} />
+                <span ref={historySectionReference} />
+              </div>
               <HistorySection
                 formMethods={formMethods}
                 taskLists={taskLists}
@@ -498,17 +512,66 @@ const NewTaskDrawer = ({
           </TaskDrawerContainer>
         </ClickAwayListener>
       )}
-      <TaskDrawerTourPopper
-        anchorEl={dueDateSectionReference?.current}
-        position="bottom-start"
-        open={openedTourStep === 1}
-      >
-        <TaskDrawerTourContent
-          stepIndex={1}
-          setStep={setOpenedTourStep}
-          onClose={() => setOpenedTourStep(null)}
-        />
-      </TaskDrawerTourPopper>
+      {/* Tour popper components */}
+      {openedTourStep !== null && (
+        <>
+          <TaskDrawerTourPopper
+            anchorEl={dueDateSectionReference?.current}
+            position="bottom-start"
+            open={openedTourStep === 1}
+          >
+            <TaskDrawerTourContent
+              stepIndex={1}
+              setStep={setOpenedTourStep}
+              onClose={() => setOpenedTourStep(null)}
+            />
+          </TaskDrawerTourPopper>
+          <TaskDrawerTourPopper
+            anchorEl={statusSectionReference?.current}
+            position="top-end"
+            open={openedTourStep === 2}
+          >
+            <TaskDrawerTourContent
+              stepIndex={2}
+              setStep={setOpenedTourStep}
+              onClose={() => setOpenedTourStep(null)}
+            />
+          </TaskDrawerTourPopper>
+          <TaskDrawerTourPopper
+            anchorEl={labelsSectionReference?.current}
+            position="top-end"
+            open={openedTourStep === 3}
+          >
+            <TaskDrawerTourContent
+              stepIndex={3}
+              setStep={setOpenedTourStep}
+              onClose={() => setOpenedTourStep(null)}
+            />
+          </TaskDrawerTourPopper>
+          <TaskDrawerTourPopper
+            anchorEl={commentsSectionReference?.current}
+            position="top-end"
+            open={openedTourStep === 4}
+          >
+            <TaskDrawerTourContent
+              stepIndex={4}
+              setStep={setOpenedTourStep}
+              onClose={() => setOpenedTourStep(null)}
+            />
+          </TaskDrawerTourPopper>
+          <TaskDrawerTourPopper
+            anchorEl={historySectionReference?.current}
+            position="top-start"
+            open={openedTourStep === 5}
+          >
+            <TaskDrawerTourContent
+              stepIndex={5}
+              setStep={setOpenedTourStep}
+              onClose={() => setOpenedTourStep(null)}
+            />
+          </TaskDrawerTourPopper>
+        </>
+      )}
     </>
   );
 };

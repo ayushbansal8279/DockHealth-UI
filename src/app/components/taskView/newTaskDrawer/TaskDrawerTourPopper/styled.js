@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const PopperTopArrow = styled.div`
   position: absolute;
@@ -18,7 +19,7 @@ export const PopperBottomArrow = styled(PopperTopArrow)`
 `;
 
 export const PopperWrapper = styled.div`
-  margin-top: 8px;
+  margin: ${spacing.small} 0;
   background: ${palette.darkBlue};
   border-radius: 5px;
 `;

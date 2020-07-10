@@ -278,17 +278,19 @@ const TopSection = ({
           }}
         />
       )}
-      <TaskDrawerTourPopper
-        anchorEl={taskMenuReference?.current}
-        position="bottom-end"
-        open={openedTourStep === 0}
-      >
-        <TaskDrawerTourContent
-          stepIndex={0}
-          setStep={setTourStep}
-          onClose={() => setTourStep(null)}
-        />
-      </TaskDrawerTourPopper>
+      {openedTourStep !== null && (
+        <TaskDrawerTourPopper
+          anchorEl={taskMenuReference?.current}
+          position="bottom-end"
+          open={openedTourStep === 0}
+        >
+          <TaskDrawerTourContent
+            stepIndex={0}
+            setStep={setTourStep}
+            onClose={() => setTourStep(null)}
+          />
+        </TaskDrawerTourPopper>
+      )}
     </>
   );
 };
