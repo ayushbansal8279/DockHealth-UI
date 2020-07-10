@@ -248,7 +248,7 @@ export const SlimTaskItemDescription = styled.div`
     width: 450px;
   }
 
-  @media (min-width: 1157px) {
+  @media (min-width: 1153px) {
     min-width: 550px;
   }
 
@@ -279,7 +279,7 @@ export const SlimTaskItemRightSide = styled.div`
     margin-left: 50px;
   }
 
-  @media (min-width: 1157px) {
+  @media (min-width: 1153px) {
     margin-left: 75px;
     width: 280px;
     max-width: 280px;
