@@ -1,7 +1,6 @@
 import React from 'react';
 import { ClickAwayListener } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
-import { TASK_DRAWER_TOUR_STEPS } from './task-drawer-tour-steps';
 import {
   TourContent,
   Title,
@@ -15,32 +14,37 @@ import {
   CloseIcon,
 } from './styled';
 
-const TaskDrawerTourContent = ({ setStep, stepIndex, onClose }) => {
+const TaskDrawerTourContent = ({
+  steps,
+  setStep,
+  currentStepIndex,
+  onClose,
+}) => {
+  const { title, description, description2 } = steps[currentStepIndex];
+
   return (
     <ClickAwayListener onClickAway={onClose}>
       <TourContent>
-        <Title>{TASK_DRAWER_TOUR_STEPS[stepIndex].title}</Title>
-        <Description>
-          {TASK_DRAWER_TOUR_STEPS[stepIndex].description}
-        </Description>
-        {TASK_DRAWER_TOUR_STEPS[stepIndex].description2 && (
+        <Title>{title}</Title>
+        <Description>{description}</Description>
+        {description2 && (
           <>
             <Spacing vertical={4} />
-            <Description>
-              {TASK_DRAWER_TOUR_STEPS[stepIndex].description2}
-            </Description>
+            <Description>{description2}</Description>
           </>
         )}
         <NavigationContainer>
           <NavigationDotsContainer>
-            {TASK_DRAWER_TOUR_STEPS.map(({ key }, index) => (
-              <DotNavigationButton key={key} onClick={() => setStep(index)}>
-                <Dot isNext={index > stepIndex} />
+            {steps.map(({ index }) => (
+              <DotNavigationButton key={index} onClick={() => setStep(index)}>
+                <Dot isNext={index > currentStepIndex} />
               </DotNavigationButton>
             ))}
           </NavigationDotsContainer>
-          {stepIndex < TASK_DRAWER_TOUR_STEPS.length - 1 ? (
-            <TourButton onClick={() => setStep(stepIndex + 1)}>Next</TourButton>
+          {currentStepIndex < steps.length - 1 ? (
+            <TourButton onClick={() => setStep(currentStepIndex + 1)}>
+              Next
+            </TourButton>
           ) : (
             <TourButton onClick={onClose}>Got it</TourButton>
           )}
