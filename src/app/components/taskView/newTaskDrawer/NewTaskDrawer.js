@@ -600,26 +600,26 @@ const NewTaskDrawer = ({
                 closeTaskDrawer={closeTaskDrawer}
               />
             </Grid>
+            {/* Tour popper components */}
+            {openedTourStep !== null &&
+              tourSteps.map(({ reference, index, position }) => (
+                <TaskDrawerTourPopper
+                  key={index}
+                  anchorEl={reference?.current}
+                  position={position}
+                  open={openedTourStep === index}
+                >
+                  <TaskDrawerTourContent
+                    steps={tourSteps}
+                    currentStepIndex={index}
+                    setStep={setOpenedTourStep}
+                    onClose={closeTour}
+                  />
+                </TaskDrawerTourPopper>
+              ))}
           </TaskDrawerContainer>
         </ClickAwayListener>
       )}
-      {/* Tour popper components */}
-      {openedTourStep !== null &&
-        tourSteps.map(({ reference, index, position }) => (
-          <TaskDrawerTourPopper
-            key={index}
-            anchorEl={reference?.current}
-            position={position}
-            open={openedTourStep === index}
-          >
-            <TaskDrawerTourContent
-              steps={tourSteps}
-              currentStepIndex={index}
-              setStep={setOpenedTourStep}
-              onClose={closeTour}
-            />
-          </TaskDrawerTourPopper>
-        ))}
     </>
   );
 };
