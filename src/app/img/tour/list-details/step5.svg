@@ -37,7 +37,30 @@
 <path d="M119.329 172.087L126.618 172.087" stroke="#C1CCDA" stroke-width="4.79782"/>
 <path d="M132.457 172.087L135.176 172.087" stroke="#C1CCDA" stroke-width="4.79782"/>
 </g>
+<g filter="url(#filter0_d)">
+<path d="M151.065 107.79C151.065 124.482 137.533 138.014 120.841 138.014C104.148 138.014 90.6164 124.482 90.6164 107.79C90.6164 91.0971 104.148 77.5651 120.841 77.5651C137.533 77.5651 151.065 91.0971 151.065 107.79Z" stroke="#EF8A23" stroke-width="4.56382"/>
+</g>
+<path d="M103.826 108.443H116.45" stroke="white" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M103.826 108.443H116.45" stroke="url(#paint5_linear)" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M103.826 104.481H116.45" stroke="white" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M103.826 104.481H116.45" stroke="url(#paint6_linear)" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M103.826 112.405H116.451" stroke="white" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M103.826 112.405H116.451" stroke="url(#paint7_linear)" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M129.177 108.443H138.699" stroke="#00A2E5" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M129.177 104.481H138.699" stroke="#00A2E5" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M126.144 112.405H138.697" stroke="#00A2E5" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M126.075 108.443H126.127" stroke="#00A2E5" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M126.075 104.481H126.127" stroke="#00A2E5" stroke-width="1.58596" stroke-linecap="round" stroke-linejoin="round"/>
 <defs>
+<filter id="filter0_d" x="87.0838" y="75.2832" width="67.5141" height="67.5141" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="1.25067"/>
+<feGaussianBlur stdDeviation="0.625334"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+</filter>
 <linearGradient id="paint0_linear" x1="11.4287" y1="192.643" x2="200.478" y2="181.139" gradientUnits="userSpaceOnUse">
 <stop stop-color="#01A0E3"/>
 <stop offset="1" stop-color="#074E8A"/>
@@ -55,6 +78,18 @@
 <stop offset="1" stop-color="white" stop-opacity="0"/>
 </linearGradient>
 <linearGradient id="paint4_linear" x1="-61.3078" y1="162.833" x2="-61.3078" y2="181.345" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint5_linear" x1="110.138" y1="108.443" x2="110.138" y2="107.443" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint6_linear" x1="110.138" y1="104.481" x2="110.138" y2="103.481" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint7_linear" x1="110.138" y1="112.405" x2="110.138" y2="111.405" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
 <stop offset="1" stop-color="white" stop-opacity="0"/>
 </linearGradient>

@@ -70,7 +70,11 @@ const DashboardView = () => {
               <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
             )}
             {openedTour === 2 && (
-              <Tour steps={SECOND_TOUR_STEPS} onClose={closeSecondTour} />
+              <Tour
+                darkTheme
+                steps={SECOND_TOUR_STEPS}
+                onClose={closeSecondTour}
+              />
             )}
           </DashboardTourWrapper>
           <DashboardTourBackground

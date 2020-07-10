@@ -10,7 +10,10 @@ export const TourContainer = styled.div`
   width: 648px;
   max-width: calc(100vw - 100px);
   padding: 25px 55px 35px 25px;
-  background: linear-gradient(262.44deg, #01a0e3 0%, #074e8a 98.93%);
+  background: ${({ darkTheme }) =>
+    darkTheme
+      ? palette.darkGrey
+      : 'linear-gradient(262.44deg, #01a0e3 0%, #074e8a 98.93%)'};
   border-radius: 5px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.25);
   font-family: 'Montserrat', sans-serif;

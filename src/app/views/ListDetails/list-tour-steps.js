@@ -24,8 +24,7 @@ export const LIST_TOUR_STEPS = [
     key: 3,
     icon: Step3Icon,
     title: 'Quickly add a new task',
-    description:
-      'Adding a new task is now a snap. Simply type in your task in the new box with “+ Add Task,” hit the enter key and the new task is saved to your list.',
+    description: `Adding a new task is now a snap. Simply type in your task in the new box with “+Add Task,” hit the enter key and the new task is saved to your list.`,
   },
   {
     key: 4,

@@ -15,12 +15,12 @@ import {
   TourButton,
 } from './styled';
 
-const Tour = ({ steps, onClose }) => {
+const Tour = ({ steps, onClose, darkTheme }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const { icon, title, description } = steps[currentStep];
   return (
-    <TourContainer>
+    <TourContainer darkTheme={darkTheme}>
       <CloseIconButton onClick={onClose} size="small">
         <CloseIcon />
       </CloseIconButton>
