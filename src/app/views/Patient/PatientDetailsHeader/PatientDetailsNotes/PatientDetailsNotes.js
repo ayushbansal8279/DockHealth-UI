@@ -54,7 +54,7 @@ const PatientDetailsNotes = ({
 
       <PatientDetailsNoteInput
         onEnterClick={value => {
-          if (value?.length > 0) {
+          if ([...value]?.filter(char => char !== ' ').length > 0) {
             addPatientNote({ note: value });
             listReference.current.scrollTo({
               top: 0,
