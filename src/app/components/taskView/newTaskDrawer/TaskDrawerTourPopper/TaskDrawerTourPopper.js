@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Popper } from '@material-ui/core';
 import { PopperTopArrow, PopperBottomArrow, PopperWrapper } from './styled';
 
 const TaskDrawerTourPopover = ({ children, anchorEl, position, open }) => {
   const [arrowReference, setArrowReference] = useState(null);
 
-  const isArrowTop = position.includes('bottom');
-  const isArrowBottom = position.includes('top');
+  const isTopArrow = position.includes('bottom');
+  const isBottomArrow = position.includes('top');
 
   const setReference = element => {
     if (element !== null && arrowReference === null) {
       setArrowReference(element);
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      setArrowReference(null);
+    }
+  }, [open]);
 
   return (
     <Popper
@@ -35,9 +41,9 @@ const TaskDrawerTourPopover = ({ children, anchorEl, position, open }) => {
         },
       }}
     >
-      {isArrowTop && <PopperTopArrow ref={setReference} />}
+      {isTopArrow && <PopperTopArrow ref={setReference} />}
       <PopperWrapper>{children}</PopperWrapper>
-      {isArrowBottom && <PopperBottomArrow ref={setReference} />}
+      {isBottomArrow && <PopperBottomArrow ref={setReference} />}
     </Popper>
   );
 };

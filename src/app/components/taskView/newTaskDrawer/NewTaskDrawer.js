@@ -2,8 +2,10 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider, ClickAwayListener } from '@material-ui/core';
 import React, { useRef, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
+import { isNil } from 'ramda';
 import { addPatient, getAllPatients } from 'actions/patient-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
@@ -11,7 +13,7 @@ import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { useDispatch } from 'react-redux';
+import localStorageHelper from 'helpers/local-storage-helper';
 import { noop } from 'helpers/utility-functions';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
@@ -52,6 +54,8 @@ import {
 } from './NewTaskDrawer.Utilities';
 import TaskDrawerTourContent from './TaskDrawerTourContent/TaskDrawerTourContent';
 import TaskDrawerTourPopper from './TaskDrawerTourPopper/TaskDrawerTourPopper';
+
+const TASK_DRAWER_FIRST_TIME_KEY = 'TASK_DRAWER_FIRST_TIME_KEY';
 
 const NewTaskDrawer = ({
   isInbox,
@@ -95,15 +99,27 @@ const NewTaskDrawer = ({
   const historySectionReference = useRef(null);
 
   useEffect(() => {
-    if (taskDrawerOpen) {
-      setOpenedTourStep(0);
+    const taskDrawerFirstTimeValue = localStorageHelper.getItem(
+      TASK_DRAWER_FIRST_TIME_KEY,
+    );
 
-      if (!taskDrawerOpen && openedTourStep !== null) {
-        setOpenedTourStep(null);
-      }
+    if (
+      taskDrawerOpen &&
+      (isNil(taskDrawerFirstTimeValue) || taskDrawerFirstTimeValue)
+    ) {
+      setOpenedTourStep(0);
+    }
+
+    if (!taskDrawerOpen && openedTourStep !== null) {
+      setOpenedTourStep(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskDrawerOpen]);
+
+  const closeTour = () => {
+    localStorageHelper.setItem(TASK_DRAWER_FIRST_TIME_KEY, false);
+    setOpenedTourStep(null);
+  };
 
   const { saveDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
@@ -528,7 +544,7 @@ const NewTaskDrawer = ({
             <TaskDrawerTourContent
               stepIndex={1}
               setStep={setOpenedTourStep}
-              onClose={() => setOpenedTourStep(null)}
+              onClose={closeTour}
             />
           </TaskDrawerTourPopper>
           <TaskDrawerTourPopper
@@ -539,7 +555,7 @@ const NewTaskDrawer = ({
             <TaskDrawerTourContent
               stepIndex={2}
               setStep={setOpenedTourStep}
-              onClose={() => setOpenedTourStep(null)}
+              onClose={() => closeTour}
             />
           </TaskDrawerTourPopper>
           <TaskDrawerTourPopper
@@ -550,7 +566,7 @@ const NewTaskDrawer = ({
             <TaskDrawerTourContent
               stepIndex={3}
               setStep={setOpenedTourStep}
-              onClose={() => setOpenedTourStep(null)}
+              onClose={() => closeTour}
             />
           </TaskDrawerTourPopper>
           <TaskDrawerTourPopper
@@ -561,7 +577,7 @@ const NewTaskDrawer = ({
             <TaskDrawerTourContent
               stepIndex={4}
               setStep={setOpenedTourStep}
-              onClose={() => setOpenedTourStep(null)}
+              onClose={() => closeTour}
             />
           </TaskDrawerTourPopper>
           <TaskDrawerTourPopper
@@ -572,7 +588,7 @@ const NewTaskDrawer = ({
             <TaskDrawerTourContent
               stepIndex={5}
               setStep={setOpenedTourStep}
-              onClose={() => setOpenedTourStep(null)}
+              onClose={closeTour}
             />
           </TaskDrawerTourPopper>
         </>
