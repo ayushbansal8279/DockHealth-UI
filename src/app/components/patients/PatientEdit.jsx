@@ -58,8 +58,8 @@ const validationObjectShape = {
     .nullable()
     .transform(value => (!value ? null : value))
     .email('This field requires a valid email address'),
-  phoneHome: string(),
-  phoneMobile: string(),
+  phoneHome: string().nullable(),
+  phoneMobile: string().nullable(),
 };
 
 const validationSchema = object().shape(validationObjectShape);
