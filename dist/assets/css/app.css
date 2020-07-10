@@ -242,7 +242,8 @@ textarea {
      * Show the overflow in IE.
      */
 button {
-  overflow: visible; }
+  overflow: visible; 
+}
 
 /**
      * Remove the inheritance of text transform in Edge, Firefox, and IE.
@@ -251,7 +252,9 @@ button {
 button,
 select {
   /* 1 */
-  text-transform: none; }
+  text-transform: none; 
+  text-decoration: none;
+}
 
 /**
      * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
@@ -769,7 +772,8 @@ kbd {
     display: table-cell !important; }
   a,
   a:visited {
-    text-decoration: underline; }
+    text-decoration: none; 
+  }
   a[href]:after {
     content: " (" attr(href) ")"; }
   .ir a:after,
