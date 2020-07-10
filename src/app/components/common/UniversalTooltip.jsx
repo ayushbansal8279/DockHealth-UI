@@ -1,4 +1,4 @@
-import { Fade, Popper, PopperProps } from '@material-ui/core';
+import { Fade, Popper } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -56,10 +56,11 @@ const ArrowElementReverseRight = styled.div`
 const StyledPopper = styled(Popper)`
   && {
     z-index: 10000;
+    max-width: ${({ maxWidth }) => maxWidth};
   }
 `;
 
-const UniversalTooltip = ({ children, ...props }: PopperProps) => {
+const UniversalTooltip = ({ children, ...props }) => {
   if (props?.placement === 'top') {
     return (
       <StyledPopper {...props} transition>

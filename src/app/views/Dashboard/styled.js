@@ -11,10 +11,14 @@ export const DashboardViewWrapper = styled.div`
 
 export const DashboardSidebarWrapper = styled.div`
   height: 100%;
-  width: ${({ isHidden }) => (isHidden ? 0 : 380)}px;
+  width: ${({ isHidden }) => (isHidden ? 0 : 280)}px;
   border-right: 1px solid ${palette.coolGrey2};
   background-color: ${palette.coolGrey4};
   transition: width 0.3s ease-out;
+
+  @media (min-width: 1157px) {
+    width: ${({ isHidden }) => (isHidden ? 0 : 380)}px;
+  }
 `;
 
 export const DashboardContentWrapper = styled.div`
