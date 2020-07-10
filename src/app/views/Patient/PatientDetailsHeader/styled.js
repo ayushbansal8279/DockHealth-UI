@@ -13,10 +13,15 @@ export const PatientDetailsContainer = styled.div`
 export const PatientDetailsInformationContainer = styled.div`
   display: flex;
   padding: ${spacing.huge} ${spacing.largePlus};
-  justify-content: center;
-  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
   border-bottom: 3px solid #f5f8fa;
+`;
+
+export const PatientDetailsBio = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export const PatientName = styled.div`
@@ -65,4 +70,13 @@ export const NavigationBackIcon = styled.img`
 
 export const PatientDetailsLabel = styled.div`
   color: ${palette.brightBlue};
+`;
+
+export const ArrowBox = styled.div`
+  display: flex;
+  align-items: flex-end;
+`;
+
+export const ArrowBoxIndicator = styled.div`
+  height: fit-content;
 `;
