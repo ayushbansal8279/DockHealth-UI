@@ -5,6 +5,7 @@ import ArrowLeftIcon from 'img/arrow-left.svg';
 import Arrow from 'components/common/Arrow/Arrow';
 import {
   PatientDetailsInformationContainer,
+  PatientDetailsBio,
   PatientName,
   PatientInfo,
   PatientInfoDivider,
@@ -12,6 +13,8 @@ import {
   PatientDetails,
   NavigationBackIcon,
   PatientDetailsLabel,
+  ArrowBox,
+  ArrowBoxIndicator,
 } from './styled';
 
 const formatInformation = (information, width) => {
@@ -65,53 +68,61 @@ const PatientDetailsInformation = ({
 
   return (
     <PatientDetailsInformationContainer>
-      <PatientName>
-        <Link to="/patients">
-          <NavigationBackIcon src={ArrowLeftIcon} />
-        </Link>
-        {[firstName, middleName, lastName].join(' ')}
-      </PatientName>
-      <PatientDetails>
-        <PatientDetailsInformations>
-          {dob && gender && (
-            <>
-              <PatientInfo>
-                {moment(dob).format('MM/DD/YYYY')}{' '}
-                {moment().diff(moment(dob), 'years')} {'yo '}
-                {gender?.charAt(0)?.toUpperCase()}
-              </PatientInfo>
-              <PatientInfoDivider />
-            </>
-          )}
-          {mrn && (
-            <>
-              <PatientInfo>MRN# {mrn}</PatientInfo>
-              <PatientInfoDivider />
-            </>
-          )}
-          {email && (
-            <>
-              <PatientInfo>{formatInformation(email, width)}</PatientInfo>
-              <PatientInfoDivider />
-            </>
-          )}
-          {phoneMobile && (
-            <>
-              <PatientInfo>M {phoneMobile}</PatientInfo>
-              <PatientInfoDivider />
-            </>
-          )}
-          {phoneHome && (
-            <>
-              <PatientInfo>H {phoneHome}</PatientInfo>
-              <PatientInfoDivider />
-            </>
-          )}
-        </PatientDetailsInformations>
-        <Arrow isOpen={isOpenedDetails} setOpen={setIsOpenedDetails}>
-          <PatientDetailsLabel>DETAILS</PatientDetailsLabel>
-        </Arrow>
-      </PatientDetails>
+      <PatientDetailsBio>
+        <PatientName>
+          <Link to="/patients">
+            <NavigationBackIcon src={ArrowLeftIcon} />
+          </Link>
+          {[firstName, middleName, lastName].join(' ')}
+        </PatientName>
+        {((dob && gender) || mrn || email || phoneMobile || phoneHome) && (
+          <PatientDetails>
+            <PatientDetailsInformations>
+              {dob && gender && (
+                <>
+                  <PatientInfo>
+                    {moment(dob).format('MM/DD/YYYY')}{' '}
+                    {moment().diff(moment(dob), 'years')} {'yo '}
+                    {gender?.charAt(0)?.toUpperCase()}
+                  </PatientInfo>
+                  <PatientInfoDivider />
+                </>
+              )}
+              {mrn && (
+                <>
+                  <PatientInfo>MRN# {mrn}</PatientInfo>
+                  <PatientInfoDivider />
+                </>
+              )}
+              {email && (
+                <>
+                  <PatientInfo>{formatInformation(email, width)}</PatientInfo>
+                  <PatientInfoDivider />
+                </>
+              )}
+              {phoneMobile && (
+                <>
+                  <PatientInfo>M {phoneMobile}</PatientInfo>
+                  <PatientInfoDivider />
+                </>
+              )}
+              {phoneHome && (
+                <>
+                  <PatientInfo>H {phoneHome}</PatientInfo>
+                  <PatientInfoDivider />
+                </>
+              )}
+            </PatientDetailsInformations>
+          </PatientDetails>
+        )}
+      </PatientDetailsBio>
+      <ArrowBox>
+        <ArrowBoxIndicator>
+          <Arrow isOpen={isOpenedDetails} setOpen={setIsOpenedDetails}>
+            <PatientDetailsLabel>DETAILS</PatientDetailsLabel>
+          </Arrow>
+        </ArrowBoxIndicator>
+      </ArrowBox>
     </PatientDetailsInformationContainer>
   );
 };
