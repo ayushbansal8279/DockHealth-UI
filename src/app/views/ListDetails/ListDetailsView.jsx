@@ -30,7 +30,7 @@ import {
   availableFiltersInInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 
-import { ListTourWrapper } from './ListDetailsView.Styled';
+import { ListTourWrapper, ListTourBackground } from './ListDetailsView.Styled';
 import TasksView from '../Task/NewTasksView/TasksView';
 import { LIST_TOUR_STEPS } from './list-tour-steps';
 
@@ -469,11 +469,14 @@ class Home extends Component {
     return (
       <>
         <TasksView {...taskViewProps} defaultGroupName="New tasks" />
-        <ListTourWrapper>
-          {isTourOpen && (
-            <Tour steps={LIST_TOUR_STEPS} onClose={this.closeTourModal} />
-          )}
-        </ListTourWrapper>
+        {isTourOpen && (
+          <>
+            <ListTourWrapper>
+              <Tour steps={LIST_TOUR_STEPS} onClose={this.closeTourModal} />
+            </ListTourWrapper>
+            <ListTourBackground onClick={this.closeTourModal} />
+          </>
+        )}
       </>
     );
   }

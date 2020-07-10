@@ -26,10 +26,19 @@ export const DashboardContentWrapper = styled.div`
   max-width: 1440px;
 `;
 
+export const DashboardTourBackground = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+`;
+
 export const DashboardTourWrapper = styled.div`
   position: fixed;
   top: 150px;
   left: 50%;
-  z-index: 200;
   transform: translateX(-40%);
+  z-index: 201;
 `;

@@ -11,6 +11,7 @@ import {
   DashboardSidebarWrapper,
   DashboardContentWrapper,
   DashboardTourWrapper,
+  DashboardTourBackground,
 } from './styled';
 import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 
@@ -63,14 +64,19 @@ const DashboardView = () => {
         <DashboardContent isTaskDrawerOpen={isTaskDrawerOpen} />
       </DashboardContentWrapper>
       {openedTour && (
-        <DashboardTourWrapper>
-          {openedTour === 1 && (
-            <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
-          )}
-          {openedTour === 2 && (
-            <Tour steps={SECOND_TOUR_STEPS} onClose={closeSecondTour} />
-          )}
-        </DashboardTourWrapper>
+        <>
+          <DashboardTourWrapper>
+            {openedTour === 1 && (
+              <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
+            )}
+            {openedTour === 2 && (
+              <Tour steps={SECOND_TOUR_STEPS} onClose={closeSecondTour} />
+            )}
+          </DashboardTourWrapper>
+          <DashboardTourBackground
+            onClick={openedTour === 1 ? closeFirstTour : closeSecondTour}
+          />
+        </>
       )}
     </DashboardViewWrapper>
   );
