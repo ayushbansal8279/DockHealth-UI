@@ -216,6 +216,7 @@ const TaskItem = ({
     matchDescription,
     matchLabels,
     matchPatient,
+    matchPatientMRN,
     matchWorkflowStatus,
   } = searchMetaData;
 
@@ -340,10 +341,16 @@ const TaskItem = ({
               )}
               {patient && !parentHasPatient && (
                 <ListItemLink to={`patient/${patient.patientIdentifier}`}>
-                  {matchPatient && highlightedValue ? (
+                  {(matchPatient || matchPatientMRN) && highlightedValue ? (
                     <Highlighter
                       highlightClassName="list-highlight"
-                      searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+                      searchWords={
+                        matchPatient
+                          ? highlightedValue?.toLowerCase().split(/\s+/)
+                          : `${patient.firstName} ${patient.lastName}`
+                              .toLowerCase()
+                              .split(/\s+/)
+                      }
                       autoEscape
                       textToHighlight={`${patient.firstName} ${patient.lastName}`}
                     />
