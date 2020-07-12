@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -53,7 +54,12 @@ const LoginPassword = () => {
           } else {
             sessionStorage.setItem('sessionStartTime', new Date().getTime());
             const nextPathname = sessionStorage.getItem('next-page') || '/';
-            hashHistory.push(nextPathname);
+            if (nextPathname.includes('login')) {
+              hashHistory.push('/home');
+            } else {
+              hashHistory.push(nextPathname);
+            }
+
             sessionStorage.setItem('next-page', '');
             success('Logged in.');
           }
