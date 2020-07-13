@@ -21,8 +21,7 @@ export const PrimaryInputField = styled.input`
   font-weight: ${props =>
     props.placeholder && !props.value ? fontWeights.light : fontWeights.bold};
   outline: none;
-  padding: ${props =>
-    props.isLabelCenterized ? '0' : `${spacing.tiny} 0 ${spacing.small}`};
+  padding: ${props => (props.isLabelCenterized ? '0' : `0 0 2px`)};
   height: ${props => (props.isLabelCenterized ? '0' : 'initial')};
   transition: height 0.2s, padding 0.2s;
 
