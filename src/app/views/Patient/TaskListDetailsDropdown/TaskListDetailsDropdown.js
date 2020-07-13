@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -11,6 +11,7 @@ import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
 } from 'helpers/list-secition-saved-state';
+import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
 
 import {
   Arrow,
@@ -19,8 +20,11 @@ import {
   ListDetailsHeader,
   ListNameSection,
   ViewIcon,
+  ViewIconBox,
+  IconsBox,
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -46,6 +50,12 @@ const TaskListDetailsDropdown = ({
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
     sessionStorageKey,
   );
+
+  const areViewOptionsVisible = useMemo(() => {
+    if (!isOpen) return false;
+
+    return checkIfTasksHaveSubtasksOrCommnets(tasks);
+  }, [isOpen, tasks]);
 
   const isFullView = viewType === FULL_VIEW;
 
@@ -75,20 +85,32 @@ const TaskListDetailsDropdown = ({
             changeUserRoleForList={changeUserRoleForList}
           />
         )}
-        <div>
-          <ViewIcon
-            alt="slim-view"
-            src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
-            onClick={() => setViewType(SLIM_VIEW)}
-            isHidden={!isOpen || tasks?.length === 0}
-          />
-          <ViewIcon
-            alt="full-view"
-            src={isFullView ? FullViewActiveIcon : FullViewIcon}
-            onClick={() => setViewType(FULL_VIEW)}
-            isHidden={!isOpen || tasks?.length === 0}
-          />
-        </div>
+        <IconsBox>
+          <ViewIconBox isHidden={!areViewOptionsVisible}>
+            <UniversalTooltipContainer
+              placement="top-end"
+              label="Slim view. Just the task shows"
+            >
+              <ViewIcon
+                alt="slim-view"
+                src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
+                onClick={() => setViewType(SLIM_VIEW)}
+              />
+            </UniversalTooltipContainer>
+          </ViewIconBox>
+          <ViewIconBox isHidden={!areViewOptionsVisible}>
+            <UniversalTooltipContainer
+              placement="top-end"
+              label="Full view. Task and comments show"
+            >
+              <ViewIcon
+                alt="full-view"
+                src={isFullView ? FullViewActiveIcon : FullViewIcon}
+                onClick={() => setViewType(FULL_VIEW)}
+              />
+            </UniversalTooltipContainer>
+          </ViewIconBox>
+        </IconsBox>
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
         {!isCompleteTab && (

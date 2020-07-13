@@ -34,10 +34,6 @@ export const Arrow = styled.img`
   transition: all 0.5s ease-in-out;
 `;
 
-export const ViewIconBox = styled.div`
-  visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
-`;
-
 export const TasksGroupContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -108,8 +104,4 @@ export const PaginationButton = styled.button`
   color: ${props => (props.disabled ? palette.coolGrey2 : palette.brightBlue)};
   font-size: ${fontSizes.regular};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
-`;
-
-export const IconsBox = styled.div`
-  display: flex;
 `;

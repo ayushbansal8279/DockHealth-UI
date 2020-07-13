@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useMemo } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -13,8 +13,11 @@ import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
 } from 'helpers/list-secition-saved-state';
+import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
 import {
   ViewIcon,
+  ViewIconBox,
+  IconsBox,
   Arrow,
 } from 'components/tasklist/DropdownListSection/styled';
 
@@ -26,12 +29,10 @@ import {
   TasksGroupHeader,
   TasksGroupLabel,
   Tasks,
-  ViewIconBox,
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   PaginationButton,
-  IconsBox,
 } from './styled';
 
 const TasksGroup = ({
@@ -76,6 +77,12 @@ const TasksGroup = ({
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
     groupSessionStorageKey,
   );
+
+  const areViewOptionsVisible = useMemo(() => {
+    if (!isOpen) return false;
+
+    return checkIfTasksHaveSubtasksOrCommnets(tasks);
+  }, [isOpen, tasks]);
 
   const isFullView = viewType === FULL_VIEW;
 
@@ -129,7 +136,7 @@ const TasksGroup = ({
         )}
         {!changingGroupOrderDisabled && (
           <IconsBox>
-            <ViewIconBox isHidden={!isOpen || tasks?.length === 0}>
+            <ViewIconBox isHidden={!areViewOptionsVisible}>
               <UniversalTooltipContainer
                 placement="top-end"
                 label="Slim view. Just the task shows"
@@ -141,7 +148,7 @@ const TasksGroup = ({
                 />
               </UniversalTooltipContainer>
             </ViewIconBox>
-            <ViewIconBox isHidden={!isOpen || tasks?.length === 0}>
+            <ViewIconBox isHidden={!areViewOptionsVisible}>
               <UniversalTooltipContainer
                 placement="top-end"
                 label="Full view. Task and comments show"

@@ -36,10 +36,17 @@ export const ListNameSection = styled.p`
   vertical-align: middle;
 `;
 
+export const ViewIconBox = styled.div`
+  visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
+`;
+
+export const IconsBox = styled.div`
+  display: flex;
+`;
+
 export const ViewIcon = styled.img`
   margin-left: ${spacing.regularPlus};
   margin-bottom: ${spacing.tiny};
-  visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
   cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
 `;
 
