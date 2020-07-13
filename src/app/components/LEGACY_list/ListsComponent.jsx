@@ -72,6 +72,31 @@ const ListsButton = withStyles({
   },
 })(Button);
 
+const NewListTag = styled.div`
+  background: #a4deb9;
+  color: #2a4a70;
+  font-size: 0.75em;
+  padding: 0 0.45em;
+  -webkit-border-radius: 0.45em;
+  -moz-border-radius: 0.45em;
+  border-radius: 0.45em;
+  margin-bottom: 0.25em;
+`;
+
+const NewListNotification = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  background: #a4deb9;
+  color: #2a4a70;
+  font-size: 1em;
+  padding: 1em 5em;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  border-radius: 0.75em;
+  margin-bottom: 1em;
+`;
+
 const TaskListRow = ({
   taskList,
   setIsAdminForCurrentList,
@@ -80,6 +105,7 @@ const TaskListRow = ({
   setCurrentListMenuAnchor,
   currentUser,
   onClick,
+  showNewIndicator,
 }) => {
   const popoverReference = useRef(null);
 
@@ -119,6 +145,7 @@ const TaskListRow = ({
         justify="center"
         direction="column"
       >
+        {showNewIndicator && <NewListTag>NEW</NewListTag>}
         <div
           onClick={() => onClick(taskListIdentifier)}
           style={{ cursor: 'pointer', textAlign: 'left' }}
@@ -183,6 +210,7 @@ const ListsComponent = props => {
     taskLists,
     currentUser,
     onClick,
+    showNewIndicator,
   } = props;
 
   const [isLeavePopoverOpen, openLeavePopover, closeLeavePopover] = useBoolean(
@@ -323,6 +351,20 @@ const ListsComponent = props => {
 
   return (
     <span>
+      {showNewIndicator && taskLists && taskLists.length > 0 && (
+        <Grid
+          container
+          alignItems="flex-start"
+          justify="center"
+          direction="column"
+        >
+          <NewListNotification>
+            {taskLists.length > 1
+              ? 'Hooray! You have new lists.'
+              : 'Hooray! You have a new list.'}
+          </NewListNotification>
+        </Grid>
+      )}
       {taskLists?.map(
         renderTaskListRow({
           setIsAdminForCurrentList,
@@ -331,6 +373,7 @@ const ListsComponent = props => {
           setCurrentListMenuAnchor,
           currentUser,
           onClick,
+          showNewIndicator,
         }),
       )}
       <TaskListInviteMemberContainer

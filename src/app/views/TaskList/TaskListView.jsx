@@ -28,7 +28,7 @@ import TipsButton from 'components/common/TipsButton';
 import TipsContentHeader from 'components/common/TipsContentHeader';
 import GenericHeader from 'components/common/GenericHeader';
 import ListsComponent from 'components/LEGACY_list/ListsComponent';
-import PendingListsComponent from 'components/LEGACY_list/PendingListsComponent';
+// import PendingListsComponent from 'components/LEGACY_list/PendingListsComponent';
 import {
   onTaskListDeleted,
   onTaskListInvitationAccepted,
@@ -276,6 +276,13 @@ class TaskListView extends PureComponent {
     hashHistory.push(`/tasks/${taskListIdentifier}`);
   };
 
+  onClickPendingList = taskListIdentifier => {
+    const { taskActions } = this.props;
+    taskActions.resetTaskSearch();
+    this.acceptInviteToTaskList({ taskListIdentifier });
+    hashHistory.push(`/tasks/${taskListIdentifier}`);
+  };
+
   render() {
     const {
       isFetching,
@@ -475,10 +482,19 @@ class TaskListView extends PureComponent {
                       </LoaderContainer>
                     ) : (
                       <div style={{ marginTop: '0px', padding: '0px' }}>
-                        <PendingListsComponent
+                        {/* <PendingListsComponent
                           taskLists={pendingTaskLists}
                           acceptInviteToTaskList={this.acceptInviteToTaskList}
                           rejectInviteToTaskList={this.rejectInviteToTaskList}
+                        /> */}
+                        <ListsComponent
+                          taskLists={pendingTaskLists}
+                          currentUser={currentUser}
+                          editForm={this.editTaskList}
+                          deleteList={this.deleteList}
+                          leaveList={this.leaveList}
+                          onClick={this.onClickPendingList}
+                          showNewIndicator
                         />
                         <ListsComponent
                           taskLists={taskLists}
@@ -487,6 +503,7 @@ class TaskListView extends PureComponent {
                           deleteList={this.deleteList}
                           leaveList={this.leaveList}
                           onClick={this.onClick}
+                          showNewIndicator={false}
                         />
                       </div>
                     )}
