@@ -441,9 +441,9 @@ class Home extends Component {
 
     const { createTaskGroupList } = tasksGroupsListActions;
 
-    const loadedTasklist = taskLists ? taskLists.find(
-      t => t.taskListIdentifier === taskListIdentifier,
-    ) : {};
+    const loadedTasklist = taskLists
+      ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
+      : {};
 
     const taskViewProps = {
       members,

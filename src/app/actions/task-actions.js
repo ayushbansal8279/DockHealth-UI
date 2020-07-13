@@ -1082,12 +1082,14 @@ export function getFilteredTasksForPeopleList(
 
 const processTaskCountersSuccess = (data, dispatch) => {
   const payload = {
-    incomplete: data ? data.find(
-      ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
-    )?.metricValue : 0,
-    complete: data ? data.find(
-      ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
-    )?.metricValue : 0,
+    incomplete: data
+      ? data.find(({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT')
+          ?.metricValue
+      : 0,
+    complete: data
+      ? data.find(({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT')
+          ?.metricValue
+      : 0,
   };
   dispatch({ type: ActionTypes.TASK_COUNTERS_SUCCESS, payload });
 };
