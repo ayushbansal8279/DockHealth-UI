@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
+import { Popover } from '@material-ui/core';
 
 export const DashboardSidebarWrapper = styled.div`
   display: flex;
@@ -96,4 +97,18 @@ export const PrivateListIcon = styled.img`
   position: absolute;
   left: 18px;
   top: 10px;
+`;
+
+export const RolloverPopover = styled(Popover)`
+  && {
+    pointer-events: none;
+    transform: translateX(-${spacing.small});
+  }
+`;
+
+export const RolloverPopoverLabel = styled.label`
+  padding: 0 ${spacing.small};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  color: ${palette.brightBlue};
 `;

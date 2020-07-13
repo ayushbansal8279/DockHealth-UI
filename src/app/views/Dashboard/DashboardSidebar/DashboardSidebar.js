@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { listsSelector } from 'selectors/task-list-selectors';
@@ -20,9 +20,23 @@ import {
   ListsSection,
   InfoDot,
   Arrow,
+  RolloverPopover,
+  RolloverPopoverLabel,
 } from './styled';
 
 const DashboardSidebar = ({ lists, showNavbar }) => {
+  const hoveredItemReference = useRef(null);
+  const [popoverLabel, setPopoverLabel] = useState(null);
+
+  const handleMouseEnter = (event, listName) => {
+    const { target } = event;
+
+    if (target?.scrollWidth > target?.offsetWidth) {
+      hoveredItemReference.current = target;
+      setPopoverLabel(listName);
+    }
+  };
+
   return (
     <DashboardSidebarWrapper>
       <TopSection>
@@ -54,7 +68,10 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
                   {isPrivate && (
                     <PrivateListIcon src={LockIcon} alt="private" />
                   )}
-                  <ListItemTitle>
+                  <ListItemTitle
+                    onMouseEnter={event => handleMouseEnter(event, listName)}
+                    onMouseLeave={() => setPopoverLabel(null)}
+                  >
                     <TitleText>{listName}</TitleText>
                   </ListItemTitle>
                   <ListItemInfo>
@@ -67,6 +84,21 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
           )}
         </ListItemsWrapper>
       </ListsSection>
+      <RolloverPopover
+        anchorEl={hoveredItemReference?.current}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        open={popoverLabel}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transitionDuration={100}
+      >
+        <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
+      </RolloverPopover>
     </DashboardSidebarWrapper>
   );
 };
