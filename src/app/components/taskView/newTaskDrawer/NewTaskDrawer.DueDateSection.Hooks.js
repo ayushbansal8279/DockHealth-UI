@@ -51,7 +51,7 @@ const initializeDueDateSectionHooks = ({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedTaskIdentifier, refreshList],
+    [selectedTaskIdentifier, refreshList, selectedTask],
   );
 
   const clearDueDate = async event => {

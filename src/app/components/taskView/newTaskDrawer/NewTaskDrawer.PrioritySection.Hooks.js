@@ -38,15 +38,17 @@ const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
             setAutoSaveVisible();
           })
           .catch(() => {
-            dispatch(AlertActions.showGlobalAlert(
-              'Error updating priority, please try again later',
-              'error',
-            ));
+            dispatch(
+              AlertActions.showGlobalAlert(
+                'Error updating priority, please try again later',
+                'error',
+              ),
+            );
           });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedTaskIdentifier],
+    [selectedTaskIdentifier, selectedTask],
   );
 
   return {

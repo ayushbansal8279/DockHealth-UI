@@ -5,6 +5,7 @@ import {
   GET_TASK_HISTORY_SUCCESS,
   REQUEST_HISTORY,
   SET_AS_CURRENT_TASK,
+  UPDATE_TASK_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -41,6 +42,19 @@ const TaskReducer = (state = initialState, action) => {
   switch (action.type) {
     case REQUEST_HISTORY:
       return requestHistory(state);
+
+    case UPDATE_TASK_SUCCESS: {
+      const { task } = action;
+
+      if (state.selectedTask) {
+        return {
+          ...state,
+          selectedTask: { ...state.selectedTask, ...task },
+        };
+      }
+
+      return state;
+    }
 
     case SET_AS_CURRENT_TASK:
       return {

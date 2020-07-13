@@ -54,15 +54,17 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible }) => {
             setAutoSaveVisible();
           })
           .catch(() => {
-            dispatch(AlertActions.showGlobalAlert(
-              'Error updating status, please try again later',
-              'error',
-            ));
+            dispatch(
+              AlertActions.showGlobalAlert(
+                'Error updating status, please try again later',
+                'error',
+              ),
+            );
           });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedTaskIdentifier],
+    [selectedTaskIdentifier, selectedTask],
   );
 
   return {
