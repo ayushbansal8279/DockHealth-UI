@@ -1,9 +1,10 @@
 import { Grid } from '@material-ui/core';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
-import { useMount, useToggle } from 'react-use';
+// import { useMount, useToggle } from 'react-use';
+import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
 import { updateOrganizationName } from 'actions/organization-actions';
@@ -11,19 +12,22 @@ import { findAllUsers, loading } from 'actions/people-actions';
 import * as userApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
-import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
+// import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import {
-  OnboardingButton,
-} from '../OnboardingTemplate.Components';
+import { OnboardingButton } from '../OnboardingTemplate.Components';
 
-const goToProfile = () => {
-  hashHistory.push('/onboarding/profile');
+const goToMainPage = () => {
+  hashHistory.push('/');
 };
+
+// const goToProfile = () => {
+//   hashHistory.push('/onboarding/profile');
+// };
 
 const onSubmit = ({ dispatch }) => ({ organizationName }) => {
   updateOrganizationName({ organizationName })(dispatch).then(() => {
-    goToProfile();
+    // goToProfile();
+    goToMainPage();
   });
 };
 
@@ -33,42 +37,42 @@ const validationSchema = object().shape({
   organizationName: string().required(REQUIRED_MESSAGE),
 });
 
-const InvitePeopleButton = ({ getAllUsers }) => {
-  const invitePeopleButtonReference = useRef(null);
-  const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
+// const InvitePeopleButton = ({ getAllUsers }) => {
+//   const invitePeopleButtonReference = useRef(null);
+//   const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
 
-  const toggleInvitePopover = useCallback(
-    ({ newInvitePopoverState } = {}) => {
-      togglePopoverOpen(newInvitePopoverState ?? !isPopoverOpen);
-    },
-    [isPopoverOpen, togglePopoverOpen],
-  );
+//   const toggleInvitePopover = useCallback(
+//     ({ newInvitePopoverState } = {}) => {
+//       togglePopoverOpen(newInvitePopoverState ?? !isPopoverOpen);
+//     },
+//     [isPopoverOpen, togglePopoverOpen],
+//   );
 
-  return (
-    <>
-      <OnboardingButton
-        variant="contained"
-        size="small"
-        onClick={() => togglePopoverOpen(true)}
-      >
-        <div ref={invitePeopleButtonReference}>
-          <MontserratTypography variant="h4" weight="500">
-            + Add more users to my organization
-          </MontserratTypography>
-        </div>
-      </OnboardingButton>
-      <InvitePeoplePopover
-        open={isPopoverOpen}
-        toggleInvitePopover={toggleInvitePopover}
-        anchor={invitePeopleButtonReference.current}
-        getAllUsers={getAllUsers}
-      />
-    </>
-  );
-};
+//   return (
+//     <>
+//       <OnboardingButton
+//         variant="contained"
+//         size="small"
+//         onClick={() => togglePopoverOpen(true)}
+//       >
+//         <div ref={invitePeopleButtonReference}>
+//           <MontserratTypography variant="h4" weight="500">
+//             + Add more users to my organization
+//           </MontserratTypography>
+//         </div>
+//       </OnboardingButton>
+//       <InvitePeoplePopover
+//         open={isPopoverOpen}
+//         toggleInvitePopover={toggleInvitePopover}
+//         anchor={invitePeopleButtonReference.current}
+//         getAllUsers={getAllUsers}
+//       />
+//     </>
+//   );
+// };
 
 const OnboardingTeamOrgSetupViewDesktop = () => {
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  // const [selectedUsers, setSelectedUsers] = useState([]);
   const outerContainerReference = useRef(null);
   const dispatch = useDispatch();
 
@@ -100,9 +104,9 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
     revalidationMode: 'onChange',
   });
 
-  const [invitationPanelVisible, toggleInvitationPanelVisible] = useState(
-    false,
-  );
+  // const [invitationPanelVisible, toggleInvitationPanelVisible] = useState(
+  //   false,
+  // );
 
   return (
     <form
@@ -119,8 +123,8 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
           What would you like to call your group or practice?
         </MontserratTypography>
         <MontserratTypography variant="h3">
-          You're Welcome to be creative, or just use your organization's
-          official name.
+          You&apos;re Welcome to be creative, or just use your
+          organization&apos;s official name.
         </MontserratTypography>
         <Spacing vertical={5} />
         <UniversalMontserratInput
@@ -155,12 +159,7 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
         <Spacing vertical={4} />
         <Grid container justify="flex-end">
           <Spacing horizontal={4} />
-          <OnboardingButton
-            variant="contained"
-            type="submit"
-            size="large"
-            onClick={goToMainPage}
-          >
+          <OnboardingButton variant="contained" type="submit" size="small">
             Continue
           </OnboardingButton>
         </Grid>
