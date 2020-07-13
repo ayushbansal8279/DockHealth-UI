@@ -5,7 +5,6 @@ import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffectOnce } from 'react-use';
-import { object, string } from 'yup';
 import { findAllUsersByOrganizationId } from 'actions/people-actions';
 
 const MAX_VISIBLE_MEMBERS_COUNT = 5;
@@ -17,14 +16,9 @@ const getFormWatchedValues = ({ watch }) => ({
   membersValue: watch('memberIdentifiers') ?? [],
 });
 
-const validationSchema = object().shape({
-  listName: string().required('This field is required'),
-});
-
 const initializeAddListFormHooks = () => {
   const dispatch = useDispatch();
   const formContext = useForm({
-    validationSchema,
     reValidateMode: 'onSubmit',
   });
 
@@ -52,6 +46,20 @@ const initializeAddListFormHooks = () => {
 
   useEffectOnce(() => {
     findAllUsersByOrganizationId()(dispatch);
+    register(
+      {
+        name: 'listName',
+      },
+      {
+        validate: value => {
+          if (![...value]?.filter(char => char !== ' ').length > 0) {
+            return 'This field is required';
+          }
+
+          return true;
+        },
+      },
+    );
 
     register({ name: 'listDescription' });
     register({ name: 'owner' });
