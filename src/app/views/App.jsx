@@ -13,6 +13,7 @@ import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification';
 import { featurePalette } from 'styles/palette';
 import Modal from '../modal/Modal';
+import RotateScreen from './RotateScreen';
 
 const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;
@@ -74,24 +75,36 @@ class App extends PureComponent {
   render() {
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
     const { children } = this.props;
+    const isLessThen1024 = window?.innerWidth < 1024;
+    const orientationType = window?.screen?.orientation?.type;
+    const showRotateScreenPage =
+      isLessThen1024 &&
+      ['portrait-primary', 'portrait-secondary', 'portrait'].includes(
+        orientationType,
+      );
 
     return (
       <AppContainer id="appHome">
-        <Modal />
-        <div className="new-task" />
-        <IdleTimer
-          ref={reference => {
-            this.idleTimer = reference;
-          }}
-          element={document}
-          onActive={this.onActive}
-          onIdle={this.onIdle}
-          onAction={this.onAction}
-          debounce={250}
-          timeout={systemTimeout}
-        />
-        <MainContainer>{children}</MainContainer>
-        <Notification />
+        {!showRotateScreenPage && (
+          <>
+            <Modal />
+            <div className="new-task" />
+            <IdleTimer
+              ref={reference => {
+                this.idleTimer = reference;
+              }}
+              element={document}
+              onActive={this.onActive}
+              onIdle={this.onIdle}
+              onAction={this.onAction}
+              debounce={250}
+              timeout={systemTimeout}
+            />
+            <MainContainer>{children}</MainContainer>
+            <Notification />
+          </>
+        )}
+        {showRotateScreenPage && <RotateScreen />}
       </AppContainer>
     );
   }
