@@ -9,11 +9,10 @@ import { getUserAvatar } from 'api/people-api';
 import Avatar from 'components/common/Avatar';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
 import Loader from 'components/common/Loader/Loader';
-import Spacing from 'components/common/Spacing';
-import TaskCheckbox from 'components/task/TaskCheckbox';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import spacing from 'styles/spacing';
+
 import { openModal as openModalAction } from 'modal/actions';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
@@ -24,14 +23,28 @@ const LoaderContainer = styled.div`
   width: 100%;
 `;
 
-const SmallScreenGrid = styled(Grid)`
-  && {
-    padding: 1rem;
+const StyledAnchorDiv = styled.div`
+  color: ${palette.brightBlue};
+  overflow-wrap: anywhere;
+`;
+
+const MemberTableRow = styled(Grid)`
+  margin: 0 !important;
+  width: 100% !important;
+  padding: ${spacing.regularPlus} 0 !important;
+
+  &:nth-child(even) {
+    background-color: ${palette.coolGrey3};
   }
 `;
 
-const StyledAnchorDiv = styled.div`
-  color: ${palette.brightBlue};
+const MemberTableCell = styled.div`
+  font-family: 'Roboto Condensed', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: ${props => props.alignItems || 'flex-start'};
+  height: 100%;
 `;
 
 const USER_TYPES = new Proxy(
@@ -54,6 +67,26 @@ const USER_TYPES = new Proxy(
       changeable: true,
       description:
         'Has access to the list and can ask to invite others to the List',
+    },
+    DEFAULT: {
+      label: 'Invited',
+      invitationModifiable: true,
+    },
+  },
+  {
+    get: (object, path) => object[path.toUpperCase()] || object.DEFAULT,
+  },
+);
+
+const USER_STATUS_TYPES = new Proxy(
+  {
+    INACTIVE: {
+      label: 'Inactive',
+      changeable: true,
+    },
+    CANCELLED: {
+      label: 'Cancelled',
+      invitationModifiable: true,
     },
     DEFAULT: {
       label: 'Invited',
@@ -125,13 +158,9 @@ export const MemberAvatar = ({
 };
 
 export const EmptyOrganizationMemberRow = () => (
-  <tr>
-    <td colSpan={6}>
-      <Grid container alignItems="center" justify="center">
-        No members are unsubscribed
-      </Grid>
-    </td>
-  </tr>
+  <Grid container alignItems="center" justify="center">
+    No members are unsubscribed
+  </Grid>
 );
 
 const OrganizationMemberRow = ({
@@ -146,20 +175,26 @@ const OrganizationMemberRow = ({
   eulaAcknowledged,
   isUserSelected,
   toggleSelectedUser,
-  isSmallScreen,
   showJoined,
   showSubscription,
   subscriptionPlanData,
   openRemoveSubscriptionModal,
   organizationMembers,
+  isInvited,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const derivedOrgUserRole =
-    ['ACTIVE', 'INACTIVE'].includes(userStatus) && eulaAcknowledged
-      ? orgUserRole
-      : '';
+  let userType = null;
 
-  const userType = USER_TYPES[derivedOrgUserRole];
+  if (['CANCELLED', 'INACTIVE'].includes(userStatus)) {
+    userType = USER_STATUS_TYPES[userStatus];
+  } else {
+    const derivedOrgUserRole =
+      ['ACTIVE', 'INACTIVE'].includes(userStatus) && eulaAcknowledged
+        ? orgUserRole
+        : '';
+
+    userType = USER_TYPES[derivedOrgUserRole];
+  }
 
   const removeSubscription = () => {
     openRemoveSubscriptionModal({
@@ -185,21 +220,6 @@ const OrganizationMemberRow = ({
     (adminCount <= 1 && (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')) ||
     userIdentifier === sessionStorage.userIdentifier;
 
-  const checkboxElement = (
-    <TaskCheckbox
-      disabled={isDisabledRemovingSubscription}
-      checked={isUserSelected({ userIdentifier, email })}
-      onChange={event => {
-        if (event.target.checked) {
-          toggleSelectedUser({ userIdentifier, email })(event);
-        } else {
-          removeSubscription();
-        }
-      }}
-      color={palette.coolGrey1}
-    />
-  );
-
   const registrationMoment = moment(registrationDate);
   const formattedRegistrationDate = registrationMoment.isValid()
     ? registrationMoment.format('LL')
@@ -212,138 +232,58 @@ const OrganizationMemberRow = ({
     planPricePerUser,
   });
 
-  if (isSmallScreen) {
-    return (
-      <tr>
-        <td>
-          <SmallScreenGrid container wrap="nowrap" spacing={2}>
-            <Grid item xs={1}>
-              {checkboxElement}
-            </Grid>
-            <Grid
-              item
-              xs={11}
-              container
-              justify="space-between"
-              alignItems="flex-end"
-              wrap="nowrap"
-            >
-              <Grid
-                item
-                xs
-                container
-                direction="column"
-                alignItems="flex-start"
-              >
-                <MontserratTypography variant="h4" weight="600">
-                  {`${firstName} ${lastName}`.trim()}
-                </MontserratTypography>
-                {email && (
-                  <>
-                    <Spacing vertical={3} />
-                    <MontserratTypography variant="h4">
-                      <StyledAnchorDiv>{email}</StyledAnchorDiv>
-                    </MontserratTypography>
-                  </>
-                )}
-                <Spacing vertical={3} />
-                <MemberTypeLabel
-                  userIdentifier={userIdentifier}
-                  userType={userType}
-                  userTypes={USER_TYPES}
-                  orgUserRole={orgUserRole}
-                  removeSubscription={removeSubscription}
-                  userHasSubscription={
-                    !!isUserSelected({
-                      userIdentifier,
-                      email,
-                    })
-                  }
-                />
-                {showJoined && (
-                  <>
-                    <Spacing vertical={3} />
-                    <MontserratTypography variant="h4">
-                      Joined {formattedRegistrationDate}
-                    </MontserratTypography>
-                  </>
-                )}
-              </Grid>
-              {showSubscription && (
-                <Grid
-                  item
-                  xs
-                  container
-                  alignItems="flex-end"
-                  justify="flex-end"
-                >
-                  <MontserratTypography variant="h4">
-                    {trialPlanPricePerUser}
-                  </MontserratTypography>
-                </Grid>
-              )}
-            </Grid>
-          </SmallScreenGrid>
-        </td>
-      </tr>
-    );
-  }
-
   return (
-    <tr>
-      <td>{checkboxElement}</td>
-      <td>
-        <MemberAvatar
-          firstName={firstName}
-          lastName={lastName}
-          userIdentifier={userIdentifier}
-          profileThumbnailPictureHash={profileThumbnailPictureHash}
-        />
-      </td>
-      <td>
-        <Grid container direction="column" justify="center">
-          <MontserratTypography variant="h4" weight="600">
-            {`${firstName} ${lastName}`.trim()}
-          </MontserratTypography>
-          {email && (
-            <MontserratTypography variant="h4">
-              <StyledAnchorDiv>{email}</StyledAnchorDiv>
-            </MontserratTypography>
-          )}
-        </Grid>
-      </td>
-      <td>
-        <MemberTypeLabel
-          email={email}
-          userIdentifier={userIdentifier}
-          userType={userType}
-          userTypes={USER_TYPES}
-          removeSubscription={removeSubscription}
-          orgUserRole={orgUserRole}
-          isDisabledRemovingSubscription={isDisabledRemovingSubscription}
-          userHasSubscription={
-            !!isUserSelected({
-              userIdentifier,
-              email,
-            })
-          }
-        />
-      </td>
-      {showJoined && (
-        <td>
-          <MontserratTypography variant="h4">
-            {formattedRegistrationDate}
-          </MontserratTypography>
-        </td>
-      )}
-      {showSubscription && (
-        <td>
-          <MontserratTypography variant="h4">
-            {trialPlanPricePerUser}
-          </MontserratTypography>
-        </td>
-      )}
-    </tr>
+    <MemberTableRow container spacing={1}>
+      <Grid item xs={1}>
+        <MemberTableCell alignItems="center">
+          <MemberAvatar
+            firstName={firstName}
+            lastName={lastName}
+            userIdentifier={userIdentifier}
+            profileThumbnailPictureHash={profileThumbnailPictureHash}
+          />
+        </MemberTableCell>
+      </Grid>
+      <Grid item xs={3}>
+        <MemberTableCell>
+          {`${firstName} ${lastName} ${
+            userIdentifier === sessionStorage.userIdentifier ? '(me)' : ''
+          }`.trim()}
+          {email && <StyledAnchorDiv>{email}</StyledAnchorDiv>}
+        </MemberTableCell>
+      </Grid>
+      <Grid item xs={3}>
+        <MemberTableCell>
+          <MemberTypeLabel
+            email={email}
+            userIdentifier={userIdentifier}
+            userType={userType}
+            userTypes={USER_TYPES}
+            removeSubscription={removeSubscription}
+            orgUserRole={orgUserRole}
+            isDisabledRemovingSubscription={isDisabledRemovingSubscription}
+            userStatus={userStatus}
+            userHasSubscription={
+              !!isUserSelected({
+                userIdentifier,
+                email,
+              })
+            }
+          />
+        </MemberTableCell>
+      </Grid>
+      <Grid item xs={3}>
+        <MemberTableCell>
+          {showJoined && formattedRegistrationDate}
+          {isInvited && <div>Invitation sent</div>}
+        </MemberTableCell>
+      </Grid>
+      <Grid item xs={2}>
+        <MemberTableCell>
+          {showSubscription && trialPlanPricePerUser}
+        </MemberTableCell>
+      </Grid>
+    </MemberTableRow>
   );
 };
 

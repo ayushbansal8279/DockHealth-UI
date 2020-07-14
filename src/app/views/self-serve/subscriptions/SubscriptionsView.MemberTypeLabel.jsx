@@ -10,8 +10,8 @@ import {
 import ListPopover from 'components/common/ListPopover';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import { MemberTypeLabelButton } from './SubscriptionsView.MemberTypeLabel.Components';
+import Arrow from 'components/common/Arrow/Arrow';
+import { MemberTypeButton } from './SubscriptionsView.MembersTable.Styled';
 import {
   ListPopoverItem,
   ListPopoverItemLabel,
@@ -88,12 +88,14 @@ const renderInvitations = ({
   resendInvite,
   cancelInvite,
   reloadUsers,
+  userStatus,
 }) => {
   return [
     {
       key: 'resend',
       button: true,
       label: 'Resend invitation',
+      isSelected: userStatus === 'INVITED',
       description:
         'Resend invite to this user to remind them to create an account',
       onClick: () => {
@@ -123,6 +125,7 @@ const renderInvitations = ({
       key: 'cancel',
       button: true,
       label: 'Cancel invitation',
+      isSelected: userStatus === 'CANCELLED',
       description:
         'Cancel this invitation and remove this person from the user list',
       onClick: () => {
@@ -152,10 +155,25 @@ const renderInvitations = ({
 };
 
 const renderItem = ({ label, description, onClick, isSelected }) => (
-  <ListPopoverItem onClick={onClick} isSelected={isSelected}>
+  <ListPopoverItem
+    onClick={onClick}
+    isSelected={isSelected}
+    disabled={isSelected}
+  >
     <ListPopoverItemLabel isSelected={isSelected}>{label}</ListPopoverItemLabel>
     <ListPopoverItemDescription>{description}</ListPopoverItemDescription>
   </ListPopoverItem>
+);
+
+const DropdownIndicator = ({ isOpen, setOpen, label }) => (
+  <Arrow
+    isOpen={isOpen}
+    setOpen={setOpen}
+    paddingLeft="0"
+    justifyContent="space-between"
+  >
+    <div>{label}</div>
+  </Arrow>
 );
 
 const MemberTypeLabel = ({
@@ -167,6 +185,7 @@ const MemberTypeLabel = ({
   userHasSubscription,
   isDisabledRemovingSubscription,
   orgUserRole,
+  userStatus,
 }) => {
   const labelReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -209,14 +228,18 @@ const MemberTypeLabel = ({
 
   return (
     <>
-      <MemberTypeLabelButton
+      <MemberTypeButton
         ref={labelReference}
         invited={invitationModifiable}
         clickable={Boolean(renderOptionsMethod)}
         onClick={renderOptionsMethod ? openPopover : undefined}
       >
-        <MontserratTypography variant="h4">{label}</MontserratTypography>
-      </MemberTypeLabelButton>
+        <DropdownIndicator
+          setOpen={() => {}}
+          isOpen={isPopoverOpen}
+          label={label}
+        />
+      </MemberTypeButton>
       {renderOptionsMethod && (
         <ListPopover
           anchorEl={labelReference.current}
@@ -232,6 +255,7 @@ const MemberTypeLabel = ({
           onClose={closePopover}
           open={isPopoverOpen}
           items={renderOptionsMethod({
+            userStatus,
             userIdentifier,
             userTypes,
             closePopover,

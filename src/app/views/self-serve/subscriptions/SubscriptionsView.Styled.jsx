@@ -163,18 +163,24 @@ export const BigPriceLabel = styled.span`
   letter-spacing: -0.125rem;
 `;
 
-export const ListPopoverItem = styled.div`
+export const ListPopoverItem = styled.button`
   width: 550px;
   border-bottom: 1px solid ${palette.coolGrey2};
   padding: ${spacing.regular} ${spacing.large} ${spacing.large};
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  text-align: left;
+  outline: none;
   background-color: ${props =>
     props.isSelected ? 'rgba(0, 162, 229, 0.07)' : palette.coolGrey4};
 
   &:hover {
     background-color: rgba(0, 162, 229, 0.07);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 `;
 

@@ -2,9 +2,16 @@ import React from 'react';
 import ArrowIcon from 'img/arrow';
 import { ArrowImg, ArrowContainer } from './styled';
 
-const Arrow = ({ showArrow = true, isOpen, setOpen, children }) => {
+const Arrow = ({
+  showArrow = true,
+  isOpen,
+  setOpen,
+  paddingLeft,
+  justifyContent,
+  children,
+}) => {
   return (
-    <ArrowContainer>
+    <ArrowContainer paddingLeft={paddingLeft} justifyContent={justifyContent}>
       {React.cloneElement(children, {
         isOpen,
         onClick: () => setOpen(!isOpen),
