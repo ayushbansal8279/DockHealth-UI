@@ -25,7 +25,6 @@ const CompletedTasksView = ({
   isSearchApplied,
   areFiltersApplied,
   reassignTask,
-  hasFiltersApplied,
   selectedTask,
   listUniqueKey,
   groupPagination,
@@ -61,7 +60,7 @@ const CompletedTasksView = ({
               dragAndDropDisabled={dragAndDropDisabled}
               listNameVisible={listNameVisible}
               reassignTask={reassignTask}
-              hasFiltersApplied={hasFiltersApplied}
+              areFiltersApplied={areFiltersApplied}
               isSearchApplied={isSearchApplied}
               selectedTask={selectedTask}
               listUniqueKey={listUniqueKey}

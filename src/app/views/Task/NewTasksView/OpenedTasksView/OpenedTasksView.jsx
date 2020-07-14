@@ -141,6 +141,7 @@ const OpenedTasksView = ({
                     isSearchApplied={isSearchApplied}
                     selectedTask={selectedTask}
                     listUniqueKey={listUniqueKey}
+                    areFiltersApplied={areFiltersApplied}
                   />
                 ),
               )}

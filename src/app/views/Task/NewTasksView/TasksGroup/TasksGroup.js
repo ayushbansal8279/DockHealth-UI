@@ -64,7 +64,7 @@ const TasksGroup = ({
   dragAndDropDisabled,
   listNameVisible,
   changingGroupOrderDisabled,
-  hasFiltersApplied,
+  areFiltersApplied,
   isSearchApplied,
   selectedTask,
   taskGroupIdentifier,
@@ -97,21 +97,23 @@ const TasksGroup = ({
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-              <TasksGroupLabelCounter>
-                (
-                {tasks?.reduce(
-                  (counter, task) =>
-                    counter +
-                    task.subtasks?.filter(x =>
-                      isCompletedGroup
-                        ? x.status === 'COMPLETE'
-                        : x.status === 'INCOMPLETE',
-                    ).length +
-                    1,
-                  0,
-                ) || 0}
-                )
-              </TasksGroupLabelCounter>
+              {!isSearchApplied && !areFiltersApplied && (
+                <TasksGroupLabelCounter>
+                  (
+                  {tasks?.reduce(
+                    (counter, task) =>
+                      counter +
+                      task.subtasks?.filter(x =>
+                        isCompletedGroup
+                          ? x.status === 'COMPLETE'
+                          : x.status === 'INCOMPLETE',
+                      ).length +
+                      1,
+                    0,
+                  ) || 0}
+                  )
+                </TasksGroupLabelCounter>
+              )}
             </TasksGroupLabel>
           </GroupNameSection>
         </GroupNameSectionWrapper>
@@ -185,7 +187,7 @@ const TasksGroup = ({
           listNameVisible={listNameVisible}
           selectedTask={selectedTask}
         />
-        {groupPagination && hasMoreTasks && !hasFiltersApplied && (
+        {groupPagination && hasMoreTasks && !areFiltersApplied && (
           <PaginationButton
             disabled={isFetchingMoreTasks}
             type="button"
