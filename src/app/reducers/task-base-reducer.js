@@ -325,15 +325,17 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case UPDATE_TASK_SUCCESS: {
       const { task } = action;
-      const mainTaskId = getMainTaskId(action.task);
 
       const updateTaskFromAction = tasks =>
         tasks.map(t => {
-          if (t.taskIdentifier !== mainTaskId) {
+          if (
+            t.taskIdentifier !== task.parentTaskIdentifier &&
+            t.taskIdentifier !== task.taskIdentifier
+          ) {
             return t;
           }
 
-          if (!task.parentTaskIdentifier) {
+          if (task.taskIdentifier === t.taskIdentifier) {
             return { ...t, ...task };
           }
 
