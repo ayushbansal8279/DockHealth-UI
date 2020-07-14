@@ -24,6 +24,15 @@ export const TaskDrawerContainer = styled.div`
   z-index: 100;
 `;
 
+export const TaskDrawerBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  z-index: 99;
+`;
+
 export const AdornmentContainer = styled.div`
   align-items: center;
   align-self: flex-end;

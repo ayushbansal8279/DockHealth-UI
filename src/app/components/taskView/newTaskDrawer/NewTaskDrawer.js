@@ -36,6 +36,7 @@ import {
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
+  TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
@@ -259,21 +260,13 @@ const NewTaskDrawer = ({
       .catch(noop);
   };
 
-  // const isAddingSubTask =
-  //   selectedTask &&
-  //   selectedTask.taskIdentifier === null &&
-  //   selectedTask.parentTaskIdentifier !== null;
+  const isAddingSubtask =
+    selectedTask &&
+    selectedTask.taskIdentifier === null &&
+    selectedTask.parentTaskIdentifier !== null;
 
   return (
     <>
-      {/* {taskDrawerOpen && (
-        <ClickAwayListener
-          onClickAway={() => {
-            if (!isAddingSubTask) {
-              closeTaskDrawer();
-            }
-          }}
-        > */}
       <TaskDrawerContainer
         open={taskDrawerOpen}
         top={top}
@@ -601,8 +594,9 @@ const NewTaskDrawer = ({
             </TaskDrawerTourPopper>
           ))}
       </TaskDrawerContainer>
-      {/* </ClickAwayListener>
-      )} */}
+      {taskDrawerOpen && !isAddingSubtask && (
+        <TaskDrawerBackground onClick={closeTaskDrawer} />
+      )}
     </>
   );
 };
