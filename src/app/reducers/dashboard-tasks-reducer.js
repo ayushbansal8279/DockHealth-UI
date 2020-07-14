@@ -8,10 +8,16 @@ const initialState = {
   error: '',
 };
 
+const updateTaskInList = (lists, updateTaskCallback) =>
+  lists.map(group => {
+    const updatedTasks = updateTaskCallback(group.tasks);
+    return { ...group, tasks: updatedTasks };
+  });
+
 const updateTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    tasksList: updateTaskFromAction(state.tasksList),
+    tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
   };
 };
 

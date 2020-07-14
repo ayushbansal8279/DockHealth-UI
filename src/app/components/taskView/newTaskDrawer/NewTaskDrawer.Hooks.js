@@ -58,6 +58,7 @@ const onSubmit = ({
   setSaving,
   setAutoSaveVisible,
   closeTaskDrawer,
+  refreshList,
 }) => data => {
   // const currentLabels = selectedTask?.labels ?? [];
   // const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
@@ -105,6 +106,8 @@ const onSubmit = ({
 
       if (!taskIdentifier) return;
       storeAsCurrentTask(response)(dispatch);
+
+      refreshList();
 
       setSaving(false);
       setAutoSaveVisible();
@@ -488,6 +491,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       setSaving,
       setAutoSaveVisible,
       closeTaskDrawer,
+      refreshList,
     }),
     formMethods,
     isAddingOrEditingSubtask,
