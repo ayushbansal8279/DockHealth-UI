@@ -23,6 +23,8 @@ const DashboardView = () => {
   const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
   const isLoadingDashboard = useSelector(dashboardTasksIsLoadingSelector);
 
+  const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
+
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
       DASHBOARD_FIRST_TIME_KEY,
@@ -57,10 +59,10 @@ const DashboardView = () => {
 
   return (
     <DashboardViewWrapper>
-      <DashboardSidebarWrapper isHidden={isTaskDrawerOpen}>
+      <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
         <DashboardSidebar />
       </DashboardSidebarWrapper>
-      <DashboardContentWrapper hasRightPadding={isTaskDrawerOpen}>
+      <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
         <DashboardContent isTaskDrawerOpen={isTaskDrawerOpen} />
       </DashboardContentWrapper>
       {openedTour && (
