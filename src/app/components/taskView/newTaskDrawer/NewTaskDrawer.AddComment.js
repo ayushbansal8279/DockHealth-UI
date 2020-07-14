@@ -25,6 +25,8 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   useEffect(() => {
     if (taskDrawerFocusField === FocusDrawerFieldEnum.COMMENT) {
       addCommentReference.current.focus();
+      // eslint-disable-next-line no-unused-expressions
+      addCommentReference.current?.scrollIntoView(true);
     }
   }, [taskDrawerFocusField]);
 
