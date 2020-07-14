@@ -126,7 +126,6 @@ const initializeMembersTableHooks = ({
     isFetching,
     toggleSelectedUser,
     isUserSelected,
-
     currentSearch,
     setCurrentSearch,
     isAllUsersSelected,

@@ -24,10 +24,12 @@ const renderUserTypesOptions = ({
   userTypes,
   closePopover,
   reloadUsers,
+  addSubscription,
   removeSubscription,
   userHasSubscription,
   isDisabledRemovingSubscription,
   orgUserRole,
+  userStatus,
 }) => {
   let renderedArray = [
     ...Object.entries(userTypes)
@@ -74,6 +76,22 @@ const renderUserTypesOptions = ({
         onClick: () => {
           closePopover();
           removeSubscription();
+        },
+      },
+    ];
+  }
+
+  if (userStatus === 'INACTIVE') {
+    renderedArray = [
+      ...renderedArray,
+      {
+        key: 'activate_user',
+        label: 'Reactive user',
+        selectable: true,
+        changeable: true,
+        onClick: () => {
+          closePopover();
+          addSubscription();
         },
       },
     ];
@@ -126,6 +144,7 @@ const renderInvitations = ({
       button: true,
       label: 'Cancel invitation',
       isSelected: userStatus === 'CANCELLED',
+      isDisabled: true,
       description:
         'Cancel this invitation and remove this person from the user list',
       onClick: () => {
@@ -154,11 +173,17 @@ const renderInvitations = ({
   ];
 };
 
-const renderItem = ({ label, description, onClick, isSelected }) => (
+const renderItem = ({
+  label,
+  description,
+  onClick,
+  isSelected,
+  isDisabled,
+}) => (
   <ListPopoverItem
     onClick={onClick}
     isSelected={isSelected}
-    disabled={isSelected}
+    disabled={isDisabled}
   >
     <ListPopoverItemLabel isSelected={isSelected}>{label}</ListPopoverItemLabel>
     <ListPopoverItemDescription>{description}</ListPopoverItemDescription>
@@ -181,6 +206,7 @@ const MemberTypeLabel = ({
   userIdentifier,
   userType: { label, changeable, invitationModifiable },
   userTypes,
+  addSubscription,
   removeSubscription,
   userHasSubscription,
   isDisabledRemovingSubscription,
@@ -264,6 +290,7 @@ const MemberTypeLabel = ({
             resendInvite,
             cancelInvite,
             reloadUsers,
+            addSubscription,
             removeSubscription,
             userHasSubscription,
             isDisabledRemovingSubscription,
