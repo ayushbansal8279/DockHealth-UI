@@ -24,6 +24,8 @@ import SortingColumn, {
 import {
   MembersTableContainer,
   MemberTable,
+  MemberTableHeader,
+  SubscriptionLabelBox,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
   USER_SUBSCRIPTION_STATUS,
@@ -44,7 +46,7 @@ const renderOrganizationMemberRow = ({
   subscriptionPlanData,
   organizationMembers,
 }) => props => {
-  const { firstName, lastName, email, userIdentifier } = props;
+  const { firstName, lastName, email, userIdentifier, userStatus } = props;
   const key = `${firstName}${lastName}${userIdentifier}${email}`;
 
   return (
@@ -58,6 +60,7 @@ const renderOrganizationMemberRow = ({
       chosenSubscriptionPlan={chosenSubscriptionPlan}
       subscriptionPlanData={subscriptionPlanData}
       organizationMembers={organizationMembers}
+      isInvited={userStatus === 'INVITED'}
       {...props}
     />
   );
@@ -205,72 +208,68 @@ const SubscriptionsViewMembersTable = ({
             </Grid>
           )}
           <MemberTable isSmallScreen={isSmallScreen}>
-            {!isSmallScreen && (
-              <thead>
-                <tr>
-                  <th>&nbsp;</th>
-                  <th>&nbsp;</th>
-                  <th style={{ minWidth: '200px' }}>
-                    <SortingColumn
-                      currentSortingOrder={currentSortingOrder}
-                      currentSortingProperty={currentSortingProperty}
-                      sortingProperty={SORTING_PROPERTIES.NAME}
-                      setSortingProperty={setSortingProperty}
-                    >
-                      NAME
-                    </SortingColumn>
-                  </th>
-                  <th style={{ maxWidth: '120px' }}>
-                    <SortingColumn
-                      currentSortingOrder={currentSortingOrder}
-                      currentSortingProperty={currentSortingProperty}
-                      sortingProperty={SORTING_PROPERTIES.USER_TYPE}
-                      setSortingProperty={setSortingProperty}
-                    >
-                      USER TYPE
-                    </SortingColumn>
-                  </th>
-                  {showJoined && (
-                    <th style={{ maxWidth: '120px' }}>
-                      <SortingColumn
-                        currentSortingOrder={currentSortingOrder}
-                        currentSortingProperty={currentSortingProperty}
-                        sortingProperty={SORTING_PROPERTIES.JOINED}
-                        setSortingProperty={setSortingProperty}
-                      >
-                        JOINED
-                      </SortingColumn>
-                    </th>
-                  )}
-                  {showSubscription && (
-                    <th style={{ maxWidth: '120px' }}>
-                      <MontserratTypography variant="h4">
-                        SUBSCRIPTION
-                      </MontserratTypography>
-                    </th>
-                  )}
-                </tr>
-              </thead>
+            <MemberTableHeader container spacing={1}>
+              <Grid item xs={1} />
+              <Grid item xs={3}>
+                <SortingColumn
+                  currentSortingOrder={currentSortingOrder}
+                  currentSortingProperty={currentSortingProperty}
+                  sortingProperty={SORTING_PROPERTIES.NAME}
+                  setSortingProperty={setSortingProperty}
+                >
+                  NAME
+                </SortingColumn>
+              </Grid>
+              <Grid item xs={3}>
+                <SortingColumn
+                  currentSortingOrder={currentSortingOrder}
+                  currentSortingProperty={currentSortingProperty}
+                  sortingProperty={SORTING_PROPERTIES.USER_TYPE}
+                  setSortingProperty={setSortingProperty}
+                >
+                  USER TYPE
+                </SortingColumn>
+              </Grid>
+              <Grid item xs={3}>
+                {showJoined && (
+                  <SortingColumn
+                    currentSortingOrder={currentSortingOrder}
+                    currentSortingProperty={currentSortingProperty}
+                    sortingProperty={SORTING_PROPERTIES.JOINED}
+                    setSortingProperty={setSortingProperty}
+                  >
+                    JOINED
+                  </SortingColumn>
+                )}
+              </Grid>
+              <Grid item xs={2}>
+                {showSubscription && (
+                  <SubscriptionLabelBox>
+                    <MontserratTypography variant="span">
+                      SUBSCRIPTION
+                    </MontserratTypography>
+                  </SubscriptionLabelBox>
+                )}
+              </Grid>
+            </MemberTableHeader>
+
+            {isEmpty(filteredOrganizationMembers) ? (
+              <EmptyOrganizationMemberRow />
+            ) : (
+              filteredOrganizationMembers.map(
+                renderOrganizationMemberRow({
+                  toggleSelectedUser,
+                  isUserSelected,
+                  isSmallScreen,
+                  showJoined,
+                  showSubscription,
+                  selectedUsers,
+                  subscriptionPlanData,
+                  chosenSubscriptionPlan,
+                  organizationMembers,
+                }),
+              )
             )}
-            <tbody>
-              {isEmpty(filteredOrganizationMembers) ? (
-                <EmptyOrganizationMemberRow />
-              ) : (
-                filteredOrganizationMembers.map(
-                  renderOrganizationMemberRow({
-                    toggleSelectedUser,
-                    isUserSelected,
-                    isSmallScreen,
-                    showJoined,
-                    showSubscription,
-                    selectedUsers,
-                    subscriptionPlanData,
-                    chosenSubscriptionPlan,
-                    organizationMembers,
-                  }),
-                )
-              )}
-            </tbody>
           </MemberTable>
         </>
       )}

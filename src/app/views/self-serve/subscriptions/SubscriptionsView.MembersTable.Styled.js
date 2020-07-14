@@ -1,6 +1,8 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import palette, { opacify } from 'styles/palette';
+import palette from 'styles/palette';
+import spacing from 'styles/spacing';
+import { fontSizes } from 'styles/font';
 import { H3 } from './SubscriptionsView.Styled';
 
 export const MembersTableContainer = styled.div`
@@ -8,65 +10,16 @@ export const MembersTableContainer = styled.div`
   width: 100%;
 `;
 
-export const MemberTable = styled.table`
-  && {
-    border: 0;
-    border-spacing: 0;
-    font-size: 0.875rem;
-    margin-bottom: 0;
-    margin-top: 0.75rem;
-    width: 100%;
+export const MemberTable = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: ${spacing.smallPlus};
+`;
 
-    & th,
-    & td {
-      padding: 0.125rem;
-    }
-
-    & thead {
-      background: ${opacify(palette.coolGrey2, 0.3)};
-
-      & tr {
-        background: transparent;
-        height: 2rem;
-        min-height: 2rem;
-      }
-
-      & th {
-        background: transparent;
-        border-bottom: 0.0625rem ${palette.coolGrey2} solid;
-        color: ${palette.mediumGrey};
-        font-size: 0.875rem;
-        font-weight: 600;
-        vertical-align: middle;
-      }
-    }
-
-    & tbody {
-      & tr {
-        height: 5rem;
-        min-height: 5rem;
-      }
-
-      & tr:nth-child(even) {
-        background: ${palette.white};
-      }
-
-      & tr:nth-child(odd) {
-        background: ${palette.coolGrey4};
-      }
-
-      ${props =>
-        !props.isSmallScreen &&
-        `& tr td:nth-child(-n + 2) {
-        text-align: center;
-      }`}
-
-      & td {
-        color: ${palette.unknownGrey1};
-        font-size: 0.875rem;
-      }
-    }
-  }
+export const MemberTableHeader = styled(Grid)`
+  background-color: rgba(193, 204, 218, 0.3);
+  margin: 0 !important;
+  width: 100% !important;
 `;
 
 export const HeaderCaptionGrid = styled(Grid)`
@@ -103,4 +56,22 @@ export const SubscriptionStatusSwitchLabel = styled(H3)`
 
 export const MembersTableSearchContainer = styled.div`
   width: 14rem;
+`;
+
+export const MemberTypeButton = styled.button`
+  max-width: 82px;
+  width: 100%;
+  outline: none;
+
+  * > * {
+    font-weight: normal;
+    color: ${props =>
+      props.clickable ? palette.mediumGrey : palette.lightGrey};
+  }
+`;
+
+export const SubscriptionLabelBox = styled.div`
+  font-size: ${fontSizes.smallPlus};
+  color: #4a4a4a // custom color;
+  padding: ${spacing.tiny} 0;
 `;

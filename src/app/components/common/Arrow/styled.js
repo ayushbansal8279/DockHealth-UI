@@ -14,9 +14,10 @@ export const ArrowImg = styled.img`
 
 export const ArrowContainer = styled.div`
   display: flex;
+  justify-content: ${props => props.justifyContent || 'flex-end'};
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
-  padding-left: ${spacing.giga};
+  padding-left: ${props => props.paddingLeft || spacing.giga};
   cursor: pointer;
   & > span {
     margin-right: ${spacing.tiny};
