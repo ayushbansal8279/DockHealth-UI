@@ -209,7 +209,7 @@ export const InfoText = styled.p`
 // SlimTaskItem
 export const SlimTaskItemContainer = styled.div`
   display: flex;
-  height: 70px;
+  min-height: 70px;
   align-ttems: center;
   width: 100%;
   position: relative;

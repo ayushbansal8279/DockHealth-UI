@@ -1,14 +1,24 @@
-import { put, call, takeEvery, takeLatest } from 'redux-saga/effects';
+import {
+  put,
+  call,
+  takeEvery,
+  takeLatest,
+  select,
+  delay,
+} from 'redux-saga/effects';
 import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
   REQUEST_DASHBOARD_TASKS_FAILURE,
+  UPDATE_TASK_SUCCESS,
 } from 'actions/action-types';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { getDashboardTasks, reorderTasksInGroup } from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { toggleTaskCompletedStatus } from 'helpers/task-update-helper';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
@@ -90,7 +100,13 @@ function* doReloadDashboardTasks() {
 
 function* doToggleDashboardTaskComplete({ task }) {
   try {
+    const currentUser = yield select(userProfileSelector);
+    const updatedTask = toggleTaskCompletedStatus(task, currentUser);
+
+    yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
+
     yield call(TaskApi.markComplete, task);
+    yield delay(1000);
     yield call(doReloadDashboardTasks);
 
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));

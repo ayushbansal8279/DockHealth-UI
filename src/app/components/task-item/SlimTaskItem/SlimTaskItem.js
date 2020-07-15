@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Circle from 'img/circle';
+import CircleCompleted from 'img/circle-completed';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
@@ -16,6 +17,7 @@ import {
   SlimTaskItemListLink,
   PrioritySwitch,
   ThreeDots,
+  CompletedBy,
 } from '../styled';
 
 const SlimTaskItem = ({
@@ -29,7 +31,16 @@ const SlimTaskItem = ({
   openDrawer,
   isSelected,
 }) => {
-  const { description, taskList, dueDate, priority, parentTask } = task;
+  const {
+    description,
+    taskList,
+    dueDate,
+    priority,
+    parentTask,
+    completedDt,
+    completedBy,
+    status,
+  } = task;
   const isOverdueTask =
     moment(dueDate).format('HH:mm') !== '00:00'
       ? moment(dueDate).isBefore(moment())
@@ -51,6 +62,13 @@ const SlimTaskItem = ({
           .concat('...')
       : description;
 
+  const completedByName =
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+      .trim()
+      .replace(/^\.$/, '') || 'Unknown';
+
+  const isCompleted = status === 'COMPLETE';
+
   return (
     <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
       {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
@@ -59,7 +77,11 @@ const SlimTaskItem = ({
           <img src={HighPriorityLabel} alt="Priority icon" />
         )}
       </PrioritySwitch>
-      <CircleIcon src={Circle} onClick={toggleTaskComplete} isClickable />
+      <CircleIcon
+        src={isCompleted ? CircleCompleted : Circle}
+        onClick={toggleTaskComplete}
+        isClickable
+      />
       <SlimTaskItemRow>
         <SlimTaskItemDescription>
           <div
@@ -70,6 +92,15 @@ const SlimTaskItem = ({
           >
             {formattedTaskDescription}
           </div>
+          <CompletedBy isCompleted={isCompleted}>
+            <span>{`Completed by ${completedByName} ${completedDt &&
+              ` on ${
+                completedDt
+                  ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                  : ''
+              }`}
+                `}</span>
+          </CompletedBy>
           {parentTask && (
             <SlimTaskItemParentTaskLabel>
               Subtask of{' '}
