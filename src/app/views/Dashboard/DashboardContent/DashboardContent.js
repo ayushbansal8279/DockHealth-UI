@@ -158,7 +158,10 @@ const DashboardContent = ({
       </ViewLoader>
       <NewTaskDrawer
         modalActions={modalActions}
-        refreshTriggers={[ContextRefreshTriggers.DUE_DATE_CHANGE]}
+        refreshTriggers={[
+          ContextRefreshTriggers.DUE_DATE_CHANGE,
+          ContextRefreshTriggers.ASSIGNED_TO_CHANGE,
+        ]}
         refreshList={reloadDashboardTasks}
       />
     </DashboardContainer>

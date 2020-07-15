@@ -21,6 +21,8 @@ export const FocusDrawerFieldEnum = {
 
 export const ContextRefreshTriggers = {
   DUE_DATE_CHANGE: 1,
+  ASSIGNED_TO_CHANGE: 2,
+  LIST_CHANGE: 3,
 };
 
 const getFormattedAge = ({ dob }) => {

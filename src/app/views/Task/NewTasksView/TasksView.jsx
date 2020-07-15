@@ -61,6 +61,7 @@ const TaskView = ({
   listUniqueKey,
   pdfTitle,
   groupPagination = false,
+  taskDrawerRefreshTriggers = [],
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -210,7 +211,11 @@ const TaskView = ({
           listUniqueKey={listUniqueKey}
         />
       )}
-      <NewTaskDrawer modalActions={modalActions} refreshList={refreshTab} />
+      <NewTaskDrawer
+        modalActions={modalActions}
+        refreshList={refreshTab}
+        refreshTriggers={taskDrawerRefreshTriggers}
+      />
     </TaskViewContainer>
   );
 };

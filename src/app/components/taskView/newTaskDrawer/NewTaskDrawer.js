@@ -398,6 +398,13 @@ const NewTaskDrawer = ({
                   onInputChange={onAssignedToInputChange}
                   onItemSelected={async option => {
                     await handleAssignedToSelect(option);
+                    if (
+                      refreshTriggers.includes(
+                        ContextRefreshTriggers.ASSIGNED_TO_CHANGE,
+                      )
+                    ) {
+                      refreshList();
+                    }
                     assignedToInputReference.current
                       .querySelector('input')
                       .blur();
