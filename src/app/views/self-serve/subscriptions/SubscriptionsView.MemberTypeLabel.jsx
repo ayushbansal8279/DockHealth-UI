@@ -144,7 +144,7 @@ const renderInvitations = ({
       button: true,
       label: 'Cancel invitation',
       isSelected: userStatus === 'CANCELLED',
-      isDisabled: true,
+      isDisabled: userStatus === 'CANCELLED',
       description:
         'Cancel this invitation and remove this person from the user list',
       onClick: () => {
