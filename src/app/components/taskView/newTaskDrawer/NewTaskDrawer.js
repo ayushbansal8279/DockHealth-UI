@@ -206,11 +206,16 @@ const NewTaskDrawer = ({
   });
 
   const dueDateValue = watch('dueDate');
-  const duetimeValue = dueTimeReference?.current?.value;
+  const dueTimeValue = dueTimeReference?.current?.value;
 
+  const isDueTimeEmpty = !(
+    dueTimeReference?.current?.value &&
+    dueTimeReference?.current?.value !== '' &&
+    dueTimeReference?.current?.value !== '__:__ __'
+  );
   const isOverDue =
-    dueDateValue && duetimeValue
-      ? moment(`${dueDateValue} ${duetimeValue}`).isBefore(moment())
+    dueDateValue && !isDueTimeEmpty
+      ? moment(`${dueDateValue} ${dueTimeValue}`).isBefore(moment())
       : dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
 
   const selectedPatientIdentifier = watch('patientIdentifier');

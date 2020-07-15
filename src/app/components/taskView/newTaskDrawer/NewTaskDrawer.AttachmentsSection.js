@@ -120,7 +120,7 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
                   <UploadBar progress={uploadProgress} />
                 </UploadBarContainer>
               </UploadBarOuterContainer>
-              <Spacing horizontal={3} />
+              <Spacing horizontal={4} />
             </>
           )}
           <AddAttachmentButton

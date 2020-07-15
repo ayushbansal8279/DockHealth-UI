@@ -30,8 +30,11 @@ const SlimTaskItem = ({
   isSelected,
 }) => {
   const { description, taskList, dueDate, priority, parentTask } = task;
-  const hasOverdue = dueDate && moment().isAfter(moment(dueDate), 'days');
-  const taskListLength = hasOverdue ? 20 : 24;
+  const isOverdueTask =
+    moment(dueDate).format('HH:mm') !== '00:00'
+      ? moment(dueDate).isBefore(moment())
+      : dueDate && moment(dueDate).isBefore(moment().startOf('day'));
+  const taskListLength = isOverdueTask ? 20 : 24;
   const formattedTaskListName =
     taskList?.listName?.length > taskListLength
       ? taskList?.listName
@@ -89,7 +92,7 @@ const SlimTaskItem = ({
           {taskList && (
             <SlimTaskItemListLink
               to={`tasks/${taskList?.taskListIdentifier}`}
-              withMargin={hasOverdue}
+              withMargin={isOverdueTask}
             >
               <UniversalTooltipContainer
                 placement="top"
@@ -100,7 +103,7 @@ const SlimTaskItem = ({
               </UniversalTooltipContainer>
             </SlimTaskItemListLink>
           )}
-          {hasOverdue && <OverdueBar>Overdue</OverdueBar>}
+          {isOverdueTask && <OverdueBar>Overdue</OverdueBar>}
         </SlimTaskItemRightSide>
       </SlimTaskItemRow>
     </SlimTaskItemContainer>
