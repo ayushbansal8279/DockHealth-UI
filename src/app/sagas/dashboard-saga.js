@@ -1,11 +1,4 @@
-import {
-  put,
-  call,
-  takeEvery,
-  takeLatest,
-  select,
-  delay,
-} from 'redux-saga/effects';
+import { put, call, takeEvery, select, delay } from 'redux-saga/effects';
 import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
@@ -99,8 +92,11 @@ function* doReloadDashboardTasks() {
 }
 
 function* doToggleDashboardTaskComplete({ task }) {
+  if (task.status === 'COMPLETE') return;
+
   try {
     const currentUser = yield select(userProfileSelector);
+
     const updatedTask = toggleTaskCompletedStatus(task, currentUser);
 
     yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
@@ -164,7 +160,7 @@ export default function* watchDashboard() {
   yield takeEvery(FETCH_DASHBOARD_TASKS, doFetchDashboardTasks);
   yield takeEvery(RELOAD_DASHBOARD_TASKS, doReloadDashboardTasks);
   yield takeEvery(QUICK_ADD_DASHBOARD_TASK, doQuickAddDahboardTask);
-  yield takeLatest(
+  yield takeEvery(
     TOGGLE_DASHBOARD_TASK_COMPLETE,
     doToggleDashboardTaskComplete,
   );
