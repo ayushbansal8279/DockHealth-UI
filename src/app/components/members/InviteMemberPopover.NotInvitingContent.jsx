@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prevent-abbreviations */
 import React, {
   useCallback,
   useRef,
@@ -110,13 +111,51 @@ const MemberItemElement = ({
   currentUser,
   taskList,
   notInTaskList,
-  cancelInviteToTaskList,
-  removeUserFromTaskList,
-  inviteUserToTaskList,
-  changeUserRoleForList,
+  cancelInviteToTaskList: cancelInviteToTaskListAction,
+  removeUserFromTaskList: removeUserFromTaskListAction,
+  inviteUserToTaskList: inviteUserToTaskListAction,
+  changeUserRoleForList: changeUserRoleForListAction,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const [processing, setProcessing] = useState(false);
   const moreIconButtonReference = useRef(null);
   const invitationPending = member.status === 'PENDING';
+
+  useEffect(() => {
+    setProcessing(false);
+  }, [member]);
+
+  const removeUserFromTaskList = useCallback(
+    (...args) => {
+      setProcessing(true);
+      removeUserFromTaskListAction(...args).catch(() => setProcessing(false));
+    },
+    [removeUserFromTaskListAction],
+  );
+
+  const cancelInviteToTaskList = useCallback(
+    (...args) => {
+      setProcessing(true);
+      cancelInviteToTaskListAction(...args).catch(() => setProcessing(false));
+    },
+    [cancelInviteToTaskListAction],
+  );
+
+  const inviteUserToTaskList = useCallback(
+    (...args) => {
+      setProcessing(true);
+      inviteUserToTaskListAction(...args).catch(() => setProcessing(false));
+    },
+    [inviteUserToTaskListAction],
+  );
+
+  const changeUserRoleForList = useCallback(
+    (...args) => {
+      setProcessing(true);
+      changeUserRoleForListAction(...args).catch(() => setProcessing(false));
+    },
+    [changeUserRoleForListAction],
+  );
 
   const [isItemPopoverOpen, openItemPopover, closeItemPopover] = useBoolean(
     false,
@@ -163,10 +202,10 @@ const MemberItemElement = ({
     taskListIdentifier,
     closeItemPopover,
     notInTaskList,
-    inviteUserToTaskList,
     cancelInviteToTaskList,
-    changeUserRoleForList,
     removeUserFromTaskList,
+    inviteUserToTaskList,
+    changeUserRoleForList,
   });
 
   const isCurrentUser = currentUser?.userIdentifier === member?.userIdentifier;
@@ -181,6 +220,7 @@ const MemberItemElement = ({
     } else {
       if (invitationPending) {
         cancelInviteToTaskList(taskListIdentifier, member?.email);
+      } else {
         removeUserFromTaskList(taskListIdentifier, member.userIdentifier);
       }
       closeItemPopover();
@@ -203,7 +243,11 @@ const MemberItemElement = ({
     <MemberItem key={member?.userIdentifier ?? member?.email}>
       <MemberInnerItem isCurrentUser={isCurrentUser} onClick={toggleInvitation}>
         <TickIconContainer>
-          {!notInTaskList && <TickIcon active={hasUserAcceptedInvitation} />}
+          {!processing ? (
+            !notInTaskList && <TickIcon active={hasUserAcceptedInvitation} />
+          ) : (
+            <Loader size={LoaderSizes.small} />
+          )}
         </TickIconContainer>
         <StyledMember
           transparent={!hasUserAcceptedInvitation}
@@ -311,10 +355,10 @@ const NotInvitingContent = ({
   isAdmin,
   currentUser,
   taskList,
-  cancelInviteToTaskList,
-  removeUserFromTaskList,
   inviteUserToTaskList,
+  cancelInviteToTaskList,
   changeUserRoleForList,
+  removeUserFromTaskList,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [membersNotInTaskList, setMembersNotInTaskList] = useState([]);
