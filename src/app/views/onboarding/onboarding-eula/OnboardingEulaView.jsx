@@ -35,6 +35,7 @@ const OnboardingEulaView = () => {
       ) {
         hashHistory.push('/onboarding/baa-overview');
       } else {
+        console.log('onAgree');
         hashHistory.push('/tasks');
       }
     });

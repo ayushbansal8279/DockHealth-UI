@@ -124,8 +124,8 @@ export const Routes = ({ store }) => {
   const checkFeatureToggles = withFeatureToggle(store);
 
   useEffectOnce(() => {
-    sessionStorage.setItem('next-page', '');
     console.log('useEffectOnce - routes', sessionStorage.getItem('next-page'));
+    sessionStorage.setItem('next-page', '');
 
     const firstPathname = transformPathname(
       hashHistory.getCurrentLocation()?.pathname,
