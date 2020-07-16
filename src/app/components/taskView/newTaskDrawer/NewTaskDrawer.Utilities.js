@@ -25,6 +25,10 @@ export const ContextRefreshTriggers = {
   LIST_CHANGE: 3,
 };
 
+export const TaskDrawerFields = {
+  PATIENT: 1,
+};
+
 const getFormattedAge = ({ dob }) => {
   if (!dob) {
     return '-';

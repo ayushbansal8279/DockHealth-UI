@@ -7,6 +7,7 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import { TaskDrawerFields } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
@@ -125,6 +126,7 @@ const PatientDetailsView = ({
       <NewTaskDrawer
         modalActions={modalActions}
         refreshList={refreshPatientTasks}
+        disabledFileds={[TaskDrawerFields.PATIENT]}
       />
     </>
   );

@@ -52,6 +52,7 @@ import {
   renderMemberoptionWithHighlighting,
   FocusDrawerFieldEnum,
   ContextRefreshTriggers,
+  TaskDrawerFields,
 } from './NewTaskDrawer.Utilities';
 import TaskDrawerTourContent from './TaskDrawerTourContent/TaskDrawerTourContent';
 import TaskDrawerTourPopper from './TaskDrawerTourPopper/TaskDrawerTourPopper';
@@ -63,6 +64,7 @@ const NewTaskDrawer = ({
   modalActions,
   refreshList,
   refreshTriggers = [],
+  disabledFileds = [],
 }) => {
   const {
     taskDrawerOpen,
@@ -349,6 +351,7 @@ const NewTaskDrawer = ({
                   name="patientIdentifier"
                   label="Patient"
                   placeholder="Who is the patient?"
+                  disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
                   onInputChange={onPatientInputChange}
                   onItemSelected={async (option, event) => {
                     await handlePatientSelect(option);
@@ -373,7 +376,9 @@ const NewTaskDrawer = ({
                   }
                   InputProps={{
                     endAdornment:
-                      selectedTask && selectedPatientIdentifier ? (
+                      selectedTask &&
+                      selectedPatientIdentifier &&
+                      !disabledFileds.includes(TaskDrawerFields.PATIENT) ? (
                         <AdornmentClear onClick={clearSelectedPatient} />
                       ) : (
                         ''
