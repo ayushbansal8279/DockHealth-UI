@@ -48,7 +48,15 @@ export const DashboardTasksGroupList = styled.div`
 `;
 
 export const DashboardHeaderContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
   padding: 0 55px;
+`;
+
+export const MenuButton = styled.button`
+  margin-right: 88px; // per design
+  outline: none;
+  cursor: pointer;
 `;
 
 export const DroppableBox = styled.div`

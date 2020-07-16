@@ -1,11 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { listsSelector } from 'selectors/task-list-selectors';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
-import * as TemplateActions from 'actions/template-actions';
 import {
   TopSection,
   MenuButton,
@@ -103,12 +100,4 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
   );
 };
 
-const mapDispatchToProps = {
-  showNavbar: TemplateActions.showNavbar,
-};
-
-const mapStateToProps = state => ({
-  lists: listsSelector(state),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardSidebar);
+export default DashboardSidebar;

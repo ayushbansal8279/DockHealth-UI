@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import { Grid } from '@material-ui/core';
+import MenuIcon from 'img/menu-icon';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
@@ -23,6 +24,7 @@ import {
   openDrawer as openDrawerAction,
   closeDrawer as closeDrawerAction,
 } from 'actions/task-drawer-actions';
+import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
@@ -34,6 +36,7 @@ import {
   DashboardHeaderContainer,
   EmptyDashboard,
   StickyHeader,
+  MenuButton,
 } from './styled';
 import DashboardHeader from '../DashboardHeader/DashboardHeader';
 
@@ -100,6 +103,8 @@ const DashboardContent = ({
     sortDashboardTasks,
     reloadDashboardTasks,
   },
+  showNavbar,
+  showMenuButton,
 }) => {
   const { openModal } = modalActions;
   const [searchValue, setSearchValue] = useState('');
@@ -190,6 +195,11 @@ const DashboardContent = ({
   return (
     <DashboardContainer>
       <DashboardHeaderContainer>
+        {showMenuButton && (
+          <MenuButton onClick={showNavbar}>
+            <img src={MenuIcon} alt="menu" />
+          </MenuButton>
+        )}
         <DashboardHeader currentUser={currentUser} />
       </DashboardHeaderContainer>
       <Spacing vertical={3} />
@@ -272,6 +282,7 @@ const mapDispatchToProps = dispatch => ({
   storeAsCurrentTask: bindActionCreators(storeAsCurrentTaskAction, dispatch),
   openDrawer: bindActionCreators(openDrawerAction, dispatch),
   closeDrawer: bindActionCreators(closeDrawerAction, dispatch),
+  showNavbar: bindActionCreators(showNavbarAction, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);

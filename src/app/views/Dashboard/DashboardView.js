@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, connect } from 'react-redux';
 import { useMount } from 'react-use';
 import { isNil } from 'ramda';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
+import { listsSelector } from 'selectors/task-list-selectors';
+import * as TemplateActions from 'actions/template-actions';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import * as userApi from 'api/user-api';
@@ -20,14 +22,18 @@ import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
 const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const DashboardView = () => {
+const DashboardView = ({
+  isTaskDrawerOpen,
+  isLoadingDashboard,
+  lists,
+  showNavbar,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
   const [openedTour, setOpenendTour] = useState(null);
-  const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
-  const isLoadingDashboard = useSelector(dashboardTasksIsLoadingSelector);
   const currentUser = useSelector(store => store.userState.user);
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
+  const hasAnyList = lists?.length > 0;
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
@@ -87,11 +93,16 @@ const DashboardView = () => {
 
   return (
     <DashboardViewWrapper>
-      <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
-        <DashboardSidebar />
-      </DashboardSidebarWrapper>
+      {hasAnyList && (
+        <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
+          <DashboardSidebar lists={lists} showNavbar={showNavbar} />
+        </DashboardSidebarWrapper>
+      )}
       <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
-        <DashboardContent isTaskDrawerOpen={isTaskDrawerOpen} />
+        <DashboardContent
+          showMenuButton={!hasAnyList}
+          isTaskDrawerOpen={isTaskDrawerOpen}
+        />
       </DashboardContentWrapper>
       {openedTour && (
         <>
@@ -116,4 +127,14 @@ const DashboardView = () => {
   );
 };
 
-export default DashboardView;
+const mapStateToProps = state => ({
+  lists: listsSelector(state),
+  isTaskDrawerOpen: state.taskDrawerState.open,
+  isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
+});
+
+const mapDispatchToProps = {
+  showNavbar: TemplateActions.showNavbar,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);
