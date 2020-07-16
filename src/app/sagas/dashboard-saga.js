@@ -12,6 +12,7 @@ import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { toggleTaskCompletedStatus } from 'helpers/task-update-helper';
+import { fetchTasklistForUser } from 'sagas/tasklist-saga';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
@@ -149,6 +150,8 @@ function* doQuickAddDahboardTask({ payload }) {
       assignedToIdentifier,
     });
     yield call(doReloadDashboardTasks);
+    yield put(fetchTasklistForUser());
+
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
   } catch (error) {
     yield call(doReloadDashboardTasks);
