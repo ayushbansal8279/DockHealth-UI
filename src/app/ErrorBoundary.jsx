@@ -24,7 +24,6 @@ class ErrorBoundary extends Component {
       allowOutsideClick: false,
       allowEscapeKey: false,
       confirmationCallback: () => {
-        console.log('Error boundary');
         window.location.href = '/#/tasks';
         window.location.reload();
       },
