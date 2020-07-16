@@ -70,6 +70,7 @@ const handleHomeRedirection = async ({
     (data.eulaAcknowledged && isEulaPath) ||
     (orgData?.baaSigned && isBaaPath)
   ) {
+    console.log('replace', HOME_PATH);
     hashHistory.replace(HOME_PATH);
   }
 };
