@@ -280,7 +280,7 @@ const NewTaskDrawer = ({
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormContext {...formMethods}>
-            <Grid container spacing={1} style={styleTaskDrawerContainer}>
+            <Grid container style={styleTaskDrawerContainer}>
               <TopSection
                 formMethods={formMethods}
                 taskLists={taskLists}
