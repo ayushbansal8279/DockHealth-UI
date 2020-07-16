@@ -29,7 +29,6 @@ axiosInstance.interceptors.response.use(identity, error => {
 
   if (localStorage.getItem(NETWORK_ERROR) === 'false') {
     localStorage.setItem(NETWORK_ERROR, 'true');
-    window.location.reload();
     return undefined;
   }
 

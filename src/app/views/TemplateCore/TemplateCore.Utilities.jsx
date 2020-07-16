@@ -6,7 +6,10 @@ import {
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import handleFeatureToggle from 'helpers/handle-feature-toggle';
-import { setCurrentPageAfterLogin, useMobile } from 'helpers/utility-functions';
+import {
+  setCurrentPageInSessionStorage,
+  useMobile,
+} from 'helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
@@ -70,8 +73,6 @@ const handleHomeRedirection = async ({
     (data.eulaAcknowledged && isEulaPath) ||
     (orgData?.baaSigned && isBaaPath)
   ) {
-    console.log('replace', HOME_PATH);
-    console.log('replace next page', sessionStorage.getItem('next-page'));
     hashHistory.replace(HOME_PATH);
   }
 };
@@ -141,7 +142,7 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   }
 
   if (!loggedIn || !user) {
-    setCurrentPageAfterLogin();
+    setCurrentPageInSessionStorage();
     hashHistory.push('login');
     return;
   }
@@ -155,6 +156,7 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   userApi.updateStoreWithCurrentUser(user);
 
   try {
+    setCurrentPageInSessionStorage();
     checkUserAccountState({ user, pathname, dispatch });
   } catch (error) {
     hashHistory.push('login');

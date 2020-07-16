@@ -124,7 +124,6 @@ export const Routes = ({ store }) => {
   const checkFeatureToggles = withFeatureToggle(store);
 
   useEffectOnce(() => {
-    console.log('useEffectOnce - routes', sessionStorage.getItem('next-page'));
     sessionStorage.setItem('next-page', '');
 
     const firstPathname = transformPathname(
