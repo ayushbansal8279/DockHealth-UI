@@ -56,6 +56,21 @@ const DueTimeSection = ({
     dueTimeReference?.current?.value !== '__:__ __'
   );
 
+  const handleSaveDueTime = value => {
+    if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(value)) {
+      setErrorMessage(
+        'Time must be between 12:00 AM and 11:59 PM and include AM/PM',
+      );
+      return;
+    }
+    setErrorMessage(null);
+    saveDueDate({
+      updatedDueDate: dueDateValue,
+      updatedDueTime: value,
+    });
+    unsetFocus();
+  };
+
   return (
     <div>
       <DueTimeLabelContainer>DUE TIME (00:00 AM/PM)</DueTimeLabelContainer>
@@ -74,26 +89,14 @@ const DueTimeSection = ({
           }}
           placeholder="00:00 AM"
           alwaysShowMask
-          onBlur={event => {
-            if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(event.target.value)) {
-              setErrorMessage(
-                'Time must be between 12:00 AM and 11:59 PM and include AM/PM',
-              );
-              return;
-            }
-            setErrorMessage(null);
-            saveDueDate({
-              updatedDueDate: dueDateValue,
-              updatedDueTime: event.target.value,
-            });
-            unsetFocus();
-          }}
+          onBlur={({ target }) => handleSaveDueTime(target?.value)}
           onFocus={() => {
             setFocus();
           }}
           onChange={() => {
             setErrorMessage(null);
           }}
+          onKeyDown={({ keyCode, target }) => keyCode === 13 && target?.blur()}
           isOverDue={isOverDue}
           isEmpty={isEmpty}
           isFocus={isFocus}
