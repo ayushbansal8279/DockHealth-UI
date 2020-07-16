@@ -71,6 +71,7 @@ const handleHomeRedirection = async ({
     (orgData?.baaSigned && isBaaPath)
   ) {
     console.log('replace', HOME_PATH);
+    console.log('replace next page', sessionStorage.getItem('next-page'));
     hashHistory.replace(HOME_PATH);
   }
 };
