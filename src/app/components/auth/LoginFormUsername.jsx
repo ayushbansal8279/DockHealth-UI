@@ -39,6 +39,7 @@ const LoginFormUsername = ({ onSubmit }) => {
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
           .then(() => {
             const nextPage = sessionStorage.getItem('next-page');
+            console.log('useMount - LoginFormUsername', nextPage);
             window.location.href =
               nextPage?.length > 0 ? `/#${nextPage}` : '/#/tasks';
 

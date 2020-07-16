@@ -159,6 +159,7 @@ export const setCurrentPageAfterLogin = () => {
   const currentPathname = hashHistory.getCurrentLocation().pathname;
 
   sessionStorage.setItem('next-page', currentPathname);
+  console.log('setCurrentPageAfterLogin', sessionStorage.getItem('next-page'));
 
   hashHistory.push('/login');
 };

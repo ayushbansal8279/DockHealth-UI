@@ -125,6 +125,7 @@ export const Routes = ({ store }) => {
 
   useEffectOnce(() => {
     sessionStorage.setItem('next-page', '');
+    console.log('useEffectOnce - routes', sessionStorage.getItem('next-page'));
 
     const firstPathname = transformPathname(
       hashHistory.getCurrentLocation()?.pathname,
