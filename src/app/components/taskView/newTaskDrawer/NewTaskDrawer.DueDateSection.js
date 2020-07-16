@@ -197,7 +197,7 @@ const DueDateSection = ({
           ? moment(currentDueDate).format(DATE_US_FORMAT)
           : '',
         style: {
-          color: isOverDue ? palette.red : palette.black,
+          color: isOverDue && palette.red,
         },
       }}
       renderItem={renderDropdownItem({

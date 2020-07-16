@@ -72,12 +72,9 @@ const DueTimeSection = ({
             A: '[APap]',
             M: '[Mm]',
           }}
-          // mask={mask}
-          // maskPlaceholder="00:00 AM"
           placeholder="00:00 AM"
           alwaysShowMask
           onBlur={event => {
-            // console.log(event.target.value);
             if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(event.target.value)) {
               setErrorMessage(
                 'Time must be between 12:00 AM and 11:59 PM and include AM/PM',

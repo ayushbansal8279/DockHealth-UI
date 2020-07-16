@@ -33,16 +33,12 @@ export const DueTimeErrorMessage = styled.span`
 export const DueTimeInputMask = styled(InputMask)`
   && {
     border: none;
-    color: ${props =>
-      props.isOverDue
-        ? palette.red
-        : (props.isEmpty && !props.isFocus
-        ? palette.coolGrey2
-        : palette.black)};
+    color: ${({ isOverDue }) => (isOverDue ? 'red' : palette.mediumGrey)};
     font-family: ${FONT_FAMILY};
     font-weight: bold;
     width: 90%;
-    :focus {
+
+    &:focus {
       box-shadow: none;
       outline: none;
     }
