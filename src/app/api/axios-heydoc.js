@@ -10,6 +10,10 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   function(config) {
+    if(config.url.indexOf("/oidc/")!=-1
+      || config.url.indexOf("/fhir/")!=-1){
+      return config;
+    }
     // Do something before request is sent
     const currentAccessToken = sessionStorage.getItem('accessToken');
     config.headers.Authorization = `Bearer ${currentAccessToken}`;

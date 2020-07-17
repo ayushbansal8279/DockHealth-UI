@@ -918,6 +918,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode) {
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
+        sessionStorage.setItem('accessToken', userAccessToken);
         resolve('success');
       });
     } catch (error) {
