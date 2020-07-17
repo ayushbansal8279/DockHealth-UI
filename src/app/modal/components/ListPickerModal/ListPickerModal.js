@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { getTaskListForUser } from 'actions/tasklist-actions';
 import { addTaskList } from 'api/tasklist-api';
-import { CloseIconButton, CloseIcon, ListPickerModalWrapper } from './styled';
-import { ModalWrapper } from '../styled';
+import { ListPickerModalWrapper } from './styled';
+import { ModalWrapper, CloseIconButton, CloseIcon } from '../styled';
 import ListSelectSection from './ListSelectSection';
 
 const ListPickerModal = ({

@@ -11,6 +11,10 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import Spacing from 'components/common/Spacing';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import * as userApi from 'api/user-api';
+import {
+  openModal as openModalAction,
+  // closeModal as closeModalAction,
+} from 'modal/actions';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardCreateList from './DashboardCreateList/DashboardCreateList';
@@ -36,6 +40,7 @@ const DashboardView = ({
   lists,
   showNavbar,
   currentUser,
+  openModal,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
@@ -118,8 +123,11 @@ const DashboardView = ({
         </DashboardHeaderContainer>
         <Spacing vertical={3} />
         {createListView ? (
-          <DashboardCreateListWrapper onClick={() => setCreateListView(false)}>
-            <DashboardCreateList />
+          <DashboardCreateListWrapper>
+            <DashboardCreateList
+              onCreateList={() => openModal('CreateList')}
+              onTakeATour={() => setCreateListView(false)}
+            />
           </DashboardCreateListWrapper>
         ) : (
           <DashboardList
@@ -160,6 +168,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
+  openModal: openModalAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);

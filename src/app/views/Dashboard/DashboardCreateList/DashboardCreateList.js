@@ -11,7 +11,7 @@ import {
   CreateListButton,
 } from './styled';
 
-const DashboardCreateList = () => {
+const DashboardCreateList = ({ onCreateList, onTakeATour }) => {
   return (
     <Wrapper>
       <TextWrapper>
@@ -22,10 +22,14 @@ const DashboardCreateList = () => {
           as you like. Let’s get started!
         </Description>
         <ButtonsContainer>
-          <CreateListButton variant="contained" size="small" onClick={() => {}}>
+          <CreateListButton
+            variant="contained"
+            size="small"
+            onClick={onCreateList}
+          >
             Create a list
           </CreateListButton>
-          <TourButton variant="text" size="small" onClick={() => {}}>
+          <TourButton variant="text" size="small" onClick={onTakeATour}>
             Take tour of Dock
           </TourButton>
         </ButtonsContainer>

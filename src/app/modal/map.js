@@ -10,6 +10,7 @@ import ArchivePatientModal from './components/ArchivePatientModal/ArchivePatient
 import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActiveUserModal';
 import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
 import ResetSortingModal from './components/ResetSortingModal/ResetSortingModal';
+import CreateListModal from './components/CreateListModal/CreateListModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -23,8 +24,8 @@ const MODAL_MAP = {
   ArchivePatient: ArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
-
   ResetSorting: ResetSortingModal,
+  CreateList: CreateListModal,
 };
 
 export default MODAL_MAP;

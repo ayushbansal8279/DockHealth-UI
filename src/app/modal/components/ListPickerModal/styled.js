@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import { IconButton, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
-import { Close } from '@material-ui/icons';
 import { fontSizes } from 'styles/font';
 
 export const ListPickerModalWrapper = styled.div`
@@ -95,22 +94,6 @@ export const ListItem = styled.button`
   ${({ isSelected }) =>
     !isSelected && `&:hover { background: ${palette.brightBlueWithAlpha}; }`}
 `;
-
-export const CloseIconButton = withStyles({
-  root: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    display: 'block',
-  },
-})(IconButton);
-
-export const CloseIcon = withStyles({
-  root: {
-    width: 16,
-    height: 16,
-  },
-})(Close);
 
 export const EmptyMessage = styled.p`
   color: ${palette.coolGrey2};
