@@ -72,6 +72,6 @@ export const MemberTypeButton = styled.button`
 
 export const SubscriptionLabelBox = styled.div`
   font-size: ${fontSizes.smallPlus};
-  color: #4a4a4a // custom color;
+  color: #4a4a4a; // custom color
   padding: ${spacing.tiny} 0;
 `;
