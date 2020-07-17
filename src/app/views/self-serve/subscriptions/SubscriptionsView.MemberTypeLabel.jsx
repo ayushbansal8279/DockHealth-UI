@@ -89,8 +89,8 @@ const renderUserTypesOptions = ({
     renderedArray = [
       ...renderedArray,
       {
-        key: 'activate_user',
-        label: 'Reactive user',
+        key: 'reactivate_user',
+        label: 'Reactivate user',
         selectable: true,
         changeable: true,
         onClick: () => {
