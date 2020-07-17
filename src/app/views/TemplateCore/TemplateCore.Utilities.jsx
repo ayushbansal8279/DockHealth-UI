@@ -6,10 +6,7 @@ import {
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import handleFeatureToggle from 'helpers/handle-feature-toggle';
-import {
-  setCurrentPageInSessionStorage,
-  useMobile,
-} from 'helpers/utility-functions';
+import { setCurrentPageAfterLogin, useMobile } from 'helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
@@ -142,7 +139,7 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   }
 
   if (!loggedIn || !user) {
-    setCurrentPageInSessionStorage();
+    setCurrentPageAfterLogin();
     hashHistory.push('login');
     return;
   }
@@ -156,7 +153,6 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   userApi.updateStoreWithCurrentUser(user);
 
   try {
-    setCurrentPageInSessionStorage();
     checkUserAccountState({ user, pathname, dispatch });
   } catch (error) {
     hashHistory.push('login');
