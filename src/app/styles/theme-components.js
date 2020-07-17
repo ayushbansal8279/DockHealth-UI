@@ -137,6 +137,7 @@ const themeCommonOverrides = () => ({
         fontSize: '1.5rem',
         minHeight: '3.625rem',
         textTransform: 'none',
+        borderRadius: 0,
       },
       contained: {
         background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
