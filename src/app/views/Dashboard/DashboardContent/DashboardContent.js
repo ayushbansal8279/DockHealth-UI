@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import { Grid } from '@material-ui/core';
-import MenuIcon from 'img/menu-icon';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
@@ -12,7 +11,6 @@ import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
 } from 'selectors/dashboard-tasks-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -30,15 +28,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
-import {
-  DashboardContainer,
-  SearchGrid,
-  DashboardHeaderContainer,
-  EmptyDashboard,
-  StickyHeader,
-  MenuButton,
-} from './styled';
-import DashboardHeader from '../DashboardHeader/DashboardHeader';
+import { SearchGrid, EmptyDashboard, StickyHeader } from './styled';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
   dashboardTasks.reduce((accumulator, currentValue) => {
@@ -103,8 +93,6 @@ const DashboardContent = ({
     sortDashboardTasks,
     reloadDashboardTasks,
   },
-  showNavbar,
-  showMenuButton,
 }) => {
   const { openModal } = modalActions;
   const [searchValue, setSearchValue] = useState('');
@@ -193,16 +181,7 @@ const DashboardContent = ({
   }, [searchValue, filteredDashboardTasks]);
 
   return (
-    <DashboardContainer>
-      <DashboardHeaderContainer>
-        {showMenuButton && (
-          <MenuButton onClick={showNavbar}>
-            <img src={MenuIcon} alt="menu" />
-          </MenuButton>
-        )}
-        <DashboardHeader currentUser={currentUser} />
-      </DashboardHeaderContainer>
-      <Spacing vertical={3} />
+    <>
       <StickyHeader>
         <Grid container direction="row" justify="flex-end">
           <SearchGrid isFocused={searchFocused || searchValue} item>
@@ -265,14 +244,13 @@ const DashboardContent = ({
         ]}
         refreshList={reloadDashboardTasks}
       />
-    </DashboardContainer>
+    </>
   );
 };
 
 const mapStateToProps = state => ({
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
-  currentUser: userProfileSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
 });
 

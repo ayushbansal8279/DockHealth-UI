@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, connect } from 'react-redux';
 import { useMount } from 'react-use';
 import { isNil } from 'ramda';
+import MenuIcon from 'img/menu-icon';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { listsSelector } from 'selectors/task-list-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import * as TemplateActions from 'actions/template-actions';
 import localStorageHelper from 'helpers/local-storage-helper';
+import Spacing from 'components/common/Spacing';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import * as userApi from 'api/user-api';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
@@ -16,8 +19,11 @@ import {
   DashboardContentWrapper,
   DashboardTourWrapper,
   DashboardTourBackground,
+  DashboardHeaderContainer,
+  MenuButton,
 } from './styled';
 import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
+import DashboardHeader from './DashboardHeader/DashboardHeader';
 
 const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
 const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
@@ -27,6 +33,7 @@ const DashboardView = ({
   isLoadingDashboard,
   lists,
   showNavbar,
+  currentUser,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
@@ -34,6 +41,7 @@ const DashboardView = ({
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
   const hasAnyList = lists?.length > 0;
+  const firstTour = false;
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
@@ -99,10 +107,23 @@ const DashboardView = ({
         </DashboardSidebarWrapper>
       )}
       <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
-        <DashboardContent
-          showMenuButton={!hasAnyList}
-          isTaskDrawerOpen={isTaskDrawerOpen}
-        />
+        <DashboardHeaderContainer>
+          {!hasAnyList && (
+            <MenuButton onClick={showNavbar}>
+              <img src={MenuIcon} alt="menu" />
+            </MenuButton>
+          )}
+          <DashboardHeader currentUser={currentUser} />
+        </DashboardHeaderContainer>
+        <Spacing vertical={3} />
+        {firstTour ? (
+          <div>first tour</div>
+        ) : (
+          <DashboardContent
+            currentUser={currentUser}
+            isTaskDrawerOpen={isTaskDrawerOpen}
+          />
+        )}
       </DashboardContentWrapper>
       {openedTour && (
         <>
@@ -131,6 +152,7 @@ const mapStateToProps = state => ({
   lists: listsSelector(state),
   isTaskDrawerOpen: state.taskDrawerState.open,
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
+  currentUser: userProfileSelector(state),
 });
 
 const mapDispatchToProps = {

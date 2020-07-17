@@ -9,13 +9,6 @@ export const SearchGrid = styled(Grid)`
   transition: width 0.2s ease-out;
 `;
 
-export const DashboardContainer = styled.div`
-  position: relative;
-  height: 100%;
-  overflow-y: auto;
-  margin-top: ${spacing.large};
-`;
-
 export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
@@ -45,18 +38,6 @@ export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${spacing.large};
-`;
-
-export const DashboardHeaderContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  padding: 0 55px;
-`;
-
-export const MenuButton = styled.button`
-  margin-right: 88px; // per design
-  outline: none;
-  cursor: pointer;
 `;
 
 export const DroppableBox = styled.div`

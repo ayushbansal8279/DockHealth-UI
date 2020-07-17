@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const DashboardViewWrapper = styled.div`
   display: flex;
@@ -22,12 +23,15 @@ export const DashboardSidebarWrapper = styled.div`
 `;
 
 export const DashboardContentWrapper = styled.div`
+  position: relative;
   flex: 1;
-  height: 100%;
-  overflow: hidden;
-  padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
-  transition: padding-right 0.3s ease-out;
   max-width: 1440px;
+  height: calc(100% - ${spacing.large});
+  padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
+  margin-top: ${spacing.large};
+  transition: padding-right 0.3s ease-out;
+  overflow-x: hidden;
+  overflow-y: auto;
 `;
 
 export const DashboardTourBackground = styled.div`
@@ -45,4 +49,16 @@ export const DashboardTourWrapper = styled.div`
   left: 50%;
   transform: translateX(-40%);
   z-index: 201;
+`;
+
+export const DashboardHeaderContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  padding: 0 55px;
+`;
+
+export const MenuButton = styled.button`
+  margin-right: 88px; // per design
+  outline: none;
+  cursor: pointer;
 `;
