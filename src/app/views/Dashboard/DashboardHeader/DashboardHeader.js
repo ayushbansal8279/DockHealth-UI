@@ -15,7 +15,7 @@ import {
   HeaderTextContainer,
 } from './styled';
 
-const DashboardHeader = ({ currentUser }) => {
+const DashboardHeader = ({ currentUser, isUserFirstTime }) => {
   const [avatarContent, setAvatarContent] = useState('');
 
   useEffect(() => {
@@ -54,7 +54,9 @@ const DashboardHeader = ({ currentUser }) => {
               Hello {currentUser.firstName}
             </HeaderTitle>
             <Spacing vertical={3} />
-            <MontserratTypography>Welcome back!</MontserratTypography>
+            <MontserratTypography>{`Welcome${
+              !isUserFirstTime ? ' back' : ''
+            }!`}</MontserratTypography>
           </HeaderTextContainer>
         </Grid>
         <Grid container item sm={2} justify="flex-end" alignItems="flex-start">

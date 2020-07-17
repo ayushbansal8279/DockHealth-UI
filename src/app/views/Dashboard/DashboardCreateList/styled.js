@@ -48,5 +48,6 @@ export const TourButton = styled(Button)`
   && {
     min-width: 245px;
     text-transform: uppercase;
+    text-decoration: underline;
   }
 `;

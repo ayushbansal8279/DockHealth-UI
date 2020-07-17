@@ -119,7 +119,10 @@ const DashboardView = ({
               <img src={MenuIcon} alt="menu" />
             </MenuButton>
           )}
-          <DashboardHeader currentUser={currentUser} />
+          <DashboardHeader
+            isUserFirstTime={createListView}
+            currentUser={currentUser}
+          />
         </DashboardHeaderContainer>
         <Spacing vertical={3} />
         {createListView ? (
