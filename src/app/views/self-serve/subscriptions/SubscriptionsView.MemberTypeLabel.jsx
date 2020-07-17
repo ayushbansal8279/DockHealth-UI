@@ -31,39 +31,43 @@ const renderUserTypesOptions = ({
   orgUserRole,
   userStatus,
 }) => {
-  let renderedArray = [
-    ...Object.entries(userTypes)
-      .filter(pathEq(['1', 'selectable'], true))
-      .map(([role, { label, description }]) => ({
-        key: role,
-        button: true,
-        isSelected: orgUserRole === role,
-        label,
-        description,
-        onClick: () => {
-          changeUserRole({ userIdentifier, role })
-            .then(() => {
-              showToast({
-                status: 'success',
-                title: `User's role changed successfully`,
-              });
-              reloadUsers();
-              closePopover();
-            })
-            .catch(error => {
-              showAlert({
-                status: 'error',
-                title: 'Error',
-                text:
-                  error?.errorMessage ??
-                  `User's role could not be changed, please try again later`,
-              });
+  let renderedArray = [];
 
-              closePopover();
-            });
-        },
-      })),
-  ];
+  if (userStatus === 'ACTIVE') {
+    renderedArray = [
+      ...Object.entries(userTypes)
+        .filter(pathEq(['1', 'selectable'], true))
+        .map(([role, { label, description }]) => ({
+          key: role,
+          button: true,
+          isSelected: orgUserRole === role,
+          label,
+          description,
+          onClick: () => {
+            changeUserRole({ userIdentifier, role })
+              .then(() => {
+                showToast({
+                  status: 'success',
+                  title: `User's role changed successfully`,
+                });
+                reloadUsers();
+                closePopover();
+              })
+              .catch(error => {
+                showAlert({
+                  status: 'error',
+                  title: 'Error',
+                  text:
+                    error?.errorMessage ??
+                    `User's role could not be changed, please try again later`,
+                });
+
+                closePopover();
+              });
+          },
+        })),
+    ];
+  }
 
   if (userHasSubscription && !isDisabledRemovingSubscription) {
     renderedArray = [
