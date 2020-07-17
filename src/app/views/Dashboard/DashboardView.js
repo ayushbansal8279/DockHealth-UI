@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { useMount } from 'react-use';
 import { isNil } from 'ramda';
 import MenuIcon from 'img/menu-icon';
@@ -12,7 +12,8 @@ import Spacing from 'components/common/Spacing';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import * as userApi from 'api/user-api';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
-import DashboardContent from './DashboardContent/DashboardContent';
+import DashboardList from './DashboardList/DashboardList';
+import DashboardCreateList from './DashboardCreateList/DashboardCreateList';
 import {
   DashboardViewWrapper,
   DashboardSidebarWrapper,
@@ -21,6 +22,7 @@ import {
   DashboardTourBackground,
   DashboardHeaderContainer,
   MenuButton,
+  DashboardCreateListWrapper,
 } from './styled';
 import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
@@ -37,11 +39,10 @@ const DashboardView = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
-  const currentUser = useSelector(store => store.userState.user);
+  const [createListView, setCreateListView] = useState(true);
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
   const hasAnyList = lists?.length > 0;
-  const firstTour = false;
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
@@ -116,10 +117,12 @@ const DashboardView = ({
           <DashboardHeader currentUser={currentUser} />
         </DashboardHeaderContainer>
         <Spacing vertical={3} />
-        {firstTour ? (
-          <div>first tour</div>
+        {createListView ? (
+          <DashboardCreateListWrapper onClick={() => setCreateListView(false)}>
+            <DashboardCreateList />
+          </DashboardCreateListWrapper>
         ) : (
-          <DashboardContent
+          <DashboardList
             currentUser={currentUser}
             isTaskDrawerOpen={isTaskDrawerOpen}
           />

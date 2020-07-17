@@ -76,7 +76,7 @@ const SORT_METHODS = {
       ),
 };
 
-const DashboardContent = ({
+const DashboardList = ({
   dashboardTasks,
   dashboardTasksIsLoading,
   currentUser,
@@ -263,4 +263,4 @@ const mapDispatchToProps = dispatch => ({
   showNavbar: bindActionCreators(showNavbarAction, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardList);

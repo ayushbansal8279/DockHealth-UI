@@ -24,6 +24,8 @@ export const DashboardSidebarWrapper = styled.div`
 
 export const DashboardContentWrapper = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
   flex: 1;
   max-width: 1440px;
   height: calc(100% - ${spacing.large});
@@ -61,4 +63,13 @@ export const MenuButton = styled.button`
   margin-right: 88px; // per design
   outline: none;
   cursor: pointer;
+`;
+
+export const DashboardCreateListWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin-top: ${spacing.regularPlus};
+  border-top: 1px solid ${palette.coolGrey2};
 `;
