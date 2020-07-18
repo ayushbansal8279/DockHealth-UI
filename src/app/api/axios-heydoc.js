@@ -10,8 +10,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   function(config) {
-    if(config.url.indexOf("/oidc/")!=-1
-      || config.url.indexOf("/fhir/")!=-1){
+    if (config.url.includes('/oidc/') || config.url.includes('/fhir/')) {
       return config;
     }
     // Do something before request is sent
