@@ -262,10 +262,12 @@ export function login(loginUserName, password) {
       .then(user => {
         // console.log(user);
         resolvedCognitoUser = user;
-        if (user.challengeName === 'SMS_MFA' ||
-            user.challengeName === 'SOFTWARE_TOKEN_MFA') {
-              resolve(user);
-        }else{
+        if (
+          user.challengeName === 'SMS_MFA' ||
+          user.challengeName === 'SOFTWARE_TOKEN_MFA'
+        ) {
+          resolve(user);
+        } else {
           store.dispatch({ type: 'user/user', user });
           sessionStorage.setItem(
             'accessToken',
@@ -918,6 +920,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode) {
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
+        sessionStorage.setItem('accessToken', userAccessToken);
         resolve('success');
       });
     } catch (error) {
