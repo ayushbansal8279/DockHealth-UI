@@ -19,7 +19,14 @@ const initializeAddListFormHooks = () => {
     reValidateMode: 'onSubmit',
   });
 
-  const { register, unregister, handleSubmit, setValue, watch } = formContext;
+  const {
+    register,
+    errors,
+    unregister,
+    handleSubmit,
+    setValue,
+    watch,
+  } = formContext;
 
   const { listOwner, currentUser, currentList, people } = useSelector(
     store => ({
@@ -140,6 +147,8 @@ const initializeAddListFormHooks = () => {
   );
 
   return {
+    register,
+    errors,
     addAdmin,
     addMember,
     allAdminsWithOwner,
