@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member';
 
@@ -15,7 +15,7 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
     currentUser,
     commentContent,
     onCommentChange,
-    onEnterPress,
+    saveComment,
     onCommentFocus,
     isAddingComment,
   } = initializeAddCommentHooks({ addComment, parentFormSubmit });
@@ -35,7 +35,10 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
       <Member member={currentUser} size={40} />
       <AddCommentInput
         onChange={onCommentChange}
-        onKeyDown={onEnterPress}
+        onKeyDown={event =>
+          event.key === 'Enter' && addCommentReference.current?.blur()
+        }
+        onBlur={saveComment}
         onFocus={onCommentFocus}
         value={commentContent}
         placeholder="Leave a comment"
