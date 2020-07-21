@@ -13,18 +13,27 @@ const Modal = ({ modal, ...restProps }) => {
   const { modalProps, modalName, isOpen } = modal;
   const { closeModal } = restProps;
 
+  const handleCloseModal = () => {
+    closeModal();
+    if (typeof modalProps.onClose === 'function') modalProps.onClose();
+  };
+
   const ModalComponent = MODAL_MAP[modalName];
   if (!ModalComponent) return null;
 
   return (
     <ReactModal
       isOpen={isOpen}
-      onRequestClose={closeModal}
+      onRequestClose={handleCloseModal}
       overlayClassName="modal-overlay"
       className="modal-content"
       {...restProps}
     >
-      <ModalComponent {...modalProps} {...restProps} />
+      <ModalComponent
+        {...modalProps}
+        {...restProps}
+        closeModal={handleCloseModal}
+      />
     </ReactModal>
   );
 };

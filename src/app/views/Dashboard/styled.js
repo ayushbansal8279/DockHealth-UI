@@ -5,6 +5,8 @@ import spacing from 'styles/spacing';
 export const DashboardViewWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   height: 100%;
   width: 100%;
   background-color: ${palette.white};

@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMount } from 'react-use';
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import MenuIcon from 'img/menu-icon';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { listsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TemplateActions from 'actions/template-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskListSagaActions from 'sagas/tasklist-saga';
+import * as UserApi from 'api/user-api';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Spacing from 'components/common/Spacing';
 import Tour from 'components/tour-wizard/Tour/Tour';
-import * as userApi from 'api/user-api';
-import {
-  openModal as openModalAction,
-  // closeModal as closeModalAction,
-} from 'modal/actions';
+import { openModal as openModalAction } from 'modal/actions';
+import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardCreateList from './DashboardCreateList/DashboardCreateList';
@@ -43,13 +42,17 @@ const DashboardView = ({
   currentUser,
   openModal,
   setTaskListAsCurrentList,
+  fetchTasklistForUser,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
-  const [createListView, setCreateListView] = useState(true);
 
+  const currentUserLoaded = currentUser && !isEmpty(currentUser);
+  const { usageState } = currentUser ?? {};
+  const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
+
+  const createListView = !hasExistingLists || hasOnlyInvitedLists;
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
-  const hasAnyList = lists?.length > 0;
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
@@ -87,8 +90,7 @@ const DashboardView = ({
     }
 
     const refreshAccessTokenTimeoutId = setTimeout(() => {
-      // console.log('refresh token on timeout');
-      userApi.refreshAccessToken(user.username);
+      UserApi.refreshAccessToken(user.username);
       refreshAccessToken(user);
     }, systemTimeout);
 
@@ -104,67 +106,78 @@ const DashboardView = ({
 
   const handleCreateList = () => {
     setTaskListAsCurrentList(null);
-    openModal('CreateList');
+    openModal('CreateList', {
+      test: 'test',
+      onClose: () => {
+        UserApi.getUserByEmail(currentUser.email, currentUser);
+        fetchTasklistForUser();
+      },
+    });
   };
 
   useEffect(() => {
-    if (!isLoadingDashboard) openTourModal();
+    if (!isLoadingDashboard && currentUserLoaded && !createListView)
+      openTourModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingDashboard]);
+  }, [isLoadingDashboard, createListView, currentUserLoaded]);
 
   return (
     <DashboardViewWrapper>
-      {hasAnyList && (
-        <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
-          <DashboardSidebar lists={lists} showNavbar={showNavbar} />
-        </DashboardSidebarWrapper>
-      )}
-      <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
-        <DashboardHeaderContainer>
-          {!hasAnyList && (
-            <MenuButton onClick={showNavbar}>
-              <img src={MenuIcon} alt="menu" />
-            </MenuButton>
-          )}
-          <DashboardHeader
-            isUserFirstTime={createListView}
-            currentUser={currentUser}
-          />
-        </DashboardHeaderContainer>
-        <Spacing vertical={3} />
-        {createListView ? (
-          <DashboardCreateListWrapper>
-            <DashboardCreateList
-              onCreateList={handleCreateList}
-              onTakeATour={() => setCreateListView(false)}
-            />
-          </DashboardCreateListWrapper>
-        ) : (
-          <DashboardList
-            currentUser={currentUser}
-            isTaskDrawerOpen={isTaskDrawerOpen}
-          />
-        )}
-      </DashboardContentWrapper>
-      {openedTour && (
+      <ViewLoader isFetchingData={!currentUserLoaded}>
         <>
-          <DashboardTourWrapper>
-            {openedTour === 1 && (
-              <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
-            )}
-            {openedTour === 2 && (
-              <Tour
-                darkTheme
-                steps={SECOND_TOUR_STEPS}
-                onClose={closeSecondTour}
+          {hasExistingLists && (
+            <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
+              <DashboardSidebar lists={lists} showNavbar={showNavbar} />
+            </DashboardSidebarWrapper>
+          )}
+          <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
+            <DashboardHeaderContainer>
+              {!hasExistingLists && (
+                <MenuButton onClick={showNavbar}>
+                  <img src={MenuIcon} alt="menu" />
+                </MenuButton>
+              )}
+              <DashboardHeader
+                isUserFirstTime={createListView}
+                currentUser={currentUser}
+              />
+            </DashboardHeaderContainer>
+            <Spacing vertical={3} />
+            {createListView ? (
+              <DashboardCreateListWrapper>
+                <DashboardCreateList
+                  onCreateList={handleCreateList}
+                  onTakeATour={() => {}}
+                />
+              </DashboardCreateListWrapper>
+            ) : (
+              <DashboardList
+                currentUser={currentUser}
+                isTaskDrawerOpen={isTaskDrawerOpen}
               />
             )}
-          </DashboardTourWrapper>
-          <DashboardTourBackground
-            onClick={openedTour === 1 ? closeFirstTour : closeSecondTour}
-          />
+          </DashboardContentWrapper>
+          {openedTour && (
+            <>
+              <DashboardTourWrapper>
+                {openedTour === 1 && (
+                  <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
+                )}
+                {openedTour === 2 && (
+                  <Tour
+                    darkTheme
+                    steps={SECOND_TOUR_STEPS}
+                    onClose={closeSecondTour}
+                  />
+                )}
+              </DashboardTourWrapper>
+              <DashboardTourBackground
+                onClick={openedTour === 1 ? closeFirstTour : closeSecondTour}
+              />
+            </>
+          )}
         </>
-      )}
+      </ViewLoader>
     </DashboardViewWrapper>
   );
 };
@@ -180,6 +193,7 @@ const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
   openModal: openModalAction,
   setTaskListAsCurrentList: TaskListActions.setTaskListAsCurrentList,
+  fetchTasklistForUser: TaskListSagaActions.fetchTasklistForUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);
