@@ -152,7 +152,12 @@ const DashboardView = ({
                 <DashboardFirstVisitView
                   hasInvitedLists={hasOnlyInvitedLists}
                   onCreateList={handleCreateList}
-                  onTakeATour={() => {}}
+                  onTakeATour={() =>
+                    openModal('Video', {
+                      title: 'Emailing a Task to Dock Health',
+                      url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
+                    })
+                  }
                   list={lists.find(list => list.listType !== 'INBOX')}
                 />
               </DashboardFirstVisitViewWrapper>

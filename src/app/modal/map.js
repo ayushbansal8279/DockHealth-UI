@@ -11,6 +11,7 @@ import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActi
 import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
 import ResetSortingModal from './components/ResetSortingModal/ResetSortingModal';
 import CreateListModal from './components/CreateListModal/CreateListModal';
+import VideoModal from './components/VideoModal/VideoModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -26,6 +27,7 @@ const MODAL_MAP = {
   ArchivePerson: ArchivePersonModal,
   ResetSorting: ResetSortingModal,
   CreateList: CreateListModal,
+  Video: VideoModal,
 };
 
 export default MODAL_MAP;
