@@ -20,7 +20,7 @@ const onSubmit = ({
   addPerson,
   closeInviteForm,
   dispatch,
-  openModal,
+  onInviteSuccess,
   taskListIdentifier,
 }) => async ({ email, firstName, lastName }) => {
   let submitAction;
@@ -51,7 +51,7 @@ const onSubmit = ({
       addInvitedPeople(userName);
       addPerson({ userIdentifier: userId });
       closeInviteForm();
-      openModal(userName);
+      onInviteSuccess(userName);
     })
     .catch(error => {
       showAlert({
@@ -70,7 +70,7 @@ const InviteForm = ({
   addPerson,
   closeInviteForm,
   initialValues,
-  openModal,
+  onInviteSuccess,
   taskListIdentifier,
 }) => {
   const { formContext, dispatch, handleSubmit } = initializeInviteFormHooks(
@@ -118,7 +118,7 @@ const InviteForm = ({
               addPerson,
               closeInviteForm,
               dispatch,
-              openModal,
+              onInviteSuccess,
               taskListIdentifier,
             }),
           )}

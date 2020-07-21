@@ -133,7 +133,7 @@ const PeoplePicker = ({
   closePicker,
   currentUserRole,
   isOpen,
-  openModal,
+  onInviteSuccess,
   peopleIdentifiers,
   peopleList,
   peopleLabel,
@@ -251,7 +251,7 @@ const PeoplePicker = ({
             closeInviteForm={closeInviteForm}
             hasAdminRole={hasAdminRole}
             initialValues={{ firstName, lastName }}
-            openModal={openModal}
+            onInviteSuccess={onInviteSuccess}
             taskListIdentifier={taskListIdentifier}
           />
         )}

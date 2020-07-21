@@ -155,7 +155,7 @@ const ListForm = ({ setListFormOpen }) => {
         closePicker={() => setPickerOpened(null)}
         currentUserRole={orgUserRole}
         isOpen={pickerOpened === ADMIN_PICKER}
-        openModal={userName => setModalContent(userName)}
+        onInviteSuccess={userName => setModalContent(userName)}
         peopleIdentifiers={allAdminsWithOwner}
         peopleLabel={messages.form.admins.label}
         peopleList={people}
@@ -169,7 +169,7 @@ const ListForm = ({ setListFormOpen }) => {
         availablePeopleList={peopleListForMemberPicker}
         closePicker={() => setPickerOpened(null)}
         currentUserRole={orgUserRole}
-        isOpen={pickerOpened === MEMBER_PICKER}
+        onInviteSuccess={pickerOpened === MEMBER_PICKER}
         openModal={userName => setModalContent(userName)}
         peopleIdentifiers={allMembersValue}
         peopleLabel={messages.form.members.label}
