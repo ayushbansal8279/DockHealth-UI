@@ -131,7 +131,10 @@ const DashboardView = ({
               <DashboardSidebar lists={lists} showNavbar={showNavbar} />
             </DashboardSidebarWrapper>
           )}
-          <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
+          <DashboardContentWrapper
+            fullWidth={createListView}
+            hasRightPadding={shouldHideSidebar}
+          >
             <DashboardHeaderContainer>
               {!hasExistingLists && (
                 <MenuButton onClick={showNavbar}>

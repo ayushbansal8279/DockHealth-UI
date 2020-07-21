@@ -29,7 +29,7 @@ export const DashboardContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-width: 1440px;
+  ${({ fullWidth }) => !fullWidth && 'max-width: 1440px;'}
   height: calc(100% - ${spacing.large});
   padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
   margin-top: ${spacing.large};
