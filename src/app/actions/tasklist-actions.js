@@ -39,6 +39,7 @@ export function saveTaskList(formProps) {
           dispatch(
             AlertActions.showGlobalAlert('Task List updated successfully!'),
           );
+          return updatedTasklist;
         })
         .catch(error => {
           dispatch(
@@ -62,6 +63,7 @@ export function saveTaskList(formProps) {
         dispatch(
           AlertActions.showGlobalAlert('Task List created successfully!'),
         );
+        return tasklist;
       })
       .catch(error => {
         dispatch(

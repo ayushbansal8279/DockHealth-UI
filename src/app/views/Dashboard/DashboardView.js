@@ -7,6 +7,7 @@ import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selec
 import { listsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TemplateActions from 'actions/template-actions';
+import * as TaskListActions from 'actions/tasklist-actions';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Spacing from 'components/common/Spacing';
 import Tour from 'components/tour-wizard/Tour/Tour';
@@ -41,6 +42,7 @@ const DashboardView = ({
   showNavbar,
   currentUser,
   openModal,
+  setTaskListAsCurrentList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
@@ -100,6 +102,11 @@ const DashboardView = ({
     refreshAccessToken(currentUser);
   });
 
+  const handleCreateList = () => {
+    setTaskListAsCurrentList(null);
+    openModal('CreateList');
+  };
+
   useEffect(() => {
     if (!isLoadingDashboard) openTourModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,7 +135,7 @@ const DashboardView = ({
         {createListView ? (
           <DashboardCreateListWrapper>
             <DashboardCreateList
-              onCreateList={() => openModal('CreateList')}
+              onCreateList={handleCreateList}
               onTakeATour={() => setCreateListView(false)}
             />
           </DashboardCreateListWrapper>
@@ -172,6 +179,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
   openModal: openModalAction,
+  setTaskListAsCurrentList: TaskListActions.setTaskListAsCurrentList,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);

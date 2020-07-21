@@ -9,6 +9,8 @@ export const CreateListModalWrapper = styled(ModalWrapper)`
   flex-direction: column;
   width: 530px;
   min-height: 537px;
+  max-height: calc(100% - 50px);
+  overflow-y: scroll;
 `;
 
 export const Header = styled.div`
@@ -41,9 +43,9 @@ export const Step = styled.button`
   width: 8px;
   border: 1px solid ${palette.coolGrey2};
   border-radius: 4px;
-  ${({ isFilled }) => isFilled && `background: ${palette.coolGrey2};`}
-  cursor: pointer;
   outline: none;
+  ${({ isFilled }) => isFilled && `background: ${palette.coolGrey2};`}
+  ${({ isDisabled }) => !isDisabled && 'cursor: pointer;'}
 
   &:not(:last-child) {
     margin-right: ${spacing.tiny};
