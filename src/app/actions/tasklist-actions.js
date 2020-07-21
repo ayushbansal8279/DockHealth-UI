@@ -253,14 +253,20 @@ export function deleteTaskListById(taskListIdentifier) {
       });
 }
 
-export function removeUserFromTaskList(taskListIdentifier, removedUserId) {
+export function removeUserFromTaskList(
+  taskListIdentifier,
+  removedUserIdentifier,
+) {
   return dispatch =>
-    TaskListApi.removeUserFromTaskList(taskListIdentifier, removedUserId)
+    TaskListApi.removeUserFromTaskList(
+      taskListIdentifier,
+      removedUserIdentifier,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
           response,
-          removedUserId,
+          removedUserIdentifier,
         });
         dispatch(AlertActions.showGlobalAlert('User removed successfully'));
       })
@@ -275,14 +281,20 @@ export function removeUserFromTaskList(taskListIdentifier, removedUserId) {
       });
 }
 
-export function cancelInviteToTaskList(taskListIdentifier, email) {
+export function cancelInviteToTaskList(
+  taskListIdentifier,
+  cancelledUserIdentifier,
+) {
   return dispatch =>
-    TaskListApi.cancelInviteToTaskList(taskListIdentifier, email)
+    TaskListApi.cancelInviteToTaskList(
+      taskListIdentifier,
+      cancelledUserIdentifier,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS,
           response,
-          removedUserEmail: email,
+          removedUserIdentifier: cancelledUserIdentifier,
         });
         dispatch(
           AlertActions.showGlobalAlert('Invitation canceled successfully'),

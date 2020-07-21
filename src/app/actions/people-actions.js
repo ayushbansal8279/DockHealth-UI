@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import * as PeopleApi from 'api/people-api';
-import * as ActionTypes from './action-types';
 import * as AlertActions from 'alert/actions';
+import * as ActionTypes from './action-types';
 
 export function findAllUsersByOrganizationId() {
   return dispatch =>
@@ -49,14 +49,12 @@ export function invitePersonToOrganization(formProps) {
       });
 }
 
-export function resendInviteToOrganization(email) {
-  const personInfo = { email, organizationIdentifier: '1' };
-
+export function resendInviteToOrganization(userIdentifier) {
   return dispatch =>
-    PeopleApi.resendInviteToOrganization(personInfo)
+    PeopleApi.resendInviteToOrganization(userIdentifier)
       .then(response => {
         dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, response });
-        dispatch(AlertActions.showGlobalAlert('Invitation resent!'))
+        dispatch(AlertActions.showGlobalAlert('Invitation resent!'));
       })
       .catch(error => {
         throw error;
@@ -74,9 +72,9 @@ export function changeUserRoleForOrg(markedUserIdentifier, role) {
       });
 }
 
-export function cancelInviteToOrganization(markedUserEmail) {
+export function cancelInviteToOrganization(markedUserIdentifier) {
   return dispatch =>
-    PeopleApi.cancelInviteToOrganization(markedUserEmail)
+    PeopleApi.cancelInviteToOrganization(markedUserIdentifier)
       .then(response => {
         dispatch({
           type: ActionTypes.CANCEL_USER_ORG_INVITE_SUCCESS,

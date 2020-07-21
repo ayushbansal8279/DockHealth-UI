@@ -160,7 +160,7 @@ export function removeUserFromTaskList(
 ) {
   return axios
     .delete(
-      `user/removeUserFromTaskList/${taskListIdentifier}?removedUserId=${removedUserIdentifier}`,
+      `user/removeUserFromTaskList/${taskListIdentifier}?userIdentifier=${removedUserIdentifier}`,
     )
     .then(response => response?.data)
     .catch(error => {
@@ -168,12 +168,13 @@ export function removeUserFromTaskList(
     });
 }
 
-export function cancelInviteToTaskList(taskListIdentifier, email) {
+export function cancelInviteToTaskList(
+  taskListIdentifier,
+  cancelledUserIdentifier,
+) {
   return axios
     .put(
-      `list/cancelInviteToTaskList/${taskListIdentifier}?markedUserEmail=${encodeURIComponent(
-        email,
-      )}`,
+      `list/cancelInviteToTaskList/${taskListIdentifier}?userIdentifier=${cancelledUserIdentifier}`,
     )
     .then(response => response?.data)
     .catch(error => {

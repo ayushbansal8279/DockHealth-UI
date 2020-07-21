@@ -105,7 +105,7 @@ const renderUserTypesOptions = ({
 };
 
 const renderInvitations = ({
-  email,
+  userIdentifier,
   closePopover,
   resendInvite,
   cancelInvite,
@@ -121,7 +121,7 @@ const renderInvitations = ({
       description:
         'Resend invite to this user to remind them to create an account',
       onClick: () => {
-        resendInvite({ email })
+        resendInvite({ userIdentifier })
           .then(() => {
             showToast({
               status: 'success',
@@ -152,7 +152,7 @@ const renderInvitations = ({
       description:
         'Cancel this invitation and remove this person from the user list',
       onClick: () => {
-        cancelInvite({ email })
+        cancelInvite({ userIdentifier })
           .then(() => {
             showToast({
               status: 'success',
@@ -229,12 +229,14 @@ const MemberTypeLabel = ({
   );
 
   const resendInvite = useCallback(
-    ({ email: userEmail }) => resendInviteToOrganization(userEmail)(dispatch),
+    ({ userIdentifier: memberUserIdentifier }) =>
+      resendInviteToOrganization(memberUserIdentifier)(dispatch),
     [dispatch],
   );
 
   const cancelInvite = useCallback(
-    ({ email: userEmail }) => cancelInviteToOrganization(userEmail)(dispatch),
+    ({ userIdentifier: memberUserIdentifier }) =>
+      cancelInviteToOrganization(memberUserIdentifier)(dispatch),
     [dispatch],
   );
 

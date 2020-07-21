@@ -80,7 +80,7 @@ const getMemberItemPopoverData = ({
       },
       topButtonLabel: 'Resend invitation',
       bottomButtonOnClick: () => {
-        cancelInviteToTaskList(taskListIdentifier, member?.email);
+        cancelInviteToTaskList(taskListIdentifier, member?.userIdentifier);
         closeItemPopover();
       },
       bottomButtonLabel: 'Cancel invitation',
@@ -219,7 +219,7 @@ const MemberItemElement = ({
       inviteUserToTaskList(taskListIdentifier, member);
     } else {
       if (invitationPending) {
-        cancelInviteToTaskList(taskListIdentifier, member?.email);
+        cancelInviteToTaskList(taskListIdentifier, member?.userIdentifier);
       } else {
         removeUserFromTaskList(taskListIdentifier, member.userIdentifier);
       }
