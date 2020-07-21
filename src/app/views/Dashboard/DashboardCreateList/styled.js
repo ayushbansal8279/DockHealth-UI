@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
-import { Button } from '@material-ui/core';
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -24,8 +23,9 @@ export const TextWrapper = styled.div`
 `;
 
 export const Title = styled.h3`
-  font-size: ${fontSizes.largePlus};
   margin-bottom: ${spacing.largePlus};
+  font-size: ${fontSizes.largePlus};
+  line-height: 1.5;
 `;
 
 export const Description = styled.p`
@@ -36,18 +36,4 @@ export const Description = styled.p`
 export const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-export const CreateListButton = styled(Button)`
-  && {
-    min-width: 245px;
-  }
-`;
-
-export const TourButton = styled(Button)`
-  && {
-    min-width: 245px;
-    text-transform: uppercase;
-    text-decoration: underline;
-  }
 `;

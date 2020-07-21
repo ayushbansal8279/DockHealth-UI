@@ -52,6 +52,7 @@ const DashboardView = ({
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
 
   const createListView = !hasExistingLists || hasOnlyInvitedLists;
+
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
 
   const openTourModal = () => {
@@ -146,8 +147,10 @@ const DashboardView = ({
             {createListView ? (
               <DashboardCreateListWrapper>
                 <DashboardCreateList
+                  hasInvitedLists={hasOnlyInvitedLists}
                   onCreateList={handleCreateList}
                   onTakeATour={() => {}}
+                  list={lists.find(list => list.listType !== 'INBOX')}
                 />
               </DashboardCreateListWrapper>
             ) : (
