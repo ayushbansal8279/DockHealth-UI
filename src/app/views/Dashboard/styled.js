@@ -67,7 +67,7 @@ export const MenuButton = styled.button`
   cursor: pointer;
 `;
 
-export const DashboardCreateListWrapper = styled.div`
+export const DashboardFirstVisitViewWrapper = styled.div`
   display: flex;
   flex: 1;
   justify-content: center;

@@ -12,7 +12,7 @@ import {
   ButtonsContainer,
 } from './styled';
 
-const DashboardCreateList = ({
+const DashboardFirstVisitView = ({
   hasInvitedLists,
   onCreateList,
   onTakeATour,
@@ -70,4 +70,4 @@ const DashboardCreateList = ({
   );
 };
 
-export default DashboardCreateList;
+export default DashboardFirstVisitView;

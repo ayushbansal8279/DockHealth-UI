@@ -17,7 +17,7 @@ import { openModal as openModalAction } from 'modal/actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
-import DashboardCreateList from './DashboardCreateList/DashboardCreateList';
+import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
 import {
   DashboardViewWrapper,
   DashboardSidebarWrapper,
@@ -26,7 +26,7 @@ import {
   DashboardTourBackground,
   DashboardHeaderContainer,
   MenuButton,
-  DashboardCreateListWrapper,
+  DashboardFirstVisitViewWrapper,
 } from './styled';
 import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
@@ -145,14 +145,14 @@ const DashboardView = ({
             </DashboardHeaderContainer>
             <Spacing vertical={3} />
             {createListView ? (
-              <DashboardCreateListWrapper>
-                <DashboardCreateList
+              <DashboardFirstVisitViewWrapper>
+                <DashboardFirstVisitView
                   hasInvitedLists={hasOnlyInvitedLists}
                   onCreateList={handleCreateList}
                   onTakeATour={() => {}}
                   list={lists.find(list => list.listType !== 'INBOX')}
                 />
-              </DashboardCreateListWrapper>
+              </DashboardFirstVisitViewWrapper>
             ) : (
               <DashboardList
                 currentUser={currentUser}
