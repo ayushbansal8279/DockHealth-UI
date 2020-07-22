@@ -259,7 +259,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.email !== action.removedUserEmail,
+          member => member.userIdentifier !== action.removedUserIdentifier,
         ),
       };
 
