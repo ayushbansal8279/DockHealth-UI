@@ -43,12 +43,12 @@ const FilterButton = ({
     variant="text"
     onClick={() => openPopover(!isOpen)}
     size="small"
-    isFilterApplied={isFilterApplied}
+    filtered={isFilterApplied ? 'true' : 'false'}
   >
     <FilterButtonLabel
       variant="body1"
       component="span"
-      isFilterApplied={isFilterApplied}
+      filtered={isFilterApplied ? 'true' : 'false'}
     >
       FILTER {isFilterApplied ? `(${Object.keys(selectedFilters).length})` : ''}
     </FilterButtonLabel>

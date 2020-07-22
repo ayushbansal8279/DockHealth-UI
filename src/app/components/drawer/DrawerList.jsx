@@ -81,7 +81,7 @@ const Item = ({
     >
       <StyledListItemIcon
         active={childOrSelfActive}
-        isIconFilled={isIconFilled}
+        isiconfilled={isIconFilled}
       >
         <Icon color="inherit" />
         <ActiveIconRim active={childOrSelfActive} />

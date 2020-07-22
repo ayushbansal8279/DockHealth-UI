@@ -111,8 +111,8 @@ export const StyledListItemIcon = styled(ListItemIcon)`
     width: 29px;
 
     & svg {
-      ${({ isIconFilled, active }) =>
-        isIconFilled
+      ${({ isiconfilled, active }) =>
+        isiconfilled
           ? `fill: ${active ? '#ec4f3e' : '#c1ccda'};`
           : `stroke: ${active ? '#ec4f3e' : '#c1ccda'};`}
     }

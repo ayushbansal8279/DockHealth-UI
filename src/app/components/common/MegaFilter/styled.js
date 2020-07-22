@@ -18,12 +18,12 @@ export const MegaFilterPopover = withStyles({
 export const FilterButtonWrapper = styled(Button)`
   && {
     background-color: ${props =>
-      props.isFilterApplied ? palette.blueOcean : 'transparent'};
+      props.filtered === 'true' ? palette.blueOcean : 'transparent'};
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
     :hover {
       background-color: ${props =>
-        props.isFilterApplied ? palette.blueOcean : 'transparent'};
+        props.filtered === 'true' ? palette.blueOcean : 'transparent'};
     }
   }
 `;
@@ -31,9 +31,10 @@ export const FilterButtonWrapper = styled(Button)`
 export const FilterButtonLabel = withStyles({
   root: {
     fontFamily: 'Montserrat, sans-serif',
-    color: props => (props.isFilterApplied ? palette.white : palette.coolGrey1),
+    color: props =>
+      props.filtered === 'true' ? palette.white : palette.coolGrey1,
     fontWeight: props =>
-      props.isFilterApplied ? fontWeights.bold : fontWeights.regular,
+      props.filtered === 'true' ? fontWeights.bold : fontWeights.regular,
     display: 'inline-block',
     marginRight: spacing.tiny,
   },

@@ -388,7 +388,7 @@ const TaskItem = ({
         </StandardTaskItemCell>
         <StandardTaskItemCell width="200px">
           <Grid container>
-            <GridImg item xs={3} isMatching={matchComments}>
+            <GridImg item xs={3} matched={matchComments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -453,7 +453,7 @@ const TaskItem = ({
                 )}
               </PopoverDatepicker>
             </GridImg>
-            <GridImg item xs={3} isMatching={matchLabels}>
+            <GridImg item xs={3} matched={matchLabels}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -476,7 +476,7 @@ const TaskItem = ({
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3} isMatching={matchAttachments}>
+            <GridImg item xs={3} matched={matchAttachments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -509,7 +509,7 @@ const TaskItem = ({
           >
             {assignedTo ? (
               <>
-                <AssigneeMatchingWrapper isMatching={matchAssignedTo} />
+                <AssigneeMatchingWrapper matched={matchAssignedTo} />
                 <Member member={assignedTo} size={34} />
               </>
             ) : (

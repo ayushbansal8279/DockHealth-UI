@@ -22,7 +22,9 @@ export const ClearButton = styled.div`
 
 export const StyledTextField = styled(TextField)`
   && {
-    ${props => !props.noBackground && `background-color: ${palette.white};`}
+    ${props =>
+      props.transparentbackground === 'false' &&
+      `background-color: ${palette.white};`}
     border-radius: 0.25rem;
     color: ${palette.coolGrey1};
     height: 2.5rem;

@@ -87,7 +87,7 @@ export const DescriptionBox = styled.div`
 `;
 
 export const DueDate = styled.span`
-  bottom: 1;
+  bottom: 1px;
   color: ${palette.white};
   font-size: ${fontSizes.small};
   position: absolute;
@@ -103,8 +103,8 @@ export const GridImg = styled(Grid)`
   align-items: center;
   display: flex;
   justify-content: center;
-  ${({ isMatching }) =>
-    isMatching && `background: ${featurePalette.globalSearchHighlight};`}
+  ${({ matched }) =>
+    matched && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
 export const SmallText = styled.span`
@@ -316,8 +316,8 @@ export const Arrow = styled.img`
 export const MatchingWrapper = styled.div`
   height: 100%;
   width: 100%;
-  ${({ isMatching }) =>
-    isMatching && `background: ${featurePalette.globalSearchHighlight};`}
+  ${({ matched }) =>
+    matched && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
 export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
