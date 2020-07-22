@@ -1,13 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { take } from 'ramda';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffectOnce } from 'react-use';
 import { findAllUsersByOrganizationId } from 'actions/people-actions';
-
-const MAX_VISIBLE_MEMBERS_COUNT = 5;
 
 const getFormWatchedValues = ({ watch }) => ({
   listNameValue: watch('listName') ?? '',
@@ -88,8 +85,8 @@ const initializeAddListFormHooks = () => {
     listDescriptionValue,
   } = getFormWatchedValues({ watch });
 
-  const adminsValue = take(MAX_VISIBLE_MEMBERS_COUNT, allAdminsValue);
-  const membersValue = take(MAX_VISIBLE_MEMBERS_COUNT, allMembersValue);
+  const adminsValue = allAdminsValue;
+  const membersValue = allMembersValue;
 
   const formLabelContent = taskListIdentifier ? 'EDIT A LIST' : 'ADD A LIST';
 
