@@ -93,10 +93,12 @@ export const DueDate = styled.span`
   position: absolute;
   text-align: center;
   width: 100%;
+  line-height: initial;
 `;
 
 export const DueDateContainer = styled.div`
   position: relative;
+  width: fit-content;
 `;
 
 export const GridImg = styled(Grid)`
@@ -228,30 +230,11 @@ export const SlimTaskItemContainer = styled.div`
   }
 `;
 
-export const SlimTaskItemRow = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
-`;
-
 export const SlimTaskItemDescription = styled.div`
   cursor: pointer;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  min-width: 350px;
-  width: 350px;
-
-  @media (min-width: 1025px) {
-    min-width: 450px;
-    width: 450px;
-  }
-
-  @media (min-width: 1153px) {
-    width: 450px;
-    min-width: 450px;
-  }
 
   & > div {
     overflow-wrap: break-word;
@@ -268,30 +251,15 @@ export const SlimTaskItemParentTaskLabel = styled.div`
   }
 `;
 
-export const SlimTaskItemRightSide = styled.div`
-  display: flex;
-  width: 180px;
-  max-width: 200px;
-  margin-left: 30px;
-
-  @media (min-width: 1025px) {
-    width: 220px;
-    max-width: 230px;
-    margin-left: 25px;
-  }
-
-  @media (min-width: 1153px) {
-    width: 280px;
-    max-width: 280px;
-    margin-left: 25px;
-  }
-`;
-
 export const SlimTaskItemListLink = styled(Link)`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   margin-right: ${props => props.withMargin && spacing.large};
-  width: 150px;
+`;
+
+export const OverdueContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export const OverdueBar = styled.div`
@@ -303,6 +271,7 @@ export const OverdueBar = styled.div`
   font-size: ${fontSizes.regular};
   color: white;
   height: fit-content;
+  width: fit-content;
 `;
 
 export const Arrow = styled.img`

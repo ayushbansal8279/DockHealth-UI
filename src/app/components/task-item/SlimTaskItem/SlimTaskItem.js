@@ -1,23 +1,26 @@
 import React from 'react';
 import moment from 'moment';
+import { Grid } from '@material-ui/core';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 
+import { getCalendarIcon } from '../icons';
 import {
   CircleIcon,
   OverdueBar,
+  OverdueContainer,
   SlimTaskItemContainer,
-  SlimTaskItemRow,
   SlimTaskItemDescription,
   SlimTaskItemParentTaskLabel,
-  SlimTaskItemRightSide,
   SlimTaskItemListLink,
   PrioritySwitch,
   ThreeDots,
   CompletedBy,
+  DueDate,
+  DueDateContainer,
 } from '../styled';
 
 const SlimTaskItem = ({
@@ -82,44 +85,55 @@ const SlimTaskItem = ({
         onClick={toggleTaskComplete}
         isClickable
       />
-      <SlimTaskItemRow>
-        <SlimTaskItemDescription>
-          <div
-            onClick={() => {
-              openDrawer();
-              storeAsCurrentTask(task, 'home');
-            }}
-          >
-            {formattedTaskDescription}
-          </div>
-          <CompletedBy isCompleted={isCompleted}>
-            <span>{`Completed by ${completedByName} ${completedDt &&
-              ` on ${
-                completedDt
-                  ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                  : ''
-              }`}
+      <Grid container justify="space-between" alignItems="center">
+        <Grid item sm={6} md={7} lg={8}>
+          <SlimTaskItemDescription>
+            <div
+              onClick={() => {
+                openDrawer();
+                storeAsCurrentTask(task, 'home');
+              }}
+            >
+              {formattedTaskDescription}
+            </div>
+            <CompletedBy isCompleted={isCompleted}>
+              <span>{`Completed by ${completedByName} ${completedDt &&
+                ` on ${
+                  completedDt
+                    ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                    : ''
+                }`}
                 `}</span>
-          </CompletedBy>
-          {parentTask && (
-            <SlimTaskItemParentTaskLabel>
-              Subtask of{' '}
-              <span
-                onClick={() => {
-                  storeAsCurrentTask(parentTask);
-                  redirectToParentTask(
-                    parentTask?.taskList?.taskListIdentifier,
-                    parentTask?.taskIdentifier,
-                    parentTask?.status,
-                  );
-                }}
-              >
-                {parentTask.description}
-              </span>
-            </SlimTaskItemParentTaskLabel>
-          )}
-        </SlimTaskItemDescription>
-        <SlimTaskItemRightSide>
+            </CompletedBy>
+            {parentTask && (
+              <SlimTaskItemParentTaskLabel>
+                Subtask of{' '}
+                <span
+                  onClick={() => {
+                    storeAsCurrentTask(parentTask);
+                    redirectToParentTask(
+                      parentTask?.taskList?.taskListIdentifier,
+                      parentTask?.taskIdentifier,
+                      parentTask?.status,
+                    );
+                  }}
+                >
+                  {parentTask.description}
+                </span>
+              </SlimTaskItemParentTaskLabel>
+            )}
+          </SlimTaskItemDescription>
+        </Grid>
+        <Grid item sm={1} md={1} lg={1}>
+          <DueDateContainer>
+            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+            <img
+              alt="due-date"
+              src={getCalendarIcon(dueDate, true, isOverdueTask)}
+            />
+          </DueDateContainer>
+        </Grid>
+        <Grid item sm={3} md={3} lg={2}>
           {taskList && (
             <SlimTaskItemListLink
               to={`tasks/${taskList?.taskListIdentifier}`}
@@ -134,9 +148,15 @@ const SlimTaskItem = ({
               </UniversalTooltipContainer>
             </SlimTaskItemListLink>
           )}
-          {isOverdueTask && <OverdueBar>Overdue</OverdueBar>}
-        </SlimTaskItemRightSide>
-      </SlimTaskItemRow>
+        </Grid>
+        <Grid item sm={2} md={1} lg={1}>
+          {isOverdueTask && (
+            <OverdueContainer>
+              <OverdueBar>Overdue</OverdueBar>
+            </OverdueContainer>
+          )}
+        </Grid>
+      </Grid>
     </SlimTaskItemContainer>
   );
 };
