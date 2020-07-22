@@ -113,7 +113,10 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
     <Grid item sm={12} container wrap="nowrap" justify="flex-end">
       <H3>
         <span>By selecting Subscribe I agree to the </span>
-        <Anchor href="https://www.dock.health/terms-conditions" target="_blank">
+        <Anchor
+          href="https://www.dock.health/end-user-license-agreement"
+          target="_blank"
+        >
           Terms and Conditions
         </Anchor>
       </H3>
