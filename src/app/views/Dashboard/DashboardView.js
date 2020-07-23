@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useMount } from 'react-use';
-import { isNil, isEmpty } from 'ramda';
+import { isEmpty } from 'ramda';
 import Confetti from 'react-confetti';
 import MenuIcon from 'img/menu-icon';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
@@ -11,9 +11,7 @@ import * as TemplateActions from 'actions/template-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskListSagaActions from 'sagas/tasklist-saga';
 import * as UserApi from 'api/user-api';
-import localStorageHelper from 'helpers/local-storage-helper';
 import Spacing from 'components/common/Spacing';
-import Tour from 'components/tour-wizard/Tour/Tour';
 import { openModal as openModalAction } from 'modal/actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
@@ -23,18 +21,13 @@ import {
   DashboardViewWrapper,
   DashboardSidebarWrapper,
   DashboardContentWrapper,
-  DashboardTourWrapper,
-  DashboardTourBackground,
   DashboardHeaderContainer,
   MenuButton,
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
 } from './styled';
-import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
-
-const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
-const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
+import existingUserTourHooks from './existing-user-tour-hooks';
 
 const DashboardView = ({
   isTaskDrawerOpen,
@@ -47,7 +40,6 @@ const DashboardView = ({
   fetchTasklistForUser,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [openedTour, setOpenendTour] = useState(null);
   const [
     isFirstUserListCreationSuccess,
     setIsFirstUserListCreationSuccess,
@@ -57,37 +49,10 @@ const DashboardView = ({
   const { usageState } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
 
-  const createListView = !hasExistingLists || hasOnlyInvitedLists;
+  const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
   const firstUserList = lists?.find(list => list.listType !== 'INBOX');
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
-
-  const openTourModal = () => {
-    const dashboardFirstTimeValue = localStorageHelper.getItem(
-      DASHBOARD_FIRST_TIME_KEY,
-    );
-    if (isNil(dashboardFirstTimeValue) || dashboardFirstTimeValue) {
-      setOpenendTour(1);
-    } else {
-      const dashboardSecondTimeValue = localStorageHelper.getItem(
-        DASHBOARD_SECOND_TIME_KEY,
-      );
-
-      if (isNil(dashboardSecondTimeValue) || dashboardSecondTimeValue) {
-        setOpenendTour(2);
-      }
-    }
-  };
-
-  const closeFirstTour = () => {
-    setOpenendTour(null);
-    localStorageHelper.setItem(DASHBOARD_FIRST_TIME_KEY, false);
-  };
-
-  const closeSecondTour = () => {
-    setOpenendTour(null);
-    localStorageHelper.setItem(DASHBOARD_SECOND_TIME_KEY, false);
-  };
 
   const refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
@@ -126,11 +91,12 @@ const DashboardView = ({
     });
   };
 
-  useEffect(() => {
-    if (!isLoadingDashboard && currentUserLoaded && !createListView)
-      openTourModal();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingDashboard, createListView, currentUserLoaded]);
+  const { renderExistingUserTour } = existingUserTourHooks({
+    isLoadingDashboard,
+    createListViewVisible,
+    currentUserLoaded,
+    lists,
+  });
 
   return (
     <DashboardViewWrapper>
@@ -151,7 +117,7 @@ const DashboardView = ({
             </DashboardSidebarWrapper>
           )}
           <DashboardContentWrapper
-            fullWidth={createListView}
+            fullWidth={createListViewVisible}
             hasRightPadding={shouldHideSidebar}
           >
             {hasExistingLists && isFirstUserListCreationSuccess && (
@@ -166,13 +132,13 @@ const DashboardView = ({
                 )}
                 <DashboardHeader
                   isUserFirstTime={
-                    createListView || isFirstUserListCreationSuccess
+                    createListViewVisible || isFirstUserListCreationSuccess
                   }
                   currentUser={currentUser}
                 />
               </DashboardHeaderContainer>
               <Spacing vertical={3} />
-              {createListView ? (
+              {createListViewVisible ? (
                 <DashboardFirstVisitViewWrapper>
                   <DashboardFirstVisitView
                     hasInvitedLists={hasOnlyInvitedLists}
@@ -194,25 +160,7 @@ const DashboardView = ({
               )}
             </DashboardScrollableList>
           </DashboardContentWrapper>
-          {openedTour && (
-            <>
-              <DashboardTourWrapper>
-                {openedTour === 1 && (
-                  <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
-                )}
-                {openedTour === 2 && (
-                  <Tour
-                    darkTheme
-                    steps={SECOND_TOUR_STEPS}
-                    onClose={closeSecondTour}
-                  />
-                )}
-              </DashboardTourWrapper>
-              <DashboardTourBackground
-                onClick={openedTour === 1 ? closeFirstTour : closeSecondTour}
-              />
-            </>
-          )}
+          {renderExistingUserTour()}
         </>
       </ViewLoader>
     </DashboardViewWrapper>
