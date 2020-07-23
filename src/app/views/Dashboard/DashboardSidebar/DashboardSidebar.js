@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, hashHistory } from 'react-router';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
@@ -136,6 +136,10 @@ const DashboardSidebar = ({
           description="Lists will appear in this section of the page and will have a blue dot next to the number if there’s new actiity since the last time you logged in."
           buttonText="Add a task to this list"
           onButtonClick={() => {
+            closeListCreationSuccessMessage();
+            hashHistory.push(
+              `task-tour/${firstListElement?.taskListIdentifier}`,
+            );
             // navigate to task tour
           }}
           onClose={closeListCreationSuccessMessage}

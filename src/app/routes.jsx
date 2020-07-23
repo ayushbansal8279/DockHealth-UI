@@ -37,11 +37,12 @@ import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
   clearFiltersForMegaFilter,
-} from './actions/mega-filter-actions';
-import sendEvent from './api/usage-api';
-import PatientsView from './components/patients/PatientsView';
-import handleFeatureToggle from './helpers/handle-feature-toggle';
-import App from './views/App';
+} from 'actions/mega-filter-actions';
+import sendEvent from 'api/usage-api';
+import PatientsView from 'components/patients/PatientsView';
+import handleFeatureToggle from 'helpers/handle-feature-toggle';
+import TaskTourView from 'views/TaskTour/TaskTourView';
+import App from 'views/App';
 import ChangePhoneNumber from './views/auth/ChangePhoneNumber';
 import ConfirmMFACode from './views/auth/ConfirmMfaCode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
@@ -426,6 +427,10 @@ export const Routes = ({ store }) => {
             onChange={preselectTask}
             onEnter={checkFeatureToggles}
           /> */}
+          <Route
+            path="task-tour/:taskListIdentifier"
+            component={TaskTourView}
+          />
           <Route path="/tasks">
             <IndexRoute
               component={TaskListView}

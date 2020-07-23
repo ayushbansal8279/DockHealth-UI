@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import Tour from 'components/tour-wizard/Tour/Tour';
-import { setHeader as setHeaderRaw } from 'actions/header-actions';
+import { setHeader } from 'actions/header-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
@@ -29,6 +29,7 @@ import {
   selectedFiltersInMegaFilterSelector,
   availableFiltersInInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
+import Header from 'components/taskView/Header';
 
 import pusherInstance from 'helpers/pusher-instance';
 import { ListTourWrapper, ListTourBackground } from './ListDetailsView.Styled';
@@ -42,21 +43,11 @@ class Home extends Component {
 
   async componentDidMount() {
     const {
-      currentUser,
       routeParams,
       taskListActions,
       patientActions,
-      setHeader,
+      currentUser,
     } = this.props;
-
-    setHeader({
-      layout: [
-        {
-          key: 'generic-header',
-          component: null,
-        },
-      ],
-    });
 
     if (routeParams.taskListIdentifier) {
       taskListActions.getMembersByTaskListId(
@@ -82,7 +73,18 @@ class Home extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    const { actions, routeParams, currentUser } = this.props;
+    const { actions, routeParams, taskLists, currentUser } = this.props;
+
+    if (
+      taskLists !== nextProps.taskLists ||
+      nextProps.routeParams.taskListIdentifier !==
+        routeParams.taskListIdentifier
+    ) {
+      this.setViewHeader(
+        nextProps.routeParams.taskListIdentifier,
+        nextProps.taskLists,
+      );
+    }
 
     if (
       nextProps.routeParams.taskListIdentifier ===
@@ -210,6 +212,37 @@ class Home extends Component {
         actions.refreshTask(data.task);
       }
     });
+  };
+
+  setViewHeader = (taskListIdentifier, taskLists) => {
+    const { setHeaderAction } = this.props;
+
+    const loadedTasklist =
+      taskLists?.length > 0
+        ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
+        : {};
+
+    const headerComponent = (
+      <Header
+        isFetching={false}
+        title={loadedTasklist.listName}
+        taskList={loadedTasklist}
+        resetHeader={this.setViewHeader}
+        hasTitle={loadedTasklist.listName}
+      />
+    );
+
+    if (loadedTasklist.listName) {
+      setHeaderAction({
+        layout: [
+          {
+            key: 'header',
+            component: headerComponent,
+            xs: 12,
+          },
+        ],
+      });
+    }
   };
 
   openTourModal = () => {
@@ -533,7 +566,6 @@ class Home extends Component {
       taskList: loadedTasklist || undefined,
       routeParams,
       hasFiltersApplied: !isEmpty(selectedFilters),
-      title: loadedTasklist?.listName,
       isMainListView: true,
       listUniqueKey: taskListIdentifier,
       pdfTitle: `${loadedTasklist?.listName}`,
@@ -571,7 +603,7 @@ const mapDispatchToProps = dispatch => ({
   tasksGroupsListActions: bindActionCreators(TasksGroupsListActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
-  setHeader: setHeaderRaw(dispatch),
+  setHeaderAction: setHeader(dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });
