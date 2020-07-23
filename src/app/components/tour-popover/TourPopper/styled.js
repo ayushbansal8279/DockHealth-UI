@@ -4,7 +4,7 @@ import spacing from 'styles/spacing';
 
 export const PopperTopArrow = styled.div`
   position: absolute;
-  top: -10px;
+  top: -2px;
   width: 20px;
   height: 22px;
   border-bottom: 22px solid ${palette.darkBlue};
@@ -14,12 +14,12 @@ export const PopperTopArrow = styled.div`
 
 export const PopperBottomArrow = styled(PopperTopArrow)`
   top: auto;
-  bottom: -10px;
+  bottom: -2px;
   transform: rotate(-180deg);
 `;
 
 export const PopperWrapper = styled.div`
-  margin: ${spacing.small} 0;
+  margin: ${spacing.regular} 0;
   background: ${palette.darkBlue};
   border-radius: 5px;
 `;

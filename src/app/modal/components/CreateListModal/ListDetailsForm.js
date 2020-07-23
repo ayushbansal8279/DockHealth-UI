@@ -16,6 +16,7 @@ const onSubmit = ({
   closeModal,
   isSavingList,
   setIsSavingList,
+  onListCreationSuccess,
 }) => data => {
   const taskList = { ...data };
   event.preventDefault();
@@ -30,6 +31,7 @@ const onSubmit = ({
         nextStep();
         dispatch(TaskListActions.setTaskListAsCurrentList(updatedList));
         setIsSavingList(false);
+        onListCreationSuccess();
       }
     })
     .catch(error => {
@@ -43,7 +45,7 @@ const onSubmit = ({
     });
 };
 
-const ListDetailsForm = ({ closeModal, nextStep }) => {
+const ListDetailsForm = ({ closeModal, onListCreationSuccess, nextStep }) => {
   const [isSavingList, setIsSavingList] = useState(false);
   const {
     register,
@@ -66,6 +68,7 @@ const ListDetailsForm = ({ closeModal, nextStep }) => {
             closeModal,
             isSavingList,
             setIsSavingList,
+            onListCreationSuccess,
           }),
         )(event)
       }

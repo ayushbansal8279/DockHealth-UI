@@ -46,12 +46,17 @@ const DashboardView = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
+  const [
+    isFirstUserListCreationSuccess,
+    setIsFirstUserListCreationSuccess,
+  ] = useState(false);
 
   const currentUserLoaded = currentUser && !isEmpty(currentUser);
   const { usageState } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
 
   const createListView = !hasExistingLists || hasOnlyInvitedLists;
+  const firstUserList = lists?.find(list => list.listType !== 'INBOX');
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
 
@@ -110,8 +115,11 @@ const DashboardView = ({
     openModal('CreateList', {
       test: 'test',
       onClose: () => {
-        UserApi.getUserByEmail(currentUser.email, currentUser);
         fetchTasklistForUser();
+        UserApi.getUserByEmail(currentUser.email, currentUser);
+      },
+      onListCreationSuccess: () => {
+        setIsFirstUserListCreationSuccess(true);
       },
     });
   };
@@ -128,7 +136,13 @@ const DashboardView = ({
         <>
           {hasExistingLists && (
             <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
-              <DashboardSidebar lists={lists} showNavbar={showNavbar} />
+              <DashboardSidebar
+                shouldDisplayFirstListCreationMessage={
+                  isFirstUserListCreationSuccess
+                }
+                lists={lists}
+                showNavbar={showNavbar}
+              />
             </DashboardSidebarWrapper>
           )}
           <DashboardContentWrapper
@@ -142,7 +156,9 @@ const DashboardView = ({
                 </MenuButton>
               )}
               <DashboardHeader
-                isUserFirstTime={createListView}
+                isUserFirstTime={
+                  createListView || isFirstUserListCreationSuccess
+                }
                 currentUser={currentUser}
               />
             </DashboardHeaderContainer>
@@ -158,7 +174,7 @@ const DashboardView = ({
                       url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
                     })
                   }
-                  list={lists?.find(list => list.listType !== 'INBOX')}
+                  list={firstUserList}
                 />
               </DashboardFirstVisitViewWrapper>
             ) : (

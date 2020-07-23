@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Popper } from '@material-ui/core';
 import { PopperTopArrow, PopperBottomArrow, PopperWrapper } from './styled';
 
-const TaskDrawerTourPopover = ({ children, anchorEl, position, open }) => {
+const TourPopper = ({ children, anchorEl, position, open }) => {
   const [arrowReference, setArrowReference] = useState(null);
 
   const isTopArrow = position.includes('bottom');
@@ -48,4 +48,4 @@ const TaskDrawerTourPopover = ({ children, anchorEl, position, open }) => {
   );
 };
 
-export default TaskDrawerTourPopover;
+export default TourPopper;

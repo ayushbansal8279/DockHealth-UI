@@ -1,8 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
+import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
+import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 import {
   TopSection,
   MenuButton,
@@ -21,9 +23,28 @@ import {
   RolloverPopoverLabel,
 } from './styled';
 
-const DashboardSidebar = ({ lists, showNavbar }) => {
+const DashboardSidebar = ({
+  lists,
+  showNavbar,
+  shouldDisplayFirstListCreationMessage,
+}) => {
+  const [
+    openedSuccessListCreationMessage,
+    setOpenedSuccessListCreationMessage,
+  ] = useState(false);
+  const [firstListElement, setFirstListElement] = useState(null);
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
+
+  useEffect(() => {
+    if (firstListElement && shouldDisplayFirstListCreationMessage) {
+      setOpenedSuccessListCreationMessage(true);
+    }
+  }, [
+    firstListElement,
+    shouldDisplayFirstListCreationMessage,
+    setOpenedSuccessListCreationMessage,
+  ]);
 
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
@@ -33,6 +54,10 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
       setPopoverLabel(listName);
     }
   };
+
+  const filteredList = shouldDisplayFirstListCreationMessage
+    ? lists?.filter(({ listType }) => listType !== 'INBOX')
+    : lists;
 
   return (
     <DashboardSidebarWrapper>
@@ -49,9 +74,10 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
           </ListsHeader>
         </Link>
         <ListItemsWrapper>
-          {lists?.map(
+          {filteredList?.map(
             ({
               listName,
+              listType,
               taskListIdentifier,
               numberOfUnreadTasks,
               isPrivate,
@@ -69,7 +95,21 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
                     onMouseEnter={event => handleMouseEnter(event, listName)}
                     onMouseLeave={() => setPopoverLabel(null)}
                   >
-                    <TitleText>{listName}</TitleText>
+                    <TitleText
+                      ref={element => {
+                        if (
+                          listType !== 'INBOX' &&
+                          firstListElement === null &&
+                          element
+                        )
+                          setFirstListElement({
+                            reference: element,
+                            taskListIdentifier,
+                          });
+                      }}
+                    >
+                      {listName}
+                    </TitleText>
                   </ListItemTitle>
                   <ListItemInfo>
                     {!!numberOfUnreadTasks && <InfoDot />}
@@ -96,6 +136,22 @@ const DashboardSidebar = ({ lists, showNavbar }) => {
       >
         <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
       </RolloverPopover>
+      <TourPopover
+        anchorEl={firstListElement?.reference}
+        position="bottom-start"
+        open={openedSuccessListCreationMessage}
+      >
+        <StandardTourContent
+          title="Congrats on adding your first list!"
+          description="Lists will appear in this section of the page and will have a blue dot next to the number if there’s new actiity since the last time you logged in."
+          buttonText="Add a task to this list"
+          onButtonClick={() => {
+            // navigate to task tour
+          }}
+          onClose={() => setOpenedSuccessListCreationMessage(false)}
+          width={526}
+        />
+      </TourPopover>
     </DashboardSidebarWrapper>
   );
 };

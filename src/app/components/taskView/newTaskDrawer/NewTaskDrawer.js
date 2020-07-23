@@ -9,6 +9,7 @@ import { isNil } from 'ramda';
 import { addPatient, getAllPatients } from 'actions/patient-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import TourPopper from 'components/tour-popover/TourPopper/TourPopper';
 import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
@@ -54,8 +55,7 @@ import {
   ContextRefreshTriggers,
   TaskDrawerFields,
 } from './NewTaskDrawer.Utilities';
-import TaskDrawerTourContent from './TaskDrawerTourContent/TaskDrawerTourContent';
-import TaskDrawerTourPopper from './TaskDrawerTourPopper/TaskDrawerTourPopper';
+import TaskDrawerTourContent from '../../tour-popover/content/TaskDrawerTourContent/TaskDrawerTourContent';
 
 const TASK_DRAWER_FIRST_TIME_KEY = 'TASK_DRAWER_FIRST_TIME_KEY';
 
@@ -597,7 +597,7 @@ const NewTaskDrawer = ({
         {/* Tour popper components */}
         {openedTourStep !== null &&
           tourSteps.map(({ reference, index, position }) => (
-            <TaskDrawerTourPopper
+            <TourPopper
               key={index}
               anchorEl={reference?.current}
               position={position}
@@ -609,7 +609,7 @@ const NewTaskDrawer = ({
                 setStep={setOpenedTourStep}
                 onClose={closeTour}
               />
-            </TaskDrawerTourPopper>
+            </TourPopper>
           ))}
       </TaskDrawerContainer>
       {taskDrawerOpen && !isAddingSubtask && (

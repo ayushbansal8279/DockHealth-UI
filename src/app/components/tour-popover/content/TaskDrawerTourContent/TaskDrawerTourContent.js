@@ -5,14 +5,14 @@ import {
   TourContent,
   Title,
   Description,
+  CloseIconButton,
+  CloseIcon,
   NavigationContainer,
   TourButton,
   DotNavigationButton,
   NavigationDotsContainer,
   Dot,
-  CloseIconButton,
-  CloseIcon,
-} from './styled';
+} from 'components/tour-popover/content/styled';
 
 const TaskDrawerTourContent = ({
   steps,

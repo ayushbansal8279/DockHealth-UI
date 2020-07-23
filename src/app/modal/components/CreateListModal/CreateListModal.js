@@ -10,7 +10,7 @@ const ModalSteps = {
   INVITE_PEOPLE: 1,
 };
 
-const CreateListModal = ({ closeModal }) => {
+const CreateListModal = ({ closeModal, onListCreationSuccess }) => {
   const [currentStep, setCurrentStep] = useState(ModalSteps.LIST_DETAILS);
   const currentList = useSelector(store => store.taskListState.currentList);
 
@@ -21,6 +21,7 @@ const CreateListModal = ({ closeModal }) => {
           <ListDetailsForm
             closeModal={closeModal}
             nextStep={() => setCurrentStep(ModalSteps.INVITE_PEOPLE)}
+            onListCreationSuccess={onListCreationSuccess}
           />
         );
 
@@ -30,7 +31,7 @@ const CreateListModal = ({ closeModal }) => {
       default:
         return <></>;
     }
-  }, [currentStep, closeModal]);
+  }, [currentStep, closeModal, onListCreationSuccess]);
 
   return (
     <CreateListModalWrapper>

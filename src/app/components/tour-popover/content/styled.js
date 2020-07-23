@@ -8,7 +8,7 @@ import { Close } from '@material-ui/icons';
 
 export const TourContent = styled.div`
   padding: 32px 24px;
-  width: 384px;
+  width: ${({ width }) => width ?? 384}px;
   color: ${palette.white};
 `;
 
@@ -27,8 +27,8 @@ export const Description = styled.p`
 export const CloseIconButton = withStyles({
   root: {
     position: 'absolute',
-    top: 16,
-    right: 8,
+    top: 20,
+    right: 4,
     display: 'block',
     color: palette.white,
   },
@@ -82,6 +82,7 @@ export const TourButton = styled.button`
   border: 2px solid ${palette.white};
   cursor: pointer;
   outline: none;
+  text-transform: uppercase;
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);

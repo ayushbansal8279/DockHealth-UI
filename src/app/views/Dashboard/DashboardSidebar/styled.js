@@ -73,6 +73,7 @@ export const ListItemTitle = styled.div`
 `;
 
 export const TitleText = styled.p`
+  display: inline;
   margin-bottom: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -112,3 +113,15 @@ export const RolloverPopoverLabel = styled.label`
   font-weight: ${fontWeights.regular};
   color: ${palette.brightBlue};
 `;
+
+// export const TourPopupWrapper = styled.div`
+//   padding: ${spacing.large} ${spacing.regularPlus};
+//   color: ${palette.white};
+// `;
+
+// export const TourPopupTitle = styled.h2`
+//   font-size: ${fontSizes.regularPlus};
+//   font-weight: ${fontWeights.}
+// `;
+
+// export const TourPopupDescription = styled.p``;
