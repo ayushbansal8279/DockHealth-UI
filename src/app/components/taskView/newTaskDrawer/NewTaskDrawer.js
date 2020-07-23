@@ -510,6 +510,7 @@ const NewTaskDrawer = ({
                     setAutoSaveVisible={setAutoSaveVisible}
                     setSelectedLabelsValue={setValue}
                     taskDrawerFocusField={taskDrawerFocusField}
+                    refreshList={refreshList}
                   />
                 </div>
               </Grid>

@@ -38,7 +38,7 @@ import DashboardHeader from '../DashboardHeader/DashboardHeader';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
   dashboardTasks.reduce((accumulator, currentValue) => {
-    const filteredTasks = currentValue.tasks.filter(({ description }) =>
+    const filteredTasks = currentValue.tasks?.filter(({ description }) =>
       description.toLowerCase().includes(searchValue.toLowerCase()),
     );
     if (filteredTasks?.length === 0) return accumulator;
