@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
@@ -27,24 +27,14 @@ const DashboardSidebar = ({
   lists,
   showNavbar,
   shouldDisplayFirstListCreationMessage,
+  closeListCreationSuccessMessage,
 }) => {
-  const [
-    openedSuccessListCreationMessage,
-    setOpenedSuccessListCreationMessage,
-  ] = useState(false);
   const [firstListElement, setFirstListElement] = useState(null);
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
 
-  useEffect(() => {
-    if (firstListElement && shouldDisplayFirstListCreationMessage) {
-      setOpenedSuccessListCreationMessage(true);
-    }
-  }, [
-    firstListElement,
-    shouldDisplayFirstListCreationMessage,
-    setOpenedSuccessListCreationMessage,
-  ]);
+  const isListPopoverOpen =
+    shouldDisplayFirstListCreationMessage && firstListElement;
 
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
@@ -139,7 +129,7 @@ const DashboardSidebar = ({
       <TourPopover
         anchorEl={firstListElement?.reference}
         position="bottom-start"
-        open={openedSuccessListCreationMessage}
+        open={isListPopoverOpen}
       >
         <StandardTourContent
           title="Congrats on adding your first list!"
@@ -148,7 +138,7 @@ const DashboardSidebar = ({
           onButtonClick={() => {
             // navigate to task tour
           }}
-          onClose={() => setOpenedSuccessListCreationMessage(false)}
+          onClose={closeListCreationSuccessMessage}
           width={526}
         />
       </TourPopover>

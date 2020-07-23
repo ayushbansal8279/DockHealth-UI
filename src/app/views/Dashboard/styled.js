@@ -23,6 +23,15 @@ export const DashboardSidebarWrapper = styled.div`
     width: ${({ isHidden }) => (isHidden ? 0 : 380)}px;
   }
 `;
+export const DashboardScrollableList = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100% - 24px);
+  margin-top: ${spacing.large};
+  overflow-x: hidden;
+  overflow-y: auto;
+`;
 
 export const DashboardContentWrapper = styled.div`
   position: relative;
@@ -30,12 +39,9 @@ export const DashboardContentWrapper = styled.div`
   flex-direction: column;
   flex: 1;
   ${({ fullWidth }) => !fullWidth && 'max-width: 1440px;'}
-  height: calc(100% - ${spacing.large});
+  height: 100%;
   padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
-  margin-top: ${spacing.large};
   transition: padding-right 0.3s ease-out;
-  overflow-x: hidden;
-  overflow-y: auto;
 `;
 
 export const DashboardTourBackground = styled.div`

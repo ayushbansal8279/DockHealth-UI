@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMount } from 'react-use';
 import { isNil, isEmpty } from 'ramda';
+import Confetti from 'react-confetti';
 import MenuIcon from 'img/menu-icon';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { listsSelector } from 'selectors/task-list-selectors';
@@ -27,6 +28,7 @@ import {
   DashboardHeaderContainer,
   MenuButton,
   DashboardFirstVisitViewWrapper,
+  DashboardScrollableList,
 } from './styled';
 import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
@@ -142,6 +144,9 @@ const DashboardView = ({
                 }
                 lists={lists}
                 showNavbar={showNavbar}
+                closeListCreationSuccessMessage={() =>
+                  setIsFirstUserListCreationSuccess(false)
+                }
               />
             </DashboardSidebarWrapper>
           )}
@@ -149,40 +154,45 @@ const DashboardView = ({
             fullWidth={createListView}
             hasRightPadding={shouldHideSidebar}
           >
-            <DashboardHeaderContainer>
-              {!hasExistingLists && (
-                <MenuButton onClick={showNavbar}>
-                  <img src={MenuIcon} alt="menu" />
-                </MenuButton>
-              )}
-              <DashboardHeader
-                isUserFirstTime={
-                  createListView || isFirstUserListCreationSuccess
-                }
-                currentUser={currentUser}
-              />
-            </DashboardHeaderContainer>
-            <Spacing vertical={3} />
-            {createListView ? (
-              <DashboardFirstVisitViewWrapper>
-                <DashboardFirstVisitView
-                  hasInvitedLists={hasOnlyInvitedLists}
-                  onCreateList={handleCreateList}
-                  onTakeATour={() =>
-                    openModal('Video', {
-                      title: 'Emailing a Task to Dock Health',
-                      url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
-                    })
-                  }
-                  list={firstUserList}
-                />
-              </DashboardFirstVisitViewWrapper>
-            ) : (
-              <DashboardList
-                currentUser={currentUser}
-                isTaskDrawerOpen={isTaskDrawerOpen}
-              />
+            {hasExistingLists && isFirstUserListCreationSuccess && (
+              <Confetti style={{ zIndex: 101 }} numberOfPieces={700} />
             )}
+            <DashboardScrollableList>
+              <DashboardHeaderContainer>
+                {!hasExistingLists && (
+                  <MenuButton onClick={showNavbar}>
+                    <img src={MenuIcon} alt="menu" />
+                  </MenuButton>
+                )}
+                <DashboardHeader
+                  isUserFirstTime={
+                    createListView || isFirstUserListCreationSuccess
+                  }
+                  currentUser={currentUser}
+                />
+              </DashboardHeaderContainer>
+              <Spacing vertical={3} />
+              {createListView ? (
+                <DashboardFirstVisitViewWrapper>
+                  <DashboardFirstVisitView
+                    hasInvitedLists={hasOnlyInvitedLists}
+                    onCreateList={handleCreateList}
+                    onTakeATour={() =>
+                      openModal('Video', {
+                        title: 'Emailing a Task to Dock Health',
+                        url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
+                      })
+                    }
+                    list={firstUserList}
+                  />
+                </DashboardFirstVisitViewWrapper>
+              ) : (
+                <DashboardList
+                  currentUser={currentUser}
+                  isTaskDrawerOpen={isTaskDrawerOpen}
+                />
+              )}
+            </DashboardScrollableList>
           </DashboardContentWrapper>
           {openedTour && (
             <>
