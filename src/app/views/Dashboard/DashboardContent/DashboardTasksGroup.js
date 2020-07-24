@@ -73,7 +73,7 @@ const DashboardTasksGroup = ({
       </DashboardTasksGroupLabel>
       <DashboardTasksGroupList>
         <DragDropContext
-          onBeforeCapture={showResetSortingModal}
+          onBeforeDragStart={showResetSortingModal}
           onDragEnd={({ destination, source }) => {
             if (!isSortApplied) {
               const { index: destinationIndex } = destination;

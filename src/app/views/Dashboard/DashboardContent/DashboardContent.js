@@ -56,19 +56,27 @@ const SORT_CONFIG = {
 };
 
 const SORT_METHODS = {
-  [SORT_CONFIG.default]: list => list,
+  [SORT_CONFIG.default]: list => list.map(item => item),
   [SORT_CONFIG.dueDateAsc]: list =>
-    list.sort((a, b) => new Date(b?.dueDate) - new Date(a?.dueDate)),
+    list
+      .map(item => item)
+      .sort((a, b) => new Date(b?.dueDate) - new Date(a?.dueDate)),
   [SORT_CONFIG.dueDateDsc]: list =>
-    list.sort((a, b) => new Date(a?.dueDate) - new Date(b?.dueDate)),
+    list
+      .map(item => item)
+      .sort((a, b) => new Date(a?.dueDate) - new Date(b?.dueDate)),
   [SORT_CONFIG.listNameAsc]: list =>
-    list.sort((a, b) =>
-      a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
-    ),
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
+      ),
   [SORT_CONFIG.listNameDsc]: list =>
-    list.sort((a, b) =>
-      b?.taskList?.listName?.localeCompare(a?.taskList?.listName),
-    ),
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        b?.taskList?.listName?.localeCompare(a?.taskList?.listName),
+      ),
 };
 
 const DashboardContent = ({
@@ -81,7 +89,6 @@ const DashboardContent = ({
   isTaskDrawerOpen,
   selectedTaskIdentifier,
   closeDrawer,
-  openModal,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -90,6 +97,7 @@ const DashboardContent = ({
     reloadDashboardTasks,
   },
 }) => {
+  const { openModal } = modalActions;
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [sortType, setSortType] = useState(SORT_CONFIG.default);
