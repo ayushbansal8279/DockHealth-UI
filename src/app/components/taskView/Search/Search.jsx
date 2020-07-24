@@ -49,7 +49,7 @@ const Search = ({
       classes={className}
       fullWidth={fullWidth}
       variant={variant}
-      noBackground={!value && noBackground}
+      transparentbackground={!value && noBackground ? 'true' : 'false'}
       InputProps={{
         startAdornment: (
           <StyledAdornment position="start" disablePointerEvents>
