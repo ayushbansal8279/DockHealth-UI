@@ -31,7 +31,7 @@ import {
   SET_AS_CURRENT_TASK,
 } from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
-import { getTaskStatsForList } from 'actions/task-actions';
+import { getTaskStatsForList, storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-selectors';
 import { showGlobalAlert } from 'alert/actions';
@@ -354,16 +354,21 @@ export function* doOnEnterTasksGroupsList() {
 
 export function* doCreateTask(payload) {
   try {
-    const { taskGroupIdentifier, description } = payload;
+    const { taskGroupIdentifier, description, autoOpenDrawer } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
 
     if (taskListIdentifier) {
-      yield call(createTaskApi, {
+      const task = yield call(createTaskApi, {
         taskGroupIdentifier,
         taskListIdentifier,
         description,
       });
+
+      if (autoOpenDrawer) {
+        yield put(storeAsCurrentTask(task));
+        yield put(openDrawer());
+      }
 
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
       yield put(getTaskStatsForList(taskListIdentifier));
