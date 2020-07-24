@@ -41,6 +41,9 @@ const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 class Home extends Component {
   state = { isTourOpen: false };
 
+  // change for backend falg
+  drawerAutoOpenEnabled = true;
+
   async componentDidMount() {
     const {
       routeParams,
@@ -488,6 +491,7 @@ class Home extends Component {
       const payload = {
         description: taskName,
         taskGroupIdentifier,
+        autoOpenDrawer: this.drawerAutoOpenEnabled,
       };
 
       tasksGroupsListActions.createTask(payload);
@@ -570,6 +574,7 @@ class Home extends Component {
       listUniqueKey: taskListIdentifier,
       pdfTitle: `${loadedTasklist?.listName}`,
       groupPagination: true,
+      drawerAutoOpenEnabled: this.drawerAutoOpenEnabled,
     };
 
     return (
