@@ -52,5 +52,6 @@ export const ToolbarBottomGrid = styled(Grid)`
 `;
 
 export const SearchWrapper = styled.div`
-  width: 374px;
+  width: ${({ fullWidth }) => (fullWidth ? 374 : 120)}px;
+  transition: width 0.25s ease-out;
 `;

@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty } from 'ramda';
 import { toggleListNotifications } from 'actions/tasklist-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
@@ -16,6 +16,7 @@ import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import Member from 'components/members/Member';
 import { InviteMemberButton } from 'components/members/InviteMemberPopover';
+import TipsButton from 'components/common/TipsButton';
 import { showGlobalAlert } from 'alert/actions';
 import MorePopover from '../Toolbar.MorePopover';
 import {
@@ -107,9 +108,13 @@ const Toolbar = ({
   megaFilter = {},
   listNameColumnVisible = false,
   patientColumnVisible = true,
+  tipsContent,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
+  const tipsButtonReference = useRef(null);
+  const [isSearchFocused, setSearchFocused] = useState(false);
+  const [tipsOpened, setTipsOpened] = useState(false);
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
@@ -248,17 +253,34 @@ const Toolbar = ({
             }
           />
           <Spacing horizontal={5} />
-          <SearchWrapper>
+          <SearchWrapper fullWidth={isSearchFocused || searchValue}>
             <Search
               fullWidth
               noBackground
               initialValue=""
               value={searchValue}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
               onChange={event => onSearchChange(event?.target?.value)}
             />
             <Spacing horizontal={5} />
           </SearchWrapper>
+          {tipsContent && (
+            <>
+              <Spacing horizontal={5} />
+              <TipsButton
+                tipsButtonReference={tipsButtonReference}
+                active={tipsOpened}
+                toggleTips={() => setTipsOpened(!tipsOpened)}
+              />
+            </>
+          )}
         </ToolbarBottomGrid>
+      )}
+      {tipsContent && tipsOpened && (
+        <ClickAwayListener onClickAway={() => setTipsOpened(false)}>
+          <div>{tipsContent({ arrowAnchorElement: tipsButtonReference })}</div>
+        </ClickAwayListener>
       )}
     </PageContentHeader>
   );
