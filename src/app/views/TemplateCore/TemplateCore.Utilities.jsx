@@ -13,6 +13,7 @@ const EULA_PATH = '/onboarding/eula';
 const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const BAA_CHECK_PATH = '/onboarding/baa-check';
 const BAA_INVITATION_SENT_PATH = '/onboarding/baa-invitation-sent';
+const TRIAL_EXPIRATION_PATH = '/onboarding/trial-check';
 const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
 const HOME_PATH = '/tasks';
 
@@ -74,7 +75,12 @@ const handleHomeRedirection = async ({
   }
 };
 
-const checkUserAccountState = async ({ dispatch, user, pathname }) => {
+const checkUserAccountState = async ({
+  dispatch,
+  user,
+  pathname,
+  checkTrialExpiration,
+}) => {
   const data = await userApi.getUserByEmail(user.username, user);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -114,6 +120,12 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
     }
   } else if (!orgData?.baaSigned && !isBaaPath) {
     hashHistory.replace(BAA_OVERVIEW_PATH);
+  } else if (
+    checkTrialExpiration &&
+    orgData?.subscriptionDetails?.trialEnded &&
+    pathname !== TRIAL_EXPIRATION_PATH
+  ) {
+    hashHistory.replace(TRIAL_EXPIRATION_PATH);
   } else if (isMobile) {
     handleMobileRedirection({
       data,
@@ -131,7 +143,7 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
   }
 };
 
-const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
+const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
   const { pathname } = hashHistory.getCurrentLocation();
 
   if (!loggedIn && pathname === CREATE_ACCOUNT_PATH) {
@@ -153,14 +165,17 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   userApi.updateStoreWithCurrentUser(user);
 
   try {
-    checkUserAccountState({ user, pathname, dispatch });
+    checkUserAccountState({ user, pathname, dispatch, checkTrialExpiration });
   } catch (error) {
     hashHistory.push('login');
   }
 };
 
-export const checkUserAuthentication = async ({ dispatch }) => {
+export const checkUserAuthentication = async ({
+  dispatch,
+  checkTrialExpiration,
+}) => {
   await userApi.isAuthenticated({
-    isLoggedIn: isLoggedIn({ dispatch }),
+    isLoggedIn: isLoggedIn({ dispatch, checkTrialExpiration }),
   });
 };

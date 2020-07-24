@@ -185,8 +185,8 @@ export const Routes = ({ store }) => {
 
   const dispatch = useDispatch();
 
-  const checkUserIsAuthenticated = () => {
-    checkUserAuthentication({ dispatch });
+  const checkUserIsAuthenticated = ({ checkTrialExpiration }) => {
+    checkUserAuthentication({ dispatch, checkTrialExpiration });
   };
 
   const onEnterApp = ({ location, params }) => {
@@ -302,22 +302,9 @@ export const Routes = ({ store }) => {
         <Route
           component={TemplateCore}
           onEnter={() => {
-            checkUserIsAuthenticated();
+            checkUserIsAuthenticated({ checkTrialExpiration: false });
           }}
         >
-          <IndexRedirect to="/home" />
-          <Route
-            path="/home"
-            component={DashboardView}
-            onEnter={onEnterDashboard}
-            onLeave={onLeaveDashboard}
-          />
-          <Route
-            path="/search"
-            component={GlobalSearchView}
-            onEnter={onEnterGlobalSearch}
-            onLeave={onLeaveGlobalSearch}
-          />
           <Route
             path="/userprofile"
             component={UserProfileViewWrapper}
@@ -357,9 +344,22 @@ export const Routes = ({ store }) => {
         <Route
           component={TemplateCoreSubscriptionPlan}
           onEnter={() => {
-            checkUserIsAuthenticated();
+            checkUserIsAuthenticated({ checkTrialExpiration: true });
           }}
         >
+          <IndexRedirect to="/home" />
+          <Route
+            path="/home"
+            component={DashboardView}
+            onEnter={onEnterDashboard}
+            onLeave={onLeaveDashboard}
+          />
+          <Route
+            path="/search"
+            component={GlobalSearchView}
+            onEnter={onEnterGlobalSearch}
+            onLeave={onLeaveGlobalSearch}
+          />
           <Route
             path="/patients"
             component={PatientsView}
@@ -451,7 +451,7 @@ export const Routes = ({ store }) => {
           path="/onboarding"
           component={OnboardingTemplate}
           onEnter={() => {
-            checkUserIsAuthenticated();
+            checkUserIsAuthenticated({ checkTrialExpiration: false });
           }}
         >
           <Route component={OnboardingEulaView} path="eula" />
