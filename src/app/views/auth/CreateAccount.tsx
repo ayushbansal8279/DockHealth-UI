@@ -282,11 +282,11 @@ const CreateAccount = () => {
           <Spacing vertical={5} />
           <MontserratTypography variant="h4">
             <span
-              style={{ padding: '0rem 1rem', fontFamily: 'roboto condensed' }}
+              style={{ padding: '0rem 1rem'}}
             >
-              I already have an account{' '}
+              I already have an account.
             </span>
-            <StyledLink style={{ fontFamily: 'roboto condensed' }} to="/login">
+            <StyledLink to="/login">
               SIGN IN
             </StyledLink>
           </MontserratTypography>
