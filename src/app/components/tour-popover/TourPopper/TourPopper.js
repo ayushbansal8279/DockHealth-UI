@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Popper } from '@material-ui/core';
+import { Popper, ClickAwayListener } from '@material-ui/core';
 import {
   PopperTopArrow,
   PopperBottomArrow,
   PopperLeftArrow,
+  PopperRightArrow,
   PopperWrapper,
+  CloseIconButton,
+  CloseIcon,
 } from './styled';
 
-const TourPopper = ({ children, anchorEl, position, open }) => {
+const TourPopper = ({ children, anchorEl, position, open, onClose }) => {
   const [arrowReference, setArrowReference] = useState(null);
 
   const isTopArrow = position.includes('bottom');
   const isBottomArrow = position.includes('top');
   const isLeftArrow = position.includes('right');
+  const isRightArrow = position.includes('left');
 
   const setReference = element => {
     if (element !== null && arrowReference === null) {
@@ -49,7 +53,22 @@ const TourPopper = ({ children, anchorEl, position, open }) => {
     >
       {isTopArrow && <PopperTopArrow ref={setReference} />}
       {isLeftArrow && <PopperLeftArrow ref={setReference} />}
-      <PopperWrapper>{children}</PopperWrapper>
+      <ClickAwayListener onClickAway={onClose}>
+        <PopperWrapper
+          xAxisMargin={isTopArrow || isBottomArrow}
+          yAxisMargin={isLeftArrow || isRightArrow}
+        >
+          <>
+            {onClose && (
+              <CloseIconButton onClick={onClose} size="small">
+                <CloseIcon />
+              </CloseIconButton>
+            )}
+            {children}
+          </>
+        </PopperWrapper>
+      </ClickAwayListener>
+      {isRightArrow && <PopperRightArrow ref={setReference} />}
       {isBottomArrow && <PopperBottomArrow ref={setReference} />}
     </Popper>
   );

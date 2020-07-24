@@ -60,6 +60,7 @@ const NewTaskDrawer = ({
   refreshList,
   refreshTriggers = [],
   disabledFileds = [],
+  fromFirstAddTask = false,
 }) => {
   const {
     taskDrawerOpen,
@@ -88,6 +89,8 @@ const NewTaskDrawer = ({
     dueTimeReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
+  const taskDrawerReference = useRef(null);
+
   const {
     taskMenuReference,
     dueDateSectionReference,
@@ -96,7 +99,11 @@ const NewTaskDrawer = ({
     commentsSectionReference,
     historySectionReference,
     renderExistingUserTourPopover,
-  } = existingUserTaskDrawerTourHooks({ taskDrawerOpen });
+  } = existingUserTaskDrawerTourHooks({
+    taskDrawerOpen,
+    fromFirstAddTask,
+    taskDrawerReference,
+  });
 
   const { saveDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
@@ -152,7 +159,6 @@ const NewTaskDrawer = ({
 
   const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
 
-  const taskDrawerReference = useRef();
   const dispatch = useDispatch();
 
   const handleAddPatient = patient => {

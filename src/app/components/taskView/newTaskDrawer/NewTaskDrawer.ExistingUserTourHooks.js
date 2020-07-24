@@ -4,11 +4,20 @@ import { isNil } from 'ramda';
 import localStorageHelper from 'helpers/local-storage-helper';
 import TourPopper from 'components/tour-popover/TourPopper/TourPopper';
 import TaskDrawerTourContent from 'components/tour-popover/content/TaskDrawerTourContent/TaskDrawerTourContent';
+import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 
 const TASK_DRAWER_FIRST_TIME_KEY = 'TASK_DRAWER_FIRST_TIME_KEY';
 
-const existingUserTaskDrawerTourHooks = ({ taskDrawerOpen }) => {
+const existingUserTaskDrawerTourHooks = ({
+  taskDrawerOpen,
+  fromFirstAddTask,
+  taskDrawerReference,
+}) => {
   const [openedTourStep, setOpenedTourStep] = useState(null);
+  const [
+    openedFirstQuickAddTaskPopover,
+    setOpenedFirstQuickAddTaskPopover,
+  ] = useState(false);
 
   const taskMenuReference = useRef(null);
   const dueDateSectionReference = useRef(null);
@@ -86,12 +95,20 @@ const existingUserTaskDrawerTourHooks = ({ taskDrawerOpen }) => {
   }, [openedTourStep]);
 
   useEffect(() => {
+    if (fromFirstAddTask && taskDrawerOpen) {
+      setTimeout(() => {
+        setOpenedFirstQuickAddTaskPopover(true);
+      }, 1000);
+      return;
+    }
+
     const taskDrawerFirstTimeValue = localStorageHelper.getItem(
       TASK_DRAWER_FIRST_TIME_KEY,
     );
 
     if (
       taskDrawerOpen &&
+      !fromFirstAddTask &&
       (isNil(taskDrawerFirstTimeValue) || taskDrawerFirstTimeValue)
     ) {
       setOpenedTourStep(0);
@@ -101,7 +118,7 @@ const existingUserTaskDrawerTourHooks = ({ taskDrawerOpen }) => {
       setOpenedTourStep(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskDrawerOpen]);
+  }, [taskDrawerOpen, fromFirstAddTask]);
 
   const closeTour = () => {
     localStorageHelper.setItem(TASK_DRAWER_FIRST_TIME_KEY, false);
@@ -118,6 +135,7 @@ const existingUserTaskDrawerTourHooks = ({ taskDrawerOpen }) => {
               anchorEl={reference?.current}
               position={position}
               open={openedTourStep === index}
+              onClose={closeTour}
             >
               <TaskDrawerTourContent
                 steps={tourSteps}
@@ -127,6 +145,20 @@ const existingUserTaskDrawerTourHooks = ({ taskDrawerOpen }) => {
               />
             </TourPopper>
           ))}
+        {taskDrawerReference?.current && openedFirstQuickAddTaskPopover && (
+          <TourPopper
+            anchorEl={taskDrawerReference?.current}
+            position="left"
+            open={openedFirstQuickAddTaskPopover}
+            onClose={() => setOpenedFirstQuickAddTaskPopover(false)}
+          >
+            <StandardTourContent
+              title="Would you like to add more details to this task?"
+              description="Enter the details you want added and click save. Your task will be ready to go."
+              width={369}
+            />
+          </TourPopper>
+        )}
       </>
     );
   };

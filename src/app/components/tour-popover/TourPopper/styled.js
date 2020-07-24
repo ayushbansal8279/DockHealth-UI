@@ -1,6 +1,26 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { IconButton } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { Close } from '@material-ui/icons';
+
+export const CloseIconButton = withStyles({
+  root: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    display: 'block',
+    color: palette.white,
+  },
+})(IconButton);
+
+export const CloseIcon = withStyles({
+  root: {
+    width: 16,
+    height: 16,
+  },
+})(Close);
 
 export const PopperTopArrow = styled.div`
   position: absolute;
@@ -25,8 +45,17 @@ export const PopperLeftArrow = styled(PopperTopArrow)`
   transform: rotate(-90deg);
 `;
 
+export const PopperRightArrow = styled(PopperTopArrow)`
+  top: auto;
+  bottom: auto;
+  right: -2px;
+  transform: rotate(-270deg);
+`;
+
 export const PopperWrapper = styled.div`
-  margin: ${spacing.regular};
+  position: relative;
+  ${({ xAxisMargin }) => xAxisMargin && `margin: ${spacing.regular} 0;`}
+  ${({ yAxisMargin }) => yAxisMargin && `margin: 0 ${spacing.regular};`}
   background: ${palette.darkBlue};
   border-radius: 5px;
 `;

@@ -19,7 +19,7 @@ const existingUserTourHooks = ({
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
 
-  const hasAnyTask = lists.some(list => list.numberOfTasks > 0);
+  const hasAnyTask = lists?.some(list => list.numberOfTasks > 0);
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(

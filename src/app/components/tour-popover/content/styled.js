@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { IconButton } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import { Close } from '@material-ui/icons';
 
 export const TourContent = styled.div`
   padding: 32px 24px;
@@ -23,23 +20,6 @@ export const Description = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
 `;
-
-export const CloseIconButton = withStyles({
-  root: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    display: 'block',
-    color: palette.white,
-  },
-})(IconButton);
-
-export const CloseIcon = withStyles({
-  root: {
-    width: 16,
-    height: 16,
-  },
-})(Close);
 
 export const NavigationContainer = styled.div`
   display: flex;
