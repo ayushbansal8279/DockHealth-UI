@@ -79,6 +79,23 @@ const DashboardSidebar = ({
     localStorageHelper.setItem(STORAGE_DASHBOARD_THIRD_TIME_KEY, false);
   };
 
+  const setPopupReferences = (element, listType, taskListIdentifier) => {
+    if (element) {
+      if (firstListElement === null && listType !== 'INBOX') {
+        setFirstListElement({
+          reference: element,
+          taskListIdentifier,
+        });
+      }
+      if (inboxElement === null && listType === 'INBOX') {
+        setInboxElement({
+          reference: element,
+          taskListIdentifier,
+        });
+      }
+    }
+  };
+
   return (
     <DashboardSidebarWrapper>
       <TopSection>
@@ -108,21 +125,9 @@ const DashboardSidebar = ({
                 to={`/tasks/${taskListIdentifier}`}
               >
                 <ListItem
-                  ref={element => {
-                    if (firstListElement === null && element) {
-                      if (listType !== 'INBOX') {
-                        setFirstListElement({
-                          reference: element,
-                          taskListIdentifier,
-                        });
-                      } else {
-                        setInboxElement({
-                          reference: element,
-                          taskListIdentifier,
-                        });
-                      }
-                    }
-                  }}
+                  ref={element =>
+                    setPopupReferences(element, listType, taskListIdentifier)
+                  }
                 >
                   {isPrivate && (
                     <PrivateListIcon src={LockIcon} alt="private" />
@@ -162,6 +167,7 @@ const DashboardSidebar = ({
         anchorEl={firstListElement?.reference}
         position="bottom-start"
         open={isListPopoverOpen}
+        onClose={closeListCreationSuccessMessage}
       >
         <StandardTourContent
           title="Congrats on adding your first list!"
@@ -173,7 +179,6 @@ const DashboardSidebar = ({
               `task-tour/${firstListElement?.taskListIdentifier}`,
             );
           }}
-          onClose={closeListCreationSuccessMessage}
           width={526}
         />
       </TourPopover>
@@ -181,13 +186,13 @@ const DashboardSidebar = ({
         anchorEl={inboxElement?.reference}
         position="right"
         open={inboxPopoverOpen && inboxElement?.reference}
+        onClose={closeInboxPopup}
       >
         <StandardTourContent
           title="Turn an email into a task"
           description="Turn an email into a task by forwarding and email to : Task@DockHealth.email. Your inbox is where your forwarded emails will land and you can move them to any list you’d like. You can also use the inbox as a place to keep tasks of your own."
           buttonText="Got it"
           onButtonClick={closeInboxPopup}
-          onClose={closeInboxPopup}
           width={450}
         />
       </TourPopover>
