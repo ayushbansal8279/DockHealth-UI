@@ -30,10 +30,10 @@ import {
   availableFiltersInInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 
+import pusherInstance from 'helpers/pusher-instance';
 import { ListTourWrapper, ListTourBackground } from './ListDetailsView.Styled';
 import TasksView from '../Task/NewTasksView/TasksView';
 import { LIST_TOUR_STEPS } from './list-tour-steps';
-import pusherInstance from 'helpers/pusher-instance';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
@@ -129,7 +129,10 @@ class Home extends Component {
           );
         }
 
-        this.listenForRealTimeEvents(nextProps.routeParams.taskListIdentifier, user);
+        this.listenForRealTimeEvents(
+          nextProps.routeParams.taskListIdentifier,
+          curentUser,
+        );
 
         // Start with no selected tasks
         actions.storeAsCurrentTask(null);
