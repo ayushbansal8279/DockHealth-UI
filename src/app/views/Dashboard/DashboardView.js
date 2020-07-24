@@ -158,7 +158,7 @@ const DashboardView = ({
                       url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
                     })
                   }
-                  list={lists.find(list => list.listType !== 'INBOX')}
+                  list={lists?.find(list => list.listType !== 'INBOX')}
                 />
               </DashboardFirstVisitViewWrapper>
             ) : (
