@@ -98,7 +98,7 @@ const existingUserTaskDrawerTourHooks = ({
     if (fromFirstAddTask && taskDrawerOpen) {
       setTimeout(() => {
         setOpenedFirstQuickAddTaskPopover(true);
-      }, 1000);
+      }, 500);
       return;
     }
 
