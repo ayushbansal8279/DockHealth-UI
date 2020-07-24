@@ -9,6 +9,7 @@ import DeleteCommentModal from './components/DeleteCommentModal/DeleteCommentMod
 import ArchivePatientModal from './components/ArchivePatientModal/ArchivePatientModal';
 import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActiveUserModal';
 import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
+import ResetSortingModal from './components/ResetSortingModal/ResetSortingModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -22,6 +23,8 @@ const MODAL_MAP = {
   ArchivePatient: ArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
+
+  ResetSorting: ResetSortingModal,
 };
 
 export default MODAL_MAP;
