@@ -101,22 +101,36 @@ const DashboardContent = ({
   const isSortApplied = sortType !== SORT_CONFIG.default;
 
   const onClickDueDateSort = () => {
-    if (sortType === SORT_CONFIG.dueDateAsc) {
-      setSortType(SORT_CONFIG.dueDateDsc);
-    } else if (sortType === SORT_CONFIG.dueDateDsc) {
-      setSortType(SORT_CONFIG.dueDateAsc);
-    } else {
-      setSortType(SORT_CONFIG.dueDateAsc);
+    switch (sortType) {
+      case SORT_CONFIG.dueDateAsc: {
+        setSortType(SORT_CONFIG.dueDateDsc);
+        break;
+      }
+      case SORT_CONFIG.dueDateDsc: {
+        setSortType(SORT_CONFIG.dueDateAsc);
+        break;
+      }
+      default: {
+        setSortType(SORT_CONFIG.dueDateAsc);
+        break;
+      }
     }
   };
 
   const onClickListNameSort = () => {
-    if (sortType === SORT_CONFIG.listNameAsc) {
-      setSortType(SORT_CONFIG.listNameDsc);
-    } else if (sortType === SORT_CONFIG.listNameDsc) {
-      setSortType(SORT_CONFIG.listNameAsc);
-    } else {
-      setSortType(SORT_CONFIG.listNameAsc);
+    switch (sortType) {
+      case SORT_CONFIG.listNameAsc: {
+        setSortType(SORT_CONFIG.listNameDsc);
+        break;
+      }
+      case SORT_CONFIG.listNameDsc: {
+        setSortType(SORT_CONFIG.listNameAsc);
+        break;
+      }
+      default: {
+        setSortType(SORT_CONFIG.listNameAsc);
+        break;
+      }
     }
   };
 
