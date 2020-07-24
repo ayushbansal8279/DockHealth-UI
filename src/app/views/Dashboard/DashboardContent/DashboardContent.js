@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'ramda';
@@ -46,6 +47,38 @@ const searchDashboardTasks = (dashboardTasks, searchValue) =>
     return [...accumulator, { ...currentValue, tasks: filteredTasks }];
   }, []);
 
+const SORT_CONFIG = {
+  default: 'DEFAULT',
+  dueDateAsc: 'DUE_DATE_ASC',
+  dueDateDsc: 'DUE_DATE_DSC',
+  listNameAsc: 'LIST_NAME_ASC',
+  listNameDsc: 'LIST_NAME_DSC',
+};
+
+const SORT_METHODS = {
+  [SORT_CONFIG.default]: list => list.map(item => item),
+  [SORT_CONFIG.dueDateAsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) => new Date(b?.dueDate) - new Date(a?.dueDate)),
+  [SORT_CONFIG.dueDateDsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) => new Date(a?.dueDate) - new Date(b?.dueDate)),
+  [SORT_CONFIG.listNameAsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
+      ),
+  [SORT_CONFIG.listNameDsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        b?.taskList?.listName?.localeCompare(a?.taskList?.listName),
+      ),
+};
+
 const DashboardContent = ({
   dashboardTasks,
   dashboardTasksIsLoading,
@@ -64,11 +97,59 @@ const DashboardContent = ({
     reloadDashboardTasks,
   },
 }) => {
+  const { openModal } = modalActions;
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [sortType, setSortType] = useState(SORT_CONFIG.default);
   const filteredDashboardTasks = dashboardTasks.filter(
     ({ tasks }) => tasks && tasks.length !== 0,
   );
+
+  const currentSortMethod = SORT_METHODS[sortType];
+  const isSortApplied = sortType !== SORT_CONFIG.default;
+
+  const onClickDueDateSort = () => {
+    switch (sortType) {
+      case SORT_CONFIG.dueDateAsc: {
+        setSortType(SORT_CONFIG.dueDateDsc);
+        break;
+      }
+      case SORT_CONFIG.dueDateDsc: {
+        setSortType(SORT_CONFIG.dueDateAsc);
+        break;
+      }
+      default: {
+        setSortType(SORT_CONFIG.dueDateAsc);
+        break;
+      }
+    }
+  };
+
+  const onClickListNameSort = () => {
+    switch (sortType) {
+      case SORT_CONFIG.listNameAsc: {
+        setSortType(SORT_CONFIG.listNameDsc);
+        break;
+      }
+      case SORT_CONFIG.listNameDsc: {
+        setSortType(SORT_CONFIG.listNameAsc);
+        break;
+      }
+      default: {
+        setSortType(SORT_CONFIG.listNameAsc);
+        break;
+      }
+    }
+  };
+
+  const showResetSortingModal = () => {
+    if (sortType !== SORT_CONFIG.default) {
+      openModal('ResetSorting', {
+        confirm: () => setSortType(SORT_CONFIG.default),
+        closeOnConfirm: true,
+      });
+    }
+  };
 
   const handleQuickAddTask = taskName => {
     const { userIdentifier } = currentUser;
@@ -152,6 +233,12 @@ const DashboardContent = ({
                 openDrawer={openDrawer}
                 isTaskDrawerOpen={isTaskDrawerOpen}
                 selectedTaskIdentifier={selectedTaskIdentifier}
+                currentSortMethod={currentSortMethod}
+                currentSortType={sortType}
+                onClickDueDateSort={onClickDueDateSort}
+                onClickListNameSort={onClickListNameSort}
+                showResetSortingModal={showResetSortingModal}
+                isSortApplied={isSortApplied}
               />
             ))
           : renderEmptyState()}

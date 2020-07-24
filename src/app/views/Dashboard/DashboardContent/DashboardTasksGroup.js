@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Grid } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SlimTaskItem from 'components/task-item/SlimTaskItem/SlimTaskItem';
+import Arrow from 'components/common/Arrow/Arrow';
+
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -17,6 +20,12 @@ const DashboardTasksGroup = ({
   openDrawer,
   isTaskDrawerOpen,
   selectedTaskIdentifier,
+  currentSortMethod,
+  currentSortType,
+  onClickDueDateSort,
+  onClickListNameSort,
+  showResetSortingModal,
+  isSortApplied,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -28,26 +37,61 @@ const DashboardTasksGroup = ({
   return (
     <DashboardTasksGroupContainer>
       <DashboardTasksGroupLabel>
-        {groupName} ({tasks.length})
+        <Grid container>
+          <Grid item sm={6} md={7} lg={8}>
+            {groupName} ({tasks.length})
+          </Grid>
+          <Grid item sm={2} md={2} lg={2}>
+            <Arrow
+              isOpen={currentSortType === 'DUE_DATE_ASC'}
+              setOpen={onClickDueDateSort}
+              showArrow={
+                currentSortType === 'DUE_DATE_ASC' ||
+                currentSortType === 'DUE_DATE_DSC'
+              }
+              justifyContent="flex-start"
+              paddingLeft="0"
+            >
+              <span>Due</span>
+            </Arrow>
+          </Grid>
+          <Grid item sm={4} md={3} lg={2}>
+            <Arrow
+              isOpen={currentSortType === 'LIST_NAME_ASC'}
+              setOpen={onClickListNameSort}
+              showArrow={
+                currentSortType === 'LIST_NAME_ASC' ||
+                currentSortType === 'LIST_NAME_DSC'
+              }
+              justifyContent="flex-start"
+              paddingLeft="0"
+            >
+              <span>List</span>
+            </Arrow>
+          </Grid>
+        </Grid>
       </DashboardTasksGroupLabel>
       <DashboardTasksGroupList>
         <DragDropContext
+          onBeforeDragStart={showResetSortingModal}
           onDragEnd={({ destination, source }) => {
-            const { index: destinationIndex } = destination;
-            const { index: sourceIndex } = source;
-            const newTasks = [...tasks];
-            newTasks.splice(
-              destinationIndex,
-              0,
-              newTasks.splice(sourceIndex, 1)[0],
-            );
+            if (!isSortApplied) {
+              const { index: destinationIndex } = destination;
+              const { index: sourceIndex } = source;
+              const newTasks = [...tasks];
+              newTasks.splice(
+                destinationIndex,
+                0,
+                newTasks.splice(sourceIndex, 1)[0],
+              );
 
-            setNewTasks(newTasks);
+              setNewTasks(newTasks);
 
-            const newTasksOrder = newTasks.map(
-              ({ taskIdentifier }) => taskIdentifier,
-            );
-            sortDashboardTasks(groupType, newTasksOrder);
+              const newTasksOrder = newTasks.map(
+                ({ taskIdentifier }) => taskIdentifier,
+              );
+              sortDashboardTasks(groupType, newTasksOrder);
+            }
           }}
         >
           <Droppable droppableId={groupName}>
@@ -57,7 +101,7 @@ const DashboardTasksGroup = ({
                   ref={providedDroppable.innerRef}
                   {...providedDroppable.droppableProps}
                 >
-                  {tasks?.map((task, index) => (
+                  {currentSortMethod(tasks)?.map((task, index) => (
                     <Draggable
                       key={task.taskIdentifier}
                       draggableId={String(task.taskIdentifier)}
