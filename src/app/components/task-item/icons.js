@@ -2,14 +2,17 @@ import { isEmpty } from 'ramda';
 
 import CalendarDimIcon from 'img/calendar-dim';
 import CalendarIcon from 'img/calendar-icon';
-import CalendarOverDueIcon from 'img/calendar-overdue-icon';
 import CalendarIconHover from 'img/calendar-icon-hover';
+import CalendarOverDueIcon from 'img/calendar-overdue';
+import CalendarNewIcon from 'img/calendar-new';
+import CalendarNewOverDueIcon from 'img/calendar-new-overdue';
 import ClipDimIcon from 'img/clip-dim';
 import ClipIconHover from 'img/clip-hover';
 import ClipIcon from 'img/clip-v2';
 import ClipNewIcon from 'img/clip-new';
 import LabelDimIcon from 'img/label-dim';
 import LabelIcon from 'img/label';
+import LabelNewIcon from 'img/label-new';
 import LabelIconHover from 'img/label-hover';
 import MessageDimIcon from 'img/message-dim';
 import MessageIcon from 'img/message';
@@ -36,13 +39,13 @@ export const ITEM_ICONS = {
   DUE_DATE: {
     LIGHT: CalendarDimIcon,
     REGULAR: CalendarIcon,
-    NEW: CalendarIcon,
+    NEW: CalendarNewIcon,
     HOVER: CalendarIconHover,
   },
   LABELS: {
     LIGHT: LabelDimIcon,
     REGULAR: LabelIcon,
-    NEW: LabelIcon,
+    NEW: LabelNewIcon,
     HOVER: LabelIconHover,
   },
   ATTACHMENTS: {
@@ -63,10 +66,16 @@ export const getItemIconVersion = (value, isHovered, hasUpdate) => {
   return LIGHT;
 };
 
+export const getCalendarOverDueIcon = hasUpdate => {
+  if (hasUpdate) return CalendarNewOverDueIcon;
+
+  return CalendarOverDueIcon;
+};
+
 export const getItemIcon = (type, value, isHovered, hasUpdate) =>
   ITEM_ICONS[type][getItemIconVersion(value, isHovered, hasUpdate)];
 
 export const getCalendarIcon = (value, isHovered, isOverDue, hasUpdate) =>
   isOverDue
-    ? CalendarOverDueIcon
+    ? getCalendarOverDueIcon(hasUpdate)
     : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered, hasUpdate)];
