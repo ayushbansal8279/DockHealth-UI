@@ -24,6 +24,7 @@ import {
   updatePatient,
   updateTaskDescription,
   prepareSubtask,
+  markTaskRead,
 } from 'actions/task-actions';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
@@ -210,6 +211,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
         dispatch,
       );
+      markTaskRead(selectedTask)(dispatch);
     }
 
     clearError(); // clear any previous validation errors

@@ -347,7 +347,12 @@ const TaskItem = ({
                 >
                   <img
                     alt="comments"
-                    src={getItemIcon(COMMENTS, comments, isHovered)}
+                    src={getItemIcon(
+                      COMMENTS,
+                      comments,
+                      isHovered,
+                      task.updatedComment,
+                    )}
                   />
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
@@ -387,6 +392,7 @@ const TaskItem = ({
                             dueDate,
                             isHovered,
                             isOverdueTask,
+                            task.updatedDueDate,
                           )}
                         />
                       </DueDateContainer>
@@ -413,7 +419,12 @@ const TaskItem = ({
                   {' '}
                   <img
                     alt="labels"
-                    src={getItemIcon(LABELS, labels, isHovered)}
+                    src={getItemIcon(
+                      LABELS,
+                      labels,
+                      isHovered,
+                      task.updatedLabel,
+                    )}
                   />
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
@@ -436,7 +447,12 @@ const TaskItem = ({
                   {' '}
                   <img
                     alt="attachments"
-                    src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
+                    src={getItemIcon(
+                      ATTACHMENTS,
+                      attachments,
+                      isHovered,
+                      task.updatedAttachment,
+                    )}
                   />
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>

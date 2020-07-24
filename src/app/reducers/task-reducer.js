@@ -6,6 +6,7 @@ import {
   REQUEST_HISTORY,
   SET_AS_CURRENT_TASK,
   UPDATE_TASK_SUCCESS,
+  TASK_READ_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -45,6 +46,25 @@ const TaskReducer = (state = initialState, action) => {
 
     case UPDATE_TASK_SUCCESS: {
       const { task } = action;
+
+      if (state.selectedTask) {
+        return {
+          ...state,
+          selectedTask: { ...state.selectedTask, ...task },
+        };
+      }
+
+      return state;
+    }
+
+    case TASK_READ_SUCCESS: {
+      const { task } = action;
+
+      task.updated = false;
+      task.updatedComment = false;
+      task.updatedLabel = false;
+      task.updatedAttachment = false;
+      task.updatedDueDate = false;
 
       if (state.selectedTask) {
         return {

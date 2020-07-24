@@ -4,7 +4,6 @@ import CalendarDimIcon from 'img/calendar-dim';
 import CalendarIcon from 'img/calendar-icon';
 import CalendarOverDueIcon from 'img/calendar-overdue-icon';
 import CalendarIconHover from 'img/calendar-icon-hover';
-import CalendarNewIcon from 'img/calendar-new';
 import ClipDimIcon from 'img/clip-dim';
 import ClipIconHover from 'img/clip-hover';
 import ClipIcon from 'img/clip-v2';
@@ -25,6 +24,7 @@ export const ATTACHMENTS = 'ATTACHMENTS';
 export const LIGHT = 'LIGHT';
 export const REGULAR = 'REGULAR';
 export const HOVER = 'HOVER';
+export const NEW = 'NEW';
 
 export const ITEM_ICONS = {
   COMMENTS: {
@@ -36,7 +36,7 @@ export const ITEM_ICONS = {
   DUE_DATE: {
     LIGHT: CalendarDimIcon,
     REGULAR: CalendarIcon,
-    NEW: CalendarNewIcon,
+    NEW: CalendarIcon,
     HOVER: CalendarIconHover,
   },
   LABELS: {
@@ -53,7 +53,9 @@ export const ITEM_ICONS = {
   },
 };
 
-export const getItemIconVersion = (value, isHovered) => {
+export const getItemIconVersion = (value, isHovered, hasUpdate) => {
+  if (!isEmpty(value) && value && hasUpdate) return NEW;
+
   if (!isEmpty(value) && value) return REGULAR;
 
   if (isHovered) return HOVER;
@@ -61,10 +63,10 @@ export const getItemIconVersion = (value, isHovered) => {
   return LIGHT;
 };
 
-export const getItemIcon = (type, value, isHovered) =>
-  ITEM_ICONS[type][getItemIconVersion(value, isHovered)];
+export const getItemIcon = (type, value, isHovered, hasUpdate) =>
+  ITEM_ICONS[type][getItemIconVersion(value, isHovered, hasUpdate)];
 
-export const getCalendarIcon = (value, isHovered, isOverDue) =>
+export const getCalendarIcon = (value, isHovered, isOverDue, hasUpdate) =>
   isOverDue
     ? CalendarOverDueIcon
-    : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered)];
+    : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered, hasUpdate)];
