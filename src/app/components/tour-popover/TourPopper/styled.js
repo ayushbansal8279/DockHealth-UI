@@ -18,8 +18,15 @@ export const PopperBottomArrow = styled(PopperTopArrow)`
   transform: rotate(-180deg);
 `;
 
+export const PopperLeftArrow = styled(PopperTopArrow)`
+  top: auto;
+  bottom: auto;
+  left: -2px;
+  transform: rotate(-90deg);
+`;
+
 export const PopperWrapper = styled.div`
-  margin: ${spacing.regular} 0;
+  margin: ${spacing.regular};
   background: ${palette.darkBlue};
   border-radius: 5px;
 `;

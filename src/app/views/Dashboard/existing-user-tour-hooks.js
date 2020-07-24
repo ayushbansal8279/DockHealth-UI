@@ -6,8 +6,10 @@ import Tour from 'components/tour-wizard/Tour/Tour';
 import { DashboardTourWrapper, DashboardTourBackground } from './styled';
 import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 
-const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
-const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
+export const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
+export const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
+export const STORAGE_DASHBOARD_THIRD_TIME_KEY =
+  'STORAGE_DASHBOARD_THIRD_TIME_KEY';
 
 const existingUserTourHooks = ({
   isLoadingDashboard,

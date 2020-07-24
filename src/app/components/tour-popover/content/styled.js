@@ -28,7 +28,7 @@ export const CloseIconButton = withStyles({
   root: {
     position: 'absolute',
     top: 20,
-    right: 4,
+    right: 20,
     display: 'block',
     color: palette.white,
   },

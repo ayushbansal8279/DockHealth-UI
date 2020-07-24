@@ -1,10 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link, hashHistory } from 'react-router';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
+import {
+  DASHBOARD_SECOND_TIME_KEY,
+  STORAGE_DASHBOARD_THIRD_TIME_KEY,
+} from 'views/Dashboard/existing-user-tour-hooks';
+import localStorageHelper from 'helpers/local-storage-helper';
+import { isNil } from 'ramda';
 import {
   TopSection,
   MenuButton,
@@ -28,10 +34,13 @@ const DashboardSidebar = ({
   showNavbar,
   shouldDisplayFirstListCreationMessage,
   closeListCreationSuccessMessage,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [firstListElement, setFirstListElement] = useState(null);
+  const [inboxElement, setInboxElement] = useState(null);
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
+  const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
 
   const isListPopoverOpen =
     shouldDisplayFirstListCreationMessage && firstListElement;
@@ -48,6 +57,27 @@ const DashboardSidebar = ({
   const filteredList = shouldDisplayFirstListCreationMessage
     ? lists?.filter(({ listType }) => listType !== 'INBOX')
     : lists;
+
+  useEffect(() => {
+    const dashboardSecondTimeValue = localStorageHelper.getItem(
+      DASHBOARD_SECOND_TIME_KEY,
+    );
+
+    if (dashboardSecondTimeValue === false) {
+      const dashboardThirdTimeValue = localStorageHelper.getItem(
+        STORAGE_DASHBOARD_THIRD_TIME_KEY,
+      );
+
+      if (isNil(dashboardThirdTimeValue) || dashboardThirdTimeValue) {
+        setInboxPopoverOpen(true);
+      }
+    }
+  }, [inboxElement]);
+
+  const closeInboxPopup = () => {
+    setInboxPopoverOpen(false);
+    localStorageHelper.setItem(STORAGE_DASHBOARD_THIRD_TIME_KEY, false);
+  };
 
   return (
     <DashboardSidebarWrapper>
@@ -77,7 +107,23 @@ const DashboardSidebar = ({
                 key={taskListIdentifier}
                 to={`/tasks/${taskListIdentifier}`}
               >
-                <ListItem>
+                <ListItem
+                  ref={element => {
+                    if (firstListElement === null && element) {
+                      if (listType !== 'INBOX') {
+                        setFirstListElement({
+                          reference: element,
+                          taskListIdentifier,
+                        });
+                      } else {
+                        setInboxElement({
+                          reference: element,
+                          taskListIdentifier,
+                        });
+                      }
+                    }
+                  }}
+                >
                   {isPrivate && (
                     <PrivateListIcon src={LockIcon} alt="private" />
                   )}
@@ -85,21 +131,7 @@ const DashboardSidebar = ({
                     onMouseEnter={event => handleMouseEnter(event, listName)}
                     onMouseLeave={() => setPopoverLabel(null)}
                   >
-                    <TitleText
-                      ref={element => {
-                        if (
-                          listType !== 'INBOX' &&
-                          firstListElement === null &&
-                          element
-                        )
-                          setFirstListElement({
-                            reference: element,
-                            taskListIdentifier,
-                          });
-                      }}
-                    >
-                      {listName}
-                    </TitleText>
+                    <TitleText>{listName}</TitleText>
                   </ListItemTitle>
                   <ListItemInfo>
                     {!!numberOfUnreadTasks && <InfoDot />}
@@ -140,10 +172,23 @@ const DashboardSidebar = ({
             hashHistory.push(
               `task-tour/${firstListElement?.taskListIdentifier}`,
             );
-            // navigate to task tour
           }}
           onClose={closeListCreationSuccessMessage}
           width={526}
+        />
+      </TourPopover>
+      <TourPopover
+        anchorEl={inboxElement?.reference}
+        position="right"
+        open={inboxPopoverOpen && inboxElement?.reference}
+      >
+        <StandardTourContent
+          title="Turn an email into a task"
+          description="Turn an email into a task by forwarding and email to : Task@DockHealth.email. Your inbox is where your forwarded emails will land and you can move them to any list you’d like. You can also use the inbox as a place to keep tasks of your own."
+          buttonText="Got it"
+          onButtonClick={closeInboxPopup}
+          onClose={closeInboxPopup}
+          width={450}
         />
       </TourPopover>
     </DashboardSidebarWrapper>
