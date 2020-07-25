@@ -72,17 +72,6 @@ const getMatchedComments = (comments, matchingCommentIdentifiers) =>
       )
     : comments;
 
-const dueDateQuickSelectOptions = [
-  {
-    label: 'Today',
-    date: moment(),
-  },
-  {
-    label: 'Tomorrow',
-    date: moment().add(1, 'days'),
-  },
-];
-
 const getToolTipMultiLabelDetails = labels => {
   let toolTipMultiLabelDetails = '';
   if (labels.length === 1) {
@@ -181,6 +170,17 @@ const TaskItem = ({
     moment(dueDate).format('HH:mm') !== '00:00'
       ? moment(dueDate).isBefore(moment())
       : dueDate && moment(dueDate).isBefore(moment().startOf('day'));
+
+  const dueDateQuickSelectOptions = [
+    {
+      label: 'Today',
+      date: moment(),
+    },
+    {
+      label: 'Tomorrow',
+      date: moment().add(1, 'days'),
+    },
+  ];
 
   return (
     <StandardTaskItemPanel
