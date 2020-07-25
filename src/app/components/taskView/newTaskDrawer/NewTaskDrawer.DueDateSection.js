@@ -18,55 +18,6 @@ const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YY';
 const SET_DATE_VALUE = 'set-date';
 
-const dueDateOptions = [
-  {
-    key: 'today',
-    value: moment()
-      .startOf('day')
-      .format(DATE_ISO_FORMAT),
-    label: (
-      <DueDateLabelContainer>
-        <RobotoTypography condensed variant="h4">
-          Today
-        </RobotoTypography>
-      </DueDateLabelContainer>
-    ),
-    displayLabel: moment()
-      .startOf('day')
-      .format(DATE_US_FORMAT),
-  },
-  {
-    key: 'tomorrow',
-    value: moment()
-      .startOf('day')
-      .add(1, 'day')
-      .format(DATE_ISO_FORMAT),
-    label: (
-      <DueDateLabelContainer>
-        <RobotoTypography condensed variant="h4">
-          Tomorrow
-        </RobotoTypography>
-      </DueDateLabelContainer>
-    ),
-    displayLabel: moment()
-      .startOf('day')
-      .add(1, 'day')
-      .format(DATE_US_FORMAT),
-  },
-  {
-    key: 'set-date',
-    value: SET_DATE_VALUE,
-    label: (
-      <DueDateLabelContainer>
-        <RobotoTypography condensed variant="h4">
-          Set date
-        </RobotoTypography>
-      </DueDateLabelContainer>
-    ),
-    displayLabel: 'Set date',
-  },
-];
-
 const renderDropdownItem = ({
   openCalendar,
   closeCalendar,
@@ -159,6 +110,55 @@ const DueDateSection = ({
       setValue,
     ],
   );
+
+  const dueDateOptions = [
+    {
+      key: 'today',
+      value: moment()
+        .startOf('day')
+        .format(DATE_ISO_FORMAT),
+      label: (
+        <DueDateLabelContainer>
+          <RobotoTypography condensed variant="h4">
+            Today
+          </RobotoTypography>
+        </DueDateLabelContainer>
+      ),
+      displayLabel: moment()
+        .startOf('day')
+        .format(DATE_US_FORMAT),
+    },
+    {
+      key: 'tomorrow',
+      value: moment()
+        .startOf('day')
+        .add(1, 'day')
+        .format(DATE_ISO_FORMAT),
+      label: (
+        <DueDateLabelContainer>
+          <RobotoTypography condensed variant="h4">
+            Tomorrow
+          </RobotoTypography>
+        </DueDateLabelContainer>
+      ),
+      displayLabel: moment()
+        .startOf('day')
+        .add(1, 'day')
+        .format(DATE_US_FORMAT),
+    },
+    {
+      key: 'set-date',
+      value: SET_DATE_VALUE,
+      label: (
+        <DueDateLabelContainer>
+          <RobotoTypography condensed variant="h4">
+            Set date
+          </RobotoTypography>
+        </DueDateLabelContainer>
+      ),
+      displayLabel: 'Set date',
+    },
+  ];
 
   const options = [
     ...dueDateOptions,
