@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useMount } from 'react-use';
 import { isNil } from 'ramda';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
+import * as userApi from 'api/user-api';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardContent from './DashboardContent/DashboardContent';
 import {
@@ -18,10 +20,12 @@ import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
 const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
 const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const DashboardView = () => {
   const [openedTour, setOpenendTour] = useState(null);
   const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
   const isLoadingDashboard = useSelector(dashboardTasksIsLoadingSelector);
+  const currentUser = useSelector(store => store.userState.user);
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
 
@@ -51,6 +55,30 @@ const DashboardView = () => {
     setOpenendTour(null);
     localStorageHelper.setItem(DASHBOARD_SECOND_TIME_KEY, false);
   };
+
+  const refreshAccessToken = user => {
+    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
+
+    if (sessionStorage.refreshAccessTokenTimeoutId) {
+      clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
+      sessionStorage.setItem('refreshAccessTokenTimeoutId', null);
+    }
+
+    const refreshAccessTokenTimeoutId = setTimeout(() => {
+      // console.log('refresh token on timeout');
+      userApi.refreshAccessToken(user.username);
+      refreshAccessToken(user);
+    }, systemTimeout);
+
+    sessionStorage.setItem(
+      'refreshAccessTokenTimeoutId',
+      refreshAccessTokenTimeoutId,
+    );
+  };
+
+  useMount(() => {
+    refreshAccessToken(currentUser);
+  });
 
   useEffect(() => {
     if (!isLoadingDashboard) openTourModal();
