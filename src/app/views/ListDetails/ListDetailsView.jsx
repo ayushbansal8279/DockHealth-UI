@@ -42,7 +42,7 @@ class Home extends Component {
 
   async componentDidMount() {
     const {
-      curentUser,
+      currentUser,
       routeParams,
       taskListActions,
       patientActions,
@@ -71,18 +71,18 @@ class Home extends Component {
 
     patientActions.getAllPatients();
 
-    this.refreshAccessToken(curentUser);
+    this.refreshAccessToken(currentUser);
 
     // TODO: Move to saga
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    this.listenForRealTimeEvents(routeParams.taskListIdentifier, curentUser);
+    this.listenForRealTimeEvents(routeParams.taskListIdentifier, currentUser);
   }
 
   componentWillUpdate(nextProps) {
-    const { actions, routeParams } = this.props;
+    const { actions, routeParams, currentUser } = this.props;
 
     if (
       nextProps.routeParams.taskListIdentifier ===
@@ -101,7 +101,7 @@ class Home extends Component {
       nextProps.routeParams.taskListIdentifier !==
       routeParams.taskListIdentifier
     ) {
-      const { curentUser, taskListActions, megaFilterActions } = this.props;
+      const { taskListActions, megaFilterActions } = this.props;
 
       actions.loading();
       megaFilterActions.clearFiltersForMegaFilter();
@@ -129,14 +129,23 @@ class Home extends Component {
           );
         }
 
-        this.listenForRealTimeEvents(
-          nextProps.routeParams.taskListIdentifier,
-          curentUser,
-        );
-
         // Start with no selected tasks
         actions.storeAsCurrentTask(null);
       }
+    }
+
+    if (
+      (currentUser &&
+        nextProps &&
+        nextProps.currentUser &&
+        currentUser.userIdentifier !== nextProps.currentUser.userIdentifier) ||
+      nextProps.routeParams.taskListIdentifier !==
+        routeParams.taskListIdentifier
+    ) {
+      this.listenForRealTimeEvents(
+        nextProps.routeParams.taskListIdentifier,
+        nextProps.currentUser,
+      );
     }
   }
 
@@ -147,25 +156,25 @@ class Home extends Component {
   }
 
   listenForRealTimeEvents = (taskListIdentifier, currentUser) => {
-    if (!currentUser) {
+    if (!currentUser || !currentUser.userIdentifier) {
       return;
     }
 
-    const { taskActions } = this.props;
+    const { actions } = this.props;
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
 
     let channel = pusherInstance.channel(channelName);
     if (!channel) {
       channel = pusherInstance.subscribe(channelName);
-      console.log('subscribed to channel');
+      console.log(`subscribed to channel: ${channelName}`);
     }
-    channel.bind('pusher:subscription_succeeded', function() {
-      console.log('subscription_succeeded');
-    });
-    channel.bind('pusher:subscription_error', function(status) {
-      console.log('subscription_error', status);
-    });
+    // channel.bind('pusher:subscription_succeeded', function() {
+    //   console.log('subscription_succeeded');
+    // });
+    // channel.bind('pusher:subscription_error', function(status) {
+    //   console.log('subscription_error', status);
+    // });
     // console.log(channel);
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
@@ -174,7 +183,7 @@ class Home extends Component {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
-      console.log(data);
+      // console.log(data);
       const currentTaskListIdentifier = taskListIdentifier;
       if (
         data.task?.taskList &&
@@ -185,20 +194,20 @@ class Home extends Component {
             data.eventType?.startsWith('DUPLICATE_TASK')) &&
           data.task?.taskList
         ) {
-          taskActions.getListTasks(
+          actions.getListTasks(
             data.task.taskList.taskListIdentifier,
             null,
             null,
             'INCOMPLETE',
           );
-          taskActions.getListTasksCount(
+          actions.getListTasksCount(
             data.task.taskList.taskListIdentifier,
             null,
             'COMPLETE',
           );
         }
         // eslint-disable-next-line no-unused-expressions
-        taskActions.refreshTask(data.task);
+        actions.refreshTask(data.task);
       }
     });
   };
@@ -550,7 +559,7 @@ class Home extends Component {
 const mapStateToProps = state => ({
   taskLists: taskListSelector(state),
   completedTasks: completedTasksSelector(state),
-  curentUser: userProfileSelector(state),
+  currentUser: userProfileSelector(state),
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   filters: availableFiltersInInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
