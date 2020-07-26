@@ -848,7 +848,8 @@ export function refreshAccessToken(email) {
           comp.getUserByEmailAndAccessToken(email, data.accessToken.jwtToken);
         }
         sessionStorage.setItem('accessToken', data.accessToken.jwtToken);
-        resolve(session.isValid());
+        // resolve(session.isValid());
+        resolve(true);
       })
       .catch(error => {
         console.log(error);
