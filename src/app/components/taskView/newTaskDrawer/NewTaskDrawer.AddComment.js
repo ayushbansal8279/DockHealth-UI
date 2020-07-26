@@ -41,7 +41,7 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
         onBlur={saveComment}
         onFocus={onCommentFocus}
         value={commentContent}
-        placeholder="Leave a comment"
+        placeholder="Leave a comment and press enter on your keyboard to save"
         ref={addCommentReference}
       />
       {isAddingComment && (
