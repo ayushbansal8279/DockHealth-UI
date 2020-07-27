@@ -17,16 +17,16 @@ const TaskDrawerTourContent = ({
   currentStepIndex,
   onClose,
 }) => {
-  const { title, description, description2 } = steps[currentStepIndex];
+  const { title, description, additionalDescription } = steps[currentStepIndex];
 
   return (
     <TourContent>
       <Title>{title}</Title>
       <Description>{description}</Description>
-      {description2 && (
+      {additionalDescription && (
         <>
           <Spacing vertical={4} />
-          <Description>{description2}</Description>
+          <Description>{additionalDescription}</Description>
         </>
       )}
       <NavigationContainer>

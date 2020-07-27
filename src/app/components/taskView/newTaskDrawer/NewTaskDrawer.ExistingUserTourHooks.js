@@ -45,7 +45,7 @@ const existingUserTaskDrawerTourHooks = ({
       title: 'Due Date & Due Time',
       description:
         'We added the ability to assign a due time for tasks. Based on a due date and time, we‘ll send alerts to remind you a task is due.',
-      description2:
+      additionalDescription:
         'Remember that the new Home screen is organized based on due date. Adding due dates will help you stay organized and get things done on time.',
     },
     {
