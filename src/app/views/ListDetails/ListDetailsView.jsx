@@ -41,7 +41,7 @@ const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 class Home extends Component {
   state = { isTourOpen: false };
 
-  // change for backend falg
+  // substitute for backend falg ( if user ever created a task )
   drawerAutoOpenEnabled = true;
 
   async componentDidMount() {
