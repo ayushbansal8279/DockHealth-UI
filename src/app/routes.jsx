@@ -32,7 +32,11 @@ import {
 } from 'sagas/patient-tasks-saga';
 import { initializeDashboardView } from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
-import { getMembersByTaskListId } from 'actions/tasklist-actions';
+import {
+  getMembersByTaskListId,
+  getTaskListForUser,
+} from 'actions/tasklist-actions';
+import { findPendingTaskListsForUser } from 'actions/invitation-actions';
 import {
   getFiltersForMegaFilter,
   getFiltersForPeopleListMegaFilter,
@@ -274,6 +278,8 @@ export const Routes = ({ store }) => {
 
   const onEnterDashboard = () => {
     dispatch(initializeHiddenNavbarTemplate());
+    dispatch(getTaskListForUser());
+    dispatch(findPendingTaskListsForUser());
     dispatch(initializeDashboardView());
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
@@ -33,6 +33,7 @@ const DashboardView = ({
   isTaskDrawerOpen,
   isLoadingDashboard,
   lists,
+  pendingLists,
   showNavbar,
   currentUser,
   openModal,
@@ -77,6 +78,11 @@ const DashboardView = ({
     refreshAccessToken(currentUser);
   });
 
+  const allLists = useMemo(() => [...pendingLists, ...lists], [
+    lists,
+    pendingLists,
+  ]);
+
   const handleCreateList = () => {
     setTaskListAsCurrentList(null);
     openModal('CreateList', {
@@ -108,7 +114,7 @@ const DashboardView = ({
                 shouldDisplayFirstListCreationMessage={
                   isFirstUserListCreationSuccess
                 }
-                lists={lists}
+                lists={allLists}
                 showNavbar={showNavbar}
                 closeListCreationSuccessMessage={() =>
                   setIsFirstUserListCreationSuccess(false)
@@ -169,6 +175,7 @@ const DashboardView = ({
 
 const mapStateToProps = state => ({
   lists: listsSelector(state),
+  pendingLists: state.invitationState.pendingTasklists,
   isTaskDrawerOpen: state.taskDrawerState.open,
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
   currentUser: userProfileSelector(state),
