@@ -41,9 +41,6 @@ const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 class Home extends Component {
   state = { isTourOpen: false };
 
-  // substitute for backend falg ( if user ever created a task )
-  drawerAutoOpenEnabled = false;
-
   async componentDidMount() {
     const {
       routeParams,
@@ -485,13 +482,13 @@ class Home extends Component {
   };
 
   quickAddTask = (taskName, taskGroupIdentifier) => {
-    const { tasksGroupsListActions } = this.props;
+    const { tasksGroupsListActions, taskCounters } = this.props;
 
     if (taskName) {
       const payload = {
         description: taskName,
         taskGroupIdentifier,
-        autoOpenDrawer: this.drawerAutoOpenEnabled,
+        autoOpenDrawer: taskCounters?.incomplete === 0,
       };
 
       tasksGroupsListActions.createTask(payload);
@@ -546,6 +543,7 @@ class Home extends Component {
       routeParams,
       selectedFilters,
       routeParams: { taskListIdentifier },
+      taskCounters,
     } = this.props;
 
     const { isTourOpen } = this.state;
@@ -574,7 +572,7 @@ class Home extends Component {
       listUniqueKey: taskListIdentifier,
       pdfTitle: `${loadedTasklist?.listName}`,
       groupPagination: true,
-      drawerAutoOpenEnabled: this.drawerAutoOpenEnabled,
+      drawerAutoOpenEnabled: taskCounters?.incomplete === 0,
     };
 
     return (
@@ -600,6 +598,7 @@ const mapStateToProps = state => ({
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   filters: availableFiltersInInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
+  taskCounters: state.listTasks.taskCounters,
 });
 
 const mapDispatchToProps = dispatch => ({

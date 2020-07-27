@@ -7,6 +7,7 @@ import TaskDrawerTourContent from 'components/tour-popover/content/TaskDrawerTou
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 
 const TASK_DRAWER_FIRST_TIME_KEY = 'TASK_DRAWER_FIRST_TIME_KEY';
+const TASK_DRAWER_FIRST_AUTO_OPEN_KEY = 'TASK_DRAWER_FIRST_AUTO_OPEN_KEY';
 
 const existingUserTaskDrawerTourHooks = ({
   taskDrawerOpen,
@@ -95,8 +96,16 @@ const existingUserTaskDrawerTourHooks = ({
   }, [openedTourStep]);
 
   useEffect(() => {
-    if (fromFirstAddTask && taskDrawerOpen) {
+    const taskDrawerFirstAutoOpenValue = localStorageHelper.getItem(
+      TASK_DRAWER_FIRST_AUTO_OPEN_KEY,
+    );
+    if (
+      fromFirstAddTask &&
+      taskDrawerOpen &&
+      (isNil(taskDrawerFirstAutoOpenValue) || taskDrawerFirstAutoOpenValue)
+    ) {
       setTimeout(() => {
+        localStorageHelper.setItem(TASK_DRAWER_FIRST_AUTO_OPEN_KEY, false);
         setOpenedFirstQuickAddTaskPopover(true);
       }, 500);
       return;
