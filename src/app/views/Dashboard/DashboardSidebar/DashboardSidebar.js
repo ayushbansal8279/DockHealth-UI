@@ -34,6 +34,7 @@ const DashboardSidebar = ({
   showNavbar,
   shouldDisplayFirstListCreationMessage,
   closeListCreationSuccessMessage,
+  acceptInvitation,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [firstListElement, setFirstListElement] = useState(null);
@@ -111,41 +112,41 @@ const DashboardSidebar = ({
           </ListsHeader>
         </Link>
         <ListItemsWrapper>
-          {filteredList?.map(
-            ({
-              listName,
-              listType,
-              taskListIdentifier,
-              numberOfUnreadTasks,
-              isPrivate,
-              numberOfTasks = 0,
-            }) => (
-              <Link
-                key={taskListIdentifier}
-                to={`/tasks/${taskListIdentifier}`}
+          {filteredList?.map(taskList => (
+            <Link
+              key={taskList?.taskListIdentifier}
+              to={`/tasks/${taskList?.taskListIdentifier}`}
+              onClick={() => {
+                if (taskList?.status === 'PENDING') acceptInvitation(taskList);
+              }}
+            >
+              <ListItem
+                ref={element =>
+                  setPopupReferences(
+                    element,
+                    taskList?.listType,
+                    taskList?.taskListIdentifier,
+                  )
+                }
               >
-                <ListItem
-                  ref={element =>
-                    setPopupReferences(element, listType, taskListIdentifier)
+                {taskList?.isPrivate && (
+                  <PrivateListIcon src={LockIcon} alt="private" />
+                )}
+                <ListItemTitle
+                  onMouseEnter={event =>
+                    handleMouseEnter(event, taskList?.listName)
                   }
+                  onMouseLeave={() => setPopoverLabel(null)}
                 >
-                  {isPrivate && (
-                    <PrivateListIcon src={LockIcon} alt="private" />
-                  )}
-                  <ListItemTitle
-                    onMouseEnter={event => handleMouseEnter(event, listName)}
-                    onMouseLeave={() => setPopoverLabel(null)}
-                  >
-                    <TitleText>{listName}</TitleText>
-                  </ListItemTitle>
-                  <ListItemInfo>
-                    {!!numberOfUnreadTasks && <InfoDot />}
-                    {numberOfTasks}
-                  </ListItemInfo>
-                </ListItem>
-              </Link>
-            ),
-          )}
+                  <TitleText>{taskList?.listName}</TitleText>
+                </ListItemTitle>
+                <ListItemInfo>
+                  {!!taskList?.numberOfUnreadTasks && <InfoDot />}
+                  {taskList?.numberOfTasks}
+                </ListItemInfo>
+              </ListItem>
+            </Link>
+          ))}
         </ListItemsWrapper>
       </ListsSection>
       <RolloverPopover

@@ -9,6 +9,7 @@ import { listsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TemplateActions from 'actions/template-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
+import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskListSagaActions from 'sagas/tasklist-saga';
 import * as UserApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
@@ -39,6 +40,7 @@ const DashboardView = ({
   openModal,
   setTaskListAsCurrentList,
   fetchTasklistForUser,
+  acceptInviteToTaskList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [
@@ -119,6 +121,7 @@ const DashboardView = ({
                 closeListCreationSuccessMessage={() =>
                   setIsFirstUserListCreationSuccess(false)
                 }
+                acceptInvitation={acceptInviteToTaskList}
               />
             </DashboardSidebarWrapper>
           )}
@@ -186,6 +189,7 @@ const mapDispatchToProps = {
   openModal: openModalAction,
   setTaskListAsCurrentList: TaskListActions.setTaskListAsCurrentList,
   fetchTasklistForUser: TaskListSagaActions.fetchTasklistForUser,
+  acceptInviteToTaskList: InvitationActions.acceptInviteToTaskList,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);

@@ -1,3 +1,4 @@
+import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import * as InvitationApi from 'api/invitation-api';
 import * as TaskListApi from 'api/tasklist-api';
 import * as ActionTypes from './action-types';
@@ -18,6 +19,7 @@ export function acceptInviteToTaskList(tasklist) {
   return dispatch => {
     return InvitationApi.acceptInviteToTaskList(tasklist.taskListIdentifier)
       .then(response => {
+        onTaskListInvitationAccepted();
         dispatch({
           type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS,
           res: response,

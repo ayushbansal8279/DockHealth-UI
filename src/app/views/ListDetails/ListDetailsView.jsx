@@ -42,7 +42,7 @@ class Home extends Component {
   state = { isTourOpen: false };
 
   // substitute for backend falg ( if user ever created a task )
-  drawerAutoOpenEnabled = true;
+  drawerAutoOpenEnabled = false;
 
   async componentDidMount() {
     const {
@@ -225,17 +225,17 @@ class Home extends Component {
         ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
         : {};
 
-    const headerComponent = (
-      <Header
-        isFetching={false}
-        title={loadedTasklist.listName}
-        taskList={loadedTasklist}
-        resetHeader={this.setViewHeader}
-        hasTitle={loadedTasklist.listName}
-      />
-    );
+    if (loadedTasklist?.listName) {
+      const headerComponent = (
+        <Header
+          isFetching={false}
+          title={loadedTasklist.listName}
+          taskList={loadedTasklist}
+          resetHeader={this.setViewHeader}
+          hasTitle={loadedTasklist.listName}
+        />
+      );
 
-    if (loadedTasklist.listName) {
       setHeaderAction({
         layout: [
           {

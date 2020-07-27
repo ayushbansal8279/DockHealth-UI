@@ -31,7 +31,6 @@ import ListsComponent from 'components/LEGACY_list/ListsComponent';
 // import PendingListsComponent from 'components/LEGACY_list/PendingListsComponent';
 import {
   onTaskListDeleted,
-  onTaskListInvitationAccepted,
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from 'helpers/ga-event-helper';
@@ -253,7 +252,6 @@ class TaskListView extends PureComponent {
   acceptInviteToTaskList = taskList => {
     const { invitationAction, taskActions } = this.props;
     invitationAction.acceptInviteToTaskList(taskList);
-    onTaskListInvitationAccepted();
     taskActions.resetTaskSearch();
     hashHistory.push(`tasks/${taskList.taskListIdentifier}`);
   };
