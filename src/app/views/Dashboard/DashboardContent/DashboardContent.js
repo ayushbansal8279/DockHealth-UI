@@ -60,11 +60,15 @@ const SORT_METHODS = {
   [SORT_CONFIG.dueDateAsc]: list =>
     list
       .map(item => item)
-      .sort((a, b) => new Date(b?.dueDate) - new Date(a?.dueDate)),
+      .sort((a, b) => {
+        return b?.dueDate > a?.dueDate ? 1 : -1;
+      }),
   [SORT_CONFIG.dueDateDsc]: list =>
     list
       .map(item => item)
-      .sort((a, b) => new Date(a?.dueDate) - new Date(b?.dueDate)),
+      .sort((a, b) => {
+        return a?.dueDate > b?.dueDate ? 1 : -1;
+      }),
   [SORT_CONFIG.listNameAsc]: list =>
     list
       .map(item => item)
