@@ -13,6 +13,7 @@ import {
 } from 'selectors/dashboard-tasks-selectors';
 import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
+import DashboardNewUserInfo from 'views/Dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
@@ -101,6 +102,7 @@ const DashboardList = ({
   const filteredDashboardTasks = dashboardTasks.filter(
     ({ tasks }) => tasks && tasks.length !== 0,
   );
+  const { userIdentifier, usageState } = currentUser;
 
   const currentSortMethod = SORT_METHODS[sortType];
   const isSortApplied = sortType !== SORT_CONFIG.default;
@@ -149,8 +151,6 @@ const DashboardList = ({
   };
 
   const handleQuickAddTask = taskName => {
-    const { userIdentifier } = currentUser;
-
     modalActions.openModal('ListPicker', {
       fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
       listCreationPayload: {
@@ -165,6 +165,9 @@ const DashboardList = ({
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
+
+    // if login count is < 5
+    if (usageState?.loginCount < 5) return <DashboardNewUserInfo />;
 
     return (
       <EmptyDashboard>
