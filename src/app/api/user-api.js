@@ -5,6 +5,7 @@ import Amplify from '@aws-amplify/core';
 import Auth from '@aws-amplify/auth';
 import configureStore from '../ConfigureStore';
 import axios from './axios-heydoc';
+import sendEvent from './usage-api';
 
 const store = configureStore();
 
@@ -273,6 +274,11 @@ export function login(loginUserName, password) {
             'accessToken',
             user.signInUserSession.accessToken.jwtToken,
           );
+          sendEvent({
+            eventAction: 'LOGIN_SUCCESS',
+            eventCategory: 'AUTH',
+            usageEventType: 'USAGE_ACTION',
+          });
           resolve(user);
         }
       })
@@ -373,6 +379,11 @@ export function sendMFACode(userData) {
           'accessToken',
           loggedUser.signInUserSession.accessToken.jwtToken,
         );
+        sendEvent({
+          eventAction: 'LOGIN_SUCCESS',
+          eventCategory: 'AUTH',
+          usageEventType: 'USAGE_ACTION',
+        });
         resolve(loggedUser);
       })
       .catch(error => {
@@ -922,6 +933,11 @@ export function getEnterpriseAccessTokensByAuthCode(authCode) {
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('accessToken', userAccessToken);
+        sendEvent({
+          eventAction: 'LOGIN_SUCCESS',
+          eventCategory: 'AUTH',
+          usageEventType: 'USAGE_ACTION',
+        });
         resolve('success');
       });
     } catch (error) {
