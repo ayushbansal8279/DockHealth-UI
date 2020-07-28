@@ -8,6 +8,8 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
   CancelButton,
@@ -17,15 +19,17 @@ const DuplicateTaskModal = ({ skip, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={Attachment} alt="Attachment" />
-        <Typography color="textSecondary" variant="h2">
-          DUPLICATE ATTACHMENT
-        </Typography>
-        <Spacing vertical={5} />
-        <Typography variant="body1">
-          Would you like to duplicate attachments?
-        </Typography>
-        <Spacing vertical={4} />
+        <ModalIconContainer>
+          <ModalMainIcon src={Attachment} alt="Attachment" />
+          <Typography color="textSecondary" variant="h2">
+            DUPLICATE ATTACHMENT
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            Would you like to duplicate attachments?
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton variant="outlined" type="button" onClick={skip}>
             No, Do Not Duplicate

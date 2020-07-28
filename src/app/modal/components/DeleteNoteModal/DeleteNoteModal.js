@@ -8,6 +8,8 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
 } from '../styled';
@@ -16,16 +18,18 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={Note} alt="note" />
-        <Typography color="textPrimary" variant="h2">
-          Delete patient note
-        </Typography>
-        <Spacing vertical={5} />
-        <Typography variant="body1">
-          Are you sure you want to delete this note? This action cannot be
-          undone
-        </Typography>
-        <Spacing vertical={4} />
+        <ModalIconContainer>
+          <ModalMainIcon src={Note} alt="note" />
+          <Typography color="textPrimary" variant="h2">
+            Delete patient note
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            Are you sure you want to delete this note? This action cannot be
+            undone
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <Button variant="outlined" type="button" onClick={closeModal}>
             Cancel

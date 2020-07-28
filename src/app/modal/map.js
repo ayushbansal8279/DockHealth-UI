@@ -9,7 +9,7 @@ import DeleteCommentModal from './components/DeleteCommentModal/DeleteCommentMod
 import ArchivePatientModal from './components/ArchivePatientModal/ArchivePatientModal';
 import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActiveUserModal';
 import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
-import ResetSortingModal from './components/ResetSortingModal/ResetSortingModal';
+import ClearSortFiltersModal from './components/ClearSortFiltersModal/ClearSortFiltersModal';
 import CreateListModal from './components/CreateListModal/CreateListModal';
 import VideoModal from './components/VideoModal/VideoModal';
 
@@ -25,7 +25,7 @@ const MODAL_MAP = {
   ArchivePatient: ArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
-  ResetSorting: ResetSortingModal,
+  ClearSortFilters: ClearSortFiltersModal,
   CreateList: CreateListModal,
   Video: VideoModal,
 };

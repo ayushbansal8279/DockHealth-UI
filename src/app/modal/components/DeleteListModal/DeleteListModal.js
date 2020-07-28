@@ -8,6 +8,8 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
   CancelButton,
@@ -17,16 +19,18 @@ const DeleteListModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={TrashCan} alt="Task" />
-        <Typography color="textPrimary" variant="h2">
-          DELETE LIST
-        </Typography>
-        <Spacing vertical={5} />
-        <Typography variant="body1">
-          Are you sure you want to delete this list? This action cannot be
-          undone.
-        </Typography>
-        <Spacing vertical={4} />
+        <ModalIconContainer>
+          <ModalMainIcon src={TrashCan} alt="Task" />
+          <Typography color="textPrimary" variant="h2">
+            DELETE LIST
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            Are you sure you want to delete this list? This action cannot be
+            undone.
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton variant="outlined" type="button" onClick={closeModal}>
             Cancel
