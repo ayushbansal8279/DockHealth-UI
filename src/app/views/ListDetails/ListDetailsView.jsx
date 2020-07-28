@@ -207,7 +207,7 @@ class Home extends Component {
           );
         }
         // eslint-disable-next-line no-unused-expressions
-        actions.refreshTask(data.task);
+        actions.refreshAnotherTask(data.task);
       }
     });
   };
