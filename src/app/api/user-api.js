@@ -837,24 +837,21 @@ export function refreshAccessToken(email) {
       resolve(session.isValid());
     });
     */
+   
+    const cognitoUser = await Auth.currentAuthenticatedUser();
+    const currentSession = await Auth.currentSession();
+    cognitoUser.refreshSession(currentSession.refreshToken, (err, session) => {
+      //console.log('session', err, session);
+      const { accessToken } = session;
+      console.log(accessToken)
+      axios.defaults.headers.common.Authorization = `Bearer ${accessToken.jwtToken}`;
+      sessionStorage.setItem('accessToken', accessToken.jwtToken);
+      resolve(true);
+      if(err){
+        reject(err);
+      }
+    }); 
 
-    Auth.currentSession()
-      .then(data => {
-        // console.log(data);
-        const currentAccessToken = sessionStorage.getItem('accessToken');
-        axios.defaults.headers.common.Authorization = `Bearer ${data.accessToken.jwtToken}`;
-        sessionStorage.setItem('accessToken', data.accessToken.jwtToken);
-        if (currentAccessToken !== data.accessToken.jwtToken) {
-          comp.getUserByEmailAndAccessToken(email, data.accessToken.jwtToken);
-        }
-        sessionStorage.setItem('accessToken', data.accessToken.jwtToken);
-        // resolve(session.isValid());
-        resolve(true);
-      })
-      .catch(error => {
-        console.log(error);
-        reject(error);
-      });
   });
 }
 
