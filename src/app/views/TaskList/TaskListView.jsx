@@ -480,11 +480,6 @@ class TaskListView extends PureComponent {
                       </LoaderContainer>
                     ) : (
                       <div style={{ marginTop: '0px', padding: '0px' }}>
-                        {/* <PendingListsComponent
-                          taskLists={pendingTaskLists}
-                          acceptInviteToTaskList={this.acceptInviteToTaskList}
-                          rejectInviteToTaskList={this.rejectInviteToTaskList}
-                        /> */}
                         <ListsComponent
                           taskLists={pendingTaskLists}
                           currentUser={currentUser}

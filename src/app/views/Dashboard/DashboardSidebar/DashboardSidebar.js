@@ -1,4 +1,8 @@
 import React, { useRef, useState } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as ModalActions from 'modal/actions';
+import * as TaskListActions from 'actions/tasklist-actions';
 import { Link } from 'react-router';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
@@ -34,6 +38,8 @@ const DashboardSidebar = ({
   shouldDisplayFirstListCreationMessage,
   closeListCreationSuccessMessage,
   acceptInvitation,
+  modalActions,
+  taskListActions,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const hoveredItemReference = useRef(null);
@@ -71,6 +77,16 @@ const DashboardSidebar = ({
       current: itemsMoreButtonReferences.current[indexOnList],
     });
     setListMenuPopupOpen(true);
+  };
+
+  const openDeleteConfirmationModal = () => {
+    const modalProps = {
+      confirm: () => {
+        taskListActions.deleteTaskListById(selectedList?.taskListIdentifier);
+        modalActions.closeModal();
+      },
+    };
+    modalActions.openModal('DeleteList', modalProps);
   };
 
   return (
@@ -168,21 +184,28 @@ const DashboardSidebar = ({
           {
             key: 'edit',
             label: 'Edit list',
-            onClick: () => {},
+            onClick: () => {
+              setListMenuPopupOpen(false);
+            },
           },
           ...(['ADMIN', 'OWNER'].includes(selectedList?.role)
             ? [
                 {
                   key: 'delete',
                   label: 'Delete list',
-                  onClick: () => {},
+                  onClick: () => {
+                    openDeleteConfirmationModal();
+                    setListMenuPopupOpen(false);
+                  },
                 },
               ]
             : []),
           {
             key: 'invite',
             label: 'Invite people to list',
-            onClick: () => {},
+            onClick: () => {
+              setListMenuPopupOpen(false);
+            },
           },
         ]}
       />
@@ -191,4 +214,9 @@ const DashboardSidebar = ({
   );
 };
 
-export default DashboardSidebar;
+const mapDispachToProps = dispatch => ({
+  modalActions: bindActionCreators(ModalActions, dispatch),
+  taskListActions: bindActionCreators(TaskListActions, dispatch),
+});
+
+export default connect(null, mapDispachToProps)(DashboardSidebar);
