@@ -26,6 +26,7 @@ export const Button = styled.button`
   text-align: left;
   outline: none;
   color: ${palette.darkGrey};
+  font-family: 'Montserrat', sans-serif;
 
   &:hover {
     cursor: pointer;
