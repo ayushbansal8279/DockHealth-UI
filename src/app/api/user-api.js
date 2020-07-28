@@ -817,7 +817,7 @@ export function refreshAccessToken(email) {
   //   Pool: userPool,
   // };
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     /*
     const cognitoUser = new CognitoUser(cognitoUserData);
     cognitoUser.getSession((error, session) => {
