@@ -1,16 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Link, hashHistory } from 'react-router';
+import React, { useRef, useState } from 'react';
+import { Link } from 'react-router';
+import { IconButton } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
-import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
-import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
-import {
-  DASHBOARD_SECOND_TIME_KEY,
-  STORAGE_DASHBOARD_THIRD_TIME_KEY,
-} from 'views/Dashboard/existing-user-tour-hooks';
-import localStorageHelper from 'helpers/local-storage-helper';
-import { isNil } from 'ramda';
+import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import {
   TopSection,
   MenuButton,
@@ -27,7 +22,11 @@ import {
   Arrow,
   RolloverPopover,
   RolloverPopoverLabel,
+  ListItemWrapper,
+  ListLink,
+  MenuIconPlaceholder,
 } from './styled';
+import initializeUserTourItems from './user-tour';
 
 const DashboardSidebar = ({
   lists,
@@ -37,14 +36,21 @@ const DashboardSidebar = ({
   acceptInvitation,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [firstListElement, setFirstListElement] = useState(null);
-  const [inboxElement, setInboxElement] = useState(null);
   const hoveredItemReference = useRef(null);
-  const [popoverLabel, setPopoverLabel] = useState(null);
-  const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
+  const itemsMoreButtonReferences = useRef([]);
 
-  const isListPopoverOpen =
-    shouldDisplayFirstListCreationMessage && firstListElement;
+  const [popoverLabel, setPopoverLabel] = useState(null);
+  const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
+  const [
+    currentListMenuPopupReference,
+    setCurrentListMenuPopupReference,
+  ] = useState(false);
+  const [selectedList, setSelectedList] = useState(null);
+
+  const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
+    shouldDisplayFirstListCreationMessage,
+    closeListCreationSuccessMessage,
+  });
 
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
@@ -59,42 +65,12 @@ const DashboardSidebar = ({
     ? lists?.filter(({ listType }) => listType !== 'INBOX')
     : lists;
 
-  useEffect(() => {
-    const dashboardSecondTimeValue = localStorageHelper.getItem(
-      DASHBOARD_SECOND_TIME_KEY,
-    );
-
-    if (dashboardSecondTimeValue === false) {
-      const dashboardThirdTimeValue = localStorageHelper.getItem(
-        STORAGE_DASHBOARD_THIRD_TIME_KEY,
-      );
-
-      if (isNil(dashboardThirdTimeValue) || dashboardThirdTimeValue) {
-        setInboxPopoverOpen(true);
-      }
-    }
-  }, [inboxElement]);
-
-  const closeInboxPopup = () => {
-    setInboxPopoverOpen(false);
-    localStorageHelper.setItem(STORAGE_DASHBOARD_THIRD_TIME_KEY, false);
-  };
-
-  const setPopupReferences = (element, listType, taskListIdentifier) => {
-    if (element) {
-      if (firstListElement === null && listType !== 'INBOX') {
-        setFirstListElement({
-          reference: element,
-          taskListIdentifier,
-        });
-      }
-      if (inboxElement === null && listType === 'INBOX') {
-        setInboxElement({
-          reference: element,
-          taskListIdentifier,
-        });
-      }
-    }
+  const openListMenuPopover = (taskList, indexOnList) => {
+    setSelectedList(taskList);
+    setCurrentListMenuPopupReference({
+      current: itemsMoreButtonReferences.current[indexOnList],
+    });
+    setListMenuPopupOpen(true);
   };
 
   return (
@@ -112,40 +88,60 @@ const DashboardSidebar = ({
           </ListsHeader>
         </Link>
         <ListItemsWrapper>
-          {filteredList?.map(taskList => (
-            <Link
-              key={taskList?.taskListIdentifier}
-              to={`/tasks/${taskList?.taskListIdentifier}`}
-              onClick={() => {
-                if (taskList?.status === 'PENDING') acceptInvitation(taskList);
-              }}
-            >
-              <ListItem
-                ref={element =>
-                  setPopupReferences(
-                    element,
-                    taskList?.listType,
-                    taskList?.taskListIdentifier,
-                  )
-                }
+          {filteredList?.map((taskList, index) => (
+            <ListItemWrapper>
+              <ListLink
+                key={taskList?.taskListIdentifier}
+                to={`/tasks/${taskList?.taskListIdentifier}`}
+                onClick={() => {
+                  if (taskList?.status === 'PENDING')
+                    acceptInvitation(taskList);
+                }}
               >
-                {taskList?.isPrivate && (
-                  <PrivateListIcon src={LockIcon} alt="private" />
-                )}
-                <ListItemTitle
-                  onMouseEnter={event =>
-                    handleMouseEnter(event, taskList?.listName)
+                <ListItem
+                  ref={element =>
+                    setTourPopupReferences(
+                      element,
+                      taskList?.listType,
+                      taskList?.taskListIdentifier,
+                    )
                   }
-                  onMouseLeave={() => setPopoverLabel(null)}
                 >
-                  <TitleText>{taskList?.listName}</TitleText>
-                </ListItemTitle>
-                <ListItemInfo>
-                  {!!taskList?.numberOfUnreadTasks && <InfoDot />}
-                  {taskList?.numberOfTasks}
-                </ListItemInfo>
-              </ListItem>
-            </Link>
+                  {taskList?.isPrivate && (
+                    <PrivateListIcon src={LockIcon} alt="private" />
+                  )}
+                  <ListItemTitle
+                    onMouseEnter={event =>
+                      handleMouseEnter(event, taskList?.listName)
+                    }
+                    onMouseLeave={() => setPopoverLabel(null)}
+                  >
+                    <TitleText>{taskList?.listName}</TitleText>
+                  </ListItemTitle>
+                  <ListItemInfo>
+                    {!!taskList?.numberOfUnreadTasks && <InfoDot />}
+                    {taskList?.numberOfTasks}
+                  </ListItemInfo>
+                </ListItem>
+              </ListLink>
+              {taskList?.listType !== 'INBOX' ? (
+                <IconButton
+                  ref={element => {
+                    if (element)
+                      itemsMoreButtonReferences.current[index] = element;
+                  }}
+                  onClick={() => {
+                    openListMenuPopover(taskList, index);
+                  }}
+                  size="small"
+                  color="secondary"
+                >
+                  <MoreVert />
+                </IconButton>
+              ) : (
+                <MenuIconPlaceholder />
+              )}
+            </ListItemWrapper>
           ))}
         </ListItemsWrapper>
       </ListsSection>
@@ -164,39 +160,33 @@ const DashboardSidebar = ({
       >
         <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
       </RolloverPopover>
-      <TourPopover
-        anchorEl={firstListElement?.reference}
-        position="bottom-start"
-        open={isListPopoverOpen}
-        onClose={closeListCreationSuccessMessage}
-      >
-        <StandardTourContent
-          title="Congrats on adding your first list!"
-          description="Lists will appear in this section of the page and will have a blue dot next to the number if there’s new actiity since the last time you logged in."
-          buttonText="Add a task to this list"
-          onButtonClick={() => {
-            closeListCreationSuccessMessage();
-            hashHistory.push(
-              `task-tour/${firstListElement?.taskListIdentifier}`,
-            );
-          }}
-          width={526}
-        />
-      </TourPopover>
-      <TourPopover
-        anchorEl={inboxElement?.reference}
-        position="right"
-        open={inboxPopoverOpen && inboxElement?.reference}
-        onClose={closeInboxPopup}
-      >
-        <StandardTourContent
-          title="Turn an email into a task"
-          description="Turn an email into a task by forwarding and email to : Task@DockHealth.email. Your inbox is where your forwarded emails will land and you can move them to any list you’d like. You can also use the inbox as a place to keep tasks of your own."
-          buttonText="Got it"
-          onButtonClick={closeInboxPopup}
-          width={450}
-        />
-      </TourPopover>
+      <MenuPopover
+        anchorEl={currentListMenuPopupReference?.current}
+        open={listMenuPopupOpen}
+        onClose={() => setListMenuPopupOpen(false)}
+        options={[
+          {
+            key: 'edit',
+            label: 'Edit list',
+            onClick: () => {},
+          },
+          ...(['ADMIN', 'OWNER'].includes(selectedList?.role)
+            ? [
+                {
+                  key: 'delete',
+                  label: 'Delete list',
+                  onClick: () => {},
+                },
+              ]
+            : []),
+          {
+            key: 'invite',
+            label: 'Invite people to list',
+            onClick: () => {},
+          },
+        ]}
+      />
+      {renderTourItems()}
     </DashboardSidebarWrapper>
   );
 };

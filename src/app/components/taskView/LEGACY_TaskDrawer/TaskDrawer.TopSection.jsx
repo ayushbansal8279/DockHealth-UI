@@ -4,6 +4,7 @@ import React, { useCallback, useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
+import * as AlertActions from 'alert/actions';
 import { onTaskPriorityChanged } from 'helpers/ga-event-helper';
 import { PriorityDot } from '../../common/Priority';
 import TaskDrawerForm from './TaskDrawer.Form';
@@ -17,7 +18,6 @@ import {
   TopLabel,
 } from './TaskDrawer.Styled';
 import PriorityFlag from '../PriorityFlag';
-import * as AlertActions from 'alert/actions';
 
 export default ({
   addingTaskOrSubtask,
@@ -59,7 +59,12 @@ export default ({
           setAutoSaveVisible();
         })
         .catch(() => {
-          dispatch(AlertActions.showGlobalAlert('Error updating status, please try again later', 'error'));
+          dispatch(
+            AlertActions.showGlobalAlert(
+              'Error updating status, please try again later',
+              'error',
+            ),
+          );
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

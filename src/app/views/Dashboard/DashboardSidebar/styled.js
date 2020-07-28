@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
-import { Popover } from '@material-ui/core';
+import { Popover, Link } from '@material-ui/core';
 
 export const DashboardSidebarWrapper = styled.div`
   display: flex;
@@ -37,10 +37,26 @@ export const ListItemsWrapper = styled.div`
   overflow-y: auto;
 `;
 
+export const ListItemWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding-right: ${spacing.small};
+`;
+
+export const ListLink = styled(Link)`
+  && {
+    flex: 1;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+`;
+
 export const ListItem = styled.div`
   position: relative;
   display: flex;
-  padding: ${spacing.small} ${spacing.large} ${spacing.small} 42px;
+  padding: ${spacing.small} ${spacing.tiny} ${spacing.small} 42px;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
@@ -111,4 +127,8 @@ export const RolloverPopoverLabel = styled.label`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   color: ${palette.brightBlue};
+`;
+
+export const MenuIconPlaceholder = styled.div`
+  width: 29px;
 `;
