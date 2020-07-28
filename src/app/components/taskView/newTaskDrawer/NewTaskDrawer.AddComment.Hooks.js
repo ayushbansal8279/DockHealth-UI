@@ -42,9 +42,9 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
       });
   }, [addComment, commentContent, setAddingComment, unsetAddingComment]);
 
-  const onEnterPress = useCallback(
+  const saveComment = useCallback(
     event => {
-      if (event.key === 'Enter' && !isAddingComment) {
+      if (!isAddingComment) {
         event.preventDefault();
         event.stopPropagation();
 
@@ -68,7 +68,7 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
     commentContent,
     setCommentContent,
     onCommentChange,
-    onEnterPress,
+    saveComment,
     onCommentFocus,
     isAddingComment,
   };

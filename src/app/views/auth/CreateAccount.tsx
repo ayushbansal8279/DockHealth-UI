@@ -281,14 +281,10 @@ const CreateAccount = () => {
           <NextButton type="submit">Continue</NextButton>
           <Spacing vertical={5} />
           <MontserratTypography variant="h4">
-            <span
-              style={{ padding: '0rem 1rem', fontFamily: 'roboto condensed' }}
-            >
-              I already have an account{' '}
+            <span style={{ padding: '0rem 1rem' }}>
+              I already have an account.
             </span>
-            <StyledLink style={{ fontFamily: 'roboto condensed' }} to="/login">
-              SIGN IN
-            </StyledLink>
+            <StyledLink to="/login">SIGN IN</StyledLink>
           </MontserratTypography>
         </FormContext>
       </StyledForm>

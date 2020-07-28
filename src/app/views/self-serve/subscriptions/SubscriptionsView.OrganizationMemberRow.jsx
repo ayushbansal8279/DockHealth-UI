@@ -207,6 +207,12 @@ const OrganizationMemberRow = ({
         }),
     });
   };
+
+  const addSubscription = () =>
+    toggleSelectedUser({ userIdentifier, email })({
+      target: { checked: true },
+    });
+
   const adminCount =
     organizationMembers?.filter(
       ({ orgUserRole: memberUserRole }) =>
@@ -260,6 +266,7 @@ const OrganizationMemberRow = ({
             userType={userType}
             userTypes={USER_TYPES}
             removeSubscription={removeSubscription}
+            addSubscription={addSubscription}
             orgUserRole={orgUserRole}
             isDisabledRemovingSubscription={isDisabledRemovingSubscription}
             userStatus={userStatus}

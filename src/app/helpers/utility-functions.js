@@ -155,11 +155,14 @@ export const showAlert = ({
   return swalPromise;
 };
 
-export const setCurrentPageAfterLogin = () => {
+export const setCurrentPageInSessionStorage = () => {
   const currentPathname = hashHistory.getCurrentLocation().pathname;
 
   sessionStorage.setItem('next-page', currentPathname);
+};
 
+export const setCurrentPageAfterLogin = () => {
+  setCurrentPageInSessionStorage();
   hashHistory.push('/login');
 };
 

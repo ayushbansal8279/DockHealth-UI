@@ -78,7 +78,11 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
   return (
     <InfoPanelContainer>
       <Link to="/people">
-        <img src={ArrowLeftIcon} alt="back-navigation" />
+        <img
+          src={ArrowLeftIcon}
+          alt="back-navigation"
+          style={{ width: '20px' }}
+        />
       </Link>
       <Spacing horizontal={3} />
       <Avatar color={palette.unknownGrey5} size={50}>

@@ -63,9 +63,12 @@ export function invitePersonToOrganization(person) {
     });
 }
 
-export function resendInviteToOrganization(person) {
+export function resendInviteToOrganization(markedUserIdentifier) {
   return axios
-    .put('organization/resendInviteToOrganization', person)
+    .put(
+      `${'organization/resendInviteToOrganization/' +
+        '?userIdentifier='}${markedUserIdentifier}`,
+    )
     .then(response => {
       return response.data;
     })
@@ -88,11 +91,11 @@ export function changeUserRoleForOrg(markedUserIdentifier, role) {
     });
 }
 
-export function cancelInviteToOrganization(markedUserEmail) {
+export function cancelInviteToOrganization(markedUserIdentifier) {
   return axios
     .put(
       `${'organization/cancelInviteToOrganization/' +
-        '?markedUserEmail='}${encodeURIComponent(markedUserEmail)}`,
+        '?userIdentifier='}${markedUserIdentifier}`,
     )
     .then(response => {
       return response.data;
@@ -106,7 +109,7 @@ export function removeUserFromOrganization(removedUserIdentifier) {
   return axios
     .delete(
       `${'user/removeUserFromOrganization' +
-        '?removedUserId='}${removedUserIdentifier}`,
+        '?userIdentifier='}${removedUserIdentifier}`,
     )
     .then(response => {
       return response.data;
@@ -118,7 +121,9 @@ export function removeUserFromOrganization(removedUserIdentifier) {
 
 export function addUserToOrganization(addedUserIdentifier) {
   return axios
-    .put(`${'user/addUserToOrganization?addedUserId='}${addedUserIdentifier}`)
+    .put(
+      `${'user/addUserToOrganization?userIdentifier='}${addedUserIdentifier}`,
+    )
     .then(response => {
       return response.data;
     })

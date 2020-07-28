@@ -1,6 +1,6 @@
 import { fixList } from 'helpers/inbox-fix';
-import axios from './axios-heydoc';
 import { showAlert } from 'helpers/utility-functions';
+import axios from './axios-heydoc';
 
 export function getAllPatients() {
   return axios
@@ -70,12 +70,19 @@ export function addPatient(patient) {
     })
     .catch(error => {
       console.log(error);
-      showAlert({status: 'error', title: 'Error', text: 'Error in adding patient. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in adding patient. Please try again.',
+      });
       throw new Error(error?.response?.data);
     });
 }
 
 export function updatePatient(patient) {
+  if (patient.dob === '') {
+    patient.dob = null;
+  }
   return axios
     .put('patient', patient)
     .then(response => {
@@ -83,7 +90,11 @@ export function updatePatient(patient) {
     })
     .catch(error => {
       console.log(error);
-      showAlert({status: 'error', title: 'Error', text: 'Error in updating patient. Please try again.'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in updating patient. Please try again.',
+      });
       throw new Error(error?.response?.data);
     });
 }
@@ -150,6 +161,11 @@ export const updatePatientNote = note =>
     .put('/patient/note', note)
     .then(response => response.data)
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in updating patient note. Please try again.',
+      });
       throw new Error(error?.response?.data);
     });
 
@@ -158,23 +174,23 @@ export const deletePatientNote = patientNoteIdentifier =>
     .delete(`/patient/note/deletePatientNoteById/${patientNoteIdentifier}`)
     .then(response => response.data)
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in deleting patient note. Please try again.',
+      });
       throw new Error(error?.response?.data);
     });
 
-export function updatePatientWithoutAlert(patient) {
-  return axios
-    .put('patient', patient)
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
-      throw new Error(error?.response?.data);
-    });
-}
 export const archivePatient = patientNoteIdentifier =>
   axios
     .delete(`/patient/archivePatient/${patientNoteIdentifier}`)
     .then(response => response.data)
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error in archiving patient. Please try again.',
+      });
       throw new Error(error?.response?.data);
     });

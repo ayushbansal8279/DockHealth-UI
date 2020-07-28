@@ -11,7 +11,6 @@ import {
   PatientInfoDivider,
   PatientDetailsInformations,
   PatientDetails,
-  NavigationBackIcon,
   PatientDetailsLabel,
   ArrowBox,
   ArrowBoxIndicator,
@@ -68,53 +67,61 @@ const PatientDetailsInformation = ({
 
   return (
     <PatientDetailsInformationContainer>
-      <PatientDetailsBio>
-        <PatientName>
+      <PatientDetailsBio style={{ flexDirection: 'row' }}>
+        <div style={{ width: '30px' }}>
           <Link to="/patients">
-            <NavigationBackIcon src={ArrowLeftIcon} />
+            <img
+              src={ArrowLeftIcon}
+              alt="back-navigation"
+              style={{ width: '20px' }}
+            />
           </Link>
-          {[firstName, middleName, lastName].join(' ')}
-        </PatientName>
-        {((dob && gender) || mrn || email || phoneMobile || phoneHome) && (
-          <PatientDetails>
-            <PatientDetailsInformations>
-              {dob && gender && (
-                <>
-                  <PatientInfo>
-                    {moment(dob).format('MM/DD/YYYY')}{' '}
-                    {moment().diff(moment(dob), 'years')} {'yo '}
-                    {gender?.charAt(0)?.toUpperCase()}
-                  </PatientInfo>
-                  <PatientInfoDivider />
-                </>
-              )}
-              {mrn && (
-                <>
-                  <PatientInfo>MRN# {mrn}</PatientInfo>
-                  <PatientInfoDivider />
-                </>
-              )}
-              {email && (
-                <>
-                  <PatientInfo>{formatInformation(email, width)}</PatientInfo>
-                  <PatientInfoDivider />
-                </>
-              )}
-              {phoneMobile && (
-                <>
-                  <PatientInfo>M {phoneMobile}</PatientInfo>
-                  <PatientInfoDivider />
-                </>
-              )}
-              {phoneHome && (
-                <>
-                  <PatientInfo>H {phoneHome}</PatientInfo>
-                  <PatientInfoDivider />
-                </>
-              )}
-            </PatientDetailsInformations>
-          </PatientDetails>
-        )}
+        </div>
+        <div>
+          <PatientName>
+            {[firstName, middleName, lastName].join(' ')}
+          </PatientName>
+          {((dob && gender) || mrn || email || phoneMobile || phoneHome) && (
+            <PatientDetails>
+              <PatientDetailsInformations>
+                {dob && gender && (
+                  <>
+                    <PatientInfo>
+                      {moment(dob).format('MM/DD/YYYY')}{' '}
+                      {moment().diff(moment(dob), 'years')} {'yo '}
+                      {gender?.charAt(0)?.toUpperCase()}
+                    </PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+                {mrn && (
+                  <>
+                    <PatientInfo>MRN# {mrn}</PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+                {email && (
+                  <>
+                    <PatientInfo>{formatInformation(email, width)}</PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+                {phoneMobile && (
+                  <>
+                    <PatientInfo>M {phoneMobile}</PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+                {phoneHome && (
+                  <>
+                    <PatientInfo>H {phoneHome}</PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+              </PatientDetailsInformations>
+            </PatientDetails>
+          )}
+        </div>
       </PatientDetailsBio>
       <ArrowBox>
         <ArrowBoxIndicator>

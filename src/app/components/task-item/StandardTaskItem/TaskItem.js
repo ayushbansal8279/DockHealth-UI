@@ -12,22 +12,6 @@ import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
-import CalendarDimIcon from 'img/calendar-dim';
-import CalendarIcon from 'img/calendar-icon';
-import CalendarOverDueIcon from 'img/calendar-overdue-icon';
-import CalendarIconHover from 'img/calendar-icon-hover';
-import CalendarNewIcon from 'img/calendar-new';
-import ClipDimIcon from 'img/clip-dim';
-import ClipIconHover from 'img/clip-hover';
-import ClipIcon from 'img/clip-v2';
-import ClipNewIcon from 'img/clip-new';
-import LabelDimIcon from 'img/label-dim';
-import LabelIcon from 'img/label';
-import LabelIconHover from 'img/label-hover';
-import MessageDimIcon from 'img/message-dim';
-import MessageIcon from 'img/message';
-import MessageIconHover from 'img/message-hover';
-import MessageNewIcon from 'img/message-new';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
@@ -43,6 +27,17 @@ import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskD
 import ReactHtmlParser from 'react-html-parser';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import TaskItemStatus from './TaskItemStatus';
+
+import {
+  getItemIconVersion,
+  getItemIcon,
+  getCalendarIcon,
+  REGULAR,
+  COMMENTS,
+  LABELS,
+  ATTACHMENTS,
+} from '../icons';
+
 import {
   AddCrossIcon,
   AddPlaceholder,
@@ -76,70 +71,6 @@ const getMatchedComments = (comments, matchingCommentIdentifiers) =>
         matchingCommentIdentifiers.includes(commentIdentifier),
       )
     : comments;
-
-const dueDateQuickSelectOptions = [
-  {
-    label: 'Today',
-    date: moment(),
-  },
-  {
-    label: 'Tomorrow',
-    date: moment().add(1, 'days'),
-  },
-];
-
-const COMMENTS = 'COMMENTS';
-const DUE_DATE = 'DUE_DATE';
-const LABELS = 'LABELS';
-const ATTACHMENTS = 'ATTACHMENTS';
-
-const LIGHT = 'LIGHT';
-const REGULAR = 'REGULAR';
-const HOVER = 'HOVER';
-// const NEW = 'NEW';
-
-const ITEM_ICONS = {
-  COMMENTS: {
-    LIGHT: MessageDimIcon,
-    REGULAR: MessageIcon,
-    NEW: MessageNewIcon,
-    HOVER: MessageIconHover,
-  },
-  DUE_DATE: {
-    LIGHT: CalendarDimIcon,
-    REGULAR: CalendarIcon,
-    NEW: CalendarNewIcon,
-    HOVER: CalendarIconHover,
-  },
-  LABELS: {
-    LIGHT: LabelDimIcon,
-    REGULAR: LabelIcon,
-    NEW: LabelIcon,
-    HOVER: LabelIconHover,
-  },
-  ATTACHMENTS: {
-    LIGHT: ClipDimIcon,
-    REGULAR: ClipIcon,
-    NEW: ClipNewIcon,
-    HOVER: ClipIconHover,
-  },
-};
-
-const getItemIconVersion = (value, isHovered) => {
-  if (!isEmpty(value) && value) return REGULAR;
-
-  if (isHovered) return HOVER;
-
-  return LIGHT;
-};
-
-const getItemIcon = (type, value, isHovered) =>
-  ITEM_ICONS[type][getItemIconVersion(value, isHovered)];
-
-const getCalendarIcon = (value, isHovered, isOverDue) =>
-  isOverDue
-    ? CalendarOverDueIcon
-    : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered)];
 
 const getToolTipMultiLabelDetails = labels => {
   let toolTipMultiLabelDetails = '';
@@ -239,6 +170,17 @@ const TaskItem = ({
     moment(dueDate).format('HH:mm') !== '00:00'
       ? moment(dueDate).isBefore(moment())
       : dueDate && moment(dueDate).isBefore(moment().startOf('day'));
+
+  const dueDateQuickSelectOptions = [
+    {
+      label: 'Today',
+      date: moment(),
+    },
+    {
+      label: 'Tomorrow',
+      date: moment().add(1, 'days'),
+    },
+  ];
 
   return (
     <StandardTaskItemPanel
@@ -388,7 +330,7 @@ const TaskItem = ({
         </StandardTaskItemCell>
         <StandardTaskItemCell width="200px">
           <Grid container>
-            <GridImg item xs={3} isMatching={matchComments}>
+            <GridImg item xs={3} matched={matchComments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -405,7 +347,12 @@ const TaskItem = ({
                 >
                   <img
                     alt="comments"
-                    src={getItemIcon(COMMENTS, comments, isHovered)}
+                    src={getItemIcon(
+                      COMMENTS,
+                      comments,
+                      isHovered,
+                      task.updatedComment,
+                    )}
                   />
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
@@ -445,6 +392,7 @@ const TaskItem = ({
                             dueDate,
                             isHovered,
                             isOverdueTask,
+                            task.updatedDueDate,
                           )}
                         />
                       </DueDateContainer>
@@ -453,7 +401,7 @@ const TaskItem = ({
                 )}
               </PopoverDatepicker>
             </GridImg>
-            <GridImg item xs={3} isMatching={matchLabels}>
+            <GridImg item xs={3} matched={matchLabels}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -471,12 +419,17 @@ const TaskItem = ({
                   {' '}
                   <img
                     alt="labels"
-                    src={getItemIcon(LABELS, labels, isHovered)}
+                    src={getItemIcon(
+                      LABELS,
+                      labels,
+                      isHovered,
+                      task.updatedLabel,
+                    )}
                   />
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3} isMatching={matchAttachments}>
+            <GridImg item xs={3} matched={matchAttachments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -494,7 +447,12 @@ const TaskItem = ({
                   {' '}
                   <img
                     alt="attachments"
-                    src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
+                    src={getItemIcon(
+                      ATTACHMENTS,
+                      attachments,
+                      isHovered,
+                      task.updatedAttachment,
+                    )}
                   />
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
@@ -509,7 +467,7 @@ const TaskItem = ({
           >
             {assignedTo ? (
               <>
-                <AssigneeMatchingWrapper isMatching={matchAssignedTo} />
+                <AssigneeMatchingWrapper matched={matchAssignedTo} />
                 <Member member={assignedTo} size={34} />
               </>
             ) : (

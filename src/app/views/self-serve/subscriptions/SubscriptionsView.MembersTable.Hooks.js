@@ -93,9 +93,11 @@ const initializeMembersTableHooks = ({
             },
           );
         } else {
-          cancelInviteToOrganization(toggledUser.email)(dispatch).then(() => {
-            getAllUsers();
-          });
+          cancelInviteToOrganization(toggledUser.userIdentifier)(dispatch).then(
+            () => {
+              getAllUsers();
+            },
+          );
         }
       }
     },
@@ -126,7 +128,6 @@ const initializeMembersTableHooks = ({
     isFetching,
     toggleSelectedUser,
     isUserSelected,
-
     currentSearch,
     setCurrentSearch,
     isAllUsersSelected,

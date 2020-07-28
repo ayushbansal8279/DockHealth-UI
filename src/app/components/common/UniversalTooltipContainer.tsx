@@ -1,5 +1,6 @@
 import { PopperProps } from '@material-ui/core';
 import React, { useRef } from 'react';
+import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import UniversalTooltip from './UniversalTooltip';
 
@@ -7,9 +8,14 @@ interface UniversalTooltipContainerProps extends PopperProps {
   label?: React.ReactNode;
 }
 
+const ElementWrapper: any = styled.div`
+  display: inline-block;
+`;
+
 const UniversalTooltipContainer = ({
   children,
   label,
+  open,
   ...props
 }: UniversalTooltipContainerProps) => {
   const [isTooltipShown, showTooltip, hideTooltip] = useBoolean(false);
@@ -20,19 +26,19 @@ const UniversalTooltipContainer = ({
       {label !== '' && (
         <UniversalTooltip
           anchorEl={popoverReference.current}
-          open={isTooltipShown}
+          open={open || isTooltipShown}
           {...props}
         >
           {label}
         </UniversalTooltip>
       )}
-      <div
+      <ElementWrapper
         ref={popoverReference}
         onMouseEnter={showTooltip}
         onMouseLeave={hideTooltip}
       >
         {children}
-      </div>
+      </ElementWrapper>
     </>
   );
 };

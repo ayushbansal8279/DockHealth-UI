@@ -5,7 +5,7 @@ import {
   createPatientNote,
   deletePatientNote as deletePatientNoteApi,
   updatePatientNote as updatePatientNoteApi,
-  updatePatientWithoutAlert,
+  updatePatient as updatePatientApi,
   archivePatient as archivePatientApi,
 } from 'api/patient-api';
 import {
@@ -141,7 +141,7 @@ export function* doUpdatePatient(payload) {
 
     yield put({ type: FETCH_PATIENT });
 
-    yield call(updatePatientWithoutAlert, patient);
+    yield call(updatePatientApi, patient);
 
     const details = yield call(getPatientById, patientIdentifier);
 

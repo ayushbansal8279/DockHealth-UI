@@ -14,6 +14,7 @@ export const TaskDrawerContainer = styled.div`
     ${opacify(palette.black, 0.2)};
   bottom: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 0rem;
   position: fixed;
   right: 0;

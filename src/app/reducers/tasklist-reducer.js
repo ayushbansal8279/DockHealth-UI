@@ -251,15 +251,16 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.userIdentifier !== action.removedUserId,
+          member => member.userIdentifier !== action.removedUserIdentifier,
         ),
       };
 
+    // eslint-disable-next-line sonarjs/no-duplicated-branches
     case CANCEL_TASKLIST_INVITE_SUCCESS:
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.email !== action.removedUserEmail,
+          member => member.userIdentifier !== action.removedUserIdentifier,
         ),
       };
 

@@ -34,6 +34,7 @@ const PatientDetailsNotes = ({
         isOpen={isOpenedNotes}
         setOpen={setIsOpenedNotes}
         showArrow={allNotes?.length > 0}
+        justifyContent="flex-start"
       >
         <span>NOTES</span>
       </Arrow>

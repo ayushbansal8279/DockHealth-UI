@@ -87,24 +87,28 @@ export const DescriptionBox = styled.div`
 `;
 
 export const DueDate = styled.span`
-  bottom: 1;
+  bottom: 1px;
   color: ${palette.white};
   font-size: ${fontSizes.small};
   position: absolute;
   text-align: center;
-  width: 100%;
+  line-height: initial;
 `;
 
 export const DueDateContainer = styled.div`
   position: relative;
+  display: flex;
+  width: 37.98px; // per design
+  justify-content: center;
+  text-align: center;
 `;
 
 export const GridImg = styled(Grid)`
   align-items: center;
   display: flex;
   justify-content: center;
-  ${({ isMatching }) =>
-    isMatching && `background: ${featurePalette.globalSearchHighlight};`}
+  ${({ matched }) =>
+    matched && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
 export const SmallText = styled.span`
@@ -183,6 +187,7 @@ export const ThreeDots = styled.img`
   top: 50%;
   transform: translateY(-50%);
   opacity: 0;
+  cursor: pointer;
 
   &:active {
     opacity: 1;
@@ -209,7 +214,7 @@ export const InfoText = styled.p`
 // SlimTaskItem
 export const SlimTaskItemContainer = styled.div`
   display: flex;
-  height: 70px;
+  min-height: 70px;
   align-ttems: center;
   width: 100%;
   position: relative;
@@ -228,30 +233,11 @@ export const SlimTaskItemContainer = styled.div`
   }
 `;
 
-export const SlimTaskItemRow = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
-`;
-
 export const SlimTaskItemDescription = styled.div`
   cursor: pointer;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  min-width: 350px;
-  width: 350px;
-
-  @media (min-width: 1025px) {
-    min-width: 450px;
-    width: 450px;
-  }
-
-  @media (min-width: 1153px) {
-    width: 450px;
-    min-width: 450px;
-  }
 
   & > div {
     overflow-wrap: break-word;
@@ -268,41 +254,10 @@ export const SlimTaskItemParentTaskLabel = styled.div`
   }
 `;
 
-export const SlimTaskItemRightSide = styled.div`
-  display: flex;
-  width: 180px;
-  max-width: 200px;
-  margin-left: 30px;
-
-  @media (min-width: 1025px) {
-    width: 220px;
-    max-width: 230px;
-    margin-left: 25px;
-  }
-
-  @media (min-width: 1153px) {
-    width: 280px;
-    max-width: 280px;
-    margin-left: 25px;
-  }
-`;
-
 export const SlimTaskItemListLink = styled(Link)`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   margin-right: ${props => props.withMargin && spacing.large};
-  width: 150px;
-`;
-
-export const OverdueBar = styled.div`
-  background-image: linear-gradient(29deg, #ec4f3e 53%, #fb7c06 115%);
-  padding: 2px 10px; // per design
-  display: flex;
-  justify-content: flex-end;
-  border-radius: 81px; // per design
-  font-size: ${fontSizes.regular};
-  color: white;
-  height: fit-content;
 `;
 
 export const Arrow = styled.img`
@@ -316,8 +271,8 @@ export const Arrow = styled.img`
 export const MatchingWrapper = styled.div`
   height: 100%;
   width: 100%;
-  ${({ isMatching }) =>
-    isMatching && `background: ${featurePalette.globalSearchHighlight};`}
+  ${({ matched }) =>
+    matched && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
 export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
@@ -327,4 +282,8 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
   transform: translate(-50%, -50%);
   width: 67px;
   height: 50px;
+`;
+
+export const SlimTaskGridContainer = styled.div`
+  display: flex;
 `;

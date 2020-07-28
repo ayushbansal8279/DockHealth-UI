@@ -3,7 +3,7 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 
 export const TaskGroupsContainer = styled.div`
-  margin: ${spacing.large} ${spacing.huge};
+  margin: 0 ${spacing.huge} ${spacing.large} ${spacing.huge};
 `;
 
 export const TaskViewContainer = styled.div`

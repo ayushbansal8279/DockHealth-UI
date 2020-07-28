@@ -36,7 +36,7 @@ const QuickAddTaskInput = ({
           name="newTask"
           type="text"
           ref={addTaskInput}
-          placeholder="Add task"
+          placeholder="Add a task and press enter on your keyboard"
           onFocus={onFocus}
           onKeyDown={event =>
             event.keyCode === 13 && handleInputEnterDown(event.target.value)

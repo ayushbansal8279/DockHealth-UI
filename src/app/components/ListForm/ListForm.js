@@ -135,6 +135,7 @@ const ListForm = ({ setListFormOpen }) => {
           required
           showError
           centerizedLabelOnStart
+          placeholder="Add your list name here"
           value={listNameValue}
         />
       </FormContext>
@@ -144,6 +145,7 @@ const ListForm = ({ setListFormOpen }) => {
           label={messages.form.description.label}
           name="listDescription"
           centerizedLabelOnStart
+          placeholder="Do you want to add a desciption for the list?"
           value={listDescriptionValue}
         />
       </FormContext>

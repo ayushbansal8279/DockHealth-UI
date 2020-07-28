@@ -24,12 +24,13 @@ import {
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { completedTasksSelector } from 'selectors/task-selectors';
-import { userSelector } from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   selectedFiltersInMegaFilterSelector,
   availableFiltersInInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 
+import pusherInstance from 'helpers/pusher-instance';
 import { ListTourWrapper, ListTourBackground } from './ListDetailsView.Styled';
 import TasksView from '../Task/NewTasksView/TasksView';
 import { LIST_TOUR_STEPS } from './list-tour-steps';
@@ -41,7 +42,7 @@ class Home extends Component {
 
   async componentDidMount() {
     const {
-      user,
+      currentUser,
       routeParams,
       taskListActions,
       patientActions,
@@ -70,16 +71,18 @@ class Home extends Component {
 
     patientActions.getAllPatients();
 
-    this.refreshAccessToken(user);
+    this.refreshAccessToken(currentUser);
 
     // TODO: Move to saga
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
+
+    this.listenForRealTimeEvents(routeParams.taskListIdentifier, currentUser);
   }
 
   componentWillUpdate(nextProps) {
-    const { actions, routeParams } = this.props;
+    const { actions, routeParams, currentUser } = this.props;
 
     if (
       nextProps.routeParams.taskListIdentifier ===
@@ -130,6 +133,20 @@ class Home extends Component {
         actions.storeAsCurrentTask(null);
       }
     }
+
+    if (
+      (currentUser &&
+        nextProps &&
+        nextProps.currentUser &&
+        currentUser.userIdentifier !== nextProps.currentUser.userIdentifier) ||
+      nextProps.routeParams.taskListIdentifier !==
+        routeParams.taskListIdentifier
+    ) {
+      this.listenForRealTimeEvents(
+        nextProps.routeParams.taskListIdentifier,
+        nextProps.currentUser,
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -137,6 +154,63 @@ class Home extends Component {
 
     actions.resetTaskCounters();
   }
+
+  listenForRealTimeEvents = (taskListIdentifier, currentUser) => {
+    if (!currentUser || !currentUser.userIdentifier) {
+      return;
+    }
+
+    const { actions } = this.props;
+    const currentUserIdentifier = currentUser.userIdentifier;
+    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+
+    let channel = pusherInstance.channel(channelName);
+    if (!channel) {
+      channel = pusherInstance.subscribe(channelName);
+      console.log(`subscribed to channel: ${channelName}`);
+    }
+    // channel.bind('pusher:subscription_succeeded', function() {
+    //   console.log('subscription_succeeded');
+    // });
+    // channel.bind('pusher:subscription_error', function(status) {
+    //   console.log('subscription_error', status);
+    // });
+    // console.log(channel);
+    // Listen to the channel for new entries.
+    // The server publishes to this channel whenever a entry is updated
+
+    channel.bind('task-update', data => {
+      // Since the app is going to be realtime, we don't want the same item to
+      // be shown twice. Device A publishes an entry, all other devices including itself
+      // receives the entry, so act like a basic filter
+      // console.log(data);
+      const currentTaskListIdentifier = taskListIdentifier;
+      if (
+        data.task?.taskList &&
+        data.task?.taskList.taskListIdentifier === currentTaskListIdentifier
+      ) {
+        if (
+          (data.eventType?.startsWith('CREATE_TASK') ||
+            data.eventType?.startsWith('DUPLICATE_TASK')) &&
+          data.task?.taskList
+        ) {
+          actions.getListTasks(
+            data.task.taskList.taskListIdentifier,
+            null,
+            null,
+            'INCOMPLETE',
+          );
+          actions.getListTasksCount(
+            data.task.taskList.taskListIdentifier,
+            null,
+            'COMPLETE',
+          );
+        }
+        // eslint-disable-next-line no-unused-expressions
+        actions.refreshTask(data.task);
+      }
+    });
+  };
 
   openTourModal = () => {
     const listDatailsFirstTimeValue = localStorageHelper.getItem(
@@ -485,7 +559,7 @@ class Home extends Component {
 const mapStateToProps = state => ({
   taskLists: taskListSelector(state),
   completedTasks: completedTasksSelector(state),
-  user: userSelector(state),
+  currentUser: userProfileSelector(state),
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   filters: availableFiltersInInMegaFilterSelector(state),
   members: taskListMembersSelector(state),

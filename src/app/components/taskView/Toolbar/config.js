@@ -1,8 +1,8 @@
 import { isNil } from 'ramda';
 
 export const TaskListTabName = {
-  OPEN: 'incomplete',
-  COMPLETE: 'complete',
+  OPEN: 'INCOMPLETE',
+  COMPLETE: 'COMPLETE',
 };
 
 // eslint-disable-next-line import/prefer-default-export

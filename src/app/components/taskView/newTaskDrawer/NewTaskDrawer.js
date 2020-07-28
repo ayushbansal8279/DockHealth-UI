@@ -52,6 +52,7 @@ import {
   renderMemberoptionWithHighlighting,
   FocusDrawerFieldEnum,
   ContextRefreshTriggers,
+  TaskDrawerFields,
 } from './NewTaskDrawer.Utilities';
 import TaskDrawerTourContent from './TaskDrawerTourContent/TaskDrawerTourContent';
 import TaskDrawerTourPopper from './TaskDrawerTourPopper/TaskDrawerTourPopper';
@@ -63,6 +64,7 @@ const NewTaskDrawer = ({
   modalActions,
   refreshList,
   refreshTriggers = [],
+  disabledFileds = [],
 }) => {
   const {
     taskDrawerOpen,
@@ -280,7 +282,7 @@ const NewTaskDrawer = ({
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormContext {...formMethods}>
-            <Grid container spacing={1} style={styleTaskDrawerContainer}>
+            <Grid container style={styleTaskDrawerContainer}>
               <TopSection
                 formMethods={formMethods}
                 taskLists={taskLists}
@@ -349,6 +351,7 @@ const NewTaskDrawer = ({
                   name="patientIdentifier"
                   label="Patient"
                   placeholder="Who is the patient?"
+                  disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
                   onInputChange={onPatientInputChange}
                   onItemSelected={async (option, event) => {
                     await handlePatientSelect(option);
@@ -373,7 +376,9 @@ const NewTaskDrawer = ({
                   }
                   InputProps={{
                     endAdornment:
-                      selectedTask && selectedPatientIdentifier ? (
+                      selectedTask &&
+                      selectedPatientIdentifier &&
+                      !disabledFileds.includes(TaskDrawerFields.PATIENT) ? (
                         <AdornmentClear onClick={clearSelectedPatient} />
                       ) : (
                         ''
@@ -398,6 +403,13 @@ const NewTaskDrawer = ({
                   onInputChange={onAssignedToInputChange}
                   onItemSelected={async option => {
                     await handleAssignedToSelect(option);
+                    if (
+                      refreshTriggers.includes(
+                        ContextRefreshTriggers.ASSIGNED_TO_CHANGE,
+                      )
+                    ) {
+                      refreshList();
+                    }
                     assignedToInputReference.current
                       .querySelector('input')
                       .blur();
@@ -498,6 +510,7 @@ const NewTaskDrawer = ({
                     setAutoSaveVisible={setAutoSaveVisible}
                     setSelectedLabelsValue={setValue}
                     taskDrawerFocusField={taskDrawerFocusField}
+                    refreshList={refreshList}
                   />
                 </div>
               </Grid>

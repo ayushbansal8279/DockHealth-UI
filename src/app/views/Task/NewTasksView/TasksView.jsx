@@ -22,6 +22,7 @@ import {
 import { TaskViewContainer } from './styled';
 import OpenedTasksView from './OpenedTasksView/OpenedTasksViewContainer';
 import CompletedTasksView from './CompletedTasksView/CompletedTasksViewContainer';
+import { InboxHelpPanel } from '../TaskView.InboxElements';
 
 const Priority = {
   High: 'HIGH',
@@ -61,6 +62,7 @@ const TaskView = ({
   listUniqueKey,
   pdfTitle,
   groupPagination = false,
+  taskDrawerRefreshTriggers = [],
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -152,6 +154,14 @@ const TaskView = ({
     }
   };
 
+  const getTipsContent = () => {
+    if (taskList?.listType === 'INBOX') {
+      return InboxHelpPanel;
+    }
+
+    return null;
+  };
+
   return (
     <TaskViewContainer>
       <Toolbar
@@ -168,6 +178,7 @@ const TaskView = ({
         onSelectFilters={handleFilterChange}
         listNameColumnVisible={listNameVisible}
         pdfTitle={pdfTitle}
+        tipsContent={getTipsContent()}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
@@ -210,7 +221,11 @@ const TaskView = ({
           listUniqueKey={listUniqueKey}
         />
       )}
-      <NewTaskDrawer modalActions={modalActions} refreshList={refreshTab} />
+      <NewTaskDrawer
+        modalActions={modalActions}
+        refreshList={refreshTab}
+        refreshTriggers={taskDrawerRefreshTriggers}
+      />
     </TaskViewContainer>
   );
 };

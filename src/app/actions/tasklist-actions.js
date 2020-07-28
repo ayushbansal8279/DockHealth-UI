@@ -36,10 +36,17 @@ export function saveTaskList(formProps) {
             type: ActionTypes.UPDATE_TASKLIST_SUCCESS,
             updatedTasklist,
           });
-          dispatch(AlertActions.showGlobalAlert('Task List updated successfully!'));
+          dispatch(
+            AlertActions.showGlobalAlert('Task List updated successfully!'),
+          );
         })
         .catch(error => {
-          dispatch(AlertActions.showGlobalAlert('Error in saving Task List details', 'error'));
+          dispatch(
+            AlertActions.showGlobalAlert(
+              'Error in saving Task List details',
+              'error',
+            ),
+          );
           throw error;
         });
   }
@@ -52,10 +59,17 @@ export function saveTaskList(formProps) {
           // set the default role for now
           tasklist: { ...tasklist, role: 'OWNER' },
         });
-        dispatch(AlertActions.showGlobalAlert('Task List created successfully!'));
+        dispatch(
+          AlertActions.showGlobalAlert('Task List created successfully!'),
+        );
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in creating Task List details', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error in creating Task List details',
+            'error',
+          ),
+        );
         throw error;
       });
 }
@@ -141,12 +155,14 @@ export const inviteUserToTaskList = (taskListIdentifier, user) => dispatch =>
       });
     })
     .catch(error => {
-      dispatch(AlertActions.showGlobalAlert(
-        error?.errorMessage ??
-          error?.message ??
-          'Error inviting user to task list',
-        'error',
-      ));
+      dispatch(
+        AlertActions.showGlobalAlert(
+          error?.errorMessage ??
+            error?.message ??
+            'Error inviting user to task list',
+          'error',
+        ),
+      );
       throw error;
     });
 
@@ -168,7 +184,9 @@ export function inviteMultipleUsersToTaskList(
         dispatch(AlertActions.showGlobalAlert('Invitations sent!'));
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in sending invitation', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert('Error in sending invitation', 'error'),
+        );
         throw error;
       });
 }
@@ -209,7 +227,9 @@ export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in updating user role', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert('Error in updating user role', 'error'),
+        );
         throw error;
       });
 }
@@ -226,43 +246,67 @@ export function deleteTaskListById(taskListIdentifier) {
         dispatch(AlertActions.showGlobalAlert('Task List deleted'));
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in deleting Task List', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert('Error in deleting Task List', 'error'),
+        );
         throw error;
       });
 }
 
-export function removeUserFromTaskList(taskListIdentifier, removedUserId) {
+export function removeUserFromTaskList(
+  taskListIdentifier,
+  removedUserIdentifier,
+) {
   return dispatch =>
-    TaskListApi.removeUserFromTaskList(taskListIdentifier, removedUserId)
+    TaskListApi.removeUserFromTaskList(
+      taskListIdentifier,
+      removedUserIdentifier,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
           response,
-          removedUserId,
+          removedUserIdentifier,
         });
         dispatch(AlertActions.showGlobalAlert('User removed successfully'));
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in removing User from Task List', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error in removing User from Task List',
+            'error',
+          ),
+        );
         throw error;
       });
 }
 
-export function cancelInviteToTaskList(taskListIdentifier, email) {
+export function cancelInviteToTaskList(
+  taskListIdentifier,
+  cancelledUserIdentifier,
+) {
   return dispatch =>
-    TaskListApi.cancelInviteToTaskList(taskListIdentifier, email)
+    TaskListApi.cancelInviteToTaskList(
+      taskListIdentifier,
+      cancelledUserIdentifier,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS,
           response,
-          removedUserEmail: email,
+          removedUserIdentifier: cancelledUserIdentifier,
         });
         dispatch(
           AlertActions.showGlobalAlert('Invitation canceled successfully'),
         );
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in canceling invitation', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error in canceling invitation',
+            'error',
+          ),
+        );
         throw error;
       });
 }
@@ -317,7 +361,12 @@ export function toggleListNotifications(
         });
       })
       .catch(error => {
-        dispatch(AlertActions.showGlobalAlert('Error in toggling notification for Task List', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error in toggling notification for Task List',
+            'error',
+          ),
+        );
         throw error;
       });
 }

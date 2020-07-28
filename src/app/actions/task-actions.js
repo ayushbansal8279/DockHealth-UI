@@ -1109,3 +1109,18 @@ export const getTaskStatsForUser = userIdentifier => dispatch => {
 export const resetTaskCounters = () => ({
   type: ActionTypes.RESET_TASK_COUNTERS,
 });
+
+export function markTaskRead(task) {
+  return dispatch =>
+    TaskApi.flagUnread(task?.taskIdentifier, false)
+      .then(() => {
+        // do nothing
+        dispatch({
+          type: ActionTypes.TASK_READ_SUCCESS,
+          task,
+        });
+      })
+      .catch(error => {
+        throw error;
+      });
+}
