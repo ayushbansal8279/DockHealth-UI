@@ -198,13 +198,13 @@ const DashboardSidebar = ({
         onClose={() => setListMenuPopupOpen(false)}
         onAfterOptionClick={() => setListMenuPopupOpen(false)}
         options={[
-          {
-            key: 'edit',
-            label: 'Edit list',
-            onClick: () => {},
-          },
           ...(['ADMIN', 'OWNER'].includes(selectedList?.role)
             ? [
+                {
+                  key: 'edit',
+                  label: 'Edit list',
+                  onClick: () => {},
+                },
                 {
                   key: 'delete',
                   label: 'Delete list',
@@ -213,7 +213,15 @@ const DashboardSidebar = ({
                   },
                 },
               ]
-            : []),
+            : [
+                {
+                  key: 'leave',
+                  label: 'Leave List',
+                  onClick: () => {
+                    taskListActions.leaveList(selectedList?.taskListIdentifier);
+                  },
+                },
+              ]),
           {
             key: 'invite',
             label: 'Invite people to list',

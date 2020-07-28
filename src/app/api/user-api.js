@@ -1,4 +1,4 @@
-import { onLogin, onLogout } from 'helpers/ga-event-helper';
+import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Amplify from '@aws-amplify/core';
@@ -743,7 +743,10 @@ export function leaveList(taskListIdentifier) {
     .delete(
       `${process.env.HEYDOC_SERVICES_BASE_URL}user/userLeavesList/${taskListIdentifier}`,
     )
-    .then(response => response)
+    .then(response => {
+      onTaskListLeft();
+      return response;
+    })
     .catch(error => {
       throw error;
     });

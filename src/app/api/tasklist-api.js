@@ -1,3 +1,4 @@
+import { onTaskListDeleted } from 'helpers/ga-event-helper';
 import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
@@ -148,7 +149,10 @@ export function changeUserRoleForList(
 export function deleteTaskListById(taskListIdentifier) {
   return axios
     .delete(`list/deleteTaskListById/${taskListIdentifier}`)
-    .then(response => response?.data)
+    .then(response => {
+      onTaskListDeleted();
+      return response?.data;
+    })
     .catch(error => {
       throw new Error(error?.response?.data);
     });
