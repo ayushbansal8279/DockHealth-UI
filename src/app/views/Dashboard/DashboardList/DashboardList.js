@@ -141,9 +141,9 @@ const DashboardList = ({
     }
   };
 
-  const showResetSortingModal = () => {
+  const showClearSortFiltersModal = () => {
     if (sortType !== SORT_CONFIG.default) {
-      openModal('ResetSorting', {
+      openModal('ClearSortFilters', {
         confirm: () => setSortType(SORT_CONFIG.default),
         closeOnConfirm: true,
       });
@@ -233,7 +233,7 @@ const DashboardList = ({
                 currentSortType={sortType}
                 onClickDueDateSort={onClickDueDateSort}
                 onClickListNameSort={onClickListNameSort}
-                showResetSortingModal={showResetSortingModal}
+                showClearSortFiltersModal={showClearSortFiltersModal}
                 isSortApplied={isSortApplied}
               />
             ))

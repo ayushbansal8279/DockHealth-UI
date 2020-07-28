@@ -18,7 +18,7 @@ export const StickyHeader = styled.div`
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
-  padding-bottom: 10px;
+  padding-bottom: 50px;
 
   &:last-child {
     padding-bottom: 0;
@@ -29,9 +29,10 @@ export const DashboardTasksGroupLabel = styled.div`
   font-size: 1.125rem;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.regularPlus};
-  padding-bottom: ${spacing.smallPlus};
+  padding: ${spacing.smallPlus};
   border-bottom: 1px solid ${palette.coolGrey2};
   margin: 0 55px;
+  background-color: #f9fafc;
 `;
 
 export const DashboardTasksGroupList = styled.div`
