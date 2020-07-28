@@ -21,7 +21,7 @@ const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
   const taskLists = useSelector(taskListSelector);
   const dispatch = useDispatch();
 
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     window.addEventListener('resize', () => setWindowWidth(window.innerWidth));
