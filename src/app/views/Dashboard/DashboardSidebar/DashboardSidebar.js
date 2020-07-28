@@ -10,6 +10,7 @@ import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
+import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 import {
   TopSection,
   MenuButton,
@@ -40,6 +41,7 @@ const DashboardSidebar = ({
   acceptInvitation,
   modalActions,
   taskListActions,
+  members,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const hoveredItemReference = useRef(null);
@@ -52,6 +54,7 @@ const DashboardSidebar = ({
     setCurrentListMenuPopupReference,
   ] = useState(false);
   const [selectedList, setSelectedList] = useState(null);
+  const [invitePopoverOpen, setInvitePopoverOpen] = useState(false);
 
   const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
     shouldDisplayFirstListCreationMessage,
@@ -87,6 +90,19 @@ const DashboardSidebar = ({
       },
     };
     modalActions.openModal('DeleteList', modalProps);
+  };
+
+  const handleInviteToList = () => {
+    const { taskListIdentifier } = selectedList;
+
+    if (!taskListIdentifier) return;
+
+    taskListActions
+      .getMembersByTaskListId(taskListIdentifier, 'ALL')
+      .then(() => {
+        setInvitePopoverOpen(true);
+      })
+      .catch(() => {});
   };
 
   return (
@@ -180,13 +196,12 @@ const DashboardSidebar = ({
         anchorEl={currentListMenuPopupReference?.current}
         open={listMenuPopupOpen}
         onClose={() => setListMenuPopupOpen(false)}
+        onAfterOptionClick={() => setListMenuPopupOpen(false)}
         options={[
           {
             key: 'edit',
             label: 'Edit list',
-            onClick: () => {
-              setListMenuPopupOpen(false);
-            },
+            onClick: () => {},
           },
           ...(['ADMIN', 'OWNER'].includes(selectedList?.role)
             ? [
@@ -195,7 +210,6 @@ const DashboardSidebar = ({
                   label: 'Delete list',
                   onClick: () => {
                     openDeleteConfirmationModal();
-                    setListMenuPopupOpen(false);
                   },
                 },
               ]
@@ -203,20 +217,29 @@ const DashboardSidebar = ({
           {
             key: 'invite',
             label: 'Invite people to list',
-            onClick: () => {
-              setListMenuPopupOpen(false);
-            },
+            onClick: handleInviteToList,
           },
         ]}
+      />
+      <TaskListInviteMemberContainer
+        addMemberButtonReference={currentListMenuPopupReference}
+        isMemberPopoverOpen={invitePopoverOpen}
+        closeMemberPopover={() => setInvitePopoverOpen(false)}
+        taskList={selectedList}
+        members={members ?? []}
       />
       {renderTourItems()}
     </DashboardSidebarWrapper>
   );
 };
 
+const mapStateToProps = state => ({
+  members: state.taskListState.tasklistmembers,
+});
+
 const mapDispachToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
 });
 
-export default connect(null, mapDispachToProps)(DashboardSidebar);
+export default connect(mapStateToProps, mapDispachToProps)(DashboardSidebar);

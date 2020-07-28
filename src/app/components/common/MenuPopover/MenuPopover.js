@@ -1,7 +1,19 @@
 import React from 'react';
 import { StyledPopover, ButtonsWrapper, Button } from './styled';
 
-const MenuPopover = ({ anchorEl, open, onClose, options }) => {
+const MenuPopover = ({
+  anchorEl,
+  open,
+  onClose,
+  options,
+  onAfterOptionClick = null,
+}) => {
+  const handleOptionClick = (event, onClick) => {
+    if (typeof onAfterOptionClick === 'function') onAfterOptionClick();
+
+    onClick();
+  };
+
   return (
     <StyledPopover
       anchorEl={anchorEl}
@@ -19,7 +31,11 @@ const MenuPopover = ({ anchorEl, open, onClose, options }) => {
     >
       <ButtonsWrapper>
         {options?.map(({ key, label, onClick }) => (
-          <Button key={key} onClick={onClick} type="button">
+          <Button
+            key={key}
+            onClick={event => handleOptionClick(event, onClick)}
+            type="button"
+          >
             {label}
           </Button>
         ))}
