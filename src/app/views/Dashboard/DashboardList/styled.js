@@ -32,7 +32,7 @@ export const DashboardTasksGroupLabel = styled.div`
   padding: ${spacing.smallPlus};
   border-bottom: 1px solid ${palette.coolGrey2};
   margin: 0 55px;
-  background-color: #f9fafc;
+  background-color: ${palette.coolGrey4};
 `;
 
 export const DashboardTasksGroupList = styled.div`

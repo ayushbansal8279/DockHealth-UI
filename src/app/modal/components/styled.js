@@ -1,6 +1,7 @@
 import { Button, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
+import palette from 'styles/palette';
 import { withStyles } from '@material-ui/core/styles';
 import { Close } from '@material-ui/icons';
 
@@ -26,7 +27,7 @@ export const ModalMainIcon = styled.img`
 
 export const ModalIconContainer = styled.div`
   padding: ${spacing.largePlus};
-  border-bottom: 1px solid #c1ccda;
+  border-bottom: 1px solid ${palette.coolGrey2};
   width: 100%;
   display: flex;
   flex-direction: column;
