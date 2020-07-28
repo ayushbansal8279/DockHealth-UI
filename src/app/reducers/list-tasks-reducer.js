@@ -14,6 +14,7 @@ import {
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   TASK_ARCHIVED,
   UPDATE_TASK_SUCCESS,
+  REFRESH_ANOTHER_TASK_SUCCESS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -160,7 +161,8 @@ const TaskReducer = (state = initialState, action) => {
       return TaskBaseReducer(state, action, updateCompletedTasksStateCallback);
     }
 
-    case UPDATE_TASK_SUCCESS: {
+    case UPDATE_TASK_SUCCESS:
+    case REFRESH_ANOTHER_TASK_SUCCESS: {
       if (action.task.status === 'COMPLETE') {
         return TaskBaseReducer(
           state,

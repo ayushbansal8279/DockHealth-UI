@@ -875,6 +875,22 @@ export const removeTaskAttachment = (
       throw error;
     });
 
+export const refreshAnotherTask = selectedTask => dispatch =>
+  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+    .then(task => {
+      // explicitly mark task as updated so we can show the flag
+      task.updated = true; // eslint-disable-line no-param-reassign
+      dispatch({
+        type: ActionTypes.REFRESH_ANOTHER_TASK_SUCCESS,
+        task,
+      });
+      reloadTaskListStats(dispatch, selectedTask);
+      return task;
+    })
+    .catch(error => {
+      throw error;
+    });
+
 export const refreshTask = selectedTask => dispatch =>
   TaskApi.getTaskDetails(selectedTask.taskIdentifier)
     .then(task => {
