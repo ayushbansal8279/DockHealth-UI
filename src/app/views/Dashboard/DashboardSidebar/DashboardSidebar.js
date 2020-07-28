@@ -3,7 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
-import { Link } from 'react-router';
+import * as InvitationActions from 'actions/invitation-actions';
+import { Link, hashHistory } from 'react-router';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import LockIcon from 'img/lock-icon';
@@ -40,8 +41,9 @@ const DashboardSidebar = ({
   closeListCreationSuccessMessage,
   acceptInvitation,
   modalActions,
-  taskListActions,
   members,
+  taskListActions,
+  invitationActions,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const hoveredItemReference = useRef(null);
@@ -105,6 +107,16 @@ const DashboardSidebar = ({
       .catch(() => {});
   };
 
+  const handleLeaveList = () => {
+    const { status } = selectedList;
+
+    if (status === 'PENDING') {
+      invitationActions.rejectInviteToTaskList(selectedList);
+    } else {
+      taskListActions.leaveList(selectedList?.taskListIdentifier);
+    }
+  };
+
   return (
     <DashboardSidebarWrapper>
       <TopSection>
@@ -124,10 +136,11 @@ const DashboardSidebar = ({
             <ListItemWrapper>
               <ListLink
                 key={taskList?.taskListIdentifier}
-                to={`/tasks/${taskList?.taskListIdentifier}`}
                 onClick={() => {
                   if (taskList?.status === 'PENDING')
                     acceptInvitation(taskList);
+
+                  hashHistory.push(`/tasks/${taskList?.taskListIdentifier}`);
                 }}
               >
                 <ListItem
@@ -202,12 +215,12 @@ const DashboardSidebar = ({
             ? [
                 {
                   key: 'edit',
-                  label: 'Edit list',
+                  label: 'Edit List',
                   onClick: () => {},
                 },
                 {
                   key: 'delete',
-                  label: 'Delete list',
+                  label: 'Delete List',
                   onClick: () => {
                     openDeleteConfirmationModal();
                   },
@@ -217,9 +230,7 @@ const DashboardSidebar = ({
                 {
                   key: 'leave',
                   label: 'Leave List',
-                  onClick: () => {
-                    taskListActions.leaveList(selectedList?.taskListIdentifier);
-                  },
+                  onClick: handleLeaveList,
                 },
               ]),
           {
@@ -248,6 +259,7 @@ const mapStateToProps = state => ({
 const mapDispachToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
+  invitationActions: bindActionCreators(InvitationActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispachToProps)(DashboardSidebar);

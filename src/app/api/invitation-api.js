@@ -1,3 +1,4 @@
+import { onTaskListInvitationRejected } from 'helpers/ga-event-helper';
 import axios from './axios-heydoc';
 
 export function findInvitationsByUserId() {
@@ -28,6 +29,7 @@ export function rejectInviteToTaskList(taskListIdentifier) {
   return axios
     .put(`list/rejectInviteToTaskList/${taskListIdentifier}`)
     .then(response => {
+      onTaskListInvitationRejected();
       return response.data;
     })
     .catch(function(error) {
