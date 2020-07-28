@@ -24,6 +24,7 @@ import {
   TASK_ATTACHMENT_REMOVED,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_COMMENT_SUCCESS,
+  REFRESH_ANOTHER_TASK_SUCCESS,
 } from 'actions/action-types';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -323,7 +324,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_SUCCESS: {
+    case UPDATE_TASK_SUCCESS:
+    case REFRESH_ANOTHER_TASK_SUCCESS: {
       const { task } = action;
 
       const updateTaskFromAction = tasks =>
