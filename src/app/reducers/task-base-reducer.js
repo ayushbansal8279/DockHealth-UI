@@ -324,7 +324,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_SUCCESS: 
+    case UPDATE_TASK_SUCCESS:
     case REFRESH_ANOTHER_TASK_SUCCESS: {
       const { task } = action;
 
