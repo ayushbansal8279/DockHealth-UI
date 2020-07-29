@@ -492,7 +492,7 @@ class TaskListView extends PureComponent {
                           currentUser={currentUser}
                           editForm={this.editTaskList}
                           deleteList={this.deleteList}
-                          leaveList={this.leaveList}
+                          leaveList={this.rejectInviteToTaskList}
                           onClick={this.onClickPendingList}
                           showNewIndicator
                         />
