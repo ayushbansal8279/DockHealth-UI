@@ -5,13 +5,14 @@ import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import { Link, hashHistory } from 'react-router';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Popover } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import ArrowIcon from 'img/arrow';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
+import ListForm from 'components/ListForm/ListForm';
 import {
   TopSection,
   MenuButton,
@@ -57,6 +58,7 @@ const DashboardSidebar = ({
   ] = useState(false);
   const [selectedList, setSelectedList] = useState(null);
   const [invitePopoverOpen, setInvitePopoverOpen] = useState(false);
+  const [listEditPopupOpen, setListEditPopupOpen] = useState(false);
 
   const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
     shouldDisplayFirstListCreationMessage,
@@ -115,6 +117,11 @@ const DashboardSidebar = ({
     } else {
       taskListActions.leaveList(selectedList?.taskListIdentifier);
     }
+  };
+
+  const handleEditList = () => {
+    taskListActions.setTaskListAsCurrentList(selectedList);
+    setListEditPopupOpen(true);
   };
 
   return (
@@ -216,7 +223,7 @@ const DashboardSidebar = ({
                 {
                   key: 'edit',
                   label: 'Edit List',
-                  onClick: () => {},
+                  onClick: handleEditList,
                 },
                 {
                   key: 'delete',
@@ -240,6 +247,21 @@ const DashboardSidebar = ({
           },
         ]}
       />
+      <Popover
+        open={listEditPopupOpen}
+        anchorEl={currentListMenuPopupReference?.current}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        onClose={() => setListEditPopupOpen(false)}
+      >
+        <ListForm setListFormOpen={setListEditPopupOpen} />
+      </Popover>
       <TaskListInviteMemberContainer
         addMemberButtonReference={currentListMenuPopupReference}
         isMemberPopoverOpen={invitePopoverOpen}
