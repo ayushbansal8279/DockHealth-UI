@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
-import { Link, hashHistory } from 'react-router';
-import { IconButton, Popover } from '@material-ui/core';
+import { hashHistory } from 'react-router';
+import { IconButton, Dialog } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
-import ArrowIcon from 'img/arrow';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 import ListForm from 'components/ListForm/ListForm';
@@ -26,12 +25,12 @@ import {
   PrivateListIcon,
   ListsSection,
   InfoDot,
-  Arrow,
   RolloverPopover,
   RolloverPopoverLabel,
   ListItemWrapper,
   ListLink,
   MenuIconPlaceholder,
+  AddListButton,
 } from './styled';
 import initializeUserTourItems from './user-tour';
 
@@ -119,8 +118,8 @@ const DashboardSidebar = ({
     }
   };
 
-  const handleEditList = () => {
-    taskListActions.setTaskListAsCurrentList(selectedList);
+  const openListEditDialog = taskList => {
+    taskListActions.setTaskListAsCurrentList(taskList);
     setListEditPopupOpen(true);
   };
 
@@ -132,12 +131,12 @@ const DashboardSidebar = ({
         </MenuButton>
       </TopSection>
       <ListsSection>
-        <Link to="/tasks">
-          <ListsHeader>
-            Lists
-            <Arrow src={ArrowIcon} alt="arrow" />
-          </ListsHeader>
-        </Link>
+        <ListsHeader>
+          My lists
+          <AddListButton onClick={() => openListEditDialog(null)} type="button">
+            <span>+</span> Add list
+          </AddListButton>
+        </ListsHeader>
         <ListItemsWrapper>
           {filteredList?.map((taskList, index) => (
             <ListItemWrapper>
@@ -223,7 +222,7 @@ const DashboardSidebar = ({
                 {
                   key: 'edit',
                   label: 'Edit List',
-                  onClick: handleEditList,
+                  onClick: () => openListEditDialog(selectedList),
                 },
                 {
                   key: 'delete',
@@ -247,21 +246,20 @@ const DashboardSidebar = ({
           },
         ]}
       />
-      <Popover
+      <Dialog
         open={listEditPopupOpen}
-        anchorEl={currentListMenuPopupReference?.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
+        fullWidth
         onClose={() => setListEditPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {
+            maxWidth: '40rem',
+          },
+        }}
       >
         <ListForm setListFormOpen={setListEditPopupOpen} />
-      </Popover>
+      </Dialog>
       <TaskListInviteMemberContainer
         addMemberButtonReference={currentListMenuPopupReference}
         isMemberPopoverOpen={invitePopoverOpen}

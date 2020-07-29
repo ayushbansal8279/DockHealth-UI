@@ -56,7 +56,7 @@ export const ListLink = styled(Link)`
 export const ListItem = styled.div`
   position: relative;
   display: flex;
-  padding: ${spacing.small} ${spacing.tiny} ${spacing.small} 42px;
+  padding: ${spacing.smallPlus} ${spacing.tiny} ${spacing.smallPlus} 42px;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
@@ -66,20 +66,14 @@ export const ListItem = styled.div`
   }
 `;
 
-export const ListsHeader = styled(ListItem)`
+export const ListsHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${palette.brightBlue};
+  padding: ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus} 42px;
+  color: ${palette.mediumGrey};
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.regularPlus};
-`;
-
-export const Arrow = styled.img`
-  height: 18px;
-  width: 18px;
-  margin-right: ${spacing.tiny};
-  transform: rotate(-90deg);
 `;
 
 export const ListItemTitle = styled.div`
@@ -131,4 +125,21 @@ export const RolloverPopoverLabel = styled.label`
 
 export const MenuIconPlaceholder = styled.div`
   width: 29px;
+`;
+
+export const AddListButton = styled.button`
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.bold};
+  border-radius: 2px;
+  color: ${palette.mediumGrey};
+  padding: ${spacing.tiny} ${spacing.small};
+  outline: none;
+
+  & > span {
+    color: ${palette.orange};
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
