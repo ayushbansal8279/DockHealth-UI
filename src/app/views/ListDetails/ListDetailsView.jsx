@@ -39,7 +39,7 @@ import { LIST_TOUR_STEPS } from './list-tour-steps';
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 class Home extends Component {
-  state = { isTourOpen: false };
+  state = { isTourOpen: false, tourConditionChecked: false };
 
   async componentDidMount() {
     const {
@@ -56,9 +56,7 @@ class Home extends Component {
       );
     }
 
-    this.initTable().then(() => {
-      this.openTourModal();
-    });
+    this.initTable();
 
     patientActions.getAllPatients();
 
@@ -73,7 +71,13 @@ class Home extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    const { actions, routeParams, taskLists, currentUser } = this.props;
+    const {
+      actions,
+      routeParams,
+      taskLists,
+      currentUser,
+      taskCounters,
+    } = this.props;
 
     if (
       taskLists !== nextProps.taskLists ||
@@ -84,6 +88,22 @@ class Home extends Component {
         nextProps.routeParams.taskListIdentifier,
         nextProps.taskLists,
       );
+    }
+
+    if (
+      taskCounters !== nextProps.taskCounters &&
+      nextProps.taskCounters?.incomplete !== undefined
+    ) {
+      const { tourConditionChecked } = this.state;
+
+      if (nextProps.taskCounters?.incomplete === 0 && !tourConditionChecked) {
+        // eslint-disable-next-line react/no-will-update-set-state
+        this.setState({ tourConditionChecked: true });
+      }
+
+      if (nextProps.taskCounters?.incomplete > 0 && !tourConditionChecked) {
+        this.openTourModal();
+      }
     }
 
     if (
