@@ -8,6 +8,8 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
   CancelButton,
@@ -17,16 +19,18 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={Folder} alt="Task Group" />
-        <Typography color="textPrimary" variant="h2">
-          DELETE GROUP
-        </Typography>
-        <Spacing vertical={5} />
-        <Typography variant="body1">
-          Are you sure you want to delete this group? If you delete this group
-          and there are tasks within the group, the tasks will not be deleted.
-        </Typography>
-        <Spacing vertical={4} />
+        <ModalIconContainer>
+          <ModalMainIcon src={Folder} alt="Task Group" />
+          <Typography color="textPrimary" variant="h2">
+            DELETE GROUP
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            Are you sure you want to delete this group? If you delete this group
+            and there are tasks within the group, the tasks will not be deleted.
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton variant="outlined" type="button" onClick={closeModal}>
             No, do not delete

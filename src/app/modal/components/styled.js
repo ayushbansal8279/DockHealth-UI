@@ -1,6 +1,7 @@
 import { Button, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
+import palette from 'styles/palette';
 import { withStyles } from '@material-ui/core/styles';
 import { Close } from '@material-ui/icons';
 
@@ -9,11 +10,14 @@ export const ModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 480px;
+  width: 400px;
   max-width: 100vw;
-  padding: ${spacing.largePlus};
   font-family: 'Roboto Condensed', sans-serif;
   background-color: white;
+`;
+
+export const ModalWrapperWithPadding = styled(ModalWrapper)`
+  padding: ${spacing.largePlus};
 `;
 
 export const ModalMainIcon = styled.img`
@@ -21,10 +25,27 @@ export const ModalMainIcon = styled.img`
   margin-bottom: ${spacing.large};
 `;
 
+export const ModalIconContainer = styled.div`
+  padding: ${spacing.largePlus};
+  border-bottom: 1px solid ${palette.coolGrey2};
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const ModalDescriptionContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${spacing.largePlus};
+`;
+
 export const ButtonsContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: 0 ${spacing.small};
+  padding: ${spacing.small} ${spacing.largePlus} ${spacing.largePlus};
 
   & > button {
     width: 165px; // per design

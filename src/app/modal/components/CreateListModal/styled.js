@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 import spacing from 'styles/spacing';
-import { ModalWrapper } from '../styled';
+import { ModalWrapperWithPadding } from '../styled';
 
-export const CreateListModalWrapper = styled(ModalWrapper)`
+export const CreateListModalWrapper = styled(ModalWrapperWithPadding)`
   display: flex;
   flex-direction: column;
   width: 530px;

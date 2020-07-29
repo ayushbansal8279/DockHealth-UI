@@ -286,4 +286,5 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
 
 export const SlimTaskGridContainer = styled.div`
   display: flex;
+  padding-left: ${spacing.regular};
 `;

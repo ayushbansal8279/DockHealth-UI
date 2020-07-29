@@ -8,25 +8,29 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
   CancelButton,
 } from '../styled';
 
-const ResetSortingModal = ({ closeModal, closeOnConfirm, confirm }) => {
+const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={SortArrows} alt="Sort arrows" />
-        <Typography color="textPrimary" variant="h2">
-          RESET SORTING
-        </Typography>
-        <Spacing vertical={4} />
-        <Typography variant="body1">
-          In order to enable dragging tasks, please reset the sort.
-        </Typography>
-        <Spacing vertical={4} />
-        <Spacing vertical={2} />
+        <ModalIconContainer>
+          <ModalMainIcon src={SortArrows} alt="Sort arrows" />
+          <Typography color="textSecondary" variant="h2">
+            CLEAR SORT
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            This page has an active sort or filter. In order to enable drag and
+            drop we’ll need to clear the sort.
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton variant="outlined" type="button" onClick={closeModal}>
             Cancel
@@ -40,7 +44,7 @@ const ResetSortingModal = ({ closeModal, closeOnConfirm, confirm }) => {
               if (closeOnConfirm) closeModal();
             }}
           >
-            Reset
+            CLEAR SORT
           </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
@@ -48,4 +52,4 @@ const ResetSortingModal = ({ closeModal, closeOnConfirm, confirm }) => {
   );
 };
 
-export default ResetSortingModal;
+export default ClearSortFiltersModal;

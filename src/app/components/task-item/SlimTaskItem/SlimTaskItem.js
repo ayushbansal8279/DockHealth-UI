@@ -74,12 +74,11 @@ const SlimTaskItem = ({
   return (
     <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
       {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
-      <PrioritySwitch left="34px" onClick={() => {}} isClickable={false}>
+      <PrioritySwitch left="42px" onClick={() => {}} isClickable={false}>
         {priority === 'HIGH' && (
           <img src={HighPriorityLabel} alt="Priority icon" />
         )}
       </PrioritySwitch>
-
       <Grid container justify="space-between" alignItems="center">
         <Grid item sm={6} md={7} lg={8}>
           <SlimTaskGridContainer>

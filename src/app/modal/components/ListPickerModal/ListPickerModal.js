@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { getTaskListForUser } from 'actions/tasklist-actions';
 import { addTaskList } from 'api/tasklist-api';
 import { ListPickerModalWrapper } from './styled';
-import { ModalWrapper, CloseIconButton, CloseIcon } from '../styled';
+import { ModalWrapperWithPadding, CloseIconButton, CloseIcon } from '../styled';
 import ListSelectSection from './ListSelectSection';
 
 const ListPickerModal = ({
@@ -61,7 +61,7 @@ const ListPickerModal = ({
   }, [closeModal, fetchMethod]);
 
   return (
-    <ModalWrapper>
+    <ModalWrapperWithPadding>
       <ListPickerModalWrapper>
         <CloseIconButton onClick={closeModal} size="small" color="secondary">
           <CloseIcon />
@@ -76,7 +76,7 @@ const ListPickerModal = ({
           onCancel={closeModal}
         />
       </ListPickerModalWrapper>
-    </ModalWrapper>
+    </ModalWrapperWithPadding>
   );
 };
 

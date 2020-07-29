@@ -8,6 +8,8 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
 } from '../styled';
@@ -16,16 +18,18 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={RedFolder} alt="red-folder" />
-        <Typography color="textPrimary" variant="h2">
-          Archive Patient
-        </Typography>
-        <Spacing vertical={5} />
-        <Typography variant="body1">
-          Are you sure you want to archive this patient? This action cannot be
-          undone.
-        </Typography>
-        <Spacing vertical={4} />
+        <ModalIconContainer>
+          <ModalMainIcon src={RedFolder} alt="red-folder" />
+          <Typography color="textPrimary" variant="h2">
+            Archive Patient
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            Are you sure you want to archive this patient? This action cannot be
+            undone.
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <Button variant="outlined" type="button" onClick={closeModal}>
             No, do not archive

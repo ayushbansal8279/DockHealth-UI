@@ -8,6 +8,8 @@ import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
   ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
   ButtonsContainer,
   ConfirmButton,
   CancelButton,
@@ -17,17 +19,19 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={folderUser} alt="folder_user" />
-        <Typography color="textPrimary" variant="h2">
-          Remove as an active User
-        </Typography>
-        <Spacing vertical={5} />
-        <Typography variant="body1">
-          Are you sure you want to remove this user as a paid, active user? If
-          removed, you will not be charged for this user starting in the next
-          billing cycle.
-        </Typography>
-        <Spacing vertical={4} />
+        <ModalIconContainer>
+          <ModalMainIcon src={folderUser} alt="folder_user" />
+          <Typography color="textPrimary" variant="h2">
+            Remove as an active User
+          </Typography>
+        </ModalIconContainer>
+        <ModalDescriptionContainer>
+          <Typography variant="body1">
+            Are you sure you want to remove this user as a paid, active user? If
+            removed, you will not be charged for this user starting in the next
+            billing cycle.
+          </Typography>
+        </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton variant="outlined" type="button" onClick={closeModal}>
             No, do not remove
