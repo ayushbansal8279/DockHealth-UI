@@ -442,7 +442,11 @@ const ListsComponent = props => {
           <ListsButton
             variant="contained"
             onClick={() => {
-              leaveList(currentListIdentifier).then(closeLeavePopover);
+              const taskList = taskLists?.find(
+                ({ taskListIdentifier }) =>
+                  taskListIdentifier === currentListIdentifier,
+              );
+              leaveList(taskList).then(closeLeavePopover);
             }}
           >
             YES, LEAVE LIST

@@ -243,7 +243,7 @@ class TaskListView extends PureComponent {
     });
   };
 
-  leaveList = taskListIdentifier => {
+  leaveList = ({ taskListIdentifier }) => {
     const { taskListAction } = this.props;
     return taskListAction.leaveList(taskListIdentifier).then(() => {
       onTaskListLeft();
@@ -260,8 +260,9 @@ class TaskListView extends PureComponent {
 
   rejectInviteToTaskList = taskList => {
     const { invitationAction } = this.props;
-    invitationAction.rejectInviteToTaskList(taskList);
-    onTaskListInvitationRejected();
+    return invitationAction
+      .rejectInviteToTaskList(taskList)
+      .then(() => onTaskListInvitationRejected());
   };
 
   refresh = () => {
