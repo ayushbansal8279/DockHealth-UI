@@ -143,3 +143,17 @@ export const AddListButton = styled.button`
     cursor: pointer;
   }
 `;
+
+export const NewListIndicator = styled.p`
+  position: absolute;
+  bottom: ${spacing.regularPlus};
+  left: 50%;
+  width: 210px;
+  transform: translateX(-50%);
+  margin-bottom: 0;
+  padding: ${spacing.small} ${spacing.smallPlus};
+  background: ${palette.darkBlue};
+  color: ${palette.white};
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: center;
+`;

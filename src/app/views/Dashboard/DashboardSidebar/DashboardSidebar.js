@@ -31,6 +31,7 @@ import {
   ListLink,
   MenuIconPlaceholder,
   AddListButton,
+  NewListIndicator,
 } from './styled';
 import initializeUserTourItems from './user-tour';
 
@@ -63,6 +64,8 @@ const DashboardSidebar = ({
     shouldDisplayFirstListCreationMessage,
     closeListCreationSuccessMessage,
   });
+
+  const hasAnyPendingList = lists.some(({ status }) => status === 'PENDING');
 
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
@@ -129,6 +132,9 @@ const DashboardSidebar = ({
         <MenuButton onClick={showNavbar}>
           <img src={MenuIcon} alt="menu" />
         </MenuButton>
+        {hasAnyPendingList && (
+          <NewListIndicator>Hooray! You have a new list.</NewListIndicator>
+        )}
       </TopSection>
       <ListsSection>
         <ListsHeader>
