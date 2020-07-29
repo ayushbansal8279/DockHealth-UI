@@ -127,7 +127,7 @@ const existingUserTaskDrawerTourHooks = ({
       setOpenedTourStep(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskDrawerOpen, fromFirstAddTask]);
+  }, [taskDrawerOpen]);
 
   const closeTour = () => {
     localStorageHelper.setItem(TASK_DRAWER_FIRST_TIME_KEY, false);
