@@ -32,6 +32,7 @@ import {
   MenuIconPlaceholder,
   AddListButton,
   NewListIndicator,
+  NewListLabel,
 } from './styled';
 import initializeUserTourItems from './user-tour';
 
@@ -164,6 +165,9 @@ const DashboardSidebar = ({
                     )
                   }
                 >
+                  {taskList?.status === 'PENDING' && (
+                    <NewListLabel>New</NewListLabel>
+                  )}
                   {taskList?.isPrivate && (
                     <PrivateListIcon src={LockIcon} alt="private" />
                   )}

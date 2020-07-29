@@ -157,3 +157,15 @@ export const NewListIndicator = styled.p`
   font-family: 'Roboto Condensed', sans-serif;
   text-align: center;
 `;
+
+export const NewListLabel = styled.p`
+  position: absolute;
+  top: -4px;
+  left: 42px;
+  margin-bottom: 0;
+  color: ${palette.darkBlue};
+  font-family: 'Roboto Condensed', sans-serif;
+  text-transform: uppercase;
+  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.small};
+`;

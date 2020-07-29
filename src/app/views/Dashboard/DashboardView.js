@@ -80,7 +80,7 @@ const DashboardView = ({
     refreshAccessToken(currentUser);
   });
 
-  const allLists = useMemo(() => [...pendingLists, ...lists], [
+  const allLists = useMemo(() => [...lists, ...pendingLists], [
     lists,
     pendingLists,
   ]);
