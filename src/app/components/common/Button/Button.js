@@ -13,7 +13,8 @@ const StyledButton = styled.button`
   font-weight: ${fontWeights.regularPlus};
   text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : 'lowercase')};
   outline: none;
-  cursor: pointer;
+
+  ${({ disabled }) => !disabled && `cursor: pointer;`}
   
   & > span {
     position: relative;
@@ -41,16 +42,13 @@ const StyledButton = styled.button`
     }
   }}
 
-  ${({ variant, color }) => {
+  ${({ variant, colors }) => {
     switch (variant) {
       case 'contained':
         return `
           border: none;
           color: ${palette.white};
-          ${color === 'primary' &&
-            `
-              background: linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue});
-            `}
+          background: linear-gradient(to top right, ${colors.main}, ${colors.secondary});
 
           &:before {
             position: absolute;
@@ -61,16 +59,17 @@ const StyledButton = styled.button`
             height: 100%;
             opacity: 0;
             transition: opacity 0.25s ease-out;
-            ${color === 'primary' &&
-              `
-                background: linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue});
-              `}
+                background: linear-gradient(to top right, ${colors.main}, ${colors.main});
           }
 
           &:hover {
             &:before {
               opacity: 1;
             }
+          }
+
+          &:disabled {
+            background: ${palette.coolGrey1};
           }
           `;
 
@@ -80,30 +79,55 @@ const StyledButton = styled.button`
             border-style: solid;
             background: none;
             transition: background 0.25s ease-out;
-            ${color === 'primary' &&
-              `
-                border-color: ${palette.darkBlue};
-                color: ${palette.darkBlue};
-              `}
+            border-color: ${colors.main};
+            color: ${colors.main};
 
             &:before {
               background: none;
             }
+
+            &:hover {
+              color: ${colors.secondary};
+              border-color: ${colors.secondary};
+            }
+
+            &:disabled {
+              color: ${palette.coolGrey1};
+              border-color: ${palette.coolGrey1};
+            }
+
+
         `;
       case 'text':
         return `
           border: none;
           text-decoration: underline;
-          ${color === 'primary' &&
-            `
-            color: ${palette.darkBlue};
-        `}
+          color: ${colors.main};
         `;
       default:
         return ``;
     }
   }}
 `;
+
+function getButtonColors(color) {
+  switch (color) {
+    case 'blue':
+      return {
+        main: palette.darkBlue,
+        secondary: palette.brightBlue,
+      };
+
+    case 'red':
+      return {
+        main: palette.oPlusRed,
+        secondary: palette.orange,
+      };
+
+    default:
+      return {};
+  }
+}
 
 const Button = ({
   children,
@@ -114,16 +138,18 @@ const Button = ({
   size,
   type,
   fullWidth,
+  disabled,
 }) => {
   return (
     <StyledButton
       variant={variant}
-      color={color}
+      colors={getButtonColors(color)}
       uppercase={uppercase}
       onClick={onClick}
       size={size}
       type={type}
       fullWidth={fullWidth}
+      disabled={disabled}
     >
       <span>{children}</span>
     </StyledButton>
@@ -133,20 +159,22 @@ const Button = ({
 Button.propTypes = {
   children: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(['contained', 'outlined', 'text']),
-  color: PropTypes.oneOf(['primary', 'secondary', 'tetriary']),
+  color: PropTypes.oneOf(['blue', 'red']),
   size: PropTypes.oneOf(['small', 'medium']),
   type: PropTypes.oneOf(['button', 'submit']),
   uppercase: PropTypes.bool,
   fullWidth: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
   variant: 'contained',
-  color: 'primary',
+  color: 'blue',
   size: 'medium',
   type: 'button',
   uppercase: true,
   fullWidth: false,
+  disabled: false,
 };
 
 export default Button;
