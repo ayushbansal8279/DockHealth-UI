@@ -35,7 +35,11 @@ const PeopleFilterRowComponent = ({
   isSelected,
   onClick,
 }) => (
-  <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+  <StyledFilterRow
+    isSelected={isSelected}
+    isDisabled={!taskCount}
+    onClick={!!taskCount && onClick}
+  >
     <Member member={reference} size={25} />
     <MemberOptionLabel>{displayValue}</MemberOptionLabel>
     <OptionCount>{taskCount || '0'}</OptionCount>
@@ -49,7 +53,11 @@ const StatusFilterRowComponent = ({
   onClick,
 }) => {
   return (
-    <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+    <StyledFilterRow
+      isSelected={isSelected}
+      isDisabled={!taskCount}
+      onClick={!!taskCount && onClick}
+    >
       <TaskItemStatus workflowStatus={itemKey} labelWidth="180px" />
       <OptionCount>{taskCount || '0'}</OptionCount>
     </StyledFilterRow>
@@ -65,7 +73,11 @@ const PriorityFilterRowComponent = ({
   const { label, icon: IconComponent } = getPriorityConfig(priority);
 
   return (
-    <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+    <StyledFilterRow
+      isSelected={isSelected}
+      isDisabled={!taskCount}
+      onClick={!!taskCount && onClick}
+    >
       {IconComponent && <IconComponent />}
       <OptionLabel>{label}</OptionLabel>
       <OptionCount>{taskCount || '0'}</OptionCount>
@@ -79,7 +91,11 @@ const StandardFilterRowComponent = ({
   isSelected,
   onClick,
 }) => (
-  <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+  <StyledFilterRow
+    isSelected={isSelected}
+    isDisabled={!taskCount}
+    onClick={!!taskCount && onClick}
+  >
     <OptionLabel>{displayValue}</OptionLabel>
     <OptionCount>{taskCount || '0'}</OptionCount>
   </StyledFilterRow>
@@ -103,7 +119,11 @@ const DateFilterRowComponent = ({
       customDueDateEnd={customDueDateEnd}
     />
   ) : (
-    <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+    <StyledFilterRow
+      isSelected={isSelected}
+      isDisabled={!taskCount}
+      onClick={!!taskCount && onClick}
+    >
       <OptionLabel>{displayValue}</OptionLabel>
       <OptionCount>{taskCount || '0'}</OptionCount>
     </StyledFilterRow>
@@ -115,7 +135,11 @@ export const FilterRowUnassigned = ({
   taskCount,
   onClick,
 }) => (
-  <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+  <StyledFilterRow
+    isSelected={isSelected}
+    isDisabled={!taskCount}
+    onClick={!!taskCount && onClick}
+  >
     {hasAvatars && (
       <StyledUnassignedIcon src={UnassignedIcon} alt="Unassigned" />
     )}

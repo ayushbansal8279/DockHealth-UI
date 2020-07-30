@@ -165,19 +165,33 @@ export const StyledFilterRow = styled.div`
   height: 30px; // per design
   background-color: ${props =>
     props.isSelected ? palette.darkBlue : palette.blueGrey};
-  color: ${props => (props.isSelected ? 'white' : 'black')};
+  color: ${props => {
+    if (props.isSelected) {
+      return 'white';
+    }
+    if (props.isDisabled) {
+      return palette.coolGrey2;
+    }
+
+    return 'black';
+  }};
   border-radius: 4px;
   font-size: ${fontSizes.small};
-  cursor: pointer;
   margin-bottom: ${spacing.tiny};
   padding: 0 ${spacing.small};
 
   & > span {
     margin-left: ${spacing.small};
   }
+  ${props =>
+    !props.isDisabled &&
+    `
+      cursor: pointer;
+    `}
 
   ${props =>
     !props.isSelected &&
+    !props.isDisabled &&
     `&:hover {
       background-color: ${palette.lightGrey};
       color: white;}`};
@@ -206,7 +220,7 @@ export const OptionLabel = styled.span`
 
 export const OptionCount = styled.div`
   margin-left: ${spacing.small};
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
 `;
 
 export const MegaFilterOptions = styled.div`
