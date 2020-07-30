@@ -8,7 +8,7 @@ import {
   CalendarIconWrapper,
 } from './styled';
 
-export const DAYS_OF_WEEK = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+export const DAYS_OF_WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 export const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 
 const checkIfDayIsInSelectedRange = (
@@ -58,10 +58,10 @@ export const renderDayLabels = ({
 }) => {
   const currentMonthStartPoint = moment(currentMonthMoment)
     .startOf('month')
-    .startOf('isoWeek');
+    .startOf('week');
   const currentMonthEndPoint = moment(currentMonthMoment)
     .endOf('month')
-    .endOf('isoWeek');
+    .endOf('week');
 
   const displayedMonthDays =
     currentMonthEndPoint.diff(currentMonthStartPoint, 'day') || 0;
