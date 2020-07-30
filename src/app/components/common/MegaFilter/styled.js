@@ -80,7 +80,8 @@ export const MegaFilterLeftOptions = styled.div`
 
 export const MegaFilterLabel = styled.label`
   color: ${palette.mediumGrey};
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.smallPlus};
+  font-family: 'Roboto', sans-serif;
 `;
 
 export const MegaFilterBoldedLabel = styled.span`
@@ -152,9 +153,10 @@ export const FilterSearched = styled.div`
 
 export const FilterLabel = styled.label`
   color: ${palette.lightGrey};
-  font-weight: ${fontSizes.bold};
-  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.smallPlus};
   text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
 `;
 
 export const StyledFilterRow = styled.div`
@@ -206,7 +208,7 @@ export const ClearButton = styled.button`
   align-items: center;
   margin-left: ${spacing.small};
   color: ${palette.brightBlue};
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.smallPlus};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
 `;
 
