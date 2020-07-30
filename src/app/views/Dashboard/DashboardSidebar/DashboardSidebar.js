@@ -115,11 +115,17 @@ const DashboardSidebar = ({
   const handleLeaveList = () => {
     const { status } = selectedList;
 
-    if (status === 'PENDING') {
-      invitationActions.rejectInviteToTaskList(selectedList);
-    } else {
-      taskListActions.leaveList(selectedList?.taskListIdentifier);
-    }
+    const modalProps = {
+      confirm: () => {
+        if (status === 'PENDING') {
+          invitationActions.rejectInviteToTaskList(selectedList);
+        } else {
+          taskListActions.leaveList(selectedList?.taskListIdentifier);
+        }
+        modalActions.closeModal();
+      },
+    };
+    modalActions.openModal('LeaveList', modalProps);
   };
 
   const openListEditDialog = taskList => {

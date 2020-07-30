@@ -12,6 +12,7 @@ import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonMod
 import ClearSortFiltersModal from './components/ClearSortFiltersModal/ClearSortFiltersModal';
 import CreateListModal from './components/CreateListModal/CreateListModal';
 import VideoModal from './components/VideoModal/VideoModal';
+import LeaveListModal from './components/LeaveListModal/LeaveListModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -28,6 +29,7 @@ const MODAL_MAP = {
   ClearSortFilters: ClearSortFiltersModal,
   CreateList: CreateListModal,
   Video: VideoModal,
+  LeaveList: LeaveListModal,
 };
 
 export default MODAL_MAP;
