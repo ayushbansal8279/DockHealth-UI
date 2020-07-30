@@ -7,21 +7,39 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 const StyledButton = styled.button`
   position: relative;
-  height: 2.5rem;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   ${({ fullWidth }) => !fullWidth && 'min-width: 10.625rem;'}
   
-  padding: ${spacing.small} ${spacing.regular};
-  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : 'lowercase')};
   outline: none;
   cursor: pointer;
-
+  
   & > span {
     position: relative;
     z-index: 100;
   }
+  
+  ${({ size }) => {
+    switch (size) {
+      case 'small':
+        return `
+          height: 30px;
+          padding: 0 ${spacing.regular};
+          font-size: ${fontSizes.smallPlus};
+        `;
+
+      case 'medium':
+        return `
+          height: 50px;
+          padding: 0 ${spacing.regular};
+          font-size: ${fontSizes.regular};
+        `;
+
+      default:
+        return ``;
+    }
+  }}
 
   ${({ variant, color }) => {
     switch (variant) {
@@ -93,6 +111,7 @@ const Button = ({
   color,
   uppercase,
   onClick,
+  size,
   type,
   fullWidth,
 }) => {
@@ -102,6 +121,7 @@ const Button = ({
       color={color}
       uppercase={uppercase}
       onClick={onClick}
+      size={size}
       type={type}
       fullWidth={fullWidth}
     >
@@ -114,6 +134,7 @@ Button.propTypes = {
   children: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(['contained', 'outlined', 'text']),
   color: PropTypes.oneOf(['primary', 'secondary', 'tetriary']),
+  size: PropTypes.oneOf(['small', 'medium']),
   type: PropTypes.oneOf(['button', 'submit']),
   uppercase: PropTypes.bool,
   fullWidth: PropTypes.bool,
@@ -122,6 +143,7 @@ Button.propTypes = {
 Button.defaultProps = {
   variant: 'contained',
   color: 'primary',
+  size: 'medium',
   type: 'button',
   uppercase: true,
   fullWidth: false,
