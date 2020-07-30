@@ -110,7 +110,16 @@ export const renderDayLabels = ({
             isCurrentMonth={isCurrentMonth}
             isDaySelected={isDaySelected || isDayInSelectedRange}
           >
-            <MontserratTypography variant="h6" color="inherit" align="center">
+            <MontserratTypography
+              variant="h6"
+              color="inherit"
+              align="center"
+              weight={
+                dayMoment.isBefore(moment(), 'days') || !isCurrentMonth
+                  ? 'normal'
+                  : 'bold'
+              }
+            >
               {dayMoment.format('D')}
             </MontserratTypography>
           </CalendarDayLabel>
