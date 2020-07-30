@@ -54,8 +54,10 @@ export const PopperRightArrow = styled(PopperTopArrow)`
 
 export const PopperWrapper = styled.div`
   position: relative;
-  ${({ xAxisMargin }) => xAxisMargin && `margin: ${spacing.regular} 0;`}
-  ${({ yAxisMargin }) => yAxisMargin && `margin: 0 ${spacing.regular};`}
+  ${({ yAxisMargin }) =>
+    yAxisMargin && `margin: ${spacing.regular} ${spacing.tiny};`}
+  ${({ xAxisMargin }) =>
+    xAxisMargin && `margin: ${spacing.tiny} ${spacing.regular};`}
   background: ${palette.darkBlue};
   border-radius: 5px;
 `;

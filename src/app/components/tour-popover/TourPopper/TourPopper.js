@@ -55,8 +55,8 @@ const TourPopper = ({ children, anchorEl, position, open, onClose }) => {
       {isLeftArrow && <PopperLeftArrow ref={setReference} />}
       <ClickAwayListener onClickAway={onClose}>
         <PopperWrapper
-          xAxisMargin={isTopArrow || isBottomArrow}
-          yAxisMargin={isLeftArrow || isRightArrow}
+          yAxisMargin={isTopArrow || isBottomArrow}
+          xAxisMargin={isLeftArrow || isRightArrow}
         >
           <>
             {onClose && (
