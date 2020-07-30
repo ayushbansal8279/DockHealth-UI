@@ -42,7 +42,7 @@ const StyledButton = styled.button`
     }
   }}
 
-  ${({ variant, colors }) => {
+  ${({ variant, colors, theme }) => {
     switch (variant) {
       case 'contained':
         return `
@@ -79,16 +79,25 @@ const StyledButton = styled.button`
             border-style: solid;
             background: none;
             transition: background 0.25s ease-out;
-            border-color: ${colors.main};
-            color: ${colors.main};
-
+            
             &:before {
               background: none;
             }
-
-            &:hover {
-              color: ${colors.secondary};
-              border-color: ${colors.secondary};
+            
+            ${
+              theme === 'dark'
+                ? `
+                  border-color: ${palette.white};
+                  color: ${palette.white};
+                `
+                : `
+                  border-color: ${colors.main};
+                  color: ${colors.main};
+                  &:hover {
+                    color: ${colors.secondary};
+                    border-color: ${colors.secondary};
+                  }
+              `
             }
 
             &:disabled {
@@ -139,6 +148,7 @@ const Button = ({
   type,
   fullWidth,
   disabled,
+  theme,
 }) => {
   return (
     <StyledButton
@@ -150,6 +160,7 @@ const Button = ({
       type={type}
       fullWidth={fullWidth}
       disabled={disabled}
+      theme={theme}
     >
       <span>{children}</span>
     </StyledButton>
@@ -165,6 +176,7 @@ Button.propTypes = {
   uppercase: PropTypes.bool,
   fullWidth: PropTypes.bool,
   disabled: PropTypes.bool,
+  theme: PropTypes.oneOf(['light', 'dark']),
 };
 
 Button.defaultProps = {
@@ -175,6 +187,7 @@ Button.defaultProps = {
   uppercase: true,
   fullWidth: false,
   disabled: false,
+  theme: 'light',
 };
 
 export default Button;
