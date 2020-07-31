@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
 import moment from 'moment';
 import { Grid } from '@material-ui/core';
@@ -6,6 +7,7 @@ import CircleCompleted from 'img/circle-completed';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import Member from 'components/members/Member';
 
 import { getCalendarIcon } from '../icons';
 import {
@@ -20,6 +22,7 @@ import {
   DueDate,
   DueDateContainer,
   SlimTaskGridContainer,
+  AssignedBox,
 } from '../styled';
 
 const SlimTaskItem = ({
@@ -32,8 +35,11 @@ const SlimTaskItem = ({
   dragHandleProps,
   openDrawer,
   isSelected,
+  showAssignedPerson,
+  gridConfig,
 }) => {
   const {
+    assignedTo,
     description,
     taskList,
     dueDate,
@@ -80,7 +86,7 @@ const SlimTaskItem = ({
         )}
       </PrioritySwitch>
       <Grid container justify="space-between" alignItems="center">
-        <Grid item sm={6} md={7} lg={8}>
+        <Grid item {...gridConfig.description}>
           <SlimTaskGridContainer>
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
@@ -125,7 +131,7 @@ const SlimTaskItem = ({
             </SlimTaskItemDescription>
           </SlimTaskGridContainer>
         </Grid>
-        <Grid item sm={2} md={2} lg={2}>
+        <Grid item {...gridConfig.dueDate}>
           <DueDateContainer>
             <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
             <img
@@ -134,7 +140,16 @@ const SlimTaskItem = ({
             />
           </DueDateContainer>
         </Grid>
-        <Grid item sm={4} md={3} lg={2}>
+        {showAssignedPerson && (
+          <Grid item {...gridConfig.assignedPerson}>
+            {assignedTo && (
+              <AssignedBox>
+                <Member member={assignedTo} size={34} />
+              </AssignedBox>
+            )}
+          </Grid>
+        )}
+        <Grid item {...gridConfig.listName}>
           {taskList && (
             <SlimTaskItemListLink
               to={`tasks/${taskList?.taskListIdentifier}`}
