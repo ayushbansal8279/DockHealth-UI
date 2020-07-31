@@ -3,14 +3,7 @@ import { equals, pick } from 'ramda';
 import React from 'react';
 import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
-import {
-  hashHistory,
-  IndexRoute,
-  IndexRedirect,
-  Redirect,
-  Route,
-  Router,
-} from 'react-router';
+import { hashHistory, IndexRoute, Redirect, Route, Router } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'views/Patient/PatientDetailsView';
 import PatientTasksListView from 'views/Patient/PatientTasksListView';
@@ -365,7 +358,6 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated({ checkTrialExpiration: true });
           }}
         >
-          <IndexRedirect to="/home" />
           <Route
             path="/home"
             component={DashboardView}
@@ -375,17 +367,10 @@ export const Routes = ({ store }) => {
                 hashHistory.push('/home/my-tasks');
               }
             }}
+            onLeave={onLeaveDashboard}
           >
-            <Route
-              path="my-tasks"
-              onEnter={onEnterMyTasksDashboard}
-              onLeave={onLeaveDashboard}
-            />
-            <Route
-              path="all-tasks"
-              onEnter={onEnterAllTasksDashboard}
-              onLeave={onLeaveDashboard}
-            />
+            <Route path="my-tasks" onEnter={onEnterMyTasksDashboard} />
+            <Route path="all-tasks" onEnter={onEnterAllTasksDashboard} />
           </Route>
           <Route
             path="/search"

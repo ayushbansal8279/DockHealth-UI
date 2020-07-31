@@ -185,6 +185,7 @@ const getDrawerItems = ({ lists }) => [
     id: 'home',
     label: 'Home',
     icon: HomeIcon,
+    tabsPath: ['/my-tasks', '/all-tasks'],
     to: 'home',
     isIconFilled: false,
   },
@@ -254,7 +255,15 @@ const DrawerList = ({
 
       const currentDrawerItem = drawerItems
         .concat(drawerChildItems)
-        .find(({ to }) => location.pathname.endsWith(encodeURI(to)));
+        .find(({ to, tabsPath }) => {
+          if (tabsPath) {
+            return !!tabsPath.find(tab => {
+              return `/${to + tab}` === location.pathname;
+            });
+          }
+
+          return location.pathname.endsWith(encodeURI(to));
+        });
 
       if (currentDrawerItem) {
         setActiveId(currentDrawerItem.id || '');
