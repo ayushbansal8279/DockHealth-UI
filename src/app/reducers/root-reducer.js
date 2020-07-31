@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { RESET_APP } from 'actions/action-types';
 import ModalReducer from 'modal/reducers';
 import AlertChipReducer from 'alert/reducer';
 import AuthBaseReducer from './auth-base-reducer';
@@ -25,7 +26,7 @@ import TemplateReducer from './template-reducer';
 import DashboardTasksReducer from './dashboard-tasks-reducer';
 import GlobalSearchReducer from './global-search-reducer';
 
-export default combineReducers({
+const appReducer = combineReducers({
   templateState: TemplateReducer,
   taskState: TaskReducer,
   patientState: PatientReducer,
@@ -52,3 +53,11 @@ export default combineReducers({
   dashboardTasks: DashboardTasksReducer,
   globalSearch: GlobalSearchReducer,
 });
+
+export default function rootReducer(state, action) {
+  if (action.type === RESET_APP) {
+    return appReducer(undefined, action);
+  }
+
+  return appReducer(state, action);
+}

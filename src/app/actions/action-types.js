@@ -1,3 +1,6 @@
+// Global
+export const RESET_APP = 'RESET_APP';
+
 // Tasks
 export const GET_TASKS_SUCCESS = 'GET_TASKS_SUCCESS';
 export const GET_COMPLETED_TASKS_SUCCESS = 'GET_COMPLETED_TASKS_SUCCESS';

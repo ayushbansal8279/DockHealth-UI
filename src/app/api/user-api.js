@@ -1,4 +1,5 @@
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
+import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Amplify from '@aws-amplify/core';
@@ -205,6 +206,7 @@ export function logout() {
         .then(data => {
           resolvedCognitoUser = null;
           store.dispatch({ type: 'user/user', user: null });
+          store.dispatch({ type: RESET_APP });
           sessionStorage.removeItem('accessToken');
           sessionStorage.removeItem('userIdentifier');
           sessionStorage.removeItem('sessionStartTime');
@@ -851,21 +853,22 @@ export function refreshAccessToken(email) {
       resolve(session.isValid());
     });
     */
-   
+
     const cognitoUser = await Auth.currentAuthenticatedUser();
     const currentSession = await Auth.currentSession();
-    cognitoUser.refreshSession(currentSession.refreshToken, (err, session) => {
-      //console.log('session', err, session);
-      const { accessToken } = session;
-      console.log(accessToken)
-      axios.defaults.headers.common.Authorization = `Bearer ${accessToken.jwtToken}`;
-      sessionStorage.setItem('accessToken', accessToken.jwtToken);
-      resolve(true);
-      if(err){
-        reject(err);
-      }
-    }); 
-
+    cognitoUser.refreshSession(
+      currentSession.refreshToken,
+      (error, session) => {
+        const { accessToken } = session;
+        console.log(accessToken);
+        axios.defaults.headers.common.Authorization = `Bearer ${accessToken.jwtToken}`;
+        sessionStorage.setItem('accessToken', accessToken.jwtToken);
+        resolve(true);
+        if (error) {
+          reject(error);
+        }
+      },
+    );
   });
 }
 
