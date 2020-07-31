@@ -288,3 +288,9 @@ export const SlimTaskGridContainer = styled.div`
   display: flex;
   padding-left: ${spacing.regular};
 `;
+
+export const AssignedBox = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-left: -40px;
+`;

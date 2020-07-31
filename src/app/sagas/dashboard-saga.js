@@ -7,26 +7,41 @@ import {
   UPDATE_TASK_SUCCESS,
 } from 'actions/action-types';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { getDashboardTasks, reorderTasksInGroup } from 'api/dashboard-api';
+import {
+  getDashboardMyTasks,
+  getDashboardAllTasks,
+  reorderTasksInGroup,
+} from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { toggleTaskCompletedStatus } from 'helpers/task-update-helper';
 import { fetchTasklistForUser } from 'sagas/tasklist-saga';
 
-const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
-const FETCH_DASHBOARD_TASKS = 'FETCH_DASHBOARD_TASKS';
+const INITIALIZE_MY_TASKS_DASHBOARD_VIEW = 'INITIALIZE_MY_TASKS_DASHBOARD_VIEW';
+const INITIALIZE_ALL_TASKS_DASHBOARD_VIEW =
+  'INITIALIZE_ALL_TASKS_DASHBOARD_VIEW';
+const FETCH_DASHBOARD_MY_TASKS = 'FETCH_DASHBOARD_MY_TASKS';
+const FETCH_DASHBOARD_ALL_TASKS = 'FETCH_DASHBOARD_ALL_TASKS';
+
 const RELOAD_DASHBOARD_TASKS = 'RELOAD_DASHBOARD_TASKS';
 const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
 const QUICK_ADD_DASHBOARD_TASK = 'QUICK_ADD_DASHBOARD_TASK';
 const REDIRECT_TO_PARENT_TASK = 'REDIRECT_TO_PARENT_TASK';
 const SORT_DASHBOARD_TASKS = 'SORT_DASHBOARD_TASKS';
 
-export const initializeDashboardView = () => ({
-  type: INITIALIZE_DASHBOARD_VIEW,
+export const initializeMyTasksDashboardView = () => ({
+  type: INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
 });
 
-export const fetchDashboardTasks = () => ({ type: FETCH_DASHBOARD_TASKS });
+export const initializeAllTasksDashboardView = () => ({
+  type: INITIALIZE_ALL_TASKS_DASHBOARD_VIEW,
+});
+
+export const fetchDashboardMyTasks = () => ({ type: FETCH_DASHBOARD_MY_TASKS });
+export const fetchDashboardAllTasks = () => ({
+  type: FETCH_DASHBOARD_ALL_TASKS,
+});
 export const reloadDashboardTasks = () => ({ type: RELOAD_DASHBOARD_TASKS });
 export const redirectToParentTask = (
   taskListIdentifier,
@@ -63,10 +78,39 @@ export const quickAddDashboardTask = (
   },
 });
 
-function* doFetchDashboardTasks() {
+const getTasksType = () => {
+  const location = window.location?.hash?.split('/');
+  const tab = location.slice(-1)[0];
+
+  switch (tab) {
+    case 'all-tasks':
+      return 'all-tasks';
+    case 'my-tasks':
+      return 'my-tasks';
+    default:
+      return '';
+  }
+};
+
+function* doFetchDashboardMyTasks() {
   try {
     yield put({ type: REQUEST_DASHBOARD_TASKS });
-    const tasksList = yield getDashboardTasks();
+    const tasksList = yield getDashboardMyTasks();
+    yield put({
+      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
+      tasksList,
+    });
+  } catch (error) {
+    yield put({
+      type: REQUEST_DASHBOARD_TASKS_FAILURE,
+    });
+  }
+}
+
+function* doFetchDashboardAllTasks() {
+  try {
+    yield put({ type: REQUEST_DASHBOARD_TASKS });
+    const tasksList = yield getDashboardAllTasks();
     yield put({
       type: REQUEST_DASHBOARD_TASKS_SUCCESS,
       tasksList,
@@ -80,7 +124,10 @@ function* doFetchDashboardTasks() {
 
 function* doReloadDashboardTasks() {
   try {
-    const tasksList = yield getDashboardTasks();
+    const isAllTasks = getTasksType() === 'all-tasks';
+    const tasksList = isAllTasks
+      ? yield getDashboardAllTasks()
+      : yield getDashboardMyTasks();
     yield put({
       type: REQUEST_DASHBOARD_TASKS_SUCCESS,
       tasksList,
@@ -136,8 +183,12 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   }
 }
 
-function* doInitializeDashboardView() {
-  yield call(doFetchDashboardTasks);
+function* doInitializeMyTasksDashboardView() {
+  yield call(doFetchDashboardMyTasks);
+}
+
+function* doInitializeAllTasksDashboardView() {
+  yield call(doFetchDashboardAllTasks);
 }
 
 function* doQuickAddDahboardTask({ payload }) {
@@ -159,8 +210,16 @@ function* doQuickAddDahboardTask({ payload }) {
 }
 
 export default function* watchDashboard() {
-  yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
-  yield takeEvery(FETCH_DASHBOARD_TASKS, doFetchDashboardTasks);
+  yield takeEvery(
+    INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
+    doInitializeMyTasksDashboardView,
+  );
+  yield takeEvery(
+    INITIALIZE_ALL_TASKS_DASHBOARD_VIEW,
+    doInitializeAllTasksDashboardView,
+  );
+  yield takeEvery(FETCH_DASHBOARD_MY_TASKS, doFetchDashboardMyTasks);
+  yield takeEvery(FETCH_DASHBOARD_ALL_TASKS, doFetchDashboardAllTasks);
   yield takeEvery(RELOAD_DASHBOARD_TASKS, doReloadDashboardTasks);
   yield takeEvery(QUICK_ADD_DASHBOARD_TASK, doQuickAddDahboardTask);
   yield takeEvery(

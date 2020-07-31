@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import { Grid } from '@material-ui/core';
@@ -29,7 +30,16 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
-import { SearchGrid, EmptyDashboard, StickyHeader } from './styled';
+import {
+  ToolbarContainer,
+  SearchGrid,
+  SearchContainer,
+  EmptyDashboard,
+  StickyHeader,
+  DasboardTabsContainer,
+  DashboardTab as StyledDashboardTab,
+  DashboardTabHighlight,
+} from './styled';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
   dashboardTasks.reduce((accumulator, currentValue) => {
@@ -45,6 +55,8 @@ const SORT_CONFIG = {
   default: 'DEFAULT',
   dueDateAsc: 'DUE_DATE_ASC',
   dueDateDsc: 'DUE_DATE_DSC',
+  assignedAsc: 'ASSIGNED_ASC',
+  assignedDsc: 'ASSIGNED_DSC',
   listNameAsc: 'LIST_NAME_ASC',
   listNameDsc: 'LIST_NAME_DSC',
 };
@@ -63,6 +75,18 @@ const SORT_METHODS = {
       .sort((a, b) => {
         return a?.dueDate > b?.dueDate ? 1 : -1;
       }),
+  [SORT_CONFIG.assignedAsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        a?.assignedTo?.userName?.localeCompare(b?.assignedTo?.userName),
+      ),
+  [SORT_CONFIG.assignedDsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        b?.assignedTo?.userName?.localeCompare(a?.assignedTo?.userName),
+      ),
   [SORT_CONFIG.listNameAsc]: list =>
     list
       .map(item => item)
@@ -75,6 +99,33 @@ const SORT_METHODS = {
       .sort((a, b) =>
         b?.taskList?.listName?.localeCompare(a?.taskList?.listName),
       ),
+};
+
+export const DashboardTab = ({
+  label,
+  setHighlightPosition,
+  isSelected,
+  onClick,
+}) => {
+  const labelReference = useRef(null);
+  useEffect(() => {
+    if (isSelected) {
+      setHighlightPosition({
+        width: labelReference?.current?.offsetWidth,
+        left: labelReference?.current?.offsetLeft,
+      });
+    }
+  }, [labelReference, setHighlightPosition, isSelected]);
+
+  return (
+    <StyledDashboardTab
+      ref={labelReference}
+      onClick={onClick}
+      isSelected={isSelected}
+    >
+      {label}
+    </StyledDashboardTab>
+  );
 };
 
 const DashboardList = ({
@@ -96,6 +147,11 @@ const DashboardList = ({
   },
 }) => {
   const { openModal } = modalActions;
+  const [selectedTab, setSelectedTab] = useState('MY_TASKS');
+  const [highlightPosition, setHighlightPosition] = useState({
+    width: 0,
+    left: 0,
+  });
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [sortType, setSortType] = useState(SORT_CONFIG.default);
@@ -106,6 +162,22 @@ const DashboardList = ({
 
   const currentSortMethod = SORT_METHODS[sortType];
   const isSortApplied = sortType !== SORT_CONFIG.default;
+
+  useEffect(() => {
+    const location = window.location?.hash?.split('/');
+    const tab = location.slice(-1)[0];
+    if (tab === 'all-tasks') {
+      setSelectedTab('ALL_TASKS');
+    } else {
+      setSelectedTab('MY_TASKS');
+    }
+  }, []);
+
+  useEffect(() => {
+    setSearchValue('');
+    setSearchFocused(false);
+    setSortType(SORT_CONFIG.default);
+  }, [selectedTab]);
 
   const onClickDueDateSort = () => {
     switch (sortType) {
@@ -119,6 +191,23 @@ const DashboardList = ({
       }
       default: {
         setSortType(SORT_CONFIG.dueDateAsc);
+        break;
+      }
+    }
+  };
+
+  const onClickAssignedSort = () => {
+    switch (sortType) {
+      case SORT_CONFIG.assignedAsc: {
+        setSortType(SORT_CONFIG.assignedDsc);
+        break;
+      }
+      case SORT_CONFIG.assignedDsc: {
+        setSortType(SORT_CONFIG.assignedAsc);
+        break;
+      }
+      default: {
+        setSortType(SORT_CONFIG.assignedAsc);
         break;
       }
     }
@@ -186,18 +275,42 @@ const DashboardList = ({
   return (
     <>
       <StickyHeader>
-        <Grid container direction="row" justify="flex-end">
-          <SearchGrid isFocused={searchFocused || searchValue} item>
-            <Search
-              fullWidth
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              value={searchValue}
-              onChange={event => setSearchValue(event?.target?.value)}
-            />
-          </SearchGrid>
-        </Grid>
-        <Spacing vertical={3} />
+        <ToolbarContainer container direction="row" justify="space-between">
+          <Grid item xs={5}>
+            <DasboardTabsContainer>
+              <DashboardTab
+                label="My Tasks"
+                setHighlightPosition={setHighlightPosition}
+                onClick={() => {
+                  setSelectedTab('MY_TASKS');
+                  hashHistory.push('/home/my-tasks');
+                }}
+                isSelected={selectedTab === 'MY_TASKS'}
+              />
+              <DashboardTab
+                label="All Tasks"
+                setHighlightPosition={setHighlightPosition}
+                onClick={() => {
+                  setSelectedTab('ALL_TASKS');
+                  hashHistory.push('/home/all-tasks');
+                }}
+                isSelected={selectedTab === 'ALL_TASKS'}
+              />
+              <DashboardTabHighlight {...highlightPosition} />
+            </DasboardTabsContainer>
+          </Grid>
+          <SearchContainer item xs={7}>
+            <SearchGrid isFocused={searchFocused || searchValue}>
+              <Search
+                fullWidth
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                value={searchValue}
+                onChange={event => setSearchValue(event?.target?.value)}
+              />
+            </SearchGrid>
+          </SearchContainer>
+        </ToolbarContainer>
         <QuickAddTaskInput
           autoComplete="off"
           quickAddTask={handleQuickAddTask}
@@ -232,9 +345,11 @@ const DashboardList = ({
                 currentSortMethod={currentSortMethod}
                 currentSortType={sortType}
                 onClickDueDateSort={onClickDueDateSort}
+                onClickAssignedSort={onClickAssignedSort}
                 onClickListNameSort={onClickListNameSort}
                 showClearSortFiltersModal={showClearSortFiltersModal}
                 isSortApplied={isSortApplied}
+                isAllTasksTab={selectedTab === 'ALL_TASKS'}
               />
             ))
           : renderEmptyState()}
@@ -266,4 +381,7 @@ const mapDispatchToProps = dispatch => ({
   showNavbar: bindActionCreators(showNavbarAction, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(React.memo(DashboardList));
