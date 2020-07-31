@@ -3,7 +3,14 @@ import { equals, pick } from 'ramda';
 import React from 'react';
 import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
-import { hashHistory, IndexRoute, Redirect, Route, Router } from 'react-router';
+import {
+  hashHistory,
+  IndexRoute,
+  Redirect,
+  Route,
+  Router,
+  IndexRedirect,
+} from 'react-router';
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'views/Patient/PatientDetailsView';
 import PatientTasksListView from 'views/Patient/PatientTasksListView';
@@ -358,6 +365,7 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated({ checkTrialExpiration: true });
           }}
         >
+          <IndexRedirect to="/home" />
           <Route
             path="/home"
             component={DashboardView}
