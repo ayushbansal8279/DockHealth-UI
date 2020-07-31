@@ -55,7 +55,7 @@ const LoginPassword = () => {
             sessionStorage.setItem('sessionStartTime', new Date().getTime());
             const nextPathname = sessionStorage.getItem('next-page') || '/';
             if (nextPathname.includes('login')) {
-              hashHistory.push('/home');
+              hashHistory.push('/home/my-tasks');
             } else {
               hashHistory.push(nextPathname);
             }
