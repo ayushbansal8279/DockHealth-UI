@@ -5,8 +5,8 @@ import { fontWeights } from 'styles/font';
 import { Grid } from '@material-ui/core';
 
 export const ToolbarContainer = styled(Grid)`
-  border-bottom: 2px solid #f5f8fa;
-  margin-bottom: 30px;
+  border-bottom: 2px solid ${palette.blueGrey};
+  margin-bottom: ${spacing.largePlus};
   margin-top: 50px;
   position: relative;
 `;
@@ -76,11 +76,11 @@ export const DasboardTabsContainer = styled.div`
 `;
 
 export const DashboardTab = styled.button`
-  margin-right: 16px;
+  margin-right: ${spacing.regular};
   cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  color: ${props => props.isSelected && '#00a2e5'};
+  font-size: 1.125rem;
+  font-weight: ${fontWeights.bold};
+  color: ${props => props.isSelected && palette.brightBlue};
 
   &:focus {
     outline: none;
@@ -88,7 +88,7 @@ export const DashboardTab = styled.button`
 `;
 
 export const DashboardTabHighlight = styled.div`
-  background-color: #00a2e5;
+  background-color: ${palette.brightBlue};
   height: 4px;
   position: absolute;
   bottom: -3px;
