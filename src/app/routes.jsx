@@ -30,8 +30,12 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import { initializeDashboardView } from 'sagas/dashboard-saga';
+import {
+  initializeMyTasksDashboardView,
+  initializeAllTasksDashboardView,
+} from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
+
 import {
   getMembersByTaskListId,
   getTaskListForUser,
@@ -280,7 +284,14 @@ export const Routes = ({ store }) => {
     dispatch(initializeHiddenNavbarTemplate());
     dispatch(getTaskListForUser());
     dispatch(findPendingTaskListsForUser());
-    dispatch(initializeDashboardView());
+  };
+
+  const onEnterMyTasksDashboard = () => {
+    dispatch(initializeMyTasksDashboardView());
+  };
+
+  const onEnterAllTasksDashboard = () => {
+    dispatch(initializeAllTasksDashboardView());
   };
 
   const onLeaveDashboard = () => {
@@ -358,9 +369,24 @@ export const Routes = ({ store }) => {
           <Route
             path="/home"
             component={DashboardView}
-            onEnter={onEnterDashboard}
-            onLeave={onLeaveDashboard}
-          />
+            onEnter={nextState => {
+              onEnterDashboard();
+              if (nextState?.location?.pathname === '/home') {
+                hashHistory.push('/home/my-tasks');
+              }
+            }}
+          >
+            <Route
+              path="my-tasks"
+              onEnter={onEnterMyTasksDashboard}
+              onLeave={onLeaveDashboard}
+            />
+            <Route
+              path="all-tasks"
+              onEnter={onEnterAllTasksDashboard}
+              onLeave={onLeaveDashboard}
+            />
+          </Route>
           <Route
             path="/search"
             component={GlobalSearchView}
