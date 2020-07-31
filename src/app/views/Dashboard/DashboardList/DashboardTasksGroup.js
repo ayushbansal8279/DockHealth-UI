@@ -103,59 +103,62 @@ const DashboardTasksGroup = ({
             </Arrow>
           </Grid>
           <Grid item {...gridConfig.dueDate}>
-            <Arrow
-              isOpen={currentSortType === 'DUE_DATE_ASC'}
-              setOpen={onClickDueDateSort}
-              showDefaultArrow={
-                currentSortType !== 'DUE_DATE_ASC' &&
-                currentSortType !== 'DUE_DATE_DSC'
-              }
-              justifyContent="flex-start"
-              paddingLeft="0"
-              arrowType="secondary"
-              isDisabled={!groupIsOpen}
-              showArrow={groupIsOpen}
-            >
-              <span>Due</span>
-            </Arrow>
+            {groupIsOpen && (
+              <Arrow
+                isOpen={currentSortType === 'DUE_DATE_ASC'}
+                setOpen={onClickDueDateSort}
+                showDefaultArrow={
+                  currentSortType !== 'DUE_DATE_ASC' &&
+                  currentSortType !== 'DUE_DATE_DSC'
+                }
+                justifyContent="flex-start"
+                paddingLeft="0"
+                arrowType="secondary"
+                isDisabled={!groupIsOpen}
+              >
+                <span>Due</span>
+              </Arrow>
+            )}
           </Grid>
           {isAllTasksTab && (
             <Grid item {...gridConfig.assignedPerson}>
-              <AssignedBox>
-                <Arrow
-                  isOpen={currentSortType === 'ASSIGNED_ASC'}
-                  setOpen={onClickAssignedSort}
-                  showDefaultArrow={
-                    currentSortType !== 'ASSIGNED_ASC' &&
-                    currentSortType !== 'ASSIGNED_DSC'
-                  }
-                  justifyContent="flex-start"
-                  paddingLeft="0"
-                  arrowType="secondary"
-                  isDisabled={!groupIsOpen}
-                  showArrow={groupIsOpen}
-                >
-                  <span>Assigned</span>
-                </Arrow>
-              </AssignedBox>
+              {groupIsOpen && (
+                <AssignedBox>
+                  <Arrow
+                    isOpen={currentSortType === 'ASSIGNED_ASC'}
+                    setOpen={onClickAssignedSort}
+                    showDefaultArrow={
+                      currentSortType !== 'ASSIGNED_ASC' &&
+                      currentSortType !== 'ASSIGNED_DSC'
+                    }
+                    justifyContent="flex-start"
+                    paddingLeft="0"
+                    arrowType="secondary"
+                    isDisabled={!groupIsOpen}
+                  >
+                    <span>Assigned</span>
+                  </Arrow>
+                </AssignedBox>
+              )}
             </Grid>
           )}
           <Grid item {...gridConfig.listName}>
-            <Arrow
-              isOpen={currentSortType === 'LIST_NAME_ASC'}
-              setOpen={onClickListNameSort}
-              showDefaultArrow={
-                currentSortType !== 'LIST_NAME_ASC' &&
-                currentSortType !== 'LIST_NAME_DSC'
-              }
-              justifyContent="flex-start"
-              paddingLeft="0"
-              arrowType="secondary"
-              isDisabled={!groupIsOpen}
-              showArrow={groupIsOpen}
-            >
-              <span>List</span>
-            </Arrow>
+            {groupIsOpen && (
+              <Arrow
+                isOpen={currentSortType === 'LIST_NAME_ASC'}
+                setOpen={onClickListNameSort}
+                showDefaultArrow={
+                  currentSortType !== 'LIST_NAME_ASC' &&
+                  currentSortType !== 'LIST_NAME_DSC'
+                }
+                justifyContent="flex-start"
+                paddingLeft="0"
+                arrowType="secondary"
+                isDisabled={!groupIsOpen}
+              >
+                <span>List</span>
+              </Arrow>
+            )}
           </Grid>
         </Grid>
       </DashboardTasksGroupLabel>
