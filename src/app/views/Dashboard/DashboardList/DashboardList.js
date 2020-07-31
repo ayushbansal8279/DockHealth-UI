@@ -67,13 +67,13 @@ const SORT_METHODS = {
     list
       .map(item => item)
       .sort((a, b) => {
-        return b?.dueDate > a?.dueDate ? 1 : -1;
+        return a?.dueDate > b?.dueDate ? 1 : -1;
       }),
   [SORT_CONFIG.dueDateDsc]: list =>
     list
       .map(item => item)
       .sort((a, b) => {
-        return a?.dueDate > b?.dueDate ? 1 : -1;
+        return b?.dueDate > a?.dueDate ? 1 : -1;
       }),
   [SORT_CONFIG.assignedAsc]: list =>
     list
