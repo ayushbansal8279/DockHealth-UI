@@ -4,9 +4,23 @@ import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 import { Grid } from '@material-ui/core';
 
+export const ToolbarContainer = styled(Grid)`
+  border-bottom: 2px solid #f5f8fa;
+  margin-bottom: 30px;
+  margin-top: 50px;
+  position: relative;
+`;
+
+export const SearchContainer = styled(Grid)`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 export const SearchGrid = styled(Grid)`
+  display: flex;
   width: ${({ isFocused }) => (isFocused ? 300 : 110)}px;
   transition: width 0.2s ease-out;
+  justify-content: flex-end;
 `;
 
 export const StickyHeader = styled.div`
@@ -54,4 +68,36 @@ export const EmptyDashboard = styled.div`
   & > p {
     font-weight: ${fontWeights.regularPlus};
   }
+`;
+
+export const DasboardTabsContainer = styled.div`
+  height: 100%;
+  display: flex;
+`;
+
+export const DashboardTab = styled.button`
+  margin-right: 16px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: ${props => props.isSelected && '#00a2e5'};
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const DashboardTabHighlight = styled.div`
+  background-color: #00a2e5;
+  height: 4px;
+  position: absolute;
+  bottom: -3px;
+  width: ${props => props.width};
+  left: ${props => props.left};
+  transition: left 0.2s ease-out;
+`;
+
+export const AssignedBox = styled.div`
+  display: flex;
+  justify-content: center;
 `;

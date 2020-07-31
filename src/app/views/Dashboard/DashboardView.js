@@ -33,8 +33,8 @@ import existingUserTourHooks from './existing-user-tour-hooks';
 const DashboardView = ({
   isTaskDrawerOpen,
   isLoadingDashboard,
-  lists,
-  pendingLists,
+  lists = [],
+  pendingLists = [],
   showNavbar,
   currentUser,
   openModal,

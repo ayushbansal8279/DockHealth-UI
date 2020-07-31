@@ -9,7 +9,50 @@ import {
   DashboardTasksGroupLabel,
   DashboardTasksGroupList,
   DroppableBox,
+  AssignedBox,
 } from './styled';
+
+const GRID_CONFIG = {
+  primary: {
+    description: {
+      sm: 6,
+      md: 7,
+      lg: 9,
+    },
+    dueDate: {
+      sm: 2,
+      md: 2,
+      lg: 1,
+    },
+    listName: {
+      sm: 4,
+      md: 3,
+      lg: 2,
+    },
+  },
+  secondary: {
+    description: {
+      sm: 3,
+      md: 4,
+      lg: 7,
+    },
+    dueDate: {
+      sm: 3,
+      md: 2,
+      lg: 1,
+    },
+    assignedPerson: {
+      sm: 3,
+      md: 3,
+      lg: 2,
+    },
+    listName: {
+      sm: 3,
+      md: 3,
+      lg: 2,
+    },
+  },
+};
 
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
@@ -23,9 +66,11 @@ const DashboardTasksGroup = ({
   currentSortMethod,
   currentSortType,
   onClickDueDateSort,
+  onClickAssignedSort,
   onClickListNameSort,
   showClearSortFiltersModal,
   isSortApplied,
+  isAllTasksTab,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -35,11 +80,15 @@ const DashboardTasksGroup = ({
     setNewTasks(dashboardTasks);
   }, [dashboardTasks]);
 
+  const gridConfig = isAllTasksTab
+    ? GRID_CONFIG.secondary
+    : GRID_CONFIG.primary;
+
   return (
     <DashboardTasksGroupContainer>
       <DashboardTasksGroupLabel>
         <Grid container>
-          <Grid item sm={6} md={7} lg={8}>
+          <Grid item {...gridConfig.description}>
             <Arrow
               isOpen={groupIsOpen}
               setOpen={() => setGroupIsOpen(!groupIsOpen)}
@@ -53,7 +102,7 @@ const DashboardTasksGroup = ({
               </span>
             </Arrow>
           </Grid>
-          <Grid item sm={2} md={2} lg={2}>
+          <Grid item {...gridConfig.dueDate}>
             <Arrow
               isOpen={currentSortType === 'DUE_DATE_ASC'}
               setOpen={onClickDueDateSort}
@@ -70,7 +119,28 @@ const DashboardTasksGroup = ({
               <span>Due</span>
             </Arrow>
           </Grid>
-          <Grid item sm={4} md={3} lg={2}>
+          {isAllTasksTab && (
+            <Grid item {...gridConfig.assignedPerson}>
+              <AssignedBox>
+                <Arrow
+                  isOpen={currentSortType === 'ASSIGNED_ASC'}
+                  setOpen={onClickAssignedSort}
+                  showDefaultArrow={
+                    currentSortType !== 'ASSIGNED_ASC' &&
+                    currentSortType !== 'ASSIGNED_DSC'
+                  }
+                  justifyContent="flex-start"
+                  paddingLeft="0"
+                  arrowType="secondary"
+                  isDisabled={!groupIsOpen}
+                  showArrow={groupIsOpen}
+                >
+                  <span>Assigned</span>
+                </Arrow>
+              </AssignedBox>
+            </Grid>
+          )}
+          <Grid item {...gridConfig.listName}>
             <Arrow
               isOpen={currentSortType === 'LIST_NAME_ASC'}
               setOpen={onClickListNameSort}
@@ -125,7 +195,9 @@ const DashboardTasksGroup = ({
                         key={task.taskIdentifier}
                         draggableId={String(task.taskIdentifier)}
                         index={index}
-                        isDragDisabled={isTaskDrawerOpen || tasks?.length < 2}
+                        isDragDisabled={
+                          isTaskDrawerOpen || tasks?.length < 2 || isAllTasksTab
+                        }
                       >
                         {(draggableProvided, { isDragging }) => (
                           <div
@@ -144,12 +216,16 @@ const DashboardTasksGroup = ({
                                 draggableProvided.dragHandleProps
                               }
                               isDraggable={
-                                !isTaskDrawerOpen && tasks?.length > 1
+                                !isTaskDrawerOpen &&
+                                tasks?.length > 1 &&
+                                !isAllTasksTab
                               }
                               openDrawer={openDrawer}
                               isSelected={
                                 selectedTaskIdentifier === task?.taskIdentifier
                               }
+                              showAssignedPerson={isAllTasksTab}
+                              gridConfig={gridConfig}
                             />
                           </div>
                         )}

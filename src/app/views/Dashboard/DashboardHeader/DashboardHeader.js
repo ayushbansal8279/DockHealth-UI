@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import Avatar from 'components/common/Avatar';
 import AppLogo from 'img/logo/dock-logo';
@@ -15,7 +14,7 @@ import {
   HeaderTextContainer,
 } from './styled';
 
-const DashboardHeader = ({ currentUser, isUserFirstTime }) => {
+const DashboardHeader = ({ currentUser }) => {
   const [avatarContent, setAvatarContent] = useState('');
 
   useEffect(() => {
@@ -54,9 +53,6 @@ const DashboardHeader = ({ currentUser, isUserFirstTime }) => {
               Hello {currentUser.firstName}
             </HeaderTitle>
             <Spacing vertical={3} />
-            <MontserratTypography>{`Welcome${
-              !isUserFirstTime ? ' back' : ''
-            }!`}</MontserratTypography>
           </HeaderTextContainer>
         </Grid>
         <Grid container item sm={2} justify="flex-end" alignItems="flex-start">
