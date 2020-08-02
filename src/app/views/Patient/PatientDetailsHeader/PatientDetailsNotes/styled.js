@@ -41,6 +41,7 @@ export const PatientNoteInformation = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-right: ${spacing.regular};
 `;
 
 export const PatientNoteOptions = styled.div`
@@ -70,7 +71,7 @@ export const PatientNote = styled.div`
   margin: 0 ${spacing.regularPlus};
   justify-content: space-between;
   background-color: ${props => (props.isEditable ? '#F5F8FA' : 'white')};
-  border-bottom: 1px solid #c1ccda;
+  border-bottom: 1px solid ${palette.coolGrey2};
 
   &:last-child {
     margin-bottom: 0;
@@ -92,20 +93,35 @@ export const PatientNoteAuthor = styled.div`
   color: ${palette.coolGrey2};
 `;
 
-export const PatientNoteDescription = styled.input`
+export const PatientNoteDescription = styled.div`
   border: none;
   background-color: transparent;
   outline: none;
   padding: 0;
-
-  &:disabled {
-    border: none;
-    background-color: transparent;
-    outline: none;
-    cursor: default;
-  }
+  word-break: break-all;
 `;
 
+export const PatientNoteTextarea = styled.textarea`
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: 0;
+  min-height: ${props =>
+    props.textareaHeight > 100 ? `${props.textareaHeight}px` : '100px'};
+  max-height: ${props =>
+    props.textareaHeight > 180 ? '180px' : `${props.textareaHeight}px`};
+  line-height: 24px;
+  resize: none;
+
+  &:focus {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
+`;
 export const AddNotePlaceholder = styled.div`
   color: ${palette.coolGrey2};
   text-transform: uppercase;
