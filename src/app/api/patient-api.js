@@ -156,7 +156,8 @@ export const createPatientNote = (patientIdentifier, note) =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error adding patient note. It may be too long. Please try again.',
+        text:
+          'Error adding patient note. It may be too long. Please try again.',
       });
       throw new Error(error?.response?.data);
     });
