@@ -73,7 +73,7 @@ export function addPatient(patient) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in adding patient. Please try again.',
+        text: 'Error adding patient. Please try again.',
       });
       throw new Error(error?.response?.data);
     });
@@ -93,7 +93,7 @@ export function updatePatient(patient) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in updating patient. Please try again.',
+        text: 'Error updating patient. Please try again.',
       });
       throw new Error(error?.response?.data);
     });
@@ -153,6 +153,11 @@ export const createPatientNote = (patientIdentifier, note) =>
     .post(`/patient/note/${patientIdentifier}`, note)
     .then(response => response.data)
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error adding patient note. It may be too long. Please try again.',
+      });
       throw new Error(error?.response?.data);
     });
 
@@ -164,7 +169,7 @@ export const updatePatientNote = note =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in updating patient note. Please try again.',
+        text: 'Error updating patient note. Please try again.',
       });
       throw new Error(error?.response?.data);
     });
@@ -177,7 +182,7 @@ export const deletePatientNote = patientNoteIdentifier =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in deleting patient note. Please try again.',
+        text: 'Error deleting patient note. Please try again.',
       });
       throw new Error(error?.response?.data);
     });
@@ -190,7 +195,7 @@ export const archivePatient = patientNoteIdentifier =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in archiving patient. Please try again.',
+        text: 'Error archiving patient. Please try again.',
       });
       throw new Error(error?.response?.data);
     });
