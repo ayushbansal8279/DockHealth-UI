@@ -117,11 +117,14 @@ const TaskListRow = ({
     creator,
     role,
     listName,
+    listType,
     listDescription,
     adminIdentifiers,
   } = taskList;
 
   let isOwnerOrAdmin = role === 'ADMIN' || role === 'OWNER';
+  const isInbox = listType === 'INBOX';
+
   // double check against admins list
   if (
     role === 'MEMBER' &&
@@ -181,19 +184,21 @@ const TaskListRow = ({
           {numberOfTasks}
         </MontserratTypography>
       </UniversalTooltipContainer>
-      <div ref={popoverReference}>
-        <IconButton
-          onClick={() => {
-            setIsAdminForCurrentList(isOwnerOrAdmin);
-            setCurrentListIdentifier(taskListIdentifier);
-            setCurrentListMenuAnchor(popoverReference);
-            openListMenu();
-          }}
-          size="small"
-        >
-          <MoreVert color="secondary" />
-        </IconButton>
-      </div>
+      {!isInbox && (
+        <div ref={popoverReference}>
+          <IconButton
+            onClick={() => {
+              setIsAdminForCurrentList(isOwnerOrAdmin);
+              setCurrentListIdentifier(taskListIdentifier);
+              setCurrentListMenuAnchor(popoverReference);
+              openListMenu();
+            }}
+            size="small"
+          >
+            <MoreVert color="secondary" />
+          </IconButton>
+        </div>
+      )}
     </RowContainer>
   );
 };
