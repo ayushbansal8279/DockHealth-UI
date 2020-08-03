@@ -1,4 +1,5 @@
 import React from 'react';
+import EmptyTaskListBear from 'img/animals/bear';
 import { DragDropContext } from 'react-beautiful-dnd';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -34,7 +35,13 @@ const CompletedTasksView = ({
 
     if (areFiltersApplied) return <NoFilterResultsView />;
 
-    return <EmptyListView>This list has no tasks</EmptyListView>;
+    return (
+      <EmptyListView
+        title="This list has no tasks"
+        description="Be the first to add a task to this list!"
+        image={EmptyTaskListBear}
+      />
+    );
   };
   return (
     <ViewLoader isFetchingData={isFetchingData}>

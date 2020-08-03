@@ -152,9 +152,8 @@ const DashboardSidebar = ({
         </ListsHeader>
         <ListItemsWrapper>
           {filteredList?.map((taskList, index) => (
-            <ListItemWrapper>
+            <ListItemWrapper key={taskList?.taskListIdentifier}>
               <ListLink
-                key={taskList?.taskListIdentifier}
                 onClick={() => {
                   if (taskList?.status === 'PENDING')
                     acceptInvitation(taskList);

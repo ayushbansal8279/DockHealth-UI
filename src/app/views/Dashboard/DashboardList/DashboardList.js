@@ -5,10 +5,12 @@ import { hashHistory } from 'react-router';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import EmptyTaskListBird from 'img/animals/bird';
+import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
+import { getTaskStatsForUser } from 'api/task-api';
 import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
@@ -155,6 +157,8 @@ const DashboardList = ({
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [sortType, setSortType] = useState(SORT_CONFIG.default);
+  const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
+
   const filteredDashboardTasks = dashboardTasks.filter(
     ({ tasks }) => tasks && tasks.length !== 0,
   );
@@ -162,6 +166,25 @@ const DashboardList = ({
 
   const currentSortMethod = SORT_METHODS[sortType];
   const isSortApplied = sortType !== SORT_CONFIG.default;
+
+  useEffect(() => {
+    if (currentUser) {
+      if (selectedTab === 'MY_TASKS') {
+        getTaskStatsForUser(currentUser.userIdentifier).then(counters => {
+          const completeTaskCounter = counters.find(
+            ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
+          );
+
+          if (completeTaskCounter) {
+            setCompleteTaskCount(completeTaskCounter.metricValue);
+          }
+        });
+      } else {
+        setCompleteTaskCount(null);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dashboardTasks, selectedTab]);
 
   useEffect(() => {
     const location = window.location?.hash?.split('/');
@@ -257,6 +280,15 @@ const DashboardList = ({
 
     if (usageState?.loginCount < 5) return <DashboardNewUserInfo />;
 
+    if (completeTaskCount > 0 && selectedTab === 'MY_TASKS')
+      return (
+        <EmptyListView
+          title={['Way to go!', 'You’ve completed all of your tasks.']}
+          description="Take a breather, tomorrow is a new day full of possibilities."
+          image={EmptyTaskListAlpaca}
+        />
+      );
+
     return (
       <EmptyListView
         widthBreakpoint={1400}
@@ -329,7 +361,11 @@ const DashboardList = ({
         />
       </StickyHeader>
       <Spacing vertical={5} />
-      <ViewLoader isFetchingData={dashboardTasksIsLoading}>
+      <ViewLoader
+        isFetchingData={
+          dashboardTasksIsLoading || completeTaskCount === undefined
+        }
+      >
         {!isEmpty(searchedDashboardTasks)
           ? searchedDashboardTasks?.map(item => (
               <DashboardTasksGroup

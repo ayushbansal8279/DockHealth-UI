@@ -25,7 +25,6 @@ export const TextWrapper = styled.div`
 
 export const ImageWrapper = styled.div`
   width: 390px;
-  min-height: 220px;
 `;
 
 export const Image = styled.img`
