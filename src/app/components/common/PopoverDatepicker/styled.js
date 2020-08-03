@@ -7,7 +7,7 @@ export const DatepickerOptionLabelContainer = styled.button`
   align-items: center;
   width: 100%;
   padding: 0.5rem;
-  color: ${palette.darkGrey};
+  color: ${palette.coolGrey1};
   cursor: pointer;
 
   ${props => props.isSelected && `&& > * { font-weight: ${fontWeights.bold}; }`}

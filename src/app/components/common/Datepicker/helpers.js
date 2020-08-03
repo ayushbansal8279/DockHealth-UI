@@ -114,11 +114,7 @@ export const renderDayLabels = ({
               variant="h6"
               color="inherit"
               align="center"
-              weight={
-                dayMoment.isBefore(moment(), 'days') || !isCurrentMonth
-                  ? 'normal'
-                  : 'bold'
-              }
+              weight={dayMoment.isBefore(moment(), 'days') ? 'normal' : 'bold'}
             >
               {dayMoment.format('D')}
             </MontserratTypography>
