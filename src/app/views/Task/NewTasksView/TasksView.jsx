@@ -176,6 +176,7 @@ const TaskView = ({
           selectedTask={selectedTask}
           isMainListView={isMainListView}
           listUniqueKey={listUniqueKey}
+          taskCounters={taskCounters}
         />
       )}
       <NewTaskDrawer

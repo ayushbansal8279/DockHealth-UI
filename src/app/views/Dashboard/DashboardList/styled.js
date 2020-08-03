@@ -60,16 +60,6 @@ export const DroppableBox = styled.div`
   border-radius: 4px;
 `;
 
-export const EmptyDashboard = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 48px;
-
-  & > p {
-    font-weight: ${fontWeights.regularPlus};
-  }
-`;
-
 export const DasboardTabsContainer = styled.div`
   height: 100%;
   display: flex;

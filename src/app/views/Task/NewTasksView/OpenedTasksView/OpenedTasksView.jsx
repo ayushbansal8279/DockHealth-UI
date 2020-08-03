@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
+import EmptyTaskListFox from 'img/list/tasklist-fox';
 
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
@@ -46,6 +47,7 @@ const OpenedTasksView = ({
   selectedTask,
   isMainListView,
   listUniqueKey,
+  taskCounters,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -64,17 +66,41 @@ const OpenedTasksView = ({
         return (
           <EmptyTaskAddView
             quickAddTask={groupName => quickAddTask(groupName, null, true)}
-          />
+          >
+            {taskCounters?.complete > 0 ? (
+              <EmptyListView
+                title={['Way to go!', 'You’ve completed all of your tasks.']}
+                description="Take a breather, tomorrow is a new day full of possibilities."
+                image={EmptyTaskListFox}
+              />
+            ) : (
+              <EmptyListView
+                title="This list has no tasks"
+                description="Be the first to add a task to this list!"
+                image={EmptyTaskListFox}
+              />
+            )}
+          </EmptyTaskAddView>
         );
 
       return (
         <EmptyListViewWithQuickAddTask quickAddTask={quickAddTask}>
-          This list has no tasks
+          <EmptyListView
+            title="This person has no tasks"
+            description="Add and automatically assign a task to this person above."
+            image={EmptyTaskListFox}
+          />
         </EmptyListViewWithQuickAddTask>
       );
     }
 
-    return <EmptyListView>This list has no tasks</EmptyListView>;
+    return (
+      <EmptyListView
+        title="This list has no tasks"
+        description="Be the first to add a task to this list!"
+        image={EmptyTaskListFox}
+      />
+    );
   };
 
   return (

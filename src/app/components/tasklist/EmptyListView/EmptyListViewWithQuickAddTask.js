@@ -15,7 +15,7 @@ const EmptyListViewWithQuickAddTask = ({ quickAddTask, children }) => (
       }}
     />
     <Spacing vertical={5} />
-    <p>{children}</p>
+    {children}
   </EmptyListContainer>
 );
 

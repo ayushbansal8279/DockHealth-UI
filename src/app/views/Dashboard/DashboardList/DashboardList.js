@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
+import EmptyTaskListBird from 'img/list/bird';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
@@ -19,6 +20,7 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
+import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
 import {
   openDrawer as openDrawerAction,
@@ -26,7 +28,6 @@ import {
 } from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -34,7 +35,6 @@ import {
   ToolbarContainer,
   SearchGrid,
   SearchContainer,
-  EmptyDashboard,
   StickyHeader,
   DasboardTabsContainer,
   DashboardTab as StyledDashboardTab,
@@ -255,15 +255,15 @@ const DashboardList = ({
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
 
-    // if login count is < 5
     if (usageState?.loginCount < 5) return <DashboardNewUserInfo />;
 
     return (
-      <EmptyDashboard>
-        <MontserratTypography>
-          Way to go! You have no tasks!
-        </MontserratTypography>
-      </EmptyDashboard>
+      <EmptyListView
+        widthBreakpoint={1400}
+        title={['There are no tasks', 'assigned to you.']}
+        description="Add tasks above to automatically assign to yourself."
+        image={EmptyTaskListBird}
+      />
     );
   };
   const searchedDashboardTasks = useMemo(() => {
