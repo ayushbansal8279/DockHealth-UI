@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
-import EmptyTaskListBird from 'img/list/bird';
+import EmptyTaskListBird from 'img/animals/bird';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';

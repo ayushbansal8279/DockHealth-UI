@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TaskListDetailsDropdown from 'views/Patient/TaskListDetailsDropdown/TaskListDetailsDropdown';
-import EmptyTaskListBird from 'img/list/bird';
+import EmptyTaskListBird from 'img/animals/bird';
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -13,7 +13,6 @@ import {
   patientTaskListsSelector,
   patientTaskListsActiveTabSelector,
   patientTaskSearchSelector,
-  completeTasksCountSelector,
 } from 'selectors/patient-tasks-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -44,7 +43,6 @@ const PatientTasksListView = ({
   modalActions,
   taskSearch,
   areFiltersApplied,
-  completeTasksCount,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
@@ -76,19 +74,11 @@ const PatientTasksListView = ({
 
     return (
       <EmptyListViewWithQuickAddTask quickAddTask={handleQuickAddTask}>
-        {completeTasksCount ? (
-          <EmptyListView
-            title={['Way to go!', 'You’ve completed all of your tasks.']}
-            description="Take a breather, tomorrow is a new day full of possibilities."
-            image={EmptyTaskListBird}
-          />
-        ) : (
-          <EmptyListView
-            title="This patient has no tasks"
-            description="Add tasks for this patient above."
-            image={EmptyTaskListBird}
-          />
-        )}
+        <EmptyListView
+          title="This patient has no tasks"
+          description="Add tasks for this patient above."
+          image={EmptyTaskListBird}
+        />
       </EmptyListViewWithQuickAddTask>
     );
   };
@@ -157,7 +147,6 @@ const mapStateToProps = state => ({
   selectedTask: state.taskState.selectedTask,
   taskSearch: patientTaskSearchSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
-  completeTasksCount: completeTasksCountSelector(state),
 });
 
 export default connect(

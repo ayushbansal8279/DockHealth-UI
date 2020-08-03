@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
-import EmptyTaskListFox from 'img/list/tasklist-fox';
+import EmptyTaskListFox from 'img/animals/fox';
+import EmptyTaskListAlpaca from 'img/animals/alpaca';
+import EmptyTaskListBear from 'img/animals/bear';
 
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
@@ -71,13 +73,13 @@ const OpenedTasksView = ({
               <EmptyListView
                 title={['Way to go!', 'You’ve completed all of your tasks.']}
                 description="Take a breather, tomorrow is a new day full of possibilities."
-                image={EmptyTaskListFox}
+                image={EmptyTaskListAlpaca}
               />
             ) : (
               <EmptyListView
                 title="This list has no tasks"
                 description="Be the first to add a task to this list!"
-                image={EmptyTaskListFox}
+                image={EmptyTaskListBear}
               />
             )}
           </EmptyTaskAddView>
@@ -98,7 +100,7 @@ const OpenedTasksView = ({
       <EmptyListView
         title="This list has no tasks"
         description="Be the first to add a task to this list!"
-        image={EmptyTaskListFox}
+        image={EmptyTaskListBear}
       />
     );
   };
