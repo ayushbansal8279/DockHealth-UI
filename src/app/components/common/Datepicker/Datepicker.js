@@ -42,7 +42,7 @@ const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
       }),
     // useEffect work better for primitive values (like strings in here)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [formattedCurrentMonth],
+    [formattedCurrentMonth, selectedDate],
   );
 
   const changeMonth = useCallback(

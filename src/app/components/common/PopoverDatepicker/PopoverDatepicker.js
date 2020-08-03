@@ -96,7 +96,7 @@ const PopoverDatepicker = ({
           {isCalendarOpen && (
             <Datepicker
               selectedDate={selectedDate}
-              onDateChange={handleDatePick}
+              onDateChange={onDateChange}
               minDate={minDate}
               maxDate={maxDate}
             />
