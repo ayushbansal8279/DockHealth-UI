@@ -4,12 +4,11 @@ import { isNil } from 'ramda';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import { DashboardTourWrapper, DashboardTourBackground } from './styled';
-import { FIRST_TOUR_STEPS, SECOND_TOUR_STEPS } from './dashboard-tour-steps';
+import { FIRST_TOUR_STEPS } from './dashboard-tour-steps';
 
 export const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
-export const DASHBOARD_SECOND_TIME_KEY = 'STORAGE_DASHBOARD_SECOND_TIME';
-export const STORAGE_DASHBOARD_THIRD_TIME_KEY =
-  'STORAGE_DASHBOARD_THIRD_TIME_KEY';
+export const STORAGE_DASHBOARD_TOUR_INBOX_KEY =
+  'STORAGE_DASHBOARD_TOUR_INBOX_KEY';
 
 const existingUserTourHooks = ({
   isLoadingDashboard,
@@ -27,25 +26,12 @@ const existingUserTourHooks = ({
     );
     if (isNil(dashboardFirstTimeValue) || dashboardFirstTimeValue) {
       setOpenendTour(1);
-    } else {
-      const dashboardSecondTimeValue = localStorageHelper.getItem(
-        DASHBOARD_SECOND_TIME_KEY,
-      );
-
-      if (isNil(dashboardSecondTimeValue) || dashboardSecondTimeValue) {
-        setOpenendTour(2);
-      }
     }
   };
 
   const closeFirstTour = () => {
     setOpenendTour(null);
     localStorageHelper.setItem(DASHBOARD_FIRST_TIME_KEY, false);
-  };
-
-  const closeSecondTour = () => {
-    setOpenendTour(null);
-    localStorageHelper.setItem(DASHBOARD_SECOND_TIME_KEY, false);
   };
 
   useEffect(() => {
@@ -73,17 +59,8 @@ const existingUserTourHooks = ({
               {openedTour === 1 && (
                 <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
               )}
-              {openedTour === 2 && (
-                <Tour
-                  darkTheme
-                  steps={SECOND_TOUR_STEPS}
-                  onClose={closeSecondTour}
-                />
-              )}
             </DashboardTourWrapper>
-            <DashboardTourBackground
-              onClick={openedTour === 1 ? closeFirstTour : closeSecondTour}
-            />
+            <DashboardTourBackground onClick={closeFirstTour} />
           </>
         )}
       </>
@@ -93,7 +70,6 @@ const existingUserTourHooks = ({
   return {
     openedTour,
     closeFirstTour,
-    closeSecondTour,
     renderExistingUserTour,
   };
 };

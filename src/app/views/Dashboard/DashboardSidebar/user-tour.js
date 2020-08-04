@@ -4,8 +4,8 @@ import { hashHistory } from 'react-router';
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 import {
-  DASHBOARD_SECOND_TIME_KEY,
-  STORAGE_DASHBOARD_THIRD_TIME_KEY,
+  DASHBOARD_FIRST_TIME_KEY,
+  STORAGE_DASHBOARD_TOUR_INBOX_KEY,
 } from 'views/Dashboard/existing-user-tour-hooks';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { isNil } from 'ramda';
@@ -19,16 +19,16 @@ const initializeUserTourItems = ({
   const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
 
   useEffect(() => {
-    const dashboardSecondTimeValue = localStorageHelper.getItem(
-      DASHBOARD_SECOND_TIME_KEY,
+    const dashboardFirstTimeValue = localStorageHelper.getItem(
+      DASHBOARD_FIRST_TIME_KEY,
     );
 
-    if (dashboardSecondTimeValue === false) {
-      const dashboardThirdTimeValue = localStorageHelper.getItem(
-        STORAGE_DASHBOARD_THIRD_TIME_KEY,
+    if (dashboardFirstTimeValue === false) {
+      const dashboardInboxTourValue = localStorageHelper.getItem(
+        STORAGE_DASHBOARD_TOUR_INBOX_KEY,
       );
 
-      if (isNil(dashboardThirdTimeValue) || dashboardThirdTimeValue) {
+      if (isNil(dashboardInboxTourValue) || dashboardInboxTourValue) {
         setInboxPopoverOpen(true);
       }
     }
@@ -39,7 +39,7 @@ const initializeUserTourItems = ({
 
   const closeInboxPopup = () => {
     setInboxPopoverOpen(false);
-    localStorageHelper.setItem(STORAGE_DASHBOARD_THIRD_TIME_KEY, false);
+    localStorageHelper.setItem(STORAGE_DASHBOARD_TOUR_INBOX_KEY, false);
   };
 
   const setTourPopupReferences = (element, listType, taskListIdentifier) => {
