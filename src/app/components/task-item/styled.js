@@ -304,6 +304,12 @@ export const SlimTaskWorkflowStatusContainer = styled.div`
   font-size: ${fontSizes.smallPlus};
 `;
 
+export const DueDateButton = styled.button`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export const SlimTaskItemPatientLink = styled(Link)`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};

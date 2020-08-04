@@ -4,7 +4,6 @@ import { Grid, Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SlimTaskItem from 'components/task-item/SlimTaskItem/SlimTaskItem';
 import Arrow from 'components/common/Arrow/Arrow';
-
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -162,6 +161,7 @@ const DashboardTasksGroup = ({
   isSortApplied,
   isAllTasksTab,
   dynamicColumnType,
+  updateDueDate,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -321,6 +321,7 @@ const DashboardTasksGroup = ({
                               showAssignedPerson={isAllTasksTab}
                               gridConfig={gridConfig}
                               dynamicColumnType={dynamicColumnType}
+                              updateDueDate={updateDueDate}
                             />
                           </div>
                         )}

@@ -371,7 +371,7 @@ export const Routes = ({ store }) => {
             component={DashboardView}
             onEnter={nextState => {
               onEnterDashboard();
-              if (nextState?.location?.pathname === '/home') {
+              if (nextState?.location?.pathname?.toLowerCase() === '/home') {
                 hashHistory.push('/home/my-tasks');
               }
             }}

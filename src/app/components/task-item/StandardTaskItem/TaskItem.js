@@ -63,6 +63,7 @@ import {
   ListItemLink,
   Arrow,
   AssigneeMatchingWrapper,
+  DueDateButton,
 } from '../styled';
 
 const getMatchedComments = (comments, matchingCommentIdentifiers) =>
@@ -369,7 +370,7 @@ const TaskItem = ({
                 quickSelectOptions={dueDateQuickSelectOptions}
               >
                 {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-                  <button
+                  <DueDateButton
                     type="button"
                     onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                     ref={elementReference}
@@ -397,7 +398,7 @@ const TaskItem = ({
                         />
                       </DueDateContainer>
                     </UniversalTooltipContainer>
-                  </button>
+                  </DueDateButton>
                 )}
               </PopoverDatepicker>
             </GridImg>

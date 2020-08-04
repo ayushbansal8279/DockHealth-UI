@@ -15,7 +15,10 @@ import {
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { toggleTaskCompletedStatus } from 'helpers/task-update-helper';
+import {
+  toggleTaskCompletedStatus,
+  setDueDate as setDueDateHelper,
+} from 'helpers/task-update-helper';
 import { fetchTasklistForUser } from 'sagas/tasklist-saga';
 
 const INITIALIZE_MY_TASKS_DASHBOARD_VIEW = 'INITIALIZE_MY_TASKS_DASHBOARD_VIEW';
@@ -29,6 +32,7 @@ const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
 const QUICK_ADD_DASHBOARD_TASK = 'QUICK_ADD_DASHBOARD_TASK';
 const REDIRECT_TO_PARENT_TASK = 'REDIRECT_TO_PARENT_TASK';
 const SORT_DASHBOARD_TASKS = 'SORT_DASHBOARD_TASKS';
+const DO_UPDATE_DASHBOARD_TASK_DUE_DATE = 'DO_UPDATE_DASHBOARD_TASK_DUE_DATE';
 
 export const initializeMyTasksDashboardView = () => ({
   type: INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
@@ -75,6 +79,14 @@ export const quickAddDashboardTask = (
     description: taskName,
     taskListIdentifier,
     assignedToIdentifier,
+  },
+});
+
+export const updateDashboardTaskDueDate = (task, dueDate) => ({
+  type: DO_UPDATE_DASHBOARD_TASK_DUE_DATE,
+  payload: {
+    task,
+    dueDate,
   },
 });
 
@@ -170,7 +182,7 @@ function* doRedirectToParentTask({
       `tasks/${taskListIdentifier}/${taskStatus}/${taskIdentifer}`,
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -179,7 +191,7 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
     yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
     yield call(doReloadDashboardTasks);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -209,6 +221,22 @@ function* doQuickAddDahboardTask({ payload }) {
   }
 }
 
+function* doUpdateDashboardTaskDueDate({ payload }) {
+  const { task, dueDate } = payload;
+
+  try {
+    const updatedTask = setDueDateHelper(task, dueDate);
+    yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
+
+    yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+    yield put(reloadDashboardTasks());
+  } catch (error) {
+    console.error(error);
+    yield put(reloadDashboardTasks());
+  }
+}
+
 export default function* watchDashboard() {
   yield takeEvery(
     INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
@@ -228,4 +256,8 @@ export default function* watchDashboard() {
   );
   yield takeEvery(REDIRECT_TO_PARENT_TASK, doRedirectToParentTask);
   yield takeEvery(SORT_DASHBOARD_TASKS, doSortDashboardTasks);
+  yield takeEvery(
+    DO_UPDATE_DASHBOARD_TASK_DUE_DATE,
+    doUpdateDashboardTaskDueDate,
+  );
 }

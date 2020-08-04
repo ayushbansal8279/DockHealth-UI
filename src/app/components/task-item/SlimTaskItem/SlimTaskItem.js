@@ -8,6 +8,7 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import Member from 'components/members/Member';
+import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 
 import { getCalendarIcon } from '../icons';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
@@ -25,15 +26,49 @@ import {
   SlimTaskGridContainer,
   AssignedBox,
   SlimTaskWorkflowStatusContainer,
+  DueDateButton,
   SlimTaskItemPatientLink,
 } from '../styled';
 
-const DueDateComponent = ({ dueDate, isOverdueTask }) => (
-  <DueDateContainer>
-    <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-    <img alt="due-date" src={getCalendarIcon(dueDate, true, isOverdueTask)} />
-  </DueDateContainer>
-);
+const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
+  const dueDateQuickSelectOptions = [
+    {
+      label: 'Today',
+      date: moment(),
+    },
+    {
+      label: 'Tomorrow',
+      date: moment().add(1, 'days'),
+    },
+  ];
+
+  return (
+    <PopoverDatepicker
+      selectedDate={dueDate}
+      onDateChange={date => {
+        const existingTime = dueDate ? moment(dueDate).format('HH:mm') : '';
+        updateDueDate(task, moment(`${date} ${existingTime}`), true);
+      }}
+      quickSelectOptions={dueDateQuickSelectOptions}
+    >
+      {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+        <DueDateButton
+          type="button"
+          onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+          ref={elementReference}
+        >
+          <DueDateContainer>
+            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+            <img
+              alt="due-date"
+              src={getCalendarIcon(dueDate, true, isOverdueTask)}
+            />
+          </DueDateContainer>
+        </DueDateButton>
+      )}
+    </PopoverDatepicker>
+  );
+};
 
 const PatientComponent = ({ patient }) => (
   <SlimTaskItemPatientLink to={`patient/${patient?.patientIdentifier}`}>
@@ -79,6 +114,7 @@ const SlimTaskItem = ({
   isSelected,
   showAssignedPerson,
   gridConfig,
+  updateDueDate,
   dynamicColumnType = 'DUE_DATE',
 }) => {
   const {
@@ -176,7 +212,14 @@ const SlimTaskItem = ({
           </SlimTaskGridContainer>
         </Grid>
         <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
-          <DynamicColumnComponent {...{ ...task, isOverdueTask }} />
+          <DynamicColumnComponent
+            {...{
+              ...task,
+              isOverdueTask,
+              updateDueDate,
+              task,
+            }}
+          />
         </Grid>
         {showAssignedPerson && (
           <Grid item {...gridConfig.assignedPerson}>

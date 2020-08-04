@@ -181,6 +181,7 @@ const DashboardList = ({
     quickAddDashboardTask,
     sortDashboardTasks,
     reloadDashboardTasks,
+    updateDashboardTaskDueDate,
   },
 }) => {
   const { openModal } = modalActions;
@@ -464,6 +465,7 @@ const DashboardList = ({
                 showClearSortFiltersModal={showClearSortFiltersModal}
                 isSortApplied={isSortApplied}
                 isAllTasksTab={selectedTab === 'ALL_TASKS'}
+                updateDueDate={updateDashboardTaskDueDate}
               />
             ))
           : renderEmptyState()}
