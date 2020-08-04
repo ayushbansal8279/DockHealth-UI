@@ -37,11 +37,7 @@ import { fetchTasklistForUser } from 'sagas/tasklist-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
 
-const INITIALIZE_MY_TASKS_DASHBOARD_VIEW = 'INITIALIZE_MY_TASKS_DASHBOARD_VIEW';
-const INITIALIZE_ALL_TASKS_DASHBOARD_VIEW =
-  'INITIALIZE_ALL_TASKS_DASHBOARD_VIEW';
-const FETCH_DASHBOARD_MY_TASKS = 'FETCH_DASHBOARD_MY_TASKS';
-const FETCH_DASHBOARD_ALL_TASKS = 'FETCH_DASHBOARD_ALL_TASKS';
+const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
 
 const RELOAD_DASHBOARD_TASKS = 'RELOAD_DASHBOARD_TASKS';
 const TOGGLE_DASHBOARD_TASK_COMPLETE = 'TOGGLE_DASHBOARD_TASK_COMPLETE';
@@ -53,17 +49,8 @@ const FETCH_DASHBOARD_FILTERS = 'FETCH_DASHBOARD_FILTERS';
 const DO_UPDATE_DASHBOARD_SELECTED_FILTERS =
   'DO_UPDATE_DASHBOARD_SELECTED_FILTERS';
 
-export const initializeMyTasksDashboardView = () => ({
-  type: INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
-});
-
-export const initializeAllTasksDashboardView = () => ({
-  type: INITIALIZE_ALL_TASKS_DASHBOARD_VIEW,
-});
-
-export const fetchDashboardMyTasks = () => ({ type: FETCH_DASHBOARD_MY_TASKS });
-export const fetchDashboardAllTasks = () => ({
-  type: FETCH_DASHBOARD_ALL_TASKS,
+export const initializeDashboardView = () => ({
+  type: INITIALIZE_DASHBOARD_VIEW,
 });
 export const reloadDashboardTasks = () => ({ type: RELOAD_DASHBOARD_TASKS });
 export const redirectToParentTask = (
@@ -133,36 +120,6 @@ const getTasksType = () => {
       return '';
   }
 };
-
-function* doFetchDashboardMyTasks() {
-  try {
-    yield put({ type: REQUEST_DASHBOARD_TASKS });
-    const tasksList = yield getDashboardMyTasks();
-    yield put({
-      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
-      tasksList,
-    });
-  } catch (error) {
-    yield put({
-      type: REQUEST_DASHBOARD_TASKS_FAILURE,
-    });
-  }
-}
-
-function* doFetchDashboardAllTasks() {
-  try {
-    yield put({ type: REQUEST_DASHBOARD_TASKS });
-    const tasksList = yield getDashboardAllTasks();
-    yield put({
-      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
-      tasksList,
-    });
-  } catch (error) {
-    yield put({
-      type: REQUEST_DASHBOARD_TASKS_FAILURE,
-    });
-  }
-}
 
 function* doReloadDashboardTasks() {
   try {
@@ -236,12 +193,35 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   }
 }
 
-function* doInitializeMyTasksDashboardView() {
-  yield call(doFetchDashboardMyTasks);
+function* doFetchDashboardFilters() {
+  const tasksType = getTasksType();
+  const isAllTasks = tasksType === 'all-tasks';
+
+  try {
+    const filters = isAllTasks
+      ? yield call(getDashboardAllTasksFilters)
+      : yield call(getDashboardMyTasksFilters);
+
+    yield put(
+      MegaFilterActions.selectFiltersFromLocalStorage('dashboard', tasksType),
+    );
+
+    yield put({
+      type: FETCH_MEGA_FILTERS_SUCCESS,
+      filters,
+    });
+  } catch (error) {
+    yield put({
+      type: FETCH_MEGA_FILTERS_FAILURE,
+    });
+  }
 }
 
-function* doInitializeAllTasksDashboardView() {
-  yield call(doFetchDashboardAllTasks);
+function* doInitializeDashboardView() {
+  yield put(MegaFilterActions.clearFiltersForMegaFilter());
+  yield put({ type: REQUEST_DASHBOARD_TASKS });
+  yield doFetchDashboardFilters();
+  yield put(reloadDashboardTasks());
 }
 
 function* doQuickAddDahboardTask({ payload }) {
@@ -278,25 +258,7 @@ function* doUpdateDashboardTaskDueDate({ payload }) {
   }
 }
 
-function* doFetchDashboardFilters() {
-  const isAllTasks = getTasksType() === 'all-tasks';
   
-  try {
-    const filters = isAllTasks
-      ? yield call(getDashboardAllTasksFilters)
-      : yield call(getDashboardMyTasksFilters);
-
-    yield put({
-      type: FETCH_MEGA_FILTERS_SUCCESS,
-      filters,
-    });
-  } catch (error) {
-    yield put({
-      type: FETCH_MEGA_FILTERS_FAILURE,
-    });
-  }
-}
-
 function* doUpdateDashboardSelectedFilters({ payload }) {
   const { selectedFilters } = payload;
   const taskType = getTasksType();
@@ -312,16 +274,7 @@ function* doUpdateDashboardSelectedFilters({ payload }) {
 }
 
 export default function* watchDashboard() {
-  yield takeEvery(
-    INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
-    doInitializeMyTasksDashboardView,
-  );
-  yield takeEvery(
-    INITIALIZE_ALL_TASKS_DASHBOARD_VIEW,
-    doInitializeAllTasksDashboardView,
-  );
-  yield takeEvery(FETCH_DASHBOARD_MY_TASKS, doFetchDashboardMyTasks);
-  yield takeEvery(FETCH_DASHBOARD_ALL_TASKS, doFetchDashboardAllTasks);
+  yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
   yield takeEvery(RELOAD_DASHBOARD_TASKS, doReloadDashboardTasks);
   yield takeEvery(QUICK_ADD_DASHBOARD_TASK, doQuickAddDahboardTask);
   yield takeEvery(

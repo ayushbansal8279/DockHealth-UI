@@ -30,11 +30,7 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import {
-  initializeMyTasksDashboardView,
-  initializeAllTasksDashboardView,
-  fetchDashboardFilters,
-} from 'sagas/dashboard-saga';
+import { initializeDashboardView } from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
 
 import {
@@ -287,16 +283,8 @@ export const Routes = ({ store }) => {
     dispatch(findPendingTaskListsForUser());
   };
 
-  const onEnterMyTasksDashboard = () => {
-    dispatch(initializeMyTasksDashboardView());
-    dispatch(clearFiltersForMegaFilter());
-    dispatch(fetchDashboardFilters());
-  };
-
-  const onEnterAllTasksDashboard = () => {
-    dispatch(initializeAllTasksDashboardView());
-    dispatch(clearFiltersForMegaFilter());
-    dispatch(fetchDashboardFilters());
+  const onEnterDashboardTab = () => {
+    dispatch(initializeDashboardView());
   };
 
   const onLeaveDashboard = () => {
@@ -383,8 +371,8 @@ export const Routes = ({ store }) => {
             }}
             onLeave={onLeaveDashboard}
           >
-            <Route path="my-tasks" onEnter={onEnterMyTasksDashboard} />
-            <Route path="all-tasks" onEnter={onEnterAllTasksDashboard} />
+            <Route path="my-tasks" onEnter={onEnterDashboardTab} />
+            <Route path="all-tasks" onEnter={onEnterDashboardTab} />
           </Route>
           <Route
             path="/search"
