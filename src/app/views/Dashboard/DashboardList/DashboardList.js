@@ -32,16 +32,24 @@ import {
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import MegaFilter from 'components/common/MegaFilter/MegaFilter';
+import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
+import {
+  megaFilterSelector,
+  hasFiltersAppliedSelector,
+} from 'selectors/mega-filter-selectors';
 import DashboardSettings from '../DashboardSettings/DashboardSettings';
+
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
   SearchGrid,
-  SearchContainer,
+  ActionsContainer,
   StickyHeader,
   DasboardTabsContainer,
   DashboardTab as StyledDashboardTab,
   DashboardTabHighlight,
+  EmptyStateContainer,
 } from './styled';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
@@ -182,7 +190,10 @@ const DashboardList = ({
     sortDashboardTasks,
     reloadDashboardTasks,
     updateDashboardTaskDueDate,
+    updateDashboardSelectedFilters,
   },
+  megaFilter,
+  areFiltersApplied,
 }) => {
   const { openModal } = modalActions;
   const [selectedTab, setSelectedTab] = useState('MY_TASKS');
@@ -201,6 +212,7 @@ const DashboardList = ({
     ({ tasks }) => tasks && tasks.length !== 0,
   );
   const { userIdentifier, usageState } = currentUser;
+  const { filters, selectedFilters } = megaFilter;
 
   const currentSortMethod = SORT_METHODS[sortType];
   const isSortApplied = sortType !== SORT_CONFIG.default;
@@ -352,6 +364,8 @@ const DashboardList = ({
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
 
+    if (areFiltersApplied) return <NoFilterResultsView />;
+
     if (usageState?.loginCount < 5) return <DashboardNewUserInfo />;
 
     if (completeTaskCount > 0 && selectedTab === 'MY_TASKS')
@@ -405,7 +419,16 @@ const DashboardList = ({
               <DashboardTabHighlight {...highlightPosition} />
             </DasboardTabsContainer>
           </Grid>
-          <SearchContainer item xs={7}>
+
+          <ActionsContainer item xs={7}>
+            <MegaFilter
+              filters={filters}
+              selectedFilters={selectedFilters}
+              onSelectFilters={updateDashboardSelectedFilters}
+              taskStatus="INCOMPLETE"
+              activeItemsAmount={0}
+            />
+            <Spacing horizontal={4} />
             <SearchGrid isFocused={searchFocused || searchValue}>
               <Search
                 fullWidth
@@ -419,7 +442,7 @@ const DashboardList = ({
               setDynamicColumnType={setDynamicColumnType}
               dynamicColumnType={dynamicColumnType}
             />
-          </SearchContainer>
+          </ActionsContainer>
         </ToolbarContainer>
         <QuickAddTaskInput
           autoComplete="off"
@@ -444,31 +467,33 @@ const DashboardList = ({
           dashboardTasksIsLoading || completeTaskCount === undefined
         }
       >
-        {!isEmpty(searchedDashboardTasks)
-          ? searchedDashboardTasks?.map(item => (
-              <DashboardTasksGroup
-                key={item.groupType}
-                dashboardTasksGroup={item}
-                toggleDashboardTaskComplete={toggleDashboardTaskComplete}
-                redirectToParentTask={redirectToParentTask}
-                storeAsCurrentTask={storeAsCurrentTask}
-                sortDashboardTasks={sortDashboardTasks}
-                openDrawer={openDrawer}
-                isTaskDrawerOpen={isTaskDrawerOpen}
-                selectedTaskIdentifier={selectedTaskIdentifier}
-                currentSortMethod={currentSortMethod}
-                currentSortType={sortType}
-                dynamicColumnType={dynamicColumnType}
-                onClickDynamincColumnSort={onClickDynamincColumnSort}
-                onClickAssignedSort={onClickAssignedSort}
-                onClickListNameSort={onClickListNameSort}
-                showClearSortFiltersModal={showClearSortFiltersModal}
-                isSortApplied={isSortApplied}
-                isAllTasksTab={selectedTab === 'ALL_TASKS'}
-                updateDueDate={updateDashboardTaskDueDate}
-              />
-            ))
-          : renderEmptyState()}
+        {!isEmpty(searchedDashboardTasks) ? (
+          searchedDashboardTasks?.map(item => (
+            <DashboardTasksGroup
+              key={item.groupType}
+              dashboardTasksGroup={item}
+              toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+              redirectToParentTask={redirectToParentTask}
+              storeAsCurrentTask={storeAsCurrentTask}
+              sortDashboardTasks={sortDashboardTasks}
+              openDrawer={openDrawer}
+              isTaskDrawerOpen={isTaskDrawerOpen}
+              selectedTaskIdentifier={selectedTaskIdentifier}
+              currentSortMethod={currentSortMethod}
+              currentSortType={sortType}
+              dynamicColumnType={dynamicColumnType}
+              onClickDynamincColumnSort={onClickDynamincColumnSort}
+              onClickAssignedSort={onClickAssignedSort}
+              onClickListNameSort={onClickListNameSort}
+              showClearSortFiltersModal={showClearSortFiltersModal}
+              isSortApplied={isSortApplied}
+              isAllTasksTab={selectedTab === 'ALL_TASKS'}
+              updateDueDate={updateDashboardTaskDueDate}
+            />
+          ))
+        ) : (
+          <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
+        )}
       </ViewLoader>
       <NewTaskDrawer
         modalActions={modalActions}
@@ -487,6 +512,8 @@ const mapStateToProps = state => ({
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
   userPreferColumn: userProfileDashbaordPrefsSelector(state),
+  megaFilter: megaFilterSelector(state),
+  areFiltersApplied: hasFiltersAppliedSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({

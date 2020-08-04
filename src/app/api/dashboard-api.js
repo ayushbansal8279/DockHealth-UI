@@ -32,3 +32,49 @@ export function reorderTasksInGroup({
       throw error;
     });
 }
+
+export function getDashboardMyTasksFilters(status = 'INCOMPLETE') {
+  return axios
+    .get(`task/filter/filterOptionsForCurrentUser?status=${status}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getDashboardAllTasksFilters(status = 'INCOMPLETE') {
+  return axios
+    .get(`task/filter/filterOptionsForTasksInOrganization?status=${status}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export const getDashboardMyTasksByCriteria = (
+  selectedFilters,
+  status = 'INCOMPLETE',
+) =>
+  axios
+    .post(
+      `task/filter/filterTasksByCriteriaForCurrentUser?status=${status}`,
+      selectedFilters,
+    )
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+
+export const getDashboardAllTasksByCriteria = (
+  selectedFilters,
+  status = 'INCOMPLETE',
+) =>
+  axios
+    .post(
+      `task/filter/filterTasksByCriteriaForOrganization?status=${status}`,
+      selectedFilters,
+    )
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });

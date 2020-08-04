@@ -1,25 +1,41 @@
-import { put, call, takeEvery, select, delay } from 'redux-saga/effects';
+import {
+  put,
+  call,
+  takeEvery,
+  select,
+  delay,
+  takeLatest,
+} from 'redux-saga/effects';
 import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
   REQUEST_DASHBOARD_TASKS_FAILURE,
   UPDATE_TASK_SUCCESS,
+  FETCH_MEGA_FILTERS_SUCCESS,
+  FETCH_MEGA_FILTERS_FAILURE,
 } from 'actions/action-types';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   getDashboardMyTasks,
   getDashboardAllTasks,
   reorderTasksInGroup,
+  getDashboardMyTasksFilters,
+  getDashboardAllTasksFilters,
+  getDashboardMyTasksByCriteria,
+  getDashboardAllTasksByCriteria,
 } from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
   setDueDate as setDueDateHelper,
 } from 'helpers/task-update-helper';
 import { fetchTasklistForUser } from 'sagas/tasklist-saga';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import { isEmpty } from 'ramda';
 
 const INITIALIZE_MY_TASKS_DASHBOARD_VIEW = 'INITIALIZE_MY_TASKS_DASHBOARD_VIEW';
 const INITIALIZE_ALL_TASKS_DASHBOARD_VIEW =
@@ -33,6 +49,9 @@ const QUICK_ADD_DASHBOARD_TASK = 'QUICK_ADD_DASHBOARD_TASK';
 const REDIRECT_TO_PARENT_TASK = 'REDIRECT_TO_PARENT_TASK';
 const SORT_DASHBOARD_TASKS = 'SORT_DASHBOARD_TASKS';
 const DO_UPDATE_DASHBOARD_TASK_DUE_DATE = 'DO_UPDATE_DASHBOARD_TASK_DUE_DATE';
+const FETCH_DASHBOARD_FILTERS = 'FETCH_DASHBOARD_FILTERS';
+const DO_UPDATE_DASHBOARD_SELECTED_FILTERS =
+  'DO_UPDATE_DASHBOARD_SELECTED_FILTERS';
 
 export const initializeMyTasksDashboardView = () => ({
   type: INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
@@ -90,6 +109,17 @@ export const updateDashboardTaskDueDate = (task, dueDate) => ({
   },
 });
 
+export const fetchDashboardFilters = () => ({
+  type: FETCH_DASHBOARD_FILTERS,
+});
+
+export const updateDashboardSelectedFilters = selectedFilters => ({
+  type: DO_UPDATE_DASHBOARD_SELECTED_FILTERS,
+  payload: {
+    selectedFilters,
+  },
+});
+
 const getTasksType = () => {
   const location = window.location?.hash?.split('/');
   const tab = location.slice(-1)[0];
@@ -136,10 +166,21 @@ function* doFetchDashboardAllTasks() {
 
 function* doReloadDashboardTasks() {
   try {
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const isAllTasks = getTasksType() === 'all-tasks';
-    const tasksList = isAllTasks
-      ? yield getDashboardAllTasks()
-      : yield getDashboardMyTasks();
+
+    let tasksList = [];
+
+    if (!selectedFilters || !isEmpty(selectedFilters)) {
+      tasksList = isAllTasks
+        ? yield getDashboardAllTasksByCriteria(selectedFilters)
+        : yield getDashboardMyTasksByCriteria(selectedFilters);
+    } else {
+      tasksList = isAllTasks
+        ? yield getDashboardAllTasks()
+        : yield getDashboardMyTasks();
+    }
+
     yield put({
       type: REQUEST_DASHBOARD_TASKS_SUCCESS,
       tasksList,
@@ -237,6 +278,39 @@ function* doUpdateDashboardTaskDueDate({ payload }) {
   }
 }
 
+function* doFetchDashboardFilters() {
+  const isAllTasks = getTasksType() === 'all-tasks';
+  
+  try {
+    const filters = isAllTasks
+      ? yield call(getDashboardAllTasksFilters)
+      : yield call(getDashboardMyTasksFilters);
+
+    yield put({
+      type: FETCH_MEGA_FILTERS_SUCCESS,
+      filters,
+    });
+  } catch (error) {
+    yield put({
+      type: FETCH_MEGA_FILTERS_FAILURE,
+    });
+  }
+}
+
+function* doUpdateDashboardSelectedFilters({ payload }) {
+  const { selectedFilters } = payload;
+  const taskType = getTasksType();
+
+  yield put(
+    MegaFilterActions.selectFiltersForMegaFilter(
+      selectedFilters,
+      'dashboard',
+      taskType,
+    ),
+  );
+  yield put(reloadDashboardTasks());
+}
+
 export default function* watchDashboard() {
   yield takeEvery(
     INITIALIZE_MY_TASKS_DASHBOARD_VIEW,
@@ -259,5 +333,10 @@ export default function* watchDashboard() {
   yield takeEvery(
     DO_UPDATE_DASHBOARD_TASK_DUE_DATE,
     doUpdateDashboardTaskDueDate,
+  );
+  yield takeLatest(FETCH_DASHBOARD_FILTERS, doFetchDashboardFilters);
+  yield takeEvery(
+    DO_UPDATE_DASHBOARD_SELECTED_FILTERS,
+    doUpdateDashboardSelectedFilters,
   );
 }

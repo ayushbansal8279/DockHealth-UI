@@ -11,7 +11,7 @@ export const ToolbarContainer = styled(Grid)`
   position: relative;
 `;
 
-export const SearchContainer = styled(Grid)`
+export const ActionsContainer = styled(Grid)`
   display: flex;
   justify-content: flex-end;
 `;
@@ -90,4 +90,8 @@ export const DashboardTabHighlight = styled.div`
 export const AssignedBox = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+export const EmptyStateContainer = styled.div`
+  padding: 0 55px;
 `;

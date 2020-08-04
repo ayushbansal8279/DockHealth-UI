@@ -33,6 +33,7 @@ import {
 import {
   initializeMyTasksDashboardView,
   initializeAllTasksDashboardView,
+  fetchDashboardFilters,
 } from 'sagas/dashboard-saga';
 import DashboardView from 'views/Dashboard/DashboardView';
 
@@ -288,14 +289,19 @@ export const Routes = ({ store }) => {
 
   const onEnterMyTasksDashboard = () => {
     dispatch(initializeMyTasksDashboardView());
+    dispatch(clearFiltersForMegaFilter());
+    dispatch(fetchDashboardFilters());
   };
 
   const onEnterAllTasksDashboard = () => {
     dispatch(initializeAllTasksDashboardView());
+    dispatch(clearFiltersForMegaFilter());
+    dispatch(fetchDashboardFilters());
   };
 
   const onLeaveDashboard = () => {
     dispatch(removeHiddenNavbarTemplate());
+    dispatch(clearFiltersForMegaFilter());
     dispatch(closeDrawer());
   };
 
