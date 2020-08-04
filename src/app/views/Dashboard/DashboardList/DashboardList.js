@@ -15,6 +15,7 @@ import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
 } from 'selectors/dashboard-tasks-selectors';
+import { userProfileDashbaordPrefsSelector } from 'selectors/user-selectors';
 import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/Dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
@@ -31,7 +32,7 @@ import {
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
-
+import DashboardSettings from '../DashboardSettings/DashboardSettings';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -57,6 +58,10 @@ const SORT_CONFIG = {
   default: 'DEFAULT',
   dueDateAsc: 'DUE_DATE_ASC',
   dueDateDsc: 'DUE_DATE_DSC',
+  workflowStatusAsc: 'WORKFLOW_STATUS_ASC',
+  workflowStatusDsc: 'WORKFLOW_STATUS_DSC',
+  patientAsc: 'PATIENT_ASC',
+  patientDsc: 'PATIENT_DSC',
   assignedAsc: 'ASSIGNED_ASC',
   assignedDsc: 'ASSIGNED_DSC',
   listNameAsc: 'LIST_NAME_ASC',
@@ -77,6 +82,35 @@ const SORT_METHODS = {
       .sort((a, b) => {
         return b?.dueDate > a?.dueDate ? 1 : -1;
       }),
+  [SORT_CONFIG.workflowStatusAsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) => {
+        const aWorkflowStauts = a?.workflowStatus || '';
+        const bWorkflowStauts = b?.workflowStatus || '';
+
+        return aWorkflowStauts.localeCompare(bWorkflowStauts);
+      }),
+  [SORT_CONFIG.workflowStatusDsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) => {
+        const aWorkflowStauts = a?.workflowStatus || '';
+        const bWorkflowStauts = b?.workflowStatus || '';
+        return bWorkflowStauts.localeCompare(aWorkflowStauts);
+      }),
+  [SORT_CONFIG.patientAsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        a?.patient?.firstName?.localeCompare(b?.patient?.firstName),
+      ),
+  [SORT_CONFIG.patientDsc]: list =>
+    list
+      .map(item => item)
+      .sort((a, b) =>
+        b?.patient?.firstName?.localeCompare(a?.patient?.firstName),
+      ),
   [SORT_CONFIG.assignedAsc]: list =>
     list
       .map(item => item)
@@ -140,6 +174,7 @@ const DashboardList = ({
   isTaskDrawerOpen,
   selectedTaskIdentifier,
   closeDrawer,
+  userPreferColumn,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -158,7 +193,9 @@ const DashboardList = ({
   const [searchFocused, setSearchFocused] = useState(false);
   const [sortType, setSortType] = useState(SORT_CONFIG.default);
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-
+  const [dynamicColumnType, setDynamicColumnType] = useState(
+    userPreferColumn || 'DUE_DATE',
+  );
   const filteredDashboardTasks = dashboardTasks.filter(
     ({ tasks }) => tasks && tasks.length !== 0,
   );
@@ -202,19 +239,55 @@ const DashboardList = ({
     setSortType(SORT_CONFIG.default);
   }, [selectedTab]);
 
-  const onClickDueDateSort = () => {
-    switch (sortType) {
-      case SORT_CONFIG.dueDateAsc: {
-        setSortType(SORT_CONFIG.dueDateDsc);
-        break;
+  useEffect(() => {
+    setSortType(SORT_CONFIG.default);
+  }, [dynamicColumnType]);
+
+  const onClickDynamincColumnSort = () => {
+    if (dynamicColumnType === 'DUE_DATE') {
+      switch (sortType) {
+        case SORT_CONFIG.dueDateAsc: {
+          setSortType(SORT_CONFIG.dueDateDsc);
+          break;
+        }
+        case SORT_CONFIG.dueDateDsc: {
+          setSortType(SORT_CONFIG.dueDateAsc);
+          break;
+        }
+        default: {
+          setSortType(SORT_CONFIG.dueDateAsc);
+          break;
+        }
       }
-      case SORT_CONFIG.dueDateDsc: {
-        setSortType(SORT_CONFIG.dueDateAsc);
-        break;
+    } else if (dynamicColumnType === 'STATUS') {
+      switch (sortType) {
+        case SORT_CONFIG.workflowStatusAsc: {
+          setSortType(SORT_CONFIG.workflowStatusDsc);
+          break;
+        }
+        case SORT_CONFIG.workflowStatusDsc: {
+          setSortType(SORT_CONFIG.workflowStatusAsc);
+          break;
+        }
+        default: {
+          setSortType(SORT_CONFIG.workflowStatusAsc);
+          break;
+        }
       }
-      default: {
-        setSortType(SORT_CONFIG.dueDateAsc);
-        break;
+    } else if (dynamicColumnType === 'PATIENT') {
+      switch (sortType) {
+        case SORT_CONFIG.patientAsc: {
+          setSortType(SORT_CONFIG.patientDsc);
+          break;
+        }
+        case SORT_CONFIG.patientDsc: {
+          setSortType(SORT_CONFIG.patientAsc);
+          break;
+        }
+        default: {
+          setSortType(SORT_CONFIG.patientAsc);
+          break;
+        }
       }
     }
   };
@@ -341,6 +414,10 @@ const DashboardList = ({
                 onChange={event => setSearchValue(event?.target?.value)}
               />
             </SearchGrid>
+            <DashboardSettings
+              setDynamicColumnType={setDynamicColumnType}
+              dynamicColumnType={dynamicColumnType}
+            />
           </SearchContainer>
         </ToolbarContainer>
         <QuickAddTaskInput
@@ -380,7 +457,8 @@ const DashboardList = ({
                 selectedTaskIdentifier={selectedTaskIdentifier}
                 currentSortMethod={currentSortMethod}
                 currentSortType={sortType}
-                onClickDueDateSort={onClickDueDateSort}
+                dynamicColumnType={dynamicColumnType}
+                onClickDynamincColumnSort={onClickDynamincColumnSort}
                 onClickAssignedSort={onClickAssignedSort}
                 onClickListNameSort={onClickListNameSort}
                 showClearSortFiltersModal={showClearSortFiltersModal}
@@ -406,6 +484,7 @@ const mapStateToProps = state => ({
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
+  userPreferColumn: userProfileDashbaordPrefsSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({

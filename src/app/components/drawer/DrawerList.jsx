@@ -186,7 +186,7 @@ const getDrawerItems = ({ lists }) => [
     label: 'Home',
     icon: HomeIcon,
     tabsPath: ['/my-tasks', '/all-tasks'],
-    to: 'home',
+    to: 'home/my-tasks',
     isIconFilled: false,
   },
   {

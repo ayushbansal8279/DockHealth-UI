@@ -294,3 +294,21 @@ export const AssignedBox = styled.div`
   justify-content: center;
   margin-left: -40px;
 `;
+
+export const SlimTaskWorkflowStatusContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: calc(100% - ${spacing.regular});
+  padding-left: ${spacing.regularPlus};
+  font-size: ${fontSizes.smallPlus};
+`;
+
+export const SlimTaskItemPatientLink = styled(Link)`
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.regular};
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;

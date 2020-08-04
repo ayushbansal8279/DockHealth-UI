@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicated-branches */
 import React, { useState, useEffect } from 'react';
 import { Grid, Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -15,14 +16,38 @@ import {
 const GRID_CONFIG = {
   primary: {
     description: {
-      sm: 6,
-      md: 7,
-      lg: 9,
+      PATIENT: {
+        sm: 5,
+        md: 6,
+        lg: 8,
+      },
+      DUE_DATE: {
+        sm: 6,
+        md: 7,
+        lg: 9,
+      },
+      STATUS: {
+        sm: 5,
+        md: 6,
+        lg: 8,
+      },
     },
-    dueDate: {
-      sm: 2,
-      md: 2,
-      lg: 1,
+    dynamicColumn: {
+      PATIENT: {
+        sm: 3,
+        md: 3,
+        lg: 2,
+      },
+      DUE_DATE: {
+        sm: 2,
+        md: 2,
+        lg: 1,
+      },
+      STATUS: {
+        sm: 3,
+        md: 3,
+        lg: 2,
+      },
     },
     listName: {
       sm: 4,
@@ -32,14 +57,38 @@ const GRID_CONFIG = {
   },
   secondary: {
     description: {
-      sm: 3,
-      md: 4,
-      lg: 7,
+      PATIENT: {
+        sm: 3,
+        md: 4,
+        lg: 6,
+      },
+      DUE_DATE: {
+        sm: 3,
+        md: 4,
+        lg: 7,
+      },
+      STATUS: {
+        sm: 3,
+        md: 4,
+        lg: 6,
+      },
     },
-    dueDate: {
-      sm: 3,
-      md: 2,
-      lg: 1,
+    dynamicColumn: {
+      PATIENT: {
+        sm: 3,
+        md: 2,
+        lg: 2,
+      },
+      DUE_DATE: {
+        sm: 3,
+        md: 2,
+        lg: 1,
+      },
+      STATUS: {
+        sm: 3,
+        md: 2,
+        lg: 2,
+      },
     },
     assignedPerson: {
       sm: 3,
@@ -54,6 +103,47 @@ const GRID_CONFIG = {
   },
 };
 
+const getDynamicColumnLabel = (dynamicColumnType, currentSortType) => {
+  switch (dynamicColumnType) {
+    case 'DUE_DATE': {
+      return {
+        label: 'Due',
+        isOpen: currentSortType === 'DUE_DATE_ASC',
+        showDefaultArrow:
+          currentSortType !== 'DUE_DATE_ASC' &&
+          currentSortType !== 'DUE_DATE_DSC',
+      };
+    }
+    case 'PATIENT': {
+      return {
+        label: 'Patient',
+        isOpen: currentSortType === 'PATIENT_ASC',
+        showDefaultArrow:
+          currentSortType !== 'PATIENT_ASC' &&
+          currentSortType !== 'PATIENT_DSC',
+      };
+    }
+    case 'STATUS': {
+      return {
+        label: 'Status',
+        isOpen: currentSortType === 'WORKFLOW_STATUS_ASC',
+        showDefaultArrow:
+          currentSortType !== 'WORKFLOW_STATUS_ASC' &&
+          currentSortType !== 'WORKFLOW_STATUS_DSC',
+      };
+    }
+    default: {
+      return {
+        label: 'Due',
+        isOpen: currentSortType === 'DUE_DATE_ASC',
+        showDefaultArrow:
+          currentSortType !== 'DUE_DATE_ASC' &&
+          currentSortType !== 'DUE_DATE_DSC',
+      };
+    }
+  }
+};
+
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
   toggleDashboardTaskComplete,
@@ -65,12 +155,13 @@ const DashboardTasksGroup = ({
   selectedTaskIdentifier,
   currentSortMethod,
   currentSortType,
-  onClickDueDateSort,
+  onClickDynamincColumnSort,
   onClickAssignedSort,
   onClickListNameSort,
   showClearSortFiltersModal,
   isSortApplied,
   isAllTasksTab,
+  dynamicColumnType,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -83,12 +174,16 @@ const DashboardTasksGroup = ({
   const gridConfig = isAllTasksTab
     ? GRID_CONFIG.secondary
     : GRID_CONFIG.primary;
+  const dynamicColumnLabel = getDynamicColumnLabel(
+    dynamicColumnType,
+    currentSortType,
+  );
 
   return (
     <DashboardTasksGroupContainer>
       <DashboardTasksGroupLabel>
         <Grid container>
-          <Grid item {...gridConfig.description}>
+          <Grid item {...gridConfig.description[dynamicColumnType]}>
             <Arrow
               isOpen={groupIsOpen}
               setOpen={() => setGroupIsOpen(!groupIsOpen)}
@@ -102,23 +197,19 @@ const DashboardTasksGroup = ({
               </span>
             </Arrow>
           </Grid>
-          <Grid item {...gridConfig.dueDate}>
-            {groupIsOpen && (
-              <Arrow
-                isOpen={currentSortType === 'DUE_DATE_ASC'}
-                setOpen={onClickDueDateSort}
-                showDefaultArrow={
-                  currentSortType !== 'DUE_DATE_ASC' &&
-                  currentSortType !== 'DUE_DATE_DSC'
-                }
-                justifyContent="flex-start"
-                paddingLeft="0"
-                arrowType="secondary"
-                isDisabled={!groupIsOpen}
-              >
-                <span>Due</span>
-              </Arrow>
-            )}
+          <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
+            <Arrow
+              isOpen={dynamicColumnLabel?.isOpen}
+              setOpen={onClickDynamincColumnSort}
+              showDefaultArrow={dynamicColumnLabel?.showDefaultArrow}
+              justifyContent="flex-start"
+              paddingLeft="0"
+              arrowType="secondary"
+              isDisabled={!groupIsOpen}
+              showArrow={groupIsOpen}
+            >
+              <span>{dynamicColumnLabel?.label}</span>
+            </Arrow>
           </Grid>
           {isAllTasksTab && (
             <Grid item {...gridConfig.assignedPerson}>
@@ -229,6 +320,7 @@ const DashboardTasksGroup = ({
                               }
                               showAssignedPerson={isAllTasksTab}
                               gridConfig={gridConfig}
+                              dynamicColumnType={dynamicColumnType}
                             />
                           </div>
                         )}

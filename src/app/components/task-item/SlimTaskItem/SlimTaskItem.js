@@ -10,6 +10,7 @@ import UniversalTooltipContainer from 'components/common/UniversalTooltipContain
 import Member from 'components/members/Member';
 
 import { getCalendarIcon } from '../icons';
+import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
 import {
   CircleIcon,
   SlimTaskItemContainer,
@@ -23,7 +24,48 @@ import {
   DueDateContainer,
   SlimTaskGridContainer,
   AssignedBox,
+  SlimTaskWorkflowStatusContainer,
+  SlimTaskItemPatientLink,
 } from '../styled';
+
+const DueDateComponent = ({ dueDate, isOverdueTask }) => (
+  <DueDateContainer>
+    <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+    <img alt="due-date" src={getCalendarIcon(dueDate, true, isOverdueTask)} />
+  </DueDateContainer>
+);
+
+const PatientComponent = ({ patient }) => (
+  <SlimTaskItemPatientLink to={`patient/${patient?.patientIdentifier}`}>
+    {patient && `${patient?.firstName} ${patient?.lastName}`}
+  </SlimTaskItemPatientLink>
+);
+
+const WorkflowStatusComponent = ({ workflowStatus }) => (
+  <SlimTaskWorkflowStatusContainer>
+    <TaskItemStatus workflowStatus={workflowStatus} />
+  </SlimTaskWorkflowStatusContainer>
+);
+
+const getDynamicColumn = type => {
+  switch (type) {
+    case 'DUE_DATE': {
+      return DueDateComponent;
+    }
+
+    case 'PATIENT': {
+      return PatientComponent;
+    }
+
+    case 'STATUS': {
+      return WorkflowStatusComponent;
+    }
+
+    default: {
+      return DueDateComponent;
+    }
+  }
+};
 
 const SlimTaskItem = ({
   task,
@@ -37,6 +79,7 @@ const SlimTaskItem = ({
   isSelected,
   showAssignedPerson,
   gridConfig,
+  dynamicColumnType = 'DUE_DATE',
 }) => {
   const {
     assignedTo,
@@ -76,6 +119,7 @@ const SlimTaskItem = ({
       .replace(/^\.$/, '') || 'Unknown';
 
   const isCompleted = status === 'COMPLETE';
+  const DynamicColumnComponent = getDynamicColumn(dynamicColumnType);
 
   return (
     <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
@@ -86,7 +130,7 @@ const SlimTaskItem = ({
         )}
       </PrioritySwitch>
       <Grid container justify="space-between" alignItems="center">
-        <Grid item {...gridConfig.description}>
+        <Grid item {...gridConfig.description[dynamicColumnType]}>
           <SlimTaskGridContainer>
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
@@ -131,14 +175,8 @@ const SlimTaskItem = ({
             </SlimTaskItemDescription>
           </SlimTaskGridContainer>
         </Grid>
-        <Grid item {...gridConfig.dueDate}>
-          <DueDateContainer>
-            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-            <img
-              alt="due-date"
-              src={getCalendarIcon(dueDate, true, isOverdueTask)}
-            />
-          </DueDateContainer>
+        <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
+          <DynamicColumnComponent {...{ ...task, isOverdueTask }} />
         </Grid>
         {showAssignedPerson && (
           <Grid item {...gridConfig.assignedPerson}>
