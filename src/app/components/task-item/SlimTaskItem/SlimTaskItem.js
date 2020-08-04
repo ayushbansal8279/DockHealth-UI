@@ -28,6 +28,7 @@ import {
   SlimTaskWorkflowStatusContainer,
   DueDateButton,
   SlimTaskItemPatientLink,
+  DueDateAddLabel,
 } from '../styled';
 
 const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
@@ -63,6 +64,7 @@ const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
               alt="due-date"
               src={getCalendarIcon(dueDate, true, isOverdueTask)}
             />
+            {!dueDate && <DueDateAddLabel>Add</DueDateAddLabel>}
           </DueDateContainer>
         </DueDateButton>
       )}

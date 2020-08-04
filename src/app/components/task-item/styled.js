@@ -86,6 +86,23 @@ export const DescriptionBox = styled.div`
   width: 100%;
 `;
 
+export const DueDateButton = styled.button`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const DueDateAddLabel = styled.p`
+  display: none;
+  position: absolute;
+  bottom: -22px;
+  margin-bottom: 0;
+  text-align: center;
+  color: ${palette.brightBlue};
+  font-weight: ${fontWeights.light};
+  font-size: ${fontSizes.regular};
+`;
+
 export const DueDate = styled.span`
   bottom: 1px;
   color: ${palette.white};
@@ -101,6 +118,12 @@ export const DueDateContainer = styled.div`
   width: 37.98px; // per design
   justify-content: center;
   text-align: center;
+
+  &:hover {
+    ${DueDateAddLabel} {
+      display: block;
+    }
+  }
 `;
 
 export const GridImg = styled(Grid)`
@@ -302,12 +325,6 @@ export const SlimTaskWorkflowStatusContainer = styled.div`
   height: calc(100% - ${spacing.regular});
   padding-left: ${spacing.regularPlus};
   font-size: ${fontSizes.smallPlus};
-`;
-
-export const DueDateButton = styled.button`
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 export const SlimTaskItemPatientLink = styled(Link)`
