@@ -162,6 +162,8 @@ const DashboardTasksGroup = ({
   isAllTasksTab,
   dynamicColumnType,
   updateDueDate,
+  currentUser,
+  reassignDashboardTask,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -322,6 +324,10 @@ const DashboardTasksGroup = ({
                               gridConfig={gridConfig}
                               dynamicColumnType={dynamicColumnType}
                               updateDueDate={updateDueDate}
+                              currentUser={currentUser}
+                              reassignTask={({ taskIdentifier }, { userId }) =>
+                                reassignDashboardTask(taskIdentifier, userId)
+                              }
                             />
                           </div>
                         )}
