@@ -14,5 +14,5 @@ export const userProfileSelector = createSelector(
 
 export const userProfileDashbaordPrefsSelector = createSelector(
   userProfileSelector,
-  ({ userPreference }) => userPreference?.displayColumns,
+  ({ userPreference }) => userPreference?.displayColumns?.[0],
 );

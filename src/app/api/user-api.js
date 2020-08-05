@@ -962,7 +962,7 @@ export function updateUserDashboardPrefs(column) {
     displayColumns: [column],
   };
 
-  const currentUser = sessionStorage.getItem('userProfile');
+  const currentUser = JSON.parse(sessionStorage.getItem('userProfile'));
 
   return axios
     .put(
@@ -978,7 +978,7 @@ export function updateUserDashboardPrefs(column) {
         },
       };
       store.dispatch({ type: 'user/userProfile', userProfile: newCurrentUser });
-      sessionStorage.setItem('userProfile', newCurrentUser);
+      sessionStorage.setItem('userProfile', JSON.stringify(newCurrentUser));
       return response?.data;
     })
     .catch(error => {

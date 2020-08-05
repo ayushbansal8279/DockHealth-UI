@@ -186,7 +186,7 @@ const getDrawerItems = ({ lists }) => [
     label: 'Home',
     icon: HomeIcon,
     tabsPath: ['/my-tasks', '/all-tasks'],
-    to: 'home/my-tasks',
+    to: '/home',
     isIconFilled: false,
   },
   {
@@ -258,7 +258,7 @@ const DrawerList = ({
         .find(({ to, tabsPath }) => {
           if (tabsPath) {
             return !!tabsPath.find(tab => {
-              return `/${to + tab}` === location.pathname;
+              return `${to + tab}` === location.pathname;
             });
           }
 
