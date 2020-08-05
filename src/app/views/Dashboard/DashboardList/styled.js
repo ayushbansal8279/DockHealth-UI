@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
-import { Grid } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { Grid, Switch } from '@material-ui/core';
 
 export const ToolbarContainer = styled(Grid)`
   border-bottom: 2px solid ${palette.blueGrey};
@@ -17,7 +18,7 @@ export const ActionsContainer = styled(Grid)`
 
 export const SearchGrid = styled(Grid)`
   display: flex;
-  width: ${({ isFocused }) => (isFocused ? 300 : 110)}px;
+  width: ${({ isFocused }) => (isFocused ? 300 : 115)}px;
   transition: width 0.2s ease-out;
   justify-content: flex-end;
 `;
@@ -93,4 +94,26 @@ export const AssignedBox = styled.div`
 
 export const EmptyStateContainer = styled.div`
   padding: 0 55px;
+`;
+
+export const TipsSwitch = withStyles({
+  switchBase: {
+    color: palette.coolGrey4,
+    '&$checked': {
+      color: palette.darkBlue,
+    },
+    '&$checked + $track': {
+      backgroundColor: 'rgba(33, 109, 194, 0.38)',
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
+
+export const TipsSwitchLabel = styled.label`
+  font-family: 'Montserrat', sans-serif;
+  color: ${palette.coolGrey1};
+  font-weight: ${fontWeights.regular};
+  vertical-align: middle;
+  text-transform: uppercase;
 `;

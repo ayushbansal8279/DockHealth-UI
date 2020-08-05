@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
+import { fontWeights } from 'styles/font';
 
 export const ClearButton = styled.div`
   align-items: center;
@@ -62,11 +63,13 @@ export const StyledTextField = styled(TextField)`
       box-shadow: none;
       background: none;
       font-size: 0.875rem;
+      font-weight: ${fontWeights.regular};
       padding: 0;
 
       &::placeholder {
         color: ${palette.coolGrey1};
         font-size: 1rem;
+        font-weight: ${fontWeights.regular};
         opacity: 0.8;
         text-transform: uppercase;
       }

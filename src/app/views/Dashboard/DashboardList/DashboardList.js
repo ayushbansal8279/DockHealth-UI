@@ -51,6 +51,8 @@ import {
   DashboardTab as StyledDashboardTab,
   DashboardTabHighlight,
   EmptyStateContainer,
+  TipsSwitch,
+  TipsSwitchLabel,
 } from './styled';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
@@ -211,6 +213,8 @@ const DashboardList = ({
   const [dynamicColumnType, setDynamicColumnType] = useState(
     userPreferColumn || 'DUE_DATE',
   );
+  const [tourOpenSwitch, setTourOpenSwitch] = useState(false);
+
   const filteredDashboardTasks = dashboardTasks.filter(
     ({ tasks }) => tasks && tasks.length !== 0,
   );
@@ -454,6 +458,14 @@ const DashboardList = ({
                 onChange={event => setSearchValue(event?.target?.value)}
               />
             </SearchGrid>
+            <Spacing horizontal={4} />
+            <div>
+              <TipsSwitchLabel>Tips</TipsSwitchLabel>
+              <TipsSwitch
+                checked={tourOpenSwitch}
+                onChange={() => setTourOpenSwitch(!tourOpenSwitch)}
+              />
+            </div>
             <Spacing horizontal={4} />
             <DashboardSettings
               setDynamicColumnType={setDynamicColumnType}
