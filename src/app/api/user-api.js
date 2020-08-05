@@ -956,3 +956,32 @@ export function acknowledgeEula() {
     url: '/user/acknowledgeEULA',
   }).then(({ data }) => data);
 }
+
+export function updateUserDashboardPrefs(column) {
+  const prefs = {
+    displayColumns: [column],
+  };
+
+  const currentUser = JSON.parse(sessionStorage.getItem('userProfile'));
+
+  return axios
+    .put(
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/updateUserPreferences`,
+      prefs,
+    )
+    .then(response => {
+      const newCurrentUser = {
+        ...currentUser,
+        userPreference: {
+          ...currentUser?.userPreference,
+          displayColumns: [column],
+        },
+      };
+      store.dispatch({ type: 'user/userProfile', userProfile: newCurrentUser });
+      sessionStorage.setItem('userProfile', JSON.stringify(newCurrentUser));
+      return response?.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
