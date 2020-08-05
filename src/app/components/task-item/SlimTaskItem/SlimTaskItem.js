@@ -3,12 +3,14 @@ import React from 'react';
 import moment from 'moment';
 import { Grid } from '@material-ui/core';
 import Circle from 'img/circle';
+import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import Member from 'components/members/Member';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
+import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
 
 import { getCalendarIcon } from '../icons';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
@@ -29,6 +31,7 @@ import {
   DueDateButton,
   SlimTaskItemPatientLink,
   DueDateAddLabel,
+  AddCrossIcon,
 } from '../styled';
 
 const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
@@ -118,6 +121,8 @@ const SlimTaskItem = ({
   gridConfig,
   updateDueDate,
   dynamicColumnType = 'DUE_DATE',
+  currentUser,
+  reassignTask,
 }) => {
   const {
     assignedTo,
@@ -225,11 +230,19 @@ const SlimTaskItem = ({
         </Grid>
         {showAssignedPerson && (
           <Grid item {...gridConfig.assignedPerson}>
-            {assignedTo && (
-              <AssignedBox>
-                <Member member={assignedTo} size={34} />
-              </AssignedBox>
-            )}
+            <AssignedBox>
+              <TaskAssignMember
+                currentUser={currentUser}
+                reassignTask={reassignTask}
+                task={task}
+              >
+                {assignedTo ? (
+                  <Member member={assignedTo} size={34} />
+                ) : (
+                  <AddCrossIcon src={CrossIcon} size="34px" />
+                )}
+              </TaskAssignMember>
+            </AssignedBox>
           </Grid>
         )}
         <Grid item {...gridConfig.listName}>

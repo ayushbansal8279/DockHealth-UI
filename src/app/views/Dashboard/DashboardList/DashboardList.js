@@ -196,6 +196,7 @@ const DashboardList = ({
     reloadDashboardTasks,
     updateDashboardTaskDueDate,
     updateDashboardSelectedFilters,
+    reassignDashboardTask,
   },
   megaFilter,
   areFiltersApplied,
@@ -518,6 +519,8 @@ const DashboardList = ({
               isSortApplied={isSortApplied}
               isAllTasksTab={selectedTab === 'ALL_TASKS'}
               updateDueDate={updateDashboardTaskDueDate}
+              currentUser={currentUser}
+              reassignDashboardTask={reassignDashboardTask}
             />
           ))
         ) : (

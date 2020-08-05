@@ -32,6 +32,7 @@ import {
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
+import { reassignTask } from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
@@ -52,6 +53,7 @@ const DO_UPDATE_DASHBOARD_TASK_DUE_DATE = 'DO_UPDATE_DASHBOARD_TASK_DUE_DATE';
 const FETCH_DASHBOARD_FILTERS = 'FETCH_DASHBOARD_FILTERS';
 const DO_UPDATE_DASHBOARD_SELECTED_FILTERS =
   'DO_UPDATE_DASHBOARD_SELECTED_FILTERS';
+const DO_REASSIGN_DASHBOARD_TASK = 'DO_REASSIGN_DASHBOARD_TASK';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -111,6 +113,12 @@ export const updateDashboardSelectedFilters = selectedFilters => ({
   },
 });
 
+export const reassignDashboardTask = (taskIdentifier, userId) => ({
+  type: DO_REASSIGN_DASHBOARD_TASK,
+  taskIdentifier,
+  userId,
+});
+
 const getTasksType = () => {
   const location = window.location?.hash?.split('/');
   const tab = location.slice(-1)[0];
@@ -161,6 +169,12 @@ function* doReloadDashboardTasks() {
     const isAllTasks = getTasksType() === 'all-tasks';
 
     let tasksList = [];
+
+    if (isAllTasks) {
+      yield call(doFetchDashboardAllTasksStatistics);
+    } else {
+      yield call(doFetchDashboardMyTasksStatistics);
+    }
 
     if (!selectedFilters || !isEmpty(selectedFilters)) {
       tasksList = isAllTasks
@@ -311,6 +325,15 @@ function* doUpdateDashboardSelectedFilters({ payload }) {
   yield put(reloadDashboardTasks());
 }
 
+function* doReassignDashboardTask({ taskIdentifier, userId }) {
+  try {
+    yield put(reassignTask(taskIdentifier, userId));
+    yield call(doReloadDashboardTasks);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default function* watchDashboard() {
   yield takeEvery(INITIALIZE_DASHBOARD_VIEW, doInitializeDashboardView);
   yield takeEvery(RELOAD_DASHBOARD_TASKS, doReloadDashboardTasks);
@@ -330,4 +353,5 @@ export default function* watchDashboard() {
     DO_UPDATE_DASHBOARD_SELECTED_FILTERS,
     doUpdateDashboardSelectedFilters,
   );
+  yield takeEvery(DO_REASSIGN_DASHBOARD_TASK, doReassignDashboardTask);
 }
