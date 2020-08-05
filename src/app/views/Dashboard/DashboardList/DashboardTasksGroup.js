@@ -200,18 +200,20 @@ const DashboardTasksGroup = ({
             </Arrow>
           </Grid>
           <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
-            <Arrow
-              isOpen={dynamicColumnLabel?.isOpen}
-              setOpen={onClickDynamincColumnSort}
-              showDefaultArrow={dynamicColumnLabel?.showDefaultArrow}
-              justifyContent="flex-start"
-              paddingLeft="0"
-              arrowType="secondary"
-              isDisabled={!groupIsOpen}
-              showArrow={groupIsOpen}
-            >
-              <span>{dynamicColumnLabel?.label}</span>
-            </Arrow>
+            {groupIsOpen && (
+              <Arrow
+                isOpen={dynamicColumnLabel?.isOpen}
+                setOpen={onClickDynamincColumnSort}
+                showDefaultArrow={dynamicColumnLabel?.showDefaultArrow}
+                justifyContent="flex-start"
+                paddingLeft="0"
+                arrowType="secondary"
+                isDisabled={!groupIsOpen}
+                showArrow={groupIsOpen}
+              >
+                <span>{dynamicColumnLabel?.label}</span>
+              </Arrow>
+            )}
           </Grid>
           {isAllTasksTab && (
             <Grid item {...gridConfig.assignedPerson}>
