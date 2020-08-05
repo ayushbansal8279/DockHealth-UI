@@ -241,7 +241,7 @@ const SlimTaskItem = ({
                 ) : (
                   <AddCrossIcon src={CrossIcon} size="34px" />
                 )}
-              </TaskAssignMember>{' '}
+              </TaskAssignMember>
             </AssignedBox>
           </Grid>
         )}
