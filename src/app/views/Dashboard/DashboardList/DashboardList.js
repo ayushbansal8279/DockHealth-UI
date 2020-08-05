@@ -452,6 +452,7 @@ const DashboardList = ({
                 onChange={event => setSearchValue(event?.target?.value)}
               />
             </SearchGrid>
+            <Spacing horizontal={4} />
             <DashboardSettings
               setDynamicColumnType={setDynamicColumnType}
               dynamicColumnType={dynamicColumnType}
