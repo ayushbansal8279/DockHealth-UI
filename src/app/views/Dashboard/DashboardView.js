@@ -18,6 +18,7 @@ import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
+import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
 import {
   DashboardViewWrapper,
   DashboardSidebarWrapper,
@@ -106,6 +107,9 @@ const DashboardView = ({
     lists,
   });
 
+  const location = window.location?.hash?.split('/');
+  const dashboardTab = location.slice(-1)[0];
+
   return (
     <DashboardViewWrapper>
       <ViewLoader isFetchingData={!currentUserLoaded}>
@@ -145,6 +149,7 @@ const DashboardView = ({
                   }
                   currentUser={currentUser}
                 />
+                <DashboardStatistics dashboardTab={dashboardTab} />
               </DashboardHeaderContainer>
               <Spacing vertical={3} />
               {createListViewVisible ? (
@@ -165,6 +170,7 @@ const DashboardView = ({
                 <DashboardList
                   currentUser={currentUser}
                   isTaskDrawerOpen={isTaskDrawerOpen}
+                  dashboardTab={dashboardTab}
                 />
               )}
             </DashboardScrollableList>

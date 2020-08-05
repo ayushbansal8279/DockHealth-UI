@@ -11,6 +11,9 @@ import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
   REQUEST_DASHBOARD_TASKS_FAILURE,
+  REQUEST_DASHBOARD_STATISTICS,
+  REQUEST_DASHBOARD_STATISTICS_SUCCESS,
+  REQUEST_DASHBOARD_STATISTICS_FAILURE,
   UPDATE_TASK_SUCCESS,
   FETCH_MEGA_FILTERS_SUCCESS,
   FETCH_MEGA_FILTERS_FAILURE,
@@ -24,6 +27,7 @@ import {
   getDashboardAllTasksFilters,
   getDashboardMyTasksByCriteria,
   getDashboardAllTasksByCriteria,
+  getDashboardStatistics,
 } from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
@@ -121,6 +125,36 @@ const getTasksType = () => {
   }
 };
 
+function* doFetchDashboardMyTasksStatistics() {
+  try {
+    yield put({ type: REQUEST_DASHBOARD_STATISTICS });
+    const statistics = yield getDashboardStatistics('MyTasks');
+    yield put({
+      type: REQUEST_DASHBOARD_STATISTICS_SUCCESS,
+      statistics,
+    });
+  } catch (error) {
+    yield put({
+      type: REQUEST_DASHBOARD_STATISTICS_FAILURE,
+    });
+  }
+}
+
+function* doFetchDashboardAllTasksStatistics() {
+  try {
+    yield put({ type: REQUEST_DASHBOARD_STATISTICS });
+    const statistics = yield getDashboardStatistics('AllTasks');
+    yield put({
+      type: REQUEST_DASHBOARD_STATISTICS_SUCCESS,
+      statistics,
+    });
+  } catch (error) {
+    yield put({
+      type: REQUEST_DASHBOARD_STATISTICS_FAILURE,
+    });
+  }
+}
+
 function* doReloadDashboardTasks() {
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
@@ -198,6 +232,12 @@ function* doFetchDashboardFilters() {
   const isAllTasks = tasksType === 'all-tasks';
 
   try {
+    if (isAllTasks) {
+      yield call(doFetchDashboardAllTasksStatistics);
+    } else {
+      yield call(doFetchDashboardMyTasksStatistics);
+    }
+
     const filters = isAllTasks
       ? yield call(getDashboardAllTasksFilters)
       : yield call(getDashboardMyTasksFilters);
@@ -253,12 +293,10 @@ function* doUpdateDashboardTaskDueDate({ payload }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(reloadDashboardTasks());
   } catch (error) {
-    console.error(error);
     yield put(reloadDashboardTasks());
   }
 }
 
-  
 function* doUpdateDashboardSelectedFilters({ payload }) {
   const { selectedFilters } = payload;
   const taskType = getTasksType();

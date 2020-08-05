@@ -17,6 +17,7 @@ import {
 } from 'selectors/dashboard-tasks-selectors';
 import { userProfileDashbaordPrefsSelector } from 'selectors/user-selectors';
 import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
+import { dashboardStatisticsIsLoadingSelector } from 'selectors/dashboard-statistics-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/Dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -175,6 +176,7 @@ export const DashboardTab = ({
 const DashboardList = ({
   dashboardTasks,
   dashboardTasksIsLoading,
+  dashboardStatisticsIsLoading,
   currentUser,
   modalActions,
   storeAsCurrentTask,
@@ -183,6 +185,7 @@ const DashboardList = ({
   selectedTaskIdentifier,
   closeDrawer,
   userPreferColumn,
+  dashboardTab,
   dashboardActions: {
     redirectToParentTask,
     toggleDashboardTaskComplete,
@@ -236,15 +239,14 @@ const DashboardList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboardTasks, selectedTab]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const location = window.location?.hash?.split('/');
-    const tab = location.slice(-1)[0];
-    if (tab === 'all-tasks') {
+    if (dashboardTab === 'all-tasks') {
       setSelectedTab('ALL_TASKS');
     } else {
       setSelectedTab('MY_TASKS');
     }
-  }, []);
+  });
 
   useEffect(() => {
     setSearchValue('');
@@ -479,7 +481,9 @@ const DashboardList = ({
       <Spacing vertical={5} />
       <ViewLoader
         isFetchingData={
-          dashboardTasksIsLoading || completeTaskCount === undefined
+          dashboardTasksIsLoading ||
+          dashboardStatisticsIsLoading ||
+          completeTaskCount === undefined
         }
       >
         {!isEmpty(searchedDashboardTasks) ? (
@@ -525,6 +529,7 @@ const DashboardList = ({
 const mapStateToProps = state => ({
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
+  dashboardStatisticsIsLoading: dashboardStatisticsIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
   userPreferColumn: userProfileDashbaordPrefsSelector(state),
   megaFilter: megaFilterSelector(state),
