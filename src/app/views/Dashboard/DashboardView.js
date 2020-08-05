@@ -100,7 +100,11 @@ const DashboardView = ({
     });
   };
 
-  const { renderExistingUserTour } = existingUserTourHooks({
+  const {
+    renderExistingUserTour,
+    tourModalIsOpen,
+    forceOpenTourModal,
+  } = existingUserTourHooks({
     isLoadingDashboard,
     createListViewVisible,
     currentUserLoaded,
@@ -171,6 +175,8 @@ const DashboardView = ({
                   currentUser={currentUser}
                   isTaskDrawerOpen={isTaskDrawerOpen}
                   dashboardTab={dashboardTab}
+                  tourModalIsOpen={tourModalIsOpen}
+                  openTourModal={forceOpenTourModal}
                 />
               )}
             </DashboardScrollableList>

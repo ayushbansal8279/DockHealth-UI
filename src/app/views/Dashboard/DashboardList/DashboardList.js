@@ -199,6 +199,8 @@ const DashboardList = ({
   },
   megaFilter,
   areFiltersApplied,
+  tourModalIsOpen,
+  openTourModal,
 }) => {
   const { openModal } = modalActions;
   const [selectedTab, setSelectedTab] = useState('MY_TASKS');
@@ -213,7 +215,6 @@ const DashboardList = ({
   const [dynamicColumnType, setDynamicColumnType] = useState(
     userPreferColumn || 'DUE_DATE',
   );
-  const [tourOpenSwitch, setTourOpenSwitch] = useState(false);
 
   const filteredDashboardTasks = dashboardTasks.filter(
     ({ tasks }) => tasks && tasks.length !== 0,
@@ -461,10 +462,7 @@ const DashboardList = ({
             <Spacing horizontal={4} />
             <div>
               <TipsSwitchLabel>Tips</TipsSwitchLabel>
-              <TipsSwitch
-                checked={tourOpenSwitch}
-                onChange={() => setTourOpenSwitch(!tourOpenSwitch)}
-              />
+              <TipsSwitch checked={tourModalIsOpen} onChange={openTourModal} />
             </div>
             <Spacing horizontal={4} />
             <DashboardSettings

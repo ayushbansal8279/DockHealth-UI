@@ -67,10 +67,18 @@ const existingUserTourHooks = ({
     );
   };
 
+  const forceOpenTourModal = () => {
+    if (!openedTour) {
+      setOpenendTour(1);
+    }
+  };
+
   return {
     openedTour,
     closeFirstTour,
     renderExistingUserTour,
+    tourModalIsOpen: openedTour === 1,
+    forceOpenTourModal,
   };
 };
 
