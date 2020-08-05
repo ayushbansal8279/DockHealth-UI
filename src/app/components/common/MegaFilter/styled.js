@@ -7,12 +7,12 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const MegaFilterPopover = withStyles({
-  paper: {
-    right: '40px', // per design
-    left: '104px', // per design
+  paper: props => ({
+    width: 'calc(100% - 160px)',
     border: 'none',
     boxShadow: '0px 4px 10px rgba(204, 204, 204, 0.25)',
-  },
+    ...props.customStyles,
+  }),
 })(Popover);
 
 export const FilterButtonWrapper = styled(Button)`

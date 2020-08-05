@@ -392,6 +392,16 @@ const DashboardList = ({
       : filteredDashboardTasks;
   }, [searchValue, filteredDashboardTasks]);
 
+  const activeTasksCount = useMemo(
+    () =>
+      searchedDashboardTasks.reduce(
+        (accumulator, currentValue) =>
+          accumulator + (currentValue.tasks?.length || 0),
+        0,
+      ),
+    [searchedDashboardTasks],
+  );
+
   return (
     <>
       <StickyHeader>
@@ -422,11 +432,15 @@ const DashboardList = ({
 
           <ActionsContainer item xs={7}>
             <MegaFilter
+              popoverStyles={{
+                width: 'calc(100% - 420px)',
+                right: '100px',
+              }}
               filters={filters}
               selectedFilters={selectedFilters}
               onSelectFilters={updateDashboardSelectedFilters}
               taskStatus="INCOMPLETE"
-              activeItemsAmount={0}
+              activeItemsAmount={activeTasksCount}
             />
             <Spacing horizontal={4} />
             <SearchGrid isFocused={searchFocused || searchValue}>

@@ -207,6 +207,7 @@ const MegaFilter = ({
   onSelectFilters,
   taskList,
   taskStatus,
+  popoverStyles = {},
 }) => {
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
@@ -264,6 +265,7 @@ const MegaFilter = ({
         {isFilterApplied && <FilterClearButton clearFilters={clearFilters} />}
       </div>
       <MegaFilterPopover
+        customStyles={popoverStyles}
         anchorEl={megaFilterReference?.current}
         anchorOrigin={{
           vertical: 'bottom',
