@@ -7,7 +7,6 @@ import { Grid } from '@material-ui/core';
 export const ToolbarContainer = styled(Grid)`
   border-bottom: 2px solid ${palette.blueGrey};
   margin-bottom: ${spacing.largePlus};
-  margin-top: 50px;
   position: relative;
 `;
 
