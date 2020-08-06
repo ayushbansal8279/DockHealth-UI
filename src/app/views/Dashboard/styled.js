@@ -63,8 +63,8 @@ export const DashboardTourWrapper = styled.div`
 
 export const DashboardHeaderContainer = styled.div`
   display: flex;
-  align-items: flex-start;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
   padding: 0 55px;
 `;
 
