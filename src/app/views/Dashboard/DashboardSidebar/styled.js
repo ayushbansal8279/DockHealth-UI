@@ -98,9 +98,11 @@ export const ListItemInfo = styled.div`
 export const InfoDot = styled.div`
   height: 8px;
   width: 8px;
-  margin-right: ${spacing.small};
   border-radius: 4px;
   background-color: ${palette.brightBlue};
+  position: absolute;
+  left: 24px;
+  top: 18px;
 `;
 
 export const PrivateListIcon = styled.img`
