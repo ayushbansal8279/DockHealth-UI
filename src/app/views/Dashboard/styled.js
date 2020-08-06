@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 export const DashboardViewWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   width: 100%;
