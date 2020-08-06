@@ -293,9 +293,7 @@ const DashboardTasksGroup = ({
                         key={task.taskIdentifier}
                         draggableId={String(task.taskIdentifier)}
                         index={index}
-                        isDragDisabled={
-                          isTaskDrawerOpen || tasks?.length < 2 || isAllTasksTab
-                        }
+                        isDragDisabled={isTaskDrawerOpen || tasks?.length < 2}
                       >
                         {(draggableProvided, { isDragging }) => (
                           <div
@@ -314,9 +312,7 @@ const DashboardTasksGroup = ({
                                 draggableProvided.dragHandleProps
                               }
                               isDraggable={
-                                !isTaskDrawerOpen &&
-                                tasks?.length > 1 &&
-                                !isAllTasksTab
+                                !isTaskDrawerOpen && tasks?.length > 1
                               }
                               openDrawer={openDrawer}
                               isSelected={
