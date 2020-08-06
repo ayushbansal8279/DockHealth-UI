@@ -46,6 +46,7 @@ export const ListItemWrapper = styled.div`
 export const ListLink = styled(Link)`
   && {
     flex: 1;
+    overflow: hidden;
 
     &:hover {
       text-decoration: none;
