@@ -21,7 +21,12 @@ const StyledGrid = styled(Grid)`
 
 const TemplateAuthBaseDefaultContent = () => {
   return (
-    <StyledGrid container justify="center" alignItems="left" direction="column">
+    <StyledGrid
+      container
+      justify="center"
+      alignItems="flex-start"
+      direction="column"
+    >
       <a href="/#/">
         <DockLogoImage />
       </a>

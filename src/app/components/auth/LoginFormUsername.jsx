@@ -74,7 +74,6 @@ const LoginFormUsername = ({ onSubmit }) => {
             />
             <Spacing vertical={5} />
             <NextButton
-              active
               id="loginButton"
               type="submit"
               variant="contained"
