@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 export const DashboardViewWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   width: 100%;
@@ -63,8 +63,8 @@ export const DashboardTourWrapper = styled.div`
 
 export const DashboardHeaderContainer = styled.div`
   display: flex;
-  align-items: flex-start;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
   padding: 0 55px;
 `;
 

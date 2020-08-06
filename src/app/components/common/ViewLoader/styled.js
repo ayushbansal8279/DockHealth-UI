@@ -3,6 +3,8 @@ import { Fade } from '@material-ui/core';
 
 export const FadeContainer = styled.div`
   display: flex;
+  flex-direction: row;
+  flex: 1;
   justify-content: center;
   padding: ${props => props.padding || '100px 0'};
 `;

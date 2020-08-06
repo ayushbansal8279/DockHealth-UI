@@ -601,7 +601,11 @@ class Home extends Component {
         {isTourOpen && (
           <>
             <ListTourWrapper>
-              <Tour steps={LIST_TOUR_STEPS} onClose={this.closeTourModal} />
+              <Tour
+                modalName="List tour modal"
+                steps={LIST_TOUR_STEPS}
+                onClose={this.closeTourModal}
+              />
             </ListTourWrapper>
             <ListTourBackground onClick={this.closeTourModal} />
           </>

@@ -1,5 +1,7 @@
 import sendEvent from 'api/usage-api';
 
+const USER_EDUCATION_CATEGORY = 'User education';
+
 const parseBooleanToLabel = value => (value ? 'On' : 'Off');
 
 export const onFilterChanged = filter => {
@@ -161,6 +163,33 @@ export const onPatientNoteEdited = () => {
     usageEventType: 'USAGE_ACTION',
     eventCategory: 'Patients',
     eventAction: 'Patient note edited',
+  });
+};
+
+export const onAutoTourModalStepEnter = (modalName, stepKey) => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: `Auto | ${modalName}`,
+    eventLabel: stepKey,
+  });
+};
+
+export const onTourModalStepEnter = (modalName, stepKey) => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: modalName,
+    eventLabel: stepKey,
+  });
+};
+
+export const onTaskDrawerTourStepEnter = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'Task drawer tour',
+    eventLabel: stepKey,
   });
 };
 

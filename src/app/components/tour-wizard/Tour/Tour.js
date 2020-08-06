@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  onTourModalStepEnter,
+  onAutoTourModalStepEnter,
+} from 'helpers/ga-event-helper';
 import {
   TourContainer,
   StepContent,
@@ -15,8 +19,17 @@ import {
   TourButton,
 } from './styled';
 
-const Tour = ({ steps, onClose, darkTheme }) => {
+const Tour = ({ modalName, modalAutoTriggered, steps, onClose, darkTheme }) => {
   const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    if (modalAutoTriggered) {
+      onAutoTourModalStepEnter(modalName, steps[currentStep]?.title);
+    } else {
+      onTourModalStepEnter(modalName, steps[currentStep]?.title);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
 
   const { icon, title, description } = steps[currentStep];
   return (

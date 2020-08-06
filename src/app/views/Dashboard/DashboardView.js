@@ -153,7 +153,6 @@ const DashboardView = ({
                   }
                   currentUser={currentUser}
                 />
-                <DashboardStatistics dashboardTab={dashboardTab} />
               </DashboardHeaderContainer>
               <Spacing vertical={3} />
               {createListViewVisible ? (
@@ -171,13 +170,18 @@ const DashboardView = ({
                   />
                 </DashboardFirstVisitViewWrapper>
               ) : (
-                <DashboardList
-                  currentUser={currentUser}
-                  isTaskDrawerOpen={isTaskDrawerOpen}
-                  dashboardTab={dashboardTab}
-                  tourModalIsOpen={tourModalIsOpen}
-                  openTourModal={forceOpenTourModal}
-                />
+                <>
+                  <DashboardHeaderContainer>
+                    <DashboardStatistics dashboardTab={dashboardTab} />
+                  </DashboardHeaderContainer>
+                  <DashboardList
+                    currentUser={currentUser}
+                    isTaskDrawerOpen={isTaskDrawerOpen}
+                    dashboardTab={dashboardTab}
+                    tourModalIsOpen={tourModalIsOpen}
+                    openTourModal={forceOpenTourModal}
+                  />
+                </>
               )}
             </DashboardScrollableList>
           </DashboardContentWrapper>
