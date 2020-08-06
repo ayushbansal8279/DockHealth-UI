@@ -133,7 +133,6 @@ export const UniversalMobileInputComponent = ({
     name={name}
     ref={inputRef}
     mask="(999) 999-9999"
-    maskPlaceholder={null}
     onChange={event => {
       setValue(name, event.target.value);
     }}
@@ -151,7 +150,6 @@ export const UniversalBirthdayInputComponent = ({
     name={name}
     ref={inputRef}
     mask="99/99/9999"
-    maskPlaceholder={null}
     onChange={event => {
       setValue(name, event.target.value);
     }}
@@ -227,7 +225,6 @@ export const UniversalInput = ({
             // value,
             setValue,
             name,
-            register,
           }}
           error={hasError}
           inputComponent={CustomComponent}
