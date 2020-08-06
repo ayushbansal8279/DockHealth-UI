@@ -143,7 +143,7 @@ export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
   font-size: ${fontSizes.regular};
   cursor: pointer;
-  width: 150px;
+  margin-right: ${spacing.regularPlus};
 `;
 
 export const StandardTaskItemCell = styled.div`
@@ -330,6 +330,22 @@ export const SlimTaskWorkflowStatusContainer = styled.div`
 export const SlimTaskItemPatientLink = styled(Link)`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const SubtasksBox = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const SubtasksAddLabel = styled.button`
+  color: ${palette.brightBlue};
+  font-weight: normal;
+  cursor: pointer;
+  z-index: 1000;
 
   &:hover {
     text-decoration: underline;
