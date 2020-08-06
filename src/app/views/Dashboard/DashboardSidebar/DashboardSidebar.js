@@ -176,6 +176,7 @@ const DashboardSidebar = ({
                   {taskList?.isPrivate && (
                     <PrivateListIcon src={LockIcon} alt="private" />
                   )}
+                  {!!taskList?.hasUpdatesForMember && <InfoDot />}
                   <ListItemTitle
                     onMouseEnter={event =>
                       handleMouseEnter(event, taskList?.listName)
@@ -184,10 +185,7 @@ const DashboardSidebar = ({
                   >
                     <TitleText>{taskList?.listName}</TitleText>
                   </ListItemTitle>
-                  <ListItemInfo>
-                    {!!taskList?.numberOfUnreadTasks && <InfoDot />}
-                    {taskList?.numberOfTasks}
-                  </ListItemInfo>
+                  <ListItemInfo>{taskList?.numberOfTasks}</ListItemInfo>
                 </ListItem>
               </ListLink>
               {taskList?.listType !== 'INBOX' ? (

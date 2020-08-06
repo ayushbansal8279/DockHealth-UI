@@ -164,7 +164,7 @@ const StyledForm = styled.form`
   width: 100%;
 `;
 
-const CreateAccount = () => {
+const CreateAccount = props => {
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
@@ -178,11 +178,18 @@ const CreateAccount = () => {
   });
 
   const email = formMethods.watch('email');
+  const { setValue } = formMethods;
 
   const locationParameters = parse(hashHistory.getCurrentLocation()?.search);
   const hasTrialReferral = Boolean(locationParameters.trial);
 
   useMount(() => {
+    const { uname } = props.location.query;
+    // console.log(`uname: ${uname} code:${code}`);
+    if (uname) {
+      setValue('email', uname);
+    }
+
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
@@ -196,15 +203,17 @@ const CreateAccount = () => {
 
   const hasCustomPageTitle = customPageTitle !== '';
 
+  const fontFamily = 'roboto condensed';
+
   const onboardingDialogStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily,
     fontWeight: 300,
     fontSize: '18px',
     padding: '0rem 1rem',
   };
 
   const onboardingMessageStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily,
     fontWeight: 300,
     fontSize: '18px',
     padding: '0rem 1rem',
@@ -212,7 +221,7 @@ const CreateAccount = () => {
   };
 
   const onboardingLinkStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily,
     fontWeight: 300,
     fontSize: '18px',
   };
