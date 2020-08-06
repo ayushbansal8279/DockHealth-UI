@@ -279,7 +279,6 @@ const TaskItem = ({
                       event.preventDefault();
                       event.stopPropagation();
                     }
-                    // openDrawer();
                     prepareSubtask(taskIdentifier)(dispatch);
                   }}
                 >
