@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { isNil } from 'ramda';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
@@ -17,6 +17,7 @@ const existingUserTourHooks = ({
   lists,
 }) => {
   const [openedTour, setOpenendTour] = useState(null);
+  const isModalAutoTriggered = useRef(true);
 
   const hasAnyTask = lists?.some(list => list.numberOfTasks > 0);
 
@@ -30,6 +31,7 @@ const existingUserTourHooks = ({
   };
 
   const closeFirstTour = () => {
+    isModalAutoTriggered.current = true;
     setOpenendTour(null);
     localStorageHelper.setItem(DASHBOARD_FIRST_TIME_KEY, false);
   };
@@ -57,7 +59,12 @@ const existingUserTourHooks = ({
           <>
             <DashboardTourWrapper>
               {openedTour === 1 && (
-                <Tour steps={FIRST_TOUR_STEPS} onClose={closeFirstTour} />
+                <Tour
+                  modalName="Home tour modal"
+                  modalAutoTriggered={isModalAutoTriggered?.current}
+                  steps={FIRST_TOUR_STEPS}
+                  onClose={closeFirstTour}
+                />
               )}
             </DashboardTourWrapper>
             <DashboardTourBackground onClick={closeFirstTour} />
@@ -69,6 +76,7 @@ const existingUserTourHooks = ({
 
   const forceOpenTourModal = () => {
     if (!openedTour) {
+      isModalAutoTriggered.current = false;
       setOpenendTour(1);
     }
   };

@@ -5,6 +5,7 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import TourPopper from 'components/tour-popover/TourPopper/TourPopper';
 import TaskDrawerTourContent from 'components/tour-popover/content/TaskDrawerTourContent/TaskDrawerTourContent';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
+import { onTaskDrawerTourStepEnter } from 'helpers/ga-event-helper';
 
 const TASK_DRAWER_FIRST_TIME_KEY = 'TASK_DRAWER_FIRST_TIME_KEY';
 const TASK_DRAWER_FIRST_AUTO_OPEN_KEY = 'TASK_DRAWER_FIRST_AUTO_OPEN_KEY';
@@ -83,14 +84,18 @@ const existingUserTaskDrawerTourHooks = ({
   ];
 
   useEffect(() => {
-    if (openedTourStep) {
-      const { reference, afterScrollPosition } = tourSteps[openedTourStep];
+    if (openedTourStep !== null) {
+      const { reference, afterScrollPosition, title } = tourSteps[
+        openedTourStep
+      ];
 
       // eslint-disable-next-line no-unused-expressions
       reference?.current.scrollIntoView({
         behavior: 'smooth',
         block: afterScrollPosition || 'center',
       });
+
+      onTaskDrawerTourStepEnter(title);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openedTourStep]);
