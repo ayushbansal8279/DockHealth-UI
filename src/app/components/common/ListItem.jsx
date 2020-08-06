@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ButtonBase } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 
-const ItemContainer = styled(ButtonBase)`
+const ItemContainer = styled(({ selected, ...otherProps }) => (
+  <ButtonBase {...otherProps} />
+))`
   && {
     display: block;
     height: 56px;

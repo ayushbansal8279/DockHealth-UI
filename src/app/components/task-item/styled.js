@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router';
 import { Grid } from '@material-ui/core';
@@ -277,7 +279,9 @@ export const SlimTaskItemParentTaskLabel = styled.div`
   }
 `;
 
-export const SlimTaskItemListLink = styled(Link)`
+export const SlimTaskItemListLink = styled(({ withMargin, ...otherProps }) => (
+  <Link {...otherProps} />
+))`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   margin-right: ${props => props.withMargin && spacing.large};

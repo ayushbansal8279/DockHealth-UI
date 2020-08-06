@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import styled from 'styled-components';
 
 import {
@@ -100,7 +102,9 @@ export const NestedListItem = styled(ListItem)`
   }
 `;
 
-export const StyledListItemIcon = styled(ListItemIcon)`
+export const StyledListItemIcon = styled(
+  ({ isiconfilled, active, ...otherProps }) => <ListItemIcon {...otherProps} />,
+)`
   && {
     align-items: center;
     display: flex;

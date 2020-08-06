@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -17,7 +19,9 @@ export const ActionsContainer = styled(Grid)`
   justify-content: flex-end;
 `;
 
-export const SearchGrid = styled(Grid)`
+export const SearchGrid = styled(({ isFocused, ...otherProps }) => (
+  <Grid {...otherProps} />
+))`
   display: flex;
   width: ${({ isFocused }) => (isFocused ? 300 : 115)}px;
   transition: width 0.2s ease-out;

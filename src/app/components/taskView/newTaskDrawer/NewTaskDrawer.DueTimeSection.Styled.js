@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable import/prefer-default-export */
+import React from 'react';
 import InputMask from 'react-input-mask';
 import styled from 'styled-components';
 import palette from 'styles/palette';
@@ -30,7 +32,9 @@ export const DueTimeErrorMessage = styled.span`
   font-size: 12px;
 `;
 
-export const DueTimeInputMask = styled(InputMask)`
+export const DueTimeInputMask = styled(({ isOverDue, ...otherProps }) => (
+  <InputMask {...otherProps} />
+))`
   && {
     border: none;
     color: ${({ isOverDue }) => (isOverDue ? 'red' : palette.mediumGrey)};

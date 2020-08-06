@@ -26,6 +26,7 @@ const renderDropdownItem = ({
   onItemSelection,
 }) => ({ setValue }) => ({ label, value, disabled }) => (
   <div
+    key={label}
     onClick={() => {
       if (disabled) return;
 

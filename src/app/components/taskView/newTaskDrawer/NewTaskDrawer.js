@@ -362,14 +362,16 @@ const NewTaskDrawer = ({
                 >
                   {formattedMembers}
                 </SelectInput>
-                <InviteMemberPopover
-                  anchorElement={assignedToInputReference}
-                  isPopoverOpen={isInvitePopoverOpen}
-                  closePopover={closeInvitePopover}
-                  initialValue={assignedToInputValue}
-                  setParentFormValue={setValue}
-                  taskList={selectedTask?.taskList}
-                />
+                {selectedTask && (
+                  <InviteMemberPopover
+                    anchorElement={assignedToInputReference}
+                    isPopoverOpen={isInvitePopoverOpen}
+                    closePopover={closeInvitePopover}
+                    initialValue={assignedToInputValue}
+                    setParentFormValue={setValue}
+                    taskList={selectedTask?.taskList}
+                  />
+                )}
               </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <div ref={dueDateSectionReference}>

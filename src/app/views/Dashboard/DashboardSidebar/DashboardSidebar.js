@@ -215,7 +215,7 @@ const DashboardSidebar = ({
           vertical: 'top',
           horizontal: 'left',
         }}
-        open={popoverLabel}
+        open={!!popoverLabel}
         transformOrigin={{
           vertical: 'top',
           horizontal: 'left',

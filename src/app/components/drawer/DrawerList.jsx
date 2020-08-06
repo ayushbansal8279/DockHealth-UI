@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable import/no-unresolved */
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -31,21 +32,23 @@ import {
 
 const NESTED_LIST_PREFIX = 'nested';
 
-const RouterLink = ({ active, highlighted, nested = false, ...props }) => {
-  const { to } = props;
+const RouterLink = React.forwardRef(
+  ({ active, highlighted, nested = false, tabsPath, ...props }, reference) => {
+    const { to } = props;
 
-  const className = clsx(
-    active && 'active',
-    highlighted && 'highlighted',
-    to === 'support' && 'navsupport',
-  );
+    const className = clsx(
+      active && 'active',
+      highlighted && 'highlighted',
+      to === 'support' && 'navsupport',
+    );
 
-  return (
-    <StyledRouterLinkContainer nested={nested} className={className}>
-      <Link {...props} />
-    </StyledRouterLinkContainer>
-  );
-};
+    return (
+      <StyledRouterLinkContainer nested={nested} className={className}>
+        <Link ref={reference} {...props} />
+      </StyledRouterLinkContainer>
+    );
+  },
+);
 
 const Item = ({
   activeId,
