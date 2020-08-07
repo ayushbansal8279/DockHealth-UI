@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
 import { isEmpty } from 'ramda';
@@ -266,8 +267,20 @@ const PeoplePicker = ({
               filteredPeople.map(
                 renderPickerOption({
                   peopleIdentifiers,
-                  addPerson,
-                  removePerson,
+                  addPerson: (...args) => {
+                    addPerson(...args);
+                    setSearchValue('');
+
+                    if (searchInputReference.current)
+                      searchInputReference.current.focus();
+                  },
+                  removePerson: (...args) => {
+                    removePerson(...args);
+                    setSearchValue('');
+
+                    if (searchInputReference.current)
+                      searchInputReference.current.focus();
+                  },
                 }),
               )
             )}
