@@ -1,11 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { isEmpty, pick } from 'ramda';
 import Highlighter from 'react-highlight-words';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
+import { prepareSubtask } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
@@ -64,6 +65,8 @@ import {
   Arrow,
   AssigneeMatchingWrapper,
   DueDateButton,
+  SubtasksBox,
+  SubtasksAddLabel,
 } from '../styled';
 
 const getMatchedComments = (comments, matchingCommentIdentifiers) =>
@@ -152,6 +155,8 @@ const TaskItem = ({
     matchWorkflowStatus,
   } = searchMetaData;
 
+  const dispatch = useDispatch();
+
   const listName = taskList?.listName;
   const taskListIdentifier = taskList?.taskListIdentifier;
 
@@ -183,19 +188,18 @@ const TaskItem = ({
     },
   ];
 
+  const isSelectedTask =
+    selectedTask?.taskIdentifier === taskIdentifier ||
+    (selectedTask?.taskIdentifier == null &&
+      selectedTask?.parentTaskIdentifier === taskIdentifier);
+
   return (
     <StandardTaskItemPanel
       isDragging={isDragging}
       onMouseEnter={() => setIsHoverd(true)}
       onMouseLeave={() => setIsHoverd(false)}
     >
-      <StandardTaskItemContainer
-        isSelected={
-          selectedTask?.taskIdentifier === taskIdentifier ||
-          (selectedTask?.taskIdentifier == null &&
-            selectedTask?.parentTaskIdentifier === taskIdentifier)
-        }
-      >
+      <StandardTaskItemContainer isSelected={isSelectedTask}>
         {!dragAndDropDisabled && isDraggable && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
@@ -256,17 +260,32 @@ const TaskItem = ({
                 }`}
                 `}</span>
             </CompletedBy>
-            {!isEmpty(subtasks) && subtasks?.length > 0 && (
-              <SubtasksGroupLabel
-                onClick={event => {
-                  event.stopPropagation();
-                  switchOpen(!isOpen);
-                }}
-              >
-                <span>{subtasks?.length} subtasks</span>
-                <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
-              </SubtasksGroupLabel>
-            )}
+            <SubtasksBox>
+              {!isEmpty(subtasks) && subtasks?.length > 0 && (
+                <SubtasksGroupLabel
+                  onClick={event => {
+                    event.stopPropagation();
+                    switchOpen(!isOpen);
+                  }}
+                >
+                  <span>{subtasks?.length} subtasks</span>
+                  <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
+                </SubtasksGroupLabel>
+              )}
+              {!isSubtask && isSelectedTask && (
+                <SubtasksAddLabel
+                  onClick={async event => {
+                    if (event) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }
+                    prepareSubtask(taskIdentifier)(dispatch);
+                  }}
+                >
+                  Add Subtask
+                </SubtasksAddLabel>
+              )}
+            </SubtasksBox>
           </DescriptionBox>
         </StandardTaskItemCell>
         {patientVisible && (
