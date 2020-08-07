@@ -13,12 +13,15 @@ import { isNil } from 'ramda';
 const initializeUserTourItems = ({
   shouldDisplayFirstListCreationMessage,
   closeListCreationSuccessMessage,
+  currentUser,
 }) => {
   const [firstListElement, setFirstListElement] = useState(null);
   const [inboxElement, setInboxElement] = useState(null);
   const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
 
   useEffect(() => {
+    if (currentUser?.usageState?.loginCount >= 5) return;
+
     const dashboardFirstTimeValue = localStorageHelper.getItem(
       DASHBOARD_FIRST_TIME_KEY,
     );
@@ -32,6 +35,7 @@ const initializeUserTourItems = ({
         setInboxPopoverOpen(true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inboxElement]);
 
   const isListPopoverOpen =

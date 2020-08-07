@@ -46,6 +46,7 @@ const DashboardSidebar = ({
   members,
   taskListActions,
   invitationActions,
+  currentUser,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const hoveredItemReference = useRef(null);
@@ -64,6 +65,7 @@ const DashboardSidebar = ({
   const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
     shouldDisplayFirstListCreationMessage,
     closeListCreationSuccessMessage,
+    currentUser,
   });
 
   const hasAnyPendingList = lists.some(({ status }) => status === 'PENDING');

@@ -130,6 +130,7 @@ const DashboardView = ({
                   setIsFirstUserListCreationSuccess(false)
                 }
                 acceptInvitation={acceptInviteToTaskList}
+                currentUser={currentUser}
               />
             </DashboardSidebarWrapper>
           )}
