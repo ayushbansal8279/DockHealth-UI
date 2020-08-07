@@ -65,7 +65,6 @@ const DueDateSection = ({
   dueTimeReference,
 }) => {
   const dateFieldName = 'dueDate';
-  // const timeFieldName = 'dueTime';
 
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
   const popoverStateArray = useBoolean(false);
@@ -75,7 +74,6 @@ const DueDateSection = ({
   const { setValue, watch } = useFormContext();
 
   const currentDueDate = watch(dateFieldName);
-  // const currentDueTime = watch(timeFieldName);
   const currentDueTime = dueTimeReference?.current?.value;
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier ?? null;

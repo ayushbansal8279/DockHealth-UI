@@ -256,6 +256,7 @@ const SelectInput = React.forwardRef(
         closeAutocomplete,
       }),
       getOptionSelected: (option, selected) => selected.value === option.value,
+      autoHighlight: true,
     });
 
     const inputReference = setAnchorEl;
