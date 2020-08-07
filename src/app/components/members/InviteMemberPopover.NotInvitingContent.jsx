@@ -364,6 +364,8 @@ const NotInvitingContent = ({
   const [membersNotInTaskList, setMembersNotInTaskList] = useState([]);
   const [membersInitialized, setMembersInitialized] = useState(false);
 
+  const searchContainerReference = useRef(null);
+
   const { taskListIdentifier } = taskList;
 
   const fetchMembersNotInTaskList = useCallback(
@@ -395,6 +397,17 @@ const NotInvitingContent = ({
     [members, membersNotInTaskList, searchTerm],
   );
 
+  const resetSearch = () => {
+    setSearchTerm('');
+
+    if (searchContainerReference.current) {
+      const inputReference = searchContainerReference.current.querySelector(
+        'input',
+      );
+      inputReference.focus();
+    }
+  };
+
   return (
     <>
       <PopoverHeader hasCloseButton>
@@ -403,7 +416,7 @@ const NotInvitingContent = ({
           <CloseIcon />
         </PopoverHeaderCloseButton>
       </PopoverHeader>
-      <HeaderSearchContainer>
+      <HeaderSearchContainer ref={searchContainerReference}>
         <HeaderSearch
           autoFocus
           fullWidth
@@ -426,10 +439,22 @@ const NotInvitingContent = ({
                   notInTaskList={membersNotInTaskListIdentifiers.includes(
                     memberIdentifier,
                   )}
-                  cancelInviteToTaskList={cancelInviteToTaskList}
-                  removeUserFromTaskList={removeUserFromTaskList}
-                  inviteUserToTaskList={inviteUserToTaskList}
-                  changeUserRoleForList={changeUserRoleForList}
+                  cancelInviteToTaskList={(...args) => {
+                    cancelInviteToTaskList(...args);
+                    resetSearch();
+                  }}
+                  removeUserFromTaskList={(...args) => {
+                    removeUserFromTaskList(...args);
+                    resetSearch();
+                  }}
+                  inviteUserToTaskList={(...args) => {
+                    inviteUserToTaskList(...args);
+                    resetSearch();
+                  }}
+                  changeUserRoleForList={(...args) => {
+                    changeUserRoleForList(...args);
+                    resetSearch();
+                  }}
                 />
               );
             })}
