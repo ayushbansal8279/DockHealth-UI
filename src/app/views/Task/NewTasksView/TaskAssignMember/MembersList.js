@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import Member from 'components/members/Member';
 import MagnifierIcon from 'img/magnifier';
@@ -29,12 +29,23 @@ const MembersList = ({
   const filteredMembers = membersWithoutCurrentUser?.filter(({ userName }) =>
     userName.toLowerCase().includes(searchValue.toLowerCase()),
   );
+  const inputReference = useRef(null);
+
+  useEffect(() => {
+    if (inputReference) {
+      // eslint-disable-next-line no-unused-expressions
+      inputReference?.current?.focus();
+    }
+  }, [inputReference]);
 
   return (
     <>
       <InputBox>
         <img src={MagnifierIcon} alt="magnifier" />
-        <Input onChange={event => setSearchValue(event.target.value)} />
+        <Input
+          onChange={event => setSearchValue(event.target.value)}
+          ref={inputReference}
+        />
       </InputBox>
       <Box>
         <AssignToMeBox>
