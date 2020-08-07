@@ -169,7 +169,7 @@ const ListForm = ({ setListFormOpen }) => {
         availablePeopleList={peopleListForMemberPicker}
         closePicker={() => setPickerOpened(null)}
         currentUserRole={orgUserRole}
-        onInviteSuccess={pickerOpened === MEMBER_PICKER}
+        isOpen={pickerOpened === MEMBER_PICKER}
         openModal={userName => setModalContent(userName)}
         peopleIdentifiers={allMembersValue}
         peopleLabel={messages.form.members.label}
