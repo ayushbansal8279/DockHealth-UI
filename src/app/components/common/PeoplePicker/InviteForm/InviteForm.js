@@ -85,6 +85,8 @@ const InviteForm = ({
             name="firstName"
             label={messages.inviteForm.firstName.label}
             styling="secondary"
+            showError
+            required
           />
         </FormContext>
 
@@ -93,6 +95,8 @@ const InviteForm = ({
             name="lastName"
             label={messages.inviteForm.lastName.label}
             styling="secondary"
+            showError
+            required
           />
         </FormContext>
       </Row>
@@ -104,6 +108,8 @@ const InviteForm = ({
             styling="secondary"
             placeholder={messages.inviteForm.email.placeholder}
             fullWidth
+            showError
+            required
           />
         </FormContext>
       </Row>
