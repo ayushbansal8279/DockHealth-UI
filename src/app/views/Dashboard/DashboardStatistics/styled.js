@@ -6,7 +6,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const DashboardStatisticsTileContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   background-image: ${props => props.background};
   border-radius: 10px;
   padding: 10px 10px ${spacing.small} ${spacing.regular};

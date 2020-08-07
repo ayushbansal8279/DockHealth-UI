@@ -141,20 +141,22 @@ const DashboardView = ({
               <Confetti style={{ zIndex: 101 }} numberOfPieces={700} />
             )}
             <DashboardScrollableList>
-              <DashboardHeaderContainer>
-                {!hasExistingLists && (
-                  <MenuButton onClick={showNavbar}>
-                    <img src={MenuIcon} alt="menu" />
-                  </MenuButton>
-                )}
-                <DashboardHeader
-                  isUserFirstTime={
-                    createListViewVisible || isFirstUserListCreationSuccess
-                  }
-                  currentUser={currentUser}
-                />
-              </DashboardHeaderContainer>
-              <Spacing vertical={3} />
+              <div>
+                <DashboardHeaderContainer>
+                  {!hasExistingLists && (
+                    <MenuButton onClick={showNavbar}>
+                      <img src={MenuIcon} alt="menu" />
+                    </MenuButton>
+                  )}
+                  <DashboardHeader
+                    isUserFirstTime={
+                      createListViewVisible || isFirstUserListCreationSuccess
+                    }
+                    currentUser={currentUser}
+                  />
+                </DashboardHeaderContainer>
+                <Spacing vertical={3} />
+              </div>
               {createListViewVisible ? (
                 <DashboardFirstVisitViewWrapper>
                   <DashboardFirstVisitView
@@ -170,7 +172,7 @@ const DashboardView = ({
                   />
                 </DashboardFirstVisitViewWrapper>
               ) : (
-                <>
+                <div>
                   <DashboardHeaderContainer>
                     <DashboardStatistics dashboardTab={dashboardTab} />
                   </DashboardHeaderContainer>
@@ -181,7 +183,7 @@ const DashboardView = ({
                     tourModalIsOpen={tourModalIsOpen}
                     openTourModal={forceOpenTourModal}
                   />
-                </>
+                </div>
               )}
             </DashboardScrollableList>
           </DashboardContentWrapper>

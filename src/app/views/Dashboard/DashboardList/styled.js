@@ -6,9 +6,10 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Switch } from '@material-ui/core';
 
 export const ToolbarContainer = styled(Grid)`
+  position: relative;
+  height: 42px;
   border-bottom: 2px solid ${palette.blueGrey};
   margin-bottom: ${spacing.largePlus};
-  position: relative;
 `;
 
 export const ActionsContainer = styled(Grid)`
