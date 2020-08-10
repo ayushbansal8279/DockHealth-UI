@@ -70,6 +70,7 @@ const NewTaskDrawer = ({
     formMethods,
     isAddingOrEditingSubtask,
     patients,
+    isLoadingPatients,
     taskLists,
     currentAssignedToAdornment,
     closeTaskDrawer,
@@ -87,6 +88,8 @@ const NewTaskDrawer = ({
     members,
     clearSelectedPatient,
     dueTimeReference,
+    onPatientInputChange,
+    patientInputReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
   const taskDrawerReference = useRef(null);
@@ -137,8 +140,8 @@ const NewTaskDrawer = ({
   const enteredDescription = watch('description');
 
   const {
-    patientInputReference,
-    onPatientInputChange,
+    // patientInputReference,
+    // onPatientInputChange,
     assignedToInputReference,
     isInvitePopoverOpen,
     openInvitePopover,
@@ -280,9 +283,19 @@ const NewTaskDrawer = ({
                       direction="column"
                       style={{ padding: '10px 10px' }}
                     >
-                      <RobotoTypography condensed variant="h4" color="inherit">
-                        No record found
-                      </RobotoTypography>
+                      {isLoadingPatients ? (
+                        <Grid container justify="center" alignItems="center">
+                          <Loader size={LoaderSizes.small} />
+                        </Grid>
+                      ) : (
+                        <RobotoTypography
+                          condensed
+                          variant="h4"
+                          color="inherit"
+                        >
+                          No record found
+                        </RobotoTypography>
+                      )}
                     </Grid>
                   }
                   InputProps={{
@@ -295,7 +308,9 @@ const NewTaskDrawer = ({
                         ''
                       ),
                   }}
-                  endAdornmentActionLabel="Add patient"
+                  endAdornmentActionLabel={
+                    isLoadingPatients ? null : 'Add patient'
+                  }
                   onEndAdornmentAcionClick={handleAddPatient}
                   endAdornmentEnabled
                   autoFocusEnabled={

@@ -42,6 +42,16 @@ export function getPatientsByTaskList(taskListIdentifier) {
     });
 }
 
+export function getPatientsByName(searchedPatientName) {
+  return axios
+    .get(`patient/getPatientsByName?inputStr=${searchedPatientName}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data);
+    });
+}
+
 export function getPatientById(patientIdentifier) {
   return axios
     .get(`patient/${patientIdentifier}`)
@@ -81,6 +91,7 @@ export function addPatient(patient) {
 
 export function updatePatient(patient) {
   if (patient.dob === '') {
+    // eslint-disable-next-line no-param-reassign
     patient.dob = null;
   }
   return axios

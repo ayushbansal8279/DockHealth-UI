@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import { getAllPatients } from 'actions/patient-actions';
+import { getPatientsByName } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
 import {
   saveTask,
@@ -123,7 +123,6 @@ const onSubmit = ({
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const {
-    patients,
     taskDrawerOpen,
     taskDrawerFocusField,
     selectedTask,
@@ -136,7 +135,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   } = useSelector(store => ({
     taskDrawerOpen: store.taskDrawerState.open,
     taskDrawerFocusField: store.taskDrawerState.focusField,
-    patients: store.patientState.allPatients,
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
     tasks: store.listTasks.tasks,
@@ -149,6 +147,22 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       : store.taskLabelState.requesting.listLabels,
     currentUser: store.userState.userProfile,
   }));
+
+  const [patients, setPatients] = useState([]);
+  const [isLoadingPatients, setIsLoadingPatients] = useState(true);
+  const patientInputReference = useRef(null);
+  const [patientInputValue, setPatientInputValue] = useState('');
+
+  const onPatientInputChange = useCallback((_event, value, reason) => {
+    if (reason === 'input' && value !== '') {
+      setIsLoadingPatients(true);
+      setPatientInputValue(value);
+      getPatientsByName(value).then(fetchedPatients => {
+        setPatients(fetchedPatients);
+        setIsLoadingPatients(false);
+      });
+    }
+  }, []);
 
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
@@ -262,7 +276,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
 
   useMount(() => {
-    getAllPatients()(dispatch);
+    // getAllPatients()(dispatch);
     setValue('newTaskListId', null);
   });
 
@@ -516,6 +530,10 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     isFetchingMembers,
     clearSelectedPatient,
     dueTimeReference,
+    onPatientInputChange,
+    patientInputReference,
+    patientInputValue,
+    isLoadingPatients,
   };
 };
 
