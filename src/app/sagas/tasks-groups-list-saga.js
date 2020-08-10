@@ -340,7 +340,7 @@ export function* doOnEnterTasksGroupsList() {
 
     if (taskListIdentifier) {
       yield call(doGetTasksGroupsList, { taskListIdentifier });
-      yield call(doGetTasksList, { taskListIdentifier });
+      // yield call(doGetTasksList, { taskListIdentifier });
     }
 
     const isSelectedTask = yield select(taskIsSelectedSelector);

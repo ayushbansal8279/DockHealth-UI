@@ -137,12 +137,24 @@ class Home extends Component {
         taskListActions.getTaskListStats({
           taskListIdentifier: nextProps.routeParams.taskListIdentifier,
         });
-        this.getTasksList(
-          nextProps.routeParams.taskListIdentifier,
+
+        const status =
           nextProps.routeParams.tabName === TaskListTabName.COMPLETE
             ? 'COMPLETE'
-            : 'INCOMPLETE',
+            : 'INCOMPLETE';
+        const filters = sessionStorageHelper.getItem(
+          `filter-${nextProps.routeParams.taskListIdentifier}-${status}`,
         );
+
+        if (!filters) {
+          this.getTasksList(nextProps.routeParams.taskListIdentifier, status);
+        } else {
+          this.getFilteredTasks(
+            nextProps.routeParams.taskListIdentifier,
+            filters,
+            status,
+          );
+        }
 
         if (nextProps.routeParams.taskListIdentifier) {
           taskListActions.getMembersByTaskListId(
@@ -303,7 +315,7 @@ class Home extends Component {
     if (!filters) {
       return this.getTasksList(taskListIdentifier, status);
     }
-    return this.getFilteredTasks(filters, status);
+    return this.getFilteredTasks(taskListIdentifier, filters, status);
   };
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
@@ -347,7 +359,7 @@ class Home extends Component {
     });
 
     if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(filters, status);
+      return this.getFilteredTasks(taskListIdentifier, filters, status);
     }
 
     return this.getTasksList(taskListIdentifier, status);
@@ -387,7 +399,7 @@ class Home extends Component {
     );
 
     if (filters && !isEmpty(filters)) {
-      this.getFilteredTasks(filters, status);
+      this.getFilteredTasks(taskListIdentifier, filters, status);
     } else {
       this.getTasksList(
         taskListIdentifier,
@@ -417,11 +429,8 @@ class Home extends Component {
   };
 
   // TODO: Move to saga
-  getFilteredTasks = (filters, taskStatus) => {
-    const {
-      routeParams: { taskListIdentifier },
-      actions,
-    } = this.props;
+  getFilteredTasks = (taskListIdentifier, filters, taskStatus) => {
+    const { actions } = this.props;
 
     return actions.getFilteredTasksForList(
       taskListIdentifier,
@@ -446,7 +455,11 @@ class Home extends Component {
       taskStatus,
     );
 
-    return this.getFilteredTasks(updatedFilters, taskStatus);
+    return this.getFilteredTasks(
+      taskListIdentifier,
+      updatedFilters,
+      taskStatus,
+    );
   };
 
   downloadPDF = () => {
