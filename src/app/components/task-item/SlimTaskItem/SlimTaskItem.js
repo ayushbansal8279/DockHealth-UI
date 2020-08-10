@@ -222,7 +222,7 @@ const SlimTaskItem = ({
           <DynamicColumnComponent
             {...{
               ...task,
-              isOverdueTask,
+              isOverdueTask: isOverdueTask && !isCompleted,
               updateDueDate,
               task,
             }}

@@ -411,7 +411,7 @@ const TaskItem = ({
                           src={getCalendarIcon(
                             dueDate,
                             isHovered,
-                            isOverdueTask,
+                            isOverdueTask && !isCompleted,
                             task.updatedDueDate,
                           )}
                         />
