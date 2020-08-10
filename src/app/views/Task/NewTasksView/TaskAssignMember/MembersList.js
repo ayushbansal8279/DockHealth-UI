@@ -48,31 +48,35 @@ const MembersList = ({
         />
       </InputBox>
       <Box>
-        <AssignToMeBox>
-          <MemberRow
-            onClick={() => {
-              reassignTask(task, currentUser);
-            }}
-          >
-            <Member member={currentUser} size={30} />
-            <span>Assign To Me</span>
-          </MemberRow>
-        </AssignToMeBox>
+        {'assign to me'.includes(searchValue.toLowerCase()) && (
+          <AssignToMeBox>
+            <MemberRow
+              onClick={() => {
+                reassignTask(task, currentUser);
+              }}
+            >
+              <Member member={currentUser} size={30} />
+              <span>Assign To Me</span>
+            </MemberRow>
+          </AssignToMeBox>
+        )}
         {!isFetchingMembers ? (
           <MembersBox>
             <StyledMembersList>
-              <MemberRow
-                key="unassigned"
-                onClick={() => {
-                  reassignTask(task, null);
-                }}
-              >
-                <RemoveCircleOutlineRounded
-                  color="action"
-                  style={{ height: '30px', width: '30px' }}
-                />
-                <span>Unassigned</span>
-              </MemberRow>
+              {'unassigned'.includes(searchValue.toLowerCase()) && (
+                <MemberRow
+                  key="unassigned"
+                  onClick={() => {
+                    reassignTask(task, null);
+                  }}
+                >
+                  <RemoveCircleOutlineRounded
+                    color="action"
+                    style={{ height: '30px', width: '30px' }}
+                  />
+                  <span>Unassigned</span>
+                </MemberRow>
+              )}
               {filteredMembers?.map(member => (
                 <MemberRow
                   key={member.userId}
