@@ -48,7 +48,9 @@ const MembersList = ({
         />
       </InputBox>
       <Box>
-        {'assign to me'.includes(searchValue.toLowerCase()) && (
+        {currentUser?.userName
+          ?.toLowerCase()
+          .includes(searchValue.toLowerCase()) && (
           <AssignToMeBox>
             <MemberRow
               onClick={() => {
