@@ -82,10 +82,10 @@ const DocumentsView = () => {
       </MontserratTypography>
       <MontserratTypography weight="normal" variant="h4" gutterBottom>
         <DocumentLink
-          href="https://www.dock.health/end-user-license-agreement"
+          href="https://www.dock.health/terms-and-conditions"
           target="_blank"
         >
-          Terms of Service
+          Terms and Conditions
         </DocumentLink>
       </MontserratTypography>
       {isPreviewReady && (
