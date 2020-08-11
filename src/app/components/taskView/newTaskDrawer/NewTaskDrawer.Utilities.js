@@ -57,7 +57,7 @@ export const getFormattedPatients = ({ patients }) =>
         <PatientLabelContainer key={patient?.patientIdentifier}>
           <CondensedH4>{patientName}</CondensedH4>
           <CondensedH4 align="right">{getFormattedAge({ dob })}</CondensedH4>
-          <CondensedH4 align="right">{mrn}</CondensedH4>
+          <CondensedH4 align="right">{mrn || '-'}</CondensedH4>
         </PatientLabelContainer>
       ),
       displayLabel: patientName,

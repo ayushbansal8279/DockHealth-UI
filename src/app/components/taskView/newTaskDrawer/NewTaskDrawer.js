@@ -264,6 +264,7 @@ const NewTaskDrawer = ({
                 <SelectInput
                   name="patientIdentifier"
                   label="Patient"
+                  renderItem={option => option.label}
                   placeholder="Who is the patient?"
                   disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
                   onInputChange={onPatientInputChange}
