@@ -114,7 +114,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
       <H3>
         <span>By selecting Subscribe I agree to the </span>
         <Anchor
-          href="https://www.dock.health/end-user-license-agreement"
+          href="https://www.dock.health/terms-and-conditions"
           target="_blank"
         >
           Terms and Conditions
