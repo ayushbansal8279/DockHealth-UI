@@ -14,12 +14,12 @@ import {
 } from './styled';
 
 const BACKGROUND_GRADIENTS = {
-  greenTurquoise: 'linear-gradient(199deg, #00A2E5 0%, #BAD440 96%)',
-  orangeYellow: 'linear-gradient(199deg, #FECD21 0%, #EF8A23 96%)',
-  purpleBlue: 'linear-gradient(199deg, #00A2E5 0%, #581384 96%)',
-  orangeRed: 'linear-gradient(199deg, #CC2B61 0%, #F09937 96%)',
-  redPurple: 'linear-gradient(199deg, #553BBE 0%, #E94739 96%)',
-  almostPurple: 'linear-gradient(199deg, #5D0E81 0%, #C82A64 96%)',
+  greenTurquoise: ' linear-gradient(225.32deg, #00A2E5 0%, #BAD440 96%)',
+  orangeYellow: ' linear-gradient(225.32deg, #FECD21 0%, #EF8A23 96%)',
+  purpleBlue: 'linear-gradient(225.32deg, #00A2E5 0%, #581384 96%)',
+  orangeRed: 'linear-gradient(225.32deg, #CC2B61 0%, #F09937 96%)',
+  redPurple: 'linear-gradient(225.32deg, #553BBE 0%, #E94739 96%)',
+  bluePurple: 'linear-gradient(225.32deg, #553BBE 25%, #184B8F 96%)',
 };
 
 const TILE_ICON = {
