@@ -21,9 +21,9 @@ const GRID_CONFIG = {
         lg: 8,
       },
       DUE_DATE: {
-        sm: 6,
-        md: 7,
-        lg: 9,
+        sm: 5,
+        md: 6,
+        lg: 8,
       },
       STATUS: {
         sm: 5,
@@ -38,9 +38,9 @@ const GRID_CONFIG = {
         lg: 2,
       },
       DUE_DATE: {
-        sm: 2,
-        md: 2,
-        lg: 1,
+        sm: 3,
+        md: 3,
+        lg: 2,
       },
       STATUS: {
         sm: 3,
@@ -64,7 +64,7 @@ const GRID_CONFIG = {
       DUE_DATE: {
         sm: 3,
         md: 4,
-        lg: 7,
+        lg: 6,
       },
       STATUS: {
         sm: 3,
@@ -81,7 +81,7 @@ const GRID_CONFIG = {
       DUE_DATE: {
         sm: 3,
         md: 2,
-        lg: 1,
+        lg: 2,
       },
       STATUS: {
         sm: 3,
