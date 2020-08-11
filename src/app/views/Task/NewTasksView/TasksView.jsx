@@ -120,72 +120,74 @@ const TaskView = ({
   };
 
   return (
-    <TaskViewContainer>
-      <Toolbar
-        members={members}
-        showMembers={showMembers}
-        onSelectTab={navigateToTab}
-        selectedTab={selectedTab}
-        taskList={taskList}
-        openTasksAmount={taskCounters.incomplete}
-        completedTasksAmount={taskCounters.complete}
-        onSearchChange={setSearchValue}
-        showNotifications={showNotificationAction}
-        searchValue={searchValue}
-        onSelectFilters={handleFilterChange}
-        listNameColumnVisible={listNameVisible}
-        pdfTitle={pdfTitle}
-        tipsContent={getTipsContent()}
-      />
-      {selectedTab === TaskListTabName.COMPLETE ? (
-        <CompletedTasksView
-          openDrawer={openDrawer}
-          storeAsCurrentTask={storeAsCurrentTask}
-          currentUser={currentUser}
-          toggleSingleTaskPriority={toggleSingleTaskPriority}
-          toggleCompleteTask={toggleTaskCompletedStatus}
-          summaryTasksCount={taskCounters.complete}
-          reassignTask={handleReassignTask}
-          showMoreTasks={() => refreshTab(false, true)}
-          updateDueDate={updateDueDate}
-          listNameVisible={listNameVisible}
+    <>
+      <TaskViewContainer>
+        <Toolbar
+          members={members}
+          showMembers={showMembers}
+          onSelectTab={navigateToTab}
+          selectedTab={selectedTab}
+          taskList={taskList}
+          openTasksAmount={taskCounters.incomplete}
+          completedTasksAmount={taskCounters.complete}
+          onSearchChange={setSearchValue}
+          showNotifications={showNotificationAction}
           searchValue={searchValue}
-          selectedTask={selectedTask}
-          listUniqueKey={listUniqueKey}
-          groupPagination={groupPagination}
+          onSelectFilters={handleFilterChange}
+          listNameColumnVisible={listNameVisible}
+          pdfTitle={pdfTitle}
+          tipsContent={getTipsContent()}
         />
-      ) : (
-        <OpenedTasksView
-          openDrawer={openDrawer}
-          createTaskGroupList={createListGroup}
-          currentUser={currentUser}
-          toggleCompleteTask={toggleTaskCompletedStatus}
-          storeAsCurrentTask={storeAsCurrentTask}
-          toggleSingleTaskPriority={toggleSingleTaskPriority}
-          editGroupName={editGroupName}
-          quickAddTask={quickAddTask}
-          deleteGroup={deleteGroup}
-          changeGroupsOrder={changeGroupsOrder}
-          reassignTask={handleReassignTask}
-          updateDueDate={updateDueDate}
-          updateWorkflowStatus={updateWorkflowStatus}
-          defaultGroupName={defaultGroupName}
-          dragAndDropDisabled={dragAndDropDisabled}
-          listNameVisible={listNameVisible}
-          searchValue={searchValue}
-          selectedTask={selectedTask}
-          isMainListView={isMainListView}
-          listUniqueKey={listUniqueKey}
-          taskCounters={taskCounters}
-        />
-      )}
+        {selectedTab === TaskListTabName.COMPLETE ? (
+          <CompletedTasksView
+            openDrawer={openDrawer}
+            storeAsCurrentTask={storeAsCurrentTask}
+            currentUser={currentUser}
+            toggleSingleTaskPriority={toggleSingleTaskPriority}
+            toggleCompleteTask={toggleTaskCompletedStatus}
+            summaryTasksCount={taskCounters.complete}
+            reassignTask={handleReassignTask}
+            showMoreTasks={() => refreshTab(false, true)}
+            updateDueDate={updateDueDate}
+            listNameVisible={listNameVisible}
+            searchValue={searchValue}
+            selectedTask={selectedTask}
+            listUniqueKey={listUniqueKey}
+            groupPagination={groupPagination}
+          />
+        ) : (
+          <OpenedTasksView
+            openDrawer={openDrawer}
+            createTaskGroupList={createListGroup}
+            currentUser={currentUser}
+            toggleCompleteTask={toggleTaskCompletedStatus}
+            storeAsCurrentTask={storeAsCurrentTask}
+            toggleSingleTaskPriority={toggleSingleTaskPriority}
+            editGroupName={editGroupName}
+            quickAddTask={quickAddTask}
+            deleteGroup={deleteGroup}
+            changeGroupsOrder={changeGroupsOrder}
+            reassignTask={handleReassignTask}
+            updateDueDate={updateDueDate}
+            updateWorkflowStatus={updateWorkflowStatus}
+            defaultGroupName={defaultGroupName}
+            dragAndDropDisabled={dragAndDropDisabled}
+            listNameVisible={listNameVisible}
+            searchValue={searchValue}
+            selectedTask={selectedTask}
+            isMainListView={isMainListView}
+            listUniqueKey={listUniqueKey}
+            taskCounters={taskCounters}
+          />
+        )}
+      </TaskViewContainer>
       <NewTaskDrawer
         modalActions={modalActions}
         refreshList={refreshTab}
         refreshTriggers={taskDrawerRefreshTriggers}
         fromFirstAddTask={drawerAutoOpenEnabled}
       />
-    </TaskViewContainer>
+    </>
   );
 };
 

@@ -19,8 +19,11 @@ export const TaskDrawerContainer = styled.div`
   position: fixed;
   right: 0;
   top: ${({ top }) => top}px;
+  -webkit-transform: translateX(${({ open }) => (open ? 0 : 100)}%);
   transform: translateX(${({ open }) => (open ? 0 : 100)}%);
-  transition: all 0.25s ease-out;
+  -webkit-transition: -webkit-transform 500ms ease;
+  transition: transform 500ms ease;
+  will-change: transform;
   width: 756px;
   z-index: 100;
 `;
