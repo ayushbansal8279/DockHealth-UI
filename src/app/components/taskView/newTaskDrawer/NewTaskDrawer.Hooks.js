@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMount } from 'react-use';
+import { useMount, useUnmount } from 'react-use';
 import { object, string } from 'yup';
 import { getPatientsByName } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
@@ -153,16 +153,22 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const patientInputReference = useRef(null);
   const [patientInputValue, setPatientInputValue] = useState('');
 
-  const onPatientInputChange = useCallback((_event, value, reason) => {
-    if (reason === 'input' && value !== '') {
-      setIsLoadingPatients(true);
-      setPatientInputValue(value);
-      getPatientsByName(value).then(fetchedPatients => {
-        setPatients(fetchedPatients);
-        setIsLoadingPatients(false);
-      });
-    }
-  }, []);
+  const onPatientInputChange = useCallback(
+    (_event, value, reason) => {
+      const patientFetched = patients?.some(({ firstName, lastName }) =>
+        `${firstName} ${lastName}`.trim().includes(value),
+      );
+      if (reason === 'input' && !patientFetched && value !== '') {
+        setIsLoadingPatients(true);
+        setPatientInputValue(value);
+        getPatientsByName(value).then(fetchedPatients => {
+          setPatients(fetchedPatients);
+          setIsLoadingPatients(false);
+        });
+      }
+    },
+    [patients],
+  );
 
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
@@ -222,6 +228,11 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       taskList !== undefined &&
       taskList?.taskListIdentifier
     ) {
+      if (selectedTask?.patient?.patientIdentifier) {
+        setPatients([selectedTask?.patient]);
+        setValue('patientIdentifier', selectedTask.patient.patientIdentifier);
+      }
+
       getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
         dispatch,
       );
@@ -276,8 +287,11 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
 
   useMount(() => {
-    // getAllPatients()(dispatch);
     setValue('newTaskListId', null);
+  });
+
+  useUnmount(() => {
+    setPatients([]);
   });
 
   const openTaskDrawer = useCallback(() => {
@@ -459,6 +473,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const clearSelectedPatient = async () => {
     setValue('patientIdentifier', null);
     setValue('patientName', null);
+    setPatients([]);
     if (selectedTask && selectedTask.taskIdentifier != null) {
       await handleUpdatePatient();
     }
