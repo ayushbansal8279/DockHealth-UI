@@ -20,13 +20,13 @@ import {
 const TILS_CONFIG = {
   'my-tasks': {
     completed: 'purpleBlue',
-    assigned: 'almostPurple',
-    patientsCared: 'orangeRed',
+    assigned: 'redPurple',
+    patientsCared: 'orangeYellow',
   },
   'all-tasks': {
-    completed: 'redPurple',
+    completed: 'orangeRed',
     assigned: 'greenTurquoise',
-    patientsCared: 'orangeYellow',
+    patientsCared: 'bluePurple',
   },
 };
 
