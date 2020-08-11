@@ -67,6 +67,10 @@ import {
   DueDateButton,
   SubtasksBox,
   SubtasksAddLabel,
+  SubtaskStylingLastLink,
+  SubtaskStylingLinkContainer,
+  SubtaskStylingVerticalPart,
+  SubtaskStylingHorizontalPart,
 } from '../styled';
 
 const getMatchedComments = (comments, matchingCommentIdentifiers) =>
@@ -102,6 +106,17 @@ const getToolTipAttachmentsLabelDetails = attachments => {
   return attachmentLabelDetails;
 };
 
+const getSubtaskStylingLink = isLast => {
+  if (isLast) return <SubtaskStylingLastLink />;
+
+  return (
+    <SubtaskStylingLinkContainer>
+      <SubtaskStylingVerticalPart />
+      <SubtaskStylingHorizontalPart />
+    </SubtaskStylingLinkContainer>
+  );
+};
+
 const TaskItem = ({
   isOpen,
   switchOpen,
@@ -125,6 +140,8 @@ const TaskItem = ({
   parentHasPatient,
   highlightedValue,
   isDraggable,
+  isLast,
+  showSubtaskStylingLink,
 }) => {
   const {
     taskIdentifier,
@@ -200,6 +217,7 @@ const TaskItem = ({
       onMouseLeave={() => setIsHoverd(false)}
     >
       <StandardTaskItemContainer isSelected={isSelectedTask}>
+        {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
         {!dragAndDropDisabled && isDraggable && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
@@ -436,7 +454,6 @@ const TaskItem = ({
                     storeAsCurrentTask(task);
                   }}
                 >
-                  {' '}
                   <img
                     alt="labels"
                     src={getItemIcon(
@@ -591,6 +608,8 @@ const Subtasks = ({
                             reassignTask={reassignTask}
                             parentHasPatient={parentHasPatient}
                             isDraggable={isDraggable}
+                            isLast={index + 1 === orderedSubtasks.length}
+                            showSubtaskStylingLink={!draggedId}
                             {...restProps}
                           />
                           {draggedId !== String(subtask.taskIdentifier) &&
