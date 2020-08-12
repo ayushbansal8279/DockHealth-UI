@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import {
@@ -35,10 +36,13 @@ const DashboardStatistics = ({
   dashboardIsLoading,
   dashboardTab,
 }) => {
+  const [tileHeights, setTileHeights] = useState([]);
   const patientStatsAmount = dashboardStatistics?.find(
     ({ metricName }) => metricName === 'PATIENTS_SERVED_COUNT',
   )?.metricValue;
   const showPatientAmount = patientStatsAmount !== 0;
+  const highestTile = isEmpty(tileHeights) ? 0 : Math.max(...tileHeights);
+
   return (
     <DashboardStatisticsContainer>
       <ViewLoader isFetchingData={dashboardIsLoading} padding="50px 0">
@@ -61,6 +65,10 @@ const DashboardStatistics = ({
           <Grid item xs={3}>
             <DashboardStatisticsTile
               label="OPEN TASKS"
+              updateTileHeights={tileHeight =>
+                setTileHeights([...tileHeights, tileHeight])
+              }
+              highestTile={highestTile}
               amount={
                 dashboardStatistics?.find(
                   ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
@@ -73,6 +81,10 @@ const DashboardStatistics = ({
               background={TILS_CONFIG[dashboardTab]?.completed}
               icon="completed"
               label="COMPLETED"
+              updateTileHeights={tileHeight =>
+                setTileHeights([...tileHeights, tileHeight])
+              }
+              highestTile={highestTile}
               amount={
                 dashboardStatistics?.find(
                   ({ metricName }) => metricName === 'COMPLETED_TASKS_COUNT',
@@ -85,6 +97,10 @@ const DashboardStatistics = ({
               background={TILS_CONFIG[dashboardTab]?.assigned}
               icon="assigned"
               label="ASSIGNED"
+              updateTileHeights={tileHeight =>
+                setTileHeights([...tileHeights, tileHeight])
+              }
+              highestTile={highestTile}
               amount={
                 dashboardStatistics?.find(
                   ({ metricName }) => metricName === 'ASSIGNED_TASKS_COUNT',
@@ -96,6 +112,9 @@ const DashboardStatistics = ({
             <DashboardStatisticsTile
               background={TILS_CONFIG[dashboardTab]?.patientsCared}
               icon="patientsCared"
+              updateTileHeights={tileHeight => {
+                setTileHeights([...tileHeights, tileHeight]);
+              }}
               label={
                 showPatientAmount
                   ? 'PATIENTS CARED FOR'

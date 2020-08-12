@@ -8,15 +8,18 @@ export const DashboardStatisticsTileContainer = styled.div`
   width: 100%;
   background-image: ${props => props.background};
   border-radius: 10px;
-  padding: 10px 10px ${spacing.small} ${spacing.regular};
+  padding: 10px 10px ${spacing.regular} ${spacing.regular};
   display: flex;
   justify-content: space-between;
+  height: ${props => props.height};
 `;
 
 export const DashboardStatisticsTileText = styled.div`
   padding-top: 12px;
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
+  position: relative;
+  width: calc(100% - 40px);
 `;
 
 export const DashboardStatisticsTileAmount = styled.div`
@@ -24,7 +27,10 @@ export const DashboardStatisticsTileAmount = styled.div`
   font-weight: ${fontWeights.regularPlus};
   color: ${props => (props.hasBackground ? 'white' : palette.mediumGrey)};
   margin-right: ${spacing.small};
-  line-height: normal;
+  display: inline-block;
+  vertical-align: top;
+  height: 0.75em;
+  line-height: 0.75em;
 `;
 
 export const DashboardStatisticsTileLabelBox = styled.div`
