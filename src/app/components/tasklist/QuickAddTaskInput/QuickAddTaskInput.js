@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { AddTaskInputWrapper, ErrorLabel } from './styled';
 
 const QuickAddTaskInput = ({
@@ -7,20 +7,20 @@ const QuickAddTaskInput = ({
   validator,
   autoComplete = 'on',
 }) => {
-  const addTaskInput = useRef();
   const [error, setError] = useState(null);
+  const [inputValue, setInputValue] = useState('');
 
-  const handleInputEnterDown = taskName => {
+  const handleInputEnterDown = () => {
     let validatorError = null;
 
     if (validator) {
-      validatorError = validator(taskName);
+      validatorError = validator(inputValue);
       setError(validatorError);
     }
 
-    if (taskName && !validatorError) {
-      quickAddTask(taskName);
-      addTaskInput.current.value = '';
+    if (inputValue && !validatorError) {
+      quickAddTask(inputValue);
+      setInputValue('');
 
       if (validator) {
         setError(null);
@@ -35,13 +35,13 @@ const QuickAddTaskInput = ({
           autoComplete={autoComplete}
           name="newTask"
           type="text"
-          ref={addTaskInput}
+          value={inputValue}
+          onChange={event => setInputValue(event.target.value)}
           placeholder="Add a task and press enter on your keyboard"
           onFocus={onFocus}
-          onKeyDown={event =>
-            event.keyCode === 13 && handleInputEnterDown(event.target.value)
-          }
+          onKeyDown={event => event.keyCode === 13 && handleInputEnterDown()}
         />
+        {inputValue && <span>Press enter to save this task</span>}
       </AddTaskInputWrapper>
       {error && <ErrorLabel>{error}</ErrorLabel>}
     </>

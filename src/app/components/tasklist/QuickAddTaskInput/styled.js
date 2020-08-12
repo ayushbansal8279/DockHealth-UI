@@ -22,6 +22,15 @@ export const AddTaskInputWrapper = styled.div`
     }
   }
 
+  & > span {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: ${palette.coolGrey1};
+    font-size: ${fontSizes.smallPlus};
+  }
+
   &:before {
     position: absolute;
     top: 50%;
