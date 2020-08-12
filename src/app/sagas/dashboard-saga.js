@@ -165,6 +165,30 @@ function* doFetchDashboardAllTasksStatistics() {
   }
 }
 
+function* doFetchDashboardFilters() {
+  const tasksType = getTasksType();
+  const isAllTasks = tasksType === 'all-tasks';
+
+  try {
+    const filters = isAllTasks
+      ? yield call(getDashboardAllTasksFilters)
+      : yield call(getDashboardMyTasksFilters);
+
+    yield put(
+      MegaFilterActions.selectFiltersFromLocalStorage('dashboard', tasksType),
+    );
+
+    yield put({
+      type: FETCH_MEGA_FILTERS_SUCCESS,
+      filters,
+    });
+  } catch (error) {
+    yield put({
+      type: FETCH_MEGA_FILTERS_FAILURE,
+    });
+  }
+}
+
 function* doReloadDashboardTasks() {
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
@@ -211,7 +235,7 @@ function* doToggleDashboardTaskComplete({ task }) {
 
     yield call(TaskApi.markComplete, task);
     yield delay(TASK_DISAPPEAR_DELAY);
-    yield call(doReloadDashboardTasks);
+    yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
 
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
   } catch (error) {
@@ -240,36 +264,6 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
     yield call(doReloadDashboardTasks);
   } catch (error) {
     console.error(error);
-  }
-}
-
-function* doFetchDashboardFilters() {
-  const tasksType = getTasksType();
-  const isAllTasks = tasksType === 'all-tasks';
-
-  try {
-    if (isAllTasks) {
-      yield call(doFetchDashboardAllTasksStatistics);
-    } else {
-      yield call(doFetchDashboardMyTasksStatistics);
-    }
-
-    const filters = isAllTasks
-      ? yield call(getDashboardAllTasksFilters)
-      : yield call(getDashboardMyTasksFilters);
-
-    yield put(
-      MegaFilterActions.selectFiltersFromLocalStorage('dashboard', tasksType),
-    );
-
-    yield put({
-      type: FETCH_MEGA_FILTERS_SUCCESS,
-      filters,
-    });
-  } catch (error) {
-    yield put({
-      type: FETCH_MEGA_FILTERS_FAILURE,
-    });
   }
 }
 
