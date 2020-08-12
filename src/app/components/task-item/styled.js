@@ -50,6 +50,7 @@ export const PrioritySwitch = styled.button`
 
 export const PriorityHoverIcon = styled.img`
   opacity: 0;
+  background-color: ${palette.coolGrey4};
 `;
 
 export const AddPlaceholder = styled.div`
@@ -354,4 +355,40 @@ export const SubtasksAddLabel = styled.button`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+export const SubtaskStylingLinkContainer = styled.div`
+  height: calc(2px + 100%);
+  width: 18px;
+  position: absolute;
+  left: -19px;
+  top: -1px;
+  display: flex;
+  align-items: center;
+`;
+
+export const SubtaskStylingVerticalPart = styled.div`
+  width: 0.5px;
+  height: 100%;
+  background-color: ${palette.coolGrey2};
+  padding: 1px 0;
+`;
+
+export const SubtaskStylingHorizontalPart = styled.div`
+  height: 1px;
+  width: 100%;
+  background-color: ${palette.coolGrey2};
+`;
+
+export const SubtaskStylingLastLink = styled.div`
+  height: calc(1px + 50%);
+  width: 18px;
+  border: 1px solid ${palette.coolGrey2};
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 4px;
+  position: absolute;
+  padding: 1px 0;
+  left: -19px;
+  top: -1px;
 `;
