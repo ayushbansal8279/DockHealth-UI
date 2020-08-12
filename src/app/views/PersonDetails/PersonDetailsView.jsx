@@ -11,7 +11,6 @@ import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as ModalActions from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
@@ -298,7 +297,6 @@ class PersonDetailsView extends PureComponent {
       pdfTitle: personData
         ? `${personData.firstName} ${personData.lastName}`
         : null,
-      taskDrawerRefreshTriggers: [ContextRefreshTriggers.ASSIGNED_TO_CHANGE],
     };
 
     return (

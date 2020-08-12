@@ -55,7 +55,6 @@ const TaskView = ({
   listUniqueKey,
   pdfTitle,
   groupPagination = false,
-  taskDrawerRefreshTriggers = [],
   drawerAutoOpenEnabled = false,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -186,7 +185,6 @@ const TaskView = ({
       <NewTaskDrawer
         modalActions={modalActions}
         refreshList={refreshTab}
-        refreshTriggers={taskDrawerRefreshTriggers}
         fromFirstAddTask={drawerAutoOpenEnabled}
       />
     </>
