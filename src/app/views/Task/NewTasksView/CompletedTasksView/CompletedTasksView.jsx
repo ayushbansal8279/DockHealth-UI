@@ -43,6 +43,15 @@ const CompletedTasksView = ({
       />
     );
   };
+
+  const tasksAndSubTasks =
+    tasks?.reduce(
+      (counter, task) =>
+        counter +
+        task.subtasks?.filter(x => x.status === 'COMPLETE').length +
+        1,
+      0,
+    ) || 0;
   return (
     <ViewLoader isFetchingData={isFetchingData}>
       {tasks?.length > 0 ? (
@@ -60,7 +69,7 @@ const CompletedTasksView = ({
               isCompletedGroup
               groupPagination={groupPagination}
               showMoreTasks={showMoreTasks}
-              hasMoreTasks={tasks.length < summaryTasksCount}
+              hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
               isFetchingMoreTasks={isFetchingMoreTasks}
               updateDueDate={updateDueDate}
               quickAddTaskVisible={false}
