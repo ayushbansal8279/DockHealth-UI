@@ -7,6 +7,7 @@ import { setHeader } from 'actions/header-actions';
 import { taskListSelector } from 'selectors/task-list-selectors';
 import Header from 'components/taskView/Header';
 import Button from 'components/common/Button/Button';
+import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import {
   TaskTourWrapper,
   Title,
@@ -25,6 +26,8 @@ const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
 
   useEffect(() => {
     window.addEventListener('resize', () => setWindowWidth(window.innerWidth));
+
+    onNewUserTourEnter('Task tour view');
 
     return () => {
       window.removeEventListener('resize', () =>
@@ -84,6 +87,7 @@ const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
         <Button
           fullWidth
           onClick={() => {
+            onNewUserTourEnter('Navigate to list button click');
             hashHistory.push(`tasks/${taskListIdentifier}`);
           }}
         >

@@ -9,6 +9,7 @@ import {
 } from 'views/Dashboard/existing-user-tour-hooks';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { isNil } from 'ramda';
+import { onNewUserTourEnter, onInboxTourEnter } from 'helpers/ga-event-helper';
 
 const initializeUserTourItems = ({
   shouldDisplayFirstListCreationMessage,
@@ -49,12 +50,14 @@ const initializeUserTourItems = ({
   const setTourPopupReferences = (element, listType, taskListIdentifier) => {
     if (element) {
       if (firstListElement === null && listType !== 'INBOX') {
+        onNewUserTourEnter('Create list congrats');
         setFirstListElement({
           reference: element,
           taskListIdentifier,
         });
       }
       if (inboxElement === null && listType === 'INBOX') {
+        onInboxTourEnter('Inbox introduction');
         setInboxElement({
           reference: element,
           taskListIdentifier,

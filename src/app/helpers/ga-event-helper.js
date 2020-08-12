@@ -193,6 +193,42 @@ export const onTaskDrawerTourStepEnter = stepKey => {
   });
 };
 
+export const onNewUserTourEnter = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'First user tour',
+    eventLabel: stepKey,
+  });
+};
+
+export const onInboxTourEnter = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'Inbox tour',
+    eventLabel: stepKey,
+  });
+};
+
+export const onListsTipsEvent = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'Lists tips',
+    eventLabel: stepKey,
+  });
+};
+
+export const onListsTutorialModalEvent = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'Lists tutorial modal',
+    eventLabel: stepKey,
+  });
+};
+
 export const onLogin = () => {
   // ReactGA.set({
   //   userId: sessionStorage.userIdentifier,

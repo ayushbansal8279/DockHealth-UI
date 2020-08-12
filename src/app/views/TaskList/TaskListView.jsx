@@ -33,6 +33,7 @@ import {
   onTaskListDeleted,
   onTaskListInvitationRejected,
   onTaskListLeft,
+  onListsTipsEvent,
 } from 'helpers/ga-event-helper';
 import pusherInstance from 'helpers/pusher-instance';
 import TipNextStepIcon from 'img/tip-next-step-icon.svg';
@@ -185,6 +186,10 @@ class TaskListView extends PureComponent {
   };
 
   toggleTips = () => {
+    const { tipsOpen } = this.state;
+    if (!tipsOpen) {
+      onListsTipsEvent('Lists tips popover opened');
+    }
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
       tipsOpen: previousTipsOpen === 'true' ? 'false' : 'true',
     }));
@@ -198,6 +203,7 @@ class TaskListView extends PureComponent {
   };
 
   hideTipsModal = () => {
+    onListsTipsEvent('Lists tips popover closed');
     this.setState({
       tipsModalOpen: 'false',
     });

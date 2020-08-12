@@ -15,6 +15,7 @@ import * as UserApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
+import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
@@ -87,6 +88,7 @@ const DashboardView = ({
   ]);
 
   const handleCreateList = () => {
+    onNewUserTourEnter('Opened create list modal');
     setTaskListAsCurrentList(null);
     openModal('CreateList', {
       test: 'test',
@@ -95,6 +97,7 @@ const DashboardView = ({
         UserApi.getUserByEmail(currentUser.email, currentUser);
       },
       onListCreationSuccess: () => {
+        onNewUserTourEnter('Create list success');
         setIsFirstUserListCreationSuccess(true);
       },
     });
@@ -163,12 +166,13 @@ const DashboardView = ({
                   <DashboardFirstVisitView
                     hasInvitedLists={hasOnlyInvitedLists}
                     onCreateList={handleCreateList}
-                    onTakeATour={() =>
+                    onTakeATour={() => {
+                      onNewUserTourEnter('Video tutorial');
                       openModal('Video', {
                         title: 'Emailing a Task to Dock Health',
                         url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
-                      })
-                    }
+                      });
+                    }}
                     list={firstUserList}
                   />
                 </DashboardFirstVisitViewWrapper>

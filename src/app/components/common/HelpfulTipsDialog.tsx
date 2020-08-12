@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { DialogProps, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { range } from 'ramda';
@@ -5,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 // import Lightbulb from 'img/lightbulb.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
+import { onListsTutorialModalEvent } from 'helpers/ga-event-helper';
 import {
   ChildrenContainer,
   DialogComponent,
@@ -56,6 +58,11 @@ const HelpfulTipsDialog = ({
     setStepsCount(children?.length ?? 0);
     setCurrentStep(0);
   }, [children]);
+
+  useEffect(() => {
+    if (currentStep && children?.length > 0)
+      onListsTutorialModalEvent(children?.[currentStep].title);
+  }, [currentStep, children]);
 
   const isLastStep = currentStep + 1 === stepsCount;
 
@@ -115,7 +122,10 @@ const HelpfulTipsDialog = ({
           variant="text"
           color="inherit"
           size="small"
-          onClick={() => closeDialog?.()}
+          onClick={() => {
+            closeDialog?.();
+            onListsTutorialModalEvent('Skip tutorial button click');
+          }}
         >
           <MontserratTypography weight="normal" variant="h4">
             SKIP TUTORIAL
