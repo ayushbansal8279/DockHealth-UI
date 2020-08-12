@@ -25,13 +25,13 @@ export const TaskDrawerFields = {
 
 const getFormattedAge = ({ dob }) => {
   if (!dob) {
-    return '-';
+    return '';
   }
 
   const yearsOld = moment().diff(moment(dob), 'years');
 
   if (yearsOld < 0) {
-    return '-';
+    return '';
   }
 
   const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
@@ -51,7 +51,7 @@ export const getFormattedPatients = ({ patients }) =>
         <PatientLabelContainer key={patient?.patientIdentifier}>
           <CondensedH4>{patientName}</CondensedH4>
           <CondensedH4 align="right">{getFormattedAge({ dob })}</CondensedH4>
-          <CondensedH4 align="right">{mrn || '-'}</CondensedH4>
+          <CondensedH4 align="right">{mrn || ''}</CondensedH4>
         </PatientLabelContainer>
       ),
       displayLabel: patientName,
