@@ -195,7 +195,7 @@ export const StyledFilterRow = styled.div`
     !props.isSelected &&
     !props.isDisabled &&
     `&:hover {
-      background-color: ${palette.lightGrey};
+      background-color: ${palette.coolGrey2};
       color: white;}`};
 `;
 
