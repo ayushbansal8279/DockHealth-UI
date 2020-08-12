@@ -218,6 +218,9 @@ export const MemberOptionLabel = styled.span`
 
 export const OptionLabel = styled.span`
   width: 180px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 export const OptionCount = styled.div`
