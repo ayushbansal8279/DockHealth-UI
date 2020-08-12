@@ -402,8 +402,9 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        prepareSubtask(selectedTask.taskIdentifier)(dispatch);
+        await prepareSubtask(selectedTask.taskIdentifier)(dispatch);
         afterAddSubTask();
+        refreshList();
         onButtonClicked('Add subtask');
       } catch {
         noop();
@@ -427,6 +428,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
           member?.userIdentifier,
         )(dispatch);
         setAutoSaveVisible();
+        refreshList();
       } catch {
         dispatch(
           AlertActions.showGlobalAlert(
@@ -467,6 +469,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       await handleUpdatePatient(patient);
+      refreshList();
     }
   };
 
@@ -476,6 +479,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     setPatients([]);
     if (selectedTask && selectedTask.taskIdentifier != null) {
       await handleUpdatePatient();
+      refreshList();
     }
   };
 

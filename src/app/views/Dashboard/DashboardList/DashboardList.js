@@ -32,7 +32,6 @@ import {
 } from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { ContextRefreshTriggers } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import {
@@ -529,10 +528,6 @@ const DashboardList = ({
       </ViewLoader>
       <NewTaskDrawer
         modalActions={modalActions}
-        refreshTriggers={[
-          ContextRefreshTriggers.DUE_DATE_CHANGE,
-          ContextRefreshTriggers.ASSIGNED_TO_CHANGE,
-        ]}
         refreshList={reloadDashboardTasks}
       />
     </>

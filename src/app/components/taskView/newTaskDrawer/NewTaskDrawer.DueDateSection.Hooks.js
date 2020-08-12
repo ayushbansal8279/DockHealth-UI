@@ -9,7 +9,6 @@ const initializeDueDateSectionHooks = ({
   setAutoSaveVisible,
   setValue,
   refreshList,
-  shouldRefresh,
 }) => {
   const dispatch = useDispatch();
 
@@ -36,9 +35,7 @@ const initializeDueDateSectionHooks = ({
         )(dispatch)
           .then(() => {
             setAutoSaveVisible();
-            if (shouldRefresh) {
-              refreshList();
-            }
+            refreshList();
           })
           .catch(() => {
             dispatch(
@@ -60,7 +57,7 @@ const initializeDueDateSectionHooks = ({
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
         await updateDueDate(selectedTask, null, false)(dispatch);
-        if (shouldRefresh) refreshList();
+        refreshList();
         setAutoSaveVisible();
       } catch {
         dispatch(

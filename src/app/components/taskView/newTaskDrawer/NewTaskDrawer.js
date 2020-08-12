@@ -49,7 +49,6 @@ import {
   getFormattedPatients,
   renderMemberoptionWithHighlighting,
   FocusDrawerFieldEnum,
-  ContextRefreshTriggers,
   TaskDrawerFields,
 } from './NewTaskDrawer.Utilities';
 import existingUserTaskDrawerTourHooks from './NewTaskDrawer.ExistingUserTourHooks';
@@ -58,7 +57,6 @@ const NewTaskDrawer = ({
   isInbox,
   modalActions,
   refreshList,
-  refreshTriggers = [],
   disabledFileds = [],
   fromFirstAddTask = false,
 }) => {
@@ -330,13 +328,7 @@ const NewTaskDrawer = ({
                   onInputChange={onAssignedToInputChange}
                   onItemSelected={async option => {
                     await handleAssignedToSelect(option);
-                    if (
-                      refreshTriggers.includes(
-                        ContextRefreshTriggers.ASSIGNED_TO_CHANGE,
-                      )
-                    ) {
-                      refreshList();
-                    }
+                    refreshList();
                     assignedToInputReference.current
                       .querySelector('input')
                       .blur();
@@ -396,9 +388,6 @@ const NewTaskDrawer = ({
                     isOverDue={isOverDue}
                     setAutoSaveVisible={setAutoSaveVisible}
                     refreshList={refreshList}
-                    shouldRefreshContext={refreshTriggers.includes(
-                      ContextRefreshTriggers.DUE_DATE_CHANGE,
-                    )}
                     dueTimeReference={dueTimeReference}
                   />
                 </div>
