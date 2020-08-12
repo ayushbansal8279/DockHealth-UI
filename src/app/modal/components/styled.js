@@ -53,13 +53,15 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const CancelButton = styled(Button)`
-  min-width: 170px;
+  min-width: 150px;
   flex: 1;
 `;
 
 export const ConfirmButton = styled(Button)`
-  min-width: 170px;
-  flex: 1;
+  && {
+    min-width: 190px;
+    flex: 1;
+  }
 `;
 
 export const CloseIconButton = withStyles({
