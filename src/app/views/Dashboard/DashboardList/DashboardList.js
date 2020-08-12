@@ -92,7 +92,6 @@ const SORT_METHODS = {
       .map(item => item)
       .sort((a, b) => {
         if (!a?.dueDate) return 1;
-
         return b?.dueDate > a?.dueDate ? 1 : -1;
       }),
   [SORT_CONFIG.workflowStatusAsc]: list =>
