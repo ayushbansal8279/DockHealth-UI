@@ -9,8 +9,8 @@ import * as ModalActions from 'modal/actions';
 
 import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 
 import {
   tasksIsFetchingSelector,
@@ -82,7 +82,9 @@ const TaskView = ({
   // TODO: Move to saga
   const invokeToggleCompleteAction = task => {
     toggleCompleteTask(task, selectedTab, currentUser)
-      .then(() => refreshTab())
+      .then(() => {
+        setTimeout(refreshTab, TASK_DISAPPEAR_DELAY);
+      })
       .catch(() => refreshTab());
   };
 

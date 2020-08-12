@@ -37,6 +37,7 @@ import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
   setDueDate as setDueDateHelper,
+  TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
 import { fetchTasklistForUser } from 'sagas/tasklist-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -208,7 +209,7 @@ function* doToggleDashboardTaskComplete({ task }) {
     yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
 
     yield call(TaskApi.markComplete, task);
-    yield delay(1000);
+    yield delay(TASK_DISAPPEAR_DELAY);
     yield call(doReloadDashboardTasks);
 
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));

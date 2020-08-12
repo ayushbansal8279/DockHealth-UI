@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+export const TASK_DISAPPEAR_DELAY = 1000;
+
 export const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
   return tasks.map(task => {
     let updatedSubtasks = [];

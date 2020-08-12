@@ -5,6 +5,7 @@ import {
   select,
   all,
   takeEvery,
+  delay,
 } from 'redux-saga/effects';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskListApi from 'api/tasklist-api';
@@ -39,6 +40,7 @@ import {
   assignTask as assignTaskHelper,
   setDueDate as setDueDateHelper,
   setWorkflowStatus as setWorkflowStatusHelper,
+  TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
@@ -336,6 +338,8 @@ function* doToggleTaskCompleteStatus({ payload }) {
 
     yield call(TaskApi[apiEndpoint], task);
     yield put(AlertActions.showGlobalAlert(successMessage));
+
+    yield delay(TASK_DISAPPEAR_DELAY);
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   } catch (error) {
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
