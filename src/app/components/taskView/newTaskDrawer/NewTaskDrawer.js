@@ -416,6 +416,7 @@ const NewTaskDrawer = ({
                   <StatusSection
                     selectedTask={selectedTask}
                     setAutoSaveVisible={setAutoSaveVisible}
+                    refreshList={refreshList}
                   />
                 </div>
               </Grid>

@@ -196,6 +196,7 @@ const DashboardList = ({
     updateDashboardTaskDueDate,
     updateDashboardSelectedFilters,
     reassignDashboardTask,
+    fetchDashboardFilters,
   },
   megaFilter,
   areFiltersApplied,
@@ -528,7 +529,10 @@ const DashboardList = ({
       </ViewLoader>
       <NewTaskDrawer
         modalActions={modalActions}
-        refreshList={reloadDashboardTasks}
+        refreshList={() => {
+          reloadDashboardTasks();
+          fetchDashboardFilters();
+        }}
       />
     </>
   );

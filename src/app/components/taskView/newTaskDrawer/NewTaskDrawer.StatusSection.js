@@ -54,11 +54,11 @@ const onItemSelection = ({ saveTaskStatus }) => value => {
   saveTaskStatus({ newTaskStatus: value });
 };
 
-const StatusSection = ({ setAutoSaveVisible }) => {
+const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
   const {
     currentStatusFlagColor,
     saveTaskStatus,
-  } = initializeStatusSectionHooks({ setAutoSaveVisible });
+  } = initializeStatusSectionHooks({ setAutoSaveVisible, refreshList });
 
   return (
     <StatusFieldContainer>
@@ -75,10 +75,9 @@ const StatusSection = ({ setAutoSaveVisible }) => {
               <SmallSwitchChevron color={palette.orangeJulius} />
             </EndAdornmentContainer>
           ),
-          // startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
         renderItem={renderDropdownItem}
-        onItemSelection={onItemSelection({ saveTaskStatus })}
+        onItemSelection={onItemSelection({ saveTaskStatus, refreshList })}
       >
         {statusOptions}
       </DropdownInput>
