@@ -466,6 +466,7 @@ export const Routes = ({ store }) => {
               onLeave={() => {
                 dispatch(clearFiltersForMegaFilter());
                 dispatch(closeDrawer());
+                dispatch(storeAsCurrentTask(null));
               }}
             />
           </Route>
