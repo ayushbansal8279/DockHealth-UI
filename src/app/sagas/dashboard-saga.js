@@ -5,6 +5,7 @@ import {
   select,
   delay,
   takeLatest,
+  all,
 } from 'redux-saga/effects';
 import { hashHistory } from 'react-router';
 import {
@@ -288,7 +289,7 @@ function* doQuickAddDahboardTask({ payload }) {
       taskListIdentifier,
       assignedToIdentifier,
     });
-    yield call(doReloadDashboardTasks);
+    yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
     yield put(fetchTasklistForUser());
 
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
