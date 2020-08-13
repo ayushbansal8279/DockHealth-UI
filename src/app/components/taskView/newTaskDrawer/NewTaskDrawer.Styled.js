@@ -34,7 +34,7 @@ export const TaskDrawerBackground = styled.div`
   left: 0;
   width: 100vw;
   height: 100%;
-  z-index: 99;
+  z-index: 98;
 `;
 
 export const AdornmentContainer = styled.div`
