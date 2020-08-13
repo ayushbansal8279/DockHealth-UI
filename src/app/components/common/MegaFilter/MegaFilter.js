@@ -16,7 +16,9 @@ import {
   FilterClearButtonWrapper,
   FilterClearButtonLabel,
   MegaFilterHeader,
+  MegaFilterSubHeader,
   MegaFilterLabel,
+  MegaFilterNoResultsLabel,
   MegaFilterBoldedLabel,
   StyledFilter,
   Filters,
@@ -33,12 +35,7 @@ const UNASSIGNED = 'UNASSIGNED';
 
 const SEARCH_EXCLUDE_KEYS = ['DUE_DATE_RANGE'];
 
-const FilterButton = ({
-  isOpen,
-  openPopover,
-  isFilterApplied,
-  selectedFilters,
-}) => (
+const FilterButton = ({ isOpen, openPopover, isFilterApplied }) => (
   <FilterButtonWrapper
     variant="text"
     onClick={() => openPopover(!isOpen)}
@@ -50,7 +47,7 @@ const FilterButton = ({
       component="span"
       filtered={isFilterApplied ? 'true' : 'false'}
     >
-      FILTER {isFilterApplied ? `(${Object.keys(selectedFilters).length})` : ''}
+      FILTER
     </FilterButtonLabel>
     <RotatableChevron
       rotated={isOpen}
@@ -207,6 +204,7 @@ const MegaFilter = ({
   onSelectFilters,
   taskList,
   taskStatus,
+  tasksAndSubTasksCount,
   popoverStyles = {},
 }) => {
   const [isOpen, openPopover] = useState(false);
@@ -281,15 +279,24 @@ const MegaFilter = ({
         <Container>
           <MegaFilterHeader>
             <MegaFilterLeftOptions>
-              <MegaFilterLabel>
-                <MegaFilterBoldedLabel>
-                  FILTER ACTIVE TASKS{' '}
-                </MegaFilterBoldedLabel>
-                {activeItemsAmount} ITEMS
-              </MegaFilterLabel>
-              <ClearButton type="button" onClick={clearFilters}>
-                CLEAR ALL
-              </ClearButton>
+              <>
+                <MegaFilterLabel>
+                  <MegaFilterBoldedLabel>
+                    FILTER ACTIVE TASKS{' '}
+                  </MegaFilterBoldedLabel>
+                  {isFilterApplied && (
+                    <>
+                      SHOWING {tasksAndSubTasksCount} OF {activeItemsAmount}{' '}
+                      ITEMS
+                    </>
+                  )}
+                </MegaFilterLabel>
+                {isFilterApplied && (
+                  <ClearButton type="button" onClick={clearFilters}>
+                    CLEAR
+                  </ClearButton>
+                )}
+              </>
             </MegaFilterLeftOptions>
             <MegaFilterOptions>
               <MegaFilterSearch
@@ -298,6 +305,13 @@ const MegaFilter = ({
               />
             </MegaFilterOptions>
           </MegaFilterHeader>
+          <MegaFilterSubHeader>
+            {isFilterApplied && tasksAndSubTasksCount === 0 && (
+              <MegaFilterNoResultsLabel>
+                There are no results for your filter criteria.
+              </MegaFilterNoResultsLabel>
+            )}
+          </MegaFilterSubHeader>
           <Filters>
             {!isEmpty(filters) &&
               filters

@@ -41,19 +41,20 @@ axiosInstance.interceptors.response.use(identity, error => {
     return undefined;
   }
 
+  console.log('Connection error');
   // window.location.href = '/#/login';
-  showToast({
-    status: 'error',
-    title: 'Connection error',
-    text: 'A connection error has occured, please refresh the page',
-    confirmButtonText: 'Refresh page',
-    showConfirmButton: true,
-    showCloseButton: true,
-    timerProgressBar: false,
-    timer: 0,
-  }).then(({ value }) => {
-    if (value) window.location.reload();
-  });
+  // showToast({
+  //   status: 'error',
+  //   title: 'Connection error',
+  //   text: 'A connection error has occured, please refresh the page',
+  //   confirmButtonText: 'Refresh page',
+  //   showConfirmButton: true,
+  //   showCloseButton: true,
+  //   timerProgressBar: false,
+  //   timer: 0,
+  // }).then(({ value }) => {
+  //   if (value) window.location.reload();
+  // });
 });
 
 export default axiosInstance;

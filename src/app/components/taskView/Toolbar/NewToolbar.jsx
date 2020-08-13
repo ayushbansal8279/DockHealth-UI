@@ -103,6 +103,7 @@ const Toolbar = ({
   onSearchChange,
   searchValue,
   haveTasks,
+  tasksAndSubTasksCount,
   onSelectFilters,
   pdfTitle,
   megaFilter = {},
@@ -246,6 +247,7 @@ const Toolbar = ({
             taskStatus={
               selectedTab === TaskListTabName.OPEN ? 'INCOMPLETE' : 'COMPLETE'
             }
+            tasksAndSubTasksCount={tasksAndSubTasksCount}
             activeItemsAmount={
               selectedTab === TaskListTabName.OPEN
                 ? openTasksAmount

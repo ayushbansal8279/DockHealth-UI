@@ -23,6 +23,23 @@ const mapStateToProps = (state, ownProps) => {
       completedTasks.length > 0 &&
       ownProps.selectedTab === TaskListTabName.COMPLETE);
 
+  const tasksAndSubTasksCount =
+    ownProps.selectedTab === TaskListTabName.OPEN
+      ? openedTasks?.reduce(
+          (counter, task) =>
+            counter +
+            task.subtasks?.filter(x => x.status === 'INCOMPLETE').length +
+            1,
+          0,
+        ) || 0
+      : completedTasks?.reduce(
+          (counter, task) =>
+            counter +
+            task.subtasks?.filter(x => x.status === 'COMPLETE').length +
+            1,
+          0,
+        ) || 0;
+
   return {
     printData: {
       openedTasks,
@@ -32,6 +49,7 @@ const mapStateToProps = (state, ownProps) => {
     },
     megaFilter: megaFilterSelector(state),
     haveTasks,
+    tasksAndSubTasksCount,
     ...ownProps,
   };
 };
