@@ -350,7 +350,7 @@ export const SubtasksAddLabel = styled.button`
   color: ${palette.brightBlue};
   font-weight: normal;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 98;
 
   &:hover {
     text-decoration: underline;
