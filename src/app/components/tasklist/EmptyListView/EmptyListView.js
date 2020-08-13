@@ -9,10 +9,16 @@ import {
   Description,
 } from './styled';
 
-const EmptyListView = ({ title, description, image, widthBreakpoint }) => (
+const EmptyListView = ({
+  title,
+  description,
+  image,
+  imageStyle,
+  widthBreakpoint,
+}) => (
   <EmptyListContainer>
     <ContentWrapper mediaBreakpoint={widthBreakpoint}>
-      <TextWrapper>
+      <TextWrapper style={{ paddingRight: '0px' }}>
         {Array.isArray(title) ? (
           title.map(t => (
             <Title>
@@ -26,7 +32,7 @@ const EmptyListView = ({ title, description, image, widthBreakpoint }) => (
         <Description>{description}</Description>
       </TextWrapper>
       <ImageWrapper>
-        <Image src={image} alt="empty view" />
+        <Image src={image} alt="empty view" style={imageStyle} />
       </ImageWrapper>
     </ContentWrapper>
   </EmptyListContainer>

@@ -16,7 +16,9 @@ import {
   FilterClearButtonWrapper,
   FilterClearButtonLabel,
   MegaFilterHeader,
+  MegaFilterSubHeader,
   MegaFilterLabel,
+  MegaFilterNoResultsLabel,
   MegaFilterBoldedLabel,
   StyledFilter,
   Filters,
@@ -197,12 +199,12 @@ const FilterColumn = ({
 const MegaFilter = ({
   children,
   filters,
-  filteredItemsAmount,
   activeItemsAmount,
   selectedFilters,
   onSelectFilters,
   taskList,
   taskStatus,
+  tasksAndSubTasksCount,
   popoverStyles = {},
 }) => {
   const [isOpen, openPopover] = useState(false);
@@ -284,7 +286,8 @@ const MegaFilter = ({
                   </MegaFilterBoldedLabel>
                   {isFilterApplied && (
                     <>
-                      SHOWING {filteredItemsAmount} OF {activeItemsAmount} ITEMS
+                      SHOWING {tasksAndSubTasksCount} OF {activeItemsAmount}{' '}
+                      ITEMS
                     </>
                   )}
                 </MegaFilterLabel>
@@ -294,11 +297,6 @@ const MegaFilter = ({
                   </ClearButton>
                 )}
               </>
-              <MegaFilterLabel>
-                {isFilterApplied && filteredItemsAmount === 0 && (
-                  <>There are no results for your filter criteria.</>
-                )}
-              </MegaFilterLabel>
             </MegaFilterLeftOptions>
             <MegaFilterOptions>
               <MegaFilterSearch
@@ -307,6 +305,13 @@ const MegaFilter = ({
               />
             </MegaFilterOptions>
           </MegaFilterHeader>
+          <MegaFilterSubHeader>
+            {isFilterApplied && tasksAndSubTasksCount === 0 && (
+              <MegaFilterNoResultsLabel>
+                There are no results for your filter criteria.
+              </MegaFilterNoResultsLabel>
+            )}
+          </MegaFilterSubHeader>
           <Filters>
             {!isEmpty(filters) &&
               filters

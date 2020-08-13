@@ -1,11 +1,15 @@
 import React from 'react';
-import { EmptyFilteredListContainer } from './styled';
+import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import EmplyFilterResultsPorcupine from 'img/animals/porcupine';
 
 const NoFilterResultsView = () => {
   return (
-    <EmptyFilteredListContainer>
-      <p>No results for your filter criteria.</p>
-    </EmptyFilteredListContainer>
+    <EmptyListView
+      title="There are no results for your filter criteria."
+      description=""
+      image={EmplyFilterResultsPorcupine}
+      imageStyle={{ height: '200px' }}
+    />
   );
 };
 

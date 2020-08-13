@@ -70,8 +70,20 @@ export const Container = styled.div`
 
 export const MegaFilterHeader = styled.div`
   display: flex;
+  justify-content: space-between;
+`;
+
+export const MegaFilterSubHeader = styled.div`
+  display: flex;
   margin-bottom: ${spacing.largePlus};
   justify-content: space-between;
+`;
+
+export const MegaFilterNoResultsLabel = styled.label`
+  color: ${palette.oPlusRed};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.bold};
+  font-family: 'Montserrat', sans-serif;
 `;
 
 export const MegaFilterLeftOptions = styled.div`
