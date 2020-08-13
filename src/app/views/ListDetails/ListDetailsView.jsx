@@ -49,12 +49,12 @@ class Home extends Component {
       currentUser,
     } = this.props;
 
-    if (routeParams.taskListIdentifier) {
-      taskListActions.getMembersByTaskListId(
-        routeParams.taskListIdentifier,
-        'ALL',
-      );
-    }
+    // if (routeParams.taskListIdentifier) {
+    //   taskListActions.getMembersByTaskListId(
+    //     routeParams.taskListIdentifier,
+    //     'ALL',
+    //   );
+    // }
 
     this.initTable();
 
@@ -156,12 +156,12 @@ class Home extends Component {
           );
         }
 
-        if (nextProps.routeParams.taskListIdentifier) {
-          taskListActions.getMembersByTaskListId(
-            nextProps.routeParams.taskListIdentifier,
-            'ALL',
-          );
-        }
+        // if (nextProps.routeParams.taskListIdentifier) {
+        //   taskListActions.getMembersByTaskListId(
+        //     nextProps.routeParams.taskListIdentifier,
+        //     'ALL',
+        //   );
+        // }
 
         // Start with no selected tasks
         actions.storeAsCurrentTask(null);
