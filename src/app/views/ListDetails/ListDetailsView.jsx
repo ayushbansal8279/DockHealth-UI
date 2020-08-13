@@ -47,6 +47,7 @@ class Home extends Component {
       taskListActions,
       patientActions,
       currentUser,
+      taskLists,
     } = this.props;
 
     if (routeParams.taskListIdentifier) {
@@ -57,6 +58,8 @@ class Home extends Component {
     }
 
     this.initTable();
+
+    this.setViewHeader(routeParams.taskListIdentifier, taskLists);
 
     patientActions.getAllPatients();
 
