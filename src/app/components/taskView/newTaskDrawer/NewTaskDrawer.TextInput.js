@@ -42,8 +42,6 @@ const TextInput = React.forwardRef(
       }
     }, [autoFocusEnabled, reference]);
 
-    console.log('calsses', classes);
-
     return (
       <>
         <TextField
