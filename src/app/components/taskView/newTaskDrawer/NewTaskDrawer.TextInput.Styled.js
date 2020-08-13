@@ -8,13 +8,13 @@ const ANIMATION = 'all 0.2s ease-out';
 const styles = {
   root: {
     border: BORDER,
-    borderBottomColor: palette.coolGrey2,
     borderRadius: 0,
     fontFamily: FONT_FAMILY,
     height: '100%',
     transition: ANIMATION,
     zIndex: 1,
     boxShadow: 'none',
+    borderBottomColor: props => (props.borderOnFocus ? '' : palette.coolGrey2),
     '& label': {
       color: palette.coolGrey2,
     },

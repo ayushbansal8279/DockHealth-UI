@@ -220,6 +220,7 @@ const NewTaskDrawer = ({
                   required
                   multiple
                   placeholder="What is the task?"
+                  borderOnFocus
                   InputLabelProps={{
                     shrink: true,
                   }}

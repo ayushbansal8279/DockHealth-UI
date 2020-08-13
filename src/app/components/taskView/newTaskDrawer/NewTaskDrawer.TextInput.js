@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import { any, bool, func, objectOf, string } from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -34,12 +34,15 @@ const TextInput = React.forwardRef(
 
     const error = (errors[name] || {}).message;
     const hasError = Boolean(error);
+    const [isFocused, setIsFocused] = useState(false);
 
     useEffect(() => {
       if (autoFocusEnabled && reference && reference.current) {
         reference.current.focus();
       }
     }, [autoFocusEnabled, reference]);
+
+    console.log('calsses', classes);
 
     return (
       <>
@@ -49,6 +52,7 @@ const TextInput = React.forwardRef(
           placeholder={placeholder}
           className={[
             classes.root,
+            isFocused ? classes.focused : '',
             className,
             hasError ? classes.error : '',
           ].join(' ')}
@@ -78,8 +82,14 @@ const TextInput = React.forwardRef(
           //   shrink: true,
           // }}
           InputLabelProps={InputLabelProps}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={event => {
+            onFocus(event);
+            setIsFocused(true);
+          }}
+          onBlur={event => {
+            onBlur(event);
+            setIsFocused(false);
+          }}
           inputProps={inputProps}
           inputRef={parentType !== 'text' ? null : register}
           disabled={disabled}
