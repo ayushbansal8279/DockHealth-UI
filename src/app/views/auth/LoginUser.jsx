@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
@@ -26,8 +26,9 @@ const onSubmit = form => {
   }
 };
 
-const LoginUser = () => {
+const LoginUser = props => {
   const dispatch = useDispatch();
+  const [userEmail, setUserEmail] = useState('');
 
   const confirmStatus = sessionStorage.getItem('confirmStatus');
 
@@ -41,13 +42,16 @@ const LoginUser = () => {
 
   useMount(() => {
     setConfirmationBaseState();
+    if (props.location?.query?.uname !== undefined) {
+      setUserEmail(props.location?.query?.uname);
+    }
   });
 
   useEffect(() => {
     setConfirmationBaseState();
   }, [confirmStatus, setConfirmationBaseState]);
 
-  return <LoginFormUsername onSubmit={onSubmit} />;
+  return <LoginFormUsername onSubmit={onSubmit} userEmail={userEmail} />;
 };
 
 export default LoginUser;

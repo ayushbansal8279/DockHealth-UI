@@ -57,9 +57,8 @@ const ConfirmRegistration = props => {
 
           success('Registration confirmed. Please Login');
           window.sessionStorage.setItem('confirmStatus', true);
-          hashHistory.push('login');
+          hashHistory.push(`login?uname=${encodeURIComponent(uname)}`);
           // window.location.href = process.env.BRANCH_IO_APP_LINK;
-          // hashHistory.push('confirmRegistrationSuccess')
         })
         .catch(error => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
@@ -74,15 +73,6 @@ const ConfirmRegistration = props => {
             // window.location.href = process.env.BRANCH_IO_APP_LINK;
             return;
           }
-          // const field = false;
-          // if (!field) {
-          //   showAlert({
-          //     icon: 'error',
-          //     title: 'Error',
-          //     text: 'User account not confirmed. Please try again',
-          //   });
-          //   hashHistory.push('login');
-          // }
           setDialogTitle(`Email confirmation`);
           setDialogMessage(`You may have already confirmed your email.`);
           showDialog();
