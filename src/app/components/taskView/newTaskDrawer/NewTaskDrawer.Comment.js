@@ -1,4 +1,3 @@
-import escape from 'lodash.escape';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 import Spacing from 'components/common/Spacing';
@@ -20,8 +19,7 @@ import {
   CommentMemberContainer,
 } from './NewTaskDrawer.CommentSection.Styled';
 
-const sanitizeCommentValue = ({ comment }) =>
-  escape(comment.replace(/<br.*>$/, ''));
+const sanitizeCommentValue = ({ comment }) => comment.replace(/<br.*>$/, '');
 
 const ADMIN_USER_ROLE = 'ADMIN';
 
