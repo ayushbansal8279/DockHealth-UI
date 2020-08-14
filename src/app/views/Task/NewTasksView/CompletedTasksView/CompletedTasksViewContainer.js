@@ -16,14 +16,24 @@ const mapStateToProps = (state, ownProps) => {
   const filteredCompletedTasks = !searchValue
     ? completedTasks
     : completedTasks.filter(
-        ({ description, comments, subtasks }) =>
+        ({ description, comments, subtasks, patient, assignedTo }) =>
           description.toLowerCase().includes(searchValue.toLowerCase()) ||
           pluck('comment', comments).filter(s =>
             new RegExp(searchValue.toLowerCase(), 'ig').test(s),
           ).length > 0 ||
           pluck('description', subtasks).filter(s =>
             new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-          ).length > 0,
+          ).length > 0 ||
+          patient?.firstName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          assignedTo?.firstName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          assignedTo?.lastName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()),
       );
 
   return {

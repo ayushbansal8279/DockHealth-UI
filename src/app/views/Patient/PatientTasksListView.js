@@ -24,8 +24,15 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
-    const filteredTasks = currentValue.tasks.filter(({ description }) =>
-      description.toLowerCase().includes(searchValue.toLowerCase()),
+    const filteredTasks = currentValue.tasks.filter(
+      ({ description, patient, assignedTo }) =>
+        description.toLowerCase().includes(searchValue.toLowerCase()) ||
+        patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        assignedTo?.firstName
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()) ||
+        assignedTo?.lastName.toLowerCase().includes(searchValue.toLowerCase()),
     );
     if (filteredTasks.length === 0) return accumulator;
 

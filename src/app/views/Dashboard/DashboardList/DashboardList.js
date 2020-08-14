@@ -56,8 +56,15 @@ import {
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
   dashboardTasks.reduce((accumulator, currentValue) => {
-    const filteredTasks = currentValue.tasks?.filter(({ description }) =>
-      description.toLowerCase().includes(searchValue.toLowerCase()),
+    const filteredTasks = currentValue.tasks?.filter(
+      ({ description, patient, assignedTo }) =>
+        description.toLowerCase().includes(searchValue.toLowerCase()) ||
+        patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        assignedTo?.firstName
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()) ||
+        assignedTo?.lastName.toLowerCase().includes(searchValue.toLowerCase()),
     );
     if (filteredTasks?.length === 0) return accumulator;
 
