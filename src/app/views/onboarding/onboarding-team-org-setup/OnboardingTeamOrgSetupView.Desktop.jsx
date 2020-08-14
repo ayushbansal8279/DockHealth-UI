@@ -1,21 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Grid } from '@material-ui/core';
-import React, { useCallback, useRef, useEffect } from 'react';
-import { FormContext, useForm, useFormContext } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
-import { useMount } from 'react-use';
-import { object, string } from 'yup';
-import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
 import { updateOrganizationName } from 'actions/organization-actions';
-import { findAllUsers, loading } from 'actions/people-actions';
-import * as userApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
-import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import { OnboardingButton } from '../OnboardingTemplate.Components';
 import {
   Title,
   FormWrapper,
@@ -28,23 +19,17 @@ import {
   ColorPickerLabel,
   ColorPickerHeader,
   InitialsInput,
+  InitialsError,
 } from './styled';
 
-const goToMainPage = () => {
-  hashHistory.push('/');
-};
-
-const onSubmit = ({ dispatch }) => ({ organizationName }) => {
-  updateOrganizationName({ organizationName })(dispatch).then(() => {
-    goToMainPage();
+const onSubmit = ({ dispatch }) => formValues => {
+  return;
+  updateOrganizationName({ organizationName: formValues.organizationName })(
+    dispatch,
+  ).then(() => {
+    hashHistory.push('/');
   });
 };
-
-const REQUIRED_MESSAGE = 'This field is required';
-
-const validationSchema = object().shape({
-  organizationName: string().required(REQUIRED_MESSAGE),
-});
 
 const ORGANIZATION_TILE_COLORS = [
   {
@@ -79,9 +64,10 @@ const ORGANIZATION_TILE_COLORS = [
 
 const OnboardingTeamOrgSetupViewDesktop = () => {
   const formContext = useForm({
-    // validationSchema,
     revalidationMode: 'onChange',
   });
+
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -91,6 +77,10 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
     setValue,
     watch,
   } = formContext;
+
+  const organizationNameValue = watch('organizationName');
+  const organizationInitialsValue = watch('organizationInitials');
+  const organizationThemeColor = watch('oraganizationThemeColor');
 
   useEffect(() => {
     register(
@@ -107,51 +97,35 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
         },
       },
     );
-
-    // register({ name: 'listDescription' });
-    // register({ name: 'owner' });
-    // register({ name: 'adminIdentifiers' });
-    // register({ name: 'memberIdentifiers' });
-
-    // setDefaultFormValues();
+    register(
+      { name: 'organizationInitials' },
+      {
+        minLength: {
+          value: 2,
+          message: '2 initials required', // TODO: update validation message
+        },
+        required: 'This field is required',
+      },
+    );
+    register(
+      {
+        name: 'oraganizationThemeColor',
+      },
+      {
+        required: 'You have to choose your theme color', // TODO: update validation message
+      },
+    );
 
     return () => {
       unregister('organizationName');
+      unregister('organizationInitials');
+      unregister('oraganizationThemeColor');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const outerContainerReference = useRef(null);
-  const dispatch = useDispatch();
-
-  const getAllUsers = useCallback(() => {
-    userApi.isAuthenticated({
-      isLoggedIn: (loggedIn, user) => {
-        if (loggedIn) {
-          userApi.getUserByEmail(user.username, user).then(data => {
-            if (data.profileThumbnailPictureHash) {
-              userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
-            }
-            userApi.getUserNotoficationPrefs();
-
-            loading()(dispatch);
-            findAllUsers()(dispatch);
-          });
-        }
-      },
-    });
-  }, [dispatch]);
-
-  useMount(() => {
-    setOnboardingCurrentStep({ currentStep: 4 })(dispatch);
-    getAllUsers();
-  });
-
   return (
-    <FormWrapper
-      onSubmit={handleSubmit(onSubmit({ dispatch }))}
-      ref={outerContainerReference}
-    >
+    <FormWrapper onSubmit={handleSubmit(onSubmit({ dispatch }))}>
       <Title>Name your organization</Title>
       <Spacing vertical={5} />
       <Description>
@@ -169,7 +143,7 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
         required
         showError
         centerizedLabelOnStart
-        // value={listNameValue}
+        value={organizationNameValue}
       />
 
       <Spacing vertical={4} />
@@ -179,9 +153,24 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
       </TileSettingsDescription>
       <Spacing vertical={4} />
       <InitialsInput
-        ref={register({ required: true, maxLength: 3, minLength: 2 })}
+        ref={register}
+        name="organizationInitials"
         placeholder="abc"
+        onChange={event => {
+          const newValue = event.target.value.trim().toUpperCase();
+
+          if (newValue.length > 3) {
+            setValue('organizationInitials', newValue.slice(0, 3));
+          } else {
+            setValue('organizationInitials', newValue);
+          }
+        }}
+        value={organizationInitialsValue}
+        backgroundColor={organizationThemeColor}
       />
+      {errors?.organizationInitials && (
+        <InitialsError>{errors?.organizationInitials?.message}</InitialsError>
+      )}
       <Spacing vertical={4} />
       <BottomSection>
         <ColorPickerWrapper>
@@ -189,44 +178,28 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
           <Spacing vertical={3} />
           {ORGANIZATION_TILE_COLORS.map(({ uniqueName, hex }) => (
             <>
-              <input type="radio" name="color" id={uniqueName} value={hex} />
-              <ColorPickerLabel color={hex} htmlFor={uniqueName}>
-                {/* <span className="red" /> */}
-              </ColorPickerLabel>
+              <input
+                ref={register}
+                type="radio"
+                name="oraganizationThemeColor"
+                id={uniqueName}
+                value={hex}
+              />
+              <ColorPickerLabel color={hex} htmlFor={uniqueName} />
             </>
           ))}
+          {errors?.oraganizationThemeColor && (
+            <InitialsError>
+              {errors?.oraganizationThemeColor?.message}
+            </InitialsError>
+          )}
         </ColorPickerWrapper>
         <ButtonWrapper>
-          <Button fullWidth>Continue</Button>
+          <Button fullWidth type="submit">
+            Continue
+          </Button>
         </ButtonWrapper>
       </BottomSection>
-      {/* <Spacing vertical={6} />
-        <MontserratTypography variant="h1" weight="600">
-          TIME TO CHOOSE A NAME
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h3">
-          What would you like to call your group or practice?
-        </MontserratTypography>
-        <MontserratTypography variant="h3">
-          You&apos;re Welcome to be creative, or just use your
-          organization&apos;s official name.
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <UniversalMontserratInput
-          autoFocus
-          label="What is the name of your group or practice?"
-          name="organizationName"
-          required
-        />
-        <Spacing vertical={4} />
-        <Grid container justify="flex-end">
-          <Spacing horizontal={4} />
-          <OnboardingButton variant="contained" type="submit" size="small">
-            Continue
-          </OnboardingButton> 
-        </Grid>
-          */}
     </FormWrapper>
   );
 };
