@@ -214,23 +214,25 @@ const TopSection = ({
                 paddingBottom: '0',
               }}
             >
-              {!isCompleted && (
-                <ListItem
-                  key="action_add_subtask"
-                  onClick={onAddSubTask({
-                    afterAddSubTask: () => {
-                      closeTaskMenuPopover();
-                    },
-                    selectedTask,
-                  })}
-                  button
-                  style={{
-                    borderBottom: `1px solid ${palette.coolGrey3}`,
-                  }}
-                >
-                  <CondensedH4>Add Subtask</CondensedH4>
-                </ListItem>
-              )}
+              {!isCompleted &&
+                selectedTask &&
+                !selectedTask.parentTaskIdentifier && (
+                  <ListItem
+                    key="action_add_subtask"
+                    onClick={onAddSubTask({
+                      afterAddSubTask: () => {
+                        closeTaskMenuPopover();
+                      },
+                      selectedTask,
+                    })}
+                    button
+                    style={{
+                      borderBottom: `1px solid ${palette.coolGrey3}`,
+                    }}
+                  >
+                    <CondensedH4>Add Subtask</CondensedH4>
+                  </ListItem>
+                )}
               <ListItem
                 key="action_duplicate"
                 onClick={event => {
