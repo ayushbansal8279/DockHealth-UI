@@ -805,7 +805,10 @@ export function storeAllTasks(tasks, completedTasks) {
     return [];
   };
 }
-export const prepareSubtask = (parentTaskIdentifier, assignedTo) => dispatch => {
+export const prepareSubtask = (
+  parentTaskIdentifier,
+  assignedTo,
+) => dispatch => {
   const subtaskShape = {
     taskIdentifier: null,
     parentTaskIdentifier,

@@ -404,8 +404,8 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        var assignedTo = null;
-        if(assignToSelf && selectedTask.assignedTo){
+        let assignedTo = null;
+        if (assignToSelf && selectedTask.assignedTo) {
           assignedTo = selectedTask.assignedTo;
         }
         await prepareSubtask(selectedTask.taskIdentifier, assignedTo)(dispatch);

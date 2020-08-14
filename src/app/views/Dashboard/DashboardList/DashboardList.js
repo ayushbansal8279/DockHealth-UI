@@ -542,7 +542,7 @@ const DashboardList = ({
           reloadDashboardTasks();
           fetchDashboardFilters();
         }}
-        assignToSelf={true}
+        assignToSelf
       />
     </>
   );
