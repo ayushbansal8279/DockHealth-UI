@@ -84,13 +84,20 @@ const LabelsSection = ({
       onItemSelected={(options, selectedOption) => {
         if (selectedTask && selectedTask?.taskIdentifier !== '') {
           saveAddLabel(selectedOption);
+          setCurrentlyEditedOption(null);
         }
       }}
       onItemRemoved={(options, removedOption) => {
         if (selectedTask && selectedTask?.taskIdentifier !== '') {
           removeLabelFromTask(removedOption);
+          setCurrentlyEditedOption(null);
         }
       }}
+      itemEditing={
+        !!(
+          currentlyEditedOption !== undefined && currentlyEditedOption !== null
+        )
+      }
       formatTagItem={(key, value) => {
         return getFormattedLabel({
           labelIdentifier: key,
@@ -101,6 +108,7 @@ const LabelsSection = ({
       endAdornmentEnabled
       forceOpen={forceOpen}
       onFocusCallback={() => {
+        setCurrentlyEditedOption(null);
         saveTaskOnFocus();
       }}
       autoFocusEnabled={taskDrawerFocusField === FocusDrawerFieldEnum.LABEL}

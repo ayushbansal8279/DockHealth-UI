@@ -162,6 +162,7 @@ const SelectInput = React.forwardRef(
       autoFocusEnabled,
       endAdornmentEnabled,
       onEndAdornmentAcionClick,
+      itemEditing,
     },
     reference,
   ) => {
@@ -435,6 +436,7 @@ const SelectInput = React.forwardRef(
           inputValue !== currentOption?.displayLabel ? (
             <Listbox
               {...getListboxProps()}
+              itemEditing={itemEditing}
               style={{
                 width:
                   reference && reference.current
@@ -448,6 +450,7 @@ const SelectInput = React.forwardRef(
           {groupedOptions.length > 0 ? (
             <Listbox
               {...getListboxProps()}
+              itemEditing={itemEditing}
               style={{
                 width:
                   reference && reference.current

@@ -78,20 +78,22 @@ export const Listbox = styled('ul')`
   }
 
   & li[data-focus='true'] {
-    background-color: ${palette.blueGrey};
+    background-color: ${props =>
+      props.itemEditing ? 'transparent' : palette.blueGrey};
     cursor: pointer;
   }
 
   & li[data-focus='true'] > div > div:nth-child(2) {
-    visibility: visible;
+    visibility: ${props => (props.itemEditing ? 'hidden' : 'visible')};
   }
 
   & li[data-focus='true'] > div > div:nth-child(3) {
-    visibility: visible;
+    visibility: ${props => (props.itemEditing ? 'hidden' : 'visible')};
   }
 
   & li[data-focus='true'][aria-selected='true'] {
-    background-color: ${palette.blueGrey};
+    background-color: ${props =>
+      props.itemEditing ? 'transparent' : palette.blueGrey};
   }
 
   & li[aria-selected='true'] {

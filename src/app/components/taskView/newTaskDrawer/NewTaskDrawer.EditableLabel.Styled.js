@@ -43,6 +43,7 @@ export const LabelInputContainer = styled.div`
   grid-gap: 0.5rem;
   grid-template-columns: 1fr auto;
   padding: ${spacing.small};
+  margin-top: -5px;
 `;
 
 export const LabelInput = styled.div`
