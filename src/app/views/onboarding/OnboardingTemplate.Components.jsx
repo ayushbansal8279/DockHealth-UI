@@ -15,13 +15,9 @@ import styled from 'styled-components';
 import clsx from 'clsx';
 import palette, { opacify } from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import WelcomeBackgroundPattern from 'img/Grey_Bubble_Pattern_Bottom.svg';
 
 export const OnboardingBackground = styled.div`
   background-color: ${palette.white};
-  background-image: url(${WelcomeBackgroundPattern});
-  background-position: bottom;
-  background-repeat: repeat-x;
   min-height: 100%;
   height: fit-content;
 `;
