@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 
 export const FormWrapper = styled.form`
   font-family: 'Montserrat', sans-serif;
@@ -96,7 +95,6 @@ export const InitialsInput = styled.input`
   display: block;
   height: 60px;
   width: 60px;
-  padding: ${spacing.smallPlus};
   outline: none;
   border: none;
   text-transform: uppercase;
@@ -106,5 +104,16 @@ export const InitialsInput = styled.input`
   box-sizing: border-box;
   background: ${({ backgroundColor }) => backgroundColor || palette.coolGrey4};
   color: ${({ backgroundColor }) =>
-    backgroundColor ? palette.white : palette.coolGrey2};
+    backgroundColor ? palette.white : palette.mediumGrey};
+  text-align: center;
+
+  &::placeholder {
+    color: ${palette.coolGrey2};
+  }
+`;
+
+export const InitialsError = styled.p`
+  margin-bottom: 0;
+  color: ${palette.oPlusRed};
+  font-size: ${fontSizes.small};
 `;
