@@ -12,6 +12,15 @@ export const ToolbarContainer = styled(Grid)`
   height: 42px;
   border-bottom: 2px solid ${palette.blueGrey};
   margin-bottom: ${spacing.largePlus};
+  flex-direction: column-reverse !important;
+  align-items: flex-start !important;
+  flex-wrap: inherit !important;
+
+  @media screen and (min-width: 960px) {
+    flex-direction: row !important;
+    align-items: initial !important;
+    flex-wrap: wrap;
+  }
 `;
 
 export const ActionsContainer = styled(Grid)`

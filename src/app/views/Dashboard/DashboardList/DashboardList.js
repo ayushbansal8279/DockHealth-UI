@@ -423,7 +423,7 @@ const DashboardList = ({
     <>
       <StickyHeader>
         <ToolbarContainer container direction="row" justify="space-between">
-          <Grid item xs={5}>
+          <Grid item md={3}>
             <DasboardTabsContainer>
               <DashboardTab
                 label="My Tasks"
@@ -446,8 +446,7 @@ const DashboardList = ({
               <DashboardTabHighlight {...highlightPosition} />
             </DasboardTabsContainer>
           </Grid>
-
-          <ActionsContainer item xs={7}>
+          <ActionsContainer item md={9}>
             <MegaFilter
               popoverStyles={{
                 width: 'calc(100% - 420px)',
