@@ -357,9 +357,12 @@ const DashboardList = ({
   };
 
   const showClearSortFiltersModal = () => {
-    if (sortType !== SORT_CONFIG.default) {
+    if (sortType !== SORT_CONFIG.default || areFiltersApplied) {
       openModal('ClearSortFilters', {
-        confirm: () => setSortType(SORT_CONFIG.default),
+        confirm: () => {
+          setSortType(SORT_CONFIG.default);
+          updateDashboardSelectedFilters({});
+        },
         closeOnConfirm: true,
       });
     }
@@ -526,6 +529,7 @@ const DashboardList = ({
               onClickListNameSort={onClickListNameSort}
               showClearSortFiltersModal={showClearSortFiltersModal}
               isSortApplied={isSortApplied}
+              areFiltersApplied={areFiltersApplied}
               isAllTasksTab={selectedTab === 'ALL_TASKS'}
               updateDueDate={updateDashboardTaskDueDate}
               currentUser={currentUser}

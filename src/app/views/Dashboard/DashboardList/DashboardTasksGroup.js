@@ -164,6 +164,7 @@ const DashboardTasksGroup = ({
   updateDueDate,
   currentUser,
   reassignDashboardTask,
+  areFiltersApplied,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -262,7 +263,7 @@ const DashboardTasksGroup = ({
           <DragDropContext
             onBeforeDragStart={showClearSortFiltersModal}
             onDragEnd={({ destination, source }) => {
-              if (!isSortApplied) {
+              if (!isSortApplied && !areFiltersApplied) {
                 const { index: destinationIndex } = destination;
                 const { index: sourceIndex } = source;
                 const newTasks = [...tasks];
