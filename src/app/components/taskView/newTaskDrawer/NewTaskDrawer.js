@@ -59,6 +59,7 @@ const NewTaskDrawer = ({
   refreshList,
   disabledFileds = [],
   fromFirstAddTask = false,
+  assignToSelf = false,
 }) => {
   const {
     taskDrawerOpen,
@@ -204,6 +205,7 @@ const NewTaskDrawer = ({
                 onDelete={onDelete}
                 onDuplicate={onDuplicate}
                 onAddSubTask={onAddSubTask}
+                assignToSelf={assignToSelf}
                 isInbox={isInbox}
                 closeTaskDrawer={closeTaskDrawer}
                 setAutoSaveVisible={setAutoSaveVisible}

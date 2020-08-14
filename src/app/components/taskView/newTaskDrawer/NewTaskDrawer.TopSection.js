@@ -66,6 +66,7 @@ const TopSection = ({
   closeTaskDrawer,
   modalActions,
   setTourTaskMenuReference,
+  assignToSelf,
 }) => {
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -224,6 +225,7 @@ const TopSection = ({
                         closeTaskMenuPopover();
                       },
                       selectedTask,
+                      assignToSelf,
                     })}
                     button
                     style={{

@@ -396,7 +396,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     }
   };
 
-  const onAddSubTask = ({ afterAddSubTask }) => async event => {
+  const onAddSubTask = ({ afterAddSubTask, assignToSelf }) => async event => {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -404,7 +404,11 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await prepareSubtask(selectedTask.taskIdentifier)(dispatch);
+        var assignedTo = null;
+        if(assignToSelf && selectedTask.assignedTo){
+          assignedTo = selectedTask.assignedTo;
+        }
+        await prepareSubtask(selectedTask.taskIdentifier, assignedTo)(dispatch);
         afterAddSubTask();
         refreshList();
         onButtonClicked('Add subtask');
