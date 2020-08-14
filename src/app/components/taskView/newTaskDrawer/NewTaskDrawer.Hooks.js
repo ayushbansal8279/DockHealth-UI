@@ -60,7 +60,7 @@ const onSubmit = ({
   setAutoSaveVisible,
   closeTaskDrawer,
   refreshList,
-}) => data => {
+}) => (data, event) => {
   // const currentLabels = selectedTask?.labels ?? [];
   // const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
@@ -113,7 +113,9 @@ const onSubmit = ({
       setSaving(false);
       setAutoSaveVisible();
 
-      closeTaskDrawer();
+      if (event?.target === 'form') {
+        closeTaskDrawer();
+      }
     })
     .catch(() => {
       setSaving(false);
