@@ -5,11 +5,12 @@ import spacing from 'styles/spacing';
 
 // Primary
 export const PrimaryInputBox = styled.div`
+  box-sizing: border-box;
   background-color: ${palette.coolGrey4};
   display: flex;
   flex-direction: column;
   padding: ${spacing.small} ${spacing.regular};
-  height: 72px;
+  height: 80px;
   ${props => props.fullWidth && 'width: 100%;'}
 `;
 
