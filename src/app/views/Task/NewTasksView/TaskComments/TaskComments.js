@@ -15,8 +15,10 @@ const TaskComments = ({
   onClickComment,
   highlightedValue,
 }) => {
-  const [showMore, setShowMore] = useState(comments?.length <= 3);
-  const limitedComments = showMore ? comments : comments?.slice(0, 3);
+  const [showMore, setShowMore] = useState(
+    !!(comments !== undefined && comments?.length > 3),
+  );
+  const limitedComments = !showMore ? comments : comments?.slice(0, 3);
   const groupedComments = groupBy(
     ({ dateCreated }) => moment(dateCreated).format('M/DD/YYYY'),
     limitedComments ?? [],
@@ -38,8 +40,8 @@ const TaskComments = ({
           </div>
         </TaskCommentsGroupedDay>
       ))}
-      {!showMore && (
-        <ShowMoreButton onClick={() => setShowMore(true)}>
+      {showMore && (
+        <ShowMoreButton onClick={() => setShowMore(false)}>
           Show more
         </ShowMoreButton>
       )}
