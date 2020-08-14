@@ -1064,8 +1064,19 @@ export function getFilteredTasksForList(
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
-  return dispatch =>
-    TaskApi.getFilteredTasksForList(taskListIdentifier, status, selectedFilters)
+  return dispatch => {
+    dispatch({
+      type:
+        status === 'INCOMPLETE'
+          ? ActionTypes.REQUEST_TASKS
+          : ActionTypes.REQUEST_COMPLETED_TASKS,
+    });
+
+    return TaskApi.getFilteredTasksForList(
+      taskListIdentifier,
+      status,
+      selectedFilters,
+    )
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
@@ -1073,6 +1084,7 @@ export function getFilteredTasksForList(
       .catch(error => {
         throw error;
       });
+  };
 }
 
 export function getFilteredTasksForPeopleList(
