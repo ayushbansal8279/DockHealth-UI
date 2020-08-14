@@ -229,19 +229,23 @@ class Home extends Component {
         if (
           (data.eventType?.startsWith('CREATE_TASK') ||
             data.eventType?.startsWith('DUPLICATE_TASK')) &&
-          data.task?.taskList
+          data.task?.taskList &&
+          data.task?.creator.userIdentifier !== currentUserIdentifier
         ) {
-          actions.getListTasks(
-            data.task.taskList.taskListIdentifier,
-            null,
-            null,
-            'INCOMPLETE',
+          const status = 'INCOMPLETE';
+          const filters = sessionStorageHelper.getItem(
+            `filter-${data.task.taskList.taskListIdentifier}-${status}`,
           );
-          actions.getListTasksCount(
-            data.task.taskList.taskListIdentifier,
-            null,
-            'COMPLETE',
-          );
+
+          if (!filters) {
+            this.getTasksList(data.task.taskList.taskListIdentifier, status);
+          } else {
+            this.getFilteredTasks(
+              data.task.taskList.taskListIdentifier,
+              filters,
+              status,
+            );
+          }
         }
         // eslint-disable-next-line no-unused-expressions
         actions.refreshAnotherTask(data.task);
