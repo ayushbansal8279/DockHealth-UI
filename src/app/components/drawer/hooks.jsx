@@ -12,7 +12,7 @@ import {
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import * as TemplateActions from 'actions/template-actions';
-import { TrialBannerLink, useDrawerClasses } from './Drawer.Styled';
+import { TrialBannerLink, useDrawerClasses } from './styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
 const CARD_EXPIRATION_WARNING_DAYS = 15;

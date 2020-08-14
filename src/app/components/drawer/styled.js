@@ -4,6 +4,13 @@ import { Link } from 'react-router';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
+export const DrawerContainer = styled.div`
+  display: flex;
+  height: 100%;
+  flex-flow: column nowrap;
+  overflow: hidden;
+`;
+
 export const useDrawerClasses = makeStyles({
   appBar: {
     backgroundColor: palette.midnightBlue,
