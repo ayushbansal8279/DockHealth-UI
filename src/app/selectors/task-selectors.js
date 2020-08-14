@@ -47,7 +47,7 @@ const sortByOrderProperty = (a, b) => {
   }
 
   if (b.taskOrderProp === null) {
-    return -1;
+    return 1;
   }
 
   return a.taskOrderProp - b.taskOrderProp;
