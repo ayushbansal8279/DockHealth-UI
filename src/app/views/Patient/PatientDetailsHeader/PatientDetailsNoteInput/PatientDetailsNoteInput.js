@@ -27,7 +27,10 @@ const PatientDetailsNoteInput = ({
       <InputBox>
         <Member member={currentUser} size={40} />
         <Input
-          onBlur={hideInput}
+          onBlur={() => {
+            if (closeOnEnter) hideInput();
+            return onEnterClick(note);
+          }}
           onChange={setNote}
           onEnter={() => {
             if (closeOnEnter) hideInput();
