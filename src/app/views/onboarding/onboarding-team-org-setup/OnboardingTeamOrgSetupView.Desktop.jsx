@@ -22,11 +22,16 @@ import {
   InitialsError,
 } from './styled';
 
-const onSubmit = ({ dispatch }) => formValues => {
-  return;
-  updateOrganizationName({ organizationName: formValues.organizationName })(
-    dispatch,
-  ).then(() => {
+const onSubmit = ({ dispatch }) => ({
+  organizationName,
+  organizationInitials,
+  organizationThemeColor,
+}) => {
+  updateOrganizationName({
+    organizationName,
+    organizationInitials,
+    organizationProfileColor: organizationThemeColor,
+  })(dispatch).then(() => {
     hashHistory.push('/');
   });
 };
@@ -107,7 +112,7 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
       },
     );
     register({
-        name: 'oraganizationThemeColor',
+      name: 'oraganizationThemeColor',
     });
 
     return () => {
