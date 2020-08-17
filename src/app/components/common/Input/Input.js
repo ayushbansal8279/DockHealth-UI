@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  InputWrapper,
   PrimaryInputBox,
   PrimaryInputLabel,
   PrimaryInputField,
@@ -68,24 +69,30 @@ const Input = React.forwardRef(
       !isFocused && centerizedLabelOnStart && (!value || value?.length === 0);
 
     return (
-      <Box fullWidth={fullWidth}>
-        <Label isLabelCenterized={isLabelCenterized} htmlFor={name}>
-          {label}
-          {required && <RequiredLabel>(required)</RequiredLabel>}
-        </Label>
-        <Field
-          id={name}
-          name={name}
-          type={type}
-          disabled={disabled}
-          placeholder={placeholder}
-          isLabelCenterized={isLabelCenterized}
-          ref={reference}
-          {...focusProps}
-          {...simpleInput}
-        />
+      <InputWrapper fullWidth={fullWidth}>
         {hasError && <Error>{error}</Error>}
-      </Box>
+        <Box>
+          <Label
+            isLabelCenterized={isLabelCenterized}
+            htmlFor={name}
+            hasError={hasError}
+          >
+            {label}
+            {required && <RequiredLabel>(required)</RequiredLabel>}
+          </Label>
+          <Field
+            id={name}
+            name={name}
+            type={type}
+            disabled={disabled}
+            placeholder={placeholder}
+            isLabelCenterized={isLabelCenterized}
+            ref={reference}
+            {...focusProps}
+            {...simpleInput}
+          />
+        </Box>
+      </InputWrapper>
     );
   },
 );
