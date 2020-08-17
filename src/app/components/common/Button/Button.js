@@ -7,6 +7,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 const StyledButton = styled.button`
   position: relative;
+  box-sizing: border-box;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   ${({ fullWidth }) => !fullWidth && 'min-width: 10.625rem;'}
   
