@@ -6,7 +6,7 @@ export const AvatarWrapper = styled.div`
   position: relative;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
-  background: ${({ backgroundColor }) => backgroundColor};
+  background: ${({ backgroundColor }) => backgroundColor || palette.coolGrey4};
   font-family: 'Montserrat', sans-serif;
   overflow: hidden;
 `;
