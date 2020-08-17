@@ -4,9 +4,9 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ProfileSettingsWrapper = styled.div`
-  max-width: 758px;
+  max-width: 798px;
   margin: 0 auto;
-  padding: 140px 0;
+  padding: 140px 20px;
   color: ${palette.mediumGrey};
   font-family: 'Montserrat', sans-serif;
 `;
@@ -51,7 +51,7 @@ export const DetailsText = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: ${fontSizes.regularPlus};
-  font-weight: ${fontWeights.bold};
+  font-weight: ${fontWeights.regularPlus};
   font-family: inherit;
 `;
 
