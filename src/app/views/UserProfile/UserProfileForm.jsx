@@ -82,8 +82,6 @@ const UserProfileForm = ({
     reValidateMode: 'onSubmit',
   });
 
-  console.log('default values', defaultValues);
-
   const {
     handleSubmit,
     formState: { isSubmitting },
