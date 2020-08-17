@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import palette from 'styles/palette';
 import { isEmpty } from 'ramda';
 import { setHeader } from 'actions/header-actions';
 import { updateOrganizationName } from 'actions/organization-actions';
@@ -116,7 +115,6 @@ const checkOrganizationNameForEditable = (
 
 const UserProfileView = () => {
   const dispatch = useDispatch();
-  const canLeaveCurrentOrganization = false;
 
   const { userProfile, userNotificationPreferences } = useSelector(store => {
     return {
@@ -127,6 +125,8 @@ const UserProfileView = () => {
       },
     };
   });
+
+  const canLeaveCurrentOrganization = userProfile.orgUserRole === 'GUEST'; // TODO: test after API update
 
   useMount(() => {
     userApi.getUserNotoficationPrefs();
@@ -179,6 +179,21 @@ const UserProfileView = () => {
     ),
   );
 
+  const getOrgRole = () => {
+    switch (userProfile.orgUserRole) {
+      case 'OWNER':
+        return 'Owner';
+      case 'ADMIN':
+        return 'Admin';
+      case 'MEMBER':
+        return 'Member';
+      case 'GUEST':
+        return 'Guest';
+      default:
+        return '';
+    }
+  };
+
   return (
     <ViewContainer>
       {!isEmpty(userProfile) && userNotificationPreferences && (
@@ -187,7 +202,15 @@ const UserProfileView = () => {
             <ViewHeader>Manage Your Profile</ViewHeader>
             <ViewDescription>
               This is where you can make changes to your profile information.
-              View our <a href="/">Privacy Policy</a>.
+              View our{' '}
+              <a
+                href="https://www.dock.health/privacy-statement"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Statement
+              </a>
+              .
             </ViewDescription>
           </SettingsSection>
           <Divider />
@@ -201,13 +224,13 @@ const UserProfileView = () => {
               alignItems="center"
             >
               <OrganizationAvatar
-                initials="bgi"
-                backgroundColor={palette.orange}
+                initials={userProfile.organizationInitials}
+                backgroundColor={userProfile.organizationProfileColor}
               />
               <Spacing horizontal={4} />
               <OrganizationDetails>
-                <DetailsText>Boston Children&apos;s Hospital</DetailsText>
-                <DetailsText>Guest</DetailsText>
+                <DetailsText>{userProfile.organizationName}</DetailsText>
+                <DetailsText>{getOrgRole()}</DetailsText>
               </OrganizationDetails>
               <Spacing horizontal={5} />
               {canLeaveCurrentOrganization && (
