@@ -102,19 +102,13 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
       {
         minLength: {
           value: 2,
-          message: '2 initials required', // TODO: update validation message
+          message: 'Your initials must contain at least 2 letters',
         },
-        required: 'This field is required',
       },
     );
-    register(
-      {
+    register({
         name: 'oraganizationThemeColor',
-      },
-      {
-        required: 'You have to choose your theme color', // TODO: update validation message
-      },
-    );
+    });
 
     return () => {
       unregister('organizationName');
