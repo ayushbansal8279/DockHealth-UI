@@ -3,15 +3,19 @@ import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
+export const InputWrapper = styled.div`
+  ${props => props.fullWidth && 'width: 100%;'}
+`;
+
 // Primary
 export const PrimaryInputBox = styled.div`
+  width: 100%;
   box-sizing: border-box;
   background-color: ${palette.coolGrey4};
   display: flex;
   flex-direction: column;
   padding: ${spacing.small} ${spacing.regular};
   height: 80px;
-  ${props => props.fullWidth && 'width: 100%;'}
 `;
 
 export const PrimaryInputField = styled.input`
@@ -32,8 +36,11 @@ export const PrimaryInputField = styled.input`
 `;
 
 export const PrimaryInputLabel = styled.label`
-  color: ${props =>
-    props.isLabelCenterized ? palette.mediumGrey : palette.lightGrey};
+  color: ${props => {
+    if (props.hasError) return palette.oPlusRed;
+
+    return props.isLabelCenterized ? palette.mediumGrey : palette.lightGrey;
+  }};
   font-size: ${props =>
     props.isLabelCenterized ? fontSizes.regular : fontSizes.small};
   padding: ${props =>
@@ -42,17 +49,20 @@ export const PrimaryInputLabel = styled.label`
 `;
 
 export const PrimaryInputError = styled.span`
+  display: block;
+  padding: ${spacing.small} ${spacing.smallPlus};
   color: ${palette.oPlusRed};
   font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.bold};
 `;
 
 // Secondary
 export const SecondaryInputBox = styled.div`
+  width: 100%;
   background-color: ${palette.white};
   display: flex;
   flex-direction: column;
   padding: ${spacing.small} ${spacing.smallPlus};
-  ${props => props.fullWidth && 'width: 100%;'}
 `;
 
 export const SecondaryInputField = styled.input`
@@ -72,15 +82,18 @@ export const SecondaryInputField = styled.input`
 `;
 
 export const SecondaryInputLabel = styled.label`
-  color: ${palette.lightGrey};
+  color: ${props => (props.hasError ? palette.oPlusRed : palette.lightGrey)};
   font-size: ${fontSizes.small};
   padding: ${spacing.tiny} 0;
   text-transform: uppercase;
 `;
 
 export const SecondaryInputError = styled.span`
+  display: block;
+  padding: ${spacing.small} ${spacing.smallPlus};
   color: ${palette.oPlusRed};
   font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.bold};
 `;
 
 // Rest

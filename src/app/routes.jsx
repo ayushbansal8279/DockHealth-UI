@@ -71,7 +71,6 @@ import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/Onbo
 import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
 import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
-import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
 import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
 import OnboardingTrialCheckView from './views/onboarding/onboarding-trial-check/OnboardingTrialCheckView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
@@ -92,7 +91,7 @@ import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubscriptionPlan';
-import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
+import UserProfileView from './views/UserProfile/UserProfileView';
 import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
 import { setLocationAndParameters } from './location/actions';
 import {
@@ -319,7 +318,7 @@ export const Routes = ({ store }) => {
         >
           <Route
             path="/userprofile"
-            component={UserProfileViewWrapper}
+            component={UserProfileView}
             onEnter={checkFeatureToggles}
           />
           <Route
@@ -488,7 +487,6 @@ export const Routes = ({ store }) => {
             path="baa-invitation-sent"
           />
           <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
-          <Route component={OnboardingProfileView} path="profile" />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

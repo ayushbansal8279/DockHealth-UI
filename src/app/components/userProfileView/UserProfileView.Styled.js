@@ -8,7 +8,6 @@ export const FormContainer = styled.form``;
 
 export const ViewContainer = styled.div`
   background-color: ${palette.white};
-  padding: 40px 0;
   position: relative;
 `;
 
