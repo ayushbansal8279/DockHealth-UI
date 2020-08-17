@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const ProfileSettingsWrapper = styled.div`
   max-width: 758px;
@@ -61,5 +62,15 @@ export const ActionButton = styled.button`
   &:hover {
     cursor: pointer;
     text-decoration: underline;
+  }
+`;
+
+export const SettingsSection = styled.section`
+  &:not(:first-of-type) {
+    margin-top: ${spacing.giga};
+  }
+
+  &:not(:last-of-type) {
+    margin-bottom: ${spacing.largePlus};
   }
 `;

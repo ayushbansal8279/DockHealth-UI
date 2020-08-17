@@ -26,6 +26,7 @@ import {
   OrganizationDetails,
   DetailsText,
   ActionButton,
+  SettingsSection,
 } from './styled';
 import OrganizationAvatar from '../../components/common/OrganizationAvatar/OrganizationAvatar';
 
@@ -182,15 +183,15 @@ const UserProfileView = () => {
     <ViewContainer>
       {!isEmpty(userProfile) && userNotificationPreferences && (
         <ProfileSettingsWrapper>
-          <ViewHeader>Manage Your Profile</ViewHeader>
-          <ViewDescription>
-            This is where you can make changes to your profile information. View
-            our <a href="/">Privacy Policy</a>.
-          </ViewDescription>
-          <Spacing vertical={4} />
+          <SettingsSection>
+            <ViewHeader>Manage Your Profile</ViewHeader>
+            <ViewDescription>
+              This is where you can make changes to your profile information.
+              View our <a href="/">Privacy Policy</a>.
+            </ViewDescription>
+          </SettingsSection>
           <Divider />
-          <Spacing vertical={5} />
-          <section>
+          <SettingsSection>
             <SectionHeader>My Organization</SectionHeader>
             <Spacing vertical={5} />
             <Grid
@@ -215,11 +216,9 @@ const UserProfileView = () => {
                 </ActionButton>
               )}
             </Grid>
-          </section>
-          <Spacing vertical={5} />
+          </SettingsSection>
           <Divider />
-          <Spacing vertical={5} />
-          <section>
+          <SettingsSection>
             <SectionHeader>My profile</SectionHeader>
             <Spacing vertical={5} />
             <UserProfileForm
@@ -229,7 +228,7 @@ const UserProfileView = () => {
               onSubmit={onFormSubmit({ userProfile, dispatch })}
               validationSchema={validationSchema}
             />
-          </section>
+          </SettingsSection>
         </ProfileSettingsWrapper>
       )}
     </ViewContainer>
