@@ -76,3 +76,36 @@ export const SettingsSection = styled.section`
   ${({ noMarginBottom }) =>
     !noMarginBottom && `margin-bottom: ${spacing.largePlus};`}
 `;
+
+export const AppVersionInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 55px ${spacing.large};
+  background-color: ${palette.lightGrey2};
+`;
+
+export const AppVersionInfoIcon = styled.img`
+  display: block;
+  width: 183px;
+`;
+
+export const AppVersionInfoTextWrapper = styled.div`
+  flex: 1;
+  margin-bottom: 0;
+  padding-right: ${spacing.giga};
+  padding-left: ${spacing.large};
+  font-size: ${fontSizes.regular};
+`;
+
+export const AppVersionInfoHeader = styled.h4`
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: ${fontWeights.bold};
+`;
+
+export const AppVersionInfoText = styled.p`
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: ${fontWeights.light};
+`;
