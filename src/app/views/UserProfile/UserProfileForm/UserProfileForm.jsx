@@ -10,6 +10,7 @@ import {
 } from 'components/common/UniversalInput/UniversalInput';
 import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
 import Spacing from 'components/common/Spacing';
+import validationSchema from './validation-schema';
 import {
   FormSwitchListItem,
   SectionSubtypography,
@@ -62,8 +63,6 @@ const UserProfileForm = ({
   // formFieldDefinitions,
   formSwitchDefinitions,
   onSubmit,
-  renderAvatarUploader = true,
-  validationSchema,
 }) => {
   const formMethods = useForm({
     defaultValues,
@@ -87,18 +86,16 @@ const UserProfileForm = ({
           <SectionHeader>My profile</SectionHeader>
           <Spacing vertical={5} />
           <Grid container spacing={2}>
-            {renderAvatarUploader && (
-              <UserAvatarGrid
-                alignItems="center"
-                container
-                item
-                xs={12}
-                direction="row"
-                wrap="nowrap"
-              >
-                <UserAvatarUploader />
-              </UserAvatarGrid>
-            )}
+            <UserAvatarGrid
+              alignItems="center"
+              container
+              item
+              xs={12}
+              direction="row"
+              wrap="nowrap"
+            >
+              <UserAvatarUploader />
+            </UserAvatarGrid>
             <Grid container item alignItems="flex-end" spacing={2}>
               <Grid item xs={12} md={6}>
                 <UniversalInput
@@ -123,6 +120,14 @@ const UserProfileForm = ({
                 name="email"
                 label="Email"
                 readOnly
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <UniversalInput
+                type="password"
+                label="Password"
+                readOnly
+                value="password"
               />
             </Grid>
             <Grid item xs={12}>
