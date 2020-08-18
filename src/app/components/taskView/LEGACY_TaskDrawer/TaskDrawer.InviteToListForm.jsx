@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { invitePersonToOrganization } from 'actions/people-actions';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
-import StyledInput from '../../userProfileView/StyledInput/StyledInput';
+import StyledInput from './StyledInput/StyledInput';
 import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
 
 const BottomFormLabel = styled.button`
