@@ -72,11 +72,7 @@ export const ActionButton = styled.button`
 `;
 
 export const SettingsSection = styled.section`
-  &:not(:first-of-type) {
-    margin-top: ${spacing.giga};
-  }
-
-  &:not(:last-of-type) {
-    margin-bottom: ${spacing.largePlus};
-  }
+  ${({ noMarginTop }) => !noMarginTop && `margin-top: ${spacing.giga};`}
+  ${({ noMarginBottom }) =>
+    !noMarginBottom && `margin-bottom: ${spacing.largePlus};`}
 `;

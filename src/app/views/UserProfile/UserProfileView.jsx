@@ -198,7 +198,7 @@ const UserProfileView = () => {
     <ViewContainer>
       {!isEmpty(userProfile) && userNotificationPreferences && (
         <ProfileSettingsWrapper>
-          <SettingsSection>
+          <SettingsSection noMarginTop>
             <ViewHeader>Manage Your Profile</ViewHeader>
             <ViewDescription>
               This is where you can make changes to your profile information.
@@ -241,17 +241,13 @@ const UserProfileView = () => {
             </Grid>
           </SettingsSection>
           <Divider />
-          <SettingsSection>
-            <SectionHeader>My profile</SectionHeader>
-            <Spacing vertical={5} />
-            <UserProfileForm
-              defaultValues={defaultValues}
-              formFieldDefinitions={formFieldDefinitions}
-              formSwitchDefinitions={formSwitchDefinitions}
-              onSubmit={onFormSubmit({ userProfile, dispatch })}
-              validationSchema={validationSchema}
-            />
-          </SettingsSection>
+          <UserProfileForm
+            defaultValues={defaultValues}
+            formFieldDefinitions={formFieldDefinitions}
+            formSwitchDefinitions={formSwitchDefinitions}
+            onSubmit={onFormSubmit({ userProfile, dispatch })}
+            validationSchema={validationSchema}
+          />
         </ProfileSettingsWrapper>
       )}
     </ViewContainer>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Grid, ListItem } from '@material-ui/core';
-import { Link } from 'react-router';
-import palette from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const FormSwitchListItem = styled(ListItem)`
   && {
@@ -17,29 +17,16 @@ export const SectionTypography = styled(SectionSubtypography)`
   font-weight: bold;
 `;
 
-export const StyledLinkLabel = styled.div`
-  display: inline-flex;
-  font-size: 20px;
-  margin-right: 0.5rem;
-  margin-top: 4rem;
-`;
-
-export const StyledRouterLink = styled(Link)`
-  color: ${palette.lighterCyanBlue};
-  display: inline-flex;
-  font-size: 20px;
-  margin-top: 4rem;
-  text-decoration: none;
-  transition: filter 0.2s ease;
-
-  &:hover {
-    color: ${palette.lighterCyanBlue};
-    filter: brightness(1.25);
-  }
-`;
-
 export const UserAvatarGrid = styled(Grid)`
   && {
     margin-bottom: 1.5rem;
   }
+`;
+
+export const FormInfoText = styled.p`
+  margin-bottom: 0;
+  padding: 0 ${spacing.regularPlus};
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
 `;
