@@ -54,11 +54,15 @@ export const PriorityHoverIcon = styled.img`
 `;
 
 export const AddPlaceholder = styled.div`
-  color: ${palette.mediumGrey};
+  color: ${palette.lightGrey};
   opacity: 0;
   &::first-letter {
     color: ${palette.orange};
     font-size: ${fontSizes.regular};
+  }
+
+  &:hover {
+    color: ${palette.brightBlue};
   }
 `;
 
@@ -253,7 +257,7 @@ export const SlimTaskItemContainer = styled.div`
   transition: background-color linear 0.2s;
 
   &:hover {
-    & ${PriorityHoverIcon}, ${ThreeDots} {
+    & ${PriorityHoverIcon}, ${ThreeDots}, ${AddPlaceholder} {
       opacity: 1;
     }
   }
@@ -328,16 +332,16 @@ export const SlimTaskWorkflowStatusContainer = styled.div`
   align-items: center;
   position: relative;
   height: calc(100% - ${spacing.regular});
-  padding-left: ${spacing.regularPlus};
+  padding-left: ${props => props.withPadding && spacing.regularPlus};
   font-size: ${fontSizes.smallPlus};
 `;
 
 export const SlimTaskItemPatientLink = styled(Link)`
-  color: ${palette.brightBlue};
+  color: ${palette.darkGrey};
   font-size: ${fontSizes.regular};
 
   &:hover {
-    text-decoration: underline;
+    color: ${palette.brightBlue};
   }
 `;
 

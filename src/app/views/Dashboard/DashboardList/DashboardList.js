@@ -25,7 +25,10 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
-import { storeAsCurrentTask as storeAsCurrentTaskAction } from 'actions/task-actions';
+import {
+  storeAsCurrentTask as storeAsCurrentTaskAction,
+  updateWorkflowStatus as updateWorkflowStatusAction,
+} from 'actions/task-actions';
 import {
   openDrawer as openDrawerAction,
   closeDrawer as closeDrawerAction,
@@ -211,6 +214,7 @@ const DashboardList = ({
   areFiltersApplied,
   tourModalIsOpen,
   openTourModal,
+  updateWorkflowStatus,
 }) => {
   const { openModal } = modalActions;
   const [selectedTab, setSelectedTab] = useState('MY_TASKS');
@@ -533,6 +537,7 @@ const DashboardList = ({
               updateDueDate={updateDashboardTaskDueDate}
               currentUser={currentUser}
               reassignDashboardTask={reassignDashboardTask}
+              updateWorkflowStatus={updateWorkflowStatus}
             />
           ))
         ) : (
@@ -568,6 +573,10 @@ const mapDispatchToProps = dispatch => ({
   openDrawer: bindActionCreators(openDrawerAction, dispatch),
   closeDrawer: bindActionCreators(closeDrawerAction, dispatch),
   showNavbar: bindActionCreators(showNavbarAction, dispatch),
+  updateWorkflowStatus: bindActionCreators(
+    updateWorkflowStatusAction,
+    dispatch,
+  ),
 });
 
 export default connect(
