@@ -15,26 +15,29 @@ import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import palette, { opacify } from 'styles/palette';
 import { RequiredLabel } from 'components/common/Input/styled';
+import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const ErrorLabel = styled.h4`
   color: ${palette.error};
   font-size: 0.75rem;
+  padding-left: 22px;
   margin: 0;
-  margin-bottom: 0.125rem;
+  margin-bottom: ${spacing.small};
   user-select: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
 `;
 
 export const UniversalFormControl = withStyles({
   root: {
     backgroundColor: palette.coolGrey4,
-    height: '4rem',
+    height: 75,
     transition: 'all 0.2s ease-out',
   },
   whiteBackground: {
     backgroundColor: palette.white,
-  },
-  error: {
-    backgroundColor: palette.coolGrey4,
   },
 })(({ classes, whiteBackground, error, ...props }) => {
   const className = clsx(
@@ -47,53 +50,47 @@ export const UniversalFormControl = withStyles({
 
 export const UniversalInputLabel = withStyles({
   root: {
-    color: palette.greyBlue,
     pointerEvents: 'none',
     top: '50%',
-    transform: 'translate(1rem, -50%) scale(1)',
+    transform: 'translate(22px, -50%) scale(1)',
     transition: 'all 200ms ease',
+    color: palette.mediumGrey,
+    fontFamily: "'Montserrat', sans-serif",
+    fontSize: fontSizes.regular,
+    fontWeight: fontWeights.regular,
     zIndex: 2,
   },
-  required: {
+  shrink: {
+    top: '10%',
+    transform: 'translate(22px, 0.375rem) scale(1)',
+    transformOrigin: 'center left',
+    transition: 'all 200ms ease',
+    color: palette.coolGrey1,
+    fontSize: fontSizes.small,
+  },
+  focused: {
+    color: `${palette.coolGrey1} !important`,
+  },
+  error: {
+    color: `${palette.error} !important`,
     '& > span': {
       color: palette.error,
     },
-  },
-  shrink: {
-    color: palette.unknownGrey5,
-    top: '5%',
-    transform: 'translate(1rem, 0.375rem) scale(1)',
-    transformOrigin: 'center left',
-    transition: 'all 200ms ease',
-  },
-  focused: {
-    color: `${palette.unknownGrey5} !important`,
   },
 })(InputLabel);
 
 export const UniversalInputBase = withStyles({
   root: {
-    border: `0.0625rem solid ${opacify(palette.unknownGrey6, 0)}`,
     height: '100%',
     transition: 'all 0.2s ease-out',
     zIndex: 1,
-  },
-  error: {
-    border: `0.0625rem solid ${palette.error}`,
-  },
-  focused: {
-    border: `0.0625rem solid ${palette.unknownGrey6}`,
-    '&$error': {
-      border: `0.0625rem solid ${palette.error}`,
-    },
   },
   input: {
     borderRadius: 0,
     boxShadow: 'none',
     paddingBottom: 0,
-    // padding: '1.25rem 1rem',
-    marginTop: '1.25rem',
-    marginLeft: '1rem',
+    marginTop: spacing.small,
+    marginLeft: 22,
     '&:focus': {
       backgroundColor: opacify(palette.lightGrey, 0),
       border: 0,
@@ -213,7 +210,7 @@ export const UniversalInput = ({
         whiteBackground={whiteBackground}
         fullWidth
       >
-        <UniversalInputLabel shrink={shrink}>
+        <UniversalInputLabel shrink={shrink} error={hasError}>
           {label}
           {required && <RequiredLabel>(required)</RequiredLabel>}
         </UniversalInputLabel>
