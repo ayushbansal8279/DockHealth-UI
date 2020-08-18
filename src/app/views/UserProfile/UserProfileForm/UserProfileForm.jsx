@@ -4,7 +4,10 @@ import { FormContext, useForm } from 'react-hook-form';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Button from 'components/common/Button/Button';
 import { FormSwitch } from 'components/common/Switch/Switch';
-import { UniversalMobileInputComponent } from 'components/common/UniversalInput/UniversalInput';
+import {
+  UniversalInput,
+  UniversalMobileInputComponent,
+} from 'components/common/UniversalInput/UniversalInput';
 import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
 import {
   FormSwitchListItem,
@@ -13,8 +16,6 @@ import {
   StyledLinkLabel,
   StyledRouterLink,
   UserAvatarGrid,
-  UserProfileViewGrid,
-  StyledInput,
 } from './styled';
 
 const renderFormFieldDefinition = ({
@@ -28,7 +29,7 @@ const renderFormFieldDefinition = ({
 }) => (
   <Grid key={key} item xs={12}>
     {PreFieldComponent && <PreFieldComponent />}
-    <StyledInput
+    <UniversalInput
       type={type}
       name={key}
       label={label}
@@ -89,59 +90,75 @@ const UserProfileForm = ({
         autoComplete="off"
         autoCorrect="off"
       >
-        <Grid container justify="center">
-          <UserProfileViewGrid item sm={12} container>
-            {renderAvatarUploader && (
-              <UserAvatarGrid
-                alignItems="center"
-                container
-                item
-                xs={12}
-                direction="row"
-                wrap="nowrap"
-              >
-                <UserAvatarUploader />
-              </UserAvatarGrid>
-            )}
-            {formFieldDefinitions.map(renderFormFieldDefinition)}
-            {formSwitchDefinitions?.length > 0 && (
-              <Grid item xs={12}>
-                <List>
-                  <ListItem divider>
-                    <SectionTypography>Notifications</SectionTypography>
-                  </ListItem>
-                  {formSwitchDefinitions.map(renderFormSwitchDefinition)}
-                </List>
-              </Grid>
-            )}
-            {CustomFooter ?? (
-              <Grid item container xs={12} justify="flex-end">
-                <Grid item sm={12} md={6}>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    type="submit"
-                    disabled={isSubmitting}
-                    {...otherSaveButtonProps}
-                  >
-                    {isSubmitting ? (
-                      <Loader size={LoaderSizes.medium} />
-                    ) : (
-                      saveButtonLabel
-                    )}
-                  </Button>
-                </Grid>
-              </Grid>
-            )}
-            <Grid item container xs={12} justify="flex-end">
-              {showSignInLabel && (
-                <>
-                  <StyledLinkLabel>I already have an account.</StyledLinkLabel>
-                  <StyledRouterLink to="/login">Sign in</StyledRouterLink>
-                </>
-              )}
+        <Grid container spacing={2}>
+          {renderAvatarUploader && (
+            <UserAvatarGrid
+              alignItems="center"
+              container
+              item
+              xs={12}
+              direction="row"
+              wrap="nowrap"
+            >
+              <UserAvatarUploader />
+            </UserAvatarGrid>
+          )}
+          <Grid container item spacing={2}>
+            <Grid item xs={12} md={6}>
+              <UniversalInput
+                type="text"
+                name="firstName"
+                label="First name"
+                required
+              />
             </Grid>
-          </UserProfileViewGrid>
+            <Grid item xs={12} md={6}>
+              <UniversalInput
+                type="text"
+                name="lastName"
+                label="Last name"
+                required
+              />
+            </Grid>
+          </Grid>
+          {formFieldDefinitions.map(renderFormFieldDefinition)}
+          {formSwitchDefinitions?.length > 0 && (
+            <Grid item xs={12}>
+              <List>
+                <ListItem divider>
+                  <SectionTypography>Notifications</SectionTypography>
+                </ListItem>
+                {formSwitchDefinitions.map(renderFormSwitchDefinition)}
+              </List>
+            </Grid>
+          )}
+          {CustomFooter ?? (
+            <Grid item container xs={12} justify="flex-end">
+              <Grid item sm={12} md={6}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  type="submit"
+                  disabled={isSubmitting}
+                  {...otherSaveButtonProps}
+                >
+                  {isSubmitting ? (
+                    <Loader size={LoaderSizes.medium} />
+                  ) : (
+                    saveButtonLabel
+                  )}
+                </Button>
+              </Grid>
+            </Grid>
+          )}
+          <Grid item container xs={12} justify="flex-end">
+            {showSignInLabel && (
+              <>
+                <StyledLinkLabel>I already have an account.</StyledLinkLabel>
+                <StyledRouterLink to="/login">Sign in</StyledRouterLink>
+              </>
+            )}
+          </Grid>
         </Grid>
       </form>
     </FormContext>
