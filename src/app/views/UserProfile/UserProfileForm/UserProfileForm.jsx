@@ -12,10 +12,8 @@ import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarU
 import Spacing from 'components/common/Spacing';
 import validationSchema from './validation-schema';
 import {
-  FormSwitchListItem,
   SectionSubtypography,
   SectionTypography,
-  UserAvatarGrid,
   FormInfoText,
 } from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
@@ -44,24 +42,24 @@ import { SettingsSection, SectionHeader } from '../styled';
 //   </Grid>
 // );
 
-const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
-  <FormSwitchListItem key={key}>
-    <Grid container alignItems="flex-start" justify="space-between">
-      <div>
-        <SectionTypography>{label}</SectionTypography>
-        {sublabels.map(sublabel => (
-          <SectionSubtypography key={sublabel}>{sublabel}</SectionSubtypography>
-        ))}
-      </div>
-      <FormSwitch name={key} />
-    </Grid>
-  </FormSwitchListItem>
-);
+// const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
+//   <FormSwitchListItem key={key}>
+//     <Grid container alignItems="flex-start" justify="space-between">
+//       <div>
+//         <SectionTypography>{label}</SectionTypography>
+//         {sublabels.map(sublabel => (
+//           <SectionSubtypography key={sublabel}>{sublabel}</SectionSubtypography>
+//         ))}
+//       </div>
+//       <FormSwitch name={key} />
+//     </Grid>
+//   </FormSwitchListItem>
+// );
 
 const UserProfileForm = ({
   defaultValues,
   // formFieldDefinitions,
-  formSwitchDefinitions,
+  // formSwitchDefinitions,
   onSubmit,
 }) => {
   const formMethods = useForm({
@@ -86,7 +84,7 @@ const UserProfileForm = ({
           <SectionHeader>My profile</SectionHeader>
           <Spacing vertical={5} />
           <Grid container spacing={2}>
-            <UserAvatarGrid
+            <Grid
               alignItems="center"
               container
               item
@@ -95,7 +93,8 @@ const UserProfileForm = ({
               wrap="nowrap"
             >
               <UserAvatarUploader />
-            </UserAvatarGrid>
+            </Grid>
+            <Spacing vertical={4} />
             <Grid container item alignItems="flex-end" spacing={2}>
               <Grid item xs={12} md={6}>
                 <UniversalInput
@@ -180,11 +179,39 @@ const UserProfileForm = ({
           <SectionHeader>Preferences</SectionHeader>
           <Spacing vertical={5} />
           <Grid container spacing={2}>
-            {formSwitchDefinitions?.length > 0 && (
-              <Grid item xs={12}>
-                {formSwitchDefinitions.map(renderFormSwitchDefinition)}
-              </Grid>
-            )}
+            <Grid
+              container
+              item
+              alignItems="flex-start"
+              justify="space-between"
+            >
+              <div>
+                <SectionTypography>Emails</SectionTypography>
+                <SectionSubtypography>
+                  Notify me via email when there is a new activity.
+                </SectionSubtypography>
+              </div>
+              <FormSwitch name="emailNotificationsEnabled" />
+            </Grid>
+            <Grid
+              container
+              item
+              alignItems="flex-start"
+              justify="space-between"
+            >
+              <div>
+                <SectionTypography>
+                  Push Notifications to mobile phone
+                </SectionTypography>
+                <SectionSubtypography>
+                  Notify me via push notification when there is new activity.
+                </SectionSubtypography>
+                <SectionSubtypography>
+                  *Mobile app required.
+                </SectionSubtypography>
+              </div>
+              <FormSwitch name="pushNotificationsEnabled" />
+            </Grid>
           </Grid>
         </SettingsSection>
         <Grid container xs={12} justify="flex-end">
