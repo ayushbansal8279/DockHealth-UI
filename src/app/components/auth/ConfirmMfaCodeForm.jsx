@@ -1,10 +1,11 @@
+/* eslint-disable unicorn/prefer-string-slice */
 import React, { useEffect } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
-import { NextButton, StyledLink } from './AuthComponents.styled';
+import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
+import { NextButton } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),

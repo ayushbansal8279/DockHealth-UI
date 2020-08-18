@@ -1,16 +1,12 @@
 import { Grid, List, ListItem } from '@material-ui/core';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import styled from 'styled-components';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import StyledSwitch from 'components/userProfileView/StyledSwitch';
+import Button from 'components/common/Button/Button';
+import StyledSwitch from 'components/userProfileView/StyledSwitch/StyledSwitch';
+import { UniversalMobileInputComponent } from 'components/common/UniversalInput/UniversalInput';
+import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
 import {
-  UniversalInput,
-  UniversalMobileInputComponent,
-} from 'components/userProfileView/UniversalInput';
-import UserAvatar from 'components/userProfileView/UserAvatar';
-import {
-  FormContainer,
   FormSwitchListItem,
   SectionSubtypography,
   SectionTypography,
@@ -18,14 +14,8 @@ import {
   StyledRouterLink,
   UserAvatarGrid,
   UserProfileViewGrid,
-} from 'components/userProfileView/UserProfileView.Styled';
-import Button from 'components/common/Button/Button';
-
-const StyledInput = styled(UniversalInput)`
-  && {
-    margin-bottom: 0.75rem;
-  }
-`;
+  StyledInput,
+} from './styled';
 
 const renderFormFieldDefinition = ({
   key,
@@ -94,7 +84,7 @@ const UserProfileForm = ({
 
   return (
     <FormContext {...formMethods}>
-      <FormContainer
+      <form
         onSubmit={handleSubmit(onSubmit)}
         autoComplete="off"
         autoCorrect="off"
@@ -110,7 +100,7 @@ const UserProfileForm = ({
                 direction="row"
                 wrap="nowrap"
               >
-                <UserAvatar />
+                <UserAvatarUploader />
               </UserAvatarGrid>
             )}
             {formFieldDefinitions.map(renderFormFieldDefinition)}
@@ -153,7 +143,7 @@ const UserProfileForm = ({
             </Grid>
           </UserProfileViewGrid>
         </Grid>
-      </FormContainer>
+      </form>
     </FormContext>
   );
 };

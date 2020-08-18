@@ -18,7 +18,7 @@ import Spacing from '../common/Spacing';
 import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
-} from '../userProfileView/UniversalInput';
+} from '../common/UniversalInput/UniversalInput';
 import { NextButton } from './AuthComponents.styled';
 
 const REQUIRED_MESSAGE = 'This field is required';

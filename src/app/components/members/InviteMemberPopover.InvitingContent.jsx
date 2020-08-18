@@ -10,7 +10,7 @@ import {
 } from 'actions/tasklist-actions';
 import { showAlert } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
+import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
 import {
   FormSection,
   PopoverBottomSection,

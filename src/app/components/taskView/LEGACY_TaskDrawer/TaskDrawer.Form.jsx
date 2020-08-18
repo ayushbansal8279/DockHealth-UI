@@ -10,7 +10,7 @@ import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { MemberName } from '../../members/MemberPicker';
 import MemberSlot from '../../members/MemberSlot';
-import StyledInput from '../../userProfileView/StyledInput';
+import StyledInput from '../../userProfileView/StyledInput/StyledInput';
 import TaskDrawerAddPatientForm from './TaskDrawer.AddPatientForm';
 import TaskDrawerEditTaskComponent from './TaskDrawer.EditTaskComponent';
 import TaskDrawerEmailBodyContainer from './TaskDrawer.EmailBody';

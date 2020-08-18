@@ -6,7 +6,7 @@ import useBoolean from 'hooks/useBoolean';
 import ArrowUpIcon from 'img/arrow-up.svg';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import { PaddedButtonLabel } from './UserProfileView.Styled';
+import { PaddedButtonLabel } from './styled';
 
 const getSmallButtonContent = ({
   fileLoaded,

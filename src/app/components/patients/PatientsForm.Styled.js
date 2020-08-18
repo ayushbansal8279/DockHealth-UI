@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { UniversalInput } from '../userProfileView/UniversalInput';
+import { UniversalInput } from '../common/UniversalInput/UniversalInput';
 
 export const PanelActionContainer = styled.div`
   display: flex;

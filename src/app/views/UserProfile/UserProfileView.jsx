@@ -8,14 +8,13 @@ import { updateOrganizationName } from 'actions/organization-actions';
 import * as userApi from 'api/user-api';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import { ViewContainer } from 'components/userProfileView/UserProfileView.Styled';
 import * as AlertActions from 'alert/actions';
-import UserProfileForm from './UserProfileForm';
+import UserProfileForm from './UserProfileForm/UserProfileForm';
 import {
   formFieldDefinitions,
   formSwitchDefinitions,
-} from './UserProfileView.FormDefinitions';
-import validationSchema from './UserProfileView.ValidationSchema';
+} from './UserProfileForm/form-definitions';
+import validationSchema from './UserProfileForm/validation-schema';
 import {
   ProfileSettingsWrapper,
   ViewHeader,
@@ -26,6 +25,7 @@ import {
   DetailsText,
   ActionButton,
   SettingsSection,
+  ViewContainer,
 } from './styled';
 import OrganizationAvatar from '../../components/common/OrganizationAvatar/OrganizationAvatar';
 
@@ -89,7 +89,7 @@ const onFormSubmit = ({ userProfile, dispatch }) => async data => {
     userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
   }
 };
@@ -120,8 +120,8 @@ const UserProfileView = () => {
     return {
       userProfile: store.userState.userProfile,
       userNotificationPreferences: {
-        emailNotificationsEnabled: store.userState.userNotificationPrefs.email,
-        pushNotificationsEnabled: store.userState.userNotificationPrefs.push,
+        emailNotificationsEnabled: store.userState.userNotificationPrefs?.email,
+        pushNotificationsEnabled: store.userState.userNotificationPrefs?.push,
       },
     };
   });

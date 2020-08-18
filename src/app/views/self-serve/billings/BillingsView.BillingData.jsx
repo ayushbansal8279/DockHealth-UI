@@ -15,7 +15,7 @@ import {
   UniversalFormControl,
   UniversalInputLabel,
   UniversalMontserratInput,
-} from 'components/userProfileView/UniversalInput';
+} from 'components/common/UniversalInput/UniversalInput';
 import useBoolean from 'hooks/useBoolean';
 import CardAmexIcon from 'img/cards/american-express.png';
 import CardDiscoverIcon from 'img/cards/discover.png';
