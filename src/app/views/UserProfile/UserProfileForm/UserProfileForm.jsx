@@ -3,7 +3,7 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Button from 'components/common/Button/Button';
-import StyledSwitch from 'components/userProfileView/StyledSwitch/StyledSwitch';
+import { FormSwitch } from 'components/common/Switch/Switch';
 import { UniversalMobileInputComponent } from 'components/common/UniversalInput/UniversalInput';
 import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
 import {
@@ -50,7 +50,7 @@ const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
           <SectionSubtypography key={sublabel}>{sublabel}</SectionSubtypography>
         ))}
       </div>
-      <StyledSwitch name={key} />
+      <FormSwitch name={key} />
     </Grid>
   </FormSwitchListItem>
 );

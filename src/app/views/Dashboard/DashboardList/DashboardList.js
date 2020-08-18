@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import EmptyTaskListBird from 'img/animals/bird';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import { Grid } from '@material-ui/core';
+import Switch from 'components/common/Switch/Switch';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
@@ -50,7 +51,6 @@ import {
   DashboardTab as StyledDashboardTab,
   DashboardTabHighlight,
   EmptyStateContainer,
-  TipsSwitch,
   TipsSwitchLabel,
 } from './styled';
 
@@ -474,7 +474,7 @@ const DashboardList = ({
             <Spacing horizontal={4} />
             <div>
               <TipsSwitchLabel>Tips</TipsSwitchLabel>
-              <TipsSwitch checked={tourModalIsOpen} onChange={openTourModal} />
+              <Switch checked={tourModalIsOpen} onChange={openTourModal} />
             </div>
             <Spacing horizontal={4} />
             <DashboardSettings

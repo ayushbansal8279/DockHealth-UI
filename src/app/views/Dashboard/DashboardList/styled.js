@@ -110,20 +110,6 @@ export const EmptyStateContainer = styled.div`
   padding: 0 55px;
 `;
 
-export const TipsSwitch = withStyles({
-  switchBase: {
-    color: palette.coolGrey4,
-    '&$checked': {
-      color: palette.darkBlue,
-    },
-    '&$checked + $track': {
-      backgroundColor: 'rgba(33, 109, 194, 0.38)',
-    },
-  },
-  checked: {},
-  track: {},
-})(Switch);
-
 export const TipsSwitchLabel = styled.label`
   font-family: 'Montserrat', sans-serif;
   color: ${palette.coolGrey1};
