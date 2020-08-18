@@ -5,9 +5,11 @@ import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import { mergeRefs as mergeReferences } from 'helpers/utility-functions';
 import palette, { opacify } from 'styles/palette';
-import { matchEmptyNumber } from 'views/UserProfile/UserProfileView.ValidationSchema';
-import StyledInputAutoCorrectedDate from './StyledInput.AutoCorrectedDate';
-import initializeStyledInputHooks from './StyledInput.Hooks';
+import StyledInputAutoCorrectedDate from './auto-corrected-date';
+import initializeStyledInputHooks from './hooks';
+
+export const matchEmptyNumber = value =>
+  value.replace(/_/g, '').replace(/^-+$/, '');
 
 const EMPTY_CLASS_NAME = 'empty';
 const ERROR_CLASS_NAME = 'error';

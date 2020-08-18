@@ -6,7 +6,7 @@ import Spacing from '../common/Spacing';
 import {
   UniversalBirthdayInputComponent,
   UniversalMobileInputComponent,
-} from '../userProfileView/UniversalInput';
+} from '../common/UniversalInput/UniversalInput';
 import {
   PanelActionContainer,
   PatientInput,

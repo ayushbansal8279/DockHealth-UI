@@ -6,7 +6,7 @@ import { object, string } from 'yup';
 import * as UserApi from 'api/user-api';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
+import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
 import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';

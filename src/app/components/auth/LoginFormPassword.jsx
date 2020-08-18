@@ -7,7 +7,7 @@ import EyeClosed from 'img/eye-closed.svg';
 import EyeOpen from 'img/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
+import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
 import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({

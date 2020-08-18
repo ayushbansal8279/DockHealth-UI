@@ -2,8 +2,8 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import AvatarEdit from 'react-avatar-edit';
 import palette from 'styles/palette';
-import Avatar from '../common/Avatar';
-import initializeUserAvatarHooks from './UserAvatar.Hooks';
+import Avatar from 'components/common/Avatar';
+import initializeUserAvatarHooks from './hooks';
 import {
   OuterAvatarContainer,
   PlainLink,
@@ -13,7 +13,7 @@ import {
   UploadImagePopoverGrid,
   UploadImagePopoverLabel,
   UserAvatarSupplement,
-} from './UserProfileView.Styled';
+} from './styled';
 
 export default () => {
   const {

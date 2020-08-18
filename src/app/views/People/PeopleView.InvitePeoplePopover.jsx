@@ -7,15 +7,15 @@ import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from 'actions/people-actions';
 import Spacing from 'components/common/Spacing';
-import { UniversalInput } from 'components/userProfileView/UniversalInput';
+import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
 import { showAlert } from 'helpers/utility-functions';
+import * as AlertActions from 'alert/actions';
 import {
   InvitePeoplePopoverContainer,
   InvitePeoplePopoverSection,
   InvitePopoverCloseButton,
   InvitePopoverDivider,
 } from './PeopleView.Styled';
-import * as AlertActions from 'alert/actions';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   email,
@@ -29,7 +29,9 @@ const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   })(dispatch)
     .then(() => {
       closePopover();
-      dispatch(AlertActions.showGlobalAlert('Invitation sent successfully', 'success'));
+      dispatch(
+        AlertActions.showGlobalAlert('Invitation sent successfully', 'success'),
+      );
       getAllUsers();
     })
     .catch(error => {

@@ -4,8 +4,8 @@ import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
-import { NextButton, StyledLink } from './AuthComponents.styled';
+import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
+import { NextButton } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
