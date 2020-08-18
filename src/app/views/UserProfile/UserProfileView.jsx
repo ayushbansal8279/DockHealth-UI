@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
+import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
 import { updateOrganizationName } from 'actions/organization-actions';
 import * as userApi from 'api/user-api';
@@ -25,6 +26,11 @@ import {
   ActionButton,
   SettingsSection,
   ViewContainer,
+  AppVersionInfoWrapper,
+  AppVersionInfoIcon,
+  AppVersionInfoTextWrapper,
+  AppVersionInfoText,
+  AppVersionInfoHeader,
 } from './styled';
 import OrganizationAvatar from '../../components/common/OrganizationAvatar/OrganizationAvatar';
 
@@ -246,6 +252,25 @@ const UserProfileView = () => {
             formSwitchDefinitions={formSwitchDefinitions}
             onSubmit={onFormSubmit({ userProfile, dispatch })}
           />
+          <Spacing vertical={5} />
+          <Divider />
+          <Spacing vertical={2} />
+          <AppVersionInfoWrapper>
+            <AppVersionInfoIcon src={MobileDevices} alt="Mobile app" />
+            <AppVersionInfoTextWrapper>
+              <AppVersionInfoHeader>
+                Desktop and Mobile versions
+              </AppVersionInfoHeader>
+              <AppVersionInfoText>
+                Dock is there where you need us. Access through your desktop or
+                take the{' '}
+                <a href="/" target="_blank" rel="noopener noreferrer">
+                  mobile app
+                </a>{' '}
+                on your rounds.
+              </AppVersionInfoText>
+            </AppVersionInfoTextWrapper>
+          </AppVersionInfoWrapper>
         </ProfileSettingsWrapper>
       )}
     </ViewContainer>
