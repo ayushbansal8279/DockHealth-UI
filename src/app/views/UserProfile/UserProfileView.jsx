@@ -14,7 +14,6 @@ import {
   formFieldDefinitions,
   formSwitchDefinitions,
 } from './UserProfileForm/form-definitions';
-import validationSchema from './UserProfileForm/validation-schema';
 import {
   ProfileSettingsWrapper,
   ViewHeader,
@@ -246,7 +245,6 @@ const UserProfileView = () => {
             formFieldDefinitions={formFieldDefinitions}
             formSwitchDefinitions={formSwitchDefinitions}
             onSubmit={onFormSubmit({ userProfile, dispatch })}
-            validationSchema={validationSchema}
           />
         </ProfileSettingsWrapper>
       )}
