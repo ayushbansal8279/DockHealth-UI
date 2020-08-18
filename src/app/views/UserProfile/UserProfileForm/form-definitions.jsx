@@ -10,16 +10,6 @@ const PrePasswordLabel = styled.div`
 
 export const formFieldDefinitions = [
   {
-    key: 'firstName',
-    label: 'First Name',
-    required: true,
-  },
-  {
-    key: 'lastName',
-    label: 'Last Name',
-    required: true,
-  },
-  {
     key: 'title',
     label: 'Title',
     required: true,

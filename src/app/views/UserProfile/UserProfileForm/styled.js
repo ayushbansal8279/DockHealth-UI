@@ -1,14 +1,7 @@
 import styled from 'styled-components';
 import { Grid, ListItem } from '@material-ui/core';
 import { Link } from 'react-router';
-import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
 import palette from 'styles/palette';
-
-export const StyledInput = styled(UniversalInput)`
-  && {
-    margin-bottom: 0.75rem;
-  }
-`;
 
 export const FormSwitchListItem = styled(ListItem)`
   && {
@@ -42,12 +35,6 @@ export const StyledRouterLink = styled(Link)`
   &:hover {
     color: ${palette.lighterCyanBlue};
     filter: brightness(1.25);
-  }
-`;
-
-export const UserProfileViewGrid = styled(Grid)`
-  && {
-    max-width: 780px;
   }
 `;
 
