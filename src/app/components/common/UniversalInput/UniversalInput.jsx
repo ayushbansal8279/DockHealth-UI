@@ -91,6 +91,7 @@ export const UniversalInputBase = withStyles({
     paddingBottom: 0,
     marginTop: spacing.small,
     marginLeft: 22,
+    fontFamily: "'Roboto Condensed', sans-serif",
     '&:focus': {
       backgroundColor: opacify(palette.lightGrey, 0),
       border: 0,
