@@ -5,9 +5,9 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { invitePersonToOrganization } from 'actions/people-actions';
 import palette from 'styles/palette';
-import StyledInput from '../../userProfileView/StyledInput';
+import * as AlertActions from 'alert/actions';
+import StyledInput from '../../userProfileView/StyledInput/StyledInput';
 import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
-import AlertMessages from '../alert/AlertMessages';
 
 const BottomFormLabel = styled.button`
   align-items: center;
@@ -68,11 +68,21 @@ const onSubmit = ({ dispatch, handlePersonSelect, toggleAddingNewPerson }) => {
   return async data => {
     try {
       await invitePersonToOrganization(data)(dispatch);
-      dispatch(AlertActions.showGlobalAlert('New person invited successfully', 'success'));
+      dispatch(
+        AlertActions.showGlobalAlert(
+          'New person invited successfully',
+          'success',
+        ),
+      );
       toggleAddingNewPerson();
       handlePersonSelect(data)();
     } catch {
-      dispatch(AlertActions.showGlobalAlert('Error inviting new person, please try again later', 'error'));
+      dispatch(
+        AlertActions.showGlobalAlert(
+          'Error inviting new person, please try again later',
+          'error',
+        ),
+      );
     }
   };
 };

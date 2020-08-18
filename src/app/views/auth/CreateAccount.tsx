@@ -24,7 +24,7 @@ import Spacing from 'components/common/Spacing';
 import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
-} from 'components/userProfileView/UniversalInput';
+} from 'components/common/UniversalInput/UniversalInput';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';

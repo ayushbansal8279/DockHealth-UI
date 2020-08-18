@@ -3,7 +3,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
+import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
 import { NextButton } from './AuthComponents.styled';
 
 const MIN_PASSWORD_LENGTH = 8;

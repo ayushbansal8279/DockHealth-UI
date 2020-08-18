@@ -3,6 +3,11 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
+export const ViewContainer = styled.div`
+  background-color: ${palette.white};
+  position: relative;
+`;
+
 export const ProfileSettingsWrapper = styled.div`
   max-width: 798px;
   margin: 0 auto;

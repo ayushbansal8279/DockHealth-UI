@@ -10,7 +10,7 @@ import Spacing from 'components/common/Spacing';
 import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
-} from 'components/userProfileView/UniversalInput';
+} from 'components/common/UniversalInput/UniversalInput';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { OnboardingButton } from '../OnboardingTemplate.Components';
