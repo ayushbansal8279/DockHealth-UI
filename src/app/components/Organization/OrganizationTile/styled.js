@@ -8,7 +8,7 @@ export const OrganizationTileContaier = styled.div`
   align-items: center;
   justify-content: center;
   background-color: ${props =>
-    props.isDefaultTile ? '#F9FAFC' : props.organizationColor};
+    props.isDefaultTile ? palette.coolGrey2 : props.organizationColor};
   height: ${props => props.size};
   min-height: ${props => props.size};
   width: ${props => props.size};
