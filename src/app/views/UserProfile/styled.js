@@ -12,7 +12,7 @@ export const ProfileSettingsWrapper = styled.div`
   max-width: 798px;
   width: 100%;
   margin: 0 auto;
-  padding: 140px 20px;
+  padding: 140px ${spacing.regularPlus};
   color: ${palette.mediumGrey};
   font-family: 'Montserrat', sans-serif;
 `;
