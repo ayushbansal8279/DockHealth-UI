@@ -16,6 +16,6 @@ export const OrganizationIdentifierContainer = styled.div`
   margin-right: ${props => spacing[props.right] || props.right};
 
   & > span {
-    margin-left: 8px;
+    margin-left: ${spacing.small};
   }
 `;
