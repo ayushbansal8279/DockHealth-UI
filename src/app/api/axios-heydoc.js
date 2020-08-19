@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import axios from 'axios';
 import { identity } from 'ramda';
 // import { showToast } from '../helpers/utility-functions';
@@ -15,6 +16,10 @@ axiosInstance.interceptors.request.use(
     }
     // Do something before request is sent
     const currentAccessToken = sessionStorage.getItem('accessToken');
+    const currentOrganizationIdentifier = sessionStorage.getItem(
+      'currentOrganizationIdentifier',
+    );
+    config.headers.CurrentOrganizationIdentifier = currentOrganizationIdentifier;
     config.headers.Authorization = `Bearer ${currentAccessToken}`;
     return config;
   },

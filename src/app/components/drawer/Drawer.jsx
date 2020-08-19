@@ -43,6 +43,7 @@ const Drawer = ({ children }) => {
     isNavbarInFullMode,
     areNavbarSettingsVisible,
     hideNavbar,
+    currentOrganization,
   } = initializeDrawerHooks();
 
   return (
@@ -104,8 +105,8 @@ const Drawer = ({ children }) => {
           open={isNavbarInFullMode || isOpen}
           user={user}
           lists={lists}
-          bannerVisible={bannerVisibleFlag}
           settingsVisible={areNavbarSettingsVisible}
+          currentOrganization={currentOrganization}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>

@@ -131,11 +131,6 @@ export const StyledListItem = styled(ListItem)`
   }
 `;
 
-export const StandardListContainer = styled.div`
-  padding-top: ${props => (props.bannerVisible ? 2.875 : 1)}rem;
-  transition: all 0.2s ease-out;
-`;
-
 export const StyledRouterLinkContainer = styled.div`
   display: flex;
   height: 2.125rem;
@@ -232,6 +227,7 @@ export const DropdownListItem = styled(FooterListItem)`
 `;
 
 export const StyledDropdown = styled.div`
+  margin-top: ${spacing.small};
   background-color: ${palette.midnightBlue};
   height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   min-height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
