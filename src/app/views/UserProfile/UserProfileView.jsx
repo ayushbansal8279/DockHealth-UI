@@ -1,20 +1,13 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
-import { updateOrganizationName } from 'actions/organization-actions';
 import * as userApi from 'api/user-api';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import * as AlertActions from 'alert/actions';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
-import {
-  formFieldDefinitions,
-  formSwitchDefinitions,
-} from './UserProfileForm/form-definitions';
 import {
   ProfileSettingsWrapper,
   ViewHeader,
@@ -34,90 +27,6 @@ import {
 } from './styled';
 import OrganizationAvatar from '../../components/common/OrganizationAvatar/OrganizationAvatar';
 
-const onFormSubmit = ({ userProfile, dispatch }) => async data => {
-  const {
-    emailNotificationsEnabled,
-    pushNotificationsEnabled,
-    ...otherData
-  } = data;
-
-  try {
-    const requestData = {};
-    formFieldDefinitions
-      .filter(({ readOnly = false }) => !readOnly)
-      .forEach(({ key, isPhoneNumber }) => {
-        const value = otherData[key];
-
-        requestData[key] = isPhoneNumber ? value?.replace(/-/g, '') : value;
-      });
-
-    requestData.specialties = [
-      {
-        name: requestData.specialty,
-        // specialtyId: otherSpecialty.specialtyId,
-        // subSpecialties: [
-        //   {
-        //     subSpecialtyId: otherSubspecialty.subSpecialtyId,
-        //     subSpecialtyName: requestData.subspecialty,
-        //   },
-        // ],
-      },
-    ];
-
-    requestData.titles = [
-      {
-        name: requestData.title,
-        // titleId: otherTitle.titleId,
-      },
-    ];
-
-    await userApi.updateUser(requestData);
-
-    if (
-      requestData.organizationName &&
-      requestData.organizationName !== userProfile.organizationName
-    ) {
-      const { organizationName } = requestData;
-      updateOrganizationName({ organizationName })(dispatch);
-    }
-
-    await userApi.updateUserNotoficationPrefs(
-      emailNotificationsEnabled,
-      pushNotificationsEnabled,
-    );
-
-    dispatch(
-      AlertActions.showGlobalAlert('Profile updated successfully!', 'success'),
-    );
-
-    userApi.getUserById();
-    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
-    userApi.getUserNotoficationPrefs();
-  } catch (error) {
-    console.error(error);
-    dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
-  }
-};
-
-const checkOrganizationNameForEditable = (
-  allFormFieldDefinitions,
-  userProfile,
-) => {
-  allFormFieldDefinitions
-    .filter(({ readOnly = true }) => readOnly)
-    .forEach(fieldDef => {
-      const fieldDefToUpdate = fieldDef;
-      if (
-        fieldDefToUpdate.key === 'organizationName' &&
-        (userProfile.orgUserRole === 'ADMIN' ||
-          userProfile.orgUserRole === 'OWNER') &&
-        fieldDefToUpdate !== undefined
-      ) {
-        fieldDefToUpdate.readOnly = false;
-      }
-    });
-};
-
 const UserProfileView = () => {
   const dispatch = useDispatch();
 
@@ -133,15 +42,9 @@ const UserProfileView = () => {
 
   const canLeaveCurrentOrganization = userProfile.orgUserRole === 'GUEST'; // TODO: test after API update
 
-  useMount(() => {
-    userApi.getUserNotoficationPrefs();
-  });
-
   useEffect(
     () => {
       userApi.getUserNotoficationPrefs();
-      // userApi.getAllSpecialties();
-      // userApi.getAllTitles();
 
       setHeader(dispatch)({
         layout: [
@@ -154,34 +57,6 @@ const UserProfileView = () => {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
-  );
-
-  checkOrganizationNameForEditable(formFieldDefinitions, userProfile);
-
-  const defaultValues = Object.fromEntries(
-    [...formFieldDefinitions, ...formSwitchDefinitions].map(
-      ({
-        key,
-        isPhoneNumber = false,
-        defaultValue = '',
-        defaultValueGetter = () => undefined,
-      }) => {
-        let newDefaultValue =
-          defaultValueGetter(userProfile) ||
-          (userNotificationPreferences || {})[key] ||
-          (userProfile || {})[key] ||
-          defaultValue;
-
-        if (isPhoneNumber) {
-          newDefaultValue = newDefaultValue.replace(
-            /(\d{3})(\d{3})(\d{4})/,
-            '$1-$2-$3',
-          );
-        }
-
-        return [key, newDefaultValue];
-      },
-    ),
   );
 
   const getOrgRole = () => {
@@ -247,10 +122,8 @@ const UserProfileView = () => {
           </SettingsSection>
           <Divider />
           <UserProfileForm
-            defaultValues={defaultValues}
-            formFieldDefinitions={formFieldDefinitions}
-            formSwitchDefinitions={formSwitchDefinitions}
-            onSubmit={onFormSubmit({ userProfile, dispatch })}
+            userProfile={userProfile}
+            userNotificationPreferences={userNotificationPreferences}
           />
           <Spacing vertical={5} />
           <Divider />
@@ -264,7 +137,11 @@ const UserProfileView = () => {
               <AppVersionInfoText>
                 Dock is there where you need us. Access through your desktop or
                 take the{' '}
-                <a href="/" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://apps.apple.com/us/app/dock-health/id1277060287"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   mobile app
                 </a>{' '}
                 on your rounds.
