@@ -27,6 +27,21 @@ import {
 } from './styled';
 import OrganizationAvatar from '../../components/common/OrganizationAvatar/OrganizationAvatar';
 
+const getOrgRole = roleKey => {
+  switch (roleKey) {
+    case 'OWNER':
+      return 'Owner';
+    case 'ADMIN':
+      return 'Admin';
+    case 'MEMBER':
+      return 'Member';
+    case 'GUEST':
+      return 'Guest';
+    default:
+      return '';
+  }
+};
+
 const UserProfileView = () => {
   const dispatch = useDispatch();
 
@@ -59,20 +74,7 @@ const UserProfileView = () => {
     [],
   );
 
-  const getOrgRole = () => {
-    switch (userProfile.orgUserRole) {
-      case 'OWNER':
-        return 'Owner';
-      case 'ADMIN':
-        return 'Admin';
-      case 'MEMBER':
-        return 'Member';
-      case 'GUEST':
-        return 'Guest';
-      default:
-        return '';
-    }
-  };
+  const userOrgRole = getOrgRole(userProfile?.orgUserRole);
 
   return (
     <ViewContainer>
@@ -110,7 +112,7 @@ const UserProfileView = () => {
               <Spacing horizontal={4} />
               <OrganizationDetails>
                 <DetailsText>{userProfile.organizationName}</DetailsText>
-                <DetailsText>{getOrgRole()}</DetailsText>
+                <DetailsText>{userOrgRole}</DetailsText>
               </OrganizationDetails>
               <Spacing horizontal={5} />
               {canLeaveCurrentOrganization && (

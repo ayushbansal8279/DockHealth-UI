@@ -21,7 +21,7 @@ import spacing from 'styles/spacing';
 export const ErrorLabel = styled.h4`
   color: ${palette.error};
   font-size: 0.75rem;
-  padding-left: 22px;
+  padding-left: ${spacing.regularPlus};
   margin: 0;
   margin-bottom: ${spacing.small};
   user-select: none;
@@ -52,7 +52,7 @@ export const UniversalInputLabel = withStyles({
   root: {
     pointerEvents: 'none',
     top: '50%',
-    transform: 'translate(22px, -50%) scale(1)',
+    transform: 'translate(20px, -50%) scale(1)',
     transition: 'all 200ms ease',
     color: palette.mediumGrey,
     fontFamily: "'Montserrat', sans-serif",

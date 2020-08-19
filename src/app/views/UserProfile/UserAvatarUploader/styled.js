@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { Button, Popover, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import palette, { opacify } from 'styles/palette';
+import { fontSizes } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const OuterAvatarContainer = styled.div`
   align-items: center;
@@ -12,7 +14,7 @@ export const OuterAvatarContainer = styled.div`
 
 export const PlainLink = styled.a`
   color: ${palette.lighterCyanBlue};
-  font-size: 20px;
+  font-size: ${fontSizes.regularPlus};
   ${props => props.topPadded && 'margin-top: 4rem;'}
   text-decoration: none;
   transition: filter 0.2s ease;
@@ -104,10 +106,10 @@ export const UserAvatarSupplement = styled.div`
   color: ${palette.unknownGrey5};
   cursor: pointer;
   margin-left: 0.6rem;
-  padding: 1rem;
+  padding: ${spacing.regular};
   padding-right: 4rem;
 `;
 
 export const PaddedButtonLabel = styled.span`
-  margin-left: 0.5rem;
+  margin-left: ${spacing.small};
 `;
