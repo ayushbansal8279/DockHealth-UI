@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import Spacing from 'components/common/Spacing';
 import folderUser from 'img/modals/user-folder';
 import { redTheme } from '../../themes/red-theme';
 
@@ -11,8 +11,8 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  ConfirmButtonWrapper,
+  CancelButtonWrapper,
 } from '../styled';
 
 const RemoveActiveUserModal = ({ closeModal, confirm }) => {
@@ -32,20 +32,33 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            Do not remove
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton
-            variant="contained"
-            type="button"
-            onClick={() => {
-              confirm();
-              closeModal();
-            }}
-          >
-            Remove
-          </ConfirmButton>
+          <CancelButtonWrapper>
+            <Button
+              fullWidth
+              variant="outlined"
+              type="button"
+              color="red"
+              size="small"
+              onClick={closeModal}
+            >
+              Do not remove
+            </Button>
+          </CancelButtonWrapper>
+          <ConfirmButtonWrapper>
+            <Button
+              fullWidth
+              variant="contained"
+              type="button"
+              size="small"
+              color="red"
+              onClick={() => {
+                confirm();
+                closeModal();
+              }}
+            >
+              Remove
+            </Button>
+          </ConfirmButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>
