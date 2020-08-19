@@ -233,13 +233,12 @@ const DrawerList = ({
   location,
   onMouseEnter,
   onMouseLeave,
-  bannerVisible,
   settingsVisible,
+  currentOrganization,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
   const [rolloverLabel, setRolloverLabel] = useState('');
-
   const drawerItems = getDrawerItems({ lists });
 
   useEffect(
@@ -281,9 +280,9 @@ const DrawerList = ({
         onMouseLeave={onMouseLeave}
       >
         <OrganizationIdentifier
-          tileConfig={{ fontSize: 'smallPlus' }}
+          tileConfig={{ fontSize: 'smallPlus', ...currentOrganization }}
           spacingsConfig={{ top: 18, bottom: 0, left: 18, right: 0 }}
-          organizationName="Organization name"
+          organizationName={currentOrganization?.organizationName}
           isOpen={open}
         />
         <DrawerListItemsContainer>

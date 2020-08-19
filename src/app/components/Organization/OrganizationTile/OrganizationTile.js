@@ -3,17 +3,17 @@ import React from 'react';
 import { OrganizationTileContaier } from './styled';
 
 const OrganizationTile = ({
-  organizationColor,
-  organizationInitial,
+  organizationProfileColor,
+  organizationInitials,
   size = 43,
 }) => {
   return (
     <OrganizationTileContaier
-      organizationColor={organizationColor}
+      organizationColor={organizationProfileColor}
       size={size}
-      isDefaultTile={!organizationInitial}
+      isDefaultTile={!organizationInitials}
     >
-      {organizationInitial || 'ABC'}
+      {organizationInitials || ''}
     </OrganizationTileContaier>
   );
 };

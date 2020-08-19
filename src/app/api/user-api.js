@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
@@ -181,7 +182,6 @@ export function resendConfirmationCode(userData) {
 
 export function logout() {
   return new Promise(resolve => {
-    // const userPoolForAuth = userPool;
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
       sessionStorage.removeItem('EnterpriseUserFlag');
       sessionStorage.removeItem('SSO_ACCESSTOKEN');
@@ -189,28 +189,15 @@ export function logout() {
       sessionStorage.removeItem('SSO_USEREMAIL');
       resolve();
     } else {
-      /*
-      const cognitoUser = userPoolForAuth.getCurrentUser();
-      if (cognitoUser != null) {
-        cognitoUser.signOut();
-        resolvedCognitoUser = null;
-        store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
-        sessionStorage.removeItem('accessToken');
-        sessionStorage.removeItem('userIdentifier');
-        sessionStorage.removeItem('sessionStartTime');
-        onLogout();
-      }
-      resolve();
-      */
       Auth.signOut()
-        .then(data => {
+        .then(() => {
           resolvedCognitoUser = null;
           store.dispatch({ type: 'user/user', user: null });
           store.dispatch({ type: RESET_APP });
           sessionStorage.removeItem('accessToken');
           sessionStorage.removeItem('userIdentifier');
           sessionStorage.removeItem('sessionStartTime');
-          // console.log(data)
+          sessionStorage.removeItem('currentOrganizationIdentifier');
           onLogout();
         })
         .catch(error => {
@@ -228,42 +215,11 @@ export function login(loginUserName, password) {
   sessionStorage.removeItem('SSO_REFRESHTOKEN');
   sessionStorage.removeItem('SSO_USEREMAIL');
   return new Promise((resolve, reject) => {
-    console.log(`login: ${username}`);
-    /*
-    const authenticationData = {
-      Username: username,
-      Password: password,
-    };
-    const authenticationDetails = new window.AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(
-      authenticationData,
-    );
-    const cognitoUserData = {
-      Username: username,
-      Pool: userPool,
-    };
-    const cognitoUser = new CognitoUser(cognitoUserData);
-    cognitoUser.setAuthenticationFlowType("USER_PASSWORD_AUTH");
-    resolvedCognitoUser = cognitoUser;
-    cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: result => {
-        store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
-        resolve(result);
-      },
-
-      onFailure: reject,
-
-      mfaRequired(challengeName, challengeParameters) {
-        resolve({ challengeName, challengeParameters });
-      },
-    });
-    */
-
     Auth.signIn({
       username, // Required, the username
       password, // Optional, the password
     })
       .then(user => {
-        // console.log(user);
         resolvedCognitoUser = user;
         if (
           user.challengeName === 'SMS_MFA' ||
@@ -397,29 +353,11 @@ export function sendMFACode(userData) {
 
 export function rememberDevice() {
   return new Promise(resolve => {
-    /*
-    const cognitoUser = resolvedCognitoUser;
-    if (cognitoUser != null) {
-      cognitoUser.getSession(error => {
-        if (!error) {
-          cognitoUser.setDeviceStatusRemembered({
-            onSuccess: result => {
-              resolve(result);
-            },
-            onFailure: noop,
-          });
-        }
-      });
-    }
-    */
-
     Auth.currentAuthenticatedUser({
       bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     })
       .then(user => {
-        console.log(user);
         user.getCachedDeviceKeyAndPassword(); // without this line, the deviceKey is null
-        console.log(user.deviceKey);
         user.setDeviceStatusRemembered({
           onSuccess: result => {
             resolve(result);
@@ -453,35 +391,12 @@ export function isAuthenticated({ isLoggedIn }) {
     isLoggedIn(false, userData);
   }
 
-  /*
-  const cognitoUser = userPoolForAuth.getCurrentUser();
-  if (cognitoUser != null) {
-    cognitoUser.getSession((error, session) => {
-      if (error) {
-        isLoggedIn(false, cognitoUser);
-      } else {
-        sessionStorage.setItem(
-          'accessToken',
-          cognitoUser.signInUserSession.accessToken.jwtToken,
-        );
-
-        cognitoUser.getUserAttributes(noop);
-        isLoggedIn(session.isValid(), cognitoUser);
-      }
-    });
-  } else {
-    isLoggedIn(false, cognitoUser);
-  }
-  */
-
   Auth.currentAuthenticatedUser({
     bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
   })
     .then(user => {
-      // console.log(user);
       Auth.currentSession()
         .then(data => {
-          // console.log(data);
           sessionStorage.setItem('accessToken', data.accessToken.jwtToken);
         })
         .catch(error => {
@@ -493,31 +408,6 @@ export function isAuthenticated({ isLoggedIn }) {
       console.log(error);
       isLoggedIn(false, null);
     });
-
-  /*
-  Auth.currentSession()
-  .then((data) => {
-    console.log(data);
-    sessionStorage.setItem(
-      'accessToken',
-      data.accessToken.jwtToken,
-    );
-    Auth.currentAuthenticatedUser({
-      bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-    }).then((user) => {
-      console.log(user);
-      isLoggedIn(true, user);
-    })
-    .catch((err) => {
-      console.log(err);
-      isLoggedIn(false, null);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-    isLoggedIn(false, null);
-  });
-  */
 }
 
 export function forgotPassword(userData) {
@@ -527,28 +417,7 @@ export function forgotPassword(userData) {
     username = username.toLowerCase();
   }
 
-  // const cognitoUserData = {
-  //   Username: username,
-  //   Pool: userPool,
-  // };
-
   return new Promise((resolve, reject) => {
-    /*
-    const cognitoUser = new CognitoUser(cognitoUserData);
-
-    cognitoUser.forgotPassword({
-      onSuccess: result => {
-        resolve(result.user);
-      },
-      onFailure: error => {
-        reject(error);
-      },
-      inputVerificationCode: data => {
-        resolve(data);
-      },
-    });
-    */
-
     Auth.forgotPassword(username)
       .then(data => {
         // console.log(data);
@@ -569,24 +438,7 @@ export function resetPassword(userData) {
     username = username.toLowerCase();
   }
 
-  // const cognitoUserData = {
-  //   Username: username,
-  //   Pool: userPool,
-  // };
-
   return new Promise((resolve, reject) => {
-    /*
-    const cognitoUser = new CognitoUser(cognitoUserData);
-
-    cognitoUser.confirmPassword(verificationCode, password, {
-      onSuccess: result => {
-        resolve(result);
-      },
-      onFailure: error => {
-        reject(error);
-      },
-    });
-    */
     Auth.forgotPasswordSubmit(username, verificationCode, password)
       .then(data => {
         // console.log(data);
@@ -609,6 +461,10 @@ export function createUser(user) {
   });
 }
 
+export function getUserOrganization() {
+  return axios.get('user/findUserOrganizations');
+}
+
 export function getUserByEmailAndAccessToken(userEmail, accessToken) {
   const authString = 'Bearer '.concat(accessToken);
   axios.defaults.headers.common.Authorization = authString;
@@ -622,11 +478,36 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
       }user/findUserByEmail?email=${encodeURIComponent(email)}`,
     )
     .then(response => {
-      store.dispatch({ type: 'user/userProfile', userProfile: response?.data });
-      sessionStorage.setItem('userIdentifier', response?.data.userIdentifier);
-      sessionStorage.setItem('userProfile', JSON.stringify(response?.data));
-      onLogin();
-      return { ...response?.data, access: dummyAccess };
+      getUserOrganization().then(({ data: orgData }) => {
+        const userProfile = { ...response?.data, userOrganizations: orgData };
+        store.dispatch({
+          type: 'user/userProfile',
+          userProfile,
+        });
+        sessionStorage.setItem(
+          'userIdentifier',
+          response?.data?.userIdentifier,
+        );
+        sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
+        const currentOrgIdentifier = sessionStorage.getItem(
+          'currentOrganizationIdentifier',
+        );
+
+        if (
+          currentOrgIdentifier === undefined ||
+          currentOrgIdentifier === '' ||
+          !currentOrgIdentifier
+        ) {
+          sessionStorage.setItem(
+            'currentOrganizationIdentifier',
+            response?.data?.organizationIdentifier,
+          );
+          axios.defaults.headers.common.CurrentOrganizationIdentifier =
+            response?.data?.organizationIdentifier;
+        }
+        onLogin();
+        return { ...userProfile, access: dummyAccess };
+      });
     });
 }
 
