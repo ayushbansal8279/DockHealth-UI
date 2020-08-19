@@ -27,14 +27,13 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to remove this user as a paid, active user? If
-            removed, you will not be charged for this user starting in the next
-            billing cycle.
+            Are you sure you want to remove this user? If removed, you will not
+            be charged for this user starting in the next billing cycle.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            No, do not remove
+            Do not remove
           </CancelButton>
           <Spacing horizontal={3} />
           <ConfirmButton
