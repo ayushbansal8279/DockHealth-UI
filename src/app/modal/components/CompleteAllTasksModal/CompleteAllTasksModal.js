@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import CircleCompletedGrey from 'img/circle-completed-grey';
@@ -11,8 +12,8 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const CompleteAllTasksModal = ({ closeModal, confirm }) => {
@@ -33,13 +34,31 @@ const CompleteAllTasksModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            No, don&apos;t complete
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Yes, complete all
-          </ConfirmButton>
+          <FlexButtonWrapper>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="outlined"
+              type="button"
+              onClick={closeModal}
+            >
+              Do not complete
+            </Button>
+          </FlexButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={172}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="contained"
+              type="button"
+              onClick={confirm}
+            >
+              Complete all
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

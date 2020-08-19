@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import SortArrows from 'img/modals/sort-arrows';
 import { redTheme } from '../../themes/red-theme';
@@ -11,8 +12,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
@@ -32,20 +32,34 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            Cancel
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton
-            variant="contained"
-            type="button"
-            onClick={() => {
-              confirm();
-              if (closeOnConfirm) closeModal();
-            }}
-          >
-            CLEAR SORT
-          </ConfirmButton>
+          <FixedWidthButtonWrapper width={120}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="outlined"
+              type="button"
+              onClick={closeModal}
+            >
+              Cancel
+            </Button>
+          </FixedWidthButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={152}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="contained"
+              type="button"
+              onClick={() => {
+                confirm();
+                if (closeOnConfirm) closeModal();
+              }}
+            >
+              CLEAR SORT
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

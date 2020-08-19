@@ -2,17 +2,17 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import Spacing from 'components/common/Spacing';
 import folderUser from 'img/modals/user-folder';
 import { redTheme } from '../../themes/red-theme';
-
 import {
   ModalWrapper,
   ModalMainIcon,
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButtonWrapper,
-  CancelButtonWrapper,
+  FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const RemoveActiveUserModal = ({ closeModal, confirm }) => {
@@ -32,7 +32,7 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButtonWrapper>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="outlined"
@@ -43,8 +43,9 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
             >
               Do not remove
             </Button>
-          </CancelButtonWrapper>
-          <ConfirmButtonWrapper>
+          </FlexButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={124}>
             <Button
               fullWidth
               variant="contained"
@@ -58,7 +59,7 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
             >
               Remove
             </Button>
-          </ConfirmButtonWrapper>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

@@ -45,16 +45,16 @@ export const ModalDescriptionContainer = styled.div`
 export const ButtonsContainer = styled.div`
   display: flex;
   width: 100%;
+  justify-content: center;
   padding: ${spacing.small} ${spacing.largePlus} ${spacing.largePlus};
 `;
 
-export const CancelButtonWrapper = styled.div`
+export const FlexButtonWrapper = styled.div`
   flex: 1;
 `;
 
-export const ConfirmButtonWrapper = styled.div`
-  width: 124px;
-  margin-left: ${spacing.regular};
+export const FixedWidthButtonWrapper = styled.div`
+  width: ${({ width }) => width || 'auto'}px;
 `;
 
 export const CloseIconButton = withStyles({
