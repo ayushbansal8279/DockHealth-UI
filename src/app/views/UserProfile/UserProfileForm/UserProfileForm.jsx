@@ -1,9 +1,12 @@
 import { Grid } from '@material-ui/core';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
+import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import { FormSwitch } from 'components/common/Switch/Switch';
+import { head } from 'ramda';
+import * as userApi from 'api/user-api';
+import * as AlertActions from 'alert/actions';
 import {
   UniversalInput,
   UniversalMobileInputComponent,
@@ -18,50 +21,69 @@ import {
 } from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
 
-// const renderFormFieldDefinition = ({
-//   key,
-//   label,
-//   required = false,
-//   readOnly = false,
-//   type = 'text',
-//   isPhoneNumber = false,
-//   PreFieldComponent,
-// }) => (
-//   <Grid key={key} item xs={12}>
-//     {PreFieldComponent && <PreFieldComponent />}
-//     <UniversalInput
-//       type={type}
-//       name={key}
-//       label={label}
-//       required={required}
-//       readOnly={readOnly}
-//       CustomComponent={
-//         isPhoneNumber ? UniversalMobileInputComponent : undefined
-//       }
-//     />
-//   </Grid>
-// );
+const onSubmit = ({ dispatch }) => async data => {
+  const {
+    emailNotificationsEnabled,
+    pushNotificationsEnabled,
+    ...otherData
+  } = data;
 
-// const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
-//   <FormSwitchListItem key={key}>
-//     <Grid container alignItems="flex-start" justify="space-between">
-//       <div>
-//         <SectionTypography>{label}</SectionTypography>
-//         {sublabels.map(sublabel => (
-//           <SectionSubtypography key={sublabel}>{sublabel}</SectionSubtypography>
-//         ))}
-//       </div>
-//       <FormSwitch name={key} />
-//     </Grid>
-//   </FormSwitchListItem>
-// );
+  try {
+    const requestData = {
+      firstName: otherData.firstName,
+      lastName: otherData.lastName,
+      titles: [{ name: otherData.title }],
+      department: otherData.department,
+      workPhoneNumber:
+        otherData?.workPhoneNumber?.replace(/[\s()-]/g, '') || '',
+    };
 
-const UserProfileForm = ({
-  defaultValues,
-  // formFieldDefinitions,
-  // formSwitchDefinitions,
-  onSubmit,
-}) => {
+    await userApi.updateUser(requestData);
+    await userApi.updateUserNotoficationPrefs(
+      emailNotificationsEnabled,
+      pushNotificationsEnabled,
+    );
+
+    dispatch(
+      AlertActions.showGlobalAlert('Profile updated successfully!', 'success'),
+    );
+
+    userApi.getUserById();
+    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
+    userApi.getUserNotoficationPrefs();
+  } catch (error) {
+    console.error(error);
+    dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
+  }
+};
+
+const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
+  const dispatch = useDispatch();
+
+  const defaultValues = useMemo(() => {
+    return {
+      firstName: userProfile.firstName,
+      lastName: userProfile.lastName,
+      title: head(userProfile.titles || [])?.name,
+      department: userProfile.department,
+      email: userProfile.email,
+      accountPhoneNumber: userProfile.accountPhoneNumber
+        ? userProfile.accountPhoneNumber
+            .replace(/^\+1/, '')
+            .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
+        : userProfile.accountPhoneNumber,
+      workPhoneNumber: userProfile.workPhoneNumber
+        ? userProfile.workPhoneNumber
+            .replace(/^\+1/, '')
+            .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
+        : '',
+      emailNotificationsEnabled:
+        userNotificationPreferences.emailNotificationsEnabled || false,
+      pushNotificationsEnabled:
+        userNotificationPreferences.pushNotificationsEnabled || false,
+    };
+  }, [userProfile, userNotificationPreferences]);
+
   const formMethods = useForm({
     defaultValues,
     validationSchema,
@@ -76,7 +98,7 @@ const UserProfileForm = ({
   return (
     <FormContext {...formMethods}>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit({ dispatch }))}
         autoComplete="off"
         autoCorrect="off"
       >
@@ -222,7 +244,7 @@ const UserProfileForm = ({
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? <Loader size={LoaderSizes.medium} /> : 'Save'}
+              Save
             </Button>
           </Grid>
         </Grid>
