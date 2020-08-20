@@ -7,11 +7,14 @@ import * as InvitationActions from 'actions/invitation-actions';
 import { hashHistory } from 'react-router';
 import { IconButton, Dialog } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
+import palette from 'styles/palette';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 import ListForm from 'components/ListForm/ListForm';
+import OrganizationList from 'components/Organization/OrganizationList/OrganizationList';
+
 import {
   TopSection,
   MenuButton,
@@ -135,6 +138,18 @@ const DashboardSidebar = ({
     setListEditPopupOpen(true);
   };
 
+  const {
+    userOrganizations,
+    organizationIdentifier: orgIdentifier,
+  } = currentUser;
+  const currentOrganization = userOrganizations?.find(
+    ({ organizationIdentifier }) => orgIdentifier === organizationIdentifier,
+  );
+  const availableUserOrganizations = userOrganizations?.filter(
+    ({ organizationIdentifier }) =>
+      organizationIdentifier === currentOrganization?.organizationIdentifier,
+  );
+
   return (
     <DashboardSidebarWrapper>
       <TopSection>
@@ -145,6 +160,14 @@ const DashboardSidebar = ({
           <NewListIndicator>Hooray! You have a new list.</NewListIndicator>
         )}
       </TopSection>
+      <OrganizationList
+        currentOrganization={currentOrganization}
+        availableUserOrganizations={availableUserOrganizations}
+        shouldExpand
+        selectedIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
+        availableIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
+        showShadowOnHover
+      />
       <ListsSection>
         <ListsHeader>
           My lists
