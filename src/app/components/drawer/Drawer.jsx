@@ -4,14 +4,15 @@ import React from 'react';
 import Intercom from 'react-intercom';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
-import initializeDrawerHooks from './Drawer.Hooks';
+import initializeDrawerHooks from './hooks';
+import DrawerList from './DrawerList/DrawerList';
 import {
+  DrawerContainer,
   ContentContainer,
   TrialBanner,
   TrialBannerContainer,
   TrialBannerLink,
-} from './Drawer.Styled';
-import DrawerList from './DrawerList';
+} from './styled';
 
 const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   <Grid item container key={key} {...otherProps}>
@@ -42,17 +43,11 @@ const Drawer = ({ children }) => {
     isNavbarInFullMode,
     areNavbarSettingsVisible,
     hideNavbar,
+    currentOrganization,
   } = initializeDrawerHooks();
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100%',
-        flexFlow: 'column nowrap',
-        overflow: 'hidden',
-      }}
-    >
+    <DrawerContainer>
       {isHeaderVisible && (
         <AppBar
           className={clsx(
@@ -110,8 +105,8 @@ const Drawer = ({ children }) => {
           open={isNavbarInFullMode || isOpen}
           user={user}
           lists={lists}
-          bannerVisible={bannerVisibleFlag}
           settingsVisible={areNavbarSettingsVisible}
+          currentOrganization={currentOrganization}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
@@ -123,7 +118,7 @@ const Drawer = ({ children }) => {
         <GlobalAlertChip />
         {children}
       </ContentContainer>
-    </div>
+    </DrawerContainer>
   );
 };
 

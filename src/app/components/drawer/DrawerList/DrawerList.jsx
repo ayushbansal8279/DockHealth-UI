@@ -5,30 +5,28 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router';
 import useBoolean from 'hooks/useBoolean';
 import ListsIcon from 'img/drawer/ListsIcon';
-import LogoutIcon from 'img/drawer/LogoutIcon';
 import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
-// import SupportIcon from 'img/drawer/SupportIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
 import SearchIcon from 'img/drawer/SearchIcon';
+import OrganizationIdentifier from '../../Organization/OrganizationIdentifier/OrganizationIdentifier';
 
-import DrawerHeader from './DrawerHeader';
+import DrawerFooter from './DrawerFooter';
 import {
+  DrawerListContainer,
+  DrawerListItemsContainer,
   ActiveIconRim,
-  ListDivider,
   NestedList,
   NestedListContainer,
   NestedListItem,
   NestedListItemText,
   RolloverNestedListItemText,
   RolloverPopover,
-  StandardListContainer,
-  StyledList,
   StyledListItem,
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
-} from './DrawerList.styled';
+} from './styled';
 
 const NESTED_LIST_PREFIX = 'nested';
 
@@ -219,12 +217,6 @@ const getDrawerItems = ({ lists }) => [
     icon: PatientsIcon,
     to: 'patients',
   },
-  // {
-  //   id: 'support',
-  //   label: 'Support',
-  //   icon: SupportIcon,
-  //   to: 'support',
-  // },
 ];
 
 const renderDrawerItem = ({ ...drawerListProps }) => ({
@@ -241,13 +233,12 @@ const DrawerList = ({
   location,
   onMouseEnter,
   onMouseLeave,
-  bannerVisible,
   settingsVisible,
+  currentOrganization,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
   const [rolloverLabel, setRolloverLabel] = useState('');
-
   const drawerItems = getDrawerItems({ lists });
 
   useEffect(
@@ -284,14 +275,17 @@ const DrawerList = ({
 
   return (
     <>
-      <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <DrawerHeader
-          setActiveId={setActiveId}
-          user={user}
-          onMouseEnter={onMouseEnter}
-          settingsVisible={settingsVisible}
+      <DrawerListContainer
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        <OrganizationIdentifier
+          tileConfig={{ fontSize: 'smallPlus', ...currentOrganization }}
+          spacingsConfig={{ top: 18, bottom: 0, left: 18, right: 0 }}
+          organizationName={currentOrganization?.organizationName}
+          isOpen={open}
         />
-        <StandardListContainer bannerVisible={bannerVisible}>
+        <DrawerListItemsContainer>
           {drawerItems.map(
             renderDrawerItem({
               activeId,
@@ -304,18 +298,14 @@ const DrawerList = ({
               setRolloverPopoverAnchor,
             }),
           )}
-        </StandardListContainer>
-        <ListDivider />
-        <Item
-          id="logout"
-          label="Logout"
-          icon={LogoutIcon}
-          to="logout"
-          activeId={activeId}
-          open={open}
+        </DrawerListItemsContainer>
+        <DrawerFooter
           setActiveId={setActiveId}
+          user={user}
+          onMouseEnter={onMouseEnter}
+          settingsVisible={settingsVisible}
         />
-      </StyledList>
+      </DrawerListContainer>
       <RolloverPopover
         anchorEl={rolloverPopoverAnchor?.current}
         anchorOrigin={{

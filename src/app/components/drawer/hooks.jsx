@@ -12,7 +12,7 @@ import {
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import * as TemplateActions from 'actions/template-actions';
-import { TrialBannerLink, useDrawerClasses } from './Drawer.Styled';
+import { TrialBannerLink, useDrawerClasses } from './styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
 const CARD_EXPIRATION_WARNING_DAYS = 15;
@@ -40,8 +40,6 @@ const initializeDrawerHooks = () => {
     },
   } = useSelector(store => ({
     ...store.organizationState,
-    organizationIdentifier:
-      store.userState?.userProfile?.organizationIdentifier,
     messageBannerBar: store.organizationState?.referralConfig?.messageBannerBar,
     user: store.userState.userProfile,
     lists: store.taskListState.tasklist,
@@ -161,6 +159,16 @@ const initializeDrawerHooks = () => {
     }
   }, [organization, messageBannerBar, trialEndLabel, isTrialSubscriptionPlan]);
 
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+
+  const currentOrganization =
+    user?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
+
   return {
     isOpen,
     open,
@@ -197,6 +205,7 @@ const initializeDrawerHooks = () => {
     isNavbarInFullMode,
     areNavbarSettingsVisible,
     hideNavbar: () => dispatch(TemplateActions.hideNavbar()),
+    currentOrganization,
   };
 };
 
