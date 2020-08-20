@@ -91,27 +91,6 @@ export const ColorPickerWrapper = styled.div`
   }
 `;
 
-export const InitialsInput = styled.input`
-  display: block;
-  height: 60px;
-  width: 60px;
-  outline: none;
-  border: none;
-  text-transform: uppercase;
-  font-family: inherit;
-  font-weight: ${fontWeights.bold};
-  font-size: ${fontSizes.regular};
-  box-sizing: border-box;
-  background: ${({ backgroundColor }) => backgroundColor || palette.coolGrey4};
-  color: ${({ backgroundColor }) =>
-    backgroundColor ? palette.white : palette.mediumGrey};
-  text-align: center;
-
-  &::placeholder {
-    color: ${palette.coolGrey2};
-  }
-`;
-
 export const InitialsError = styled.p`
   margin-bottom: 0;
   color: ${palette.oPlusRed};
