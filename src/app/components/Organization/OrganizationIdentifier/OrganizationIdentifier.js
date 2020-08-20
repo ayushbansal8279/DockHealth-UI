@@ -4,11 +4,11 @@ import OrganizationTile from '../OrganizationTile/OrganizationTile';
 
 const OrganizationIdentifier = ({
   tileConfig,
-  spacingsConfig,
+  identifierConfig,
   organizationName,
   isOpen,
 }) => (
-  <OrganizationIdentifierContainer {...spacingsConfig}>
+  <OrganizationIdentifierContainer {...identifierConfig}>
     <OrganizationTile {...tileConfig} />
     {isOpen && <span>{organizationName}</span>}
   </OrganizationIdentifierContainer>
