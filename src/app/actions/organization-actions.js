@@ -148,8 +148,18 @@ export const setPaymentNewPlan = ({ newPlan }) => dispatch => {
   });
 };
 
-export const updateOrganizationName = ({ organizationName }) => dispatch =>
-  OrganizationApi.updateOrganizationName({ organizationName }).then(() => {
+export const updateOrganizationName = ({
+  organizationName,
+  organizationInitials,
+  organizationProfileColor,
+  organizationIdentifier,
+}) => dispatch =>
+  OrganizationApi.updateOrganizationName({
+    organizationName,
+    organizationInitials,
+    organizationProfileColor,
+    organizationIdentifier,
+  }).then(() => {
     dispatch({
       type: UPDATE_ORGANIZATION,
       payload: {

@@ -63,12 +63,20 @@ export const updateLegalEntityName = ({ legalEntityName }) =>
     },
   }).then(response => response.data);
 
-export const updateOrganizationName = ({ organizationName }) =>
+export const updateOrganizationName = ({
+  organizationName,
+  organizationInitials,
+  organizationProfileColor,
+  organizationIdentifier = null,
+}) =>
   axios({
     method: 'put',
     url: '/organization/updateOrganizationName',
     data: {
       organizationName,
+      organizationInitials,
+      organizationProfileColor,
+      organizationIdentifier,
     },
   }).then(response => response.data);
 

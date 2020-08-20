@@ -5,6 +5,8 @@ import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
 import * as userApi from 'api/user-api';
+import { openModal as openModalAction } from 'modal/actions';
+import OrganizationAvatar from 'components/organization/OrganizationAvatar/OrganizationAvatar';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
@@ -25,7 +27,6 @@ import {
   AppVersionInfoText,
   AppVersionInfoHeader,
 } from './styled';
-import OrganizationAvatar from '../../components/common/OrganizationAvatar/OrganizationAvatar';
 
 const getOrgRole = roleKey => {
   switch (roleKey) {
@@ -55,8 +56,6 @@ const UserProfileView = () => {
     };
   });
 
-  const canLeaveCurrentOrganization = userProfile.orgUserRole === 'GUEST'; // TODO: test after API update
-
   useEffect(
     () => {
       userApi.getUserNotoficationPrefs();
@@ -73,6 +72,38 @@ const UserProfileView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  const renderOrganizationActionButton = () => {
+    switch (userProfile.orgUserRole) {
+      case 'GUEST':
+        return (
+          <ActionButton type="button" onClick={() => {}}>
+            Leave organization
+          </ActionButton>
+        );
+
+      case 'OWNER':
+      case 'ADMIN':
+        return (
+          <ActionButton
+            type="button"
+            onClick={() =>
+              dispatch(
+                openModalAction('EditOrganization', {
+                  userProfile,
+                  confirm: userApi.getUserById,
+                }),
+              )
+            }
+          >
+            Edit organization
+          </ActionButton>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   const userOrgRole = getOrgRole(userProfile?.orgUserRole);
 
@@ -115,11 +146,7 @@ const UserProfileView = () => {
                 <DetailsText>{userOrgRole}</DetailsText>
               </OrganizationDetails>
               <Spacing horizontal={5} />
-              {canLeaveCurrentOrganization && (
-                <ActionButton type="button" onClick={() => {}}>
-                  Leave organization
-                </ActionButton>
-              )}
+              {renderOrganizationActionButton()}
             </Grid>
           </SettingsSection>
           <Divider />
