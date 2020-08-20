@@ -9,8 +9,8 @@ import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
 import SearchIcon from 'img/drawer/SearchIcon';
+import palette from 'styles/palette';
 import OrganizationIdentifier from '../../Organization/OrganizationIdentifier/OrganizationIdentifier';
-
 import DrawerFooter from './DrawerFooter';
 import {
   DrawerListContainer,
@@ -26,6 +26,10 @@ import {
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
+  OrganizationIdentifiersList,
+  OrganizationIdentifiersListContainer,
+  // AddOrganizationLink,
+  // AddOrganizationLinkContainer,
 } from './styled';
 
 const NESTED_LIST_PREFIX = 'nested';
@@ -237,9 +241,19 @@ const DrawerList = ({
   currentOrganization,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
+  const [
+    isOrganizationSectionOpen,
+    openOrganizationSection,
+    closeOrganizationSection,
+  ] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
   const [rolloverLabel, setRolloverLabel] = useState('');
   const drawerItems = getDrawerItems({ lists });
+  const { userOrganizations } = user;
+  const availableUserOrganizations = userOrganizations?.filter(
+    ({ organizationIdentifier }) =>
+      organizationIdentifier === currentOrganization?.organizationIdentifier,
+  );
 
   useEffect(
     () => {
@@ -279,12 +293,62 @@ const DrawerList = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        <OrganizationIdentifier
-          tileConfig={{ fontSize: 'smallPlus', ...currentOrganization }}
-          spacingsConfig={{ top: 18, bottom: 0, left: 18, right: 0 }}
-          organizationName={currentOrganization?.organizationName}
-          isOpen={open}
-        />
+        <OrganizationIdentifiersListContainer
+          isOpen={isOrganizationSectionOpen}
+          onMouseEnter={openOrganizationSection}
+          onMouseLeave={closeOrganizationSection}
+        >
+          <OrganizationIdentifier
+            tileConfig={{
+              fontSize: 'smallPlus',
+              ...currentOrganization,
+            }}
+            identifierConfig={{
+              top: 12,
+              bottom: 12,
+              left: 12,
+              right: 12,
+              fontColor: isOrganizationSectionOpen
+                ? palette.mediumGrey
+                : 'white',
+            }}
+            organizationName={currentOrganization?.organizationName}
+            isOpen={open}
+          />
+          <OrganizationIdentifiersList
+            isOpen={isOrganizationSectionOpen}
+            organizationAmount={5}
+          >
+            {availableUserOrganizations?.map(org => (
+              <OrganizationIdentifier
+                tileConfig={{
+                  fontSize: 'smallPlus',
+                  ...org,
+                }}
+                identifierConfig={{
+                  top: 12,
+                  bottom: 12,
+                  left: 12,
+                  right: 12,
+                  fontColor: isOrganizationSectionOpen
+                    ? palette.mediumGrey
+                    : 'white',
+                  onHover: {
+                    backgroundColor: palette.coolGrey4,
+                  },
+                }}
+                organizationName={org?.organizationName}
+                isOpen={open}
+              />
+            ))}
+
+            {/* <AddOrganizationLinkContainer>
+              <AddOrganizationLink to="userProfile">
+                Add an organization
+              </AddOrganizationLink>
+            </AddOrganizationLinkContainer> */}
+          </OrganizationIdentifiersList>
+        </OrganizationIdentifiersListContainer>
         <DrawerListItemsContainer>
           {drawerItems.map(
             renderDrawerItem({

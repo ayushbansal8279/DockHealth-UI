@@ -5,17 +5,26 @@ import spacing from 'styles/spacing';
 export const OrganizationIdentifierContainer = styled.div`
   display: flex;
   align-items: center;
-  color: white;
   font-family: 'Montserrat', sans-serif;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};
-
-  margin-top: ${props => spacing[props.top] || props.top};
-  margin-bottom: ${props => spacing[props.bottom] || props.bottom};
-  margin-left: ${props => spacing[props.left] || props.left};
-  margin-right: ${props => spacing[props.right] || props.right};
+  padding-top: ${props => spacing[props.top] || props.top};
+  padding-bottom: ${props => spacing[props.bottom] || props.bottom};
+  padding-left: ${props => spacing[props.left] || props.left};
+  padding-right: ${props => spacing[props.right] || props.right};
+  color: ${props => props.fontColor || 'white'};
+  overflow: hidden;
 
   & > span {
     margin-left: ${spacing.small};
   }
+
+  ${props => {
+    if (props.onHover) {
+      return `&:hover {
+        background-color: ${props.onHover.backgroundColor};
+      }`;
+    }
+    return null;
+  }}
 `;
