@@ -1,0 +1,23 @@
+import React from 'react';
+import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
+import { ColorPickerLabel, ColorPickerWrapper } from './styled';
+
+const OrganizationColorPicker = ({ name, onChange, value }) => (
+  <ColorPickerWrapper>
+    {ORGANIZATION_TILE_COLORS.map(({ uniqueName, hex }) => (
+      <span key={uniqueName}>
+        <input
+          type="radio"
+          name={name}
+          id={uniqueName}
+          value={hex}
+          checked={value?.toLowerCase() === hex?.toLowerCase()}
+          onChange={event => typeof onChange === 'function' && onChange(event)}
+        />
+        <ColorPickerLabel color={hex} htmlFor={uniqueName} />
+      </span>
+    ))}
+  </ColorPickerWrapper>
+);
+
+export default OrganizationColorPicker;

@@ -7,21 +7,19 @@ import { updateOrganizationName } from 'actions/organization-actions';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
-import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
+import OrganizationAvatarInput from 'components/organization/OrganizationAvatarInput/OrganizationAvatarInput';
 import {
   Title,
   FormWrapper,
   Description,
   BottomSection,
   ButtonWrapper,
-  ColorPickerWrapper,
   TileSettingsHeader,
   TileSettingsDescription,
-  ColorPickerLabel,
   ColorPickerHeader,
-  InitialsInput,
   InitialsError,
 } from './styled';
+import OrganizationColorPicker from './OrganizationColorPicker';
 
 const onSubmit = ({ dispatch }) => ({
   organizationName,
@@ -55,7 +53,7 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
 
   const organizationNameValue = watch('organizationName');
   const organizationInitialsValue = watch('organizationInitials');
-  const organizationThemeColor = watch('oraganizationThemeColor');
+  const organizationThemeColorValue = watch('organizationThemeColor');
 
   useEffect(() => {
     register(
@@ -82,13 +80,13 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
       },
     );
     register({
-      name: 'oraganizationThemeColor',
+      name: 'organizationThemeColor',
     });
 
     return () => {
       unregister('organizationName');
       unregister('organizationInitials');
-      unregister('oraganizationThemeColor');
+      unregister('organizationThemeColor');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -121,8 +119,7 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
         2-3 initials to represent your organization
       </TileSettingsDescription>
       <Spacing vertical={4} />
-      <InitialsInput
-        ref={register}
+      <OrganizationAvatarInput
         name="organizationInitials"
         placeholder="abc"
         onChange={event => {
@@ -135,34 +132,30 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
           }
         }}
         value={organizationInitialsValue}
-        backgroundColor={organizationThemeColor}
+        backgroundColor={organizationThemeColorValue}
       />
       {errors?.organizationInitials && (
         <InitialsError>{errors?.organizationInitials?.message}</InitialsError>
       )}
       <Spacing vertical={4} />
       <BottomSection>
-        <ColorPickerWrapper>
+        <div>
           <ColorPickerHeader>Choose your theme color</ColorPickerHeader>
           <Spacing vertical={3} />
-          {ORGANIZATION_TILE_COLORS.map(({ uniqueName, hex }) => (
-            <>
-              <input
-                ref={register}
-                type="radio"
-                name="oraganizationThemeColor"
-                id={uniqueName}
-                value={hex}
-              />
-              <ColorPickerLabel color={hex} htmlFor={uniqueName} />
-            </>
-          ))}
+          <OrganizationColorPicker
+            name="organizationThemeColor"
+            value={organizationThemeColorValue}
+            onChange={event => {
+              const { name, value } = event.target;
+              setValue(name, value);
+            }}
+          />
           {errors?.oraganizationThemeColor && (
             <InitialsError>
               {errors?.oraganizationThemeColor?.message}
             </InitialsError>
           )}
-        </ColorPickerWrapper>
+        </div>
         <ButtonWrapper>
           <Button fullWidth type="submit">
             Continue
