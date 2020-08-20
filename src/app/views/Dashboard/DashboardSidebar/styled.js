@@ -13,7 +13,7 @@ export const DashboardSidebarWrapper = styled.div`
 
 export const TopSection = styled.div`
   position: relative;
-  height: 180px;
+  height: 90px;
   width: 100%;
 `;
 

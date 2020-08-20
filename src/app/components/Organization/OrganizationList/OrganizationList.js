@@ -1,0 +1,92 @@
+import React from 'react';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'styles/palette';
+import OrganizationIdentifier from '../OrganizationIdentifier/OrganizationIdentifier';
+
+import {
+  OrganizationIdentifiersList,
+  OrganizationIdentifiersListContainer,
+  // AddOrganizationLink,
+  // AddOrganizationLinkContainer,
+} from './styled';
+
+const OrganizationList = ({
+  currentOrganization,
+  availableUserOrganizations,
+  shouldExpand,
+  selectedIdentifierConfig,
+  availableIdentifierConfig,
+  showShadowOnHover,
+  onSelect,
+}) => {
+  const [
+    isOrganizationSectionOpen,
+    openOrganizationSection,
+    closeOrganizationSection,
+  ] = useBoolean(false);
+
+  const defaultIdentifierConfig = {
+    top: 12,
+    bottom: 12,
+    left: 12,
+    right: 12,
+    fontColor: isOrganizationSectionOpen ? palette.mediumGrey : 'white',
+  };
+
+  const customSelectedIdentifierConfig = {
+    ...defaultIdentifierConfig,
+    ...selectedIdentifierConfig,
+  };
+
+  const customAvailableIdentifierConfig = {
+    onHover: {
+      backgroundColor: palette.coolGrey4,
+    },
+    ...defaultIdentifierConfig,
+    ...availableIdentifierConfig,
+  };
+
+  return (
+    <OrganizationIdentifiersListContainer
+      isOpen={isOrganizationSectionOpen}
+      onMouseEnter={openOrganizationSection}
+      onMouseLeave={closeOrganizationSection}
+      showShadowOnHover={showShadowOnHover}
+    >
+      <OrganizationIdentifier
+        tileConfig={{
+          fontSize: 'smallPlus',
+          ...currentOrganization,
+        }}
+        identifierConfig={customSelectedIdentifierConfig}
+        organizationName={currentOrganization?.organizationName}
+        isOpen={shouldExpand}
+      />
+      <OrganizationIdentifiersList
+        isOpen={isOrganizationSectionOpen}
+        organizationAmount={5}
+      >
+        {availableUserOrganizations?.map(org => (
+          <OrganizationIdentifier
+            tileConfig={{
+              fontSize: 'smallPlus',
+              ...org,
+            }}
+            identifierConfig={customAvailableIdentifierConfig}
+            organizationName={org?.organizationName}
+            isOpen={shouldExpand}
+            onSelect={() => onSelect(org?.organizationIdentifier)}
+          />
+        ))}
+
+        {/* <AddOrganizationLinkContainer>
+    <AddOrganizationLink to="userProfile">
+      Add an organization
+    </AddOrganizationLink>
+  </AddOrganizationLinkContainer> */}
+      </OrganizationIdentifiersList>
+    </OrganizationIdentifiersListContainer>
+  );
+};
+
+export default OrganizationList;
