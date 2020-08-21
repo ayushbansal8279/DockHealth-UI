@@ -5,6 +5,7 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   min-height: 56px;
@@ -13,16 +14,12 @@ export const Wrapper = styled.div`
   color: ${palette.mediumGrey};
 `;
 
-export const PlaceholderContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
 export const Placeholder = styled.p`
+  position: absolute;
   margin-bottom: 0;
+  top: 50%;
+  left: ${spacing.large};
+  transform: translateY(-50%);
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
@@ -30,12 +27,19 @@ export const Placeholder = styled.p`
 `;
 
 export const SelectElement = styled.button`
+  position: relative;
   width: calc(100% - 130px);
   padding: ${spacing.smallPlus} ${spacing.regularPlus} ${spacing.tiny}
     ${spacing.regularPlus};
   background: ${palette.coolGrey4};
   text-align: left;
   cursor: text;
+
+  ${({ withValue }) =>
+    withValue &&
+    `
+    box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
+  `}
 `;
 
 export const ButtonWrapper = styled.div`
@@ -96,4 +100,16 @@ export const SearchInput = styled.input`
   outline: none;
   border: none;
   background: transparent;
+`;
+
+export const AvailablePeopleWrapper = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: calc(100% - 130px);
+  max-height: 138px;
+  overflow-y: scroll;
+  background: ${palette.white};
+  box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
+  z-index: 100;
 `;

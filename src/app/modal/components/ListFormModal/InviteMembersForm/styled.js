@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const InviteInitialViewWrapper = styled.div`
   display: flex;
@@ -60,4 +61,35 @@ export const LoaderWrapper = styled.div`
   flex: 1;
   justify-content: center;
   alignitems: center;
+`;
+
+export const MembersListWrapper = styled.div`
+  width: 100%;
+  height: 138px;
+  overflow-y: scroll;
+`;
+
+export const MemberListItem = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  padding: ${spacing.tiny} ${spacing.smallPlus};
+`;
+
+export const MemberFullNameWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+`;
+
+export const MemberFullName = styled.p`
+  margin-bottom: 0;
+  margin-left: ${spacing.smallPlus};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  font-family: 'Roboto Condensed', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
