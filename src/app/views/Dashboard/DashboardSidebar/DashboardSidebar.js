@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
+import { selectCurrentOrganization as selectCurrentOrganizationAction } from 'api/user-api';
 import { hashHistory } from 'react-router';
 import { IconButton, Dialog } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
@@ -50,6 +51,7 @@ const DashboardSidebar = ({
   taskListActions,
   invitationActions,
   currentUser,
+  selectCurrentOrganization,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const hoveredItemReference = useRef(null);
@@ -147,7 +149,7 @@ const DashboardSidebar = ({
   );
   const availableUserOrganizations = userOrganizations?.filter(
     ({ organizationIdentifier }) =>
-      organizationIdentifier === currentOrganization?.organizationIdentifier,
+      organizationIdentifier !== currentOrganization?.organizationIdentifier,
   );
 
   return (
@@ -167,6 +169,7 @@ const DashboardSidebar = ({
         selectedIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
         availableIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
         showShadowOnHover
+        onSelect={selectCurrentOrganization}
       />
       <ListsSection>
         <ListsHeader>
@@ -318,6 +321,10 @@ const mapDispachToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
+  selectCurrentOrganization: bindActionCreators(
+    selectCurrentOrganizationAction,
+    dispatch,
+  ),
 });
 
 export default connect(mapStateToProps, mapDispachToProps)(DashboardSidebar);
