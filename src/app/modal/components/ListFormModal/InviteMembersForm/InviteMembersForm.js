@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import PersonIcon from 'img/modals/person';
 import PeopleIcon from 'img/modals/people';
+import * as TaskListApi from 'api/tasklist-api';
+import * as PeopleApi from 'api/people-api';
 import { showAlert } from 'helpers/utility-functions';
 import * as TaskListActions from 'actions/tasklist-actions';
+import { findAllUsersByOrganizationId } from 'actions/people-actions';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
 import initializeListFormHooks from 'components/ListForm/hooks';
-import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
+// import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
 import { Title, FormWrapper, Header, Description } from '../styled';
+import ListMembersSelect from '../ListMembersSelect/ListMembersSelect';
 import {
   InviteInitialViewWrapper,
   InviteInitialViewContent,
@@ -16,10 +21,12 @@ import {
   NavigationIcon,
   NavigationText,
   SkipButton,
+  LoaderWrapper,
 } from './styled';
+import Loader from 'components/common/Loader/Loader';
 
-const ADMIN_PICKER = 'ADMIN_PICKER';
-const MEMBER_PICKER = 'MEMBER_PICKER';
+// const ADMIN_PICKER = 'ADMIN_PICKER';
+// const MEMBER_PICKER = 'MEMBER_PICKER';
 
 const onSubmit = ({
   dispatch,
@@ -52,28 +59,77 @@ const onSubmit = ({
     });
 };
 
-const InviteMembersForm = ({ closeModal, isListEditMode }) => {
+const InviteMembersForm = ({
+  closeModal,
+  isListEditMode,
+  taskListIdentifier,
+}) => {
+  const dispatch = useDispatch();
   const [newListView, setNewListView] = useState(!isListEditMode);
-  const [pickerOpened, setPickerOpened] = useState(null);
   const [isSavingList, setIsSavingList] = useState(false);
+  const [listMembers, setListMembers] = useState([]);
+  const [listMembersFetched, setListMembersFetched] = useState(false);
 
-  const {
-    addAdmin,
-    addMember,
-    allAdminsWithOwner,
-    allMembersValue,
-    currentUser,
-    dispatch,
-    handleSubmit,
-    people,
-    peopleListForAdminPicker,
-    peopleListForMemberPicker,
-    removeAdmin,
-    removeMember,
-    taskListIdentifier,
-  } = initializeListFormHooks();
+  const [allOrganizationMembers, setAllOrganizationMembers] = useState([]);
+  const [
+    allOrganizationMembersFetched,
+    setAllOrganizationMembersFetched,
+  ] = useState(false);
 
-  const { orgUserRole } = currentUser;
+  useEffect(() => {
+    if (!newListView) {
+      setAllOrganizationMembersFetched(false);
+      PeopleApi.findAllUsersByOrganizationId().then(organizationMembers => {
+        setAllOrganizationMembers(organizationMembers);
+        setAllOrganizationMembersFetched(true);
+      });
+    }
+  }, [newListView]);
+
+  useEffect(() => {
+    if (!newListView && taskListIdentifier) {
+      setListMembersFetched(false);
+      TaskListApi.getMembersByTaskListId(taskListIdentifier, 'ALL').then(
+        members => {
+          setListMembers(members);
+          setListMembersFetched(true);
+        },
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newListView, taskListIdentifier]);
+
+  const userProfile = useSelector(state => state.userState.userProfile);
+
+  const organizationMembersNotInTheList = useMemo(
+    () =>
+      allOrganizationMembers.filter(
+        organizationMember =>
+          !listMembers.some(
+            ({ userIdentifier }) =>
+              organizationMember.userIdentifier === userIdentifier,
+          ),
+      ),
+    [allOrganizationMembers, listMembers],
+  );
+
+  // const {
+  //   addAdmin,
+  //   addMember,
+  //   allAdminsWithOwner,
+  //   allMembersValue,
+  //   currentUser,
+  //   dispatch,
+  //   handleSubmit,
+  //   people,
+  //   peopleListForAdminPicker,
+  //   peopleListForMemberPicker,
+  //   removeAdmin,
+  //   removeMember,
+  //   taskListIdentifier,
+  // } = initializeListFormHooks();
+
+  // const { orgUserRole } = currentUser;
 
   if (newListView) {
     return (
@@ -101,21 +157,22 @@ const InviteMembersForm = ({ closeModal, isListEditMode }) => {
 
   return (
     <FormWrapper
-      onSubmit={event =>
-        handleSubmit(
-          onSubmit({
-            dispatch,
-            taskListIdentifier,
-            event,
-            closeModal,
-            setIsSavingList,
-            isSavingList,
-          }),
-        )(event)
+      onSubmit={
+        event => {}
+        // handleSubmit(
+        //   onSubmit({
+        //     dispatch,
+        //     taskListIdentifier: list.taskListIdentifier,
+        //     event,
+        //     closeModal,
+        //     setIsSavingList,
+        //     isSavingList,
+        //   }),
+        // )(event)
       }
     >
       <Grid container direction="column" justify="space-between">
-        <Grid item>
+        <Grid container item>
           <Header>
             <Title>Invite Others to this list</Title>
             <Description>
@@ -124,35 +181,23 @@ const InviteMembersForm = ({ closeModal, isListEditMode }) => {
               patients who are part of this list.
             </Description>
           </Header>
-          <PeoplePicker
-            addPerson={addAdmin}
-            availablePeopleList={peopleListForAdminPicker}
-            closePicker={() => setPickerOpened(null)}
-            currentUserRole={orgUserRole}
-            isOpen={pickerOpened === ADMIN_PICKER}
-            peopleIdentifiers={allAdminsWithOwner}
-            peopleLabel={messages.form.admins.label}
-            peopleList={people}
-            setOpenedPicker={() => setPickerOpened(ADMIN_PICKER)}
-            removePerson={removeAdmin}
-            taskListIdentifier={taskListIdentifier}
-            tooltipDescritpion={messages.form.admins.tooltip}
-          />
-          <Spacing vertical={4} />
-          <PeoplePicker
-            addPerson={addMember}
-            availablePeopleList={peopleListForMemberPicker}
-            closePicker={() => setPickerOpened(null)}
-            currentUserRole={orgUserRole}
-            isOpen={pickerOpened === MEMBER_PICKER}
-            peopleIdentifiers={allMembersValue}
-            peopleLabel={messages.form.members.label}
-            peopleList={people}
-            setOpenedPicker={() => setPickerOpened(MEMBER_PICKER)}
-            removePerson={removeMember}
-            taskListIdentifier={taskListIdentifier}
-            tooltipDescritpion={messages.form.members.tooltip}
-          />
+          {allOrganizationMembersFetched && listMembersFetched ? (
+            <>
+              <ListMembersSelect
+                currentUser={userProfile}
+                availablePeople={organizationMembersNotInTheList}
+              />
+              <div>
+                {listMembers.map(({ userName }) => (
+                  <div>{userName}</div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <LoaderWrapper>
+              <Loader />
+            </LoaderWrapper>
+          )}
         </Grid>
         <Spacing vertical={4} />
         <SkipButton type="button" onClick={closeModal}>

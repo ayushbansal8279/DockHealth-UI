@@ -54,3 +54,10 @@ export const SkipButton = styled.button`
   text-decoration: underline;
   text-transform: uppercase;
 `;
+
+export const LoaderWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  alignitems: center;
+`;
