@@ -52,13 +52,12 @@ class App extends PureComponent {
   idleTimer = null;
 
   componentWillMount() {
-    const redirectToHome = sessionStorage.getItem('redirectToHome');
+    const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     if (redirectToHome) {
-      sessionStorage.setItem('redirectToHome', false);
-
       if (window.location.hash !== '#/home/my-tasks') {
         window.location.href = '#/home/my-tasks';
       }
+      sessionStorage.setItem('redirectToHome', false);
     }
   }
 
