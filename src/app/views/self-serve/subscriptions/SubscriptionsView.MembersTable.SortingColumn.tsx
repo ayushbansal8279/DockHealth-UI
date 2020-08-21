@@ -1,7 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -44,6 +43,7 @@ const SortingColumnContainer = styled.div`
   font-size: ${fontSizes.smallPlus};
   color: #4a4a4a; // custom color
   padding: ${spacing.tiny} 0;
+  font-family: 'Montserrat', sans-serif;
 `;
 
 const SortingColumn = ({
@@ -55,7 +55,7 @@ const SortingColumn = ({
 }: SortingColumnProps) => (
   <SortingColumnContainer onClick={() => setSortingProperty(sortingProperty)}>
     <Grid container alignItems="center" direction="row" wrap="nowrap">
-      <MontserratTypography variant="span">{children}</MontserratTypography>
+      <span>{children}</span>
       {currentSortingProperty === sortingProperty && (
         <RotatableChevronWithSpacing
           color={palette.brightBlue}
