@@ -8,6 +8,11 @@ import { highlightPatient } from 'actions/patient-actions';
 import PatientsDetailsIcon from 'img/details.svg';
 import PatientsEmptyIcon from 'img/patients-empty.svg';
 import palette from 'styles/palette';
+import Button from 'components/common/Button/Button';
+import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
+import ExcelLogo from 'img/ExcelLogo.svg';
+import { openModal as openModalAction } from 'modal/actions';
+// import PatientImportPopover from './PatientImportPopover';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -22,27 +27,95 @@ const EmptyListIcon = styled.div`
   width: 47px;
 `;
 
+const EmptyListHeader = styled.div`
+  position: absolute;
+  width: 441px;
+  hegiht: 82px;
+  left: 106px;
+  top: 162px;
+
+  font-family: Montserrat;
+  font-size: 26px;
+  line-height: 153%;
+  text-align: left;
+`;
+
+const EmptyListContent = styled.div`
+  position: absolute;
+  width: 513;
+  height: 42px;
+  left: 106px;
+  top: 264px;
+
+  font-family: Montserrat;
+  font-size: 16px;
+  line-height: 130%;
+  text-align: left;
+`;
+
+const StyledButton = styled(Button)`
+  margin: 10px;
+  width: 265px;
+  height: 50px;
+`;
+const ImportAnimals = styled.img`
+  position: absolute;
+  width: 423px;
+  height: 181.57px;
+  left: 660px;
+  top: 180.8px;
+`;
+
+const DownloadIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+const DownloadTemplate = styled.a`
+  font-family: Roboto Condensed;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+`;
+
 const EmptyList = () => (
   <EmptyListContainer>
+    {/* <PatientImportPopover></PatientImportPopover> */}
     <div>
-      <p>
-        <strong>
-          There are currently no patient profiles in you organization.
-        </strong>
-      </p>
-      <div>
-        You can add a patient profile by clicking <b>ADD A PATIENT</b> button on
-        the top right of the page. If you would like to add patients in bulk or
-        connect to your electronic health record, please contact us at&nbsp;
-        <a
-          href="mailto:support@dock.health?Subject=Dock%20Support"
-          target="_top"
-          style={{ color: palette.cyanBlue }}
-        >
-          support@dock.health
+      <EmptyListHeader>
+        Import your patient list and easily track their tasks.
+      </EmptyListHeader>
+      <EmptyListContent>
+        Your patient list is safe with us. Only people who you invite to your
+        organization will have access. &nbsp;
+        <a href="" target="_top" style={{ color: palette.cyanBlue }}>
+          Learn More
         </a>
-      </div>
+        <p />
+        <StyledButton
+          variant="contained"
+          onclick={() => {
+            openModalAction('ImportPatients', { step: 1 });
+          }}
+        >
+          IMPORT PATIENT LIST
+        </StyledButton>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <StyledButton variant="outlined" onClick={onAddPatientClick}>
+          ADD A PATIENT
+        </StyledButton>
+        <spacing vertical={5} />
+        <div style={{ marginTop: '20px' }}>
+          <DownloadTemplate>
+            <DownloadIcon src={ExcelLogo} alt="Excel Logo" />
+            Download Excel Patient Template
+          </DownloadTemplate>
+        </div>
+      </EmptyListContent>
     </div>
+    <ImportAnimals src={PatientImportAnimals} alt="empty view" />
+    {/* <ImportPatientsModal></ImportPatientsModal> */}
   </EmptyListContainer>
 );
 

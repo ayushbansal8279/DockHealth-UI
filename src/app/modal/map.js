@@ -13,6 +13,7 @@ import ClearSortFiltersModal from './components/ClearSortFiltersModal/ClearSortF
 import CreateListModal from './components/CreateListModal/CreateListModal';
 import VideoModal from './components/VideoModal/VideoModal';
 import LeaveListModal from './components/LeaveListModal/LeaveListModal';
+import ImportPatientsModal from './components/ImportPatientsModal/ImportPatientsModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -30,6 +31,7 @@ const MODAL_MAP = {
   CreateList: CreateListModal,
   Video: VideoModal,
   LeaveList: LeaveListModal,
+  ImportPatients: ImportPatientsModal,
 };
 
 export default MODAL_MAP;
