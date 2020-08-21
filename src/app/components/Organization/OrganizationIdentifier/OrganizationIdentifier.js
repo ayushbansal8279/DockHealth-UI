@@ -4,11 +4,12 @@ import OrganizationTile from '../OrganizationTile/OrganizationTile';
 
 const OrganizationIdentifier = ({
   tileConfig,
-  spacingsConfig,
+  identifierConfig,
   organizationName,
   isOpen,
+  onSelect = () => {},
 }) => (
-  <OrganizationIdentifierContainer {...spacingsConfig}>
+  <OrganizationIdentifierContainer {...identifierConfig} onClick={onSelect}>
     <OrganizationTile {...tileConfig} />
     {isOpen && <span>{organizationName}</span>}
   </OrganizationIdentifierContainer>

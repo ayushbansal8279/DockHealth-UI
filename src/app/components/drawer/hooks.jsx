@@ -12,6 +12,7 @@ import {
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import * as TemplateActions from 'actions/template-actions';
+import { selectCurrentOrganization } from 'api/user-api';
 import { TrialBannerLink, useDrawerClasses } from './styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
@@ -205,6 +206,8 @@ const initializeDrawerHooks = () => {
     isNavbarInFullMode,
     areNavbarSettingsVisible,
     hideNavbar: () => dispatch(TemplateActions.hideNavbar()),
+    selectCurrentOrganization: organizationIdentifier =>
+      dispatch(selectCurrentOrganization(organizationIdentifier)),
     currentOrganization,
   };
 };

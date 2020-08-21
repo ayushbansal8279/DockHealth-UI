@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router';
 import {
   List,
   ListItem,
@@ -239,4 +240,37 @@ export const StyledDropdown = styled.div`
 export const DrawerMemberContainer = styled.div`
   margin-left: 18px;
   margin-top: ${spacing.regular};
+`;
+
+export const OrganizationIdentifiersListContainer = styled.div`
+  margin: ${spacing.smallPlus} ${spacing.small} 0;
+  position: relative;
+  background-color: ${props =>
+    props.isOpen ? palette.coolGrey4 : 'transparent'};
+  color: ${props => (props.isOpen ? palette.mediumGrey : 'white')} !important;
+`;
+
+export const OrganizationIdentifiersList = styled.div`
+  height: ${props => (props.isOpen ? 'fit-content' : 0)};
+  max-height: ${props =>
+    props.isOpen ? `calc(100% * ${props.organizationAmount})` : 0};
+  overflow-y: auto;
+  background-color: ${props => props.isOpen && 'white'};
+  position: absolute;
+  background-color: white;
+  z-index: 1;
+  width: 100%;
+  transition: max-height 0.5s;
+  cursor: pointer;
+`;
+
+export const AddOrganizationLinkContainer = styled.div`
+  width: 100%;
+  border-top: 1px solid ${palette.blueGrey};
+  padding: ${spacing.smallPlus};
+`;
+
+export const AddOrganizationLink = styled(Link)`
+  text-transform: uppercase;
+  color: ${palette.brightBlue};
 `;
