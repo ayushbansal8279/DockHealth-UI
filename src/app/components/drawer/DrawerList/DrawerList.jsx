@@ -239,6 +239,7 @@ const DrawerList = ({
   onMouseLeave,
   settingsVisible,
   currentOrganization,
+  selectCurrentOrganization,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [
@@ -252,7 +253,7 @@ const DrawerList = ({
   const { userOrganizations } = user;
   const availableUserOrganizations = userOrganizations?.filter(
     ({ organizationIdentifier }) =>
-      organizationIdentifier === currentOrganization?.organizationIdentifier,
+      organizationIdentifier !== currentOrganization?.organizationIdentifier,
   );
 
   useEffect(
@@ -339,6 +340,9 @@ const DrawerList = ({
                 }}
                 organizationName={org?.organizationName}
                 isOpen={open}
+                onSelect={() =>
+                  selectCurrentOrganization(org?.organizationIdentifier)
+                }
               />
             ))}
 

@@ -7,8 +7,9 @@ const OrganizationIdentifier = ({
   identifierConfig,
   organizationName,
   isOpen,
+  onSelect = () => {},
 }) => (
-  <OrganizationIdentifierContainer {...identifierConfig}>
+  <OrganizationIdentifierContainer {...identifierConfig} onClick={onSelect}>
     <OrganizationTile {...tileConfig} />
     {isOpen && <span>{organizationName}</span>}
   </OrganizationIdentifierContainer>
