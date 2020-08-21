@@ -216,6 +216,7 @@ const MemberTypeLabel = ({
   isDisabledRemovingSubscription,
   orgUserRole,
   userStatus,
+  isInvited,
 }) => {
   const labelReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -265,6 +266,7 @@ const MemberTypeLabel = ({
         invited={invitationModifiable}
         clickable={Boolean(renderOptionsMethod)}
         onClick={renderOptionsMethod ? openPopover : undefined}
+        isInvited={isInvited}
       >
         <DropdownIndicator
           setOpen={() => {}}

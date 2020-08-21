@@ -65,13 +65,17 @@ export const MemberTypeButton = styled.button`
 
   * > * {
     font-weight: normal;
-    color: ${props =>
-      props.clickable ? palette.mediumGrey : palette.lightGrey};
-  }
+    color: ${props => {
+      if (props.isInvited || !props.clickable) return palette.coolGrey1;
+
+      return palette.mediumGrey;
+    }}
+  
 `;
 
 export const SubscriptionLabelBox = styled.div`
   font-size: ${fontSizes.smallPlus};
   color: #4a4a4a; // custom color
   padding: ${spacing.tiny} 0;
+  font-family: 'Montserrat', sans-serif;
 `;
