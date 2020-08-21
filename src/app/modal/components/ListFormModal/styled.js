@@ -2,15 +2,14 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 import spacing from 'styles/spacing';
-import { ModalWrapperWithPadding } from '../styled';
+import { ModalWrapper } from '../styled';
 
-export const CreateListModalWrapper = styled(ModalWrapperWithPadding)`
+export const ListFormModalWrapper = styled(ModalWrapper)`
   display: flex;
   flex-direction: column;
-  width: 530px;
-  min-height: 537px;
-  max-height: calc(100% - 50px);
-  overflow-y: scroll;
+  width: 600px;
+  min-height: 441px;
+  padding: ${spacing.regularPlus} ${spacing.largePlus};
 `;
 
 export const Header = styled.div`
@@ -52,9 +51,8 @@ export const Step = styled.button`
   }
 `;
 
-export const ButtonsWrapper = styled.div`
-  width: 100%;
-  text-align: center;
+export const ButtonWrapper = styled.div`
+  width: 170px;
 `;
 
 export const FormWrapper = styled.form`

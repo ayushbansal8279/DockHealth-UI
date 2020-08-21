@@ -1,24 +1,27 @@
 import React, { useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { CreateListModalWrapper, StepCounter, Step } from './styled';
+import { ListFormModalWrapper, StepCounter, Step } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 import ListDetailsForm from './ListDetailsForm';
-import InviteMembersForm from './InviteMembersForm';
+import InviteMembersForm from './InviteMembersForm/InviteMembersForm';
 
 const ModalSteps = {
   LIST_DETAILS: 0,
   INVITE_PEOPLE: 1,
 };
 
-const CreateListModal = ({ closeModal, onListCreationSuccess }) => {
+const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
+  const [editedList, setEditedList] = useState(list);
   const [currentStep, setCurrentStep] = useState(ModalSteps.LIST_DETAILS);
-  const currentList = useSelector(store => store.taskListState.currentList);
+
+  const isListEditMode = !!list;
 
   const renderStep = useCallback(() => {
     switch (currentStep) {
       case ModalSteps.LIST_DETAILS:
         return (
           <ListDetailsForm
+            list={editedList}
+            setList={setEditedList}
             closeModal={closeModal}
             nextStep={() => setCurrentStep(ModalSteps.INVITE_PEOPLE)}
             onListCreationSuccess={onListCreationSuccess}
@@ -26,15 +29,21 @@ const CreateListModal = ({ closeModal, onListCreationSuccess }) => {
         );
 
       case ModalSteps.INVITE_PEOPLE:
-        return <InviteMembersForm closeModal={closeModal} />;
+        return (
+          <InviteMembersForm
+            closeModal={closeModal}
+            isListEditMode={isListEditMode}
+          />
+        );
 
       default:
         return <></>;
     }
-  }, [currentStep, closeModal, onListCreationSuccess]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep, editedList]);
 
   return (
-    <CreateListModalWrapper>
+    <ListFormModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
@@ -44,13 +53,13 @@ const CreateListModal = ({ closeModal, onListCreationSuccess }) => {
           <Step
             key={value}
             isFilled={currentStep >= value}
-            onClick={() => currentList && setCurrentStep(value)}
-            isDisabled={!currentList}
+            onClick={() => editedList && setCurrentStep(value)}
+            isDisabled={!editedList}
           />
         ))}
       </StepCounter>
-    </CreateListModalWrapper>
+    </ListFormModalWrapper>
   );
 };
 
-export default CreateListModal;
+export default ListFormModal;

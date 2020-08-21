@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
+import PersonIcon from 'img/modals/person';
+import PeopleIcon from 'img/modals/people';
 import { showAlert } from 'helpers/utility-functions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
 import initializeListFormHooks from 'components/ListForm/hooks';
-import Button from 'components/common/Button/Button';
 import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
+import { Title, FormWrapper, Header, Description } from '../styled';
 import {
-  Title,
-  ButtonsWrapper,
-  FormWrapper,
-  Header,
-  Description,
+  InviteInitialViewWrapper,
+  InviteInitialViewContent,
+  NavigationActionButton,
+  NavigationIcon,
+  NavigationText,
+  SkipButton,
 } from './styled';
 
 const ADMIN_PICKER = 'ADMIN_PICKER';
@@ -49,7 +52,8 @@ const onSubmit = ({
     });
 };
 
-const InviteMembersForm = ({ closeModal }) => {
+const InviteMembersForm = ({ closeModal, isListEditMode }) => {
+  const [newListView, setNewListView] = useState(!isListEditMode);
   const [pickerOpened, setPickerOpened] = useState(null);
   const [isSavingList, setIsSavingList] = useState(false);
 
@@ -71,6 +75,30 @@ const InviteMembersForm = ({ closeModal }) => {
 
   const { orgUserRole } = currentUser;
 
+  if (newListView) {
+    return (
+      <InviteInitialViewWrapper>
+        <Header>
+          <Title>Would you like to Invite people to this list</Title>
+        </Header>
+        <InviteInitialViewContent>
+          <NavigationActionButton onClick={closeModal}>
+            <Spacing vertical={5} />
+            <NavigationIcon src={PersonIcon} alt="Just for me" />
+            <Spacing vertical={5} />
+            <NavigationText>This list is just for me</NavigationText>
+          </NavigationActionButton>
+          <NavigationActionButton onClick={() => setNewListView(false)}>
+            <Spacing vertical={5} />
+            <NavigationIcon src={PeopleIcon} alt="Invite others" />
+            <Spacing vertical={5} />
+            <NavigationText>Invite others to this list</NavigationText>
+          </NavigationActionButton>
+        </InviteInitialViewContent>
+      </InviteInitialViewWrapper>
+    );
+  }
+
   return (
     <FormWrapper
       onSubmit={event =>
@@ -89,11 +117,11 @@ const InviteMembersForm = ({ closeModal }) => {
       <Grid container direction="column" justify="space-between">
         <Grid item>
           <Header>
-            <Title>Invite people to the list</Title>
+            <Title>Invite Others to this list</Title>
             <Description>
-              You can keep your list to yourself or invite as many people as
-              you’d like to share it with. The people you invite to this list
-              will have access to the tasks, people and patients on this list.
+              Invite as many people as you’d like to share it with. The people
+              you invite to this list will have access to the tasks, people and
+              patients who are part of this list.
             </Description>
           </Header>
           <PeoplePicker
@@ -127,15 +155,9 @@ const InviteMembersForm = ({ closeModal }) => {
           />
         </Grid>
         <Spacing vertical={4} />
-        <Grid>
-          <ButtonsWrapper>
-            <Button variant="outlined" onClick={closeModal}>
-              Skip for now
-            </Button>
-            <Spacing horizontal={4} />
-            <Button type="submit">Invite to list</Button>
-          </ButtonsWrapper>
-        </Grid>
+        <SkipButton type="button" onClick={closeModal}>
+          Skip
+        </SkipButton>
       </Grid>
     </FormWrapper>
   );
