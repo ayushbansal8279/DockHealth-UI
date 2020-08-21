@@ -19,6 +19,7 @@ export const Header = styled.div`
 `;
 
 export const Description = styled.p`
+  margin-bottom: 0;
   font-size: ${fontSizes.regular};
   color: ${palette.coolGrey1};
 `;
