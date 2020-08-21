@@ -12,6 +12,7 @@ import Loader from 'components/common/Loader/Loader';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontSizes } from 'styles/font';
 
 import { openModal as openModalAction } from 'modal/actions';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
@@ -26,15 +27,16 @@ const LoaderContainer = styled.div`
 const StyledAnchorDiv = styled.div`
   color: ${palette.brightBlue};
   overflow-wrap: anywhere;
+  font-size: ${fontSizes.smallPlus};
 `;
 
 const MemberTableRow = styled(Grid)`
   margin: 0 !important;
   width: 100% !important;
-  padding: ${spacing.regularPlus} 0 !important;
+  padding: ${spacing.regular} 0 !important;
 
   &:nth-child(even) {
-    background-color: ${palette.coolGrey3};
+    background-color: ${palette.coolGrey4};
   }
 `;
 
@@ -45,6 +47,7 @@ const MemberTableCell = styled.div`
   justify-content: center;
   align-items: ${props => props.alignItems || 'flex-start'};
   height: 100%;
+  color: ${props => props.isInvited && palette.coolGrey1};
 `;
 
 const USER_TYPES = new Proxy(
@@ -153,7 +156,7 @@ export const MemberAvatar = ({
       <Loader />
     </LoaderContainer>
   ) : (
-    <Avatar size={55}>{avatarContent}</Avatar>
+    <Avatar size={39}>{avatarContent}</Avatar>
   );
 };
 
@@ -250,7 +253,7 @@ const OrganizationMemberRow = ({
           />
         </MemberTableCell>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <MemberTableCell>
           {`${firstName} ${lastName} ${
             userIdentifier === sessionStorage.userIdentifier ? '(me)' : ''
@@ -258,7 +261,7 @@ const OrganizationMemberRow = ({
           {email && <StyledAnchorDiv>{email}</StyledAnchorDiv>}
         </MemberTableCell>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         <MemberTableCell>
           <MemberTypeLabel
             email={email}
@@ -270,6 +273,7 @@ const OrganizationMemberRow = ({
             orgUserRole={orgUserRole}
             isDisabledRemovingSubscription={isDisabledRemovingSubscription}
             userStatus={userStatus}
+            isInvited={isInvited}
             userHasSubscription={
               !!isUserSelected({
                 userIdentifier,
@@ -280,7 +284,7 @@ const OrganizationMemberRow = ({
         </MemberTableCell>
       </Grid>
       <Grid item xs={3}>
-        <MemberTableCell>
+        <MemberTableCell isInvited={isInvited}>
           {showJoined && formattedRegistrationDate}
           {isInvited && <div>Invitation sent</div>}
         </MemberTableCell>
