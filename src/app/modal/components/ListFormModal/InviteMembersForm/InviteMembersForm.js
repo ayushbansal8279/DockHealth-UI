@@ -10,6 +10,8 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import { findAllUsersByOrganizationId } from 'actions/people-actions';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
+import Member from 'components/members/Member';
+import Loader from 'components/common/Loader/Loader';
 import initializeListFormHooks from 'components/ListForm/hooks';
 // import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
 import { Title, FormWrapper, Header, Description } from '../styled';
@@ -22,8 +24,11 @@ import {
   NavigationText,
   SkipButton,
   LoaderWrapper,
+  MembersListWrapper,
+  MemberListItem,
+  MemberFullName,
+  MemberFullNameWrapper,
 } from './styled';
-import Loader from 'components/common/Loader/Loader';
 
 // const ADMIN_PICKER = 'ADMIN_PICKER';
 // const MEMBER_PICKER = 'MEMBER_PICKER';
@@ -187,11 +192,21 @@ const InviteMembersForm = ({
                 currentUser={userProfile}
                 availablePeople={organizationMembersNotInTheList}
               />
-              <div>
-                {listMembers.map(({ userName }) => (
-                  <div>{userName}</div>
+              <Spacing vertical={4} />
+              <MembersListWrapper>
+                {listMembers.map(member => (
+                  <MemberListItem>
+                    <Member
+                      key={member.userIdentifier}
+                      size={38}
+                      member={member}
+                    />
+                    <MemberFullNameWrapper>
+                      <MemberFullName>{member.userName}</MemberFullName>
+                    </MemberFullNameWrapper>
+                  </MemberListItem>
                 ))}
-              </div>
+              </MembersListWrapper>
             </>
           ) : (
             <LoaderWrapper>
