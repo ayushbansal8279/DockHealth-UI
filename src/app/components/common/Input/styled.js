@@ -5,6 +5,8 @@ import spacing from 'styles/spacing';
 
 export const InputWrapper = styled.div`
   ${props => props.fullWidth && 'width: 100%;'}
+  font-family: 'Montserrat', sans-serif;
+  font-weight: ${fontWeights.regular};
 `;
 
 // Primary
@@ -15,7 +17,7 @@ export const PrimaryInputBox = styled.div`
   display: flex;
   flex-direction: column;
   padding: ${spacing.small} ${spacing.regular};
-  height: 80px;
+  height: 75px;
 `;
 
 export const PrimaryInputField = styled.input`
@@ -23,12 +25,12 @@ export const PrimaryInputField = styled.input`
   border: none;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-  font-weight: ${props =>
-    props.placeholder && !props.value ? fontWeights.light : fontWeights.bold};
+  font-weight: ${fontWeights.regular};
   outline: none;
   padding: ${props => (props.isLabelCenterized ? '0' : `0 0 2px`)};
   height: ${props => (props.isLabelCenterized ? '0' : 'initial')};
   transition: height 0.2s, padding 0.2s;
+  font-family: 'Roboto Condensed', sans-serif;
 
   &:disabled {
     background-color: ${palette.coolGrey4};

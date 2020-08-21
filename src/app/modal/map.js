@@ -10,7 +10,7 @@ import ArchivePatientModal from './components/ArchivePatientModal/ArchivePatient
 import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActiveUserModal';
 import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
 import ClearSortFiltersModal from './components/ClearSortFiltersModal/ClearSortFiltersModal';
-import CreateListModal from './components/CreateListModal/CreateListModal';
+import ListFormModal from './components/ListFormModal/ListFormModal';
 import VideoModal from './components/VideoModal/VideoModal';
 import LeaveListModal from './components/LeaveListModal/LeaveListModal';
 import EditOrganizationModal from './components/EditOrganizationModal/EditOrganizationModal';
@@ -28,7 +28,7 @@ const MODAL_MAP = {
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
   ClearSortFilters: ClearSortFiltersModal,
-  CreateList: CreateListModal,
+  ListForm: ListFormModal,
   Video: VideoModal,
   LeaveList: LeaveListModal,
   EditOrganization: EditOrganizationModal,

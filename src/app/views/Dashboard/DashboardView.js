@@ -40,7 +40,6 @@ const DashboardView = ({
   showNavbar,
   currentUser,
   openModal,
-  setTaskListAsCurrentList,
   fetchTasklistForUser,
   acceptInviteToTaskList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -89,9 +88,7 @@ const DashboardView = ({
 
   const handleCreateList = () => {
     onNewUserTourEnter('Opened create list modal');
-    setTaskListAsCurrentList(null);
-    openModal('CreateList', {
-      test: 'test',
+    openModal('ListForm', {
       onClose: () => {
         fetchTasklistForUser();
         UserApi.getUserByEmail(currentUser.email, currentUser);

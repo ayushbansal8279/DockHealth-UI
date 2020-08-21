@@ -6,14 +6,13 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import { selectCurrentOrganization as selectCurrentOrganizationAction } from 'api/user-api';
 import { hashHistory } from 'react-router';
-import { IconButton, Dialog } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import palette from 'styles/palette';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
-import ListForm from 'components/ListForm/ListForm';
 import OrganizationList from 'components/Organization/OrganizationList/OrganizationList';
 
 import {
@@ -65,7 +64,6 @@ const DashboardSidebar = ({
   ] = useState(false);
   const [selectedList, setSelectedList] = useState(null);
   const [invitePopoverOpen, setInvitePopoverOpen] = useState(false);
-  const [listEditPopupOpen, setListEditPopupOpen] = useState(false);
 
   const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
     shouldDisplayFirstListCreationMessage,
@@ -135,9 +133,8 @@ const DashboardSidebar = ({
     modalActions.openModal('LeaveList', modalProps);
   };
 
-  const openListEditDialog = taskList => {
-    taskListActions.setTaskListAsCurrentList(taskList);
-    setListEditPopupOpen(true);
+  const openListEditModal = taskList => {
+    modalActions.openModal('ListForm', { list: taskList });
   };
 
   const { userOrganizations } = currentUser;
@@ -176,7 +173,7 @@ const DashboardSidebar = ({
       <ListsSection>
         <ListsHeader>
           My lists
-          <AddListButton onClick={() => openListEditDialog(null)} type="button">
+          <AddListButton onClick={() => openListEditModal(null)} type="button">
             <span>+</span> Add list
           </AddListButton>
         </ListsHeader>
@@ -265,7 +262,7 @@ const DashboardSidebar = ({
                 {
                   key: 'edit',
                   label: 'Edit List',
-                  onClick: () => openListEditDialog(selectedList),
+                  onClick: () => openListEditModal(selectedList),
                 },
                 {
                   key: 'delete',
@@ -289,20 +286,6 @@ const DashboardSidebar = ({
           },
         ]}
       />
-      <Dialog
-        open={listEditPopupOpen}
-        fullWidth
-        onClose={() => setListEditPopupOpen(false)}
-        PaperProps={{
-          elevation: 0,
-          square: true,
-          style: {
-            maxWidth: '40rem',
-          },
-        }}
-      >
-        <ListForm setListFormOpen={setListEditPopupOpen} />
-      </Dialog>
       <TaskListInviteMemberContainer
         addMemberButtonReference={currentListMenuPopupReference}
         isMemberPopoverOpen={invitePopoverOpen}
