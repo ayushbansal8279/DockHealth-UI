@@ -494,7 +494,7 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
         );
 
         if (
-          currentOrgIdentifier === undefined ||
+          currentOrgIdentifier === 'undefined' ||
           currentOrgIdentifier === '' ||
           !currentOrgIdentifier
         ) {
@@ -741,7 +741,6 @@ export function refreshAccessToken(email) {
       currentSession.refreshToken,
       (error, session) => {
         const { accessToken } = session;
-        console.log(accessToken);
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken.jwtToken}`;
         sessionStorage.setItem('accessToken', accessToken.jwtToken);
         resolve(true);
