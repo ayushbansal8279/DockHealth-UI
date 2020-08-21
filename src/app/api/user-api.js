@@ -866,3 +866,22 @@ export function updateUserDashboardPrefs(column) {
       throw error;
     });
 }
+
+export function selectCurrentOrganization(organizationIdentifier) {
+  return axios({
+    method: 'put',
+    url: `/user/selectOrganization/${organizationIdentifier}`,
+  })
+    .then(() => {
+      sessionStorage.setItem(
+        'currentOrganizationIdentifier',
+        organizationIdentifier,
+      );
+      sessionStorage.setItem('redirectToHome', true);
+      axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+      window.location.reload();
+    })
+    .catch(error => {
+      throw error;
+    });
+}
