@@ -14,7 +14,6 @@ import React, { useEffect } from 'react';
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/taskView/Search/Search';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import SortingColumn, {
@@ -210,7 +209,7 @@ const SubscriptionsViewMembersTable = ({
           <MemberTable isSmallScreen={isSmallScreen}>
             <MemberTableHeader container spacing={1}>
               <Grid item xs={1} />
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 <SortingColumn
                   currentSortingOrder={currentSortingOrder}
                   currentSortingProperty={currentSortingProperty}
@@ -220,7 +219,7 @@ const SubscriptionsViewMembersTable = ({
                   NAME
                 </SortingColumn>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <SortingColumn
                   currentSortingOrder={currentSortingOrder}
                   currentSortingProperty={currentSortingProperty}
@@ -244,11 +243,7 @@ const SubscriptionsViewMembersTable = ({
               </Grid>
               <Grid item xs={2}>
                 {showSubscription && (
-                  <SubscriptionLabelBox>
-                    <MontserratTypography variant="span">
-                      SUBSCRIPTION
-                    </MontserratTypography>
-                  </SubscriptionLabelBox>
+                  <SubscriptionLabelBox>SUBSCRIPTION</SubscriptionLabelBox>
                 )}
               </Grid>
             </MemberTableHeader>
