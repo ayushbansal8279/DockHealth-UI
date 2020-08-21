@@ -140,12 +140,14 @@ const DashboardSidebar = ({
     setListEditPopupOpen(true);
   };
 
-  const {
-    userOrganizations,
-    organizationIdentifier: orgIdentifier,
-  } = currentUser;
+  const { userOrganizations } = currentUser;
+
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
   const currentOrganization = userOrganizations?.find(
-    ({ organizationIdentifier }) => orgIdentifier === organizationIdentifier,
+    ({ organizationIdentifier }) =>
+      currentOrganizationIdentifier === organizationIdentifier,
   );
   const availableUserOrganizations = userOrganizations?.filter(
     ({ organizationIdentifier }) =>
