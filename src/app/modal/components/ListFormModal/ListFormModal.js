@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ListFormModalWrapper, StepCounter, Step } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
-import ListDetailsForm from './ListDetailsForm';
+import ListDetailsForm from './ListDetailsForm/ListDetailsForm';
 import InviteMembersForm from './InviteMembersForm/InviteMembersForm';
 
 const ModalSteps = {
@@ -11,7 +11,7 @@ const ModalSteps = {
 
 const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
   const [editedList, setEditedList] = useState(list);
-  const [currentStep, setCurrentStep] = useState(ModalSteps.LIST_DETAILS);
+  const [currentStep, setCurrentStep] = useState(ModalSteps.INVITE_PEOPLE);
 
   const isListEditMode = !!list;
 
@@ -33,6 +33,7 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
           <InviteMembersForm
             closeModal={closeModal}
             isListEditMode={isListEditMode}
+            taskListIdentifier={editedList?.taskListIdentifier}
           />
         );
 

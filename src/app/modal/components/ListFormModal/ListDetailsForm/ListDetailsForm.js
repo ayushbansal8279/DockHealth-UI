@@ -8,7 +8,7 @@ import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
 import Button from 'components/common/Button/Button';
-import { Title, ButtonWrapper, FormWrapper, Header } from './styled';
+import { Title, ButtonWrapper, FormWrapper, Header } from '../styled';
 
 const onSubmit = ({
   event,
