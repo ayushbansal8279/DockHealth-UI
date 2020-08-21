@@ -51,6 +51,17 @@ ReactModal.setAppElement('#app');
 class App extends PureComponent {
   idleTimer = null;
 
+  componentWillMount() {
+    const redirectToHome = sessionStorage.getItem('redirectToHome');
+    if (redirectToHome) {
+      sessionStorage.setItem('redirectToHome', false);
+
+      if (window.location.hash !== '#/home/my-tasks') {
+        window.location.href = '#/home/my-tasks';
+      }
+    }
+  }
+
   onAction = () => {};
 
   onActive = () => {};

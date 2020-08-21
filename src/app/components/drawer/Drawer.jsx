@@ -44,6 +44,7 @@ const Drawer = ({ children }) => {
     areNavbarSettingsVisible,
     hideNavbar,
     currentOrganization,
+    selectCurrentOrganization,
   } = initializeDrawerHooks();
 
   return (
@@ -107,6 +108,7 @@ const Drawer = ({ children }) => {
           lists={lists}
           settingsVisible={areNavbarSettingsVisible}
           currentOrganization={currentOrganization}
+          selectCurrentOrganization={selectCurrentOrganization}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
