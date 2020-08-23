@@ -197,3 +197,31 @@ export const deletePatientNote = (
     throw error;
   }
 };
+
+export function downloadPatientImportTemplate() {
+  return PatientApi.downloadPatientImportTemplate()
+    .then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Patient_Data_Upload_Template.xlsx');
+      document.body.append(link);
+      link.click();
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export const uploadPatientData = (fileData, additionalConfig) => dispatch =>
+  PatientApi.uploadPatientData(fileData, additionalConfig)
+    .then(response => {
+      dispatch({
+        type: ActionTypes.PATIENT_DATA_UPLOADED,
+      });
+
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });

@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(identity, error => {
   }
 
   console.log('Connection error');
-  // window.location.href = '/#/login';
+  window.location.href = '/#/login';
   // showToast({
   //   status: 'error',
   //   title: 'Connection error',

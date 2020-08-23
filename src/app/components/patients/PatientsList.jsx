@@ -1,17 +1,22 @@
 import moment from 'moment';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
+import { Dialog } from '@material-ui/core';
 import styled from 'styled-components';
-import { highlightPatient } from 'actions/patient-actions';
+import {
+  beginPatientCreation,
+  highlightPatient,
+  downloadPatientImportTemplate,
+} from 'actions/patient-actions';
 import PatientsDetailsIcon from 'img/details.svg';
 import PatientsEmptyIcon from 'img/patients-empty.svg';
 import palette from 'styles/palette';
 import Button from 'components/common/Button/Button';
 import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
 import ExcelLogo from 'img/ExcelLogo.svg';
-import { openModal as openModalAction } from 'modal/actions';
+import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 // import PatientImportPopover from './PatientImportPopover';
 
 const EmptyListContainer = styled.div`
@@ -79,7 +84,11 @@ const DownloadTemplate = styled.a`
   line-height: 19px;
 `;
 
-const EmptyList = () => (
+const EmptyList = ({
+  onAddPatientClick,
+  importPopupOpen,
+  setImportPopupOpen,
+}) => (
   <EmptyListContainer>
     {/* <PatientImportPopover></PatientImportPopover> */}
     <div>
@@ -95,8 +104,9 @@ const EmptyList = () => (
         <p />
         <StyledButton
           variant="contained"
-          onclick={() => {
-            openModalAction('ImportPatients', { step: 1 });
+          onClick={() => {
+            // openModalAction('ImportPatients', { step: 1 });
+            setImportPopupOpen(true);
           }}
         >
           IMPORT PATIENT LIST
@@ -107,7 +117,11 @@ const EmptyList = () => (
         </StyledButton>
         <spacing vertical={5} />
         <div style={{ marginTop: '20px' }}>
-          <DownloadTemplate>
+          <DownloadTemplate
+            onClick={() => {
+              downloadPatientImportTemplate();
+            }}
+          >
             <DownloadIcon src={ExcelLogo} alt="Excel Logo" />
             Download Excel Patient Template
           </DownloadTemplate>
@@ -115,7 +129,23 @@ const EmptyList = () => (
       </EmptyListContent>
     </div>
     <ImportAnimals src={PatientImportAnimals} alt="empty view" />
-    {/* <ImportPatientsModal></ImportPatientsModal> */}
+    <Dialog
+      open={importPopupOpen}
+      onClose={() => setImportPopupOpen(false)}
+      PaperProps={{
+        elevation: 0,
+        square: true,
+        style: {},
+      }}
+    >
+      <ImportPatientsModal
+        closeModal={() => {
+          setImportPopupOpen(false);
+        }}
+        downloadTemplate={downloadPatientImportTemplate}
+        step={1}
+      />
+    </Dialog>
   </EmptyListContainer>
 );
 
@@ -313,8 +343,24 @@ const PatientsList = ({
   isCompact,
   highlightedPatient,
 }) => {
+  const dispatch = useDispatch();
+
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
+
+  const onAddPatientClick = useCallback(() => {
+    dispatch(beginPatientCreation());
+  }, [dispatch]);
+
   if (patients.length === 0) {
-    return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
+    return isFiltered ? (
+      <EmptyFilteredList />
+    ) : (
+      <EmptyList
+        onAddPatientClick={onAddPatientClick}
+        importPopupOpen={importPopupOpen}
+        setImportPopupOpen={setImportPopupOpen}
+      />
+    );
   }
 
   return (
