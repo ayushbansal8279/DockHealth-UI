@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import PersonIcon from 'img/modals/person';
 import PeopleIcon from 'img/modals/people';
@@ -25,6 +26,8 @@ import {
   MemberListItem,
   MemberFullName,
   MemberFullNameWrapper,
+  MemberStatusLabel,
+  MemberAvatarWrapper,
 } from './styled';
 
 const InviteMembersForm = ({
@@ -32,6 +35,7 @@ const InviteMembersForm = ({
   isListEditMode,
   taskList,
   setList,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
   const [newListView, setNewListView] = useState(!isListEditMode);
@@ -177,8 +181,14 @@ const InviteMembersForm = ({
               <MembersListWrapper>
                 {listMembers.map(member => (
                   <MemberListItem key={member.userIdentifier}>
-                    <Member size={38} member={member} />
-                    <MemberFullNameWrapper>
+                    <MemberAvatarWrapper
+                      isPending={member.status === 'PENDING'}
+                    >
+                      <Member size={38} member={member} />
+                    </MemberAvatarWrapper>
+                    <MemberFullNameWrapper
+                      isPending={member.status === 'PENDING'}
+                    >
                       <MemberFullName>
                         {member.userName}{' '}
                         {member.userIdentifier ===
@@ -187,6 +197,21 @@ const InviteMembersForm = ({
                         )}
                       </MemberFullName>
                     </MemberFullNameWrapper>
+                    {member.status === 'PENDING' ? (
+                      <MemberStatusLabel>Approval Pending</MemberStatusLabel>
+                    ) : (
+                      (member.taskListUserRole === 'ADMIN' ||
+                        member.taskListUserRole === 'OWNER') && (
+                        <MemberStatusLabel>List Admin</MemberStatusLabel>
+                      )
+                    )}
+                    <IconButton
+                      onClick={() => {}}
+                      size="small"
+                      color="secondary"
+                    >
+                      <MoreVert />
+                    </IconButton>
                   </MemberListItem>
                 ))}
               </MembersListWrapper>
