@@ -64,7 +64,7 @@ const StyledButton = styled.button`
                 background: linear-gradient(to top right, ${colors.main}, ${colors.main});
           }
 
-          &:hover {
+          &:hover:not(:disabled) {
             &:before {
               opacity: 1;
             }
