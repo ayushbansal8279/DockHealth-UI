@@ -81,6 +81,12 @@ export const MemberFullNameWrapper = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+
+  ${({ isPending }) => isPending && 'opacity: 0.7;'}
+`;
+
+export const MemberAvatarWrapper = styled.div`
+  ${({ isPending }) => isPending && 'opacity: 0.7;'}
 `;
 
 export const MemberFullName = styled.p`
@@ -88,8 +94,17 @@ export const MemberFullName = styled.p`
   margin-left: ${spacing.smallPlus};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
   font-family: 'Roboto Condensed', sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const MemberStatusLabel = styled.p`
+  margin-left: ${spacing.smallPlus};
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
 `;
