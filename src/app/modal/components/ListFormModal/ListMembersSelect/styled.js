@@ -26,9 +26,16 @@ export const Placeholder = styled.p`
   font-family: inherit;
 `;
 
+export const SelectElementWrapper = styled.div`
+  width: calc(100% - 130px);
+  max-height: 132px;
+`;
+
 export const SelectElement = styled.button`
   position: relative;
-  width: calc(100% - 130px);
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
   padding: ${spacing.smallPlus} ${spacing.regularPlus} ${spacing.tiny}
     ${spacing.regularPlus};
   background: ${palette.coolGrey4};
@@ -100,6 +107,10 @@ export const SearchInput = styled.input`
   outline: none;
   border: none;
   background: transparent;
+
+  &:disabled {
+    background: transparent;
+  }
 `;
 
 export const AvailablePeopleWrapper = styled.div`
@@ -112,4 +123,50 @@ export const AvailablePeopleWrapper = styled.div`
   background: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   z-index: 100;
+  padding: ${spacing.smallPlus} 0;
+`;
+
+export const AvailablePeopleItemButton = styled.button`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus}
+    ${spacing.regularPlus};
+  cursor: pointer;
+
+  ${({ isHovered }) => isHovered && `background-color: ${palette.coolGrey4};`}
+`;
+
+export const UserName = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  padding-right: ${spacing.regular};
+  overflow: hidden;
+`;
+
+export const UserNameText = styled.p`
+  margin-bottom: 0;
+  font-family: inherit;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  color: ${palette.mediumGrey};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const EmptyPeopleResult = styled.div`
+  padding: ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus}
+    ${spacing.regularPlus};
+`;
+
+export const EmptyResultText = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+  color: ${palette.black};
 `;
