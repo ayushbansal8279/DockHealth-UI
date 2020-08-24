@@ -6,26 +6,21 @@ import {
 } from 'modal/components/styled';
 
 export const ImportPatientPopoverWrapper = styled(ModalWrapperWithPadding)`
-  position: -webkit-sticky;
-  position: sticky;
+  position: absolute !important;
   width: 401px;
-  height: 100%;
+  height: inherit;
   bottom: 0;
   right: 0;
   align-items: baseline;
   align-vertical: center;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  display: block;
   overflow: auto;
   padding-right: 5px;
   padding-bottom: 0;
 `;
 
-export const ImportPatientPopoverWrapperMinimized = styled(
-  ModalWrapperWithPadding,
-)`
-  position: -webkit-sticky;
-  position: sticky;
+export const ImportPatientPopoverWrapperMinimized = styled(ModalWrapperWithPadding)`
+position: absolute !important;
   width: 401px;
   height: 32px;
   bottom: 0;

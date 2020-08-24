@@ -17,7 +17,7 @@ import Button from 'components/common/Button/Button';
 import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
 import ExcelLogo from 'img/ExcelLogo.svg';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
-// import PatientImportPopover from './PatientImportPopover';
+import PatientImportPopover from './PatientImportPopover';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -74,6 +74,7 @@ const ImportAnimals = styled.img`
 const DownloadIcon = styled.img`
   width: 20px;
   height: 20px;
+  margin-right: 7px;
 `;
 
 const DownloadTemplate = styled.a`
@@ -88,19 +89,18 @@ const EmptyList = ({
   onAddPatientClick,
   importPopupOpen,
   setImportPopupOpen,
+  importPopoverOpen,
+  setImportPopoverOpen
 }) => (
-  <EmptyListContainer>
-    {/* <PatientImportPopover></PatientImportPopover>  */}
-    <div>
+  <>
+   <EmptyListContainer>
+     <div>
       <EmptyListHeader>
         Import your patient list and easily track their tasks.
       </EmptyListHeader>
       <EmptyListContent>
         Your patient list is safe with us. Only people who you invite to your
-        organization will have access. &nbsp;
-        <a href="" target="_top" style={{ color: palette.cyanBlue }}>
-          Learn More
-        </a>
+        organization will have access.
         <p />
         <StyledButton
           variant="contained"
@@ -129,6 +129,7 @@ const EmptyList = ({
       </EmptyListContent>
     </div>
     <ImportAnimals src={PatientImportAnimals} alt="empty view" />
+
     <Dialog
       open={importPopupOpen}
       onClose={() => setImportPopupOpen(false)}
@@ -145,8 +146,17 @@ const EmptyList = ({
         downloadTemplate={downloadPatientImportTemplate}
         step={1}
       />
-    </Dialog>
+
+    </Dialog> 
+    
   </EmptyListContainer>
+      <PatientImportPopover
+        closePopover={() => {setImportPopoverOpen(false);}}
+        minimized={1}
+      />
+    
+  </>
+    
 );
 
 const EmptyFilteredList = () => (
@@ -346,6 +356,8 @@ const PatientsList = ({
   const dispatch = useDispatch();
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
+  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
+  
 
   const onAddPatientClick = useCallback(() => {
     dispatch(beginPatientCreation());
@@ -359,6 +371,8 @@ const PatientsList = ({
         onAddPatientClick={onAddPatientClick}
         importPopupOpen={importPopupOpen}
         setImportPopupOpen={setImportPopupOpen}
+        importPopoverOpen={importPopoverOpen}
+        setImportPopoverOpen={setImportPopoverOpen}
       />
     );
   }

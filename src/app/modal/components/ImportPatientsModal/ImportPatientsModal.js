@@ -30,6 +30,7 @@ const ContentMessage = styled.p`
   font-weight: 300;
   font-size: 18px;
   line-height: 25px;
+  text-align: center;
 `;
 
 const Title = styled.h5`
@@ -111,7 +112,7 @@ const ImportPatientsModal = ({ step, closeModal, downloadTemplate }) => {
         .catch(() => {});
     }
   }, [closeModal, dispatch]);
-
+  
   return (
     <>
       {modalStep === 1 && (

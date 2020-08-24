@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import ExcelLogo from 'img/ExcelLogo.svg';
 import { Add as AddIcon } from '@material-ui/icons';
 import circleCompleted from 'img/circle-completed.svg';
+import { useDispatch } from 'react-redux';
 import {
   ImportPatientPopoverWrapper,
   ImportPatientPopoverWrapperMinimized,
@@ -42,17 +43,18 @@ const ProgressBar = styled.div`
   align: left;
 `;
 
-const ImportPatientsModal = ({ closePopover, expandPopover }) => {
-  const x = 1;
+const PatientImportPopover = ({ minimized,  closePopover }) => {
+    const [minimizedState, setMinimizedState] = useState(minimized);
 
   // DEFAULT POPOVER
-  if (x === 1) {
     return (
+        <> 
+    {minimizedState === 1 && (
       <ImportPatientPopoverWrapper>
         <PopoverHeader>
           Patient Upload
           <PopoverCloseButton
-            onClick={closePopover}
+            onClick={() => {setMinimizedState(2);}}
             size="small"
             color="secondary"
           >
@@ -72,17 +74,17 @@ const ImportPatientsModal = ({ closePopover, expandPopover }) => {
           <ProgressMessage>{fileProgress}% Complete</ProgressMessage>
         </ProgressDisplayArea>
       </ImportPatientPopoverWrapper>
-    );
-  }
+    )}
 
-  // MINIMIZED POPOVER
-  if (x === 2) {
-    return (
+
+  {minimizedState === 2 && (
       <ImportPatientPopoverWrapperMinimized>
         <PopoverHeader>
           Patient Upload
           <PopoverExpandButton
-            onClick={expandPopover}
+            onClick={() => {
+                setMinimizedState(1);
+            }}
             size="small"
             color="secondary"
           >
@@ -90,11 +92,9 @@ const ImportPatientsModal = ({ closePopover, expandPopover }) => {
           </PopoverExpandButton>
         </PopoverHeader>
       </ImportPatientPopoverWrapperMinimized>
-    );
-  }
-  // COMPLETED UPLOAD POPOVER
-  if (x === 3) {
-    return (
+   )}
+
+  {minimizedState === 3  && (
       <ImportPatientPopoverWrapper>
         <PopoverHeader>
           Patient Upload
@@ -115,11 +115,10 @@ const ImportPatientsModal = ({ closePopover, expandPopover }) => {
           </FileName>
         </FileDisplayArea>
       </ImportPatientPopoverWrapper>
-    );
-  }
-  // ERROR POPOVER
-  if (x === 4) {
-    return (
+    
+  )}
+  
+  {minimizedState === 4 && (
       <ImportPatientPopoverWrapper>
         <PopoverHeader>
           Patient Upload
@@ -131,7 +130,7 @@ const ImportPatientsModal = ({ closePopover, expandPopover }) => {
             Close
           </CloseButtonWord>
           <PopoverCloseButton
-            onClick={closePopover}
+            onClick={() => {setMinimizedState(2)}}
             size="small"
             color="secondary"
           >
@@ -153,12 +152,13 @@ const ImportPatientsModal = ({ closePopover, expandPopover }) => {
           <ErrorMessage>Row 21 - Length of data too long</ErrorMessage>
 
           <FixErrorContainer>
-            <FixErrors>Re-upload corrected file</FixErrors>
-            <FixErrors>Add patients manually</FixErrors>
+            <FixErrors onClick={closePopover}>Re-upload corrected file</FixErrors>
+            <FixErrors onClick={closePopover}>Add patients manually</FixErrors>
           </FixErrorContainer>
         </ErrorDisplayArea>
-      </ImportPatientPopoverWrapper>
+      </ImportPatientPopoverWrapper>)}
+    </>
     );
-  }
 };
-export default ImportPatientsModal;
+
+export default PatientImportPopover;
