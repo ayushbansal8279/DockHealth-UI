@@ -1,5 +1,8 @@
 import React, { useState, useRef, useMemo } from 'react';
 import Button from 'components/common/Button/Button';
+import Member from 'components/members/Member';
+import { ClickAwayListener, Grid } from '@material-ui/core';
+import Loader from 'components/common/Loader/Loader';
 import {
   Wrapper,
   Placeholder,
@@ -11,26 +14,37 @@ import {
   RemoveMemberIcon,
   SearchInput,
   AvailablePeopleWrapper,
+  AvailablePeopleItemButton,
+  UserName,
+  UserNameText,
+  SelectElementWrapper,
+  EmptyPeopleResult,
+  EmptyResultText,
 } from './styled';
 
-const ListMembersSelect = ({ availablePeople, currentUser }) => {
+const ListMembersSelect = ({
+  disabled,
+  availablePeople,
+  isLoadingAvailablePeople,
+  onAcitonButtonClick,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
   const searchInputReference = useRef(null);
-  const [selectedMembers, setSelectedMembers] = useState([
-    { userIdentifier: 'sdfasdf', userName: 'Maciej Laufer' },
-    { userIdentifier: 'sdfasdfdd', userName: 'Maciej Tester2' },
-    { userIdentifier: 'sdfasdfsds', userName: 'Maciej Tester3' },
-    { userIdentifier: 'sdfasdfsdsss', userName: 'Maciej Tester4' },
-    { userIdentifier: 'sdfasdfsdsaaaa', userName: 'Maciej Tester5' },
-  ]);
+  const searchedPeopleReferences = useRef([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
   const [searchInputValue, setSearchInputValue] = useState('');
-  const [isSearchInputFocused, setIsSearchInputFocused] = useState(false);
+  const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
 
   const searchedAvailablePeople = useMemo(
     () =>
-      availablePeople.filter(({ userName }) =>
-        userName.toLowerCase().includes(searchInputValue),
+      availablePeople.filter(
+        ({ userName, userIdentifier }) =>
+          userName.toLowerCase().includes(searchInputValue) &&
+          !selectedMembers.some(
+            selectedMember => selectedMember.userIdentifier === userIdentifier,
+          ),
       ),
-    [searchInputValue, availablePeople],
+    [searchInputValue, availablePeople, selectedMembers],
   );
 
   const removeSelectedMember = userIdentifier => {
@@ -41,28 +55,91 @@ const ListMembersSelect = ({ availablePeople, currentUser }) => {
     );
   };
 
-  const handleSearchInputKeyDown = event => {
-    // handling esc press
-    if (event.keyCode === 27) {
-      event.preventDefault();
-      event.stopPropagation();
-      searchInputReference.current.blur();
-      setSearchInputValue('');
-    }
+  const handleSelectMember = member => {
+    setSelectedMembers(perviousSelectedMember => [
+      ...perviousSelectedMember,
+      member,
+    ]);
+    setSearchInputValue('');
+    searchInputReference.current.focus();
+  };
 
-    if (searchInputReference.current) {
-      if (!searchInputReference.current?.value) {
-        searchInputReference.current.style.width = 20;
-        return;
-      }
-
-      // set content width plus input padding value
-      searchInputReference.current.style.width =
-        searchInputReference.current?.scrollWidth + 8;
+  const handleInviteSelectedPeople = () => {
+    if (selectedMembers?.length > 0) {
+      onAcitonButtonClick(selectedMembers);
+      setSelectedMembers([]);
     }
   };
 
-  const handleSelectClick = event => {
+  const handleSearchInputKeyDown = event => {
+    switch (event.keyCode) {
+      // esc key
+      case 27:
+        event.preventDefault();
+        event.stopPropagation();
+        searchInputReference.current.blur();
+        setSearchInputValue('');
+        break;
+
+      // enter key
+      case 13:
+        event.preventDefault();
+        event.stopPropagation();
+        if (searchInputReference.current?.value) {
+          handleSelectMember(searchedAvailablePeople[hoveredItemIndex]);
+        } else {
+          handleInviteSelectedPeople();
+        }
+        break;
+
+      // down arrow key
+      case 40:
+        event.preventDefault();
+        event.stopPropagation();
+        setHoveredItemIndex(previousIndex => {
+          let newIndex;
+          if (previousIndex === searchedAvailablePeople.length - 1) {
+            newIndex = 0;
+          } else {
+            newIndex = previousIndex + 1;
+          }
+
+          searchedPeopleReferences.current[newIndex].scrollIntoView(false);
+          return newIndex;
+        });
+        break;
+
+      // up arrow key
+      case 38:
+        event.preventDefault();
+        event.stopPropagation();
+        setHoveredItemIndex(previousIndex => {
+          let newIndex;
+          if (previousIndex === 0) {
+            newIndex = searchedAvailablePeople.length - 1;
+          } else {
+            newIndex = previousIndex - 1;
+          }
+
+          searchedPeopleReferences.current[newIndex].scrollIntoView(true);
+          return newIndex;
+        });
+        break;
+
+      default:
+        // set content width plus input padding value
+        searchInputReference.current.style.width =
+          searchInputReference.current?.scrollWidth + 8;
+        searchInputReference.current.scrollIntoView(true);
+        break;
+    }
+
+    if (!searchInputReference.current?.value) {
+      searchInputReference.current.style.width = 20;
+    }
+  };
+
+  const handleSelectAreaClick = event => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -73,46 +150,84 @@ const ListMembersSelect = ({ availablePeople, currentUser }) => {
 
   return (
     <Wrapper>
-      <SelectElement
-        withValue={searchInputValue}
-        type="button"
-        onClick={handleSelectClick}
-      >
-        <>
-          {selectedMembers.map(member => (
-            <MemberItemWrapper key={member.userIdentifier}>
-              <MemberName>{member.userName}</MemberName>
-              <RemoveMemberButton
-                type="button"
-                onClick={() => removeSelectedMember(member.userIdentifier)}
-              >
-                <RemoveMemberIcon />
-              </RemoveMemberButton>
-            </MemberItemWrapper>
-          ))}
-          <SearchInput
-            ref={searchInputReference}
-            onKeyDown={handleSearchInputKeyDown}
-            value={searchInputValue}
-            onChange={event => setSearchInputValue(event.target.value)}
-            onFocus={() => setIsSearchInputFocused(true)}
-            onBlur={() => setIsSearchInputFocused(false)}
-          />
-          {(!selectedMembers || selectedMembers.length === 0) &&
-            !searchInputValue && (
-              <Placeholder>Type the nameof a the person to invite</Placeholder>
-            )}
-        </>
-      </SelectElement>
-      {searchInputValue && isSearchInputFocused && (
-        <AvailablePeopleWrapper>
-          {searchedAvailablePeople.map(({ userName }) => (
-            <div>{userName}</div>
-          ))}
-        </AvailablePeopleWrapper>
-      )}
+      <ClickAwayListener onClickAway={() => setSearchInputValue('')}>
+        <SelectElementWrapper>
+          <SelectElement
+            withValue={searchInputValue}
+            type="button"
+            onClick={handleSelectAreaClick}
+          >
+            <>
+              {selectedMembers.map(member => (
+                <MemberItemWrapper key={member.userIdentifier}>
+                  <MemberName>{member.userName}</MemberName>
+                  <RemoveMemberButton
+                    type="button"
+                    onClick={() => removeSelectedMember(member.userIdentifier)}
+                  >
+                    <RemoveMemberIcon />
+                  </RemoveMemberButton>
+                </MemberItemWrapper>
+              ))}
+              <SearchInput
+                ref={searchInputReference}
+                onKeyDown={handleSearchInputKeyDown}
+                value={searchInputValue}
+                onChange={event => setSearchInputValue(event.target.value)}
+                disabled={disabled}
+              />
+              {(!selectedMembers || selectedMembers.length === 0) &&
+                !searchInputValue && (
+                  <Placeholder>
+                    Type the name of a the person to invite
+                  </Placeholder>
+                )}
+            </>
+          </SelectElement>
+          {searchInputValue && (
+            <AvailablePeopleWrapper>
+              {isLoadingAvailablePeople ? (
+                <Grid container justify="center">
+                  <Loader />
+                </Grid>
+              ) : (
+                <>
+                  {searchedAvailablePeople?.length > 0 ? (
+                    searchedAvailablePeople.map((person, index) => (
+                      <AvailablePeopleItemButton
+                        key={person.userIdentifier}
+                        ref={element => {
+                          searchedPeopleReferences.current[index] = element;
+                        }}
+                        type="button"
+                        onClick={() => handleSelectMember(person)}
+                        onMouseEnter={() => setHoveredItemIndex(index)}
+                        isHovered={index === hoveredItemIndex}
+                      >
+                        <UserName>
+                          <UserNameText>{person.userName}</UserNameText>
+                        </UserName>
+                        <Member size={38} member={person} />
+                      </AvailablePeopleItemButton>
+                    ))
+                  ) : (
+                    <EmptyPeopleResult>
+                      <EmptyResultText>No record found</EmptyResultText>
+                    </EmptyPeopleResult>
+                  )}
+                </>
+              )}
+            </AvailablePeopleWrapper>
+          )}
+        </SelectElementWrapper>
+      </ClickAwayListener>
       <ButtonWrapper>
-        <Button fullWidth size="small" onClick={() => {}}>
+        <Button
+          fullWidth
+          size="small"
+          onClick={handleInviteSelectedPeople}
+          disabled={selectedMembers.length === 0 || disabled}
+        >
           Invite
         </Button>
       </ButtonWrapper>

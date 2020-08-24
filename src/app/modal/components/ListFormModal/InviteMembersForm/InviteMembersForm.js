@@ -7,13 +7,10 @@ import * as TaskListApi from 'api/tasklist-api';
 import * as PeopleApi from 'api/people-api';
 import { showAlert } from 'helpers/utility-functions';
 import * as TaskListActions from 'actions/tasklist-actions';
-import { findAllUsersByOrganizationId } from 'actions/people-actions';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
 import Member from 'components/members/Member';
 import Loader from 'components/common/Loader/Loader';
-import initializeListFormHooks from 'components/ListForm/hooks';
-// import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
 import { Title, FormWrapper, Header, Description } from '../styled';
 import ListMembersSelect from '../ListMembersSelect/ListMembersSelect';
 import {
@@ -30,48 +27,16 @@ import {
   MemberFullNameWrapper,
 } from './styled';
 
-// const ADMIN_PICKER = 'ADMIN_PICKER';
-// const MEMBER_PICKER = 'MEMBER_PICKER';
-
-const onSubmit = ({
-  dispatch,
-  event,
-  closeModal,
-  isSavingList,
-  setIsSavingList,
-  taskListIdentifier = null,
-}) => data => {
-  const taskList = { ...data, taskListIdentifier };
-
-  event.stopPropagation();
-  event.preventDefault();
-
-  if (isSavingList) return;
-
-  setIsSavingList(true);
-  dispatch(TaskListActions.saveTaskList(taskList))
-    .then(() => {
-      setIsSavingList(false);
-      closeModal();
-    })
-    .catch(error => {
-      setIsSavingList(false);
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text: error?.message ?? messages.submit.error,
-      });
-    });
-};
-
 const InviteMembersForm = ({
   closeModal,
   isListEditMode,
-  taskListIdentifier,
+  taskList,
+  setList,
 }) => {
   const dispatch = useDispatch();
   const [newListView, setNewListView] = useState(!isListEditMode);
   const [isSavingList, setIsSavingList] = useState(false);
+  const [isUpdatingMembersList, setIsUpdatingMembersList] = useState(false);
   const [listMembers, setListMembers] = useState([]);
   const [listMembersFetched, setListMembersFetched] = useState(false);
 
@@ -92,17 +57,25 @@ const InviteMembersForm = ({
   }, [newListView]);
 
   useEffect(() => {
-    if (!newListView && taskListIdentifier) {
-      setListMembersFetched(false);
-      TaskListApi.getMembersByTaskListId(taskListIdentifier, 'ALL').then(
-        members => {
+    if (!newListView && taskList?.taskListIdentifier) {
+      if (listMembers.length === 0) {
+        setListMembersFetched(false);
+      } else {
+        setIsUpdatingMembersList(true);
+      }
+
+      TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
+        .then(members => {
           setListMembers(members);
           setListMembersFetched(true);
-        },
-      );
+          setIsUpdatingMembersList(false);
+        })
+        .catch(() => {
+          setIsUpdatingMembersList(false);
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newListView, taskListIdentifier]);
+  }, [newListView, taskList]);
 
   const userProfile = useSelector(state => state.userState.userProfile);
 
@@ -118,23 +91,34 @@ const InviteMembersForm = ({
     [allOrganizationMembers, listMembers],
   );
 
-  // const {
-  //   addAdmin,
-  //   addMember,
-  //   allAdminsWithOwner,
-  //   allMembersValue,
-  //   currentUser,
-  //   dispatch,
-  //   handleSubmit,
-  //   people,
-  //   peopleListForAdminPicker,
-  //   peopleListForMemberPicker,
-  //   removeAdmin,
-  //   removeMember,
-  //   taskListIdentifier,
-  // } = initializeListFormHooks();
+  const handleInviteMembers = members => {
+    setIsSavingList(true);
+    const newMembersIdentifiers = members.map(
+      ({ userIdentifier }) => userIdentifier,
+    );
+    const requestTaskList = {
+      taskListIdentifier: taskList.taskListIdentifier,
+      memberIdentifiers: [
+        ...taskList.memberIdentifiers,
+        ...newMembersIdentifiers,
+      ],
+      adminIdentifiers: taskList.adminIdentifiers,
+    };
 
-  // const { orgUserRole } = currentUser;
+    TaskListActions.saveTaskList(requestTaskList)(dispatch)
+      .then(updatedList => {
+        setList(updatedList);
+        setIsSavingList(false);
+      })
+      .catch(error => {
+        setIsSavingList(false);
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: error?.message ?? messages.submit.error,
+        });
+      });
+  };
 
   if (newListView) {
     return (
@@ -161,21 +145,7 @@ const InviteMembersForm = ({
   }
 
   return (
-    <FormWrapper
-      onSubmit={
-        event => {}
-        // handleSubmit(
-        //   onSubmit({
-        //     dispatch,
-        //     taskListIdentifier: list.taskListIdentifier,
-        //     event,
-        //     closeModal,
-        //     setIsSavingList,
-        //     isSavingList,
-        //   }),
-        // )(event)
-      }
-    >
+    <FormWrapper>
       <Grid container direction="column" justify="space-between">
         <Grid container item>
           <Header>
@@ -189,20 +159,33 @@ const InviteMembersForm = ({
           {allOrganizationMembersFetched && listMembersFetched ? (
             <>
               <ListMembersSelect
-                currentUser={userProfile}
+                disabled={isSavingList}
                 availablePeople={organizationMembersNotInTheList}
+                isLoadingAvailablePeople={!allOrganizationMembersFetched}
+                onAcitonButtonClick={handleInviteMembers}
               />
               <Spacing vertical={4} />
+              {isUpdatingMembersList && (
+                <>
+                  <Grid container direction="column" alignItems="center">
+                    <Spacing vertical={2} />
+                    <Loader />
+                    <Spacing vertical={2} />
+                  </Grid>
+                </>
+              )}
               <MembersListWrapper>
                 {listMembers.map(member => (
-                  <MemberListItem>
-                    <Member
-                      key={member.userIdentifier}
-                      size={38}
-                      member={member}
-                    />
+                  <MemberListItem key={member.userIdentifier}>
+                    <Member size={38} member={member} />
                     <MemberFullNameWrapper>
-                      <MemberFullName>{member.userName}</MemberFullName>
+                      <MemberFullName>
+                        {member.userName}{' '}
+                        {member.userIdentifier ===
+                          userProfile?.userIdentifier && (
+                          <span>&nbsp;(me)</span>
+                        )}
+                      </MemberFullName>
                     </MemberFullNameWrapper>
                   </MemberListItem>
                 ))}

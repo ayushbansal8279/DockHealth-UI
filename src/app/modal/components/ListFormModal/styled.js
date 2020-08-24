@@ -8,7 +8,7 @@ export const ListFormModalWrapper = styled(ModalWrapper)`
   display: flex;
   flex-direction: column;
   width: 600px;
-  min-height: 441px;
+  min-height: 500px;
   padding: ${spacing.regularPlus} ${spacing.largePlus};
 `;
 
@@ -56,7 +56,7 @@ export const ButtonWrapper = styled.div`
   width: 170px;
 `;
 
-export const FormWrapper = styled.form`
+export const FormWrapper = styled.div`
   display: flex;
   flex: 1;
   width: 100%;
