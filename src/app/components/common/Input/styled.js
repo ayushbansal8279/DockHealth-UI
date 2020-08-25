@@ -64,7 +64,6 @@ export const SecondaryInputBox = styled.div`
   background-color: ${palette.white};
   display: flex;
   flex-direction: column;
-  padding: ${spacing.small} ${spacing.smallPlus};
 `;
 
 export const SecondaryInputField = styled.input`
@@ -92,7 +91,7 @@ export const SecondaryInputLabel = styled.label`
 
 export const SecondaryInputError = styled.span`
   display: block;
-  padding: ${spacing.small} ${spacing.smallPlus};
+  padding: ${spacing.small} 0;
   color: ${palette.oPlusRed};
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.bold};
