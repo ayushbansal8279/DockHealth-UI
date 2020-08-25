@@ -61,7 +61,12 @@ const getMemberStatusLabel = member => {
 
 const getMenuOptionsForMember = (
   member,
-  { changeUserRole, removeUserFromList },
+  {
+    changeUserRole,
+    removeUserFromList,
+    cancelInviteToList,
+    resendInvitationToList,
+  },
 ) => {
   const { status, taskListUserRole, userIdentifier } = member;
 
@@ -108,13 +113,13 @@ const getMenuOptionsForMember = (
         {
           title: 'Resend Request to Group Owner(s)',
           action: () => {
-            console.log('Resend');
+            resendInvitationToList(userIdentifier);
           },
         },
         {
           title: 'Cancel Invitation',
           action: () => {
-            console.log('Cancel invitation');
+            cancelInviteToList(userIdentifier);
           },
         },
       ];
@@ -124,13 +129,13 @@ const getMenuOptionsForMember = (
         {
           title: 'Resend Invitation',
           action: () => {
-            console.log('Resend invitation');
+            resendInvitationToList(userIdentifier);
           },
         },
         {
           title: 'Cancel Invitation',
           action: () => {
-            console.log('Cancel invitation');
+            cancelInviteToList(userIdentifier);
           },
         },
       ];
@@ -143,7 +148,7 @@ const getMenuOptionsForMember = (
 const InviteMembersForm = ({
   closeModal,
   isListEditMode,
-  taskList,
+  list,
   setList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -181,7 +186,7 @@ const InviteMembersForm = ({
       setIsUpdatingMembersList(true);
     }
 
-    TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
+    TaskListApi.getMembersByTaskListId(list.taskListIdentifier, 'ALL')
       .then(members => {
         setListMembers(members);
         setListMembersFetched(true);
@@ -193,11 +198,11 @@ const InviteMembersForm = ({
   };
 
   useEffect(() => {
-    if (!newListView && taskList?.taskListIdentifier) {
+    if (!newListView && list?.taskListIdentifier) {
       refreshListMembers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newListView, taskList]);
+  }, [newListView, list]);
 
   const userProfile = useSelector(state => state.userState.userProfile);
 
@@ -219,12 +224,9 @@ const InviteMembersForm = ({
       ({ userIdentifier }) => userIdentifier,
     );
     const requestTaskList = {
-      taskListIdentifier: taskList.taskListIdentifier,
-      memberIdentifiers: [
-        ...taskList.memberIdentifiers,
-        ...newMembersIdentifiers,
-      ],
-      adminIdentifiers: taskList.adminIdentifiers,
+      taskListIdentifier: list.taskListIdentifier,
+      memberIdentifiers: [...list.memberIdentifiers, ...newMembersIdentifiers],
+      adminIdentifiers: list.adminIdentifiers,
     };
 
     TaskListActions.saveTaskList(requestTaskList)(dispatch)
@@ -246,7 +248,7 @@ const InviteMembersForm = ({
     setIsUpdatingMembersList(true);
 
     TaskListApi.changeUserRoleForList(
-      taskList.taskListIdentifier,
+      list.taskListIdentifier,
       userIdentifier,
       role,
     )
@@ -261,10 +263,31 @@ const InviteMembersForm = ({
   const removeUserFromList = userIdentifier => {
     setIsUpdatingMembersList(true);
 
-    TaskListApi.removeUserFromTaskList(
-      taskList.taskListIdentifier,
-      userIdentifier,
-    )
+    TaskListApi.removeUserFromTaskList(list.taskListIdentifier, userIdentifier)
+      .then(() => {
+        refreshListMembers();
+      })
+      .catch(() => {
+        refreshListMembers();
+      });
+  };
+
+  const cancelInviteToList = userIdentifier => {
+    setIsUpdatingMembersList(true);
+
+    TaskListApi.cancelInviteToTaskList(list.taskListIdentifier, userIdentifier)
+      .then(() => {
+        refreshListMembers();
+      })
+      .catch(() => {
+        refreshListMembers();
+      });
+  };
+
+  const resendInvitationToList = userIdentifier => {
+    setIsUpdatingMembersList(true);
+
+    TaskListApi.inviteUserToTaskList(list.taskListIdentifier, userIdentifier)
       .then(() => {
         refreshListMembers();
       })
@@ -276,7 +299,12 @@ const InviteMembersForm = ({
   const handleOpenMenu = (event, member) => {
     menuAnchor.current = event.target;
     setCurrentMenuOptions(
-      getMenuOptionsForMember(member, { changeUserRole, removeUserFromList }),
+      getMenuOptionsForMember(member, {
+        changeUserRole,
+        removeUserFromList,
+        cancelInviteToList,
+        resendInvitationToList,
+      }),
     );
     setIsMenuOpen(true);
   };
