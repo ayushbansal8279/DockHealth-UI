@@ -33,7 +33,7 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
           <InviteMembersForm
             closeModal={closeModal}
             isListEditMode={isListEditMode}
-            taskList={editedList}
+            list={editedList}
             setList={setEditedList}
           />
         );
