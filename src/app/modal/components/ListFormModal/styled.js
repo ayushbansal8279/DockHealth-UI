@@ -57,6 +57,7 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const FormWrapper = styled.div`
+  position: relative;
   display: flex;
   flex: 1;
   width: 100%;
