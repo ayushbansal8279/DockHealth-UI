@@ -80,11 +80,14 @@ export const DasboardTabsContainer = styled.div`
 `;
 
 export const DashboardTab = styled.button`
-  margin-right: ${spacing.giga};
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: ${fontWeights.bold};
   color: ${props => props.isSelected && palette.brightBlue};
+
+  &:not(:last-of-type) {
+    margin-right: ${spacing.giga};
+  }
 
   &:focus {
     outline: none;
