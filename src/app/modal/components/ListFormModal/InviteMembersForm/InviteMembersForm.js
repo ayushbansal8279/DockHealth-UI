@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Grid, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +28,114 @@ import {
   MemberFullNameWrapper,
   MemberStatusLabel,
   MemberAvatarWrapper,
+  MemberMenuWrapper,
+  MemberMenuButton,
+  MemberMenuButtonTitle,
+  MemberMenuButtonDescription,
+  MenuPopover,
 } from './styled';
+
+const isMemberPending = member =>
+  member.status === 'PENDING' || member.status === 'INVITED';
+
+const getMemberStatusLabel = member => {
+  const { status, taskListUserRole } = member;
+
+  switch (status) {
+    case 'ACTIVE':
+      if (taskListUserRole === 'ADMIN')
+        return <MemberStatusLabel>List Admin</MemberStatusLabel>;
+
+      return null;
+
+    case 'PENDING':
+      return <MemberStatusLabel>Approval Pending</MemberStatusLabel>;
+
+    case 'INVITED':
+      return <MemberStatusLabel>Invitation Pending</MemberStatusLabel>;
+
+    default:
+      return null;
+  }
+};
+
+const getMenuOptionsForMember = (member, { changeUserRole }) => {
+  const { status, taskListUserRole, userIdentifier } = member;
+
+  switch (status) {
+    case 'ACTIVE':
+      if (taskListUserRole === 'ADMIN')
+        return [
+          {
+            title: 'List Member',
+            action: () => {
+              changeUserRole(userIdentifier, 'MEMBER');
+            },
+          },
+          {
+            title: 'Remove From This List',
+            description:
+              'If you remove a user they will lose access to this list.',
+            action: () => {
+              console.log('Remove from the list');
+            },
+          },
+        ];
+
+      return [
+        {
+          title: 'List admin',
+          description: 'Can edit and delete the list.',
+          action: () => {
+            changeUserRole(userIdentifier, 'ADMIN');
+          },
+        },
+        {
+          title: 'Remove From This List',
+          description:
+            'If you remove a user they will lose access to this list.',
+          action: () => {
+            console.log('Remove from the list');
+          },
+        },
+      ];
+
+    case 'PENDING':
+      return [
+        {
+          title: 'Resend Request to Group Owner(s)',
+          action: () => {
+            console.log('Resend');
+          },
+        },
+        {
+          title: 'Cancel Invitation',
+          action: () => {
+            console.log('Cancel invitation');
+          },
+        },
+      ];
+
+    case 'INVITED':
+      return [
+        {
+          title: 'Resend Invitation',
+          action: () => {
+            console.log('Resend invitation');
+          },
+        },
+        {
+          title: 'Cancel Invitation',
+          action: () => {
+            console.log('Cancel invitation');
+          },
+        },
+      ];
+
+    default:
+      return null;
+  }
+};
 
 const InviteMembersForm = ({
   closeModal,
@@ -38,17 +145,21 @@ const InviteMembersForm = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
+
+  const menuAnchor = useRef(null);
+
   const [newListView, setNewListView] = useState(!isListEditMode);
   const [isSavingList, setIsSavingList] = useState(false);
   const [isUpdatingMembersList, setIsUpdatingMembersList] = useState(false);
   const [listMembers, setListMembers] = useState([]);
   const [listMembersFetched, setListMembersFetched] = useState(false);
-
   const [allOrganizationMembers, setAllOrganizationMembers] = useState([]);
   const [
     allOrganizationMembersFetched,
     setAllOrganizationMembersFetched,
   ] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentMenuOptions, setCurrentMenuOptions] = useState(null);
 
   useEffect(() => {
     if (!newListView) {
@@ -60,23 +171,27 @@ const InviteMembersForm = ({
     }
   }, [newListView]);
 
+  const refreshListMembers = () => {
+    if (listMembers.length === 0) {
+      setListMembersFetched(false);
+    } else {
+      setIsUpdatingMembersList(true);
+    }
+
+    TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
+      .then(members => {
+        setListMembers(members);
+        setListMembersFetched(true);
+        setIsUpdatingMembersList(false);
+      })
+      .catch(() => {
+        setIsUpdatingMembersList(false);
+      });
+  };
+
   useEffect(() => {
     if (!newListView && taskList?.taskListIdentifier) {
-      if (listMembers.length === 0) {
-        setListMembersFetched(false);
-      } else {
-        setIsUpdatingMembersList(true);
-      }
-
-      TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
-        .then(members => {
-          setListMembers(members);
-          setListMembersFetched(true);
-          setIsUpdatingMembersList(false);
-        })
-        .catch(() => {
-          setIsUpdatingMembersList(false);
-        });
+      refreshListMembers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newListView, taskList]);
@@ -122,6 +237,32 @@ const InviteMembersForm = ({
           text: error?.message ?? messages.submit.error,
         });
       });
+  };
+
+  const changeUserRole = (userIdentifier, role) => {
+    TaskListApi.changeUserRoleForList(
+      taskList.taskListIdentifier,
+      userIdentifier,
+      role,
+    )
+      .then(() => {
+        refreshListMembers();
+      })
+      .catch(() => {
+        refreshListMembers();
+      });
+  };
+
+  const handleOpenMenu = (event, member) => {
+    menuAnchor.current = event.target;
+    setCurrentMenuOptions(getMenuOptionsForMember(member, { changeUserRole }));
+    setIsMenuOpen(true);
+  };
+
+  const handleCloseMenu = () => {
+    menuAnchor.current = null;
+    setCurrentMenuOptions(null);
+    setIsMenuOpen(false);
   };
 
   if (newListView) {
@@ -181,14 +322,10 @@ const InviteMembersForm = ({
               <MembersListWrapper>
                 {listMembers.map(member => (
                   <MemberListItem key={member.userIdentifier}>
-                    <MemberAvatarWrapper
-                      isPending={member.status === 'PENDING'}
-                    >
+                    <MemberAvatarWrapper isPending={isMemberPending(member)}>
                       <Member size={38} member={member} />
                     </MemberAvatarWrapper>
-                    <MemberFullNameWrapper
-                      isPending={member.status === 'PENDING'}
-                    >
+                    <MemberFullNameWrapper isPending={isMemberPending(member)}>
                       <MemberFullName>
                         {member.userName}{' '}
                         {member.userIdentifier ===
@@ -197,16 +334,9 @@ const InviteMembersForm = ({
                         )}
                       </MemberFullName>
                     </MemberFullNameWrapper>
-                    {member.status === 'PENDING' ? (
-                      <MemberStatusLabel>Approval Pending</MemberStatusLabel>
-                    ) : (
-                      (member.taskListUserRole === 'ADMIN' ||
-                        member.taskListUserRole === 'OWNER') && (
-                        <MemberStatusLabel>List Admin</MemberStatusLabel>
-                      )
-                    )}
+                    {getMemberStatusLabel(member)}
                     <IconButton
-                      onClick={() => {}}
+                      onClick={event => handleOpenMenu(event, member)}
                       size="small"
                       color="secondary"
                     >
@@ -227,6 +357,42 @@ const InviteMembersForm = ({
           Skip
         </SkipButton>
       </Grid>
+      {currentMenuOptions && (
+        <MenuPopover
+          anchorEl={menuAnchor?.current}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={isMenuOpen}
+          onClose={handleCloseMenu}
+          transitionDuration={0}
+        >
+          <MemberMenuWrapper>
+            {currentMenuOptions.map(({ title, description, action }) => (
+              <MemberMenuButton
+                key={title}
+                type="button"
+                onClick={() => {
+                  handleCloseMenu();
+                  action();
+                }}
+              >
+                <MemberMenuButtonTitle>{title}</MemberMenuButtonTitle>
+                {description && (
+                  <MemberMenuButtonDescription>
+                    {description}
+                  </MemberMenuButtonDescription>
+                )}
+              </MemberMenuButton>
+            ))}
+          </MemberMenuWrapper>
+        </MenuPopover>
+      )}
     </FormWrapper>
   );
 };
