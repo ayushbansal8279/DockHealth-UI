@@ -160,8 +160,12 @@ export const UserNameText = styled.p`
 `;
 
 export const EmptyPeopleResult = styled.div`
-  padding: ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus}
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: ${spacing.smallPlus} ${spacing.giga} ${spacing.smallPlus}
     ${spacing.regularPlus};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const EmptyResultText = styled.p`
@@ -169,4 +173,17 @@ export const EmptyResultText = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   color: ${palette.black};
+  font-family: inherit;
+`;
+
+export const EmptyResultButton = styled.button`
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  font-family: inherit;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
