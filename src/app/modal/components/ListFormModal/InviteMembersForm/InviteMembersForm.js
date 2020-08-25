@@ -59,7 +59,10 @@ const getMemberStatusLabel = member => {
   }
 };
 
-const getMenuOptionsForMember = (member, { changeUserRole }) => {
+const getMenuOptionsForMember = (
+  member,
+  { changeUserRole, removeUserFromList },
+) => {
   const { status, taskListUserRole, userIdentifier } = member;
 
   switch (status) {
@@ -77,7 +80,7 @@ const getMenuOptionsForMember = (member, { changeUserRole }) => {
             description:
               'If you remove a user they will lose access to this list.',
             action: () => {
-              console.log('Remove from the list');
+              removeUserFromList(userIdentifier);
             },
           },
         ];
@@ -95,7 +98,7 @@ const getMenuOptionsForMember = (member, { changeUserRole }) => {
           description:
             'If you remove a user they will lose access to this list.',
           action: () => {
-            console.log('Remove from the list');
+            removeUserFromList(userIdentifier);
           },
         },
       ];
@@ -240,6 +243,8 @@ const InviteMembersForm = ({
   };
 
   const changeUserRole = (userIdentifier, role) => {
+    setIsUpdatingMembersList(true);
+
     TaskListApi.changeUserRoleForList(
       taskList.taskListIdentifier,
       userIdentifier,
@@ -253,9 +258,26 @@ const InviteMembersForm = ({
       });
   };
 
+  const removeUserFromList = userIdentifier => {
+    setIsUpdatingMembersList(true);
+
+    TaskListApi.removeUserFromTaskList(
+      taskList.taskListIdentifier,
+      userIdentifier,
+    )
+      .then(() => {
+        refreshListMembers();
+      })
+      .catch(() => {
+        refreshListMembers();
+      });
+  };
+
   const handleOpenMenu = (event, member) => {
     menuAnchor.current = event.target;
-    setCurrentMenuOptions(getMenuOptionsForMember(member, { changeUserRole }));
+    setCurrentMenuOptions(
+      getMenuOptionsForMember(member, { changeUserRole, removeUserFromList }),
+    );
     setIsMenuOpen(true);
   };
 
@@ -310,15 +332,7 @@ const InviteMembersForm = ({
                 onAcitonButtonClick={handleInviteMembers}
               />
               <Spacing vertical={4} />
-              {isUpdatingMembersList && (
-                <>
-                  <Grid container direction="column" alignItems="center">
-                    <Spacing vertical={2} />
-                    <Loader />
-                    <Spacing vertical={2} />
-                  </Grid>
-                </>
-              )}
+
               <MembersListWrapper>
                 {listMembers.map(member => (
                   <MemberListItem key={member.userIdentifier}>
@@ -337,6 +351,7 @@ const InviteMembersForm = ({
                     {getMemberStatusLabel(member)}
                     <IconButton
                       onClick={event => handleOpenMenu(event, member)}
+                      disabled={isUpdatingMembersList}
                       size="small"
                       color="secondary"
                     >
@@ -345,6 +360,15 @@ const InviteMembersForm = ({
                   </MemberListItem>
                 ))}
               </MembersListWrapper>
+              {isUpdatingMembersList && (
+                <>
+                  <Grid container direction="column" alignItems="center">
+                    <Spacing vertical={2} />
+                    <Loader />
+                    <Spacing vertical={2} />
+                  </Grid>
+                </>
+              )}
             </>
           ) : (
             <LoaderWrapper>
