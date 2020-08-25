@@ -113,6 +113,7 @@ const getMenuOptionsForMember = (
         {
           title: 'Resend Request to Group Owner(s)',
           action: () => {
+            // TODO(maciek): check endpoint for resending approval request
             resendInvitationToList(userIdentifier);
           },
         },
