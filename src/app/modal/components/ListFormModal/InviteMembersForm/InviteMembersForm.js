@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Grid, IconButton } from '@material-ui/core';
+import { Grid, IconButton, ClickAwayListener } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import PersonIcon from 'img/modals/person';
@@ -14,6 +14,7 @@ import Member from 'components/members/Member';
 import Loader from 'components/common/Loader/Loader';
 import { Title, FormWrapper, Header, Description } from '../styled';
 import ListMembersSelect from '../ListMembersSelect/ListMembersSelect';
+import ExternalInviteForm from '../ExternalInviteForm/ExternalInviteForm';
 import {
   InviteInitialViewWrapper,
   InviteInitialViewContent,
@@ -33,6 +34,7 @@ import {
   MemberMenuButtonTitle,
   MemberMenuButtonDescription,
   MenuPopover,
+  ExternalUserInviteFormWrapper,
 } from './styled';
 
 const isMemberPending = member =>
@@ -169,6 +171,9 @@ const InviteMembersForm = ({
   ] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentMenuOptions, setCurrentMenuOptions] = useState(null);
+  const [externalInviteFormState, setExternalInviteFormState] = useState({
+    opened: false,
+  });
 
   useEffect(() => {
     if (!newListView) {
@@ -316,6 +321,21 @@ const InviteMembersForm = ({
     setIsMenuOpen(false);
   };
 
+  const handleOpenExternalInviteForm = searchedValue => {
+    const [firstName, lastName] = searchedValue?.split(' ');
+    setExternalInviteFormState({
+      opened: true,
+      initialValues: {
+        firstName: firstName
+          ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
+          : '',
+        lastName: lastName
+          ? lastName.charAt(0).toUpperCase() + lastName.slice(1)
+          : '',
+      },
+    });
+  };
+
   if (newListView) {
     return (
       <InviteInitialViewWrapper>
@@ -359,12 +379,9 @@ const InviteMembersForm = ({
                 availablePeople={organizationMembersNotInTheList}
                 isLoadingAvailablePeople={!allOrganizationMembersFetched}
                 onAcitonButtonClick={handleInviteMembers}
-                emptyListAction={() => {
-                  console.log('invite external');
-                }}
+                emptyListAction={handleOpenExternalInviteForm}
               />
               <Spacing vertical={4} />
-
               <MembersListWrapper>
                 {listMembers.map(member => (
                   <MemberListItem key={member.userIdentifier}>
@@ -448,6 +465,24 @@ const InviteMembersForm = ({
             ))}
           </MemberMenuWrapper>
         </MenuPopover>
+      )}
+      {externalInviteFormState.opened && (
+        <ClickAwayListener
+          onClickAway={() => setExternalInviteFormState({ opened: false })}
+        >
+          <ExternalUserInviteFormWrapper>
+            <ExternalInviteForm
+              addPerson={() => {}}
+              addInvitedPeople={() => {}}
+              closeInviteForm={() =>
+                setExternalInviteFormState({ opended: false })
+              }
+              initialValues={externalInviteFormState?.initialValues}
+              onInviteSuccess={() => {}}
+              taskListIdentifier={list?.taskListIdentifier}
+            />
+          </ExternalUserInviteFormWrapper>
+        </ClickAwayListener>
       )}
     </FormWrapper>
   );
