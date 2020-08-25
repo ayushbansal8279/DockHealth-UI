@@ -73,6 +73,12 @@ const ListMembersSelect = ({
     }
   };
 
+  const handleEmptyResultActionClick = () => {
+    emptyListAction(searchInputValue);
+    setSearchInputValue('');
+    searchInputReference.current.blur();
+  };
+
   const handleSearchInputKeyDown = event => {
     switch (event.keyCode) {
       // esc key
@@ -87,10 +93,22 @@ const ListMembersSelect = ({
       case 13:
         event.preventDefault();
         event.stopPropagation();
-        if (searchInputReference.current?.value) {
+        if (
+          searchInputReference.current?.value &&
+          searchedAvailablePeople?.length > 0
+        ) {
           handleSelectMember(searchedAvailablePeople[hoveredItemIndex]);
-        } else {
+          break;
+        }
+
+        if (selectedMembers?.length > 0) {
           handleInviteSelectedPeople();
+          break;
+        }
+
+        if (searchedAvailablePeople?.length === 0) {
+          handleEmptyResultActionClick();
+          break;
         }
         break;
 
@@ -218,7 +236,7 @@ const ListMembersSelect = ({
                       {typeof emptyListAction === 'function' && (
                         <EmptyResultButton
                           type="button"
-                          onClick={emptyListAction}
+                          onClick={handleEmptyResultActionClick}
                         >
                           Invite
                         </EmptyResultButton>
