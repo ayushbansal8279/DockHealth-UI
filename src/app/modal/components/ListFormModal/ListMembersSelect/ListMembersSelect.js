@@ -20,6 +20,7 @@ import {
   SelectElementWrapper,
   EmptyPeopleResult,
   EmptyResultText,
+  EmptyResultButton,
 } from './styled';
 
 const ListMembersSelect = ({
@@ -27,6 +28,7 @@ const ListMembersSelect = ({
   availablePeople,
   isLoadingAvailablePeople,
   onAcitonButtonClick,
+  emptyListAction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const searchInputReference = useRef(null);
@@ -213,6 +215,14 @@ const ListMembersSelect = ({
                   ) : (
                     <EmptyPeopleResult>
                       <EmptyResultText>No record found</EmptyResultText>
+                      {typeof emptyListAction === 'function' && (
+                        <EmptyResultButton
+                          type="button"
+                          onClick={emptyListAction}
+                        >
+                          Invite
+                        </EmptyResultButton>
+                      )}
                     </EmptyPeopleResult>
                   )}
                 </>

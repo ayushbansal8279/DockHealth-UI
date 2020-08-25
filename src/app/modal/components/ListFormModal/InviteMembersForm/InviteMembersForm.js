@@ -359,6 +359,9 @@ const InviteMembersForm = ({
                 availablePeople={organizationMembersNotInTheList}
                 isLoadingAvailablePeople={!allOrganizationMembersFetched}
                 onAcitonButtonClick={handleInviteMembers}
+                emptyListAction={() => {
+                  console.log('invite external');
+                }}
               />
               <Spacing vertical={4} />
 
