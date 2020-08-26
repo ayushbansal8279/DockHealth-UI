@@ -1,7 +1,7 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
-import spacing from 'styles/spacing';
 
-export const FormWrapper = styled.form`
-  padding: ${spacing.regularPlus};
+export const ExternalInviteContainer = styled.div`
+  width: 440px;
 `;
+
+export default ExternalInviteContainer;

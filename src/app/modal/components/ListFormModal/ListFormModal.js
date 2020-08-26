@@ -11,7 +11,7 @@ const ModalSteps = {
 
 const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
   const [editedList, setEditedList] = useState(list);
-  const [currentStep, setCurrentStep] = useState(ModalSteps.LIST_DETAILS);
+  const [currentStep, setCurrentStep] = useState(ModalSteps.INVITE_PEOPLE);
 
   const isListEditMode = !!list;
 
@@ -54,7 +54,7 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
         {Object.values(ModalSteps).map(value => (
           <Step
             key={value}
-            isFilled={currentStep >= value}
+            isCurrent={currentStep >= value}
             onClick={() => editedList && setCurrentStep(value)}
             isDisabled={!editedList}
           />
