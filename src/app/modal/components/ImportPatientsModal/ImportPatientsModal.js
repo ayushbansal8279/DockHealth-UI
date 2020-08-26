@@ -199,7 +199,10 @@ const ImportPatientsModal = ({
                 style={{ display: 'none' }}
                 onChange={onFileInputChange}
               />
-              <button onClick={onButtonClick} style={{ color: palette.cyanBlue, paddingRight: "5px" }}>
+              <button
+                onClick={onButtonClick}
+                style={{ color: palette.cyanBlue, paddingRight: '5px' }}
+              >
                 {' '}
                 <span> Browse </span>{' '}
               </button>
