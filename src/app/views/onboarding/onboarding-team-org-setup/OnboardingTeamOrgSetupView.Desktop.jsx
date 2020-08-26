@@ -8,6 +8,7 @@ import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import OrganizationAvatarInput from 'components/organization/OrganizationAvatarInput/OrganizationAvatarInput';
+import OrganizationColorPicker from 'components/organization/OrganizationColorPicker/OrganizationColorPicker';
 import {
   Title,
   FormWrapper,
@@ -19,7 +20,6 @@ import {
   ColorPickerHeader,
   InitialsError,
 } from './styled';
-import OrganizationColorPicker from './OrganizationColorPicker';
 
 const onSubmit = ({ dispatch }) => ({
   organizationName,
