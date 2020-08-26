@@ -472,14 +472,12 @@ const InviteMembersForm = ({
         >
           <ExternalUserInviteFormWrapper>
             <ExternalInviteForm
-              addPerson={() => {}}
-              addInvitedPeople={() => {}}
+              taskListIdentifier={list?.taskListIdentifier}
+              initialValues={externalInviteFormState?.initialValues}
               closeInviteForm={() =>
                 setExternalInviteFormState({ opended: false })
               }
-              initialValues={externalInviteFormState?.initialValues}
-              onInviteSuccess={() => {}}
-              taskListIdentifier={list?.taskListIdentifier}
+              onInviteSuccess={refreshListMembers}
             />
           </ExternalUserInviteFormWrapper>
         </ClickAwayListener>

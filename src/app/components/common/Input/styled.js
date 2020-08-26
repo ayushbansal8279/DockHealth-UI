@@ -72,10 +72,22 @@ export const SecondaryInputField = styled.input`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${props =>
-    props.placeholder && !props.value ? fontWeights.light : fontWeights.bold};
+    props.placeholder && !props.value
+      ? fontWeights.light
+      : fontWeights.regular};
   outline: none;
+  height: auto;
+  margin: 0;
   padding: ${spacing.tiny} 0 ${spacing.small};
   border-bottom: 1px solid ${palette.coolGrey2};
+  box-shadow: none;
+
+  &:focus {
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid ${palette.coolGrey2};
+    background: transparent;
+  }
 
   &:disabled {
     background-color: ${palette.coolGrey4};
