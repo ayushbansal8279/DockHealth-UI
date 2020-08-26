@@ -194,6 +194,21 @@ const InviteMembersForm = ({
   const resendInvitationToList = userIdentifier => {
     setIsUpdatingMembersList(true);
 
+    // TODO: update to correct endpoint
+    TaskListApi.inviteUserToTaskList(list.taskListIdentifier, userIdentifier)
+      .then(() => {
+        refreshListMembers();
+      })
+      .catch(() => {
+        refreshListMembers();
+      });
+  };
+
+  // eslint-disable-next-line sonarjs/no-identical-functions
+  const resendApprovalRequestToList = userIdentifier => {
+    setIsUpdatingMembersList(true);
+
+    // TODO: update to correct endpoint
     TaskListApi.inviteUserToTaskList(list.taskListIdentifier, userIdentifier)
       .then(() => {
         refreshListMembers();
@@ -211,6 +226,7 @@ const InviteMembersForm = ({
         removeUserFromList,
         cancelInviteToList,
         resendInvitationToList,
+        resendApprovalRequestToList,
       }),
     );
     setIsMenuOpen(true);
