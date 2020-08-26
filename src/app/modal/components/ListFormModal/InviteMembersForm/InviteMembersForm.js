@@ -27,7 +27,6 @@ import {
   MemberListItem,
   MemberFullName,
   MemberFullNameWrapper,
-  MemberStatusLabel,
   MemberAvatarWrapper,
   MemberMenuWrapper,
   MemberMenuButton,
@@ -36,117 +35,11 @@ import {
   MenuPopover,
   ExternalUserInviteFormWrapper,
 } from './styled';
-
-const isMemberPending = member =>
-  member.status === 'PENDING' || member.status === 'INVITED';
-
-const getMemberStatusLabel = member => {
-  const { status, taskListUserRole } = member;
-
-  switch (status) {
-    case 'ACTIVE':
-      if (taskListUserRole === 'ADMIN')
-        return <MemberStatusLabel>List Admin</MemberStatusLabel>;
-
-      return null;
-
-    case 'PENDING':
-      return <MemberStatusLabel>Approval Pending</MemberStatusLabel>;
-
-    case 'INVITED':
-      return <MemberStatusLabel>Invitation Pending</MemberStatusLabel>;
-
-    default:
-      return null;
-  }
-};
-
-const getMenuOptionsForMember = (
-  member,
-  {
-    changeUserRole,
-    removeUserFromList,
-    cancelInviteToList,
-    resendInvitationToList,
-  },
-) => {
-  const { status, taskListUserRole, userIdentifier } = member;
-
-  switch (status) {
-    case 'ACTIVE':
-      if (taskListUserRole === 'ADMIN')
-        return [
-          {
-            title: 'List Member',
-            action: () => {
-              changeUserRole(userIdentifier, 'MEMBER');
-            },
-          },
-          {
-            title: 'Remove From This List',
-            description:
-              'If you remove a user they will lose access to this list.',
-            action: () => {
-              removeUserFromList(userIdentifier);
-            },
-          },
-        ];
-
-      return [
-        {
-          title: 'List admin',
-          description: 'Can edit and delete the list.',
-          action: () => {
-            changeUserRole(userIdentifier, 'ADMIN');
-          },
-        },
-        {
-          title: 'Remove From This List',
-          description:
-            'If you remove a user they will lose access to this list.',
-          action: () => {
-            removeUserFromList(userIdentifier);
-          },
-        },
-      ];
-
-    case 'PENDING':
-      return [
-        {
-          title: 'Resend Request to Group Owner(s)',
-          action: () => {
-            // TODO(maciek): check endpoint for resending approval request
-            resendInvitationToList(userIdentifier);
-          },
-        },
-        {
-          title: 'Cancel Invitation',
-          action: () => {
-            cancelInviteToList(userIdentifier);
-          },
-        },
-      ];
-
-    case 'INVITED':
-      return [
-        {
-          title: 'Resend Invitation',
-          action: () => {
-            resendInvitationToList(userIdentifier);
-          },
-        },
-        {
-          title: 'Cancel Invitation',
-          action: () => {
-            cancelInviteToList(userIdentifier);
-          },
-        },
-      ];
-
-    default:
-      return null;
-  }
-};
+import {
+  getMenuOptionsForMember,
+  getMemberStatusLabel,
+  isMemberPending,
+} from './helpers';
 
 const InviteMembersForm = ({
   closeModal,
@@ -223,6 +116,14 @@ const InviteMembersForm = ({
       ),
     [allOrganizationMembers, listMembers],
   );
+
+  const currentUserListRole = useMemo(() => {
+    const currentUserInList = listMembers.find(
+      ({ userIdentifier }) => userIdentifier === userProfile?.userIdentifier,
+    );
+
+    return currentUserInList?.taskListUserRole;
+  }, [userProfile, listMembers]);
 
   const handleInviteMembers = members => {
     setIsSavingList(true);
@@ -398,14 +299,16 @@ const InviteMembersForm = ({
                       </MemberFullName>
                     </MemberFullNameWrapper>
                     {getMemberStatusLabel(member)}
-                    <IconButton
-                      onClick={event => handleOpenMenu(event, member)}
-                      disabled={isUpdatingMembersList}
-                      size="small"
-                      color="secondary"
-                    >
-                      <MoreVert />
-                    </IconButton>
+                    {currentUserListRole === 'ADMIN' && (
+                      <IconButton
+                        onClick={event => handleOpenMenu(event, member)}
+                        disabled={isUpdatingMembersList}
+                        size="small"
+                        color="secondary"
+                      >
+                        <MoreVert />
+                      </IconButton>
+                    )}
                   </MemberListItem>
                 ))}
               </MembersListWrapper>

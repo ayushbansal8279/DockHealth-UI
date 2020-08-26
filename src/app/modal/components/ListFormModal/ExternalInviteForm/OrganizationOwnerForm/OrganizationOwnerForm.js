@@ -32,26 +32,22 @@ const OrganizationOwnerForm = ({
 
   const formContext = useForm({
     validationSchema,
-    defaultValues: { ...initialValues, role: 'GUEST' },
+    defaultValues: { ...initialValues, userRole: 'GUEST' },
   });
 
-  const { handleSubmit, register, unregister, watch } = formContext;
-
-  const emailValue = watch('email');
-
-  console.log('email input:', emailValue);
+  const { handleSubmit, register, unregister } = formContext;
 
   useEffect(() => {
     register({ name: 'firstName' });
     register({ name: 'lastName' });
     register({ name: 'email' });
-    register({ name: 'role' });
+    register({ name: 'userRole' });
 
     return () => {
       unregister('firstName');
       unregister('lastName');
       unregister('email');
-      unregister('role');
+      unregister('userRole');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
