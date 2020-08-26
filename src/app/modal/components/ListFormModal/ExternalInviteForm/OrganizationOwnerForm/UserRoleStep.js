@@ -17,7 +17,7 @@ import {
 const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
-  const roleValue = watch('role');
+  const roleValue = watch('userRole');
 
   return (
     <RoleFormWrapper container direction="column" justify="space-between">
@@ -31,10 +31,10 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         <input
           id="Member"
           type="radio"
-          name="role"
+          name="userRole"
           value="MEMBER"
           checked={roleValue === 'MEMBER'}
-          onChange={event => setValue('role', event.target.value)}
+          onChange={event => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel isSelected={roleValue === 'MEMBER'} htmlFor="Member">
           <RoleOptionHeaderWrapper>
@@ -50,10 +50,10 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         <input
           id="Guest"
           type="radio"
-          name="role"
+          name="userRole"
           value="GUEST"
           checked={roleValue === 'GUEST'}
-          onChange={event => setValue('role', event.target.value)}
+          onChange={event => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
           <RoleOptionHeaderWrapper>
