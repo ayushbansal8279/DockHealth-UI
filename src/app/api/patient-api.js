@@ -260,3 +260,13 @@ export function uploadPatientData(fileData, additionalConfig = {}) {
       throw error;
     });
 }
+
+export function getLatestPatientImportDetails() {
+  return axios
+    .get('patient/getLatestPatientImportProcessStatus')
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data);
+    });
+}

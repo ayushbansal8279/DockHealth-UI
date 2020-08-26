@@ -89,74 +89,68 @@ const EmptyList = ({
   onAddPatientClick,
   importPopupOpen,
   setImportPopupOpen,
-  importPopoverOpen,
-  setImportPopoverOpen
+  setImportPopoverOpen,
+  refreshPatientList,
 }) => (
   <>
-   <EmptyListContainer>
-     <div>
-      <EmptyListHeader>
-        Import your patient list and easily track their tasks.
-      </EmptyListHeader>
-      <EmptyListContent>
-        Your patient list is safe with us. Only people who you invite to your
-        organization will have access.
-        <p />
-        <StyledButton
-          variant="contained"
-          onClick={() => {
-            // openModalAction('ImportPatients', { step: 1 });
-            setImportPopupOpen(true);
-          }}
-        >
-          IMPORT PATIENT LIST
-        </StyledButton>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <StyledButton variant="outlined" onClick={onAddPatientClick}>
-          ADD A PATIENT
-        </StyledButton>
-        <spacing vertical={5} />
-        <div style={{ marginTop: '20px' }}>
-          <DownloadTemplate
+    <EmptyListContainer>
+      <div>
+        <EmptyListHeader>
+          Import your patient list and easily track their tasks.
+        </EmptyListHeader>
+        <EmptyListContent>
+          Your patient list is safe with us. Only people who you invite to your
+          organization will have access.
+          <p />
+          <StyledButton
+            variant="contained"
             onClick={() => {
-              downloadPatientImportTemplate();
+              // openModalAction('ImportPatients', { step: 1 });
+              setImportPopupOpen(true);
             }}
           >
-            <DownloadIcon src={ExcelLogo} alt="Excel Logo" />
-            Download Excel Patient Template
-          </DownloadTemplate>
-        </div>
-      </EmptyListContent>
-    </div>
-    <ImportAnimals src={PatientImportAnimals} alt="empty view" />
+            IMPORT PATIENT LIST
+          </StyledButton>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <StyledButton variant="outlined" onClick={onAddPatientClick}>
+            ADD A PATIENT
+          </StyledButton>
+          <spacing vertical={5} />
+          <div style={{ marginTop: '20px' }}>
+            <DownloadTemplate
+              onClick={() => {
+                downloadPatientImportTemplate();
+              }}
+            >
+              <DownloadIcon src={ExcelLogo} alt="Excel Logo" />
+              Download Excel Patient Template
+            </DownloadTemplate>
+          </div>
+        </EmptyListContent>
+      </div>
+      <ImportAnimals src={PatientImportAnimals} alt="empty view" />
 
-    <Dialog
-      open={importPopupOpen}
-      onClose={() => setImportPopupOpen(false)}
-      PaperProps={{
-        elevation: 0,
-        square: true,
-        style: {},
-      }}
-    >
-      <ImportPatientsModal
-        closeModal={() => {
-          setImportPopupOpen(false);
+      <Dialog
+        open={importPopupOpen}
+        onClose={() => setImportPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {},
         }}
-        downloadTemplate={downloadPatientImportTemplate}
-        step={1}
-      />
-
-    </Dialog> 
-    
-  </EmptyListContainer>
-      <PatientImportPopover
-        closePopover={() => {setImportPopoverOpen(false);}}
-        minimized={1}
-      />
-    
+      >
+        <ImportPatientsModal
+          closeModal={() => {
+            setImportPopupOpen(false);
+          }}
+          downloadTemplate={downloadPatientImportTemplate}
+          setImportPopoverOpen={setImportPopoverOpen}
+          refreshPatientList={refreshPatientList}
+          step={1}
+        />
+      </Dialog>
+    </EmptyListContainer>
   </>
-    
 );
 
 const EmptyFilteredList = () => (
@@ -352,12 +346,15 @@ const PatientsList = ({
   isFiltered,
   isCompact,
   highlightedPatient,
+  patientImportDetails,
+  refreshPatientList,
 }) => {
   const dispatch = useDispatch();
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
-  
+  const [importPopoverOpen, setImportPopoverOpen] = useState(
+    !!patientImportDetails,
+  );
 
   const onAddPatientClick = useCallback(() => {
     dispatch(beginPatientCreation());
@@ -367,22 +364,42 @@ const PatientsList = ({
     return isFiltered ? (
       <EmptyFilteredList />
     ) : (
-      <EmptyList
-        onAddPatientClick={onAddPatientClick}
-        importPopupOpen={importPopupOpen}
-        setImportPopupOpen={setImportPopupOpen}
-        importPopoverOpen={importPopoverOpen}
-        setImportPopoverOpen={setImportPopoverOpen}
-      />
+      <>
+        <EmptyList
+          onAddPatientClick={onAddPatientClick}
+          importPopupOpen={importPopupOpen}
+          setImportPopupOpen={setImportPopupOpen}
+          setImportPopoverOpen={setImportPopoverOpen}
+          refreshPatientList={refreshPatientList}
+        />
+        {importPopoverOpen && (
+          <PatientImportPopover
+            closePopover={() => {
+              setImportPopoverOpen(false);
+            }}
+            patientImportDetails={patientImportDetails}
+          />
+        )}
+      </>
     );
   }
 
   return (
-    <NonEmptyList
-      patients={patients}
-      isCompact={isCompact}
-      highlightedPatient={highlightedPatient}
-    />
+    <>
+      <NonEmptyList
+        patients={patients}
+        isCompact={isCompact}
+        highlightedPatient={highlightedPatient}
+      />
+      {importPopoverOpen && (
+        <PatientImportPopover
+          closePopover={() => {
+            setImportPopoverOpen(false);
+          }}
+          patientImportDetails={patientImportDetails}
+        />
+      )}
+    </>
   );
 };
 

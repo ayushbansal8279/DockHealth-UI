@@ -21,6 +21,8 @@ import {
   ADD_PATIENT_NOTE,
   UPDATE_PATIENT_NOTE,
   DELETE_PATIENT_NOTE,
+  PATIENT_DATA_UPLOADED,
+  GET_PATIENT_IMPORT_DETAILS,
 } from './action-types';
 
 export const loading = () => ({ type: REQUEST_PATIENTS });
@@ -217,7 +219,7 @@ export const uploadPatientData = (fileData, additionalConfig) => dispatch =>
   PatientApi.uploadPatientData(fileData, additionalConfig)
     .then(response => {
       dispatch({
-        type: ActionTypes.PATIENT_DATA_UPLOADED,
+        type: PATIENT_DATA_UPLOADED,
       });
 
       return response.data;
@@ -225,3 +227,12 @@ export const uploadPatientData = (fileData, additionalConfig) => dispatch =>
     .catch(error => {
       throw error;
     });
+
+export const getLatestPatientImportDetails = () => async dispatch => {
+  const patientImportDetails = await PatientApi.getLatestPatientImportDetails();
+  dispatch({
+    type: GET_PATIENT_IMPORT_DETAILS,
+    patientImportDetails,
+  });
+  return patientImportDetails;
+};

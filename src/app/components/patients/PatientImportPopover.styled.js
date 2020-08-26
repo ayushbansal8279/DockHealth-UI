@@ -17,10 +17,13 @@ export const ImportPatientPopoverWrapper = styled(ModalWrapperWithPadding)`
   overflow: auto;
   padding-right: 5px;
   padding-bottom: 0;
+  margin-right: 100px;
 `;
 
-export const ImportPatientPopoverWrapperMinimized = styled(ModalWrapperWithPadding)`
-position: absolute !important;
+export const ImportPatientPopoverWrapperMinimized = styled(
+  ModalWrapperWithPadding,
+)`
+  position: absolute !important;
   width: 401px;
   height: 32px;
   bottom: 0;
@@ -29,6 +32,7 @@ position: absolute !important;
   align-vertical: center;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   padding: 16px;
+  margin-right: 100px;
 `;
 
 export const PopoverCloseButton = styled(CloseIconButton)`

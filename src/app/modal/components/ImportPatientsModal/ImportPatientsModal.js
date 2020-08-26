@@ -82,7 +82,13 @@ const FileInputImage = styled.img`
   margin: 20px;
 `;
 
-const ImportPatientsModal = ({ step, closeModal, downloadTemplate }) => {
+const ImportPatientsModal = ({
+  step,
+  closeModal,
+  downloadTemplate,
+  setImportPopoverOpen,
+  refreshPatientList,
+}) => {
   const inputFile = useRef(null);
   const dispatch = useDispatch();
 
@@ -103,6 +109,8 @@ const ImportPatientsModal = ({ step, closeModal, downloadTemplate }) => {
           // console.log(total);
           if (loaded === total) {
             closeModal();
+            setImportPopoverOpen(true);
+            refreshPatientList();
           }
         },
       })(dispatch)
@@ -111,8 +119,8 @@ const ImportPatientsModal = ({ step, closeModal, downloadTemplate }) => {
         })
         .catch(() => {});
     }
-  }, [closeModal, dispatch]);
-  
+  }, [closeModal, dispatch, refreshPatientList, setImportPopoverOpen]);
+
   return (
     <>
       {modalStep === 1 && (
@@ -191,10 +199,10 @@ const ImportPatientsModal = ({ step, closeModal, downloadTemplate }) => {
                 style={{ display: 'none' }}
                 onChange={onFileInputChange}
               />
-              <a onClick={onButtonClick} style={{ color: palette.cyanBlue }}>
+              <button onClick={onButtonClick} style={{ color: palette.cyanBlue, paddingRight: "5px" }}>
                 {' '}
                 <span> Browse </span>{' '}
-              </a>
+              </button>
               your local files.
             </FileInputMessage>
           </FileInputArea>

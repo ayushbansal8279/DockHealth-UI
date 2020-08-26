@@ -26,6 +26,7 @@ import {
   SELECT_EMR_PATIENT_SUCCESS,
   UPDATE_PATIENT_NOTE,
   UPDATE_PATIENT_SUCCESS,
+  GET_PATIENT_IMPORT_DETAILS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -206,6 +207,14 @@ const PatientReducer = (state = initialState, action) => {
       return {
         ...state,
         allPatients: removeNoteFromPatient(state.allPatients),
+      };
+    }
+
+    case GET_PATIENT_IMPORT_DETAILS: {
+      const { patientImportDetails } = action;
+      return {
+        ...state,
+        patientImportDetails,
       };
     }
 

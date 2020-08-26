@@ -7,6 +7,7 @@ import {
   getMyPatientsActive,
   getMyPatientsAll,
   highlightPatient,
+  getLatestPatientImportDetails,
 } from 'actions/patient-actions';
 import Loader from '../common/Loader/Loader';
 import GenericHeader from '../common/GenericHeader';
@@ -46,6 +47,7 @@ const searchPatients = (patients, searchTerm) => {
   return patients.filter(isMatch);
 };
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const PatientsView = () => {
   const dispatch = useDispatch();
 
@@ -63,6 +65,9 @@ const PatientsView = () => {
         patientIdentifier === highlightedPatientIdentifier,
     );
   });
+  const patientImportDetails = useSelector(
+    ({ patientState }) => patientState.patientImportDetails,
+  );
 
   const isCreatingPatient = useSelector(
     ({ patientState }) => patientState.isCreatingPatient,
@@ -86,6 +91,7 @@ const PatientsView = () => {
   }, [dispatch]);
 
   const [searchTerm, setSearchTerm] = useState('');
+
   const handleSearch = useCallback(
     event => {
       const { value } = event.target;
@@ -94,6 +100,16 @@ const PatientsView = () => {
     },
     [deselectPatient, setSearchTerm],
   );
+
+  const refreshPatientList = useCallback(async () => {
+    getAllPatients()(dispatch);
+    const importDetails = await getLatestPatientImportDetails()(dispatch);
+    if (importDetails && importDetails.completePercentage < 100) {
+      setTimeout(() => {
+        refreshPatientList();
+      }, 1000);
+    }
+  }, [dispatch]);
 
   const handlePatientFilter = useCallback(
     selectedFilter => {
@@ -104,8 +120,12 @@ const PatientsView = () => {
       } else {
         getAllPatients()(dispatch);
       }
+      getLatestPatientImportDetails()(dispatch);
+      setTimeout(() => {
+        refreshPatientList();
+      }, 1000);
     },
-    [dispatch],
+    [dispatch, refreshPatientList],
   );
 
   const filteredPatients = searchPatients(patients, searchTerm);
@@ -130,6 +150,8 @@ const PatientsView = () => {
                 isFiltered={searchTerm !== ''}
                 isCompact={isCompact}
                 highlightedPatient={highlightedPatient}
+                patientImportDetails={patientImportDetails}
+                refreshPatientList={refreshPatientList}
               />
               <SideClickListener onClick={deselectPatient} />
             </Grid>
