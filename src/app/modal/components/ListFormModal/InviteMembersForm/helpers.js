@@ -36,6 +36,7 @@ export const getMenuOptionsForMember = (
     removeUserFromList,
     cancelInviteToList,
     resendInvitationToList,
+    resendApprovalRequestToList,
   },
 ) => {
   const { userStatus, taskListUserRole, userIdentifier } = member;
@@ -95,8 +96,7 @@ export const getMenuOptionsForMember = (
         {
           title: 'Resend Request to Group Owner(s)',
           action: () => {
-            // TODO(maciek): check endpoint for resending approval request
-            resendInvitationToList(userIdentifier);
+            resendApprovalRequestToList(userIdentifier);
           },
         },
         {
