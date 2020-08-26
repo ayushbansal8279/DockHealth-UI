@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { updateOrganizationName } from 'actions/organization-actions';
 import Button from 'components/common/Button/Button';
 import OrganizationAvatarInput from 'components/organization/OrganizationAvatarInput/OrganizationAvatarInput';
-import OrganizationColorPicker from 'views/onboarding/onboarding-team-org-setup/OrganizationColorPicker';
+import OrganizationColorPicker from 'components/organization/OrganizationColorPicker/OrganizationColorPicker';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import { useForm } from 'react-hook-form';
