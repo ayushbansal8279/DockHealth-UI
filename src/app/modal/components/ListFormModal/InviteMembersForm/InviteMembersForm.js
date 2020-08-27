@@ -19,7 +19,6 @@ const InviteMembersForm = ({
   closeModal,
   isListEditMode,
   list,
-  setList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [newListView, setNewListView] = useState(!isListEditMode);
@@ -60,7 +59,7 @@ const InviteMembersForm = ({
               patients who are part of this list.
             </Description>
           </Header>
-          <InviteMemberToListForm list={list} onListUpdate={setList} />
+          <InviteMemberToListForm list={list} />
         </Grid>
         <Spacing vertical={4} />
         <SkipButton type="button" onClick={closeModal}>

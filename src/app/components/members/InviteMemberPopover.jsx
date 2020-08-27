@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { IconButton } from '@material-ui/core';
+import { openModal } from 'modal/actions';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import InvitingContent from './InviteMemberPopover.InvitingContent';
 import NotInvitingContent from './InviteMemberPopover.NotInvitingContent';
@@ -62,31 +63,28 @@ const InviteMemberPopover = ({
   );
 };
 
-export const InviteMemberButton = ({ size = 54, children }) => {
-  const addMemberButtonReference = useRef(null);
-  const addMemberButtonStyles = useAddMemberButtonStyles({ size });
+export const InviteMemberButton = ({ size = 54, refreshMembers, list }) => {
+  const dispatch = useDispatch();
 
-  const [
-    isMemberPopoverOpen,
-    openMemberPopover,
-    closeMemberPopover,
-  ] = useBoolean(false);
+  const addMemberButtonStyles = useAddMemberButtonStyles({ size });
 
   return (
     <>
-      <div ref={addMemberButtonReference}>
+      <div>
         <IconButton
           className={clsx(addMemberButtonStyles.root)}
-          onClick={openMemberPopover}
+          onClick={() =>
+            dispatch(
+              openModal('InviteToList', {
+                list,
+                onMembersRefresh: refreshMembers,
+              }),
+            )
+          }
         >
           +
         </IconButton>
       </div>
-      {children({
-        isMemberPopoverOpen,
-        closeMemberPopover,
-        addMemberButtonReference,
-      })}
     </>
   );
 };

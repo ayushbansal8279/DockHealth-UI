@@ -2,7 +2,10 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty } from 'ramda';
-import { toggleListNotifications } from 'actions/tasklist-actions';
+import {
+  toggleListNotifications,
+  getMembersByTaskListId,
+} from 'actions/tasklist-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
@@ -18,7 +21,7 @@ import Member from 'components/members/Member';
 import { InviteMemberButton } from 'components/members/InviteMemberPopover';
 import TipsButton from 'components/common/TipsButton';
 import { showGlobalAlert } from 'alert/actions';
-import MorePopover from '../Toolbar.MorePopover';
+import MorePopover from './MorePopover';
 import {
   MoreMembersButtonContainer,
   ToolbarLabel,
@@ -27,7 +30,6 @@ import {
   SearchWrapper,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
-import TaskListInviteMemberContainer from '../TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -208,15 +210,18 @@ const Toolbar = ({
                 )}
                 <Spacing horizontal={2} />
                 {taskList?.listType !== 'INBOX' && (
-                  <InviteMemberButton size={40}>
-                    {props => (
-                      <TaskListInviteMemberContainer
-                        members={members}
-                        taskList={taskList}
-                        {...props}
-                      />
-                    )}
-                  </InviteMemberButton>
+                  <InviteMemberButton
+                    size={40}
+                    list={taskList}
+                    refreshMembers={() =>
+                      dispatch(
+                        getMembersByTaskListId(
+                          taskList.taskListIdentifier,
+                          'ALL',
+                        ),
+                      )
+                    }
+                  />
                 )}
               </>
             )}

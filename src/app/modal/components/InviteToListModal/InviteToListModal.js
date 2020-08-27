@@ -4,7 +4,7 @@ import InviteMemberToListForm from 'components/members/InviteMemberToListForm/In
 import { InviteToListModalWrapper, Header, Title, Description } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 
-const InviteToListModal = ({ closeModal, list = null }) => {
+const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
   useEffect(() => {
     if (!list) {
       closeModal();
@@ -25,7 +25,10 @@ const InviteToListModal = ({ closeModal, list = null }) => {
             patients who are part of this list.
           </Description>
         </Header>
-        <InviteMemberToListForm list={list} />
+        <InviteMemberToListForm
+          list={list}
+          onMembersRefresh={onMembersRefresh}
+        />
       </Grid>
     </InviteToListModalWrapper>
   );

@@ -9,23 +9,21 @@ import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import Search from 'components/taskView/Search/Search';
-import { InviteMemberButton } from 'components/members/InviteMemberPopover';
-import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
-import AdornedButton from '../common/AdornedButton';
-import PageContentHeader from '../common/PageContentHeader';
-import RotatableChevron from '../common/RotatableChevron';
-import Spacing from '../common/Spacing';
-import TipsButton from '../common/TipsButton';
-import UniversalTooltip from '../common/UniversalTooltip';
-import Member from '../members/Member';
+import * as AlertActions from 'alert/actions';
+import AdornedButton from '../../common/AdornedButton';
+import PageContentHeader from '../../common/PageContentHeader';
+import RotatableChevron from '../../common/RotatableChevron';
+import Spacing from '../../common/Spacing';
+import TipsButton from '../../common/TipsButton';
+import UniversalTooltip from '../../common/UniversalTooltip';
+import Member from '../../members/Member';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
-import MorePopover from './Toolbar.MorePopover';
+import MorePopover from '../Toolbar/MorePopover';
 import {
   MoreMembersButtonContainer,
   SlimViewToggle,
   ToolbarLabel,
 } from './Toolbar.Styled';
-import AlertMessages from '../alert/AlertMessages';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -58,10 +56,12 @@ const useToggleNotifications = ({
         newNotificationStatus,
       )(dispatch);
       onNotificationsToggled(newNotificationStatus);
-      dispatch(AlertActions.showGlobalAlert(
-        `Notifications are now ${newNotificationStatus ? 'on' : 'off'}`,
-        'success',
-      ));
+      dispatch(
+        AlertActions.showGlobalAlert(
+          `Notifications are now ${newNotificationStatus ? 'on' : 'off'}`,
+          'success',
+        ),
+      );
     } catch {
       showAlert({
         status: 'error',
@@ -273,16 +273,6 @@ export default ({
                       </MoreMembersButtonContainer>
                     </>
                   )}
-                  <Spacing horizontal={2} />
-                  <InviteMemberButton size={40}>
-                    {props => (
-                      <TaskListInviteMemberContainer
-                        members={members}
-                        taskList={taskList}
-                        {...props}
-                      />
-                    )}
-                  </InviteMemberButton>
                 </>
               )}
             </>
