@@ -9,7 +9,7 @@ import { getMemberStatus, isMemberPending } from 'helpers/list-members-helper';
 import * as TaskListActions from 'actions/tasklist-actions';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import Loader from 'components/common/Loader/Loader';
 import ListMembersSelect from './ListMembersSelect/ListMembersSelect';
 import ExternalInviteForm from './ExternalInviteForm/ExternalInviteForm';

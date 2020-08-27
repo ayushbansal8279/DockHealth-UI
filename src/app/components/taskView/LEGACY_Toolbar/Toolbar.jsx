@@ -16,7 +16,7 @@ import RotatableChevron from '../../common/RotatableChevron';
 import Spacing from '../../common/Spacing';
 import TipsButton from '../../common/TipsButton';
 import UniversalTooltip from '../../common/UniversalTooltip';
-import Member from '../../members/Member';
+import Member from '../../members/Member/Member';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from '../Toolbar/MorePopover';
 import {

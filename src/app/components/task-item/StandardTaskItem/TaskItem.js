@@ -14,7 +14,7 @@ import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import palette from 'styles/palette';

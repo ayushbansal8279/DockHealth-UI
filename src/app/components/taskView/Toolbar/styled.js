@@ -55,3 +55,10 @@ export const SearchWrapper = styled.div`
   width: ${({ fullWidth }) => (fullWidth ? 374 : 120)}px;
   transition: width 0.25s ease-out;
 `;
+
+export const MemberWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  ${({ isPending }) => isPending && `opacity: 0.7;`}
+`;

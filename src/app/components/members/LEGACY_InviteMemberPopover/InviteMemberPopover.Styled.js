@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import Search from 'components/taskView/Search/Search';
 import spacing from 'styles/spacing';
-import Member from '../Member';
+import Member from '../Member/Member';
 
 const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
 

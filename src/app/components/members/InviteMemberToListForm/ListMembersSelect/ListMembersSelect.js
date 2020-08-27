@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo } from 'react';
 import Button from 'components/common/Button/Button';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import Loader from 'components/common/Loader/Loader';
 import {

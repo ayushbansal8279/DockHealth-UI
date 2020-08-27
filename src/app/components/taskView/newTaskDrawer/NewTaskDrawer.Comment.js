@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 import Spacing from 'components/common/Spacing';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import { RobotoTypography } from 'styles/theme';
 
 import { useMount } from 'react-use';

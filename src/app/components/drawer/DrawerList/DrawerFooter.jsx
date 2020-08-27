@@ -4,7 +4,7 @@ import { hashHistory, Link } from 'react-router';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
-import Member from '../../members/Member';
+import Member from '../../members/Member/Member';
 import {
   DrawerMemberContainer,
   ListDivider,
