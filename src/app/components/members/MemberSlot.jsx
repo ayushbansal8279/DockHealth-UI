@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ProfileIcon from 'img/profile.svg';
 import palette from 'styles/palette';
-import Member from './Member';
+import Member from './Member/Member';
 
 const MemberSlot = ({ member, onClick, size }) =>
   member ? (

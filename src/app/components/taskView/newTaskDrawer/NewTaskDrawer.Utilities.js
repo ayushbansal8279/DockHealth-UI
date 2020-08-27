@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';

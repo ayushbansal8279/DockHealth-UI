@@ -3,8 +3,10 @@ import React, { useRef } from 'react';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import Avatar from '../common/Avatar';
-import UniversalTooltip from '../common/UniversalTooltip';
+import { getMemberStatus } from 'helpers/list-members-helper';
+import Avatar from 'components/common/Avatar';
+import UniversalTooltip from 'components/common/UniversalTooltip';
+import { TooltipName, TooltipStatus } from './styled';
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
@@ -14,7 +16,14 @@ const Member = React.forwardRef(
     { onClick, member, children, className, color, size, showTooltip = true },
     reference,
   ) => {
-    const alt = member && `${member.firstName} ${member.lastName}`;
+    const status = getMemberStatus(member);
+    const alt = member ? (
+      <div>
+        <TooltipName>{`${member.firstName} ${member.lastName}`}</TooltipName>
+        {status && <TooltipStatus>{status}</TooltipStatus>}
+      </div>
+    ) : null;
+
     const avatarContent = member?.profileThumbnailPictureHash ? (
       <img src={getThumbnailUrl(member)} alt={alt} />
     ) : (

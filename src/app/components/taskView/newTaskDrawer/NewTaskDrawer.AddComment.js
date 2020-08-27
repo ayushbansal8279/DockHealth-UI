@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 
 import initializeAddCommentHooks from './NewTaskDrawer.AddComment.Hooks';
 import {

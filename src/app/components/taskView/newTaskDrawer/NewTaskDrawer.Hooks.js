@@ -28,7 +28,7 @@ import {
 } from 'actions/task-actions';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';

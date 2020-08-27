@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useBoolean from 'hooks/useBoolean';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Input from './Input';
 

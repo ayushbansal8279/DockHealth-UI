@@ -7,7 +7,7 @@ import TickIcon from 'img/tick-icon';
 import MailIcon from 'img/mail';
 import CrossIcon from 'img/cross';
 import useBoolean from 'hooks/useBoolean';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import Input from 'components/common/Input/Input';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { MontserratTypography } from 'styles/theme-montserrat';
