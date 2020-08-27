@@ -29,24 +29,23 @@ export const Placeholder = styled.p`
 export const SelectElementWrapper = styled.div`
   width: calc(100% - 130px);
   max-height: 132px;
-`;
-
-export const SelectElement = styled.button`
-  position: relative;
-  width: 100%;
-  height: 100%;
   overflow-y: scroll;
-  padding: ${spacing.smallPlus} ${spacing.regularPlus} ${spacing.tiny}
-    ${spacing.regularPlus};
-  background: ${palette.coolGrey4};
-  text-align: left;
-  cursor: text;
 
   ${({ withValue }) =>
     withValue &&
     `
     box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   `}
+`;
+
+export const SelectElement = styled.button`
+  position: relative;
+  width: 100%;
+  padding: ${spacing.smallPlus} ${spacing.regularPlus} ${spacing.tiny}
+    ${spacing.regularPlus};
+  background: ${palette.coolGrey4};
+  text-align: left;
+  cursor: text;
 `;
 
 export const ButtonWrapper = styled.div`

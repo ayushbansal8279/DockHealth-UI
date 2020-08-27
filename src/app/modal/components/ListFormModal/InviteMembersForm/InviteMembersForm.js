@@ -280,8 +280,8 @@ const InviteMembersForm = ({
 
   return (
     <Wrapper>
-      <Grid container direction="column" justify="space-between">
-        <Grid container item>
+      <Grid container direction="column" justify="space-between" wrap="nowrap">
+        <Grid container direction="column" item wrap="nowrap">
           <Header>
             <Title>Invite Others to this list</Title>
             <Description>

@@ -171,12 +171,8 @@ const ListMembersSelect = ({
   return (
     <Wrapper>
       <ClickAwayListener onClickAway={() => setSearchInputValue('')}>
-        <SelectElementWrapper>
-          <SelectElement
-            withValue={searchInputValue}
-            type="button"
-            onClick={handleSelectAreaClick}
-          >
+        <SelectElementWrapper withValue={searchInputValue}>
+          <SelectElement type="button" onClick={handleSelectAreaClick}>
             <>
               {selectedMembers.map(member => (
                 <MemberItemWrapper key={member.userIdentifier}>
