@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import * as TaskListApi from 'api/tasklist-api';
 import { showAlert } from 'helpers/utility-functions';
@@ -21,6 +21,23 @@ const ExternalInviteForm = ({
   const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(
     currentUser.orgUserRole,
   );
+
+  useEffect(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const handleKeyDown = event => {
+      if (event.keyCode === 27) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        closeInviteForm();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmitForm = useCallback(
     data => {

@@ -69,8 +69,6 @@ const ListDetailsForm = ({
   const listNameValue = watch('listName');
   const listDescriptionValue = watch('listDescription');
 
-  console.log('errors', errors);
-
   useEffect(() => {
     register(
       {

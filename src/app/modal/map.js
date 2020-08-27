@@ -14,6 +14,7 @@ import ListFormModal from './components/ListFormModal/ListFormModal';
 import VideoModal from './components/VideoModal/VideoModal';
 import LeaveListModal from './components/LeaveListModal/LeaveListModal';
 import EditOrganizationModal from './components/EditOrganizationModal/EditOrganizationModal';
+import InviteToListModal from './components/InviteToListModal/InviteToListModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -32,6 +33,7 @@ const MODAL_MAP = {
   Video: VideoModal,
   LeaveList: LeaveListModal,
   EditOrganization: EditOrganizationModal,
+  InviteToList: InviteToListModal,
 };
 
 export default MODAL_MAP;
