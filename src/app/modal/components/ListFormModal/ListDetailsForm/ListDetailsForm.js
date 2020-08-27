@@ -8,7 +8,8 @@ import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
 import Button from 'components/common/Button/Button';
-import { Title, ButtonWrapper, FormWrapper, Header } from '../styled';
+import { Title, ButtonWrapper, Header } from '../styled';
+import { StyledForm } from './styled';
 
 const onSubmit = ({
   event,
@@ -68,6 +69,8 @@ const ListDetailsForm = ({
   const listNameValue = watch('listName');
   const listDescriptionValue = watch('listDescription');
 
+  console.log('errors', errors);
+
   useEffect(() => {
     register(
       {
@@ -93,7 +96,7 @@ const ListDetailsForm = ({
   }, []);
 
   return (
-    <FormWrapper
+    <StyledForm
       onSubmit={event =>
         handleSubmit(
           onSubmit({
@@ -163,7 +166,7 @@ const ListDetailsForm = ({
           </ButtonWrapper>
         </Grid>
       </Grid>
-    </FormWrapper>
+    </StyledForm>
   );
 };
 
