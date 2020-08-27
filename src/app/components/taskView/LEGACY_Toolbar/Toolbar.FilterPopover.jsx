@@ -2,9 +2,9 @@ import { Button, Fade } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import palette from 'styles/palette';
-import ListPopover from '../common/ListPopover';
-import RotatableChevron from '../common/RotatableChevron';
-import Spacing from '../common/Spacing';
+import ListPopover from 'components/common/ListPopover';
+import RotatableChevron from 'components/common/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 import { ToolbarLabel } from './Toolbar.Styled';
 
 export const filterOptions = [

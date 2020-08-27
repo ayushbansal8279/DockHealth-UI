@@ -40,10 +40,7 @@ const TaskListDetailsDropdown = ({
   updateDueDate,
   updateWorkflowStatus,
   quickAddTask,
-  inviteUserToTaskList,
-  cancelInviteToTaskList,
-  removeUserFromTaskList,
-  changeUserRoleForList,
+  refreshView,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
 
@@ -78,11 +75,8 @@ const TaskListDetailsDropdown = ({
         {listMembers?.length > 0 && (
           <TaskListMembers
             members={listMembers}
-            taskListIdentifier={taskListIdentifier}
-            cancelInviteToTaskList={cancelInviteToTaskList}
-            removeUserFromTaskList={removeUserFromTaskList}
-            inviteUserToTaskList={inviteUserToTaskList}
-            changeUserRoleForList={changeUserRoleForList}
+            list={list}
+            refreshMembers={refreshView}
           />
         )}
         <IconsBox>

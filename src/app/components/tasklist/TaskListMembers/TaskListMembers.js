@@ -9,7 +9,7 @@ import InviteMemberPopover, {
 } from 'components/members/InviteMemberPopover';
 import useBoolean from 'hooks/useBoolean';
 
-import { MoreMembersButtonContainer } from './styled';
+import { MoreMembersButtonContainer, MemberWrapper } from './styled';
 
 const getMembersNames = ({ members }) =>
   members?.map(member => {
@@ -26,15 +26,7 @@ const getMembersNames = ({ members }) =>
     );
   });
 
-const TaskListMembers = ({
-  members,
-  taskListIdentifier,
-  inviteUserToTaskList,
-  cancelInviteToTaskList,
-  removeUserFromTaskList,
-  changeUserRoleForList,
-  limit = 4,
-}) => {
+const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
   const moreMembersButtonReference = useRef(null);
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -46,11 +38,11 @@ const TaskListMembers = ({
 
   return (
     <>
-      {shownMembers?.map(member => (
-        <div key={member.userIdentifier}>
-          <Spacing horizontal={2} />
+      {shownMembers?.map((member, index) => (
+        <MemberWrapper key={member.userIdentifier}>
+          {index !== 0 && <Spacing horizontal={2} />}
           <Member member={member} size={40} />
-        </div>
+        </MemberWrapper>
       ))}
       {hiddenMembersCount > 0 && (
         <>
@@ -72,19 +64,11 @@ const TaskListMembers = ({
         </>
       )}
       <Spacing horizontal={2} />
-      <InviteMemberButton size={40}>
-        {props => (
-          <InviteMemberPopover
-            {...props}
-            members={members}
-            taskList={{ taskListIdentifier }}
-            cancelInviteToTaskList={cancelInviteToTaskList}
-            removeUserFromTaskList={removeUserFromTaskList}
-            inviteUserToTaskList={inviteUserToTaskList}
-            changeUserRoleForList={changeUserRoleForList}
-          />
-        )}
-      </InviteMemberButton>
+      <InviteMemberButton
+        size={40}
+        list={list}
+        refreshMembers={refreshMembers}
+      />
     </>
   );
 };

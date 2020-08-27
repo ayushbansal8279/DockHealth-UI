@@ -1,20 +1,14 @@
 import { Button, Dialog, Grid, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Close, MoreVert } from '@material-ui/icons';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import {
-  clearMembersInTaskList,
-  getMembersByTaskListId,
-} from 'actions/tasklist-actions';
 import { openModal, closeModal } from 'modal/actions';
 import useBoolean from 'hooks/useBoolean';
-import Loader from 'components/common/Loader/Loader';
 import ListPopover from 'components/common/ListPopover';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
-import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
@@ -221,20 +215,10 @@ const ListsComponent = props => {
   const [isLeavePopoverOpen, openLeavePopover, closeLeavePopover] = useBoolean(
     false,
   );
-  const [
-    isInvitePopoverOpen,
-    openInvitePopover,
-    closeInvitePopover,
-  ] = useBoolean(false);
   const [isListMenuOpen, openListMenu, closeListMenu] = useBoolean(false);
   const [isAdminForCurrentList, setIsAdminForCurrentList] = useState(false);
   const [currentListIdentifier, setCurrentListIdentifier] = useState(null);
   const [currentListMenuAnchor, setCurrentListMenuAnchor] = useState(null);
-  const [
-    areMembersLoading,
-    setMembersLoading,
-    unsetMembersLoading,
-  ] = useBoolean(false);
 
   const dispatch = useDispatch();
 
@@ -247,32 +231,10 @@ const ListsComponent = props => {
     [currentListIdentifier, taskLists],
   );
 
-  const { members } = useSelector(store => ({
-    members: store.taskListState.tasklistmembers,
-  }));
-
-  const onInviteMenuItemClick = useCallback(() => {
-    setMembersLoading();
-    clearMembersInTaskList()(dispatch);
-
-    getMembersByTaskListId(
-      currentListIdentifier,
-      'ALL',
-    )(dispatch)
-      .then(() => {
-        unsetMembersLoading();
-        openInvitePopover();
-        closeListMenu();
-      })
-      .catch(unsetMembersLoading);
-  }, [
-    closeListMenu,
-    currentListIdentifier,
-    dispatch,
-    openInvitePopover,
-    setMembersLoading,
-    unsetMembersLoading,
-  ]);
+  const onInviteMenuItemClick = () => {
+    closeListMenu();
+    dispatch(openModal('InviteToList', { list: currentList }));
+  };
 
   const deleteTaskList = async () => {
     deleteList(currentListIdentifier).then(dispatch(closeModal()));
@@ -311,14 +273,6 @@ const ListsComponent = props => {
           label: (
             <Grid container wrap="nowrap" alignItems="center">
               <div>Invite to list </div>
-              {areMembersLoading && (
-                <>
-                  <Spacing horizontal={3} />
-                  <div>
-                    <Loader size={16} />
-                  </div>
-                </>
-              )}
             </Grid>
           ),
           onClick: onInviteMenuItemClick,
@@ -331,14 +285,6 @@ const ListsComponent = props => {
           label: (
             <Grid container wrap="nowrap" alignItems="center">
               <div>Invite to list </div>
-              {areMembersLoading && (
-                <>
-                  <Spacing horizontal={3} />
-                  <div>
-                    <Loader size={16} />
-                  </div>
-                </>
-              )}
             </Grid>
           ),
           onClick: onInviteMenuItemClick,
@@ -381,13 +327,6 @@ const ListsComponent = props => {
           showNewIndicator,
         }),
       )}
-      <TaskListInviteMemberContainer
-        addMemberButtonReference={currentListMenuAnchor}
-        isMemberPopoverOpen={isInvitePopoverOpen}
-        closeMemberPopover={closeInvitePopover}
-        taskList={currentList}
-        members={members ?? []}
-      />
       <ListPopover
         anchorEl={currentListMenuAnchor?.current}
         open={isListMenuOpen}

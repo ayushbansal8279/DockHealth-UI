@@ -40,7 +40,7 @@ import TaskList from 'components/task/TaskList';
 import { TASK_LIST_SHOW_MORE_STEP } from 'components/task/TaskList.Data';
 import Header from 'components/taskView/Header';
 import HeadsUpArea from 'components/taskView/HeadsUpArea';
-import Toolbar from 'components/taskView/Toolbar';
+import Toolbar from 'components/taskView/LEGACY_Toolbar/Toolbar';
 import {
   onButtonClicked,
   onFilterChanged,
