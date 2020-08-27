@@ -1,12 +1,10 @@
 import { IconButton, Popover } from '@material-ui/core';
-// import { makeStyles, withStyles } from '@material-ui/core/styles';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import Search from 'components/taskView/Search/Search';
 import spacing from 'styles/spacing';
-import Member from './Member';
+import Member from '../Member';
 
 const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
 
@@ -15,21 +13,6 @@ export const LoaderContainer = styled.div`
   justify-content: center;
   margin: ${spacing.giga} 0;
 `;
-
-export const useAddMemberButtonStyles = makeStyles({
-  root: {
-    border: `0.125rem dashed ${palette.coolGrey1}`,
-    color: palette.brightBlue,
-    fontSize: ({ size }) => (size * 30) / 54,
-    fontWeight: '500',
-    height: ({ size }) => size,
-    lineHeight: 1,
-    minHeight: ({ size }) => size,
-    minWidth: ({ size }) => size,
-    padding: 0,
-    width: ({ size }) => size,
-  },
-});
 
 export const AddMemberPopover = withStyles({
   paper: {
