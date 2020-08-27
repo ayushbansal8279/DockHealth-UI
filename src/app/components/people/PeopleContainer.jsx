@@ -9,7 +9,7 @@ import * as PeopleActions from 'actions/people-actions';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
-import Member from '../members/Member';
+import Member from '../members/Member/Member';
 import {
   ListContainer,
   ListEntryContainer,

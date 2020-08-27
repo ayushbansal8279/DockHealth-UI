@@ -9,6 +9,7 @@ import {
 import { openModal } from 'modal/actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
+import { isMemberPending } from 'helpers/list-members-helper';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import PageContentHeader from 'components/common/NewPageContentHeader';
@@ -18,7 +19,7 @@ import UniversalTooltip from 'components/common/UniversalTooltip';
 import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import TipsButton from 'components/common/TipsButton';
 import { showGlobalAlert } from 'alert/actions';
@@ -29,6 +30,7 @@ import {
   ToolbarBottomGrid,
   HeaderActionButtonsGrid,
   SearchWrapper,
+  MemberWrapper,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
 
@@ -39,10 +41,10 @@ const renderMemberAvatar = ({ taskListMembers }) => member => {
     ) || {};
 
   return (
-    <>
+    <MemberWrapper isPending={isMemberPending(member)}>
       <Spacing horizontal={2} />
       <Member member={taskListMember} size={40} />
-    </>
+    </MemberWrapper>
   );
 };
 

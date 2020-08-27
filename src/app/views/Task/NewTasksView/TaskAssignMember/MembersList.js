@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
-import Member from 'components/members/Member';
+import Member from 'components/members/Member/Member';
 import MagnifierIcon from 'img/magnifier';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 
