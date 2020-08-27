@@ -63,14 +63,26 @@ export function invitePersonToOrganization(person) {
     });
 }
 
-export function resendInviteToOrganization(markedUserIdentifier) {
+export function resendInviteToOrganization(userIdentifier) {
   return axios
     .put(
-      `${'organization/resendInviteToOrganization/' +
-        '?userIdentifier='}${markedUserIdentifier}`,
+      `organization/resendInviteToOrganization/?userIdentifier=${userIdentifier}`,
     )
-    .then(response => {
-      return response.data;
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
+}
+
+export function resendApprovalRequestUserForOrganization(userIdentifier) {
+  return axios
+    .put(
+      `user/resendApprovalRequestUserForOrganization/?userIdentifier=${userIdentifier}`,
+    )
+    .then(({ data }) => {
+      return data;
     })
     .catch(error => {
       throw new Error(error?.response?.data);
