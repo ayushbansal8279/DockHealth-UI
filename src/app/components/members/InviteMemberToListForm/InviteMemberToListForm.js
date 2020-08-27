@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as TaskListApi from 'api/tasklist-api';
 import * as PeopleApi from 'api/people-api';
 import { showAlert } from 'helpers/utility-functions';
+import { getMemberStatus, isMemberPending } from 'helpers/list-members-helper';
 import * as TaskListActions from 'actions/tasklist-actions';
 import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
@@ -27,12 +28,9 @@ import {
   MenuPopover,
   ExternalUserInviteFormWrapper,
   Container,
+  MemberStatusLabel,
 } from './styled';
-import {
-  getMenuOptionsForMember,
-  getMemberStatusLabel,
-  isMemberPending,
-} from './helpers';
+import { getMenuOptionsForMember } from './helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
@@ -250,32 +248,35 @@ const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
           />
           <Spacing vertical={4} />
           <MembersListWrapper>
-            {listMembers.map(member => (
-              <MemberListItem key={member.userIdentifier}>
-                <MemberAvatarWrapper isPending={isMemberPending(member)}>
-                  <Member size={38} member={member} />
-                </MemberAvatarWrapper>
-                <MemberFullNameWrapper isPending={isMemberPending(member)}>
-                  <MemberFullName>
-                    {member.userName}{' '}
-                    {member.userIdentifier === userProfile?.userIdentifier && (
-                      <span>&nbsp;(me)</span>
-                    )}
-                  </MemberFullName>
-                </MemberFullNameWrapper>
-                {getMemberStatusLabel(member)}
-                {currentUserListRole === 'ADMIN' && (
-                  <IconButton
-                    onClick={event => handleOpenMenu(event, member)}
-                    disabled={isUpdatingMembersList}
-                    size="small"
-                    color="secondary"
-                  >
-                    <MoreVert />
-                  </IconButton>
-                )}
-              </MemberListItem>
-            ))}
+            {listMembers.map(member => {
+              const status = getMemberStatus(member);
+
+              return (
+                <MemberListItem key={member.userIdentifier}>
+                  <MemberAvatarWrapper isPending={isMemberPending(member)}>
+                    <Member size={38} member={member} />
+                  </MemberAvatarWrapper>
+                  <MemberFullNameWrapper isPending={isMemberPending(member)}>
+                    <MemberFullName>
+                      {member.userName}{' '}
+                      {member.userIdentifier ===
+                        userProfile?.userIdentifier && <span>&nbsp;(me)</span>}
+                    </MemberFullName>
+                  </MemberFullNameWrapper>
+                  {status && <MemberStatusLabel>{status}</MemberStatusLabel>}
+                  {currentUserListRole === 'ADMIN' && (
+                    <IconButton
+                      onClick={event => handleOpenMenu(event, member)}
+                      disabled={isUpdatingMembersList}
+                      size="small"
+                      color="secondary"
+                    >
+                      <MoreVert />
+                    </IconButton>
+                  )}
+                </MemberListItem>
+              );
+            })}
           </MembersListWrapper>
           {isUpdatingMembersList && (
             <>

@@ -225,15 +225,9 @@ class TaskListView extends PureComponent {
   };
 
   editTaskList = taskList => {
-    const { taskListAction } = this.props;
-    const contentContainer = document.querySelector('#content-container');
-    // eslint-disable-next-line no-unused-expressions
-    contentContainer?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-    taskListAction.setTaskListAsCurrentList(taskList);
-    this.setListFormOpen(true);
+    const { modalActions } = this.props;
+
+    modalActions.openModal('ListForm', { list: taskList });
   };
 
   deleteList = taskListIdentifier => {

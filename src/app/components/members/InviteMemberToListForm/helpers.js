@@ -1,34 +1,5 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable sonarjs/no-duplicate-string */
-import React from 'react';
-import { MemberStatusLabel } from './styled';
-
-export const isMemberPending = member =>
-  member.userStatus === 'PENDING' || member.userStatus === 'INVITED';
-
-export const getMemberStatusLabel = member => {
-  const { userStatus, taskListUserRole } = member;
-
-  switch (userStatus) {
-    case 'ACTIVE':
-      if (taskListUserRole === 'ADMIN')
-        return <MemberStatusLabel>List Admin</MemberStatusLabel>;
-
-      return null;
-
-    case 'PENDING':
-      return <MemberStatusLabel>Approval Pending</MemberStatusLabel>;
-
-    case 'DENIED':
-      return <MemberStatusLabel>Denied</MemberStatusLabel>;
-
-    case 'INVITED':
-      return <MemberStatusLabel>Invitation Pending</MemberStatusLabel>;
-
-    default:
-      return null;
-  }
-};
-
 export const getMenuOptionsForMember = (
   member,
   {
