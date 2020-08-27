@@ -1,15 +1,9 @@
 import React from 'react';
-import { IconButton } from '@material-ui/core';
-import { openModal } from 'modal/actions';
-import clsx from 'clsx';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import InvitingContent from './InviteMemberPopover.InvitingContent';
 import NotInvitingContent from './InviteMemberPopover.NotInvitingContent';
-import {
-  AddMemberPopover,
-  useAddMemberButtonStyles,
-} from './InviteMemberPopover.Styled';
+import { AddMemberPopover } from './InviteMemberPopover.Styled';
 
 const InviteMemberPopover = ({
   addMemberButtonReference,
@@ -60,32 +54,6 @@ const InviteMemberPopover = ({
         />
       )}
     </AddMemberPopover>
-  );
-};
-
-export const InviteMemberButton = ({ size = 54, refreshMembers, list }) => {
-  const dispatch = useDispatch();
-
-  const addMemberButtonStyles = useAddMemberButtonStyles({ size });
-
-  return (
-    <>
-      <div>
-        <IconButton
-          className={clsx(addMemberButtonStyles.root)}
-          onClick={() =>
-            dispatch(
-              openModal('InviteToList', {
-                list,
-                onMembersRefresh: refreshMembers,
-              }),
-            )
-          }
-        >
-          +
-        </IconButton>
-      </div>
-    </>
   );
 };
 
