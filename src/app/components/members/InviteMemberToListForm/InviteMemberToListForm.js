@@ -181,7 +181,6 @@ const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
   const resendInvitationToList = userIdentifier => {
     setIsUpdatingMembersList(true);
 
-    // TODO: update to correct endpoint
     TaskListApi.inviteUserToTaskList(list.taskListIdentifier, userIdentifier)
       .then(() => {
         refreshListMembers();
@@ -191,12 +190,10 @@ const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
       });
   };
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   const resendApprovalRequestToList = userIdentifier => {
     setIsUpdatingMembersList(true);
 
-    // TODO: update to correct endpoint
-    TaskListApi.inviteUserToTaskList(list.taskListIdentifier, userIdentifier)
+    PeopleApi.resendApprovalRequestUserForOrganization(userIdentifier)
       .then(() => {
         refreshListMembers();
       })
