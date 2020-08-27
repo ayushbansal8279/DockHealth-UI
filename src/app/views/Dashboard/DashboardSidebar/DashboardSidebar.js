@@ -125,6 +125,10 @@ const DashboardSidebar = ({
     modalActions.openModal('ListForm', { list: taskList });
   };
 
+  const openListAddModal = () => {
+    modalActions.openModal('ListForm');
+  };
+
   const { userOrganizations } = currentUser;
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -161,7 +165,7 @@ const DashboardSidebar = ({
       <ListsSection>
         <ListsHeader>
           My lists
-          <AddListButton onClick={() => openListEditModal(null)} type="button">
+          <AddListButton onClick={openListAddModal} type="button">
             <span>+</span> Add list
           </AddListButton>
         </ListsHeader>

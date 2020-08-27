@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux';
 import { setHeader } from 'actions/header-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskActions from 'actions/task-actions';
+import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import AdornedButton from 'components/common/AdornedButton';
@@ -218,15 +219,9 @@ class TaskListView extends PureComponent {
   };
 
   addTaskList = () => {
-    const { taskListAction } = this.props;
-    const contentContainer = document.querySelector('#content-container');
-    // eslint-disable-next-line no-unused-expressions
-    contentContainer?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-    taskListAction.setTaskListAsCurrentList(null);
-    this.setListFormOpen(true);
+    const { modalActions } = this.props;
+
+    modalActions.openModal('ListForm');
   };
 
   editTaskList = taskList => {
@@ -560,6 +555,7 @@ function mapDispatchToProps(dispatch) {
     taskActions: bindActionCreators(TaskActions, dispatch),
     taskListAction: bindActionCreators(TaskListActions, dispatch),
     invitationAction: bindActionCreators(InvitationActions, dispatch),
+    modalActions: bindActionCreators(ModalActions, dispatch),
     setHeaderBound: setHeader(dispatch),
   };
 }
