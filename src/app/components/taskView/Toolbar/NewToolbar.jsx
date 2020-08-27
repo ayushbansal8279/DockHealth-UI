@@ -6,6 +6,7 @@ import {
   toggleListNotifications,
   getMembersByTaskListId,
 } from 'actions/tasklist-actions';
+import { openModal } from 'modal/actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
@@ -18,7 +19,7 @@ import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import Member from 'components/members/Member';
-import { InviteMemberButton } from 'components/members/InviteMemberPopover';
+import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import TipsButton from 'components/common/TipsButton';
 import { showGlobalAlert } from 'alert/actions';
 import MorePopover from './MorePopover';
@@ -212,13 +213,18 @@ const Toolbar = ({
                 {taskList?.listType !== 'INBOX' && (
                   <InviteMemberButton
                     size={40}
-                    list={taskList}
-                    refreshMembers={() =>
+                    onClick={() =>
                       dispatch(
-                        getMembersByTaskListId(
-                          taskList.taskListIdentifier,
-                          'ALL',
-                        ),
+                        openModal('InviteToList', {
+                          list: taskList,
+                          onMembersRefresh: () =>
+                            dispatch(
+                              getMembersByTaskListId(
+                                taskList.taskListIdentifier,
+                                'ALL',
+                              ),
+                            ),
+                        }),
                       )
                     }
                   />

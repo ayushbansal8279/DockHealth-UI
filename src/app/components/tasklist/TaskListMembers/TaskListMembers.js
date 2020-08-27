@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { splitAt } from 'ramda';
+import { openModal } from 'modal/actions';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltip from 'components/common/UniversalTooltip';
 import Member from 'components/members/Member';
-import InviteMemberPopover, {
-  InviteMemberButton,
-} from 'components/members/InviteMemberPopover';
+import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import useBoolean from 'hooks/useBoolean';
 
 import { MoreMembersButtonContainer, MemberWrapper } from './styled';
@@ -27,6 +27,7 @@ const getMembersNames = ({ members }) =>
   });
 
 const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
+  const dispatch = useDispatch();
   const moreMembersButtonReference = useRef(null);
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -66,8 +67,14 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
       <Spacing horizontal={2} />
       <InviteMemberButton
         size={40}
-        list={list}
-        refreshMembers={refreshMembers}
+        onClick={() =>
+          dispatch(
+            openModal('InviteToList', {
+              list,
+              onMembersRefresh: refreshMembers,
+            }),
+          )
+        }
       />
     </>
   );
