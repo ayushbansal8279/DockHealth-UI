@@ -5,6 +5,13 @@ import spacing from 'styles/spacing';
 import { Popover } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
+export const Wrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+  width: 100%;
+`;
+
 export const InviteInitialViewWrapper = styled.div`
   display: flex;
   flex: 1;
