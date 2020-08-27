@@ -35,7 +35,7 @@ import {
 } from './helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const InviteMemberToListForm = ({ list, onListUpdate }) => {
+const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
   const dispatch = useDispatch();
 
   const menuAnchor = useRef(null);
@@ -63,12 +63,15 @@ const InviteMemberToListForm = ({ list, onListUpdate }) => {
     });
   }, []);
 
-  const refreshListMembers = () => {
+  const refreshListMembers = (isInitial = false) => {
     if (listMembers.length === 0) {
       setListMembersFetched(false);
     } else {
       setIsUpdatingMembersList(true);
     }
+
+    if (!isInitial && typeof onMembersRefresh === 'function')
+      onMembersRefresh();
 
     TaskListApi.getMembersByTaskListId(list.taskListIdentifier, 'ALL')
       .then(members => {
@@ -83,7 +86,7 @@ const InviteMemberToListForm = ({ list, onListUpdate }) => {
 
   useEffect(() => {
     if (list?.taskListIdentifier) {
-      refreshListMembers();
+      refreshListMembers(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
@@ -117,13 +120,12 @@ const InviteMemberToListForm = ({ list, onListUpdate }) => {
     );
     const requestTaskList = {
       taskListIdentifier: list.taskListIdentifier,
-      memberIdentifiers: [...list.memberIdentifiers, ...newMembersIdentifiers],
-      adminIdentifiers: list.adminIdentifiers,
+      memberIdentifiers: [...newMembersIdentifiers],
     };
 
     TaskListActions.saveTaskList(requestTaskList)(dispatch)
-      .then(updatedList => {
-        if (typeof onListUpdate === 'function') onListUpdate(updatedList);
+      .then(() => {
+        refreshListMembers();
         setIsSavingList(false);
       })
       .catch(error => {

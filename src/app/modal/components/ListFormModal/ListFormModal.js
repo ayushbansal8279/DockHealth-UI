@@ -34,7 +34,6 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
             closeModal={closeModal}
             isListEditMode={isListEditMode}
             list={editedList}
-            setList={setEditedList}
           />
         );
 

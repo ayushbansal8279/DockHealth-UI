@@ -60,10 +60,7 @@ const PatientTasksListView = ({
     updatePatientTaskDueDate,
     updatePatientTaskWorkflowStatus,
     quickAddPatientTask,
-    inviteUserToTaskList,
-    removeUserFromTaskList,
-    cancelUserInviteToTaskList,
-    changeMemberRole,
+    refreshPatientTasks,
   } = patientTasksSagaActions;
 
   const handleQuickAddTask = taskName => {
@@ -128,10 +125,7 @@ const PatientTasksListView = ({
           updateDueDate={updatePatientTaskDueDate}
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
-          cancelInviteToTaskList={cancelUserInviteToTaskList}
-          removeUserFromTaskList={removeUserFromTaskList}
-          inviteUserToTaskList={inviteUserToTaskList}
-          changeUserRoleForList={changeMemberRole}
+          refreshView={refreshPatientTasks}
         />
       ))
     : renderEmptyListView();

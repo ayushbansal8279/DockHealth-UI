@@ -17,4 +17,7 @@ export const MoreMembersButtonContainer = styled.div`
   font-weight: ${fontWeights.bold};
 `;
 
-export default { MoreMembersButtonContainer };
+export const MemberWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;

@@ -30,6 +30,7 @@ export const SelectElementWrapper = styled.div`
   width: calc(100% - 130px);
   max-height: 132px;
   overflow-y: scroll;
+  z-index: 1;
 
   ${({ withValue }) =>
     withValue &&
@@ -99,7 +100,7 @@ export const SearchInput = styled.input`
   max-width: 100%;
   width: 20px;
   padding: ${spacing.tiny};
-  margin-bottom: ${spacing.small};
+  margin-bottom: 10px;
   line-height: 1.4;
   font-family: inherit;
   color: ${palette.mediumGrey};
