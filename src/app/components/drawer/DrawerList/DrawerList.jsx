@@ -9,7 +9,7 @@ import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
 import SearchIcon from 'img/drawer/SearchIcon';
-import OrganizationList from '../../Organization/OrganizationList/OrganizationList';
+import OrganizationList from '../../organization/OrganizationList/OrganizationList';
 import DrawerFooter from './DrawerFooter';
 import {
   DrawerListContainer,

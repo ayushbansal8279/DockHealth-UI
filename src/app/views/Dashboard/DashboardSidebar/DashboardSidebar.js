@@ -12,8 +12,7 @@ import palette from 'styles/palette';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
-import TaskListInviteMemberContainer from 'components/taskView/TaskListInviteMemberContainer/TaskListInviteMemberContainer';
-import OrganizationList from 'components/Organization/OrganizationList/OrganizationList';
+import OrganizationList from 'components/organization/OrganizationList/OrganizationList';
 
 import {
   TopSection,
@@ -46,7 +45,6 @@ const DashboardSidebar = ({
   closeListCreationSuccessMessage,
   acceptInvitation,
   modalActions,
-  members,
   taskListActions,
   invitationActions,
   currentUser,
@@ -63,7 +61,6 @@ const DashboardSidebar = ({
     setCurrentListMenuPopupReference,
   ] = useState(false);
   const [selectedList, setSelectedList] = useState(null);
-  const [invitePopoverOpen, setInvitePopoverOpen] = useState(false);
 
   const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
     shouldDisplayFirstListCreationMessage,
@@ -105,16 +102,7 @@ const DashboardSidebar = ({
   };
 
   const handleInviteToList = () => {
-    const { taskListIdentifier } = selectedList;
-
-    if (!taskListIdentifier) return;
-
-    taskListActions
-      .getMembersByTaskListId(taskListIdentifier, 'ALL')
-      .then(() => {
-        setInvitePopoverOpen(true);
-      })
-      .catch(() => {});
+    modalActions.openModal('InviteToList', { list: selectedList });
   };
 
   const handleLeaveList = () => {
@@ -286,21 +274,10 @@ const DashboardSidebar = ({
           },
         ]}
       />
-      <TaskListInviteMemberContainer
-        addMemberButtonReference={currentListMenuPopupReference}
-        isMemberPopoverOpen={invitePopoverOpen}
-        closeMemberPopover={() => setInvitePopoverOpen(false)}
-        taskList={selectedList}
-        members={members ?? []}
-      />
       {renderTourItems()}
     </DashboardSidebarWrapper>
   );
 };
-
-const mapStateToProps = state => ({
-  members: state.taskListState.tasklistmembers,
-});
 
 const mapDispachToProps = dispatch => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
@@ -312,4 +289,4 @@ const mapDispachToProps = dispatch => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispachToProps)(DashboardSidebar);
+export default connect(null, mapDispachToProps)(DashboardSidebar);
