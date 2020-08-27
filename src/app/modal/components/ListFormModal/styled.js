@@ -55,10 +55,3 @@ export const Step = styled.button`
 export const ButtonWrapper = styled.div`
   width: 170px;
 `;
-
-export const FormWrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex: 1;
-  width: 100%;
-`;

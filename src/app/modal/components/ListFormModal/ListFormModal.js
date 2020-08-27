@@ -11,7 +11,7 @@ const ModalSteps = {
 
 const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
   const [editedList, setEditedList] = useState(list);
-  const [currentStep, setCurrentStep] = useState(ModalSteps.INVITE_PEOPLE);
+  const [currentStep, setCurrentStep] = useState(ModalSteps.LIST_DETAILS);
 
   const isListEditMode = !!list;
 

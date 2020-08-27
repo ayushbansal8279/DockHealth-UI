@@ -12,7 +12,7 @@ import Spacing from 'components/common/Spacing';
 import messages from 'components/ListForm/messages';
 import Member from 'components/members/Member';
 import Loader from 'components/common/Loader/Loader';
-import { Title, FormWrapper, Header, Description } from '../styled';
+import { Title, Header, Description } from '../styled';
 import ListMembersSelect from '../ListMembersSelect/ListMembersSelect';
 import ExternalInviteForm from '../ExternalInviteForm/ExternalInviteForm';
 import {
@@ -34,6 +34,7 @@ import {
   MemberMenuButtonDescription,
   MenuPopover,
   ExternalUserInviteFormWrapper,
+  Wrapper,
 } from './styled';
 import {
   getMenuOptionsForMember,
@@ -278,7 +279,7 @@ const InviteMembersForm = ({
   }
 
   return (
-    <FormWrapper>
+    <Wrapper>
       <Grid container direction="column" justify="space-between">
         <Grid container item>
           <Header>
@@ -401,7 +402,7 @@ const InviteMembersForm = ({
           </ExternalUserInviteFormWrapper>
         </ClickAwayListener>
       )}
-    </FormWrapper>
+    </Wrapper>
   );
 };
 
