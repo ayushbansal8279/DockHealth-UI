@@ -60,6 +60,7 @@ const renderOrganizationMemberRow = ({
       subscriptionPlanData={subscriptionPlanData}
       organizationMembers={organizationMembers}
       isInvited={userStatus === 'INVITED'}
+      userIdentifier={userIdentifier}
       {...props}
     />
   );
