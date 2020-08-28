@@ -120,4 +120,5 @@ export const ExternalUserInviteFormWrapper = styled.div`
   left: 0px;
   background: ${palette.white};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  z-index: 2;
 `;
