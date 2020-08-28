@@ -281,9 +281,8 @@ const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
           {isUpdatingMembersList && (
             <>
               <Grid container direction="column" alignItems="center">
-                <Spacing vertical={2} />
+                <Spacing vertical={3} />
                 <Loader />
-                <Spacing vertical={2} />
               </Grid>
             </>
           )}

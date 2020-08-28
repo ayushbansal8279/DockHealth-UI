@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 export const Container = styled.div`
   position: relative;
   width: 100%;
-  height: 306px;
+  height: 286px;
 `;
 
 export const LoaderWrapper = styled.div`
@@ -28,7 +28,7 @@ export const MemberListItem = styled.div`
 
 export const MembersListWrapper = styled.div`
   width: 100%;
-  height: 158px;
+  height: 138px;
   overflow-y: scroll;
 `;
 
