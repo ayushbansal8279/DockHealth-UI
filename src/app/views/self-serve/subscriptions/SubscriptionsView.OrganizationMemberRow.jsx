@@ -54,22 +54,25 @@ const USER_TYPES = new Proxy(
   {
     OWNER: {
       label: 'Owner',
-      description:
-        'Has full access to the platform, can edit payment information and accepts or declines paying users',
-    },
-    ADMIN: {
-      label: 'Admin',
       selectable: true,
       changeable: true,
       description:
-        'Has full access to the platform but cannot access payment information or accept/decline new paid users to the account',
+        'Full access to everything including billing and payments and approving new members.',
     },
     MEMBER: {
-      label: 'Member',
+      label: 'Members',
       selectable: true,
       changeable: true,
       description:
-        'Has access to the list and can ask to invite others to the List',
+        'Part of your Organization. Can add and invite members who are already part of your organization. Can access all patients and people in the group/practice.',
+    },
+    GUEST: {
+      label: 'Guests',
+      selectable: true,
+      changeable: true,
+      isLimitedAccess: true,
+      description:
+        'Not part of your Organization.  Only have access to this list asks on this list and the patients and people on this list.',
     },
     DEFAULT: {
       label: 'Invited',
@@ -77,7 +80,7 @@ const USER_TYPES = new Proxy(
     },
   },
   {
-    get: (object, path) => object[path.toUpperCase()] || object.DEFAULT,
+    get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
   },
 );
 
@@ -97,7 +100,7 @@ const USER_STATUS_TYPES = new Proxy(
     },
   },
   {
-    get: (object, path) => object[path.toUpperCase()] || object.DEFAULT,
+    get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
   },
 );
 
@@ -216,17 +219,16 @@ const OrganizationMemberRow = ({
       target: { checked: true },
     });
 
-  const adminCount =
+  const ownerCount =
     organizationMembers?.filter(
-      ({ orgUserRole: memberUserRole }) =>
-        memberUserRole === 'ADMIN' || memberUserRole === 'OWNER',
+      ({ orgUserRole: memberUserRole }) => memberUserRole === 'OWNER',
     )?.length ?? 0;
 
   const hasOneUserRemaining = organizationMembers.length === 1;
 
   const isDisabledRemovingSubscription =
     hasOneUserRemaining ||
-    (adminCount <= 1 && (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')) ||
+    (ownerCount <= 1 && orgUserRole === 'OWNER') ||
     userIdentifier === sessionStorage.userIdentifier;
 
   const registrationMoment = moment(registrationDate);

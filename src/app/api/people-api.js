@@ -190,3 +190,27 @@ export function getUserByEmail({ email }) {
       throw error;
     });
 }
+
+export function approvePendingUser({ userIdentifier, role }) {
+  return axios
+    .put(`user/approveUserForOrganization?userIdentifier=${userIdentifier}`, {
+      role,
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
+}
+
+export function denyPendingUser({ userIdentifier }) {
+  return axios
+    .put(`user/denyUserForOrganization?userIdentifier=${userIdentifier}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
+}
