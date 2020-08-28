@@ -7,6 +7,7 @@ import { FormSwitch } from 'components/common/Switch/Switch';
 import { head } from 'ramda';
 import * as userApi from 'api/user-api';
 import * as AlertActions from 'alert/actions';
+import { openModal } from 'modal/actions';
 import {
   UniversalInput,
   UniversalMobileInputComponent,
@@ -18,6 +19,7 @@ import {
   SectionSubtypography,
   SectionTypography,
   FormInfoText,
+  InputActionButton,
 } from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
 
@@ -95,6 +97,10 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
     formState: { isSubmitting },
   } = formMethods;
 
+  const openChangePasswordModal = () => {
+    dispatch(openModal('ChangePassword'));
+  };
+
   return (
     <FormContext {...formMethods}>
       <form
@@ -149,6 +155,14 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
                 label="Password"
                 readOnly
                 value="password"
+                endAdornment={
+                  <InputActionButton
+                    type="button"
+                    onClick={openChangePasswordModal}
+                  >
+                    Change
+                  </InputActionButton>
+                }
               />
             </Grid>
             <Grid item xs={12}>
