@@ -118,7 +118,7 @@ export const AvailablePeopleWrapper = styled.div`
   top: 100%;
   left: 0;
   width: calc(100% - 130px);
-  max-height: 138px;
+  max-height: 165px;
   overflow-y: scroll;
   background: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);

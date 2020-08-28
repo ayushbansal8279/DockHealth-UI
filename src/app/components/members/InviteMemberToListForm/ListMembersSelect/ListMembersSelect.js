@@ -41,7 +41,7 @@ const ListMembersSelect = ({
     () =>
       availablePeople.filter(
         ({ userName, userIdentifier }) =>
-          userName.toLowerCase().includes(searchInputValue) &&
+          userName.toLowerCase().startsWith(searchInputValue.toLowerCase()) &&
           !selectedMembers.some(
             selectedMember => selectedMember.userIdentifier === userIdentifier,
           ),

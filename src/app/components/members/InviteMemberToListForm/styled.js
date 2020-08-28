@@ -28,7 +28,7 @@ export const MemberListItem = styled.div`
 
 export const MembersListWrapper = styled.div`
   width: 100%;
-  height: 138px;
+  height: 158px;
   overflow-y: scroll;
 `;
 
