@@ -10,7 +10,8 @@ const StyledButton = styled.button`
   box-sizing: border-box;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   ${({ fullWidth }) => !fullWidth && 'min-width: 10.625rem;'}
-  
+  ${({ withoutMinWidth }) => withoutMinWidth && 'min-width: auto;'}
+
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
   text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : 'lowercase')};
@@ -23,19 +24,19 @@ const StyledButton = styled.button`
     z-index: 100;
   }
   
-  ${({ size }) => {
+  ${({ size, padding }) => {
     switch (size) {
       case 'small':
         return `
           height: 30px;
-          padding: 0 ${spacing.regular};
+          padding: ${padding || `0 ${spacing.regular}`};
           font-size: ${fontSizes.smallPlus};
         `;
 
       case 'medium':
         return `
           height: 50px;
-          padding: 0 ${spacing.regular};
+          padding: ${padding || `0 ${spacing.regular}`};
           font-size: ${fontSizes.regular};
         `;
 
@@ -151,6 +152,8 @@ const Button = ({
   fullWidth,
   disabled,
   theme,
+  withoutMinWidth,
+  padding,
 }) => {
   return (
     <StyledButton
@@ -163,6 +166,8 @@ const Button = ({
       fullWidth={fullWidth}
       disabled={disabled}
       theme={theme}
+      withoutMinWidth={withoutMinWidth}
+      padding={padding}
     >
       <span>{children}</span>
     </StyledButton>
