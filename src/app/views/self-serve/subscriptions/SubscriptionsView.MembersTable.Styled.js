@@ -59,7 +59,7 @@ export const MembersTableSearchContainer = styled.div`
 `;
 
 export const MemberTypeButton = styled.button`
-  max-width: 90px;
+  max-width: 94px;
   width: 100%;
   outline: none;
 
