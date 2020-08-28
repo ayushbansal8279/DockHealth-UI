@@ -185,7 +185,7 @@ const PendingApprovalPopover = props => {
             withoutMinWidth
             fullWidth
           >
-            APRROVE
+            APPROVE
           </Button>
         </ApprovalButtonContainer>
       </PendingApprovalButtonsContainer>
