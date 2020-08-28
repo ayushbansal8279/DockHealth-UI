@@ -77,6 +77,7 @@ export const renderUserTypesOptions = ({
         label: 'Reactivate user',
         selectable: true,
         changeable: true,
+        isSelected: selectedRoleKey === 'reactivate_user',
         onSave: () => {
           closePopover();
           addSubscription();

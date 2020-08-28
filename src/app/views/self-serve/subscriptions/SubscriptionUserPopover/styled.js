@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 
 // Common
 export const LimitedAccessLabel = styled.span`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Roboto Condensed';
   color: ${palette.orange};
   font-style: italic;
   font-weight: normal;
@@ -13,6 +13,7 @@ export const LimitedAccessLabel = styled.span`
 `;
 
 export const Header = styled.div`
+  font-family: 'Roboto Condensed';
   background-color: ${palette.coolGrey4};
   width: 100%;
   font-size: ${fontSizes.regular};
@@ -24,6 +25,7 @@ export const Header = styled.div`
 
 // RoleSelectionPopover
 export const RoleItem = styled.div`
+  font-family: 'Roboto Condensed';
   display: flex;
   padding: 18px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
@@ -72,6 +74,7 @@ export const RoleSelectorRemoveUserButton = styled.button`
 
 // InvitationPopover
 export const InvitationItem = styled.div`
+  font-family: 'Roboto Condensed';
   display: flex;
   padding: ${spacing.large} 40px;
   width: 408px;
@@ -93,6 +96,7 @@ export const InvitationItemDescription = styled.div`
 
 // PendingApprovalPopover
 export const PendingApprovalContainer = styled.div`
+  font-family: 'Roboto Condensed';
   width: 462px;
   height: 385px;
   display: flex;
