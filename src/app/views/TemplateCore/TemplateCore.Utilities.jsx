@@ -68,7 +68,7 @@ const handleHomeRedirection = async ({
   });
 
   if (
-    (data.eulaAcknowledged && isEulaPath) ||
+    (data?.eulaAcknowledged && isEulaPath) ||
     (orgData?.baaSigned && isBaaPath)
   ) {
     hashHistory.replace(HOME_PATH);
@@ -93,7 +93,7 @@ const checkUserAccountState = async ({
 
   let orgData = null;
 
-  if (data?.organizationIdentifier) {
+  if (data?.organizationIdentifier !== '') {
     orgData = await checkBAASignedStatus()(dispatch);
     getConfigurationForReferral({ referralCode: orgData?.referralCode })(
       dispatch,
@@ -118,7 +118,11 @@ const checkUserAccountState = async ({
     if (pathname !== EULA_PATH) {
       hashHistory.replace(EULA_PATH);
     }
-  } else if (!orgData?.baaSigned && !isBaaPath) {
+  } else if (
+    data?.organizationIdentifier !== '' &&
+    !orgData?.baaSigned &&
+    !isBaaPath
+  ) {
     hashHistory.replace(BAA_OVERVIEW_PATH);
   } else if (
     checkTrialExpiration &&
