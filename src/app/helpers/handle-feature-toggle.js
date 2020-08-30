@@ -3,7 +3,7 @@ import { hashHistory } from 'react-router';
 
 export default ({ location, user }) => {
   const { pathname } = location;
-  const { access } = user;
+  const access = user?.access;
 
   const rawPathname = pathname.replace(/^\//, '');
 
