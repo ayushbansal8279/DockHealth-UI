@@ -39,8 +39,8 @@ const OrganizationList = ({
   };
 
   const customAvailableIdentifierConfig = {
-    onHover: {
-      backgroundColor: palette.coolGrey4,
+    onhover: {
+      backgroundColor: palette.coolGrey3,
     },
     ...defaultIdentifierConfig,
     ...availableIdentifierConfig,
@@ -72,6 +72,7 @@ const OrganizationList = ({
               fontSize: 'smallPlus',
               ...org,
             }}
+            key={`org_${org?.organizationIdentifier}`}
             identifierConfig={customAvailableIdentifierConfig}
             organizationName={org?.organizationName}
             isOpen={shouldExpand}
