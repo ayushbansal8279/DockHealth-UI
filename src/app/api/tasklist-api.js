@@ -3,7 +3,7 @@ import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
   return axios({
-    url: 'list/findTaskListsByUserId',
+    url: 'list/findTaskListsForUser',
     method: 'get',
   })
     .then(response => response?.data)
