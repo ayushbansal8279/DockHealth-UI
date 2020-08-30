@@ -20,9 +20,9 @@ export const OrganizationIdentifierContainer = styled.div`
   }
 
   ${props => {
-    if (props.onHover) {
+    if (props.onhover) {
       return `&:hover {
-        background-color: ${props.onHover.backgroundColor};
+        background-color: ${props.onhover.backgroundColor};
       }`;
     }
     return null;
