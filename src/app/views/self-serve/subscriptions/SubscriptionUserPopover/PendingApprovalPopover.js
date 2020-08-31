@@ -57,7 +57,7 @@ const renderUserTypesOptions = ({
 }) => {
   let renderedArray = [];
 
-  if (userStatus === 'ACTIVE') {
+  if (userStatus === 'PENDING') {
     renderedArray = [
       ...Object.entries(userTypes)
         .filter(pathEq(['1', 'selectable'], true))
@@ -171,7 +171,6 @@ const PendingApprovalPopover = props => {
                 })
             }
             size="small"
-            withoutMinWidth
             variant="outlined"
             fullWidth
           >
@@ -182,7 +181,6 @@ const PendingApprovalPopover = props => {
           <Button
             onClick={() => setSelectedStep('second')}
             size="small"
-            withoutMinWidth
             fullWidth
           >
             APPROVE
@@ -240,8 +238,6 @@ const PendingApprovalPopover = props => {
               })
           }
           size="small"
-          withoutMinWidth
-          padding="0 30px"
           disabled={!selectedRole?.key}
         >
           Save

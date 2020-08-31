@@ -98,6 +98,9 @@ const USER_STATUS_TYPES = new Proxy(
       label: 'Invited',
       invitationModifiable: true,
     },
+    PENDING: {
+      label: 'Approval Pending',
+    },
   },
   {
     get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
@@ -191,7 +194,7 @@ const OrganizationMemberRow = ({
 }) => {
   let userType = null;
 
-  if (['CANCELLED', 'INACTIVE'].includes(userStatus)) {
+  if (['CANCELLED', 'INACTIVE', 'PENDING'].includes(userStatus)) {
     userType = USER_STATUS_TYPES[userStatus];
   } else {
     const derivedOrgUserRole =
