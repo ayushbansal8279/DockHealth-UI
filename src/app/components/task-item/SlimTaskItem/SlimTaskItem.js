@@ -75,11 +75,14 @@ const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
   );
 };
 
-const PatientComponent = ({ patient }) => (
-  <SlimTaskItemPatientLink to={`patient/${patient?.patientIdentifier}`}>
-    {patient && `${patient?.firstName} ${patient?.lastName}`}
-  </SlimTaskItemPatientLink>
-);
+const PatientComponent = ({ patient, parentTask }) => {
+  const taskPatient = parentTask ? parentTask.patient : patient;
+  return (
+    <SlimTaskItemPatientLink to={`patient/${taskPatient?.patientIdentifier}`}>
+      {taskPatient && `${taskPatient?.firstName} ${taskPatient?.lastName}`}
+    </SlimTaskItemPatientLink>
+  );
+};
 
 const WorkflowStatusComponent = ({ workflowStatus }) => (
   <SlimTaskWorkflowStatusContainer>
