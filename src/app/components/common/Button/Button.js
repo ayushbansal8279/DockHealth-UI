@@ -10,7 +10,6 @@ const StyledButton = styled.button`
   box-sizing: border-box;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   ${({ fullWidth }) => !fullWidth && 'min-width: 10.625rem;'}
-  ${({ withoutMinWidth }) => withoutMinWidth && 'min-width: auto;'}
 
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
@@ -24,19 +23,19 @@ const StyledButton = styled.button`
     z-index: 100;
   }
   
-  ${({ size, padding }) => {
+  ${({ size }) => {
     switch (size) {
       case 'small':
         return `
           height: 30px;
-          padding: ${padding || `0 ${spacing.regular}`};
+          padding: 0 ${spacing.regular};
           font-size: ${fontSizes.smallPlus};
         `;
 
       case 'medium':
         return `
           height: 50px;
-          padding: ${padding || `0 ${spacing.regular}`};
+          padding: 0 ${spacing.regular};
           font-size: ${fontSizes.regular};
         `;
 
@@ -152,7 +151,6 @@ const Button = ({
   fullWidth,
   disabled,
   theme,
-  withoutMinWidth,
   padding,
 }) => {
   return (
@@ -166,7 +164,6 @@ const Button = ({
       fullWidth={fullWidth}
       disabled={disabled}
       theme={theme}
-      withoutMinWidth={withoutMinWidth}
       padding={padding}
     >
       <span>{children}</span>

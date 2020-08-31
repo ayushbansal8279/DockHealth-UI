@@ -187,8 +187,6 @@ const RoleSelectionPopover = ({
               selectedRole?.onSave();
             }}
             size="small"
-            withoutMinWidth
-            padding="0 30px"
             disabled={!selectedRole?.key}
           >
             Save

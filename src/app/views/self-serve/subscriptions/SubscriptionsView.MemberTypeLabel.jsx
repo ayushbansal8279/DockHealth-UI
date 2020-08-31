@@ -61,8 +61,8 @@ const MemberTypeLabel = ({
       <MemberTypeButton
         ref={labelReference}
         invited={invitationModifiable}
-        clickable
-        onClick={openPopover}
+        clickable={!isDisabledRemovingSubscription}
+        onClick={isDisabledRemovingSubscription ? () => {} : openPopover}
         isInvited={isInvited}
       >
         <DropdownIndicator
