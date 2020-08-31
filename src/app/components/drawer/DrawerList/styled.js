@@ -46,9 +46,21 @@ export const NestedList = styled(StyledList)`
   && {
     height: unset;
     min-height: unset;
-    overflow-y: auto;
     padding-bottom: 0;
     width: 100%;
+    overflow-y: scroll;
+    max-height: 200px;
+
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
   }
 `;
 
@@ -151,7 +163,6 @@ export const NestedListContainer = styled.div`
   && {
     display: ${props => (props.active ? 'flex' : 'none')};
     margin-top: 0.5rem;
-    overflow-y: auto;
 
     & + ${StyledRouterLinkContainer} > a {
       margin-top: 0;
@@ -230,10 +241,22 @@ export const StyledDropdown = styled.div`
   margin-top: ${spacing.small};
   background-color: ${palette.midnightBlue};
   height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
-  min-height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
-  overflow: hidden;
+  overflow-x: hidden;
   transition: all 0.25s ease-out;
   width: 100%;
+  margin-bottom: ${spacing.regularPlus};
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
 `;
 
 export const DrawerMemberContainer = styled.div`
