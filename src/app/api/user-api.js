@@ -1,4 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
+import { hashHistory } from 'react-router';
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
@@ -181,6 +182,9 @@ export function resendConfirmationCode(userData) {
 }
 
 export function logout() {
+  window.sessionStorage.removeItem('confirmStatus');
+  hashHistory.replace('login');
+
   return new Promise(resolve => {
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
       sessionStorage.removeItem('EnterpriseUserFlag');
@@ -884,3 +888,8 @@ export function selectCurrentOrganization(organizationIdentifier) {
       throw error;
     });
 }
+
+export const leaveOrganization = organizationIdentifier =>
+  axios
+    .delete(`/user/leaveOrganization/${organizationIdentifier}`)
+    .then(({ data }) => data);
