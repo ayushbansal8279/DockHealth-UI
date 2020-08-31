@@ -152,7 +152,8 @@ function* doFetchDashboardMyTasksStatistics() {
 
 function* doFetchDashboardAllTasksStatistics() {
   try {
-    yield put({ type: REQUEST_DASHBOARD_STATISTICS });
+    // Do Not show loader
+    // yield put({ type: REQUEST_DASHBOARD_STATISTICS });
     const statistics = yield getDashboardStatistics('AllTasks');
     yield put({
       type: REQUEST_DASHBOARD_STATISTICS_SUCCESS,
