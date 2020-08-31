@@ -12,7 +12,7 @@ import palette from 'styles/palette';
 import LockIcon from 'img/lock-icon';
 import MenuIcon from 'img/menu-icon';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
-import OrganizationList from 'components/organization/OrganizationList/OrganizationList';
+import OrganizationList from 'components/Organization/OrganizationList/OrganizationList';
 
 import {
   TopSection,

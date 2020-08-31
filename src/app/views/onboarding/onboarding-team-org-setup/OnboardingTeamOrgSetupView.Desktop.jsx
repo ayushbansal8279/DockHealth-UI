@@ -7,8 +7,8 @@ import { updateOrganizationName } from 'actions/organization-actions';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
-import OrganizationAvatarInput from 'components/organization/OrganizationAvatarInput/OrganizationAvatarInput';
-import OrganizationColorPicker from 'components/organization/OrganizationColorPicker/OrganizationColorPicker';
+import OrganizationAvatarInput from 'components/Organization/OrganizationAvatarInput/OrganizationAvatarInput';
+import OrganizationColorPicker from 'components/Organization/OrganizationColorPicker/OrganizationColorPicker';
 import {
   Title,
   FormWrapper,
