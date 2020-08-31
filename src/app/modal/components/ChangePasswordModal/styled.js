@@ -5,7 +5,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const ChangePasswordModalContainer = styled.div`
   position: relative;
-  width: 490px;
+  width: 570px;
   padding: ${spacing.largePlus} ${spacing.giga};
   background-color: ${palette.white};
   font-family: 'Montserrat', sans-serif;
