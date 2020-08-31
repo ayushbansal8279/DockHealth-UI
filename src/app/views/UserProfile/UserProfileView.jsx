@@ -6,7 +6,7 @@ import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
 import * as userApi from 'api/user-api';
 import { openModal as openModalAction } from 'modal/actions';
-import OrganizationAvatar from 'components/organization/OrganizationAvatar/OrganizationAvatar';
+import OrganizationAvatar from 'components/Organization/OrganizationAvatar/OrganizationAvatar';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
