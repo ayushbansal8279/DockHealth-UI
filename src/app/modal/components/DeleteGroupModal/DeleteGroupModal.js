@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import Folder from 'img/modals/folder';
@@ -11,8 +12,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const DeleteGroupModal = ({ closeModal, confirm }) => {
@@ -32,13 +32,31 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            No, do not delete
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Yes
-          </ConfirmButton>
+          <FixedWidthButtonWrapper width={160}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="outlined"
+              type="button"
+              onClick={closeModal}
+            >
+              Do not delete
+            </Button>
+          </FixedWidthButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={88}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="contained"
+              type="button"
+              onClick={confirm}
+            >
+              Yes
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

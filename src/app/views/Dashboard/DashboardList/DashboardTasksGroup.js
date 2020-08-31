@@ -165,6 +165,7 @@ const DashboardTasksGroup = ({
   currentUser,
   reassignDashboardTask,
   areFiltersApplied,
+  updateWorkflowStatus,
 }) => {
   const { groupName, groupType, tasks: dashboardTasks } = dashboardTasksGroup;
   const [tasks, setNewTasks] = useState([]);
@@ -327,6 +328,7 @@ const DashboardTasksGroup = ({
                               reassignTask={({ taskIdentifier }, { userId }) =>
                                 reassignDashboardTask(taskIdentifier, userId)
                               }
+                              updateWorkflowStatus={updateWorkflowStatus}
                             />
                           </div>
                         )}

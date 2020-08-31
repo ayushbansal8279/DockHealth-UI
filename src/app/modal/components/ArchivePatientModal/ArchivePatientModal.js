@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import RedFolder from 'img/modals/red-folder';
@@ -11,7 +12,8 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
+  FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const ArchivePatientModal = ({ closeModal, confirm }) => {
@@ -31,13 +33,31 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <Button variant="outlined" type="button" onClick={closeModal}>
-            No, do not archive
-          </Button>
-          <Spacing horizontal={3} />
-          <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Archive
-          </ConfirmButton>
+          <FlexButtonWrapper>
+            <Button
+              fullWidth
+              size="small"
+              color="red"
+              variant="outlined"
+              type="button"
+              onClick={closeModal}
+            >
+              Do not archive
+            </Button>
+          </FlexButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={127}>
+            <Button
+              fullWidth
+              size="small"
+              color="red"
+              variant="contained"
+              type="button"
+              onClick={confirm}
+            >
+              Archive
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

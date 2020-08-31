@@ -10,11 +10,14 @@ import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import Member from 'components/members/Member/Member';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
+import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
 import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
+import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 
 import { getCalendarIcon } from '../icons';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
 import {
+  ClickablePatient,
   CircleIcon,
   SlimTaskItemContainer,
   SlimTaskItemDescription,
@@ -32,6 +35,7 @@ import {
   SlimTaskItemPatientLink,
   DueDateAddLabel,
   AddCrossIcon,
+  AddPlaceholder,
 } from '../styled';
 
 const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
@@ -75,15 +79,56 @@ const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
   );
 };
 
-const PatientComponent = ({ patient }) => (
-  <SlimTaskItemPatientLink to={`patient/${patient?.patientIdentifier}`}>
-    {patient && `${patient?.firstName} ${patient?.lastName}`}
-  </SlimTaskItemPatientLink>
-);
+const PatientComponent = ({
+  status,
+  patient,
+  openDrawer,
+  storeAsCurrentTask,
+  task,
+  parentTask,
+}) => {
+  const taskPatient = parentTask ? parentTask.patient : patient;
 
-const WorkflowStatusComponent = ({ workflowStatus }) => (
-  <SlimTaskWorkflowStatusContainer>
-    <TaskItemStatus workflowStatus={workflowStatus} />
+  return (
+    <ClickablePatient
+      onClick={() => {
+        if (!taskPatient) {
+          openDrawer(FocusDrawerFieldEnum.PATIENT);
+          storeAsCurrentTask(task);
+        }
+      }}
+    >
+      {status !== 'COMPLETE' && !taskPatient && (
+        <AddPlaceholder>+ Patient</AddPlaceholder>
+      )}
+      {patient && (
+        <SlimTaskItemPatientLink
+          to={`patient/${taskPatient.patientIdentifier}`}
+        >
+          {taskPatient.firstName} {taskPatient.lastName}
+        </SlimTaskItemPatientLink>
+      )}
+    </ClickablePatient>
+  );
+};
+
+const WorkflowStatusComponent = ({
+  task,
+  status,
+  workflowStatus,
+  updateWorkflowStatus,
+}) => (
+  <SlimTaskWorkflowStatusContainer
+    withPadding={status !== 'COMPLETE' && workflowStatus}
+  >
+    <TaskWorkflowStatus task={task} updateWorkflowStatus={updateWorkflowStatus}>
+      {status !== 'COMPLETE' && workflowStatus && (
+        <TaskItemStatus workflowStatus={workflowStatus} />
+      )}
+      {task.status !== 'COMPLETE' && !workflowStatus && (
+        <AddPlaceholder>+ Status</AddPlaceholder>
+      )}
+    </TaskWorkflowStatus>
   </SlimTaskWorkflowStatusContainer>
 );
 
@@ -123,6 +168,7 @@ const SlimTaskItem = ({
   dynamicColumnType = 'DUE_DATE',
   currentUser,
   reassignTask,
+  updateWorkflowStatus,
 }) => {
   const {
     assignedTo,
@@ -200,7 +246,7 @@ const SlimTaskItem = ({
               </CompletedBy>
               {parentTask && (
                 <SlimTaskItemParentTaskLabel>
-                  Subtask of{' '}
+                  Subtask of
                   <span
                     onClick={() => {
                       storeAsCurrentTask(parentTask);
@@ -211,7 +257,7 @@ const SlimTaskItem = ({
                       );
                     }}
                   >
-                    {parentTask.description}
+                    {` ${parentTask.description}`}
                   </span>
                 </SlimTaskItemParentTaskLabel>
               )}
@@ -225,6 +271,9 @@ const SlimTaskItem = ({
               isOverdueTask: isOverdueTask && !isCompleted,
               updateDueDate,
               task,
+              openDrawer,
+              storeAsCurrentTask,
+              updateWorkflowStatus,
             }}
           />
         </Grid>

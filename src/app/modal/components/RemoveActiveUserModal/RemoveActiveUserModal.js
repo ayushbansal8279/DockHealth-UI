@@ -1,18 +1,18 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import folderUser from 'img/modals/user-folder';
 import { redTheme } from '../../themes/red-theme';
-
 import {
   ModalWrapper,
   ModalMainIcon,
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const RemoveActiveUserModal = ({ closeModal, confirm }) => {
@@ -27,26 +27,39 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to remove this user as a paid, active user? If
-            removed, you will not be charged for this user starting in the next
-            billing cycle.
+            Are you sure you want to remove this user? If removed, you will not
+            be charged for this user starting in the next billing cycle.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            No, do not remove
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton
-            variant="contained"
-            type="button"
-            onClick={() => {
-              confirm();
-              closeModal();
-            }}
-          >
-            Remove
-          </ConfirmButton>
+          <FlexButtonWrapper>
+            <Button
+              fullWidth
+              variant="outlined"
+              type="button"
+              color="red"
+              size="small"
+              onClick={closeModal}
+            >
+              Do not remove
+            </Button>
+          </FlexButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={124}>
+            <Button
+              fullWidth
+              variant="contained"
+              type="button"
+              size="small"
+              color="red"
+              onClick={() => {
+                confirm();
+                closeModal();
+              }}
+            >
+              Remove
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

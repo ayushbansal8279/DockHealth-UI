@@ -103,7 +103,8 @@ export const StyledInputBase = withStyles({
     height: '2.625rem',
   },
   input: {
-    backgroundColor: palette.lightGrey,
+    borderBottom: 'inset',
+    backgroundColor: 'transparent',
     borderRadius: '0.25rem',
     boxShadow: 'none',
     boxSizing: 'border-box',
@@ -111,8 +112,8 @@ export const StyledInputBase = withStyles({
     padding: '0.6rem 0.5rem',
     height: '100%',
     '&:focus': {
-      backgroundColor: palette.lightGrey,
-      border: 0,
+      backgroundColor: 'transparent',
+      border: 1,
       boxShadow: 'none',
     },
   },

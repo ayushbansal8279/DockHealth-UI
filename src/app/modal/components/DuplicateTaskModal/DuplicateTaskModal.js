@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import Attachment from 'img/modals/attachment';
@@ -11,8 +12,8 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const DuplicateTaskModal = ({ skip, confirm }) => {
@@ -31,13 +32,31 @@ const DuplicateTaskModal = ({ skip, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={skip}>
-            No, Do Not Duplicate
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Yes
-          </ConfirmButton>
+          <FlexButtonWrapper>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="outlined"
+              type="button"
+              onClick={skip}
+            >
+              Do not duplicate
+            </Button>
+          </FlexButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={88}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="contained"
+              type="button"
+              onClick={confirm}
+            >
+              Yes
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

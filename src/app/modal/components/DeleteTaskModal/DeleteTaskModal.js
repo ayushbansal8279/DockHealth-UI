@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import TrashCan from 'img/modals/trash-can';
@@ -11,8 +12,8 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const DeleteTaskModal = ({ closeModal, confirm }) => {
@@ -32,13 +33,31 @@ const DeleteTaskModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            Cancel
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Delete Permanently
-          </ConfirmButton>
+          <FlexButtonWrapper>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="outlined"
+              type="button"
+              onClick={closeModal}
+            >
+              Cancel
+            </Button>
+          </FlexButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={231}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="contained"
+              type="button"
+              onClick={confirm}
+            >
+              Delete Permanently
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

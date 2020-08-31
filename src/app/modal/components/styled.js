@@ -1,4 +1,4 @@
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -45,23 +45,16 @@ export const ModalDescriptionContainer = styled.div`
 export const ButtonsContainer = styled.div`
   display: flex;
   width: 100%;
+  justify-content: center;
   padding: ${spacing.small} ${spacing.largePlus} ${spacing.largePlus};
-
-  & > button {
-    width: 165px; // per design
-  }
 `;
 
-export const CancelButton = styled(Button)`
-  min-width: 150px;
+export const FlexButtonWrapper = styled.div`
   flex: 1;
 `;
 
-export const ConfirmButton = styled(Button)`
-  && {
-    min-width: 190px;
-    flex: 1;
-  }
+export const FixedWidthButtonWrapper = styled.div`
+  width: ${({ width }) => width || 'auto'}px;
 `;
 
 export const CloseIconButton = withStyles({

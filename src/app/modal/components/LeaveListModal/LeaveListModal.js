@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import TaskList from 'img/modals/task-list';
 import { redTheme } from '../../themes/red-theme';
@@ -11,8 +12,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  ConfirmButton,
-  CancelButton,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const LeaveListModal = ({ closeModal, confirm }) => {
@@ -32,13 +32,31 @@ const LeaveListModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <CancelButton variant="outlined" type="button" onClick={closeModal}>
-            Cancel
-          </CancelButton>
-          <Spacing horizontal={3} />
-          <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Leave List
-          </ConfirmButton>
+          <FixedWidthButtonWrapper width={120}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="outlined"
+              type="button"
+              onClick={closeModal}
+            >
+              Cancel
+            </Button>
+          </FixedWidthButtonWrapper>
+          <Spacing horizontal={4} />
+          <FixedWidthButtonWrapper width={141}>
+            <Button
+              fullWidth
+              color="red"
+              size="small"
+              variant="contained"
+              type="button"
+              onClick={confirm}
+            >
+              Leave List
+            </Button>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>
