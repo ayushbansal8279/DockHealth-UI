@@ -182,6 +182,11 @@ export function resendConfirmationCode(userData) {
   });
 }
 
+export function changePassword(oldPassword, newPassword) {
+  const { user } = store.getState().userState;
+  return Auth.changePassword(user, oldPassword, newPassword);
+}
+
 export function logout() {
   window.sessionStorage.removeItem('confirmStatus');
   hashHistory.replace('login');

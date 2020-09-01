@@ -1,7 +1,10 @@
 import React from 'react';
 import { useForm, FormContext } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
 import { Grid } from '@material-ui/core';
+import * as UserApi from 'api/user-api';
+import { showGlobalAlert } from 'alert/actions';
 import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -26,13 +29,28 @@ const validationSchema = object({
     'Passwords must match',
   ),
 });
-const onSubmit = ({ setError }) => data => {
-  // TODO: connect to API
-  console.log('data', data);
-  setError('currentPassword', 'manual', 'Current password is incorrect');
+
+const onSubmit = ({ setError, closeModal, dispatch }) => ({
+  currentPassword,
+  newPassword,
+}) => {
+  UserApi.changePassword(currentPassword, newPassword)
+    .then(() => {
+      dispatch(showGlobalAlert('Password changed'));
+      closeModal();
+    })
+    .catch(error => {
+      if (error.code === 'NotAuthorizedException') {
+        setError('currentPassword', 'manual', 'Incorrect password');
+      } else {
+        setError('currentPassword', 'manual', error.message);
+      }
+    });
 };
 
 const ChangePasswordModal = ({ closeModal }) => {
+  const dispatch = useDispatch();
+
   const formMethods = useForm({
     validationSchema,
     reValidateMode: 'onSubmit',
@@ -47,7 +65,9 @@ const ChangePasswordModal = ({ closeModal }) => {
       </CloseIconButton>
       <Title>Change your password</Title>
       <FormContext {...formMethods}>
-        <StyledForm onSubmit={handleSubmit(onSubmit({ setError }))}>
+        <StyledForm
+          onSubmit={handleSubmit(onSubmit({ setError, closeModal, dispatch }))}
+        >
           <UniversalInput
             type="password"
             label="Current Password"
