@@ -56,6 +56,7 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber }) => {
               code for HIPAA compliance
             </HelperText>
             <UniversalInput
+              autoFocus
               label="Your Mobile Number"
               name="phoneNumber"
               CustomComponent={UniversalMobileInputComponent}

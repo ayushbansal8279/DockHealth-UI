@@ -69,6 +69,7 @@ const ChangePasswordModal = ({ closeModal }) => {
           onSubmit={handleSubmit(onSubmit({ setError, closeModal, dispatch }))}
         >
           <UniversalInput
+            autoFocus
             type="password"
             label="Current Password"
             name="currentPassword"

@@ -72,6 +72,7 @@ const ConfirmNumberStep = ({
               my mobile phone number
             </HelperText>
             <UniversalInput
+              autoFocus
               label="Authorization code"
               name="authorizationCode"
               required
