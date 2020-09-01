@@ -93,7 +93,12 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
   };
 
   const openChangeMobileNumberModal = () => {
-    dispatch(openModal('ChangeMobileNumber'));
+    dispatch(
+      openModal('ChangeMobileNumber', {
+        userProfile,
+        onUpdateSuccess: userApi.getUserById,
+      }),
+    );
   };
 
   return (

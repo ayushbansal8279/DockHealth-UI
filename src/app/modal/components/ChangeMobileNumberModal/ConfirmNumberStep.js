@@ -27,14 +27,18 @@ const validationSchema = object({
     .required(REQUIRED_MESSAGE),
 });
 
-const onSubmit = ({ closeModal }) => data => {
+const onSubmit = ({ closeModal, onUpdateSuccess }) => ({
+  authorizationCode,
+}) => {
   // TODO: confirm code in API
-  console.log('data', data);
+  console.log('authorizationCode', authorizationCode);
   closeModal();
+  onUpdateSuccess();
 };
 
 const ConfirmNumberStep = ({
   closeModal,
+  onUpdateSuccess,
   goToPreviousStep,
   newPhoneNumber = '',
 }) => {
@@ -56,7 +60,9 @@ const ConfirmNumberStep = ({
 
   return (
     <FormContext {...formMethods}>
-      <StyledForm onSubmit={handleSubmit(onSubmit({ closeModal }))}>
+      <StyledForm
+        onSubmit={handleSubmit(onSubmit({ closeModal, onUpdateSuccess }))}
+      >
         <GridMaxHeight container direction="column" justify="space-between">
           <Grid item>
             <Spacing vertical={4} />

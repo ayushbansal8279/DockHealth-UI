@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import * as UserApi from 'api/user-api';
 import {
   UniversalInput,
   UniversalMobileInputComponent,
@@ -28,25 +29,44 @@ const validationSchema = object({
     .required(REQUIRED_MESSAGE),
 });
 
-const onSubmit = ({ goToNextStep, setNewPhoneNumber }) => data => {
-  // TODO: connect to API
-  console.log('data', data);
-  goToNextStep();
-  setNewPhoneNumber(data.phoneNumber);
+const onSubmit = ({
+  goToNextStep,
+  setNewPhoneNumber,
+  setError,
+  userProfile,
+}) => ({ phoneNumber }) => {
+  UserApi.updatePhoneNumber(
+    userProfile.email,
+    userProfile.accountPhoneNumber,
+    phoneNumber.replace(/[\s()-]/g, ''),
+  )
+    .then(() => {
+      goToNextStep();
+      setNewPhoneNumber(phoneNumber);
+    })
+    .catch(() => {
+      setError(
+        'phoneNumber',
+        'manual',
+        'Something went wrong. Please try again later.',
+      );
+    });
 };
 
-const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber }) => {
+const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
   const formMethods = useForm({
     validationSchema,
     reValidateMode: 'onSubmit',
   });
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, setError } = formMethods;
 
   return (
     <FormContext {...formMethods}>
       <StyledForm
-        onSubmit={handleSubmit(onSubmit({ goToNextStep, setNewPhoneNumber }))}
+        onSubmit={handleSubmit(
+          onSubmit({ goToNextStep, setNewPhoneNumber, setError, userProfile }),
+        )}
       >
         <GridMaxHeight container direction="column" justify="space-between">
           <Grid item>

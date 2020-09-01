@@ -13,7 +13,11 @@ const ModalStep = {
   CONFIRM: 2,
 };
 
-const ChangeMobileNumberModal = ({ closeModal }) => {
+const ChangeMobileNumberModal = ({
+  closeModal,
+  userProfile,
+  onUpdateSuccess,
+}) => {
   const [currentStep, setCurrentStep] = useState(ModalStep.CHANGE_MOBILE_PHONE);
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
 
@@ -22,6 +26,8 @@ const ChangeMobileNumberModal = ({ closeModal }) => {
       case ModalStep.CHANGE_MOBILE_PHONE:
         return (
           <ChangeNumberStep
+            userProfile={userProfile}
+            closeModal={closeModal}
             goToNextStep={() => setCurrentStep(ModalStep.CONFIRM)}
             setNewPhoneNumber={setNewPhoneNumber}
           />
@@ -35,6 +41,7 @@ const ChangeMobileNumberModal = ({ closeModal }) => {
               setCurrentStep(ModalStep.CHANGE_MOBILE_PHONE)
             }
             newPhoneNumber={newPhoneNumber}
+            onUpdateSuccess={onUpdateSuccess}
           />
         );
 

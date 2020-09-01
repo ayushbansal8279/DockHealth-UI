@@ -902,3 +902,8 @@ export const leaveOrganization = organizationIdentifier =>
   axios
     .delete(`/user/leaveOrganization/${organizationIdentifier}`)
     .then(({ data }) => data);
+
+export const updatePhoneNumber = (email, existingPhone, newPhone) =>
+  axios
+    .put(`/user/updateMFAPhoneNumber`, { email, existingPhone, newPhone })
+    .then(({ data }) => data);
