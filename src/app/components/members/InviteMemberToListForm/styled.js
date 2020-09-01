@@ -7,6 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 export const Container = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 286px;
 `;
@@ -28,7 +30,7 @@ export const MemberListItem = styled.div`
 
 export const MembersListWrapper = styled.div`
   width: 100%;
-  height: 158px;
+  flex: 1;
   overflow-y: scroll;
 `;
 
@@ -116,7 +118,7 @@ export const MenuPopover = withStyles({
 
 export const ExternalUserInviteFormWrapper = styled.div`
   position: absolute;
-  bottom: -20px;
+  bottom: 0px;
   left: 0px;
   background: ${palette.white};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
