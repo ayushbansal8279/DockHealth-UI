@@ -17,6 +17,7 @@ export const ChangeMobileNumberModalContainer = styled.div`
 `;
 
 export const StepContainer = styled.div`
+  display: flex;
   flex: 1;
 `;
 
@@ -29,13 +30,14 @@ export const Title = styled.h2`
 
 export const GridMaxHeight = styled(Grid)`
   && {
-    height: 100%;
+    flex: 1;
   }
 `;
 
 export const StyledForm = styled.form`
+  display: flex;
   width: 100%;
-  height: 100%;
+  flex: 1;
 `;
 
 export const HelperText = styled.p`
