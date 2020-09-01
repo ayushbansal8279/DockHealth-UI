@@ -31,7 +31,7 @@ const onSubmit = ({ dispatch }) => ({
     organizationInitials,
     organizationProfileColor: organizationThemeColor,
   })(dispatch).then(() => {
-    hashHistory.push('/');
+    hashHistory.push('/onboarding/team-setup');
   });
 };
 

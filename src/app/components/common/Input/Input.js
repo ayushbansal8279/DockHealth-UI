@@ -78,7 +78,7 @@ const Input = React.forwardRef(
             hasError={hasError}
           >
             {label}
-            {required && <RequiredLabel>(required)</RequiredLabel>}
+            {label && required && <RequiredLabel>(required)</RequiredLabel>}
           </Label>
           <Field
             id={name}
