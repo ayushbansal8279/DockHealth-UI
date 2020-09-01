@@ -1,4 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
+import { isNil } from 'ramda';
 import { hashHistory } from 'react-router';
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
@@ -611,8 +612,11 @@ export function updateUserNotoficationPrefs(
 ) {
   const notificationPreferences = {
     email: Boolean(emailNotification),
-    push: Boolean(pushNotification),
   };
+
+  if (!isNil(pushNotification)) {
+    notificationPreferences.push = Boolean(pushNotification);
+  }
 
   return axios
     .put(

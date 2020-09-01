@@ -24,11 +24,7 @@ import {
 import { SettingsSection, SectionHeader } from '../styled';
 
 const onSubmit = ({ dispatch }) => async data => {
-  const {
-    emailNotificationsEnabled,
-    pushNotificationsEnabled,
-    ...otherData
-  } = data;
+  const { emailNotificationsEnabled, ...otherData } = data;
 
   try {
     const requestData = {
@@ -41,10 +37,7 @@ const onSubmit = ({ dispatch }) => async data => {
     };
 
     await userApi.updateUser(requestData);
-    await userApi.updateUserNotoficationPrefs(
-      emailNotificationsEnabled,
-      pushNotificationsEnabled,
-    );
+    await userApi.updateUserNotoficationPrefs(emailNotificationsEnabled);
 
     dispatch(
       AlertActions.showGlobalAlert('Profile updated successfully!', 'success'),
@@ -81,8 +74,6 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
         : '',
       emailNotificationsEnabled:
         userNotificationPreferences.emailNotificationsEnabled || false,
-      pushNotificationsEnabled:
-        userNotificationPreferences.pushNotificationsEnabled || false,
     };
   }, [userProfile, userNotificationPreferences]);
 
@@ -228,25 +219,6 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
                 </SectionSubtypography>
               </div>
               <FormSwitch name="emailNotificationsEnabled" />
-            </Grid>
-            <Grid
-              container
-              item
-              alignItems="flex-start"
-              justify="space-between"
-            >
-              <div>
-                <SectionTypography>
-                  Push Notifications to mobile phone
-                </SectionTypography>
-                <SectionSubtypography>
-                  Notify me via push notification when there is new activity.
-                </SectionSubtypography>
-                <SectionSubtypography>
-                  *Mobile app required.
-                </SectionSubtypography>
-              </div>
-              <FormSwitch name="pushNotificationsEnabled" />
             </Grid>
           </Grid>
         </SettingsSection>
