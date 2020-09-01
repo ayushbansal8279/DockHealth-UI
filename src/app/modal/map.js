@@ -17,6 +17,7 @@ import EditOrganizationModal from './components/EditOrganizationModal/EditOrgani
 import InviteToListModal from './components/InviteToListModal/InviteToListModal';
 import ChangePasswordModal from './components/ChangePasswordModal/ChangePasswordModal';
 import LeaveOrganizationModal from './components/LeaveOrganizationModal/LeaveOrganizationModal';
+import ChangeMobileNumberModal from './components/ChangeMobileNumberModal/ChangeMobileNumberModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -38,6 +39,7 @@ const MODAL_MAP = {
   EditOrganization: EditOrganizationModal,
   InviteToList: InviteToListModal,
   ChangePassword: ChangePasswordModal,
+  ChangeMobileNumber: ChangeMobileNumberModal,
 };
 
 export default MODAL_MAP;

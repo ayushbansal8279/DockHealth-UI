@@ -26,6 +26,11 @@ const validationSchema = object({
     'Passwords must match',
   ),
 });
+const onSubmit = ({ setError }) => data => {
+  // TODO: connect to API
+  console.log('data', data);
+  setError('currentPassword', 'manual', 'Current password is incorrect');
+};
 
 const ChangePasswordModal = ({ closeModal }) => {
   const formMethods = useForm({
@@ -33,12 +38,7 @@ const ChangePasswordModal = ({ closeModal }) => {
     reValidateMode: 'onSubmit',
   });
 
-  const onSubmit = data => {
-    console.log('data', data);
-    debugger;
-  };
-
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, setError } = formMethods;
 
   return (
     <ChangePasswordModalContainer>
@@ -47,7 +47,7 @@ const ChangePasswordModal = ({ closeModal }) => {
       </CloseIconButton>
       <Title>Change your password</Title>
       <FormContext {...formMethods}>
-        <StyledForm onSubmit={handleSubmit(onSubmit)}>
+        <StyledForm onSubmit={handleSubmit(onSubmit({ setError }))}>
           <UniversalInput
             type="password"
             label="Current Password"

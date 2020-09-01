@@ -92,6 +92,10 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
     dispatch(openModal('ChangePassword'));
   };
 
+  const openChangeMobileNumberModal = () => {
+    dispatch(openModal('ChangeMobileNumber'));
+  };
+
   return (
     <FormContext {...formMethods}>
       <form
@@ -176,6 +180,14 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
                   required
                   readOnly
                   CustomComponent={UniversalMobileInputComponent}
+                  endAdornment={
+                    <InputActionButton
+                      type="button"
+                      onClick={openChangeMobileNumberModal}
+                    >
+                      Change
+                    </InputActionButton>
+                  }
                 />
               </Grid>
               <Grid item md={6} xs={12}>
