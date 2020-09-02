@@ -7,6 +7,7 @@ import { FormSwitch } from 'components/common/Switch/Switch';
 import { head } from 'ramda';
 import * as userApi from 'api/user-api';
 import * as AlertActions from 'alert/actions';
+import { openModal } from 'modal/actions';
 import {
   UniversalInput,
   UniversalMobileInputComponent,
@@ -18,15 +19,12 @@ import {
   SectionSubtypography,
   SectionTypography,
   FormInfoText,
+  InputActionButton,
 } from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
 
 const onSubmit = ({ dispatch }) => async data => {
-  const {
-    emailNotificationsEnabled,
-    pushNotificationsEnabled,
-    ...otherData
-  } = data;
+  const { emailNotificationsEnabled, ...otherData } = data;
 
   try {
     const requestData = {
@@ -39,10 +37,7 @@ const onSubmit = ({ dispatch }) => async data => {
     };
 
     await userApi.updateUser(requestData);
-    await userApi.updateUserNotoficationPrefs(
-      emailNotificationsEnabled,
-      pushNotificationsEnabled,
-    );
+    await userApi.updateUserNotoficationPrefs(emailNotificationsEnabled);
 
     dispatch(
       AlertActions.showGlobalAlert('Profile updated successfully!', 'success'),
@@ -79,8 +74,6 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
         : '',
       emailNotificationsEnabled:
         userNotificationPreferences.emailNotificationsEnabled || false,
-      pushNotificationsEnabled:
-        userNotificationPreferences.pushNotificationsEnabled || false,
     };
   }, [userProfile, userNotificationPreferences]);
 
@@ -94,6 +87,19 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
     handleSubmit,
     formState: { isSubmitting },
   } = formMethods;
+
+  const openChangePasswordModal = () => {
+    dispatch(openModal('ChangePassword'));
+  };
+
+  const openChangeMobileNumberModal = () => {
+    dispatch(
+      openModal('ChangeMobileNumber', {
+        userProfile,
+        onUpdateSuccess: userApi.getUserById,
+      }),
+    );
+  };
 
   return (
     <FormContext {...formMethods}>
@@ -149,6 +155,14 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
                 label="Password"
                 readOnly
                 value="password"
+                endAdornment={
+                  <InputActionButton
+                    type="button"
+                    onClick={openChangePasswordModal}
+                  >
+                    Change
+                  </InputActionButton>
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -171,6 +185,14 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
                   required
                   readOnly
                   CustomComponent={UniversalMobileInputComponent}
+                  endAdornment={
+                    <InputActionButton
+                      type="button"
+                      onClick={openChangeMobileNumberModal}
+                    >
+                      Change
+                    </InputActionButton>
+                  }
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -214,25 +236,6 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
                 </SectionSubtypography>
               </div>
               <FormSwitch name="emailNotificationsEnabled" />
-            </Grid>
-            <Grid
-              container
-              item
-              alignItems="flex-start"
-              justify="space-between"
-            >
-              <div>
-                <SectionTypography>
-                  Push Notifications to mobile phone
-                </SectionTypography>
-                <SectionSubtypography>
-                  Notify me via push notification when there is new activity.
-                </SectionSubtypography>
-                <SectionSubtypography>
-                  *Mobile app required.
-                </SectionSubtypography>
-              </div>
-              <FormSwitch name="pushNotificationsEnabled" />
             </Grid>
           </Grid>
         </SettingsSection>

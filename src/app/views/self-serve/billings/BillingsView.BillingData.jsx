@@ -11,11 +11,11 @@ import {
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import Spacing from 'components/common/Spacing';
+import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import {
   UniversalFormControl,
   UniversalInputLabel,
-  UniversalMontserratInput,
-} from 'components/common/UniversalInput/UniversalInput';
+} from 'components/common/UniversalInput/styled';
 import useBoolean from 'hooks/useBoolean';
 import CardAmexIcon from 'img/cards/american-express.png';
 import CardDiscoverIcon from 'img/cards/discover.png';

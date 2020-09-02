@@ -9,8 +9,6 @@ export default class Logout extends PureComponent {
   componentDidMount = () => {
     const durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
 
-    this.redirectToLogin();
-
     return userApi
       .logout()
       .then(() => {
@@ -42,11 +40,6 @@ export default class Logout extends PureComponent {
     } catch (error_) {
       return null;
     }
-  };
-
-  redirectToLogin = () => {
-    hashHistory.replace('login');
-    window.sessionStorage.removeItem('confirmStatus');
   };
 
   render() {

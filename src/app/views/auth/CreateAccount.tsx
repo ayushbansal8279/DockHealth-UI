@@ -9,6 +9,7 @@ import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
+import { validPasswordSchema } from 'helpers/validation-helper';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import * as organizationApi from 'api/organization-api';
 import {
@@ -46,16 +47,7 @@ const validationSchema = object().shape({
     .email('This field should contain a valid email address'),
   password: string()
     .required(REQUIRED_MESSAGE)
-    .min(8, 'At least 8 characters are required in the password')
-    .matches(/\d/, 'At least one number is required in the password')
-    .matches(
-      /[A-Z]/,
-      'At least one uppercase letter is required in the password',
-    )
-    .matches(
-      /[a-z]/,
-      'At least one lowercase letter is required in the password',
-    ),
+    .concat(validPasswordSchema),
   mobilePhoneNumber: string()
     .transform(value => value.replace(/\D/g, ''))
     .required(REQUIRED_MESSAGE)

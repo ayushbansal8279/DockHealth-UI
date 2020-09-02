@@ -8,8 +8,7 @@ export const InviteToListModalWrapper = styled(ModalWrapper)`
   display: flex;
   flex-direction: column;
   width: 600px;
-  min-height: 500px;
-  padding: ${spacing.regularPlus} ${spacing.largePlus};
+  padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.largePlus};
 `;
 
 export const Header = styled.div`

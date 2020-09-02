@@ -1,4 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
+import { isNil } from 'ramda';
+import { hashHistory } from 'react-router';
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
@@ -180,7 +182,15 @@ export function resendConfirmationCode(userData) {
   });
 }
 
+export function changePassword(oldPassword, newPassword) {
+  const { user } = store.getState().userState;
+  return Auth.changePassword(user, oldPassword, newPassword);
+}
+
 export function logout() {
+  window.sessionStorage.removeItem('confirmStatus');
+  hashHistory.replace('login');
+
   return new Promise(resolve => {
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
       sessionStorage.removeItem('EnterpriseUserFlag');
@@ -607,8 +617,11 @@ export function updateUserNotoficationPrefs(
 ) {
   const notificationPreferences = {
     email: Boolean(emailNotification),
-    push: Boolean(pushNotification),
   };
+
+  if (!isNil(pushNotification)) {
+    notificationPreferences.push = Boolean(pushNotification);
+  }
 
   return axios
     .put(
@@ -884,3 +897,25 @@ export function selectCurrentOrganization(organizationIdentifier) {
       throw error;
     });
 }
+
+export const leaveOrganization = organizationIdentifier =>
+  axios
+    .delete(`/user/leaveOrganization/${organizationIdentifier}`)
+    .then(({ data }) => data);
+
+export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
+  const { user } = store.getState().userState;
+
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  await Auth.updateUserAttributes(user, { phone_number: `+1${newPhone}` });
+
+  await Auth.verifyUserAttribute(user, 'phone_number');
+
+  return axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
+};
+
+export const verifyNewPhoneNumber = code => {
+  const { user } = store.getState().userState;
+
+  return Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
+};

@@ -5,8 +5,13 @@ import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
 import * as userApi from 'api/user-api';
-import { openModal as openModalAction } from 'modal/actions';
 import OrganizationAvatar from 'components/Organization/OrganizationAvatar/OrganizationAvatar';
+import {
+  openModal as openModalAction,
+  closeModal as closeModalAction,
+} from 'modal/actions';
+import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
+import AlertTypes from 'alert/AlertTypes';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
@@ -73,11 +78,34 @@ const UserProfileView = () => {
     [],
   );
 
+  const handleLeaveOrganiztion = () => {
+    dispatch(
+      openModalAction('LeaveOrganization', {
+        confirm: () => {
+          userApi
+            .leaveOrganization(userProfile.organizationIdentifier)
+            .then(() => {
+              userApi.logout();
+            })
+            .catch(() => {
+              dispatch(closeModalAction());
+              dispatch(
+                showGlobalAlertAction(
+                  'Something went wrong!',
+                  AlertTypes.ERROR,
+                ),
+              );
+            });
+        },
+      }),
+    );
+  };
+
   const renderOrganizationActionButton = () => {
     switch (userProfile.orgUserRole) {
       case 'GUEST':
         return (
-          <ActionButton type="button" onClick={() => {}}>
+          <ActionButton type="button" onClick={handleLeaveOrganiztion}>
             Leave organization
           </ActionButton>
         );
