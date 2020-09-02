@@ -31,18 +31,16 @@ const validationSchema = object({
 const onSubmit = ({ closeModal, onUpdateSuccess, setError }) => ({
   authorizationCode,
 }) => {
-  // TODO: confirm code in API
-  console.log('authorizationCode', authorizationCode);
   UserApi.verifyNewPhoneNumber(authorizationCode)
     .then(() => {
       closeModal();
       onUpdateSuccess();
     })
-    .catch(() => {
+    .catch(error => {
       setError(
         'authorizationCode',
         'manual',
-        'Something went wrong. Please try again later.',
+        error?.message || 'Something went wrong. Please try again later.',
       );
     });
 };

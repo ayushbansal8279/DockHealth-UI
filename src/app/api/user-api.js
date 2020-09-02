@@ -906,15 +906,16 @@ export const leaveOrganization = organizationIdentifier =>
 export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   const { user } = store.getState().userState;
 
+  // eslint-disable-next-line @typescript-eslint/camelcase
   await Auth.updateUserAttributes(user, { phone_number: `+1${newPhone}` });
 
   await Auth.verifyUserAttribute(user, 'phone_number');
 
-  axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
+  return axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
 };
 
-export const verifyNewPhoneNumber = async code => {
+export const verifyNewPhoneNumber = code => {
   const { user } = store.getState().userState;
 
-  await Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
+  return Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
 };
