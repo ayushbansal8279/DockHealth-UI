@@ -903,7 +903,18 @@ export const leaveOrganization = organizationIdentifier =>
     .delete(`/user/leaveOrganization/${organizationIdentifier}`)
     .then(({ data }) => data);
 
-export const updatePhoneNumber = (email, existingPhone, newPhone) =>
-  axios
-    .put(`/user/updateMFAPhoneNumber`, { email, existingPhone, newPhone })
-    .then(({ data }) => data);
+export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
+  const { user } = store.getState().userState;
+
+  await Auth.updateUserAttributes(user, { phone_number: `+1${newPhone}` });
+
+  await Auth.verifyUserAttribute(user, 'phone_number');
+
+  axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
+};
+
+export const verifyNewPhoneNumber = async code => {
+  const { user } = store.getState().userState;
+
+  await Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
+};

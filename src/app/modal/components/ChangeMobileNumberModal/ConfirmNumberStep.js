@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import * as UserApi from 'api/user-api';
 import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -27,13 +28,23 @@ const validationSchema = object({
     .required(REQUIRED_MESSAGE),
 });
 
-const onSubmit = ({ closeModal, onUpdateSuccess }) => ({
+const onSubmit = ({ closeModal, onUpdateSuccess, setError }) => ({
   authorizationCode,
 }) => {
   // TODO: confirm code in API
   console.log('authorizationCode', authorizationCode);
-  closeModal();
-  onUpdateSuccess();
+  UserApi.verifyNewPhoneNumber(authorizationCode)
+    .then(() => {
+      closeModal();
+      onUpdateSuccess();
+    })
+    .catch(() => {
+      setError(
+        'authorizationCode',
+        'manual',
+        'Something went wrong. Please try again later.',
+      );
+    });
 };
 
 const ConfirmNumberStep = ({
@@ -47,7 +58,7 @@ const ConfirmNumberStep = ({
     reValidateMode: 'onSubmit',
   });
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, setError } = formMethods;
 
   const formattedPhoneNumber = useMemo(
     () =>
@@ -61,7 +72,7 @@ const ConfirmNumberStep = ({
   return (
     <FormContext {...formMethods}>
       <StyledForm
-        onSubmit={handleSubmit(onSubmit({ closeModal, onUpdateSuccess }))}
+        onSubmit={handleSubmit(onSubmit({ closeModal, onUpdateSuccess, setError }))}
       >
         <GridMaxHeight container direction="column" justify="space-between">
           <Grid item>
