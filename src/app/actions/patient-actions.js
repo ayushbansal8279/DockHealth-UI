@@ -21,6 +21,8 @@ import {
   ADD_PATIENT_NOTE,
   UPDATE_PATIENT_NOTE,
   DELETE_PATIENT_NOTE,
+  PATIENT_DATA_UPLOADED,
+  GET_PATIENT_IMPORT_DETAILS,
 } from './action-types';
 
 export const loading = () => ({ type: REQUEST_PATIENTS });
@@ -194,6 +196,52 @@ export const deletePatientNote = (
     dispatch({
       type: DELETE_PATIENT_NOTE_ERROR,
     });
+    throw error;
+  }
+};
+
+export function downloadPatientImportTemplate() {
+  return PatientApi.downloadPatientImportTemplate()
+    .then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download', 'Patient_Data_Upload_Template.xlsx');
+      document.body.append(link);
+      link.click();
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export const uploadPatientData = (fileData, additionalConfig) => dispatch => {
+  try {
+    PatientApi.uploadPatientData(fileData, additionalConfig)
+      .then(response => {
+        dispatch({
+          type: PATIENT_DATA_UPLOADED,
+        });
+
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+  } catch (error) {
+    throw error;
+  }
+};
+export const getLatestPatientImportDetails = () => async dispatch => {
+  try {
+    const patientImportDetails = await PatientApi.getLatestPatientImportDetails();
+    dispatch({
+      type: GET_PATIENT_IMPORT_DETAILS,
+      patientImportDetails,
+    });
+    return patientImportDetails;
+  } catch (error) {
     throw error;
   }
 };
