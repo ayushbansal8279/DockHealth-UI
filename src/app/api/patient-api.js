@@ -1,5 +1,6 @@
 import { fixList } from 'helpers/inbox-fix';
-import { showAlert } from 'helpers/utility-functions';
+import { noop, showAlert } from 'helpers/utility-functions';
+
 import axios from './axios-heydoc';
 
 export function getAllPatients() {
@@ -211,3 +212,60 @@ export const archivePatient = patientNoteIdentifier =>
       });
       throw new Error(error?.response?.data);
     });
+
+export function downloadPatientImportTemplate() {
+  return axios({
+    url: `/patient/downloadPatientImportTemplate`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then(response => {
+      return response;
+    })
+    .catch(noop);
+}
+
+export function uploadPatientData(fileData, additionalConfig = {}) {
+  const formData = new FormData();
+  formData.append('file', fileData);
+
+  return axios
+    .post(`patient/uploadData`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      ...additionalConfig,
+    })
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 413) {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'File exceeded the allowed size of 100 MB',
+        });
+      } else {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'Error in uploading patient data. Please try again.',
+        });
+      }
+      throw error;
+    });
+}
+
+export function getLatestPatientImportDetails() {
+  return axios
+    .get('patient/getLatestPatientImportProcessStatus')
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data);
+    });
+}

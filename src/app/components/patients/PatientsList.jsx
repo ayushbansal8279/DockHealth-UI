@@ -1,13 +1,25 @@
 import moment from 'moment';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
+import { Dialog } from '@material-ui/core';
 import styled from 'styled-components';
-import { highlightPatient } from 'actions/patient-actions';
+import {
+  beginPatientCreation,
+  highlightPatient,
+  downloadPatientImportTemplate,
+} from 'actions/patient-actions';
 import PatientsDetailsIcon from 'img/details.svg';
 import PatientsEmptyIcon from 'img/patients-empty.svg';
 import palette from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
+import Button from 'components/common/Button/Button';
+import Spacing from 'components/common/Spacing';
+import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
+import ExcelLogo from 'img/ExcelLogo.svg';
+import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
+import PatientImportPopover from './PatientImportPopover';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -22,28 +34,124 @@ const EmptyListIcon = styled.div`
   width: 47px;
 `;
 
-const EmptyList = () => (
-  <EmptyListContainer>
-    <div>
-      <p>
-        <strong>
-          There are currently no patient profiles in you organization.
-        </strong>
-      </p>
+const EmptyListHeader = styled.div`
+  position: absolute;
+  width: 441px;
+  hegiht: 82px;
+  left: 106px;
+  top: 162px;
+
+  font-family: Montserrat;
+  font-size: ${fontSizes.large};
+  line-height: 153%;
+  text-align: left;
+`;
+
+const EmptyListContent = styled.div`
+  position: absolute;
+  width: 513px;
+  height: 42px;
+  left: 106px;
+  top: 264px;
+
+  font-family: Montserrat;
+  font-size: ${fontSizes.regular};
+  line-height: 130%;
+  text-align: left;
+`;
+
+const StyledButton = styled(Button)`
+  margin-right: 20px;
+  width: 265px;
+  height: 50px;
+`;
+const ImportAnimals = styled.img`
+  position: absolute;
+  width: 423px;
+  height: 181.57px;
+  left: 660px;
+  top: 180.8px;
+`;
+
+const DownloadIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 7px;
+`;
+
+const DownloadTemplate = styled.a`
+  font-family: Roboto Condensed;
+  font-style: normal;
+  font-weight: ${fontWeights.regular};
+  font-size: ${fontSizes.regular};
+  line-height: 19px;
+`;
+
+const EmptyList = ({
+  onAddPatientClick,
+  importPopupOpen,
+  setImportPopupOpen,
+  setImportPopoverOpen,
+  refreshPatientList,
+}) => (
+  <>
+    <EmptyListContainer>
       <div>
-        You can add a patient profile by clicking <b>ADD A PATIENT</b> button on
-        the top right of the page. If you would like to add patients in bulk or
-        connect to your electronic health record, please contact us at&nbsp;
-        <a
-          href="mailto:support@dock.health?Subject=Dock%20Support"
-          target="_top"
-          style={{ color: palette.cyanBlue }}
-        >
-          support@dock.health
-        </a>
+        <EmptyListHeader>
+          Import your patient list and easily track their tasks.
+        </EmptyListHeader>
+        <EmptyListContent>
+          Your patient list is safe with us. Only people who you invite to your
+          organization will have access.
+          <p />
+          <StyledButton
+            variant="contained"
+            onClick={() => {
+              setImportPopupOpen(true);
+            }}
+          >
+            IMPORT PATIENT LIST
+          </StyledButton>
+          <Spacing horizontal={4} />
+          <StyledButton variant="outlined" onClick={onAddPatientClick}>
+            ADD A PATIENT
+          </StyledButton>
+          <Spacing vertical={5} />
+          <div style={{ marginTop: '20px' }}>
+            <DownloadTemplate
+              onClick={() => {
+                downloadPatientImportTemplate();
+              }}
+            >
+              <DownloadIcon src={ExcelLogo} alt="Excel Logo" />
+              Download Excel Patient Template
+            </DownloadTemplate>
+          </div>
+        </EmptyListContent>
       </div>
-    </div>
-  </EmptyListContainer>
+      <ImportAnimals src={PatientImportAnimals} alt="empty view" />
+
+      <Dialog
+        open={importPopupOpen}
+        onClose={() => setImportPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {},
+        }}
+      >
+        <ImportPatientsModal
+          closeModal={() => {
+            setImportPopupOpen(false);
+          }}
+          downloadTemplate={downloadPatientImportTemplate}
+          setImportPopoverOpen={setImportPopoverOpen}
+          refreshPatientList={refreshPatientList}
+          step={1}
+        />
+      </Dialog>
+    </EmptyListContainer>
+  </>
 );
 
 const EmptyFilteredList = () => (
@@ -239,17 +347,60 @@ const PatientsList = ({
   isFiltered,
   isCompact,
   highlightedPatient,
+  patientImportDetails,
+  refreshPatientList,
 }) => {
+  const dispatch = useDispatch();
+
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
+  const [importPopoverOpen, setImportPopoverOpen] = useState(
+    patientImportDetails && patientImportDetails.recordsProcessed,
+  );
+
+  const onAddPatientClick = useCallback(() => {
+    dispatch(beginPatientCreation());
+  }, [dispatch]);
+
   if (patients.length === 0) {
-    return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
+    return isFiltered ? (
+      <EmptyFilteredList />
+    ) : (
+      <>
+        <EmptyList
+          onAddPatientClick={onAddPatientClick}
+          importPopupOpen={importPopupOpen}
+          setImportPopupOpen={setImportPopupOpen}
+          setImportPopoverOpen={setImportPopoverOpen}
+          refreshPatientList={refreshPatientList}
+        />
+        {importPopoverOpen && (
+          <PatientImportPopover
+            closePopover={() => {
+              setImportPopoverOpen(false);
+            }}
+            patientImportDetails={patientImportDetails}
+          />
+        )}
+      </>
+    );
   }
 
   return (
-    <NonEmptyList
-      patients={patients}
-      isCompact={isCompact}
-      highlightedPatient={highlightedPatient}
-    />
+    <>
+      <NonEmptyList
+        patients={patients}
+        isCompact={isCompact}
+        highlightedPatient={highlightedPatient}
+      />
+      {importPopoverOpen && (
+        <PatientImportPopover
+          closePopover={() => {
+            setImportPopoverOpen(false);
+          }}
+          patientImportDetails={patientImportDetails}
+        />
+      )}
+    </>
   );
 };
 
