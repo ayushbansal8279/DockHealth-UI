@@ -72,7 +72,9 @@ const ConfirmNumberStep = ({
   return (
     <FormContext {...formMethods}>
       <StyledForm
-        onSubmit={handleSubmit(onSubmit({ closeModal, onUpdateSuccess, setError }))}
+        onSubmit={handleSubmit(
+          onSubmit({ closeModal, onUpdateSuccess, setError }),
+        )}
       >
         <GridMaxHeight container direction="column" justify="space-between">
           <Grid item>
