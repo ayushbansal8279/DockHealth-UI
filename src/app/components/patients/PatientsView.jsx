@@ -101,19 +101,27 @@ const PatientsView = () => {
     [deselectPatient, setSearchTerm],
   );
 
-  const refreshPatientList = useCallback(async () => {
-    getAllPatients()(dispatch);
-    const importDetails = await getLatestPatientImportDetails()(dispatch);
-    if (
-      importDetails &&
-      importDetails.recordsToProcess &&
-      importDetails.completePercentage < 100
-    ) {
-      setTimeout(() => {
-        refreshPatientList();
-      }, 1000);
-    }
-  }, [dispatch]);
+  const refreshPatientList = useCallback(
+    async counter => {
+      getAllPatients()(dispatch);
+      const importDetails = await getLatestPatientImportDetails()(dispatch);
+      let refreshCounter = 1;
+      if (counter) {
+        refreshCounter = counter;
+      }
+      if (
+        importDetails &&
+        (importDetails.recordsToProcess || refreshCounter < 10) &&
+        importDetails.completePercentage < 100
+      ) {
+        setTimeout(() => {
+          refreshCounter += 1;
+          refreshPatientList(refreshCounter);
+        }, 1000);
+      }
+    },
+    [dispatch],
+  );
 
   const handlePatientFilter = useCallback(
     selectedFilter => {
@@ -126,7 +134,7 @@ const PatientsView = () => {
       }
       getLatestPatientImportDetails()(dispatch);
       setTimeout(() => {
-        refreshPatientList();
+        refreshPatientList(1);
       }, 1000);
     },
     [dispatch, refreshPatientList],
@@ -142,6 +150,9 @@ const PatientsView = () => {
         handleSearch={handleSearch}
         handlePatientFilter={handlePatientFilter}
         deselectPatient={deselectPatient}
+        hasPatients={!(patients.length === 0 && searchTerm === '')}
+        patientImportDetails={patientImportDetails}
+        refreshPatientList={refreshPatientList}
       />
       <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>

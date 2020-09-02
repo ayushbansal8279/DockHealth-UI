@@ -1,14 +1,31 @@
-import { Grid } from '@material-ui/core';
+import { Grid, Dialog } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
-import { beginPatientCreation, loading } from 'actions/patient-actions';
+import {
+  beginPatientCreation,
+  loading,
+  downloadPatientImportTemplate,
+} from 'actions/patient-actions';
+
+import styled from 'styled-components';
+import Button from 'components/common/Button/Button';
 import Search from 'components/taskView/Search/Search';
+import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import Spacing from '../common/Spacing';
 import PatientsFilter from './PatientsFilter';
+
+const StyledButton = styled(Button)`
+  && {
+  }
+`;
+
+const ImportPatientsButtonWrapper = styled.div`
+  width: 550px;
+`;
 
 const ALL_PATIENTS = 'ALL_PATIENTS';
 const MY_PATIENTS = 'MY_PATIENTS';
@@ -63,8 +80,12 @@ const PatientsToolbar = ({
   deselectPatient,
   handleSearch,
   handlePatientFilter,
+  hasPatients,
+  refreshPatientList,
 }) => {
   const dispatch = useDispatch();
+
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   const onAddPatientClick = useCallback(() => {
     dispatch(beginPatientCreation());
@@ -80,9 +101,41 @@ const PatientsToolbar = ({
         <Spacing horizontal={4} />
         <Search onChange={handleSearch} />
       </Grid>
-      <AdornedButton adornment={<AddIcon />} onClick={onAddPatientClick}>
-        ADD A PATIENT
-      </AdornedButton>
+      {hasPatients && (
+        <>
+          <ImportPatientsButtonWrapper>
+            <StyledButton
+              variant="contained"
+              onClick={() => {
+                setImportPopupOpen(true);
+              }}
+            >
+              IMPORT PATIENTS FROM EXCEL
+            </StyledButton>
+          </ImportPatientsButtonWrapper>
+          <AdornedButton adornment={<AddIcon />} onClick={onAddPatientClick}>
+            ADD A PATIENT
+          </AdornedButton>
+        </>
+      )}
+      <Dialog
+        open={importPopupOpen}
+        onClose={() => setImportPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {},
+        }}
+      >
+        <ImportPatientsModal
+          closeModal={() => {
+            setImportPopupOpen(false);
+          }}
+          downloadTemplate={downloadPatientImportTemplate}
+          refreshPatientList={refreshPatientList}
+          step={1}
+        />
+      </Dialog>
     </PageContentHeader>
   );
 };
