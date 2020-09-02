@@ -35,7 +35,7 @@ const onSubmit = ({ dispatch }) => ({
   });
 };
 
-const OnboardingTeamOrgSetupViewDesktop = () => {
+const OnboardingOrgSetupViewDesktop = () => {
   const formContext = useForm({
     revalidationMode: 'onChange',
   });
@@ -166,4 +166,4 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
   );
 };
 
-export default OnboardingTeamOrgSetupViewDesktop;
+export default OnboardingOrgSetupViewDesktop;
