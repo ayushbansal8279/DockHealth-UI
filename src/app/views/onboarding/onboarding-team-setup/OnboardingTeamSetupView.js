@@ -12,25 +12,46 @@ import {
   Description,
   StyledForm,
   AddPersonButton,
+  FormErrorText,
 } from './styled';
 
 const REQUIRED_MESSAGE = 'This filed is reqiered';
 
 const formSchema = {
-  firstName: string().required(REQUIRED_MESSAGE),
-  lastName: string().required(REQUIRED_MESSAGE),
+  firstName: string().when(['lastName', 'email'], {
+    is: (lastName, email) => lastName || email,
+    then: string().required(REQUIRED_MESSAGE),
+  }),
+  lastName: string().when(['firstName', 'email'], {
+    is: (firstName, email) => firstName || email,
+    then: string().required(REQUIRED_MESSAGE),
+  }),
   email: string()
-    .required(REQUIRED_MESSAGE)
+    .when(['firstName', 'lastName'], {
+      is: (firstName, lastName) => lastName || firstName,
+      then: string().required(REQUIRED_MESSAGE),
+    })
     .email('This field should contain a valid email address'),
 };
 
 const fieldsSchema = object().shape({
-  organizationMembers: array().of(object().shape(formSchema)),
+  organizationMembers: array()
+    .compact(({ firstName, lastName, email }) => {
+      return !firstName && !lastName && !email;
+    })
+    .of(
+      object().shape(formSchema, [
+        ['lastName', 'email'],
+        ['firstName', 'email'],
+        ['firstName', 'lastName'],
+      ]),
+    )
+    .required('You have to invite at least one person'),
 });
 
-const onSubmit = data => {
-  console.log('data', data);
-  hashHistory.push('/');
+const onSubmit = ({ organizationMembers }) => {
+  console.log('data', organizationMembers);
+  // hashHistory.push('/');
 };
 
 const OnboardingTeamSetupView = () => {
@@ -83,6 +104,9 @@ const OnboardingTeamSetupView = () => {
       <Spacing vertical={5} />
       <FormContext {...formMethods}>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
+          {errors?.organizationMembers?.message && (
+            <FormErrorText>{errors.organizationMembers.message}</FormErrorText>
+          )}
           {fields.map((item, index) => (
             <div key={item.id}>
               {index !== 0 && <Spacing vertical={5} />}

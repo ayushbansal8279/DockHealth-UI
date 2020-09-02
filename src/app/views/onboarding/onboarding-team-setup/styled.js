@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const ViewContainer = styled.div`
   color: ${palette.mediumGrey};
@@ -32,4 +33,12 @@ export const AddPersonButton = styled.button`
   font-size: ${fontSizes.regularPlus};
   font-family: inherit;
   cursor: pointer;
+`;
+
+export const FormErrorText = styled.p`
+  margin-bottom: ${spacing.smallPlus};
+  color: ${palette.oPlusRed};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regular};
+  font-family: inherit;
 `;
