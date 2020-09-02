@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 import {
   CloseIconButton,
   ModalWrapperWithPadding,
@@ -45,8 +47,8 @@ export const CloseButtonWord = styled(CloseIconButton)`
   font-weight: normal !important;
   font-size: 14px !important;
   color: ${palette.mediumGrey} !important;
-  top: 3px !important;
-  right: 39px !important;
+  top: ${spacing.tiny} !important;
+  right: ${spacing.giga} !important;
 `;
 export const PopoverMinimizeButton = styled.div`
   width: 19px;
@@ -57,11 +59,11 @@ export const PopoverMinimizeButton = styled.div`
 export const DownloadIcon = styled.img`
   width: 28px;
   height: 28px;
-  margin-right: 6px;
+  margin-right: ${spacing.small};
 `;
 
 export const FileDisplayArea = styled.div`
-  margin-top: 18px;
+  margin-top: ${spacing.regular};
 `;
 
 export const FileName = styled.p`
@@ -69,7 +71,7 @@ export const FileName = styled.p`
   font-family: Roboto Condensed;
   font-style: normal;
   font-weight: bold;
-  font-size: 16px;
+  font-size: ${fontSizes.regular};
   line-height: 135%;
   height: 22px;
 `;
@@ -81,13 +83,13 @@ export const PopoverHeader = styled.div`
   width: 401px;
   height: 32px;
   position: absolute;
-  padding: 7.1px;
+  padding: ${spacing.small};
   color: ${palette.mediumGrey};
   text-align: left;
   font-family: Roboto Condensed;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: ${fontSizes.smallPlus};
   line-height: 135%;
 `;
 
@@ -97,7 +99,7 @@ export const ProgressMessage = styled.p`
   font-family: Roboto Condensed;
   font-style: normal;
   font-weight: normal;
-  font-size: 12px;
+  font-size: ${fontSizes.small};
   line-height: 135%;
   display: inline-block;
 `;
@@ -119,11 +121,11 @@ export const ErrorAmount = styled.p`
   text-align: left;
   font-family: Roboto Condensed;
   font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.smallPlus};
   line-height: 135%;
   color: ${palette.red};
-  margin-bottom: 0.5rem !important;
+  margin-bottom: 0.5rem;
 `;
 
 export const ErrorMessage = styled.p`
@@ -134,11 +136,11 @@ export const ErrorMessage = styled.p`
   font-size: 12px;
   line-height: 135%;
   color: ${palette.red};
-  margin-bottom: 0.25rem !important;
+  margin-bottom: 0.25rem;
 `;
 export const FixErrorContainer = styled.div`
   text-align: left;
-  margin: 20px;
+  margin: ${spacing.regularPlus};
   margin-left: 0;
 `;
 
@@ -150,5 +152,5 @@ export const FixErrors = styled.a`
   line-height: 135%;
   color: ${palette.mediumGrey};
   text-align: left;
-  margin-right: 10px;
+  margin-right: ${spacing.small};
 `;

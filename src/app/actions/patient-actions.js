@@ -205,6 +205,7 @@ export function downloadPatientImportTemplate() {
     .then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
+      link.style.display = 'none';
       link.href = url;
       link.setAttribute('download', 'Patient_Data_Upload_Template.xlsx');
       document.body.append(link);
@@ -215,24 +216,32 @@ export function downloadPatientImportTemplate() {
     });
 }
 
-export const uploadPatientData = (fileData, additionalConfig) => dispatch =>
-  PatientApi.uploadPatientData(fileData, additionalConfig)
-    .then(response => {
-      dispatch({
-        type: PATIENT_DATA_UPLOADED,
+export const uploadPatientData = (fileData, additionalConfig) => dispatch => {
+  try {
+    PatientApi.uploadPatientData(fileData, additionalConfig)
+      .then(response => {
+        dispatch({
+          type: PATIENT_DATA_UPLOADED,
+        });
+
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
       });
-
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-
+  } catch (error) {
+    throw error;
+  }
+};
 export const getLatestPatientImportDetails = () => async dispatch => {
-  const patientImportDetails = await PatientApi.getLatestPatientImportDetails();
-  dispatch({
-    type: GET_PATIENT_IMPORT_DETAILS,
-    patientImportDetails,
-  });
-  return patientImportDetails;
+  try {
+    const patientImportDetails = await PatientApi.getLatestPatientImportDetails();
+    dispatch({
+      type: GET_PATIENT_IMPORT_DETAILS,
+      patientImportDetails,
+    });
+    return patientImportDetails;
+  } catch (error) {
+    throw error;
+  }
 };

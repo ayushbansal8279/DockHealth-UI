@@ -104,7 +104,11 @@ const PatientsView = () => {
   const refreshPatientList = useCallback(async () => {
     getAllPatients()(dispatch);
     const importDetails = await getLatestPatientImportDetails()(dispatch);
-    if (importDetails && importDetails.completePercentage < 100) {
+    if (
+      importDetails &&
+      importDetails.recordsToProcess &&
+      importDetails.completePercentage < 100
+    ) {
       setTimeout(() => {
         refreshPatientList();
       }, 1000);

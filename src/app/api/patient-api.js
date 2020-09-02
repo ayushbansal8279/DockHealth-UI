@@ -220,7 +220,6 @@ export function downloadPatientImportTemplate() {
     responseType: 'blob',
     headers: {
       Accept: 'application/octet-stream',
-      // Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
   })
     .then(response => {

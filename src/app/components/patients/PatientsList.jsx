@@ -13,7 +13,9 @@ import {
 import PatientsDetailsIcon from 'img/details.svg';
 import PatientsEmptyIcon from 'img/patients-empty.svg';
 import palette from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
 import Button from 'components/common/Button/Button';
+import Spacing from 'components/common/Spacing';
 import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
 import ExcelLogo from 'img/ExcelLogo.svg';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
@@ -40,26 +42,26 @@ const EmptyListHeader = styled.div`
   top: 162px;
 
   font-family: Montserrat;
-  font-size: 26px;
+  font-size: ${fontSizes.large};
   line-height: 153%;
   text-align: left;
 `;
 
 const EmptyListContent = styled.div`
   position: absolute;
-  width: 513;
+  width: 513px;
   height: 42px;
   left: 106px;
   top: 264px;
 
   font-family: Montserrat;
-  font-size: 16px;
+  font-size: ${fontSizes.regular};
   line-height: 130%;
   text-align: left;
 `;
 
 const StyledButton = styled(Button)`
-  margin: 10px;
+  margin-right: 20px;
   width: 265px;
   height: 50px;
 `;
@@ -80,8 +82,8 @@ const DownloadIcon = styled.img`
 const DownloadTemplate = styled.a`
   font-family: Roboto Condensed;
   font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
+  font-weight: ${fontWeights.regular};
+  font-size: ${fontSizes.regular};
   line-height: 19px;
 `;
 
@@ -105,17 +107,16 @@ const EmptyList = ({
           <StyledButton
             variant="contained"
             onClick={() => {
-              // openModalAction('ImportPatients', { step: 1 });
               setImportPopupOpen(true);
             }}
           >
             IMPORT PATIENT LIST
           </StyledButton>
-          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Spacing horizontal={4} />
           <StyledButton variant="outlined" onClick={onAddPatientClick}>
             ADD A PATIENT
           </StyledButton>
-          <spacing vertical={5} />
+          <Spacing vertical={5} />
           <div style={{ marginTop: '20px' }}>
             <DownloadTemplate
               onClick={() => {
@@ -353,7 +354,7 @@ const PatientsList = ({
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
   const [importPopoverOpen, setImportPopoverOpen] = useState(
-    !!patientImportDetails,
+    patientImportDetails && patientImportDetails.recordsProcessed,
   );
 
   const onAddPatientClick = useCallback(() => {

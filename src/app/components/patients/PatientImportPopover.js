@@ -51,7 +51,7 @@ const PatientImportPopover = ({ closePopover, patientImportDetails }) => {
   // DEFAULT POPOVER
   return (
     <>
-      {minimizedState === false && (
+      {!minimizedState && (
         <ImportPatientPopoverWrapper>
           <PopoverHeader>
             Patient Upload
@@ -124,7 +124,7 @@ const PatientImportPopover = ({ closePopover, patientImportDetails }) => {
         </ImportPatientPopoverWrapper>
       )}
 
-      {minimizedState === true && (
+      {minimizedState && (
         <ImportPatientPopoverWrapperMinimized>
           <PopoverHeader>
             Patient Upload
