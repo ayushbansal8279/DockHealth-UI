@@ -20,7 +20,9 @@ const InviteMemberPopover = ({
 
   const currentUser = useSelector(store => store.userState.userProfile);
 
-  const isAdmin = currentUser?.orgUserRole === 'ADMIN';
+  const isAdmin =
+    currentUser?.orgUserRole === 'ADMIN' ||
+    currentUser?.orgUserRole === 'OWNER';
 
   return (
     <AddMemberPopover
