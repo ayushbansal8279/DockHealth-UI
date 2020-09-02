@@ -1,11 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { hashHistory } from 'react-router';
 import Spacing from 'components/common/Spacing';
 import { FormContext, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
 import { Grid } from '@material-ui/core';
+import { invitePersonToOrganization } from 'api/people-api';
 import Button from 'components/common/Button/Button';
 import Input from 'components/common/Input/Input';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import {
   ViewContainer,
   Title,
@@ -35,27 +37,70 @@ const formSchema = {
 };
 
 const fieldsSchema = object().shape({
-  organizationMembers: array()
-    .compact(({ firstName, lastName, email }) => {
-      return !firstName && !lastName && !email;
-    })
-    .of(
-      object().shape(formSchema, [
-        ['lastName', 'email'],
-        ['firstName', 'email'],
-        ['firstName', 'lastName'],
-      ]),
-    )
-    .required('You have to invite at least one person'),
+  organizationMembers: array().of(
+    object().shape(formSchema, [
+      ['lastName', 'email'],
+      ['firstName', 'email'],
+      ['firstName', 'lastName'],
+    ]),
+  ),
 });
 
-const onSubmit = ({ organizationMembers }) => {
-  console.log('data', organizationMembers);
-  // hashHistory.push('/');
+const onSubmit = ({
+  setError,
+  setIsSaving,
+  clearFieldByIndex,
+  setSavingFieldAtIndex,
+}) => ({ organizationMembers }) => {
+  const filledFileds = organizationMembers.filter(
+    ({ firstName, lastName, email }) => firstName && lastName && email,
+  );
+
+  if (filledFileds.length === 0) {
+    setError(
+      'organizationMembers',
+      'manual',
+      'You have to invite at least one person',
+    );
+    return;
+  }
+
+  setIsSaving(true);
+  const invitationPromises = [];
+  filledFileds.forEach(person => {
+    setSavingFieldAtIndex(person.index, true);
+    invitationPromises.push(
+      invitePersonToOrganization(person)
+        .then(response => {
+          setSavingFieldAtIndex(person.index, false);
+          clearFieldByIndex(person.index);
+          return response;
+        })
+        .catch(error => {
+          setSavingFieldAtIndex(person.index, false);
+          setError(
+            `organizationMembers[${person.index}].email`,
+            'manual',
+            error?.message || 'Something went wrong. Please try again later.',
+          );
+          throw new Error(error.message);
+        }),
+    );
+  });
+
+  Promise.all(invitationPromises)
+    .then(() => {
+      setIsSaving(false);
+      hashHistory.push('/');
+    })
+    .catch(() => {
+      setIsSaving(false);
+    });
 };
 
 const OnboardingTeamSetupView = () => {
-  // const lastFirstNameFieldReference = useRef(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [savingFields, setSavingFields] = useState([]);
   const [
     lastFirstNameFieldReference,
     setLastFirstNameFieldReference,
@@ -79,19 +124,42 @@ const OnboardingTeamSetupView = () => {
     mode: 'onSubmit',
     defaultValues: {
       organizationMembers: [
-        { id: 0, firstName: '', lastName: '', email: '' },
-        { id: 1, firstName: '', lastName: '', email: '' },
-        { id: 2, firstName: '', lastName: '', email: '' },
+        { index: 0, firstName: '', lastName: '', email: '' },
+        { index: 1, firstName: '', lastName: '', email: '' },
+        { index: 2, firstName: '', lastName: '', email: '' },
       ],
     },
   });
 
-  const { handleSubmit, control, register, errors } = formMethods;
+  const {
+    handleSubmit,
+    control,
+    register,
+    errors,
+    setError,
+    setValue,
+  } = formMethods;
 
   const { fields, append } = useFieldArray({
     control,
     name: 'organizationMembers',
   });
+
+  const clearFieldByIndex = useCallback(index => {
+    setValue(`organizationMembers[${index}].email`, '');
+    setValue(`organizationMembers[${index}].firstName`, '');
+    setValue(`organizationMembers[${index}].lastName`, '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const setSavingFieldAtIndex = useCallback((index, isSavingAtIndex) => {
+    setSavingFields(state => {
+      const stateToReturn = [...state];
+      stateToReturn[index] = isSavingAtIndex;
+      return stateToReturn;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ViewContainer>
@@ -103,13 +171,27 @@ const OnboardingTeamSetupView = () => {
       </Description>
       <Spacing vertical={5} />
       <FormContext {...formMethods}>
-        <StyledForm onSubmit={handleSubmit(onSubmit)}>
+        <StyledForm
+          onSubmit={handleSubmit(
+            onSubmit({
+              setError,
+              setIsSaving,
+              clearFieldByIndex,
+              setSavingFieldAtIndex,
+            }),
+          )}
+        >
           {errors?.organizationMembers?.message && (
             <FormErrorText>{errors.organizationMembers.message}</FormErrorText>
           )}
           {fields.map((item, index) => (
-            <div key={item.id}>
+            <div key={item.index}>
               {index !== 0 && <Spacing vertical={5} />}
+              <Input
+                ref={register}
+                name={`organizationMembers[${item.index}].index`}
+                type="hidden"
+              />
               <Grid container direction="row" alignItems="flex-end" spacing={3}>
                 <Grid item xs={3}>
                   <Input
@@ -123,13 +205,14 @@ const OnboardingTeamSetupView = () => {
                       }
                     }}
                     type="text"
-                    name={`organizationMembers[${index}].firstName`}
+                    name={`organizationMembers[${item.index}].firstName`}
                     placeholder="FIRST NAME"
                     required
                     showError
                     styling="secondary"
                     error={
-                      errors?.organizationMembers?.[index]?.firstName?.message
+                      errors?.organizationMembers?.[item.index]?.firstName
+                        ?.message
                     }
                   />
                 </Grid>
@@ -137,28 +220,42 @@ const OnboardingTeamSetupView = () => {
                   <Input
                     ref={register}
                     type="text"
-                    name={`organizationMembers[${index}].lastName`}
+                    name={`organizationMembers[${item.index}].lastName`}
                     placeholder="LAST NAME"
                     required
                     showError
                     styling="secondary"
                     error={
-                      errors?.organizationMembers?.[index]?.lastName?.message
+                      errors?.organizationMembers?.[item.index]?.lastName
+                        ?.message
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={savingFields[item.index] ? 5 : 6}>
                   <Input
                     ref={register}
                     type="text"
-                    name={`organizationMembers[${index}].email`}
+                    name={`organizationMembers[${item.index}].email`}
                     placeholder="EMAIL"
                     required
                     showError
                     styling="secondary"
-                    error={errors?.organizationMembers?.[index]?.email?.message}
+                    error={
+                      errors?.organizationMembers?.[item.index]?.email?.message
+                    }
                   />
                 </Grid>
+                {savingFields[item.index] && (
+                  <Grid
+                    container
+                    item
+                    xs={1}
+                    justify="flex-end"
+                    style={{ alignSelf: 'center' }}
+                  >
+                    <Loader size={LoaderSizes.small} />
+                  </Grid>
+                )}
               </Grid>
             </div>
           ))}
@@ -167,7 +264,7 @@ const OnboardingTeamSetupView = () => {
             type="button"
             onClick={() =>
               append({
-                id: fields.length,
+                index: fields[fields.length - 1].index + 1,
                 firstName: '',
                 lastName: '',
                 email: '',
@@ -179,7 +276,7 @@ const OnboardingTeamSetupView = () => {
           <Spacing vertical={5} />
           <Grid container spacing={3}>
             <Grid item xs={4}>
-              <Button fullWidth type="submit">
+              <Button fullWidth type="submit" disabled={isSaving}>
                 Send invite
               </Button>
             </Grid>

@@ -69,7 +69,7 @@ const Input = React.forwardRef(
       !isFocused && centerizedLabelOnStart && (!value || value?.length === 0);
 
     return (
-      <InputWrapper fullWidth={fullWidth}>
+      <InputWrapper isHidden={type === 'hidden'} fullWidth={fullWidth}>
         {hasError && <Error>{error}</Error>}
         <Box>
           <Label

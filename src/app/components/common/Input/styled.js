@@ -7,6 +7,8 @@ export const InputWrapper = styled.div`
   ${props => props.fullWidth && 'width: 100%;'}
   font-family: 'Montserrat', sans-serif;
   font-weight: ${fontWeights.regular};
+
+  ${({ isHidden }) => isHidden && `display: none;`}
 `;
 
 // Primary
