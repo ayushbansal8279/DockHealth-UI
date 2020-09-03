@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import styled from 'styled-components';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { themeMontserratNormal } from 'styles/theme-montserrat';
+import ActivityAlerts from 'components/common/ActivityAlerts/ActivityAlerts';
 import Loader, { LoaderSizes } from './Loader/Loader';
 
 const GenericHeaderContainer = styled.div`
@@ -15,6 +16,14 @@ const GenericHeaderContainer = styled.div`
   grid-gap: 1rem;
   padding-right: 0.5rem;
   width: 100%;
+`;
+
+const AlertsLogoContainer = styled.div`
+  display: flex;
+
+  & > img {
+    margin-right: 48px;
+  }
 `;
 
 const DockHeaderImage = styled.img.attrs({
@@ -46,9 +55,12 @@ const GenericHeader = ({
             {isFetching ? <Loader size={LoaderSizes.medium} /> : children}
           </ChildrenWrapperComponent>
         </Grid>
-        <Link to="/">
-          <DockHeaderImage />
-        </Link>
+        <AlertsLogoContainer>
+          <ActivityAlerts variant="white" />
+          <Link to="/">
+            <DockHeaderImage />
+          </Link>
+        </AlertsLogoContainer>
       </GenericHeaderContainer>
     </ThemeProvider>
   );
