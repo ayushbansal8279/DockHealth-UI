@@ -34,29 +34,17 @@ export const getActivityAlerts = setActivityAlertsList =>
       throw error;
     });
 
-export const clearActivityAlert = (activityAlertId, onSuccess) =>
+export const clearActivityAlert = activityAlertId =>
   axios({
     method: 'put',
     url: `/activity/clear/${activityAlertId}`,
-  })
-    .then(() => {
-      onSuccess();
-    })
-    .catch(error => {
-      throw error;
-    });
+  });
 
-export const clearAllActivityAlerts = onSuccess =>
+export const clearAllActivityAlerts = () =>
   axios({
     method: 'put',
     url: '/activity/clearAllActivityAlertsForUser',
-  })
-    .then(() => {
-      onSuccess();
-    })
-    .catch(error => {
-      throw error;
-    });
+  });
 
 export const switchActivityAlerts = value =>
   axios({

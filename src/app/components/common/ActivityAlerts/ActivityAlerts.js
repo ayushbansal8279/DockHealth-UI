@@ -119,11 +119,15 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
   }, [isOpen]);
 
   const onClearAlert = async activityAlertId => {
-    await clearActivityAlert(activityAlertId, getActivityAlertsWithLoader);
+    await clearActivityAlert(activityAlertId).then(() => {
+      getActivityAlertsWithLoader();
+    });
   };
 
   const onClearAllAlerts = async () => {
-    await clearAllActivityAlerts(getActivityAlertsWithLoader);
+    await clearAllActivityAlerts().then(() => {
+      getActivityAlertsWithLoader();
+    });
   };
 
   const { BellIcon, NewBellIcon, MutedBellIcon } = getIconsConfig(variant);
