@@ -17,6 +17,9 @@ export const OrganizationIdentifierContainer = styled.div`
 
   & > span {
     margin-left: ${spacing.small};
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   ${props => {
