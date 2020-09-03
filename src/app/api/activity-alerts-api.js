@@ -1,4 +1,7 @@
 import axios from './axios-heydoc';
+import configureStore from '../ConfigureStore';
+
+const store = configureStore();
 
 export const getActivityAlertsPreferences = () =>
   axios({
@@ -9,6 +12,10 @@ export const getActivityAlertsPreferences = () =>
       const { notificationsEnabled, hasUnreadAlerts } = data;
       sessionStorage.setItem('notificationsEnabled', notificationsEnabled);
       sessionStorage.setItem('hasUnreadAlerts', hasUnreadAlerts);
+      store.dispatch({
+        type: 'alerts/enableAlerts',
+        alertsEnabled: notificationsEnabled,
+      });
     })
     .catch(error => {
       throw error;
@@ -58,6 +65,10 @@ export const switchActivityAlerts = value =>
   })
     .then(() => {
       sessionStorage.setItem('notificationsEnabled', value);
+      store.dispatch({
+        type: 'alerts/enableAlerts',
+        alertsEnabled: value,
+      });
     })
     .catch(error => {
       throw error;

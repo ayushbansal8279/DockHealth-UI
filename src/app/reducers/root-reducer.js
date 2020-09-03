@@ -26,8 +26,10 @@ import TemplateReducer from './template-reducer';
 import DashboardTasksReducer from './dashboard-tasks-reducer';
 import DashboardStatisticsReducer from './dashboard-statistics-reducer';
 import GlobalSearchReducer from './global-search-reducer';
+import AlertsReducer from './alerts-reducer';
 
 const appReducer = combineReducers({
+  alertsState: AlertsReducer,
   templateState: TemplateReducer,
   taskState: TaskReducer,
   patientState: PatientReducer,

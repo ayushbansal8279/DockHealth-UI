@@ -17,7 +17,8 @@ import {
 
 const AssignedCommentAlertItem = ({ itemAlert, onClearAlert }) => {
   const { task, createdDateTime, organization, targetIdentifier } = itemAlert;
-  const { description, comments } = task;
+  const { description, taskList, taskIdentifier, status, comments } = task;
+  const { taskListIdentifier } = taskList;
   const {
     organizationInitials,
     organizationName,
@@ -54,10 +55,17 @@ const AssignedCommentAlertItem = ({ itemAlert, onClearAlert }) => {
       </ActivityAlertsItemHeader>
       <ActivityAlertsItemLabel>
         New comment in{' '}
-        {description?.length > 30
-          ? `${description.slice(0, 30)}...`
-          : description}{' '}
-        added by {creator?.firstName} {creator?.lastName}
+        <StyledLink
+          to={`/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`}
+        >
+          {description?.length > 30
+            ? `${description.slice(0, 30)}...`
+            : description}
+        </StyledLink>{' '}
+        added by{' '}
+        <StyledLink to={`/assignedToPerson/${creator?.userIdentifier}`}>
+          {creator?.firstName} {creator?.lastName}
+        </StyledLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertItemQuotes>
         “{comment?.length > 120 ? `${comment.slice(0, 120)}...` : comment}”

@@ -79,9 +79,11 @@ const listenRealTimeAlerts = (
 };
 
 const ActivityAlerts = ({ variant = 'blue' }) => {
-  const { currentUser } = useSelector(store => ({
+  const { currentUser, enabledAlertsState } = useSelector(store => ({
     currentUser: store.userState.userProfile,
+    enabledAlertsState: store.alertsState.alertsEnabled,
   }));
+
   const [isOpen, setIsOpen] = useState(false);
   const [activityAlertsList, setActivityAlertsList] = useState(null);
   const [hasUnreadAlertsState, setHasUnreadAlertsState] = useState(
@@ -92,9 +94,6 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     setActivityAlertsListIsFetching,
   ] = useState(null);
 
-  const [enabledAlerts, setEnabledAlerts] = useState(
-    JSON.parse(sessionStorage.getItem('notificationsEnabled')),
-  );
   const iconReference = useRef(null);
 
   const getActivityAlertsWithLoader = async () => {
@@ -105,8 +104,12 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
 
   useEffect(() => {
     getActivityAlertsPreferences();
-    listenRealTimeAlerts(currentUser, setHasUnreadAlertsState, enabledAlerts);
-  }, [currentUser, enabledAlerts]);
+    listenRealTimeAlerts(
+      currentUser,
+      setHasUnreadAlertsState,
+      enabledAlertsState,
+    );
+  }, [currentUser, enabledAlertsState]);
 
   useEffect(() => {
     if (isOpen) {
@@ -114,10 +117,6 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
       setHasUnreadAlertsState(false);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    switchActivityAlerts(enabledAlerts);
-  }, [enabledAlerts]);
 
   const onClearAlert = async activityAlertId => {
     await clearActivityAlert(activityAlertId, getActivityAlertsWithLoader);
@@ -131,9 +130,9 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
 
   let CurrentBellIcon = BellIcon;
 
-  if (hasUnreadAlertsState && enabledAlerts) {
+  if (hasUnreadAlertsState && enabledAlertsState) {
     CurrentBellIcon = NewBellIcon;
-  } else if (!enabledAlerts) {
+  } else if (!enabledAlertsState) {
     CurrentBellIcon = MutedBellIcon;
   } else {
     CurrentBellIcon = BellIcon;
@@ -168,11 +167,13 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
             </ActivityAlertsPopoverLabel>
             <div>
               <Switch
-                checked={enabledAlerts}
-                onChange={() => setEnabledAlerts(!enabledAlerts)}
+                checked={enabledAlertsState}
+                onChange={() => {
+                  switchActivityAlerts(!enabledAlertsState);
+                }}
               />
               <ActivityAlertsSwitchLabel>
-                {enabledAlerts ? 'ON' : 'OFF'}
+                {enabledAlertsState ? 'ON' : 'OFF'}
               </ActivityAlertsSwitchLabel>
             </div>
           </ActivityAlertsHeaderLabel>

@@ -30,15 +30,14 @@ const listenRealTimeAlerts = (currentUser, addAlertToList) => {
 };
 
 const ActivityAlertsToasts = () => {
-  if (!JSON.parse(sessionStorage.getItem('notificationsEnabled'))) {
-    return null;
-  }
-
-  const currentUser = useSelector(store => store.userState.userProfile);
-
   const [alertsList, setAlertsList] = useState([]);
   const [newAlert, setNewAlert] = useState({});
   const [lastElement, setLastElement] = useState(null);
+
+  const { currentUser, enabledAlertsState } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+    enabledAlertsState: store.alertsState.alertsEnabled,
+  }));
 
   useEffect(() => {
     listenRealTimeAlerts(currentUser, setNewAlert);
@@ -56,6 +55,10 @@ const ActivityAlertsToasts = () => {
       setAlertsList([]);
     }
   }, [lastElement]);
+
+  if (!enabledAlertsState) {
+    return null;
+  }
 
   return (
     <ActivityAlertsToastsContainer>
