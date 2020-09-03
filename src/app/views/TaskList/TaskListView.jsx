@@ -312,6 +312,8 @@ class TaskListView extends PureComponent {
     const hasCovidList =
       currentUser.referralCode && currentUser.referralCode === 'covid19';
 
+    const isGuestUser = currentUser.orgUserRole === 'GUEST';
+
     return (
       <TaskListViewWrapper>
         {hasStartedFetching && !isFetching && (
@@ -322,18 +324,20 @@ class TaskListView extends PureComponent {
                 tipsButtonReference={this.tipsButtonReference}
                 toggleTips={this.toggleTips}
               />
-              <AdornedButton
-                adornment={
-                  taskListFormOpen && !currentTaskList ? <Close /> : <Add />
-                }
-                onClick={this.addTaskList}
-                innerRef={this.addTaskButtonReference}
-                style={{
-                  zIndex: 110,
-                }}
-              >
-                ADD A LIST
-              </AdornedButton>
+              {!isGuestUser && (
+                <AdornedButton
+                  adornment={
+                    taskListFormOpen && !currentTaskList ? <Close /> : <Add />
+                  }
+                  onClick={this.addTaskList}
+                  innerRef={this.addTaskButtonReference}
+                  style={{
+                    zIndex: 110,
+                  }}
+                >
+                  ADD A LIST
+                </AdornedButton>
+              )}
             </PageContentHeader>
             {tipsOpen === 'true' && (
               <ClickAwayListener onClickAway={this.closeTips}>

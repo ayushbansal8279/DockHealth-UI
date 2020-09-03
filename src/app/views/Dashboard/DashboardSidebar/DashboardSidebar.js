@@ -51,6 +51,8 @@ const DashboardSidebar = ({
   selectCurrentOrganization,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const isGuestUser = currentUser.orgUserRole === 'GUEST';
+
   const hoveredItemReference = useRef(null);
   const itemsMoreButtonReferences = useRef([]);
 
@@ -165,9 +167,11 @@ const DashboardSidebar = ({
       <ListsSection>
         <ListsHeader>
           My lists
-          <AddListButton onClick={openListAddModal} type="button">
-            <span>+</span> Add list
-          </AddListButton>
+          {!isGuestUser && (
+            <AddListButton onClick={openListAddModal} type="button">
+              <span>+</span> Add list
+            </AddListButton>
+          )}
         </ListsHeader>
         <ListItemsWrapper>
           {filteredList?.map((taskList, index) => (
@@ -271,11 +275,13 @@ const DashboardSidebar = ({
                   onClick: handleLeaveList,
                 },
               ]),
-          {
-            key: 'invite',
-            label: 'Invite people to list',
-            onClick: handleInviteToList,
-          },
+          !isGuestUser
+            ? {
+                key: 'invite',
+                label: 'Invite people to list',
+                onClick: handleInviteToList,
+              }
+            : {},
         ]}
       />
       {renderTourItems()}

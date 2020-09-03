@@ -219,6 +219,7 @@ const ListsComponent = props => {
   const [isAdminForCurrentList, setIsAdminForCurrentList] = useState(false);
   const [currentListIdentifier, setCurrentListIdentifier] = useState(null);
   const [currentListMenuAnchor, setCurrentListMenuAnchor] = useState(null);
+  const isGuestUser = currentUser.orgUserRole === 'GUEST';
 
   const dispatch = useDispatch();
 
@@ -279,16 +280,18 @@ const ListsComponent = props => {
         },
       ]
     : [
-        {
-          key: 'invite',
-          button: true,
-          label: (
-            <Grid container wrap="nowrap" alignItems="center">
-              <div>Invite to list </div>
-            </Grid>
-          ),
-          onClick: onInviteMenuItemClick,
-        },
+        !isGuestUser
+          ? {
+              key: 'invite',
+              button: true,
+              label: (
+                <Grid container wrap="nowrap" alignItems="center">
+                  <div>Invite to list </div>
+                </Grid>
+              ),
+              onClick: onInviteMenuItemClick,
+            }
+          : {},
         {
           key: 'leave',
           button: true,

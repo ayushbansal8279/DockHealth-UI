@@ -30,15 +30,20 @@ const MenuPopover = ({
       transitionDuration={0}
     >
       <ButtonsWrapper>
-        {options?.map(({ key, label, onClick }) => (
-          <Button
-            key={key}
-            onClick={event => handleOptionClick(event, onClick)}
-            type="button"
-          >
-            {label}
-          </Button>
-        ))}
+        {options?.map(({ key, label, onClick }) => {
+          if (key !== undefined && key !== '') {
+            return (
+              <Button
+                key={key}
+                onClick={event => handleOptionClick(event, onClick)}
+                type="button"
+              >
+                {label}
+              </Button>
+            );
+          }
+          return null;
+        })}
       </ButtonsWrapper>
     </StyledPopover>
   );
