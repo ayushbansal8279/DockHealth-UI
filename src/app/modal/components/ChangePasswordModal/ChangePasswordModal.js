@@ -3,8 +3,9 @@ import { useForm, FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
 import { Grid } from '@material-ui/core';
+import LockIcon from 'img/modals/lock';
 import * as UserApi from 'api/user-api';
-import { showGlobalAlert } from 'alert/actions';
+import { openModal } from 'modal/actions';
 import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -30,14 +31,19 @@ const validationSchema = object({
   ),
 });
 
-const onSubmit = ({ setError, closeModal, dispatch }) => ({
+const onSubmit = ({ setError, dispatch }) => ({
   currentPassword,
   newPassword,
 }) => {
   UserApi.changePassword(currentPassword, newPassword)
     .then(() => {
-      dispatch(showGlobalAlert('Password changed'));
-      closeModal();
+      dispatch(
+        openModal('Confirmation', {
+          description: 'Your password has been updated.',
+          icon: LockIcon,
+          iconAlt: 'Password',
+        }),
+      );
     })
     .catch(error => {
       if (error.code === 'NotAuthorizedException') {
@@ -65,9 +71,7 @@ const ChangePasswordModal = ({ closeModal }) => {
       </CloseIconButton>
       <Title>Change your password</Title>
       <FormContext {...formMethods}>
-        <StyledForm
-          onSubmit={handleSubmit(onSubmit({ setError, closeModal, dispatch }))}
-        >
+        <StyledForm onSubmit={handleSubmit(onSubmit({ setError, dispatch }))}>
           <UniversalInput
             autoFocus
             type="password"
