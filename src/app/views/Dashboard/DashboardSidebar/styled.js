@@ -148,12 +148,8 @@ export const AddListButton = styled.button`
 `;
 
 export const NewListIndicator = styled.p`
-  position: absolute;
-  bottom: ${spacing.regularPlus};
-  left: 50%;
   width: 210px;
-  transform: translateX(-50%);
-  margin-bottom: 0;
+  margin: ${spacing.giga} auto;
   padding: ${spacing.small} ${spacing.smallPlus};
   background: ${palette.darkBlue};
   color: ${palette.white};

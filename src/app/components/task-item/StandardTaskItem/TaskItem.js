@@ -300,7 +300,7 @@ const TaskItem = ({
                     prepareSubtask(taskIdentifier)(dispatch);
                   }}
                 >
-                  Add Subtask
+                  Add a subtask
                 </SubtasksAddLabel>
               )}
             </SubtasksBox>

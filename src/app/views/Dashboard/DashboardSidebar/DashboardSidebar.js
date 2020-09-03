@@ -151,9 +151,6 @@ const DashboardSidebar = ({
         <MenuButton onClick={showNavbar}>
           <img src={MenuIcon} alt="menu" />
         </MenuButton>
-        {hasAnyPendingList && (
-          <NewListIndicator>Hooray! You have a new list.</NewListIndicator>
-        )}
       </TopSection>
       <OrganizationList
         currentOrganization={currentOrganization}
@@ -164,6 +161,9 @@ const DashboardSidebar = ({
         showShadowOnHover
         onSelect={selectCurrentOrganization}
       />
+      {hasAnyPendingList && (
+        <NewListIndicator>Hooray! You have a new list.</NewListIndicator>
+      )}
       <ListsSection>
         <ListsHeader>
           My lists
