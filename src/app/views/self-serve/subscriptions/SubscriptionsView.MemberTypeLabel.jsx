@@ -3,7 +3,10 @@ import { useDispatch } from 'react-redux';
 import { findAllUsers } from 'actions/people-actions';
 import Arrow from 'components/common/Arrow/Arrow';
 import useBoolean from 'hooks/useBoolean';
-import { MemberTypeButton } from './SubscriptionsView.MembersTable.Styled';
+import {
+  MemberTypeButton,
+  CurrentUserLabel,
+} from './SubscriptionsView.MembersTable.Styled';
 import InvitationPopover from './SubscriptionUserPopover/InvitationPopover';
 import RoleSelectionPopover from './SubscriptionUserPopover/RoleSelectionPopover';
 import PendingApprovalPopover from './SubscriptionUserPopover/PendingApprovalPopover';
@@ -65,11 +68,16 @@ const MemberTypeLabel = ({
         onClick={isDisabledRemovingSubscription ? () => {} : openPopover}
         isInvited={isInvited}
       >
-        <DropdownIndicator
-          setOpen={() => {}}
-          isOpen={isPopoverOpen}
-          label={label}
-        />
+        {!isDisabledRemovingSubscription && (
+          <DropdownIndicator
+            setOpen={() => {}}
+            isOpen={isPopoverOpen}
+            label={label}
+          />
+        )}
+        {isDisabledRemovingSubscription && (
+          <CurrentUserLabel>{label}</CurrentUserLabel>
+        )}
       </MemberTypeButton>
       {PopoverComponent && (
         <PopoverComponent
