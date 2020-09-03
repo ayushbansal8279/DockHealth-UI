@@ -62,15 +62,14 @@ export const MemberTypeButton = styled.button`
   max-width: 160px;
   width: 100%;
   outline: none;
-
+  
   * > * {
     font-weight: normal;
-    color: ${props => {
-      if (props.isInvited || !props.clickable) return palette.coolGrey1;
+    color: ${props =>
+      props.isInvited || !props.clickable
+        ? palette.coolGrey1
+        : palette.mediumGrey}
 
-      return palette.mediumGrey;
-    }}
-  
 `;
 
 export const SubscriptionLabelBox = styled.div`
@@ -78,4 +77,9 @@ export const SubscriptionLabelBox = styled.div`
   color: #4a4a4a; // custom color
   padding: ${spacing.tiny} 0;
   font-family: 'Montserrat', sans-serif;
+`;
+
+export const CurrentUserLabel = styled.div`
+  display: flex;
+  justify-content: flex-start;
 `;
