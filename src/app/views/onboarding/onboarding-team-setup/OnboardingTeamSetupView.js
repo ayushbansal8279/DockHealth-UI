@@ -15,7 +15,15 @@ import {
   StyledForm,
   AddPersonButton,
   FormErrorText,
+  FieldStatusLabel,
 } from './styled';
+
+const renderSingleInviteLabel = isSuccess =>
+  isSuccess ? (
+    <FieldStatusLabel>Invite sent</FieldStatusLabel>
+  ) : (
+    <FieldStatusLabel isError>Invite failed</FieldStatusLabel>
+  );
 
 const REQUIRED_MESSAGE = 'This filed is reqiered';
 
@@ -49,8 +57,8 @@ const fieldsSchema = object().shape({
 const onSubmit = ({
   setError,
   setIsSaving,
-  clearFieldByIndex,
-  setSavingFieldAtIndex,
+  fieldsState,
+  setFieldStateAtIndex,
 }) => ({ organizationMembers }) => {
   const filledFileds = organizationMembers.filter(
     ({ firstName, lastName, email }) => firstName && lastName && email,
@@ -68,16 +76,27 @@ const onSubmit = ({
   setIsSaving(true);
   const invitationPromises = [];
   filledFileds.forEach(person => {
-    setSavingFieldAtIndex(person.index, true);
+    if (fieldsState[person.index]?.success) {
+      return;
+    }
+
+    setFieldStateAtIndex(person.index, { loading: true });
     invitationPromises.push(
       invitePersonToOrganization(person)
         .then(response => {
-          setSavingFieldAtIndex(person.index, false);
-          clearFieldByIndex(person.index);
+          setFieldStateAtIndex(person.index, {
+            loading: false,
+            disabled: true,
+            success: true,
+          });
           return response;
         })
         .catch(error => {
-          setSavingFieldAtIndex(person.index, false);
+          setFieldStateAtIndex(person.index, {
+            loading: false,
+            disabled: false,
+            success: false,
+          });
           setError(
             `organizationMembers[${person.index}].email`,
             'manual',
@@ -100,7 +119,7 @@ const onSubmit = ({
 
 const OnboardingTeamSetupView = () => {
   const [isSaving, setIsSaving] = useState(false);
-  const [savingFields, setSavingFields] = useState([]);
+  const [fieldsState, setFiledsState] = useState([]);
   const [
     lastFirstNameFieldReference,
     setLastFirstNameFieldReference,
@@ -131,31 +150,17 @@ const OnboardingTeamSetupView = () => {
     },
   });
 
-  const {
-    handleSubmit,
-    control,
-    register,
-    errors,
-    setError,
-    setValue,
-  } = formMethods;
+  const { handleSubmit, control, register, errors, setError } = formMethods;
 
   const { fields, append } = useFieldArray({
     control,
     name: 'organizationMembers',
   });
 
-  const clearFieldByIndex = useCallback(index => {
-    setValue(`organizationMembers[${index}].email`, '');
-    setValue(`organizationMembers[${index}].firstName`, '');
-    setValue(`organizationMembers[${index}].lastName`, '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const setSavingFieldAtIndex = useCallback((index, isSavingAtIndex) => {
-    setSavingFields(state => {
+  const setFieldStateAtIndex = useCallback((index, stateAtIndex) => {
+    setFiledsState(state => {
       const stateToReturn = [...state];
-      stateToReturn[index] = isSavingAtIndex;
+      stateToReturn[index] = stateAtIndex;
       return stateToReturn;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,89 +181,106 @@ const OnboardingTeamSetupView = () => {
             onSubmit({
               setError,
               setIsSaving,
-              clearFieldByIndex,
-              setSavingFieldAtIndex,
+              fieldsState,
+              setFieldStateAtIndex,
             }),
           )}
         >
           {errors?.organizationMembers?.message && (
             <FormErrorText>{errors.organizationMembers.message}</FormErrorText>
           )}
-          {fields.map((item, index) => (
-            <div key={item.index}>
-              {index !== 0 && <Spacing vertical={5} />}
-              <Input
-                ref={register}
-                name={`organizationMembers[${item.index}].index`}
-                type="hidden"
-              />
-              <Grid container direction="row" alignItems="flex-end" spacing={3}>
-                <Grid item xs={3}>
-                  <Input
-                    ref={element => {
-                      register(element);
-                      if (!firstFirstNameFieldReference.current) {
-                        firstFirstNameFieldReference.current = element;
+          {fields.map((item, index) => {
+            const fieldState = fieldsState[item.index];
+
+            return (
+              <div key={item.index}>
+                {index !== 0 && <Spacing vertical={5} />}
+                <Input
+                  ref={register}
+                  name={`organizationMembers[${item.index}].index`}
+                  type="hidden"
+                />
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="flex-end"
+                  spacing={2}
+                >
+                  <Grid item xs={3}>
+                    <Input
+                      ref={element => {
+                        register(element);
+                        if (!firstFirstNameFieldReference.current) {
+                          firstFirstNameFieldReference.current = element;
+                        }
+                        if (index === fields.length - 1 && fields.length > 3) {
+                          setLastFirstNameFieldReference(element);
+                        }
+                      }}
+                      type="text"
+                      name={`organizationMembers[${item.index}].firstName`}
+                      placeholder="FIRST NAME"
+                      required
+                      showError
+                      styling="secondary"
+                      disabled={fieldState?.disabled}
+                      error={
+                        errors?.organizationMembers?.[item.index]?.firstName
+                          ?.message
                       }
-                      if (index === fields.length - 1 && fields.length > 3) {
-                        setLastFirstNameFieldReference(element);
-                      }
-                    }}
-                    type="text"
-                    name={`organizationMembers[${item.index}].firstName`}
-                    placeholder="FIRST NAME"
-                    required
-                    showError
-                    styling="secondary"
-                    error={
-                      errors?.organizationMembers?.[item.index]?.firstName
-                        ?.message
-                    }
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Input
-                    ref={register}
-                    type="text"
-                    name={`organizationMembers[${item.index}].lastName`}
-                    placeholder="LAST NAME"
-                    required
-                    showError
-                    styling="secondary"
-                    error={
-                      errors?.organizationMembers?.[item.index]?.lastName
-                        ?.message
-                    }
-                  />
-                </Grid>
-                <Grid item xs={savingFields[item.index] ? 5 : 6}>
-                  <Input
-                    ref={register}
-                    type="text"
-                    name={`organizationMembers[${item.index}].email`}
-                    placeholder="EMAIL"
-                    required
-                    showError
-                    styling="secondary"
-                    error={
-                      errors?.organizationMembers?.[item.index]?.email?.message
-                    }
-                  />
-                </Grid>
-                {savingFields[item.index] && (
-                  <Grid
-                    container
-                    item
-                    xs={1}
-                    justify="flex-end"
-                    style={{ alignSelf: 'center' }}
-                  >
-                    <Loader size={LoaderSizes.small} />
+                    />
                   </Grid>
-                )}
-              </Grid>
-            </div>
-          ))}
+                  <Grid item xs={3}>
+                    <Input
+                      ref={register}
+                      type="text"
+                      name={`organizationMembers[${item.index}].lastName`}
+                      placeholder="LAST NAME"
+                      required
+                      showError
+                      styling="secondary"
+                      disabled={fieldState?.disabled}
+                      error={
+                        errors?.organizationMembers?.[item.index]?.lastName
+                          ?.message
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={fieldState ? 5 : 6}>
+                    <Input
+                      ref={register}
+                      type="text"
+                      name={`organizationMembers[${item.index}].email`}
+                      placeholder="EMAIL"
+                      required
+                      showError
+                      styling="secondary"
+                      disabled={fieldState?.disabled}
+                      error={
+                        errors?.organizationMembers?.[item.index]?.email
+                          ?.message
+                      }
+                    />
+                  </Grid>
+                  {fieldState && (
+                    <Grid
+                      container
+                      item
+                      xs={1}
+                      justify={fieldState.loading ? 'center' : 'flex-start'}
+                      style={{ alignSelf: 'center' }}
+                    >
+                      {fieldState.loading ? (
+                        <Loader size={LoaderSizes.small} />
+                      ) : (
+                        renderSingleInviteLabel(fieldState.success)
+                      )}
+                    </Grid>
+                  )}
+                </Grid>
+              </div>
+            );
+          })}
           <Spacing vertical={5} />
           <AddPersonButton
             type="button"
