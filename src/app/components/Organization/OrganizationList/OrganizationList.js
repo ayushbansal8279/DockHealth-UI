@@ -49,8 +49,16 @@ const OrganizationList = ({
   return (
     <OrganizationIdentifiersListContainer
       isOpen={isOrganizationSectionOpen}
-      onMouseEnter={openOrganizationSection}
-      onMouseLeave={closeOrganizationSection}
+      onMouseEnter={
+        availableUserOrganizations?.length > 0
+          ? openOrganizationSection
+          : () => {}
+      }
+      onMouseLeave={
+        availableUserOrganizations?.length > 0
+          ? closeOrganizationSection
+          : () => {}
+      }
       showShadowOnHover={showShadowOnHover}
     >
       <OrganizationIdentifier
