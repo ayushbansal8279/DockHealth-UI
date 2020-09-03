@@ -63,8 +63,9 @@ import {
   TipsContainer,
 } from './TaskListView.Styled';
 
-const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
-const STORAGE_NEW_USER_FIRST_TIME = 'STORAGE_NEW_USER_FIRST_TIME';
+// storage keys for tooltips auto open
+// const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
+// const STORAGE_NEW_USER_FIRST_TIME = 'STORAGE_NEW_USER_FIRST_TIME';
 
 const getTourStep = (contentImage, displayDescription) => ({
   content: <img alt="step 1" src={contentImage} />,
@@ -115,7 +116,7 @@ class TaskListView extends PureComponent {
     listFormOpen: false,
     hasStartedFetching: false,
     channelName: null,
-    tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || 'true',
+    tipsOpen: false,
     tipsModalOpen: false,
   };
 
@@ -137,10 +138,6 @@ class TaskListView extends PureComponent {
       hasStartedFetching: true,
     });
 
-    if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
-      this.showTipsModal();
-    }
-
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
 
@@ -159,16 +156,6 @@ class TaskListView extends PureComponent {
     channel.bind('tasklist-update', () => {
       taskListAction.getTaskListForUser();
     });
-  }
-
-  componentDidUpdate({ tipsOpen: previousTipsOpen }) {
-    const { tipsOpen } = this.state;
-
-    // needed for contextual menu
-
-    if (tipsOpen !== previousTipsOpen) {
-      localStorage.setItem(STORAGE_TASK_LIST_TIPS_OPEN, tipsOpen);
-    }
   }
 
   componentWillUnmount() {
@@ -208,8 +195,6 @@ class TaskListView extends PureComponent {
     this.setState({
       tipsModalOpen: 'false',
     });
-
-    localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
   };
 
   setListFormOpen = listFormOpen => {
