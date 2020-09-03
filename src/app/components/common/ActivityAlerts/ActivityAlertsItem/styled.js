@@ -96,3 +96,8 @@ export const StyledLink = styled(Link)`
   font-size: ${fontSizes.regular};
   color: ${palette.brightBlue};
 `;
+
+export const StyledCrossIcon = styled.img`
+  cursor: pointer;
+  margin-left: ${spacing.smallPlus};
+`;

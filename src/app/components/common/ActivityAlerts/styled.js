@@ -84,6 +84,7 @@ export const ActivityAlertsList = styled.div`
 export const ActivityAlertsClearAllLabel = styled.div`
   display: flex;
   align-items: center;
+  font-family: Montserrat;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regularPlus};

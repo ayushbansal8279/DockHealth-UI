@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import CircleCompleted from 'img/circle-completed';
+import CrossIcon from 'img/notifications/cross';
 import {
   ActivityAlertsItemContainer,
   ActivityAlertsItemHeader,
@@ -13,9 +14,14 @@ import {
   ActivityAlertItemQuotes,
   CompletedCircleIcon,
   StyledLink,
+  StyledCrossIcon,
 } from './styled';
 
-const AssignedCommentAlertItem = ({ itemAlert, onClearAlert }) => {
+const AssignedCommentAlertItem = ({
+  itemAlert,
+  onClearAlert,
+  withCrossIcon,
+}) => {
   const { task, createdDateTime, organization, targetIdentifier } = itemAlert;
   const { description, taskList, taskIdentifier, status, comments } = task;
   const { taskListIdentifier } = taskList;
@@ -48,9 +54,18 @@ const AssignedCommentAlertItem = ({ itemAlert, onClearAlert }) => {
           <ActivityAlertsItemTime>
             {moment(createdDateTime).fromNow()}
           </ActivityAlertsItemTime>
-          <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-            Clear
-          </ActivityAlertsItemClearLabel>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
         </div>
       </ActivityAlertsItemHeader>
       <ActivityAlertsItemLabel>
@@ -74,7 +89,7 @@ const AssignedCommentAlertItem = ({ itemAlert, onClearAlert }) => {
   );
 };
 
-const AssignedAlertItem = ({ itemAlert, onClearAlert }) => {
+const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   const { task, createdDateTime, organization } = itemAlert;
   const { description, taskList, taskIdentifier, status } = task;
   const { taskListIdentifier } = taskList;
@@ -100,9 +115,18 @@ const AssignedAlertItem = ({ itemAlert, onClearAlert }) => {
           <ActivityAlertsItemTime>
             {moment(createdDateTime).fromNow()}
           </ActivityAlertsItemTime>
-          <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-            Clear
-          </ActivityAlertsItemClearLabel>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
         </div>
       </ActivityAlertsItemHeader>
       <ActivityAlertsItemLabel>
@@ -124,7 +148,7 @@ const AssignedAlertItem = ({ itemAlert, onClearAlert }) => {
   );
 };
 
-const CompletedTaskAlertItem = ({ itemAlert, onClearAlert }) => {
+const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   const { task, createdDateTime, organization } = itemAlert;
   const { description, taskList, taskIdentifier, status } = task;
   const { taskListIdentifier } = taskList;
@@ -151,9 +175,18 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert }) => {
           <ActivityAlertsItemTime>
             {moment(createdDateTime).fromNow()}
           </ActivityAlertsItemTime>
-          <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-            Clear
-          </ActivityAlertsItemClearLabel>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
         </div>
       </ActivityAlertsItemHeader>
       <ActivityAlertsItemLabel>
@@ -173,19 +206,24 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert }) => {
   );
 };
 
-const getItemVariant = (itemAlert, onClearAlert) => {
+const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
   const { activityAlertType } = itemAlert;
 
   switch (activityAlertType) {
     case 'ASSIGN_TASK':
       return (
-        <AssignedAlertItem itemAlert={itemAlert} onClearAlert={onClearAlert} />
+        <AssignedAlertItem
+          itemAlert={itemAlert}
+          onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
+        />
       );
     case 'CREATE_COMMENT':
       return (
         <AssignedCommentAlertItem
           itemAlert={itemAlert}
           onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
         />
       );
     case 'MARK_COMPLETE':
@@ -193,6 +231,7 @@ const getItemVariant = (itemAlert, onClearAlert) => {
         <CompletedTaskAlertItem
           itemAlert={itemAlert}
           onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
         />
       );
     default:
@@ -200,7 +239,7 @@ const getItemVariant = (itemAlert, onClearAlert) => {
   }
 };
 
-const ActivityAlertsItem = ({ itemAlert, onClearAlert }) =>
-  getItemVariant(itemAlert, onClearAlert);
+const ActivityAlertsItem = ({ itemAlert, onClearAlert, withCrossIcon }) =>
+  getItemVariant(itemAlert, onClearAlert, withCrossIcon);
 
 export default ActivityAlertsItem;
