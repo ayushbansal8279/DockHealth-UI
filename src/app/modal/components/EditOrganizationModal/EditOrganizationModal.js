@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
+import OfficeIcon from 'img/modals/office';
 import { useDispatch } from 'react-redux';
+import { openModal } from 'modal/actions';
 import { updateOrganizationName } from 'actions/organization-actions';
 import Button from 'components/common/Button/Button';
 import OrganizationAvatarInput from 'components/Organization/OrganizationAvatarInput/OrganizationAvatarInput';
@@ -20,12 +22,7 @@ import {
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 
-const onSubmit = ({
-  dispatch,
-  closeModal,
-  confirm,
-  organizationIdentifier,
-}) => ({
+const onSubmit = ({ dispatch, onSuccess, organizationIdentifier }) => ({
   organizationName,
   organizationInitials,
   organizationProfileColor,
@@ -36,12 +33,18 @@ const onSubmit = ({
     organizationInitials,
     organizationProfileColor,
   })(dispatch).then(() => {
-    confirm();
-    closeModal();
+    onSuccess();
+    dispatch(
+      openModal('Confirmation', {
+        description: 'Changes to your Organization have been saved.',
+        icon: OfficeIcon,
+        altIcon: 'Organization',
+      }),
+    );
   });
 };
 
-const EditOrganizationModal = ({ closeModal, userProfile, confirm }) => {
+const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
   const dispatch = useDispatch();
 
   const formContext = useForm({
@@ -114,8 +117,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, confirm }) => {
         onSubmit={handleSubmit(
           onSubmit({
             dispatch,
-            closeModal,
-            confirm,
+            onSuccess,
             organizationIdentifier: userProfile?.organizationIdentifier,
           }),
         )}

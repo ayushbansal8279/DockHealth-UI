@@ -119,7 +119,7 @@ const UserProfileView = () => {
               dispatch(
                 openModalAction('EditOrganization', {
                   userProfile,
-                  confirm: userApi.getUserById,
+                  onSuccess: userApi.getUserById,
                 }),
               )
             }
