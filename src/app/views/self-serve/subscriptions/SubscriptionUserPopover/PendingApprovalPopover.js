@@ -25,14 +25,14 @@ import {
 const USER_TYPES = new Proxy(
   {
     MEMBER: {
-      label: 'Members',
+      label: 'Member',
       selectable: true,
       changeable: true,
       description:
         'Part of your Organization. Can add and invite members who are already part of your organization. Can access all patients and people in the group/practice.',
     },
     GUEST: {
-      label: 'Guests',
+      label: 'Guest',
       selectable: true,
       changeable: true,
       isLimitedAccess: true,
