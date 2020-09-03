@@ -19,6 +19,7 @@ import ChangePasswordModal from './components/ChangePasswordModal/ChangePassword
 import LeaveOrganizationModal from './components/LeaveOrganizationModal/LeaveOrganizationModal';
 import ChangeMobileNumberModal from './components/ChangeMobileNumberModal/ChangeMobileNumberModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
+import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -42,6 +43,7 @@ const MODAL_MAP = {
   ChangePassword: ChangePasswordModal,
   ChangeMobileNumber: ChangeMobileNumberModal,
   Confirmation: ConfirmationModal,
+  OnboardingInviteConfirmation: OnboardingInviteConfirmationModal,
 };
 
 export default MODAL_MAP;

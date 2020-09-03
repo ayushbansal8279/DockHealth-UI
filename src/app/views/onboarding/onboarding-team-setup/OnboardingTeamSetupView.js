@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { hashHistory } from 'react-router';
+import { useDispatch } from 'react-redux';
 import Spacing from 'components/common/Spacing';
 import { FormContext, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
 import { Grid } from '@material-ui/core';
+import { openModal } from 'modal/actions';
 import { invitePersonToOrganization } from 'api/people-api';
 import Button from 'components/common/Button/Button';
 import Input from 'components/common/Input/Input';
@@ -59,6 +61,7 @@ const onSubmit = ({
   setIsSaving,
   fieldsState,
   setFieldStateAtIndex,
+  dispatch,
 }) => ({ organizationMembers }) => {
   const filledFileds = organizationMembers.filter(
     ({ firstName, lastName, email }) => firstName && lastName && email,
@@ -111,6 +114,11 @@ const onSubmit = ({
     .then(() => {
       setIsSaving(false);
       hashHistory.push('/');
+      dispatch(
+        openModal('OnboardingInviteConfirmation', {
+          moreThanOneInvite: filledFileds.length > 1,
+        }),
+      );
     })
     .catch(() => {
       setIsSaving(false);
@@ -118,6 +126,8 @@ const onSubmit = ({
 };
 
 const OnboardingTeamSetupView = () => {
+  const dispatch = useDispatch();
+
   const [isSaving, setIsSaving] = useState(false);
   const [fieldsState, setFiledsState] = useState([]);
   const [
@@ -183,6 +193,7 @@ const OnboardingTeamSetupView = () => {
               setIsSaving,
               fieldsState,
               setFieldStateAtIndex,
+              dispatch,
             }),
           )}
         >
