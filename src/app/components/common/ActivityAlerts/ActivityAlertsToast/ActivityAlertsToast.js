@@ -36,6 +36,7 @@ const ActivityAlertsToast = ({ itemAlert, positionInQueue, onClear }) => {
           <ActivityAlertsItem
             onClearAlert={() => setIsCleared(true)}
             itemAlert={itemAlert}
+            withCrossIcon
           />
         </ActivityAlertsToastContainer>
       )}
