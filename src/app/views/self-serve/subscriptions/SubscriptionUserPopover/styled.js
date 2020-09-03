@@ -56,7 +56,6 @@ export const RoleItemLabel = styled.div`
 
 export const RoleItemDescription = styled.div`
   color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.extraLight};
   font-size: ${fontSizes.smallPlus};
 `;
 
@@ -89,7 +88,6 @@ export const InvitationItemLabel = styled.div`
 
 export const InvitationItemDescription = styled.div`
   color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.extraLight};
   font-size: ${fontSizes.smallPlus};
   margin-bottom: ${spacing.smallPlus};
 `;
