@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
-import { showAlert, showToast } from 'helpers/utility-functions';
 import {
   cancelInviteToOrganization,
   resendInviteToOrganization,
@@ -20,6 +20,7 @@ const renderInvitations = ({
   cancelInvite,
   reloadUsers,
   userStatus,
+  dispatch,
 }) => {
   return [
     {
@@ -31,21 +32,17 @@ const renderInvitations = ({
       onSave: () => {
         resendInvite({ userIdentifier })
           .then(() => {
-            showToast({
-              status: 'success',
-              title: 'Invitation resent successfully',
-            });
+            dispatch(showGlobalAlert('Invitation resent successfully'));
             reloadUsers();
             closePopover();
           })
           .catch(error => {
-            showAlert({
-              status: 'error',
-              title: 'Error',
-              text:
-                error?.errorMessage ??
-                'Invitation could not be resent, please try again later',
-            });
+            dispatch(
+              showGlobalErrorAlert(
+                error?.message ??
+                  'Invitation could not be resent, please try again later',
+              ),
+            );
 
             closePopover();
           });
@@ -61,22 +58,17 @@ const renderInvitations = ({
       onSave: () => {
         cancelInvite({ userIdentifier })
           .then(() => {
-            showToast({
-              status: 'success',
-              title: 'Invitation cancelled successfully',
-            });
+            dispatch(showGlobalAlert('Invitation cancelled successfully'));
             reloadUsers();
             closePopover();
           })
           .catch(error => {
-            showAlert({
-              status: 'error',
-              title: 'Error',
-              text:
-                error?.errorMessage ??
-                'Invitation could not be cancelled, please try again later',
-            });
-
+            dispatch(
+              showGlobalErrorAlert(
+                error?.message ??
+                  'Invitation could not be cancelled, please try again later',
+              ),
+            );
             closePopover();
           });
       },
@@ -156,6 +148,7 @@ const InvitationPopover = ({
         orgUserRole,
         resendInvite,
         cancelInvite,
+        dispatch,
       })}
     />
   );

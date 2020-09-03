@@ -6,7 +6,7 @@ import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Button from 'components/common/Button/Button';
-import { showAlert, showToast } from 'helpers/utility-functions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { changeUserRoleForOrg } from 'actions/people-actions';
 import { approvePendingUser, denyPendingUser } from 'api/people-api';
 import { renderRoleItem } from './RoleSelectionPopover';
@@ -54,6 +54,7 @@ const renderUserTypesOptions = ({
   orgUserRole,
   userStatus,
   selectedRoleKey,
+  dispatch,
 }) => {
   let renderedArray = [];
 
@@ -73,21 +74,17 @@ const renderUserTypesOptions = ({
           onSave: () => {
             changeUserRole({ userIdentifier, role })
               .then(() => {
-                showToast({
-                  status: 'success',
-                  title: `User's role changed successfully`,
-                });
+                dispatch(showGlobalAlert(`User's role changed successfully`));
                 reloadUsers();
                 closePopover();
               })
               .catch(error => {
-                showAlert({
-                  status: 'error',
-                  title: 'Error',
-                  text:
-                    error?.errorMessage ??
-                    `User's role could not be changed, please try again later`,
-                });
+                dispatch(
+                  showGlobalErrorAlert(
+                    error?.message ??
+                      `User's role could not be changed, please try again later`,
+                  ),
+                );
 
                 closePopover();
               });
@@ -151,21 +148,21 @@ const PendingApprovalPopover = props => {
             onClick={() =>
               denyPendingUser({ userIdentifier })
                 .then(() => {
-                  showToast({
-                    status: 'success',
-                    title: `User's pending invitation denied successfully`,
-                  });
+                  dispatch(
+                    showGlobalAlert(
+                      `User's pending invitation denied successfully`,
+                    ),
+                  );
                   reloadUsers();
                   closePopover();
                 })
                 .catch(error => {
-                  showAlert({
-                    status: 'error',
-                    title: 'Error',
-                    text:
-                      error?.errorMessage ??
-                      `User's pending invitation could not be denied, please try again later`,
-                  });
+                  dispatch(
+                    showGlobalErrorAlert(
+                      error?.message ??
+                        `User's pending invitation could not be denied, please try again later`,
+                    ),
+                  );
 
                   closePopover();
                 })
@@ -206,6 +203,7 @@ const PendingApprovalPopover = props => {
           removeSubscription,
           orgUserRole,
           selectedRoleKey: selectedRole?.key,
+          dispatch,
         })?.map(item =>
           renderRoleItem({
             ...item,
@@ -218,21 +216,17 @@ const PendingApprovalPopover = props => {
           onClick={() =>
             approvePendingUser({ userIdentifier, role: selectedRole?.key })
               .then(() => {
-                showToast({
-                  status: 'success',
-                  title: `User's pending invitation approved successfully`,
-                });
+                dispatch(`User's pending invitation approved successfully`);
                 reloadUsers();
                 closePopover();
               })
               .catch(error => {
-                showAlert({
-                  status: 'error',
-                  title: 'Error',
-                  text:
-                    error?.errorMessage ??
-                    `User's pending invitation could not be approved, please try again later`,
-                });
+                dispatch(
+                  showGlobalErrorAlert(
+                    error?.message ??
+                      `User's pending invitation could not be approved, please try again later`,
+                  ),
+                );
 
                 closePopover();
               })

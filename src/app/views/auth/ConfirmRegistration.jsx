@@ -1,13 +1,14 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import React, { useState } from 'react';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-// import ConfirmUserAccountForm from 'components/auth/ConfirmUserAccountForm';
+import { useDispatch } from 'react-redux';
 import { confirmRegistration, resendConfirmationCode } from 'api/user-api';
 import { StyledAnchorDiv } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import { showAlert, showToast } from 'helpers/utility-functions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
@@ -16,41 +17,40 @@ import {
   OnboardingHeader,
 } from '../onboarding/OnboardingTemplate.Components';
 
-const resendEmail = async email => {
+const resendEmail = async (email, dispatch) => {
   try {
     await resendConfirmationCode({
       username: email,
     });
-    showToast({
-      status: 'success',
-      title: 'Account confirmation email resent',
-    });
+    dispatch(showGlobalAlert('Account confirmation email resent'));
   } catch (error) {
-    showAlert({
-      status: 'error',
-      title: 'Error',
-      text: error?.message ?? 'Could not resend email, please try again later',
-    });
+    dispatch(
+      showGlobalErrorAlert(
+        error?.message ?? 'Could not resend email, please try again later',
+      ),
+    );
   }
 };
 
 const ConfirmRegistration = props => {
+  const dispatch = useDispatch();
   const [isDialogShown, showDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
+  // eslint-disable-next-line consistent-return
   useMount(() => {
     const { uname } = props.location.query;
     const { code } = props.location.query;
-    // console.log(`uname: ${uname} code:${code}`);
+
     if (uname && code) {
       setUserEmail(uname);
       return confirmRegistration({
         username: uname,
         confirmationCode: code,
       })
-        .then(u => {
+        .then(() => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             CONFIRM_REGISTRATION_SUCCESS: 'YES',
           });
@@ -152,7 +152,7 @@ const ConfirmRegistration = props => {
           </span>
           <StyledAnchorDiv
             style={onboardingLinkStyle}
-            onClick={() => resendEmail(userEmail)}
+            onClick={() => resendEmail(userEmail, dispatch)}
           >
             Resend email
           </StyledAnchorDiv>

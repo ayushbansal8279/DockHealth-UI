@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { pathEq } from 'ramda';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
-import { showAlert, showToast } from 'helpers/utility-functions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { changeUserRoleForOrg } from 'actions/people-actions';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
@@ -27,6 +27,7 @@ export const renderUserTypesOptions = ({
   orgUserRole,
   userStatus,
   selectedRoleKey,
+  dispatch,
 }) => {
   let renderedArray = [];
 
@@ -46,21 +47,17 @@ export const renderUserTypesOptions = ({
           onSave: () => {
             changeUserRole({ userIdentifier, role })
               .then(() => {
-                showToast({
-                  status: 'success',
-                  title: `User's role changed successfully`,
-                });
+                dispatch(showGlobalAlert(`User's role changed successfully`));
                 reloadUsers();
                 closePopover();
               })
               .catch(error => {
-                showAlert({
-                  status: 'error',
-                  title: 'Error',
-                  text:
-                    error?.errorMessage ??
-                    `User's role could not be changed, please try again later`,
-                });
+                dispatch(
+                  showGlobalErrorAlert(
+                    error?.message ??
+                      `User's role could not be changed, please try again later`,
+                  ),
+                );
 
                 closePopover();
               });
@@ -205,6 +202,7 @@ const RoleSelectionPopover = ({
         removeSubscription,
         orgUserRole,
         selectedRoleKey: selectedRole?.key,
+        dispatch,
       })}
     />
   );

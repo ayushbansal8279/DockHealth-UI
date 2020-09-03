@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios';
 import { identity } from 'ramda';
-// import { showToast } from '../helpers/utility-functions';
 
 const NETWORK_ERROR = 'NETWORK_ERROR';
 
@@ -29,6 +28,7 @@ axiosInstance.interceptors.request.use(
   },
 );
 
+// eslint-disable-next-line consistent-return
 axiosInstance.interceptors.response.use(identity, error => {
   if (error.response) {
     localStorage.setItem(NETWORK_ERROR, 'false');
@@ -48,18 +48,6 @@ axiosInstance.interceptors.response.use(identity, error => {
 
   console.log('Connection error');
   window.location.href = '/#/login';
-  // showToast({
-  //   status: 'error',
-  //   title: 'Connection error',
-  //   text: 'A connection error has occured, please refresh the page',
-  //   confirmButtonText: 'Refresh page',
-  //   showConfirmButton: true,
-  //   showCloseButton: true,
-  //   timerProgressBar: false,
-  //   timer: 0,
-  // }).then(({ value }) => {
-  //   if (value) window.location.reload();
-  // });
 });
 
 export default axiosInstance;

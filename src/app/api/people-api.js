@@ -72,7 +72,7 @@ export function resendInviteToOrganization(userIdentifier) {
       return data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -99,7 +99,7 @@ export function changeUserRoleForOrg(markedUserIdentifier, role) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -113,7 +113,7 @@ export function cancelInviteToOrganization(markedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -212,7 +212,7 @@ export function approvePendingUser({ userIdentifier, role }) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -223,6 +223,6 @@ export function denyPendingUser({ userIdentifier }) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
