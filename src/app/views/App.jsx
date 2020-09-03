@@ -11,12 +11,15 @@ import ReactModal from 'react-modal';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification';
+import ActivityAlertsToasts from 'components/common/ActivityAlerts/ActivityAlertsToasts';
 import { featurePalette } from 'styles/palette';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 
 const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+  position: relative;
 `;
 
 const MainContainer = styled.main`
@@ -98,6 +101,7 @@ class App extends PureComponent {
         {!showRotateScreenPage && (
           <>
             <Modal />
+            <ActivityAlertsToasts />
             <div className="new-task" />
             <IdleTimer
               ref={reference => {

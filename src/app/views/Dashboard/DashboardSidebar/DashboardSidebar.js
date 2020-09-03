@@ -130,6 +130,7 @@ const DashboardSidebar = ({
   };
 
   const { userOrganizations } = currentUser;
+  console.log(currentUser);
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',

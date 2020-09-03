@@ -198,6 +198,8 @@ export function logout() {
           sessionStorage.removeItem('userIdentifier');
           sessionStorage.removeItem('sessionStartTime');
           sessionStorage.removeItem('currentOrganizationIdentifier');
+          sessionStorage.removeItem('notificationsEnabled');
+          sessionStorage.removeItem('hasUnreadAlerts');
           onLogout();
         })
         .catch(error => {
