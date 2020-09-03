@@ -109,6 +109,7 @@ export const SecondaryInputError = styled.span`
   color: ${palette.oPlusRed};
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.bold};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 // Rest

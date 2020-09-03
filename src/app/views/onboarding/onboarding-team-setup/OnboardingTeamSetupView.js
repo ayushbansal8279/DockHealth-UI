@@ -214,7 +214,7 @@ const OnboardingTeamSetupView = () => {
                 <Grid
                   container
                   direction="row"
-                  alignItems="flex-end"
+                  alignItems="flex-start"
                   spacing={2}
                 >
                   <Grid item xs={3}>

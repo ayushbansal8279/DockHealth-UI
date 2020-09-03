@@ -70,7 +70,7 @@ const Input = React.forwardRef(
 
     return (
       <InputWrapper isHidden={type === 'hidden'} fullWidth={fullWidth}>
-        {hasError && <Error>{error}</Error>}
+        {hasError && styling === 'primary' && <Error>{error}</Error>}
         <Box>
           <Label
             isLabelCenterized={isLabelCenterized}
@@ -92,6 +92,7 @@ const Input = React.forwardRef(
             {...simpleInput}
           />
         </Box>
+        {hasError && styling === 'secondary' && <Error>{error}</Error>}
       </InputWrapper>
     );
   },
