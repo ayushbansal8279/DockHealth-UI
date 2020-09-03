@@ -31,11 +31,11 @@ const onSubmit = ({ dispatch }) => ({
     organizationInitials,
     organizationProfileColor: organizationThemeColor,
   })(dispatch).then(() => {
-    hashHistory.push('/');
+    hashHistory.push('/onboarding/team-setup');
   });
 };
 
-const OnboardingTeamOrgSetupViewDesktop = () => {
+const OnboardingOrgSetupViewDesktop = () => {
   const formContext = useForm({
     revalidationMode: 'onChange',
   });
@@ -166,4 +166,4 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
   );
 };
 
-export default OnboardingTeamOrgSetupViewDesktop;
+export default OnboardingOrgSetupViewDesktop;

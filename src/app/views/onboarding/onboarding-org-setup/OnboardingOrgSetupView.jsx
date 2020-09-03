@@ -8,9 +8,9 @@ import {
   OnboardingSpacing4,
   OnboardingAnchor,
 } from '../OnboardingTemplate.Components';
-import OnboardingTeamOrgSetupViewDesktop from './OnboardingTeamOrgSetupView.Desktop';
+import OnboardingOrgSetupViewDesktop from './OnboardingOrgSetupView.Desktop';
 
-const OnboardingTeamOrgSetupView = () => {
+const OnboardingOrgSetupView = () => {
   const isMobile = useMobile();
   const isIOS = useIOS();
   const isSmallScreen = useSmallScreen();
@@ -44,8 +44,8 @@ const OnboardingTeamOrgSetupView = () => {
       </OnboardingH3>
     </>
   ) : (
-    <OnboardingTeamOrgSetupViewDesktop />
+    <OnboardingOrgSetupViewDesktop />
   );
 };
 
-export default OnboardingTeamOrgSetupView;
+export default OnboardingOrgSetupView;

@@ -71,7 +71,8 @@ import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/Onbo
 import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
 import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
-import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
+import OnboardingOrgSetupView from './views/onboarding/onboarding-org-setup/OnboardingOrgSetupView';
+import OnboardingTeamSetupView from './views/onboarding/onboarding-team-setup/OnboardingTeamSetupView';
 import OnboardingTrialCheckView from './views/onboarding/onboarding-trial-check/OnboardingTrialCheckView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
@@ -85,7 +86,6 @@ import SubscriptionPaymentView from './views/self-serve/subscription-payment/Sub
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
 import SupportView from './views/Support/SupportView';
 import TaskListActivityFeedView from './views/TaskList/TaskListActivityFeedView';
-// import TaskListSearch from './views/TaskList/TaskListSearch';
 import TaskListView from './views/TaskList/TaskListView';
 import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase/TemplateAuthBase';
@@ -486,7 +486,8 @@ export const Routes = ({ store }) => {
             component={OnboardingBaaInvitationSentView}
             path="baa-invitation-sent"
           />
-          <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
+          <Route component={OnboardingOrgSetupView} path="organization-setup" />
+          <Route component={OnboardingTeamSetupView} path="team-setup" />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

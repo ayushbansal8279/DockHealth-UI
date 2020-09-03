@@ -69,7 +69,7 @@ const Input = React.forwardRef(
       !isFocused && centerizedLabelOnStart && (!value || value?.length === 0);
 
     return (
-      <InputWrapper fullWidth={fullWidth}>
+      <InputWrapper isHidden={type === 'hidden'} fullWidth={fullWidth}>
         {hasError && <Error>{error}</Error>}
         <Box>
           <Label
@@ -78,7 +78,7 @@ const Input = React.forwardRef(
             hasError={hasError}
           >
             {label}
-            {required && <RequiredLabel>(required)</RequiredLabel>}
+            {label && required && <RequiredLabel>(required)</RequiredLabel>}
           </Label>
           <Field
             id={name}

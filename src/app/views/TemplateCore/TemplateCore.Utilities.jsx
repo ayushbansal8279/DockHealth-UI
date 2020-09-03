@@ -14,7 +14,7 @@ const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const BAA_CHECK_PATH = '/onboarding/baa-check';
 const BAA_INVITATION_SENT_PATH = '/onboarding/baa-invitation-sent';
 const TRIAL_EXPIRATION_PATH = '/onboarding/trial-check';
-const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
+const TEAM_ORG_SETUP_PATH = '/onboarding/organization-setup';
 const HOME_PATH = '/tasks';
 
 export const getBrowserInfo = () => {
