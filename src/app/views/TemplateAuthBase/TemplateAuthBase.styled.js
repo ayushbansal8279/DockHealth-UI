@@ -8,7 +8,7 @@ const mdBreakpoint = 960;
 export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 100vh;
   width: 100%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {
@@ -58,33 +58,34 @@ export const LeftSideContentContainer = styled.div`
 `;
 
 export const RightSideMainContainer = styled.div`
-  align-items: center;
-  background-color: ${palette.white};
-  display: flex;
-  flex: 1;
-  height: min-content;
-  justify-content: center;
-  min-height: min-content;
-
   @media screen and (min-width: ${mdBreakpoint}px) {
     height: 100%;
-    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
 export const RightSideContentContainer = styled.div`
-  align-items: flex-start;
-  display: flex;
-  height: min-content;
-  justify-content: center;
-  min-height: min-content;
-  padding: 1.5rem;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: auto;
 
   @media screen and (min-width: ${mdBreakpoint}px) {
-    align-items: center;
-    height: 100%;
-    min-height: 100%;
+    max-height: 100%;
+    overflow-y: scroll;
+  }
+`;
+
+export const RightSideMaxWidthContainer = styled.div`
+  width: 100%;
+  padding: 1.5rem;
+
+  @media screen and (min-width: ${mdBreakpoint}px) {
     padding: 2rem;
     max-width: 495px;
   }
