@@ -11,7 +11,7 @@ export const matchEmptyNumber = value =>
 export default object().shape({
   firstName: string().required(REQUIRED_MESSAGE),
   lastName: string().required(REQUIRED_MESSAGE),
-  title: string().required(REQUIRED_MESSAGE),
+  title: string().nullable(),
   specialty: string().nullable(),
   subspecialty: string().nullable(),
   department: string().nullable(),

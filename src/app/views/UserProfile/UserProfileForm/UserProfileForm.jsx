@@ -211,7 +211,7 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
               spacing={2}
             >
               <Grid item md={6} xs={12}>
-                <UniversalInput name="title" label="Title" required />
+                <UniversalInput name="title" label="Title" />
               </Grid>
               <Grid item md={6} xs={12}>
                 <UniversalInput name="department" label="Department" />
