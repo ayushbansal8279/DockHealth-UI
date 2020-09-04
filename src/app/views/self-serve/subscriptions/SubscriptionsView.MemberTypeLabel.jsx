@@ -2,7 +2,6 @@ import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { findAllUsers } from 'actions/people-actions';
 import Arrow from 'components/common/Arrow/Arrow';
-import useBoolean from 'hooks/useBoolean';
 import {
   MemberTypeButton,
   CurrentUserLabel,
@@ -34,9 +33,11 @@ const MemberTypeLabel = ({
   orgUserRole,
   userStatus,
   isInvited,
+  isPopoverOpen,
+  openPopover,
+  closePopover,
 }) => {
   const labelReference = useRef(null);
-  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const dispatch = useDispatch();
   const reloadUsers = useCallback(() => findAllUsers()(dispatch), [dispatch]);
 
