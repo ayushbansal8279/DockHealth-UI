@@ -115,6 +115,7 @@ const Toolbar = ({
   listNameColumnVisible = false,
   patientColumnVisible = true,
   tipsContent,
+  isFetching,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -266,6 +267,7 @@ const Toolbar = ({
                 ? openTasksAmount
                 : completedTasksAmount
             }
+            isFetching={isFetching}
           />
           <Spacing horizontal={5} />
           <SearchWrapper fullWidth={isSearchFocused || searchValue}>

@@ -56,6 +56,8 @@ const TaskView = ({
   pdfTitle,
   groupPagination = false,
   drawerAutoOpenEnabled = false,
+  isFetching,
+  isCompletedTasksFetching,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -138,6 +140,7 @@ const TaskView = ({
           listNameColumnVisible={listNameVisible}
           pdfTitle={pdfTitle}
           tipsContent={getTipsContent()}
+          isFetching={isFetching || isCompletedTasksFetching}
         />
         {selectedTab === TaskListTabName.COMPLETE ? (
           <CompletedTasksView

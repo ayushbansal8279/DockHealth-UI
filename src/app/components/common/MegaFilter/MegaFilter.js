@@ -205,6 +205,7 @@ const MegaFilter = ({
   taskList,
   taskStatus,
   tasksAndSubTasksCount,
+  isFetching,
   popoverStyles = {},
 }) => {
   const [isOpen, openPopover] = useState(false);
@@ -306,7 +307,7 @@ const MegaFilter = ({
             </MegaFilterOptions>
           </MegaFilterHeader>
           <MegaFilterSubHeader>
-            {isFilterApplied && tasksAndSubTasksCount === 0 && (
+            {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
               <MegaFilterNoResultsLabel>
                 There are no results for your filter criteria.
               </MegaFilterNoResultsLabel>
