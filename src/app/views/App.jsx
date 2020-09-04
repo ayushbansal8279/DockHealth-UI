@@ -64,10 +64,6 @@ class App extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    sessionStorage.removeItem('currentOrganizationIdentifier');
-  }
-
   onAction = () => {};
 
   onActive = () => {};
