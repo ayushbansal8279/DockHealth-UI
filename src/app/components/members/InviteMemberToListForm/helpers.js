@@ -17,7 +17,7 @@ export const getMenuOptionsForMember = (
       if (taskListUserRole === 'ADMIN')
         return [
           {
-            title: 'List Member',
+            title: 'Remove as List Admin',
             action: () => {
               changeUserRole(userIdentifier, 'MEMBER');
             },
@@ -34,7 +34,7 @@ export const getMenuOptionsForMember = (
 
       return [
         {
-          title: 'List admin',
+          title: 'Make List Admin',
           description: 'Can edit and delete the list.',
           action: () => {
             changeUserRole(userIdentifier, 'ADMIN');
