@@ -123,11 +123,13 @@ export const HorizontalLabel = styled.span`
 `;
 
 export const FiledInSelect = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
   cursor: ${props => (props.enableDropDown ? 'pointer' : '')};
-  display: inline-flex;
-  flex-flow: row nowrap;
-  width: 200px;
+
   & > * {
     font-size: 1rem;
     margin-left: 6px;
@@ -244,4 +246,27 @@ export const AdornmentClear = styled(Close)`
     color: ${palette.coolGrey2};
     cursor: pointer;
   }
+`;
+
+export const ActionButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+export const ListNameContainer = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
+export const ListNameSelectContainer = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 `;
