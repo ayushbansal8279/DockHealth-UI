@@ -82,6 +82,7 @@ const PatientsToolbar = ({
   handlePatientFilter,
   hasPatients,
   refreshPatientList,
+  isGuest,
 }) => {
   const dispatch = useDispatch();
 
@@ -101,7 +102,7 @@ const PatientsToolbar = ({
         <Spacing horizontal={4} />
         <Search onChange={handleSearch} />
       </Grid>
-      {hasPatients && (
+      {hasPatients && !isGuest && (
         <>
           <ImportPatientsButtonWrapper>
             <StyledButton

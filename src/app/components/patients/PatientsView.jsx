@@ -75,6 +75,12 @@ const PatientsView = () => {
 
   const patientCount = patients?.length ?? 0;
 
+  const orgUserRole = useSelector(
+    store => store.userState.userProfile?.orgUserRole,
+  );
+
+  const isGuest = orgUserRole === 'GUEST';
+
   useEffect(() => {
     setHeader(dispatch)({
       layout: [
@@ -103,7 +109,6 @@ const PatientsView = () => {
 
   const refreshPatientList = useCallback(
     async counter => {
-      getAllPatients()(dispatch);
       const importDetails = await getLatestPatientImportDetails()(dispatch);
       let refreshCounter = 1;
       if (counter) {
@@ -111,7 +116,7 @@ const PatientsView = () => {
       }
       if (
         importDetails &&
-        (importDetails.recordsToProcess || refreshCounter < 10) &&
+        (importDetails.createdDateTime || refreshCounter < 10) &&
         importDetails.completePercentage < 100
       ) {
         setTimeout(() => {
@@ -131,11 +136,11 @@ const PatientsView = () => {
         getMyPatientsActive()(dispatch);
       } else {
         getAllPatients()(dispatch);
+        getLatestPatientImportDetails()(dispatch);
+        setTimeout(() => {
+          refreshPatientList(1);
+        }, 1000);
       }
-      getLatestPatientImportDetails()(dispatch);
-      setTimeout(() => {
-        refreshPatientList(1);
-      }, 1000);
     },
     [dispatch, refreshPatientList],
   );
@@ -153,6 +158,7 @@ const PatientsView = () => {
         hasPatients={!(patients.length === 0 && searchTerm === '')}
         patientImportDetails={patientImportDetails}
         refreshPatientList={refreshPatientList}
+        isGuest={isGuest}
       />
       <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>
@@ -167,6 +173,7 @@ const PatientsView = () => {
                 highlightedPatient={highlightedPatient}
                 patientImportDetails={patientImportDetails}
                 refreshPatientList={refreshPatientList}
+                isGuest={isGuest}
               />
               <SideClickListener onClick={deselectPatient} />
             </Grid>

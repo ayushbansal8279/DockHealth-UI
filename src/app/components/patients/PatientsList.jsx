@@ -349,12 +349,13 @@ const PatientsList = ({
   highlightedPatient,
   patientImportDetails,
   refreshPatientList,
+  isGuest,
 }) => {
   const dispatch = useDispatch();
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
   const [importPopoverOpen, setImportPopoverOpen] = useState(
-    patientImportDetails && patientImportDetails.recordsProcessed,
+    patientImportDetails && patientImportDetails.createdDateTime,
   );
 
   const onAddPatientClick = useCallback(() => {
@@ -362,7 +363,7 @@ const PatientsList = ({
   }, [dispatch]);
 
   if (patients.length === 0) {
-    return isFiltered ? (
+    return isFiltered || isGuest ? (
       <EmptyFilteredList />
     ) : (
       <>
