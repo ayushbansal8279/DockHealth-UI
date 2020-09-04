@@ -290,7 +290,7 @@ const Toolbar = ({
                     ? openTasksAmount
                     : completedTasksAmount
                 }
-            isFetching={isFetching}
+                isFetching={isFetching}
               />
               <Spacing horizontal={5} />
               <SearchWrapper fullWidth={isSearchFocused || searchValue}>
