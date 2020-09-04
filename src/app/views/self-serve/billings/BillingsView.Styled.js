@@ -1,6 +1,7 @@
 import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { fontWeights } from 'styles/font';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -57,4 +58,13 @@ export const ErrorContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.5rem 1rem;
+`;
+
+export const StyledLabel = styled.label`
+  color: inherit;
+  font-weight: ${fontWeights.regular};
+
+  & > span {
+    color: ${palette.coolGrey2};
+  }
 `;
