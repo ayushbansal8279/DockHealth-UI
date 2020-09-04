@@ -51,7 +51,7 @@ const DashboardFirstVisitView = ({
             <Description>
               Lists are how you organize all your tasks. Think of a list as a
               folder where tasks related to that folder live. You can create as
-              many lists as you like. Let’s get started!
+              many lists as you&apos;d like. Let’s get started!
             </Description>
             <ButtonsContainer>
               <Button fullWidth variant="contained" onClick={onCreateList}>

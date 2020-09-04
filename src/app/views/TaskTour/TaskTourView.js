@@ -73,7 +73,7 @@ const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
     <TaskTourWrapper>
       <Title>How to read your to-dos</Title>
       <Description>
-        Before we get to creating a Task, let’s make sure you kno w all the
+        Before we get to creating a Task, let’s make sure you know all the
         features on your to-do list.
       </Description>
       <ImageWrapper>
