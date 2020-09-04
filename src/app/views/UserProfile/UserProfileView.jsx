@@ -182,7 +182,7 @@ const UserProfileView = () => {
             userProfile={userProfile}
             userNotificationPreferences={userNotificationPreferences}
           />
-          <Spacing vertical={5} />
+          <Spacing vertical={8} />
           <Divider />
           <Spacing vertical={2} />
           <AppVersionInfoWrapper>
