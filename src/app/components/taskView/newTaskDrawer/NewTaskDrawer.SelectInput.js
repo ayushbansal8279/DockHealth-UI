@@ -14,7 +14,7 @@ import {
   string,
 } from 'prop-types';
 import { prop, propOr } from 'ramda';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import parse from 'autosuggest-highlight/parse';
@@ -260,17 +260,20 @@ const SelectInput = React.forwardRef(
       autoHighlight: true,
     });
 
-    const inputReference = setAnchorEl;
+    const filteredGroupedOptions = useMemo(
+      () =>
+        groupedOptions.filter(option =>
+          option?.displayLabel
+            ?.toLowerCase()
+            .startsWith(inputValue.toLowerCase()),
+        ),
+      [inputValue, groupedOptions],
+    );
 
-    // console.log('dirty: '+dirty);
-    // console.log('inputValue: '+inputValue);
-    // console.log('selectedValue: '+currentOption?.displayLabel);
-    // console.log(currentOption);
-    // console.log('groupedOptions length: '+groupedOptions.length);
+    const inputReference = setAnchorEl;
 
     const onKeyDown = useCallback(
       event => {
-        // console.log('onKeyDown');
         if (multiple && event.key === 'Enter') {
           event.preventDefault();
           event.stopPropagation();
@@ -288,7 +291,7 @@ const SelectInput = React.forwardRef(
 
         if (
           !multiple &&
-          groupedOptions.length === 0 &&
+          filteredGroupedOptions.length === 0 &&
           event.key === 'Enter' &&
           onEndAdornmentAcionClick
         ) {
@@ -303,7 +306,7 @@ const SelectInput = React.forwardRef(
         name,
         onItemSelected,
         onEndAdornmentAcionClick,
-        groupedOptions,
+        filteredGroupedOptions,
       ],
     );
 
@@ -359,7 +362,7 @@ const SelectInput = React.forwardRef(
     const endAdornment = (
       <EndAdornmentContainer>
         {endAdornmentEnabled &&
-          groupedOptions.length === 0 &&
+          filteredGroupedOptions.length === 0 &&
           !!inputValue &&
           popupOpen &&
           (multiple ? (
@@ -431,7 +434,7 @@ const SelectInput = React.forwardRef(
               autoFocusEnabled={autoFocusEnabled}
             />
           </StyledAutoComplete>
-          {groupedOptions.length === 0 &&
+          {filteredGroupedOptions.length === 0 &&
           inputValue !== '' &&
           inputValue !== currentOption?.displayLabel ? (
             <Listbox
@@ -447,7 +450,7 @@ const SelectInput = React.forwardRef(
               <div>{noOptionsText}</div>
             </Listbox>
           ) : null}
-          {groupedOptions.length > 0 ? (
+          {filteredGroupedOptions.length > 0 ? (
             <Listbox
               {...getListboxProps()}
               itemEditing={itemEditing}
@@ -458,7 +461,7 @@ const SelectInput = React.forwardRef(
                     : '300px',
               }}
             >
-              {groupedOptions.map((option, index) => (
+              {filteredGroupedOptions.map((option, index) => (
                 <li
                   {...getOptionProps({ option, index })}
                   data-multiple={multiple ? 'true' : 'false'}
