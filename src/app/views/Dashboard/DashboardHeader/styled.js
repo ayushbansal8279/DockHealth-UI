@@ -23,3 +23,7 @@ export const HeaderTitle = styled(MontserratTypography)`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+
+export const DashboardHeaderActivityAlertsContainer = styled.div`
+  margin-right: 48px;
+`;

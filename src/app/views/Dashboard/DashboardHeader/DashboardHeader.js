@@ -13,6 +13,7 @@ import {
   HeaderTitle,
   PersonImage,
   HeaderTextContainer,
+  DashboardHeaderActivityAlertsContainer,
 } from './styled';
 
 const DashboardHeader = ({ currentUser }) => {
@@ -44,7 +45,7 @@ const DashboardHeader = ({ currentUser }) => {
         justify="space-between"
         alignItems="center"
       >
-        <Grid container item sm={9} md={9} lg={10}>
+        <Grid container item sm={6} md={8} lg={9}>
           <Avatar color={palette.coolGrey1} size={60}>
             {avatarContent}
           </Avatar>
@@ -56,13 +57,19 @@ const DashboardHeader = ({ currentUser }) => {
             <Spacing vertical={3} />
           </HeaderTextContainer>
         </Grid>
-        <Grid container item sm={3} md={3} lg={2} alignItems="center">
-          <Grid item sm={4} md={4} lg={6}>
+        <Grid
+          container
+          item
+          sm={6}
+          md={4}
+          lg={3}
+          alignItems="center"
+          justify="flex-end"
+        >
+          <DashboardHeaderActivityAlertsContainer>
             <ActivityAlerts variant="blue" />
-          </Grid>
-          <Grid item sm={8} md={8} lg={6}>
-            <HeaderLogo src={AppLogo} />
-          </Grid>
+          </DashboardHeaderActivityAlertsContainer>
+          <HeaderLogo src={AppLogo} />
         </Grid>
       </Grid>
     </>
