@@ -116,7 +116,8 @@ const PatientsView = () => {
       }
       if (
         importDetails &&
-        (importDetails.createdDateTime || refreshCounter < 10) &&
+        importDetails.createdDateTime &&
+        refreshCounter < 10 &&
         importDetails.completePercentage < 100
       ) {
         setTimeout(() => {
