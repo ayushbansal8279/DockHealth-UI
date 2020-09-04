@@ -500,7 +500,13 @@ export const Routes = ({ store }) => {
               component={ConfirmRegistrationSuccess}
             />
             <Route path="/create-account" component={CreateAccount} />
-            <Route path="/login" component={LoginUser} />
+            <Route
+              path="/login"
+              component={LoginUser}
+              onEnter={() => {
+                sessionStorage.removeItem('currentOrganizationIdentifier');
+              }}
+            />
             <Route path="/loginUser" component={LoginPassword} />
             <Route path="/welcome" component={LoginWelcome} />
             <Route path="/logout" component={Logout} />
