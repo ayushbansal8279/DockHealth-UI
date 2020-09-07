@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Divider } from '@material-ui/core';
 import moment from 'moment';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import useBoolean from 'hooks/useBoolean';
@@ -21,31 +21,32 @@ const SET_DATE_VALUE = 'set-date';
 const renderDropdownItem = ({
   openCalendar,
   closeCalendar,
-  openPopover,
-  closePopover,
   onItemSelection,
-}) => ({ setValue }) => ({ label, value, disabled }) => (
+  inputReference,
+}) => ({ setValue }) => ({ label, value, disabled, isHovered }) => (
   <div
-    key={label}
-    onClick={() => {
+    onMouseDown={() => {
       if (disabled) return;
 
       if (value === SET_DATE_VALUE) {
         openCalendar();
-        closePopover();
+        inputReference.blur();
         setTimeout(() => {
           // a simple hack to reopen the Popover since it doesn't support scroll and needs to have everything displayed so as to re-position
-          openPopover();
-        }, 50);
+          inputReference.focus();
+        }, 100);
       } else {
         setValue(value);
         onItemSelection(value);
-        closePopover();
         closeCalendar();
       }
+
+      setTimeout(() => {
+        inputReference.focus();
+      }, 100);
     }}
   >
-    {label}
+    {label(isHovered)}
   </div>
 );
 
@@ -65,10 +66,13 @@ const DueDateSection = ({
 }) => {
   const dateFieldName = 'dueDate';
 
+  const reference = useRef(null);
+
+  const inputReference = reference.current?.querySelector('input');
+
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
   const popoverStateArray = useBoolean(false);
-  const openPopover = popoverStateArray[1];
-  const closePopover = popoverStateArray[2];
+  const [initialMonthMomentValue, setInitialMonthMomentValue] = useState(null);
 
   const { setValue, watch } = useFormContext();
 
@@ -94,17 +98,22 @@ const DueDateSection = ({
         updatedDueDate: value,
         updatedDueTime: currentDueTime || '',
       });
-      closeCalendar();
-      closePopover();
+      // closeCalendar();
+      inputReference.blur();
       setAutoSaveVisible();
+
+      setTimeout(() => {
+        inputReference.focus();
+      }, 100);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       closeCalendar,
-      closePopover,
       currentDueTime,
       saveDueDate,
       setAutoSaveVisible,
       setValue,
+      reference.current,
     ],
   );
 
@@ -114,8 +123,8 @@ const DueDateSection = ({
       value: moment()
         .startOf('day')
         .format(DATE_ISO_FORMAT),
-      label: (
-        <DueDateLabelContainer>
+      label: isHovered => (
+        <DueDateLabelContainer isHovered={isHovered}>
           <RobotoTypography condensed variant="h4">
             Today
           </RobotoTypography>
@@ -131,8 +140,8 @@ const DueDateSection = ({
         .startOf('day')
         .add(1, 'day')
         .format(DATE_ISO_FORMAT),
-      label: (
-        <DueDateLabelContainer>
+      label: isHovered => (
+        <DueDateLabelContainer isHovered={isHovered}>
           <RobotoTypography condensed variant="h4">
             Tomorrow
           </RobotoTypography>
@@ -146,8 +155,8 @@ const DueDateSection = ({
     {
       key: 'set-date',
       value: SET_DATE_VALUE,
-      label: (
-        <DueDateLabelContainer>
+      label: isHovered => (
+        <DueDateLabelContainer isHovered={isHovered}>
           <RobotoTypography condensed variant="h4">
             Set date
           </RobotoTypography>
@@ -168,6 +177,13 @@ const DueDateSection = ({
           <Datepicker
             onDateChange={setDueDateValue}
             selectedDate={currentDueDate ? moment(currentDueDate) : null}
+            initialMonthMomentValue={initialMonthMomentValue}
+            onMonthChange={nextMonthMomentValue => {
+              setInitialMonthMomentValue(nextMonthMomentValue);
+              setTimeout(() => {
+                inputReference.focus();
+              }, 100);
+            }}
           />
         </div>
       ),
@@ -178,6 +194,7 @@ const DueDateSection = ({
 
   return (
     <DropdownInput
+      ref={reference}
       name={dateFieldName}
       label="Due date"
       placeholder="Set a due date?"
@@ -200,9 +217,8 @@ const DueDateSection = ({
       renderItem={renderDropdownItem({
         openCalendar,
         closeCalendar,
-        openPopover,
-        closePopover,
         onItemSelection: onItemSelection({ saveDueDate, currentDueTime }),
+        inputReference,
       })}
       popoverStateArray={popoverStateArray}
     >

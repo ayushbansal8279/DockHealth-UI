@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import initializeStatusSectionHooks, {
@@ -21,8 +21,8 @@ import palette from '../../../styles/palette';
 const statusOptions = STATUSES.map(({ value, label, color }) => ({
   key: value,
   value,
-  label: (
-    <StatusLabelContainer>
+  label: isHovered => (
+    <StatusLabelContainer isHovered={isHovered}>
       <StatusFlag color={color} />
       <CondensedH4>{label}</CondensedH4>
     </StatusLabelContainer>
@@ -33,6 +33,7 @@ const statusOptions = STATUSES.map(({ value, label, color }) => ({
 const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
   label,
   value,
+  isHovered,
 }) => (
   <BlockButton
     type="button"
@@ -46,7 +47,7 @@ const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
       closePopover();
     }}
   >
-    {label}
+    {label(isHovered)}
   </BlockButton>
 );
 
@@ -55,6 +56,7 @@ const onItemSelection = ({ saveTaskStatus }) => value => {
 };
 
 const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
+  const reference = useRef(null);
   const {
     currentStatusFlagColor,
     saveTaskStatus,
@@ -66,6 +68,7 @@ const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
         <StatusFlag color={currentStatusFlagColor} />
       </StatusFlagContainer>
       <DropdownInput
+        ref={reference}
         name="workflowStatus"
         label="Status"
         placeholder="Is there a status?"

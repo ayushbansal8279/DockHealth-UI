@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import PriorityFlag from 'img/priority-flag';
 
@@ -22,8 +22,8 @@ import palette from '../../../styles/palette';
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
   value,
-  label: (
-    <PriorityLabelContainer>
+  label: isHovered => (
+    <PriorityLabelContainer isHovered={isHovered}>
       <PriorityFlag color={color} />
       <CondensedH4>{label}</CondensedH4>
     </PriorityLabelContainer>
@@ -34,6 +34,7 @@ const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
 const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
   label,
   value,
+  isHovered,
 }) => (
   <BlockButton
     type="button"
@@ -47,7 +48,7 @@ const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
       closePopover();
     }}
   >
-    {label}
+    {label(isHovered)}
   </BlockButton>
 );
 
@@ -56,6 +57,7 @@ const onItemSelection = ({ saveTaskPriority }) => value => {
 };
 
 const PrioritySection = ({ setAutoSaveVisible }) => {
+  const reference = useRef(null);
   const {
     currentPriorityFlagColor,
     saveTaskPriority,
@@ -67,6 +69,7 @@ const PrioritySection = ({ setAutoSaveVisible }) => {
         <PriorityFlag color={currentPriorityFlagColor} />
       </PriorityFlagContainer>
       <DropdownInput
+        ref={reference}
         name="priority"
         label="Priority"
         placeholder="Is there a priority?"
