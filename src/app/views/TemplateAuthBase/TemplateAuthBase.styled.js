@@ -58,6 +58,8 @@ export const LeftSideContentContainer = styled.div`
 `;
 
 export const RightSideMainContainer = styled.div`
+  background-color: ${palette.white};
+
   @media screen and (min-width: ${mdBreakpoint}px) {
     height: 100%;
     display: flex;
