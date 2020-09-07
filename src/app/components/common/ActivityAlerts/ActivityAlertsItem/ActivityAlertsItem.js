@@ -1,5 +1,8 @@
 import React from 'react';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { hashHistory } from 'react-router';
+import { storeAsCurrentTask } from 'actions/task-actions';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/notifications/cross';
 import {
@@ -15,6 +18,7 @@ import {
   CompletedCircleIcon,
   StyledLink,
   StyledCrossIcon,
+  StyledTaskLink,
 } from './styled';
 
 const AssignedCommentAlertItem = ({
@@ -22,6 +26,7 @@ const AssignedCommentAlertItem = ({
   onClearAlert,
   withCrossIcon,
 }) => {
+  const dispatch = useDispatch();
   const { task, createdDateTime, organization, targetIdentifier } = itemAlert;
   const { description, taskList, taskIdentifier, status, comments } = task;
   const { taskListIdentifier } = taskList;
@@ -70,13 +75,19 @@ const AssignedCommentAlertItem = ({
       </ActivityAlertsItemHeader>
       <ActivityAlertsItemLabel>
         New comment in{' '}
-        <StyledLink
-          to={`/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`}
+        <StyledTaskLink
+          onClick={() => {
+            dispatch(storeAsCurrentTask(task));
+            onClearAlert();
+            hashHistory.push(
+              `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+            );
+          }}
         >
           {description?.length > 30
             ? `${description.slice(0, 30)}...`
             : description}
-        </StyledLink>{' '}
+        </StyledTaskLink>{' '}
         added by{' '}
         <StyledLink to={`/assignedToPerson/${creator?.userIdentifier}`}>
           {creator?.firstName} {creator?.lastName}
