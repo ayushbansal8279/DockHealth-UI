@@ -12,6 +12,9 @@ import {
   HorizontalLabel,
   CondensedH4,
   styleFirstRow,
+  ActionButtonsContainer,
+  ListNameContainer,
+  ListNameSelectContainer,
 } from './NewTaskDrawer.Styled';
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
@@ -113,18 +116,13 @@ const TopSection = ({
         justify="space-between"
         style={styleFirstRow}
       >
-        <Grid
-          container
-          item
-          xs={6}
-          alignItems="flex-start"
-          justify="flex-start"
-        >
+        <ListNameContainer>
           {selectedTask && !selectedTask.parentTaskIdentifier && (
             <>
               <input type="hidden" name="newTaskListId" ref={register} />
               <HorizontalLabel>FILED IN: </HorizontalLabel>
-              <div
+              <Spacing horizontal={3} />
+              <ListNameSelectContainer
                 ref={filedInInputReference}
                 onClick={
                   moreTaskListsAvailable ? openFiledInPopover : undefined
@@ -144,15 +142,18 @@ const TopSection = ({
                   )}
                 </FiledInSelect>
                 {moreTaskListsAvailable && (
-                  <SmallSwitchChevronDown color={palette.orangeJulius} />
+                  <>
+                    <Spacing horizontal={3} />
+                    <SmallSwitchChevronDown color={palette.orangeJulius} />
+                  </>
                 )}
-              </div>
+              </ListNameSelectContainer>
               <InputPopover
                 anchorElement={filedInInputReference}
                 isPopoverOpen={isFiledInPopoverOpen}
                 closePopover={closeFiledInPopover}
                 popupStyle={{
-                  width: '600px',
+                  width: '550px',
                 }}
               >
                 <StyledList>
@@ -171,9 +172,10 @@ const TopSection = ({
               </InputPopover>
             </>
           )}
-        </Grid>
-        <Grid container item xs={6} alignItems="flex-end" justify="flex-end">
-          {selectedTask && (
+        </ListNameContainer>
+        <Spacing horizontal={5} />
+        <ActionButtonsContainer>
+          {selectedTask && !selectedTask.parentTaskIdentifier && (
             <IconButton
               ref={element => {
                 taskMenuReference.current = element;
@@ -271,7 +273,7 @@ const TopSection = ({
                 )}
             </StyledList>
           </InputPopover>
-        </Grid>
+        </ActionButtonsContainer>
       </Grid>
       {selectedTask && (
         <Divider

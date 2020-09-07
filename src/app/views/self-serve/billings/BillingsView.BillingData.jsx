@@ -21,7 +21,6 @@ import CardAmexIcon from 'img/cards/american-express.png';
 import CardDiscoverIcon from 'img/cards/discover.png';
 import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
-import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import BillingInformation from './BillingsView.BillingData.BillingInformation';
 import {
@@ -32,7 +31,7 @@ import {
   FormContainer,
   StyledFormHelperText,
 } from './BillingsView.BillingData.Components';
-import { StyledCollapse } from './BillingsView.Styled';
+import { StyledCollapse, StyledLabel } from './BillingsView.Styled';
 
 const REQUIRED_MESSAGE = 'This field is required.';
 
@@ -107,6 +106,7 @@ const BillingElement = ({
   label,
   alwaysShrink,
   setInputEmpty,
+  required,
 }) => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [isEmpty, setEmptyRaw] = useToggle(true);
@@ -132,8 +132,10 @@ const BillingElement = ({
       >
         <UniversalInputLabel shrink={isFocused || !isEmpty || alwaysShrink}>
           <MontserratTypography variant="h4">
-            <span>{label} </span>
-            <span style={{ color: palette.oPlusRed }}>*</span>
+            <StyledLabel>
+              {label}
+              {required && <span> (required)</span>}
+            </StyledLabel>
           </MontserratTypography>
         </UniversalInputLabel>
         <BillingElementContainer error={Boolean(fieldError)}>

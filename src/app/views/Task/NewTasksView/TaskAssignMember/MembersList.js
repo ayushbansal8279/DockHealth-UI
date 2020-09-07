@@ -27,7 +27,7 @@ const MembersList = ({
   );
   const [searchValue, setSearchValue] = useState('');
   const filteredMembers = membersWithoutCurrentUser?.filter(({ userName }) =>
-    userName.toLowerCase().includes(searchValue.toLowerCase()),
+    userName.toLowerCase().startsWith(searchValue.toLowerCase()),
   );
   const inputReference = useRef(null);
 

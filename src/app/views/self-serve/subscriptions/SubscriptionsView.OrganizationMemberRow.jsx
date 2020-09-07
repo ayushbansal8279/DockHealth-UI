@@ -5,6 +5,7 @@ import React from 'react';
 import { useAsync } from 'react-use';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import useBoolean from 'hooks/useBoolean';
 import { getUserAvatar } from 'api/people-api';
 import Avatar from 'components/common/Avatar';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
@@ -34,6 +35,8 @@ const MemberTableRow = styled(Grid)`
   margin: 0 !important;
   width: 100% !important;
   padding: ${spacing.regular} 0 !important;
+  background-color: ${props =>
+    props.isSelected && palette.brightBlueWithAlpha} !important;
 
   &:nth-child(even) {
     background-color: ${palette.coolGrey4};
@@ -193,6 +196,7 @@ const OrganizationMemberRow = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   let userType = null;
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
   if (['CANCELLED', 'INACTIVE', 'PENDING'].includes(userStatus)) {
     userType = USER_STATUS_TYPES[userStatus];
@@ -247,7 +251,7 @@ const OrganizationMemberRow = ({
   });
 
   return (
-    <MemberTableRow container spacing={1}>
+    <MemberTableRow container spacing={1} isSelected={isPopoverOpen}>
       <Grid item xs={1}>
         <MemberTableCell alignItems="center">
           <MemberAvatar
@@ -285,6 +289,9 @@ const OrganizationMemberRow = ({
                 email,
               })
             }
+            isPopoverOpen={isPopoverOpen}
+            openPopover={openPopover}
+            closePopover={closePopover}
           />
         </MemberTableCell>
       </Grid>

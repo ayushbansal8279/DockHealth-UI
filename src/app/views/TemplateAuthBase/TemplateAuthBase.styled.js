@@ -28,31 +28,31 @@ export const LeftSideMainContainer = styled.div`
     url(${AuthTemplateTopBackgroundBottom});
   background-repeat: repeat-x;
   background-position: bottom, top;
-  display: flex-root;
+  display: flex;
   max-width: 642px;
-  height: 100%;
   justify-content: center;
-  min-height: 100%;
-  padding: 14rem 7rem 2rem 7rem;
+  padding-left: 7rem;
+  padding-right: 7rem;
+  padding-bottom: 0;
   width: 50%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {
-    height: min-content;
     max-width: unset;
-    min-height: min-content;
     padding: 1.5rem;
     width: 100%;
+  }
+
+  @media screen and (min-height: 750px) {
+    padding-bottom: 7rem;
   }
 `;
 
 export const LeftSideContentContainer = styled.div`
   color: ${palette.white};
-  height: min-content;
-  min-height: min-content;
   width: 100%;
+  height: auto;
 
   @media screen and (min-width: ${mdBreakpoint}px) {
-    max-height: 721px;
     max-width: 525px;
   }
 `;

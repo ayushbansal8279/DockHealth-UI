@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty } from 'ramda';
@@ -116,10 +116,12 @@ const Toolbar = ({
   patientColumnVisible = true,
   tipsContent,
   isFetching,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
+  const tipsAutoOpenChecked = useRef(false);
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -146,6 +148,20 @@ const Toolbar = ({
 
   const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
+
+  useEffect(() => {
+    if (!tipsContent) {
+      return;
+    }
+
+    if (openTasksAmount === 0 && !tipsAutoOpenChecked.current) {
+      setTipsOpened(true);
+      tipsAutoOpenChecked.current = true;
+    } else if (openTasksAmount > 0) {
+      tipsAutoOpenChecked.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openTasksAmount]);
 
   return (
     <PageContentHeader>
@@ -251,40 +267,49 @@ const Toolbar = ({
           pdfTitle={pdfTitle}
         />
       </Grid>
-      {(haveTasks || searchValue || !isEmpty(selectedFilters)) && (
+      {(haveTasks ||
+        searchValue ||
+        !isEmpty(selectedFilters) ||
+        taskList?.listType === 'INBOX') && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
-          <MegaFilter
-            filters={filters}
-            selectedFilters={selectedFilters}
-            onSelectFilters={onSelectFilters}
-            taskList={taskList}
-            taskStatus={
-              selectedTab === TaskListTabName.OPEN ? 'INCOMPLETE' : 'COMPLETE'
-            }
-            tasksAndSubTasksCount={tasksAndSubTasksCount}
-            activeItemsAmount={
-              selectedTab === TaskListTabName.OPEN
-                ? openTasksAmount
-                : completedTasksAmount
-            }
-            isFetching={isFetching}
-          />
-          <Spacing horizontal={5} />
-          <SearchWrapper fullWidth={isSearchFocused || searchValue}>
-            <Search
-              fullWidth
-              noBackground
-              initialValue=""
-              value={searchValue}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              onChange={event => onSearchChange(event?.target?.value)}
-            />
-            <Spacing horizontal={5} />
-          </SearchWrapper>
+          {haveTasks && (
+            <>
+              <MegaFilter
+                filters={filters}
+                selectedFilters={selectedFilters}
+                onSelectFilters={onSelectFilters}
+                taskList={taskList}
+                taskStatus={
+                  selectedTab === TaskListTabName.OPEN
+                    ? 'INCOMPLETE'
+                    : 'COMPLETE'
+                }
+                tasksAndSubTasksCount={tasksAndSubTasksCount}
+                activeItemsAmount={
+                  selectedTab === TaskListTabName.OPEN
+                    ? openTasksAmount
+                    : completedTasksAmount
+                }
+                isFetching={isFetching}
+              />
+              <Spacing horizontal={5} />
+              <SearchWrapper fullWidth={isSearchFocused || searchValue}>
+                <Search
+                  fullWidth
+                  noBackground
+                  initialValue=""
+                  value={searchValue}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  onChange={event => onSearchChange(event?.target?.value)}
+                />
+                <Spacing horizontal={5} />
+              </SearchWrapper>
+            </>
+          )}
           {tipsContent && (
             <>
-              <Spacing horizontal={5} />
+              {haveTasks && <Spacing horizontal={5} />}
               <TipsButton
                 tipsButtonReference={tipsButtonReference}
                 active={tipsOpened}
