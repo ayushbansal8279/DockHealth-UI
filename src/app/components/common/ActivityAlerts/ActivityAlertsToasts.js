@@ -5,10 +5,11 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'ramda';
 import pusherInstance from 'helpers/pusher-instance';
+import { getActivityAlertDetails } from 'api/activity-alerts-api';
 import ActivityAlertsToast from './ActivityAlertsToast/ActivityAlertsToast';
 import { ActivityAlertsToastsContainer } from './styled';
 
-const listenRealTimeAlerts = (currentUser, addAlertToList) => {
+const listenRealTimeAlerts = (currentUser, showAlert) => {
   if (!currentUser || !currentUser.userIdentifier) {
     return;
   }
@@ -24,7 +25,7 @@ const listenRealTimeAlerts = (currentUser, addAlertToList) => {
   channel.bind('activity-alert', ({ alert }) => {
     if (alert) {
       sessionStorage.setItem('hasUnreadAlerts', true);
-      addAlertToList(alert);
+      showAlert(alert);
     }
   });
 };
@@ -39,8 +40,16 @@ const ActivityAlertsToasts = () => {
     enabledAlertsState: store.alertsState.alertsEnabled,
   }));
 
+  const showActivityAlert = async alert => {
+    console.log(`getting alert for : ${alert.activityAlertIdentifier}`);
+    const alertDetails = await getActivityAlertDetails(
+      alert.activityAlertIdentifier,
+    );
+    setNewAlert(alertDetails);
+  };
+
   useEffect(() => {
-    listenRealTimeAlerts(currentUser, setNewAlert);
+    listenRealTimeAlerts(currentUser, showActivityAlert);
   }, [currentUser]);
 
   useEffect(() => {

@@ -34,6 +34,18 @@ export const getActivityAlerts = setActivityAlertsList =>
       throw error;
     });
 
+export const getActivityAlertDetails = activityAlertId =>
+  axios({
+    method: 'get',
+    url: `/activity/alertDetails/${activityAlertId}`,
+  })
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      throw error;
+    });
+
 export const clearActivityAlert = activityAlertId =>
   axios({
     method: 'put',
