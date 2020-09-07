@@ -41,7 +41,6 @@ const ActivityAlertsToasts = () => {
   }));
 
   const showActivityAlert = async alert => {
-    console.log(`getting alert for : ${alert.activityAlertIdentifier}`);
     const alertDetails = await getActivityAlertDetails(
       alert.activityAlertIdentifier,
     );

@@ -97,6 +97,14 @@ export const StyledLink = styled(Link)`
   color: ${palette.brightBlue};
 `;
 
+export const StyledTaskLink = styled.span`
+  font-family: Roboto Condensed;
+  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.regular};
+  color: ${palette.brightBlue};
+  cursor: pointer;
+`;
+
 export const StyledCrossIcon = styled.img`
   cursor: pointer;
   margin-left: ${spacing.smallPlus};
