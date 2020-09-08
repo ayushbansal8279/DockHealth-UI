@@ -272,41 +272,37 @@ const Toolbar = ({
         !isEmpty(selectedFilters) ||
         taskList?.listType === 'INBOX') && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
-          {haveTasks && (
-            <>
-              <MegaFilter
-                filters={filters}
-                selectedFilters={selectedFilters}
-                onSelectFilters={onSelectFilters}
-                taskList={taskList}
-                taskStatus={
-                  selectedTab === TaskListTabName.OPEN
-                    ? 'INCOMPLETE'
-                    : 'COMPLETE'
-                }
-                tasksAndSubTasksCount={tasksAndSubTasksCount}
-                activeItemsAmount={
-                  selectedTab === TaskListTabName.OPEN
-                    ? openTasksAmount
-                    : completedTasksAmount
-                }
-                isFetching={isFetching}
+          <>
+            <MegaFilter
+              filters={filters}
+              selectedFilters={selectedFilters}
+              onSelectFilters={onSelectFilters}
+              taskList={taskList}
+              taskStatus={
+                selectedTab === TaskListTabName.OPEN ? 'INCOMPLETE' : 'COMPLETE'
+              }
+              tasksAndSubTasksCount={tasksAndSubTasksCount}
+              activeItemsAmount={
+                selectedTab === TaskListTabName.OPEN
+                  ? openTasksAmount
+                  : completedTasksAmount
+              }
+              isFetching={isFetching}
+            />
+            <Spacing horizontal={5} />
+            <SearchWrapper fullWidth={isSearchFocused || searchValue}>
+              <Search
+                fullWidth
+                noBackground
+                initialValue=""
+                value={searchValue}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                onChange={event => onSearchChange(event?.target?.value)}
               />
               <Spacing horizontal={5} />
-              <SearchWrapper fullWidth={isSearchFocused || searchValue}>
-                <Search
-                  fullWidth
-                  noBackground
-                  initialValue=""
-                  value={searchValue}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  onChange={event => onSearchChange(event?.target?.value)}
-                />
-                <Spacing horizontal={5} />
-              </SearchWrapper>
-            </>
-          )}
+            </SearchWrapper>
+          </>
           {tipsContent && (
             <>
               {haveTasks && <Spacing horizontal={5} />}
