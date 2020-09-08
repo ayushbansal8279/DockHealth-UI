@@ -309,8 +309,7 @@ const DrawerList = ({
         <DrawerFooter
           setActiveId={setActiveId}
           user={user}
-          onMouseEnter={onMouseEnter}
-          settingsVisible={settingsVisible}
+          settingsVisible={settingsVisible && open}
         />
       </DrawerListContainer>
       <RolloverPopover
