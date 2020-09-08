@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import SmallSwitchChevron from 'img/list-switch-chevron';
+import palette from 'styles/palette';
 
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import initializeStatusSectionHooks, {
@@ -10,13 +12,7 @@ import {
   StatusFieldContainer,
   StatusFlagContainer,
 } from './NewTaskDrawer.StatusSection.Styled';
-import {
-  EndAdornmentContainer,
-  BlockButton,
-  CondensedH4,
-} from './NewTaskDrawer.Styled';
-import SmallSwitchChevron from '../../../img/list-switch-chevron';
-import palette from '../../../styles/palette';
+import { EndAdornmentContainer, CondensedH4 } from './NewTaskDrawer.Styled';
 
 const statusOptions = STATUSES.map(({ value, label, color }) => ({
   key: value,
@@ -30,37 +26,24 @@ const statusOptions = STATUSES.map(({ value, label, color }) => ({
   displayLabel: label,
 }));
 
-const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
-  label,
-  value,
-  isHovered,
-}) => (
-  <BlockButton
-    type="button"
-    onClick={() => {
-      if (value === 'NO_STATUS') {
-        setValue(null); // default to null since we just clear the selection
-      } else {
-        setValue(value);
-      }
-      onItemSelection(value);
-      closePopover();
-    }}
-  >
-    {label(isHovered)}
-  </BlockButton>
-);
-
-const onItemSelection = ({ saveTaskStatus }) => value => {
-  saveTaskStatus({ newTaskStatus: value });
-};
+const STATUS_FIELD_NAME = 'workflowStatus';
 
 const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
   const reference = useRef(null);
   const {
     currentStatusFlagColor,
     saveTaskStatus,
+    setValue,
   } = initializeStatusSectionHooks({ setAutoSaveVisible, refreshList });
+
+  const selectOption = value => {
+    if (value === 'NO_STATUS') {
+      setValue(STATUS_FIELD_NAME, null); // default to null since we just clear the selection
+    } else {
+      setValue(STATUS_FIELD_NAME, value);
+    }
+    saveTaskStatus({ newTaskStatus: value });
+  };
 
   return (
     <StatusFieldContainer>
@@ -69,7 +52,7 @@ const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
       </StatusFlagContainer>
       <DropdownInput
         ref={reference}
-        name="workflowStatus"
+        name={STATUS_FIELD_NAME}
         label="Status"
         placeholder="Is there a status?"
         InputProps={{
@@ -79,8 +62,7 @@ const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
             </EndAdornmentContainer>
           ),
         }}
-        renderItem={renderDropdownItem}
-        onItemSelection={onItemSelection({ saveTaskStatus, refreshList })}
+        selectOption={selectOption}
       >
         {statusOptions}
       </DropdownInput>

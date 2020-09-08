@@ -8,6 +8,7 @@ export const PriorityLabelContainer = styled.div`
   grid-gap: 0.5rem;
   grid-template-columns: 1.5rem 1fr;
   padding: 0.5rem;
+  color: ${palette.coolGrey1};
 
   ${({ isHovered }) =>
     isHovered &&

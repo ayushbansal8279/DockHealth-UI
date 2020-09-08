@@ -1,7 +1,6 @@
-import { Popover, Popper, ClickAwayListener } from '@material-ui/core';
-import { bool, func, node, shape, object } from 'prop-types';
+import { Popper } from '@material-ui/core';
+import { bool, node, shape, object } from 'prop-types';
 import React from 'react';
-import { useCss } from 'react-use';
 import styled from 'styled-components';
 
 const StyledPopper = styled.div`
@@ -16,7 +15,6 @@ const StyledPopper = styled.div`
 const InputPopover = ({
   anchorElement,
   isPopoverOpen,
-  closePopover,
   children,
   popupStyle,
 }) => {
@@ -24,14 +22,6 @@ const InputPopover = ({
     popupStyle?.width ||
     `${anchorElement.current?.getBoundingClientRect().width}px` ||
     {};
-
-  const popoverClassName = useCss({
-    '&&': {
-      border: 0,
-      marginTop: '0.5rem',
-      width: widthValue,
-    },
-  });
 
   return (
     <Popper
@@ -51,7 +41,6 @@ InputPopover.propTypes = {
     current: object,
   }).isRequired,
   isPopoverOpen: bool.isRequired,
-  closePopover: func.isRequired,
   children: node,
 };
 

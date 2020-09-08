@@ -18,51 +18,13 @@ const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YY';
 const SET_DATE_VALUE = 'set-date';
 
-const renderDropdownItem = ({
-  openCalendar,
-  closeCalendar,
-  onItemSelection,
-  inputReference,
-}) => ({ setValue }) => ({ label, value, disabled, isHovered }) => (
-  <div
-    onMouseDown={() => {
-      if (disabled) return;
-
-      if (value === SET_DATE_VALUE) {
-        openCalendar();
-        inputReference.blur();
-        setTimeout(() => {
-          // a simple hack to reopen the Popover since it doesn't support scroll and needs to have everything displayed so as to re-position
-          inputReference.focus();
-        }, 100);
-      } else {
-        setValue(value);
-        onItemSelection(value);
-        closeCalendar();
-      }
-
-      setTimeout(() => {
-        inputReference.focus();
-      }, 100);
-    }}
-  >
-    {label(isHovered)}
-  </div>
-);
-
-const onItemSelection = ({ saveDueDate, currentDueTime }) => value => {
-  saveDueDate({
-    updatedDueDate: value,
-    updatedDueTime: currentDueTime || '',
-  });
-};
-
 const DueDateSection = ({
   selectedTask,
   isOverDue,
   setAutoSaveVisible,
   refreshList,
   dueTimeReference,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dateFieldName = 'dueDate';
 
@@ -98,13 +60,11 @@ const DueDateSection = ({
         updatedDueDate: value,
         updatedDueTime: currentDueTime || '',
       });
-      // closeCalendar();
-      inputReference.blur();
       setAutoSaveVisible();
 
       setTimeout(() => {
         inputReference.focus();
-      }, 100);
+      }, 150);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -113,8 +73,36 @@ const DueDateSection = ({
       saveDueDate,
       setAutoSaveVisible,
       setValue,
-      reference.current,
+      inputReference,
     ],
+  );
+
+  const selectOption = useCallback(
+    value => {
+      if (value === 'calendar') return;
+
+      if (value === SET_DATE_VALUE) {
+        if (isCalendarOpen) {
+          closeCalendar();
+        } else {
+          openCalendar();
+        }
+        inputReference.blur();
+        setTimeout(() => {
+          // a simple hack to reopen the Popover since it doesn't support scroll and needs to have everything displayed so as to re-position
+          inputReference.focus();
+        }, 100);
+      } else {
+        setValue(dateFieldName, value);
+        saveDueDate({
+          updatedDueDate: value,
+          updatedDueTime: currentDueTime || '',
+        });
+        closeCalendar();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [inputReference, currentDueTime, saveDueDate],
   );
 
   const dueDateOptions = [
@@ -214,12 +202,7 @@ const DueDateSection = ({
           color: isOverDue && palette.red,
         },
       }}
-      renderItem={renderDropdownItem({
-        openCalendar,
-        closeCalendar,
-        onItemSelection: onItemSelection({ saveDueDate, currentDueTime }),
-        inputReference,
-      })}
+      selectOption={selectOption}
       popoverStateArray={popoverStateArray}
     >
       {options}

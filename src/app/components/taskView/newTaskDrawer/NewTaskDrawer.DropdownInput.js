@@ -10,9 +10,7 @@ import {
   shape,
   string,
 } from 'prop-types';
-import palette from 'styles/palette';
-import { prop } from 'ramda';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
@@ -25,23 +23,16 @@ const DropdownInputContainer = styled.div`
   width: 100%;
 `;
 
-const DropdownItemContainer = styled.div`
-  ${({ isHovered }) =>
-    isHovered &&
-    `
-      background-color: ${palette.coolGrey4};
-      && > * {
-        font-weight: bold;
-      }
-    `}
+const StyledButton = styled.button`
+  display: block;
+  width: 100%;
+  text-align: left;
 `;
 
 const DropdownInput = React.forwardRef(
   (
     {
       children,
-      renderItem,
-      onItemSelection,
       name,
       label,
       placeholder,
@@ -53,6 +44,7 @@ const DropdownInput = React.forwardRef(
       InputLabelProps,
       InputProps,
       inputProps,
+      selectOption,
     },
     reference,
   ) => {
@@ -61,7 +53,7 @@ const DropdownInput = React.forwardRef(
 
     const [hoveredItem, setHoveredItem] = useState(0);
 
-    const { register, unregister, setValue, watch } = useFormContext();
+    const { register, unregister, watch } = useFormContext();
 
     useMount(() => {
       register({
@@ -82,12 +74,15 @@ const DropdownInput = React.forwardRef(
       [children, currentValue],
     );
 
-    const setValueForCurrentField = useCallback(
-      value => {
-        setValue(name, value);
-      },
-      [name, setValue],
-    );
+    const handleSelectOption = ({ value }) => {
+      if (currentValue !== value) {
+        selectOption(value);
+      }
+
+      setTimeout(() => {
+        reference.current.querySelector('input').focus();
+      }, 100);
+    };
 
     const handleInputKeyDown = event => {
       switch (event.keyCode) {
@@ -101,6 +96,7 @@ const DropdownInput = React.forwardRef(
         case 13:
           event.preventDefault();
           event.stopPropagation();
+          handleSelectOption(children[hoveredItem]);
           break;
 
         // down arrow key
@@ -165,19 +161,18 @@ const DropdownInput = React.forwardRef(
           closePopover={closePopover}
         >
           {children?.map((child, index) => (
-            <div
+            <StyledButton
+              type="button"
               key={child?.key}
               onMouseEnter={() => setHoveredItem(index)}
               onMouseDown={() => {
-                // select item
+                handleSelectOption(child);
               }}
             >
-              {renderItem({
-                setValue: setValueForCurrentField,
-                closePopover,
-                onItemSelection,
-              })({ ...child, isHovered: index === hoveredItem })}
-            </div>
+              {typeof child.label === 'function'
+                ? child.label(hoveredItem === index)
+                : child.label}
+            </StyledButton>
           ))}
         </InputPopover>
       </DropdownInputContainer>
@@ -195,8 +190,6 @@ DropdownInput.propTypes = {
     }),
   ).isRequired,
   popoverStateArray: arrayOf(oneOfType([bool, func])),
-  renderItem: func,
-  onItemSelection: func,
   label: string.isRequired,
   placeholder: string,
   name: string.isRequired,
@@ -207,12 +200,11 @@ DropdownInput.propTypes = {
   inputProps: objectOf(any),
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
+  selectOption: func.isRequired,
 };
 
 DropdownInput.defaultProps = {
   popoverStateArray: null,
-  renderItem: () => prop('label'),
-  onItemSelection: () => {},
   placeholder: '',
   className: '',
   required: false,
