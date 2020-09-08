@@ -240,9 +240,7 @@ export const DropdownListItem = styled(FooterListItem)`
 export const StyledDropdown = styled.div`
   margin-top: ${spacing.small};
   background-color: ${palette.midnightBlue};
-  height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   overflow-x: hidden;
-  transition: all 0.25s ease-out;
   width: 100%;
   margin-bottom: ${spacing.regularPlus};
   overflow-y: scroll;
