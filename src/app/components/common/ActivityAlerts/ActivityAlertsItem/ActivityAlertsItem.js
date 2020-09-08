@@ -120,7 +120,9 @@ const AssignedCommentAlertItem = ({
             }
           }}
         >
-          {creator?.firstName} {creator?.lastName}
+          {`${creator?.firstName} ${creator?.lastName}`.length > 20
+            ? `${`${creator?.firstName} ${creator?.lastName}`?.slice(0, 20)}...`
+            : `${creator?.firstName} ${creator?.lastName}`}
         </StyledTaskLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertItemQuotes>
@@ -191,7 +193,9 @@ const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
             }
           }}
         >
-          {taskList?.listName}
+          {taskList?.listName?.length > 20
+            ? `${taskList?.listName.slice(0, 20)}...`
+            : taskList?.listName}
         </StyledTaskLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertsItemDescription>
