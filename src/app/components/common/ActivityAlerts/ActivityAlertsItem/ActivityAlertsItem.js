@@ -1,8 +1,10 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import React from 'react';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { storeAsCurrentTask } from 'actions/task-actions';
+import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/notifications/cross';
 import {
@@ -16,7 +18,6 @@ import {
   ActivityAlertsItemClearLabel,
   ActivityAlertItemQuotes,
   CompletedCircleIcon,
-  StyledLink,
   StyledCrossIcon,
   StyledTaskLink,
 } from './styled';
@@ -34,6 +35,7 @@ const AssignedCommentAlertItem = ({
     organizationInitials,
     organizationName,
     organizationProfileColor,
+    organizationIdentifier,
   } = organization;
 
   const alertComment =
@@ -77,11 +79,23 @@ const AssignedCommentAlertItem = ({
         New comment in{' '}
         <StyledTaskLink
           onClick={() => {
-            dispatch(storeAsCurrentTask(task));
-            onClearAlert();
-            hashHistory.push(
-              `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+            const currentOrganizationIdentifier = sessionStorage.getItem(
+              'currentOrganizationIdentifier',
             );
+
+            if (organizationIdentifier === currentOrganizationIdentifier) {
+              dispatch(storeAsCurrentTask(task));
+              onClearAlert();
+              hashHistory.push(
+                `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+              );
+            } else {
+              sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
+              selectCurrentOrganizationWithRedirection(
+                organizationIdentifier,
+                `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+              );
+            }
           }}
         >
           {description?.length > 30
@@ -89,9 +103,25 @@ const AssignedCommentAlertItem = ({
             : description}
         </StyledTaskLink>{' '}
         added by{' '}
-        <StyledLink to={`/assignedToPerson/${creator?.userIdentifier}`}>
+        <StyledTaskLink
+          onClick={() => {
+            const currentOrganizationIdentifier = sessionStorage.getItem(
+              'currentOrganizationIdentifier',
+            );
+
+            if (organizationIdentifier === currentOrganizationIdentifier) {
+              onClearAlert();
+              hashHistory.push(`/assignedToPerson/${creator?.userIdentifier}`);
+            } else {
+              selectCurrentOrganizationWithRedirection(
+                organizationIdentifier,
+                `#/assignedToPerson/${creator?.userIdentifier}`,
+              );
+            }
+          }}
+        >
           {creator?.firstName} {creator?.lastName}
-        </StyledLink>
+        </StyledTaskLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertItemQuotes>
         “{comment?.length > 120 ? `${comment.slice(0, 120)}...` : comment}”
@@ -101,6 +131,7 @@ const AssignedCommentAlertItem = ({
 };
 
 const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
+  const dispatch = useDispatch();
   const { task, createdDateTime, organization } = itemAlert;
   const { description, taskList, taskIdentifier, status } = task;
   const { taskListIdentifier } = taskList;
@@ -108,6 +139,7 @@ const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     organizationInitials,
     organizationName,
     organizationProfileColor,
+    organizationIdentifier,
   } = organization;
   return (
     <ActivityAlertsItemContainer>
@@ -142,24 +174,59 @@ const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
       </ActivityAlertsItemHeader>
       <ActivityAlertsItemLabel>
         A New task has been assigned to you in{' '}
-        <StyledLink to={`/tasks/${taskListIdentifier}`}>
+        <StyledTaskLink
+          onClick={() => {
+            const currentOrganizationIdentifier = sessionStorage.getItem(
+              'currentOrganizationIdentifier',
+            );
+
+            if (organizationIdentifier === currentOrganizationIdentifier) {
+              onClearAlert();
+              hashHistory.push(`/tasks/${taskListIdentifier}`);
+            } else {
+              selectCurrentOrganizationWithRedirection(
+                organizationIdentifier,
+                `#/tasks/${taskListIdentifier}`,
+              );
+            }
+          }}
+        >
           {taskList?.listName}
-        </StyledLink>
+        </StyledTaskLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertsItemDescription>
-        <StyledLink
-          to={`/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`}
+        <StyledTaskLink
+          onClick={() => {
+            const currentOrganizationIdentifier = sessionStorage.getItem(
+              'currentOrganizationIdentifier',
+            );
+
+            if (organizationIdentifier === currentOrganizationIdentifier) {
+              dispatch(storeAsCurrentTask(task));
+              onClearAlert();
+              hashHistory.push(
+                `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+              );
+            } else {
+              sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
+              selectCurrentOrganizationWithRedirection(
+                organizationIdentifier,
+                `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+              );
+            }
+          }}
         >
           {description?.length > 120
             ? `${description.slice(0, 120)}...`
             : description}
-        </StyledLink>
+        </StyledTaskLink>
       </ActivityAlertsItemDescription>
     </ActivityAlertsItemContainer>
   );
 };
 
 const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
+  const dispatch = useDispatch();
   const { task, createdDateTime, organization } = itemAlert;
   const { description, taskList, taskIdentifier, status } = task;
   const { taskListIdentifier } = taskList;
@@ -167,6 +234,7 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     organizationInitials,
     organizationName,
     organizationProfileColor,
+    organizationIdentifier,
   } = organization;
 
   return (
@@ -205,13 +273,31 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
         been completed
       </ActivityAlertsItemLabel>
       <ActivityAlertsItemDescription>
-        <StyledLink
-          to={`/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`}
+        <StyledTaskLink
+          onClick={() => {
+            const currentOrganizationIdentifier = sessionStorage.getItem(
+              'currentOrganizationIdentifier',
+            );
+
+            if (organizationIdentifier === currentOrganizationIdentifier) {
+              dispatch(storeAsCurrentTask(task));
+              onClearAlert();
+              hashHistory.push(
+                `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+              );
+            } else {
+              sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
+              selectCurrentOrganizationWithRedirection(
+                organizationIdentifier,
+                `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+              );
+            }
+          }}
         >
           {description?.length > 120
             ? `${description.slice(0, 120)}...`
             : description}
-        </StyledLink>
+        </StyledTaskLink>
       </ActivityAlertsItemDescription>
     </ActivityAlertsItemContainer>
   );

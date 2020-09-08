@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -88,13 +87,6 @@ export const CompletedCircleIcon = styled.img`
   width: 22;
   height: 22;
   margin-right: ${spacing.small};
-`;
-
-export const StyledLink = styled(Link)`
-  font-family: Roboto Condensed;
-  font-weight: ${fontWeights.bold};
-  font-size: ${fontSizes.regular};
-  color: ${palette.brightBlue};
 `;
 
 export const StyledTaskLink = styled.span`
