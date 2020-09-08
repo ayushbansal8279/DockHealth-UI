@@ -541,9 +541,14 @@ export function getUserByEmail(email, cognitoUser) {
 }
 
 export function getUserById() {
-  return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
-    store.dispatch({ type: 'user/userProfile', userProfile: response?.data });
-    return response?.data;
+  return getUserOrganization().then(({ data: orgData }) => {
+    return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
+      store.dispatch({
+        type: 'user/userProfile',
+        userProfile: { ...response?.data, userOrganizations: orgData },
+      });
+      return { ...response?.data, userOrganizations: orgData };
+    });
   });
 }
 
