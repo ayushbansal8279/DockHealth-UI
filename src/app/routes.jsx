@@ -292,13 +292,8 @@ export const Routes = ({ store }) => {
     dispatch(closeDrawer());
   };
 
-  const onEnterGlobalSearch = () => {
-    dispatch(initializeHiddenNavbarTemplate());
-  };
-
   const onLeaveGlobalSearch = () => {
     dispatch(GlobalSearchActions.resetGlobalSearch());
-    dispatch(removeHiddenNavbarTemplate());
     dispatch(closeDrawer());
   };
 
@@ -376,7 +371,6 @@ export const Routes = ({ store }) => {
           <Route
             path="/search"
             component={GlobalSearchView}
-            onEnter={onEnterGlobalSearch}
             onLeave={onLeaveGlobalSearch}
           />
           <Route

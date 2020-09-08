@@ -19,8 +19,3 @@ export const CheckboxDescription = styled.label`
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
 `;
-
-export const MenuButton = styled.button`
-  cursor: pointer;
-  outline: none;
-`;
