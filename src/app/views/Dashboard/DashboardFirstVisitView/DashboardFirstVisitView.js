@@ -15,7 +15,7 @@ import {
 const DashboardFirstVisitView = ({
   hasInvitedLists,
   onCreateList,
-  onTakeATour,
+  // onTakeATour,
   list,
 }) => {
   return (
@@ -30,9 +30,9 @@ const DashboardFirstVisitView = ({
             </Title>
             <Spacing vertical={6} />
             <ButtonsContainer>
-              <Button fullWidth variant="contained" onClick={onTakeATour}>
+              {/* <Button fullWidth variant="contained" onClick={onTakeATour}>
                 Take tour of Dock
-              </Button>
+              </Button> */}
               <Spacing horizontal={4} />
               <Button
                 fullWidth
@@ -58,9 +58,9 @@ const DashboardFirstVisitView = ({
                 Create a list
               </Button>
               <Spacing horizontal={4} />
-              <Button fullWidth variant="text" onClick={onTakeATour}>
+              {/* <Button fullWidth variant="text" onClick={onTakeATour}>
                 Take tour of Dock
-              </Button>
+              </Button> */}
             </ButtonsContainer>
           </>
         )}
