@@ -118,6 +118,7 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
       const fileInputElement = attachmentFileInputReference.current;
 
       if (fileInputElement) {
+        fileInputElement.value = null;
         fileInputElement.dispatchEvent(new MouseEvent('click'));
       }
     },
