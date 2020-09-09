@@ -23,6 +23,7 @@ export const OrganizationIdentifiersListContainer = styled.div`
   background-color: ${props =>
     props.isOpen ? palette.coolGrey4 : 'transparent'};
   color: ${props => (props.isOpen ? palette.mediumGrey : 'white')} !important;
+  overflow: hidden;
 
   ${props =>
     props.showShadowOnHover &&
