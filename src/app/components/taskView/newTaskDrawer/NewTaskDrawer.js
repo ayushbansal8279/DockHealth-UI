@@ -370,6 +370,7 @@ const NewTaskDrawer = ({
                     endAdornment: currentAssignedToAdornment,
                   }}
                   endAdornmentEnabled={false}
+                  showAllOptions
                 >
                   {formattedMembers}
                 </SelectInput>

@@ -163,6 +163,7 @@ const SelectInput = React.forwardRef(
       endAdornmentEnabled,
       onEndAdornmentAcionClick,
       itemEditing,
+      showAllOptions,
     },
     reference,
   ) => {
@@ -260,15 +261,18 @@ const SelectInput = React.forwardRef(
       autoHighlight: true,
     });
 
-    const filteredGroupedOptions = useMemo(
-      () =>
-        groupedOptions.filter(option =>
-          option?.displayLabel
-            ?.toLowerCase()
-            .startsWith(inputValue.toLowerCase()),
-        ),
-      [inputValue, groupedOptions],
-    );
+    let filteredGroupedOptions = groupedOptions;
+    if (!showAllOptions) {
+      filteredGroupedOptions = useMemo(
+        () =>
+          groupedOptions.filter(option =>
+            option?.displayLabel
+              ?.toLowerCase()
+              .startsWith(inputValue.toLowerCase()),
+          ),
+        [inputValue, groupedOptions],
+      );
+    }
 
     const inputReference = setAnchorEl;
 
@@ -513,6 +517,7 @@ SelectInput.propTypes = {
   onFocusCallback: func,
   disabled: bool,
   autoFocusEnabled: bool,
+  showAllOptions: bool,
 };
 
 SelectInput.defaultProps = {
@@ -540,6 +545,7 @@ SelectInput.defaultProps = {
   onFocusCallback: undefined,
   disabled: false,
   autoFocusEnabled: false,
+  showAllOptions: false,
 };
 
 export default SelectInput;
