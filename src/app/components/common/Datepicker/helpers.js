@@ -102,7 +102,7 @@ export const renderDayLabels = ({
           key={dayMoment.format(DATE_ISO_FORMAT)}
           color={isDaySelected || isDayInSelectedRange ? 'primary' : 'default'}
           size="small"
-          onClick={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
+          onMouseDown={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
           disabled={isOutOfRange}
         >
           <CalendarDayLabel

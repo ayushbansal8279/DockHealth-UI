@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { connect } from 'react-redux';
-import MenuIcon from 'img/menu-icon';
 import { isSearchingCompletedTasksSelector } from 'selectors/global-search-selectors';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import * as TemplateActions from 'actions/template-actions';
@@ -8,15 +7,9 @@ import Spacing from 'components/common/Spacing';
 import TaskCheckbox from 'components/task/TaskCheckbox';
 import GlobalSearchInput from '../GlobalSearchInput/GlobalSearchInput';
 
-import {
-  TopSectionGrid,
-  InputWrapper,
-  CheckboxDescription,
-  MenuButton,
-} from './styled';
+import { TopSectionGrid, InputWrapper, CheckboxDescription } from './styled';
 
 const GlobalSearchHeader = ({
-  showNavbar,
   isSearchingCompletedTasks,
   setSearchValue,
   setSearchCompletedTasks,
@@ -35,10 +28,6 @@ const GlobalSearchHeader = ({
       justify="flex-start"
       alignItems="center"
     >
-      <MenuButton type="button" onClick={showNavbar}>
-        <img src={MenuIcon} alt="menu" />
-      </MenuButton>
-      <Spacing horizontal={5} />
       <InputWrapper>
         <GlobalSearchInput
           ref={searchInputReference}

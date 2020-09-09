@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
@@ -10,7 +10,7 @@ import { PaddedButtonLabel } from './styled';
 
 const getSmallButtonContent = ({
   fileLoaded,
-  fileUploaded,
+  userProfilePic,
   fileLoading,
 }) => () => {
   if (fileLoading) {
@@ -21,7 +21,7 @@ const getSmallButtonContent = ({
     return <span>Save</span>;
   }
 
-  if (fileUploaded) {
+  if (userProfilePic) {
     return <span>I love it</span>;
   }
 
@@ -35,7 +35,7 @@ const getSmallButtonContent = ({
 
 const getSmallButtonOnClick = ({
   fileLoaded,
-  fileUploaded,
+  userProfilePic,
   fileLoading,
   handleFinishEditing,
   unsetPopoverOpen,
@@ -49,7 +49,7 @@ const getSmallButtonOnClick = ({
     return handleFinishEditing;
   }
 
-  if (fileUploaded) {
+  if (userProfilePic) {
     return unsetPopoverOpen;
   }
 
@@ -64,7 +64,6 @@ export default () => {
   const fileInputReference = useRef(null);
   const [popoverOpen, setPopoverOpen, unsetPopoverOpen] = useBoolean(false);
   const [fileLoading, setFileLoading, unsetFileLoading] = useBoolean(false);
-  const [fileUploaded, setFileUploaded, unsetFileUploaded] = useBoolean(false);
   const [fileLoaded, setFileLoaded] = useState(null);
   const [fileCropped, setFileCropped] = useState(null);
 
@@ -80,12 +79,15 @@ export default () => {
     avatarInitials
   );
 
+  useEffect(() => {
+    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
+  }, []);
+
   const openPopover = useCallback(() => {
     setPopoverOpen();
     setFileCropped(null);
     setFileLoaded(null);
-    unsetFileUploaded();
-  }, [setPopoverOpen, unsetFileUploaded]);
+  }, [setPopoverOpen]);
 
   const activateFileInput = useCallback(() => {
     if (!fileLoading) {
@@ -107,10 +109,9 @@ export default () => {
           sessionStorage.userIdentifier,
           'PROFILE',
         );
-        setFileUploaded();
         setFileLoaded(null);
       });
-  }, [fileCropped, setFileUploaded]);
+  }, [fileCropped]);
 
   const handleFileChanged = useCallback(
     event => {
@@ -169,8 +170,8 @@ export default () => {
   );
 
   return {
-    userProfile,
     userProfilePic,
+    userProfile,
     avatarReference,
     fileInputReference,
     popoverOpen,
@@ -189,12 +190,12 @@ export default () => {
     removeProfilePicture,
     getSmallButtonContent: getSmallButtonContent({
       fileLoaded,
-      fileUploaded,
+      userProfilePic,
       fileLoading,
     }),
     getSmallButtonOnClick: getSmallButtonOnClick({
       fileLoaded,
-      fileUploaded,
+      userProfilePic,
       fileLoading,
       activateFileInput,
       handleFinishEditing,
@@ -202,8 +203,5 @@ export default () => {
     }),
     handleFileCropped,
     handleFinishEditing,
-    fileUploaded,
-    setFileUploaded,
-    unsetFileUploaded,
   };
 };

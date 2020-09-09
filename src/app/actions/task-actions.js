@@ -4,9 +4,28 @@ import * as TaskApi from 'api/task-api';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
 import { getTasksGroupsList } from 'sagas/tasks-groups-list-saga';
+import { openDrawer } from 'actions/task-drawer-actions';
 import * as ActionTypes from './action-types';
 // import * as TaskListActions from './tasklist-actions';
 import AlertMessages from '../alert/AlertMessages';
+
+export const clearPreparedSubtask = curry(dispatch =>
+  dispatch({
+    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+    addingNewSubtask: false,
+    addingNewSubtaskParentId: null,
+    subtaskShape: {},
+  }),
+);
+
+export function storeAsCurrentTask(task) {
+  return dispatch => {
+    dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
+    if ((task && task.taskIdentifier !== null) || task == null) {
+      clearPreparedSubtask(dispatch);
+    }
+  };
+}
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -58,6 +77,7 @@ export function getListTasks(
     if (cumulativeFlag) {
       dispatch({ type: ActionTypes.GET_MORE_TASKS_REQUEST });
     }
+
     return TaskApi.getListTasksByUser(
       taskListIdentifier,
       status,
@@ -67,6 +87,21 @@ export function getListTasks(
     )
       .then(tasks => {
         dispatch({ type: action, tasks });
+
+        const selectedTaskIdentifier = sessionStorage.getItem(
+          'selectedTaskIdentifier',
+        );
+
+        const selectedTask = tasks.find(
+          ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
+        );
+
+        if (selectedTask) {
+          dispatch(storeAsCurrentTask(selectedTask));
+          dispatch(openDrawer());
+          sessionStorage.removeItem('selectedTaskIdentifier');
+        }
+
         return tasks;
       })
       .catch(error => {
@@ -279,15 +314,6 @@ export function getHighPriorityTasksByTaskList(taskListIdentifier) {
         throw error;
       });
 }
-
-export const clearPreparedSubtask = curry(dispatch =>
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtask: false,
-    addingNewSubtaskParentId: null,
-    subtaskShape: {},
-  }),
-);
 
 export const reloadTaskListStats = (dispatch, task) => {
   if (task.taskList) {
@@ -777,15 +803,6 @@ export function getInboxTasks(status, sortBy, filterBy, cumulativeFlag) {
 export function taskToState(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.EDIT_TASK, task });
-  };
-}
-
-export function storeAsCurrentTask(task) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
-    if ((task && task.taskIdentifier !== null) || task == null) {
-      clearPreparedSubtask(dispatch);
-    }
   };
 }
 

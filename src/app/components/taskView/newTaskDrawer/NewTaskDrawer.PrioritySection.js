@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import PriorityFlag from 'img/priority-flag';
+import SmallSwitchChevron from 'img/list-switch-chevron';
+import palette from 'styles/palette';
 
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import initializePrioritySectionHooks, {
@@ -11,19 +13,13 @@ import {
   PriorityFieldContainer,
   PriorityFlagContainer,
 } from './NewTaskDrawer.PrioritySection.Styled';
-import {
-  EndAdornmentContainer,
-  BlockButton,
-  CondensedH4,
-} from './NewTaskDrawer.Styled';
-import SmallSwitchChevron from '../../../img/list-switch-chevron';
-import palette from '../../../styles/palette';
+import { EndAdornmentContainer, CondensedH4 } from './NewTaskDrawer.Styled';
 
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
   value,
-  label: (
-    <PriorityLabelContainer>
+  label: isHovered => (
+    <PriorityLabelContainer isHovered={isHovered}>
       <PriorityFlag color={color} />
       <CondensedH4>{label}</CondensedH4>
     </PriorityLabelContainer>
@@ -31,35 +27,25 @@ const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   displayLabel: label,
 }));
 
-const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
-  label,
-  value,
-}) => (
-  <BlockButton
-    type="button"
-    onClick={() => {
-      if (value === 'NONE') {
-        setValue(null); // default to null since we just clear the selection
-      } else {
-        setValue(value);
-      }
-      onItemSelection(value);
-      closePopover();
-    }}
-  >
-    {label}
-  </BlockButton>
-);
-
-const onItemSelection = ({ saveTaskPriority }) => value => {
-  saveTaskPriority({ newTaskPriority: value });
-};
+const PRIORITY_FIELD_NAME = 'priority';
 
 const PrioritySection = ({ setAutoSaveVisible }) => {
+  const reference = useRef(null);
   const {
     currentPriorityFlagColor,
     saveTaskPriority,
+    setValue,
   } = initializePrioritySectionHooks({ setAutoSaveVisible });
+
+  const selectOption = value => {
+    if (value === 'NONE') {
+      setValue(PRIORITY_FIELD_NAME, null); // default to null since we just clear the selection
+    } else {
+      setValue(PRIORITY_FIELD_NAME, value);
+    }
+
+    saveTaskPriority({ newTaskPriority: value });
+  };
 
   return (
     <PriorityFieldContainer>
@@ -67,7 +53,8 @@ const PrioritySection = ({ setAutoSaveVisible }) => {
         <PriorityFlag color={currentPriorityFlagColor} />
       </PriorityFlagContainer>
       <DropdownInput
-        name="priority"
+        ref={reference}
+        name={PRIORITY_FIELD_NAME}
         label="Priority"
         placeholder="Is there a priority?"
         InputProps={{
@@ -76,10 +63,8 @@ const PrioritySection = ({ setAutoSaveVisible }) => {
               <SmallSwitchChevron color={palette.orangeJulius} />
             </EndAdornmentContainer>
           ),
-          // startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
-        renderItem={renderDropdownItem}
-        onItemSelection={onItemSelection({ saveTaskPriority })}
+        selectOption={selectOption}
       >
         {priorityOptions}
       </DropdownInput>

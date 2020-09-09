@@ -210,6 +210,9 @@ export function logout() {
           sessionStorage.removeItem('currentOrganizationIdentifier');
           sessionStorage.removeItem('notificationsEnabled');
           sessionStorage.removeItem('hasUnreadAlerts');
+          sessionStorage.removeItem('redirectToHome');
+          sessionStorage.removeItem('redirectToLink');
+          sessionStorage.removeItem('selectedTaskIdentifier');
           onLogout();
         })
         .catch(error => {
@@ -538,9 +541,14 @@ export function getUserByEmail(email, cognitoUser) {
 }
 
 export function getUserById() {
-  return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
-    store.dispatch({ type: 'user/userProfile', userProfile: response?.data });
-    return response?.data;
+  return getUserOrganization().then(({ data: orgData }) => {
+    return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
+      store.dispatch({
+        type: 'user/userProfile',
+        userProfile: { ...response?.data, userOrganizations: orgData },
+      });
+      return { ...response?.data, userOrganizations: orgData };
+    });
   });
 }
 
@@ -892,6 +900,28 @@ export function selectCurrentOrganization(organizationIdentifier) {
         organizationIdentifier,
       );
       sessionStorage.setItem('redirectToHome', JSON.stringify(true));
+      axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+      window.location.reload();
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function selectCurrentOrganizationWithRedirection(
+  organizationIdentifier,
+  redirectionLink,
+) {
+  return axios({
+    method: 'put',
+    url: `/user/selectOrganization/${organizationIdentifier}`,
+  })
+    .then(() => {
+      sessionStorage.setItem(
+        'currentOrganizationIdentifier',
+        organizationIdentifier,
+      );
+      sessionStorage.setItem('redirectToLink', redirectionLink);
       axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
       window.location.reload();
     })

@@ -8,14 +8,17 @@ export const PriorityLabelContainer = styled.div`
   grid-gap: 0.5rem;
   grid-template-columns: 1.5rem 1fr;
   padding: 0.5rem;
+  color: ${palette.coolGrey1};
 
-  &:hover {
-    background-color: ${palette.coolGrey4};
+  ${({ isHovered }) =>
+    isHovered &&
+    `
+      background-color: ${palette.coolGrey4};
 
-    && > * {
-      font-weight: bold;
-    }
-  }
+      && > * {
+        font-weight: bold;
+      }
+    `}
 `;
 
 export const PriorityFieldContainer = styled.div`
