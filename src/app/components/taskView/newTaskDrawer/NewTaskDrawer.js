@@ -8,6 +8,7 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
+import MentionsInput from 'components/common/MentionsInput/MentionsInput';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
@@ -200,6 +201,9 @@ const NewTaskDrawer = ({
                 }}
               />
               <Spacing vertical={2} />
+              <Grid item xs={12}>
+                <MentionsInput />
+              </Grid>
               <Grid item xs={12} style={styleFullRow}>
                 <TextInput
                   name="description"
