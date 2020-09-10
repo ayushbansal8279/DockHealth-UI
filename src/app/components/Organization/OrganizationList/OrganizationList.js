@@ -6,8 +6,9 @@ import OrganizationIdentifier from '../OrganizationIdentifier/OrganizationIdenti
 import {
   OrganizationIdentifiersList,
   OrganizationIdentifiersListContainer,
-  // AddOrganizationLink,
-  // AddOrganizationLinkContainer,
+  AddOrganizationLink,
+  AddOrganizationLinkContainer,
+  PlusIcon,
 } from './styled';
 
 const OrganizationList = ({
@@ -49,16 +50,8 @@ const OrganizationList = ({
   return (
     <OrganizationIdentifiersListContainer
       isOpen={isOrganizationSectionOpen}
-      onMouseEnter={
-        availableUserOrganizations?.length > 0
-          ? openOrganizationSection
-          : () => {}
-      }
-      onMouseLeave={
-        availableUserOrganizations?.length > 0
-          ? closeOrganizationSection
-          : () => {}
-      }
+      onMouseEnter={openOrganizationSection}
+      onMouseLeave={closeOrganizationSection}
       showShadowOnHover={showShadowOnHover}
     >
       <OrganizationIdentifier
@@ -87,12 +80,11 @@ const OrganizationList = ({
             onSelect={() => onSelect(org?.organizationIdentifier)}
           />
         ))}
-
-        {/* <AddOrganizationLinkContainer>
-    <AddOrganizationLink to="userProfile">
-      Add an organization
-    </AddOrganizationLink>
-  </AddOrganizationLinkContainer> */}
+        <AddOrganizationLinkContainer>
+          <AddOrganizationLink to="create-organization">
+            <PlusIcon>+</PlusIcon> Add an organization
+          </AddOrganizationLink>
+        </AddOrganizationLinkContainer>
       </OrganizationIdentifiersList>
     </OrganizationIdentifiersListContainer>
   );

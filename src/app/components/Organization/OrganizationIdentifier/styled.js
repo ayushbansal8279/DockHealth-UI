@@ -8,10 +8,10 @@ export const OrganizationIdentifierContainer = styled.div`
   font-family: 'Montserrat', sans-serif;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};
-  padding-top: ${props => spacing[props.top] || props.top};
-  padding-bottom: ${props => spacing[props.bottom] || props.bottom};
-  padding-left: ${props => spacing[props.left] || props.left};
-  padding-right: ${props => spacing[props.right] || props.right};
+  padding-top: ${props => spacing[props.top] || props.top}px;
+  padding-bottom: ${props => spacing[props.bottom] || props.bottom}px;
+  padding-left: ${props => spacing[props.left] || props.left}px;
+  padding-right: ${props => spacing[props.right] || props.right}px;
   color: ${props => props.fontColor || 'white'};
   overflow: hidden;
 

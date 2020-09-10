@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontWeights } from 'styles/font';
 
 export const OrganizationIdentifiersList = styled.div`
   height: ${props => (props.isOpen ? 'fit-content' : 0)};
@@ -22,7 +23,7 @@ export const OrganizationIdentifiersListContainer = styled.div`
   background-color: ${props =>
     props.isOpen ? palette.coolGrey4 : 'transparent'};
   color: ${props => (props.isOpen ? palette.mediumGrey : 'white')} !important;
-  overflow: hidden;
+  ${props => !props.isOpen && `overflow: hidden;`}
 
   ${props =>
     props.showShadowOnHover &&
@@ -46,5 +47,10 @@ export const AddOrganizationLinkContainer = styled.div`
 
 export const AddOrganizationLink = styled(Link)`
   text-transform: uppercase;
+  font-weight: ${fontWeights.regular};
   color: ${palette.brightBlue};
+`;
+
+export const PlusIcon = styled.span`
+  color: ${palette.coolGrey2};
 `;
