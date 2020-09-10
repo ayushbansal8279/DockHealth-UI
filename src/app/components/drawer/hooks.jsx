@@ -207,7 +207,7 @@ const initializeDrawerHooks = () => {
     areNavbarSettingsVisible,
     hideNavbar: () => dispatch(TemplateActions.hideNavbar()),
     selectCurrentOrganization: organizationIdentifier =>
-      dispatch(selectCurrentOrganization(organizationIdentifier)),
+      selectCurrentOrganization(organizationIdentifier),
     currentOrganization,
   };
 };

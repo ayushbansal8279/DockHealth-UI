@@ -11,6 +11,21 @@ export const get = ({ organizationIdentifier }) => {
   });
 };
 
+export const createOrganization = ({
+  organizationName,
+  organizationInitials,
+  organizationProfileColor,
+}) =>
+  axios({
+    method: 'post',
+    url: '/organization',
+    data: {
+      organizationName,
+      organizationInitials,
+      organizationProfileColor,
+    },
+  }).then(({ data }) => data);
+
 export const saveBillingDetails = ({ billingData, token }) =>
   axios({
     method: 'put',
