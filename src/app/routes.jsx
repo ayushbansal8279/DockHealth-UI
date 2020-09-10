@@ -48,6 +48,9 @@ import PatientsView from 'components/patients/PatientsView';
 import handleFeatureToggle from 'helpers/handle-feature-toggle';
 import TaskTourView from 'views/TaskTour/TaskTourView';
 import App from 'views/App';
+import CreateOrganizationTemplate from 'views/CreateOrganization/CreateOrganizationTemplate';
+import CreateOrganizationSetupView from 'views/CreateOrganization/CreateOrganizationSetupView/CreateOrganizationSetupView';
+import CreateOrganizationTeamView from 'views/CreateOrganization/CreateOrganizationTeamView/CreateOrganizationTeamView';
 import ChangePhoneNumber from './views/auth/ChangePhoneNumber';
 import ConfirmMFACode from './views/auth/ConfirmMfaCode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
@@ -482,6 +485,17 @@ export const Routes = ({ store }) => {
           />
           <Route component={OnboardingOrgSetupView} path="organization-setup" />
           <Route component={OnboardingTeamSetupView} path="team-setup" />
+        </Route>
+        <Route
+          path="/create-organization"
+          component={CreateOrganizationTemplate}
+          onEnter={() => {
+            checkUserIsAuthenticated({ checkTrialExpiration: true });
+          }}
+        >
+          <IndexRedirect to="setup" />
+          <Route path="setup" component={CreateOrganizationSetupView} />
+          <Route path="team" component={CreateOrganizationTeamView} />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>
