@@ -81,7 +81,7 @@ const OrganizationList = ({
           />
         ))}
         <AddOrganizationLinkContainer>
-          <AddOrganizationLink to="create-organization">
+          <AddOrganizationLink to="/onboarding/create-organization">
             <PlusIcon>+</PlusIcon> Add an organization
           </AddOrganizationLink>
         </AddOrganizationLinkContainer>

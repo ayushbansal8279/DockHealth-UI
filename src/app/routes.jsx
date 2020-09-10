@@ -48,9 +48,6 @@ import PatientsView from 'components/patients/PatientsView';
 import handleFeatureToggle from 'helpers/handle-feature-toggle';
 import TaskTourView from 'views/TaskTour/TaskTourView';
 import App from 'views/App';
-import CreateOrganizationTemplate from 'views/CreateOrganization/CreateOrganizationTemplate';
-import CreateOrganizationSetupView from 'views/CreateOrganization/CreateOrganizationSetupView/CreateOrganizationSetupView';
-import CreateOrganizationTeamView from 'views/CreateOrganization/CreateOrganizationTeamView/CreateOrganizationTeamView';
 import ChangePhoneNumber from './views/auth/ChangePhoneNumber';
 import ConfirmMFACode from './views/auth/ConfirmMfaCode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
@@ -70,13 +67,14 @@ import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 // import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetails/ListDetailsView';
-import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
-import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
-import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
-import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
-import OnboardingOrgSetupView from './views/onboarding/onboarding-org-setup/OnboardingOrgSetupView';
-import OnboardingTeamSetupView from './views/onboarding/onboarding-team-setup/OnboardingTeamSetupView';
-import OnboardingTrialCheckView from './views/onboarding/onboarding-trial-check/OnboardingTrialCheckView';
+import OnboardingCreateOrganizationView from './views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView';
+import OnboardingBaaCheckView from './views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
+import OnboardingBaaInvitationSentView from './views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
+import OnboardingBaaOverviewView from './views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';
+import OnboardingEulaView from './views/onboarding/OnboardingEulaView/OnboardingEulaView';
+import OnboardingOrgSetupView from './views/onboarding/OnboardingOrgSetupView/OnboardingOrgSetupView';
+import OnboardingTeamSetupView from './views/onboarding/OnboardingTeamSetupView/OnboardingTeamSetupView';
+import OnboardingTrialCheckView from './views/onboarding/OnboardingTrialCheckView/OnboardingTrialCheckView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
@@ -483,19 +481,12 @@ export const Routes = ({ store }) => {
             component={OnboardingBaaInvitationSentView}
             path="baa-invitation-sent"
           />
+          <Route
+            component={OnboardingCreateOrganizationView}
+            path="create-organization"
+          />
           <Route component={OnboardingOrgSetupView} path="organization-setup" />
           <Route component={OnboardingTeamSetupView} path="team-setup" />
-        </Route>
-        <Route
-          path="/create-organization"
-          component={CreateOrganizationTemplate}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: true });
-          }}
-        >
-          <IndexRedirect to="setup" />
-          <Route path="setup" component={CreateOrganizationSetupView} />
-          <Route path="team" component={CreateOrganizationTeamView} />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>
