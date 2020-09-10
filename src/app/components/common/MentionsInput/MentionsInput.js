@@ -6,16 +6,16 @@ import createMentionPlugin, {
   defaultSuggestionsFilter,
 } from 'draft-js-mention-plugin';
 import './editorStyles.css';
-import peopleMentions from './people';
-import patientMentions from './patient';
 import palette from 'styles/palette';
 import { Popper } from '@material-ui/core';
 import Highlighter from 'react-highlight-words';
+import peopleMentions from './people';
+import patientMentions from './patient';
+import createMentionEntities from './helpers';
 
 const MemberEntry = props => {
   const {
     mention,
-    theme,
     searchValue, // eslint-disable-line no-unused-vars
 
     // eslint-disable-line no-unused-vars
@@ -83,7 +83,7 @@ const PatientEntry = ({ mention, searchValue, isFocused, ...parentProps }) => {
 const MemberMention = ({ mention, className, children }) => {
   const reference = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  console.log('hovered', isHovered);
+
   return (
     <span>
       <a
@@ -119,8 +119,6 @@ const MemberMention = ({ mention, className, children }) => {
 const PatientMention = ({ mention, className, children, ...props }) => {
   const reference = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  console.log('props', props);
-  console.log('mention', mention);
 
   return (
     <a
@@ -199,7 +197,31 @@ const MentionsInput = () => {
     }),
   );
 
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  // const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(
+    EditorState.createWithContent(
+      createMentionEntities(
+        'asdfasdf @Matthew Russell sdf #Patient 3 asdfasdfasdf',
+        [
+          {
+            avatar:
+              'https://pbs.twimg.com/profile_images/517863945/mattsailing_400x400.jpg',
+            link: 'https://twitter.com/mrussell247',
+            name: 'Matthew Russell',
+            title: 'Test tilte',
+            mentionType: '@',
+          },
+          {
+            name: 'Patient 3',
+            link: 'https://twitter.com/jyopur',
+            avatar:
+              'https://avatars0.githubusercontent.com/u/2182307?v=3&s=400',
+            mentionType: '#',
+          },
+        ],
+      ),
+    ),
+  );
   const [peopleSuggestions, setPeopleSuggestions] = useState(peopleMentions);
   const [patientSuggestions, setPatientSuggestions] = useState(patientMentions);
   const editor = useRef(null);
