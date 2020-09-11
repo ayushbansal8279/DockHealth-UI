@@ -8,14 +8,13 @@ import clsx from 'clsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { changeUserRoleForOrg } from 'actions/people-actions';
-import { approvePendingUser, denyPendingUser } from 'api/people-api';
+import { openModal } from 'modal/actions';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {
-  PendingApprovalContainer,
+  InactiveRoleSelectionContainer,
   RoleSelectionList,
   RoleSelectionFooter,
   RoleSelectionDescriptionOne,
-  RoleSelectionDescriptionTwo,
   RoleSelectionButtonsContainer,
   DenyButtonContainer,
   ApprovalButtonContainer,
@@ -24,6 +23,13 @@ import {
 
 const USER_TYPES = new Proxy(
   {
+    OWNER: {
+      label: 'Owner',
+      selectable: true,
+      changeable: true,
+      description:
+        'Full access to everything including billing and payments and approving new members.',
+    },
     MEMBER: {
       label: 'Member',
       selectable: true,
@@ -52,48 +58,41 @@ const renderUserTypesOptions = ({
   closePopover,
   reloadUsers,
   orgUserRole,
-  userStatus,
   selectedRoleKey,
   dispatch,
 }) => {
-  let renderedArray = [];
+  return [
+    ...Object.entries(userTypes)
+      .filter(pathEq(['1', 'selectable'], true))
+      .map(([role, { label, description, isLimitedAccess }]) => ({
+        key: role,
+        button: true,
+        isSelected:
+          selectedRoleKey === role ||
+          (!selectedRoleKey && orgUserRole === role),
+        isLimitedAccess,
+        label,
+        description,
+        onSave: () => {
+          changeUserRole({ userIdentifier, role })
+            .then(() => {
+              dispatch(showGlobalAlert(`User's role changed successfully`));
+              reloadUsers();
+              closePopover();
+            })
+            .catch(error => {
+              dispatch(
+                showGlobalErrorAlert(
+                  error?.message ??
+                    `User's role could not be changed, please try again later`,
+                ),
+              );
 
-  if (userStatus === 'PENDING') {
-    renderedArray = [
-      ...Object.entries(userTypes)
-        .filter(pathEq(['1', 'selectable'], true))
-        .map(([role, { label, description, isLimitedAccess }]) => ({
-          key: role,
-          button: true,
-          isSelected:
-            selectedRoleKey === role ||
-            (!selectedRoleKey && orgUserRole === role),
-          isLimitedAccess,
-          label,
-          description,
-          onSave: () => {
-            changeUserRole({ userIdentifier, role })
-              .then(() => {
-                dispatch(showGlobalAlert(`User's role changed successfully`));
-                reloadUsers();
-                closePopover();
-              })
-              .catch(error => {
-                dispatch(
-                  showGlobalErrorAlert(
-                    error?.message ??
-                      `User's role could not be changed, please try again later`,
-                  ),
-                );
-
-                closePopover();
-              });
-          },
-        })),
-    ];
-  }
-
-  return renderedArray;
+              closePopover();
+            });
+        },
+      })),
+  ];
 };
 
 const usePopoverClasses = makeStyles({
@@ -104,7 +103,7 @@ const usePopoverClasses = makeStyles({
   },
 });
 
-const PendingApprovalSelectionPopover = props => {
+const InactiveRoleSelectionPopover = props => {
   const {
     labelReference,
     isPopoverOpen,
@@ -130,48 +129,22 @@ const PendingApprovalSelectionPopover = props => {
 
   const FirsStepComponent = () => (
     <>
-      <Header>Approve or deny a new user request</Header>
-      <div>
-        <RoleSelectionDescriptionOne>
-          As the Organization Owner, you have the authority to approve or deny
-          new member requests.
-        </RoleSelectionDescriptionOne>
-        <RoleSelectionDescriptionTwo>
-          If denied, the person who requested the invite will be notified via
-          email. If approved, this person will become part of your subscription
-          once they create an account on Dock.
-        </RoleSelectionDescriptionTwo>
-      </div>
+      <Header>Inactive User</Header>
+      <RoleSelectionDescriptionOne>
+        You can reactive or archive this user. Which would you like to do?
+      </RoleSelectionDescriptionOne>
       <RoleSelectionButtonsContainer>
         <DenyButtonContainer>
           <Button
-            onClick={() =>
-              denyPendingUser({ userIdentifier })
-                .then(() => {
-                  dispatch(
-                    showGlobalAlert(
-                      `User's pending invitation denied successfully`,
-                    ),
-                  );
-                  reloadUsers();
-                  closePopover();
-                })
-                .catch(error => {
-                  dispatch(
-                    showGlobalErrorAlert(
-                      error?.message ??
-                        `User's pending invitation could not be denied, please try again later`,
-                    ),
-                  );
-
-                  closePopover();
-                })
-            }
+            onClick={() => {
+              dispatch(openModal('ArchiveUser'));
+              closePopover();
+            }}
             size="small"
             variant="outlined"
             fullWidth
           >
-            DENY
+            ARCHIVE
           </Button>
         </DenyButtonContainer>
         <ApprovalButtonContainer>
@@ -180,7 +153,7 @@ const PendingApprovalSelectionPopover = props => {
             size="small"
             fullWidth
           >
-            APPROVE
+            REACTIVATE
           </Button>
         </ApprovalButtonContainer>
       </RoleSelectionButtonsContainer>
@@ -213,24 +186,9 @@ const PendingApprovalSelectionPopover = props => {
       </RoleSelectionList>
       <RoleSelectionFooter>
         <Button
-          onClick={() =>
-            approvePendingUser({ userIdentifier, role: selectedRole?.key })
-              .then(() => {
-                dispatch(`User's pending invitation approved successfully`);
-                reloadUsers();
-                closePopover();
-              })
-              .catch(error => {
-                dispatch(
-                  showGlobalErrorAlert(
-                    error?.message ??
-                      `User's pending invitation could not be approved, please try again later`,
-                  ),
-                );
-
-                closePopover();
-              })
-          }
+          onClick={() => {
+            closePopover();
+          }}
           size="small"
           disabled={!selectedRole?.key}
         >
@@ -251,16 +209,15 @@ const PendingApprovalSelectionPopover = props => {
       onClose={() => {
         closePopover();
         setSelectedStep('first');
-        setSelectedRole({});
       }}
       open={isPopoverOpen}
     >
-      <PendingApprovalContainer>
+      <InactiveRoleSelectionContainer>
         {selectedStep === 'first' && <FirsStepComponent />}
         {selectedStep === 'second' && <SecondStepComponent />}
-      </PendingApprovalContainer>
+      </InactiveRoleSelectionContainer>
     </Popover>
   );
 };
 
-export default PendingApprovalSelectionPopover;
+export default InactiveRoleSelectionPopover;

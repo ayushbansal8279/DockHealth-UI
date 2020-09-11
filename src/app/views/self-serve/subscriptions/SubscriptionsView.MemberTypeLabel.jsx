@@ -9,6 +9,7 @@ import {
 import InvitationPopover from './SubscriptionUserPopover/InvitationPopover';
 import RoleSelectionPopover from './SubscriptionUserPopover/RoleSelectionPopover';
 import PendingApprovalPopover from './SubscriptionUserPopover/PendingApprovalPopover';
+import InactiveRoleSelectionPopover from './SubscriptionUserPopover/InactiveRoleSelectionPopover';
 
 const DropdownIndicator = ({ isOpen, setOpen, label }) => (
   <Arrow
@@ -48,6 +49,10 @@ const MemberTypeLabel = ({
 
     if (userStatus === 'PENDING') {
       return PendingApprovalPopover;
+    }
+
+    if (userStatus === 'INACTIVE') {
+      return InactiveRoleSelectionPopover;
     }
 
     if (invitationModifiable) {
