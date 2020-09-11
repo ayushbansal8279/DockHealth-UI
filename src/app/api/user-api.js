@@ -494,7 +494,7 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
         }user/findUserByEmail?email=${encodeURIComponent(email)}`,
       )
       .then(response => {
-         getUserOrganization().then(({ data: orgData }) => {
+        getUserOrganization().then(({ data: orgData }) => {
           const userProfile = { ...response?.data, userOrganizations: orgData };
           store.dispatch({
             type: 'user/userProfile',
@@ -525,10 +525,10 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
           resolve({ ...userProfile, access: dummyAccess });
         });
       })
-      .catch((err) => {
-        reject(err);
+      .catch(error => {
+        reject(error);
       });
-    });
+  });
 }
 
 export async function getUserByEmail(email, cognitoUser) {
