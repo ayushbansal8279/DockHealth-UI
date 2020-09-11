@@ -108,6 +108,9 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           // eslint-disable-next-line no-unused-expressions
           window?.HelloSign.close();
           setProcessing(false);
+
+          // TODO: check if organization name should be edited if yes go to organization-setup if no go to team-setup
+
           if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
             window.location.href = '/#/onboarding/organization-setup';
             window.location.reload();
