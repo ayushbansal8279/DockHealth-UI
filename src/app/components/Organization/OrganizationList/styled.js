@@ -9,7 +9,6 @@ export const OrganizationIdentifiersList = styled.div`
     props.isOpen ? `calc(100% * ${props.organizationAmount})` : 0};
   overflow-y: auto;
   background-color: ${props => props.isOpen && 'white'};
-  position: absolute;
   background-color: white;
   z-index: 1;
   width: 100%;
