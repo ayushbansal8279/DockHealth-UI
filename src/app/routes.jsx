@@ -67,6 +67,7 @@ import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 // import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetails/ListDetailsView';
+import OnboardingNewOrganizationInfoView from './views/onboarding/OnboardingNewOrganizationInfoView/OnboardingNewOrganizationInfoView';
 import OnboardingCreateOrganizationView from './views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView';
 import OnboardingBaaCheckView from './views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from './views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
@@ -480,6 +481,10 @@ export const Routes = ({ store }) => {
           <Route
             component={OnboardingBaaInvitationSentView}
             path="baa-invitation-sent"
+          />
+          <Route
+            component={OnboardingNewOrganizationInfoView}
+            path="new-organization"
           />
           <Route
             component={OnboardingCreateOrganizationView}
