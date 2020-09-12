@@ -13,6 +13,19 @@ import peopleMentions from './people';
 import patientMentions from './patient';
 import createMentionEntities from './helpers';
 
+const PopoverComponent = React.forwardRef(
+  ({ children, ...props }, reference) => (
+    <div {...props} ref={reference}>
+      {React.Children.map(children, child =>
+        child.props.mention.type === 'DEFAULT'
+          ? null
+          : React.cloneElement(child, child.props),
+      )}
+      <div>test</div>
+    </div>
+  ),
+);
+
 const MemberEntry = props => {
   const {
     mention,
@@ -23,12 +36,28 @@ const MemberEntry = props => {
     ...parentProps
   } = props;
 
-  return (
+  return mention.type === 'DEFAULT' ? (
     <div
-      {...parentProps}
-      style={{ backgroundColor: isFocused ? palette.coolGrey1 : 'transparent' }}
+      onMouseUp={event => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+      onMouseDown={event => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
     >
-      <div style={{ display: 'flex', padding: '10px' }}>
+      DEFAULT
+    </div>
+  ) : (
+    <div {...parentProps}>
+      <div
+        style={{
+          display: 'flex',
+          padding: '10px',
+          backgroundColor: isFocused ? palette.coolGrey1 : 'transparent',
+        }}
+      >
         <div style={{ height: 20, width: 20 }}>
           <img
             src={mention.avatar}
@@ -53,11 +82,14 @@ const MemberEntry = props => {
 
 const PatientEntry = ({ mention, searchValue, isFocused, ...parentProps }) => {
   return (
-    <div
-      {...parentProps}
-      style={{ backgroundColor: isFocused ? palette.coolGrey1 : 'transparent' }}
-    >
-      <div style={{ display: 'flex', padding: '10px' }}>
+    <div {...parentProps}>
+      <div
+        style={{
+          display: 'flex',
+          padding: '10px',
+          backgroundColor: isFocused ? palette.coolGrey1 : 'transparent',
+        }}
+      >
         <div style={{ height: 20, width: 20 }}>
           <img
             src={mention.avatar}
@@ -150,12 +182,14 @@ const PatientMention = ({ mention, className, children, ...props }) => {
   );
 };
 
-const MentionsInput = () => {
+const MentionsInput = ({ readOnly }) => {
   const peopleMentionPlugin = useRef(
     createMentionPlugin({
       mentionPrefix: '@',
       mentionTrigger: '@',
+      // supportWhitespace: true,
       mentionComponent: MemberMention,
+      // mentionSuggestionsComponent: CustomMentionSuggestions,
       positionSuggestions: props => {
         const rightPosition =
           window.innerWidth - props.decoratorRect.left - 200;
@@ -180,6 +214,7 @@ const MentionsInput = () => {
       mentionTrigger: '#',
       mentionComponent: PatientMention,
       positionSuggestions: props => {
+        // calculate from right side because of task drawer fixed position
         const rightPosition =
           window.innerWidth - props.decoratorRect.left - 200;
 
@@ -222,9 +257,17 @@ const MentionsInput = () => {
       ),
     ),
   );
-  const [peopleSuggestions, setPeopleSuggestions] = useState(peopleMentions);
+  const placeholder = {
+    name: '',
+    id: '',
+    type: 'DEFAULT',
+  };
+
+  const [peopleSuggestions, setPeopleSuggestions] = useState([placeholder]);
   const [patientSuggestions, setPatientSuggestions] = useState(patientMentions);
   const editor = useRef(null);
+
+  console.log('suggestions', peopleSuggestions);
 
   const onChange = state => {
     setEditorState(state);
@@ -232,7 +275,10 @@ const MentionsInput = () => {
   };
 
   const onPeopleSearchChange = ({ value }) => {
-    setPeopleSuggestions(defaultSuggestionsFilter(value, peopleMentions));
+    console.log('value', value);
+    setPeopleSuggestions(
+      value ? defaultSuggestionsFilter(value, peopleMentions) : [placeholder],
+    );
   };
 
   const onPatientSearchChange = ({ value }) => {
@@ -262,12 +308,14 @@ const MentionsInput = () => {
         plugins={plugins}
         ref={editor}
         placeholder="Placeholder"
+        readOnly={readOnly}
       />
       <PeopleMentionSuggestions
         onSearchChange={onPeopleSearchChange}
         suggestions={peopleSuggestions}
         onAddMention={onAddMention}
         entryComponent={MemberEntry}
+        popoverComponent={<PopoverComponent />}
       />
       <PatientsMentionSuggestions
         onSearchChange={onPatientSearchChange}

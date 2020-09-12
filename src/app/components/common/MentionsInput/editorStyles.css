@@ -12,3 +12,8 @@
 .editor :global(.public-DraftEditor-content) {
   min-height: 140px;
 }
+
+.editor :global(.public-DraftEditorPlaceholder-root) {
+  position: absolute;
+  color: #8492a4;
+}
