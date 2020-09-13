@@ -101,7 +101,7 @@ const PatientComponent = ({
       {status !== 'COMPLETE' && !taskPatient && (
         <AddPlaceholder>+ Patient</AddPlaceholder>
       )}
-      {patient && (
+      {taskPatient && (
         <SlimTaskItemPatientLink
           to={`patient/${taskPatient.patientIdentifier}`}
         >
