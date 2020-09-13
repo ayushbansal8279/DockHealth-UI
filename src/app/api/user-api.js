@@ -476,8 +476,8 @@ export function createUser(user) {
   });
 }
 
-export function getUserOrganization() {
-  return axios.get('user/findUserOrganizations');
+export async function getUserOrganization() {
+  return await axios.get('user/findUserOrganizations');
 }
 
 export function getUserByEmailAndAccessToken(userEmail, accessToken) {
@@ -486,47 +486,52 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
 
   const email = userEmail?.toLowerCase();
 
-  return axios
-    .get(
-      `${
-        process.env.HEYDOC_SERVICES_BASE_URL
-      }user/findUserByEmail?email=${encodeURIComponent(email)}`,
-    )
-    .then(response => {
-      getUserOrganization().then(({ data: orgData }) => {
-        const userProfile = { ...response?.data, userOrganizations: orgData };
-        store.dispatch({
-          type: 'user/userProfile',
-          userProfile,
-        });
-        sessionStorage.setItem(
-          'userIdentifier',
-          response?.data?.userIdentifier,
-        );
-        sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
-        const currentOrgIdentifier = sessionStorage.getItem(
-          'currentOrganizationIdentifier',
-        );
-
-        if (
-          currentOrgIdentifier === 'undefined' ||
-          currentOrgIdentifier === '' ||
-          !currentOrgIdentifier
-        ) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `${
+          process.env.HEYDOC_SERVICES_BASE_URL
+        }user/findUserByEmail?email=${encodeURIComponent(email)}`,
+      )
+      .then(response => {
+        getUserOrganization().then(({ data: orgData }) => {
+          const userProfile = { ...response?.data, userOrganizations: orgData };
+          store.dispatch({
+            type: 'user/userProfile',
+            userProfile,
+          });
           sessionStorage.setItem(
-            'currentOrganizationIdentifier',
-            response?.data?.organizationIdentifier,
+            'userIdentifier',
+            response?.data?.userIdentifier,
           );
-          axios.defaults.headers.common.CurrentOrganizationIdentifier =
-            response?.data?.organizationIdentifier;
-        }
-        onLogin();
-        return { ...userProfile, access: dummyAccess };
+          sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
+          const currentOrgIdentifier = sessionStorage.getItem(
+            'currentOrganizationIdentifier',
+          );
+
+          if (
+            currentOrgIdentifier === 'undefined' ||
+            currentOrgIdentifier === '' ||
+            !currentOrgIdentifier
+          ) {
+            sessionStorage.setItem(
+              'currentOrganizationIdentifier',
+              response?.data?.organizationIdentifier,
+            );
+            axios.defaults.headers.common.CurrentOrganizationIdentifier =
+              response?.data?.organizationIdentifier;
+          }
+          onLogin();
+          resolve({ ...userProfile, access: dummyAccess });
+        });
+      })
+      .catch(error => {
+        reject(error);
       });
-    });
+  });
 }
 
-export function getUserByEmail(email, cognitoUser) {
+export async function getUserByEmail(email, cognitoUser) {
   let accessToken = '';
 
   if (cognitoUser.signInUserSession) {
@@ -537,7 +542,7 @@ export function getUserByEmail(email, cognitoUser) {
     accessToken = sessionStorage.getItem('SSO_ACCESSTOKEN');
   }
 
-  return getUserByEmailAndAccessToken(email, accessToken);
+  return await getUserByEmailAndAccessToken(email, accessToken);
 }
 
 export function getUserById() {

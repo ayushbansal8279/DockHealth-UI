@@ -42,6 +42,9 @@ const getListElements = ({ isUserAdmin, organization }) => {
     subscription: organization?.subscriptionDetails,
   });
 
+  const isFreePlan =
+    organization?.subscriptionDetails?.subscriptionPlan === 'PLAN_FREE';
+
   return [
     {
       link: '/userProfile',
@@ -52,7 +55,8 @@ const getListElements = ({ isUserAdmin, organization }) => {
       label: 'Subscriptions',
     },
     isUserAdmin &&
-      !isSubscriptionTrial && {
+      !isSubscriptionTrial &&
+      !isFreePlan && {
         link: '/billing',
         label: 'Billing',
       },
