@@ -175,7 +175,7 @@ const TopSection = ({
         </ListNameContainer>
         <Spacing horizontal={5} />
         <ActionButtonsContainer>
-          {selectedTask && !selectedTask.parentTaskIdentifier && (
+          {selectedTask && (
             <IconButton
               ref={element => {
                 taskMenuReference.current = element;

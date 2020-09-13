@@ -45,7 +45,7 @@ export function getPatientsByTaskList(taskListIdentifier) {
 
 export function getPatientsByName(searchedPatientName) {
   return axios
-    .get(`patient/getPatientsByName?inputStr=${searchedPatientName}`)
+    .get(`patient/getPatientsByFirstName?inputStr=${searchedPatientName}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
