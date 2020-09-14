@@ -13,6 +13,8 @@ import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import HighPriorityLabel from 'img/priority-high-flag.svg';
+import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 
 const RowContainer = styled.div`
   align-items: center;
@@ -67,28 +69,23 @@ const ListsButton = withStyles({
 })(Button);
 
 const NewListTag = styled.div`
-  background: #a4deb9;
-  color: #2a4a70;
-  font-size: 0.75em;
-  padding: 0 0.45em;
-  -webkit-border-radius: 0.45em;
-  -moz-border-radius: 0.45em;
-  border-radius: 0.45em;
-  margin-bottom: 0.25em;
+  color: ${palette.darkBlue};
+  font-family: 'Roboto Condensed', sans-serif;
+  text-transform: uppercase;
+  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.small};
+  margin-bottom: ${spacing.small};
 `;
 
 const NewListNotification = styled.div`
-  margin-left: auto;
-  margin-right: auto;
+  width: 210px;
+  margin: 0 auto;
+  padding: ${spacing.small} ${spacing.smallPlus};
+  background: ${palette.darkBlue};
+  color: ${palette.white};
+  font-family: 'Roboto Condensed', sans-serif;
   text-align: center;
-  background: #a4deb9;
-  color: #2a4a70;
-  font-size: 1em;
-  padding: 1em 5em;
-  -webkit-border-radius: 0.75em;
-  -moz-border-radius: 0.75em;
-  border-radius: 0.75em;
-  margin-bottom: 1em;
+  margin-bottom: ${spacing.regular};
 `;
 
 const TaskListRow = ({
