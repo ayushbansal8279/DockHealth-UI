@@ -27,7 +27,7 @@ export const Placeholder = styled.p`
 `;
 
 export const SelectElementWrapper = styled.div`
-  width: calc(100% - 130px);
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : `calc(100% - 130px)`)};
   max-height: 132px;
   overflow-y: scroll;
   z-index: 1;
@@ -117,7 +117,7 @@ export const AvailablePeopleWrapper = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  width: calc(100% - 130px);
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : `calc(100% - 130px)`)};
   max-height: 165px;
   overflow-y: scroll;
   background: ${palette.white};
