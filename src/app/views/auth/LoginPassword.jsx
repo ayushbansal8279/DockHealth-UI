@@ -42,10 +42,10 @@ const LoginPassword = () => {
             LOGIN_SUCCESS: 'YES',
           });
           if (data.challengeName === 'SMS_MFA') {
-            if (data.challengeParameters) {
+            if (data.challengeParam) {
               window.sessionStorage.setItem(
                 'SMS_PHONE',
-                data.challengeParameters.CODE_DELIVERY_DESTINATION,
+                data.challengeParam.CODE_DELIVERY_DESTINATION,
               );
             }
             hashHistory.push(
