@@ -17,14 +17,12 @@ const onSubmit = ({ dispatch }) => async ({
     organizationProfileColor: organizationThemeColor,
   });
 
-  // TODO: think about moving this logic on team-setup component mount
   const { baaSigned } = await checkBAASignedStatus()(dispatch);
   if (baaSigned) {
     hashHistory.push('/onboarding/team-setup');
   } else {
     hashHistory.push('/onboarding/baa-overview');
   }
-  //
 
   await selectCurrentOrganization(organizationIdentifier, false);
 };
