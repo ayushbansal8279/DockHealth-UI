@@ -181,9 +181,11 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
               </ActivityAlertsSwitchLabel>
             </div>
           </ActivityAlertsHeaderLabel>
-          <ActivityAlertsClearAllLabel onClick={onClearAllAlerts}>
-            Clear all
-          </ActivityAlertsClearAllLabel>
+          {activityAlertsList?.length !== 0 && (
+            <ActivityAlertsClearAllLabel onClick={onClearAllAlerts}>
+              Clear all
+            </ActivityAlertsClearAllLabel>
+          )}
         </ActivityAlertsHeader>
         <ActivityAlertsList>
           <ViewLoader isFetchingData={activityAlertsListIsFetching}>
