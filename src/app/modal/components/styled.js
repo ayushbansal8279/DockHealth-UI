@@ -10,7 +10,7 @@ export const ModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 400px;
+  width: 450px;
   max-width: 100vw;
   font-family: 'Roboto Condensed', sans-serif;
   background-color: white;
