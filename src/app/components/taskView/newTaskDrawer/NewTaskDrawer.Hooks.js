@@ -176,6 +176,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
 
   const taskList = selectedTask?.taskList;
+  const taskListIdentifier = taskList?.taskListIdentifier;
 
   const [isSaving, setSaving] = useState(false);
 
@@ -209,12 +210,19 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const { top } =
     document.querySelector('#content-container')?.getBoundingClientRect() || {};
 
+  const refreshMembers = () =>
+    TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL').then(
+      data => {
+        setMembers(data);
+        return data;
+      },
+    );
+
   useEffect(() => {
-    if (taskList?.taskListIdentifier) {
+    if (taskListIdentifier) {
       setIsFetchingMembers(true);
-      TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
-        .then(data => {
-          setMembers(data);
+      refreshMembers()
+        .then(() => {
           setIsFetchingMembers(false);
         })
         .catch(error => {
@@ -222,7 +230,8 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
           throw error;
         });
     }
-  }, [taskList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskListIdentifier]);
 
   useEffect(() => {
     if (
@@ -559,6 +568,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     patientInputReference,
     patientInputValue,
     isLoadingPatients,
+    refreshMembers,
   };
 };
 

@@ -89,6 +89,7 @@ const NewTaskDrawer = ({
     dueTimeReference,
     onPatientInputChange,
     patientInputReference,
+    refreshMembers,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
   const taskDrawerReference = useRef(null);
@@ -380,8 +381,10 @@ const NewTaskDrawer = ({
                     isPopoverOpen={isInvitePopoverOpen}
                     closePopover={closeInvitePopover}
                     initialValue={assignedToInputValue}
-                    setParentFormValue={setValue}
+                    assignUser={handleAssignedToSelect}
                     taskList={selectedTask?.taskList}
+                    refreshMembers={refreshMembers}
+                    setParentFormValue={setValue}
                   />
                 )}
               </Grid>
