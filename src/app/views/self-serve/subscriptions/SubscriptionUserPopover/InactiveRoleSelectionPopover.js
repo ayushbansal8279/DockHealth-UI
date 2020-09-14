@@ -1,13 +1,11 @@
 /* eslint-disable sonarjs/no-identical-functions */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { pathEq } from 'ramda';
 import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Button from 'components/common/Button/Button';
-import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { changeUserRoleForOrg } from 'actions/people-actions';
+import { reactivateUser, archiveUser } from 'api/people-api';
 import { openModal } from 'modal/actions';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {
@@ -51,47 +49,18 @@ const USER_TYPES = new Proxy(
   },
 );
 
-const renderUserTypesOptions = ({
-  changeUserRole,
-  userIdentifier,
-  userTypes,
-  closePopover,
-  reloadUsers,
-  orgUserRole,
-  selectedRoleKey,
-  dispatch,
-}) => {
+const renderUserTypesOptions = ({ userTypes, selectedRoleKey }) => {
   return [
-    ...Object.entries(userTypes)
-      .filter(pathEq(['1', 'selectable'], true))
-      .map(([role, { label, description, isLimitedAccess }]) => ({
+    ...Object.entries(userTypes).map(
+      ([role, { label, description, isLimitedAccess }]) => ({
         key: role,
         button: true,
-        isSelected:
-          selectedRoleKey === role ||
-          (!selectedRoleKey && orgUserRole === role),
+        isSelected: selectedRoleKey === role,
         isLimitedAccess,
         label,
         description,
-        onSave: () => {
-          changeUserRole({ userIdentifier, role })
-            .then(() => {
-              dispatch(showGlobalAlert(`User's role changed successfully`));
-              reloadUsers();
-              closePopover();
-            })
-            .catch(error => {
-              dispatch(
-                showGlobalErrorAlert(
-                  error?.message ??
-                    `User's role could not be changed, please try again later`,
-                ),
-              );
-
-              closePopover();
-            });
-        },
-      })),
+      }),
+    ),
   ];
 };
 
@@ -108,24 +77,13 @@ const InactiveRoleSelectionPopover = props => {
     labelReference,
     isPopoverOpen,
     closePopover,
-    email,
     userIdentifier,
     reloadUsers,
-    addSubscription,
-    removeSubscription,
-    orgUserRole,
-    userStatus,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
   const popoverClasses = usePopoverClasses(props);
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
-
-  const changeUserRole = useCallback(
-    ({ userIdentifier: markedUserIdentifier, role: userRole }) =>
-      changeUserRoleForOrg(markedUserIdentifier, userRole)(dispatch),
-    [dispatch],
-  );
 
   const FirsStepComponent = () => (
     <>
@@ -137,7 +95,15 @@ const InactiveRoleSelectionPopover = props => {
         <DenyButtonContainer>
           <Button
             onClick={() => {
-              dispatch(openModal('ArchiveUser'));
+              dispatch(
+                openModal('ArchiveUser', {
+                  confirm: () => {
+                    archiveUser(userIdentifier).then(() => {
+                      reloadUsers();
+                    });
+                  },
+                }),
+              );
               closePopover();
             }}
             size="small"
@@ -165,18 +131,8 @@ const InactiveRoleSelectionPopover = props => {
       <Header>Select their role in your Organization</Header>
       <RoleSelectionList>
         {renderUserTypesOptions({
-          userStatus,
-          userIdentifier,
           userTypes: USER_TYPES,
-          closePopover,
-          changeUserRole,
-          email,
-          reloadUsers,
-          addSubscription,
-          removeSubscription,
-          orgUserRole,
           selectedRoleKey: selectedRole?.key,
-          dispatch,
         })?.map(item =>
           renderRoleItem({
             ...item,
@@ -188,6 +144,9 @@ const InactiveRoleSelectionPopover = props => {
         <Button
           onClick={() => {
             closePopover();
+            reactivateUser(userIdentifier, selectedRole?.key).then(() => {
+              reloadUsers();
+            });
           }}
           size="small"
           disabled={!selectedRole?.key}

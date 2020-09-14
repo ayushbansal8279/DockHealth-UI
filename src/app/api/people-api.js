@@ -226,3 +226,15 @@ export function denyPendingUser({ userIdentifier }) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function reactivateUser(userIdentifier, role) {
+  return axios.put(
+    `user/addUserToOrganization?userIdentifier=${userIdentifier}&role=${role}`,
+  );
+}
+
+export function archiveUser(userIdentifier) {
+  return axios.delete(
+    `user/archiveUserFromOrganization?userIdentifier=${userIdentifier}`,
+  );
+}
