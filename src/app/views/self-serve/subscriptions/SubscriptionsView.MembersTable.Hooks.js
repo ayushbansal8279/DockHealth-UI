@@ -3,6 +3,7 @@ import { equals, find, uniq } from 'ramda';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useToggle } from 'react-use';
+import { showGlobalAlert } from 'alert/actions';
 import {
   addUserToOrganization,
   cancelInviteToOrganization,
@@ -89,6 +90,7 @@ const initializeMembersTableHooks = ({
         if (toggledUser.userIdentifier) {
           removeUserFromOrganization(toggledUser.userIdentifier)(dispatch).then(
             () => {
+              dispatch(showGlobalAlert(`User has been removed successfully`));
               getAllUsers();
             },
           );
