@@ -32,6 +32,25 @@ export const SelectElementWrapper = styled.div`
   overflow-y: scroll;
   z-index: 1;
 
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.coolGrey4};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.coolGrey4};
+    background-color: ${palette.coolGrey1};
+  }
+
   ${({ withValue }) =>
     withValue &&
     `
@@ -124,6 +143,25 @@ export const AvailablePeopleWrapper = styled.div`
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   z-index: 100;
   padding: ${spacing.smallPlus} 0;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.white};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.white};
+    background-color: ${palette.coolGrey1};
+  }
 `;
 
 export const AvailablePeopleItemButton = styled.button`
