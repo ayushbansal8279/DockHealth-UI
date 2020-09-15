@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import { showGlobalAlert } from 'alert/actions';
 import Button from 'components/common/Button/Button';
 import { reactivateUser, archiveUser } from 'api/people-api';
 import { openModal } from 'modal/actions';
@@ -99,6 +100,9 @@ const InactiveRoleSelectionPopover = props => {
                 openModal('ArchiveUser', {
                   confirm: () => {
                     archiveUser(userIdentifier).then(() => {
+                      dispatch(
+                        showGlobalAlert(`User has been archived successfully`),
+                      );
                       reloadUsers();
                     });
                   },
@@ -145,6 +149,7 @@ const InactiveRoleSelectionPopover = props => {
           onClick={() => {
             closePopover();
             reactivateUser(userIdentifier, selectedRole?.key).then(() => {
+              dispatch(showGlobalAlert(`User has been reactived successfully`));
               reloadUsers();
             });
           }}
