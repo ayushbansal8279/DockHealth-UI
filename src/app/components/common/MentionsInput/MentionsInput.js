@@ -1,206 +1,74 @@
-import React, { useState, useRef } from 'react';
-
+import React, { useState, useRef, useEffect } from 'react';
+import moment from 'moment';
 import { EditorState, convertToRaw } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
-import createMentionPlugin, {
-  defaultSuggestionsFilter,
-} from 'draft-js-mention-plugin';
+import createMentionPlugin from 'draft-js-mention-plugin';
 import './editorStyles.css';
-import palette from 'styles/palette';
-import { Popper } from '@material-ui/core';
-import Highlighter from 'react-highlight-words';
-import peopleMentions from './people';
-import patientMentions from './patient';
+import { getMembersByTaskListId } from 'api/tasklist-api';
+import { getPatientsByName } from 'api/patient-api';
 import createMentionEntities from './helpers';
+import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
+import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
+import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
+import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
+import PeopleMention from './PeopleMention/PeopleMention';
+import PatientMention from './PatientMention/PatientMention';
 
-const PopoverComponent = React.forwardRef(
-  ({ children, ...props }, reference) => (
-    <div {...props} ref={reference}>
-      {React.Children.map(children, child =>
-        child.props.mention.type === 'DEFAULT'
-          ? null
-          : React.cloneElement(child, child.props),
-      )}
-      <div>test</div>
-    </div>
-  ),
-);
+const getFormattedAge = ({ dob }) => {
+  if (!dob) {
+    return '';
+  }
 
-const MemberEntry = props => {
-  const {
-    mention,
-    searchValue, // eslint-disable-line no-unused-vars
+  const yearsOld = moment().diff(moment(dob), 'years');
 
-    // eslint-disable-line no-unused-vars
-    isFocused,
-    ...parentProps
-  } = props;
+  if (yearsOld < 0) {
+    return '';
+  }
 
-  return mention.type === 'DEFAULT' ? (
-    <div
-      onMouseUp={event => {
-        event.preventDefault();
-        event.stopPropagation();
-      }}
-      onMouseDown={event => {
-        event.preventDefault();
-        event.stopPropagation();
-      }}
-    >
-      DEFAULT
-    </div>
-  ) : (
-    <div {...parentProps}>
-      <div
-        style={{
-          display: 'flex',
-          padding: '10px',
-          backgroundColor: isFocused ? palette.coolGrey1 : 'transparent',
-        }}
-      >
-        <div style={{ height: 20, width: 20 }}>
-          <img
-            src={mention.avatar}
-            style={{ width: '100%', height: '100%' }}
-            role="presentation"
-            alt=""
-          />
-        </div>
+  const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
 
-        <div>
-          <Highlighter
-            highlightStyle={{ fontWeight: 'bold', background: 'none' }}
-            searchWords={searchValue?.toLowerCase().split(/\s+/)}
-            autoEscape
-            textToHighlight={mention.name}
-          />
-        </div>
-      </div>
-    </div>
-  );
+  return `${yearsOld} ${yearsLabel}`;
 };
 
-const PatientEntry = ({ mention, searchValue, isFocused, ...parentProps }) => {
-  return (
-    <div {...parentProps}>
-      <div
-        style={{
-          display: 'flex',
-          padding: '10px',
-          backgroundColor: isFocused ? palette.coolGrey1 : 'transparent',
-        }}
-      >
-        <div style={{ height: 20, width: 20 }}>
-          <img
-            src={mention.avatar}
-            style={{ width: '100%', height: '100%' }}
-            role="presentation"
-            alt=""
-          />
-        </div>
+const mapPatientsToSuggestions = patients =>
+  patients.map(({ patientIdentifier, firstName, lastName, dob, mrn }) => ({
+    id: patientIdentifier,
+    name: `${firstName} ${lastName}`,
+    age: getFormattedAge({ dob }),
+    mrn,
+  }));
 
-        <div>
-          <Highlighter
-            highlightStyle={{ fontWeight: 'bold', background: 'none' }}
-            searchWords={searchValue?.toLowerCase().split(/\s+/)}
-            autoEscape
-            textToHighlight={mention.name}
-          />
-        </div>
-      </div>
-    </div>
+const mapPeopleToSuggestions = people =>
+  people.map(person => ({
+    ...person,
+    id: person.userIdentifier,
+    name: person.userName,
+  }));
+
+const peopleSuggestionsFilter = (value, people) =>
+  people.filter(({ name }) =>
+    name.toLowerCase().startsWith(value.toLowerCase()),
   );
-};
 
-const MemberMention = ({ mention, className, children }) => {
-  const reference = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <span>
-      <a
-        ref={reference}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{
-          backgroundColor: 'rgba(7, 74, 134, 0.07)',
-          color: palette.darkBlue,
-          cursor: 'pointer',
-        }}
-        className={className}
-        href={mention.link}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {children}
-        <Popper
-          anchorEl={reference.current}
-          open={isHovered}
-          position="bottom-start"
-          style={{ zIndex: 2000 }}
-        >
-          <div style={{ padding: '100px 20px', backgroundColor: 'red' }}>
-            {mention.name}
-          </div>
-        </Popper>
-      </a>
-    </span>
-  );
-};
-
-const PatientMention = ({ mention, className, children, ...props }) => {
-  const reference = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <a
-      className={className}
-      ref={reference}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        backgroundColor: 'rgba(7, 74, 134, 0.07)',
-        color: palette.darkBlue,
-        cursor: 'pointer',
-      }}
-      href={mention.link}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {children}
-      <Popper
-        anchorEl={reference.current}
-        open={isHovered}
-        position="bottom-start"
-        style={{ zIndex: 2000 }}
-      >
-        <div style={{ padding: '100px 20px', backgroundColor: 'red' }}>
-          {mention.name}
-        </div>
-      </Popper>
-    </a>
-  );
-};
-
-const MentionsInput = ({ readOnly }) => {
+const MentionsInput = ({ readOnly, taskListIdentifier }) => {
   const peopleMentionPlugin = useRef(
     createMentionPlugin({
       mentionPrefix: '@',
       mentionTrigger: '@',
       // supportWhitespace: true,
-      mentionComponent: MemberMention,
+      mentionComponent: PeopleMention,
       // mentionSuggestionsComponent: CustomMentionSuggestions,
       positionSuggestions: props => {
         const rightPosition =
-          window.innerWidth - props.decoratorRect.left - 200;
+          window.innerWidth - props.decoratorRect.left - 192;
 
+        // TODO: refactor counting right position
         return {
           position: 'fixed',
           top: props.decoratorRect.bottom + 5,
-          right: rightPosition,
+          right: rightPosition < 90 ? 90 : rightPosition,
           left: 'auto',
           bottom: 'auto',
-          background: 'indigo',
           width: 200,
           zIndex: 1001,
         };
@@ -213,18 +81,19 @@ const MentionsInput = ({ readOnly }) => {
       mentionPrefix: '#',
       mentionTrigger: '#',
       mentionComponent: PatientMention,
+      // supportWhitespace: true,
       positionSuggestions: props => {
         // calculate from right side because of task drawer fixed position
         const rightPosition =
-          window.innerWidth - props.decoratorRect.left - 200;
+          window.innerWidth - props.decoratorRect.left - 192;
 
+        // TODO: refactor counting right position
         return {
           position: 'fixed',
           top: props.decoratorRect.bottom + 5,
-          right: rightPosition,
+          right: rightPosition < 130 ? 130 : rightPosition,
           left: 'auto',
           bottom: 'auto',
-          background: 'indigo',
           width: 200,
           zIndex: 1001,
         };
@@ -257,6 +126,7 @@ const MentionsInput = ({ readOnly }) => {
       ),
     ),
   );
+
   const placeholder = {
     name: '',
     id: '',
@@ -264,10 +134,19 @@ const MentionsInput = ({ readOnly }) => {
   };
 
   const [peopleSuggestions, setPeopleSuggestions] = useState([placeholder]);
-  const [patientSuggestions, setPatientSuggestions] = useState(patientMentions);
+  const [patientSuggestions, setPatientSuggestions] = useState(placeholder);
+  const [listMembers, setListMembers] = useState([]);
   const editor = useRef(null);
 
-  console.log('suggestions', peopleSuggestions);
+  useEffect(() => {
+    if (!taskListIdentifier) {
+      return;
+    }
+
+    getMembersByTaskListId(taskListIdentifier, 'ALL').then(members => {
+      setListMembers(members);
+    });
+  }, [taskListIdentifier]);
 
   const onChange = state => {
     setEditorState(state);
@@ -275,16 +154,29 @@ const MentionsInput = ({ readOnly }) => {
   };
 
   const onPeopleSearchChange = ({ value }) => {
-    console.log('value', value);
     setPeopleSuggestions(
-      value ? defaultSuggestionsFilter(value, peopleMentions) : [placeholder],
+      value
+        ? peopleSuggestionsFilter(value, mapPeopleToSuggestions(listMembers))
+        : [placeholder],
     );
   };
 
-  const onPatientSearchChange = ({ value }) => {
-    setPatientSuggestions(defaultSuggestionsFilter(value, patientMentions));
+  const clearPatientSuggestions = () => {
+    setPatientSuggestions([placeholder]);
   };
 
+  const onPatientSearchChange = ({ value }) => {
+    if (value) {
+      getPatientsByName(value).then(fetchedPatients => {
+        const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
+        setPatientSuggestions(formattedPatients);
+      });
+    } else {
+      clearPatientSuggestions();
+    }
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const onAddMention = () => {
     // get the mention object selected
   };
@@ -314,14 +206,15 @@ const MentionsInput = ({ readOnly }) => {
         onSearchChange={onPeopleSearchChange}
         suggestions={peopleSuggestions}
         onAddMention={onAddMention}
-        entryComponent={MemberEntry}
-        popoverComponent={<PopoverComponent />}
+        entryComponent={PeopleSuggestionItem}
+        popoverComponent={<PeopleSuggestionsPopover />}
       />
       <PatientsMentionSuggestions
         onSearchChange={onPatientSearchChange}
         suggestions={patientSuggestions}
         onAddMention={onAddMention}
-        entryComponent={PatientEntry}
+        entryComponent={PatientSuggestionItem}
+        popoverComponent={<PatientsSuggestionsPopover />}
       />
     </div>
   );

@@ -88,6 +88,7 @@ const NewTaskDrawer = ({
     onPatientInputChange,
     patientInputReference,
     refreshMembers,
+    taskListIdentifier,
     handleAddPatient,
     taskInputReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
@@ -202,7 +203,7 @@ const NewTaskDrawer = ({
               />
               <Spacing vertical={2} />
               <Grid item xs={12}>
-                <MentionsInput />
+                <MentionsInput taskListIdentifier={taskListIdentifier} />
               </Grid>
               <Grid item xs={12} style={styleFullRow}>
                 <TextInput
