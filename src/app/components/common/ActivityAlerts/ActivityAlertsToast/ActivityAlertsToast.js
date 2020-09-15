@@ -24,7 +24,7 @@ const ActivityAlertsToast = ({ itemAlert, positionInQueue, onClear }) => {
   }, [isCleared, shouldRender]);
 
   const topSpacing =
-    positionInQueue === 1 ? 36 : 36 + (positionInQueue - 1) * 178;
+    positionInQueue === 1 ? 36 : 36 + (positionInQueue - 1) * 178; // positionInQueue is from 1 to X - it incomes from ActivityAlerts component - it's necessary for correct calculating spacings
 
   return (
     <>
