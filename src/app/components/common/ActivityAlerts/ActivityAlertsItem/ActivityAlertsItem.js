@@ -20,6 +20,7 @@ import {
   CompletedCircleIcon,
   StyledCrossIcon,
   StyledTaskLink,
+  StyledDescriptionTaskLink,
 } from './styled';
 
 const AssignedCommentAlertItem = ({
@@ -98,8 +99,8 @@ const AssignedCommentAlertItem = ({
             }
           }}
         >
-          {description?.length > 30
-            ? `${description.slice(0, 30)}...`
+          {description?.length > 50
+            ? `${description.slice(0, 50).replace(/\s*$/, '')}...`
             : description}
         </StyledTaskLink>{' '}
         added by{' '}
@@ -120,22 +121,25 @@ const AssignedCommentAlertItem = ({
             }
           }}
         >
-          {`${creator?.firstName} ${creator?.lastName}`.length > 20
-            ? `${`${creator?.firstName} ${creator?.lastName}`?.slice(0, 20)}...`
+          {`${creator?.firstName} ${creator?.lastName}`.length > 42
+            ? `${`${creator?.firstName} ${creator?.lastName}`?.slice(0, 42)}...`
             : `${creator?.firstName} ${creator?.lastName}`}
         </StyledTaskLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertItemQuotes>
-        “{comment?.length > 120 ? `${comment.slice(0, 120)}...` : comment}”
+        “
+        {comment?.length > 130
+          ? `${comment.slice(0, 130).replace(/\s*$/, '')}...`
+          : comment}
+        ”
       </ActivityAlertItemQuotes>
     </ActivityAlertsItemContainer>
   );
 };
 
 const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
-  const dispatch = useDispatch();
   const { task, createdDateTime, organization } = itemAlert;
-  const { description, taskList, taskIdentifier, status } = task;
+  const { description, taskList } = task;
   const { taskListIdentifier } = taskList;
   const {
     organizationInitials,
@@ -193,37 +197,15 @@ const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
             }
           }}
         >
-          {taskList?.listName?.length > 20
-            ? `${taskList?.listName.slice(0, 20)}...`
+          {taskList?.listName?.length > 74
+            ? `${taskList?.listName.slice(0, 74).replace(/\s*$/, '')}...`
             : taskList?.listName}
         </StyledTaskLink>
       </ActivityAlertsItemLabel>
       <ActivityAlertsItemDescription>
-        <StyledTaskLink
-          onClick={() => {
-            const currentOrganizationIdentifier = sessionStorage.getItem(
-              'currentOrganizationIdentifier',
-            );
-
-            if (organizationIdentifier === currentOrganizationIdentifier) {
-              dispatch(storeAsCurrentTask(task));
-              onClearAlert();
-              hashHistory.push(
-                `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-              );
-            } else {
-              sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
-              selectCurrentOrganizationWithRedirection(
-                organizationIdentifier,
-                `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-              );
-            }
-          }}
-        >
-          {description?.length > 120
-            ? `${description.slice(0, 120)}...`
-            : description}
-        </StyledTaskLink>
+        {description?.length > 130
+          ? `${description.slice(0, 130).replace(/\s*$/, '')}...`
+          : description}
       </ActivityAlertsItemDescription>
     </ActivityAlertsItemContainer>
   );
@@ -277,7 +259,7 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
         been completed
       </ActivityAlertsItemLabel>
       <ActivityAlertsItemDescription>
-        <StyledTaskLink
+        <StyledDescriptionTaskLink
           onClick={() => {
             const currentOrganizationIdentifier = sessionStorage.getItem(
               'currentOrganizationIdentifier',
@@ -298,10 +280,10 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
             }
           }}
         >
-          {description?.length > 120
-            ? `${description.slice(0, 120)}...`
+          {description?.length > 130
+            ? `${description.slice(0, 130).replace(/\s*$/, '')}...`
             : description}
-        </StyledTaskLink>
+        </StyledDescriptionTaskLink>
       </ActivityAlertsItemDescription>
     </ActivityAlertsItemContainer>
   );
