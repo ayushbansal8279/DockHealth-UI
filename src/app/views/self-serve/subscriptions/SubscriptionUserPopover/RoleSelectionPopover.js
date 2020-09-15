@@ -13,7 +13,7 @@ import {
   RoleItemLabel,
   RoleItemDescription,
   RoleSelectorFooter,
-  RoleSelectorRemoveUserButton,
+  RoleSelectorCancelRemoveUserButton,
   Header,
 } from './styled';
 
@@ -168,7 +168,7 @@ const RoleSelectionPopover = ({
       FooterComponent={() => (
         <RoleSelectorFooter multipleButtons={!isInactive}>
           {!isInactive && (
-            <RoleSelectorRemoveUserButton
+            <RoleSelectorCancelRemoveUserButton
               disabled={!userHasSubscription}
               onClick={() => {
                 closePopover();
@@ -176,7 +176,7 @@ const RoleSelectionPopover = ({
               }}
             >
               Remove user
-            </RoleSelectorRemoveUserButton>
+            </RoleSelectorCancelRemoveUserButton>
           )}
           <Button
             onClick={() => {

@@ -18,6 +18,7 @@ import {
   DenyButtonContainer,
   ApprovalButtonContainer,
   Header,
+  RoleSelectorCancelRemoveUserButton,
 } from './styled';
 
 const USER_TYPES = new Proxy(
@@ -145,6 +146,13 @@ const InactiveRoleSelectionPopover = props => {
         )}
       </RoleSelectionList>
       <RoleSelectionFooter>
+        <RoleSelectorCancelRemoveUserButton
+          onClick={() => {
+            closePopover();
+          }}
+        >
+          Cancel
+        </RoleSelectorCancelRemoveUserButton>
         <Button
           onClick={() => {
             closePopover();

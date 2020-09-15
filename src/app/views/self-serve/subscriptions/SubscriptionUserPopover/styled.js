@@ -50,7 +50,7 @@ export const RoleSelectionList = styled.div`
 
 export const RoleSelectionFooter = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: ${spacing.smallPlus} ${spacing.largePlus} 48px;
 `;
 
@@ -107,7 +107,7 @@ export const RoleSelectorFooter = styled.div`
   padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.largePlus};
 `;
 
-export const RoleSelectorRemoveUserButton = styled.button`
+export const RoleSelectorCancelRemoveUserButton = styled.button`
   color: ${palette.brightBlue};
   outline: none;
 `;
