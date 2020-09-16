@@ -607,7 +607,7 @@ const Subtasks = ({
                             currentUser={currentUser}
                             reassignTask={reassignTask}
                             parentHasPatient={parentHasPatient}
-                            isDraggable={isDraggable}
+                            isDraggable={isDraggable && subtasks?.length > 1}
                             isLast={index + 1 === orderedSubtasks.length}
                             showSubtaskStylingLink={!draggedId}
                             {...restProps}
