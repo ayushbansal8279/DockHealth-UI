@@ -21,6 +21,7 @@ import ChangeMobileNumberModal from './components/ChangeMobileNumberModal/Change
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
+import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -46,6 +47,7 @@ const MODAL_MAP = {
   Confirmation: ConfirmationModal,
   OnboardingInviteConfirmation: OnboardingInviteConfirmationModal,
   ArchiveUser: ArchiveUserModal,
+  SelectOwner: SelectOwnerModal,
 };
 
 export default MODAL_MAP;
