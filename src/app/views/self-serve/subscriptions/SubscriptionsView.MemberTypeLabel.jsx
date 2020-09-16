@@ -37,6 +37,7 @@ const MemberTypeLabel = ({
   isPopoverOpen,
   openPopover,
   closePopover,
+  displayName,
 }) => {
   const labelReference = useRef(null);
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ const MemberTypeLabel = ({
             orgUserRole,
             labelReference,
             isPopoverOpen,
+            displayName,
           }}
         />
       )}

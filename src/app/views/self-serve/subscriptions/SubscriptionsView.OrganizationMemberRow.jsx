@@ -291,6 +291,7 @@ const OrganizationMemberRow = ({
             isPopoverOpen={isPopoverOpen}
             openPopover={openPopover}
             closePopover={closePopover}
+            displayName={`${firstName} ${lastName}`}
           />
         </MemberTableCell>
       </Grid>

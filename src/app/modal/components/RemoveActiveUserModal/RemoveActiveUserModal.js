@@ -21,7 +21,9 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
   const [taskCount, setTaskCount] = useState(0);
 
   useEffect(() => {
-    getUserActiveTasksCount(userIdentifier, setTaskCount);
+    getUserActiveTasksCount(userIdentifier).then(({ data }) =>
+      setTaskCount(data?.metricValue),
+    );
   }, [userIdentifier]);
 
   return (
@@ -35,8 +37,8 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <FirstDescription>
-            This user has tasks assignd to them. These tasks will become
-            unassigned.
+            This user has tasks assigned {taskCount} to them. These tasks will
+            become unassigned.
           </FirstDescription>
           <SecondDescription>
             If removed, you will not be charged for this user starting in the

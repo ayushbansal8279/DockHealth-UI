@@ -952,9 +952,7 @@ export const verifyNewPhoneNumber = code => {
   return Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
 };
 
-export const getUserActiveTasksCount = (userId, saveCount) =>
-  axios
-    .get(
-      `/task/findCountOfTasksAssignedToSpecificUser?userId=${userId}&status=INCOMPLETE`,
-    )
-    .then(({ data }) => saveCount(data));
+export const getUserActiveTasksCount = userId =>
+  axios.get(
+    `/task/findCountOfAllTasksAssignedToSpecificUser?userId=${userId}&status=INCOMPLETE`,
+  );
