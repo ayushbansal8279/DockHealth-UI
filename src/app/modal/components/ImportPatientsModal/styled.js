@@ -38,11 +38,13 @@ export const Title = styled.h5`
 `;
 
 export const StyledButton = styled(Button)`
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 40px;
-  width: 265px;
-  height: 50px;
+  &&& {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 40px;
+    width: 265px;
+    height: 50px;
+  }
 `;
 export const AlreadyHaveTemplate = styled.a`
   font-family: Roboto Condensed;
