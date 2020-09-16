@@ -89,6 +89,7 @@ export const BillingElementContainer = styled.div`
   > * {
     height: 1.0625rem;
     width: 100%;
+    padding-left: 5px;
   }
 `;
 

@@ -31,7 +31,7 @@ export const saveBillingDetails = ({ billingData, token }) =>
     method: 'put',
     url: '/organization/saveBillingDetails',
     data: {
-      billingName: billingData.name,
+      billingName: billingData.nameOnCard,
       billingEmail: billingData.email,
       billingAddressLine1: billingData.address,
       billingAddressLine2: billingData.address2,

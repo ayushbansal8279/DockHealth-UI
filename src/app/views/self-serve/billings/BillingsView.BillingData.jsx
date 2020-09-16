@@ -22,6 +22,7 @@ import CardDiscoverIcon from 'img/cards/discover.png';
 import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import BillingInformation from './BillingsView.BillingData.BillingInformation';
 import {
   AcceptedCardsContainer,
@@ -161,10 +162,19 @@ const BillingElement = ({
   );
 };
 
-const UpdateBillingElement = ({ isUpdatingBilling, cancelUpdateBilling }) =>
+const UpdateBillingElement = ({
+  isUpdatingBilling,
+  cancelUpdateBilling,
+  processingUpdate,
+}) =>
   isUpdatingBilling && (
     <Grid item sm={12} container justify="flex-end" wrap="nowrap">
-      <Button size="small" onClick={cancelUpdateBilling} variant="text">
+      <Button
+        size="small"
+        onClick={cancelUpdateBilling}
+        variant="text"
+        disabled={processingUpdate}
+      >
         <MontserratTypography
           variant="h4"
           textDecoration="underline"
@@ -174,8 +184,13 @@ const UpdateBillingElement = ({ isUpdatingBilling, cancelUpdateBilling }) =>
         </MontserratTypography>
       </Button>
       <Spacing horizontal={4} />
-      <Button type="submit" variant="contained" size="small">
-        SAVE
+      <Button
+        type="submit"
+        variant="contained"
+        size="small"
+        disabled={processingUpdate}
+      >
+        {processingUpdate ? <Loader size={LoaderSizes.medium} /> : 'SAVE'}
       </Button>
     </Grid>
   );
@@ -195,6 +210,7 @@ const CreditPaymentForm = ({
   errors,
   SaveBillingElement,
   hasDiscountCode,
+  processingUpdate,
 }) => {
   const getInputProps = getInputPropsMethod({ setValue, values, errors });
 
@@ -318,6 +334,7 @@ const CreditPaymentForm = ({
         <UpdateBillingElement
           isUpdatingBilling={isUpdatingBilling}
           cancelUpdateBilling={cancelUpdateBilling}
+          processingUpdate={processingUpdate}
         />
       )}
     </FormContainer>
@@ -411,9 +428,22 @@ const BillingData = ({
     formFields.map(({ key }) => [key, errors?.[key]?.message ?? '']),
   );
 
+  const [
+    processingUpdate,
+    setProcessingUpdate,
+    unsetProcessingUpdate,
+  ] = useBoolean(false);
+
   return (
     <form
-      onSubmit={handleSubmit(onSubmit({ stripe, unsetUpdatingBilling }))}
+      onSubmit={handleSubmit(
+        onSubmit({
+          stripe,
+          unsetUpdatingBilling,
+          setProcessingUpdate,
+          unsetProcessingUpdate,
+        }),
+      )}
       autoComplete="off"
       autoCorrect="off"
     >
@@ -426,6 +456,7 @@ const BillingData = ({
           errors={errorsValues}
           SaveBillingElement={SaveBillingElement}
           hasDiscountCode={hasDiscountCode}
+          processingUpdate={processingUpdate}
         />
         {!isUpdatingBilling && (
           <BillingInformation setUpdatingBilling={setUpdatingBilling}>
