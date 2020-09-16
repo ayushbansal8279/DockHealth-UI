@@ -161,20 +161,18 @@ export default function ReferAColleagueModal({ ...props }) {
         aria-labelledby="form-dialog-title"
         maxWidth={maxWidth}
       >
-
-      <DialogContent>
-        <MainContainer>
-          <LeftSideMainContainer>
-            <LeftSideContentContainer>
-
-              <StyledForm
-                onSubmit={formMethods.handleSubmit(
-                  onSubmit({
-                    handleReferralClose,
-                  }),
-                )}
-              >
-                <FormContext {...formMethods}>
+        <DialogContent>
+          <MainContainer>
+            <LeftSideMainContainer>
+              <LeftSideContentContainer>
+                <StyledForm
+                  onSubmit={formMethods.handleSubmit(
+                    onSubmit({
+                      handleReferralClose,
+                    }),
+                  )}
+                >
+                  <FormContext {...formMethods}>
                     {/* <DialogContentText>
                       If you love dock health and want to refer a friend or colleague,
                       simply fill in their information below and we&apos;ll send an
@@ -193,7 +191,7 @@ export default function ReferAColleagueModal({ ...props }) {
                     <UniversalMontserratInput name="email" label="Email" />
                     <Spacing vertical={3} /> */}
 
-                  {/* <DialogActions>
+                    {/* <DialogActions>
                     <Button onClick={handleReferralClose} color="primary">
                       Cancel
                     </Button>
@@ -201,30 +199,36 @@ export default function ReferAColleagueModal({ ...props }) {
                       Send Invite
                     </Button>
                   </DialogActions> */}
-                </FormContext>
-              </StyledForm>
-
-            </LeftSideContentContainer>
-          </LeftSideMainContainer>
-          <RightSideMainContainer>
-            <RightSideContentContainer>
-              <StyledGrid container justify="center" alignItems="left" direction="column">
-                <a href="/#/">
-                  <DockLogoImage />
-                </a>
-                <Spacing vertical={5} />
-                <MontserratTypography weight="normal" variant="h3" color="inherit">
-                  A simple, HIPAA compliant task management and collaboration platform
-                  built specifically for healthcare.
-                </MontserratTypography>
-              </StyledGrid>
-            </RightSideContentContainer>
-          </RightSideMainContainer>
-        </MainContainer>
-
-      </DialogContent>
-      {/* <DialogTitle id="form-dialog-title" style={{fontSize: '20px'}}>Refer a colleague</DialogTitle> */}
-
+                  </FormContext>
+                </StyledForm>
+              </LeftSideContentContainer>
+            </LeftSideMainContainer>
+            <RightSideMainContainer>
+              <RightSideContentContainer>
+                <StyledGrid
+                  container
+                  justify="center"
+                  alignItems="left"
+                  direction="column"
+                >
+                  <a href="/#/">
+                    <DockLogoImage />
+                  </a>
+                  <Spacing vertical={5} />
+                  <MontserratTypography
+                    weight="normal"
+                    variant="h3"
+                    color="inherit"
+                  >
+                    A simple, HIPAA compliant task management and collaboration
+                    platform built specifically for healthcare.
+                  </MontserratTypography>
+                </StyledGrid>
+              </RightSideContentContainer>
+            </RightSideMainContainer>
+          </MainContainer>
+        </DialogContent>
+        {/* <DialogTitle id="form-dialog-title" style={{fontSize: '20px'}}>Refer a colleague</DialogTitle> */}
       </Dialog>
     </div>
   );
