@@ -191,8 +191,7 @@ const OrganizationMemberRow = ({
   subscriptionPlanData,
   openRemoveSubscriptionModal,
   organizationMembers,
-  isInvited,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  isInvited, // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   let userType = null;
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -227,17 +226,14 @@ const OrganizationMemberRow = ({
       target: { checked: true },
     });
 
-  const ownerCount =
+  const ownersCount =
     organizationMembers?.filter(
       ({ orgUserRole: memberUserRole }) => memberUserRole === 'OWNER',
     )?.length ?? 0;
 
   const hasOneUserRemaining = organizationMembers.length === 1;
 
-  const isDisabledRemovingSubscription =
-    hasOneUserRemaining ||
-    (ownerCount <= 1 && orgUserRole === 'OWNER') ||
-    userIdentifier === sessionStorage.userIdentifier;
+  const isDisabledRemovingSubscription = hasOneUserRemaining;
 
   const registrationMoment = moment(registrationDate);
   const formattedRegistrationDate = registrationMoment.isValid()
@@ -250,6 +246,12 @@ const OrganizationMemberRow = ({
     planIsTrial,
     planPricePerUser,
   });
+
+  const currentActiveUsers = organizationMembers?.filter(
+    user =>
+      !!user?.subscription &&
+      user?.userIdentifier === sessionStorage.userIdentifier,
+  );
 
   return (
     <MemberTableRow container spacing={1} isSelected={isPopoverOpen}>
@@ -294,6 +296,8 @@ const OrganizationMemberRow = ({
             openPopover={openPopover}
             closePopover={closePopover}
             displayName={displayName}
+            ownersCount={ownersCount}
+            currentActiveUsers={currentActiveUsers}
           />
         </MemberTableCell>
       </Grid>

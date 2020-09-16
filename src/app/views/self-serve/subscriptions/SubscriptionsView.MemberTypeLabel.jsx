@@ -38,16 +38,14 @@ const MemberTypeLabel = ({
   openPopover,
   closePopover,
   displayName,
+  ownersCount,
+  currentActiveUsers,
 }) => {
   const labelReference = useRef(null);
   const dispatch = useDispatch();
   const reloadUsers = useCallback(() => findAllUsers()(dispatch), [dispatch]);
 
   const PopoverComponent = (() => {
-    if (userIdentifier === sessionStorage.userIdentifier) {
-      return null;
-    }
-
     if (userStatus === 'PENDING') {
       return PendingApprovalPopover;
     }
@@ -103,6 +101,8 @@ const MemberTypeLabel = ({
             labelReference,
             isPopoverOpen,
             displayName,
+            ownersCount,
+            currentActiveUsers,
           }}
         />
       )}
