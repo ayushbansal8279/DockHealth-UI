@@ -3,7 +3,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const PopoverContainer = styled.div`
-  width: 317px;
+  width: 100%;
   background-color: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   font-family: 'Roboto Condensed', sans-serif;

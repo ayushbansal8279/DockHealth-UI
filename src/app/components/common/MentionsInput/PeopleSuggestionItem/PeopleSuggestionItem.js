@@ -11,7 +11,7 @@ const PeopleSuggestionItem = ({
 }) => {
   return (
     <SuggestionItemContainer {...parentProps} isFocused={isFocused}>
-      <Member size={30} member={mention} />
+      <Member size={30} member={mention} showTooltip={false} />
       <SuggestionText>
         <Highlighter
           highlightStyle={{ fontWeight: 'bold', background: 'none' }}
