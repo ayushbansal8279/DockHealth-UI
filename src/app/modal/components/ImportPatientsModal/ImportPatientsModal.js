@@ -4,8 +4,9 @@ import palette from 'styles/palette';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import { uploadPatientData } from 'actions/patient-actions';
-import { CloseIconButton, CloseIcon } from '../styled';
 import uploadFileIcon from 'img/uploadFileIcon.svg';
+import { useDropzone } from 'react-dropzone';
+import { CloseIconButton, CloseIcon } from '../styled';
 import {
   ImportPatientModalWrapper,
   Description,
@@ -29,7 +30,7 @@ const ImportPatientsModal = ({
   const dispatch = useDispatch();
 
   const onButtonClick = () => {
-    inputFileReference.current.click();
+    // inputFileReference.current.click();
   };
 
   const [modalStep, setModalStep] = useState(step);
@@ -48,13 +49,27 @@ const ImportPatientsModal = ({
             refreshPatientList();
           }
         },
-      })(dispatch)
-        .then(() => {
-          closeModal();
-        })
-        .catch(() => {});
+      })(dispatch);
     }
   }, [closeModal, dispatch, refreshPatientList, setImportPopoverOpen]);
+
+  const onDrop = useCallback(
+    acceptedFiles => {
+      acceptedFiles.forEach(file => {
+        uploadPatientData(file, {
+          onUploadProgress: ({ loaded, total }) => {
+            if (loaded === total) {
+              closeModal();
+              setImportPopoverOpen(true);
+              refreshPatientList();
+            }
+          },
+        })(dispatch);
+      });
+    },
+    [closeModal, dispatch, refreshPatientList, setImportPopoverOpen],
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
     <>
@@ -82,7 +97,7 @@ const ImportPatientsModal = ({
                 <StyledButton
                   variant="outlined"
                   type="button"
-                  size="small"
+                  size="medium"
                   onClick={closeModal}
                 >
                   Cancel
@@ -91,7 +106,7 @@ const ImportPatientsModal = ({
               <Grid item xs={6}>
                 <StyledButton
                   variant="contained"
-                  size="small"
+                  size="medium"
                   onClick={() => {
                     downloadTemplate();
                     setModalStep(2);
@@ -121,26 +136,35 @@ const ImportPatientsModal = ({
               Copy and paste your patients into the template, then upload To
               Dock here.
             </ContentMessage>
-            <FileInputArea>
+            <FileInputArea {...getRootProps()}>
               <FileInputImage src={uploadFileIcon} alt="file upload icon" />
               <FileInputMessage>
-                Drag and drop your CSV or Excel template here or
-                <input
-                  type="file"
-                  id="file"
-                  ref={inputFileReference}
-                  style={{ display: 'none' }}
-                  onChange={onFileInputChange}
-                />
-                <button
-                  onClick={onButtonClick}
-                  style={{ color: palette.cyanBlue, paddingRight: '5px' }}
-                >
-                  {' '}
-                  <span> Browse </span>{' '}
-                </button>
-                your local files.
+                {isDragActive ? (
+                  <span>Drop the files here ...</span>
+                ) : (
+                  <>
+                    <span>
+                      Drag and drop your CSV or Excel template here or
+                    </span>
+                    <button
+                      onClick={onButtonClick}
+                      style={{ color: palette.cyanBlue, paddingRight: '5px' }}
+                    >
+                      {' '}
+                      <span> Browse </span>{' '}
+                    </button>
+                    your local files.
+                  </>
+                )}
               </FileInputMessage>
+              <input
+                type="file"
+                id="file"
+                ref={inputFileReference}
+                style={{ display: 'none' }}
+                onChange={onFileInputChange}
+                {...getInputProps()}
+              />
             </FileInputArea>
           </>
         )}
