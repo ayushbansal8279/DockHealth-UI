@@ -238,9 +238,3 @@ export function archiveUser(userIdentifier) {
     `user/archiveUserFromOrganization?userIdentifier=${userIdentifier}`,
   );
 }
-
-export function changeUserToOwner(userIdentifier) {
-  return axios.put(
-    `organization/reassignOwnerForOrg?assignedUserId=${userIdentifier}`,
-  );
-}

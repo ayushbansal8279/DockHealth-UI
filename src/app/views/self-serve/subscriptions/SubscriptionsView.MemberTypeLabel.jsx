@@ -1,9 +1,7 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { findAllUsers } from 'actions/people-actions';
 import Arrow from 'components/common/Arrow/Arrow';
-import { openModal } from 'modal/actions';
 import {
   MemberTypeButton,
   CurrentUserLabel,
@@ -40,16 +38,13 @@ const MemberTypeLabel = ({
   openPopover,
   closePopover,
   displayName,
-  ownersCount,
-  currentActiveUsers,
 }) => {
   const labelReference = useRef(null);
   const dispatch = useDispatch();
   const reloadUsers = useCallback(() => findAllUsers()(dispatch), [dispatch]);
-  const isCurrrentUser = userIdentifier === sessionStorage.userIdentifier;
 
   const PopoverComponent = (() => {
-    if (ownersCount < 2 && isCurrrentUser && orgUserRole === 'OWNER') {
+    if (userIdentifier === sessionStorage.userIdentifier) {
       return null;
     }
 
@@ -71,26 +66,13 @@ const MemberTypeLabel = ({
     return null;
   })();
 
-  let onClickAction = openPopover;
-
-  if (ownersCount < 2 && isCurrrentUser && orgUserRole === 'OWNER') {
-    onClickAction = () =>
-      dispatch(
-        openModal('SelectOwner', {
-          currentActiveUsers,
-        }),
-      );
-  } else if (isDisabledRemovingSubscription) {
-    onClickAction = () => {};
-  }
-
   return (
     <>
       <MemberTypeButton
         ref={labelReference}
         invited={invitationModifiable}
         clickable={!isDisabledRemovingSubscription}
-        onClick={onClickAction}
+        onClick={isDisabledRemovingSubscription ? () => {} : openPopover}
         isInvited={isInvited}
       >
         {!isDisabledRemovingSubscription && (
@@ -121,8 +103,6 @@ const MemberTypeLabel = ({
             labelReference,
             isPopoverOpen,
             displayName,
-            ownersCount,
-            currentActiveUsers,
           }}
         />
       )}
