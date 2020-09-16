@@ -12,11 +12,11 @@ import { approvePendingUser, denyPendingUser } from 'api/people-api';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {
   PendingApprovalContainer,
-  PendingApprovalRoleList,
-  PendingApprovalFooter,
-  PendingApprovalDescriptionOne,
-  PendingApprovalDescriptionTwo,
-  PendingApprovalButtonsContainer,
+  RoleSelectionList,
+  RoleSelectionFooter,
+  RoleSelectionDescriptionOne,
+  RoleSelectionDescriptionTwo,
+  RoleSelectionButtonsContainer,
   DenyButtonContainer,
   ApprovalButtonContainer,
   Header,
@@ -104,7 +104,7 @@ const usePopoverClasses = makeStyles({
   },
 });
 
-const PendingApprovalPopover = props => {
+const PendingApprovalSelectionPopover = props => {
   const {
     labelReference,
     isPopoverOpen,
@@ -132,17 +132,17 @@ const PendingApprovalPopover = props => {
     <>
       <Header>Approve or deny a new user request</Header>
       <div>
-        <PendingApprovalDescriptionOne>
+        <RoleSelectionDescriptionOne>
           As the Organization Owner, you have the authority to approve or deny
           new member requests.
-        </PendingApprovalDescriptionOne>
-        <PendingApprovalDescriptionTwo>
+        </RoleSelectionDescriptionOne>
+        <RoleSelectionDescriptionTwo>
           If denied, the person who requested the invite will be notified via
           email. If approved, this person will become part of your subscription
           once they create an account on Dock.
-        </PendingApprovalDescriptionTwo>
+        </RoleSelectionDescriptionTwo>
       </div>
-      <PendingApprovalButtonsContainer>
+      <RoleSelectionButtonsContainer>
         <DenyButtonContainer>
           <Button
             onClick={() =>
@@ -183,14 +183,14 @@ const PendingApprovalPopover = props => {
             APPROVE
           </Button>
         </ApprovalButtonContainer>
-      </PendingApprovalButtonsContainer>
+      </RoleSelectionButtonsContainer>
     </>
   );
 
   const SecondStepComponent = () => (
     <>
       <Header>Select their role in your Organization</Header>
-      <PendingApprovalRoleList>
+      <RoleSelectionList>
         {renderUserTypesOptions({
           userStatus,
           userIdentifier,
@@ -210,8 +210,8 @@ const PendingApprovalPopover = props => {
             onSelect: setSelectedRole,
           }),
         )}
-      </PendingApprovalRoleList>
-      <PendingApprovalFooter>
+      </RoleSelectionList>
+      <RoleSelectionFooter>
         <Button
           onClick={() =>
             approvePendingUser({ userIdentifier, role: selectedRole?.key })
@@ -236,7 +236,7 @@ const PendingApprovalPopover = props => {
         >
           Save
         </Button>
-      </PendingApprovalFooter>
+      </RoleSelectionFooter>
     </>
   );
 
@@ -263,4 +263,4 @@ const PendingApprovalPopover = props => {
   );
 };
 
-export default PendingApprovalPopover;
+export default PendingApprovalSelectionPopover;

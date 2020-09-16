@@ -91,7 +91,6 @@ const USER_STATUS_TYPES = new Proxy(
   {
     INACTIVE: {
       label: 'Inactive',
-      changeable: true,
     },
     CANCELLED: {
       label: 'Cancelled',
