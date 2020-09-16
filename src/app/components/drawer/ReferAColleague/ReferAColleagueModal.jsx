@@ -1,138 +1,34 @@
 import React from 'react';
-import { Button, Dialog, Grid, IconButton } from '@material-ui/core';
+import { Dialog } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
-import styled from 'styled-components';
-import palette, { opacify } from 'styles/palette';
+import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import Spacing from 'components/common/Spacing';
 import { showAlert } from 'helpers/utility-functions';
-import DockHeaderLogo from 'img/dock-header-logo.svg';
-import AuthTemplateTopBackgroundTop from 'img/Bubble_Pattern_Top.svg';
-import AuthTemplateTopBackgroundBottom from 'img/Bubble_Pattern_Bottom.svg';
 import { referAColleague } from 'api/organization-api';
-import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
+import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
+import Button from 'components/common/Button/Button';
 
-const mdBreakpoint = 960;
-
-const MainContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  width: 100%;
-
-  @media screen and (max-width: ${mdBreakpoint}px) {
-    flex-direction: column;
-  }
-`;
-
-const LeftSideMainContainer = styled.div`
-  align-items: center;
-  background-color: ${palette.white};
-  display: flex;
-  flex: 1;
-  height: min-content;
-  justify-content: center;
-  min-height: min-content;
-
-  @media screen and (min-width: ${mdBreakpoint}px) {
-    height: 100%;
-    min-height: 100%;
-  }
-`;
-
-const LeftSideContentContainer = styled.div`
-  align-items: flex-start;
-  display: flex;
-  height: min-content;
-  justify-content: center;
-  min-height: min-content;
-  padding: 1.5rem;
-  width: 100%;
-
-  @media screen and (min-width: ${mdBreakpoint}px) {
-    align-items: center;
-    height: 100%;
-    min-height: 100%;
-    padding: 2rem;
-    max-width: 495px;
-  }
-`;
-
-const RightSideMainContainer = styled.div`
-  align-items: center;
-  background-color: ${palette.midnightBlue};
-  background-image: linear-gradient(
-      to bottom,
-      ${opacify(palette.midnightBlue, 0.5)},
-      ${opacify(palette.midnightBlue, 0.5)}
-    ),
-    url(${AuthTemplateTopBackgroundTop}),
-    url(${AuthTemplateTopBackgroundBottom});
-  background-repeat: repeat-x;
-  background-position: bottom, top;
-  display: flex-root;
-  max-width: 642px;
-  height: 100%;
-  justify-content: center;
-  min-height: 100%;
-  padding: 10rem 7rem 2rem 7rem;
-  width: 50%;
-
-  @media screen and (max-width: ${mdBreakpoint}px) {
-    height: min-content;
-    max-width: unset;
-    min-height: min-content;
-    padding: 1.5rem;
-    width: 100%;
-  }
-`;
-
-const RightSideContentContainer = styled.div`
-  color: ${palette.white};
-  height: min-content;
-  min-height: min-content;
-  width: 100%;
-
-  @media screen and (min-width: ${mdBreakpoint}px) {
-    max-height: 721px;
-    max-width: 525px;
-  }
-`;
-
-const StyledGrid = styled(Grid)`
-  && {
-    height: 100%;
-  }
-`;
-
-const DockLogoImage = styled.img.attrs({
-  src: DockHeaderLogo,
-  alt: 'Dock Health logo',
-})`
-  object-fit: contain;
-  height: 128px;
-`;
-
-const StyledForm = styled.form`
-  width: 100%;
-`;
-
-const CloseButton = styled(IconButton)`
-  && {
-    font-size: 1.125rem;
-    margin-left: auto;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-`;
+import {
+  MainContainer,
+  LeftSideMainContainer,
+  LeftSideContentContainer,
+  RightSideMainContainer,
+  RightSideContentContainer,
+  StyledGrid,
+  DockLogoImage,
+  StyledForm,
+  Title,
+  CloseButton,
+  ButtonWrapper,
+} from './styled';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -204,7 +100,7 @@ export default function ReferAColleagueModal({ ...props }) {
                   )}
                 >
                   <FormContext {...formMethods}>
-                    <div style={{ marginBottom: '20px' }}>
+                    <Title>
                       <RobotoTypography
                         weight="normal"
                         variant="h4"
@@ -212,7 +108,7 @@ export default function ReferAColleagueModal({ ...props }) {
                       >
                         REFER A COLLEAGUE
                       </RobotoTypography>
-                    </div>
+                    </Title>
                     <DialogContentText>
                       If you love Dock Health and want to refer a friend or
                       colleague, simply fill in their information below and
@@ -238,12 +134,22 @@ export default function ReferAColleagueModal({ ...props }) {
                     <Spacing vertical={3} />
 
                     <DialogActions>
-                      <Button onClick={handleReferralClose} color="secondary">
-                        Cancel
-                      </Button>
-                      <Button type="submit" color="primary">
-                        Send Invite
-                      </Button>
+                      <ButtonWrapper>
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          onClick={handleReferralClose}
+                          size="small"
+                        >
+                          Cancel
+                        </Button>
+                      </ButtonWrapper>
+                      <Spacing horizontal={3} />
+                      <ButtonWrapper>
+                        <Button fullWidth type="submit" size="small">
+                          Send Invite
+                        </Button>
+                      </ButtonWrapper>
                     </DialogActions>
                   </FormContext>
                 </StyledForm>

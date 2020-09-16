@@ -13,7 +13,7 @@ import EnvelopeIcon from 'img/drawer/EnvelopeIcon';
 import palette from 'styles/palette';
 import OrganizationList from '../../Organization/OrganizationList/OrganizationList';
 import DrawerFooter from './DrawerFooter';
-import ReferAColleagueModal from '../ReferAColleagueModal';
+import ReferAColleagueModal from '../ReferAColleague/ReferAColleagueModal';
 import {
   DrawerListContainer,
   DrawerListItemsContainer,
