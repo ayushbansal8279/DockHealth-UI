@@ -250,7 +250,7 @@ const OrganizationMemberRow = ({
   const currentActiveUsers = organizationMembers?.filter(
     user =>
       !!user?.subscription &&
-      user?.userIdentifier !== sessionStorage.userIdentifier,
+      user?.userIdentifier === sessionStorage.userIdentifier,
   );
 
   return (

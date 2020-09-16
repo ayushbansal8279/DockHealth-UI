@@ -27,7 +27,7 @@ import {
   UserNotFound,
 } from './styled';
 
-const SelectOwnerModal = ({ closeModal, currentActiveUsers }) => {
+const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -48,9 +48,9 @@ const SelectOwnerModal = ({ closeModal, currentActiveUsers }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            You are removing an organizational owner and you must have one
-            person assigned at a minimum. Who would you like to assign as the
-            organizational owner?
+            At this time, you don’t have any organizational owners. You must
+            have one person assigned as an owner. Who would you like to assign
+            as the organizational owner?
           </Typography>
         </ModalDescriptionContainer>
         <UsersContainer>
@@ -104,12 +104,13 @@ const SelectOwnerModal = ({ closeModal, currentActiveUsers }) => {
             disabled={isEmpty(selectedUser)}
             onClick={() => {
               changeUserToOwner(selectedUser?.userIdentifier).then(() => {
+                confirm();
                 closeModal();
                 hashHistory.push('/home/my-tasks');
               });
             }}
           >
-            ASSIGN ADMIN
+            ASSIGN AS OWNER
           </Button>
         </ButtonsContainer>
       </ModalWrapper>
