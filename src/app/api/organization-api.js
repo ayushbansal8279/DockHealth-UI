@@ -168,3 +168,11 @@ export const getConfigurationForReferral = referralCode =>
 //   const currentAccessToken = sessionStorage.getItem('accessToken');
 //   axios.defaults.headers.common.Authorization = `Bearer ${currentAccessToken}`;
 // };
+
+export const referAColleague = referDetails => {
+  axios({
+    method: 'put',
+    url: '/organization/referAColleague',
+    data: referDetails,
+  }).then(response => response.data);
+};

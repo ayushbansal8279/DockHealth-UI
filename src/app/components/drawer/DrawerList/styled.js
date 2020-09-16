@@ -68,7 +68,10 @@ export const StyledListItemText = styled(ListItemText).attrs({
   disableTypography: true,
 })`
   && {
-    color: ${palette.coolGrey2};
+    color: ${props =>
+      props.labelColor ? props.labelColor : palette.coolGrey2};
+    font-size: 16px;
+    line-height: 29px;
     font-weight: normal;
     overflow: hidden;
     padding: 0;

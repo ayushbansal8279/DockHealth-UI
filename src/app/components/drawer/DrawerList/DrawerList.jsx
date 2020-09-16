@@ -9,8 +9,11 @@ import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
 import SearchIcon from 'img/drawer/SearchIcon';
+import EnvelopeIcon from 'img/drawer/EnvelopeIcon';
+import palette from 'styles/palette';
 import OrganizationList from '../../Organization/OrganizationList/OrganizationList';
 import DrawerFooter from './DrawerFooter';
+import ReferAColleagueModal from '../ReferAColleagueModal';
 import {
   DrawerListContainer,
   DrawerListItemsContainer,
@@ -54,6 +57,7 @@ const Item = ({
   icon: Icon,
   id,
   label,
+  labelColor,
   childItems,
   open,
   setActiveId,
@@ -64,6 +68,7 @@ const Item = ({
   setRolloverLabel,
   setRolloverPopoverAnchor,
   isIconFilled = true,
+  onItemClick,
   ...otherProps
 }) => {
   const active = id === activeId;
@@ -77,7 +82,10 @@ const Item = ({
       to={to}
       active={active || (nestedActive && !open)}
       highlighted={active || nestedActive}
-      onClick={() => setActiveId(id)}
+      onClick={() => {
+        setActiveId(id);
+        onItemClick();
+      }}
       open={open}
       {...otherProps}
     >
@@ -88,7 +96,7 @@ const Item = ({
         <Icon color="inherit" />
         <ActiveIconRim active={childOrSelfActive} />
       </StyledListItemIcon>
-      {open && <StyledListItemText primary={label} />}
+      {open && <StyledListItemText primary={label} labelColor={labelColor} />}
     </StyledListItem>
   );
 
@@ -280,6 +288,16 @@ const DrawerList = ({
     setRolloverLabel('');
   }, [closePopover]);
 
+  const [openReferral, setOpenReferral] = React.useState(false);
+
+  const handleReferralClickOpen = () => {
+    setOpenReferral(true);
+  };
+
+  const handleReferralClose = () => {
+    setOpenReferral(false);
+  };
+
   return (
     <>
       <DrawerListContainer
@@ -311,7 +329,30 @@ const DrawerList = ({
           user={user}
           settingsVisible={settingsVisible && open}
         />
+        <Item
+          id="referAColleague"
+          label="Refer a colleague"
+          labelColor={palette.black}
+          icon={EnvelopeIcon}
+          to=""
+          onItemClick={() => {
+            handleReferralClickOpen();
+          }}
+          activeId={activeId}
+          open={open}
+          setActiveId={setActiveId}
+          style={{
+            backgroundColor: palette.coolGrey2,
+            position: 'fixed',
+            bottom: '0px',
+          }}
+        />
       </DrawerListContainer>
+      <ReferAColleagueModal
+        openReferral={openReferral}
+        handleReferralClose={handleReferralClose}
+      />
+
       <RolloverPopover
         anchorEl={rolloverPopoverAnchor?.current}
         anchorOrigin={{
