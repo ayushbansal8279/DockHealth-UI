@@ -17,6 +17,8 @@ import {
   ActivityAlertsItemTime,
   ActivityAlertsItemClearLabel,
   ActivityAlertItemQuotes,
+  ActivityAlertsUser,
+  ActivityAlertsCommonText,
   CompletedCircleIcon,
   StyledCrossIcon,
   StyledTaskLink,
@@ -289,6 +291,108 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   );
 };
 
+const NoLongerActiveUserAlertItem = ({
+  itemAlert,
+  onClearAlert,
+  withCrossIcon,
+}) => {
+  const { createdDateTime, organization } = itemAlert;
+  const {
+    organizationInitials,
+    organizationName,
+    organizationProfileColor,
+  } = organization;
+
+  return (
+    <ActivityAlertsItemContainer>
+      <ActivityAlertsItemHeader>
+        <div>
+          <ActivityAlertsItemOrganizationAvatar
+            organizationProfileColor={organizationProfileColor}
+          >
+            {organizationInitials}
+          </ActivityAlertsItemOrganizationAvatar>
+          <ActivityAlertsItemOrganizationLabel>
+            {organizationName}
+          </ActivityAlertsItemOrganizationLabel>
+        </div>
+        <div>
+          <ActivityAlertsItemTime>
+            {moment(createdDateTime).fromNow()}
+          </ActivityAlertsItemTime>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
+        </div>
+      </ActivityAlertsItemHeader>
+      <ActivityAlertsCommonText>
+        <ActivityAlertsUser>Nicole Wallis</ActivityAlertsUser> is no longer an
+        active user.
+      </ActivityAlertsCommonText>
+    </ActivityAlertsItemContainer>
+  );
+};
+
+const NewOrganizationalOwnerAlertItem = ({
+  itemAlert,
+  onClearAlert,
+  withCrossIcon,
+}) => {
+  const { createdDateTime, organization } = itemAlert;
+  const {
+    organizationInitials,
+    organizationName,
+    organizationProfileColor,
+  } = organization;
+
+  return (
+    <ActivityAlertsItemContainer>
+      <ActivityAlertsItemHeader>
+        <div>
+          <ActivityAlertsItemOrganizationAvatar
+            organizationProfileColor={organizationProfileColor}
+          >
+            {organizationInitials}
+          </ActivityAlertsItemOrganizationAvatar>
+          <ActivityAlertsItemOrganizationLabel>
+            {organizationName}
+          </ActivityAlertsItemOrganizationLabel>
+        </div>
+        <div>
+          <ActivityAlertsItemTime>
+            {moment(createdDateTime).fromNow()}
+          </ActivityAlertsItemTime>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
+        </div>
+      </ActivityAlertsItemHeader>
+      <ActivityAlertsCommonText>
+        <ActivityAlertsUser>Henry Lyn</ActivityAlertsUser> is now an
+        organizational owner.
+      </ActivityAlertsCommonText>
+    </ActivityAlertsItemContainer>
+  );
+};
+
 const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
   const { activityAlertType } = itemAlert;
 
@@ -312,6 +416,23 @@ const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
     case 'MARK_COMPLETE':
       return (
         <CompletedTaskAlertItem
+          itemAlert={itemAlert}
+          onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
+        />
+      );
+
+    case 'NO_LONGER_ACTIVER_USER':
+      return (
+        <NoLongerActiveUserAlertItem
+          itemAlert={itemAlert}
+          onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
+        />
+      );
+    case 'NEW_ORGANIZATIONAL_OWNER':
+      return (
+        <NewOrganizationalOwnerAlertItem
           itemAlert={itemAlert}
           onClearAlert={onClearAlert}
           withCrossIcon={withCrossIcon}

@@ -77,7 +77,7 @@ export const ActivityAlertsItemLabel = styled.div`
 export const ActivityAlertsItemDescription = styled.div`
   font-family: Roboto Condensed;
   color: ${palette.coolGrey1};
-  font-size: ${fontSizes.smallPlus};] 
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export const ActivityAlertItemQuotes = styled(ActivityAlertsItemDescription)`
@@ -108,4 +108,15 @@ export const StyledTaskLink = styled(StyledDescriptionTaskLink)`
 export const StyledCrossIcon = styled.img`
   cursor: pointer;
   margin-left: ${spacing.smallPlus};
+`;
+
+export const ActivityAlertsUser = styled.span`
+  font-family: Roboto Condensed;
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
+`;
+
+export const ActivityAlertsCommonText = styled.span`
+  font-family: Roboto Condensed;
+  color: ${palette.mediumGrey};
 `;
