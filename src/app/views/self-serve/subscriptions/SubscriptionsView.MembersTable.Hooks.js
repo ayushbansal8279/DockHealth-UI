@@ -90,7 +90,7 @@ const initializeMembersTableHooks = ({
         if (toggledUser.userIdentifier) {
           removeUserFromOrganization(toggledUser.userIdentifier)(dispatch).then(
             () => {
-              dispatch(showGlobalAlert(`User has been removed successfully`));
+              dispatch(showGlobalAlert(`${toggledUser?.displayName} removed`));
               getAllUsers();
             },
           );
