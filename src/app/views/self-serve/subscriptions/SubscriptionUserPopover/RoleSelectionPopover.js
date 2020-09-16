@@ -7,7 +7,6 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { changeUserRoleForOrg } from 'actions/people-actions';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
-import { openModal } from 'modal/actions';
 import {
   LimitedAccessLabel,
   RoleItem,
@@ -131,8 +130,6 @@ const RoleSelectionPopover = ({
   orgUserRole,
   userStatus,
   reloadUsers,
-  ownersCount,
-  currentActiveUsers,
 }) => {
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
@@ -144,8 +141,6 @@ const RoleSelectionPopover = ({
   );
 
   const isInactive = userStatus === 'INACTIVE';
-
-  const isCurrrentUser = userIdentifier === sessionStorage.userIdentifier;
 
   return (
     <SelectorPopover
@@ -177,20 +172,7 @@ const RoleSelectionPopover = ({
               disabled={!userHasSubscription}
               onClick={() => {
                 closePopover();
-                if (
-                  ownersCount < 2 &&
-                  isCurrrentUser &&
-                  orgUserRole === 'OWNER'
-                ) {
-                  dispatch(
-                    openModal('SelectOwner', {
-                      currentActiveUsers,
-                      confirm: removeSubscription,
-                    }),
-                  );
-                } else {
-                  removeSubscription();
-                }
+                removeSubscription();
               }}
             >
               Remove user
@@ -198,21 +180,8 @@ const RoleSelectionPopover = ({
           )}
           <Button
             onClick={() => {
-              if (
-                ownersCount < 2 &&
-                isCurrrentUser &&
-                orgUserRole === 'OWNER'
-              ) {
-                dispatch(
-                  openModal('SelectOwner', {
-                    currentActiveUsers,
-                    confirm: selectedRole?.onSave,
-                  }),
-                );
-              } else {
-                // eslint-disable-next-line no-unused-expressions
-                selectedRole?.onSave();
-              }
+              // eslint-disable-next-line no-unused-expressions
+              selectedRole?.onSave();
             }}
             size="small"
             disabled={!selectedRole?.key}

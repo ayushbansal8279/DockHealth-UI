@@ -27,7 +27,7 @@ import {
   UserNotFound,
 } from './styled';
 
-const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
+const SelectOwnerModal = ({ closeModal, currentActiveUsers }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -104,7 +104,6 @@ const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
             disabled={isEmpty(selectedUser)}
             onClick={() => {
               changeUserToOwner(selectedUser?.userIdentifier).then(() => {
-                confirm();
                 closeModal();
                 hashHistory.push('/home/my-tasks');
               });
