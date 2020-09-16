@@ -1,6 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
+import { checkBAASignedStatus } from 'actions/organization-actions';
 import {
   signOrganizationBAADocument,
   storeSignatureResult,
@@ -75,7 +77,9 @@ const getPanelDetails = ({
         ),
       };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
+  const dispatch = useDispatch();
   const [
     isInvitationFormShown,
     showInvitationForm,
@@ -89,33 +93,42 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
     window?.HelloSign.init(HELLOSIGN_CLIENT_ID);
   });
 
-  const openHelloSign = useCallback(signingUrl => {
-    const skipDomainVerification =
-      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
+  const openHelloSign = useCallback(
+    signingUrl => {
+      const skipDomainVerification =
+        HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
 
-    setProcessing(true);
+      setProcessing(true);
 
-    // eslint-disable-next-line no-unused-expressions
-    window?.HelloSign.open({
-      url: signingUrl,
-      allowCancel: true,
-      skipDomainVerification,
-      messageListener: eventData => {
-        storeSignatureResult({
-          signatureIdentifier: eventData.signature_id,
-          signatureResult: eventData.event,
-        }).then(() => {
-          // eslint-disable-next-line no-unused-expressions
-          window?.HelloSign.close();
-          setProcessing(false);
-          if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-            window.location.href = '/#/onboarding/organization-setup';
-            window.location.reload();
-          }
-        });
-      },
-    });
-  }, []);
+      // eslint-disable-next-line no-unused-expressions
+      window?.HelloSign.open({
+        url: signingUrl,
+        allowCancel: true,
+        skipDomainVerification,
+        messageListener: eventData => {
+          storeSignatureResult({
+            signatureIdentifier: eventData.signature_id,
+            signatureResult: eventData.event,
+          }).then(async () => {
+            // eslint-disable-next-line no-unused-expressions
+            window?.HelloSign.close();
+            setProcessing(false);
+
+            if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
+              const { updatedByUser } = await checkBAASignedStatus()(dispatch);
+              if (updatedByUser) {
+                window.location.href = '/#/onboarding/team-setup';
+              } else {
+                window.location.href = '/#/onboarding/organization-setup';
+              }
+              window.location.reload();
+            }
+          });
+        },
+      });
+    },
+    [dispatch],
+  );
 
   const clickReadAndSign = useCallback(() => {
     const defaultErrorMessage =

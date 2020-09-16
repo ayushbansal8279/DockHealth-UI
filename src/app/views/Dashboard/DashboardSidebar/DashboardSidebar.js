@@ -156,8 +156,8 @@ const DashboardSidebar = ({
         currentOrganization={currentOrganization}
         availableUserOrganizations={availableUserOrganizations}
         shouldExpand
-        selectedIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
-        availableIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
+        selectedIdentifierConfig={{ fontColor: palette.mediumGrey }}
+        availableIdentifierConfig={{ fontColor: palette.mediumGrey }}
         showShadowOnHover
         onSelect={selectCurrentOrganization}
       />

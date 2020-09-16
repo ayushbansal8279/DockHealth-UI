@@ -49,6 +49,9 @@ const ListMembersSelect = ({
     [searchInputValue, availablePeople, selectedMembers],
   );
 
+  const showMainInviteButton =
+    !searchInputValue || searchedAvailablePeople.length > 0;
+
   const removeSelectedMember = userIdentifier => {
     setSelectedMembers(currentSelectedMembers =>
       currentSelectedMembers.filter(
@@ -101,15 +104,19 @@ const ListMembersSelect = ({
           break;
         }
 
+        if (
+          searchInputReference.current?.value &&
+          searchedAvailablePeople?.length === 0
+        ) {
+          handleEmptyResultActionClick();
+          break;
+        }
+
         if (selectedMembers?.length > 0) {
           handleInviteSelectedPeople();
           break;
         }
 
-        if (searchedAvailablePeople?.length === 0) {
-          handleEmptyResultActionClick();
-          break;
-        }
         break;
 
       // down arrow key
@@ -171,7 +178,10 @@ const ListMembersSelect = ({
   return (
     <Wrapper>
       <ClickAwayListener onClickAway={() => setSearchInputValue('')}>
-        <SelectElementWrapper withValue={searchInputValue}>
+        <SelectElementWrapper
+          withValue={searchInputValue}
+          fullWidth={!showMainInviteButton}
+        >
           <SelectElement type="button" onClick={handleSelectAreaClick}>
             <>
               {selectedMembers.map(member => (
@@ -201,7 +211,7 @@ const ListMembersSelect = ({
             </>
           </SelectElement>
           {searchInputValue && (
-            <AvailablePeopleWrapper>
+            <AvailablePeopleWrapper fullWidth={!showMainInviteButton}>
               {isLoadingAvailablePeople ? (
                 <Grid container justify="center">
                   <Loader />
@@ -245,16 +255,18 @@ const ListMembersSelect = ({
           )}
         </SelectElementWrapper>
       </ClickAwayListener>
-      <ButtonWrapper>
-        <Button
-          fullWidth
-          size="small"
-          onClick={handleInviteSelectedPeople}
-          disabled={selectedMembers.length === 0 || disabled}
-        >
-          Invite
-        </Button>
-      </ButtonWrapper>
+      {showMainInviteButton && (
+        <ButtonWrapper>
+          <Button
+            fullWidth
+            size="small"
+            onClick={handleInviteSelectedPeople}
+            disabled={selectedMembers.length === 0 || disabled}
+          >
+            Invite
+          </Button>
+        </ButtonWrapper>
+      )}
     </Wrapper>
   );
 };

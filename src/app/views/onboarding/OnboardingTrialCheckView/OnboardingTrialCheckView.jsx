@@ -1,9 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
-import { useMount } from 'react-use';
-import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
 import palette from 'styles/palette';
 import {
   OnboardingButton,
@@ -19,12 +16,6 @@ const subscribeNow = () => {
 };
 
 const OnboardingTrialCheckView = () => {
-  const dispatch = useDispatch();
-
-  useMount(() => {
-    setOnboardingCurrentStep({ currentStep: 1 })(dispatch);
-  });
-
   return (
     <div>
       <OnboardingH2Bold>Your free trial period has expired.</OnboardingH2Bold>

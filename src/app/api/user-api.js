@@ -894,7 +894,10 @@ export function updateUserDashboardPrefs(column) {
     });
 }
 
-export function selectCurrentOrganization(organizationIdentifier) {
+export function selectCurrentOrganization(
+  organizationIdentifier,
+  redirectToHome = true,
+) {
   return axios({
     method: 'put',
     url: `/user/selectOrganization/${organizationIdentifier}`,
@@ -904,7 +907,9 @@ export function selectCurrentOrganization(organizationIdentifier) {
         'currentOrganizationIdentifier',
         organizationIdentifier,
       );
-      sessionStorage.setItem('redirectToHome', JSON.stringify(true));
+      if (redirectToHome) {
+        sessionStorage.setItem('redirectToHome', JSON.stringify(true));
+      }
       axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
       window.location.reload();
     })

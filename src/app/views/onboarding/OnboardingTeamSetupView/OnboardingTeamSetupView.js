@@ -5,6 +5,7 @@ import Spacing from 'components/common/Spacing';
 import { FormContext, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
 import { Grid } from '@material-ui/core';
+import { checkBAASignedStatus } from 'actions/organization-actions';
 import { openModal } from 'modal/actions';
 import { invitePersonToOrganization } from 'api/people-api';
 import Button from 'components/common/Button/Button';
@@ -135,6 +136,16 @@ const OnboardingTeamSetupView = () => {
     setLastFirstNameFieldReference,
   ] = useState(null);
   const firstFirstNameFieldReference = useRef(null);
+
+  useEffect(() => {
+    (async () => {
+      const { baaSigned } = await checkBAASignedStatus()(dispatch);
+      if (!baaSigned) {
+        hashHistory.push('/onboarding/baa-overview');
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (lastFirstNameFieldReference) {

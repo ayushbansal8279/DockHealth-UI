@@ -69,20 +69,24 @@ const ActivityAlertsToasts = () => {
   }
 
   return (
-    <ActivityAlertsToastsContainer>
-      {alertsList?.map((item, idx) => (
-        <ActivityAlertsToast
-          key={idx}
-          itemAlert={item}
-          positionInQueue={idx + 1}
-          isLastAlert={alertsList?.length === idx + 1}
-          onClear={() => {
-            setLastElement(idx);
-          }}
-          clearAlertList={() => alertsList([])}
-        />
-      ))}
-    </ActivityAlertsToastsContainer>
+    <>
+      {alertsList.length !== 0 && (
+        <ActivityAlertsToastsContainer>
+          {alertsList?.map((item, idx) => (
+            <ActivityAlertsToast
+              key={idx}
+              itemAlert={item}
+              positionInQueue={idx + 1}
+              isLastAlert={alertsList?.length === idx + 1}
+              onClear={() => {
+                setLastElement(idx);
+              }}
+              clearAlertList={() => alertsList([])}
+            />
+          ))}
+        </ActivityAlertsToastsContainer>
+      )}
+    </>
   );
 };
 
