@@ -208,20 +208,22 @@ const OrganizationMemberRow = ({
     userType = USER_TYPES[derivedOrgUserRole];
   }
 
+  const displayName = `${firstName} ${lastName}`;
+
   const removeSubscription = () => {
     openRemoveSubscriptionModal({
       userIdentifier,
       email,
       orgUserRole,
       confirm: () =>
-        toggleSelectedUser({ userIdentifier, email })({
+        toggleSelectedUser({ userIdentifier, email, displayName })({
           target: { checked: false },
         }),
     });
   };
 
   const addSubscription = () =>
-    toggleSelectedUser({ userIdentifier, email })({
+    toggleSelectedUser({ userIdentifier, email, displayName })({
       target: { checked: true },
     });
 
@@ -291,6 +293,7 @@ const OrganizationMemberRow = ({
             isPopoverOpen={isPopoverOpen}
             openPopover={openPopover}
             closePopover={closePopover}
+            displayName={displayName}
           />
         </MemberTableCell>
       </Grid>

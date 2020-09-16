@@ -81,6 +81,7 @@ const InactiveRoleSelectionPopover = props => {
     closePopover,
     userIdentifier,
     reloadUsers,
+    displayName,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
   const popoverClasses = usePopoverClasses(props);
@@ -101,9 +102,7 @@ const InactiveRoleSelectionPopover = props => {
                 openModal('ArchiveUser', {
                   confirm: () => {
                     archiveUser(userIdentifier).then(() => {
-                      dispatch(
-                        showGlobalAlert(`User has been archived successfully`),
-                      );
+                      dispatch(showGlobalAlert(`${displayName} is archived`));
                       reloadUsers();
                     });
                   },
@@ -157,7 +156,7 @@ const InactiveRoleSelectionPopover = props => {
           onClick={() => {
             closePopover();
             reactivateUser(userIdentifier, selectedRole?.key).then(() => {
-              dispatch(showGlobalAlert(`User has been reactived successfully`));
+              dispatch(showGlobalAlert(`${displayName} is reactivated`));
               reloadUsers();
             });
           }}

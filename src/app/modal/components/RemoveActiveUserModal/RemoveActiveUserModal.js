@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import folderUser from 'img/modals/user-folder';
+import { getUserActiveTasksCount } from 'api/user-api';
 import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
@@ -14,8 +15,17 @@ import {
   FlexButtonWrapper,
   FixedWidthButtonWrapper,
 } from '../styled';
+import { FirstDescription, SecondDescription } from './styled';
 
-const RemoveActiveUserModal = ({ closeModal, confirm }) => {
+const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
+  const [taskCount, setTaskCount] = useState(0);
+
+  useEffect(() => {
+    getUserActiveTasksCount(userIdentifier).then(({ data }) =>
+      setTaskCount(data?.metricValue),
+    );
+  }, [userIdentifier]);
+
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -26,10 +36,14 @@ const RemoveActiveUserModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Are you sure you want to remove this user? If removed, you will not
-            be charged for this user starting in the next billing cycle.
-          </Typography>
+          <FirstDescription>
+            This user has tasks assigned {taskCount} to them. These tasks will
+            become unassigned.
+          </FirstDescription>
+          <SecondDescription>
+            If removed, you will not be charged for this user starting in the
+            next billing cycle.
+          </SecondDescription>
         </ModalDescriptionContainer>
         <ButtonsContainer>
           <FlexButtonWrapper>
