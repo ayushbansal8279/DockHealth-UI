@@ -76,7 +76,6 @@ export const RoleSelectionWrapper = styled.div`
   flex: 1;
   flex-direction: column;
   padding-bottom: ${spacing.regular};
-  overflow: scroll;
 
   & > input {
     display: none;
