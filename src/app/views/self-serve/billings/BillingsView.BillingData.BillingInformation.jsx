@@ -16,6 +16,8 @@ import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { BILLING_FREQUENCY } from '../subscriptions/SubscriptionsView.Utilities';
 
+const CARD_EXPIRATION_WARNING_DAYS = 15;
+
 const InformationContainer = styled.div`
   background-color: ${palette.coolGrey4};
   color: ${palette.midnightBlue};
@@ -49,7 +51,8 @@ const CardBrandIconImage = styled.img`
 `;
 
 const ExpirationLabel = styled.span`
-  color: ${palette.oPlusRed};
+  color: ${props =>
+    props.futureExpirationWarning ? palette.oPlusRed : palette.lightGrey};
 `;
 
 const goToSubscriptions = () => {
@@ -90,11 +93,22 @@ const BillingInformation = ({ setUpdatingBilling }) => {
 
   const values = getValues();
 
-  const cardExpirationMoment = moment(values?.cardExpiration ?? null, 'm/YYYY');
+  const cardExpirationMoment = moment(
+    values?.cardExpiration ?? null,
+    'MM/YYYY',
+  );
 
   const expirationLabel = cardExpirationMoment.isValid()
     ? cardExpirationMoment.format('MM/YY')
     : values?.cardExpiration;
+
+  const futureExpirationMoment = moment()
+    .startOf('day')
+    .add(CARD_EXPIRATION_WARNING_DAYS, 'days');
+
+  const futureExpirationWarning = !!futureExpirationMoment.isSameOrAfter(
+    cardExpirationMoment,
+  );
 
   const billingDateMoment = moment(billingData?.nextBillingDate ?? null);
 
@@ -143,7 +157,9 @@ const BillingInformation = ({ setUpdatingBilling }) => {
             )}
             <span>{values?.cardNumber} </span>
             <Spacing horizontal={3} />
-            <ExpirationLabel>exp {expirationLabel}</ExpirationLabel>
+            <ExpirationLabel futureExpirationWarning={futureExpirationWarning}>
+              exp {expirationLabel}
+            </ExpirationLabel>
           </Grid>
         </MontserratTypography>
       </InformationInnerContainer>
