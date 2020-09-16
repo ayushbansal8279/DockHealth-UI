@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { isEmpty } from 'ramda';
+import { hashHistory } from 'react-router';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -105,6 +106,7 @@ const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
               changeUserToOwner(selectedUser?.userIdentifier).then(() => {
                 confirm();
                 closeModal();
+                hashHistory.push('/home/my-tasks');
               });
             }}
           >
