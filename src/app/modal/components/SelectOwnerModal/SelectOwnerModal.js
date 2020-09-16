@@ -31,7 +31,14 @@ const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState({});
 
-  const searchedUsers = currentActiveUsers?.filter(
+  const currentActiveUsersWithMemberRole = currentActiveUsers?.filter(
+    user =>
+      user?.orgUserRole === 'MEMBER' &&
+      user?.userStatus === 'ACTIVE' &&
+      user?.eulaAcknowledged === true,
+  );
+
+  const searchedUsers = currentActiveUsersWithMemberRole?.filter(
     ({ firstName, lastName }) =>
       firstName?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
       lastName?.toLowerCase()?.includes(searchQuery?.toLowerCase()),
