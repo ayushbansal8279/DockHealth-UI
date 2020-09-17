@@ -291,12 +291,12 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   );
 };
 
-const NoLongerActiveUserAlertItem = ({
+const OrganizationUserAlertItem = ({
   itemAlert,
   onClearAlert,
   withCrossIcon,
 }) => {
-  const { createdDateTime, organization } = itemAlert;
+  const { createdDateTime, organization, targetUser } = itemAlert;
   const {
     organizationInitials,
     organizationName,
@@ -335,19 +335,21 @@ const NoLongerActiveUserAlertItem = ({
         </div>
       </ActivityAlertsItemHeader>
       <ActivityAlertsCommonText>
-        <ActivityAlertsUser>Nicole Wallis</ActivityAlertsUser> is no longer an
-        active user.
+        <ActivityAlertsUser>
+          {`${targetUser?.firstName} ${targetUser?.lastName}`}
+        </ActivityAlertsUser>{' '}
+        is no longer an active user.
       </ActivityAlertsCommonText>
     </ActivityAlertsItemContainer>
   );
 };
 
-const NewOrganizationalOwnerAlertItem = ({
+const OrganizationalUserRoleChangeAlertItem = ({
   itemAlert,
   onClearAlert,
   withCrossIcon,
 }) => {
-  const { createdDateTime, organization } = itemAlert;
+  const { createdDateTime, organization, targetUser } = itemAlert;
   const {
     organizationInitials,
     organizationName,
@@ -386,8 +388,10 @@ const NewOrganizationalOwnerAlertItem = ({
         </div>
       </ActivityAlertsItemHeader>
       <ActivityAlertsCommonText>
-        <ActivityAlertsUser>Henry Lyn</ActivityAlertsUser> is now an
-        organizational owner.
+        <ActivityAlertsUser>
+          {`${targetUser?.firstName} ${targetUser?.lastName}`}
+        </ActivityAlertsUser>{' '}
+        is now an organizational owner.
       </ActivityAlertsCommonText>
     </ActivityAlertsItemContainer>
   );
@@ -422,17 +426,18 @@ const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
         />
       );
 
-    case 'NO_LONGER_ACTIVER_USER':
+    case 'REMOVE_USER_FROM_ORGANIZATION':
       return (
-        <NoLongerActiveUserAlertItem
+        <OrganizationUserAlertItem
           itemAlert={itemAlert}
           onClearAlert={onClearAlert}
           withCrossIcon={withCrossIcon}
         />
       );
-    case 'NEW_ORGANIZATIONAL_OWNER':
+
+    case 'MAKE_ADMIN_FOR_ORGANIZATION':
       return (
-        <NewOrganizationalOwnerAlertItem
+        <OrganizationalUserRoleChangeAlertItem
           itemAlert={itemAlert}
           onClearAlert={onClearAlert}
           withCrossIcon={withCrossIcon}
