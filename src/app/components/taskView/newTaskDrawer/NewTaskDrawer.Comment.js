@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-
+import React, { useCallback, useRef } from 'react';
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
 import { RobotoTypography } from 'styles/theme';
@@ -38,6 +37,7 @@ const Comment = ({
     commentIdentifier,
   } = comment;
 
+  const commentEditorReference = useRef();
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
   const [commentState, setCommentState] = useMentionsEditorState(
     convertToEditorState({
@@ -81,14 +81,27 @@ const Comment = ({
         <CommentInnerContainer isEditing={isEditing}>
           <CommentContentContainer>
             <MentionsEditor
+              ref={commentEditorReference}
               readOnly={!isEditing}
               withEditedLabel={dateCreated !== dateUpdated}
               state={commentState}
               onChange={setCommentState}
               onBlur={onCommentEdited}
+              keyBindingFn={event => {
+                if (event.keyCode === 13) {
+                  return 'enter-command';
+                }
+                return undefined;
+              }}
+              handleKeyCommand={command => {
+                if (command === 'enter-command') {
+                  commentEditorReference.current.blur();
+                  return 'handled';
+                }
+
+                return 'not-handled';
+              }}
             />
-            {/* </CommentContentField>
-            </RobotoTypography> */}
             <AuthorLabelContainer>
               <RobotoTypography condensed variant="h4" color="inherit">
                 {authorLabelContent}

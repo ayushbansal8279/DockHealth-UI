@@ -55,6 +55,20 @@ const AddComment = ({
           taskListIdentifier={taskListIdentifier}
           state={commentState}
           onChange={onCommentChange}
+          keyBindingFn={event => {
+            if (event.keyCode === 13) {
+              return 'enter-command';
+            }
+            return undefined;
+          }}
+          handleKeyCommand={command => {
+            if (command === 'enter-command') {
+              addCommentReference.current.blur();
+              return 'handled';
+            }
+
+            return 'not-handled';
+          }}
         />
       </AddCommentInputContainer>
       {isAddingComment && (

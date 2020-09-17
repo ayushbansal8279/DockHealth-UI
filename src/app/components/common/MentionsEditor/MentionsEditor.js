@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Editor from 'draft-js-plugins-editor';
-import { convertToRaw } from 'draft-js';
 import { getMembersByTaskListId } from 'api/tasklist-api';
 import { getPatientsByName } from 'api/patient-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
@@ -26,6 +25,8 @@ const MentionsEditor = React.forwardRef(
       readOnly,
       taskListIdentifier,
       withEditedLabel,
+      keyBindingFn,
+      handleKeyCommand,
       onBlur = () => {},
       onFocus = () => {},
       onChange = () => {},
@@ -61,7 +62,6 @@ const MentionsEditor = React.forwardRef(
     }, [taskListIdentifier]);
 
     const handleChange = newState => {
-      console.log('editor state', convertToRaw(newState.getCurrentContent()));
       if (!state) setEditorState(newState);
 
       onChange(newState);
@@ -125,6 +125,8 @@ const MentionsEditor = React.forwardRef(
           onFocus={onFocus}
           onBlur={handleBlur}
           onChange={handleChange}
+          keyBindingFn={keyBindingFn}
+          handleKeyCommand={handleKeyCommand}
         />
 
         <PeopleMentionSuggestions
