@@ -65,7 +65,8 @@ const substituteNameForIdInText = (rawText, mentions) => {
 
 export const convertFromEditorStateToOutput = editorState => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
-  const rawText = stateContent?.blocks[0]?.text || '';
+  const textBlocks = stateContent.blocks.map(block => block.text);
+  const rawText = textBlocks.join('\n');
   const mentions = Object.values(stateContent.entityMap)?.map(entity => ({
     ...entity.data.mention,
     type: entity.type,

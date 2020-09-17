@@ -56,6 +56,9 @@ const AddComment = ({
           state={commentState}
           onChange={onCommentChange}
           keyBindingFn={event => {
+            if (event.keyCode === 13 && event.shiftKey) {
+              return undefined;
+            }
             if (event.keyCode === 13) {
               return 'enter-command';
             }

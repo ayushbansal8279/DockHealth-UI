@@ -88,6 +88,9 @@ const Comment = ({
               onChange={setCommentState}
               onBlur={onCommentEdited}
               keyBindingFn={event => {
+                if (event.keyCode === 13 && event.shiftKey) {
+                  return undefined;
+                }
                 if (event.keyCode === 13) {
                   return 'enter-command';
                 }

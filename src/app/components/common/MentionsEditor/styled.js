@@ -17,7 +17,7 @@ export const StyledEditorContainer = styled.div`
   ${({ withEditedLabel }) =>
     withEditedLabel &&
     `
-    & .public-DraftEditor-content > div > div > div:after {
+    & .public-DraftEditor-content > div > div:last-of-type > div:after {
       content: '(Edited)';
       display: inline;
       font-size: 0.75rem;
