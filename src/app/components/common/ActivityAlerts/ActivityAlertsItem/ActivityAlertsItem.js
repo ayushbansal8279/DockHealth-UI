@@ -17,6 +17,8 @@ import {
   ActivityAlertsItemTime,
   ActivityAlertsItemClearLabel,
   ActivityAlertItemQuotes,
+  ActivityAlertsUser,
+  ActivityAlertsCommonText,
   CompletedCircleIcon,
   StyledCrossIcon,
   StyledTaskLink,
@@ -289,6 +291,112 @@ const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   );
 };
 
+const OrganizationUserAlertItem = ({
+  itemAlert,
+  onClearAlert,
+  withCrossIcon,
+}) => {
+  const { createdDateTime, organization, targetUser } = itemAlert;
+  const {
+    organizationInitials,
+    organizationName,
+    organizationProfileColor,
+  } = organization;
+
+  return (
+    <ActivityAlertsItemContainer>
+      <ActivityAlertsItemHeader>
+        <div>
+          <ActivityAlertsItemOrganizationAvatar
+            organizationProfileColor={organizationProfileColor}
+          >
+            {organizationInitials}
+          </ActivityAlertsItemOrganizationAvatar>
+          <ActivityAlertsItemOrganizationLabel>
+            {organizationName}
+          </ActivityAlertsItemOrganizationLabel>
+        </div>
+        <div>
+          <ActivityAlertsItemTime>
+            {moment(createdDateTime).fromNow()}
+          </ActivityAlertsItemTime>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
+        </div>
+      </ActivityAlertsItemHeader>
+      <ActivityAlertsCommonText>
+        <ActivityAlertsUser>
+          {`${targetUser?.firstName} ${targetUser?.lastName}`}
+        </ActivityAlertsUser>{' '}
+        is no longer an active user.
+      </ActivityAlertsCommonText>
+    </ActivityAlertsItemContainer>
+  );
+};
+
+const OrganizationalUserRoleChangeAlertItem = ({
+  itemAlert,
+  onClearAlert,
+  withCrossIcon,
+}) => {
+  const { createdDateTime, organization, targetUser } = itemAlert;
+  const {
+    organizationInitials,
+    organizationName,
+    organizationProfileColor,
+  } = organization;
+
+  return (
+    <ActivityAlertsItemContainer>
+      <ActivityAlertsItemHeader>
+        <div>
+          <ActivityAlertsItemOrganizationAvatar
+            organizationProfileColor={organizationProfileColor}
+          >
+            {organizationInitials}
+          </ActivityAlertsItemOrganizationAvatar>
+          <ActivityAlertsItemOrganizationLabel>
+            {organizationName}
+          </ActivityAlertsItemOrganizationLabel>
+        </div>
+        <div>
+          <ActivityAlertsItemTime>
+            {moment(createdDateTime).fromNow()}
+          </ActivityAlertsItemTime>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
+        </div>
+      </ActivityAlertsItemHeader>
+      <ActivityAlertsCommonText>
+        <ActivityAlertsUser>
+          {`${targetUser?.firstName} ${targetUser?.lastName}`}
+        </ActivityAlertsUser>{' '}
+        is now an organizational owner.
+      </ActivityAlertsCommonText>
+    </ActivityAlertsItemContainer>
+  );
+};
+
 const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
   const { activityAlertType } = itemAlert;
 
@@ -312,6 +420,24 @@ const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
     case 'MARK_COMPLETE':
       return (
         <CompletedTaskAlertItem
+          itemAlert={itemAlert}
+          onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
+        />
+      );
+
+    case 'REMOVE_USER_FROM_ORGANIZATION':
+      return (
+        <OrganizationUserAlertItem
+          itemAlert={itemAlert}
+          onClearAlert={onClearAlert}
+          withCrossIcon={withCrossIcon}
+        />
+      );
+
+    case 'MAKE_ADMIN_FOR_ORGANIZATION':
+      return (
+        <OrganizationalUserRoleChangeAlertItem
           itemAlert={itemAlert}
           onClearAlert={onClearAlert}
           withCrossIcon={withCrossIcon}
