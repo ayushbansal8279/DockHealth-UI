@@ -67,8 +67,8 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
               size="small"
               color="red"
               onClick={() => {
-                confirm();
                 closeModal();
+                confirm();
               }}
             >
               Remove
