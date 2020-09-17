@@ -21,7 +21,7 @@ export const SuggestionItemContainer = styled.div`
   }
 `;
 
-export const SuggestionText = styled.p`
+export const SuggestionText = styled.div`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};

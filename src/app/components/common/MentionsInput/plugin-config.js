@@ -20,26 +20,20 @@ export const peopleMentionPluginConfig = createMentionPlugin({
     // calculate from right side because of task drawer fixed position
     const rightPosition = windowWidth - props.decoratorRect.left - 244;
 
-    let topPosition;
-    let bottomPosition;
-
-    if (windowHeight / props.decoratorRect.top < 2) {
-      topPosition = 'auto';
-      bottomPosition = windowHeight - props.decoratorRect.top + 5;
-    } else {
-      topPosition = props.decoratorRect.bottom + 5;
-      bottomPosition = 'auto';
-    }
-
-    return {
+    const styles = {
       position: 'fixed',
       right: rightPosition < 8 ? 8 : rightPosition,
       left: 'auto',
-      bottom: bottomPosition,
-      top: topPosition,
       width: 252,
       zIndex: 1001,
     };
+
+    if (windowHeight - props.decoratorRect.top < 300) {
+      styles.transform = `translateY(-100%) translateY(-${props.decoratorRect
+        .height + 5}px)`;
+    }
+
+    return styles;
   },
 });
 
@@ -54,25 +48,19 @@ export const patientMentionPluginConfig = createMentionPlugin({
     // calculate from right side because of task drawer fixed position
     const rightPosition = windowWidth - props.decoratorRect.left - 309;
 
-    let topPosition;
-    let bottomPosition;
-
-    if (windowHeight / props.decoratorRect.top < 2) {
-      topPosition = 'auto';
-      bottomPosition = windowHeight - props.decoratorRect.top + 5;
-    } else {
-      topPosition = props.decoratorRect.bottom + 5;
-      bottomPosition = 'auto';
-    }
-
-    return {
+    const styles = {
       position: 'fixed',
       right: rightPosition < 8 ? 8 : rightPosition,
       left: 'auto',
-      bottom: bottomPosition,
-      top: topPosition,
       width: 317,
       zIndex: 1001,
     };
+
+    if (windowHeight - props.decoratorRect.top < 300) {
+      styles.transform = `translateY(-100%) translateY(-${props.decoratorRect
+        .height + 5}px)`;
+    }
+
+    return styles;
   },
 });

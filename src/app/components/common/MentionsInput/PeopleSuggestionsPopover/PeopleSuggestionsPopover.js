@@ -11,11 +11,13 @@ const PeopleSuggestionsPopover = React.forwardRef(
     return (
       <div {...props} ref={reference}>
         <PopoverContainer>
-          <SuggestionsContainer>
-            {suggestionsToDisplay.map(child =>
-              React.cloneElement(child, child.props),
-            )}
-          </SuggestionsContainer>
+          {suggestionsToDisplay.length > 0 && (
+            <SuggestionsContainer>
+              {suggestionsToDisplay.map(child =>
+                React.cloneElement(child, child.props),
+              )}
+            </SuggestionsContainer>
+          )}
           {suggestionsToDisplay.length > 0 && <Spacer />}
           <DefaultSuggestionItem
             tagType="@People"

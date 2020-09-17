@@ -13,7 +13,6 @@ export const DefaultSuggestionItemContainer = styled.div`
 
 const Text = styled.p`
   display: block;
-  // width: fit-content;
   margin-bottom: 0;
   color: inherit;
   font-family: inherit;

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { EditorState, convertToRaw } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
-import './editorStyles.css';
 import { getMembersByTaskListId } from 'api/tasklist-api';
 import { getPatientsByName } from 'api/patient-api';
 import createMentionEntities from './create-mention-entities';
@@ -20,12 +19,14 @@ import {
   mapPeopleToSuggestions,
   peopleSuggestionsFilter,
 } from './helpers';
+import { StyledEditorContainer } from './styled';
 
 const MentionsInput = React.forwardRef(
   (
     {
       readOnly,
       taskListIdentifier,
+      withEditedLabel,
       onBlur = () => {},
       onFocus = () => {},
       onChange = () => {},
@@ -128,7 +129,10 @@ const MentionsInput = React.forwardRef(
       linkifyPlugin.current,
     ];
     return (
-      <div className="editor" onClick={focus}>
+      <StyledEditorContainer
+        withEditedLabel={withEditedLabel && readOnly}
+        onClick={focus}
+      >
         <Editor
           ref={reference}
           plugins={plugins}
@@ -153,7 +157,7 @@ const MentionsInput = React.forwardRef(
           entryComponent={PatientSuggestionItem}
           popoverComponent={<PatientsSuggestionsPopover />}
         />
-      </div>
+      </StyledEditorContainer>
     );
   },
 );
