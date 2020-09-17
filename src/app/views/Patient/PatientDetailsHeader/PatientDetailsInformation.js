@@ -81,15 +81,18 @@ const PatientDetailsInformation = ({
           <PatientName>
             {[firstName, middleName, lastName].join(' ')}
           </PatientName>
-          {((dob && gender) || mrn || email || phoneMobile || phoneHome) && (
+          {(dob || gender || mrn || email || phoneMobile || phoneHome) && (
             <PatientDetails>
               <PatientDetailsInformations>
-                {dob && gender && (
+                {(dob || gender) && (
                   <>
                     <PatientInfo>
-                      {moment(dob).format('MM/DD/YYYY')}{' '}
-                      {moment().diff(moment(dob), 'years')} {'yo '}
-                      {gender?.charAt(0)?.toUpperCase()}
+                      {dob &&
+                        `${moment(dob).format('MM/DD/YYYY')} ${moment().diff(
+                          moment(dob),
+                          'years',
+                        )} yo `}
+                      {gender && gender?.charAt(0)?.toUpperCase()}
                     </PatientInfo>
                     <PatientInfoDivider />
                   </>
