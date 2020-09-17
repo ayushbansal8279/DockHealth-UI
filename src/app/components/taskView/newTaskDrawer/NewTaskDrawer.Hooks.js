@@ -154,6 +154,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const patientInputReference = useRef(null);
   const [patientInputValue, setPatientInputValue] = useState('');
+  const taskInputReference = useRef(null);
 
   const fetchPatients = value =>
     getPatientsByName(value).then(fetchedPatients => {
@@ -588,6 +589,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     isLoadingPatients,
     refreshMembers,
     handleAddPatient,
+    taskInputReference,
   };
 };
 

@@ -88,6 +88,7 @@ const NewTaskDrawer = ({
     patientInputReference,
     refreshMembers,
     handleAddPatient,
+    taskInputReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
   const taskDrawerReference = useRef(null);
@@ -154,6 +155,12 @@ const NewTaskDrawer = ({
       patientInputReference.current.querySelector('input').focus();
   }, [taskDrawerFocusField, patientInputReference]);
 
+  useEffect(() => {
+    if (!selectedTask || selectedTask.description === '') {
+      taskInputReference.current.querySelector('textarea').focus();
+    }
+  }, [taskInputReference, isAddingOrEditingSubtask, selectedTask]);
+
   const parentFormSubmit = handleSubmit(onSubmit);
 
   const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
@@ -201,6 +208,7 @@ const NewTaskDrawer = ({
                   multiple
                   placeholder="What is the task?"
                   borderOnFocus
+                  ref={taskInputReference}
                   InputLabelProps={{
                     shrink: true,
                   }}
