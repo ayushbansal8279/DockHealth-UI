@@ -1,30 +1,23 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
 import { RobotoTypography } from 'styles/theme';
-
-import { useMount } from 'react-use';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'styles/palette';
-import ReactHtmlParser from 'react-html-parser';
-import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
-import MentionsInput from 'components/common/MentionsInput/MentionsInput';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
-} from 'components/common/MentionsInput/helpers';
+} from 'components/common/MentionsEditor/helpers';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import {
   AuthorLabelContainer,
   CommentActionLabel,
   CommentContainer,
   CommentContentContainer,
-  CommentContentField,
   CommentInnerContainer,
   CommentMemberContainer,
 } from './NewTaskDrawer.CommentSection.Styled';
-
-const sanitizeCommentValue = ({ comment }) => comment.replace(/<br.*>$/, '');
 
 const ADMIN_USER_ROLE = 'ADMIN';
 
@@ -45,9 +38,14 @@ const Comment = ({
     commentIdentifier,
   } = comment;
 
-  const commentContentFieldReference = useRef(null);
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
-  // const [commentValue, setCommentValue] = useState('');
+  const [commentState, setCommentState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: commentContent,
+      tokenizedText: tokenizedComment,
+      mentions: commentMentions,
+    }),
+  );
 
   const authorLabelContent = `${creator?.firstName} ${
     creator?.lastName
@@ -57,46 +55,21 @@ const Comment = ({
     currentUser?.userIdentifier === creator.userIdentifier;
   const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 
-  // useEffect(() => {
-  //   if (isEditing) {
-  //     const range = document.createRange();
-  //     const sel = window.getSelection();
-  //     range.selectNodeContents(commentContentFieldReference.current);
-  //     range.collapse(false);
-  //     sel.removeAllRanges();
-  //     sel.addRange(range);
-  //     // eslint-disable-next-line no-unused-expressions
-  //     commentContentFieldReference.current?.focus();
-  //   }
-  // }, [isEditing]);
+  const onCommentEdited = useCallback(() => {
+    const updatedComment = convertFromEditorStateToOutput(commentState);
+    const commentTokenizedText = updatedComment.tokenizedText;
 
-  // useMount(() => {
-  //   setCommentValue(commentContent);
-  // });
+    if (!commentTokenizedText) {
+      return;
+    }
 
-  // const onCommentEdited = useCallback(
-  //   event => {
-  //     const sanitizedCommentValue = sanitizeCommentValue({
-  //       comment: event.target.textContent,
-  //     });
-
-  //     if (sanitizedCommentValue === '') {
-  //       return false;
-  //     }
-
-  //     unsetEditing();
-
-  //     if (commentValue !== sanitizedCommentValue) {
-  //       updateComment({
-  //         commentIdentifier,
-  //         comment: sanitizedCommentValue,
-  //       });
-  //       setCommentValue(sanitizedCommentValue);
-  //     }
-  //     return true;
-  //   },
-  //   [commentIdentifier, commentValue, unsetEditing, updateComment],
-  // );
+    unsetEditing();
+    updateComment({
+      commentIdentifier,
+      comment: commentTokenizedText,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commentIdentifier, unsetEditing, updateComment, commentState]);
 
   return (
     <React.Fragment key={commentIdentifier}>
@@ -107,46 +80,12 @@ const Comment = ({
         <Spacing horizontal={3} />
         <CommentInnerContainer isEditing={isEditing}>
           <CommentContentContainer>
-            {/* <RobotoTypography condensed variant="h4" color="inherit">
-              <CommentContentField
-                ref={commentContentFieldReference}
-                contentEditable={isEditing}
-                onBlur={onCommentEdited}
-                onKeyDown={event => {
-                  if (isEditing && event.key === 'Enter') {
-                    event.preventDefault();
-                    onCommentEdited(event);
-                  }
-                }}
-              >
-                {ReactHtmlParser(
-                  mentionifyAndLinkifyTaskText({
-                    members: null,
-                    value: commentValue,
-                  }),
-                )}
-                {!isEditing && dateCreated !== dateUpdated && (
-                  <span
-                    style={{
-                      color: palette.coolGrey2,
-                      paddingLeft: '10px',
-                      fontSize: '.75rem',
-                    }}
-                  >
-                    (Edited)
-                  </span>
-                )} */}
-            <MentionsInput
+            <MentionsEditor
               readOnly={!isEditing}
               withEditedLabel={dateCreated !== dateUpdated}
-              initialState={convertToEditorState({
-                rawText: commentContent,
-                tokenizedText: tokenizedComment,
-                mentions: commentMentions,
-              })}
-              onBlur={state =>
-                console.log('new state', convertFromEditorStateToOutput(state))
-              }
+              state={commentState}
+              onChange={setCommentState}
+              onBlur={onCommentEdited}
             />
             {/* </CommentContentField>
             </RobotoTypography> */}

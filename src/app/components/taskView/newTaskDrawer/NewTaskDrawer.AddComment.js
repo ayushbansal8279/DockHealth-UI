@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member/Member';
-import MentionsInput from 'components/common/MentionsInput/MentionsInput';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 
 import initializeAddCommentHooks from './NewTaskDrawer.AddComment.Hooks';
 import {
@@ -41,7 +41,7 @@ const AddComment = ({
     <AddCommentContainer>
       <Member member={currentUser} size={40} />
       <AddCommentInputContainer isFocused={isFocused}>
-        <MentionsInput
+        <MentionsEditor
           ref={addCommentReference}
           placeholder="Leave a comment and press enter on your keyboard to save"
           onFocus={() => {

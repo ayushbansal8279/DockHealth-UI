@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Editor from 'draft-js-plugins-editor';
+import { convertToRaw } from 'draft-js';
 import { getMembersByTaskListId } from 'api/tasklist-api';
 import { getPatientsByName } from 'api/patient-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
@@ -19,7 +20,7 @@ import {
 } from './helpers';
 import { StyledEditorContainer } from './styled';
 
-const MentionsInput = React.forwardRef(
+const MentionsEditor = React.forwardRef(
   (
     {
       readOnly,
@@ -60,6 +61,7 @@ const MentionsInput = React.forwardRef(
     }, [taskListIdentifier]);
 
     const handleChange = newState => {
+      console.log('editor state', convertToRaw(newState.getCurrentContent()));
       if (!state) setEditorState(newState);
 
       onChange(newState);
@@ -144,4 +146,4 @@ const MentionsInput = React.forwardRef(
   },
 );
 
-export default MentionsInput;
+export default MentionsEditor;
