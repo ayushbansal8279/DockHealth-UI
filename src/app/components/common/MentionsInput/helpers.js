@@ -1,8 +1,11 @@
 import moment from 'moment';
+import { isEmpty } from 'ramda';
+import { EditorState, convertToRaw } from 'draft-js';
+import { createMentionEntities } from './create-mention-entities';
 
 export const SUGGESTIONS_PLACEHOLDER = {
   name: '',
-  id: '',
+  identifier: '',
   type: 'DEFAULT',
 };
 
@@ -24,7 +27,7 @@ export const getFormattedAge = ({ dob }) => {
 
 export const mapPatientsToSuggestions = patients =>
   patients.map(({ patientIdentifier, firstName, lastName, dob, mrn }) => ({
-    id: patientIdentifier,
+    identifier: patientIdentifier,
     name: `${firstName} ${lastName}`,
     age: getFormattedAge({ dob }),
     mrn,
@@ -33,7 +36,7 @@ export const mapPatientsToSuggestions = patients =>
 export const mapPeopleToSuggestions = people =>
   people.map(person => ({
     ...person,
-    id: person.userIdentifier,
+    identifier: person.userIdentifier,
     name: person.userName,
   }));
 
@@ -41,3 +44,50 @@ export const peopleSuggestionsFilter = (value, people) =>
   people.filter(({ name }) =>
     name.toLowerCase().startsWith(value.toLowerCase()),
   );
+
+const substituteNameForIdInText = (rawText, mentions) => {
+  let textWithIds = rawText;
+  mentions.forEach(({ type, name, identifier }) => {
+    if (type === '#mention') {
+      textWithIds = textWithIds.replace(
+        new RegExp(`#${name}`, 'g'),
+        `#{${identifier}}`,
+      );
+    } else if (type === 'mention') {
+      textWithIds = textWithIds.replace(
+        new RegExp(`@${name}`, 'g'),
+        `@{${identifier}}`,
+      );
+    }
+  });
+  return textWithIds;
+};
+
+export const convertFromEditorStateToOutput = editorState => {
+  const stateContent = convertToRaw(editorState.getCurrentContent());
+  const rawText = stateContent?.blocks[0]?.text || '';
+  const mentions = Object.values(stateContent.entityMap)?.map(entity => ({
+    ...entity.data.mention,
+    type: entity.type,
+  }));
+
+  return {
+    rawText,
+    tokenizedText: substituteNameForIdInText(rawText, mentions),
+    mentions,
+  };
+};
+
+export const convertToEditorState = state => {
+  if (!state || isEmpty(state) || !state.rawText) {
+    return EditorState.createEmpty();
+  }
+
+  return EditorState.createWithContent(
+    createMentionEntities(
+      state.tokenizedText,
+      state.rawText,
+      state.mentions || [],
+    ),
+  );
+};

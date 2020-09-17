@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useSelector } from 'react-redux';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useMentionsEditorState } from 'components/common/MentionsInput/use-mentions-editor-state';
 
 import useBoolean from 'hooks/useBoolean';
+import { convertFromEditorStateToOutput } from 'components/common/MentionsInput/helpers';
 
 const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
   const { currentUser, selectedTask } = useSelector(store => ({
@@ -10,54 +12,51 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
     selectedTask: store.taskState.selectedTask,
   }));
 
-  const [commentContent, setCommentContent] = useState('');
+  const [commentState, setCommentState] = useMentionsEditorState();
   const [isAddingComment, setAddingComment, unsetAddingComment] = useBoolean(
     false,
   );
 
   const onCommentChange = useCallback(
-    event => {
+    state => {
       if (!isAddingComment) {
-        setCommentContent(event.target.value);
+        setCommentState(state);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isAddingComment],
   );
 
   const onSubmit = useCallback(() => {
     setAddingComment();
 
-    if (commentContent !== undefined && commentContent === '') {
+    const newComment = convertFromEditorStateToOutput(commentState);
+    const commentTokenizedText = newComment.tokenizedText;
+
+    if (commentTokenizedText !== undefined && commentTokenizedText === '') {
       unsetAddingComment();
       return;
     }
 
-    addComment(commentContent)
+    addComment(commentTokenizedText)
       .then(() => {
         unsetAddingComment();
-        setCommentContent('');
+        setCommentState();
       })
       .catch(() => {
         unsetAddingComment();
       });
-  }, [addComment, commentContent, setAddingComment, unsetAddingComment]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addComment, commentState, setAddingComment, unsetAddingComment]);
 
-  const saveComment = useCallback(
-    event => {
-      if (!isAddingComment) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        onSubmit();
-      }
-    },
-    [isAddingComment, onSubmit],
-  );
+  const saveComment = useCallback(() => {
+    if (!isAddingComment) {
+      onSubmit();
+    }
+  }, [isAddingComment, onSubmit]);
 
   const onCommentFocus = useCallback(() => {
-    // console.log('on comment focus');
     if (!selectedTask || !selectedTask.taskIdentifier) {
-      // console.log('saving task');
       parentFormSubmit();
     }
   }, [selectedTask, parentFormSubmit]);
@@ -65,8 +64,7 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
   return {
     currentUser,
     selectedTask,
-    commentContent,
-    setCommentContent,
+    commentState,
     onCommentChange,
     saveComment,
     onCommentFocus,

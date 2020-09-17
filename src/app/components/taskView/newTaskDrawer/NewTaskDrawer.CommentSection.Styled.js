@@ -63,14 +63,12 @@ export const AuthorLabelContainer = styled.div`
 `;
 
 export const CommentContentField = styled.div`
-  && {
-    background-color: transparent;
-    border: 0;
-    box-shadow: none;
-    cursor: text;
-    outline: none;
-    padding: 0;
-    resize: none;
-    overflow-wrap: anywhere;
-  }
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  cursor: text;
+  outline: none;
+  padding: 0;
+  resize: none;
+  overflow-wrap: anywhere;
 `;

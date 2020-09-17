@@ -38,7 +38,7 @@ const getEntityRanges = (text, mentionName, mentionKey) => {
   return null;
 };
 
-const createMentionEntities = (text, tags) => {
+export const createMentionEntitiesFromRawText = (text, tags) => {
   const rawContent = convertToRaw(ContentState.createFromText(text));
   const rawState = tags.map(tag => {
     const { mentionType, ...data } = tag;
@@ -71,4 +71,19 @@ const createMentionEntities = (text, tags) => {
   return convertFromRaw(rawContent);
 };
 
-export default createMentionEntities;
+export const createMentionEntities = (tokenizedText, rawText, tags) => {
+  const tagsWithType = tags.map(tag => {
+    const foundIndex = tokenizedText.indexOf(`{${tag.identifier}}`);
+
+    if (foundIndex !== -1) {
+      return {
+        ...tag,
+        mentionType: tokenizedText[foundIndex - 1],
+      };
+    }
+
+    return { ...tag };
+  });
+
+  return createMentionEntitiesFromRawText(rawText, tagsWithType);
+};

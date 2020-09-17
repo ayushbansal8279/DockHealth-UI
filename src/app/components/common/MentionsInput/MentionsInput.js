@@ -1,17 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { EditorState, convertToRaw } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import { getMembersByTaskListId } from 'api/tasklist-api';
 import { getPatientsByName } from 'api/patient-api';
-import createMentionEntities from './create-mention-entities';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
 import {
-  linkifyPluginConfig,
-  patientMentionPluginConfig,
-  peopleMentionPluginConfig,
+  initializeLinkifyPlugin,
+  initializePeopleMentionPlugin,
+  initializePatientMentionPlugin,
 } from './plugin-config';
 import {
   SUGGESTIONS_PLACEHOLDER,
@@ -30,34 +28,18 @@ const MentionsInput = React.forwardRef(
       onBlur = () => {},
       onFocus = () => {},
       onChange = () => {},
+      onAddMention = () => {},
       placeholder = '',
+      initialState,
+      state,
     },
     reference,
   ) => {
-    const peopleMentionPlugin = useRef(peopleMentionPluginConfig);
-    const patientMentionPlugin = useRef(patientMentionPluginConfig);
-    const linkifyPlugin = useRef(linkifyPluginConfig);
+    const linkifyPlugin = useRef(initializeLinkifyPlugin());
+    const peopleMentionPlugin = useRef(initializePeopleMentionPlugin());
+    const patientMentionPlugin = useRef(initializePatientMentionPlugin());
 
-    // const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const [editorState, setEditorState] = useState(
-      EditorState.createWithContent(
-        createMentionEntities(
-          'asdfasdf @Matthew Russell sdf #Patient 3 asdfasdfasdf',
-          [
-            {
-              id: '',
-              name: 'Matthew Russell',
-              mentionType: '@',
-            },
-            {
-              id: '',
-              name: 'Patient 3',
-              mentionType: '#',
-            },
-          ],
-        ),
-      ),
-    );
+    const [editorState, setEditorState] = useState(initialState);
 
     const [peopleSuggestions, setPeopleSuggestions] = useState([
       SUGGESTIONS_PLACEHOLDER,
@@ -77,10 +59,14 @@ const MentionsInput = React.forwardRef(
       });
     }, [taskListIdentifier]);
 
-    const handleChange = state => {
-      setEditorState(state);
-      onChange(state);
-      console.log('state', convertToRaw(state.getCurrentContent()));
+    const handleChange = newState => {
+      if (!state) setEditorState(newState);
+
+      onChange(newState);
+    };
+
+    const handleBlur = () => {
+      onBlur(state || editorState);
     };
 
     const onPeopleSearchChange = ({ value }) => {
@@ -104,11 +90,6 @@ const MentionsInput = React.forwardRef(
       } else {
         clearPatientSuggestions();
       }
-    };
-
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    const onAddMention = () => {
-      // get the mention object selected
     };
 
     const focus = () => {
@@ -136,13 +117,14 @@ const MentionsInput = React.forwardRef(
         <Editor
           ref={reference}
           plugins={plugins}
-          editorState={editorState}
+          editorState={state || editorState}
           readOnly={readOnly}
           placeholder={placeholder}
           onFocus={onFocus}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           onChange={handleChange}
         />
+
         <PeopleMentionSuggestions
           onSearchChange={onPeopleSearchChange}
           suggestions={peopleSuggestions}

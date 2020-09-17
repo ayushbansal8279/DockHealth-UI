@@ -11,7 +11,7 @@ export const AddCommentContainer = styled.div`
   position: relative;
 `;
 
-export const AddCommentInput = styled.textarea`
+export const AddCommentInputContainer = styled.div`
   background-color: ${palette.white};
   border: 0;
   box-shadow: none;
@@ -22,6 +22,16 @@ export const AddCommentInput = styled.textarea`
   padding: ${spacing.regular};
   overflow: hidden;
   min-height: 60px;
+  max-height: 120px;
+  overflow-y: auto;
+
+  ${({ isFocused }) =>
+    isFocused &&
+    `
+      border: 1px solid #ababb2;
+      box-shadow: 0 0 5px #c8c8ce;
+      transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+  `}
 `;
 
 export const AddCommentLoaderContainer = styled.div`

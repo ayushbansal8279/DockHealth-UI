@@ -9,6 +9,7 @@ const CommentSection = ({
   parentFormSubmit,
   taskDrawerFocusField,
   modalActions,
+  taskListIdentifier,
 }) => {
   const {
     groupedComments,
@@ -24,6 +25,7 @@ const CommentSection = ({
         addComment={addComment}
         parentFormSubmit={parentFormSubmit}
         taskDrawerFocusField={taskDrawerFocusField}
+        taskListIdentifier={taskListIdentifier}
       />
       {Object.entries(groupedComments).map(
         renderCommentGroup({

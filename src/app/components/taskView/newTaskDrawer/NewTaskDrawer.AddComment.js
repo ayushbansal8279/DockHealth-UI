@@ -1,19 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member/Member';
+import MentionsInput from 'components/common/MentionsInput/MentionsInput';
 
 import initializeAddCommentHooks from './NewTaskDrawer.AddComment.Hooks';
 import {
   AddCommentContainer,
-  AddCommentInput,
   AddCommentLoaderContainer,
+  AddCommentInputContainer,
 } from './NewTaskDrawer.AddComment.Styled';
 import { FocusDrawerFieldEnum } from './NewTaskDrawer.Utilities';
 
-const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
+const AddComment = ({
+  addComment,
+  parentFormSubmit,
+  taskDrawerFocusField,
+  taskListIdentifier,
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
   const {
     currentUser,
-    commentContent,
+    commentState,
     onCommentChange,
     saveComment,
     onCommentFocus,
@@ -33,17 +40,23 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   return (
     <AddCommentContainer>
       <Member member={currentUser} size={40} />
-      <AddCommentInput
-        onChange={onCommentChange}
-        onKeyDown={event =>
-          event.key === 'Enter' && addCommentReference.current?.blur()
-        }
-        onBlur={saveComment}
-        onFocus={onCommentFocus}
-        value={commentContent}
-        placeholder="Leave a comment and press enter on your keyboard to save"
-        ref={addCommentReference}
-      />
+      <AddCommentInputContainer isFocused={isFocused}>
+        <MentionsInput
+          ref={addCommentReference}
+          placeholder="Leave a comment and press enter on your keyboard to save"
+          onFocus={() => {
+            onCommentFocus();
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            saveComment();
+            setIsFocused(false);
+          }}
+          taskListIdentifier={taskListIdentifier}
+          state={commentState}
+          onChange={onCommentChange}
+        />
+      </AddCommentInputContainer>
       {isAddingComment && (
         <AddCommentLoaderContainer>
           <Loader size={LoaderSizes.medium} />

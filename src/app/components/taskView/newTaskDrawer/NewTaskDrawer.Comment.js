@@ -9,6 +9,11 @@ import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import ReactHtmlParser from 'react-html-parser';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
+import MentionsInput from 'components/common/MentionsInput/MentionsInput';
+import {
+  convertFromEditorStateToOutput,
+  convertToEditorState,
+} from 'components/common/MentionsInput/helpers';
 import {
   AuthorLabelContainer,
   CommentActionLabel,
@@ -32,6 +37,8 @@ const Comment = ({
 }) => {
   const {
     comment: commentContent,
+    commentMentions,
+    tokenizedComment,
     creator,
     dateCreated,
     dateUpdated,
@@ -40,7 +47,7 @@ const Comment = ({
 
   const commentContentFieldReference = useRef(null);
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
-  const [commentValue, setCommentValue] = useState('');
+  // const [commentValue, setCommentValue] = useState('');
 
   const authorLabelContent = `${creator?.firstName} ${
     creator?.lastName
@@ -50,46 +57,46 @@ const Comment = ({
     currentUser?.userIdentifier === creator.userIdentifier;
   const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 
-  useEffect(() => {
-    if (isEditing) {
-      const range = document.createRange();
-      const sel = window.getSelection();
-      range.selectNodeContents(commentContentFieldReference.current);
-      range.collapse(false);
-      sel.removeAllRanges();
-      sel.addRange(range);
-      // eslint-disable-next-line no-unused-expressions
-      commentContentFieldReference.current?.focus();
-    }
-  }, [isEditing]);
+  // useEffect(() => {
+  //   if (isEditing) {
+  //     const range = document.createRange();
+  //     const sel = window.getSelection();
+  //     range.selectNodeContents(commentContentFieldReference.current);
+  //     range.collapse(false);
+  //     sel.removeAllRanges();
+  //     sel.addRange(range);
+  //     // eslint-disable-next-line no-unused-expressions
+  //     commentContentFieldReference.current?.focus();
+  //   }
+  // }, [isEditing]);
 
-  useMount(() => {
-    setCommentValue(commentContent);
-  });
+  // useMount(() => {
+  //   setCommentValue(commentContent);
+  // });
 
-  const onCommentEdited = useCallback(
-    event => {
-      const sanitizedCommentValue = sanitizeCommentValue({
-        comment: event.target.textContent,
-      });
+  // const onCommentEdited = useCallback(
+  //   event => {
+  //     const sanitizedCommentValue = sanitizeCommentValue({
+  //       comment: event.target.textContent,
+  //     });
 
-      if (sanitizedCommentValue === '') {
-        return false;
-      }
+  //     if (sanitizedCommentValue === '') {
+  //       return false;
+  //     }
 
-      unsetEditing();
+  //     unsetEditing();
 
-      if (commentValue !== sanitizedCommentValue) {
-        updateComment({
-          commentIdentifier,
-          comment: sanitizedCommentValue,
-        });
-        setCommentValue(sanitizedCommentValue);
-      }
-      return true;
-    },
-    [commentIdentifier, commentValue, unsetEditing, updateComment],
-  );
+  //     if (commentValue !== sanitizedCommentValue) {
+  //       updateComment({
+  //         commentIdentifier,
+  //         comment: sanitizedCommentValue,
+  //       });
+  //       setCommentValue(sanitizedCommentValue);
+  //     }
+  //     return true;
+  //   },
+  //   [commentIdentifier, commentValue, unsetEditing, updateComment],
+  // );
 
   return (
     <React.Fragment key={commentIdentifier}>
@@ -100,7 +107,7 @@ const Comment = ({
         <Spacing horizontal={3} />
         <CommentInnerContainer isEditing={isEditing}>
           <CommentContentContainer>
-            <RobotoTypography condensed variant="h4" color="inherit">
+            {/* <RobotoTypography condensed variant="h4" color="inherit">
               <CommentContentField
                 ref={commentContentFieldReference}
                 contentEditable={isEditing}
@@ -128,9 +135,21 @@ const Comment = ({
                   >
                     (Edited)
                   </span>
-                )}
-              </CommentContentField>
-            </RobotoTypography>
+                )} */}
+            <MentionsInput
+              readOnly={!isEditing}
+              withEditedLabel={dateCreated !== dateUpdated}
+              initialState={convertToEditorState({
+                rawText: commentContent,
+                tokenizedText: tokenizedComment,
+                mentions: commentMentions,
+              })}
+              onBlur={state =>
+                console.log('new state', convertFromEditorStateToOutput(state))
+              }
+            />
+            {/* </CommentContentField>
+            </RobotoTypography> */}
             <AuthorLabelContainer>
               <RobotoTypography condensed variant="h4" color="inherit">
                 {authorLabelContent}
