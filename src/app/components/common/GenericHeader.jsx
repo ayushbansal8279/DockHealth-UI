@@ -22,7 +22,7 @@ const AlertsLogoContainer = styled.div`
   display: flex;
 
   & > img {
-    margin-right: 48px;
+    margin-right: 24px;
   }
 `;
 

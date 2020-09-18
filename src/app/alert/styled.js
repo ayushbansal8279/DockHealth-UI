@@ -5,8 +5,8 @@ import spacing from 'styles/spacing';
 
 export const GlobalChipWrapper = styled.div`
   position: fixed;
-  top: 2rem;
-  right: 200px;
+  top: 30px;
+  right: 180px;
   z-index: 5000;
   width: auto;
   height: auto;

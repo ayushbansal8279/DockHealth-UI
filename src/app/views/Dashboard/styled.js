@@ -28,7 +28,7 @@ export const DashboardScrollableList = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100% - 24px);
-  margin-top: ${spacing.large};
+  margin-top: ${spacing.regular};
   overflow-x: hidden;
   overflow-y: auto;
 `;
