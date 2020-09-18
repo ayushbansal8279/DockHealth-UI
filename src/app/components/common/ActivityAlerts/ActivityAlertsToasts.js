@@ -22,6 +22,7 @@ const listenRealTimeAlerts = (currentUser, showAlert) => {
     channel = pusherInstance.subscribe(channelName);
   }
 
+  channel.unbind('activity-alert');
   channel.bind('activity-alert', ({ alert }) => {
     if (alert) {
       sessionStorage.setItem('hasUnreadAlerts', true);
