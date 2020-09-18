@@ -65,7 +65,8 @@ const LoginPassword = () => {
           }
         })
         .catch(error => {
-          let message = error?.message;
+          // let message = error?.message;
+          let message = null;
           const errorCode = error?.code;
           if (errorCode === 'UserNotConfirmedException') {
             message =
