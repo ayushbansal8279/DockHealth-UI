@@ -613,7 +613,8 @@ const Subtasks = ({
                             {...restProps}
                           />
                           {draggedId !== String(subtask.taskIdentifier) &&
-                            !isEmpty(matchedComments) && (
+                            !isEmpty(matchedComments) &&
+                            subtask?.description !== '' && (
                               <TaskComments
                                 isOpen={isFullView}
                                 comments={matchedComments}
@@ -707,7 +708,7 @@ const Task = ({
           }}
         />
       )}
-      {!isEmpty(subtasks) && !isStartedDnD && (
+      {!isEmpty(renderedSubtasks) && !isStartedDnD && (
         <Subtasks
           subtasks={renderedSubtasks}
           isOpen={isOpen}
