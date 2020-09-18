@@ -27,7 +27,12 @@ import {
   UserNotFound,
 } from './styled';
 
-const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
+const SelectOwnerModal = ({
+  closeModal,
+  confirm,
+  currentActiveUsers,
+  isRemovingFlow,
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -113,7 +118,11 @@ const SelectOwnerModal = ({ closeModal, confirm, currentActiveUsers }) => {
               changeUserToOwner(selectedUser?.userIdentifier).then(() => {
                 confirm();
                 closeModal();
-                hashHistory.push('/home/my-tasks');
+                if (isRemovingFlow) {
+                  hashHistory.replace('/logout');
+                } else {
+                  hashHistory.push('/home/my-tasks');
+                }
               });
             }}
           >

@@ -29,6 +29,7 @@ const MemberTypeLabel = ({
   userTypes,
   addSubscription,
   removeSubscription,
+  removeSubscriptionWithNewOwnerFlow,
   userHasSubscription,
   isDisabledRemovingSubscription,
   orgUserRole,
@@ -103,6 +104,7 @@ const MemberTypeLabel = ({
             displayName,
             ownersCount,
             currentActiveUsers,
+            removeSubscriptionWithNewOwnerFlow,
           }}
         />
       )}

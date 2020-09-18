@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
 import { memoizeWith } from 'ramda';
@@ -221,6 +222,21 @@ const OrganizationMemberRow = ({
     });
   };
 
+  const removeSubscriptionWithNewOwnerFlow = openOwnerModal => {
+    openRemoveSubscriptionModal({
+      userIdentifier,
+      email,
+      orgUserRole,
+      confirm: () =>
+        openOwnerModal({
+          confirm: () =>
+            toggleSelectedUser({ userIdentifier, email, displayName })({
+              target: { checked: false },
+            }),
+        }),
+    });
+  };
+
   const addSubscription = () =>
     toggleSelectedUser({ userIdentifier, email, displayName })({
       target: { checked: true },
@@ -281,6 +297,9 @@ const OrganizationMemberRow = ({
             userType={userType}
             userTypes={USER_TYPES}
             removeSubscription={removeSubscription}
+            removeSubscriptionWithNewOwnerFlow={
+              removeSubscriptionWithNewOwnerFlow
+            }
             addSubscription={addSubscription}
             orgUserRole={orgUserRole}
             isDisabledRemovingSubscription={isDisabledRemovingSubscription}

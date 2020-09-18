@@ -127,6 +127,7 @@ const RoleSelectionPopover = ({
   userTypes,
   addSubscription,
   removeSubscription,
+  removeSubscriptionWithNewOwnerFlow,
   userHasSubscription,
   orgUserRole,
   userStatus,
@@ -182,11 +183,14 @@ const RoleSelectionPopover = ({
                   isCurrrentUser &&
                   orgUserRole === 'OWNER'
                 ) {
-                  dispatch(
-                    openModal('SelectOwner', {
-                      currentActiveUsers,
-                      confirm: removeSubscription,
-                    }),
+                  removeSubscriptionWithNewOwnerFlow(modalProps =>
+                    dispatch(
+                      openModal('SelectOwner', {
+                        currentActiveUsers,
+                        isRemovingFlow: true,
+                        ...modalProps,
+                      }),
+                    ),
                   );
                 } else {
                   removeSubscription();
@@ -198,6 +202,7 @@ const RoleSelectionPopover = ({
           )}
           <Button
             onClick={() => {
+              closePopover();
               if (
                 ownersCount < 2 &&
                 isCurrrentUser &&
