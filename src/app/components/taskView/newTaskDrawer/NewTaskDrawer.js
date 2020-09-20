@@ -206,7 +206,11 @@ const NewTaskDrawer = ({
                   label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                   required
                   multiple
-                  placeholder="What is the task?"
+                  placeholder={
+                    isAddingOrEditingSubtask
+                      ? 'What is the subtask?'
+                      : 'What is the task?'
+                  }
                   borderOnFocus
                   ref={taskInputReference}
                   InputLabelProps={{
