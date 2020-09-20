@@ -208,7 +208,9 @@ const DashboardSidebar = ({
                   >
                     <TitleText>{taskList?.listName}</TitleText>
                   </ListItemTitle>
-                  <ListItemInfo>{taskList?.numberOfTasks}</ListItemInfo>
+                  <ListItemInfo>
+                    {taskList?.numberOfTasks ? taskList?.numberOfTasks : 0}
+                  </ListItemInfo>
                 </ListItem>
               </ListLink>
               {taskList?.listType !== 'INBOX' ? (
