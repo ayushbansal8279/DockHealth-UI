@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Popper } from '@material-ui/core';
+import { Popover } from '@material-ui/core';
 import { updateUserDashboardPrefs } from 'api/user-api';
 import DashboardSettingsIcon from 'img/dashboard-settings-icon';
 import {
@@ -17,7 +17,7 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
 
   return (
     <>
-      <Popper
+      <Popover
         style={{ zIndex: 2001 }}
         anchorEl={iconReference?.current}
         anchorOrigin={{
@@ -81,7 +81,7 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
             </DashboardSettingsLabel>
           </DashboardSettingsInputBox>
         </DashboardSettingsContainer>
-      </Popper>
+      </Popover>
       <StyledDashboardSettingsIcon
         ref={iconReference}
         src={DashboardSettingsIcon}
