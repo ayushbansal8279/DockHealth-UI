@@ -6,6 +6,7 @@ import UniversalTooltip from './UniversalTooltip';
 
 interface UniversalTooltipContainerProps extends PopperProps {
   label?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const ElementWrapper: any = styled.div`
@@ -16,6 +17,7 @@ const UniversalTooltipContainer = ({
   children,
   label,
   open,
+  disabled,
   ...props
 }: UniversalTooltipContainerProps) => {
   const [isTooltipShown, showTooltip, hideTooltip] = useBoolean(false);
@@ -26,7 +28,7 @@ const UniversalTooltipContainer = ({
       {label !== '' && (
         <UniversalTooltip
           anchorEl={popoverReference.current}
-          open={open || isTooltipShown}
+          open={disabled ? false : open || isTooltipShown}
           {...props}
         >
           {label}

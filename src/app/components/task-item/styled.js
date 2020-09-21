@@ -396,3 +396,9 @@ export const SubtaskStylingLastLink = styled.div`
   left: -19px;
   top: -1px;
 `;
+
+export const SlimTaskListNameText = styled.p`
+  &:hover {
+    text-decoration: underline;
+  }
+`;
