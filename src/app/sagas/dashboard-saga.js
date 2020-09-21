@@ -224,8 +224,6 @@ function* doReloadDashboardTasks() {
 }
 
 function* doToggleDashboardTaskComplete({ task }) {
-  if (task.status === 'COMPLETE') return;
-
   try {
     const currentUser = yield select(userProfileSelector);
 
@@ -233,7 +231,11 @@ function* doToggleDashboardTaskComplete({ task }) {
 
     yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
 
-    yield call(TaskApi.markComplete, task);
+    if (task.status === 'COMPLETE') {
+      yield call(TaskApi.markIncomplete, task);
+    } else {
+      yield call(TaskApi.markComplete, task);
+    }
     yield delay(TASK_DISAPPEAR_DELAY);
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
 
