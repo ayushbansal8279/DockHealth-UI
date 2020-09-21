@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import Member from 'components/members/Member/Member';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import Highlighter from 'react-highlight-words';
-import ReactHtmlParser from 'react-html-parser';
-import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -16,6 +16,8 @@ const TaskComment = ({
   creator,
   dateUpdated,
   comment,
+  tokenizedComment,
+  commentMentions,
   dateCreated,
   highlightedValue,
 }) => {
@@ -37,9 +39,15 @@ const TaskComment = ({
               textToHighlight={comment}
             />
           ) : (
-            ReactHtmlParser(
-              mentionifyAndLinkifyTaskText({ members: null, value: comment }),
-            )
+            <MentionsEditor
+              readOnly
+              withEditedLabel={dateCreated !== dateUpdated}
+              initialState={convertToEditorState({
+                rawText: comment,
+                tokenizedText: tokenizedComment,
+                mentions: commentMentions,
+              })}
+            />
           )}
         </TaskCommentText>
         <TaskCommentDetails>
