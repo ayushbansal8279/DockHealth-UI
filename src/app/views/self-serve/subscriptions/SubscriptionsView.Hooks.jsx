@@ -9,7 +9,6 @@ import {
   selectUsersForPlan,
 } from 'actions/organization-actions';
 import { findAllUsers, loading } from 'actions/people-actions';
-import * as userApi from 'api/user-api';
 import GenericHeader from 'components/common/GenericHeader';
 import useBoolean from 'hooks/useBoolean';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './subscriptions-plans/SubscriptionsPlansView.PlanData';
@@ -60,15 +59,9 @@ const initializeSubscriptionsViewHooks = () => {
   );
 
   const getAllUsers = useCallback(() => {
-    userApi.isAuthenticated({
-      isLoggedIn: loggedIn => {
-        if (loggedIn) {
-          loading()(dispatch);
-          findAllUsers()(dispatch).then(() => {
-            recalculateEstimate();
-          });
-        }
-      },
+    loading()(dispatch);
+    findAllUsers()(dispatch).then(() => {
+      recalculateEstimate();
     });
   }, [dispatch, recalculateEstimate]);
 

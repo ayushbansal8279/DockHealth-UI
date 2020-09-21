@@ -386,43 +386,30 @@ export function rememberDevice() {
   });
 }
 
-export function isAuthenticated({ isLoggedIn }) {
-  if (!isLoggedIn) {
-    throw new Error('Callback in isAuthenticated() cannot be null');
-  }
-
-  // const userPoolForAuth = userPool;
-
+export async function isAuthenticated() {
   if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
     const userData = {
       username: sessionStorage.getItem('SSO_USEREMAIL'),
     };
 
     if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      isLoggedIn(true, userData);
-      return;
+      return { isLoggedIn: true, user: userData };
     }
 
-    isLoggedIn(false, userData);
+    return { isLoggedIn: false, user: userData };
   }
 
-  Auth.currentAuthenticatedUser({
-    bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-  })
-    .then(user => {
-      Auth.currentSession()
-        .then(data => {
-          sessionStorage.setItem('accessToken', data.accessToken.jwtToken);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      isLoggedIn(true, user);
-    })
-    .catch(error => {
-      console.log(error);
-      isLoggedIn(false, null);
+  try {
+    const user = await Auth.currentAuthenticatedUser({
+      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
+    const authData = await Auth.currentSession();
+    sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
+    return { isLoggedIn: true, user };
+  } catch (error) {
+    console.log(error);
+    return { isLoggedIn: false, user: null };
+  }
 }
 
 export function forgotPassword(userData) {

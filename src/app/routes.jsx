@@ -192,8 +192,8 @@ export const Routes = ({ store }) => {
 
   const dispatch = useDispatch();
 
-  const checkUserIsAuthenticated = ({ checkTrialExpiration }) => {
-    checkUserAuthentication({ dispatch, checkTrialExpiration });
+  const checkUserIsAuthenticated = ({ checkTrialExpiration, callback }) => {
+    checkUserAuthentication({ dispatch, checkTrialExpiration, callback });
   };
 
   const onEnterApp = ({ location, params }) => {
@@ -309,8 +309,8 @@ export const Routes = ({ store }) => {
       >
         <Route
           component={TemplateCore}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: false });
+          onEnter={(nextState, replace, callback) => {
+            checkUserIsAuthenticated({ checkTrialExpiration: false, callback });
           }}
         >
           <Route
@@ -351,8 +351,8 @@ export const Routes = ({ store }) => {
         </Route>
         <Route
           component={TemplateCoreSubscriptionPlan}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: true });
+          onEnter={(nextState, replace, callback) => {
+            checkUserIsAuthenticated({ checkTrialExpiration: true, callback });
           }}
         >
           <IndexRedirect to="/home" />
@@ -470,8 +470,8 @@ export const Routes = ({ store }) => {
         <Route
           path="/onboarding"
           component={OnboardingTemplate}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: false });
+          onEnter={(nextState, replace, callback) => {
+            checkUserIsAuthenticated({ checkTrialExpiration: false, callback });
           }}
         >
           <Route component={OnboardingEulaView} path="eula" />

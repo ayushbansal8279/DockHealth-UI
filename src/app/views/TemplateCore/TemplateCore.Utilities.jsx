@@ -147,7 +147,10 @@ const checkUserAccountState = async ({
   }
 };
 
-const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
+const isLoggedIn = ({ dispatch, checkTrialExpiration }) => async (
+  loggedIn,
+  user,
+) => {
   const { pathname } = hashHistory.getCurrentLocation();
 
   if (!loggedIn && pathname === CREATE_ACCOUNT_PATH) {
@@ -169,7 +172,12 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
   userApi.updateStoreWithCurrentUser(user);
 
   try {
-    checkUserAccountState({ user, pathname, dispatch, checkTrialExpiration });
+    await checkUserAccountState({
+      user,
+      pathname,
+      dispatch,
+      checkTrialExpiration,
+    });
   } catch (error) {
     hashHistory.push('login');
   }
@@ -178,8 +186,14 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
 export const checkUserAuthentication = async ({
   dispatch,
   checkTrialExpiration,
+  callback,
 }) => {
-  await userApi.isAuthenticated({
-    isLoggedIn: isLoggedIn({ dispatch, checkTrialExpiration }),
-  });
+  const isLoggedInResults = await userApi.isAuthenticated();
+  await isLoggedIn({ dispatch, checkTrialExpiration })(
+    isLoggedInResults.isLoggedIn,
+    isLoggedInResults.user,
+  );
+  if (callback) {
+    callback();
+  }
 };
