@@ -36,10 +36,13 @@ const ActivityAlertsToasts = () => {
   const [newAlert, setNewAlert] = useState({});
   const [lastElement, setLastElement] = useState(null);
 
-  const { currentUser, enabledAlertsState } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-    enabledAlertsState: store.alertsState.alertsEnabled,
-  }));
+  const { currentUser, alertsEnabledState, alertsHideState } = useSelector(
+    store => ({
+      currentUser: store.userState.userProfile,
+      alertsEnabledState: store.alertsState.alertsEnabled,
+      alertsHideState: store.alertsState.alertToastHide,
+    }),
+  );
 
   const showActivityAlert = async alert => {
     const alertDetails = await getActivityAlertDetails(
@@ -49,8 +52,10 @@ const ActivityAlertsToasts = () => {
   };
 
   useEffect(() => {
-    listenRealTimeAlerts(currentUser, showActivityAlert);
-  }, [currentUser]);
+    if (alertsEnabledState && !alertsHideState) {
+      listenRealTimeAlerts(currentUser, showActivityAlert);
+    }
+  }, [currentUser, alertsHideState, alertsEnabledState]);
 
   useEffect(() => {
     if (!isEmpty(newAlert)) {
@@ -65,7 +70,7 @@ const ActivityAlertsToasts = () => {
     }
   }, [lastElement]);
 
-  if (!enabledAlertsState) {
+  if (!alertsEnabledState || alertsHideState) {
     return null;
   }
 
