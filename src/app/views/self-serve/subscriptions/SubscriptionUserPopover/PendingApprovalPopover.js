@@ -20,10 +20,18 @@ import {
   DenyButtonContainer,
   ApprovalButtonContainer,
   Header,
+  RoleSelectorCancelRemoveUserButton,
 } from './styled';
 
 const USER_TYPES = new Proxy(
   {
+    OWNER: {
+      label: 'Owner',
+      selectable: true,
+      changeable: true,
+      description:
+        'Full access to everything including billing and payments and approving new members.',
+    },
     MEMBER: {
       label: 'Member',
       selectable: true,
@@ -51,7 +59,6 @@ const renderUserTypesOptions = ({
   userTypes,
   closePopover,
   reloadUsers,
-  orgUserRole,
   userStatus,
   selectedRoleKey,
   dispatch,
@@ -65,9 +72,7 @@ const renderUserTypesOptions = ({
         .map(([role, { label, description, isLimitedAccess }]) => ({
           key: role,
           button: true,
-          isSelected:
-            selectedRoleKey === role ||
-            (!selectedRoleKey && orgUserRole === role),
+          isSelected: selectedRoleKey === role,
           isLimitedAccess,
           label,
           description,
@@ -114,7 +119,6 @@ const PendingApprovalSelectionPopover = props => {
     reloadUsers,
     addSubscription,
     removeSubscription,
-    orgUserRole,
     userStatus,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
@@ -201,7 +205,6 @@ const PendingApprovalSelectionPopover = props => {
           reloadUsers,
           addSubscription,
           removeSubscription,
-          orgUserRole,
           selectedRoleKey: selectedRole?.key,
           dispatch,
         })?.map(item =>
@@ -212,6 +215,12 @@ const PendingApprovalSelectionPopover = props => {
         )}
       </RoleSelectionList>
       <RoleSelectionFooter>
+        <RoleSelectorCancelRemoveUserButton
+          multipleButtons
+          onClick={() => closePopover()}
+        >
+          Cancel
+        </RoleSelectorCancelRemoveUserButton>
         <Button
           onClick={() =>
             approvePendingUser({ userIdentifier, role: selectedRole?.key })

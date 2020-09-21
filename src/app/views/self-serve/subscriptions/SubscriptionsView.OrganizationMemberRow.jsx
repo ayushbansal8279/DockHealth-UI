@@ -322,7 +322,7 @@ const OrganizationMemberRow = ({
       </Grid>
       <Grid item xs={3}>
         <MemberTableCell isInvited={isInvited}>
-          {showJoined && formattedRegistrationDate}
+          {showJoined && userStatus !== 'PENDING' && formattedRegistrationDate}
           {isInvited && <div>Invitation sent</div>}
         </MemberTableCell>
       </Grid>

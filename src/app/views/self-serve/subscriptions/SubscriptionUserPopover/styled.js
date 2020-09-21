@@ -137,7 +137,6 @@ export const InvitationItemDescription = styled.div`
 export const PendingApprovalContainer = styled.div`
   font-family: 'Roboto Condensed';
   width: 462px;
-  height: 385px;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
