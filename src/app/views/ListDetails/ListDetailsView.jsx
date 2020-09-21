@@ -83,6 +83,15 @@ class Home extends Component {
     } = this.props;
 
     if (
+      nextProps.taskCounters?.complete === 0 &&
+      nextProps.routeParams.taskListIdentifier ===
+        routeParams.taskListIdentifier &&
+      nextProps.routeParams.tabName === TaskListTabName.COMPLETE
+    ) {
+      this.navigateToTab(TaskListTabName.OPEN);
+    }
+
+    if (
       taskLists !== nextProps.taskLists ||
       nextProps.routeParams.taskListIdentifier !==
         routeParams.taskListIdentifier
