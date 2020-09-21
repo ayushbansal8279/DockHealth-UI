@@ -33,7 +33,6 @@ import {
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
-import { reassignTask } from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
@@ -324,8 +323,9 @@ function* doUpdateDashboardSelectedFilters({ payload }) {
 
 function* doReassignDashboardTask({ taskIdentifier, userId }) {
   try {
-    yield put(reassignTask(taskIdentifier, userId));
+    yield call(TaskApi.assignOrReassignTask, { taskIdentifier }, userId);
     yield call(doReloadDashboardTasks);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     console.log(error);
   }
