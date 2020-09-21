@@ -66,7 +66,7 @@ const InviteMembersForm = ({
         </Grid>
         <Spacing vertical={4} />
         <SkipButton type="button" onClick={closeModal}>
-          Skip
+          Continue
         </SkipButton>
       </Grid>
     </Wrapper>
