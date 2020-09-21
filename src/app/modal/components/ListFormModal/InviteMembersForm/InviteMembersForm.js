@@ -59,7 +59,10 @@ const InviteMembersForm = ({
               patients who are part of this list.
             </Description>
           </Header>
-          <InviteMemberToListForm list={list} />
+          <InviteMemberToListForm
+            list={list}
+            externalInvitePosition={{ bottom: -60 }}
+          />
         </Grid>
         <Spacing vertical={4} />
         <SkipButton type="button" onClick={closeModal}>
