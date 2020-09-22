@@ -1,11 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider } from '@material-ui/core';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
@@ -39,6 +40,7 @@ import {
   styleRightColumn,
   styleLastRow,
   styleCommentRow,
+  DescriptionContainer,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 import {
@@ -90,7 +92,12 @@ const NewTaskDrawer = ({
     taskListIdentifier,
     handleAddPatient,
     taskInputReference,
+    descriptionState,
+    setDescriptionState,
+    descriptionReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
+
+  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 
   const taskDrawerReference = useRef(null);
 
@@ -158,9 +165,11 @@ const NewTaskDrawer = ({
 
   useEffect(() => {
     if (!selectedTask || selectedTask.description === '') {
-      taskInputReference.current.querySelector('textarea').focus();
+      setTimeout(() => {
+        descriptionReference.current.focus();
+      }, 0);
     }
-  }, [taskInputReference, isAddingOrEditingSubtask, selectedTask]);
+  }, [descriptionReference, isAddingOrEditingSubtask, selectedTask]);
 
   const parentFormSubmit = handleSubmit(onSubmit);
 
@@ -242,6 +251,36 @@ const NewTaskDrawer = ({
                     }
                   }}
                 />
+                <DescriptionContainer isFocused={isDescriptionFocused}>
+                  <MentionsEditor
+                    ref={descriptionReference}
+                    placeholder="What is the task?"
+                    onFocus={() => {
+                      setIsDescriptionFocused(true);
+                    }}
+                    onBlur={() => {
+                      // handleTaskDescriptionUpdate();
+                      setIsDescriptionFocused(false);
+                    }}
+                    taskListIdentifier={taskListIdentifier}
+                    state={descriptionState}
+                    onChange={setDescriptionState}
+                    keyBindingFn={event => {
+                      if (event.keyCode === 13) {
+                        return 'enter-command';
+                      }
+                      return undefined;
+                    }}
+                    handleKeyCommand={command => {
+                      if (command === 'enter-command') {
+                        // addCommentReference.current.blur();/
+                        return 'handled';
+                      }
+
+                      return 'not-handled';
+                    }}
+                  />
+                </DescriptionContainer>
               </Grid>
               {selectedTask?.sourceMessage && (
                 <Grid item xs={12} style={styleEmailRow}>

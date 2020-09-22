@@ -5,6 +5,7 @@ import palette, { opacify } from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { List, Chip } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { fontSizes, fontWeights } from 'styles/font';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
@@ -263,4 +264,15 @@ export const ListNameSelectContainer = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+`;
+
+export const DescriptionContainer = styled.div`
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
+  color: ${palette.mediumGrey};
+  transition: all 0.2s ease-out;
+
+  border-bottom: 1px solid
+    ${({ isFocused }) => (isFocused ? palette.coolGrey2 : 'transparent')};
 `;

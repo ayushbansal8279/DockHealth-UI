@@ -1,16 +1,19 @@
 import { useCallback, useState } from 'react';
-import { EditorState } from 'draft-js';
+import { EditorState, ContentState } from 'draft-js';
 
 export const useMentionsEditorState = initialValue => {
   const [state, setState] = useState(initialValue || EditorState.createEmpty());
 
-  const setMentionsEditorState = useCallback(newState => {
-    if (!newState) {
-      setState(EditorState.createEmpty());
-    } else {
-      setState(newState);
-    }
-  }, []);
+  const setMentionsEditorState = useCallback(
+    newState => {
+      if (!newState) {
+        setState(EditorState.push(state, ContentState.createFromText('')));
+      } else {
+        setState(newState);
+      }
+    },
+    [state],
+  );
 
   return [state, setMentionsEditorState];
 };

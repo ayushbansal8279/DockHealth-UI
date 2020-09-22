@@ -9,6 +9,7 @@ import React, {
   useRef,
 } from 'react';
 import debounce from 'lodash.debounce';
+import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
@@ -30,6 +31,8 @@ import {
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
 import Member from 'components/members/Member/Member';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -37,6 +40,7 @@ import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import { onButtonClicked } from '../../../helpers/ga-event-helper';
 import { noop } from '../../../helpers/utility-functions';
+
 // const REQUIRED_MESSAGE = 'This field is required';
 // const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
@@ -150,6 +154,14 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     currentUser: store.userState.userProfile,
   }));
 
+  const [descriptionState, setDescriptionState] = useMentionsEditorState();
+  const descriptionReference = useRef(null);
+
+  // useEffect(() => {
+  //   console.log(descriptionReference.current);
+  //   descriptionReference.current?.resolvePlugins();
+  // }, [descriptionState, descriptionReference]);
+
   const [patients, setPatients] = useState([]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const patientInputReference = useRef(null);
@@ -262,6 +274,22 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
     clearError(); // clear any previous validation errors
     setValue('description', selectedTask?.description ?? null);
+
+    if (selectedTask) {
+      const { tokenizedDescription, description, taskMentions } = selectedTask;
+      if (description) {
+        const newContent = createMentionEntities(
+          tokenizedDescription,
+          description,
+          taskMentions,
+        );
+
+        setDescriptionState(EditorState.push(descriptionState, newContent));
+      } else {
+        setDescriptionState();
+      }
+    }
+
     setValue(
       'patientIdentifier',
       selectedTask?.patient?.patientIdentifier ??
@@ -601,6 +629,9 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     taskListIdentifier: taskList?.taskListIdentifier,
     handleAddPatient,
     taskInputReference,
+    descriptionState,
+    setDescriptionState,
+    descriptionReference,
   };
 };
 
