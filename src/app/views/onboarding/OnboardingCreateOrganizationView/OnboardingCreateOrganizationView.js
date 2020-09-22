@@ -17,14 +17,16 @@ const onSubmit = ({ dispatch }) => async ({
     organizationProfileColor: organizationThemeColor,
   });
 
-  const { baaSigned } = await checkBAASignedStatus()(dispatch);
+  await selectCurrentOrganization(organizationIdentifier, false);
+
+  const { baaSigned } = await checkBAASignedStatus(organizationIdentifier)(
+    dispatch,
+  );
   if (baaSigned) {
     hashHistory.push('/onboarding/team-setup');
   } else {
     hashHistory.push('/onboarding/baa-overview');
   }
-
-  await selectCurrentOrganization(organizationIdentifier, false);
 };
 
 const OnboardingCreateOrganizationSetup = () => {
