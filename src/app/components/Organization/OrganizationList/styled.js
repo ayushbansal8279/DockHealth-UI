@@ -4,17 +4,23 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 
-export const OrganizationIdentifiersList = styled.div`
+export const OrganizationsListDropdownContainer = styled.div`
   height: ${props => (props.isOpen ? 'fit-content' : 0)};
-  max-height: ${props =>
-    props.isOpen ? `calc(100% * ${props.organizationAmount})` : 0};
-  overflow-y: auto;
-  background-color: ${props => props.isOpen && 'white'};
-  background-color: white;
-  z-index: 1;
   width: 100%;
-  transition: max-height 0.5s;
+  z-index: 1;
   cursor: pointer;
+  background-color: white;
+`;
+
+export const OrganizationIdentifiersList = styled.div`
+  height: ${props =>
+    props.isOpen
+      ? `calc(67px * ${props.organizationAmount})`
+      : 0}; // single oraganization identifier height times visible list items limit
+
+  transition: height 0.5s;
+  overflow-y: auto;
+  width: 100%;
 `;
 
 export const OrganizationIdentifiersListContainer = styled.div`
@@ -43,6 +49,7 @@ export const AddOrganizationLinkContainer = styled.div`
   width: 100%;
   border-top: 1px solid ${palette.blueGrey};
   padding: ${spacing.smallPlus};
+  background-color: white;
 `;
 
 export const AddOrganizationLink = styled(Link)`
