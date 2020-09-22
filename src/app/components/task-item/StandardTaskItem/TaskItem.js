@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { EditorState } from 'draft-js';
 import moment from 'moment';
 import { isEmpty, pick } from 'ramda';
 import Highlighter from 'react-highlight-words';
@@ -25,8 +26,10 @@ import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskW
 import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
 import { Tasks as SubtasksContainer } from 'views/Task/NewTasksView/TasksGroup/styled';
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
-import ReactHtmlParser from 'react-html-parser';
-import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import TaskItemStatus from './TaskItemStatus';
 
 import {
@@ -150,6 +153,8 @@ const TaskItem = ({
     attachments,
     comments,
     description,
+    tokenizedDescription,
+    taskMentions,
     dueDate,
     labels,
     patient,
@@ -178,6 +183,27 @@ const TaskItem = ({
   const taskListIdentifier = taskList?.taskListIdentifier;
 
   const [isHovered, setIsHoverd] = useState(false);
+  const [descriptionState, setDescriptionState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: description,
+      tokenizedText: tokenizedDescription,
+      mentions: taskMentions,
+    }),
+  );
+  const previousDescription = useRef(null);
+
+  useEffect(() => {
+    if (previousDescription.current !== null) {
+      const newContent = createMentionEntities(
+        tokenizedDescription,
+        description,
+        taskMentions,
+      );
+      setDescriptionState(EditorState.push(descriptionState, newContent));
+    }
+    previousDescription.current = description;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [description]);
 
   const isCompleted = task.status === 'COMPLETE';
 
@@ -253,21 +279,23 @@ const TaskItem = ({
           <DescriptionBox>
             <Description isCrossedOut={!isCompletedGroup && isCompleted}>
               {matchDescription && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
-                  autoEscape
-                  textToHighlight={description}
-                />
+                <>
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+                    autoEscape
+                    textToHighlight={description}
+                  />
+                  {edited && <SmallText> (Edited)</SmallText>}
+                </>
               ) : (
-                ReactHtmlParser(
-                  mentionifyAndLinkifyTaskText({
-                    members: null,
-                    value: description,
-                  }),
-                )
+                <MentionsEditor
+                  readOnly
+                  withEditedLabel={edited}
+                  state={descriptionState}
+                  onChange={setDescriptionState}
+                />
               )}
-              {edited && <SmallText> (Edited)</SmallText>}
             </Description>
             <CompletedBy isCompleted={isCompleted}>
               <span>{`Completed by ${completedByName} ${completedDt &&

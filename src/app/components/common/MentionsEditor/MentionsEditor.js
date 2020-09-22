@@ -114,6 +114,7 @@ const MentionsEditor = React.forwardRef(
     return (
       <StyledEditorContainer
         withEditedLabel={withEditedLabel && readOnly}
+        isReadOnly={readOnly}
         onClick={focus}
       >
         <Editor

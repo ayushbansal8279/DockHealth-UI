@@ -585,14 +585,23 @@ export function markComplete(task, status, listName, currentUser = null) {
 
 export const updateTaskDescription = (task, description) => dispatch =>
   TaskApi.updateTaskDescription(shapeTask(task), description)
-    .then(() => {
-      const newTask = task;
-      newTask.description = description;
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: newTask,
-      });
-    })
+    .then(
+      ({
+        description: updatedDescription,
+        tokenizedDescription,
+        taskMentions,
+      }) => {
+        const newTask = task;
+        newTask.description = updatedDescription;
+        newTask.tokenizedDescription = tokenizedDescription;
+        newTask.taskMentions = taskMentions;
+
+        dispatch({
+          type: ActionTypes.UPDATE_TASK_SUCCESS,
+          task: newTask,
+        });
+      },
+    )
     .catch(error => {
       throw error;
     });

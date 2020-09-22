@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import moment from 'moment';
+import { EditorState } from 'draft-js';
 import { Grid } from '@material-ui/core';
 import Circle from 'img/circle';
 import CrossIcon from 'img/cross';
@@ -13,6 +14,10 @@ import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepi
 import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
 import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
+import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 
 import { getCalendarIcon } from '../icons';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
@@ -174,6 +179,8 @@ const SlimTaskItem = ({
   const {
     assignedTo,
     description,
+    tokenizedDescription,
+    taskMentions,
     taskList,
     dueDate,
     priority,
@@ -182,6 +189,37 @@ const SlimTaskItem = ({
     completedBy,
     status,
   } = task;
+
+  const formattedTaskDescription =
+    description?.length > 100
+      ? description
+          ?.substring(0, 100)
+          .trim()
+          .concat('...')
+      : description;
+
+  const previousDescriptionValue = useRef(null);
+  const [descriptionState, setDescriptionState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: formattedTaskDescription,
+      tokenizedText: tokenizedDescription,
+      mentions: taskMentions,
+    }),
+  );
+
+  useEffect(() => {
+    if (previousDescriptionValue.current !== null) {
+      const newContent = createMentionEntities(
+        tokenizedDescription,
+        formattedTaskDescription,
+        taskMentions,
+      );
+      setDescriptionState(EditorState.push(descriptionState, newContent));
+    }
+    previousDescriptionValue.current = description;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [description]);
+
   const isOverdueTask =
     moment(dueDate).format('HH:mm') !== '00:00'
       ? moment(dueDate).isBefore(moment())
@@ -196,14 +234,6 @@ const SlimTaskItem = ({
       : taskList?.listName;
 
   const showTooltip = taskList?.listName?.length > taskListLength;
-
-  const formattedTaskDescription =
-    description?.length > 100
-      ? description
-          ?.substring(0, 100)
-          .trim()
-          .concat('...')
-      : description;
 
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
@@ -236,7 +266,11 @@ const SlimTaskItem = ({
                   storeAsCurrentTask(task, 'home');
                 }}
               >
-                {formattedTaskDescription}
+                <MentionsEditor
+                  readOnly
+                  state={descriptionState}
+                  onChange={setDescriptionState}
+                />
               </div>
               <CompletedBy isCompleted={isCompleted}>
                 <span>{`Completed by ${completedByName} ${completedDt &&

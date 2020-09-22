@@ -27,7 +27,7 @@ import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
 import TaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
 import {
-  AdornmentContainer,
+  DescriptionLabel,
   AdornmentClear,
   EnvelopeIconContainer,
   HiddenFieldContainer,
@@ -91,7 +91,6 @@ const NewTaskDrawer = ({
     refreshMembers,
     taskListIdentifier,
     handleAddPatient,
-    taskInputReference,
     descriptionState,
     setDescriptionState,
     descriptionReference,
@@ -144,8 +143,6 @@ const NewTaskDrawer = ({
 
   const selectedPatientIdentifier = watch('patientIdentifier');
 
-  const enteredDescription = watch('description');
-
   const {
     assignedToInputReference,
     isInvitePopoverOpen,
@@ -164,7 +161,7 @@ const NewTaskDrawer = ({
   }, [taskDrawerFocusField, patientInputReference]);
 
   useEffect(() => {
-    if (!selectedTask || selectedTask.description === '') {
+    if (selectedTask && selectedTask.description === '') {
       setTimeout(() => {
         descriptionReference.current.focus();
       }, 0);
@@ -211,7 +208,7 @@ const NewTaskDrawer = ({
               />
               <Spacing vertical={2} />
               <Grid item xs={12} style={styleFullRow}>
-                <TextInput
+                {/* <TextInput
                   name="description"
                   label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                   required
@@ -250,8 +247,13 @@ const NewTaskDrawer = ({
                       handleTaskDescriptionUpdate();
                     }
                   }}
-                />
+                /> */}
                 <DescriptionContainer isFocused={isDescriptionFocused}>
+                  <DescriptionLabel>
+                    {isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
+                    <Spacing horizontal={3} />
+                    <span>(required)</span>
+                  </DescriptionLabel>
                   <MentionsEditor
                     ref={descriptionReference}
                     placeholder="What is the task?"
@@ -259,7 +261,7 @@ const NewTaskDrawer = ({
                       setIsDescriptionFocused(true);
                     }}
                     onBlur={() => {
-                      // handleTaskDescriptionUpdate();
+                      handleTaskDescriptionUpdate();
                       setIsDescriptionFocused(false);
                     }}
                     taskListIdentifier={taskListIdentifier}
@@ -273,7 +275,7 @@ const NewTaskDrawer = ({
                     }}
                     handleKeyCommand={command => {
                       if (command === 'enter-command') {
-                        // addCommentReference.current.blur();/
+                        handleTaskDescriptionUpdate();
                         return 'handled';
                       }
 

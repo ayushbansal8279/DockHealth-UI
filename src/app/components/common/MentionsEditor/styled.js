@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+import { fontWeights } from 'styles/font';
+import palette from 'styles/palette';
 
 export const StyledEditorContainer = styled.div`
   box-sizing: border-box;
-  cursor: text;
+  cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
 
   & .public-DraftEditor-content {
@@ -11,7 +13,8 @@ export const StyledEditorContainer = styled.div`
 
   .public-DraftEditorPlaceholder-root {
     position: absolute;
-    color: #8492a4;
+    font-weight: ${fontWeights.light};
+    color: ${palette.coolGrey1};
   }
 
   ${({ withEditedLabel }) =>
@@ -21,7 +24,7 @@ export const StyledEditorContainer = styled.div`
       content: '(Edited)';
       display: inline;
       font-size: 0.75rem;
-      color: #8492a4;
+      color: ${palette.coolGrey2};
       margin-left: 8px;
     }
   `}

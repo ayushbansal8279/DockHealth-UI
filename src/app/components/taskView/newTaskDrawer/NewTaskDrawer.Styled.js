@@ -6,6 +6,7 @@ import { RobotoTypography } from 'styles/theme';
 import { List, Chip } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
@@ -275,4 +276,18 @@ export const DescriptionContainer = styled.div`
 
   border-bottom: 1px solid
     ${({ isFocused }) => (isFocused ? palette.coolGrey2 : 'transparent')};
+`;
+
+export const DescriptionLabel = styled.label`
+  display: block;
+  margin-bottom: ${spacing.small};
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey2};
+  text-transform: uppercase;
+
+  & > span {
+    text-transform: none;
+  }
 `;

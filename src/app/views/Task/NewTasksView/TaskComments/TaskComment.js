@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { EditorState } from 'draft-js';
 import moment from 'moment';
 import Member from 'components/members/Member/Member';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import Highlighter from 'react-highlight-words';
 import {
   TaskCommentAvatarContainer,
@@ -24,6 +27,29 @@ const TaskComment = ({
   const commentDetails = `${creator.firstName} ${creator.lastName} ${moment(
     dateUpdated,
   ).format('h:mma')}`;
+
+  const previousCommentValue = useRef(null);
+  const [commentState, setCommentState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: comment,
+      tokenizedText: tokenizedComment,
+      mentions: commentMentions,
+    }),
+  );
+
+  useEffect(() => {
+    if (previousCommentValue.current !== null) {
+      const newContent = createMentionEntities(
+        tokenizedComment,
+        comment,
+        commentMentions,
+      );
+      setCommentState(EditorState.push(commentState, newContent));
+    }
+    previousCommentValue.current = comment;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comment]);
+
   return (
     <TaskCommentContainer>
       <TaskCommentAvatarContainer>
@@ -42,11 +68,8 @@ const TaskComment = ({
             <MentionsEditor
               readOnly
               withEditedLabel={dateCreated !== dateUpdated}
-              initialState={convertToEditorState({
-                rawText: comment,
-                tokenizedText: tokenizedComment,
-                mentions: commentMentions,
-              })}
+              state={commentState}
+              onChange={setCommentState}
             />
           )}
         </TaskCommentText>

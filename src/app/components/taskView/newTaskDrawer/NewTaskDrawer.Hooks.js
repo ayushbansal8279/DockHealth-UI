@@ -13,7 +13,7 @@ import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
-import { object, string } from 'yup';
+import { object } from 'yup';
 import { getPatientsByName, addPatient } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
 import {
@@ -33,6 +33,7 @@ import { getTaskListLabels } from 'actions/task-label-actions';
 import Member from 'components/members/Member/Member';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -49,7 +50,7 @@ const TIME_12H_FORMAT = 'hh:mm A';
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
 const validationSchema = object().shape({
-  description: string().required('Task description is required'),
+  // description: string().required('Task description is required'),
   // dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
   //   excludeEmptyString: true,
   //   message: 'Time should be provided in HH:MM PM/AM format',
@@ -157,16 +158,10 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
   const descriptionReference = useRef(null);
 
-  // useEffect(() => {
-  //   console.log(descriptionReference.current);
-  //   descriptionReference.current?.resolvePlugins();
-  // }, [descriptionState, descriptionReference]);
-
   const [patients, setPatients] = useState([]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const patientInputReference = useRef(null);
   const [patientInputValue, setPatientInputValue] = useState('');
-  const taskInputReference = useRef(null);
 
   const fetchPatients = value =>
     getPatientsByName(value).then(fetchedPatients => {
@@ -273,7 +268,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     }
 
     clearError(); // clear any previous validation errors
-    setValue('description', selectedTask?.description ?? null);
 
     if (selectedTask) {
       const { tokenizedDescription, description, taskMentions } = selectedTask;
@@ -556,11 +550,13 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   };
 
   const handleTaskDescriptionUpdate = async () => {
-    const updatedTaskDescription = watch('description');
+    const updatedTaskDescription = convertFromEditorStateToOutput(
+      descriptionState,
+    ).tokenizedText;
 
     if (
       updatedTaskDescription === '' ||
-      selectedTask.description === updatedTaskDescription
+      selectedTask.tokenizedDescription === updatedTaskDescription
     ) {
       return;
     }
@@ -628,7 +624,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     refreshMembers,
     taskListIdentifier: taskList?.taskListIdentifier,
     handleAddPatient,
-    taskInputReference,
     descriptionState,
     setDescriptionState,
     descriptionReference,
