@@ -22,7 +22,8 @@ export const DrawerListItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 60px;
-  overflow-y: ${props => (props.open ? 'scroll' : 'hidden')};
+  overflow-y: auto;
+  padding: 1px 2px 1px 0;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;
