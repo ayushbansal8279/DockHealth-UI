@@ -8,6 +8,7 @@ import {
   OrganizationIdentifiersListContainer,
   AddOrganizationLink,
   AddOrganizationLinkContainer,
+  OrganizationsListDropdownContainer,
   PlusIcon,
 } from './styled';
 
@@ -63,29 +64,31 @@ const OrganizationList = ({
         organizationName={currentOrganization?.organizationName}
         isOpen={shouldExpand}
       />
-      <OrganizationIdentifiersList
-        isOpen={isOrganizationSectionOpen}
-        organizationAmount={5}
-      >
-        {availableUserOrganizations?.map(org => (
-          <OrganizationIdentifier
-            tileConfig={{
-              fontSize: 'smallPlus',
-              ...org,
-            }}
-            key={`org_${org?.organizationIdentifier}`}
-            identifierConfig={customAvailableIdentifierConfig}
-            organizationName={org?.organizationName}
-            isOpen={shouldExpand}
-            onSelect={() => onSelect(org?.organizationIdentifier)}
-          />
-        ))}
+      <OrganizationsListDropdownContainer isOpen={isOrganizationSectionOpen}>
+        <OrganizationIdentifiersList
+          isOpen={isOrganizationSectionOpen}
+          organizationAmount={5}
+        >
+          {availableUserOrganizations?.map(org => (
+            <OrganizationIdentifier
+              tileConfig={{
+                fontSize: 'smallPlus',
+                ...org,
+              }}
+              key={`org_${org?.organizationIdentifier}`}
+              identifierConfig={customAvailableIdentifierConfig}
+              organizationName={org?.organizationName}
+              isOpen={shouldExpand}
+              onSelect={() => onSelect(org?.organizationIdentifier)}
+            />
+          ))}
+        </OrganizationIdentifiersList>
         <AddOrganizationLinkContainer>
           <AddOrganizationLink to="/onboarding/new-organization">
             <PlusIcon>+</PlusIcon> Add an organization
           </AddOrganizationLink>
         </AddOrganizationLinkContainer>
-      </OrganizationIdentifiersList>
+      </OrganizationsListDropdownContainer>
     </OrganizationIdentifiersListContainer>
   );
 };
