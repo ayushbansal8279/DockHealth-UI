@@ -13,7 +13,6 @@ import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
-import { object } from 'yup';
 import { getPatientsByName, addPatient } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
 import {
@@ -49,14 +48,6 @@ const TIME_12H_FORMAT = 'hh:mm A';
 // const TIME_24H_FORMAT = 'HH:mm';
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
-const validationSchema = object().shape({
-  // description: string().required('Task description is required'),
-  // dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
-  //   excludeEmptyString: true,
-  //   message: 'Time should be provided in HH:MM PM/AM format',
-  // }),
-});
-
 const onSubmit = ({
   selectedTask,
   taskList,
@@ -65,6 +56,8 @@ const onSubmit = ({
   setAutoSaveVisible,
   closeTaskDrawer,
   refreshList,
+  descriptionState,
+  setDescriptionErrorState,
 }) => (data, event) => {
   // const currentLabels = selectedTask?.labels ?? [];
   // const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
@@ -82,11 +75,19 @@ const onSubmit = ({
   //   prop('labelIdentifier'),
   // );
 
+  const { tokenizedText } = convertFromEditorStateToOutput(descriptionState);
+
+  if (!tokenizedText) {
+    setDescriptionErrorState(true);
+    return;
+  }
+
   const requestData = {
     ...(selectedTask ?? {}),
     ...data,
     // labels: [],
     taskListIdentifier: taskList?.taskListIdentifier,
+    description: tokenizedText,
   };
 
   const dueDate = moment(requestData.dueDate);
@@ -156,6 +157,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   }));
 
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
+  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const descriptionReference = useRef(null);
 
   const [patients, setPatients] = useState([]);
@@ -200,7 +202,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const dueTimeReference = useRef();
 
   const formMethods = useForm({
-    validationSchema,
     reValidateMode: 'onSubmit',
   });
 
@@ -595,6 +596,8 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       setAutoSaveVisible,
       closeTaskDrawer,
       refreshList,
+      descriptionState,
+      setDescriptionErrorState,
     }),
     formMethods,
     isAddingOrEditingSubtask,
@@ -627,6 +630,8 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     descriptionState,
     setDescriptionState,
     descriptionReference,
+    descriptionErrorState,
+    setDescriptionErrorState,
   };
 };
 

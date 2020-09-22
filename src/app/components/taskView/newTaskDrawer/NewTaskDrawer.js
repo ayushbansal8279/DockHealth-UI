@@ -11,6 +11,7 @@ import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
@@ -41,8 +42,8 @@ import {
   styleLastRow,
   styleCommentRow,
   DescriptionContainer,
+  DescriptionError,
 } from './NewTaskDrawer.Styled';
-import TextInput from './NewTaskDrawer.TextInput';
 import {
   getFormattedMembers,
   getFormattedPatients,
@@ -94,6 +95,8 @@ const NewTaskDrawer = ({
     descriptionState,
     setDescriptionState,
     descriptionReference,
+    descriptionErrorState,
+    setDescriptionErrorState,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
@@ -208,47 +211,10 @@ const NewTaskDrawer = ({
               />
               <Spacing vertical={2} />
               <Grid item xs={12} style={styleFullRow}>
-                {/* <TextInput
-                  name="description"
-                  label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
-                  required
-                  multiple
-                  placeholder={
-                    isAddingOrEditingSubtask
-                      ? 'What is the subtask?'
-                      : 'What is the task?'
-                  }
-                  borderOnFocus
-                  ref={taskInputReference}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    type: 'text',
-                    startAdornment:
-                      (selectedTask && selectedTask.description !== '') ||
-                      enteredDescription !== '' ? (
-                        ''
-                      ) : (
-                        <AdornmentContainer>+</AdornmentContainer>
-                      ),
-                    onKeyDown: event => {
-                      if (event.key === 'Enter') {
-                        event.preventDefault();
-                        parentFormSubmit();
-                        return false;
-                      }
-                      return true;
-                    },
-                  }}
-                  onBlur={event => {
-                    if (selectedTask && selectedTask.taskIdentifier != null) {
-                      event.preventDefault();
-                      handleTaskDescriptionUpdate();
-                    }
-                  }}
-                /> */}
-                <DescriptionContainer isFocused={isDescriptionFocused}>
+                <DescriptionContainer
+                  isFocused={isDescriptionFocused}
+                  hasError={descriptionErrorState}
+                >
                   <DescriptionLabel>
                     {isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                     <Spacing horizontal={3} />
@@ -266,7 +232,17 @@ const NewTaskDrawer = ({
                     }}
                     taskListIdentifier={taskListIdentifier}
                     state={descriptionState}
-                    onChange={setDescriptionState}
+                    onChange={state => {
+                      if (descriptionErrorState) {
+                        const {
+                          tokenizedText,
+                        } = convertFromEditorStateToOutput(state);
+                        if (tokenizedText) {
+                          setDescriptionErrorState(false);
+                        }
+                      }
+                      setDescriptionState(state);
+                    }}
                     keyBindingFn={event => {
                       if (event.keyCode === 13) {
                         return 'enter-command';
@@ -283,6 +259,11 @@ const NewTaskDrawer = ({
                     }}
                   />
                 </DescriptionContainer>
+                {descriptionErrorState && (
+                  <DescriptionError>
+                    Task description is required
+                  </DescriptionError>
+                )}
               </Grid>
               {selectedTask?.sourceMessage && (
                 <Grid item xs={12} style={styleEmailRow}>

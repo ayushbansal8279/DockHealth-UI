@@ -276,6 +276,8 @@ export const DescriptionContainer = styled.div`
 
   border-bottom: 1px solid
     ${({ isFocused }) => (isFocused ? palette.coolGrey2 : 'transparent')};
+
+  ${({ hasError }) => hasError && `border-color: ${palette.error};`}
 `;
 
 export const DescriptionLabel = styled.label`
@@ -290,4 +292,11 @@ export const DescriptionLabel = styled.label`
   & > span {
     text-transform: none;
   }
+`;
+
+export const DescriptionError = styled.p`
+  margin-bottom: 0;
+  color: ${palette.error};
+  font-size: ${fontSizes.smallPlus};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
