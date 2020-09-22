@@ -5,6 +5,7 @@ import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 
 export const OrganizationsListDropdownContainer = styled.div`
+  position: absolute;
   height: ${props => (props.isOpen ? 'fit-content' : 0)};
   width: 100%;
   z-index: 1;
