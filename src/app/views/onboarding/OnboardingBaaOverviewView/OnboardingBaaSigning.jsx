@@ -15,6 +15,7 @@ import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { selectCurrentOrganization } from 'api/user-api';
+import HelloSign from 'hellosign-embedded';
 import {
   OnboardingAnchorDiv,
   OnboardingButton,
@@ -25,6 +26,8 @@ const {
   HELLOSIGN_CLIENT_ID,
   HELLOSIGN_DOMAIN_VERIFICATION_ENABLED,
 } = process.env;
+
+const helloSignClient = new HelloSign();
 
 const getPanelDetails = ({
   mainDisplayOption,
@@ -101,7 +104,6 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
 
   useMount(() => {
     // eslint-disable-next-line no-unused-expressions
-    window?.HelloSign.init(HELLOSIGN_CLIENT_ID);
   });
 
   const openHelloSign = useCallback(
@@ -112,30 +114,42 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
       setProcessing(true);
 
       // eslint-disable-next-line no-unused-expressions
-      window?.HelloSign.open({
-        url: signingUrl,
+      helloSignClient.open(signingUrl, {
+        clientId: HELLOSIGN_CLIENT_ID,
         allowCancel: true,
         skipDomainVerification,
-        messageListener: eventData => {
-          storeSignatureResult({
-            signatureIdentifier: eventData.signature_id,
-            signatureResult: eventData.event,
-          }).then(async () => {
-            // eslint-disable-next-line no-unused-expressions
-            window?.HelloSign.close();
-            setProcessing(false);
+      });
 
-            if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-              const { updatedByUser } = await checkBAASignedStatus()(dispatch);
-              if (updatedByUser) {
-                window.location.href = '/#/onboarding/team-setup';
-              } else {
-                window.location.href = '/#/onboarding/organization-setup';
-              }
-              window.location.reload();
-            }
-          });
-        },
+      helloSignClient.on('cancel', () => {
+        setProcessing(false);
+      });
+
+      helloSignClient.on('error', (signatureId, errorCode) => {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: errorCode,
+        });
+        setProcessing(false);
+      });
+
+      helloSignClient.on('sign', signatureId => {
+        storeSignatureResult({
+          signatureIdentifier: signatureId.signatureId,
+          signatureResult: 'signed',
+        }).then(async () => {
+          // eslint-disable-next-line no-unused-expressions
+          helloSignClient.close();
+          setProcessing(false);
+
+          const { updatedByUser } = await checkBAASignedStatus()(dispatch);
+          if (updatedByUser) {
+            window.location.href = '/#/onboarding/team-setup';
+          } else {
+            window.location.href = '/#/onboarding/organization-setup';
+          }
+          window.location.reload();
+        });
       });
     },
     [dispatch],
