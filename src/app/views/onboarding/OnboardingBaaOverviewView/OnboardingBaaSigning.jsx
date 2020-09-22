@@ -170,7 +170,8 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
     const { userOrganizations } = currentUserProfile;
     if (userOrganizations && userOrganizations.length > 0) {
       const baaSignedOrganizations = userOrganizations?.filter(
-        ({ baaSigned }) => baaSigned === true,
+        ({ baaSigned, subscriptionDetails }) =>
+          baaSigned === true && subscriptionDetails?.trialEnded !== true,
       );
       const { organizationIdentifier } = baaSignedOrganizations[0];
       sessionStorage.setItem(
