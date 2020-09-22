@@ -310,7 +310,7 @@ const DrawerList = ({
           shouldExpand={open}
           onSelect={selectCurrentOrganization}
         />
-        <DrawerListItemsContainer>
+        <DrawerListItemsContainer open={open}>
           {drawerItems.map(
             renderDrawerItem({
               activeId,

@@ -22,6 +22,18 @@ export const DrawerListItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 60px;
+  overflow-y: ${props => (props.open ? 'scroll' : 'hidden')};
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
 `;
 
 export const StyledList = styled(List).attrs({
