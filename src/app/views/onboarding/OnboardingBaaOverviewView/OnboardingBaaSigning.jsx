@@ -1,7 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
+import { hashHistory } from 'react-router';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import {
   signOrganizationBAADocument,
@@ -9,9 +10,11 @@ import {
 } from 'api/organization-api';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { selectCurrentOrganization } from 'api/user-api';
 import {
   OnboardingAnchorDiv,
   OnboardingButton,
@@ -29,23 +32,29 @@ const getPanelDetails = ({
   clickReadAndSign,
   showInvitationForm,
   isProcessing,
+  onCancel,
 }) =>
   mainDisplayOption
     ? {
         justify: isSmallScreen ? 'center' : 'flex-end',
         topElement: (
-          <OnboardingButton
-            variant="contained"
-            onClick={clickReadAndSign}
-            fullWidth={isSmallScreen}
-            disabled={isProcessing}
-          >
-            {isProcessing ? (
-              <Loader size={LoaderSizes.medium} />
-            ) : (
-              <span>Continue</span>
-            )}
-          </OnboardingButton>
+          <>
+            <Button onClick={onCancel} type="button" variant="text">
+              Cancel
+            </Button>
+            <OnboardingButton
+              variant="contained"
+              onClick={clickReadAndSign}
+              fullWidth={isSmallScreen}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <Loader size={LoaderSizes.medium} />
+              ) : (
+                <span>Continue</span>
+              )}
+            </OnboardingButton>
+          </>
         ),
         bottomElement: (
           <MontserratTypography variant="h4" noWrap>
@@ -87,6 +96,8 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   ] = useBoolean(false);
 
   const [isProcessing, setProcessing] = useState(false);
+
+  const currentUserProfile = useSelector(store => store.userState.userProfile);
 
   useMount(() => {
     // eslint-disable-next-line no-unused-expressions
@@ -155,6 +166,25 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
       });
   }, [openHelloSign]);
 
+  const onCancel = useCallback(async () => {
+    const { userOrganizations } = currentUserProfile;
+    if (userOrganizations && userOrganizations.length > 0) {
+      const baaSignedOrganizations = userOrganizations?.filter(
+        ({ baaSigned }) => baaSigned === true,
+      );
+      const { organizationIdentifier } = baaSignedOrganizations[0];
+      sessionStorage.setItem(
+        'currentOrganizationIdentifier',
+        organizationIdentifier,
+      );
+      await selectCurrentOrganization(organizationIdentifier, false);
+      hashHistory.push('home');
+    } else {
+      sessionStorage.removeItem('next-page');
+      hashHistory.push('login');
+    }
+  }, [currentUserProfile]);
+
   const isSmallScreen = useSmallScreen();
 
   const panelDetails = getPanelDetails({
@@ -163,6 +193,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
     clickReadAndSign,
     showInvitationForm,
     isProcessing,
+    onCancel,
   });
 
   return (
