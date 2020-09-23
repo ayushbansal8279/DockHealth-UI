@@ -28,8 +28,6 @@ import {
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
-  // AddOrganizationLink,
-  // AddOrganizationLinkContainer,
 } from './styled';
 
 const NESTED_LIST_PREFIX = 'nested';
@@ -69,6 +67,7 @@ const Item = ({
   setRolloverPopoverAnchor,
   isIconFilled = true,
   onItemClick,
+  defaultChildPath,
   ...otherProps
 }) => {
   const active = id === activeId;
@@ -79,12 +78,14 @@ const Item = ({
     <StyledListItem
       button
       component={RouterLink}
-      to={to}
+      to={defaultChildPath ? to + defaultChildPath : to}
       active={active || (nestedActive && !open)}
       highlighted={active || nestedActive}
       onClick={() => {
         setActiveId(id);
-        onItemClick();
+        if (onItemClick) {
+          onItemClick();
+        }
       }}
       open={open}
       {...otherProps}
@@ -198,6 +199,7 @@ const getDrawerItems = ({ lists }) => [
     tabsPath: ['/my-tasks', '/all-tasks'],
     to: '/home',
     isIconFilled: false,
+    defaultChildPath: '/my-tasks',
   },
   {
     id: 'lists',
@@ -335,9 +337,7 @@ const DrawerList = ({
           labelColor={palette.black}
           icon={EnvelopeIcon}
           to=""
-          onItemClick={() => {
-            handleReferralClickOpen();
-          }}
+          onItemClick={handleReferralClickOpen}
           activeId={activeId}
           open={open}
           setActiveId={setActiveId}
