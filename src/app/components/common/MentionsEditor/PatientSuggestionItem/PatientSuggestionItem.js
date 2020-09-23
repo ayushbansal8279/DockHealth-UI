@@ -1,15 +1,39 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 import { SuggestionItemContainer, SuggestionText } from './styled';
 
-const PatientSuggestionItem = ({
-  mention,
-  searchValue,
-  isFocused,
-  ...parentProps
-}) => {
+const PatientSuggestionItem = ({ mention, searchValue, isFocused }) => {
+  const suggestionItemReference = useRef(null);
+
+  const handleScroll = () => {
+    const itemElement = suggestionItemReference.current.parentElement;
+    const containerElement =
+      suggestionItemReference.current.parentElement.parentElement;
+    const { offsetTop: itemOffsetTop, offsetHeight: itemHeight } = itemElement;
+    const {
+      scrollTop: containerScrollTop,
+      offsetHeight: containerHeight,
+    } = containerElement;
+
+    if (itemOffsetTop >= containerScrollTop + containerHeight) {
+      containerElement.scrollTop = itemOffsetTop - containerHeight + itemHeight;
+    } else if (itemOffsetTop <= containerScrollTop - itemHeight) {
+      containerElement.scrollTop = itemOffsetTop;
+    }
+  };
+
+  useEffect(() => {
+    if (suggestionItemReference.current && isFocused) {
+      handleScroll();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
+
   return (
-    <SuggestionItemContainer {...parentProps} isFocused={isFocused}>
+    <SuggestionItemContainer
+      ref={suggestionItemReference}
+      isFocused={isFocused}
+    >
       <SuggestionText>
         <Highlighter
           highlightStyle={{ fontWeight: 'bold', background: 'none' }}

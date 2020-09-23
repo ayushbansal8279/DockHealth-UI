@@ -13,9 +13,11 @@ const PatientsSuggestionsPopover = React.forwardRef(
         <PopoverContainer>
           {suggestionsToDisplay.length > 0 && (
             <SuggestionsContainer>
-              {suggestionsToDisplay.map(child =>
-                React.cloneElement(child, child.props),
-              )}
+              {suggestionsToDisplay.map(child => (
+                <div key={child.props.mention.id}>
+                  {React.cloneElement(child, child.props)}
+                </div>
+              ))}
             </SuggestionsContainer>
           )}
           {suggestionsToDisplay.length > 0 && <Spacer />}

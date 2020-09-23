@@ -5,7 +5,9 @@ import palette from 'styles/palette';
 const StyledLink = styled.a`
   color: ${palette.darkBlue};
 
-  &:hover {
+  &:hover,
+  &:active,
+  &:focus {
     color: ${palette.darkBlue};
   }
 `;

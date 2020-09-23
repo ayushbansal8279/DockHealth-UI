@@ -44,7 +44,7 @@ export const renderComment = ({
 
 export const renderCommentGroup = props => ([date, comments]) => {
   return (
-    <CommentGroupContainer>
+    <CommentGroupContainer key={date}>
       <RobotoTypography condensed variant="h4" color="inherit">
         {getCommentGroupDateLabel({ date })}
       </RobotoTypography>
