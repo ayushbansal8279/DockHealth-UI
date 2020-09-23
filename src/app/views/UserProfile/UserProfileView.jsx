@@ -14,6 +14,7 @@ import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
 import AlertTypes from 'alert/AlertTypes';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
+import { getOrgRole } from 'helpers/people-helper';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
 import {
   ProfileSettingsWrapper,
@@ -32,21 +33,6 @@ import {
   AppVersionInfoText,
   AppVersionInfoHeader,
 } from './styled';
-
-const getOrgRole = roleKey => {
-  switch (roleKey) {
-    case 'OWNER':
-      return 'Owner';
-    case 'ADMIN':
-      return 'Admin';
-    case 'MEMBER':
-      return 'Member';
-    case 'GUEST':
-      return 'Guest';
-    default:
-      return '';
-  }
-};
 
 const UserProfileView = () => {
   const dispatch = useDispatch();
