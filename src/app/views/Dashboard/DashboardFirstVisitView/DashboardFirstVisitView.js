@@ -17,6 +17,7 @@ const DashboardFirstVisitView = ({
   onCreateList,
   // onTakeATour,
   list,
+  acceptInvitation,
 }) => {
   return (
     <Wrapper>
@@ -37,9 +38,12 @@ const DashboardFirstVisitView = ({
               <Button
                 fullWidth
                 variant="text"
-                onClick={() =>
-                  list && hashHistory.push(`tasks/${list.taskListIdentifier}`)
-                }
+                onClick={() => {
+                  acceptInvitation(list);
+                  if (list) {
+                    hashHistory.push(`tasks/${list.taskListIdentifier}`);
+                  }
+                }}
               >
                 Go to this list
               </Button>
