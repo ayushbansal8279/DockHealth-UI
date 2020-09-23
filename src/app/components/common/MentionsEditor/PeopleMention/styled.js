@@ -94,6 +94,34 @@ export const EmailLink = styled.a`
   }
 `;
 
+export const PersonInitialsContainer = styled.div`
+  margin: 44px auto 0;
+  width: 154px;
+  height: 154px;
+  border-radius: 77px;
+  background-color: ${({ color }) => color || palette.memberGreen};
+  overflow: auto;
+`;
+
+export const InitialsBorder = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  width: 144px;
+  height: 144px;
+  border: 5px solid ${palette.white};
+  border-radius: 72px;
+`;
+
+export const Initials = styled.p`
+  margin-bottom: 0;
+  color: ${palette.white};
+  font-family: 'Montserrat', sans-serif;
+  font-size: 54px;
+  font-weight: ${fontWeights.regular};
+`;
+
 // skeleton loader
 export const SkeletonLoaderImage = styled.div`
   width: calc(100% - 16px);

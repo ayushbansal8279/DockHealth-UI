@@ -22,9 +22,17 @@ import {
   ProfileInfoText,
   UserNameText,
   EmailLink,
+  PersonInitialsContainer,
+  Initials,
+  InitialsBorder,
 } from './styled';
 
-const getPersonAvatar = ({ userIdentifier, profilePictureHash }) => {
+const getPersonAvatar = ({
+  userIdentifier,
+  profilePictureHash,
+  bubbleColor,
+  initials,
+}) => {
   if (profilePictureHash) {
     return (
       <PersonImage
@@ -33,7 +41,13 @@ const getPersonAvatar = ({ userIdentifier, profilePictureHash }) => {
     );
   }
 
-  return <div>avatar initials</div>;
+  return (
+    <PersonInitialsContainer color={bubbleColor}>
+      <InitialsBorder>
+        <Initials>{initials.toLowerCase()}</Initials>
+      </InitialsBorder>
+    </PersonInitialsContainer>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,7 +77,7 @@ const PeopleMention = ({ mention, className, children }) => {
       {children}
       <Popper
         anchorEl={reference.current}
-        open={isHovered && mention.identifier}
+        open={isHovered && !!mention.identifier}
         placement="bottom-start"
         style={{ zIndex: 2000 }}
       >
@@ -94,7 +108,9 @@ const PeopleMention = ({ mention, className, children }) => {
                   {personData.email}
                 </EmailLink>
                 <ProfileInfoText>
-                  {formatPhoneNumber(personData.accountPhoneNumber)}
+                  {personData.accountPhoneNumber
+                    ? formatPhoneNumber(personData.accountPhoneNumber)
+                    : '-'}
                 </ProfileInfoText>
                 {/* <Spacing vertical={2} />
                 <Divider />
