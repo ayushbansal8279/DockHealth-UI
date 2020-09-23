@@ -347,7 +347,7 @@ export const SlimTaskItemPatientLink = styled(Link)`
 
 export const SubtasksBox = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 `;
 
 export const SubtasksAddLabel = styled.button`
@@ -355,6 +355,7 @@ export const SubtasksAddLabel = styled.button`
   font-weight: normal;
   cursor: pointer;
   z-index: 99;
+  width: fit-content;
 
   &:hover {
     text-decoration: underline;
