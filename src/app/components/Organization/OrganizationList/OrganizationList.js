@@ -67,7 +67,9 @@ const OrganizationList = ({
       <OrganizationsListDropdownContainer isOpen={isOrganizationSectionOpen}>
         <OrganizationIdentifiersList
           isOpen={isOrganizationSectionOpen}
-          organizationAmount={5}
+          organizationAmount={
+            availableUserOrganizations ? availableUserOrganizations.length : 1
+          }
         >
           {availableUserOrganizations?.map(org => (
             <OrganizationIdentifier
