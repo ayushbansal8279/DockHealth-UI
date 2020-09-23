@@ -6,7 +6,10 @@ import {
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import handleFeatureToggle from 'helpers/handle-feature-toggle';
-import { setCurrentPageAfterLogin, useMobile } from 'helpers/utility-functions';
+import {
+  setCurrentPageInSessionStorage,
+  useMobile,
+} from 'helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
@@ -158,7 +161,7 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => async (
   }
 
   if (!loggedIn || !user) {
-    setCurrentPageAfterLogin();
+    setCurrentPageInSessionStorage();
     hashHistory.push('login');
     return;
   }
