@@ -30,8 +30,8 @@ export const OrganizationIdentifiersListContainer = styled.div`
   background-color: ${props =>
     props.isOpen ? palette.coolGrey4 : 'transparent'};
   color: ${props => (props.isOpen ? palette.mediumGrey : 'white')} !important;
+  min-height: 67px;
   ${props => !props.isOpen && `overflow: hidden;`}
-
   ${props =>
     props.showShadowOnHover &&
     `
@@ -43,7 +43,7 @@ export const OrganizationIdentifiersListContainer = styled.div`
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       }
     }
-  }`}
+  }`};
 `;
 
 export const AddOrganizationLinkContainer = styled.div`
