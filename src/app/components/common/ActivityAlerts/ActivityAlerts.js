@@ -204,7 +204,7 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
           <ViewLoader isFetchingData={activityAlertsListIsFetching}>
             {activityAlertsList?.length === 0 && (
               <EmptyActivityAlerts>
-                There are no new notificaitons at this time
+                There are no new notifications at this time
               </EmptyActivityAlerts>
             )}
             {activityAlertsList?.length > 0 &&
