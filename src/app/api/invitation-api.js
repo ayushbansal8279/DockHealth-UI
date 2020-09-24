@@ -9,7 +9,7 @@ export function findInvitationsByUserId() {
     })
     .catch(function(error) {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -21,7 +21,7 @@ export function acceptInviteToTaskList(taskListIdentifier) {
     })
     .catch(function(error) {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -34,6 +34,6 @@ export function rejectInviteToTaskList(taskListIdentifier) {
     })
     .catch(function(error) {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }

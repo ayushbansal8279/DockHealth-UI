@@ -85,7 +85,7 @@ export function resendApprovalRequestUserForOrganization(userIdentifier) {
       return data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -127,7 +127,7 @@ export function removeUserFromOrganization(removedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -140,7 +140,7 @@ export function addUserToOrganization(addedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 

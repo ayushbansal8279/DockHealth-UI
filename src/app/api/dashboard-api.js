@@ -5,7 +5,7 @@ export function getDashboardMyTasks(status = 'INCOMPLETE') {
     .get(`/task/findTasksAssignedToUserGroupedByDueDate?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -14,7 +14,7 @@ export function getDashboardAllTasks(status = 'INCOMPLETE') {
     .get(`/task/findTasksForOrganizationGroupedByDueDate?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
