@@ -26,7 +26,6 @@ import {
   AvatarImage,
 } from './styled';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PeopleMention = ({ mention, className, children }) => {
   const reference = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
