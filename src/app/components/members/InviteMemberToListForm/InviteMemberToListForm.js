@@ -125,7 +125,10 @@ const InviteMemberToListForm = ({
       memberIdentifiers: [...newMembersIdentifiers],
     };
 
-    TaskListActions.saveTaskList(requestTaskList)(dispatch)
+    TaskListActions.inviteMultipleUsersToTaskList(
+      requestTaskList.taskListIdentifier,
+      requestTaskList.memberIdentifiers,
+    )(dispatch)
       .then(() => {
         refreshListMembers();
         setIsSavingList(false);
