@@ -32,6 +32,7 @@ const CommentSection = ({
           currentUser,
           removeComment,
           updateComment,
+          taskListIdentifier,
         }),
       )}
     </CommentSectionContainer>
