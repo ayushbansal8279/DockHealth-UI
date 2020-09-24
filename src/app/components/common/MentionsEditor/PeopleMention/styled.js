@@ -7,7 +7,7 @@ const SKELETON_ELEMENT_COLOR = palette.coolGrey3;
 
 export const MentionItem = styled.span`
   background-color: rgba(7, 74, 134, 0.07);
-  color: ${palette.darkBlue};
+  color: ${palette.brightBlue};
   cursor: pointer;
 `;
 
@@ -24,15 +24,6 @@ export const PersonImageContainer = styled.div`
   overflow: auto;
 `;
 
-export const PersonImage = styled.div`
-  height: 100%;
-  width: 100%;
-
-  ${({ url }) =>
-    url &&
-    `background: url(${url}) center center no-repeat; background-size: cover;`}
-`;
-
 export const RoleSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -40,7 +31,7 @@ export const RoleSection = styled.div`
   width: 100%;
   height: 28px;
   padding: 0 ${spacing.small};
-  background-color: ${SKELETON_ELEMENT_COLOR};
+  background-color: ${palette.darkBlue};
   color: ${palette.white};
   font-weight: ${fontWeights.light};
 `;
@@ -94,16 +85,17 @@ export const EmailLink = styled.a`
   }
 `;
 
-export const PersonInitialsContainer = styled.div`
+export const AvatarCircle = styled.div`
   margin: 44px auto 0;
   width: 154px;
   height: 154px;
   border-radius: 77px;
-  background-color: ${({ color }) => color || palette.memberGreen};
+  background-color: ${({ color }) => color || SKELETON_ELEMENT_COLOR};
   overflow: auto;
 `;
 
-export const InitialsBorder = styled.div`
+export const AvatarBorder = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,6 +104,15 @@ export const InitialsBorder = styled.div`
   height: 144px;
   border: 5px solid ${palette.white};
   border-radius: 72px;
+  overflow: hidden;
+`;
+
+export const AvatarImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 `;
 
 export const Initials = styled.p`
@@ -123,13 +124,6 @@ export const Initials = styled.p`
 `;
 
 // skeleton loader
-export const SkeletonLoaderImage = styled.div`
-  width: calc(100% - 16px);
-  height: calc(100% - 16px);
-  margin: 8px;
-  background: ${SKELETON_ELEMENT_COLOR};
-`;
-
 export const SkeletonLoaderDataContainer = styled.div`
   width: 100%;
   padding: ${spacing.small} ${spacing.tiny};

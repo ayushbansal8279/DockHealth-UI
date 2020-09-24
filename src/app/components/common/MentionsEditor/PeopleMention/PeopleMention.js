@@ -9,9 +9,7 @@ import {
   MentionItem,
   PersonCardContainer,
   PersonImageContainer,
-  PersonImage,
   RoleSection,
-  SkeletonLoaderImage,
   SkeletonLoaderDataContainer,
   SkeletonLoaderRoleSection,
   SkeletonLoaderText,
@@ -22,33 +20,11 @@ import {
   ProfileInfoText,
   UserNameText,
   EmailLink,
-  PersonInitialsContainer,
   Initials,
-  InitialsBorder,
+  AvatarCircle,
+  AvatarBorder,
+  AvatarImage,
 } from './styled';
-
-const getPersonAvatar = ({
-  userIdentifier,
-  profilePictureHash,
-  bubbleColor,
-  initials,
-}) => {
-  if (profilePictureHash) {
-    return (
-      <PersonImage
-        url={`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profilePictureHash}`}
-      />
-    );
-  }
-
-  return (
-    <PersonInitialsContainer color={bubbleColor}>
-      <InitialsBorder>
-        <Initials>{initials.toLowerCase()}</Initials>
-      </InitialsBorder>
-    </PersonInitialsContainer>
-  );
-};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PeopleMention = ({ mention, className, children }) => {
@@ -83,12 +59,25 @@ const PeopleMention = ({ mention, className, children }) => {
       >
         <PersonCardContainer
           onClick={event => {
-            event.preventDefault();
             event.stopPropagation();
           }}
         >
           <PersonImageContainer>
-            {personData ? getPersonAvatar(personData) : <SkeletonLoaderImage />}
+            <AvatarCircle color={personData?.bubbleColor}>
+              <AvatarBorder>
+                {personData ? (
+                  <>
+                    {personData.profilePictureHash && (
+                      <AvatarImage
+                        src={`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${personData.userIdentifier}/${personData.profilePictureHash}`}
+                        alt={personData.userName}
+                      />
+                    )}
+                    <Initials>{personData.initials.toLowerCase()}</Initials>
+                  </>
+                ) : null}
+              </AvatarBorder>
+            </AvatarCircle>
           </PersonImageContainer>
 
           {personData ? (
@@ -101,17 +90,24 @@ const PeopleMention = ({ mention, className, children }) => {
               </RoleSection>
               <ProfileInfoSection>
                 <UserNameText>{personData.userName}</UserNameText>
-                <ProfileInfoText>
-                  {personData.titles[0]?.name || '-'}
-                </ProfileInfoText>
-                <EmailLink href={`mailto:${personData.email}`} target="_blank">
-                  {personData.email}
-                </EmailLink>
-                <ProfileInfoText>
-                  {personData.accountPhoneNumber
-                    ? formatPhoneNumber(personData.accountPhoneNumber)
-                    : '-'}
-                </ProfileInfoText>
+                {personData.titles[0]?.name && (
+                  <ProfileInfoText>
+                    {personData.titles[0]?.name}
+                  </ProfileInfoText>
+                )}
+                {personData.email && (
+                  <EmailLink
+                    href={`mailto:${personData.email}`}
+                    target="_blank"
+                  >
+                    {personData.email}
+                  </EmailLink>
+                )}
+                {personData.accountPhoneNumber && (
+                  <ProfileInfoText>
+                    {formatPhoneNumber(personData.accountPhoneNumber)}
+                  </ProfileInfoText>
+                )}
                 {/* <Spacing vertical={2} />
                 <Divider />
                 <Spacing vertical={2} />
