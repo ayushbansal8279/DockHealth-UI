@@ -1066,7 +1066,7 @@ export function getFilteredTasksForList(
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
   return dispatch => {
-    if(withLoader){
+    if (withLoader) {
       dispatch({
         type:
           status === 'INCOMPLETE'

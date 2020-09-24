@@ -366,7 +366,12 @@ class Home extends Component {
     });
 
     if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(taskListIdentifier, filters, status, withLoader);
+      return this.getFilteredTasks(
+        taskListIdentifier,
+        filters,
+        status,
+        withLoader,
+      );
     }
 
     return this.getTasksList(taskListIdentifier, status);
