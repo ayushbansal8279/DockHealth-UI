@@ -82,6 +82,7 @@ const PatientsToolbar = ({
   handlePatientFilter,
   hasPatients,
   refreshPatientList,
+  setImportPopoverOpen,
   isGuest,
 }) => {
   const dispatch = useDispatch();
@@ -133,6 +134,7 @@ const PatientsToolbar = ({
             setImportPopupOpen(false);
           }}
           downloadTemplate={downloadPatientImportTemplate}
+          setImportPopoverOpen={setImportPopoverOpen}
           refreshPatientList={refreshPatientList}
           step={1}
         />

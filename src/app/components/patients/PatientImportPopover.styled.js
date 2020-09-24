@@ -16,7 +16,8 @@ export const ImportPatientPopoverWrapper = styled(ModalWrapperWithPadding)`
   align-items: baseline;
   align-vertical: center;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  overflow: auto;
+  overflow-x: none;
+  overflow-y: auto;
   padding-right: 5px;
   padding-bottom: 0;
   margin-right: 100px;
@@ -112,7 +113,7 @@ export const PopoverExpandButton = styled(CloseIconButton)`
 export const SuccessIcon = styled.img`
   width: 24px;
   height: 24px;
-  margin-left: 150px;
+  margin-left: 30px;
 `;
 
 export const ErrorDisplayArea = styled.div``;
