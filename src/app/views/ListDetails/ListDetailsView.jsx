@@ -366,7 +366,7 @@ class Home extends Component {
     });
 
     if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(taskListIdentifier, filters, status);
+      return this.getFilteredTasks(taskListIdentifier, filters, status, withLoader);
     }
 
     return this.getTasksList(taskListIdentifier, status);
@@ -406,7 +406,7 @@ class Home extends Component {
     );
 
     if (filters && !isEmpty(filters)) {
-      this.getFilteredTasks(taskListIdentifier, filters, status);
+      this.getFilteredTasks(taskListIdentifier, filters, status, withLoader);
     } else {
       this.getTasksList(
         taskListIdentifier,
@@ -436,13 +436,14 @@ class Home extends Component {
   };
 
   // TODO: Move to saga
-  getFilteredTasks = (taskListIdentifier, filters, taskStatus) => {
+  getFilteredTasks = (taskListIdentifier, filters, taskStatus, withLoader) => {
     const { actions } = this.props;
 
     return actions.getFilteredTasksForList(
       taskListIdentifier,
       taskStatus,
       filters,
+      withLoader,
     );
   };
 

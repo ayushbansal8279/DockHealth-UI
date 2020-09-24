@@ -1058,6 +1058,7 @@ export function getFilteredTasksForList(
   taskListIdentifier,
   status,
   selectedFilters,
+  withLoader = true,
 ) {
   const action =
     status === 'INCOMPLETE'
@@ -1065,12 +1066,14 @@ export function getFilteredTasksForList(
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
   return dispatch => {
-    dispatch({
-      type:
-        status === 'INCOMPLETE'
-          ? ActionTypes.REQUEST_TASKS
-          : ActionTypes.REQUEST_COMPLETED_TASKS,
-    });
+    if(withLoader){
+      dispatch({
+        type:
+          status === 'INCOMPLETE'
+            ? ActionTypes.REQUEST_TASKS
+            : ActionTypes.REQUEST_COMPLETED_TASKS,
+      });
+    }
 
     return TaskApi.getFilteredTasksForList(
       taskListIdentifier,
