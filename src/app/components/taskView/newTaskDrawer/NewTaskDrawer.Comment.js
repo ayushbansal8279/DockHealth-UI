@@ -26,7 +26,6 @@ const Comment = ({
   updateComment,
   currentUser,
   getFormattedCommentDate,
-  taskListIdentifier,
 }) => {
   const {
     comment: commentContent,
@@ -85,7 +84,6 @@ const Comment = ({
               ref={commentEditorReference}
               readOnly={!isEditing}
               withEditedLabel={dateCreated !== dateUpdated}
-              taskListIdentifier={taskListIdentifier}
               state={commentState}
               onChange={setCommentState}
               onBlur={onCommentEdited}

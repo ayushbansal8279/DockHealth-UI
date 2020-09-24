@@ -11,12 +11,7 @@ import {
 } from './NewTaskDrawer.AddComment.Styled';
 import { FocusDrawerFieldEnum } from './NewTaskDrawer.Utilities';
 
-const AddComment = ({
-  addComment,
-  parentFormSubmit,
-  taskDrawerFocusField,
-  taskListIdentifier,
-}) => {
+const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   const [isFocused, setIsFocused] = useState(false);
   const {
     currentUser,
@@ -52,7 +47,6 @@ const AddComment = ({
             saveComment();
             setIsFocused(false);
           }}
-          taskListIdentifier={taskListIdentifier}
           state={commentState}
           onChange={onCommentChange}
           keyBindingFn={event => {

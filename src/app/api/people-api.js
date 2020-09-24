@@ -203,6 +203,20 @@ export function getUserByEmail({ email }) {
     });
 }
 
+export function getUserByName(name) {
+  return axios({
+    method: 'get',
+    url: 'user/findUserByName',
+    params: {
+      name,
+    },
+  })
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function approvePendingUser({ userIdentifier, role }) {
   return axios
     .put(`user/approveUserForOrganization?userIdentifier=${userIdentifier}`, {

@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
-import { getMembersByTaskListId } from 'api/tasklist-api';
+import debounce from 'lodash.debounce';
 import { getPatientsByName } from 'api/patient-api';
+import { getUserByName } from 'api/people-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
@@ -15,15 +16,27 @@ import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
   mapPeopleToSuggestions,
-  peopleSuggestionsFilter,
 } from './helpers';
 import { StyledEditorContainer } from './styled';
+
+const fetchPatientsWithDebounce = debounce((value, setPatientSuggestions) => {
+  getPatientsByName(value).then(fetchedPatients => {
+    const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
+    setPatientSuggestions(formattedPatients);
+  });
+}, 300);
+
+const fetchPeopleWithDebounce = debounce((value, setPeopleSuggestions) => {
+  getUserByName(value).then(fetchedPeople => {
+    const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
+    setPeopleSuggestions(formattedPeople);
+  });
+}, 300);
 
 const MentionsEditor = React.forwardRef(
   (
     {
       readOnly,
-      taskListIdentifier,
       withEditedLabel,
       keyBindingFn,
       handleKeyCommand,
@@ -49,17 +62,6 @@ const MentionsEditor = React.forwardRef(
     const [patientSuggestions, setPatientSuggestions] = useState(
       SUGGESTIONS_PLACEHOLDER,
     );
-    const [listMembers, setListMembers] = useState([]);
-
-    useEffect(() => {
-      if (!taskListIdentifier) {
-        return;
-      }
-
-      getMembersByTaskListId(taskListIdentifier, 'ALL').then(members => {
-        setListMembers(members);
-      });
-    }, [taskListIdentifier]);
 
     const handleChange = newState => {
       if (!state) setEditorState(newState);
@@ -71,12 +73,16 @@ const MentionsEditor = React.forwardRef(
       onBlur(state || editorState);
     };
 
+    const clearPeopleSuggestions = () => {
+      setPeopleSuggestions([SUGGESTIONS_PLACEHOLDER]);
+    };
+
     const onPeopleSearchChange = ({ value }) => {
-      setPeopleSuggestions(
-        value
-          ? peopleSuggestionsFilter(value, mapPeopleToSuggestions(listMembers))
-          : [SUGGESTIONS_PLACEHOLDER],
-      );
+      if (value) {
+        fetchPeopleWithDebounce(value, setPeopleSuggestions);
+      } else {
+        clearPeopleSuggestions();
+      }
     };
 
     const clearPatientSuggestions = () => {
@@ -85,10 +91,7 @@ const MentionsEditor = React.forwardRef(
 
     const onPatientSearchChange = ({ value }) => {
       if (value) {
-        getPatientsByName(value).then(fetchedPatients => {
-          const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
-          setPatientSuggestions(formattedPatients);
-        });
+        fetchPatientsWithDebounce(value, setPatientSuggestions);
       } else {
         clearPatientSuggestions();
       }
@@ -136,6 +139,9 @@ const MentionsEditor = React.forwardRef(
           onAddMention={onAddMention}
           entryComponent={PeopleSuggestionItem}
           popoverComponent={<PeopleSuggestionsPopover />}
+          onClose={() => {
+            fetchPeopleWithDebounce.cancel();
+          }}
         />
         <PatientsMentionSuggestions
           onSearchChange={onPatientSearchChange}
@@ -143,6 +149,9 @@ const MentionsEditor = React.forwardRef(
           onAddMention={onAddMention}
           entryComponent={PatientSuggestionItem}
           popoverComponent={<PatientsSuggestionsPopover />}
+          onClose={() => {
+            fetchPatientsWithDebounce.cancel();
+          }}
         />
       </StyledEditorContainer>
     );

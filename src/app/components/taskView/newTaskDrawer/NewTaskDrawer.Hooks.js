@@ -625,7 +625,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     patientInputValue,
     isLoadingPatients,
     refreshMembers,
-    taskListIdentifier: taskList?.taskListIdentifier,
     handleAddPatient,
     descriptionState,
     setDescriptionState,

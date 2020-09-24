@@ -90,7 +90,6 @@ const NewTaskDrawer = ({
     onPatientInputChange,
     patientInputReference,
     refreshMembers,
-    taskListIdentifier,
     handleAddPatient,
     descriptionState,
     setDescriptionState,
@@ -230,7 +229,6 @@ const NewTaskDrawer = ({
                       handleTaskDescriptionUpdate();
                       setIsDescriptionFocused(false);
                     }}
-                    taskListIdentifier={taskListIdentifier}
                     state={descriptionState}
                     onChange={state => {
                       if (descriptionErrorState) {
@@ -464,7 +462,6 @@ const NewTaskDrawer = ({
                     parentFormSubmit={parentFormSubmit}
                     taskDrawerFocusField={taskDrawerFocusField}
                     modalActions={modalActions}
-                    taskListIdentifier={taskListIdentifier}
                   />
                 </div>
               </Grid>

@@ -40,11 +40,6 @@ export const mapPeopleToSuggestions = people =>
     name: person.userName,
   }));
 
-export const peopleSuggestionsFilter = (value, people) =>
-  people.filter(({ name }) =>
-    name.toLowerCase().startsWith(value.toLowerCase()),
-  );
-
 const substituteNameForIdInText = (rawText, mentions) => {
   let textWithIds = rawText;
   mentions.forEach(({ type, name, identifier }) => {
