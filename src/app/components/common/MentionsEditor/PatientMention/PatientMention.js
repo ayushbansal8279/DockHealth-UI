@@ -172,13 +172,15 @@ const PatientMention = ({ mention, className, children }) => {
                         </InfoItem>
                       )}
                       {mrn && <InfoItem>MRN# {mrn}</InfoItem>}
-                      <br />
+                      {(dob || gender || mrn) && <br />}
                       {email && (
-                        <InfoItem>
-                          <a href={`mailto:${email}`}>{email}</a>
-                        </InfoItem>
+                        <>
+                          <InfoItem>
+                            <a href={`mailto:${email}`}>{email}</a>
+                          </InfoItem>
+                          <br />
+                        </>
                       )}
-                      <br />
                       {phoneMobile && <InfoItem>M {phoneMobile}</InfoItem>}
                       {phoneHome && <InfoItem>H {phoneHome}</InfoItem>}
                     </PatientInfo>
