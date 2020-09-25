@@ -249,7 +249,7 @@ const NewTaskDrawer = ({
                     }}
                     handleKeyCommand={command => {
                       if (command === 'enter-command') {
-                        handleTaskDescriptionUpdate();
+                        descriptionReference.current.blur();
                         return 'handled';
                       }
 
