@@ -239,7 +239,11 @@ function* doToggleDashboardTaskComplete({ task }) {
     yield delay(TASK_DISAPPEAR_DELAY);
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
 
-    yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
+    if (task.status === 'COMPLETE') {
+      yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_REACTIVATED));
+    } else {
+      yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
+    }
   } catch (error) {
     yield call(doReloadDashboardTasks);
   }
