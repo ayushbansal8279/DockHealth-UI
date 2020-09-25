@@ -51,7 +51,7 @@ const MemberTableCell = styled.div`
   justify-content: center;
   align-items: ${props => props.alignItems || 'flex-start'};
   height: 100%;
-  color: ${props => props.isInvited && palette.coolGrey1};
+  color: ${props => (props.isInvited || props.isInactive) && palette.coolGrey1};
 `;
 
 const USER_TYPES = new Proxy(
@@ -321,7 +321,10 @@ const OrganizationMemberRow = ({
         </MemberTableCell>
       </Grid>
       <Grid item xs={3}>
-        <MemberTableCell isInvited={isInvited}>
+        <MemberTableCell
+          isInvited={isInvited}
+          isInactive={userStatus === 'INACTIVE'}
+        >
           {showJoined && userStatus !== 'PENDING' && formattedRegistrationDate}
           {isInvited && <div>Invitation sent</div>}
         </MemberTableCell>

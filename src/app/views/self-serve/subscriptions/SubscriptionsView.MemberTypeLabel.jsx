@@ -73,6 +73,7 @@ const MemberTypeLabel = ({
         clickable={!isDisabledRemovingSubscription}
         onClick={isDisabledRemovingSubscription ? () => {} : openPopover}
         isInvited={isInvited}
+        isInactive={userStatus === 'INACTIVE'}
       >
         {!isDisabledRemovingSubscription && (
           <DropdownIndicator
