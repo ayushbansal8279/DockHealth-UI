@@ -37,8 +37,8 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <FirstDescription>
-            This user has tasks assigned {taskCount} to them. These tasks will
-            become unassigned.
+            This user has {taskCount} tasks assigned to them. These tasks will
+            become unassigned and you can reassign in the list(s).
           </FirstDescription>
           <SecondDescription>
             If removed, you will not be charged for this user starting in the
