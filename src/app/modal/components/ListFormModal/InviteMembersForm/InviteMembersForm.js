@@ -27,7 +27,7 @@ const InviteMembersForm = ({
     return (
       <InviteInitialViewWrapper>
         <Header>
-          <Title>Would you like to Invite people to this list</Title>
+          <Title>Would you like to Invite people to this list?</Title>
         </Header>
         <InviteInitialViewContent>
           <NavigationActionButton onClick={closeModal}>
