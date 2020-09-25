@@ -371,7 +371,7 @@ const DashboardList = ({
     }
   };
 
-  const handleQuickAddTask = taskName => {
+  const handleQuickAddTask = ({ description, patientIdentifier }) => {
     modalActions.openModal('ListPicker', {
       fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
       listCreationPayload: {
@@ -379,7 +379,12 @@ const DashboardList = ({
           currentUser.userIdentifier !== userIdentifier ? [userIdentifier] : [],
       },
       confirm: taskListIdentifier => {
-        quickAddDashboardTask(taskName, taskListIdentifier, userIdentifier);
+        quickAddDashboardTask({
+          description,
+          taskListIdentifier,
+          assignedToIdentifier: userIdentifier,
+          patientIdentifier,
+        });
       },
     });
   };
@@ -488,7 +493,6 @@ const DashboardList = ({
           </ActionsContainer>
         </ToolbarContainer>
         <QuickAddTaskInput
-          autoComplete="off"
           quickAddTask={handleQuickAddTask}
           onFocus={() => {
             if (isTaskDrawerOpen) {

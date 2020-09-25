@@ -536,13 +536,12 @@ class Home extends Component {
     );
   };
 
-  quickAddTask = (taskName, taskGroupIdentifier) => {
+  quickAddTask = task => {
     const { tasksGroupsListActions, taskCounters } = this.props;
 
-    if (taskName) {
+    if (task?.description) {
       const payload = {
-        description: taskName,
-        taskGroupIdentifier,
+        ...task,
         autoOpenDrawer: taskCounters?.incomplete === 0,
       };
 

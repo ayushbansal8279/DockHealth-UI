@@ -1,26 +1,40 @@
+import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
+import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import Spacing from 'components/common/Spacing';
 import React, { useState } from 'react';
-import { AddTaskInputWrapper, ErrorLabel } from './styled';
+import {
+  AddTaskInputWrapper,
+  MentionsEditorContainer,
+  ErrorLabel,
+  QuickAddHint,
+} from './styled';
 
-const QuickAddTaskInput = ({
-  quickAddTask,
-  onFocus,
-  validator,
-  autoComplete = 'on',
-}) => {
+const QuickAddTaskInput = ({ quickAddTask, onFocus, validator }) => {
+  const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
+  const [hasInputValue, setHasInputValue] = useState(false);
   const [error, setError] = useState(null);
-  const [inputValue, setInputValue] = useState('');
 
   const handleInputEnterDown = () => {
     let validatorError = null;
 
+    const { rawText, tokenizedText, mentions } = convertFromEditorStateToOutput(
+      newTaskDescription,
+    );
+
+    // look for first patient mention to assign to created task
+    const { identifier: patientIdentifier } =
+      mentions?.find(({ type }) => type === '#mention') || {};
+
     if (validator) {
-      validatorError = validator(inputValue);
+      validatorError = validator(rawText);
       setError(validatorError);
     }
 
-    if (inputValue && !validatorError) {
-      quickAddTask(inputValue);
-      setInputValue('');
+    if (rawText && !validatorError) {
+      quickAddTask({ description: tokenizedText, patientIdentifier });
+      setNewTaskDescription();
+      setHasInputValue(false);
 
       if (validator) {
         setError(null);
@@ -28,20 +42,45 @@ const QuickAddTaskInput = ({
     }
   };
 
+  const handleOnChange = state => {
+    if (error) {
+      setError(null);
+    }
+    setNewTaskDescription(state);
+    setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
+  };
+
   return (
     <>
       <AddTaskInputWrapper hasError={!!error}>
-        <input
-          autoComplete={autoComplete}
-          name="newTask"
-          type="text"
-          value={inputValue}
-          onChange={event => setInputValue(event.target.value)}
-          placeholder="Add a task and press enter on your keyboard"
-          onFocus={onFocus}
-          onKeyDown={event => event.keyCode === 13 && handleInputEnterDown()}
-        />
-        {inputValue && <span>Press enter to save this task</span>}
+        <MentionsEditorContainer>
+          <MentionsEditor
+            placeholder="Add a task and press enter on your keyboard"
+            onFocus={onFocus}
+            state={newTaskDescription}
+            onChange={handleOnChange}
+            keyBindingFn={event => {
+              if (event.keyCode === 13) {
+                return 'enter-command';
+              }
+              return undefined;
+            }}
+            handleKeyCommand={command => {
+              if (command === 'enter-command') {
+                handleInputEnterDown();
+                return 'handled';
+              }
+
+              return 'not-handled';
+            }}
+          />
+        </MentionsEditorContainer>
+        {hasInputValue && (
+          <>
+            <Spacing horizontal={4} />
+            <QuickAddHint>Press enter to save this task</QuickAddHint>
+          </>
+        )}
       </AddTaskInputWrapper>
       {error && <ErrorLabel>{error}</ErrorLabel>}
     </>

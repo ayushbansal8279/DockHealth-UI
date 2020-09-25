@@ -66,9 +66,7 @@ const OpenedTasksView = ({
     if (quickAddTask) {
       if (isMainListView)
         return (
-          <EmptyTaskAddView
-            quickAddTask={groupName => quickAddTask(groupName, null, true)}
-          >
+          <EmptyTaskAddView quickAddTask={quickAddTask}>
             {taskCounters?.complete > 0 ? (
               <EmptyListView
                 title={['Way to go!', 'You’ve completed all of your tasks.']}

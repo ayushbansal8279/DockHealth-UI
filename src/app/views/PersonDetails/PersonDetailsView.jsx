@@ -253,7 +253,7 @@ class PersonDetailsView extends PureComponent {
     );
   };
 
-  handleQuickAddTask = taskName => {
+  handleQuickAddTask = task => {
     const {
       modalActions,
       taskActions,
@@ -269,7 +269,7 @@ class PersonDetailsView extends PureComponent {
       },
       confirm: taskListIdentifier => {
         const payload = {
-          description: taskName,
+          ...task,
           taskListIdentifier,
           assignedToIdentifier: userIdentifier,
         };

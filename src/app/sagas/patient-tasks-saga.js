@@ -69,7 +69,7 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
   'DO_CANCEL_USER_INVITE_TO_TASKLIST';
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 
-export const quickAddPatientTask = (description, taskListIdentifier) => ({
+export const quickAddPatientTask = ({ description, taskListIdentifier }) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
   payload: {
     description,

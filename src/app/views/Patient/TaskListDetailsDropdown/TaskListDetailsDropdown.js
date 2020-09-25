@@ -109,9 +109,7 @@ const TaskListDetailsDropdown = ({
       <Tasks timeout={150} in={isOpen}>
         {!isCompleteTab && (
           <QuickAddTaskInput
-            quickAddTask={taskName =>
-              quickAddTask(taskName, taskListIdentifier)
-            }
+            quickAddTask={task => quickAddTask({ ...task, taskListIdentifier })}
           />
         )}
         <div>

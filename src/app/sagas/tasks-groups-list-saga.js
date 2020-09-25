@@ -361,7 +361,12 @@ export function* doOnEnterTasksGroupsList() {
 
 export function* doCreateTask(payload) {
   try {
-    const { taskGroupIdentifier, description, autoOpenDrawer } = payload;
+    const {
+      taskGroupIdentifier,
+      description,
+      patientIdentifier,
+      autoOpenDrawer,
+    } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({ type: TASK_GROUP_LIST_REQUEST });
 
@@ -370,6 +375,7 @@ export function* doCreateTask(payload) {
         taskGroupIdentifier,
         taskListIdentifier,
         description,
+        patientIdentifier,
       });
 
       if (autoOpenDrawer) {

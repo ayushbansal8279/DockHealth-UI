@@ -82,16 +82,18 @@ export const sortDashboardTasks = (taskGroupImplicitType, tasksOrder) => ({
   tasksOrder,
 });
 
-export const quickAddDashboardTask = (
-  taskName,
+export const quickAddDashboardTask = ({
+  description,
   taskListIdentifier,
   assignedToIdentifier,
-) => ({
+  patientIdentifier,
+}) => ({
   type: QUICK_ADD_DASHBOARD_TASK,
   payload: {
-    description: taskName,
+    description,
     taskListIdentifier,
     assignedToIdentifier,
+    patientIdentifier,
   },
 });
 
@@ -281,13 +283,19 @@ function* doInitializeDashboardView() {
 }
 
 function* doQuickAddDahboardTask({ payload }) {
-  const { description, taskListIdentifier, assignedToIdentifier } = payload;
+  const {
+    description,
+    taskListIdentifier,
+    assignedToIdentifier,
+    patientIdentifier,
+  } = payload;
 
   try {
     yield call(TaskApi.addTask, {
       description,
       taskListIdentifier,
       assignedToIdentifier,
+      patientIdentifier,
     });
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
     yield put(fetchTasklistForUser());

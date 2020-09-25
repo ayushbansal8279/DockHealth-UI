@@ -63,11 +63,11 @@ const PatientTasksListView = ({
     refreshPatientTasks,
   } = patientTasksSagaActions;
 
-  const handleQuickAddTask = taskName => {
+  const handleQuickAddTask = ({ description }) => {
     modalActions.openModal('ListPicker', {
       fetchMethod: getTaskListForUser,
       confirm: taskListIdentifier =>
-        quickAddPatientTask(taskName, taskListIdentifier),
+        quickAddPatientTask(description, taskListIdentifier),
     });
   };
 
