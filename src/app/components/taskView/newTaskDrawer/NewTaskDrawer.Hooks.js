@@ -8,6 +8,7 @@ import React, {
   useState,
   useRef,
 } from 'react';
+import debounce from 'lodash.debounce';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
@@ -36,7 +37,6 @@ import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import { onButtonClicked } from '../../../helpers/ga-event-helper';
 import { noop } from '../../../helpers/utility-functions';
-
 // const REQUIRED_MESSAGE = 'This field is required';
 // const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
@@ -162,15 +162,25 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       return fetchedPatients;
     });
 
-  const onPatientInputChange = useCallback((_event, value, reason) => {
-    if (reason === 'input' && value !== '') {
-      setIsLoadingPatients(true);
-      setPatientInputValue(value);
+  const fetchPatientsWithDebounce = useCallback(
+    debounce(value => {
       fetchPatients(value).then(() => {
         setIsLoadingPatients(false);
       });
-    }
-  }, []);
+    }, 300),
+    [],
+  );
+
+  const onPatientInputChange = useCallback(
+    (_event, value, reason) => {
+      if (reason === 'input' && value !== '') {
+        setIsLoadingPatients(true);
+        setPatientInputValue(value);
+        fetchPatientsWithDebounce(value);
+      }
+    },
+    [fetchPatientsWithDebounce],
+  );
 
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
