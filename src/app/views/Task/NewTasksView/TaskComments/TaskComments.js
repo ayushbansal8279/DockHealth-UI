@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { groupBy } from 'ramda';
-import {
-  ShowMoreButton,
-  TaskCommentsContainer,
-  TaskCommentsDate,
-  TaskCommentsGroupedDay,
-} from './styled';
-import TaskComment from './TaskComment';
+import { ShowMoreButton, TaskCommentsContainer } from './styled';
+import TaskCommentsDateGroup from './TaskCommentsDateGroup';
 
 const TaskComments = ({
   isOpen,
@@ -27,18 +22,13 @@ const TaskComments = ({
   return (
     <TaskCommentsContainer timeout={150} in={isOpen}>
       {Object.keys(groupedComments).map(key => (
-        <TaskCommentsGroupedDay key={key}>
-          <TaskCommentsDate>{key}</TaskCommentsDate>
-          <div onClick={onClickComment}>
-            {groupedComments[key]?.map(comment => (
-              <TaskComment
-                key={comment.commentId}
-                highlightedValue={highlightedValue}
-                {...comment}
-              />
-            ))}
-          </div>
-        </TaskCommentsGroupedDay>
+        <TaskCommentsDateGroup
+          key={key}
+          groupDate={key}
+          highlightedValue={highlightedValue}
+          commentsGroup={groupedComments[key]}
+          onClickComment={onClickComment}
+        />
       ))}
       {showMore && (
         <ShowMoreButton onClick={() => setShowMore(false)}>

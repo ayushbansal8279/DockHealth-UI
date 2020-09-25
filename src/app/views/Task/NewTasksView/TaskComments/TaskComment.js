@@ -9,9 +9,9 @@ import { createMentionEntities } from 'components/common/MentionsEditor/create-m
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
-  TaskCommentDetails,
   TaskCommentText,
-  SmallText,
+  TaskCommentDetails,
+  TaskCommentContent,
 } from './styled';
 
 const TaskComment = ({
@@ -22,11 +22,9 @@ const TaskComment = ({
   commentMentions,
   dateCreated,
   highlightedValue,
+  isOneByOne,
+  onClickComment,
 }) => {
-  const commentDetails = `${creator.firstName} ${creator.lastName} ${moment(
-    dateUpdated,
-  ).format('h:mma')}`;
-
   const previousCommentValue = useRef(null);
   const [commentState, setCommentState] = useMentionsEditorState(
     convertToEditorState({
@@ -49,13 +47,29 @@ const TaskComment = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
 
+  const commentDetails = isOneByOne
+    ? moment(dateUpdated).format('h:mma')
+    : `${creator.firstName} ${creator.lastName} ${moment(dateUpdated).format(
+        'h:mma',
+      )}`;
+
+  const isCurrentUser =
+    sessionStorage.getItem('userIdentifier') === creator?.userIdentifier;
   return (
-    <TaskCommentContainer>
-      <TaskCommentAvatarContainer>
-        <Member member={creator} size={38} />
-      </TaskCommentAvatarContainer>
-      <div>
-        <TaskCommentText>
+    <TaskCommentContainer isCurrentUser={isCurrentUser} isOneByOne={isOneByOne}>
+      <TaskCommentDetails isCurrentUser={isCurrentUser}>
+        {commentDetails} here
+      </TaskCommentDetails>
+      <TaskCommentContent
+        onClick={onClickComment}
+        isCurrentUser={isCurrentUser}
+      >
+        {!isOneByOne && (
+          <TaskCommentAvatarContainer isCurrentUser={isCurrentUser}>
+            <Member member={creator} size={42} />
+          </TaskCommentAvatarContainer>
+        )}
+        <TaskCommentText isOneByOne={isOneByOne} isCurrentUser={isCurrentUser}>
           <MentionsEditor
             readOnly
             withEditedLabel={dateCreated !== dateUpdated}
@@ -64,11 +78,7 @@ const TaskComment = ({
             highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
           />
         </TaskCommentText>
-        <TaskCommentDetails>
-          <span>{commentDetails}</span>
-          {dateCreated !== dateUpdated && <SmallText> (Edited)</SmallText>}
-        </TaskCommentDetails>
-      </div>
+      </TaskCommentContent>
     </TaskCommentContainer>
   );
 };
