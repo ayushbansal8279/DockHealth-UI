@@ -45,7 +45,7 @@ const USER_TYPES = new Proxy(
       changeable: true,
       isLimitedAccess: true,
       description:
-        'Not part of your Organization.  Only have access to this list asks on this list and the patients and people on this list.',
+        'Not part of your Organization. Only have access to this list, tasks on this list and the patients and people on this list.',
     },
   },
   {
