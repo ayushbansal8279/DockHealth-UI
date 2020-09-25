@@ -225,7 +225,11 @@ const PendingApprovalSelectionPopover = props => {
           onClick={() =>
             approvePendingUser({ userIdentifier, role: selectedRole?.key })
               .then(() => {
-                dispatch(`User's pending invitation approved successfully`);
+                dispatch(
+                  showGlobalAlert(
+                    `User's pending invitation approved successfully`,
+                  ),
+                );
                 reloadUsers();
                 closePopover();
               })
