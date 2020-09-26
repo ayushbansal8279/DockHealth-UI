@@ -36,6 +36,7 @@ import {
   DueDateAddLabel,
   AddCrossIcon,
   AddPlaceholder,
+  SlimTaskListNameText,
 } from '../styled';
 
 const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
@@ -194,6 +195,8 @@ const SlimTaskItem = ({
           .concat('...')
       : taskList?.listName;
 
+  const showTooltip = taskList?.listName?.length > taskListLength;
+
   const formattedTaskDescription =
     description?.length > 100
       ? description
@@ -304,8 +307,11 @@ const SlimTaskItem = ({
                 placement="top"
                 label={taskList?.listName}
                 maxWidth="240px"
+                disabled={!showTooltip}
               >
-                {formattedTaskListName}
+                <SlimTaskListNameText>
+                  {formattedTaskListName}
+                </SlimTaskListNameText>
               </UniversalTooltipContainer>
             </SlimTaskItemListLink>
           )}

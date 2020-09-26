@@ -23,6 +23,47 @@ export const Header = styled.div`
   border-bottom: 0.5px solid ${palette.coolGrey3};
 `;
 
+export const RoleSelectionDescriptionOne = styled.div`
+  font-size: ${fontSizes.smallPlus};
+  color: ${palette.coolGrey1};
+  padding: ${spacing.large} ${spacing.largePlus} 0;
+`;
+
+export const RoleSelectionDescriptionTwo = styled.div`
+  font-size: ${fontSizes.smallPlus};
+  color: ${palette.coolGrey1};
+  padding: ${spacing.smallPlus} ${spacing.largePlus} ${spacing.large};
+`;
+export const RoleSelectionButtonsContainer = styled.div`
+  display: flex;
+  padding: ${spacing.large} ${spacing.largePlus};
+  width: 100%;
+`;
+
+export const RoleSelectionList = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: ${spacing.smallPlus};
+`;
+
+export const RoleSelectionFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${spacing.smallPlus} ${spacing.largePlus} 48px;
+`;
+
+export const DenyButtonContainer = styled.div`
+  margin-right: 6px !important;
+  width: 50%;
+`;
+
+export const ApprovalButtonContainer = styled.div`
+  margin-left: 6px !important;
+  width: 50%;
+`;
+
 // RoleSelectionPopover
 export const RoleItem = styled.div`
   font-family: 'Roboto Condensed';
@@ -66,7 +107,7 @@ export const RoleSelectorFooter = styled.div`
   padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.largePlus};
 `;
 
-export const RoleSelectorRemoveUserButton = styled.button`
+export const RoleSelectorCancelRemoveUserButton = styled.button`
   color: ${palette.brightBlue};
   outline: none;
 `;
@@ -96,49 +137,16 @@ export const InvitationItemDescription = styled.div`
 export const PendingApprovalContainer = styled.div`
   font-family: 'Roboto Condensed';
   width: 462px;
-  height: 385px;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
 `;
 
-export const PendingApprovalDescriptionOne = styled.div`
-  font-size: ${fontSizes.smallPlus};
-  color: ${palette.coolGrey1};
-  padding: ${spacing.large} ${spacing.largePlus} 0;
-`;
-
-export const PendingApprovalDescriptionTwo = styled.div`
-  font-size: ${fontSizes.smallPlus};
-  color: ${palette.coolGrey1};
-  padding: ${spacing.smallPlus} ${spacing.largePlus} ${spacing.large};
-`;
-export const PendingApprovalButtonsContainer = styled.div`
+// InactiveRoleSelectionPopover
+export const InactiveRoleSelectionContainer = styled.div`
+  font-family: 'Roboto Condensed';
+  width: 462px;
   display: flex;
-  padding: ${spacing.large} ${spacing.largePlus};
-  width: 100%;
-`;
-
-export const PendingApprovalRoleList = styled.div`
-  width: 100%;
-  display: flex;
+  justify-content: space-between;
   flex-direction: column;
-  align-items: center;
-  margin-top: ${spacing.smallPlus};
-`;
-
-export const PendingApprovalFooter = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  padding: ${spacing.smallPlus} ${spacing.largePlus} 48px;
-`;
-
-export const DenyButtonContainer = styled.div`
-  margin-right: 6px !important;
-  width: 50%;
-`;
-
-export const ApprovalButtonContainer = styled.div`
-  margin-left: 6px !important;
-  width: 50%;
 `;

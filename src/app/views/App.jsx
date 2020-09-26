@@ -56,11 +56,18 @@ class App extends PureComponent {
 
   componentWillMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
-    if (redirectToHome) {
+    const redirectToLink = sessionStorage.getItem('redirectToLink');
+
+    if (redirectToHome && !redirectToLink) {
+      sessionStorage.removeItem('redirectToHome');
       if (window.location.hash !== '#/home/my-tasks') {
         window.location.href = '#/home/my-tasks';
       }
-      sessionStorage.setItem('redirectToHome', false);
+    }
+
+    if (redirectToLink && !redirectToHome) {
+      sessionStorage.removeItem('redirectToLink');
+      window.location.href = redirectToLink;
     }
   }
 

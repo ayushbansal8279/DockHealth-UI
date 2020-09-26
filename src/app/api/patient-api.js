@@ -9,7 +9,7 @@ export function getAllPatients() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -19,7 +19,7 @@ export function getMyPatientsAll() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -29,7 +29,7 @@ export function getMyPatientsActive() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -39,7 +39,7 @@ export function getPatientsByTaskList(taskListIdentifier) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -49,7 +49,7 @@ export function getPatientsByName(searchedPatientName) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -59,7 +59,7 @@ export function getPatientById(patientIdentifier) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -69,7 +69,7 @@ export function removePatient(patientIdentifier) {
     .then(response => response)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -86,7 +86,7 @@ export function addPatient(patient) {
         title: 'Error',
         text: 'Error adding patient. Please try again.',
       });
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -107,7 +107,7 @@ export function updatePatient(patient) {
         title: 'Error',
         text: 'Error updating patient. Please try again.',
       });
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -119,7 +119,7 @@ export function addPatientToTask(patientIdentifier, taskIdentifier) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -129,7 +129,7 @@ export function lookupEMRPatients(searchToken) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -157,7 +157,7 @@ export const findUserTasksByPatient = (patientIdentifier, status) =>
     })
     .catch(error => {
       console.error(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const createPatientNote = (patientIdentifier, note) =>
@@ -171,7 +171,7 @@ export const createPatientNote = (patientIdentifier, note) =>
         text:
           'Error adding patient note. It may be too long. Please try again.',
       });
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const updatePatientNote = note =>
@@ -184,7 +184,7 @@ export const updatePatientNote = note =>
         title: 'Error',
         text: 'Error updating patient note. Please try again.',
       });
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const deletePatientNote = patientNoteIdentifier =>
@@ -197,7 +197,7 @@ export const deletePatientNote = patientNoteIdentifier =>
         title: 'Error',
         text: 'Error deleting patient note. Please try again.',
       });
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const archivePatient = patientNoteIdentifier =>
@@ -210,7 +210,7 @@ export const archivePatient = patientNoteIdentifier =>
         title: 'Error',
         text: 'Error archiving patient. Please try again.',
       });
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export function downloadPatientImportTemplate() {
@@ -266,6 +266,6 @@ export function getLatestPatientImportDetails() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }

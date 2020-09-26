@@ -349,21 +349,22 @@ const PatientsList = ({
   highlightedPatient,
   patientImportDetails,
   refreshPatientList,
+  importPopoverOpen,
+  setImportPopoverOpen,
+  hasImportErrors,
   isGuest,
+  isAllPatientsList,
 }) => {
   const dispatch = useDispatch();
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  const [importPopoverOpen, setImportPopoverOpen] = useState(
-    patientImportDetails && patientImportDetails.createdDateTime,
-  );
 
   const onAddPatientClick = useCallback(() => {
     dispatch(beginPatientCreation());
   }, [dispatch]);
 
   if (patients.length === 0) {
-    return isFiltered || isGuest ? (
+    return !isAllPatientsList || isFiltered || isGuest ? (
       <EmptyFilteredList />
     ) : (
       <>
@@ -380,6 +381,7 @@ const PatientsList = ({
               setImportPopoverOpen(false);
             }}
             patientImportDetails={patientImportDetails}
+            hasImportErrors={hasImportErrors}
           />
         )}
       </>
@@ -399,6 +401,7 @@ const PatientsList = ({
             setImportPopoverOpen(false);
           }}
           patientImportDetails={patientImportDetails}
+          hasImportErrors={hasImportErrors}
         />
       )}
     </>

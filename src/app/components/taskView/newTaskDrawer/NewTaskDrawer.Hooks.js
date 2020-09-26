@@ -8,11 +8,12 @@ import React, {
   useState,
   useRef,
 } from 'react';
+import debounce from 'lodash.debounce';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
 import { object, string } from 'yup';
-import { getPatientsByName } from 'api/patient-api';
+import { getPatientsByName, addPatient } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
 import {
   saveTask,
@@ -36,7 +37,6 @@ import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import { onButtonClicked } from '../../../helpers/ga-event-helper';
 import { noop } from '../../../helpers/utility-functions';
-
 // const REQUIRED_MESSAGE = 'This field is required';
 // const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
@@ -154,28 +154,39 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const patientInputReference = useRef(null);
   const [patientInputValue, setPatientInputValue] = useState('');
+  const taskInputReference = useRef(null);
+
+  const fetchPatients = value =>
+    getPatientsByName(value).then(fetchedPatients => {
+      setPatients(fetchedPatients);
+      return fetchedPatients;
+    });
+
+  const fetchPatientsWithDebounce = useCallback(
+    debounce(value => {
+      fetchPatients(value).then(() => {
+        setIsLoadingPatients(false);
+      });
+    }, 300),
+    [],
+  );
 
   const onPatientInputChange = useCallback(
     (_event, value, reason) => {
-      const patientFetched = patients?.some(({ firstName, lastName }) =>
-        `${firstName} ${lastName}`.trim().includes(value),
-      );
-      if (reason === 'input' && !patientFetched && value !== '') {
+      if (reason === 'input' && value !== '') {
         setIsLoadingPatients(true);
         setPatientInputValue(value);
-        getPatientsByName(value).then(fetchedPatients => {
-          setPatients(fetchedPatients);
-          setIsLoadingPatients(false);
-        });
+        fetchPatientsWithDebounce(value);
       }
     },
-    [patients],
+    [fetchPatientsWithDebounce],
   );
 
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
 
   const taskList = selectedTask?.taskList;
+  const taskListIdentifier = taskList?.taskListIdentifier;
 
   const [isSaving, setSaving] = useState(false);
 
@@ -209,12 +220,19 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
   const { top } =
     document.querySelector('#content-container')?.getBoundingClientRect() || {};
 
+  const refreshMembers = () =>
+    TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL').then(
+      data => {
+        setMembers(data);
+        return data;
+      },
+    );
+
   useEffect(() => {
-    if (taskList?.taskListIdentifier) {
+    if (taskListIdentifier) {
       setIsFetchingMembers(true);
-      TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
-        .then(data => {
-          setMembers(data);
+      refreshMembers()
+        .then(() => {
           setIsFetchingMembers(false);
         })
         .catch(error => {
@@ -222,7 +240,8 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
           throw error;
         });
     }
-  }, [taskList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskListIdentifier]);
 
   useEffect(() => {
     if (
@@ -489,6 +508,25 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     }
   };
 
+  const handleAddPatient = patient => {
+    const [firstName, ...lastNames] = patient.split(' ');
+
+    const data = { firstName, lastName: lastNames.join(' ') };
+
+    addPatient(data)
+      .then(async ({ patientIdentifier, firstName: name, lastName }) => {
+        await fetchPatients(patient);
+
+        await handlePatientSelect({
+          value: patientIdentifier,
+          displayLabel: `${name} ${lastName}`,
+        });
+
+        patientInputReference.current.querySelector('input').blur();
+      })
+      .catch(noop);
+  };
+
   const handleTaskDescriptionUpdate = async () => {
     const updatedTaskDescription = watch('description');
 
@@ -559,6 +597,9 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     patientInputReference,
     patientInputValue,
     isLoadingPatients,
+    refreshMembers,
+    handleAddPatient,
+    taskInputReference,
   };
 };
 

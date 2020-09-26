@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Button, Popover, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import palette, { opacify } from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
 export const OuterAvatarContainer = styled.div`
@@ -13,8 +13,9 @@ export const OuterAvatarContainer = styled.div`
 `;
 
 export const PlainLink = styled.a`
-  color: ${palette.lighterCyanBlue};
-  font-size: ${fontSizes.regularPlus};
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
   ${props => props.topPadded && 'margin-top: 4rem;'}
   text-decoration: none;
   transition: filter 0.2s ease;
@@ -112,4 +113,27 @@ export const UserAvatarSupplement = styled.div`
 
 export const PaddedButtonLabel = styled.span`
   margin-left: ${spacing.small};
+`;
+
+export const EditButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  right: -20px;
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  cursor: pointer;
+
+  &:hover {
+    color: ${palette.lighterCyanBlue};
+    filter: brightness(1.25);
+  }
+`;
+
+export const PictureInput = styled.input`
+  display: none;
+`;
+
+export const AvatarContainer = styled.div`
+  position: relative;
 `;

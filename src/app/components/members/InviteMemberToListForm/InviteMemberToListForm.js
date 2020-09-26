@@ -32,8 +32,12 @@ import {
 } from './styled';
 import { getMenuOptionsForMember } from './helpers';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
+const InviteMemberToListForm = ({
+  list,
+  onMembersRefresh,
+  externalInvitePosition,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
   const dispatch = useDispatch();
 
   const menuAnchor = useRef(null);
@@ -121,7 +125,10 @@ const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
       memberIdentifiers: [...newMembersIdentifiers],
     };
 
-    TaskListActions.saveTaskList(requestTaskList)(dispatch)
+    TaskListActions.inviteMultipleUsersToTaskList(
+      requestTaskList.taskListIdentifier,
+      requestTaskList.memberIdentifiers,
+    )(dispatch)
       .then(() => {
         refreshListMembers();
         setIsSavingList(false);
@@ -332,7 +339,9 @@ const InviteMemberToListForm = ({ list, onMembersRefresh }) => {
         <ClickAwayListener
           onClickAway={() => setExternalInviteFormState({ opened: false })}
         >
-          <ExternalUserInviteFormWrapper>
+          <ExternalUserInviteFormWrapper
+            externalInvitePosition={externalInvitePosition}
+          >
             <ExternalInviteForm
               taskListIdentifier={list?.taskListIdentifier}
               initialValues={externalInviteFormState?.initialValues}

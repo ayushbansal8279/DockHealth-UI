@@ -9,6 +9,7 @@ import {
 import InvitationPopover from './SubscriptionUserPopover/InvitationPopover';
 import RoleSelectionPopover from './SubscriptionUserPopover/RoleSelectionPopover';
 import PendingApprovalPopover from './SubscriptionUserPopover/PendingApprovalPopover';
+import InactiveRoleSelectionPopover from './SubscriptionUserPopover/InactiveRoleSelectionPopover';
 
 const DropdownIndicator = ({ isOpen, setOpen, label }) => (
   <Arrow
@@ -28,6 +29,7 @@ const MemberTypeLabel = ({
   userTypes,
   addSubscription,
   removeSubscription,
+  removeSubscriptionWithNewOwnerFlow,
   userHasSubscription,
   isDisabledRemovingSubscription,
   orgUserRole,
@@ -36,18 +38,21 @@ const MemberTypeLabel = ({
   isPopoverOpen,
   openPopover,
   closePopover,
+  displayName,
+  ownersCount,
+  currentActiveUsers,
 }) => {
   const labelReference = useRef(null);
   const dispatch = useDispatch();
   const reloadUsers = useCallback(() => findAllUsers()(dispatch), [dispatch]);
 
   const PopoverComponent = (() => {
-    if (userIdentifier === sessionStorage.userIdentifier) {
-      return null;
-    }
-
     if (userStatus === 'PENDING') {
       return PendingApprovalPopover;
+    }
+
+    if (userStatus === 'INACTIVE') {
+      return InactiveRoleSelectionPopover;
     }
 
     if (invitationModifiable) {
@@ -96,6 +101,10 @@ const MemberTypeLabel = ({
             orgUserRole,
             labelReference,
             isPopoverOpen,
+            displayName,
+            ownersCount,
+            currentActiveUsers,
+            removeSubscriptionWithNewOwnerFlow,
           }}
         />
       )}

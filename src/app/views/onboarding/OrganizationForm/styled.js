@@ -33,6 +33,11 @@ export const ButtonWrapper = styled.div`
   width: 265px;
 `;
 
+export const ButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 export const TileSettingsHeader = styled.h3`
   margin-bottom: 0;
   font-size: ${fontSizes.regularPlus};

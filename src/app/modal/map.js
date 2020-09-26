@@ -1,6 +1,7 @@
 import DeleteGroupModal from './components/DeleteGroupModal/DeleteGroupModal';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import DeleteTaskModal from './components/DeleteTaskModal/DeleteTaskModal';
+import DeleteSubtaskModal from './components/DeleteSubtaskModal/DeleteSubtaskModal';
 import DuplicateTaskModal from './components/DuplicateTaskModal/DuplicateTaskModal';
 import DeleteListModal from './components/DeleteListModal/DeleteListModal';
 import DeleteNoteModal from './components/DeleteNoteModal/DeleteNoteModal';
@@ -20,11 +21,14 @@ import LeaveOrganizationModal from './components/LeaveOrganizationModal/LeaveOrg
 import ChangeMobileNumberModal from './components/ChangeMobileNumberModal/ChangeMobileNumberModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
+import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
+import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
   CompleteAllTasks: CompleteAllTasksModal,
   DeleteTask: DeleteTaskModal,
+  DeleteSubtask: DeleteSubtaskModal,
   DuplicateTask: DuplicateTaskModal,
   DeleteList: DeleteListModal,
   DeleteNote: DeleteNoteModal,
@@ -44,6 +48,8 @@ const MODAL_MAP = {
   ChangeMobileNumber: ChangeMobileNumberModal,
   Confirmation: ConfirmationModal,
   OnboardingInviteConfirmation: OnboardingInviteConfirmationModal,
+  ArchiveUser: ArchiveUserModal,
+  SelectOwner: SelectOwnerModal,
 };
 
 export default MODAL_MAP;

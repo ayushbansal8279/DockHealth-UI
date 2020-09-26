@@ -233,7 +233,7 @@ const DashboardTasksGroup = ({
                     arrowType="secondary"
                     isDisabled={!groupIsOpen}
                   >
-                    <span>Assigned</span>
+                    <span>Assigned To</span>
                   </Arrow>
                 </AssignedBox>
               )}

@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
-import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import Member from '../../members/Member/Member';
@@ -43,6 +42,9 @@ const getListElements = ({ isUserAdmin, organization }) => {
     subscription: organization?.subscriptionDetails,
   });
 
+  const isFreePlan =
+    organization?.subscriptionDetails?.subscriptionPlan === 'PLAN_FREE';
+
   return [
     {
       link: '/userProfile',
@@ -53,7 +55,8 @@ const getListElements = ({ isUserAdmin, organization }) => {
       label: 'Subscriptions',
     },
     isUserAdmin &&
-      !isSubscriptionTrial && {
+      !isSubscriptionTrial &&
+      !isFreePlan && {
         link: '/billing',
         label: 'Billing',
       },
@@ -83,12 +86,7 @@ const renderListElement = ({ onLinkClicked, linkComponent }) => ({
   </DropdownListItem>
 );
 
-const DrawerFooter = ({
-  onMouseEnter,
-  setActiveId,
-  user,
-  settingsVisible = true,
-}) => {
+const DrawerFooter = ({ setActiveId, user, settingsVisible = true }) => {
   const { access: userProfileAccess, orgUserRole } = useSelector(
     state => state.userState.userProfile || {},
   );
@@ -97,45 +95,26 @@ const DrawerFooter = ({
 
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
 
-  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
-
   const onLinkClicked = useCallback(() => {
-    closePopover();
     setActiveId('');
-  }, [closePopover, setActiveId]);
+  }, [setActiveId]);
 
   const userProfileEnabled = userProfileAccess?.userProfileEnabled;
   const linkComponent = userProfileEnabled ? StyledLink : undefined;
-
-  const onDrawerFooterOpen = useCallback(() => {
-    openPopover();
-    onMouseEnter();
-  }, [onMouseEnter, openPopover]);
 
   const listElements = useMemo(
     () => getListElements({ isUserAdmin, organization }),
     [isUserAdmin, organization],
   );
 
-  const dropdownHeight = listElements.length * 2.625 + 0.25;
-
   return (
     <>
       <ListDivider />
-      <DrawerMemberContainer
-        onMouseEnter={userProfileEnabled && onDrawerFooterOpen}
-        onMouseLeave={closePopover}
-      >
+      <DrawerMemberContainer>
         <Member showTooltip={false} member={user} size={40} />
       </DrawerMemberContainer>
       {settingsVisible && (
-        <StyledDropdown
-          open={isPopoverOpen}
-          onMouseEnter={userProfileEnabled && openPopover}
-          onMouseLeave={closePopover}
-          timeout={250}
-          dropdownHeight={dropdownHeight}
-        >
+        <StyledDropdown>
           {listElements.map(
             renderListElement({ onLinkClicked, linkComponent }),
           )}

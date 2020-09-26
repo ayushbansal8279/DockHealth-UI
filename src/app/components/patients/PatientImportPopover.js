@@ -40,13 +40,30 @@ const ProgressBar = styled.div`
   align: left;
 `;
 
-const PatientImportPopover = ({ closePopover, patientImportDetails }) => {
+const PatientImportPopover = ({
+  closePopover,
+  patientImportDetails,
+  hasImportFailed,
+}) => {
   const [minimizedState, setMinimizedState] = useState(false);
 
   const fileProgress = patientImportDetails
     ? patientImportDetails.completePercentage
     : 0;
   const inverseProgress = 100 - fileProgress;
+
+  const uploadedFileNameMaxLength = 30;
+  const uploadedFileName =
+    patientImportDetails?.fileName?.length > uploadedFileNameMaxLength
+      ? patientImportDetails?.fileName
+          ?.substring(0, uploadedFileNameMaxLength)
+          .trim()
+          .concat('...')
+      : patientImportDetails?.fileName;
+
+  const importErrorMessage = patientImportDetails?.errorDetails
+    ? patientImportDetails?.errorDetails
+    : `${patientImportDetails?.trackingDetails?.length} Errors`;
 
   // DEFAULT POPOVER
   return (
@@ -67,7 +84,7 @@ const PatientImportPopover = ({ closePopover, patientImportDetails }) => {
                 <PopoverMinimizeButton />
               </PopoverCloseButton>
             )}
-            {fileProgress === 100 && (
+            {(fileProgress === 100 || hasImportFailed) && (
               <CloseButtonWord
                 onClick={closePopover}
                 size="small"
@@ -81,7 +98,7 @@ const PatientImportPopover = ({ closePopover, patientImportDetails }) => {
           <FileDisplayArea>
             <FileName>
               <DownloadIcon src={ExcelLogo} alt="Excel Logo" />
-              {patientImportDetails?.fileName}
+              {uploadedFileName}
               {fileProgress === 100 && (
                 <SuccessIcon src={circleCompleted} alt="CheckCircle" />
               )}
@@ -97,11 +114,15 @@ const PatientImportPopover = ({ closePopover, patientImportDetails }) => {
             </ProgressDisplayArea>
           )}
 
-          {patientImportDetails?.trackingDetails?.length > 0 && (
+          {(patientImportDetails?.trackingDetails?.length > 0 ||
+            patientImportDetails?.inError ||
+            hasImportFailed) && (
             <ErrorDisplayArea>
               <ErrorAmount>
                 {' '}
-                {patientImportDetails?.trackingDetails?.length} Errors{' '}
+                {hasImportFailed
+                  ? 'Error processing import'
+                  : `${importErrorMessage}`}
               </ErrorAmount>
               {patientImportDetails?.trackingDetails?.map(
                 ({ reference, errorDetails }) => (

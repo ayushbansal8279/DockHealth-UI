@@ -607,13 +607,14 @@ const Subtasks = ({
                             currentUser={currentUser}
                             reassignTask={reassignTask}
                             parentHasPatient={parentHasPatient}
-                            isDraggable={isDraggable}
+                            isDraggable={isDraggable && subtasks?.length > 1}
                             isLast={index + 1 === orderedSubtasks.length}
                             showSubtaskStylingLink={!draggedId}
                             {...restProps}
                           />
                           {draggedId !== String(subtask.taskIdentifier) &&
-                            !isEmpty(matchedComments) && (
+                            !isEmpty(matchedComments) &&
+                            subtask?.description !== '' && (
                               <TaskComments
                                 isOpen={isFullView}
                                 comments={matchedComments}
@@ -707,7 +708,7 @@ const Task = ({
           }}
         />
       )}
-      {!isEmpty(subtasks) && !isStartedDnD && (
+      {!isEmpty(renderedSubtasks) && !isStartedDnD && (
         <Subtasks
           subtasks={renderedSubtasks}
           isOpen={isOpen}

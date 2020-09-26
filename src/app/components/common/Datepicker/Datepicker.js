@@ -18,7 +18,14 @@ import {
   renderDayLabels,
 } from './helpers';
 
-const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
+const Datepicker = ({
+  selectedDate,
+  onDateChange,
+  minDate,
+  maxDate,
+  initialMonthMomentValue,
+  onMonthChange = () => null,
+}) => {
   const [currentMonthMoment, setCurrentMonthMoment] = useState(null);
 
   const forceUpdate = useUpdate();
@@ -26,7 +33,11 @@ const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
   const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
 
   useMount(() => {
-    setCurrentMonthMoment((momentSelectedDate || moment()).startOf('month'));
+    setCurrentMonthMoment(
+      (initialMonthMomentValue || momentSelectedDate || moment()).startOf(
+        'month',
+      ),
+    );
   });
 
   const formattedCurrentMonth = getCalendarFormattedMonth(currentMonthMoment);
@@ -47,13 +58,17 @@ const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
 
   const changeMonth = useCallback(
     value => {
-      setCurrentMonthMoment(
-        currentMonthMoment?.add(value, 'month')?.startOf('month'),
-      );
+      const nextMonthMomentValue = currentMonthMoment
+        ?.add(value, 'month')
+        ?.startOf('month');
+      setCurrentMonthMoment(nextMonthMomentValue);
+
+      onMonthChange(nextMonthMomentValue);
 
       // this update is used to due current month label not rerendering on month change
       forceUpdate();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentMonthMoment, forceUpdate],
   );
   return (
@@ -63,7 +78,7 @@ const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
           <IconButton
             size="small"
             color="inherit"
-            onClick={() => changeMonth(-1)}
+            onMouseDown={() => changeMonth(-1)}
           >
             <KeyboardArrowLeft />
           </IconButton>
@@ -80,7 +95,7 @@ const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
           <IconButton
             size="small"
             color="inherit"
-            onClick={() => changeMonth(1)}
+            onMouseDown={() => changeMonth(1)}
           >
             <KeyboardArrowRight />
           </IconButton>

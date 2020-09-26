@@ -6,7 +6,10 @@ import {
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import handleFeatureToggle from 'helpers/handle-feature-toggle';
-import { setCurrentPageAfterLogin, useMobile } from 'helpers/utility-functions';
+import {
+  setCurrentPageInSessionStorage,
+  useMobile,
+} from 'helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
@@ -147,7 +150,10 @@ const checkUserAccountState = async ({
   }
 };
 
-const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
+const isLoggedIn = ({ dispatch, checkTrialExpiration }) => async (
+  loggedIn,
+  user,
+) => {
   const { pathname } = hashHistory.getCurrentLocation();
 
   if (!loggedIn && pathname === CREATE_ACCOUNT_PATH) {
@@ -155,7 +161,7 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
   }
 
   if (!loggedIn || !user) {
-    setCurrentPageAfterLogin();
+    setCurrentPageInSessionStorage();
     hashHistory.push('login');
     return;
   }
@@ -169,7 +175,12 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
   userApi.updateStoreWithCurrentUser(user);
 
   try {
-    checkUserAccountState({ user, pathname, dispatch, checkTrialExpiration });
+    await checkUserAccountState({
+      user,
+      pathname,
+      dispatch,
+      checkTrialExpiration,
+    });
   } catch (error) {
     hashHistory.push('login');
   }
@@ -178,8 +189,14 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => (loggedIn, user) => {
 export const checkUserAuthentication = async ({
   dispatch,
   checkTrialExpiration,
+  callback,
 }) => {
-  await userApi.isAuthenticated({
-    isLoggedIn: isLoggedIn({ dispatch, checkTrialExpiration }),
-  });
+  const isLoggedInResults = await userApi.isAuthenticated();
+  await isLoggedIn({ dispatch, checkTrialExpiration })(
+    isLoggedInResults.isLoggedIn,
+    isLoggedInResults.user,
+  );
+  if (callback) {
+    callback();
+  }
 };

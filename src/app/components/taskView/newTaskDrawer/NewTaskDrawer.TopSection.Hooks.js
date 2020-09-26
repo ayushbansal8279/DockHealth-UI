@@ -45,7 +45,12 @@ const initializeTaskDrawerTopSectionHooks = ({
     const modalProps = {
       confirm: () => deleteTask(),
     };
-    modalActions.openModal('DeleteTask', modalProps);
+    const modalName =
+      selectedTask.parentTaskIdentifier !== null
+        ? 'DeleteSubtask'
+        : 'DeleteTask';
+
+    modalActions.openModal(modalName, modalProps);
   };
 
   const duplicateTaskWithAttachments = async () => {

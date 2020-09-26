@@ -32,6 +32,25 @@ export const MembersListWrapper = styled.div`
   width: 100%;
   flex: 1;
   overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.white};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.white};
+    background-color: ${palette.coolGrey1};
+  }
 `;
 
 export const MemberFullNameWrapper = styled.div`
@@ -118,8 +137,10 @@ export const MenuPopover = withStyles({
 
 export const ExternalUserInviteFormWrapper = styled.div`
   position: absolute;
-  bottom: 0px;
-  left: 0px;
+  bottom: ${({ externalInvitePosition }) =>
+    externalInvitePosition?.bottom || 0}px;
+  left: ${({ externalInvitePosition }) => externalInvitePosition?.left || 0}px;
+  padding-right: 110px;
   background: ${palette.white};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   z-index: 2;

@@ -25,5 +25,5 @@ export const HeaderTitle = styled(MontserratTypography)`
 `;
 
 export const DashboardHeaderActivityAlertsContainer = styled.div`
-  margin-right: 48px;
+  margin-right: 24px;
 `;

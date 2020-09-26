@@ -473,6 +473,7 @@ const DashboardList = ({
                 onBlur={() => setSearchFocused(false)}
                 value={searchValue}
                 onChange={event => setSearchValue(event?.target?.value)}
+                placeholder="Search Tasks"
               />
             </SearchGrid>
             <Spacing horizontal={4} />

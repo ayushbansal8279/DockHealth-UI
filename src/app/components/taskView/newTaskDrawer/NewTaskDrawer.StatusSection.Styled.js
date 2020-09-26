@@ -11,13 +11,15 @@ export const StatusLabelContainer = styled.div`
   grid-template-columns: 0.25rem 1fr;
   padding: 0.5rem 0.75rem;
 
-  &:hover {
+  ${({ isHovered }) =>
+    isHovered &&
+    `
     background-color: ${palette.coolGrey4};
-
+    
     && > * {
       font-weight: bold;
     }
-  }
+  `}
 `;
 
 export const StatusFlag = styled.div`

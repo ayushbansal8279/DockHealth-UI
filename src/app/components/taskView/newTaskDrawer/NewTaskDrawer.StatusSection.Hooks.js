@@ -36,7 +36,7 @@ export const STATUSES = [
 ];
 
 const initializeStatusSectionHooks = ({ setAutoSaveVisible, refreshList }) => {
-  const { watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const currentValue = watch('workflowStatus');
   const dispatch = useDispatch();
 
@@ -72,6 +72,7 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible, refreshList }) => {
     currentStatusFlagColor: STATUSES.find(({ value }) => value === currentValue)
       ?.color,
     saveTaskStatus,
+    setValue,
   };
 };
 

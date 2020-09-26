@@ -85,7 +85,7 @@ export function resendApprovalRequestUserForOrganization(userIdentifier) {
       return data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -127,7 +127,7 @@ export function removeUserFromOrganization(removedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -140,7 +140,7 @@ export function addUserToOrganization(addedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -225,4 +225,22 @@ export function denyPendingUser({ userIdentifier }) {
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
     });
+}
+
+export function reactivateUser(userIdentifier, role) {
+  return axios.put(
+    `user/addUserToOrganization?userIdentifier=${userIdentifier}&role=${role}`,
+  );
+}
+
+export function archiveUser(userIdentifier) {
+  return axios.delete(
+    `user/archiveUserFromOrganization?userIdentifier=${userIdentifier}`,
+  );
+}
+
+export function changeUserToOwner(userIdentifier) {
+  return axios.put(
+    `organization/reassignOwnerForOrg?assignedUserId=${userIdentifier}`,
+  );
 }

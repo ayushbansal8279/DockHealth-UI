@@ -13,7 +13,7 @@ export const DashboardSidebarWrapper = styled.div`
 
 export const TopSection = styled.div`
   position: relative;
-  height: 90px;
+  height: 60px;
   width: 100%;
 `;
 
@@ -27,7 +27,7 @@ export const ListsSection = styled.div`
 export const MenuButton = styled.button`
   position: absolute;
   left: 42px;
-  top: 60px;
+  top: 30px;
   cursor: pointer;
   outline: none;
 `;

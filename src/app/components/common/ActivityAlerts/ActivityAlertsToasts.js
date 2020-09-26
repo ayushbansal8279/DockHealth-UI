@@ -22,6 +22,7 @@ const listenRealTimeAlerts = (currentUser, showAlert) => {
     channel = pusherInstance.subscribe(channelName);
   }
 
+  channel.unbind('activity-alert');
   channel.bind('activity-alert', ({ alert }) => {
     if (alert) {
       sessionStorage.setItem('hasUnreadAlerts', true);
@@ -35,13 +36,15 @@ const ActivityAlertsToasts = () => {
   const [newAlert, setNewAlert] = useState({});
   const [lastElement, setLastElement] = useState(null);
 
-  const { currentUser, enabledAlertsState } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-    enabledAlertsState: store.alertsState.alertsEnabled,
-  }));
+  const { currentUser, alertsEnabledState, alertsHideState } = useSelector(
+    store => ({
+      currentUser: store.userState.userProfile,
+      alertsEnabledState: store.alertsState.alertsEnabled,
+      alertsHideState: store.alertsState.alertToastHide,
+    }),
+  );
 
   const showActivityAlert = async alert => {
-    console.log(`getting alert for : ${alert.activityAlertIdentifier}`);
     const alertDetails = await getActivityAlertDetails(
       alert.activityAlertIdentifier,
     );
@@ -49,8 +52,10 @@ const ActivityAlertsToasts = () => {
   };
 
   useEffect(() => {
-    listenRealTimeAlerts(currentUser, showActivityAlert);
-  }, [currentUser]);
+    if (alertsEnabledState && !alertsHideState) {
+      listenRealTimeAlerts(currentUser, showActivityAlert);
+    }
+  }, [currentUser, alertsHideState, alertsEnabledState]);
 
   useEffect(() => {
     if (!isEmpty(newAlert)) {
@@ -65,25 +70,29 @@ const ActivityAlertsToasts = () => {
     }
   }, [lastElement]);
 
-  if (!enabledAlertsState) {
+  if (!alertsEnabledState || alertsHideState) {
     return null;
   }
 
   return (
-    <ActivityAlertsToastsContainer>
-      {alertsList?.map((item, idx) => (
-        <ActivityAlertsToast
-          key={idx}
-          itemAlert={item}
-          positionInQueue={idx + 1}
-          isLastAlert={alertsList?.length === idx + 1}
-          onClear={() => {
-            setLastElement(idx);
-          }}
-          clearAlertList={() => alertsList([])}
-        />
-      ))}
-    </ActivityAlertsToastsContainer>
+    <>
+      {alertsList.length !== 0 && (
+        <ActivityAlertsToastsContainer>
+          {alertsList?.map((item, idx) => (
+            <ActivityAlertsToast
+              key={idx}
+              itemAlert={item}
+              positionInQueue={idx + 1}
+              isLastAlert={alertsList?.length === idx + 1}
+              onClear={() => {
+                setLastElement(idx);
+              }}
+              clearAlertList={() => alertsList([])}
+            />
+          ))}
+        </ActivityAlertsToastsContainer>
+      )}
+    </>
   );
 };
 

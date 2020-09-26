@@ -33,7 +33,6 @@ import {
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
-import { reassignTask } from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
@@ -225,8 +224,6 @@ function* doReloadDashboardTasks() {
 }
 
 function* doToggleDashboardTaskComplete({ task }) {
-  if (task.status === 'COMPLETE') return;
-
   try {
     const currentUser = yield select(userProfileSelector);
 
@@ -234,11 +231,19 @@ function* doToggleDashboardTaskComplete({ task }) {
 
     yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
 
-    yield call(TaskApi.markComplete, task);
+    if (task.status === 'COMPLETE') {
+      yield call(TaskApi.markIncomplete, task);
+    } else {
+      yield call(TaskApi.markComplete, task);
+    }
     yield delay(TASK_DISAPPEAR_DELAY);
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
 
-    yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
+    if (task.status === 'COMPLETE') {
+      yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_REACTIVATED));
+    } else {
+      yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
+    }
   } catch (error) {
     yield call(doReloadDashboardTasks);
   }
@@ -324,8 +329,9 @@ function* doUpdateDashboardSelectedFilters({ payload }) {
 
 function* doReassignDashboardTask({ taskIdentifier, userId }) {
   try {
-    yield put(reassignTask(taskIdentifier, userId));
+    yield call(TaskApi.assignOrReassignTask, { taskIdentifier }, userId);
     yield call(doReloadDashboardTasks);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     console.log(error);
   }

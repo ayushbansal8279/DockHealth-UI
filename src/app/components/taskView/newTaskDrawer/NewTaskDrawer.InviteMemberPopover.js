@@ -18,8 +18,10 @@ const InviteMemberPopover = ({
   isPopoverOpen,
   closePopover,
   initialValue,
-  setParentFormValue,
   taskList,
+  assignUser,
+  refreshMembers,
+  setParentFormValue,
 }) => {
   const taskListIdentifier = taskList?.taskListIdentifier;
   const {
@@ -31,6 +33,8 @@ const InviteMemberPopover = ({
     initialValue,
     taskListIdentifier,
     isPopoverOpen,
+    assignUser,
+    refreshMembers,
     setParentFormValue,
   });
 

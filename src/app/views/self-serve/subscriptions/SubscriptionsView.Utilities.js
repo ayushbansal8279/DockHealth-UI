@@ -41,6 +41,10 @@ export const getSubscriptionIsTrial = ({ subscription }) => {
   return !!subscription?.trialEndDate;
 };
 
+export const getSubscriptionIsFree = ({ subscription }) => {
+  return subscription?.subscriptionPlan === 'PLAN_FREE';
+};
+
 export const getSubscriptionNextPaymentLabel = ({ subscription }) => {
   const planIsTrial = getSubscriptionIsTrial({ subscription });
 
@@ -85,6 +89,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
     billingFrequency: billingData?.subscriptionDetails?.billingFrequency,
   });
   const planIsTrial = getSubscriptionIsTrial({ subscription });
+  const planIsFree = getSubscriptionIsFree({ subscription });
   const planNextPaymentLabel = getSubscriptionNextPaymentLabel({
     subscription,
   });
@@ -111,6 +116,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
     planNextPaymentLabel,
     planNextPaymentDate,
     planIsTrial,
+    planIsFree,
     planActiveUserCount: billingData?.activeUserCount ?? 0,
   };
 };

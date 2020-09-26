@@ -2,17 +2,14 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
-import { addPatient, getAllPatients } from 'actions/patient-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { noop } from 'helpers/utility-functions';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
@@ -89,6 +86,9 @@ const NewTaskDrawer = ({
     dueTimeReference,
     onPatientInputChange,
     patientInputReference,
+    refreshMembers,
+    handleAddPatient,
+    taskInputReference,
   } = initializeTaskDrawerHooks({ isInbox, refreshList });
 
   const taskDrawerReference = useRef(null);
@@ -139,8 +139,6 @@ const NewTaskDrawer = ({
   const enteredDescription = watch('description');
 
   const {
-    // patientInputReference,
-    // onPatientInputChange,
     assignedToInputReference,
     isInvitePopoverOpen,
     openInvitePopover,
@@ -157,28 +155,15 @@ const NewTaskDrawer = ({
       patientInputReference.current.querySelector('input').focus();
   }, [taskDrawerFocusField, patientInputReference]);
 
+  useEffect(() => {
+    if (!selectedTask || selectedTask.description === '') {
+      taskInputReference.current.querySelector('textarea').focus();
+    }
+  }, [taskInputReference, isAddingOrEditingSubtask, selectedTask]);
+
   const parentFormSubmit = handleSubmit(onSubmit);
 
   const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
-
-  const dispatch = useDispatch();
-
-  const handleAddPatient = patient => {
-    const [firstName, ...lastNames] = patient.split(' ');
-
-    const data = { firstName, lastName: lastNames.join(' ') };
-
-    addPatient(data)(dispatch)
-      .then(async ({ patientIdentifier, firstName: name, lastName }) => {
-        await getAllPatients()(dispatch);
-
-        handlePatientSelect({
-          value: patientIdentifier,
-          displayLabel: `${name} ${lastName}`,
-        });
-      })
-      .catch(noop);
-  };
 
   const isAddingSubtask =
     selectedTask &&
@@ -221,8 +206,13 @@ const NewTaskDrawer = ({
                   label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                   required
                   multiple
-                  placeholder="What is the task?"
+                  placeholder={
+                    isAddingOrEditingSubtask
+                      ? 'What is the subtask?'
+                      : 'What is the task?'
+                  }
                   borderOnFocus
+                  ref={taskInputReference}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -380,8 +370,10 @@ const NewTaskDrawer = ({
                     isPopoverOpen={isInvitePopoverOpen}
                     closePopover={closeInvitePopover}
                     initialValue={assignedToInputValue}
-                    setParentFormValue={setValue}
+                    assignUser={handleAssignedToSelect}
                     taskList={selectedTask?.taskList}
+                    refreshMembers={refreshMembers}
+                    setParentFormValue={setValue}
                   />
                 )}
               </Grid>

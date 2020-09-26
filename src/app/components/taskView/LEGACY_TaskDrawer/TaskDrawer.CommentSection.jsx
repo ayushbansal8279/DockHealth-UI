@@ -18,6 +18,7 @@ import {
 } from 'actions/task-actions';
 import { noop } from 'helpers/utility-functions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
+import * as AlertActions from 'alert/actions';
 import initializeTaskDrawerCommentSectionHooks from './TaskDrawer.CommentSection.Hooks';
 import {
   AddCommentButtonContainer,
@@ -31,7 +32,6 @@ import {
 } from './TaskDrawer.CommentSection.Styled';
 import renderComment from './TaskDrawer.RenderComment';
 import { FormSectionDivider } from './TaskDrawer.Styled';
-import AlertMessages from '../alert/AlertMessages';
 
 const getGroupedComments = ({ comments }) => {
   // const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
@@ -81,7 +81,9 @@ const addTaskPromise = async ({
 
       data = commentResponse.data;
 
-      dispatch(AlertActions.showGlobalAlert('Comment added successfully', 'success'));
+      dispatch(
+        AlertActions.showGlobalAlert('Comment added successfully', 'success'),
+      );
 
       clearCommentContent();
     }
@@ -92,7 +94,12 @@ const addTaskPromise = async ({
     return data;
   } catch (error) {
     unsetPublishingComment();
-    dispatch(AlertActions.showGlobalAlert('Error adding comment, please try again later', 'error'));
+    dispatch(
+      AlertActions.showGlobalAlert(
+        'Error adding comment, please try again later',
+        'error',
+      ),
+    );
     return null;
   }
 };
@@ -217,10 +224,20 @@ export default ({ addDeferredCommentToQueue, task }) => {
       commentData,
     )(dispatch)
       .then(() => {
-        dispatch(AlertActions.showGlobalAlert('Comment updated successfully', 'success'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Comment updated successfully',
+            'success',
+          ),
+        );
       })
       .catch(() => {
-        dispatch(AlertActions.showGlobalAlert('Error updating comment, please try again later', 'error'));
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating comment, please try again later',
+            'error',
+          ),
+        );
       });
   };
 

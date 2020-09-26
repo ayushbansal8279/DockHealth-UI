@@ -13,6 +13,9 @@ import {
   UploadImagePopoverGrid,
   UploadImagePopoverLabel,
   UserAvatarSupplement,
+  EditButton,
+  PictureInput,
+  AvatarContainer,
 } from './styled';
 
 export default () => {
@@ -32,8 +35,6 @@ export default () => {
     removeProfilePicture,
     getSmallButtonContent,
     getSmallButtonOnClick,
-    fileUploaded,
-    unsetFileUploaded,
     handleFileCropped,
   } = initializeUserAvatarHooks();
 
@@ -98,7 +99,14 @@ export default () => {
                 onClose={() => setFileLoaded(null)}
               />
             ) : (
-              <Avatar>{avatarContent}</Avatar>
+              <AvatarContainer>
+                <Avatar>{avatarContent}</Avatar>
+                {userProfilePic && (
+                  <EditButton type="button" onClick={activateFileInput}>
+                    Edit
+                  </EditButton>
+                )}
+              </AvatarContainer>
             )}
           </Grid>
           <Grid container item xs={12} justify="center">
@@ -107,46 +115,27 @@ export default () => {
               onClick={getSmallButtonOnClick()}
             >
               {getSmallButtonContent()}
-              <input
-                accept="image/png, image/jpeg"
-                type="file"
-                ref={fileInputReference}
-                onChange={handleFileChanged}
-              />
             </SmallButton>
           </Grid>
-          <Grid container item xs={12} spacing={1}>
-            {fileUploaded && (
-              <Grid container item xs={12} justify="center">
-                <PlainLink
-                  disabled={fileLoading}
-                  onClick={event => {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    if (!fileLoading) {
-                      activateFileInput();
-                      openPopover();
-                      setFileLoaded(null);
-                      unsetFileUploaded();
-                    }
-                  }}
-                >
-                  Try another picture
-                </PlainLink>
-              </Grid>
-            )}
-            {userProfilePic && (
+          <PictureInput
+            style={{ display: 'none' }}
+            accept="image/png, image/jpeg"
+            type="file"
+            ref={fileInputReference}
+            onChange={handleFileChanged}
+          />
+          {userProfilePic && !fileLoaded && (
+            <Grid container item xs={12} spacing={1}>
               <Grid container item xs={12} justify="center">
                 <PlainLink
                   disabled={fileLoading}
                   onClick={removeProfilePicture}
                 >
-                  Remove image and use my initials
+                  Use initials
                 </PlainLink>
               </Grid>
-            )}
-          </Grid>
+            </Grid>
+          )}
         </UploadImagePopoverGrid>
         <UploadImagePopoverClose onClick={unsetPopoverOpen}>
           &times;

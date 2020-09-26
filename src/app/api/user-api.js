@@ -210,6 +210,9 @@ export function logout() {
           sessionStorage.removeItem('currentOrganizationIdentifier');
           sessionStorage.removeItem('notificationsEnabled');
           sessionStorage.removeItem('hasUnreadAlerts');
+          sessionStorage.removeItem('redirectToHome');
+          sessionStorage.removeItem('redirectToLink');
+          sessionStorage.removeItem('selectedTaskIdentifier');
           onLogout();
         })
         .catch(error => {
@@ -383,43 +386,30 @@ export function rememberDevice() {
   });
 }
 
-export function isAuthenticated({ isLoggedIn }) {
-  if (!isLoggedIn) {
-    throw new Error('Callback in isAuthenticated() cannot be null');
-  }
-
-  // const userPoolForAuth = userPool;
-
+export async function isAuthenticated() {
   if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
     const userData = {
       username: sessionStorage.getItem('SSO_USEREMAIL'),
     };
 
     if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      isLoggedIn(true, userData);
-      return;
+      return { isLoggedIn: true, user: userData };
     }
 
-    isLoggedIn(false, userData);
+    return { isLoggedIn: false, user: userData };
   }
 
-  Auth.currentAuthenticatedUser({
-    bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-  })
-    .then(user => {
-      Auth.currentSession()
-        .then(data => {
-          sessionStorage.setItem('accessToken', data.accessToken.jwtToken);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      isLoggedIn(true, user);
-    })
-    .catch(error => {
-      console.log(error);
-      isLoggedIn(false, null);
+  try {
+    const user = await Auth.currentAuthenticatedUser({
+      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
+    const authData = await Auth.currentSession();
+    sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
+    return { isLoggedIn: true, user };
+  } catch (error) {
+    console.log(error);
+    return { isLoggedIn: false, user: null };
+  }
 }
 
 export function forgotPassword(userData) {
@@ -473,8 +463,8 @@ export function createUser(user) {
   });
 }
 
-export function getUserOrganization() {
-  return axios.get('user/findUserOrganizations');
+export async function getUserOrganization() {
+  return await axios.get('user/findUserOrganizations');
 }
 
 export function getUserByEmailAndAccessToken(userEmail, accessToken) {
@@ -483,47 +473,52 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
 
   const email = userEmail?.toLowerCase();
 
-  return axios
-    .get(
-      `${
-        process.env.HEYDOC_SERVICES_BASE_URL
-      }user/findUserByEmail?email=${encodeURIComponent(email)}`,
-    )
-    .then(response => {
-      getUserOrganization().then(({ data: orgData }) => {
-        const userProfile = { ...response?.data, userOrganizations: orgData };
-        store.dispatch({
-          type: 'user/userProfile',
-          userProfile,
-        });
-        sessionStorage.setItem(
-          'userIdentifier',
-          response?.data?.userIdentifier,
-        );
-        sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
-        const currentOrgIdentifier = sessionStorage.getItem(
-          'currentOrganizationIdentifier',
-        );
-
-        if (
-          currentOrgIdentifier === 'undefined' ||
-          currentOrgIdentifier === '' ||
-          !currentOrgIdentifier
-        ) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `${
+          process.env.HEYDOC_SERVICES_BASE_URL
+        }user/findUserByEmail?email=${encodeURIComponent(email)}`,
+      )
+      .then(response => {
+        getUserOrganization().then(({ data: orgData }) => {
+          const userProfile = { ...response?.data, userOrganizations: orgData };
+          store.dispatch({
+            type: 'user/userProfile',
+            userProfile,
+          });
           sessionStorage.setItem(
-            'currentOrganizationIdentifier',
-            response?.data?.organizationIdentifier,
+            'userIdentifier',
+            response?.data?.userIdentifier,
           );
-          axios.defaults.headers.common.CurrentOrganizationIdentifier =
-            response?.data?.organizationIdentifier;
-        }
-        onLogin();
-        return { ...userProfile, access: dummyAccess };
+          sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
+          const currentOrgIdentifier = sessionStorage.getItem(
+            'currentOrganizationIdentifier',
+          );
+
+          if (
+            currentOrgIdentifier === 'undefined' ||
+            currentOrgIdentifier === '' ||
+            !currentOrgIdentifier
+          ) {
+            sessionStorage.setItem(
+              'currentOrganizationIdentifier',
+              response?.data?.organizationIdentifier,
+            );
+            axios.defaults.headers.common.CurrentOrganizationIdentifier =
+              response?.data?.organizationIdentifier;
+          }
+          onLogin();
+          resolve({ ...userProfile, access: dummyAccess });
+        });
+      })
+      .catch(error => {
+        reject(error);
       });
-    });
+  });
 }
 
-export function getUserByEmail(email, cognitoUser) {
+export async function getUserByEmail(email, cognitoUser) {
   let accessToken = '';
 
   if (cognitoUser.signInUserSession) {
@@ -534,13 +529,18 @@ export function getUserByEmail(email, cognitoUser) {
     accessToken = sessionStorage.getItem('SSO_ACCESSTOKEN');
   }
 
-  return getUserByEmailAndAccessToken(email, accessToken);
+  return await getUserByEmailAndAccessToken(email, accessToken);
 }
 
 export function getUserById() {
-  return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
-    store.dispatch({ type: 'user/userProfile', userProfile: response?.data });
-    return response?.data;
+  return getUserOrganization().then(({ data: orgData }) => {
+    return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
+      store.dispatch({
+        type: 'user/userProfile',
+        userProfile: { ...response?.data, userOrganizations: orgData },
+      });
+      return { ...response?.data, userOrganizations: orgData };
+    });
   });
 }
 
@@ -881,7 +881,10 @@ export function updateUserDashboardPrefs(column) {
     });
 }
 
-export function selectCurrentOrganization(organizationIdentifier) {
+export function selectCurrentOrganization(
+  organizationIdentifier,
+  redirectToHome = true,
+) {
   return axios({
     method: 'put',
     url: `/user/selectOrganization/${organizationIdentifier}`,
@@ -891,7 +894,31 @@ export function selectCurrentOrganization(organizationIdentifier) {
         'currentOrganizationIdentifier',
         organizationIdentifier,
       );
-      sessionStorage.setItem('redirectToHome', JSON.stringify(true));
+      if (redirectToHome) {
+        sessionStorage.setItem('redirectToHome', JSON.stringify(true));
+      }
+      axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+      window.location.reload();
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function selectCurrentOrganizationWithRedirection(
+  organizationIdentifier,
+  redirectionLink,
+) {
+  return axios({
+    method: 'put',
+    url: `/user/selectOrganization/${organizationIdentifier}`,
+  })
+    .then(() => {
+      sessionStorage.setItem(
+        'currentOrganizationIdentifier',
+        organizationIdentifier,
+      );
+      sessionStorage.setItem('redirectToLink', redirectionLink);
       axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
       window.location.reload();
     })
@@ -921,3 +948,8 @@ export const verifyNewPhoneNumber = code => {
 
   return Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
 };
+
+export const getUserActiveTasksCount = userId =>
+  axios.get(
+    `/task/findCountOfAllTasksAssignedToSpecificUser?userId=${userId}&status=INCOMPLETE`,
+  );

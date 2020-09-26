@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -8,7 +7,7 @@ export const ActivityAlertsItemContainer = styled.div`
   font-family: Montserrat;
   display: flex;
   flex-direction: column;
-  height: 130px;
+  height: 160px;
   background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%),
     #ffffff; // per design
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
@@ -72,16 +71,17 @@ export const ActivityAlertsItemLabel = styled.div`
   font-family: Roboto Condensed;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
+  margin-right: ${spacing.huge};
 `;
 
 export const ActivityAlertsItemDescription = styled.div`
   font-family: Roboto Condensed;
-  color: ${palette.mediumGrey};
+  color: ${palette.coolGrey1};
+  font-size: ${fontSizes.smallPlus};
 `;
 
-export const ActivityAlertItemQuotes = styled.div`
-  font-family: Roboto Condensed;
-  color: ${palette.coolGrey1};
+export const ActivityAlertItemQuotes = styled(ActivityAlertsItemDescription)`
+  margin-right: ${spacing.huge};
 `;
 
 export const CompletedCircleIcon = styled.img`
@@ -90,14 +90,33 @@ export const CompletedCircleIcon = styled.img`
   margin-right: ${spacing.small};
 `;
 
-export const StyledLink = styled(Link)`
+export const StyledDescriptionTaskLink = styled.span`
+  font-family: Roboto Condensed;
+  font-weight: ${fontWeights.bold};
+  color: ${palette.brightBlue};
+  cursor: pointer;
+`;
+
+export const StyledTaskLink = styled(StyledDescriptionTaskLink)`
   font-family: Roboto Condensed;
   font-weight: ${fontWeights.bold};
   font-size: ${fontSizes.regular};
   color: ${palette.brightBlue};
+  cursor: pointer;
 `;
 
 export const StyledCrossIcon = styled.img`
   cursor: pointer;
   margin-left: ${spacing.smallPlus};
+`;
+
+export const ActivityAlertsUser = styled.span`
+  font-family: Roboto Condensed;
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
+`;
+
+export const ActivityAlertsCommonText = styled.span`
+  font-family: Roboto Condensed;
+  color: ${palette.mediumGrey};
 `;

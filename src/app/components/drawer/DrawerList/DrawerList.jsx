@@ -9,8 +9,11 @@ import PatientsIcon from 'img/drawer/PatientsIcon';
 import PeopleIcon from 'img/drawer/PeopleIcon';
 import HomeIcon from 'img/drawer/HomeIcon';
 import SearchIcon from 'img/drawer/SearchIcon';
+import EnvelopeIcon from 'img/drawer/EnvelopeIcon';
+import palette from 'styles/palette';
 import OrganizationList from '../../Organization/OrganizationList/OrganizationList';
 import DrawerFooter from './DrawerFooter';
+import ReferAColleagueModal from '../ReferAColleague/ReferAColleagueModal';
 import {
   DrawerListContainer,
   DrawerListItemsContainer,
@@ -25,8 +28,6 @@ import {
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
-  // AddOrganizationLink,
-  // AddOrganizationLinkContainer,
 } from './styled';
 
 const NESTED_LIST_PREFIX = 'nested';
@@ -54,6 +55,7 @@ const Item = ({
   icon: Icon,
   id,
   label,
+  labelColor,
   childItems,
   open,
   setActiveId,
@@ -64,6 +66,8 @@ const Item = ({
   setRolloverLabel,
   setRolloverPopoverAnchor,
   isIconFilled = true,
+  onItemClick,
+  defaultChildPath,
   ...otherProps
 }) => {
   const active = id === activeId;
@@ -74,10 +78,15 @@ const Item = ({
     <StyledListItem
       button
       component={RouterLink}
-      to={to}
+      to={defaultChildPath ? to + defaultChildPath : to}
       active={active || (nestedActive && !open)}
       highlighted={active || nestedActive}
-      onClick={() => setActiveId(id)}
+      onClick={() => {
+        setActiveId(id);
+        if (onItemClick) {
+          onItemClick();
+        }
+      }}
       open={open}
       {...otherProps}
     >
@@ -88,7 +97,7 @@ const Item = ({
         <Icon color="inherit" />
         <ActiveIconRim active={childOrSelfActive} />
       </StyledListItemIcon>
-      {open && <StyledListItemText primary={label} />}
+      {open && <StyledListItemText primary={label} labelColor={labelColor} />}
     </StyledListItem>
   );
 
@@ -190,6 +199,7 @@ const getDrawerItems = ({ lists }) => [
     tabsPath: ['/my-tasks', '/all-tasks'],
     to: '/home',
     isIconFilled: false,
+    defaultChildPath: '/my-tasks',
   },
   {
     id: 'lists',
@@ -280,6 +290,16 @@ const DrawerList = ({
     setRolloverLabel('');
   }, [closePopover]);
 
+  const [openReferral, setOpenReferral] = React.useState(false);
+
+  const handleReferralClickOpen = () => {
+    setOpenReferral(true);
+  };
+
+  const handleReferralClose = () => {
+    setOpenReferral(false);
+  };
+
   return (
     <>
       <DrawerListContainer
@@ -309,10 +329,30 @@ const DrawerList = ({
         <DrawerFooter
           setActiveId={setActiveId}
           user={user}
-          onMouseEnter={onMouseEnter}
-          settingsVisible={settingsVisible}
+          settingsVisible={settingsVisible && open}
+        />
+        <Item
+          id="referAColleague"
+          label="Refer a colleague"
+          labelColor={palette.black}
+          icon={EnvelopeIcon}
+          to=""
+          onItemClick={handleReferralClickOpen}
+          activeId={activeId}
+          open={open}
+          setActiveId={setActiveId}
+          style={{
+            backgroundColor: palette.coolGrey2,
+            position: 'fixed',
+            bottom: '0px',
+          }}
         />
       </DrawerListContainer>
+      <ReferAColleagueModal
+        openReferral={openReferral}
+        handleReferralClose={handleReferralClose}
+      />
+
       <RolloverPopover
         anchorEl={rolloverPopoverAnchor?.current}
         anchorOrigin={{

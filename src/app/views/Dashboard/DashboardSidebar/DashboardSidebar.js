@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
+import pusherInstance from 'helpers/pusher-instance';
 import { selectCurrentOrganization as selectCurrentOrganizationAction } from 'api/user-api';
 import { hashHistory } from 'react-router';
 import { IconButton } from '@material-ui/core';
@@ -63,6 +64,28 @@ const DashboardSidebar = ({
     setCurrentListMenuPopupReference,
   ] = useState(false);
   const [selectedList, setSelectedList] = useState(null);
+
+  useEffect(() => {
+    const currentUserIdentifier = currentUser.userIdentifier;
+    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+
+    let channel = pusherInstance.channel(channelName);
+    if (!channel) {
+      channel = pusherInstance.subscribe(channelName);
+    }
+
+    channel.bind('tasklist-update', () => {
+      invitationActions.findPendingTaskListsForUser();
+      taskListActions.getTaskListForUser();
+    });
+
+    return () => {
+      if (channel) {
+        channel = pusherInstance.unsubscribe(channelName);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { renderTourItems, setTourPopupReferences } = initializeUserTourItems({
     shouldDisplayFirstListCreationMessage,
@@ -156,8 +179,8 @@ const DashboardSidebar = ({
         currentOrganization={currentOrganization}
         availableUserOrganizations={availableUserOrganizations}
         shouldExpand
-        selectedIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
-        availableIdentifierConfig={{ fontColor: palette.mediumGrey, left: 16 }}
+        selectedIdentifierConfig={{ fontColor: palette.mediumGrey }}
+        availableIdentifierConfig={{ fontColor: palette.mediumGrey }}
         showShadowOnHover
         onSelect={selectCurrentOrganization}
       />
@@ -208,7 +231,9 @@ const DashboardSidebar = ({
                   >
                     <TitleText>{taskList?.listName}</TitleText>
                   </ListItemTitle>
-                  <ListItemInfo>{taskList?.numberOfTasks}</ListItemInfo>
+                  <ListItemInfo>
+                    {taskList?.numberOfTasks ? taskList?.numberOfTasks : 0}
+                  </ListItemInfo>
                 </ListItem>
               </ListLink>
               {taskList?.listType !== 'INBOX' ? (

@@ -1,9 +1,5 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { updateOrganizationName } from 'actions/organization-actions';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
@@ -19,28 +15,13 @@ import {
   TileSettingsDescription,
   ColorPickerHeader,
   InitialsError,
+  ButtonsContainer,
 } from './styled';
 
-const onSubmit = ({ dispatch }) => ({
-  organizationName,
-  organizationInitials,
-  organizationThemeColor,
-}) => {
-  updateOrganizationName({
-    organizationName,
-    organizationInitials,
-    organizationProfileColor: organizationThemeColor,
-  })(dispatch).then(() => {
-    hashHistory.push('/onboarding/team-setup');
-  });
-};
-
-const OnboardingOrgSetupViewDesktop = () => {
+const OrganizationForm = ({ onSubmit, onCancel }) => {
   const formContext = useForm({
     revalidationMode: 'onChange',
   });
-
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -92,7 +73,7 @@ const OnboardingOrgSetupViewDesktop = () => {
   }, []);
 
   return (
-    <FormWrapper onSubmit={handleSubmit(onSubmit({ dispatch }))}>
+    <FormWrapper onSubmit={handleSubmit(onSubmit)}>
       <Title>Name your organization</Title>
       <Spacing vertical={5} />
       <Description>
@@ -156,14 +137,21 @@ const OnboardingOrgSetupViewDesktop = () => {
             </InitialsError>
           )}
         </div>
-        <ButtonWrapper>
-          <Button fullWidth type="submit">
-            Continue
-          </Button>
-        </ButtonWrapper>
+        <ButtonsContainer>
+          {typeof onCancel === 'function' && (
+            <Button onClick={onCancel} type="button" variant="text">
+              Cancel
+            </Button>
+          )}
+          <ButtonWrapper>
+            <Button fullWidth type="submit">
+              Continue
+            </Button>
+          </ButtonWrapper>
+        </ButtonsContainer>
       </BottomSection>
     </FormWrapper>
   );
 };
 
-export default OnboardingOrgSetupViewDesktop;
+export default OrganizationForm;

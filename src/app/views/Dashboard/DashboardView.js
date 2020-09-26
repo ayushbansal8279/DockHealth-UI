@@ -54,7 +54,13 @@ const DashboardView = ({
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
 
   const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
-  const firstUserList = lists?.find(list => list.listType !== 'INBOX');
+
+  const allLists = useMemo(() => [...lists, ...pendingLists], [
+    lists,
+    pendingLists,
+  ]);
+
+  const firstUserList = allLists?.find(list => list.listType !== 'INBOX');
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
 
@@ -80,11 +86,6 @@ const DashboardView = ({
   useMount(() => {
     refreshAccessToken(currentUser);
   });
-
-  const allLists = useMemo(() => [...lists, ...pendingLists], [
-    lists,
-    pendingLists,
-  ]);
 
   const handleCreateList = () => {
     onNewUserTourEnter('Opened create list modal');
@@ -171,6 +172,7 @@ const DashboardView = ({
                       });
                     }}
                     list={firstUserList}
+                    acceptInvitation={acceptInviteToTaskList}
                   />
                 </DashboardFirstVisitViewWrapper>
               ) : (

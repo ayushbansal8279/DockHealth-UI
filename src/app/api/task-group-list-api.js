@@ -8,7 +8,7 @@ export const getGroupsByListId = listIdentifier =>
     .get(URLS.taskGroupList.get(listIdentifier))
     .then(({ data }) => data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const createGroupAssignedToList = payload =>
@@ -16,7 +16,7 @@ export const createGroupAssignedToList = payload =>
     .post(URLS.taskGroupList.add, payload)
     .then(({ data }) => data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const editGroupName = (
@@ -40,7 +40,7 @@ export const deleteGroup = groupId =>
     .delete(URLS.taskGroupList.delete(groupId))
     .then(({ data }) => data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const sortGroups = payload =>
@@ -48,5 +48,5 @@ export const sortGroups = payload =>
     .put(URLS.taskGroupList.sort, payload)
     .then(({ data }) => data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });

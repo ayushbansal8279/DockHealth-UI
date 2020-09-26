@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
 import { memoizeWith } from 'ramda';
@@ -75,7 +76,7 @@ const USER_TYPES = new Proxy(
       changeable: true,
       isLimitedAccess: true,
       description:
-        'Not part of your Organization.  Only have access to this list asks on this list and the patients and people on this list.',
+        'Not part of your Organization. Only have access to this list, tasks on this list and the patients and people on this list.',
     },
     DEFAULT: {
       label: 'Invited',
@@ -91,7 +92,6 @@ const USER_STATUS_TYPES = new Proxy(
   {
     INACTIVE: {
       label: 'Inactive',
-      changeable: true,
     },
     CANCELLED: {
       label: 'Cancelled',
@@ -192,8 +192,7 @@ const OrganizationMemberRow = ({
   subscriptionPlanData,
   openRemoveSubscriptionModal,
   organizationMembers,
-  isInvited,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  isInvited, // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   let userType = null;
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -209,34 +208,48 @@ const OrganizationMemberRow = ({
     userType = USER_TYPES[derivedOrgUserRole];
   }
 
+  const displayName = `${firstName} ${lastName}`;
+
   const removeSubscription = () => {
     openRemoveSubscriptionModal({
       userIdentifier,
       email,
       orgUserRole,
       confirm: () =>
-        toggleSelectedUser({ userIdentifier, email })({
+        toggleSelectedUser({ userIdentifier, email, displayName })({
           target: { checked: false },
         }),
     });
   };
 
+  const removeSubscriptionWithNewOwnerFlow = openOwnerModal => {
+    openRemoveSubscriptionModal({
+      userIdentifier,
+      email,
+      orgUserRole,
+      confirm: () =>
+        openOwnerModal({
+          confirm: () =>
+            toggleSelectedUser({ userIdentifier, email, displayName })({
+              target: { checked: false },
+            }),
+        }),
+    });
+  };
+
   const addSubscription = () =>
-    toggleSelectedUser({ userIdentifier, email })({
+    toggleSelectedUser({ userIdentifier, email, displayName })({
       target: { checked: true },
     });
 
-  const ownerCount =
+  const ownersCount =
     organizationMembers?.filter(
       ({ orgUserRole: memberUserRole }) => memberUserRole === 'OWNER',
     )?.length ?? 0;
 
   const hasOneUserRemaining = organizationMembers.length === 1;
 
-  const isDisabledRemovingSubscription =
-    hasOneUserRemaining ||
-    (ownerCount <= 1 && orgUserRole === 'OWNER') ||
-    userIdentifier === sessionStorage.userIdentifier;
+  const isDisabledRemovingSubscription = hasOneUserRemaining;
 
   const registrationMoment = moment(registrationDate);
   const formattedRegistrationDate = registrationMoment.isValid()
@@ -249,6 +262,12 @@ const OrganizationMemberRow = ({
     planIsTrial,
     planPricePerUser,
   });
+
+  const currentActiveUsers = organizationMembers?.filter(
+    user =>
+      !!user?.subscription &&
+      user?.userIdentifier !== sessionStorage.userIdentifier,
+  );
 
   return (
     <MemberTableRow container spacing={1} isSelected={isPopoverOpen}>
@@ -278,6 +297,9 @@ const OrganizationMemberRow = ({
             userType={userType}
             userTypes={USER_TYPES}
             removeSubscription={removeSubscription}
+            removeSubscriptionWithNewOwnerFlow={
+              removeSubscriptionWithNewOwnerFlow
+            }
             addSubscription={addSubscription}
             orgUserRole={orgUserRole}
             isDisabledRemovingSubscription={isDisabledRemovingSubscription}
@@ -292,12 +314,15 @@ const OrganizationMemberRow = ({
             isPopoverOpen={isPopoverOpen}
             openPopover={openPopover}
             closePopover={closePopover}
+            displayName={displayName}
+            ownersCount={ownersCount}
+            currentActiveUsers={currentActiveUsers}
           />
         </MemberTableCell>
       </Grid>
       <Grid item xs={3}>
         <MemberTableCell isInvited={isInvited}>
-          {showJoined && formattedRegistrationDate}
+          {showJoined && userStatus !== 'PENDING' && formattedRegistrationDate}
           {isInvited && <div>Invitation sent</div>}
         </MemberTableCell>
       </Grid>

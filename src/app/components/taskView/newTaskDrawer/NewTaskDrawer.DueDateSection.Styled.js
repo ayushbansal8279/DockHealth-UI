@@ -9,11 +9,13 @@ export const DueDateLabelContainer = styled.div`
   display: flex;
   padding: 0.5rem;
 
-  &:hover {
-    background-color: ${palette.coolGrey4};
-
-    && > * {
-      font-weight: bold;
-    }
-  }
+  ${({ isHovered }) =>
+    isHovered &&
+    `
+      background-color: ${palette.coolGrey4};
+  
+      && > * {
+        font-weight: bold;
+      }
+    `}
 `;

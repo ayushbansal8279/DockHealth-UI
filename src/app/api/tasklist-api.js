@@ -8,7 +8,7 @@ export function getTaskListForUser() {
   })
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -19,7 +19,7 @@ export function getSharedTaskListsWithCurrentUser(userIdentifier) {
   })
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -28,7 +28,7 @@ export function findPendingTaskListsForUser() {
     .get('list/findPendingTaskListsForUser')
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -39,7 +39,7 @@ export function addTaskList(tasklist) {
       return response?.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -48,7 +48,7 @@ export function getTaskListById(taskListIdentifier) {
     .get(`list/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -60,7 +60,7 @@ export function updateTaskList(taskList) {
       return response?.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -71,7 +71,7 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -80,7 +80,7 @@ export function invitePersonToTaskList(taskListIdentifier, personInfo) {
     .put(`user/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
     .then(response => response?.data)
     .catch(error => {
-      throw error;
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -89,7 +89,7 @@ export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
     .get(`user/findOrganizationUsersNotInTaskList/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      throw error;
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -100,7 +100,7 @@ export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) =>
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 
 export function inviteMultipleUsersToTaskList(
@@ -118,7 +118,7 @@ export function inviteMultipleUsersToTaskList(
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -127,7 +127,7 @@ export function getNonOrgUsersByTaskList(taskListIdentifier) {
     .get(`user/findNonOrgUsersByTaskList/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -142,7 +142,7 @@ export function changeUserRoleForList(
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -154,7 +154,7 @@ export function deleteTaskListById(taskListIdentifier) {
       return response?.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -168,7 +168,7 @@ export function removeUserFromTaskList(
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -182,7 +182,7 @@ export function cancelInviteToTaskList(
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -193,7 +193,7 @@ export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -205,7 +205,7 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -217,7 +217,7 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
     )
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -231,7 +231,7 @@ export function toggleListNotifications(
     )
     .then(response => response)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -240,7 +240,7 @@ export function findGenericListCountsForUser() {
     .get('list/getGenericListCountsForUser')
     .then(response => response?.data)
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -260,7 +260,7 @@ export function downloadPDF(taskListIdentifier) {
       return 'success';
     })
     .catch(error => {
-      throw new Error(error?.response?.data);
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
@@ -268,6 +268,6 @@ export const getTaskListStats = async ({ taskListIdentifier }) => {
   try {
     return await axios.get(`list/getTaskListStats/${taskListIdentifier}`);
   } catch (error) {
-    throw new Error(error?.response?.data);
+    throw new Error(error?.response?.data?.errorMessage);
   }
 };

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Divider } from '@material-ui/core';
 import moment from 'moment';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import useBoolean from 'hooks/useBoolean';
@@ -18,57 +18,23 @@ const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YY';
 const SET_DATE_VALUE = 'set-date';
 
-const renderDropdownItem = ({
-  openCalendar,
-  closeCalendar,
-  openPopover,
-  closePopover,
-  onItemSelection,
-}) => ({ setValue }) => ({ label, value, disabled }) => (
-  <div
-    key={label}
-    onClick={() => {
-      if (disabled) return;
-
-      if (value === SET_DATE_VALUE) {
-        openCalendar();
-        closePopover();
-        setTimeout(() => {
-          // a simple hack to reopen the Popover since it doesn't support scroll and needs to have everything displayed so as to re-position
-          openPopover();
-        }, 50);
-      } else {
-        setValue(value);
-        onItemSelection(value);
-        closePopover();
-        closeCalendar();
-      }
-    }}
-  >
-    {label}
-  </div>
-);
-
-const onItemSelection = ({ saveDueDate, currentDueTime }) => value => {
-  saveDueDate({
-    updatedDueDate: value,
-    updatedDueTime: currentDueTime || '',
-  });
-};
-
 const DueDateSection = ({
   selectedTask,
   isOverDue,
   setAutoSaveVisible,
   refreshList,
   dueTimeReference,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dateFieldName = 'dueDate';
 
+  const reference = useRef(null);
+
+  const inputReference = reference.current?.querySelector('input');
+
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
   const popoverStateArray = useBoolean(false);
-  const openPopover = popoverStateArray[1];
-  const closePopover = popoverStateArray[2];
+  const [initialMonthMomentValue, setInitialMonthMomentValue] = useState(null);
 
   const { setValue, watch } = useFormContext();
 
@@ -94,18 +60,49 @@ const DueDateSection = ({
         updatedDueDate: value,
         updatedDueTime: currentDueTime || '',
       });
-      closeCalendar();
-      closePopover();
       setAutoSaveVisible();
+
+      setTimeout(() => {
+        inputReference.focus();
+      }, 150);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       closeCalendar,
-      closePopover,
       currentDueTime,
       saveDueDate,
       setAutoSaveVisible,
       setValue,
+      inputReference,
     ],
+  );
+
+  const selectOption = useCallback(
+    value => {
+      if (value === 'calendar') return;
+
+      if (value === SET_DATE_VALUE) {
+        if (isCalendarOpen) {
+          closeCalendar();
+        } else {
+          openCalendar();
+        }
+        inputReference.blur();
+        setTimeout(() => {
+          // a simple hack to reopen the Popover since it doesn't support scroll and needs to have everything displayed so as to re-position
+          inputReference.focus();
+        }, 100);
+      } else {
+        setValue(dateFieldName, value);
+        saveDueDate({
+          updatedDueDate: value,
+          updatedDueTime: currentDueTime || '',
+        });
+        closeCalendar();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [inputReference, currentDueTime, saveDueDate],
   );
 
   const dueDateOptions = [
@@ -114,8 +111,8 @@ const DueDateSection = ({
       value: moment()
         .startOf('day')
         .format(DATE_ISO_FORMAT),
-      label: (
-        <DueDateLabelContainer>
+      label: isHovered => (
+        <DueDateLabelContainer isHovered={isHovered}>
           <RobotoTypography condensed variant="h4">
             Today
           </RobotoTypography>
@@ -131,8 +128,8 @@ const DueDateSection = ({
         .startOf('day')
         .add(1, 'day')
         .format(DATE_ISO_FORMAT),
-      label: (
-        <DueDateLabelContainer>
+      label: isHovered => (
+        <DueDateLabelContainer isHovered={isHovered}>
           <RobotoTypography condensed variant="h4">
             Tomorrow
           </RobotoTypography>
@@ -146,8 +143,8 @@ const DueDateSection = ({
     {
       key: 'set-date',
       value: SET_DATE_VALUE,
-      label: (
-        <DueDateLabelContainer>
+      label: isHovered => (
+        <DueDateLabelContainer isHovered={isHovered}>
           <RobotoTypography condensed variant="h4">
             Set date
           </RobotoTypography>
@@ -168,6 +165,13 @@ const DueDateSection = ({
           <Datepicker
             onDateChange={setDueDateValue}
             selectedDate={currentDueDate ? moment(currentDueDate) : null}
+            initialMonthMomentValue={initialMonthMomentValue}
+            onMonthChange={nextMonthMomentValue => {
+              setInitialMonthMomentValue(nextMonthMomentValue);
+              setTimeout(() => {
+                inputReference.focus();
+              }, 100);
+            }}
           />
         </div>
       ),
@@ -178,6 +182,7 @@ const DueDateSection = ({
 
   return (
     <DropdownInput
+      ref={reference}
       name={dateFieldName}
       label="Due date"
       placeholder="Set a due date?"
@@ -197,13 +202,7 @@ const DueDateSection = ({
           color: isOverDue && palette.red,
         },
       }}
-      renderItem={renderDropdownItem({
-        openCalendar,
-        closeCalendar,
-        openPopover,
-        closePopover,
-        onItemSelection: onItemSelection({ saveDueDate, currentDueTime }),
-      })}
+      selectOption={selectOption}
       popoverStateArray={popoverStateArray}
     >
       {options}

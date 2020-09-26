@@ -1,15 +1,21 @@
 import { Grid } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
+import { hashHistory } from 'react-router';
+import { checkBAASignedStatus } from 'actions/organization-actions';
 import {
   signOrganizationBAADocument,
   storeSignatureResult,
 } from 'api/organization-api';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { selectCurrentOrganization } from 'api/user-api';
+import HelloSign from 'hellosign-embedded';
 import {
   OnboardingAnchorDiv,
   OnboardingButton,
@@ -21,29 +27,37 @@ const {
   HELLOSIGN_DOMAIN_VERIFICATION_ENABLED,
 } = process.env;
 
+const helloSignClient = new HelloSign();
+
 const getPanelDetails = ({
   mainDisplayOption,
   isSmallScreen,
   clickReadAndSign,
   showInvitationForm,
   isProcessing,
+  onCancel,
 }) =>
   mainDisplayOption
     ? {
         justify: isSmallScreen ? 'center' : 'flex-end',
         topElement: (
-          <OnboardingButton
-            variant="contained"
-            onClick={clickReadAndSign}
-            fullWidth={isSmallScreen}
-            disabled={isProcessing}
-          >
-            {isProcessing ? (
-              <Loader size={LoaderSizes.medium} />
-            ) : (
-              <span>Continue</span>
-            )}
-          </OnboardingButton>
+          <>
+            <Button onClick={onCancel} type="button" variant="text">
+              Cancel
+            </Button>
+            <OnboardingButton
+              variant="contained"
+              onClick={clickReadAndSign}
+              fullWidth={isSmallScreen}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <Loader size={LoaderSizes.medium} />
+              ) : (
+                <span>Continue</span>
+              )}
+            </OnboardingButton>
+          </>
         ),
         bottomElement: (
           <MontserratTypography variant="h4" noWrap>
@@ -75,7 +89,9 @@ const getPanelDetails = ({
         ),
       };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
+  const dispatch = useDispatch();
   const [
     isInvitationFormShown,
     showInvitationForm,
@@ -84,38 +100,60 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
 
   const [isProcessing, setProcessing] = useState(false);
 
+  const currentUserProfile = useSelector(store => store.userState.userProfile);
+
   useMount(() => {
     // eslint-disable-next-line no-unused-expressions
-    window?.HelloSign.init(HELLOSIGN_CLIENT_ID);
   });
 
-  const openHelloSign = useCallback(signingUrl => {
-    const skipDomainVerification =
-      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
+  const openHelloSign = useCallback(
+    signingUrl => {
+      const skipDomainVerification =
+        HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
 
-    setProcessing(true);
+      setProcessing(true);
 
-    // eslint-disable-next-line no-unused-expressions
-    window?.HelloSign.open({
-      url: signingUrl,
-      allowCancel: true,
-      skipDomainVerification,
-      messageListener: eventData => {
-        storeSignatureResult({
-          signatureIdentifier: eventData.signature_id,
-          signatureResult: eventData.event,
-        }).then(() => {
-          // eslint-disable-next-line no-unused-expressions
-          window?.HelloSign.close();
-          setProcessing(false);
-          if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-            window.location.href = '/#/onboarding/organization-setup';
-            window.location.reload();
-          }
+      // eslint-disable-next-line no-unused-expressions
+      helloSignClient.open(signingUrl, {
+        clientId: HELLOSIGN_CLIENT_ID,
+        allowCancel: true,
+        skipDomainVerification,
+      });
+
+      helloSignClient.on('cancel', () => {
+        setProcessing(false);
+      });
+
+      helloSignClient.on('error', (signatureId, errorCode) => {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: errorCode,
         });
-      },
-    });
-  }, []);
+        setProcessing(false);
+      });
+
+      helloSignClient.on('sign', signatureId => {
+        storeSignatureResult({
+          signatureIdentifier: signatureId.signatureId,
+          signatureResult: 'signed',
+        }).then(async () => {
+          // eslint-disable-next-line no-unused-expressions
+          helloSignClient.close();
+          setProcessing(false);
+
+          const { updatedByUser } = await checkBAASignedStatus()(dispatch);
+          if (updatedByUser) {
+            window.location.href = '/#/onboarding/team-setup';
+          } else {
+            window.location.href = '/#/onboarding/organization-setup';
+          }
+          window.location.reload();
+        });
+      });
+    },
+    [dispatch],
+  );
 
   const clickReadAndSign = useCallback(() => {
     const defaultErrorMessage =
@@ -142,6 +180,26 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
       });
   }, [openHelloSign]);
 
+  const onCancel = useCallback(async () => {
+    const { userOrganizations } = currentUserProfile;
+    if (userOrganizations && userOrganizations.length > 0) {
+      const baaSignedOrganizations = userOrganizations?.filter(
+        ({ baaSigned, subscriptionDetails }) =>
+          baaSigned === true && subscriptionDetails?.trialEnded !== true,
+      );
+      const { organizationIdentifier } = baaSignedOrganizations[0];
+      sessionStorage.setItem(
+        'currentOrganizationIdentifier',
+        organizationIdentifier,
+      );
+      await selectCurrentOrganization(organizationIdentifier, false);
+      hashHistory.push('home');
+    } else {
+      sessionStorage.removeItem('next-page');
+      hashHistory.push('login');
+    }
+  }, [currentUserProfile]);
+
   const isSmallScreen = useSmallScreen();
 
   const panelDetails = getPanelDetails({
@@ -150,6 +208,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
     clickReadAndSign,
     showInvitationForm,
     isProcessing,
+    onCancel,
   });
 
   return (

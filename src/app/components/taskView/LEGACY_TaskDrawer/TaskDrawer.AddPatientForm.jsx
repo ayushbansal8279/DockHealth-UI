@@ -7,9 +7,9 @@ import { addPatient } from 'actions/patient-actions';
 import useBoolean from 'hooks/useBoolean';
 import DropdownIcon from 'img/dropdown-icon.svg';
 import palette from 'styles/palette';
-import StyledInput from '../userProfileView/StyledInput';
+import * as AlertActions from 'alert/actions';
+import StyledInput from './StyledInput/StyledInput';
 import { addPatientValidationSchema } from './TaskDrawer.ValidationSchema';
-import AlertMessages from '../alert/AlertMessages';
 
 const FormLabel = styled.div`
   color: ${palette.lighterCyanBlue};
@@ -218,12 +218,19 @@ const onSubmit = ({
       };
 
       const newPatient = await addPatient(newData)(dispatch);
-      dispatch(AlertActions.showGlobalAlert('Patient added successfully', 'success'));
+      dispatch(
+        AlertActions.showGlobalAlert('Patient added successfully', 'success'),
+      );
       toggleAddingNewPerson();
       handlePersonSelect(newPatient)();
       closePicker();
     } catch {
-      dispatch(AlertActions.showGlobalAlert('Error adding new patient, please try again later', 'error'));
+      dispatch(
+        AlertActions.showGlobalAlert(
+          'Error adding new patient, please try again later',
+          'error',
+        ),
+      );
     }
   };
 };

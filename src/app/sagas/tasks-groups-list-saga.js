@@ -335,7 +335,9 @@ export function* doReassignTasksToAnotherGroup(payload) {
 
 export function* doOnEnterTasksGroupsList() {
   try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
+    const { taskListIdentifier, taskIdentifier } = yield select(
+      locationParametersSelector,
+    );
     yield put({ type: TASK_GROUP_LIST_REQUEST });
 
     if (taskListIdentifier) {
@@ -344,6 +346,11 @@ export function* doOnEnterTasksGroupsList() {
     }
 
     const isSelectedTask = yield select(taskIsSelectedSelector);
+
+    if (taskIdentifier && !isSelectedTask) {
+      sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
+    }
+
     if (isSelectedTask) {
       yield put(openDrawer());
     }

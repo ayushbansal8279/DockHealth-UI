@@ -8,7 +8,6 @@ import HeaderReducer from './header-reducer';
 import InvitationReducer from './invitation-reducer';
 import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
-import OnboardingProgressReducer from './onboarding-progress-reducer';
 import OrganizationReducer from './organization-reducer';
 import patient from './patient';
 import PatientReducer from './patient-reducer';
@@ -41,7 +40,6 @@ const appReducer = combineReducers({
   form: FormReducer,
   patient,
   header: HeaderReducer,
-  onboardingProgress: OnboardingProgressReducer,
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,
   authBase: AuthBaseReducer,

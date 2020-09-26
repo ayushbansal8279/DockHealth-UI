@@ -67,13 +67,15 @@ import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 // import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetails/ListDetailsView';
-import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
-import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
-import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
-import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
-import OnboardingOrgSetupView from './views/onboarding/onboarding-org-setup/OnboardingOrgSetupView';
-import OnboardingTeamSetupView from './views/onboarding/onboarding-team-setup/OnboardingTeamSetupView';
-import OnboardingTrialCheckView from './views/onboarding/onboarding-trial-check/OnboardingTrialCheckView';
+import OnboardingNewOrganizationInfoView from './views/onboarding/OnboardingNewOrganizationInfoView/OnboardingNewOrganizationInfoView';
+import OnboardingCreateOrganizationView from './views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView';
+import OnboardingBaaCheckView from './views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
+import OnboardingBaaInvitationSentView from './views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
+import OnboardingBaaOverviewView from './views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';
+import OnboardingEulaView from './views/onboarding/OnboardingEulaView/OnboardingEulaView';
+import OnboardingOrgSetupView from './views/onboarding/OnboardingOrgSetupView/OnboardingOrgSetupView';
+import OnboardingTeamSetupView from './views/onboarding/OnboardingTeamSetupView/OnboardingTeamSetupView';
+import OnboardingTrialCheckView from './views/onboarding/OnboardingTrialCheckView/OnboardingTrialCheckView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
@@ -129,7 +131,7 @@ export const Routes = ({ store }) => {
   const checkFeatureToggles = withFeatureToggle(store);
 
   useEffectOnce(() => {
-    sessionStorage.setItem('next-page', '');
+    // sessionStorage.setItem('next-page', '');
 
     const firstPathname = transformPathname(
       hashHistory.getCurrentLocation()?.pathname,
@@ -190,8 +192,8 @@ export const Routes = ({ store }) => {
 
   const dispatch = useDispatch();
 
-  const checkUserIsAuthenticated = ({ checkTrialExpiration }) => {
-    checkUserAuthentication({ dispatch, checkTrialExpiration });
+  const checkUserIsAuthenticated = ({ checkTrialExpiration, callback }) => {
+    checkUserAuthentication({ dispatch, checkTrialExpiration, callback });
   };
 
   const onEnterApp = ({ location, params }) => {
@@ -292,13 +294,8 @@ export const Routes = ({ store }) => {
     dispatch(closeDrawer());
   };
 
-  const onEnterGlobalSearch = () => {
-    dispatch(initializeHiddenNavbarTemplate());
-  };
-
   const onLeaveGlobalSearch = () => {
     dispatch(GlobalSearchActions.resetGlobalSearch());
-    dispatch(removeHiddenNavbarTemplate());
     dispatch(closeDrawer());
   };
 
@@ -312,8 +309,12 @@ export const Routes = ({ store }) => {
       >
         <Route
           component={TemplateCore}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: false });
+          onEnter={(nextState, replace, callback) => {
+            checkUserIsAuthenticated({
+              checkTrialExpiration: false,
+              callback: null,
+            });
+            callback();
           }}
         >
           <Route
@@ -354,8 +355,8 @@ export const Routes = ({ store }) => {
         </Route>
         <Route
           component={TemplateCoreSubscriptionPlan}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: true });
+          onEnter={(nextState, replace, callback) => {
+            checkUserIsAuthenticated({ checkTrialExpiration: true, callback });
           }}
         >
           <IndexRedirect to="/home" />
@@ -376,7 +377,6 @@ export const Routes = ({ store }) => {
           <Route
             path="/search"
             component={GlobalSearchView}
-            onEnter={onEnterGlobalSearch}
             onLeave={onLeaveGlobalSearch}
           />
           <Route
@@ -474,8 +474,8 @@ export const Routes = ({ store }) => {
         <Route
           path="/onboarding"
           component={OnboardingTemplate}
-          onEnter={() => {
-            checkUserIsAuthenticated({ checkTrialExpiration: false });
+          onEnter={(nextState, replace, callback) => {
+            checkUserIsAuthenticated({ checkTrialExpiration: false, callback });
           }}
         >
           <Route component={OnboardingEulaView} path="eula" />
@@ -485,6 +485,14 @@ export const Routes = ({ store }) => {
           <Route
             component={OnboardingBaaInvitationSentView}
             path="baa-invitation-sent"
+          />
+          <Route
+            component={OnboardingNewOrganizationInfoView}
+            path="new-organization"
+          />
+          <Route
+            component={OnboardingCreateOrganizationView}
+            path="create-organization"
           />
           <Route component={OnboardingOrgSetupView} path="organization-setup" />
           <Route component={OnboardingTeamSetupView} path="team-setup" />

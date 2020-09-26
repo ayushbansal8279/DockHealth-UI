@@ -27,10 +27,29 @@ export const Placeholder = styled.p`
 `;
 
 export const SelectElementWrapper = styled.div`
-  width: calc(100% - 130px);
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : `calc(100% - 130px)`)};
   max-height: 132px;
   overflow-y: scroll;
   z-index: 1;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.coolGrey4};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.coolGrey4};
+    background-color: ${palette.coolGrey1};
+  }
 
   ${({ withValue }) =>
     withValue &&
@@ -117,13 +136,32 @@ export const AvailablePeopleWrapper = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  width: calc(100% - 130px);
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : `calc(100% - 130px)`)};
   max-height: 165px;
   overflow-y: scroll;
   background: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   z-index: 100;
   padding: ${spacing.smallPlus} 0;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.white};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.white};
+    background-color: ${palette.coolGrey1};
+  }
 `;
 
 export const AvailablePeopleItemButton = styled.button`

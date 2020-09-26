@@ -12,18 +12,26 @@ import { approvePendingUser, denyPendingUser } from 'api/people-api';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {
   PendingApprovalContainer,
-  PendingApprovalRoleList,
-  PendingApprovalFooter,
-  PendingApprovalDescriptionOne,
-  PendingApprovalDescriptionTwo,
-  PendingApprovalButtonsContainer,
+  RoleSelectionList,
+  RoleSelectionFooter,
+  RoleSelectionDescriptionOne,
+  RoleSelectionDescriptionTwo,
+  RoleSelectionButtonsContainer,
   DenyButtonContainer,
   ApprovalButtonContainer,
   Header,
+  RoleSelectorCancelRemoveUserButton,
 } from './styled';
 
 const USER_TYPES = new Proxy(
   {
+    OWNER: {
+      label: 'Owner',
+      selectable: true,
+      changeable: true,
+      description:
+        'Full access to everything including billing and payments and approving new members.',
+    },
     MEMBER: {
       label: 'Member',
       selectable: true,
@@ -37,7 +45,7 @@ const USER_TYPES = new Proxy(
       changeable: true,
       isLimitedAccess: true,
       description:
-        'Not part of your Organization.  Only have access to this list asks on this list and the patients and people on this list.',
+        'Not part of your Organization. Only have access to this list, tasks on this list and the patients and people on this list.',
     },
   },
   {
@@ -51,7 +59,6 @@ const renderUserTypesOptions = ({
   userTypes,
   closePopover,
   reloadUsers,
-  orgUserRole,
   userStatus,
   selectedRoleKey,
   dispatch,
@@ -65,9 +72,7 @@ const renderUserTypesOptions = ({
         .map(([role, { label, description, isLimitedAccess }]) => ({
           key: role,
           button: true,
-          isSelected:
-            selectedRoleKey === role ||
-            (!selectedRoleKey && orgUserRole === role),
+          isSelected: selectedRoleKey === role,
           isLimitedAccess,
           label,
           description,
@@ -104,7 +109,7 @@ const usePopoverClasses = makeStyles({
   },
 });
 
-const PendingApprovalPopover = props => {
+const PendingApprovalSelectionPopover = props => {
   const {
     labelReference,
     isPopoverOpen,
@@ -114,7 +119,6 @@ const PendingApprovalPopover = props => {
     reloadUsers,
     addSubscription,
     removeSubscription,
-    orgUserRole,
     userStatus,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
@@ -132,17 +136,17 @@ const PendingApprovalPopover = props => {
     <>
       <Header>Approve or deny a new user request</Header>
       <div>
-        <PendingApprovalDescriptionOne>
+        <RoleSelectionDescriptionOne>
           As the Organization Owner, you have the authority to approve or deny
           new member requests.
-        </PendingApprovalDescriptionOne>
-        <PendingApprovalDescriptionTwo>
+        </RoleSelectionDescriptionOne>
+        <RoleSelectionDescriptionTwo>
           If denied, the person who requested the invite will be notified via
           email. If approved, this person will become part of your subscription
           once they create an account on Dock.
-        </PendingApprovalDescriptionTwo>
+        </RoleSelectionDescriptionTwo>
       </div>
-      <PendingApprovalButtonsContainer>
+      <RoleSelectionButtonsContainer>
         <DenyButtonContainer>
           <Button
             onClick={() =>
@@ -183,14 +187,14 @@ const PendingApprovalPopover = props => {
             APPROVE
           </Button>
         </ApprovalButtonContainer>
-      </PendingApprovalButtonsContainer>
+      </RoleSelectionButtonsContainer>
     </>
   );
 
   const SecondStepComponent = () => (
     <>
       <Header>Select their role in your Organization</Header>
-      <PendingApprovalRoleList>
+      <RoleSelectionList>
         {renderUserTypesOptions({
           userStatus,
           userIdentifier,
@@ -201,7 +205,6 @@ const PendingApprovalPopover = props => {
           reloadUsers,
           addSubscription,
           removeSubscription,
-          orgUserRole,
           selectedRoleKey: selectedRole?.key,
           dispatch,
         })?.map(item =>
@@ -210,13 +213,23 @@ const PendingApprovalPopover = props => {
             onSelect: setSelectedRole,
           }),
         )}
-      </PendingApprovalRoleList>
-      <PendingApprovalFooter>
+      </RoleSelectionList>
+      <RoleSelectionFooter>
+        <RoleSelectorCancelRemoveUserButton
+          multipleButtons
+          onClick={() => closePopover()}
+        >
+          Cancel
+        </RoleSelectorCancelRemoveUserButton>
         <Button
           onClick={() =>
             approvePendingUser({ userIdentifier, role: selectedRole?.key })
               .then(() => {
-                dispatch(`User's pending invitation approved successfully`);
+                dispatch(
+                  showGlobalAlert(
+                    `User's pending invitation approved successfully`,
+                  ),
+                );
                 reloadUsers();
                 closePopover();
               })
@@ -236,7 +249,7 @@ const PendingApprovalPopover = props => {
         >
           Save
         </Button>
-      </PendingApprovalFooter>
+      </RoleSelectionFooter>
     </>
   );
 
@@ -263,4 +276,4 @@ const PendingApprovalPopover = props => {
   );
 };
 
-export default PendingApprovalPopover;
+export default PendingApprovalSelectionPopover;

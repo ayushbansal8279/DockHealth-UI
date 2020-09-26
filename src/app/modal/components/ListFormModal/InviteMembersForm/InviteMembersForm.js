@@ -27,7 +27,7 @@ const InviteMembersForm = ({
     return (
       <InviteInitialViewWrapper>
         <Header>
-          <Title>Would you like to Invite people to this list</Title>
+          <Title>Would you like to Invite people to this list?</Title>
         </Header>
         <InviteInitialViewContent>
           <NavigationActionButton onClick={closeModal}>
@@ -59,11 +59,14 @@ const InviteMembersForm = ({
               patients who are part of this list.
             </Description>
           </Header>
-          <InviteMemberToListForm list={list} />
+          <InviteMemberToListForm
+            list={list}
+            externalInvitePosition={{ bottom: -60 }}
+          />
         </Grid>
         <Spacing vertical={4} />
         <SkipButton type="button" onClick={closeModal}>
-          Skip
+          Continue
         </SkipButton>
       </Grid>
     </Wrapper>

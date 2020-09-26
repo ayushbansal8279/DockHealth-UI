@@ -13,6 +13,7 @@ import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import * as AlertActions from 'alert/actions';
 import BillingData from './BillingsView.BillingData';
 import InvoicesList from './BillingsView.InvoicesList';
 import {
@@ -21,15 +22,16 @@ import {
   ErrorContainer,
   StyledCollapse,
 } from './BillingsView.Styled';
-import { showAlert } from 'helpers/utility-functions';
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ setError, dispatch }) => ({
+const onSubmit = ({ setError, dispatch, organizationIdentifier }) => ({
   stripe,
   unsetUpdatingBilling,
+  setProcessingUpdate,
+  unsetProcessingUpdate,
 }) => data => {
   setError('');
-
+  setProcessingUpdate();
   return stripe
     .createToken({ name: 'cardNumber' })
     .then(token => {
@@ -43,9 +45,17 @@ const onSubmit = ({ setError, dispatch }) => ({
       })
         .then(() => {
           unsetUpdatingBilling();
-          dispatch(AlertActions.showGlobalAlert('Billing information updated successfully!', 'success'));
+          unsetProcessingUpdate();
+          dispatch(
+            AlertActions.showGlobalAlert(
+              'Billing information updated successfully!',
+              'success',
+            ),
+          );
+          getBillingDetails({ organizationIdentifier })(dispatch);
         })
         .catch(error => {
+          unsetProcessingUpdate();
           setError(
             error?.response?.data?.errorMessage ??
               'Could not update billing information, please try again later',
@@ -53,6 +63,7 @@ const onSubmit = ({ setError, dispatch }) => ({
         });
     })
     .catch(error => {
+      unsetProcessingUpdate();
       setError(
         error?.message ??
           'Could not update billing information, please try again later',
@@ -123,7 +134,7 @@ const BillingsView = () => {
             setUpdatingBilling={setUpdatingBilling}
             unsetUpdatingBilling={unsetUpdatingBilling}
             cancelUpdateBilling={cancelUpdateBilling}
-            onSubmit={onSubmit({ setError, dispatch })}
+            onSubmit={onSubmit({ setError, dispatch, organizationIdentifier })}
           />
         </Elements>
         <InvoicesList />

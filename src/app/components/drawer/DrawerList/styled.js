@@ -21,7 +21,24 @@ export const DrawerListContainer = styled.div`
 export const DrawerListItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 60px;
+  overflow-y: auto;
+  padding: 1px 2px 1px 0;
+  margin-top: ${spacing.huge};
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+
+  @media screen and (min-height: 766px) {
+    margin-top: 60px;
+  }
 `;
 
 export const StyledList = styled(List).attrs({
@@ -68,7 +85,10 @@ export const StyledListItemText = styled(ListItemText).attrs({
   disableTypography: true,
 })`
   && {
-    color: ${palette.coolGrey2};
+    color: ${props =>
+      props.labelColor ? props.labelColor : palette.coolGrey2};
+    font-size: 16px;
+    line-height: 29px;
     font-weight: normal;
     overflow: hidden;
     padding: 0;
@@ -240,9 +260,7 @@ export const DropdownListItem = styled(FooterListItem)`
 export const StyledDropdown = styled.div`
   margin-top: ${spacing.small};
   background-color: ${palette.midnightBlue};
-  height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   overflow-x: hidden;
-  transition: all 0.25s ease-out;
   width: 100%;
   margin-bottom: ${spacing.regularPlus};
   overflow-y: scroll;

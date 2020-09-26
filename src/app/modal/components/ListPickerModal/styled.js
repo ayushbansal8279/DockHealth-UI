@@ -75,7 +75,7 @@ export const ListsWrapper = styled.div`
   flex: 1;
   width: 100%;
   border: 1px solid ${palette.coolGrey2};
-  overflow: scroll;
+  overflow: auto;
 `;
 
 export const ListItem = styled.button`

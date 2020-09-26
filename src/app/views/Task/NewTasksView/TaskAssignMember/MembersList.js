@@ -23,7 +23,7 @@ const MembersList = ({
   isFetchingMembers = false,
 }) => {
   const membersWithoutCurrentUser = members?.filter(
-    ({ userId }) => userId !== currentUser.userId,
+    ({ userId }) => userId !== currentUser?.userId,
   );
   const [searchValue, setSearchValue] = useState('');
   const filteredMembers = membersWithoutCurrentUser?.filter(({ userName }) =>
@@ -69,7 +69,7 @@ const MembersList = ({
                 <MemberRow
                   key="unassigned"
                   onClick={() => {
-                    reassignTask(task, null);
+                    reassignTask(task, {});
                   }}
                 >
                   <RemoveCircleOutlineRounded
@@ -81,7 +81,7 @@ const MembersList = ({
               )}
               {filteredMembers?.map(member => (
                 <MemberRow
-                  key={member.userId}
+                  key={member?.userId}
                   onClick={() => {
                     reassignTask(task, member);
                   }}

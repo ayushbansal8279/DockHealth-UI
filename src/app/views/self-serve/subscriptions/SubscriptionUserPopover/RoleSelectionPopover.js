@@ -7,13 +7,14 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { changeUserRoleForOrg } from 'actions/people-actions';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
+import { openModal } from 'modal/actions';
 import {
   LimitedAccessLabel,
   RoleItem,
   RoleItemLabel,
   RoleItemDescription,
   RoleSelectorFooter,
-  RoleSelectorRemoveUserButton,
+  RoleSelectorCancelRemoveUserButton,
   Header,
 } from './styled';
 
@@ -126,10 +127,13 @@ const RoleSelectionPopover = ({
   userTypes,
   addSubscription,
   removeSubscription,
+  removeSubscriptionWithNewOwnerFlow,
   userHasSubscription,
   orgUserRole,
   userStatus,
   reloadUsers,
+  ownersCount,
+  currentActiveUsers,
 }) => {
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
@@ -141,6 +145,8 @@ const RoleSelectionPopover = ({
   );
 
   const isInactive = userStatus === 'INACTIVE';
+
+  const isCurrrentUser = userIdentifier === sessionStorage.userIdentifier;
 
   return (
     <SelectorPopover
@@ -168,20 +174,50 @@ const RoleSelectionPopover = ({
       FooterComponent={() => (
         <RoleSelectorFooter multipleButtons={!isInactive}>
           {!isInactive && (
-            <RoleSelectorRemoveUserButton
+            <RoleSelectorCancelRemoveUserButton
               disabled={!userHasSubscription}
               onClick={() => {
                 closePopover();
-                removeSubscription();
+                if (
+                  ownersCount < 2 &&
+                  isCurrrentUser &&
+                  orgUserRole === 'OWNER'
+                ) {
+                  removeSubscriptionWithNewOwnerFlow(modalProps =>
+                    dispatch(
+                      openModal('SelectOwner', {
+                        currentActiveUsers,
+                        isRemovingFlow: true,
+                        ...modalProps,
+                      }),
+                    ),
+                  );
+                } else {
+                  removeSubscription();
+                }
               }}
             >
               Remove user
-            </RoleSelectorRemoveUserButton>
+            </RoleSelectorCancelRemoveUserButton>
           )}
           <Button
             onClick={() => {
-              // eslint-disable-next-line no-unused-expressions
-              selectedRole?.onSave();
+              closePopover();
+              if (
+                ownersCount < 2 &&
+                isCurrrentUser &&
+                orgUserRole === 'OWNER'
+              ) {
+                dispatch(
+                  openModal('SelectOwner', {
+                    currentActiveUsers,
+                    confirm: selectedRole?.onSave,
+                  }),
+                );
+              } else {
+                // eslint-disable-next-line no-unused-expressions
+                selectedRole?.onSave();
+              }
             }}
             size="small"
             disabled={!selectedRole?.key}

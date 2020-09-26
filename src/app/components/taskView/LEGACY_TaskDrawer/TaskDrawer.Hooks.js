@@ -10,8 +10,8 @@ import {
 } from 'actions/task-actions';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
 import useBoolean from 'hooks/useBoolean';
+import * as AlertActions from 'alert/actions';
 import { taskValidationSchema } from './TaskDrawer.ValidationSchema';
-import AlertMessages from '../alert/AlertMessages';
 
 export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   // STATE HOOKS
@@ -124,10 +124,12 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
           setAutoSaveVisible();
         })
         .catch(() => {
-          dispatch(AlertActions.showGlobalAlert(
-            'Error updating priority, please try again later',
-            'error',
-          ));
+          dispatch(
+            AlertActions.showGlobalAlert(
+              'Error updating priority, please try again later',
+              'error',
+            ),
+          );
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

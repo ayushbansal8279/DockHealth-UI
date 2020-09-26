@@ -2,6 +2,7 @@ import { Fade, Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHeader } from 'actions/header-actions';
+import useBoolean from 'hooks/useBoolean';
 import {
   getAllPatients,
   getMyPatientsActive,
@@ -68,6 +69,12 @@ const PatientsView = () => {
   const patientImportDetails = useSelector(
     ({ patientState }) => patientState.patientImportDetails,
   );
+  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
+  const [
+    hasImportErrors,
+    setHasImportErrors,
+    unsetHasImportErrors,
+  ] = useBoolean(false);
 
   const isCreatingPatient = useSelector(
     ({ patientState }) => patientState.isCreatingPatient,
@@ -97,6 +104,7 @@ const PatientsView = () => {
   }, [dispatch]);
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedPatientFilter, setSelectedPatientFilter] = useState('');
 
   const handleSearch = useCallback(
     event => {
@@ -107,29 +115,7 @@ const PatientsView = () => {
     [deselectPatient, setSearchTerm],
   );
 
-  const refreshPatientList = useCallback(
-    async counter => {
-      const importDetails = await getLatestPatientImportDetails()(dispatch);
-      let refreshCounter = 1;
-      if (counter) {
-        refreshCounter = counter;
-      }
-      if (
-        importDetails &&
-        importDetails.createdDateTime &&
-        refreshCounter < 10 &&
-        importDetails.completePercentage < 100
-      ) {
-        setTimeout(() => {
-          refreshCounter += 1;
-          refreshPatientList(refreshCounter);
-        }, 1000);
-      }
-    },
-    [dispatch],
-  );
-
-  const handlePatientFilter = useCallback(
+  const reloadPatientsForSelectedFilter = useCallback(
     selectedFilter => {
       if (selectedFilter === 'MY_PATIENTS') {
         getMyPatientsAll()(dispatch);
@@ -137,13 +123,60 @@ const PatientsView = () => {
         getMyPatientsActive()(dispatch);
       } else {
         getAllPatients()(dispatch);
-        getLatestPatientImportDetails()(dispatch);
-        setTimeout(() => {
-          refreshPatientList(1);
-        }, 1000);
       }
     },
-    [dispatch, refreshPatientList],
+    [dispatch],
+  );
+
+  const refreshPatientList = useCallback(
+    async counter => {
+      const importDetails = await getLatestPatientImportDetails()(dispatch);
+      let refreshCounter = 1;
+      if (counter) {
+        refreshCounter = counter;
+        unsetHasImportErrors();
+        reloadPatientsForSelectedFilter(selectedPatientFilter);
+      }
+      if (
+        importDetails &&
+        importDetails.createdDateTime &&
+        refreshCounter < 15 &&
+        importDetails.completePercentage < 100
+      ) {
+        setTimeout(() => {
+          refreshCounter += 1;
+          refreshPatientList(refreshCounter);
+        }, 1000);
+      } else if (
+        refreshCounter === 15 &&
+        importDetails.completePercentage === 0
+      ) {
+        setHasImportErrors();
+      }
+    },
+    [
+      dispatch,
+      reloadPatientsForSelectedFilter,
+      selectedPatientFilter,
+      setHasImportErrors,
+      unsetHasImportErrors,
+    ],
+  );
+
+  const handlePatientFilter = useCallback(
+    selectedFilter => {
+      setSelectedPatientFilter(selectedFilter);
+      reloadPatientsForSelectedFilter(selectedFilter);
+      if (selectedFilter === 'ALL_PATIENTS') {
+        // load last import status
+        // getLatestPatientImportDetails()(dispatch);
+        // setTimeout(() => {
+        //   refreshPatientList(1);
+        //   unsetHasImportErrors();
+        // }, 1000);
+      }
+    },
+    [reloadPatientsForSelectedFilter],
   );
 
   const filteredPatients = searchPatients(patients, searchTerm);
@@ -159,6 +192,7 @@ const PatientsView = () => {
         hasPatients={!(patients.length === 0 && searchTerm === '')}
         patientImportDetails={patientImportDetails}
         refreshPatientList={refreshPatientList}
+        setImportPopoverOpen={setImportPopoverOpen}
         isGuest={isGuest}
       />
       <PatientsListContainer ref={patientsListContainerReference}>
@@ -174,7 +208,11 @@ const PatientsView = () => {
                 highlightedPatient={highlightedPatient}
                 patientImportDetails={patientImportDetails}
                 refreshPatientList={refreshPatientList}
+                importPopoverOpen={importPopoverOpen}
+                setImportPopoverOpen={setImportPopoverOpen}
+                hasImportErrors={hasImportErrors}
                 isGuest={isGuest}
+                isAllPatientsList={selectedPatientFilter === 'ALL_PATIENTS'}
               />
               <SideClickListener onClick={deselectPatient} />
             </Grid>

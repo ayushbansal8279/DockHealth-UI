@@ -29,7 +29,13 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
   return (
     <UserDetailsFormWrapper>
       <Grid container direction="column" spacing={2}>
-        <Grid container item direction="row" alignItems="flex-end" spacing={2}>
+        <Grid
+          container
+          item
+          direction="row"
+          alignItems="flex-start"
+          spacing={2}
+        >
           <Grid item xs={6}>
             <Input
               type="text"

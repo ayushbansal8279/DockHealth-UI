@@ -106,12 +106,6 @@ export const CondensedH5 = ({ ...props }) => (
   <RobotoTypography condensed variant="h5" {...props} />
 );
 
-export const BlockButton = styled.button`
-  display: block;
-  text-align: left;
-  width: 100%;
-`;
-
 export const HorizontalLabel = styled.span`
   color: ${palette.coolGrey2};
   fontfamily: ${FONT_FAMILY};

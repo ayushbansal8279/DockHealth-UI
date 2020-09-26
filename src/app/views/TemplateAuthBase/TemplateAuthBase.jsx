@@ -12,6 +12,7 @@ import {
   MainContainer,
   RightSideContentContainer,
   RightSideMainContainer,
+  RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
@@ -40,7 +41,9 @@ const TemplateAuthBase = ({ children }) => {
         <LeftSideContentContainer>{leftSideContent}</LeftSideContentContainer>
       </LeftSideMainContainer>
       <RightSideMainContainer>
-        <RightSideContentContainer>{children}</RightSideContentContainer>
+        <RightSideContentContainer>
+          <RightSideMaxWidthContainer>{children}</RightSideMaxWidthContainer>
+        </RightSideContentContainer>
       </RightSideMainContainer>
     </MainContainer>
   );

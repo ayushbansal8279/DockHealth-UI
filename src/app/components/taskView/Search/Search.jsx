@@ -16,6 +16,7 @@ const Search = ({
   fullWidth,
   noBackground,
   value,
+  placeholder,
   ...otherInputProps
 }) => {
   const searchReference = useRef(null);
@@ -45,7 +46,7 @@ const Search = ({
           onBlur();
         }
       }}
-      placeholder="Search"
+      placeholder={placeholder || 'Search'}
       classes={className}
       fullWidth={fullWidth}
       variant={variant}

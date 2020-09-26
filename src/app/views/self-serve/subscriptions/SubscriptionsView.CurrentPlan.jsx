@@ -45,6 +45,7 @@ const CurrentPlan = ({
     planPricePerUser,
     planTotalPayment,
     planIsTrial,
+    planIsFree,
     billingFrequency,
     planIsMonthly,
     planActiveUserCount,
@@ -83,18 +84,20 @@ const CurrentPlan = ({
           )}
         </Grid>
         <Grid container direction="column" justify="flex-end">
-          <ThemeProvider theme={themeMontserratNormal}>
-            <Typography variant="h6">
-              {planNextPaymentLabel} {planNextPaymentDate}
-            </Typography>
-            <Typography variant="h6">
-              <span>{planTotalPayment} </span>
-              {Boolean(planActiveUserCount) && (
-                <span>({planActiveUserCount} users) </span>
-              )}
-              <PlanColumnLink to="/billing">View billing</PlanColumnLink>
-            </Typography>
-          </ThemeProvider>
+          {!planIsFree && (
+            <ThemeProvider theme={themeMontserratNormal}>
+              <Typography variant="h6">
+                {planNextPaymentLabel} {planNextPaymentDate}
+              </Typography>
+              <Typography variant="h6">
+                <span>{planTotalPayment} </span>
+                {Boolean(planActiveUserCount) && (
+                  <span>({planActiveUserCount} users) </span>
+                )}
+                <PlanColumnLink to="/billing">View billing</PlanColumnLink>
+              </Typography>
+            </ThemeProvider>
+          )}
         </Grid>
       </PlanContainer>
     </AsyncElement>

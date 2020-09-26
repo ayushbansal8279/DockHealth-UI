@@ -175,13 +175,14 @@ export const selectUsersForPlan = ({ users }) => dispatch =>
   });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-export const checkBAASignedStatus = () => dispatch => {
+export const checkBAASignedStatus = organizationIdentifier => dispatch => {
   dispatch({
     type: REQUEST_GET_ORGANIZATION,
   });
 
   return handleOrganizationResponse({
-    fetchMethod: () => OrganizationApi.checkBAASignedStatus(),
+    fetchMethod: () =>
+      OrganizationApi.checkBAASignedStatus(organizationIdentifier),
     dispatch,
   });
 };
