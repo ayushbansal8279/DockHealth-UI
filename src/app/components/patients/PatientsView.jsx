@@ -146,7 +146,7 @@ const PatientsView = () => {
         setTimeout(() => {
           refreshCounter += 1;
           refreshPatientList(refreshCounter);
-        }, 2000);
+        }, 1000);
       } else if (
         refreshCounter === 15 &&
         importDetails.completePercentage === 0
