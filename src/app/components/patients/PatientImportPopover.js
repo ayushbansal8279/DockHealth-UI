@@ -43,7 +43,7 @@ const ProgressBar = styled.div`
 const PatientImportPopover = ({
   closePopover,
   patientImportDetails,
-  hasImportErrors,
+  hasImportFailed,
 }) => {
   const [minimizedState, setMinimizedState] = useState(false);
 
@@ -60,6 +60,10 @@ const PatientImportPopover = ({
           .trim()
           .concat('...')
       : patientImportDetails?.fileName;
+
+  const importErrorMessage = patientImportDetails?.errorDetails
+    ? patientImportDetails?.errorDetails
+    : `${patientImportDetails?.trackingDetails?.length} Errors`;
 
   // DEFAULT POPOVER
   return (
@@ -80,7 +84,7 @@ const PatientImportPopover = ({
                 <PopoverMinimizeButton />
               </PopoverCloseButton>
             )}
-            {(fileProgress === 100 || hasImportErrors) && (
+            {(fileProgress === 100 || hasImportFailed) && (
               <CloseButtonWord
                 onClick={closePopover}
                 size="small"
@@ -111,13 +115,14 @@ const PatientImportPopover = ({
           )}
 
           {(patientImportDetails?.trackingDetails?.length > 0 ||
-            hasImportErrors) && (
+            patientImportDetails?.inError ||
+            hasImportFailed) && (
             <ErrorDisplayArea>
               <ErrorAmount>
                 {' '}
-                {hasImportErrors
+                {hasImportFailed
                   ? 'Error processing import'
-                  : `${patientImportDetails?.trackingDetails?.length} Errors`}
+                  : `${importErrorMessage}`}
               </ErrorAmount>
               {patientImportDetails?.trackingDetails?.map(
                 ({ reference, errorDetails }) => (
