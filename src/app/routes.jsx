@@ -310,7 +310,11 @@ export const Routes = ({ store }) => {
         <Route
           component={TemplateCore}
           onEnter={(nextState, replace, callback) => {
-            checkUserIsAuthenticated({ checkTrialExpiration: false, callback });
+            checkUserIsAuthenticated({
+              checkTrialExpiration: false,
+              callback: null,
+            });
+            callback();
           }}
         >
           <Route
