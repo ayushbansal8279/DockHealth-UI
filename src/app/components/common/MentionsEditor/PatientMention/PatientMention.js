@@ -17,53 +17,12 @@ import {
   InfoItem,
   PatientNote,
   NoteDivider,
-  SkeletonLoaderTextRow,
-  SkeletonLoaderText,
   NotesTitle,
   NoteDescription,
   NoteInfo,
 } from './styled';
-
-const renderNotesSkeletonLoader = () => (
-  <>
-    <Divider />
-    <PatientNotesSection>
-      {new Array(2).fill().map(() => (
-        <>
-          <SkeletonLoaderTextRow width={162}>
-            <SkeletonLoaderText />
-          </SkeletonLoaderTextRow>
-          <Spacing vertical={3} />
-          <SkeletonLoaderTextRow width={334}>
-            <SkeletonLoaderText />
-          </SkeletonLoaderTextRow>
-          <Spacing vertical={2} />
-          <SkeletonLoaderTextRow width={334}>
-            <SkeletonLoaderText />
-          </SkeletonLoaderTextRow>
-          <Spacing vertical={2} />
-          <SkeletonLoaderTextRow width={334}>
-            <SkeletonLoaderText />
-          </SkeletonLoaderTextRow>
-          <Spacing vertical={4} />
-          <NoteDivider />
-          <Spacing vertical={3} />
-        </>
-      ))}
-      <SkeletonLoaderTextRow width={162}>
-        <SkeletonLoaderText />
-      </SkeletonLoaderTextRow>
-      <Spacing vertical={3} />
-      <SkeletonLoaderTextRow width={334}>
-        <SkeletonLoaderText />
-      </SkeletonLoaderTextRow>
-      <Spacing vertical={2} />
-      <SkeletonLoaderTextRow width={334}>
-        <SkeletonLoaderText />
-      </SkeletonLoaderTextRow>
-    </PatientNotesSection>
-  </>
-);
+import PatientMentionDetailsLoader from './PatientMentionDetailsLoader';
+import PatientMentionsNotesLoader from './PatientMentionsNotesLoader';
 
 const renderPatientNotes = (notes, { firstName, lastName }) => {
   return notes?.length > 0 ? (
@@ -188,32 +147,14 @@ const PatientMention = ({ mention, className, children }) => {
                 )}
               </>
             ) : (
-              <>
-                <SkeletonLoaderTextRow width={162}>
-                  <SkeletonLoaderText />
-                </SkeletonLoaderTextRow>
-                <Spacing vertical={3} />
-                <SkeletonLoaderTextRow width={334}>
-                  <SkeletonLoaderText />
-                  <Spacing horizontal={3} />
-                  <SkeletonLoaderText />
-                </SkeletonLoaderTextRow>
-                <Spacing vertical={2} />
-                <SkeletonLoaderTextRow width={334}>
-                  <SkeletonLoaderText />
-                </SkeletonLoaderTextRow>
-                <Spacing vertical={2} />
-                <SkeletonLoaderTextRow width={334}>
-                  <SkeletonLoaderText />
-                  <Spacing horizontal={3} />
-                  <SkeletonLoaderText />
-                </SkeletonLoaderTextRow>
-              </>
+              <PatientMentionDetailsLoader />
             )}
           </PatientInfoSection>
-          {patientData
-            ? renderPatientNotes(allNotes, patientData)
-            : renderNotesSkeletonLoader()}
+          {patientData ? (
+            renderPatientNotes(allNotes, patientData)
+          ) : (
+            <PatientMentionsNotesLoader />
+          )}
         </PatientCardContainer>
       </Popper>
     </MentionItem>
