@@ -1,12 +1,12 @@
 import React from 'react';
 import EmptyTaskListBear from 'img/animals/bear';
 import { DragDropContext } from 'react-beautiful-dnd';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from '../TasksGroup/TasksGroup';
 import { TaskGroupsContainer } from '../styled';
+import ListSkeletonLoader from '../ListSkeletonLoader/ListSkeletonLoader';
 
 const CompletedTasksView = ({
   tasks,
@@ -52,41 +52,48 @@ const CompletedTasksView = ({
         1,
       0,
     ) || 0;
+
   return (
-    <ViewLoader isFetchingData={isFetchingData}>
-      {tasks?.length > 0 ? (
-        <TaskGroupsContainer>
-          <DragDropContext onDragEnd={() => {}}>
-            <TasksGroup
-              groupName="Completed"
-              currentUser={currentUser}
-              markComplete={markComplete}
-              openDrawer={openDrawer}
-              storeAsCurrentTask={storeAsCurrentTask}
-              toggleTaskPriority={toggleSingleTaskPriority}
-              toggleCompleteTask={toggleCompleteTask}
-              tasks={tasks}
-              isCompletedGroup
-              groupPagination={groupPagination}
-              showMoreTasks={showMoreTasks}
-              hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
-              isFetchingMoreTasks={isFetchingMoreTasks}
-              updateDueDate={updateDueDate}
-              quickAddTaskVisible={false}
-              dragAndDropDisabled={dragAndDropDisabled}
-              listNameVisible={listNameVisible}
-              reassignTask={reassignTask}
-              areFiltersApplied={areFiltersApplied}
-              isSearchApplied={isSearchApplied}
-              selectedTask={selectedTask}
-              listUniqueKey={listUniqueKey}
-            />
-          </DragDropContext>
-        </TaskGroupsContainer>
+    <>
+      {isFetchingData ? (
+        <ListSkeletonLoader />
       ) : (
-        renderEmptyState()
+        <>
+          {tasks?.length > 0 ? (
+            <TaskGroupsContainer>
+              <DragDropContext onDragEnd={() => {}}>
+                <TasksGroup
+                  groupName="Completed"
+                  currentUser={currentUser}
+                  markComplete={markComplete}
+                  openDrawer={openDrawer}
+                  storeAsCurrentTask={storeAsCurrentTask}
+                  toggleTaskPriority={toggleSingleTaskPriority}
+                  toggleCompleteTask={toggleCompleteTask}
+                  tasks={tasks}
+                  isCompletedGroup
+                  groupPagination={groupPagination}
+                  showMoreTasks={showMoreTasks}
+                  hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
+                  isFetchingMoreTasks={isFetchingMoreTasks}
+                  updateDueDate={updateDueDate}
+                  quickAddTaskVisible={false}
+                  dragAndDropDisabled={dragAndDropDisabled}
+                  listNameVisible={listNameVisible}
+                  reassignTask={reassignTask}
+                  areFiltersApplied={areFiltersApplied}
+                  isSearchApplied={isSearchApplied}
+                  selectedTask={selectedTask}
+                  listUniqueKey={listUniqueKey}
+                />
+              </DragDropContext>
+            </TaskGroupsContainer>
+          ) : (
+            renderEmptyState()
+          )}
+        </>
       )}
-    </ViewLoader>
+    </>
   );
 };
 
