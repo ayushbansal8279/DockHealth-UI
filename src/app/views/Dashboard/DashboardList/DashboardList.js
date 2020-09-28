@@ -189,7 +189,6 @@ export const DashboardTab = ({
 const DashboardList = ({
   dashboardTasks,
   dashboardTasksIsLoading,
-  dashboardStatisticsIsLoading,
   currentUser,
   modalActions,
   storeAsCurrentTask,
@@ -508,9 +507,7 @@ const DashboardList = ({
       <Spacing vertical={5} />
       <ViewLoader
         isFetchingData={
-          dashboardTasksIsLoading ||
-          dashboardStatisticsIsLoading ||
-          completeTaskCount === undefined
+          dashboardTasksIsLoading || completeTaskCount === undefined
         }
       >
         {!isEmpty(searchedDashboardTasks) ? (
