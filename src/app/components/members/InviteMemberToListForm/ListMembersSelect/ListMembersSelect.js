@@ -123,34 +123,42 @@ const ListMembersSelect = ({
       case 40:
         event.preventDefault();
         event.stopPropagation();
-        setHoveredItemIndex(previousIndex => {
-          let newIndex;
-          if (previousIndex === searchedAvailablePeople.length - 1) {
-            newIndex = 0;
-          } else {
-            newIndex = previousIndex + 1;
-          }
 
-          searchedPeopleReferences.current[newIndex].scrollIntoView(false);
-          return newIndex;
-        });
+        if (searchedAvailablePeople?.length > 0) {
+          setHoveredItemIndex(previousIndex => {
+            let newIndex;
+            if (previousIndex === searchedAvailablePeople.length - 1) {
+              newIndex = 0;
+            } else {
+              newIndex = previousIndex + 1;
+            }
+
+            searchedPeopleReferences.current[newIndex].scrollIntoView(false);
+            return newIndex;
+          });
+        }
+
         break;
 
       // up arrow key
       case 38:
         event.preventDefault();
         event.stopPropagation();
-        setHoveredItemIndex(previousIndex => {
-          let newIndex;
-          if (previousIndex === 0) {
-            newIndex = searchedAvailablePeople.length - 1;
-          } else {
-            newIndex = previousIndex - 1;
-          }
 
-          searchedPeopleReferences.current[newIndex].scrollIntoView(true);
-          return newIndex;
-        });
+        if (searchedAvailablePeople?.length > 0) {
+          setHoveredItemIndex(previousIndex => {
+            let newIndex;
+            if (previousIndex === 0) {
+              newIndex = searchedAvailablePeople.length - 1;
+            } else {
+              newIndex = previousIndex - 1;
+            }
+
+            searchedPeopleReferences.current[newIndex].scrollIntoView(true);
+            return newIndex;
+          });
+        }
+
         break;
 
       default:
