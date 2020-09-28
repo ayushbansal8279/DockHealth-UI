@@ -25,6 +25,7 @@ export const AvatarContainer = styled.div`
   justify-content: center;
   position: relative;
   width: ${props => props.size ?? 110}px;
+  opacity: ${props => props.isInactive && '0.5'};
 `;
 
 export const InnerAvatarContainer = styled.div`

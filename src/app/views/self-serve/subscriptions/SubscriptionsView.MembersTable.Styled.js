@@ -66,7 +66,7 @@ export const MemberTypeButton = styled.button`
   * > * {
     font-weight: normal;
     color: ${props =>
-      props.isInvited || !props.clickable
+      props.isInvited || !props.clickable || props.isInactive
         ? palette.coolGrey1
         : palette.mediumGrey}
 
