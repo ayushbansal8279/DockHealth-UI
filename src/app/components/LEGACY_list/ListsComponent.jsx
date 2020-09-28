@@ -88,6 +88,20 @@ const NewListNotification = styled.div`
   margin-bottom: ${spacing.regular};
 `;
 
+const ListName = styled.div`
+  position: relative;
+`;
+
+const InfoDot = styled.div`
+  position: absolute;
+  top: 6px;
+  left: -16px;
+  height: 8px;
+  width: 8px;
+  border-radius: 4px;
+  background-color: ${palette.brightBlue};
+`;
+
 const TaskListRow = ({
   taskList,
   setIsAdminForCurrentList,
@@ -111,6 +125,7 @@ const TaskListRow = ({
     listType,
     listDescription,
     adminIdentifiers,
+    hasUpdatesForMember,
   } = taskList;
 
   let isOwnerOrAdmin = role === 'ADMIN' || role === 'OWNER';
@@ -140,14 +155,15 @@ const TaskListRow = ({
         direction="column"
       >
         {showNewIndicator && <NewListTag>NEW</NewListTag>}
-        <div
+        <ListName
           onClick={() => onClick(taskListIdentifier)}
           style={{ cursor: 'pointer', textAlign: 'left' }}
         >
+          {hasUpdatesForMember && <InfoDot />}
           <MontserratTypography variant="h4" weight="bold">
             {listName}
           </MontserratTypography>
-        </div>
+        </ListName>
         <Spacing vertical={2} />
         <MontserratTypography variant="h6" weight="500">
           {listDescription}
