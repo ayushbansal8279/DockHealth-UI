@@ -129,7 +129,8 @@ export const UniversalInput = ({
           placeholder={placeholder}
           inputRef={register}
           inputProps={{
-            value,
+            value:
+              name === 'username' || name === 'password' ? undefined : value,
             setValue,
             name,
           }}
