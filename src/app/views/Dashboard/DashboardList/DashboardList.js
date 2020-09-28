@@ -23,7 +23,6 @@ import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/Dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import Search from 'components/taskView/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
@@ -56,6 +55,7 @@ import {
   EmptyStateContainer,
   TipsSwitchLabel,
 } from './styled';
+import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
 
 const searchDashboardTasks = (dashboardTasks, searchValue) =>
   dashboardTasks.reduce((accumulator, currentValue) => {
@@ -505,43 +505,43 @@ const DashboardList = ({
         />
       </StickyHeader>
       <Spacing vertical={5} />
-      <ViewLoader
-        isFetchingData={
-          dashboardTasksIsLoading || completeTaskCount === undefined
-        }
-      >
-        {!isEmpty(searchedDashboardTasks) ? (
-          searchedDashboardTasks?.map(item => (
-            <DashboardTasksGroup
-              key={item.groupType}
-              dashboardTasksGroup={item}
-              toggleDashboardTaskComplete={toggleDashboardTaskComplete}
-              redirectToParentTask={redirectToParentTask}
-              storeAsCurrentTask={storeAsCurrentTask}
-              sortDashboardTasks={sortDashboardTasks}
-              openDrawer={openDrawer}
-              isTaskDrawerOpen={isTaskDrawerOpen}
-              selectedTaskIdentifier={selectedTaskIdentifier}
-              currentSortMethod={currentSortMethod}
-              currentSortType={sortType}
-              dynamicColumnType={dynamicColumnType}
-              onClickDynamincColumnSort={onClickDynamincColumnSort}
-              onClickAssignedSort={onClickAssignedSort}
-              onClickListNameSort={onClickListNameSort}
-              showClearSortFiltersModal={showClearSortFiltersModal}
-              isSortApplied={isSortApplied}
-              areFiltersApplied={areFiltersApplied}
-              isAllTasksTab={selectedTab === 'ALL_TASKS'}
-              updateDueDate={updateDashboardTaskDueDate}
-              currentUser={currentUser}
-              reassignDashboardTask={reassignDashboardTask}
-              updateWorkflowStatus={updateWorkflowStatus}
-            />
-          ))
-        ) : (
-          <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
-        )}
-      </ViewLoader>
+      {dashboardTasksIsLoading || completeTaskCount === undefined ? (
+        <DashboardSkeletonLoader />
+      ) : (
+        <>
+          {!isEmpty(searchedDashboardTasks) ? (
+            searchedDashboardTasks?.map(item => (
+              <DashboardTasksGroup
+                key={item.groupType}
+                dashboardTasksGroup={item}
+                toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+                redirectToParentTask={redirectToParentTask}
+                storeAsCurrentTask={storeAsCurrentTask}
+                sortDashboardTasks={sortDashboardTasks}
+                openDrawer={openDrawer}
+                isTaskDrawerOpen={isTaskDrawerOpen}
+                selectedTaskIdentifier={selectedTaskIdentifier}
+                currentSortMethod={currentSortMethod}
+                currentSortType={sortType}
+                dynamicColumnType={dynamicColumnType}
+                onClickDynamincColumnSort={onClickDynamincColumnSort}
+                onClickAssignedSort={onClickAssignedSort}
+                onClickListNameSort={onClickListNameSort}
+                showClearSortFiltersModal={showClearSortFiltersModal}
+                isSortApplied={isSortApplied}
+                areFiltersApplied={areFiltersApplied}
+                isAllTasksTab={selectedTab === 'ALL_TASKS'}
+                updateDueDate={updateDashboardTaskDueDate}
+                currentUser={currentUser}
+                reassignDashboardTask={reassignDashboardTask}
+                updateWorkflowStatus={updateWorkflowStatus}
+              />
+            ))
+          ) : (
+            <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
+          )}
+        </>
+      )}
       <NewTaskDrawer
         modalActions={modalActions}
         refreshList={() => {
