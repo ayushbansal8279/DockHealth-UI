@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskDrawerFields } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import * as ModalActions from 'modal/actions';
@@ -21,6 +20,8 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
+import PatientListSkeletonLoader from './PatientListSkeletonLoader/PatientListSkeletonLoader';
+import PatientToolbarSkeletonLoader from './PatientToolbarSkeletonLoader/PatientToolbarSkeletonLoader';
 
 const PatientDetailsView = ({
   children,
@@ -87,7 +88,7 @@ const PatientDetailsView = ({
   return (
     <>
       <PatientDetailsHeader patientDetails={patientDetails} />
-      {(incompleteTasksCount > 0 || completeTasksCount > 0) && (
+      {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
         <Toolbar
           onSelectTab={navigateToTab}
           selectedTab={activeTab}
@@ -119,10 +120,16 @@ const PatientDetailsView = ({
               : null
           }
         />
+      ) : (
+        <PatientToolbarSkeletonLoader />
       )}
-      <ViewLoader isFetchingData={isFetching}>
-        <PatientListsContainer>{children}</PatientListsContainer>
-      </ViewLoader>
+      <>
+        {isFetching ? (
+          <PatientListSkeletonLoader />
+        ) : (
+          <PatientListsContainer>{children}</PatientListsContainer>
+        )}
+      </>
       <NewTaskDrawer
         modalActions={modalActions}
         refreshList={refreshPatientTasks}
