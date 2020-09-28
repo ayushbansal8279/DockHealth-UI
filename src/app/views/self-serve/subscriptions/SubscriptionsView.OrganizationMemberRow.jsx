@@ -137,6 +137,8 @@ export const MemberAvatar = ({
   lastName,
   userIdentifier,
   profileThumbnailPictureHash,
+  isInactive,
+  bubbleColor,
 }) => {
   const { loading, value: avatarContent } = useAsync(async () => {
     let downloadedAvatarContent = null;
@@ -165,7 +167,9 @@ export const MemberAvatar = ({
       <Loader />
     </LoaderContainer>
   ) : (
-    <Avatar size={39}>{avatarContent}</Avatar>
+    <Avatar size={39} isInactive={isInactive} color={bubbleColor}>
+      {avatarContent}
+    </Avatar>
   );
 };
 
@@ -193,6 +197,7 @@ const OrganizationMemberRow = ({
   openRemoveSubscriptionModal,
   organizationMembers,
   isInvited, // eslint-disable-next-line sonarjs/cognitive-complexity
+  bubbleColor,
 }) => {
   let userType = null;
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -278,6 +283,8 @@ const OrganizationMemberRow = ({
             lastName={lastName}
             userIdentifier={userIdentifier}
             profileThumbnailPictureHash={profileThumbnailPictureHash}
+            isInactive={userStatus === 'INACTIVE' || isInvited}
+            bubbleColor={bubbleColor}
           />
         </MemberTableCell>
       </Grid>

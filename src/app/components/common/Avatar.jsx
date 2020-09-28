@@ -19,6 +19,7 @@ export default React.forwardRef(
       withShadow,
       color = palette.midnightBlue,
       padded = true,
+      isInactive,
       ...props
     },
     reference,
@@ -30,6 +31,7 @@ export default React.forwardRef(
       withCursor={withCursor}
       withShadow={withShadow}
       color={color}
+      isInactive={isInactive}
       {...omit(['ref'], props)}
     >
       <InnerAvatarContainer color={color} size={size} padded={padded}>
