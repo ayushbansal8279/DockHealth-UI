@@ -187,13 +187,18 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
         ({ baaSigned, subscriptionDetails }) =>
           baaSigned === true && subscriptionDetails?.trialEnded !== true,
       );
-      const { organizationIdentifier } = baaSignedOrganizations[0];
-      sessionStorage.setItem(
-        'currentOrganizationIdentifier',
-        organizationIdentifier,
-      );
-      await selectCurrentOrganization(organizationIdentifier, false);
-      hashHistory.push('home');
+      if (baaSignedOrganizations && baaSignedOrganizations.length > 0) {
+        const { organizationIdentifier } = baaSignedOrganizations[0];
+        sessionStorage.setItem(
+          'currentOrganizationIdentifier',
+          organizationIdentifier,
+        );
+        await selectCurrentOrganization(organizationIdentifier, false);
+        hashHistory.push('home');
+      } else {
+        sessionStorage.removeItem('next-page');
+        hashHistory.push('login');
+      }
     } else {
       sessionStorage.removeItem('next-page');
       hashHistory.push('login');
