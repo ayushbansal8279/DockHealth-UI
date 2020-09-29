@@ -10,6 +10,7 @@ import {
   PatientDetailsNotesListContainer,
   AddNotePlaceholder,
 } from './styled';
+import PatientDetailsNotesLoader from '../PatientDetailsNotesLoader/PatientDetailsNotesLoader';
 
 const AddPatientNote = () => (
   <MontserratTypography>
@@ -23,6 +24,7 @@ const PatientDetailsNotes = ({
   addPatientNote,
   editPatientNote,
   deletePatientNote,
+  isLoadingDetails,
 }) => {
   const [isOpenedNotes, setIsOpenedNotes] = useState(true);
   const [editableNote, setEditableNote] = useState(null);
@@ -30,46 +32,52 @@ const PatientDetailsNotes = ({
 
   return (
     <PatientDetailsNotesContainer>
-      <Arrow
-        isOpen={isOpenedNotes}
-        setOpen={setIsOpenedNotes}
-        showArrow={allNotes?.length > 0}
-        justifyContent="flex-start"
-      >
-        <span>NOTES</span>
-      </Arrow>
-      <Collapse timeout={150} in={isOpenedNotes}>
-        <PatientDetailsNotesListContainer ref={listReference}>
-          {allNotes?.map(note => (
-            <PatientNote
-              {...note}
-              setEditableNote={setEditableNote}
-              isEditable={note.patientNoteIdentifier === editableNote}
-              editPatientNote={editPatientNote}
-              deletePatientNote={deletePatientNote}
-              currentUser={currentUser}
-            />
-          ))}
-        </PatientDetailsNotesListContainer>
-      </Collapse>
+      {!isLoadingDetails ? (
+        <>
+          <Arrow
+            isOpen={isOpenedNotes}
+            setOpen={setIsOpenedNotes}
+            showArrow={allNotes?.length > 0}
+            justifyContent="flex-start"
+          >
+            <span>NOTES</span>
+          </Arrow>
+          <Collapse timeout={150} in={isOpenedNotes}>
+            <PatientDetailsNotesListContainer ref={listReference}>
+              {allNotes?.map(note => (
+                <PatientNote
+                  {...note}
+                  setEditableNote={setEditableNote}
+                  isEditable={note.patientNoteIdentifier === editableNote}
+                  editPatientNote={editPatientNote}
+                  deletePatientNote={deletePatientNote}
+                  currentUser={currentUser}
+                />
+              ))}
+            </PatientDetailsNotesListContainer>
+          </Collapse>
 
-      <PatientDetailsNoteInput
-        onEnterClick={value => {
-          if ([...value]?.filter(char => char !== ' ').length > 0) {
-            addPatientNote({ note: value });
-            listReference.current.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: 'smooth',
-            });
-          }
-        }}
-        closeOnEnter
-        placeholder="Leave a note"
-        currentUser={currentUser}
-      >
-        <AddPatientNote />
-      </PatientDetailsNoteInput>
+          <PatientDetailsNoteInput
+            onEnterClick={value => {
+              if ([...value]?.filter(char => char !== ' ').length > 0) {
+                addPatientNote({ note: value });
+                listReference.current.scrollTo({
+                  top: 0,
+                  left: 0,
+                  behavior: 'smooth',
+                });
+              }
+            }}
+            closeOnEnter
+            placeholder="Leave a note"
+            currentUser={currentUser}
+          >
+            <AddPatientNote />
+          </PatientDetailsNoteInput>
+        </>
+      ) : (
+        <PatientDetailsNotesLoader />
+      )}
     </PatientDetailsNotesContainer>
   );
 };

@@ -15,6 +15,7 @@ import {
   ArrowBox,
   ArrowBoxIndicator,
 } from './styled';
+import PatientDetailsLoader from './PatientDetailsLoader/PatientDetailsLoader';
 
 const formatInformation = (information, width) => {
   if (width <= 1152 && information?.length > 24) {
@@ -62,6 +63,7 @@ const PatientDetailsInformation = ({
   gender,
   isOpenedDetails,
   setIsOpenedDetails,
+  isLoadingDetails,
 }) => {
   const { width } = useWindowDimensions();
 
@@ -78,51 +80,58 @@ const PatientDetailsInformation = ({
           </Link>
         </div>
         <div>
-          <PatientName>
-            {[firstName, middleName, lastName].join(' ')}
-          </PatientName>
-          {(dob || gender || mrn || email || phoneMobile || phoneHome) && (
-            <PatientDetails>
-              <PatientDetailsInformations>
-                {(dob || gender) && (
-                  <>
-                    <PatientInfo>
-                      {dob &&
-                        `${moment(dob).format('MM/DD/YYYY')} ${moment().diff(
-                          moment(dob),
-                          'years',
-                        )} yo `}
-                      {gender && gender?.charAt(0)?.toUpperCase()}
-                    </PatientInfo>
-                    <PatientInfoDivider />
-                  </>
-                )}
-                {mrn && (
-                  <>
-                    <PatientInfo>MRN# {mrn}</PatientInfo>
-                    <PatientInfoDivider />
-                  </>
-                )}
-                {email && (
-                  <>
-                    <PatientInfo>{formatInformation(email, width)}</PatientInfo>
-                    <PatientInfoDivider />
-                  </>
-                )}
-                {phoneMobile && (
-                  <>
-                    <PatientInfo>M {phoneMobile}</PatientInfo>
-                    <PatientInfoDivider />
-                  </>
-                )}
-                {phoneHome && (
-                  <>
-                    <PatientInfo>H {phoneHome}</PatientInfo>
-                    <PatientInfoDivider />
-                  </>
-                )}
-              </PatientDetailsInformations>
-            </PatientDetails>
+          {!isLoadingDetails ? (
+            <>
+              <PatientName>
+                {[firstName, middleName, lastName].join(' ')}
+              </PatientName>
+              {(dob || gender || mrn || email || phoneMobile || phoneHome) && (
+                <PatientDetails>
+                  <PatientDetailsInformations>
+                    {(dob || gender) && (
+                      <>
+                        <PatientInfo>
+                          {dob &&
+                            `${moment(dob).format(
+                              'MM/DD/YYYY',
+                            )} ${moment().diff(moment(dob), 'years')} yo `}
+                          {gender && gender?.charAt(0)?.toUpperCase()}
+                        </PatientInfo>
+                        <PatientInfoDivider />
+                      </>
+                    )}
+                    {mrn && (
+                      <>
+                        <PatientInfo>MRN# {mrn}</PatientInfo>
+                        <PatientInfoDivider />
+                      </>
+                    )}
+                    {email && (
+                      <>
+                        <PatientInfo>
+                          {formatInformation(email, width)}
+                        </PatientInfo>
+                        <PatientInfoDivider />
+                      </>
+                    )}
+                    {phoneMobile && (
+                      <>
+                        <PatientInfo>M {phoneMobile}</PatientInfo>
+                        <PatientInfoDivider />
+                      </>
+                    )}
+                    {phoneHome && (
+                      <>
+                        <PatientInfo>H {phoneHome}</PatientInfo>
+                        <PatientInfoDivider />
+                      </>
+                    )}
+                  </PatientDetailsInformations>
+                </PatientDetails>
+              )}
+            </>
+          ) : (
+            <PatientDetailsLoader />
           )}
         </div>
       </PatientDetailsBio>

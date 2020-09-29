@@ -8,7 +8,6 @@ import {
   updatePatient as updatePatientAction,
   archivePatient as archivePatientAction,
 } from 'sagas/patient-saga';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { openModal as openModalAction } from 'modal/actions';
 
 import PatientDetailsInformation from './PatientDetailsInformation';
@@ -32,12 +31,13 @@ const PatientDetailsHeader = ({
 
   return (
     <PatientDetailsContainer>
-      <ViewLoader isFetchingData={patientIsLoading}>
-        <PatientDetailsInformation
-          {...patientDetails}
-          setIsOpenedDetails={setIsOpenedDetails}
-          isOpenedDetails={isOpenedDetails}
-        />
+      <PatientDetailsInformation
+        {...patientDetails}
+        isLoadingDetails={patientIsLoading}
+        setIsOpenedDetails={setIsOpenedDetails}
+        isOpenedDetails={isOpenedDetails}
+      />
+      {!patientIsLoading && (
         <PatientDetails
           {...patientDetails}
           isOpenedDetails={isOpenedDetails}
@@ -45,14 +45,15 @@ const PatientDetailsHeader = ({
           patientIdentifier={patientIdentifier}
           archivePatient={archivePatient}
         />
-        <PatientDetailsNotes
-          allNotes={allNotes}
-          currentUser={currentUser}
-          addPatientNote={addPatientNote}
-          editPatientNote={editPatientNote}
-          deletePatientNote={deletePatientNote}
-        />
-      </ViewLoader>
+      )}
+      <PatientDetailsNotes
+        isLoadingDetails={patientIsLoading}
+        allNotes={allNotes}
+        currentUser={currentUser}
+        addPatientNote={addPatientNote}
+        editPatientNote={editPatientNote}
+        deletePatientNote={deletePatientNote}
+      />
     </PatientDetailsContainer>
   );
 };
