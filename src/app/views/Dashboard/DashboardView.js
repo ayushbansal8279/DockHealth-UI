@@ -28,6 +28,7 @@ import {
   MenuButton,
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
+  DashboardListWrapper,
 } from './styled';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import existingUserTourHooks from './existing-user-tour-hooks';
@@ -135,10 +136,7 @@ const DashboardView = ({
               />
             </DashboardSidebarWrapper>
           )}
-          <DashboardContentWrapper
-            fullWidth={createListViewVisible}
-            hasRightPadding={shouldHideSidebar}
-          >
+          <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
             {hasExistingLists && isFirstUserListCreationSuccess && (
               <Confetti style={{ zIndex: 101 }} numberOfPieces={700} />
             )}
@@ -176,7 +174,7 @@ const DashboardView = ({
                   />
                 </DashboardFirstVisitViewWrapper>
               ) : (
-                <div>
+                <DashboardListWrapper fullWidth={createListViewVisible}>
                   <DashboardHeaderContainer>
                     <DashboardStatistics dashboardTab={dashboardTab} />
                   </DashboardHeaderContainer>
@@ -187,7 +185,7 @@ const DashboardView = ({
                     tourModalIsOpen={tourModalIsOpen}
                     openTourModal={forceOpenTourModal}
                   />
-                </div>
+                </DashboardListWrapper>
               )}
             </DashboardScrollableList>
           </DashboardContentWrapper>
