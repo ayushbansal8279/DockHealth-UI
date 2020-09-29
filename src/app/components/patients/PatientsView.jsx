@@ -1,4 +1,4 @@
-import { Fade, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHeader } from 'actions/header-actions';
@@ -10,30 +10,16 @@ import {
   highlightPatient,
   getLatestPatientImportDetails,
 } from 'actions/patient-actions';
-import Loader from '../common/Loader/Loader';
 import GenericHeader from '../common/GenericHeader';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
 import {
-  FadeContainer,
   PatientsListContainer,
   PatientsViewContainer,
   SidebarInnerContainer,
   SideClickListener,
 } from './PatientsView.Styled';
-
-const PatientsListSpinner = ({ isFetching }) => (
-  <FadeContainer>
-    <Fade
-      in={isFetching}
-      unmountOnExit
-      style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
-    >
-      <Loader />
-    </Fade>
-  </FadeContainer>
-);
 
 const compareField = (field, term) => field?.toLowerCase().includes(term);
 
@@ -197,26 +183,23 @@ const PatientsView = () => {
       />
       <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>
-          {isFetching ? (
-            <PatientsListSpinner isFetching={isFetching} />
-          ) : (
-            <Grid container sm={isCompact ? 6 : 12} item direction="column">
-              <PatientsList
-                patients={filteredPatients}
-                isFiltered={searchTerm !== ''}
-                isCompact={isCompact}
-                highlightedPatient={highlightedPatient}
-                patientImportDetails={patientImportDetails}
-                refreshPatientList={refreshPatientList}
-                importPopoverOpen={importPopoverOpen}
-                setImportPopoverOpen={setImportPopoverOpen}
-                hasImportErrors={hasImportErrors}
-                isGuest={isGuest}
-                isAllPatientsList={selectedPatientFilter === 'ALL_PATIENTS'}
-              />
-              <SideClickListener onClick={deselectPatient} />
-            </Grid>
-          )}
+          <Grid container sm={isCompact ? 6 : 12} item direction="column">
+            <PatientsList
+              patients={filteredPatients}
+              isFiltered={searchTerm !== ''}
+              isCompact={isCompact}
+              highlightedPatient={highlightedPatient}
+              patientImportDetails={patientImportDetails}
+              refreshPatientList={refreshPatientList}
+              importPopoverOpen={importPopoverOpen}
+              setImportPopoverOpen={setImportPopoverOpen}
+              hasImportErrors={hasImportErrors}
+              isGuest={isGuest}
+              isAllPatientsList={selectedPatientFilter === 'ALL_PATIENTS'}
+              isFetching={isFetching}
+            />
+            <SideClickListener onClick={deselectPatient} />
+          </Grid>
           {(highlightedPatient || isCreatingPatient) && (
             <Grid sm={6} item container direction="column">
               <SidebarInnerContainer

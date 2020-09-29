@@ -20,6 +20,7 @@ import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
 import ExcelLogo from 'img/ExcelLogo.svg';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import PatientImportPopover from './PatientImportPopover';
+import PatientListLoader from './PatientsListLoader/PatientListLoader';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -354,6 +355,7 @@ const PatientsList = ({
   hasImportErrors,
   isGuest,
   isAllPatientsList,
+  isFetching,
 }) => {
   const dispatch = useDispatch();
 
@@ -362,6 +364,10 @@ const PatientsList = ({
   const onAddPatientClick = useCallback(() => {
     dispatch(beginPatientCreation());
   }, [dispatch]);
+
+  if (isFetching) {
+    return <PatientListLoader />;
+  }
 
   if (patients.length === 0) {
     return !isAllPatientsList || isFiltered || isGuest ? (

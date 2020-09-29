@@ -13,13 +13,6 @@ export const PatientsListContainer = styled.div`
   overflow-y: auto;
 `;
 
-export const FadeContainer = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  padding-top: 100px;
-`;
-
 export const SideClickListener = styled.div`
   flex: 1;
 `;
