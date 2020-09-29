@@ -136,9 +136,8 @@ const getTasksType = () => {
   }
 };
 
-function* doFetchDashboardMyTasksStatistics() {
+function* doReloadDashboardMyTasksStatistics() {
   try {
-    yield put({ type: REQUEST_DASHBOARD_STATISTICS });
     const statistics = yield getDashboardStatistics('MyTasks');
     yield put({
       type: REQUEST_DASHBOARD_STATISTICS_SUCCESS,
@@ -151,10 +150,8 @@ function* doFetchDashboardMyTasksStatistics() {
   }
 }
 
-function* doFetchDashboardAllTasksStatistics() {
+function* doReloadDashboardAllTasksStatistics() {
   try {
-    // Do Not show loader
-    // yield put({ type: REQUEST_DASHBOARD_STATISTICS });
     const statistics = yield getDashboardStatistics('AllTasks');
     yield put({
       type: REQUEST_DASHBOARD_STATISTICS_SUCCESS,
@@ -198,20 +195,24 @@ function* doReloadDashboardTasks() {
 
     let tasksList = [];
 
-    if (isAllTasks) {
-      yield call(doFetchDashboardAllTasksStatistics);
-    } else {
-      yield call(doFetchDashboardMyTasksStatistics);
-    }
+    const statisticsRequest = isAllTasks
+      ? doReloadDashboardAllTasksStatistics
+      : doReloadDashboardMyTasksStatistics;
 
     if (!selectedFilters || !isEmpty(selectedFilters)) {
       tasksList = isAllTasks
-        ? yield getDashboardAllTasksByCriteria(selectedFilters)
-        : yield getDashboardMyTasksByCriteria(selectedFilters);
+        ? (yield all([
+            getDashboardAllTasksByCriteria(selectedFilters),
+            call(statisticsRequest),
+          ]))[0]
+        : (yield all([
+            getDashboardMyTasksByCriteria(selectedFilters),
+            call(statisticsRequest),
+          ]))[0];
     } else {
       tasksList = isAllTasks
-        ? yield getDashboardAllTasks()
-        : yield getDashboardMyTasks();
+        ? (yield all([getDashboardAllTasks(), call(statisticsRequest)]))[0]
+        : (yield all([getDashboardMyTasks(), call(statisticsRequest)]))[0];
     }
 
     yield put({
@@ -278,6 +279,7 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
 function* doInitializeDashboardView() {
   yield put(MegaFilterActions.clearFiltersForMegaFilter());
   yield put({ type: REQUEST_DASHBOARD_TASKS });
+  yield put({ type: REQUEST_DASHBOARD_STATISTICS });
   yield doFetchDashboardFilters();
   yield put(reloadDashboardTasks());
 }
