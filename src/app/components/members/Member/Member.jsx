@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { getMemberStatus } from 'helpers/list-members-helper';
 import Avatar from 'components/common/Avatar';
@@ -13,7 +12,16 @@ const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
 
 const Member = React.forwardRef(
   (
-    { onClick, member, children, className, color, size, showTooltip = true },
+    {
+      onClick,
+      member,
+      children,
+      className,
+      color,
+      size,
+      showTooltip = true,
+      isInactive,
+    },
     reference,
   ) => {
     const status = getMemberStatus(member);
@@ -31,7 +39,6 @@ const Member = React.forwardRef(
         {member?.initials?.toLowerCase()}
       </MontserratTypography>
     );
-    const memberColor = member?.bubbleColor || palette.memberGreen;
 
     const avatarContainerReference = useRef(null);
     const [
@@ -44,9 +51,10 @@ const Member = React.forwardRef(
       <Avatar
         ref={reference}
         size={size ?? 55}
-        color={color || memberColor}
+        color={color || member?.bubbleColor}
         className={className}
         onClick={onClick}
+        isInactive={isInactive}
       >
         {children || avatarContent}
       </Avatar>

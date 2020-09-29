@@ -10,7 +10,7 @@ const getScaledSize = ({ normalSize, propSize }) =>
 export const AvatarContainer = styled.div`
   align-items: center;
   background-color: ${palette.white};
-  border: 2px solid ${props => props.color ?? palette.cyanBlue};
+  border: 2px solid ${props => props.color ?? palette.coolGrey2};
   border-radius: 50%;
   ${props =>
     props.withShadow &&
@@ -30,7 +30,7 @@ export const AvatarContainer = styled.div`
 
 export const InnerAvatarContainer = styled.div`
   align-items: center;
-  background-color: ${props => props.color ?? palette.cyanBlue};
+  background-color: ${props => props.color ?? palette.coolGrey2};
   border: ${props =>
     props.padded
       ? `${getScaledSize({

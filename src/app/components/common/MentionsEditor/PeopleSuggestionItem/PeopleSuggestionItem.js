@@ -41,7 +41,14 @@ const PeopleSuggestionItem = ({
       {...parentProps}
       isFocused={isFocused}
     >
-      <Member size={30} member={mention} showTooltip={false} />
+      <Member
+        size={30}
+        member={mention}
+        showTooltip={false}
+        isInactive={['PENDING', 'INVITED', 'INACTIVE'].includes(
+          mention.userStatus,
+        )}
+      />
       <SuggestionText>
         <Highlighter
           highlightStyle={{ fontWeight: 'bold', background: 'none' }}
