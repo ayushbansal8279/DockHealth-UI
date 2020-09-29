@@ -70,3 +70,17 @@ export const ArchivePersonButton = styled.button`
     filter: brightness(1.25);
   }
 `;
+
+// loader
+export const TextLoader = styled.div`
+  height: 19px;
+  width: 169px;
+  margin-right: ${spacing.smallExtraPlus};
+  background: ${palette.coolGrey3};
+`;
+
+export const AvatarLoader = styled(TextLoader)`
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+`;

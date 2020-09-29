@@ -19,7 +19,8 @@ import {
   PersonTitle,
   ContactInfoContainer,
   ContactInfoItem,
-} from './PersonDetailsView.PersonInfoPanel.Styled';
+} from './styled';
+import PersonInfoLoader from './PersonInfoLoader';
 
 const NOT_AVAILABLE = 'N/A';
 
@@ -85,31 +86,37 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
         />
       </Link>
       <Spacing horizontal={3} />
-      <Avatar color={palette.unknownGrey5} size={50}>
-        {avatarContent}
-      </Avatar>
-      <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
-      <ContactInfoContainer>
-        {email && <ContactInfoItem>{email}</ContactInfoItem>}
-        {accountPhoneNumber && (
-          <ContactInfoItem>
-            M {formatPhoneNumber(accountPhoneNumber)}
-          </ContactInfoItem>
-        )}
-        {workPhoneNumber && (
-          <ContactInfoItem>
-            H {formatPhoneNumber(workPhoneNumber)}
-          </ContactInfoItem>
-        )}
-      </ContactInfoContainer>
-      {isAdminOrOwner && userIdentifier && (
+      {personData ? (
         <>
-          <ArchivePersonButton
-            onClick={() => archivePerson({ confirm: onConfirmArchive })}
-          >
-            Archive this person
-          </ArchivePersonButton>
+          <Avatar color={palette.unknownGrey5} size={50}>
+            {avatarContent}
+          </Avatar>
+          <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
+          <ContactInfoContainer>
+            {email && <ContactInfoItem>{email}</ContactInfoItem>}
+            {accountPhoneNumber && (
+              <ContactInfoItem>
+                M {formatPhoneNumber(accountPhoneNumber)}
+              </ContactInfoItem>
+            )}
+            {workPhoneNumber && (
+              <ContactInfoItem>
+                H {formatPhoneNumber(workPhoneNumber)}
+              </ContactInfoItem>
+            )}
+          </ContactInfoContainer>
+          {isAdminOrOwner && userIdentifier && (
+            <>
+              <ArchivePersonButton
+                onClick={() => archivePerson({ confirm: onConfirmArchive })}
+              >
+                Archive this person
+              </ArchivePersonButton>
+            </>
+          )}
         </>
+      ) : (
+        <PersonInfoLoader />
       )}
     </InfoPanelContainer>
   );

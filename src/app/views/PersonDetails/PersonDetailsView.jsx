@@ -18,7 +18,7 @@ import sessionStorageHelper from 'helpers/session-storage-helper';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import TasksView from 'views/Task/NewTasksView/TasksView';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
-import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
+import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 
 class PersonDetailsView extends PureComponent {
   state = {
@@ -302,12 +302,10 @@ class PersonDetailsView extends PureComponent {
     return (
       !fetching && (
         <>
-          {personData && (
-            <PersonInfoPanel
-              personData={personData}
-              archivePerson={props => openModal('ArchivePerson', { ...props })}
-            />
-          )}
+          <PersonInfoPanel
+            personData={personData}
+            archivePerson={props => openModal('ArchivePerson', { ...props })}
+          />
           <TasksView
             {...viewProps}
             defaultGroupName="All tasks"
