@@ -38,7 +38,6 @@ export const DashboardContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  ${({ fullWidth }) => !fullWidth && 'max-width: 1440px;'}
   height: 100%;
   padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
   transition: padding-right 0.3s ease-out;
@@ -81,4 +80,8 @@ export const DashboardFirstVisitViewWrapper = styled.div`
   align-items: center;
   margin-top: ${spacing.regularPlus};
   border-top: 1px solid ${palette.coolGrey2};
+`;
+
+export const DashboardListWrapper = styled.div`
+  ${({ fullWidth }) => !fullWidth && 'max-width: 1440px;'}
 `;
