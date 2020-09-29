@@ -33,6 +33,7 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
     // await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
     this.unlockLoading();
     taskListActions.getTaskListForUser();
+    taskListActions.getPendingTaskListForUser();
   }
 
   unlockLoading = () => {

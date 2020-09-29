@@ -61,9 +61,14 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
   );
 
   const taskLists = useSelector(store => store.taskListState.tasklist ?? []);
+  const pendingTaskLists = useSelector(
+    store => store.invitationState.pendingTasklists ?? [],
+  );
+
+  const mergedTaskLists = [...taskLists, ...pendingTaskLists];
 
   const listPopoverItems = [
-    ...taskLists.map(transformTaskList({ closeListPopover, taskList })),
+    ...mergedTaskLists.map(transformTaskList({ closeListPopover, taskList })),
     {
       key: 'inbox',
       active: !taskListIdentifier,
