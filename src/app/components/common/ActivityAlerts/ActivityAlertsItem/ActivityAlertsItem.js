@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react';
 import moment from 'moment';
@@ -12,28 +14,32 @@ import {
   ActivityAlertsItemHeader,
   ActivityAlertsItemOrganizationAvatar,
   ActivityAlertsItemOrganizationLabel,
-  ActivityAlertsItemLabel,
-  ActivityAlertsItemDescription,
+  ActivityAlertItemTitle,
   ActivityAlertsItemTime,
   ActivityAlertsItemClearLabel,
-  ActivityAlertItemQuotes,
-  ActivityAlertsUser,
-  ActivityAlertsCommonText,
+  ActivityAlertItemSubTitle,
   CompletedCircleIcon,
   StyledCrossIcon,
-  StyledTaskLink,
-  StyledDescriptionTaskLink,
+  StyledFooter,
 } from './styled';
 
-const AssignedCommentAlertItem = ({
-  itemAlert,
-  onClearAlert,
-  withCrossIcon,
-}) => {
+// eslint-disable-next-line unicorn/prevent-abbreviations
+const getInterpolatedText = (tpl, args) =>
+  tpl.replace(/\${(\w+)}/g, (_, v) => args[v]);
+
+const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   const dispatch = useDispatch();
-  const { task, createdDateTime, organization, targetIdentifier } = itemAlert;
+  const {
+    activityAlertTitle,
+    activityAlertSubTitle,
+    activityAlertType,
+    task,
+    createdDateTime,
+    organization,
+    targetIdentifier,
+  } = itemAlert;
   const { description, taskList, taskIdentifier, status, comments } = task;
-  const { taskListIdentifier } = taskList;
+  const { taskListIdentifier, listName } = taskList;
   const {
     organizationInitials,
     organizationName,
@@ -45,410 +51,118 @@ const AssignedCommentAlertItem = ({
     comments?.find(
       ({ commentIdentifier }) => targetIdentifier === commentIdentifier,
     ) || {};
-  const { comment, creator } = alertComment;
+  const { comment, creator = {} } = alertComment;
+  const { userName } = creator;
 
-  return (
-    <ActivityAlertsItemContainer>
-      <ActivityAlertsItemHeader>
-        <div>
-          <ActivityAlertsItemOrganizationAvatar
-            organizationProfileColor={organizationProfileColor}
-          >
-            {organizationInitials}
-          </ActivityAlertsItemOrganizationAvatar>
-          <ActivityAlertsItemOrganizationLabel>
-            {organizationName}
-          </ActivityAlertsItemOrganizationLabel>
-        </div>
-        <div>
-          <ActivityAlertsItemTime>
-            {moment(createdDateTime).fromNow()}
-          </ActivityAlertsItemTime>
-          {withCrossIcon && (
-            <StyledCrossIcon
-              src={CrossIcon}
-              alt="cross"
-              onClick={onClearAlert}
-            />
-          )}
-          {!withCrossIcon && (
-            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-              Clear
-            </ActivityAlertsItemClearLabel>
-          )}
-        </div>
-      </ActivityAlertsItemHeader>
-      <ActivityAlertsItemLabel>
-        New comment in{' '}
-        <StyledTaskLink
-          onClick={() => {
-            const currentOrganizationIdentifier = sessionStorage.getItem(
-              'currentOrganizationIdentifier',
-            );
+  let onGoFunction = null;
 
-            if (organizationIdentifier === currentOrganizationIdentifier) {
-              dispatch(storeAsCurrentTask(task));
-              onClearAlert();
-              hashHistory.push(
-                `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-              );
-            } else {
-              sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
-              selectCurrentOrganizationWithRedirection(
-                organizationIdentifier,
-                `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-              );
-            }
-          }}
-        >
-          {description?.length > 50
-            ? `${description.slice(0, 50).replace(/\s*$/, '')}...`
-            : description}
-        </StyledTaskLink>{' '}
-        added by{' '}
-        <StyledTaskLink
-          onClick={() => {
-            const currentOrganizationIdentifier = sessionStorage.getItem(
-              'currentOrganizationIdentifier',
-            );
-
-            if (organizationIdentifier === currentOrganizationIdentifier) {
-              onClearAlert();
-              hashHistory.push(`/assignedToPerson/${creator?.userIdentifier}`);
-            } else {
-              selectCurrentOrganizationWithRedirection(
-                organizationIdentifier,
-                `#/assignedToPerson/${creator?.userIdentifier}`,
-              );
-            }
-          }}
-        >
-          {`${creator?.firstName} ${creator?.lastName}`.length > 42
-            ? `${`${creator?.firstName} ${creator?.lastName}`?.slice(0, 42)}...`
-            : `${creator?.firstName} ${creator?.lastName}`}
-        </StyledTaskLink>
-      </ActivityAlertsItemLabel>
-      <ActivityAlertItemQuotes>
-        “
-        {comment?.length > 130
-          ? `${comment.slice(0, 130).replace(/\s*$/, '')}...`
-          : comment}
-        ”
-      </ActivityAlertItemQuotes>
-    </ActivityAlertsItemContainer>
-  );
-};
-
-const AssignedAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
-  const { task, createdDateTime, organization } = itemAlert;
-  const { description, taskList } = task;
-  const { taskListIdentifier } = taskList;
-  const {
-    organizationInitials,
-    organizationName,
-    organizationProfileColor,
-    organizationIdentifier,
-  } = organization;
-  return (
-    <ActivityAlertsItemContainer>
-      <ActivityAlertsItemHeader>
-        <div>
-          <ActivityAlertsItemOrganizationAvatar
-            organizationProfileColor={organizationProfileColor}
-          >
-            {organizationInitials}
-          </ActivityAlertsItemOrganizationAvatar>
-          <ActivityAlertsItemOrganizationLabel>
-            {organizationName}
-          </ActivityAlertsItemOrganizationLabel>
-        </div>
-        <div>
-          <ActivityAlertsItemTime>
-            {moment(createdDateTime).fromNow()}
-          </ActivityAlertsItemTime>
-          {withCrossIcon && (
-            <StyledCrossIcon
-              src={CrossIcon}
-              alt="cross"
-              onClick={onClearAlert}
-            />
-          )}
-          {!withCrossIcon && (
-            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-              Clear
-            </ActivityAlertsItemClearLabel>
-          )}
-        </div>
-      </ActivityAlertsItemHeader>
-      <ActivityAlertsItemLabel>
-        A New task has been assigned to you in{' '}
-        <StyledTaskLink
-          onClick={() => {
-            const currentOrganizationIdentifier = sessionStorage.getItem(
-              'currentOrganizationIdentifier',
-            );
-
-            if (organizationIdentifier === currentOrganizationIdentifier) {
-              onClearAlert();
-              hashHistory.push(`/tasks/${taskListIdentifier}`);
-            } else {
-              selectCurrentOrganizationWithRedirection(
-                organizationIdentifier,
-                `#/tasks/${taskListIdentifier}`,
-              );
-            }
-          }}
-        >
-          {taskList?.listName?.length > 74
-            ? `${taskList?.listName.slice(0, 74).replace(/\s*$/, '')}...`
-            : taskList?.listName}
-        </StyledTaskLink>
-      </ActivityAlertsItemLabel>
-      <ActivityAlertsItemDescription>
-        {description?.length > 130
-          ? `${description.slice(0, 130).replace(/\s*$/, '')}...`
-          : description}
-      </ActivityAlertsItemDescription>
-    </ActivityAlertsItemContainer>
-  );
-};
-
-const CompletedTaskAlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
-  const dispatch = useDispatch();
-  const { task, createdDateTime, organization } = itemAlert;
-  const { description, taskList, taskIdentifier, status } = task;
-  const { taskListIdentifier } = taskList;
-  const {
-    organizationInitials,
-    organizationName,
-    organizationProfileColor,
-    organizationIdentifier,
-  } = organization;
-
-  return (
-    <ActivityAlertsItemContainer>
-      <ActivityAlertsItemHeader>
-        <div>
-          <ActivityAlertsItemOrganizationAvatar
-            organizationProfileColor={organizationProfileColor}
-          >
-            {organizationInitials}
-          </ActivityAlertsItemOrganizationAvatar>
-          <ActivityAlertsItemOrganizationLabel>
-            {organizationName}
-          </ActivityAlertsItemOrganizationLabel>
-        </div>
-        <div>
-          <ActivityAlertsItemTime>
-            {moment(createdDateTime).fromNow()}
-          </ActivityAlertsItemTime>
-          {withCrossIcon && (
-            <StyledCrossIcon
-              src={CrossIcon}
-              alt="cross"
-              onClick={onClearAlert}
-            />
-          )}
-          {!withCrossIcon && (
-            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-              Clear
-            </ActivityAlertsItemClearLabel>
-          )}
-        </div>
-      </ActivityAlertsItemHeader>
-      <ActivityAlertsItemLabel>
-        <CompletedCircleIcon src={CircleCompleted} />A task you’ve assigned has
-        been completed
-      </ActivityAlertsItemLabel>
-      <ActivityAlertsItemDescription>
-        <StyledDescriptionTaskLink
-          onClick={() => {
-            const currentOrganizationIdentifier = sessionStorage.getItem(
-              'currentOrganizationIdentifier',
-            );
-
-            if (organizationIdentifier === currentOrganizationIdentifier) {
-              dispatch(storeAsCurrentTask(task));
-              onClearAlert();
-              hashHistory.push(
-                `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-              );
-            } else {
-              sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
-              selectCurrentOrganizationWithRedirection(
-                organizationIdentifier,
-                `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-              );
-            }
-          }}
-        >
-          {description?.length > 130
-            ? `${description.slice(0, 130).replace(/\s*$/, '')}...`
-            : description}
-        </StyledDescriptionTaskLink>
-      </ActivityAlertsItemDescription>
-    </ActivityAlertsItemContainer>
-  );
-};
-
-const OrganizationUserAlertItem = ({
-  itemAlert,
-  onClearAlert,
-  withCrossIcon,
-}) => {
-  const { createdDateTime, organization, targetUser } = itemAlert;
-  const {
-    organizationInitials,
-    organizationName,
-    organizationProfileColor,
-  } = organization;
-
-  return (
-    <ActivityAlertsItemContainer>
-      <ActivityAlertsItemHeader>
-        <div>
-          <ActivityAlertsItemOrganizationAvatar
-            organizationProfileColor={organizationProfileColor}
-          >
-            {organizationInitials}
-          </ActivityAlertsItemOrganizationAvatar>
-          <ActivityAlertsItemOrganizationLabel>
-            {organizationName}
-          </ActivityAlertsItemOrganizationLabel>
-        </div>
-        <div>
-          <ActivityAlertsItemTime>
-            {moment(createdDateTime).fromNow()}
-          </ActivityAlertsItemTime>
-          {withCrossIcon && (
-            <StyledCrossIcon
-              src={CrossIcon}
-              alt="cross"
-              onClick={onClearAlert}
-            />
-          )}
-          {!withCrossIcon && (
-            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-              Clear
-            </ActivityAlertsItemClearLabel>
-          )}
-        </div>
-      </ActivityAlertsItemHeader>
-      <ActivityAlertsCommonText>
-        <ActivityAlertsUser>
-          {`${targetUser?.firstName} ${targetUser?.lastName}`}
-        </ActivityAlertsUser>{' '}
-        is no longer an active user.
-      </ActivityAlertsCommonText>
-    </ActivityAlertsItemContainer>
-  );
-};
-
-const OrganizationalUserRoleChangeAlertItem = ({
-  itemAlert,
-  onClearAlert,
-  withCrossIcon,
-}) => {
-  const { createdDateTime, organization, targetUser } = itemAlert;
-  const {
-    organizationInitials,
-    organizationName,
-    organizationProfileColor,
-  } = organization;
-
-  return (
-    <ActivityAlertsItemContainer>
-      <ActivityAlertsItemHeader>
-        <div>
-          <ActivityAlertsItemOrganizationAvatar
-            organizationProfileColor={organizationProfileColor}
-          >
-            {organizationInitials}
-          </ActivityAlertsItemOrganizationAvatar>
-          <ActivityAlertsItemOrganizationLabel>
-            {organizationName}
-          </ActivityAlertsItemOrganizationLabel>
-        </div>
-        <div>
-          <ActivityAlertsItemTime>
-            {moment(createdDateTime).fromNow()}
-          </ActivityAlertsItemTime>
-          {withCrossIcon && (
-            <StyledCrossIcon
-              src={CrossIcon}
-              alt="cross"
-              onClick={onClearAlert}
-            />
-          )}
-          {!withCrossIcon && (
-            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
-              Clear
-            </ActivityAlertsItemClearLabel>
-          )}
-        </div>
-      </ActivityAlertsItemHeader>
-      <ActivityAlertsCommonText>
-        <ActivityAlertsUser>
-          {`${targetUser?.firstName} ${targetUser?.lastName}`}
-        </ActivityAlertsUser>{' '}
-        is now an organizational owner.
-      </ActivityAlertsCommonText>
-    </ActivityAlertsItemContainer>
-  );
-};
-
-const getItemVariant = (itemAlert, onClearAlert, withCrossIcon) => {
-  const { activityAlertType } = itemAlert;
-
-  switch (activityAlertType) {
-    case 'ASSIGN_TASK':
-      return (
-        <AssignedAlertItem
-          itemAlert={itemAlert}
-          onClearAlert={onClearAlert}
-          withCrossIcon={withCrossIcon}
-        />
-      );
-    case 'CREATE_COMMENT':
-      return (
-        <AssignedCommentAlertItem
-          itemAlert={itemAlert}
-          onClearAlert={onClearAlert}
-          withCrossIcon={withCrossIcon}
-        />
-      );
-    case 'MARK_COMPLETE':
-      return (
-        <CompletedTaskAlertItem
-          itemAlert={itemAlert}
-          onClearAlert={onClearAlert}
-          withCrossIcon={withCrossIcon}
-        />
+  if (
+    activityAlertType === 'ASSIGN_TASK' ||
+    activityAlertType === 'CREATE_COMMENT' ||
+    activityAlertType === 'MARK_COMPLETE'
+  ) {
+    onGoFunction = () => {
+      const currentOrganizationIdentifier = sessionStorage.getItem(
+        'currentOrganizationIdentifier',
       );
 
-    case 'REMOVE_USER_FROM_ORGANIZATION':
-      return (
-        <OrganizationUserAlertItem
-          itemAlert={itemAlert}
-          onClearAlert={onClearAlert}
-          withCrossIcon={withCrossIcon}
-        />
-      );
-
-    case 'MAKE_ADMIN_FOR_ORGANIZATION':
-      return (
-        <OrganizationalUserRoleChangeAlertItem
-          itemAlert={itemAlert}
-          onClearAlert={onClearAlert}
-          withCrossIcon={withCrossIcon}
-        />
-      );
-    default:
-      return null;
+      if (organizationIdentifier === currentOrganizationIdentifier) {
+        dispatch(storeAsCurrentTask(task));
+        onClearAlert();
+        hashHistory.push(
+          `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+        );
+      } else {
+        sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
+        selectCurrentOrganizationWithRedirection(
+          organizationIdentifier,
+          `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+        );
+      }
+    };
   }
+
+  const title = getInterpolatedText(activityAlertTitle, {
+    task_list_name: listName,
+    task_description: description,
+    comment_creator: userName,
+  });
+
+  const subtitle = getInterpolatedText(activityAlertSubTitle, {
+    task_description: description,
+    comment_description: comment,
+  });
+
+  const formattedTitle =
+    title?.length > 65 ? `${title.slice(0, 65).replace(/\s*$/, '')}...` : title;
+  let formattedSubtitle = null;
+
+  if (activityAlertType === 'CREATE_COMMENT') {
+    formattedSubtitle = `"${
+      subtitle?.length > 128
+        ? `${subtitle.slice(0, 128).replace(/\s*$/, '')}...`
+        : subtitle
+    }"`;
+  } else {
+    formattedSubtitle =
+      subtitle?.length > 130
+        ? `${subtitle.slice(0, 130).replace(/\s*$/, '')}...`
+        : subtitle;
+  }
+
+  return (
+    <ActivityAlertsItemContainer>
+      <ActivityAlertsItemHeader>
+        <div>
+          <ActivityAlertsItemOrganizationAvatar
+            organizationProfileColor={organizationProfileColor}
+          >
+            {organizationInitials}
+          </ActivityAlertsItemOrganizationAvatar>
+          <ActivityAlertsItemOrganizationLabel>
+            {organizationName}
+          </ActivityAlertsItemOrganizationLabel>
+        </div>
+        <div>
+          <ActivityAlertsItemTime>
+            {moment(createdDateTime).fromNow()}
+          </ActivityAlertsItemTime>
+          {withCrossIcon && (
+            <StyledCrossIcon
+              src={CrossIcon}
+              alt="cross"
+              onClick={onClearAlert}
+            />
+          )}
+          {!withCrossIcon && (
+            <ActivityAlertsItemClearLabel onClick={onClearAlert}>
+              Clear
+            </ActivityAlertsItemClearLabel>
+          )}
+        </div>
+      </ActivityAlertsItemHeader>
+      <ActivityAlertItemTitle>
+        {activityAlertType === 'MARK_COMPLETE' && (
+          <CompletedCircleIcon src={CircleCompleted} />
+        )}
+        {formattedTitle}
+      </ActivityAlertItemTitle>
+      <ActivityAlertItemSubTitle>{formattedSubtitle}</ActivityAlertItemSubTitle>
+      {onGoFunction && (
+        <StyledFooter>
+          <span onClick={onGoFunction}>Go</span>
+        </StyledFooter>
+      )}
+    </ActivityAlertsItemContainer>
+  );
 };
 
-const ActivityAlertsItem = ({ itemAlert, onClearAlert, withCrossIcon }) =>
-  getItemVariant(itemAlert, onClearAlert, withCrossIcon);
+const ActivityAlertsItem = ({ itemAlert, onClearAlert, withCrossIcon }) => (
+  <AlertItem
+    itemAlert={itemAlert}
+    onClearAlert={onClearAlert}
+    withCrossIcon={withCrossIcon}
+  />
+);
 
 export default ActivityAlertsItem;
