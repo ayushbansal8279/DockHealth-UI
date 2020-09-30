@@ -852,11 +852,7 @@ export function acknowledgeEula() {
   }).then(({ data }) => data);
 }
 
-export function updateUserDashboardPrefs(column) {
-  const prefs = {
-    displayColumns: [column],
-  };
-
+export function updateUserDashboardPrefs(prefs) {
   const currentUser = JSON.parse(sessionStorage.getItem('userProfile'));
 
   return axios
@@ -869,7 +865,7 @@ export function updateUserDashboardPrefs(column) {
         ...currentUser,
         userPreference: {
           ...currentUser?.userPreference,
-          displayColumns: [column],
+          ...prefs,
         },
       };
       store.dispatch({ type: 'user/userProfile', userProfile: newCurrentUser });

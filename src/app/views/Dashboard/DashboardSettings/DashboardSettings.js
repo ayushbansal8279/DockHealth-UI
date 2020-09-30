@@ -42,7 +42,7 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
               checked={dynamicColumnType === 'PATIENT'}
               onClick={() => {
                 setDynamicColumnType('PATIENT');
-                updateUserDashboardPrefs('PATIENT');
+                updateUserDashboardPrefs({ displayColumns: ['PATIENT'] });
                 setIsOpen(false);
               }}
             />
@@ -57,7 +57,7 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
               checked={dynamicColumnType === 'DUE_DATE'}
               onClick={() => {
                 setDynamicColumnType('DUE_DATE');
-                updateUserDashboardPrefs('DUE_DATE');
+                updateUserDashboardPrefs({ displayColumns: ['DUE_DATE'] });
                 setIsOpen(false);
               }}
             />
@@ -72,7 +72,7 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
               checked={dynamicColumnType === 'STATUS'}
               onClick={() => {
                 setDynamicColumnType('STATUS');
-                updateUserDashboardPrefs('STATUS');
+                updateUserDashboardPrefs({ displayColumns: ['STATUS'] });
                 setIsOpen(false);
               }}
             />

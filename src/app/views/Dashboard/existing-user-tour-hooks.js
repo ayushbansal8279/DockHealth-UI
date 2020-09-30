@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useRef } from 'react';
 import { isNil } from 'ramda';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUserDashboardPrefs } from 'api/user-api';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { openModal } from 'modal/actions';
 import localStorageHelper from 'helpers/local-storage-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import { DashboardTourWrapper, DashboardTourBackground } from './styled';
@@ -16,10 +20,27 @@ const existingUserTourHooks = ({
   currentUserLoaded,
   lists,
 }) => {
+  const dispatch = useDispatch();
   const [openedTour, setOpenendTour] = useState(null);
   const isModalAutoTriggered = useRef(true);
 
   const hasAnyTask = lists?.some(list => list.numberOfTasks > 0);
+
+  const userProfile = useSelector(userProfileSelector);
+
+  const checkNewFeaturesModals = () => {
+    const { userPreference: { appFeaturesReviewed } = {} } = userProfile;
+
+    if (!appFeaturesReviewed?.includes('MENTIONS')) {
+      dispatch(
+        openModal('MentionsTour', {
+          onClose: () => {
+            updateUserDashboardPrefs({ appFeaturesReviewed: ['MENTIONS'] });
+          },
+        }),
+      );
+    }
+  };
 
   const openTourModal = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
@@ -27,6 +48,8 @@ const existingUserTourHooks = ({
     );
     if (isNil(dashboardFirstTimeValue) || dashboardFirstTimeValue) {
       setOpenendTour(1);
+    } else {
+      checkNewFeaturesModals();
     }
   };
 
