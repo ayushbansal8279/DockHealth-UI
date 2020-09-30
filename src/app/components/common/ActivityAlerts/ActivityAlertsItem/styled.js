@@ -15,6 +15,7 @@ export const ActivityAlertsItemContainer = styled.div`
   margin-bottom: ${spacing.regular};
   padding: ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallExtraPlus}
     ${spacing.smallExtraPlus};
+  position: relative;
 `;
 
 export const ActivityAlertsItemOrganizationAvatar = styled.div`
@@ -67,20 +68,17 @@ export const ActivityAlertsItemClearLabel = styled.div`
   font-weight: ${fontWeights.regularPlus};
 `;
 
-export const ActivityAlertsItemLabel = styled.div`
+export const ActivityAlertItemTitle = styled.div`
   font-family: Roboto Condensed;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
   margin-right: ${spacing.huge};
 `;
 
-export const ActivityAlertsItemDescription = styled.div`
+export const ActivityAlertItemSubTitle = styled.div`
   font-family: Roboto Condensed;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.smallPlus};
-`;
-
-export const ActivityAlertItemQuotes = styled(ActivityAlertsItemDescription)`
   margin-right: ${spacing.huge};
 `;
 
@@ -110,13 +108,23 @@ export const StyledCrossIcon = styled.img`
   margin-left: ${spacing.smallPlus};
 `;
 
-export const ActivityAlertsUser = styled.span`
-  font-family: Roboto Condensed;
-  color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.bold};
-`;
+export const StyledFooter = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: ${palette.coolGrey4};
+  border-radius: 0 0 8px 8px;
+  padding-bottom: ${spacing.small};
 
-export const ActivityAlertsCommonText = styled.span`
-  font-family: Roboto Condensed;
-  color: ${palette.mediumGrey};
+  & > span {
+    color: ${palette.brightBlue};
+    font-weight: ${fontWeights.regularPlus};
+    cursor: pointer;
+    margin-right: ${spacing.regular};
+  }
 `;
