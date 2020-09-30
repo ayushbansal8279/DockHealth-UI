@@ -949,3 +949,10 @@ export const getUserActiveTasksCount = userId =>
   axios.get(
     `/task/findCountOfAllTasksAssignedToSpecificUser?userId=${userId}&status=INCOMPLETE`,
   );
+
+export const captureLocalTimezone = async () => {
+  const timezoneOffset = new Date().getTimezoneOffset() / 60;
+  return axios
+    .put(`/user/captureLocalTimezone?timezoneOffset=${timezoneOffset}`, {})
+    .then(({ data }) => data);
+};

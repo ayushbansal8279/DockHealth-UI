@@ -5,6 +5,7 @@ import * as PeopleApi from 'api/people-api';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import moment from 'moment';
 import {
   MentionItem,
   PersonCardContainer,
@@ -13,7 +14,7 @@ import {
   SkeletonLoaderDataContainer,
   SkeletonLoaderRoleSection,
   SkeletonLoaderText,
-  // Divider,
+  Divider,
   Role,
   PersonTasksLink,
   ProfileInfoSection,
@@ -41,6 +42,11 @@ const PeopleMention = ({ mention, className, children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered, personData]);
+
+  const localTime = moment()
+    .utc()
+    .add(personData?.timezoneOffset, 'hour')
+    .format('hh:mm A');
 
   return (
     <MentionItem
@@ -107,10 +113,10 @@ const PeopleMention = ({ mention, className, children }) => {
                     {formatPhoneNumber(personData.accountPhoneNumber)}
                   </ProfileInfoText>
                 )}
-                {/* <Spacing vertical={2} />
+                <Spacing vertical={2} />
                 <Divider />
                 <Spacing vertical={2} />
-                <ProfileInfoText>Local time</ProfileInfoText> */}
+                <ProfileInfoText>Local time {localTime}</ProfileInfoText>
               </ProfileInfoSection>
             </>
           ) : (
@@ -124,10 +130,10 @@ const PeopleMention = ({ mention, className, children }) => {
                 <SkeletonLoaderText />
                 <Spacing vertical={2} />
                 <SkeletonLoaderText />
-                {/* <Spacing vertical={3} />
+                <Spacing vertical={3} />
                 <Divider />
                 <Spacing vertical={3} />
-                <SkeletonLoaderText /> */}
+                <SkeletonLoaderText />
               </SkeletonLoaderDataContainer>
             </>
           )}
