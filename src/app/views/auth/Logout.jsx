@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { error } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
-import {initializePusherForPresence} from 'helpers/pusher-instance';
+import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 class Logout extends PureComponent {
   componentDidMount = () => {
@@ -17,14 +17,17 @@ class Logout extends PureComponent {
     if (!presenceChannel || !presenceChannel.subscribed) {
       presenceChannel = pusherForPresence.subscribe(presenceChannelName);
     }
-    const {currentUser} = this.props;
+    const { currentUser } = this.props;
 
     return userApi
       .logout()
       .then(() => {
-        var triggered = presenceChannel.trigger('client-event-dock-user-offline', { userIdentifier: currentUser?.userIdentifier });
+        const triggered = presenceChannel.trigger(
+          'client-event-dock-user-offline',
+          { userIdentifier: currentUser?.userIdentifier },
+        );
         // console.log(triggered);
-    
+
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'YES',
         });
@@ -68,7 +71,4 @@ const mapDispatchToProps = dispatch => ({
   dispatch,
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Logout);
+export default connect(mapStateToProps, mapDispatchToProps)(Logout);
