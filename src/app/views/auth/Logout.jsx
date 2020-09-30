@@ -22,12 +22,8 @@ class Logout extends PureComponent {
     return userApi
       .logout()
       .then(() => {
-        const triggered = presenceChannel.trigger(
-          'client-event-dock-user-offline',
-          { userIdentifier: currentUser?.userIdentifier },
-        );
-        // console.log(triggered);
-
+        pusherForPresence.unsubscribe(presenceChannelName);
+        
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'YES',
         });

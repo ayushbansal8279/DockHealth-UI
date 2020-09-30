@@ -201,9 +201,9 @@ export const Routes = ({ store }) => {
 
     const pusherForPresence = initializePusherForPresence();
     const presenceChannelName = `presence-dock-users`;
-    let presenceChannel = pusherForPresence.channel(presenceChannelName);
+    let presenceChannel = pusherForPresence?.channel(presenceChannelName);
     if (!presenceChannel || !presenceChannel.subscribed) {
-      presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+      presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
 
       presenceChannel.bind('pusher:subscription_succeeded', function(members) {
         const { me } = members;
@@ -229,26 +229,7 @@ export const Routes = ({ store }) => {
         console.log('idle user:', metadata.user_id);
         // presenceChannel.members.get(metadata.user_id).info
       });
-
-      presenceChannel.bind('client-event-dock-user-online', function(
-        data,
-        metadata,
-      ) {
-        console.log('online user:', metadata.user_id);
-      });
-
-      presenceChannel.bind('client-event-dock-user-offline', function(
-        data,
-        metadata,
-      ) {
-        console.log('offline user:', metadata.user_id);
-      });
     }
-    const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
-    const triggered = presenceChannel.trigger('client-event-dock-user-online', {
-      userIdentifier: currentUserIdentifier,
-    });
-    console.log(triggered);
 
     if (callback) {
       callback();
