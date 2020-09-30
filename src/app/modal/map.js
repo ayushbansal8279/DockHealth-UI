@@ -23,6 +23,7 @@ import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal'
 import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
 import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
+import MentionsTourModal from './components/MentionsTourModal/MentionsTourModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -50,6 +51,7 @@ const MODAL_MAP = {
   OnboardingInviteConfirmation: OnboardingInviteConfirmationModal,
   ArchiveUser: ArchiveUserModal,
   SelectOwner: SelectOwnerModal,
+  MentionsTour: MentionsTourModal,
 };
 
 export default MODAL_MAP;

@@ -229,6 +229,15 @@ export const onListsTutorialModalEvent = stepKey => {
   });
 };
 
+export const onMentionsTourModalEvent = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'Mentions modal',
+    eventLabel: stepKey,
+  });
+};
+
 export const onLogin = () => {
   // ReactGA.set({
   //   userId: sessionStorage.userIdentifier,
