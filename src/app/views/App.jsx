@@ -57,6 +57,12 @@ ReactModal.setAppElement('#app');
 class App extends PureComponent {
   idleTimer = null;
 
+  idleTimerForPresence = null;
+
+  pusherForPresence = null;
+
+  presenceChannelName = null;
+
   componentWillMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     const redirectToLink = sessionStorage.getItem('redirectToLink');
@@ -80,15 +86,18 @@ class App extends PureComponent {
       userState,
       setActiveUsers,
       addActiveUser,
-      removeActiveUser,
+      addIdleUser,
+      removeUser,
     } = this.props;
 
     const { userProfile: previousUserProfile } = previousUserState;
     const { userProfile } = userState;
 
+    const pusherForPresence = initializePusherForPresence();
+    this.pusherForPresence = pusherForPresence;
+    const presenceChannelName = `presence-dock-users`;
+    this.presenceChannelName = presenceChannelName;
     if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
-      const pusherForPresence = initializePusherForPresence();
-      const presenceChannelName = `presence-dock-users`;
       let presenceChannel = pusherForPresence.channel(presenceChannelName);
       if (!presenceChannel || !presenceChannel.subscribed) {
         presenceChannel = pusherForPresence.subscribe(presenceChannelName);
@@ -105,18 +114,33 @@ class App extends PureComponent {
         });
 
         presenceChannel.bind('pusher:member_added', function(member) {
-          addActiveUser(member);
+          addActiveUser({
+            ...member,
+            userIdentifier: member.id,
+          });
         });
 
         presenceChannel.bind('pusher:member_removed', function(member) {
-          removeActiveUser(member);
+          removeUser({
+            ...member,
+            userIdentifier: member.id,
+          });
         });
 
         presenceChannel.bind('client-event-dock-user-idle', function(
           data,
           metadata,
         ) {
-          console.log('idle user:', metadata.user_id);
+          // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
+          if (data.idle) {
+            addIdleUser({
+              userIdentifier: metadata.user_id,
+            });
+          } else {
+            addActiveUser({
+              userIdentifier: metadata.user_id,
+            });
+          }
         });
       }
     }
@@ -143,8 +167,28 @@ class App extends PureComponent {
     hashHistory.push('/login');
   };
 
+  onActiveForPresence = () => {
+    const presenceChannel = this.pusherForPresence.channel(
+      this.presenceChannelName,
+    );
+    if (presenceChannel && presenceChannel.subscribed) {
+      presenceChannel.trigger('client-event-dock-user-idle', { idle: false });
+    }
+  };
+
+  onIdleForPresence = () => {
+    const presenceChannel = this.pusherForPresence.channel(
+      this.presenceChannelName,
+    );
+    if (presenceChannel && presenceChannel.subscribed) {
+      presenceChannel.trigger('client-event-dock-user-idle', { idle: true });
+    }
+  };
+
   render() {
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
+    const idleTimeout = systemTimeout / 2;
+
     const { children } = this.props;
     const isLessThen1024 = window?.innerWidth < 1024;
     const orientationType = window?.screen?.orientation?.type;
@@ -171,6 +215,16 @@ class App extends PureComponent {
               onAction={this.onAction}
               debounce={250}
               timeout={systemTimeout}
+            />
+            <IdleTimer
+              ref={reference => {
+                this.idleTimerForPresence = reference;
+              }}
+              element={document}
+              onActive={this.onActiveForPresence}
+              onIdle={this.onIdleForPresence}
+              debounce={250}
+              timeout={idleTimeout}
             />
             <MainContainer>{children}</MainContainer>
             <Notification />
@@ -199,8 +253,12 @@ const mapDispatchToProps = {
     type: 'active-users/addActiveUser',
     user,
   }),
-  removeActiveUser: user => ({
-    type: 'active-users/removeActiveUser',
+  addIdleUser: user => ({
+    type: 'active-users/addIdleUser',
+    user,
+  }),
+  removeUser: user => ({
+    type: 'active-users/removeUser',
     user,
   }),
 };

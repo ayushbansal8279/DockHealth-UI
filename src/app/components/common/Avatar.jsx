@@ -8,6 +8,7 @@ import {
   InnerAvatarContainer,
   OnlineIndicator,
   OfflineIndicator,
+  IdleIndicator,
 } from './Avatar.styled';
 
 export default React.forwardRef(
@@ -22,6 +23,7 @@ export default React.forwardRef(
       showOnlineIndicator,
       isOnline,
       isOffline,
+      isIdle,
       color = palette.midnightBlue,
       padded = true,
       ...props
@@ -51,6 +53,7 @@ export default React.forwardRef(
       {showOnlineIndicator && isOffline && !withCameraIcon && (
         <OfflineIndicator />
       )}
+      {showOnlineIndicator && isIdle && !withCameraIcon && <IdleIndicator />}
     </AvatarContainer>
   ),
 );

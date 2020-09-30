@@ -100,3 +100,15 @@ export const OfflineIndicator = styled.div`
   top: 15%;
   transform: translate(-50%, -50%);
 `;
+
+export const IdleIndicator = styled.div`
+  background-color: ${palette.blueOcean};
+  border: 1px solid white;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  left: 90%;
+  position: absolute;
+  top: 15%;
+  transform: translate(-50%, -50%);
+`;
