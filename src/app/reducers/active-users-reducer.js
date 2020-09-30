@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/no-small-switch */
 const initialState = {
   activeUsersList: [],
-  idleUsersList: [],
 };
 
 const ActiveUsers = (state = initialState, action) => {
@@ -15,41 +14,27 @@ const ActiveUsers = (state = initialState, action) => {
       const { user } = action;
       return {
         activeUsersList: [...state.activeUsersList, user],
-        idleUsersList: [
-          ...(state.idleUsersList && state.idleUsersList.length > 0
-            ? state.idleUsersList.filter(
-                ({ userIdentifier }) => userIdentifier !== user.userIdentifier,
-              )
-            : []),
-        ],
       };
     }
 
-    case 'active-users/addIdleUser': {
-      const { user } = action;
+    case 'active-users/setIdleStateForUser': {
+      const { user, idleStatus } = action;
       return {
-        activeUsersList: [
-          ...state.activeUsersList.filter(
-            ({ userIdentifier }) => userIdentifier !== user.userIdentifier,
-          ),
-        ],
-        idleUsersList: [...state.idleUsersList, user],
+        activeUsersList: state.activeUsersList.map(member => 
+          member.userIdentifier === user.userIdentifier 
+          ? {
+            ...member, idle: idleStatus
+          } : member,
+        ),
       };
     }
 
-    case 'active-users/removeUser': {
+    case 'active-users/removeActiveUser': {
       const { user } = action;
       return {
         activeUsersList: [
           ...(state.activeUsersList && state.activeUsersList.length > 0
             ? state.activeUsersList.filter(
-                ({ userIdentifier }) => userIdentifier !== user.userIdentifier,
-              )
-            : []),
-        ],
-        idleUsersList: [
-          ...(state.idleUsersList && state.idleUsersList.length > 0
-            ? state.idleUsersList.filter(
                 ({ userIdentifier }) => userIdentifier !== user.userIdentifier,
               )
             : []),

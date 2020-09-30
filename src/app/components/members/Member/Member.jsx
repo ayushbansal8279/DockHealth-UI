@@ -24,7 +24,6 @@ const Member = React.forwardRef(
       showTooltip = true,
       isInactive,
       activeUsersList,
-      idleUsersList,
     },
     reference,
   ) => {
@@ -55,10 +54,6 @@ const Member = React.forwardRef(
       activeUsersList?.find(({ userIdentifier }) => {
         return userIdentifier === member?.userIdentifier;
       }) || {};
-    const onlineIdleUser =
-      idleUsersList?.find(({ userIdentifier }) => {
-        return userIdentifier === member?.userIdentifier;
-      }) || {};
 
     const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
 
@@ -71,9 +66,9 @@ const Member = React.forwardRef(
         onClick={onClick}
         isInactive={isInactive}
         showOnlineIndicator={currentUserIdentifier !== member?.userIdentifier}
-        isOnline={!isEmpty(onlineActiveUser)}
-        isOffline={isEmpty(onlineActiveUser) && isEmpty(onlineIdleUser)}
-        isIdle={!isEmpty(onlineIdleUser)}
+        isOnline={!isEmpty(onlineActiveUser) && !onlineActiveUser.idle}
+        isIdle={!isEmpty(onlineActiveUser) && onlineActiveUser.idle}
+        isOffline={isEmpty(onlineActiveUser)}
       >
         {children || avatarContent}
       </Avatar>

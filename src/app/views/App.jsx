@@ -86,8 +86,8 @@ class App extends PureComponent {
       userState,
       setActiveUsers,
       addActiveUser,
-      addIdleUser,
-      removeUser,
+      setIdleStateForUser,
+      removeActiveUser,
     } = this.props;
 
     const { userProfile: previousUserProfile } = previousUserState;
@@ -108,6 +108,7 @@ class App extends PureComponent {
           const formattedMembers = Object.keys(members)?.map(memberKey => ({
             ...members[memberKey],
             userIdentifier: memberKey,
+            idle: false,
           }));
 
           setActiveUsers(formattedMembers);
@@ -117,11 +118,12 @@ class App extends PureComponent {
           addActiveUser({
             ...member,
             userIdentifier: member.id,
+            idle: false,
           });
         });
 
         presenceChannel.bind('pusher:member_removed', function(member) {
-          removeUser({
+          removeActiveUser({
             ...member,
             userIdentifier: member.id,
           });
@@ -133,13 +135,13 @@ class App extends PureComponent {
         ) {
           // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
           if (data.idle) {
-            addIdleUser({
+            setIdleStateForUser({
               userIdentifier: metadata.user_id,
-            });
+            }, true);
           } else {
-            addActiveUser({
+            setIdleStateForUser({
               userIdentifier: metadata.user_id,
-            });
+            }, false);
           }
         });
       }
@@ -187,7 +189,8 @@ class App extends PureComponent {
 
   render() {
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
-    const idleTimeout = systemTimeout / 2;
+    // const idleTimeout = systemTimeout / 2;
+    const idleTimeout = 5000;
 
     const { children } = this.props;
     const isLessThen1024 = window?.innerWidth < 1024;
@@ -253,12 +256,13 @@ const mapDispatchToProps = {
     type: 'active-users/addActiveUser',
     user,
   }),
-  addIdleUser: user => ({
-    type: 'active-users/addIdleUser',
-    user,
+  setIdleStateForUser: (user, idleStatus) => ({
+    type: 'active-users/setIdleStateForUser',
+    user, 
+    idleStatus,
   }),
   removeUser: user => ({
-    type: 'active-users/removeUser',
+    type: 'active-users/removeActiveUser',
     user,
   }),
 };
