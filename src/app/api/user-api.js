@@ -954,7 +954,9 @@ export const getUserActiveTasksCount = userId =>
     `/task/findCountOfAllTasksAssignedToSpecificUser?userId=${userId}&status=INCOMPLETE`,
   );
 
-  export const captureLocalTimezone = async () => {
-    var timezoneOffset = new Date().getTimezoneOffset() / 60;
-    return axios.put(`/user/captureLocalTimezone?timezoneOffset=${timezoneOffset}`, {}).then(({ data }) => data);
-  };
+export const captureLocalTimezone = async () => {
+  const timezoneOffset = new Date().getTimezoneOffset() / 60;
+  return axios
+    .put(`/user/captureLocalTimezone?timezoneOffset=${timezoneOffset}`, {})
+    .then(({ data }) => data);
+};

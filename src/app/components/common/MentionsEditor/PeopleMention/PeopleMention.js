@@ -5,6 +5,7 @@ import * as PeopleApi from 'api/people-api';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import moment from 'moment';
 import {
   MentionItem,
   PersonCardContainer,
@@ -25,7 +26,6 @@ import {
   AvatarBorder,
   AvatarImage,
 } from './styled';
-import moment from 'moment';
 
 const PeopleMention = ({ mention, className, children }) => {
   const reference = useRef(null);
@@ -43,7 +43,10 @@ const PeopleMention = ({ mention, className, children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered, personData]);
 
-  const localTime = moment().utc().add(personData?.timezoneOffset, 'hour').format("hh:mm A");
+  const localTime = moment()
+    .utc()
+    .add(personData?.timezoneOffset, 'hour')
+    .format('hh:mm A');
 
   return (
     <MentionItem
