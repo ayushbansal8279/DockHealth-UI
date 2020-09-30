@@ -31,7 +31,7 @@ import {
 } from 'selectors/mega-filter-selectors';
 import Header from 'components/taskView/Header';
 
-import pusherInstance from 'helpers/pusher-instance';
+import { initializePusher } from 'helpers/pusher-instance';
 import { ListTourWrapper, ListTourBackground } from './ListDetailsView.Styled';
 import TasksView from '../Task/NewTasksView/TasksView';
 import { LIST_TOUR_STEPS } from './list-tour-steps';
@@ -212,11 +212,12 @@ class Home extends Component {
 
     const { actions } = this.props;
     const currentUserIdentifier = currentUser.userIdentifier;
-    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+    const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-    let channel = pusherInstance.channel(channelName);
-    if (!channel) {
-      channel = pusherInstance.subscribe(channelName);
+    const pusher = initializePusher();
+    let channel = pusher.channel(channelName);
+    if (!channel || !channel.subscribed) {
+      channel = pusher.subscribe(channelName);
       console.log(`subscribed to channel: ${channelName}`);
     }
     // channel.bind('pusher:subscription_succeeded', function() {

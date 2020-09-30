@@ -36,7 +36,7 @@ import {
   onTaskListLeft,
   onListsTipsEvent,
 } from 'helpers/ga-event-helper';
-import pusherInstance from 'helpers/pusher-instance';
+import { initializePusher } from 'helpers/pusher-instance';
 import TipNextStepIcon from 'img/tip-next-step-icon.svg';
 import TipPencilIcon from 'img/tip-pencil-icon.svg';
 import TaskListTip1 from 'img/tips/task-list/task-list-1.svg';
@@ -139,11 +139,12 @@ class TaskListView extends PureComponent {
     });
 
     const currentUserIdentifier = currentUser.userIdentifier;
-    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+    const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-    let channel = pusherInstance.channel(channelName);
-    if (!channel) {
-      channel = pusherInstance.subscribe(channelName);
+    const pusher = initializePusher();
+    let channel = pusher.channel(channelName);
+    if (!channel || !channel.subscribed) {
+      channel = pusher.subscribe(channelName);
     }
 
     this.setState({
@@ -161,9 +162,10 @@ class TaskListView extends PureComponent {
   componentWillUnmount() {
     const { channelName } = this.state;
 
-    let channel = pusherInstance.channel(channelName);
+    const pusher = initializePusher();
+    let channel = pusher.channel(channelName);
     if (channel) {
-      channel = pusherInstance.unsubscribe(channelName);
+      channel = pusher.unsubscribe(channelName);
     }
   }
 

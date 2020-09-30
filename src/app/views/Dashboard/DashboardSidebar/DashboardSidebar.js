@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as ModalActions from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
-import pusherInstance from 'helpers/pusher-instance';
+import { initializePusher } from 'helpers/pusher-instance';
 import { selectCurrentOrganization as selectCurrentOrganizationAction } from 'api/user-api';
 import { hashHistory } from 'react-router';
 import { IconButton } from '@material-ui/core';
@@ -67,11 +67,12 @@ const DashboardSidebar = ({
 
   useEffect(() => {
     const currentUserIdentifier = currentUser.userIdentifier;
-    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+    const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-    let channel = pusherInstance.channel(channelName);
-    if (!channel) {
-      channel = pusherInstance.subscribe(channelName);
+    const pusher = initializePusher();
+    let channel = pusher.channel(channelName);
+    if (!channel || !channel.subscribed) {
+      channel = pusher.subscribe(channelName);
     }
 
     channel.bind('tasklist-update', () => {
@@ -81,7 +82,7 @@ const DashboardSidebar = ({
 
     return () => {
       if (channel) {
-        channel = pusherInstance.unsubscribe(channelName);
+        channel = pusher.unsubscribe(channelName);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

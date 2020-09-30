@@ -1,17 +1,29 @@
 import { isNil } from 'ramda';
 import { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 import { error } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
+import { initializePusherForPresence } from 'helpers/pusher-instance';
 
-export default class Logout extends PureComponent {
+class Logout extends PureComponent {
   componentDidMount = () => {
     const durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
+
+    const pusherForPresence = initializePusherForPresence();
+    const presenceChannelName = `presence-dock-users`;
+    let presenceChannel = pusherForPresence.channel(presenceChannelName);
+    if (!presenceChannel || !presenceChannel.subscribed) {
+      presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+    }
+    const { currentUser } = this.props;
 
     return userApi
       .logout()
       .then(() => {
+        pusherForPresence.unsubscribe(presenceChannelName);
+        
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'YES',
         });
@@ -46,3 +58,13 @@ export default class Logout extends PureComponent {
     return null;
   }
 }
+
+const mapStateToProps = store => ({
+  currentUser: store.userState.userProfile,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Logout);

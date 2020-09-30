@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
+import { connect } from 'react-redux';
+import { isEmpty } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { getMemberStatus } from 'helpers/list-members-helper';
@@ -21,6 +23,8 @@ const Member = React.forwardRef(
       size,
       showTooltip = true,
       isInactive,
+      activeUsersList,
+      idleUsersList,
     },
     reference,
   ) => {
@@ -47,6 +51,17 @@ const Member = React.forwardRef(
       hideAvatarTooltip,
     ] = useBoolean(false);
 
+    const onlineActiveUser =
+      activeUsersList?.find(({ userIdentifier }) => {
+        return userIdentifier === member?.userIdentifier;
+      }) || {};
+    const onlineIdleUser =
+      idleUsersList?.find(({ userIdentifier }) => {
+        return userIdentifier === member?.userIdentifier;
+      }) || {};
+
+    const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
+
     const avatar = (
       <Avatar
         ref={reference}
@@ -55,6 +70,10 @@ const Member = React.forwardRef(
         className={className}
         onClick={onClick}
         isInactive={isInactive}
+        showOnlineIndicator={currentUserIdentifier !== member?.userIdentifier}
+        isOnline={!isEmpty(onlineActiveUser)}
+        isOffline={isEmpty(onlineActiveUser) && isEmpty(onlineIdleUser)}
+        isIdle={!isEmpty(onlineIdleUser)}
       >
         {children || avatarContent}
       </Avatar>
@@ -101,4 +120,9 @@ Member.defaultProps = {
   onClick: null,
 };
 
-export default Member;
+const mapStateToProps = state => ({
+  activeUsersList: state.activeUsers.activeUsersList,
+  idleUsersList: state.activeUsers.idleUsersList,
+});
+
+export default connect(mapStateToProps)(Member);

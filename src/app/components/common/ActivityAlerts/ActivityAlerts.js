@@ -17,7 +17,7 @@ import {
 import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
 import Switch from 'components/common/Switch/Switch';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
-import pusherInstance from 'helpers/pusher-instance';
+import { initializePusher } from 'helpers/pusher-instance';
 
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
 import {
@@ -67,11 +67,12 @@ const listenRealTimeAlerts = (
   }
 
   const currentUserIdentifier = currentUser.userIdentifier;
-  const channelName = `dock-user-channel-${currentUserIdentifier}`;
+  const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-  let channel = pusherInstance.channel(channelName);
-  if (!channel) {
-    channel = pusherInstance.subscribe(channelName);
+  const pusher = initializePusher();
+  let channel = pusher.channel(channelName);
+  if (!channel || !channel.subscribed) {
+    channel = pusher.subscribe(channelName);
   }
 
   channel.bind('activity-alert', ({ alert }) => {

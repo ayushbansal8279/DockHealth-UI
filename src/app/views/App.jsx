@@ -3,10 +3,13 @@ import 'simplebar/dist/simplebar.min.css';
 
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
+import { isEmpty } from 'ramda';
+import { connect } from 'react-redux';
 import IdleTimer from 'react-idle-timer';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
+import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
@@ -54,6 +57,12 @@ ReactModal.setAppElement('#app');
 class App extends PureComponent {
   idleTimer = null;
 
+  idleTimerForPresence = null;
+
+  pusherForPresence = null;
+
+  presenceChannelName = null;
+
   componentWillMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     const redirectToLink = sessionStorage.getItem('redirectToLink');
@@ -68,6 +77,72 @@ class App extends PureComponent {
     if (redirectToLink && !redirectToHome) {
       sessionStorage.removeItem('redirectToLink');
       window.location.href = redirectToLink;
+    }
+  }
+
+  componentDidUpdate(previousProps) {
+    const { userState: previousUserState } = previousProps;
+    const {
+      userState,
+      setActiveUsers,
+      addActiveUser,
+      addIdleUser,
+      removeUser,
+    } = this.props;
+
+    const { userProfile: previousUserProfile } = previousUserState;
+    const { userProfile } = userState;
+
+    const pusherForPresence = initializePusherForPresence();
+    this.pusherForPresence = pusherForPresence;
+    const presenceChannelName = `presence-dock-users`;
+    this.presenceChannelName = presenceChannelName;
+    if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
+      let presenceChannel = pusherForPresence.channel(presenceChannelName);
+      if (!presenceChannel || !presenceChannel.subscribed) {
+        presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+
+        presenceChannel.bind('pusher:subscription_succeeded', function({
+          members,
+        }) {
+          const formattedMembers = Object.keys(members)?.map(memberKey => ({
+            ...members[memberKey],
+            userIdentifier: memberKey,
+          }));
+
+          setActiveUsers(formattedMembers);
+        });
+
+        presenceChannel.bind('pusher:member_added', function(member) {
+          addActiveUser({
+            ...member,
+            userIdentifier: member.id,
+          });
+        });
+
+        presenceChannel.bind('pusher:member_removed', function(member) {
+          removeUser({
+            ...member,
+            userIdentifier: member.id,
+          });
+        });
+
+        presenceChannel.bind('client-event-dock-user-idle', function(
+          data,
+          metadata,
+        ) {
+          // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
+          if (data.idle) {
+            addIdleUser({
+              userIdentifier: metadata.user_id,
+            });
+          } else {
+            addActiveUser({
+              userIdentifier: metadata.user_id,
+            });
+          }
+        });
+      }
     }
   }
 
@@ -92,8 +167,28 @@ class App extends PureComponent {
     hashHistory.push('/login');
   };
 
+  onActiveForPresence = () => {
+    const presenceChannel = this.pusherForPresence.channel(
+      this.presenceChannelName,
+    );
+    if (presenceChannel && presenceChannel.subscribed) {
+      presenceChannel.trigger('client-event-dock-user-idle', { idle: false });
+    }
+  };
+
+  onIdleForPresence = () => {
+    const presenceChannel = this.pusherForPresence.channel(
+      this.presenceChannelName,
+    );
+    if (presenceChannel && presenceChannel.subscribed) {
+      presenceChannel.trigger('client-event-dock-user-idle', { idle: true });
+    }
+  };
+
   render() {
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
+    const idleTimeout = systemTimeout / 2;
+
     const { children } = this.props;
     const isLessThen1024 = window?.innerWidth < 1024;
     const orientationType = window?.screen?.orientation?.type;
@@ -121,6 +216,16 @@ class App extends PureComponent {
               debounce={250}
               timeout={systemTimeout}
             />
+            <IdleTimer
+              ref={reference => {
+                this.idleTimerForPresence = reference;
+              }}
+              element={document}
+              onActive={this.onActiveForPresence}
+              onIdle={this.onIdleForPresence}
+              debounce={250}
+              timeout={idleTimeout}
+            />
             <MainContainer>{children}</MainContainer>
             <Notification />
           </>
@@ -135,4 +240,27 @@ App.propTypes = {
   children: node.isRequired,
 };
 
-export default App;
+const mapStateToProps = state => ({
+  userState: state.userState,
+});
+
+const mapDispatchToProps = {
+  setActiveUsers: activeUsers => ({
+    type: 'active-users/setActiveUsers',
+    activeUsers,
+  }),
+  addActiveUser: user => ({
+    type: 'active-users/addActiveUser',
+    user,
+  }),
+  addIdleUser: user => ({
+    type: 'active-users/addIdleUser',
+    user,
+  }),
+  removeUser: user => ({
+    type: 'active-users/removeUser',
+    user,
+  }),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

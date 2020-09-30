@@ -193,7 +193,14 @@ export const Routes = ({ store }) => {
   const dispatch = useDispatch();
 
   const checkUserIsAuthenticated = ({ checkTrialExpiration, callback }) => {
-    checkUserAuthentication({ dispatch, checkTrialExpiration, callback });
+    checkUserAuthentication({
+      dispatch,
+      checkTrialExpiration,
+    });
+
+    if (callback) {
+      callback();
+    }
   };
 
   const onEnterApp = ({ location, params }) => {

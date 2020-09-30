@@ -77,3 +77,39 @@ export const CameraContainer = styled.div`
   transform: translate(-50%, -50%);
   width: ${({ size }) => getScaledSize({ normalSize: 40, propSize: size })}px;
 `;
+
+export const OnlineIndicator = styled.div`
+  background-color: #219653;
+  border: 1px solid white;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  left: 90%;
+  position: absolute;
+  top: 15%;
+  transform: translate(-50%, -50%);
+`;
+
+export const OfflineIndicator = styled.div`
+  background-color: white;
+  border: 1px solid ${palette.coolGrey1};
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  left: 90%;
+  position: absolute;
+  top: 15%;
+  transform: translate(-50%, -50%);
+`;
+
+export const IdleIndicator = styled.div`
+  background-color: ${palette.blueOcean};
+  border: 1px solid white;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  left: 90%;
+  position: absolute;
+  top: 15%;
+  transform: translate(-50%, -50%);
+`;

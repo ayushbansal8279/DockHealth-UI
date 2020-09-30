@@ -191,7 +191,7 @@ export function logout() {
   window.sessionStorage.removeItem('confirmStatus');
   hashHistory.replace('login');
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
       sessionStorage.removeItem('EnterpriseUserFlag');
       sessionStorage.removeItem('SSO_ACCESSTOKEN');
@@ -206,6 +206,7 @@ export function logout() {
           store.dispatch({ type: RESET_APP });
           sessionStorage.removeItem('accessToken');
           sessionStorage.removeItem('userIdentifier');
+          sessionStorage.removeItem('userProfile');
           sessionStorage.removeItem('sessionStartTime');
           sessionStorage.removeItem('currentOrganizationIdentifier');
           sessionStorage.removeItem('notificationsEnabled');
@@ -214,9 +215,11 @@ export function logout() {
           sessionStorage.removeItem('redirectToLink');
           sessionStorage.removeItem('selectedTaskIdentifier');
           onLogout();
+          resolve();
         })
         .catch(error => {
           console.log(error);
+          reject(error);
         });
     }
   });
