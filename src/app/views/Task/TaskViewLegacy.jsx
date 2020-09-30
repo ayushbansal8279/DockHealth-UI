@@ -47,7 +47,7 @@ import {
   onHeadsUpDisplayToggled,
   onSlimViewChanged,
 } from 'helpers/ga-event-helper';
-import pusherInstance from 'helpers/pusher-instance';
+import { initializePusher } from 'helpers/pusher-instance';
 import { isTaskArchivable } from 'helpers/utility-functions';
 import ChevronSmallIcon from 'img/chevron-small.svg';
 import palette from 'styles/palette';
@@ -364,11 +364,12 @@ class TaskView extends Component {
 
     const { refreshTask, taskActions } = this.props;
     const currentUserIdentifier = currentUser.userIdentifier;
-    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+    const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-    let channel = pusherInstance.channel(channelName);
-    if (!channel) {
-      channel = pusherInstance.subscribe(channelName);
+    const pusher = initializePusher();
+    let channel = pusher.channel(channelName);
+    if (!channel || !channel.subscribed) {
+      channel = pusher.subscribe(channelName);
       // console.log('subscribed to channel');
     }
     // channel.bind('pusher:subscription_succeeded', function() {
@@ -437,10 +438,11 @@ class TaskView extends Component {
     const { currentUser } = this.props;
     const currentUserIdentifier = currentUser?.userIdentifier;
     if (currentUserIdentifier) {
-      const channelName = `dock-user-channel-${currentUserIdentifier}`;
-      let channel = pusherInstance.channel(channelName);
+      const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
+      const pusher = initializePusher();
+      let channel = pusher.channel(channelName);
       if (channel) {
-        channel = pusherInstance.unsubscribe(channelName);
+        channel = pusher.unsubscribe(channelName);
         // console.log('unsubscribed from channel');
       }
     }

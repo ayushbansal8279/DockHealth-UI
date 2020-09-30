@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'ramda';
-import pusherInstance from 'helpers/pusher-instance';
+import { initializePusher } from 'helpers/pusher-instance';
 import { getActivityAlertDetails } from 'api/activity-alerts-api';
 import ActivityAlertsToast from './ActivityAlertsToast/ActivityAlertsToast';
 import { ActivityAlertsToastsContainer } from './styled';
@@ -15,11 +15,12 @@ const listenRealTimeAlerts = (currentUser, showAlert) => {
   }
 
   const currentUserIdentifier = currentUser.userIdentifier;
-  const channelName = `dock-user-channel-${currentUserIdentifier}`;
+  const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-  let channel = pusherInstance.channel(channelName);
-  if (!channel) {
-    channel = pusherInstance.subscribe(channelName);
+  const pusher = initializePusher();
+  let channel = pusher.channel(channelName);
+  if (!channel || !channel.subscribed) {
+    channel = pusher.subscribe(channelName);
   }
 
   channel.unbind('activity-alert');
