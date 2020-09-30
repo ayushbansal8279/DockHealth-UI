@@ -48,9 +48,10 @@ class Home extends Component {
       patientActions,
       currentUser,
       taskLists,
+      pendingTaskLists = [],
     } = this.props;
 
-    // if (routeParams.taskListIdentifier) {
+    // if (routeParams.taskListIdentifier) {`
     //   taskListActions.getMembersByTaskListId(
     //     routeParams.taskListIdentifier,
     //     'ALL',
@@ -59,7 +60,10 @@ class Home extends Component {
 
     this.initTable();
 
-    this.setViewHeader(routeParams.taskListIdentifier, taskLists);
+    this.setViewHeader(routeParams.taskListIdentifier, [
+      ...taskLists,
+      ...pendingTaskLists,
+    ]);
 
     patientActions.getAllPatients();
 
@@ -96,10 +100,10 @@ class Home extends Component {
       nextProps.routeParams.taskListIdentifier !==
         routeParams.taskListIdentifier
     ) {
-      this.setViewHeader(
-        nextProps.routeParams.taskListIdentifier,
-        nextProps.taskLists,
-      );
+      this.setViewHeader(nextProps.routeParams.taskListIdentifier, [
+        ...nextProps?.taskLists,
+        ...nextProps?.pendingTaskLists,
+      ]);
     }
 
     if (
@@ -657,6 +661,7 @@ const mapStateToProps = state => ({
   filters: availableFiltersInInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
   taskCounters: state.listTasks.taskCounters,
+  pendingTaskLists: state.invitationState.pendingTasklists,
 });
 
 const mapDispatchToProps = dispatch => ({

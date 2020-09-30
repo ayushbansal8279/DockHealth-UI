@@ -15,6 +15,16 @@ export function getTaskListForUser() {
   };
 }
 
+export function getPendingTaskListForUser() {
+  return dispatch => {
+    return TaskListApi.findPendingTaskListsForUser()
+      .then(tasklist => {
+        dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, tasklist });
+      })
+      .catch(noop);
+  };
+}
+
 export function loading() {
   return dispatch => {
     dispatch({ type: ActionTypes.REQUEST_LISTS });
