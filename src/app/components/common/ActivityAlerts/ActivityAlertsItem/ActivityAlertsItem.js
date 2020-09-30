@@ -80,6 +80,8 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
         );
       }
     };
+  } else {
+    return null;
   }
 
   const title = getInterpolatedText(activityAlertTitle, {
