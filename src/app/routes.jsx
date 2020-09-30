@@ -100,6 +100,7 @@ import {
   initializeHiddenNavbarTemplate,
   removeHiddenNavbarTemplate,
 } from './sagas/template-saga';
+import {initializePusherForPresence} from 'helpers/pusher-instance';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -193,7 +194,51 @@ export const Routes = ({ store }) => {
   const dispatch = useDispatch();
 
   const checkUserIsAuthenticated = ({ checkTrialExpiration, callback }) => {
-    checkUserAuthentication({ dispatch, checkTrialExpiration, callback });
+    const isLoggedInResults = checkUserAuthentication({ dispatch, checkTrialExpiration });
+
+    const pusherForPresence = initializePusherForPresence();
+    const presenceChannelName = `presence-dock-users`;
+    let presenceChannel = pusherForPresence.channel(presenceChannelName);
+    if (!presenceChannel || !presenceChannel.subscribed) {
+      presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+
+      presenceChannel.bind('pusher:subscription_succeeded', function(members) {
+        var me = members.me;
+        console.log("current user: "+JSON.stringify(me));
+
+        members.each(function(member) {
+          console.log(member);
+        });
+      });
+
+      presenceChannel.bind('pusher:member_added', function(member) {
+        console.log('online: '+member.id);
+      });
+
+      presenceChannel.bind('pusher:member_removed', function(member) {
+        console.log('offline: '+member.id);
+      });
+
+      presenceChannel.bind('client-event-dock-user-idle', function (data, metadata) {
+        console.log("idle user: ", metadata.user_id);
+        //presenceChannel.members.get(metadata.user_id).info
+      });
+
+      presenceChannel.bind('client-event-dock-user-online', function (data, metadata) {
+        console.log("online user: ", metadata.user_id);
+      });
+
+      presenceChannel.bind('client-event-dock-user-offline', function (data, metadata) {
+        console.log("offline user: ", metadata.user_id);
+      });
+    }
+    const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
+    var triggered = presenceChannel.trigger('client-event-dock-user-online', { userIdentifier: currentUserIdentifier });
+    console.log(triggered);
+
+    if (callback) {
+      callback();
+    }
   };
 
   const onEnterApp = ({ location, params }) => {

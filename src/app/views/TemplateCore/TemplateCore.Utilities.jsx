@@ -189,14 +189,11 @@ const isLoggedIn = ({ dispatch, checkTrialExpiration }) => async (
 export const checkUserAuthentication = async ({
   dispatch,
   checkTrialExpiration,
-  callback,
 }) => {
   const isLoggedInResults = await userApi.isAuthenticated();
   await isLoggedIn({ dispatch, checkTrialExpiration })(
     isLoggedInResults.isLoggedIn,
     isLoggedInResults.user,
   );
-  if (callback) {
-    callback();
-  }
+  return isLoggedInResults;
 };
