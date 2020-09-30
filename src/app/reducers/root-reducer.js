@@ -26,6 +26,7 @@ import DashboardTasksReducer from './dashboard-tasks-reducer';
 import DashboardStatisticsReducer from './dashboard-statistics-reducer';
 import GlobalSearchReducer from './global-search-reducer';
 import AlertsReducer from './alerts-reducer';
+import ActiveUsersReducer from './active-users-reducer';
 
 const appReducer = combineReducers({
   alertsState: AlertsReducer,
@@ -54,6 +55,7 @@ const appReducer = combineReducers({
   dashboardTasks: DashboardTasksReducer,
   dashboardStatistics: DashboardStatisticsReducer,
   globalSearch: GlobalSearchReducer,
+  activeUsers: ActiveUsersReducer,
 });
 
 export default function rootReducer(state, action) {

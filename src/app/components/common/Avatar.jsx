@@ -6,6 +6,8 @@ import {
   AvatarContainer,
   CameraContainer,
   InnerAvatarContainer,
+  OnlineIndicator,
+  OfflineIndicator,
 } from './Avatar.styled';
 
 export default React.forwardRef(
@@ -17,6 +19,9 @@ export default React.forwardRef(
       withCameraIcon,
       withCursor,
       withShadow,
+      showOnlineIndicator,
+      isOnline,
+      isOffline,
       color = palette.midnightBlue,
       padded = true,
       ...props
@@ -35,10 +40,16 @@ export default React.forwardRef(
       <InnerAvatarContainer color={color} size={size} padded={padded}>
         {children}
       </InnerAvatarContainer>
-      {withCameraIcon && (
+      {withCameraIcon && !showOnlineIndicator && (
         <CameraContainer size={size}>
           <img src={CameraIcon} alt="Camera icon" />
         </CameraContainer>
+      )}
+      {showOnlineIndicator && isOnline && !withCameraIcon && (
+        <OnlineIndicator />
+      )}
+      {showOnlineIndicator && isOffline && !withCameraIcon && (
+        <OfflineIndicator />
       )}
     </AvatarContainer>
   ),

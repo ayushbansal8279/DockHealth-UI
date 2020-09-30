@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
+import { connect } from 'react-redux';
+import { isEmpty } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -13,7 +15,16 @@ const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
 
 const Member = React.forwardRef(
   (
-    { onClick, member, children, className, color, size, showTooltip = true },
+    {
+      onClick,
+      member,
+      children,
+      className,
+      color,
+      size,
+      showTooltip = true,
+      activeUsersList,
+    },
     reference,
   ) => {
     const status = getMemberStatus(member);
@@ -40,6 +51,13 @@ const Member = React.forwardRef(
       hideAvatarTooltip,
     ] = useBoolean(false);
 
+    const onlineActiveUser =
+      activeUsersList?.find(({ userIdentifier }) => {
+        return userIdentifier === member?.userIdentifier;
+      }) || {};
+
+    const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
+
     const avatar = (
       <Avatar
         ref={reference}
@@ -47,6 +65,9 @@ const Member = React.forwardRef(
         color={color || memberColor}
         className={className}
         onClick={onClick}
+        showOnlineIndicator={currentUserIdentifier !== member?.userIdentifier}
+        isOnline={!isEmpty(onlineActiveUser)}
+        isOffline={isEmpty(onlineActiveUser)}
       >
         {children || avatarContent}
       </Avatar>
@@ -93,4 +114,8 @@ Member.defaultProps = {
   onClick: null,
 };
 
-export default Member;
+const mapStateToProps = state => ({
+  activeUsersList: state.activeUsers.activeUsersList,
+});
+
+export default connect(mapStateToProps)(Member);

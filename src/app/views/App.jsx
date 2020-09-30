@@ -3,10 +3,13 @@ import 'simplebar/dist/simplebar.min.css';
 
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
+import { isEmpty } from 'ramda';
+import { connect } from 'react-redux';
 import IdleTimer from 'react-idle-timer';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
+import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
@@ -68,6 +71,54 @@ class App extends PureComponent {
     if (redirectToLink && !redirectToHome) {
       sessionStorage.removeItem('redirectToLink');
       window.location.href = redirectToLink;
+    }
+  }
+
+  componentDidUpdate(previousProps) {
+    const { userState: previousUserState } = previousProps;
+    const {
+      userState,
+      setActiveUsers,
+      addActiveUser,
+      removeActiveUser,
+    } = this.props;
+
+    const { userProfile: previousUserProfile } = previousUserState;
+    const { userProfile } = userState;
+
+    if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
+      const pusherForPresence = initializePusherForPresence();
+      const presenceChannelName = `presence-dock-users`;
+      let presenceChannel = pusherForPresence.channel(presenceChannelName);
+      if (!presenceChannel || !presenceChannel.subscribed) {
+        presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+
+        presenceChannel.bind('pusher:subscription_succeeded', function({
+          members,
+        }) {
+          const formattedMembers = Object.keys(members)?.map(memberKey => ({
+            ...members[memberKey],
+            userIdentifier: memberKey,
+          }));
+
+          setActiveUsers(formattedMembers);
+        });
+
+        presenceChannel.bind('pusher:member_added', function(member) {
+          addActiveUser(member);
+        });
+
+        presenceChannel.bind('pusher:member_removed', function(member) {
+          removeActiveUser(member);
+        });
+
+        presenceChannel.bind('client-event-dock-user-idle', function(
+          data,
+          metadata,
+        ) {
+          console.log('idle user:', metadata.user_id);
+        });
+      }
     }
   }
 
@@ -135,4 +186,23 @@ App.propTypes = {
   children: node.isRequired,
 };
 
-export default App;
+const mapStateToProps = state => ({
+  userState: state.userState,
+});
+
+const mapDispatchToProps = {
+  setActiveUsers: activeUsers => ({
+    type: 'active-users/setActiveUsers',
+    activeUsers,
+  }),
+  addActiveUser: user => ({
+    type: 'active-users/addActiveUser',
+    user,
+  }),
+  removeActiveUser: user => ({
+    type: 'active-users/removeActiveUser',
+    user,
+  }),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
