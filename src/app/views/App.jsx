@@ -135,13 +135,19 @@ class App extends PureComponent {
         ) {
           // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
           if (data.idle) {
-            setIdleStateForUser({
-              userIdentifier: metadata.user_id,
-            }, true);
+            setIdleStateForUser(
+              {
+                userIdentifier: metadata.user_id,
+              },
+              true,
+            );
           } else {
-            setIdleStateForUser({
-              userIdentifier: metadata.user_id,
-            }, false);
+            setIdleStateForUser(
+              {
+                userIdentifier: metadata.user_id,
+              },
+              false,
+            );
           }
         });
       }
@@ -258,7 +264,7 @@ const mapDispatchToProps = {
   }),
   setIdleStateForUser: (user, idleStatus) => ({
     type: 'active-users/setIdleStateForUser',
-    user, 
+    user,
     idleStatus,
   }),
   removeUser: user => ({

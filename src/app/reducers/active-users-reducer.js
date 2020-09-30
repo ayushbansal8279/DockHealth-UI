@@ -20,11 +20,13 @@ const ActiveUsers = (state = initialState, action) => {
     case 'active-users/setIdleStateForUser': {
       const { user, idleStatus } = action;
       return {
-        activeUsersList: state.activeUsersList.map(member => 
-          member.userIdentifier === user.userIdentifier 
-          ? {
-            ...member, idle: idleStatus
-          } : member,
+        activeUsersList: state.activeUsersList.map(member =>
+          member.userIdentifier === user.userIdentifier
+            ? {
+                ...member,
+                idle: idleStatus,
+              }
+            : member,
         ),
       };
     }
