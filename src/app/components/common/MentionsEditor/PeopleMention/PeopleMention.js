@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router';
+import { useSelector } from 'react-redux';
 import { Popper } from '@material-ui/core';
 import * as PeopleApi from 'api/people-api';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import moment from 'moment';
+import { isEmpty } from 'ramda';
 import {
   MentionItem,
   PersonCardContainer,
@@ -25,12 +27,30 @@ import {
   AvatarCircle,
   AvatarBorder,
   AvatarImage,
+  NameSection,
+  StatusIndicatorContainer,
+  OnlineIndicator,
+  OfflineIndicator,
+  IdleIndicator,
 } from './styled';
 
 const PeopleMention = ({ mention, className, children }) => {
   const reference = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [personData, setPersonData] = useState(null);
+
+  const { activeUsersList } = useSelector(store => ({
+    activeUsersList: store.activeUsers.activeUsersList,
+  }));
+
+  const onlineActiveUser =
+    activeUsersList?.find(({ userIdentifier }) => {
+      return userIdentifier === personData?.userIdentifier;
+    }) || {};
+
+  const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
+  const isIdle = !isEmpty(onlineActiveUser) && onlineActiveUser.idle;
+  const isOffline = isEmpty(onlineActiveUser);
 
   useEffect(() => {
     if (isHovered && !personData) {
@@ -94,10 +114,32 @@ const PeopleMention = ({ mention, className, children }) => {
                 </Link>
               </RoleSection>
               <ProfileInfoSection>
-                <UserNameText>{personData.userName}</UserNameText>
+                <NameSection>
+                  <UserNameText>{personData.userName}</UserNameText>
+                  <StatusIndicatorContainer>
+                    {isOnline && (
+                      <>
+                        {' '}
+                        <OnlineIndicator /> online{' '}
+                      </>
+                    )}
+                    {isIdle && (
+                      <>
+                        {' '}
+                        <IdleIndicator /> idle{' '}
+                      </>
+                    )}
+                    {isOffline && (
+                      <>
+                        {' '}
+                        <OfflineIndicator /> offline{' '}
+                      </>
+                    )}
+                  </StatusIndicatorContainer>
+                </NameSection>
                 {personData.titles[0]?.name && (
                   <ProfileInfoText>
-                    {personData.titles[0]?.name}
+                    <>{personData.titles[0]?.name}</>
                   </ProfileInfoText>
                 )}
                 {personData.email && (

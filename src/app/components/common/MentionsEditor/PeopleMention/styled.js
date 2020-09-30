@@ -146,3 +146,40 @@ export const Divider = styled.hr`
   margin: 0;
   border-color: ${palette.coolGrey3};
 `;
+
+export const NameSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const StatusIndicatorContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const OnlineIndicator = styled.div`
+  background-color: #219653;
+  border: 1px solid white;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+`;
+
+export const OfflineIndicator = styled.div`
+  background-color: white;
+  border: 1px solid ${palette.coolGrey1};
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+`;
+
+export const IdleIndicator = styled.div`
+  background-color: ${palette.blueOcean};
+  border: 1px solid white;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+`;
