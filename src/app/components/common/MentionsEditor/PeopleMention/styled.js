@@ -158,20 +158,15 @@ export const StatusIndicatorContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  margin-left: ${spacing.small};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.extraLight};
+  color: ${palette.coolGrey1};
 `;
 
 export const OnlineIndicator = styled.div`
   background-color: #219653;
   border: 1px solid white;
-  border-radius: 50%;
-  height: 10px;
-  width: 10px;
-  margin-right: 5px;
-`;
-
-export const OfflineIndicator = styled.div`
-  background-color: white;
-  border: 1px solid ${palette.coolGrey1};
   border-radius: 50%;
   height: 10px;
   width: 10px;

@@ -7,7 +7,6 @@ import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import moment from 'moment';
-import { isEmpty } from 'ramda';
 import {
   MentionItem,
   PersonCardContainer,
@@ -30,7 +29,6 @@ import {
   NameSection,
   StatusIndicatorContainer,
   OnlineIndicator,
-  // OfflineIndicator,
   IdleIndicator,
 } from './styled';
 
@@ -44,14 +42,13 @@ const PeopleMention = ({ mention, className, children }) => {
     activeUsersList: store.activeUsers.activeUsersList,
   }));
 
-  const onlineActiveUser =
-    activeUsersList?.find(({ userIdentifier }) => {
-      return userIdentifier === personData?.userIdentifier;
-    }) || {};
+  const onlineActiveUser = activeUsersList?.find(({ userIdentifier }) => {
+    return userIdentifier === personData?.userIdentifier;
+  });
 
-  const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
-  const isIdle = !isEmpty(onlineActiveUser) && onlineActiveUser.idle;
-  const isOffline = isEmpty(onlineActiveUser);
+  const isOnline = onlineActiveUser && !onlineActiveUser.idle;
+  const isIdle = onlineActiveUser && onlineActiveUser.idle;
+  const isOffline = !onlineActiveUser;
 
   useEffect(() => {
     if (isHovered && !personData) {

@@ -8,7 +8,6 @@ import {
   SuggestionText,
   StatusNameSection,
 } from './styled';
-import { StatusIndicatorContainer } from '../PeopleMention/styled';
 
 const PeopleSuggestionItem = ({
   mention,
@@ -76,12 +75,12 @@ const PeopleSuggestionItem = ({
           autoEscape
           textToHighlight={mention.name}
         />
-        <StatusIndicatorContainer>
-          {isOnline && <StatusNameSection>online</StatusNameSection>}
-          {isIdle && <StatusNameSection>idle</StatusNameSection>}
-          {isOffline && <StatusNameSection>offline</StatusNameSection>}
-        </StatusIndicatorContainer>
       </SuggestionText>
+      <StatusNameSection>
+        {isOnline && 'online'}
+        {isIdle && 'idle'}
+        {isOffline && 'offline'}
+      </StatusNameSection>
     </SuggestionItemContainer>
   );
 };
