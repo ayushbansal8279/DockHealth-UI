@@ -4,14 +4,21 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
+export const DashboardStatisticsTilesContainer = styled.div`
+  display: flex;
+
+  & > div {
+    margin-right: ${spacing.small};
+  }
+`;
+
 export const DashboardStatisticsTileContainer = styled.div`
-  width: 100%;
+  width: 25%;
   background-image: ${props => props.background};
   border-radius: 10px;
   padding: 10px 10px ${spacing.regular} ${spacing.regular};
   display: flex;
   justify-content: space-between;
-  height: ${props => props.height};
 `;
 
 export const DashboardStatisticsTileText = styled.div`
@@ -63,7 +70,7 @@ export const DashboardStatisticsContainer = styled.div`
 
 export const DashboardStatisticsLabel = styled.span`
   color: ${palette.coolGrey1};
-  fontweight: ${fontWeights.regularPlus};
+  font-weight: ${fontWeights.regularPlus};
   padding-left: ${props => props.paddingLeft};
 `;
 
