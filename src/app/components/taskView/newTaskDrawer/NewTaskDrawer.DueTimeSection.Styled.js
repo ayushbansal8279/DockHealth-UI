@@ -32,9 +32,13 @@ export const DueTimeErrorMessage = styled.span`
   font-size: 12px;
 `;
 
-export const DueTimeInputMask = styled(({ isOverDue, ...otherProps }) => (
-  <InputMask {...otherProps} />
-))`
+export const DueTimeInputMask = styled(
+  React.forwardRef(
+    ({ isOverDue, isEmpty, isFocus, ...otherProps }, reference) => (
+      <InputMask ref={reference} {...otherProps} />
+    ),
+  ),
+)`
   && {
     border: none;
     color: ${({ isOverDue }) => (isOverDue ? 'red' : palette.mediumGrey)};

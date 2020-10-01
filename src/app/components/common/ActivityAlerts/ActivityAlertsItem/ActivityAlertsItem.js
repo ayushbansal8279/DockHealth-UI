@@ -33,12 +33,12 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     activityAlertTitle,
     activityAlertSubTitle,
     activityAlertType,
-    task,
+    task = {},
     createdDateTime,
-    organization,
+    organization = {},
     targetIdentifier,
   } = itemAlert;
-  const { description, taskList, taskIdentifier, status, comments } = task;
+  const { description, taskList = {}, taskIdentifier, status, comments } = task;
   const { taskListIdentifier, listName } = taskList;
   const {
     organizationInitials,

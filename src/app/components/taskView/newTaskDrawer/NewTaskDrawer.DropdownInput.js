@@ -183,12 +183,12 @@ const DropdownInput = React.forwardRef(
 DropdownInput.propTypes = {
   children: arrayOf(
     shape({
-      key: string.isRequired,
-      label: node.isRequired,
-      displayLabel: string.isRequired,
-      value: string.isRequired,
+      key: string,
+      label: oneOfType([func, node]),
+      displayLabel: string,
+      value: string,
     }),
-  ).isRequired,
+  ),
   popoverStateArray: arrayOf(oneOfType([bool, func])),
   label: string.isRequired,
   placeholder: string,
@@ -204,6 +204,7 @@ DropdownInput.propTypes = {
 };
 
 DropdownInput.defaultProps = {
+  children: [],
   popoverStateArray: null,
   placeholder: '',
   className: '',

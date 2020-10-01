@@ -199,7 +199,7 @@ const SelectInput = React.forwardRef(
     const placeholderValue = !hasCurrentValue ? placeholder : '';
 
     const currentOption = multiple
-      ? currentValue
+      ? currentValue ?? []
       : children.find(({ value }) => value === currentValue) ?? null;
 
     // const availableOptions = multiple
@@ -487,10 +487,10 @@ const SelectInput = React.forwardRef(
 SelectInput.propTypes = {
   children: arrayOf(
     shape({
-      key: string.isRequired,
-      label: node.isRequired,
-      displayLabel: string.isRequired,
-      value: string.isRequired,
+      key: string,
+      label: node,
+      displayLabel: string,
+      value: string,
     }),
   ),
   label: string.isRequired,

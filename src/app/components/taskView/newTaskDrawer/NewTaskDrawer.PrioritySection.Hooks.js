@@ -52,9 +52,9 @@ const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
   );
 
   return {
-    currentPriorityFlagColor: PRIORITIES.find(
-      ({ value }) => value === currentValue,
-    )?.color,
+    currentPriorityFlagColor:
+      PRIORITIES.find(({ value }) => value === currentValue)?.color ||
+      'transparent',
     saveTaskPriority,
     setValue,
   };

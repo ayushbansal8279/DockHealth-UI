@@ -15,7 +15,7 @@ const Tabs = ({ config, completedTasksAmount }) => {
         return (
           shouldRender() &&
           (key !== TaskListTabName.COMPLETE || completedTasksAmount > 0) && (
-            <Tab {...tab} />
+            <Tab key={key} {...tab} />
           )
         );
       })}
