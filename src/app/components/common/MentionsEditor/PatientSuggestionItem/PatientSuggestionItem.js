@@ -2,7 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 import { SuggestionItemContainer, SuggestionText } from './styled';
 
-const PatientSuggestionItem = ({ mention, searchValue, isFocused }) => {
+const PatientSuggestionItem = ({
+  mention,
+  searchValue,
+  isFocused,
+  ...parentProps
+}) => {
   const suggestionItemReference = useRef(null);
 
   const handleScroll = () => {
@@ -32,6 +37,7 @@ const PatientSuggestionItem = ({ mention, searchValue, isFocused }) => {
   return (
     <SuggestionItemContainer
       ref={suggestionItemReference}
+      {...parentProps}
       isFocused={isFocused}
     >
       <SuggestionText>
