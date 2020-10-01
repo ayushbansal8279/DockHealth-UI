@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import { Button, Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty } from 'ramda';
 import {
@@ -31,6 +31,7 @@ import {
   HeaderActionButtonsGrid,
   SearchWrapper,
   MemberWrapper,
+  HiddenMembersTooltipContainer,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
 
@@ -80,18 +81,28 @@ const useToggleNotifications = ({
     }
   }, [closeMorePopover, dispatch, notificationsEnabled, taskListIdentifier]);
 
-const getMembersNames = ({ members }) =>
-  members?.map(member => {
-    if (!member) {
-      return null;
+const getHiddenMembers = ({ hiddenMembers, activeUsersList }) =>
+  hiddenMembers?.map(hiddenMember => {
+    const onlineActiveUser =
+      activeUsersList?.find(({ userIdentifier }) => {
+        return userIdentifier === hiddenMember?.userIdentifier;
+      }) || {};
+
+    let userStatusLabel = 'offline';
+
+    if (!isEmpty(onlineActiveUser) && !onlineActiveUser.idle) {
+      userStatusLabel = 'online';
+    } else if (!isEmpty(onlineActiveUser) && onlineActiveUser.idle) {
+      userStatusLabel = 'idle';
+    } else if (hiddenMember?.userStatus === 'INVITED') {
+      userStatusLabel = 'invite pending';
     }
 
-    const { firstName, lastName, userIdentifier } = member;
-
     return (
-      <div key={userIdentifier}>
-        {`${firstName ?? ''} ${lastName ?? ''}`.trim()}
-      </div>
+      <HiddenMembersTooltipContainer>
+        <span>{hiddenMember?.userName?.slice(0, 16)}</span>
+        {userStatusLabel}
+      </HiddenMembersTooltipContainer>
     );
   });
 
@@ -116,6 +127,7 @@ const Toolbar = ({
   patientColumnVisible = true,
   tipsContent,
   isFetching,
+  activeUsersList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const moreButtonReference = useRef(null);
@@ -217,7 +229,10 @@ const Toolbar = ({
                       open={isShowMoreMembersTooltipOpen}
                       anchorEl={moreMembersButtonReference.current}
                     >
-                      {getMembersNames({ members: hiddenMembers })}
+                      {getHiddenMembers({
+                        hiddenMembers: members,
+                        activeUsersList,
+                      })}
                     </UniversalTooltip>
                     <MoreMembersButtonContainer
                       onMouseEnter={showMoreMembersTooltip}
@@ -324,5 +339,8 @@ const Toolbar = ({
     </PageContentHeader>
   );
 };
+const mapStateToProps = state => ({
+  activeUsersList: state.activeUsers.activeUsersList,
+});
 
-export default Toolbar;
+export default connect(mapStateToProps)(Toolbar);

@@ -30,7 +30,9 @@ const Member = React.forwardRef(
     const status = getMemberStatus(member);
     const alt = member ? (
       <div>
-        <TooltipName>{`${member.firstName} ${member.lastName}`}</TooltipName>
+        <TooltipName>
+          {`${member.firstName} ${member.lastName}`?.slice(0, 18)}
+        </TooltipName>
         {status && <TooltipStatus>{status}</TooltipStatus>}
       </div>
     ) : null;
@@ -56,6 +58,9 @@ const Member = React.forwardRef(
       }) || {};
 
     const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
+    const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
+    const isIdle = !isEmpty(onlineActiveUser) && onlineActiveUser.idle;
+    const isOffline = isEmpty(onlineActiveUser);
 
     const avatar = (
       <Avatar
@@ -66,9 +71,9 @@ const Member = React.forwardRef(
         onClick={onClick}
         isInactive={isInactive}
         showOnlineIndicator={currentUserIdentifier !== member?.userIdentifier}
-        isOnline={!isEmpty(onlineActiveUser) && !onlineActiveUser.idle}
-        isIdle={!isEmpty(onlineActiveUser) && onlineActiveUser.idle}
-        isOffline={isEmpty(onlineActiveUser)}
+        isOnline={isOnline}
+        isIdle={isIdle}
+        isOffline={isOffline}
       >
         {children || avatarContent}
       </Avatar>
@@ -90,6 +95,14 @@ const Member = React.forwardRef(
             anchorEl={avatarContainerReference.current}
           >
             {alt}
+            {member?.userStatus !== 'INVITED' &&
+              currentUserIdentifier !== member?.userIdentifier && (
+                <>
+                  {isOnline && 'online'}
+                  {isIdle && 'idle'}
+                  {isOffline && 'offline'}
+                </>
+              )}
           </UniversalTooltip>
         </>
       );
@@ -117,7 +130,6 @@ Member.defaultProps = {
 
 const mapStateToProps = state => ({
   activeUsersList: state.activeUsers.activeUsersList,
-  idleUsersList: state.activeUsers.idleUsersList,
 });
 
 export default connect(mapStateToProps)(Member);

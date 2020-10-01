@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontWeights } from 'styles/font';
 
 // LEGACY STYLES - REFACTOR REQUIRED
 export const ToolbarLabel = withStyles({
@@ -61,4 +62,15 @@ export const MemberWrapper = styled.div`
   flex-direction: row;
 
   ${({ isPending }) => isPending && `opacity: 0.7;`}
+`;
+
+export const HiddenMembersTooltipContainer = styled.div`
+  min-width: 230px;
+  display: flex;
+  justify-content: space-between;
+
+  & > span {
+    font-weight: ${fontWeights.bold};
+    margin-right: ${spacing.tiny};
+  }
 `;
