@@ -30,10 +30,11 @@ import {
   NameSection,
   StatusIndicatorContainer,
   OnlineIndicator,
-  OfflineIndicator,
+  // OfflineIndicator,
   IdleIndicator,
 } from './styled';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const PeopleMention = ({ mention, className, children }) => {
   const reference = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -129,12 +130,7 @@ const PeopleMention = ({ mention, className, children }) => {
                         <IdleIndicator /> idle{' '}
                       </>
                     )}
-                    {isOffline && (
-                      <>
-                        {' '}
-                        <OfflineIndicator /> offline{' '}
-                      </>
-                    )}
+                    {isOffline && <> offline </>}
                   </StatusIndicatorContainer>
                 </NameSection>
                 {personData.titles[0]?.name && (

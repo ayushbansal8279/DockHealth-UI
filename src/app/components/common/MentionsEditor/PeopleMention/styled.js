@@ -166,6 +166,7 @@ export const OnlineIndicator = styled.div`
   border-radius: 50%;
   height: 10px;
   width: 10px;
+  margin-right: 5px;
 `;
 
 export const OfflineIndicator = styled.div`
@@ -174,6 +175,7 @@ export const OfflineIndicator = styled.div`
   border-radius: 50%;
   height: 10px;
   width: 10px;
+  margin-right: 5px;
 `;
 
 export const IdleIndicator = styled.div`
@@ -182,4 +184,5 @@ export const IdleIndicator = styled.div`
   border-radius: 50%;
   height: 10px;
   width: 10px;
+  margin-right: 5px;
 `;
