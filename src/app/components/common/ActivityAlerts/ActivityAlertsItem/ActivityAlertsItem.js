@@ -59,7 +59,9 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   if (
     activityAlertType === 'ASSIGN_TASK' ||
     activityAlertType === 'CREATE_COMMENT' ||
-    activityAlertType === 'MARK_COMPLETE'
+    activityAlertType === 'MARK_COMPLETE' ||
+    activityAlertType === 'MENTION_TASK' ||
+    activityAlertType === 'MENTION_COMMENT'
   ) {
     onGoFunction = () => {
       const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -99,7 +101,10 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     title?.length > 65 ? `${title.slice(0, 65).replace(/\s*$/, '')}...` : title;
   let formattedSubtitle = null;
 
-  if (activityAlertType === 'CREATE_COMMENT') {
+  if (
+    activityAlertType === 'CREATE_COMMENT' ||
+    activityAlertType === 'MENTION_COMMENT'
+  ) {
     formattedSubtitle = `"${
       subtitle?.length > 128
         ? `${subtitle.slice(0, 128).replace(/\s*$/, '')}...`
