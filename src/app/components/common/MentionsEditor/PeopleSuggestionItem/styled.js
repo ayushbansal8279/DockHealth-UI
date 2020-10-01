@@ -23,8 +23,22 @@ export const SuggestionItemContainer = styled.div`
 `;
 
 export const SuggestionText = styled.div`
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   font-family: inherit;
+`;
+
+export const MemberNameSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const StatusNameSection = styled.div`
+  font-family: 'Roboto Condensed';
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
 `;

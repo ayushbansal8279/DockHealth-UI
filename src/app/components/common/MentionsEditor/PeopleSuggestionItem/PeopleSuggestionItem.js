@@ -1,7 +1,14 @@
 import Member from 'components/members/Member/Member';
 import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import Highlighter from 'react-highlight-words';
-import { SuggestionItemContainer, SuggestionText } from './styled';
+import { isEmpty } from 'ramda';
+import {
+  SuggestionItemContainer,
+  SuggestionText,
+  StatusNameSection,
+} from './styled';
+import { StatusIndicatorContainer } from '../PeopleMention/styled';
 
 const PeopleSuggestionItem = ({
   mention,
@@ -27,6 +34,19 @@ const PeopleSuggestionItem = ({
       containerElement.scrollTop = itemOffsetTop;
     }
   };
+
+  const { activeUsersList } = useSelector(store => ({
+    activeUsersList: store.activeUsers.activeUsersList,
+  }));
+
+  const onlineActiveUser =
+    activeUsersList?.find(({ userIdentifier }) => {
+      return userIdentifier === mention?.userIdentifier;
+    }) || {};
+
+  const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
+  const isIdle = !isEmpty(onlineActiveUser) && onlineActiveUser.idle;
+  const isOffline = isEmpty(onlineActiveUser);
 
   useEffect(() => {
     if (suggestionItemReference.current && isFocused) {
@@ -56,6 +76,11 @@ const PeopleSuggestionItem = ({
           autoEscape
           textToHighlight={mention.name}
         />
+        <StatusIndicatorContainer>
+          {isOnline && <StatusNameSection>online</StatusNameSection>}
+          {isIdle && <StatusNameSection>idle</StatusNameSection>}
+          {isOffline && <StatusNameSection>offline</StatusNameSection>}
+        </StatusIndicatorContainer>
       </SuggestionText>
     </SuggestionItemContainer>
   );
