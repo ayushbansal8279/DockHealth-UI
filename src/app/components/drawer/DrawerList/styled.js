@@ -81,7 +81,9 @@ export const NestedList = styled(StyledList)`
   }
 `;
 
-export const StyledListItemText = styled(ListItemText).attrs({
+export const StyledListItemText = styled(({ labelColor, ...props }) => (
+  <ListItemText {...props} />
+)).attrs({
   disableTypography: true,
 })`
   && {

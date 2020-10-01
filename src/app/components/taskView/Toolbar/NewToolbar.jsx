@@ -42,7 +42,10 @@ const renderMemberAvatar = ({ taskListMembers }) => member => {
     ) || {};
 
   return (
-    <MemberWrapper isPending={isMemberPending(member)}>
+    <MemberWrapper
+      key={member?.userIdentifier}
+      isPending={isMemberPending(member)}
+    >
       <Spacing horizontal={2} />
       <Member member={taskListMember} size={40} />
     </MemberWrapper>
@@ -309,7 +312,6 @@ const Toolbar = ({
               <Search
                 fullWidth
                 noBackground
-                initialValue=""
                 value={searchValue}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}

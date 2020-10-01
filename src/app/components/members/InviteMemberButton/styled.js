@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
 import { IconButton } from '@material-ui/core';
@@ -15,6 +17,6 @@ export const StyledIconButton = withStyles({
     padding: 0,
     width: ({ size }) => size,
   },
-})(IconButton);
+})(({ size, ...props }) => <IconButton {...props} />);
 
 export default StyledIconButton;

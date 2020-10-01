@@ -1,7 +1,6 @@
 import { Fade, Popper } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { MontserratTypography } from 'styles/theme-montserrat';
 
 const TooltipContainer = styled.div`
   padding-top: 0.5rem;
@@ -67,11 +66,7 @@ const UniversalTooltip = ({ children, ...props }) => {
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={250}>
             <TooltipContainerReverse>
-              <InnerTooltipContainer>
-                <MontserratTypography weight="normal">
-                  {children}
-                </MontserratTypography>
-              </InnerTooltipContainer>
+              <InnerTooltipContainer>{children}</InnerTooltipContainer>
               <ArrowElementReverse />
             </TooltipContainerReverse>
           </Fade>
@@ -86,11 +81,7 @@ const UniversalTooltip = ({ children, ...props }) => {
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={250}>
             <TooltipContainerReverse>
-              <InnerTooltipContainer>
-                <MontserratTypography weight="normal">
-                  {children}
-                </MontserratTypography>
-              </InnerTooltipContainer>
+              <InnerTooltipContainer>{children}</InnerTooltipContainer>
               <ArrowElementReverseRight />
             </TooltipContainerReverse>
           </Fade>
@@ -105,11 +96,7 @@ const UniversalTooltip = ({ children, ...props }) => {
         <Fade {...TransitionProps} timeout={250}>
           <TooltipContainer>
             <ArrowElement />
-            <InnerTooltipContainer>
-              <MontserratTypography weight="normal">
-                {children}
-              </MontserratTypography>
-            </InnerTooltipContainer>
+            <InnerTooltipContainer>{children}</InnerTooltipContainer>
           </TooltipContainer>
         </Fade>
       )}

@@ -9,8 +9,8 @@ import {
   LoaderRow,
 } from './styled';
 
-const renderLoaderRow = () => (
-  <LoaderRow>
+const renderLoaderRow = index => (
+  <LoaderRow key={index}>
     <LoaderFillElement />
     <Spacing horizontal={4} />
     <LoaderElement width={134} />
@@ -29,12 +29,12 @@ const ListSkeletonLoader = () => {
       <LoaderGroup>
         <LoaderElement width={108} />
         <Spacing vertical={4} />
-        {new Array(5).fill().map(() => renderLoaderRow())}
+        {new Array(5).fill().map((_, index) => renderLoaderRow(index))}
       </LoaderGroup>
       <LoaderGroup>
         <LoaderElement width={108} />
         <Spacing vertical={4} />
-        {new Array(3).fill().map(() => renderLoaderRow())}
+        {new Array(3).fill().map((_, index) => renderLoaderRow(index))}
       </LoaderGroup>
     </Container>
   );

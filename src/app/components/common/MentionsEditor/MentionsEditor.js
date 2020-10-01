@@ -57,11 +57,11 @@ const MentionsEditor = React.forwardRef(
     const [editorState, setEditorState] = useState(initialState);
 
     const [peopleSuggestions, setPeopleSuggestions] = useState([
+      [SUGGESTIONS_PLACEHOLDER],
+    ]);
+    const [patientSuggestions, setPatientSuggestions] = useState([
       SUGGESTIONS_PLACEHOLDER,
     ]);
-    const [patientSuggestions, setPatientSuggestions] = useState(
-      SUGGESTIONS_PLACEHOLDER,
-    );
 
     const handleChange = newState => {
       if (!state) setEditorState(newState);
