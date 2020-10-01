@@ -169,7 +169,7 @@ const TasksGroup = ({
             quickAddTask={task =>
               quickAddTask({
                 ...task,
-                groupIdentifier: groupId,
+                taskGroupIdentifier: groupId,
               })
             }
             validator={value => {
