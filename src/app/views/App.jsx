@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import 'normalize.css/normalize.css';
 import 'simplebar/dist/simplebar.min.css';
 
@@ -98,7 +99,7 @@ class App extends PureComponent {
     const presenceChannelName = `presence-dock-users`;
     this.presenceChannelName = presenceChannelName;
     if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
-      let presenceChannel = pusherForPresence.channel(presenceChannelName);
+      let presenceChannel = pusherForPresence?.channel(presenceChannelName);
       if (!presenceChannel || !presenceChannel.subscribed) {
         presenceChannel = pusherForPresence.subscribe(presenceChannelName);
 
@@ -176,7 +177,7 @@ class App extends PureComponent {
   };
 
   onActiveForPresence = () => {
-    const presenceChannel = this.pusherForPresence.channel(
+    const presenceChannel = this.pusherForPresence?.channel(
       this.presenceChannelName,
     );
     if (presenceChannel && presenceChannel.subscribed) {
@@ -185,10 +186,10 @@ class App extends PureComponent {
   };
 
   onIdleForPresence = () => {
-    const presenceChannel = this.pusherForPresence.channel(
+    const presenceChannel = this.pusherForPresence?.channel(
       this.presenceChannelName,
     );
-    if (presenceChannel && presenceChannel.subscribed) {
+    if (presenceChannel && presenceChannel?.subscribed) {
       presenceChannel.trigger('client-event-dock-user-idle', { idle: true });
     }
   };
