@@ -268,7 +268,7 @@ const mapDispatchToProps = {
     user,
     idleStatus,
   }),
-  removeUser: user => ({
+  removeActiveUser: user => ({
     type: 'active-users/removeActiveUser',
     user,
   }),
