@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { isEmpty } from 'ramda';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import {
@@ -15,6 +14,7 @@ import {
   DashboardStatisticsLabel,
   DashboardStatisticsContainer,
   DashboardStatisticsLabelBox,
+  DashboardStatisticsTilesContainer,
 } from './styled';
 import DashboardStatisticsLoader from '../DashboardStatisticsLoader/DashboardStatisticsLoader';
 
@@ -36,12 +36,10 @@ const DashboardStatistics = ({
   dashboardIsLoading,
   dashboardTab,
 }) => {
-  const [tileHeights, setTileHeights] = useState([]);
   const patientStatsAmount = dashboardStatistics?.find(
     ({ metricName }) => metricName === 'PATIENTS_SERVED_COUNT',
   )?.metricValue;
   const showPatientAmount = patientStatsAmount !== 0;
-  const highestTile = isEmpty(tileHeights) ? 0 : Math.max(...tileHeights);
 
   return (
     <DashboardStatisticsContainer>
@@ -52,11 +50,11 @@ const DashboardStatistics = ({
           <Grid container direction="row" spacing={2}>
             <DashboardStatisticsLabelBox item xs={3}>
               <img src={DashboardStatisticsIcon} alt="statistics" />
-              <MontserratTypography variant="span">
-                <DashboardStatisticsLabel paddingLeft="8px">
+              <DashboardStatisticsLabel paddingLeft="4px">
+                <MontserratTypography variant="span">
                   TODAY&apos;S STATUS
-                </DashboardStatisticsLabel>
-              </MontserratTypography>
+                </MontserratTypography>
+              </DashboardStatisticsLabel>
             </DashboardStatisticsLabelBox>
             <Grid item xs={3}>
               <MontserratTypography variant="span">
@@ -66,71 +64,51 @@ const DashboardStatistics = ({
               </MontserratTypography>
             </Grid>
           </Grid>
-          <Grid container direction="row" spacing={2}>
-            <Grid item xs={3}>
-              <DashboardStatisticsTile
-                label="OPEN TASKS"
-                updateTileHeights={tileHeight =>
-                  setTileHeights([...tileHeights, tileHeight])
-                }
-                highestTile={highestTile}
-                amount={
-                  dashboardStatistics?.find(
-                    ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
-                  )?.metricValue
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <DashboardStatisticsTile
-                background={TILS_CONFIG[dashboardTab]?.completed}
-                icon="completed"
-                label="COMPLETED"
-                updateTileHeights={tileHeight =>
-                  setTileHeights([...tileHeights, tileHeight])
-                }
-                highestTile={highestTile}
-                amount={
-                  dashboardStatistics?.find(
-                    ({ metricName }) => metricName === 'COMPLETED_TASKS_COUNT',
-                  )?.metricValue
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <DashboardStatisticsTile
-                background={TILS_CONFIG[dashboardTab]?.assigned}
-                icon="assigned"
-                label="ASSIGNED"
-                updateTileHeights={tileHeight =>
-                  setTileHeights([...tileHeights, tileHeight])
-                }
-                highestTile={highestTile}
-                amount={
-                  dashboardStatistics?.find(
-                    ({ metricName }) => metricName === 'ASSIGNED_TASKS_COUNT',
-                  )?.metricValue
-                }
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <DashboardStatisticsTile
-                background={TILS_CONFIG[dashboardTab]?.patientsCared}
-                icon="patientsCared"
-                updateTileHeights={tileHeight => {
-                  setTileHeights([...tileHeights, tileHeight]);
-                }}
-                label={
-                  showPatientAmount
-                    ? 'PATIENTS CARED FOR'
-                    : 'We can calculate patients when they are assigned to their tasks'
-                }
-                alignText="center"
-                amount={patientStatsAmount}
-                showAmount={showPatientAmount}
-              />
-            </Grid>
-          </Grid>
+          <DashboardStatisticsTilesContainer>
+            <DashboardStatisticsTile
+              label="OPEN TASKS"
+              amount={
+                dashboardStatistics?.find(
+                  ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
+                )?.metricValue
+              }
+            />
+
+            <DashboardStatisticsTile
+              background={TILS_CONFIG[dashboardTab]?.completed}
+              icon="completed"
+              label="COMPLETED"
+              amount={
+                dashboardStatistics?.find(
+                  ({ metricName }) => metricName === 'COMPLETED_TASKS_COUNT',
+                )?.metricValue
+              }
+            />
+
+            <DashboardStatisticsTile
+              background={TILS_CONFIG[dashboardTab]?.assigned}
+              icon="assigned"
+              label="ASSIGNED"
+              amount={
+                dashboardStatistics?.find(
+                  ({ metricName }) => metricName === 'ASSIGNED_TASKS_COUNT',
+                )?.metricValue
+              }
+            />
+
+            <DashboardStatisticsTile
+              background={TILS_CONFIG[dashboardTab]?.patientsCared}
+              icon="patientsCared"
+              label={
+                showPatientAmount
+                  ? 'PATIENTS CARED FOR'
+                  : 'We can calculate patients when they are assigned to their tasks'
+              }
+              alignText="center"
+              amount={patientStatsAmount}
+              showAmount={showPatientAmount}
+            />
+          </DashboardStatisticsTilesContainer>
         </>
       )}
     </DashboardStatisticsContainer>
