@@ -10,7 +10,7 @@ export const ModalWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 600px;
-  height: 780px;
+  height: 700px;
   padding: ${spacing.huge};
   font-family: 'Montserrat', sans-serif;
   background-color: ${palette.white};
