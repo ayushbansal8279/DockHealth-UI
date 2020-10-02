@@ -228,12 +228,13 @@ const Toolbar = ({
                   <>
                     <Spacing horizontal={1} />
                     <UniversalTooltip
-                      placement="bottom"
+                      placement="bottom-end"
                       open={isShowMoreMembersTooltipOpen}
                       anchorEl={moreMembersButtonReference.current}
+                      endSpacing="4px"
                     >
                       {getHiddenMembers({
-                        hiddenMembers: members,
+                        hiddenMembers,
                         activeUsersList,
                       })}
                     </UniversalTooltip>
