@@ -178,6 +178,7 @@ export const StandardTaskItemCell = styled.div`
 `;
 
 export const ClickablePatient = styled.span`
+  align-self: center;
   cursor: pointer;
 `;
 
@@ -287,6 +288,9 @@ export const SlimTaskItemParentTaskLabel = styled.div`
 export const SlimTaskItemListLink = styled(({ withMargin, ...otherProps }) => (
   <Link {...otherProps} />
 ))`
+  display: flex;
+  align-itmes: center;
+  align-self: center;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   margin-right: ${props => props.withMargin && spacing.large};
@@ -318,6 +322,7 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
 
 export const SlimTaskGridContainer = styled.div`
   display: flex;
+  align-items: center;
   padding-left: ${spacing.regular};
 `;
 
@@ -331,7 +336,8 @@ export const SlimTaskWorkflowStatusContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  height: calc(100% - ${spacing.regular});
+  padidng-top: ${spacing.regular});
+  padidng-bottom: ${spacing.regular});
   padding-left: ${props => props.withPadding && spacing.regularPlus};
   font-size: ${fontSizes.smallPlus};
 `;
