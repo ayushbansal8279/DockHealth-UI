@@ -29,16 +29,18 @@ const existingUserTourHooks = ({
   const userProfile = useSelector(userProfileSelector);
 
   const checkNewFeaturesModals = () => {
-    const { userPreference: { appFeaturesReviewed } = {} } = userProfile;
+    if (userProfile && userProfile.userPreference) {
+      const { userPreference: { appFeaturesReviewed } = {} } = userProfile;
 
-    if (!appFeaturesReviewed?.includes('MENTIONS')) {
-      dispatch(
-        openModal('MentionsTour', {
-          onClose: () => {
-            updateUserDashboardPrefs({ appFeaturesReviewed: ['MENTIONS'] });
-          },
-        }),
-      );
+      if (!appFeaturesReviewed?.includes('MENTIONS')) {
+        dispatch(
+          openModal('MentionsTour', {
+            onClose: () => {
+              updateUserDashboardPrefs({ appFeaturesReviewed: ['MENTIONS'] });
+            },
+          }),
+        );
+      }
     }
   };
 
