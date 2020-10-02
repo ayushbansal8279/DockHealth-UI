@@ -251,8 +251,8 @@ const SlimTaskItem = ({
           <img src={HighPriorityLabel} alt="Priority icon" />
         )}
       </PrioritySwitch>
-      <Grid container justify="space-between" alignItems="center">
-        <Grid item {...gridConfig.description[dynamicColumnType]}>
+      <Grid container justify="space-between" alignItems="stretch">
+        <Grid container item {...gridConfig.description[dynamicColumnType]}>
           <SlimTaskGridContainer>
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
@@ -301,7 +301,7 @@ const SlimTaskItem = ({
             </SlimTaskItemDescription>
           </SlimTaskGridContainer>
         </Grid>
-        <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
+        <Grid container item {...gridConfig.dynamicColumn[dynamicColumnType]}>
           <DynamicColumnComponent
             {...{
               ...task,
@@ -315,7 +315,7 @@ const SlimTaskItem = ({
           />
         </Grid>
         {showAssignedPerson && (
-          <Grid item {...gridConfig.assignedPerson}>
+          <Grid container item {...gridConfig.assignedPerson}>
             <AssignedBox>
               <TaskAssignMember
                 currentUser={currentUser}
@@ -331,7 +331,7 @@ const SlimTaskItem = ({
             </AssignedBox>
           </Grid>
         )}
-        <Grid item {...gridConfig.listName}>
+        <Grid container item {...gridConfig.listName}>
           {taskList && (
             <SlimTaskItemListLink
               to={`tasks/${taskList?.taskListIdentifier}`}
