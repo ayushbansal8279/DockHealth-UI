@@ -58,6 +58,7 @@ const TaskView = ({
   drawerAutoOpenEnabled = false,
   isFetching,
   isCompletedTasksFetching,
+  isTourOpen = false,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -189,6 +190,7 @@ const TaskView = ({
         modalActions={modalActions}
         refreshList={refreshTab}
         fromFirstAddTask={drawerAutoOpenEnabled}
+        hideTour={isTourOpen}
       />
     </>
   );

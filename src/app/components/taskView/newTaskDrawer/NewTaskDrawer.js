@@ -60,6 +60,7 @@ const NewTaskDrawer = ({
   disabledFileds = [],
   fromFirstAddTask = false,
   assignToSelf = false,
+  hideTour = false,
 }) => {
   const {
     taskDrawerOpen,
@@ -114,6 +115,7 @@ const NewTaskDrawer = ({
     taskDrawerOpen,
     fromFirstAddTask,
     taskDrawerReference,
+    hideTour,
   });
 
   const { saveDueDate } = initializeDueDateSectionHooks({

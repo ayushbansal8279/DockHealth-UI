@@ -14,6 +14,7 @@ const existingUserTaskDrawerTourHooks = ({
   taskDrawerOpen,
   fromFirstAddTask,
   taskDrawerReference,
+  hideTour,
 }) => {
   const [openedTourStep, setOpenedTourStep] = useState(null);
   const [
@@ -83,6 +84,16 @@ const existingUserTaskDrawerTourHooks = ({
     },
   ];
 
+  const previousHideTourValue = useRef(null);
+
+  useEffect(() => {
+    if (hideTour && !previousHideTourValue && openedTourStep !== null) {
+      setOpenedTourStep(null);
+    }
+    previousHideTourValue.current = hideTour;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hideTour]);
+
   useEffect(() => {
     if (openedTourStep !== null) {
       const { reference, afterScrollPosition, title } = tourSteps[
@@ -101,6 +112,8 @@ const existingUserTaskDrawerTourHooks = ({
   }, [openedTourStep]);
 
   useEffect(() => {
+    if (hideTour) return;
+
     const taskDrawerFirstAutoOpenValue = localStorageHelper.getItem(
       TASK_DRAWER_FIRST_AUTO_OPEN_KEY,
     );

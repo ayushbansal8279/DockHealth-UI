@@ -632,6 +632,7 @@ class Home extends Component {
       pdfTitle: `${loadedTasklist?.listName}`,
       groupPagination: true,
       drawerAutoOpenEnabled: taskCounters?.incomplete === 0,
+      isTourOpen,
     };
 
     return (
