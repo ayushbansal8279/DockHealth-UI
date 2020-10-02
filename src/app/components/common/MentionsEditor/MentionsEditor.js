@@ -24,7 +24,11 @@ const fetchPatientsWithDebounce = debounce(
     getPatientsByName(value).then(fetchedPatients => {
       if (areSuggestionsOpened.current) {
         const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
-        setPatientSuggestions(formattedPatients);
+        setPatientSuggestions(
+          formattedPatients.length > 0
+            ? formattedPatients
+            : [SUGGESTIONS_PLACEHOLDER],
+        );
       }
     });
   },
@@ -36,7 +40,11 @@ const fetchPeopleWithDebounce = debounce(
     getUserByFirstName(value).then(fetchedPeople => {
       if (areSuggestionsOpened.current) {
         const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-        setPeopleSuggestions(formattedPeople);
+        setPeopleSuggestions(
+          formattedPeople.length > 0
+            ? formattedPeople
+            : [SUGGESTIONS_PLACEHOLDER],
+        );
       }
     });
   },
@@ -72,6 +80,8 @@ const MentionsEditor = React.forwardRef(
     const [patientSuggestions, setPatientSuggestions] = useState([
       SUGGESTIONS_PLACEHOLDER,
     ]);
+    const [patientSearchValue, setPatientSearchValue] = useState(null);
+    const [peopleSearchValue, setPeopleSearchValue] = useState(null);
 
     const arePeopleSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
@@ -92,12 +102,14 @@ const MentionsEditor = React.forwardRef(
 
     const onPeopleSearchChange = ({ value }) => {
       if (value) {
+        setPeopleSearchValue(value);
         fetchPeopleWithDebounce(
           value,
           setPeopleSuggestions,
           arePeopleSuggestionsOpened,
         );
       } else {
+        setPeopleSearchValue('');
         clearPeopleSuggestions();
       }
     };
@@ -108,12 +120,14 @@ const MentionsEditor = React.forwardRef(
 
     const onPatientSearchChange = ({ value }) => {
       if (value) {
+        setPatientSearchValue(value);
         fetchPatientsWithDebounce(
           value,
           setPatientSuggestions,
           arePatientSuggestionsOpened,
         );
       } else {
+        setPatientSearchValue('');
         clearPatientSuggestions();
       }
     };
@@ -159,12 +173,16 @@ const MentionsEditor = React.forwardRef(
           suggestions={peopleSuggestions}
           onAddMention={onAddMention}
           entryComponent={PeopleSuggestionItem}
-          popoverComponent={<PeopleSuggestionsPopover />}
+          popoverComponent={
+            <PeopleSuggestionsPopover searchValue={peopleSearchValue} />
+          }
           onOpen={() => {
             arePeopleSuggestionsOpened.current = true;
+            setPeopleSearchValue('');
           }}
           onClose={() => {
             arePeopleSuggestionsOpened.current = false;
+            setPeopleSearchValue(null);
           }}
         />
         <PatientsMentionSuggestions
@@ -172,12 +190,16 @@ const MentionsEditor = React.forwardRef(
           suggestions={patientSuggestions}
           onAddMention={onAddMention}
           entryComponent={PatientSuggestionItem}
-          popoverComponent={<PatientsSuggestionsPopover />}
+          popoverComponent={
+            <PatientsSuggestionsPopover searchValue={patientSearchValue} />
+          }
           onOpen={() => {
             arePatientSuggestionsOpened.current = true;
+            setPatientSearchValue('');
           }}
           onClose={() => {
             arePatientSuggestionsOpened.current = false;
+            setPatientSearchValue(null);
           }}
         />
       </StyledEditorContainer>
