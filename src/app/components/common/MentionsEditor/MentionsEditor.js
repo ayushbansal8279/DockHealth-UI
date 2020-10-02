@@ -19,19 +19,29 @@ import {
 } from './helpers';
 import { StyledEditorContainer } from './styled';
 
-const fetchPatientsWithDebounce = debounce((value, setPatientSuggestions) => {
-  getPatientsByName(value).then(fetchedPatients => {
-    const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
-    setPatientSuggestions(formattedPatients);
-  });
-}, 300);
+const fetchPatientsWithDebounce = debounce(
+  (value, setPatientSuggestions, areSuggestionsOpened) => {
+    getPatientsByName(value).then(fetchedPatients => {
+      if (areSuggestionsOpened.current) {
+        const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
+        setPatientSuggestions(formattedPatients);
+      }
+    });
+  },
+  300,
+);
 
-const fetchPeopleWithDebounce = debounce((value, setPeopleSuggestions) => {
-  getUserByFirstName(value).then(fetchedPeople => {
-    const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-    setPeopleSuggestions(formattedPeople);
-  });
-}, 300);
+const fetchPeopleWithDebounce = debounce(
+  (value, setPeopleSuggestions, areSuggestionsOpened) => {
+    getUserByFirstName(value).then(fetchedPeople => {
+      if (areSuggestionsOpened.current) {
+        const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
+        setPeopleSuggestions(formattedPeople);
+      }
+    });
+  },
+  300,
+);
 
 const MentionsEditor = React.forwardRef(
   (
@@ -63,6 +73,9 @@ const MentionsEditor = React.forwardRef(
       SUGGESTIONS_PLACEHOLDER,
     ]);
 
+    const arePeopleSuggestionsOpened = useRef(false);
+    const arePatientSuggestionsOpened = useRef(false);
+
     const handleChange = newState => {
       if (!state) setEditorState(newState);
 
@@ -79,7 +92,11 @@ const MentionsEditor = React.forwardRef(
 
     const onPeopleSearchChange = ({ value }) => {
       if (value) {
-        fetchPeopleWithDebounce(value, setPeopleSuggestions);
+        fetchPeopleWithDebounce(
+          value,
+          setPeopleSuggestions,
+          arePeopleSuggestionsOpened,
+        );
       } else {
         clearPeopleSuggestions();
       }
@@ -91,7 +108,11 @@ const MentionsEditor = React.forwardRef(
 
     const onPatientSearchChange = ({ value }) => {
       if (value) {
-        fetchPatientsWithDebounce(value, setPatientSuggestions);
+        fetchPatientsWithDebounce(
+          value,
+          setPatientSuggestions,
+          arePatientSuggestionsOpened,
+        );
       } else {
         clearPatientSuggestions();
       }
@@ -139,8 +160,11 @@ const MentionsEditor = React.forwardRef(
           onAddMention={onAddMention}
           entryComponent={PeopleSuggestionItem}
           popoverComponent={<PeopleSuggestionsPopover />}
+          onOpen={() => {
+            arePeopleSuggestionsOpened.current = true;
+          }}
           onClose={() => {
-            fetchPeopleWithDebounce.cancel();
+            arePeopleSuggestionsOpened.current = false;
           }}
         />
         <PatientsMentionSuggestions
@@ -149,8 +173,11 @@ const MentionsEditor = React.forwardRef(
           onAddMention={onAddMention}
           entryComponent={PatientSuggestionItem}
           popoverComponent={<PatientsSuggestionsPopover />}
+          onOpen={() => {
+            arePatientSuggestionsOpened.current = true;
+          }}
           onClose={() => {
-            fetchPatientsWithDebounce.cancel();
+            arePatientSuggestionsOpened.current = false;
           }}
         />
       </StyledEditorContainer>
