@@ -11,8 +11,8 @@ const MentionsCards = () => {
 
   return (
     <StepContainer>
-      <Image height={460} src={MentionsCardsImage} alt="Mention card" />
-      <Spacing vertical={3} />
+      <Image height={350} src={MentionsCardsImage} alt="Mention card" />
+      <Spacing vertical={4} />
       <Title>Patient and People details</Title>
       <Description>
         Hovering over the name of team members or patients will pop up detailed
