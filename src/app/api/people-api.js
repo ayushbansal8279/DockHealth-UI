@@ -217,6 +217,20 @@ export function getUserByName(name) {
     });
 }
 
+export function getUserByFirstName(name) {
+  return axios({
+    method: 'get',
+    url: 'user/findUserByFirstName',
+    params: {
+      name,
+    },
+  })
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function approvePendingUser({ userIdentifier, role }) {
   return axios
     .put(`user/approveUserForOrganization?userIdentifier=${userIdentifier}`, {
