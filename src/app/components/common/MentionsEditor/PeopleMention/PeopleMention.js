@@ -96,7 +96,7 @@ const PeopleMention = ({ mention, className, children }) => {
                         alt={personData.userName}
                       />
                     )}
-                    <Initials>{personData.initials.toLowerCase()}</Initials>
+                    <Initials>{personData.initials?.toLowerCase()}</Initials>
                   </>
                 ) : null}
               </AvatarBorder>
@@ -130,11 +130,13 @@ const PeopleMention = ({ mention, className, children }) => {
                     {isOffline && <> offline </>}
                   </StatusIndicatorContainer>
                 </NameSection>
-                {personData.titles[0]?.name && (
-                  <ProfileInfoText>
-                    <>{personData.titles[0]?.name}</>
-                  </ProfileInfoText>
-                )}
+                {personData.titles &&
+                  personData.titles.length > 0 &&
+                  personData.titles[0]?.name && (
+                    <ProfileInfoText>
+                      <>{personData.titles[0]?.name}</>
+                    </ProfileInfoText>
+                  )}
                 {personData.email && (
                   <EmailLink
                     href={`mailto:${personData.email}`}
