@@ -38,7 +38,17 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     organization = {},
     targetIdentifier,
   } = itemAlert;
-  const { description, taskList = {}, taskIdentifier, status, comments } = task;
+  let activityTask = {};
+  if (task) {
+    activityTask = task;
+  }
+  const {
+    description,
+    taskList = {},
+    taskIdentifier,
+    status,
+    comments,
+  } = activityTask;
   const { taskListIdentifier, listName } = taskList;
   const {
     organizationInitials,
