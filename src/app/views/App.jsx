@@ -96,9 +96,9 @@ class App extends PureComponent {
 
     const pusherForPresence = initializePusherForPresence();
     this.pusherForPresence = pusherForPresence;
-    const presenceChannelName = `presence-dock-users`;
-    this.presenceChannelName = presenceChannelName;
     if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
+      const presenceChannelName = `presence-dock-users-${userProfile.organizationIdentifier}`;
+      this.presenceChannelName = presenceChannelName;
       let presenceChannel = pusherForPresence?.channel(presenceChannelName);
       if (!presenceChannel || !presenceChannel.subscribed) {
         presenceChannel = pusherForPresence.subscribe(presenceChannelName);
