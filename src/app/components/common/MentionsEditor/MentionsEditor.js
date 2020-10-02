@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByName } from 'api/patient-api';
-import { getUserByName } from 'api/people-api';
+import { getUserByFirstName } from 'api/people-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
@@ -27,7 +27,7 @@ const fetchPatientsWithDebounce = debounce((value, setPatientSuggestions) => {
 }, 300);
 
 const fetchPeopleWithDebounce = debounce((value, setPeopleSuggestions) => {
-  getUserByName(value).then(fetchedPeople => {
+  getUserByFirstName(value).then(fetchedPeople => {
     const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
     setPeopleSuggestions(formattedPeople);
   });
