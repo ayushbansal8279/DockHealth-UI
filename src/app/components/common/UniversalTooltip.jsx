@@ -30,6 +30,17 @@ const ArrowElement = styled.div`
   z-index: 1;
 `;
 
+const ArrowElementRight = styled.div`
+  background-color: #3a4657;
+  height: 1rem;
+  position: absolute;
+  right: ${props => props.endSpacing || 0};
+  top: 0.5rem;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 1rem;
+  z-index: 1;
+`;
+
 const ArrowElementReverse = styled.div`
   background-color: #3a4657;
   height: 1rem;
@@ -59,7 +70,7 @@ const StyledPopper = styled(Popper)`
   }
 `;
 
-const UniversalTooltip = ({ children, ...props }) => {
+const UniversalTooltip = ({ children, endSpacing, ...props }) => {
   if (props?.placement === 'top') {
     return (
       <StyledPopper {...props} transition>
@@ -84,6 +95,21 @@ const UniversalTooltip = ({ children, ...props }) => {
               <InnerTooltipContainer>{children}</InnerTooltipContainer>
               <ArrowElementReverseRight />
             </TooltipContainerReverse>
+          </Fade>
+        )}
+      </StyledPopper>
+    );
+  }
+
+  if (props?.placement === 'bottom-end') {
+    return (
+      <StyledPopper {...props} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={250}>
+            <TooltipContainer>
+              <ArrowElementRight endSpacing={endSpacing} />
+              <InnerTooltipContainer>{children}</InnerTooltipContainer>
+            </TooltipContainer>
           </Fade>
         )}
       </StyledPopper>
