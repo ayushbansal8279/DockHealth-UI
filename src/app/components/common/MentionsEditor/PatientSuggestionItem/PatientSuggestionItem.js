@@ -34,6 +34,8 @@ const PatientSuggestionItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
+  const { name, mrn, age } = mention;
+
   return (
     <SuggestionItemContainer
       ref={suggestionItemReference}
@@ -45,9 +47,11 @@ const PatientSuggestionItem = ({
           highlightStyle={{ fontWeight: 'bold', background: 'none' }}
           searchWords={searchValue?.toLowerCase().split(/\s+/)}
           autoEscape
-          textToHighlight={mention.name}
+          textToHighlight={name}
         />
       </SuggestionText>
+      <SuggestionText>{age}</SuggestionText>
+      <SuggestionText>{mrn}</SuggestionText>
     </SuggestionItemContainer>
   );
 };
