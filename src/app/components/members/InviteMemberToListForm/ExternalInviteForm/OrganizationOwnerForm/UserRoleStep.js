@@ -63,8 +63,9 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             </RoleOptionHeaderAdditionalInfo>
           </RoleOptionHeaderWrapper>
           <RoleOptionDescription>
-            Not part of your Organization. Only have access to this list, tasks
-            on this list and the patients and people on this list.
+            An outside collaborator you can invite into selected lists, who will
+            only have access to the tasks, patients and people who are part of
+            those lists.
           </RoleOptionDescription>
         </RoleOptionLabel>
       </RoleSelectionWrapper>
