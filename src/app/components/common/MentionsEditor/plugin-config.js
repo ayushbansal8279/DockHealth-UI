@@ -14,7 +14,7 @@ export const initializePeopleMentionPlugin = () =>
   createMentionPlugin({
     mentionPrefix: '@',
     mentionTrigger: '@',
-    // supportWhitespace: true,
+    supportWhitespace: true,
     mentionComponent: PeopleMention,
     positionSuggestions: props => {
       const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
@@ -44,7 +44,7 @@ export const initializePatientMentionPlugin = () =>
     mentionPrefix: '#',
     mentionTrigger: '#',
     mentionComponent: PatientMention,
-    // supportWhitespace: true,
+    supportWhitespace: true,
     positionSuggestions: props => {
       const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
 
