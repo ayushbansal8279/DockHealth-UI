@@ -23,17 +23,24 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
   } = initializeAddCommentHooks({ addComment, parentFormSubmit });
 
   const addCommentReference = useRef();
+  const addCommentContainerReference = useRef();
 
   useEffect(() => {
-    if (taskDrawerFocusField === FocusDrawerFieldEnum.COMMENT) {
-      addCommentReference.current.focus();
+    if (
+      taskDrawerFocusField === FocusDrawerFieldEnum.COMMENT &&
+      addCommentReference?.current
+    ) {
+      addCommentReference.current.editor.focus();
       // eslint-disable-next-line no-unused-expressions
-      addCommentReference.current?.scrollIntoView(true);
+      // addCommentReference?.current?.scrollIntoView(true);
+      if (addCommentContainerReference?.current) {
+        addCommentContainerReference.current.scrollIntoView(true);
+      }
     }
   }, [taskDrawerFocusField]);
 
   return (
-    <AddCommentContainer>
+    <AddCommentContainer ref={addCommentContainerReference}>
       <Member member={currentUser} size={40} />
       <AddCommentInputContainer isFocused={isFocused}>
         <MentionsEditor
