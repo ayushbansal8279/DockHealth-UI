@@ -21,8 +21,8 @@ export const DrawerListContainer = styled.div`
 export const DrawerListItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  margin-top: ${spacing.huge};
+  overflow-y: none;
+  margin-top: ${spacing.small};
 `;
 
 export const StyledList = styled(List).attrs({
@@ -50,7 +50,11 @@ export const NestedList = styled(StyledList)`
     padding-bottom: 0;
     width: 100%;
     overflow-y: scroll;
-    max-height: 200px;
+    max-height: 120px;
+
+    @media screen and (min-height: 750px) {
+      max-height: 190px;
+    }
 
     &::-webkit-scrollbar {
       -webkit-appearance: none;
@@ -155,7 +159,11 @@ export const StyledRouterLinkContainer = styled.div`
   min-height: 2.125rem;
 
   &:not(:first-child) {
-    ${props => !props.nested && 'margin-top: 1rem;'}
+    ${props => !props.nested && 'margin-top: .4rem;'}
+
+    @media screen and (min-height: 850px) {
+      ${props => !props.nested && 'margin-top: 1rem;'}
+    }
   }
 
   &&.active {
@@ -181,7 +189,7 @@ export const ListDivider = styled.div`
   box-sizing: border-box;
   height: 1px;
   margin-left: ${spacing.large};
-  margin-top: ${spacing.huge};
+  margin-top: ${spacing.small};
   width: 32px;
 `;
 
