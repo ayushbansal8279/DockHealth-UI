@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByName } from 'api/patient-api';
-import { getUserByFirstName } from 'api/people-api';
+import { getUserByName, getUserByFirstName } from 'api/people-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
@@ -35,18 +35,32 @@ const fetchPatientsWithDebounce = debounce(
   300,
 );
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const fetchPeopleWithDebounce = debounce(
   (value, setPeopleSuggestions, areSuggestionsOpened) => {
-    getUserByFirstName(value).then(fetchedPeople => {
-      if (areSuggestionsOpened.current) {
-        const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-        setPeopleSuggestions(
-          formattedPeople.length > 0
-            ? formattedPeople
-            : [SUGGESTIONS_PLACEHOLDER],
-        );
-      }
-    });
+    if (value.includes(' ')) {
+      getUserByName(value).then(fetchedPeople => {
+        if (areSuggestionsOpened.current) {
+          const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
+          setPeopleSuggestions(
+            formattedPeople.length > 0
+              ? formattedPeople
+              : [SUGGESTIONS_PLACEHOLDER],
+          );
+        }
+      });
+    } else {
+      getUserByFirstName(value).then(fetchedPeople => {
+        if (areSuggestionsOpened.current) {
+          const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
+          setPeopleSuggestions(
+            formattedPeople.length > 0
+              ? formattedPeople
+              : [SUGGESTIONS_PLACEHOLDER],
+          );
+        }
+      });
+    }
   },
   300,
 );
