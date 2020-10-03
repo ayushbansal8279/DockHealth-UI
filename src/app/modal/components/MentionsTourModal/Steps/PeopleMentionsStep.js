@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PeopleMentionsImage from 'img/tour/mentions/people-mentions';
+import PeopleMentionsImage from 'img/tour/mentions/people-mentions-anim.gif';
 import Spacing from 'components/common/Spacing';
 import { onMentionsTourModalEvent } from 'helpers/ga-event-helper';
 import { StepContainer, Image, Title, Description } from './styled';

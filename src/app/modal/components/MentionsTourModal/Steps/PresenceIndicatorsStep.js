@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import PresenceIndicatorsImage from 'img/tour/mentions/presence-indicators';
+import PresenceIndicatorsImage from 'img/tour/mentions/presence-indicators-anim.gif';
 import { onMentionsTourModalEvent } from 'helpers/ga-event-helper';
 import { StepContainer, Image, Title, Description } from './styled';
 
