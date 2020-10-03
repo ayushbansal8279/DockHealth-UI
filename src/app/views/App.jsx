@@ -196,8 +196,8 @@ class App extends PureComponent {
 
   render() {
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
-    // const idleTimeout = systemTimeout / 2;
-    const idleTimeout = 5000;
+    const idleTimeout = systemTimeout / 2;
+    // const idleTimeout = 5000;
 
     const { children } = this.props;
     const isLessThen1024 = window?.innerWidth < 1024;
