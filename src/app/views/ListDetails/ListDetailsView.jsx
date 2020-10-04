@@ -215,7 +215,7 @@ class Home extends Component {
     const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
     const pusher = initializePusher();
-    let channel = pusher.channel(channelName);
+    let channel = pusher?.channel(channelName);
     if (!channel || !channel.subscribed) {
       channel = pusher.subscribe(channelName);
       console.log(`subscribed to channel: ${channelName}`);

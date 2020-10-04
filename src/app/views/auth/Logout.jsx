@@ -15,7 +15,7 @@ class Logout extends PureComponent {
 
     const pusherForPresence = initializePusherForPresence();
     const presenceChannelName = `presence-dock-users-${currentUser.organizationIdentifier}`;
-    let presenceChannel = pusherForPresence.channel(presenceChannelName);
+    let presenceChannel = pusherForPresence?.channel(presenceChannelName);
     if (!presenceChannel || !presenceChannel.subscribed) {
       presenceChannel = pusherForPresence.subscribe(presenceChannelName);
     }

@@ -142,7 +142,7 @@ class TaskListView extends PureComponent {
     const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
     const pusher = initializePusher();
-    let channel = pusher.channel(channelName);
+    let channel = pusher?.channel(channelName);
     if (!channel || !channel.subscribed) {
       channel = pusher.subscribe(channelName);
     }
@@ -163,7 +163,7 @@ class TaskListView extends PureComponent {
     const { channelName } = this.state;
 
     const pusher = initializePusher();
-    let channel = pusher.channel(channelName);
+    let channel = pusher?.channel(channelName);
     if (channel) {
       channel = pusher.unsubscribe(channelName);
     }
