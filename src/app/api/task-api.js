@@ -1,6 +1,5 @@
 /* eslint-disable eqeqeq */
-import { noop } from 'helpers/utility-functions';
-import { showAlert } from 'helpers/utility-functions';
+import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import URLS from '../urls';
 
@@ -440,9 +439,13 @@ export function markLowPriority(taskIdentifier) {
 
 export function assignOrReassignTask(task, assignedToUserIdentifier) {
   const { taskIdentifier } = task;
+  let userIdentifierToAssignTask = assignedToUserIdentifier;
+  if (!userIdentifierToAssignTask) {
+    userIdentifierToAssignTask = '';
+  }
   return axios
     .put(
-      `task/addOrUpdateTaskAssignment/${taskIdentifier}?assignedToUserId=${assignedToUserIdentifier}`,
+      `task/addOrUpdateTaskAssignment/${taskIdentifier}?assignedToUserId=${userIdentifierToAssignTask}`,
     )
     .then(response => {
       return response.data;
