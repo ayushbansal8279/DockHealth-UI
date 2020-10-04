@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+/* eslint-disable sonarjs/no-identical-functions */
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import URLS from '../urls';
@@ -54,7 +55,7 @@ export function getListTasksByUser(
         filterBy: filterBy || undefined,
       },
     })
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       throw error;
     });
