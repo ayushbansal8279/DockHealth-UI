@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { featurePalette } from 'styles/palette';
 
 export const StyledEditorContainer = styled.div`
   position: relative;
@@ -29,13 +29,17 @@ export const StyledEditorContainer = styled.div`
     withEditedLabel &&
     `
     & .public-DraftEditor-content > div > div:last-of-type > div:after {
+      display: inline-block;
       content: '(Edited)';
-      display: inline;
       font-size: 0.75rem;
       color: ${palette.coolGrey2};
       margin-left: 8px;
+      text-decoration: none;
     }
   `}
 `;
 
-export default StyledEditorContainer;
+export const HighlightedElement = styled.span`
+  color: inherit;
+  background-color: ${featurePalette.globalSearchHighlight};
+`;
