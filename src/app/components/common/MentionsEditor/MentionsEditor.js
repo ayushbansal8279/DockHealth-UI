@@ -16,6 +16,7 @@ import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
   mapPeopleToSuggestions,
+  createHighlightDecorator,
 } from './helpers';
 import { StyledEditorContainer } from './styled';
 
@@ -35,32 +36,22 @@ const fetchPatientsWithDebounce = debounce(
   300,
 );
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const fetchPeopleWithDebounce = debounce(
   (value, setPeopleSuggestions, areSuggestionsOpened) => {
-    if (value.includes(' ')) {
-      getUserByName(value).then(fetchedPeople => {
-        if (areSuggestionsOpened.current) {
-          const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-          setPeopleSuggestions(
-            formattedPeople.length > 0
-              ? formattedPeople
-              : [SUGGESTIONS_PLACEHOLDER],
-          );
-        }
-      });
-    } else {
-      getUserByFirstName(value).then(fetchedPeople => {
-        if (areSuggestionsOpened.current) {
-          const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-          setPeopleSuggestions(
-            formattedPeople.length > 0
-              ? formattedPeople
-              : [SUGGESTIONS_PLACEHOLDER],
-          );
-        }
-      });
-    }
+    const fetchPeopleMethod = value.includes(' ')
+      ? getUserByName
+      : getUserByFirstName;
+
+    fetchPeopleMethod(value).then(fetchedPeople => {
+      if (areSuggestionsOpened.current) {
+        const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
+        setPeopleSuggestions(
+          formattedPeople.length > 0
+            ? formattedPeople
+            : [SUGGESTIONS_PLACEHOLDER],
+        );
+      }
+    });
   },
   300,
 );
@@ -79,6 +70,7 @@ const MentionsEditor = React.forwardRef(
       placeholder = '',
       initialState,
       state,
+      highlightedValues,
     },
     reference,
   ) => {
@@ -180,6 +172,11 @@ const MentionsEditor = React.forwardRef(
           onChange={handleChange}
           keyBindingFn={keyBindingFn}
           handleKeyCommand={handleKeyCommand}
+          decorators={
+            highlightedValues?.length > 0
+              ? [createHighlightDecorator(highlightedValues)]
+              : null
+          }
         />
 
         <PeopleMentionSuggestions

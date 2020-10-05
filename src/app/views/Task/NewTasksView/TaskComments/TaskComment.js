@@ -6,7 +6,6 @@ import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import Highlighter from 'react-highlight-words';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -57,21 +56,13 @@ const TaskComment = ({
       </TaskCommentAvatarContainer>
       <div>
         <TaskCommentText>
-          {highlightedValue ? (
-            <Highlighter
-              highlightClassName="list-highlight"
-              searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
-              autoEscape
-              textToHighlight={comment}
-            />
-          ) : (
-            <MentionsEditor
-              readOnly
-              withEditedLabel={dateCreated !== dateUpdated}
-              state={commentState}
-              onChange={setCommentState}
-            />
-          )}
+          <MentionsEditor
+            readOnly
+            withEditedLabel={dateCreated !== dateUpdated}
+            state={commentState}
+            onChange={setCommentState}
+            highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
+          />
         </TaskCommentText>
         <TaskCommentDetails>
           <span>{commentDetails}</span>

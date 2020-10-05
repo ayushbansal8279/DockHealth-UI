@@ -1,7 +1,9 @@
+import React from 'react';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js';
 import { createMentionEntities } from './create-mention-entities';
+import { HighlightedElement } from './styled';
 
 export const SUGGESTIONS_PLACEHOLDER = {
   name: '',
@@ -73,6 +75,33 @@ export const convertFromEditorStateToOutput = editorState => {
     mentions,
   };
 };
+
+const HighlightedComponent = ({ children }) => {
+  return <HighlightedElement>{children}</HighlightedElement>;
+};
+
+function findWithRegex(words, contentBlock, callback) {
+  const text = contentBlock.getText();
+
+  words.forEach(word => {
+    const matches = [...text.matchAll(word)];
+    matches.forEach(match =>
+      callback(match.index, match.index + match[0].length),
+    );
+  });
+}
+
+const handleStrategy = words => (contentBlock, callback) => {
+  findWithRegex(words, contentBlock, callback);
+};
+
+export const createHighlightDecorator = words =>
+  new CompositeDecorator([
+    {
+      strategy: handleStrategy(words),
+      component: HighlightedComponent,
+    },
+  ]);
 
 export const convertToEditorState = state => {
   if (!state || isEmpty(state) || !state.rawText) {

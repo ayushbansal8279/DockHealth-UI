@@ -54,7 +54,6 @@ import {
   DueDateContainer,
   GridImg,
   SubtasksGroupLabel,
-  SmallText,
   StandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
@@ -278,24 +277,16 @@ const TaskItem = ({
           />
           <DescriptionBox>
             <Description isCrossedOut={!isCompletedGroup && isCompleted}>
-              {matchDescription && highlightedValue ? (
-                <>
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
-                    autoEscape
-                    textToHighlight={description}
-                  />
-                  {edited && <SmallText> (Edited)</SmallText>}
-                </>
-              ) : (
-                <MentionsEditor
-                  readOnly
-                  withEditedLabel={edited}
-                  state={descriptionState}
-                  onChange={setDescriptionState}
-                />
-              )}
+              <MentionsEditor
+                readOnly
+                withEditedLabel={edited}
+                state={descriptionState}
+                onChange={setDescriptionState}
+                highlightedValues={
+                  matchDescription &&
+                  highlightedValue?.toLowerCase().split(/\s+/)
+                }
+              />
             </Description>
             <CompletedBy isCompleted={isCompleted}>
               <span>{`Completed by ${completedByName} ${completedDt &&
