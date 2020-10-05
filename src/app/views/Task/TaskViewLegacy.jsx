@@ -367,7 +367,7 @@ class TaskView extends Component {
     const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
     const pusher = initializePusher();
-    let channel = pusher.channel(channelName);
+    let channel = pusher?.channel(channelName);
     if (!channel || !channel.subscribed) {
       channel = pusher.subscribe(channelName);
       // console.log('subscribed to channel');
@@ -440,7 +440,7 @@ class TaskView extends Component {
     if (currentUserIdentifier) {
       const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
       const pusher = initializePusher();
-      let channel = pusher.channel(channelName);
+      let channel = pusher?.channel(channelName);
       if (channel) {
         channel = pusher.unsubscribe(channelName);
         // console.log('unsubscribed from channel');
