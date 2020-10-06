@@ -237,6 +237,16 @@ export const StandardTaskItemPanel = styled.div`
   }
 `;
 
+export const TaskItemParentTaskLabel = styled.div`
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey2};
+
+  & > span {
+    color: ${palette.brightBlue};
+    cursor: pointer;
+  }
+`;
+
 export const InfoText = styled.p`
   cursor: initial;
   margin-bottom: 0;

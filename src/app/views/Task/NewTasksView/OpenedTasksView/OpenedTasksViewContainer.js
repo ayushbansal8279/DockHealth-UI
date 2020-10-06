@@ -13,7 +13,7 @@ import {
   sortSubtasksInGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
 } from 'sagas/tasks-groups-list-saga';
-import { pluck } from 'ramda';
+import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import OpenedTasksView from './OpenedTasksView';
 
@@ -25,32 +25,14 @@ const mapStateToProps = (state, ownProps) => {
   const searchedGroupsWithTasks = !searchValue
     ? tasks
     : Object.keys(tasks).reduce((groupObject, currentKey) => {
-        const filteredTasks = tasks[currentKey].filter(
-          ({ description, comments, subtasks, patient, assignedTo }) =>
-            description.toLowerCase().includes(searchValue.toLowerCase()) ||
-            pluck('comment', comments).filter(s =>
-              new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-            ).length > 0 ||
-            pluck('description', subtasks).filter(s =>
-              new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-            ).length > 0 ||
-            patient?.firstName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) ||
-            patient?.lastName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) ||
-            assignedTo?.firstName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) ||
-            assignedTo?.lastName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()),
+        const searchedTasks = filterTasksBySearchValue(
+          tasks[currentKey],
+          searchValue,
         );
 
-        if (filteredTasks.length === 0) return groupObject;
+        if (searchedTasks.length === 0) return groupObject;
 
-        return { ...groupObject, [currentKey]: filteredTasks };
+        return { ...groupObject, [currentKey]: searchedTasks };
       }, {});
 
   const searchedGroupsList = !searchValue

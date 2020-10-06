@@ -30,6 +30,7 @@ import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import Spacing from 'components/common/Spacing';
 import TaskItemStatus from './TaskItemStatus';
 
 import {
@@ -73,6 +74,7 @@ import {
   SubtaskStylingLinkContainer,
   SubtaskStylingVerticalPart,
   SubtaskStylingHorizontalPart,
+  TaskItemParentTaskLabel,
 } from '../styled';
 
 const getMatchedComments = (comments, matchingCommentIdentifiers) =>
@@ -144,6 +146,7 @@ const TaskItem = ({
   isDraggable,
   isLast,
   showSubtaskStylingLink,
+  isNestedTask = false,
 }) => {
   const {
     taskIdentifier,
@@ -163,6 +166,7 @@ const TaskItem = ({
     taskList,
     parentTaskIdentifier,
     searchMetaData = {},
+    parentTask,
   } = task;
 
   const {
@@ -288,6 +292,24 @@ const TaskItem = ({
                 }
               />
             </Description>
+            {isSubtask && !isNestedTask && (
+              <>
+                <TaskItemParentTaskLabel>
+                  Subtask of
+                  <span
+                    onClick={event => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      openDrawer();
+                      storeAsCurrentTask(parentTask);
+                    }}
+                  >
+                    {` ${parentTask.description}`}
+                  </span>
+                </TaskItemParentTaskLabel>
+                {isCompleted && <Spacing vertical={2} />}
+              </>
+            )}
             <CompletedBy isCompleted={isCompleted}>
               <span>{`Completed by ${completedByName} ${completedDt &&
                 ` on ${
@@ -629,6 +651,7 @@ const Subtasks = ({
                             isDraggable={isDraggable && subtasks?.length > 1}
                             isLast={index + 1 === orderedSubtasks.length}
                             showSubtaskStylingLink={!draggedId}
+                            isNestedTask
                             {...restProps}
                           />
                           {draggedId !== String(subtask.taskIdentifier) &&

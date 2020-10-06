@@ -4,8 +4,8 @@ import {
   completedTasksIsFetchingSelector,
   completedTasksIsFetchingMoreSelector,
 } from 'selectors/task-selectors';
-import { pluck } from 'ramda';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
+import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import CompletedTasksView from './CompletedTasksView';
 
 const mapStateToProps = (state, ownProps) => {
@@ -15,26 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const filteredCompletedTasks = !searchValue
     ? completedTasks
-    : completedTasks.filter(
-        ({ description, comments, subtasks, patient, assignedTo }) =>
-          description.toLowerCase().includes(searchValue.toLowerCase()) ||
-          pluck('comment', comments).filter(s =>
-            new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-          ).length > 0 ||
-          pluck('description', subtasks).filter(s =>
-            new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-          ).length > 0 ||
-          patient?.firstName
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          assignedTo?.firstName
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          assignedTo?.lastName
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()),
-      );
+    : filterTasksBySearchValue(completedTasks, searchValue);
 
   return {
     isFetchingData: completedTasksIsFetchingSelector(state),
