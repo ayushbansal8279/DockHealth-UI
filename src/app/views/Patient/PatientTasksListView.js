@@ -21,19 +21,15 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import { getTaskListForUser } from 'api/tasklist-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
-    const filteredTasks = currentValue.tasks.filter(
-      ({ description, patient, assignedTo }) =>
-        description.toLowerCase().includes(searchValue.toLowerCase()) ||
-        patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        assignedTo?.firstName
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()) ||
-        assignedTo?.lastName.toLowerCase().includes(searchValue.toLowerCase()),
+    const filteredTasks = filterTasksBySearchValue(
+      currentValue.tasks,
+      searchValue,
     );
+
     if (filteredTasks.length === 0) return accumulator;
 
     return [...accumulator, { ...currentValue, tasks: filteredTasks }];
