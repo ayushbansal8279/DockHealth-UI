@@ -28,21 +28,22 @@ export const TaskCommentsGroupedDay = styled.div`
   }
 `;
 
-export const TaskCommentsDate = styled.div`
-  color: ${palette.coolGrey6};
-  font-size: ${fontSizes.small};
-  margin-top: ${spacing.regular};
-  margin-bottom: 10px;
-`;
+// export const TaskCommentsDate = styled.div`
+//   color: ${palette.coolGrey1};
+//   font-size: ${fontSizes.small};
+//   margin-top: ${spacing.regular};
+//   margin-bottom: 10px;
+// `;
 
 export const TaskCommentContainer = styled.div`
   display: flex;
   margin-top: ${props => props.isOneByOne && `-${spacing.small}`};
   margin-bottom: ${spacing.regular};
+  margin-left: ${props => props.isCurrentUser && '44px'};
   font-size: ${fontSizes.regular};
   flex-direction: column;
-  max-width: 720px;
   align-items: ${props => props.isCurrentUser && 'flex-end'};
+  max-width: 720px;
 
   &:last-of-type {
     margin-bottom: 0;
@@ -68,12 +69,15 @@ export const TaskCommentText = styled.div`
   padding: 10px ${spacing.regularPlus};
   margin-left: ${props => props.isOneByOne && !props.isCurrentUser && '52px'};
   margin-right: ${props => props.isOneByOne && props.isCurrentUser && '60px'};
+  max-width: 575px;
 `;
 
 export const TaskCommentDetails = styled.div`
-  margin-left: ${props => !props.isCurrentUser && '60px'};
+  margin-left: ${props => !props.isCurrentUser && '52px'};
   margin-right: ${props => props.isCurrentUser && '60px'};
+  margin-bottom: ${spacing.tiny};
   font-size: ${fontSizes.small};
+  color: ${palette.coolGrey1};
 `;
 
 export const TaskCommentAvatarContainer = styled.div`

@@ -105,15 +105,15 @@ const checkUserAccountState = async ({
 
   // uncomment the paragraph below if you have problems with signing BAA
 
-  handleHomeRedirection({
-    data,
-    orgData,
-    isEulaPath: pathname === EULA_PATH,
-    isBaaPath,
-    isMobile,
-    dispatch,
-  });
-  return;
+  // handleHomeRedirection({
+  //   data,
+  //   orgData,
+  //   isEulaPath: pathname === EULA_PATH,
+  //   isBaaPath,
+  //   isMobile,
+  //   dispatch,
+  // });
+  // return;
 
   if (data?.organizationIdentifier === '') {
     hashHistory.push('/unEnrolledUser');

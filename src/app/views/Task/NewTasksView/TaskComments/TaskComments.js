@@ -24,7 +24,6 @@ const TaskComments = ({
       {Object.keys(groupedComments).map(key => (
         <TaskCommentsDateGroup
           key={key}
-          groupDate={key}
           highlightedValue={highlightedValue}
           commentsGroup={groupedComments[key]}
           onClickComment={onClickComment}

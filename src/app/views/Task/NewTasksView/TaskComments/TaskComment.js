@@ -47,18 +47,28 @@ const TaskComment = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
 
+  let dateLabel = '';
+
+  if (moment(dateUpdated).isSame(new Date(), 'd')) {
+    dateLabel = 'Today';
+  } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
+    dateLabel = 'Yesterday';
+  } else {
+    dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
+  }
+
   const commentDetails = isOneByOne
-    ? moment(dateUpdated).format('h:mma')
-    : `${creator.firstName} ${creator.lastName} ${moment(dateUpdated).format(
-        'h:mma',
-      )}`;
+    ? `${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`
+    : `${creator.firstName} ${creator.lastName} ${dateLabel} @ ${moment(
+        dateUpdated,
+      ).format('h:mma')}`;
 
   const isCurrentUser =
     sessionStorage.getItem('userIdentifier') === creator?.userIdentifier;
   return (
     <TaskCommentContainer isCurrentUser={isCurrentUser} isOneByOne={isOneByOne}>
       <TaskCommentDetails isCurrentUser={isCurrentUser}>
-        {commentDetails} here
+        {commentDetails}
       </TaskCommentDetails>
       <TaskCommentContent
         onClick={onClickComment}
