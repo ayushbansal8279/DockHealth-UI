@@ -51,13 +51,13 @@ const DashboardStatistics = ({
             <DashboardStatisticsLabelBox item xs={3}>
               <img src={DashboardStatisticsIcon} alt="statistics" />
               <DashboardStatisticsLabel paddingLeft="4px">
-                <MontserratTypography variant="span">
+                <MontserratTypography variant="inherit">
                   TODAY&apos;S STATUS
                 </MontserratTypography>
               </DashboardStatisticsLabel>
             </DashboardStatisticsLabelBox>
             <Grid item xs={3}>
-              <MontserratTypography variant="span">
+              <MontserratTypography variant="inherit">
                 <DashboardStatisticsLabel>
                   PAST 30 DAYS
                 </DashboardStatisticsLabel>
