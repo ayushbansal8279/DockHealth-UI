@@ -85,5 +85,5 @@ export const CommentAvatarContainer = styled.div`
 `;
 
 export const EditCommentButton = styled.div`
-  visibility: ${props => props.isEditing && 'hidden'};
+  visibility: ${props => (props.isEditing ? 'hidden' : 'visible')};
 `;
