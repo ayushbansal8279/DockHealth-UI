@@ -482,6 +482,10 @@ class Home extends Component {
       taskStatus,
     );
 
+    if (isEmpty(updatedFilters)) {
+      return this.getTasksList(taskListIdentifier, taskStatus);
+    }
+
     return this.getFilteredTasks(
       taskListIdentifier,
       updatedFilters,

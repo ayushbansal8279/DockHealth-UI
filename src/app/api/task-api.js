@@ -746,7 +746,7 @@ export function getFilteredTasksForList(
 ) {
   return axios
     .post(
-      `task/filter/filterTasksByCriteria/${taskListIdentifier}?status=${status}`,
+      `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?status=${status}`,
       selectedFilters,
     )
     .then(({ data }) => data)
