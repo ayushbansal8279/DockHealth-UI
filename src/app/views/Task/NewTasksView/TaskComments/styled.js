@@ -28,13 +28,6 @@ export const TaskCommentsGroupedDay = styled.div`
   }
 `;
 
-// export const TaskCommentsDate = styled.div`
-//   color: ${palette.coolGrey1};
-//   font-size: ${fontSizes.small};
-//   margin-top: ${spacing.regular};
-//   margin-bottom: 10px;
-// `;
-
 export const TaskCommentContainer = styled.div`
   display: flex;
   margin-top: ${props => props.isOneByOne && `-${spacing.small}`};

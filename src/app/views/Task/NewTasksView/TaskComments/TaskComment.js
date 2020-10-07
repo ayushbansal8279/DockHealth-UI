@@ -65,6 +65,7 @@ const TaskComment = ({
 
   const isCurrentUser =
     sessionStorage.getItem('userIdentifier') === creator?.userIdentifier;
+
   return (
     <TaskCommentContainer isCurrentUser={isCurrentUser} isOneByOne={isOneByOne}>
       <TaskCommentDetails isCurrentUser={isCurrentUser}>

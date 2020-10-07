@@ -9,6 +9,7 @@ export const AddCommentContainer = styled.div`
   grid-template-columns: auto 1fr;
   grid-gap: ${spacing.smallPlus};
   position: relative;
+  margin-bottom: ${spacing.small};
 `;
 
 export const AddCommentInputContainer = styled.div`
