@@ -69,7 +69,6 @@ const Arrow = ({
         </ArrowImgContainer>
       )}
       {React.cloneElement(children, {
-        isOpen,
         onClick: isDisabled ? () => {} : () => setOpen(!isOpen),
       })}
       {showArrow && arrowPlacement === 'right' && (

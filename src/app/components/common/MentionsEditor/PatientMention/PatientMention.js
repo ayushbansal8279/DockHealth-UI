@@ -92,7 +92,7 @@ const PatientMention = ({ mention, className, children }) => {
       {children}
       <Popper
         anchorEl={reference.current}
-        open={isHovered && mention.identifier}
+        open={isHovered && !!mention.identifier}
         placement="bottom-start"
         style={{ zIndex: 2000 }}
       >
