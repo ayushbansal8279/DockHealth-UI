@@ -22,6 +22,7 @@ export const ListNameContainer = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
+  overflow: hidden;
 `;
 
 export const ListNameSection = styled.p`
