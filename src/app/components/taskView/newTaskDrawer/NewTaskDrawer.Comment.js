@@ -139,20 +139,22 @@ const Comment = ({
           </CommentContent>
         </CommentContainer>
         {isCommentAuthor && (
-          <EditCommentButton isEditing={isEditing}>
-            <Spacing horizontal={3} />
-            <RobotoTypography condensed variant="h5" color="inherit">
-              <CommentActionLabel
-                onClick={event => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setEditing();
-                }}
-              >
-                Edit
-              </CommentActionLabel>
-            </RobotoTypography>
-          </EditCommentButton>
+          <>
+            <Spacing horizontal={4} />
+            <EditCommentButton isEditing={isEditing}>
+              <RobotoTypography condensed variant="h5" color="inherit">
+                <CommentActionLabel
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setEditing();
+                  }}
+                >
+                  Edit
+                </CommentActionLabel>
+              </RobotoTypography>
+            </EditCommentButton>
+          </>
         )}
         {(isCommentAuthor || isAdmin) && (
           <>

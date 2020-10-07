@@ -81,7 +81,7 @@ export const CommentAvatarContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   margin-left: ${props => props.isCommentAuthor && spacing.small};
-  margin-right: ${spacing.small};
+  margin-right: ${props => !props.isCommentAuthor && spacing.small};
 `;
 
 export const EditCommentButton = styled.div`
