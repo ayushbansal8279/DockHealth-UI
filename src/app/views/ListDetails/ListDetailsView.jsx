@@ -44,19 +44,10 @@ class Home extends Component {
   async componentDidMount() {
     const {
       routeParams,
-      taskListActions,
-      patientActions,
       currentUser,
       taskLists,
       pendingTaskLists = [],
     } = this.props;
-
-    // if (routeParams.taskListIdentifier) {`
-    //   taskListActions.getMembersByTaskListId(
-    //     routeParams.taskListIdentifier,
-    //     'ALL',
-    //   );
-    // }
 
     this.initTable();
 
@@ -65,14 +56,7 @@ class Home extends Component {
       ...pendingTaskLists,
     ]);
 
-    patientActions.getAllPatients();
-
     this.refreshAccessToken(currentUser);
-
-    // TODO: Move to saga
-    taskListActions.getTaskListStats({
-      taskListIdentifier: routeParams.taskListIdentifier,
-    });
 
     this.listenForRealTimeEvents(routeParams.taskListIdentifier, currentUser);
   }
@@ -150,9 +134,6 @@ class Home extends Component {
         taskListActions.getTaskListById(
           nextProps.routeParams.taskListIdentifier,
         );
-        taskListActions.getTaskListStats({
-          taskListIdentifier: nextProps.routeParams.taskListIdentifier,
-        });
 
         const status =
           nextProps.routeParams.tabName === TaskListTabName.COMPLETE
@@ -171,13 +152,6 @@ class Home extends Component {
             status,
           );
         }
-
-        // if (nextProps.routeParams.taskListIdentifier) {
-        //   taskListActions.getMembersByTaskListId(
-        //     nextProps.routeParams.taskListIdentifier,
-        //     'ALL',
-        //   );
-        // }
 
         // Start with no selected tasks
         actions.storeAsCurrentTask(null);
@@ -360,7 +334,6 @@ class Home extends Component {
       actions,
       megaFilterActions,
       routeParams: { taskListIdentifier },
-      taskListActions,
     } = this.props;
 
     const status = 'INCOMPLETE';
@@ -374,10 +347,6 @@ class Home extends Component {
     if (withLoader) {
       actions.loading();
     }
-
-    taskListActions.getTaskListStats({
-      taskListIdentifier,
-    });
 
     if (filters && !isEmpty(filters)) {
       return this.getFilteredTasks(
@@ -396,7 +365,6 @@ class Home extends Component {
     const {
       actions,
       megaFilterActions,
-      taskListActions,
       completedTasks,
       routeParams: { taskListIdentifier },
     } = this.props;
@@ -417,8 +385,6 @@ class Home extends Component {
     const status = 'COMPLETE';
 
     megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-
-    taskListActions.getTaskListStats({ taskListIdentifier });
 
     const filters = sessionStorageHelper.getItem(
       `filter-${taskListIdentifier}-${status}`,

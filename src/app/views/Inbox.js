@@ -47,7 +47,7 @@ class Inbox extends PureComponent {
   }
 
   refresh = () => {
-    const { actions, patientActions } = this.props;
+    const { actions } = this.props;
 
     actions.loading();
     actions
@@ -56,7 +56,6 @@ class Inbox extends PureComponent {
         actions.getInboxTasks('COMPLETE', undefined, undefined);
       })
       .catch(noop);
-    patientActions.getAllPatients();
   };
 
   pullCompletedTasks = () => {
