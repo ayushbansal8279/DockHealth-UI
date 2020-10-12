@@ -59,7 +59,7 @@
     "pusher-js": "^5.0.2",
     "query-string": "^6.5.0",
     "ramda": "^0.26.1",
-    "react": "^16.13.1",
+    "react": "^16.8.4",
     "react-autosuggest": "^9.4.2",
     "react-avatar-edit": "^0.8.3",
     "react-beautiful-dnd": "^13.0.0",
