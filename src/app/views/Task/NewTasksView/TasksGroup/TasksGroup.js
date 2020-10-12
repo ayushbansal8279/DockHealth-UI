@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -86,66 +86,40 @@ const TasksGroup = ({
 
   const isFullView = viewType === FULL_VIEW;
 
-  const onSwitchOpen = useCallback(() => switchOpen(!isOpen), [
-    switchOpen,
-    isOpen,
-  ]);
-
-  const onGroupNameSectionClick = useCallback(
-    newGroupName => editGroupName(newGroupName, groupId),
-    [editGroupName, groupId],
-  );
-
-  const onDeleteGroup = useCallback(() => deleteGroup(groupId), [
-    deleteGroup,
-    groupId,
-  ]);
-
-  const tasksAmount = useMemo(
-    () =>
-      tasks?.reduce(
-        (counter, task) =>
-          counter +
-          task.subtasks?.filter(x =>
-            isCompletedGroup
-              ? x.status === 'COMPLETE'
-              : x.status === 'INCOMPLETE',
-          ).length +
-          1,
-        0,
-      ) || 0,
-    [isCompletedGroup, tasks],
-  );
-
-  const onQuickAddTask = useCallback(
-    task =>
-      quickAddTask({
-        ...task,
-        taskGroupIdentifier: groupId,
-      }),
-    [groupId, quickAddTask],
-  );
-
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
         <Arrow
           alt="arrow"
           isOpen={isOpen}
-          onClick={onSwitchOpen}
+          onClick={() => switchOpen(!isOpen)}
           src={ArrowIcon}
         />
         <GroupNameSectionWrapper>
           <GroupNameSection
             initialValue={groupName}
-            onEnterClick={onGroupNameSectionClick}
+            onEnterClick={newGroupName => editGroupName(newGroupName, groupId)}
             closeOnEnter
             disabled={isDefaultGroup || isCompletedGroup || !editGroupName}
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
               {!isSearchApplied && !areFiltersApplied && (
-                <TasksGroupLabelCounter>{tasksAmount}</TasksGroupLabelCounter>
+                <TasksGroupLabelCounter>
+                  (
+                  {tasks?.reduce(
+                    (counter, task) =>
+                      counter +
+                      task.subtasks?.filter(x =>
+                        isCompletedGroup
+                          ? x.status === 'COMPLETE'
+                          : x.status === 'INCOMPLETE',
+                      ).length +
+                      1,
+                    0,
+                  ) || 0}
+                  )
+                </TasksGroupLabelCounter>
               )}
             </TasksGroupLabel>
           </GroupNameSection>
@@ -157,7 +131,7 @@ const TasksGroup = ({
             isLastGroup={isLastGroup}
             moveGroupUp={moveGroupUp}
             moveGroupDown={moveGroupDown}
-            deleteGroup={onDeleteGroup}
+            deleteGroup={() => deleteGroup(groupId)}
           />
         )}
         {!changingGroupOrderDisabled && (
@@ -192,7 +166,12 @@ const TasksGroup = ({
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
           <QuickAddTaskInput
-            quickAddTask={onQuickAddTask}
+            quickAddTask={task =>
+              quickAddTask({
+                ...task,
+                taskGroupIdentifier: groupId,
+              })
+            }
             validator={value => {
               if ([...value]?.filter(char => char !== ' ').length < 2)
                 return 'The task description is too short (min. 2 characters)';
@@ -240,4 +219,4 @@ const TasksGroup = ({
   );
 };
 
-export default React.memo(TasksGroup);
+export default TasksGroup;

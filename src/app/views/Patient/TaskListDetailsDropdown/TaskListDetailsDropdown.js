@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
-import StandardTaskItem from 'components/task-item/StandardTaskItem/StandardTaskItem';
+import Task from 'components/task-item/StandardTaskItem/TaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import listSectionSavedState, {
@@ -44,19 +43,10 @@ const TaskListDetailsDropdown = ({
   refreshView,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
+
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
     sessionStorageKey,
   );
-
-  const {
-    addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
-  } = useSelector(state => ({
-    addingNewSubtask: state.taskState.addingNewSubtask,
-    addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
-    subtaskShape: state.taskState.subtaskShape,
-  }));
 
   const areViewOptionsVisible = useMemo(() => {
     if (!isOpen) return false;
@@ -124,7 +114,7 @@ const TaskListDetailsDropdown = ({
         )}
         <div>
           {tasks?.map(task => (
-            <StandardTaskItem
+            <Task
               key={task.taskIdentifier}
               currentUser={currentUser}
               isFullView={isFullView}
@@ -142,9 +132,6 @@ const TaskListDetailsDropdown = ({
               dragAndDropDisabled
               selectedTask={selectedTask}
               patientVisible={false}
-              addingNewSubtask={addingNewSubtask}
-              addingNewSubtaskParentId={addingNewSubtaskParentId}
-              subtaskShape={subtaskShape}
             />
           ))}
         </div>

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import Spacing from 'components/common/Spacing';
-import StandardTaskItem from 'components/task-item/StandardTaskItem/StandardTaskItem';
+import Task from 'components/task-item/StandardTaskItem/TaskItem';
 import {
   Arrow,
   Tasks,
@@ -26,16 +25,8 @@ const GlobalSearchList = ({
   highlightedValue,
 }) => {
   const { listName, tasks } = list;
+
   const [isOpen, switchOpen] = useState(true);
-  const {
-    addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
-  } = useSelector(state => ({
-    addingNewSubtask: state.taskState.addingNewSubtask,
-    addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
-    subtaskShape: state.taskState.subtaskShape,
-  }));
 
   return (
     <ListDetailsContainer>
@@ -60,7 +51,7 @@ const GlobalSearchList = ({
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
           <>
-            <StandardTaskItem
+            <Task
               key={task.taskIdentifier}
               currentUser={currentUser}
               openDrawer={openDrawer}
@@ -78,9 +69,6 @@ const GlobalSearchList = ({
               selectedTask={selectedTask}
               isFullView
               highlightedValue={highlightedValue}
-              addingNewSubtask={addingNewSubtask}
-              addingNewSubtaskParentId={addingNewSubtaskParentId}
-              subtaskShape={subtaskShape}
             />
             <Spacing vertical={3} />
           </>
