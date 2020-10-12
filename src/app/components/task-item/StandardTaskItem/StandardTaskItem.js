@@ -1,0 +1,103 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { isEmpty } from 'ramda';
+import TaskComments from 'views/Task/NewTasksView/TaskComments/TaskComments';
+import TaskItem from './TaskItem';
+import Subtasks from './Subtasks';
+import { getMatchedComments } from './helpers';
+
+const Task = ({
+  task,
+  isFullView,
+  isStartedDnD,
+  isDragging,
+  draggableProvided,
+  groupId,
+  currentUser,
+  reassignTask,
+  isDraggable,
+  addingNewSubtask,
+  addingNewSubtaskParentId,
+  subtaskShape,
+  ...restProps
+}) => {
+  const [isOpen, switchOpen] = useState(false);
+  const { comments, subtasks, patient, searchMetaData = {} } = task;
+  const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
+  const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
+  const { matchingCommentIdentifiers = [] } = searchMetaData;
+
+  useEffect(() => {
+    switchOpen(isFullView);
+  }, [isFullView, switchOpen]);
+
+  const renderedSubtasks =
+    addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
+      ? [...subtasks, subtaskShape]
+      : subtasks;
+
+  const matchingComments = useMemo(
+    () => getMatchedComments(comments, matchingCommentIdentifiers),
+    [comments, matchingCommentIdentifiers],
+  );
+
+  const showComments = useMemo(
+    () => !isEmpty(matchingComments) && !isStartedDnD,
+    [matchingComments, isStartedDnD],
+  );
+
+  const showSubtasks = useMemo(
+    () => !isEmpty(renderedSubtasks) && !isStartedDnD,
+    [renderedSubtasks, isStartedDnD],
+  );
+
+  const onClickComment = useCallback(() => {
+    openDrawer();
+    storeAsCurrentTask(task);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div {...draggableProps}>
+      <div ref={innerRef}>
+        <TaskItem
+          task={task}
+          isOpen={isOpen}
+          switchOpen={switchOpen}
+          dragHandleProps={dragHandleProps}
+          isDragging={isDragging}
+          currentUser={currentUser}
+          reassignTask={reassignTask}
+          subtasks={renderedSubtasks}
+          isDraggable={isDraggable}
+          {...restProps}
+        />
+      </div>
+      {showComments && (
+        <TaskComments
+          isOpen={isFullView}
+          comments={matchingComments}
+          highlightedValue={highlightedValue}
+          onClickComment={onClickComment}
+        />
+      )}
+      {showSubtasks && (
+        <Subtasks
+          subtasks={renderedSubtasks}
+          isOpen={isOpen}
+          isFullView={isFullView}
+          groupId={groupId}
+          parentTaskId={task.taskIdentifier}
+          currentUser={currentUser}
+          reassignTask={reassignTask}
+          parentHasPatient={!!patient}
+          taskList={task?.taskList}
+          isDraggable={isDraggable}
+          {...restProps}
+        />
+      )}
+    </div>
+  );
+};
+
+export default React.memo(Task);
