@@ -10,7 +10,6 @@ const TaskCommentsDateGroup = ({
     {commentsGroup?.map((comment, index) => (
       <TaskComment
         {...comment}
-        key={index}
         highlightedValue={highlightedValue}
         onClickComment={onClickComment}
         isOneByOne={

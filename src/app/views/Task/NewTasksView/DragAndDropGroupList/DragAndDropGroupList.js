@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import StandardTaskItem from 'components/task-item/StandardTaskItem/StandardTaskItem';
+import Task from 'components/task-item/StandardTaskItem/TaskItem';
 import { DroppablePlaceholder } from './styled';
 
 const DragAndDropGroupList = ({
@@ -24,17 +24,7 @@ const DragAndDropGroupList = ({
   selectedTask,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
-  const {
-    isTaskDrawerOpen,
-    addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
-  } = useSelector(state => ({
-    isTaskDrawerOpen: state.taskDrawerState.open,
-    addingNewSubtask: state.taskState.addingNewSubtask,
-    addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
-    subtaskShape: state.taskState.subtaskShape,
-  }));
+  const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
 
   return (
     <Droppable droppableId={groupId} isDropDisabled={isCompletedGroup}>
@@ -56,7 +46,7 @@ const DragAndDropGroupList = ({
                 }
               >
                 {(draggableProvided, { isDragging }) => (
-                  <StandardTaskItem
+                  <Task
                     key={task.taskIdentifier}
                     currentUser={currentUser}
                     isFullView={isFullView}
@@ -80,9 +70,6 @@ const DragAndDropGroupList = ({
                     listNameVisible={listNameVisible}
                     selectedTask={selectedTask}
                     isDraggable={!isTaskDrawerOpen}
-                    addingNewSubtask={addingNewSubtask}
-                    addingNewSubtaskParentId={addingNewSubtaskParentId}
-                    subtaskShape={subtaskShape}
                   />
                 )}
               </Draggable>
@@ -95,4 +82,4 @@ const DragAndDropGroupList = ({
   );
 };
 
-export default React.memo(DragAndDropGroupList);
+export default DragAndDropGroupList;
