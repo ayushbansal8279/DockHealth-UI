@@ -341,7 +341,7 @@ const TaskItem = ({
                 }
               />
             </Description>
-            {isSubtask && !isNestedTask && (
+            {isSubtask && !isNestedTask && parentTask && (
               <>
                 <TaskItemParentTaskLabel>
                   Subtask of

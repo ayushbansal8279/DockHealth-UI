@@ -29,14 +29,17 @@ import {
   GET_TASKS_SUCCESS,
   GET_COMPLETED_TASKS_SUCCESS,
   SET_AS_CURRENT_TASK,
+  INCREASE_INCOMPLETE_TASK_COUNTERS,
+  ADD_TASK_SUCCESS,
 } from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
-import { getTaskStatsForList, storeAsCurrentTask } from 'actions/task-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-selectors';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
+import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from '../location/selectors';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
@@ -371,7 +374,7 @@ export function* doCreateTask(payload) {
     yield put({ type: TASK_GROUP_LIST_REQUEST });
 
     if (taskListIdentifier) {
-      const task = yield call(createTaskApi, {
+      const createdTask = yield call(createTaskApi, {
         taskGroupIdentifier,
         taskListIdentifier,
         description,
@@ -379,14 +382,22 @@ export function* doCreateTask(payload) {
       });
 
       if (autoOpenDrawer) {
-        yield put(storeAsCurrentTask(task));
+        yield put(storeAsCurrentTask(createdTask));
         yield put(openDrawer());
       }
 
-      yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
-      yield put(getTaskStatsForList(taskListIdentifier));
+      const filters = yield select(selectedFiltersInMegaFilterSelector);
 
-      yield all([call(doGetTasksList, { taskListIdentifier })]);
+      if (filters && !isEmpty(filters)) {
+        if (checkIfTaskMatchesFilters(createdTask, filters)) {
+          yield put({ type: ADD_TASK_SUCCESS, task: createdTask });
+        }
+      } else {
+        yield put({ type: ADD_TASK_SUCCESS, task: createdTask });
+      }
+
+      yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
+      yield put({ type: INCREASE_INCOMPLETE_TASK_COUNTERS });
     }
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });

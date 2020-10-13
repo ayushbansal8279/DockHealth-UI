@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+} from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { isEmpty } from 'ramda';
@@ -41,6 +47,7 @@ import {
   megaFilterSelector,
   hasFiltersAppliedSelector,
 } from 'selectors/mega-filter-selectors';
+import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import DashboardSettings from '../DashboardSettings/DashboardSettings';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -430,6 +437,24 @@ const DashboardList = ({
     [searchedDashboardTasks],
   );
 
+  const handleTaskUpdate = useCallback(
+    updatedTask => {
+      fetchDashboardFilters();
+      if (
+        !checkIfTaskMatchesFilters(updatedTask, selectedFilters) ||
+        userIdentifier !== updatedTask.assignedTo?.userIdentifier
+      ) {
+        reloadDashboardTasks();
+      }
+    },
+    [
+      selectedFilters,
+      reloadDashboardTasks,
+      fetchDashboardFilters,
+      userIdentifier,
+    ],
+  );
+
   return (
     <>
       <StickyHeader>
@@ -548,10 +573,9 @@ const DashboardList = ({
       )}
       <NewTaskDrawer
         modalActions={modalActions}
-        refreshList={() => {
-          reloadDashboardTasks();
-          fetchDashboardFilters();
-        }}
+        onTaskUpdate={handleTaskUpdate}
+        onTaskCreation={handleTaskUpdate}
+        onTaskDelete={fetchDashboardFilters}
         assignToSelf
       />
     </>

@@ -22,7 +22,7 @@ const DueDateSection = ({
   selectedTask,
   isOverDue,
   setAutoSaveVisible,
-  refreshList,
+  onTaskUpdate,
   dueTimeReference,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -46,7 +46,7 @@ const DueDateSection = ({
   const { saveDueDate, clearDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
     setValue,
-    refreshList,
+    onTaskUpdate,
   });
 
   useEffect(() => {

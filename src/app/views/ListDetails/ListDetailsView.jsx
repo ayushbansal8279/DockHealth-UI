@@ -315,17 +315,37 @@ class Home extends Component {
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
-      actions,
-      routeParams: { tabName, taskListIdentifier },
+      routeParams: { tabName },
     } = this.props;
 
-    actions.getTaskStatsForList(taskListIdentifier);
+    this.refreshTabCounters();
 
     if (tabName === TaskListTabName.COMPLETE) {
       return this.refreshCompleteTasks(cumulativeFlag, withLoader);
     }
 
     return this.refreshIncompleteTasks(withLoader);
+  };
+
+  refreshFilters = () => {
+    const {
+      routeParams: { taskListIdentifier, tabName },
+      megaFilterActions,
+    } = this.props;
+
+    const status =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
+  };
+
+  refreshTabCounters = () => {
+    const {
+      actions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    actions.getTaskStatsForList(taskListIdentifier);
   };
 
   // TODO: Move to saga
@@ -437,10 +457,17 @@ class Home extends Component {
     const {
       routeParams: { tabName, taskListIdentifier },
       megaFilterActions,
+      actions,
     } = this.props;
 
-    const taskStatus =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+    let taskStatus = 'INCOMPLETE';
+
+    if (tabName === TaskListTabName.COMPLETE) {
+      actions.loadingCompletedTasks();
+      taskStatus = 'COMPLETE';
+    } else {
+      actions.loading();
+    }
 
     megaFilterActions.selectFiltersForMegaFilter(
       updatedFilters,
@@ -586,6 +613,8 @@ class Home extends Component {
     const taskViewProps = {
       members,
       refreshTab: this.refreshTab,
+      refreshFilters: this.refreshFilters,
+      refreshTabCounters: this.refreshTabCounters,
       downloadPDF: this.downloadPDF,
       navigateToTab: this.navigateToTab,
       createListGroup: groupName => createTaskGroupList({ groupName }),

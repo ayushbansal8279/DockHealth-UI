@@ -143,16 +143,37 @@ class PersonDetailsView extends PureComponent {
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
-      taskActions,
-      routeParams: { tabName, userIdentifier },
+      routeParams: { tabName },
     } = this.props;
-    taskActions.getTaskStatsForUser(userIdentifier);
+
+    this.refreshTabCounters();
 
     if (tabName === TaskListTabName.COMPLETE) {
       this.refreshCompleteTasks(cumulativeFlag, withLoader);
     } else {
       this.refreshIncompleteTasks(withLoader);
     }
+  };
+
+  refreshFilters = () => {
+    const {
+      megaFilterActions,
+      routeParams: { userIdentifier, tabName },
+    } = this.props;
+
+    const status =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    megaFilterActions.getFiltersForPeopleListMegaFilter(userIdentifier, status);
+  };
+
+  refreshTabCounters = () => {
+    const {
+      taskActions,
+      routeParams: { userIdentifier },
+    } = this.props;
+
+    taskActions.getTaskStatsForUser(userIdentifier);
   };
 
   refreshIncompleteTasks = (withLoader = true) => {
@@ -290,6 +311,8 @@ class PersonDetailsView extends PureComponent {
       routeParams,
       navigateToTab: this.navigateToTab,
       refreshTab: this.refreshTab,
+      refreshFilters: this.refreshFilters,
+      refreshTabCounters: this.refreshTabCounters,
       handleFilterChange: this.handleFilterChange,
       listNameVisible: true,
       quickAddTask: this.handleQuickAddTask,

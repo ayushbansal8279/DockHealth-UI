@@ -29,17 +29,18 @@ import {
 } from 'actions/task-actions';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import Member from 'components/members/Member/Member';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
+import { onButtonClicked } from 'helpers/ga-event-helper';
+import { noop } from 'helpers/utility-functions';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
-import { onButtonClicked } from '../../../helpers/ga-event-helper';
-import { noop } from '../../../helpers/utility-functions';
 
 // const REQUIRED_MESSAGE = 'This field is required';
 // const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
@@ -55,7 +56,7 @@ const onSubmit = ({
   setSaving,
   setAutoSaveVisible,
   closeTaskDrawer,
-  refreshList,
+  onTaskUpdate,
   descriptionState,
   setDescriptionErrorState,
 }) => (data, event) => {
@@ -113,8 +114,7 @@ const onSubmit = ({
 
       if (!taskIdentifier) return;
       storeAsCurrentTask(response)(dispatch);
-
-      refreshList();
+      onTaskUpdate(response);
 
       setSaving(false);
       setAutoSaveVisible();
@@ -129,7 +129,12 @@ const onSubmit = ({
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
+const initializeTaskDrawerHooks = ({
+  isInbox,
+  onTaskUpdate,
+  onTaskCreation,
+  onTaskDelete,
+}) => {
   const {
     taskDrawerOpen,
     taskDrawerFocusField,
@@ -140,6 +145,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     labels,
     areLabelsRequested,
     currentUser,
+    selectedFilters,
   } = useSelector(store => ({
     taskDrawerOpen: store.taskDrawerState.open,
     taskDrawerFocusField: store.taskDrawerState.focusField,
@@ -154,6 +160,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       ? store.taskLabelState.requesting.inboxLabels
       : store.taskLabelState.requesting.listLabels,
     currentUser: store.userState.userProfile,
+    selectedFilters: selectedFiltersInMegaFilterSelector(store),
   }));
 
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
@@ -382,7 +389,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
               `${AlertMessages.TASK_MOVED} to list ${newTaskList.listName}`,
             ),
           );
-          refreshList();
+          onTaskDelete(selectedTask);
           storeAsCurrentTask(null)(dispatch);
           closeDrawer();
         })
@@ -403,7 +410,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask)(dispatch);
-        refreshList();
+        onTaskDelete(selectedTask);
         storeAsCurrentTask(null)(dispatch);
         afterDelete();
         onButtonClicked('Delete task');
@@ -428,7 +435,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
           selectedTask,
           includeAttachments,
         )(dispatch);
-        refreshList();
+        onTaskCreation(newTask);
         storeAsCurrentTask(newTask)(dispatch);
         afterDuplicate({ newTask });
         onButtonClicked('Duplicate task');
@@ -452,7 +459,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
         }
         await prepareSubtask(selectedTask.taskIdentifier, assignedTo)(dispatch);
         afterAddSubTask();
-        refreshList();
         onButtonClicked('Add subtask');
       } catch {
         noop();
@@ -467,16 +473,15 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     };
     setValue('assignedToUserIdentifier', member?.userIdentifier);
     setValue('assignedToUserName', member?.userName);
-    // closeAssignedToPopover();
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await assignOrReassignTask(
+        const updatedTask = await assignOrReassignTask(
           selectedTask,
           member?.userIdentifier,
         )(dispatch);
         setAutoSaveVisible();
-        refreshList();
+        onTaskUpdate(updatedTask);
       } catch {
         dispatch(
           AlertActions.showGlobalAlert(
@@ -490,11 +495,12 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
   const handleUpdatePatient = async (patient = null) => {
     try {
-      await updatePatient(
+      const updatedTask = await updatePatient(
         !isAddingOrEditingSubtask ? selectedTask : selectedTaskParent,
         patient,
       )(dispatch);
       setAutoSaveVisible();
+      onTaskUpdate(updatedTask);
     } catch {
       dispatch(
         AlertActions.showGlobalAlert(
@@ -517,7 +523,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       await handleUpdatePatient(patient);
-      refreshList();
     }
   };
 
@@ -527,7 +532,6 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     setPatients([]);
     if (selectedTask && selectedTask.taskIdentifier != null) {
       await handleUpdatePatient();
-      refreshList();
     }
   };
 
@@ -595,7 +599,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
       setSaving,
       setAutoSaveVisible,
       closeTaskDrawer,
-      refreshList,
+      onTaskUpdate,
       descriptionState,
       setDescriptionErrorState,
     }),
@@ -631,6 +635,7 @@ const initializeTaskDrawerHooks = ({ isInbox, refreshList }) => {
     descriptionReference,
     descriptionErrorState,
     setDescriptionErrorState,
+    selectedFilters,
   };
 };
 
