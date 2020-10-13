@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import EmptyTaskListFox from 'img/animals/fox';
@@ -103,94 +103,136 @@ const OpenedTasksView = ({
     );
   };
 
+  const onDragEnd = useCallback(
+    eventBundle =>
+      !dragAndDropDisabled &&
+      onDragEndTask({
+        eventBundle,
+        groupList,
+        tasks,
+        reorderTasksInGroup,
+        reassignTasksToAnotherGroup,
+        updateTaskGroups,
+        setDraggableId,
+      }),
+    [
+      dragAndDropDisabled,
+      groupList,
+      reassignTasksToAnotherGroup,
+      reorderTasksInGroup,
+      tasks,
+    ],
+  );
+
+  const onBeforeCapture = useCallback(
+    ({ draggableId }) => {
+      if (!dragAndDropDisabled) setDraggableId(draggableId);
+    },
+    [dragAndDropDisabled],
+  );
+
+  const onGroupNameClick = useCallback(
+    groupName => createTaskGroupList(groupName),
+    [createTaskGroupList],
+  );
+
+  const renderTasks = useCallback(
+    () =>
+      groupList?.map(({ groupName, taskGroupIdentifier, groupType }, i) => (
+        <TasksGroup
+          key={i}
+          isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
+          groupId={taskGroupIdentifier}
+          currentUser={currentUser}
+          groupName={
+            groupType !== TASKGROUP_DEFAULT_TYPE ? groupName : defaultGroupName
+          }
+          openDrawer={openDrawer}
+          storeAsCurrentTask={storeAsCurrentTask}
+          toggleTaskPriority={toggleSingleTaskPriority}
+          editGroupName={editGroupName}
+          quickAddTask={quickAddTask}
+          deleteGroup={deleteGroup}
+          moveGroupUp={() => changeGroupsOrder(i, i - 1)}
+          moveGroupDown={() => changeGroupsOrder(i, i + 1)}
+          changingGroupOrderDisabled={!changeGroupsOrder}
+          isFirstGroup={i === 0}
+          isLastGroup={i === groupList?.length - 1}
+          tasks={
+            tasks[
+              groupType !== TASKGROUP_DEFAULT_TYPE
+                ? taskGroupIdentifier
+                : TASKGROUP_DEFAULT_TYPE
+            ] || []
+          }
+          taskGroupIdentifier={taskGroupIdentifier}
+          reorderSubtasksForTask={reorderSubtasksForTask}
+          reassignTask={reassignTask}
+          draggedId={draggedId}
+          toggleCompleteTask={toggleCompleteTask}
+          updateDueDate={updateDueDate}
+          updateWorkflowStatus={updateWorkflowStatus}
+          dragAndDropDisabled={dragAndDropDisabled}
+          listNameVisible={listNameVisible}
+          isSearchApplied={isSearchApplied}
+          selectedTask={selectedTask}
+          listUniqueKey={listUniqueKey}
+          areFiltersApplied={areFiltersApplied}
+        />
+      )),
+    [
+      areFiltersApplied,
+      changeGroupsOrder,
+      currentUser,
+      defaultGroupName,
+      deleteGroup,
+      dragAndDropDisabled,
+      draggedId,
+      editGroupName,
+      groupList,
+      isSearchApplied,
+      listNameVisible,
+      listUniqueKey,
+      openDrawer,
+      quickAddTask,
+      reassignTask,
+      reorderSubtasksForTask,
+      selectedTask,
+      storeAsCurrentTask,
+      tasks,
+      toggleCompleteTask,
+      toggleSingleTaskPriority,
+      updateDueDate,
+      updateWorkflowStatus,
+    ],
+  );
+
+  if (isFetchingData) return <ListSkeletonLoader />;
+
   return (
-    <>
-      {isFetchingData ? (
-        <ListSkeletonLoader />
-      ) : (
-        <TaskGroupsContainer>
-          {!isEmpty(groupedTasks) ? (
-            <>
-              <DragDropContext
-                onBeforeCapture={({ draggableId }) => {
-                  if (!dragAndDropDisabled) setDraggableId(draggableId);
-                }}
-                onDragEnd={eventBundle =>
-                  !dragAndDropDisabled &&
-                  onDragEndTask({
-                    eventBundle,
-                    groupList,
-                    tasks,
-                    reorderTasksInGroup,
-                    reassignTasksToAnotherGroup,
-                    updateTaskGroups,
-                    setDraggableId,
-                  })
-                }
-              >
-                {groupList?.map(
-                  ({ groupName, taskGroupIdentifier, groupType }, i) => (
-                    <TasksGroup
-                      key={i}
-                      isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
-                      groupId={taskGroupIdentifier}
-                      currentUser={currentUser}
-                      groupName={
-                        groupType !== TASKGROUP_DEFAULT_TYPE
-                          ? groupName
-                          : defaultGroupName
-                      }
-                      openDrawer={openDrawer}
-                      storeAsCurrentTask={storeAsCurrentTask}
-                      toggleTaskPriority={toggleSingleTaskPriority}
-                      editGroupName={editGroupName}
-                      quickAddTask={quickAddTask}
-                      deleteGroup={deleteGroup}
-                      moveGroupUp={() => changeGroupsOrder(i, i - 1)}
-                      moveGroupDown={() => changeGroupsOrder(i, i + 1)}
-                      changingGroupOrderDisabled={!changeGroupsOrder}
-                      isFirstGroup={i === 0}
-                      isLastGroup={i === groupList?.length - 1}
-                      tasks={
-                        tasks[
-                          groupType !== TASKGROUP_DEFAULT_TYPE
-                            ? taskGroupIdentifier
-                            : TASKGROUP_DEFAULT_TYPE
-                        ] || []
-                      }
-                      taskGroupIdentifier={taskGroupIdentifier}
-                      reorderSubtasksForTask={reorderSubtasksForTask}
-                      reassignTask={reassignTask}
-                      draggedId={draggedId}
-                      toggleCompleteTask={toggleCompleteTask}
-                      updateDueDate={updateDueDate}
-                      updateWorkflowStatus={updateWorkflowStatus}
-                      dragAndDropDisabled={dragAndDropDisabled}
-                      listNameVisible={listNameVisible}
-                      isSearchApplied={isSearchApplied}
-                      selectedTask={selectedTask}
-                      listUniqueKey={listUniqueKey}
-                      areFiltersApplied={areFiltersApplied}
-                    />
-                  ),
-                )}
-              </DragDropContext>
-              {!!createTaskGroupList && !isSearchApplied && (
-                <GroupNameSection
-                  onEnterClick={groupName => createTaskGroupList(groupName)}
-                  placeholder={messages.placeholder}
-                  closeOnEnter
-                >
-                  <AddGroupNameButton />
-                </GroupNameSection>
-              )}
-            </>
-          ) : (
-            renderEmptyState()
+    <TaskGroupsContainer>
+      {!isEmpty(groupedTasks) ? (
+        <>
+          <DragDropContext
+            onBeforeCapture={onBeforeCapture}
+            onDragEnd={onDragEnd}
+          >
+            {renderTasks()}
+          </DragDropContext>
+          {!!createTaskGroupList && !isSearchApplied && (
+            <GroupNameSection
+              onEnterClick={onGroupNameClick}
+              placeholder={messages.placeholder}
+              closeOnEnter
+            >
+              <AddGroupNameButton />
+            </GroupNameSection>
           )}
-        </TaskGroupsContainer>
+        </>
+      ) : (
+        renderEmptyState()
       )}
-    </>
+    </TaskGroupsContainer>
   );
 };
 

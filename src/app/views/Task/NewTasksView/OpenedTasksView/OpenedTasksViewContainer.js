@@ -2,50 +2,33 @@ import { connect } from 'react-redux';
 import {
   tasksGroupsIsFetchingSelector,
   tasksGroupsIsInitializedSelector,
-  tasksGroupListSelector,
 } from 'selectors/task-group-list-selectors';
 import {
   tasksIsFetchingSelector,
-  groupTasksSelector,
+  searchedGroupsWithTasksSelector,
+  searchedGroupsListSelector,
 } from 'selectors/task-selectors';
 import {
   sortTasksInGroup,
   sortSubtasksInGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
 } from 'sagas/tasks-groups-list-saga';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import OpenedTasksView from './OpenedTasksView';
 
 const mapStateToProps = (state, ownProps) => {
   const { searchValue, ...restOwnProps } = ownProps;
   const areFiltersApplied = hasFiltersAppliedSelector(state);
-  const tasks = groupTasksSelector(state);
-  const group = tasksGroupListSelector(state);
-  const searchedGroupsWithTasks = !searchValue
-    ? tasks
-    : Object.keys(tasks).reduce((groupObject, currentKey) => {
-        const searchedTasks = filterTasksBySearchValue(
-          tasks[currentKey],
-          searchValue,
-        );
-
-        if (searchedTasks.length === 0) return groupObject;
-
-        return { ...groupObject, [currentKey]: searchedTasks };
-      }, {});
-
-  const searchedGroupsList = !searchValue
-    ? group
-    : group.filter(
-        ({ taskGroupIdentifier, groupType }) =>
-          Object.keys(searchedGroupsWithTasks).includes(taskGroupIdentifier) ||
-          Object.keys(searchedGroupsWithTasks).includes(groupType),
-      );
+  const searchedGroupsWithTasks = searchedGroupsWithTasksSelector(state)(
+    searchValue,
+  );
 
   return {
     groupedTasks: searchedGroupsWithTasks,
-    groupList: searchedGroupsList,
+    groupList: searchedGroupsListSelector(state)(
+      searchValue,
+      searchedGroupsWithTasks,
+    ),
     areFiltersApplied,
     isFetchingData:
       (tasksGroupsIsFetchingSelector(state) &&
