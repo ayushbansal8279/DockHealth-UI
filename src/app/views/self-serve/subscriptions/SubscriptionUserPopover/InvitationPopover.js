@@ -83,7 +83,7 @@ const renderInvitationItem = ({
   isDisabled,
   onSave,
 }) => (
-  <InvitationItem>
+  <InvitationItem key={key}>
     <div>
       <InvitationItemLabel>{label}</InvitationItemLabel>
       <InvitationItemDescription>{description}</InvitationItemDescription>

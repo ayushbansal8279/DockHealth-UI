@@ -6,40 +6,28 @@ import { fontSizes } from 'styles/font';
 
 export const TaskCommentsContainer = styled(Collapse)`
   display: flex;
-  background-color: white;
+  width: fit-content;
   border: 1px solid ${palette.coolGrey3};
   border-top: none;
   flex-direction: column;
-  padding: ${props => (props.in ? `${spacing.regular} ${spacing.regular}` : 0)};
-`;
-
-export const TaskCommentsGroupedDay = styled.div`
-  display: flex;
-  margin-bottom: ${spacing.regular};
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-
-  & > div {
-    cursor: pointer;
-  }
-`;
-
-export const TaskCommentsDate = styled.span`
-  color: ${palette.lightGrey};
-  padding-top: 6px; //per design
-  font-size: ${fontSizes.smallPlus};
+  padding: ${props =>
+    props.in ? `${spacing.regularPlus} ${spacing.regular}` : 0};
+  padding-left: 56px;
+  background-color: white;
+  max-width: 810px;
 `;
 
 export const TaskCommentContainer = styled.div`
   display: flex;
   margin-bottom: ${spacing.regular};
   font-size: ${fontSizes.regular};
+`;
 
-  &:last-of-type {
-    margin-bottom: 0;
-  }
+export const TaskCommentContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  cursor: pointer;
 `;
 
 export const SmallText = styled.span`
@@ -48,23 +36,24 @@ export const SmallText = styled.span`
 `;
 
 export const TaskCommentText = styled.div`
-  color: ${palette.darkGrey};
-  max-width: 656px; //per design
+  color: ${palette.mediumGrey};
+  font-weight: normal;
+  max-width: 575px;
 `;
 
 export const TaskCommentDetails = styled.div`
-  color: ${palette.lightGrey};
+  color: ${palette.coolGrey2};
 `;
 
 export const TaskCommentAvatarContainer = styled.div`
-  margin: 0 ${spacing.huge};
+  margin-right: ${spacing.regular};
 `;
 
 export const ShowMoreButton = styled.button`
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
-  font-size: ${fontSizes.regular};
-  margin-top: ${spacing.regularPlus};
-  margin-left: 180px; // per design
+  font-size: ${fontSizes.smallPlus};
+  margin-left: 56px; // per design
   width: fit-content;
 `;

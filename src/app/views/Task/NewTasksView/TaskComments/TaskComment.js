@@ -9,9 +9,9 @@ import { createMentionEntities } from 'components/common/MentionsEditor/create-m
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
-  TaskCommentDetails,
   TaskCommentText,
-  SmallText,
+  TaskCommentDetails,
+  TaskCommentContent,
 } from './styled';
 
 const TaskComment = ({
@@ -22,11 +22,8 @@ const TaskComment = ({
   commentMentions,
   dateCreated,
   highlightedValue,
+  onClickComment,
 }) => {
-  const commentDetails = `${creator.firstName} ${creator.lastName} ${moment(
-    dateUpdated,
-  ).format('h:mma')}`;
-
   const previousCommentValue = useRef(null);
   const [commentState, setCommentState] = useMentionsEditorState(
     convertToEditorState({
@@ -49,12 +46,31 @@ const TaskComment = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
 
+  let dateLabel = '';
+
+  if (moment(dateUpdated).isSame(new Date(), 'd')) {
+    dateLabel = 'Today';
+  } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
+    dateLabel = 'Yesterday';
+  } else {
+    dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
+  }
+
+  const isCurrentUser =
+    sessionStorage.getItem('userIdentifier') === creator?.userIdentifier;
+
+  const commentDetails = isCurrentUser
+    ? ''
+    : `${creator.firstName} ${creator.lastName}, ${dateLabel} @ ${moment(
+        dateUpdated,
+      ).format('h:mma')}`;
+
   return (
     <TaskCommentContainer>
       <TaskCommentAvatarContainer>
-        <Member member={creator} size={38} />
+        <Member member={creator} size={40} />
       </TaskCommentAvatarContainer>
-      <div>
+      <TaskCommentContent onClick={onClickComment}>
         <TaskCommentText>
           <MentionsEditor
             readOnly
@@ -64,11 +80,8 @@ const TaskComment = ({
             highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
           />
         </TaskCommentText>
-        <TaskCommentDetails>
-          <span>{commentDetails}</span>
-          {dateCreated !== dateUpdated && <SmallText> (Edited)</SmallText>}
-        </TaskCommentDetails>
-      </div>
+        <TaskCommentDetails>{commentDetails}</TaskCommentDetails>
+      </TaskCommentContent>
     </TaskCommentContainer>
   );
 };

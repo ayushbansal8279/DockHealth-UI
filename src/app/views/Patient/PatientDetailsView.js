@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -17,6 +17,7 @@ import {
 import { patientDetailsSelector } from 'selectors/patient-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
@@ -40,6 +41,7 @@ const PatientDetailsView = ({
   taskSearch,
   patientDetails,
 }) => {
+  const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
   const navigateToTab = tabName => {
     hashHistory.push(
@@ -78,12 +80,23 @@ const PatientDetailsView = ({
     patientTasksFilterChange,
     setPatientTaskSearch,
     refreshPatientTasks,
+    fetchPatientFilters,
   } = patientTasksSagaActions;
 
   const handleSearchValueChange = value => {
     setSearchValue(value);
     setPatientTaskSearch(value);
   };
+
+  const handleTaskUpdate = useCallback(
+    updatedTask => {
+      fetchPatientFilters();
+      if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+        refreshPatientTasks();
+      }
+    },
+    [selectedFilters, refreshPatientTasks, fetchPatientFilters],
+  );
 
   return (
     <>
@@ -132,7 +145,9 @@ const PatientDetailsView = ({
       </>
       <NewTaskDrawer
         modalActions={modalActions}
-        refreshList={refreshPatientTasks}
+        onTaskUpdate={handleTaskUpdate}
+        onTaskCreation={handleTaskUpdate}
+        onTaskDelete={fetchPatientFilters}
         disabledFileds={[TaskDrawerFields.PATIENT]}
       />
     </>

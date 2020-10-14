@@ -59,14 +59,14 @@ const DashboardStatisticsTile = ({
     >
       <DashboardStatisticsTileText>
         {showAmount && (
-          <MontserratTypography variant="span">
+          <MontserratTypography variant="inherit">
             <DashboardStatisticsTileAmount hasBackground={!!backgroundGradient}>
               {amount}
             </DashboardStatisticsTileAmount>
           </MontserratTypography>
         )}
         <DashboardStatisticsTileLabelBox>
-          <MontserratTypography variant="span">
+          <MontserratTypography variant="inherit">
             <DashboardStatisticsTileLabel
               hasBackground={!!backgroundGradient}
               alignText={alignText}

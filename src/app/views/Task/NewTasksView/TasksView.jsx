@@ -1,7 +1,9 @@
+/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { isEmpty } from 'ramda';
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -11,11 +13,13 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 
 import {
   tasksIsFetchingSelector,
   completedTasksIsFetchingSelector,
 } from 'selectors/task-selectors';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { TaskViewContainer } from './styled';
 import OpenedTasksView from './OpenedTasksView/OpenedTasksViewContainer';
 import CompletedTasksView from './CompletedTasksView/CompletedTasksViewContainer';
@@ -27,6 +31,7 @@ const Priority = {
 };
 
 const TaskView = ({
+  selectedFilters,
   currentUser,
   members,
   showMembers = true,
@@ -35,6 +40,7 @@ const TaskView = ({
   modalActions,
   routeParams,
   refreshTab,
+  refreshFilters,
   listNameVisible = false,
   navigateToTab,
   taskCounters,
@@ -67,7 +73,7 @@ const TaskView = ({
   const {
     toggleTaskPriority,
     toggleCompleteTask,
-    reassignTask,
+    assignOrReassignTask,
     updateDueDate,
     updateWorkflowStatus,
     storeAsCurrentTask,
@@ -78,7 +84,15 @@ const TaskView = ({
     toggleTaskPriority(
       task,
       task.priority === Priority.High ? Priority.Low : Priority.High,
-    );
+    )
+      .then(updatedTask => {
+        if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+          refreshTab();
+        } else {
+          refreshFilters();
+        }
+      })
+      .catch(() => refreshTab());
   };
 
   // TODO: Move to saga
@@ -92,8 +106,14 @@ const TaskView = ({
 
   // TODO: Move to saga
   const handleReassignTask = (task, assignee) => {
-    reassignTask(task.taskIdentifier, assignee?.userIdentifier)
-      .then(() => refreshTab())
+    assignOrReassignTask(task, assignee?.userIdentifier)
+      .then(updatedTask => {
+        if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+          refreshTab();
+        } else {
+          refreshFilters();
+        }
+      })
       .catch(() => refreshTab());
   };
 
@@ -122,6 +142,24 @@ const TaskView = ({
 
     return null;
   };
+
+  const handleTaskUpdate = useCallback(
+    updatedTask => {
+      if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+        refreshTab();
+      } else {
+        refreshFilters();
+      }
+    },
+    [selectedFilters, refreshFilters, refreshTab],
+  );
+
+  const handleTaskDelete = useCallback(() => {
+    refreshFilters();
+    if (selectedFilters && !isEmpty(selectedFilters)) {
+      refreshTab();
+    }
+  }, [refreshTab, refreshFilters, selectedFilters]);
 
   return (
     <>
@@ -176,7 +214,7 @@ const TaskView = ({
             updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             defaultGroupName={defaultGroupName}
-            dragAndDropDisabled={dragAndDropDisabled}
+            dragAndDropDisabled={dragAndDropDisabled || searchValue}
             listNameVisible={listNameVisible}
             searchValue={searchValue}
             selectedTask={selectedTask}
@@ -188,9 +226,11 @@ const TaskView = ({
       </TaskViewContainer>
       <NewTaskDrawer
         modalActions={modalActions}
-        refreshList={refreshTab}
         fromFirstAddTask={drawerAutoOpenEnabled}
         hideTour={isTourOpen}
+        onTaskUpdate={handleTaskUpdate}
+        onTaskDelete={handleTaskDelete}
+        onTaskCreation={handleTaskUpdate}
       />
     </>
   );
@@ -208,6 +248,7 @@ const mapStateToProps = store => ({
   selectedTask: store.taskState.selectedTask,
   isFetching: tasksIsFetchingSelector(store),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(store),
+  selectedFilters: selectedFiltersInMegaFilterSelector(store),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

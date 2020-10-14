@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import styled from 'styled-components';
 import InputMask from 'react-input-mask';
 import { fontWeights, fontSizes } from 'styles/font';
@@ -43,7 +45,9 @@ export const StyledPatientDetailsInput = styled.input`
   }
 `;
 
-export const StyledPatientDetailsInputMask = styled(InputMask)`
+export const StyledPatientDetailsInputMask = styled(
+  ({ hasError, isActive, ...props }) => <InputMask {...props} />,
+)`
   border: 0;
   width: 100%;
   color: ${palette.darkGrey};

@@ -1,16 +1,4 @@
 import {
-  always,
-  evolve,
-  ifElse,
-  map,
-  mergeDeepLeft,
-  propEq,
-  uncurryN,
-  unless,
-  when,
-} from 'ramda';
-
-import {
   ADD_TASK_COMMENT_SUCCESS,
   ADD_TASK_SUCCESS,
   DELETE_TASK_COMMENT_SUCCESS,
@@ -30,41 +18,28 @@ import {
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
 
-const TASK_COMPLETE = 'COMPLETE';
+const updateTask = (taskToUpdate, tasks) =>
+  tasks.map(t => {
+    if (
+      t.taskIdentifier !== taskToUpdate.parentTaskIdentifier &&
+      t.taskIdentifier !== taskToUpdate.taskIdentifier
+    ) {
+      return t;
+    }
 
-const updateMainTask = taskData =>
-  evolve({
-    ...map(always, taskData),
-    subtasks: map(
-      unless(propEq('status', TASK_COMPLETE), mergeDeepLeft(taskData)),
-    ),
+    if (taskToUpdate.taskIdentifier === t.taskIdentifier) {
+      return { ...t, ...taskToUpdate };
+    }
+
+    return {
+      ...t,
+      subtasks: t.subtasks.map(subtask =>
+        subtask.taskIdentifier === taskToUpdate.taskIdentifier
+          ? { ...subtask, ...taskToUpdate }
+          : subtask,
+      ),
+    };
   });
-
-const updateSubTask = (taskData, subtask) =>
-  evolve({
-    subtasks: map(
-      when(
-        propEq('taskIdentifier', subtask.taskIdentifier),
-        mergeDeepLeft(taskData),
-      ),
-    ),
-  });
-
-const updateTask = uncurryN(3, taskData => task =>
-  map(
-    when(
-      propEq(
-        'taskIdentifier',
-        task.parentTaskIdentifier || task.taskIdentifier,
-      ),
-      ifElse(
-        propEq('taskIdentifier', task.taskIdentifier),
-        updateMainTask(taskData),
-        unless(propEq('status', TASK_COMPLETE), updateSubTask(taskData, task)),
-      ),
-    ),
-  ),
-);
 
 const isSubtask = ({ parentTaskIdentifier }) => parentTaskIdentifier !== null;
 const isParentOfAddedTask = addedTask => ({ taskIdentifier }) =>
@@ -204,15 +179,9 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const archivedByUser = true;
       const taskData = { status, completedBy, completedDt, archivedByUser };
 
-      // Need to update the task otherwise the completed list is not updated
-      if (!task.parentTaskIdentifier) {
-        task.status = status;
-        task.completedBy = completedBy;
-        task.completedDt = completedDt;
-        task.archivedByUser = archivedByUser;
-      }
+      const taskToUpdate = { ...task, ...taskData };
 
-      const updateTaskFromAction = tasks => updateTask(taskData, task, tasks);
+      const updateTaskFromAction = tasks => updateTask(taskToUpdate, tasks);
 
       return updateStateCallback(state, updateTaskFromAction);
     }
@@ -220,8 +189,9 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
       const { task, status, completedDt, completedBy } = action;
       const taskData = { status, completedBy, completedDt };
+      const taskToUpdate = { ...task, ...taskData };
 
-      const updateTaskFromAction = tasks => updateTask(taskData, task, tasks);
+      const updateTaskFromAction = tasks => updateTask(taskToUpdate, tasks);
 
       return updateStateCallback(state, updateTaskFromAction);
     }

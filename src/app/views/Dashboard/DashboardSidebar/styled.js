@@ -9,6 +9,7 @@ export const DashboardSidebarWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
 `;
 
 export const TopSection = styled.div`

@@ -35,14 +35,14 @@ const Search = ({
       onChange={onChange}
       onFocus={() => {
         if (searchReference.current) {
-          onFocus();
+          if (typeof onFocus === 'function') onFocus();
           searchReference.current.style.backgroundColor = 'white';
         }
       }}
       onBlur={() => {
         if (!searchReference.current.value) {
           searchReference.current.style.backgroundColor = null;
-          onBlur();
+          if (typeof onBlur === 'function') onBlur();
         }
       }}
       placeholder={placeholder || 'Search'}

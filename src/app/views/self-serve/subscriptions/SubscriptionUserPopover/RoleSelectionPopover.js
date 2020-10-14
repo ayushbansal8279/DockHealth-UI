@@ -98,6 +98,7 @@ export const renderRoleItem = ({
   onSave,
 }) => (
   <RoleItem
+    key={key}
     onClick={() => {
       if (!isDisabled && !isSelected)
         onSelect({ key, label, description, onSave });

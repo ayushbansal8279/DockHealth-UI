@@ -43,7 +43,6 @@ const GlobalSearchView = ({
     setDueDate,
     setWorkflowStatus,
     assignTask,
-    refreshTasks,
   } = globalSearchSagaActions;
 
   const renderEmptyState = () => {
@@ -79,7 +78,7 @@ const GlobalSearchView = ({
             : renderEmptyState()}
         </ViewSidePadding>
       </ViewLoader>
-      <NewTaskDrawer modalActions={modalActions} refreshList={refreshTasks} />
+      <NewTaskDrawer modalActions={modalActions} />
     </GlobalSearchWrapper>
   );
 };

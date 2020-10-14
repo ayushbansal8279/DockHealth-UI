@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Collapse } from '@material-ui/core';
-import { MontserratTypography } from 'styles/theme-montserrat';
 
 import Arrow from 'components/common/Arrow/Arrow';
 import PatientDetailsNoteInput from '../PatientDetailsNoteInput/PatientDetailsNoteInput';
@@ -13,9 +12,7 @@ import {
 import PatientDetailsNotesLoader from '../PatientDetailsNotesLoader/PatientDetailsNotesLoader';
 
 const AddPatientNote = () => (
-  <MontserratTypography>
-    <AddNotePlaceholder>+ Add note</AddNotePlaceholder>
-  </MontserratTypography>
+  <AddNotePlaceholder>+ Add note</AddNotePlaceholder>
 );
 
 const PatientDetailsNotes = ({

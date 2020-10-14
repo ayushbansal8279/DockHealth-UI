@@ -216,6 +216,7 @@ const MegaFilter = ({
     onSelectFilters({});
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     // checking if selected filters keys are present on filters list
     if (!isEmpty(filters) && !isEmpty(selectedFilters)) {
@@ -223,23 +224,26 @@ const MegaFilter = ({
       const updatedSelectedFilters = {};
 
       Object.keys(selectedFilters).forEach(key => {
-        return selectedFilters[key].forEach(selectedFilterKeyValue => {
+        if (Array.isArray(selectedFilters[key])) {
           const foundFilterColumn = filters.find(
             filter => filter.filterKey === key,
           );
-          if (
-            foundFilterColumn.list
-              .map(listElement => listElement.key)
-              .includes(selectedFilterKeyValue)
-          ) {
-            if (!updatedSelectedFilters[key]) {
-              updatedSelectedFilters[key] = [];
+
+          selectedFilters[key].forEach(selectedFilterKeyValue => {
+            if (
+              foundFilterColumn?.list
+                .map(listElement => listElement.key)
+                .includes(selectedFilterKeyValue)
+            ) {
+              if (!updatedSelectedFilters[key]) {
+                updatedSelectedFilters[key] = [];
+              }
+              updatedSelectedFilters[key].push(selectedFilterKeyValue);
+            } else {
+              shouldUpdate = true;
             }
-            updatedSelectedFilters[key].push(selectedFilterKeyValue);
-          } else {
-            shouldUpdate = true;
-          }
-        });
+          });
+        }
       });
 
       if (shouldUpdate) {

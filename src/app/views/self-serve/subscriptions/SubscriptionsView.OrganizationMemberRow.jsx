@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable sonarjs/no-identical-functions */
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
@@ -32,7 +33,9 @@ const StyledAnchorDiv = styled.div`
   font-size: ${fontSizes.smallPlus};
 `;
 
-const MemberTableRow = styled(Grid)`
+const MemberTableRow = styled(({ isSelected, ...props }) => (
+  <Grid {...props} />
+))`
   margin: 0 !important;
   width: 100% !important;
   padding: ${spacing.regular} 0 !important;

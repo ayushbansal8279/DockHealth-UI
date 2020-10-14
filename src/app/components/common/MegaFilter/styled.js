@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import styled from 'styled-components';
 import { Typography, Popover, Button } from '@material-ui/core';
 import InputMask from 'react-input-mask';
@@ -293,7 +295,9 @@ export const DueDateRangePickerInputsWrapper = styled.div`
   flex-direction: row;
 `;
 
-export const DueDateInput = styled(InputMask)`
+export const DueDateInput = styled(({ hasError, ...props }) => (
+  <InputMask {...props} />
+))`
   display: block;
   width: 100%;
   padding: 0 6px;

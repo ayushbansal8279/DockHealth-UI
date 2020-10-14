@@ -56,7 +56,9 @@ import existingUserTaskDrawerTourHooks from './NewTaskDrawer.ExistingUserTourHoo
 const NewTaskDrawer = ({
   isInbox,
   modalActions,
-  refreshList,
+  onTaskUpdate = () => {},
+  onTaskCreation = () => {},
+  onTaskDelete = () => {},
   disabledFileds = [],
   fromFirstAddTask = false,
   assignToSelf = false,
@@ -97,7 +99,12 @@ const NewTaskDrawer = ({
     descriptionReference,
     descriptionErrorState,
     setDescriptionErrorState,
-  } = initializeTaskDrawerHooks({ isInbox, refreshList });
+  } = initializeTaskDrawerHooks({
+    isInbox,
+    onTaskUpdate,
+    onTaskCreation,
+    onTaskDelete,
+  });
 
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 
@@ -118,12 +125,12 @@ const NewTaskDrawer = ({
     hideTour,
   });
 
+  const { handleSubmit, setValue, watch } = formMethods;
+
   const { saveDueDate } = initializeDueDateSectionHooks({
     setAutoSaveVisible,
-    refreshList,
+    onTaskUpdate,
   });
-
-  const { handleSubmit, setValue, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({
@@ -223,7 +230,11 @@ const NewTaskDrawer = ({
                   </DescriptionLabel>
                   <MentionsEditor
                     ref={descriptionReference}
-                    placeholder="What is the task?"
+                    placeholder={
+                      isAddingOrEditingSubtask
+                        ? 'What is the subtask?'
+                        : 'What is the task?'
+                    }
                     onFocus={() => {
                       setIsDescriptionFocused(true);
                     }}
@@ -344,7 +355,6 @@ const NewTaskDrawer = ({
                   onInputChange={onAssignedToInputChange}
                   onItemSelected={async option => {
                     await handleAssignedToSelect(option);
-                    refreshList();
                     assignedToInputReference.current
                       .querySelector('input')
                       .blur();
@@ -406,7 +416,7 @@ const NewTaskDrawer = ({
                     selectedTask={selectedTask}
                     isOverDue={isOverDue}
                     setAutoSaveVisible={setAutoSaveVisible}
-                    refreshList={refreshList}
+                    onTaskUpdate={onTaskUpdate}
                     dueTimeReference={dueTimeReference}
                   />
                 </div>
@@ -428,6 +438,7 @@ const NewTaskDrawer = ({
                 <PrioritySection
                   selectedTask={selectedTask}
                   setAutoSaveVisible={setAutoSaveVisible}
+                  onTaskUpdate={onTaskUpdate}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
@@ -435,7 +446,7 @@ const NewTaskDrawer = ({
                   <StatusSection
                     selectedTask={selectedTask}
                     setAutoSaveVisible={setAutoSaveVisible}
-                    refreshList={refreshList}
+                    onTaskUpdate={onTaskUpdate}
                   />
                 </div>
               </Grid>
@@ -448,7 +459,7 @@ const NewTaskDrawer = ({
                     setAutoSaveVisible={setAutoSaveVisible}
                     setSelectedLabelsValue={setValue}
                     taskDrawerFocusField={taskDrawerFocusField}
-                    refreshList={refreshList}
+                    onTaskUpdate={onTaskUpdate}
                   />
                 </div>
               </Grid>

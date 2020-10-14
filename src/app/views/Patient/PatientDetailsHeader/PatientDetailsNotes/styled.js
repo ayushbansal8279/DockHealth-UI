@@ -122,7 +122,8 @@ export const PatientNoteTextarea = styled.textarea`
     outline: none;
   }
 `;
-export const AddNotePlaceholder = styled.div`
+export const AddNotePlaceholder = styled.span`
+  display: block;
   color: ${palette.coolGrey2};
   text-transform: uppercase;
   font-weight: ${fontWeights.regularPlus};

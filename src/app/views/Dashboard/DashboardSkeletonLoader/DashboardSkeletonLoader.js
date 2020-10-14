@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import Spacing from 'components/common/Spacing';
 import React from 'react';
 import {
@@ -11,12 +12,12 @@ import {
 const DashboardSkeletonLoader = () => {
   return (
     <Container>
-      {new Array(3).fill().map(() => (
-        <LoaderGroup>
+      {new Array(3).fill().map((group, groupIndex) => (
+        <LoaderGroup key={groupIndex}>
           <LoaderElement width={108} />
           <Spacing vertical={5} />
-          {new Array(4).fill().map(() => (
-            <LoaderRow>
+          {new Array(4).fill().map((row, rowIndex) => (
+            <LoaderRow key={rowIndex}>
               <LoaderFillElement />
               <Spacing horizontal={5} />
               <LoaderElement width={134} />
