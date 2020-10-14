@@ -19,7 +19,10 @@ export const PRIORITIES = [
   },
 ];
 
-const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
+const initializePrioritySectionHooks = ({
+  setAutoSaveVisible,
+  onTaskUpdate,
+}) => {
   const { watch, setValue } = useFormContext();
   const currentValue = watch('priority');
   const dispatch = useDispatch();
@@ -34,7 +37,8 @@ const initializePrioritySectionHooks = ({ setAutoSaveVisible }) => {
           selectedTask,
           newTaskPriority,
         )(dispatch)
-          .then(() => {
+          .then(updatedTask => {
+            onTaskUpdate(updatedTask);
             setAutoSaveVisible();
           })
           .catch(() => {

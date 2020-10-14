@@ -438,6 +438,7 @@ const NewTaskDrawer = ({
                 <PrioritySection
                   selectedTask={selectedTask}
                   setAutoSaveVisible={setAutoSaveVisible}
+                  onTaskUpdate={onTaskUpdate}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
