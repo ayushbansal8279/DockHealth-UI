@@ -56,14 +56,9 @@ const TaskComment = ({
     dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
   }
 
-  const isCurrentUser =
-    sessionStorage.getItem('userIdentifier') === creator?.userIdentifier;
-
-  const commentDetails = isCurrentUser
-    ? ''
-    : `${creator.firstName} ${creator.lastName}, ${dateLabel} @ ${moment(
-        dateUpdated,
-      ).format('h:mma')}`;
+  const commentDetails = `${creator.firstName} ${
+    creator.lastName
+  }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
   return (
     <TaskCommentContainer>

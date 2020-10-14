@@ -47,11 +47,9 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
   const isCommentAuthor =
     currentUser?.userIdentifier === creator.userIdentifier;
 
-  const commentDetails = isCommentAuthor
-    ? ``
-    : `${creator.firstName} ${creator.lastName}, ${moment(dateUpdated).format(
-        'MM/DD/YYYY',
-      )} @ ${moment(dateUpdated).format('h:mma')}`;
+  const commentDetails = `${creator.firstName} ${creator.lastName}, ${moment(
+    dateUpdated,
+  ).format('MM/DD/YYYY')} @ ${moment(dateUpdated).format('h:mma')}`;
 
   const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 
