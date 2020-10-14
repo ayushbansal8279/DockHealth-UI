@@ -151,6 +151,7 @@ export const SubtasksGroupLabel = styled.span`
   font-size: ${fontSizes.regular};
   cursor: pointer;
   margin-right: ${spacing.regularPlus};
+  width: 200px;
 `;
 
 export const StandardTaskItemCell = styled.div`
