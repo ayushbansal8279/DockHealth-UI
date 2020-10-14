@@ -230,7 +230,11 @@ const NewTaskDrawer = ({
                   </DescriptionLabel>
                   <MentionsEditor
                     ref={descriptionReference}
-                    placeholder="What is the task?"
+                    placeholder={
+                      isAddingOrEditingSubtask
+                        ? 'What is the subtask?'
+                        : 'What is the task?'
+                    }
                     onFocus={() => {
                       setIsDescriptionFocused(true);
                     }}
