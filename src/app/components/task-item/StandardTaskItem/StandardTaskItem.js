@@ -76,7 +76,7 @@ const Task = ({
       {showComments && (
         <TaskComments
           isOpen={isFullView}
-          comments={matchingComments}
+          comments={comments}
           highlightedValue={highlightedValue}
           onClickComment={onClickComment}
         />

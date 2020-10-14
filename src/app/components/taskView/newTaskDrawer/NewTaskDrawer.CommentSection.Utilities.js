@@ -2,7 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import { descend, groupBy, pipe, prop, sortBy } from 'ramda';
 import Comment from './NewTaskDrawer.Comment';
-import { CommentGroupContainer } from './NewTaskDrawer.CommentSection.Styled';
+import {
+  CommentGroupContainer,
+  CommentGroupDateLabel,
+} from './NewTaskDrawer.CommentSection.Styled';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const COMMENT_DATE_FORMAT = 'h:mma';
@@ -14,8 +17,7 @@ export const renderComment = ({
   currentUser,
   removeComment,
   updateComment,
-  comments,
-}) => (comment, index) => {
+}) => comment => {
   return (
     <Comment
       key={comment.commentIdentifier}
@@ -24,19 +26,25 @@ export const renderComment = ({
       removeComment={removeComment}
       updateComment={updateComment}
       getFormattedCommentDate={getFormattedCommentDate}
-      isOneByOne={
-        comments[index - 1] &&
-        comments[index - 1]?.creator?.userIdentifier ===
-          comment?.creator?.userIdentifier
-      }
     />
   );
 };
 
 export const renderCommentGroup = props => ([date, comments]) => {
+  let dateLabel = '';
+
+  if (moment(date).isSame(new Date(), 'd')) {
+    dateLabel = 'Today';
+  } else if (moment(date).isSame(moment().subtract(1, 'days'), 'd')) {
+    dateLabel = 'Yesterday';
+  } else {
+    dateLabel = moment(date).format('dddd MMMM D');
+  }
+
   return (
     <CommentGroupContainer key={date}>
-      {comments.map(renderComment({ ...props, comments }))}
+      <CommentGroupDateLabel>{dateLabel}</CommentGroupDateLabel>
+      {comments.map(renderComment(props))}
     </CommentGroupContainer>
   );
 };

@@ -13,7 +13,6 @@ import {
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import {
   CommentActionLabel,
-  CommentAvatarContainer,
   CommentContainer,
   CommentText,
   CommentDetails,
@@ -24,13 +23,7 @@ import {
 
 const ADMIN_USER_ROLE = 'ADMIN';
 
-const Comment = ({
-  comment,
-  removeComment,
-  updateComment,
-  currentUser,
-  isOneByOne,
-}) => {
+const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
   const {
     comment: commentContent,
     commentMentions,
@@ -51,24 +44,15 @@ const Comment = ({
     }),
   );
 
-  let dateLabel = '';
-
-  if (moment(dateUpdated).isSame(new Date(), 'd')) {
-    dateLabel = 'Today';
-  } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
-    dateLabel = 'Yesterday';
-  } else {
-    dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
-  }
-
-  const commentDetails = isOneByOne
-    ? `${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`
-    : `${creator.firstName} ${creator.lastName} ${dateLabel} @ ${moment(
-        dateUpdated,
-      ).format('h:mma')}`;
-
   const isCommentAuthor =
     currentUser?.userIdentifier === creator.userIdentifier;
+
+  const commentDetails = isCommentAuthor
+    ? ``
+    : `${creator.firstName} ${creator.lastName}, ${moment(dateUpdated).format(
+        'MM/DD/YYYY',
+      )} @ ${moment(dateUpdated).format('h:mma')}`;
+
   const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 
   const onCommentEdited = useCallback(() => {
@@ -89,27 +73,11 @@ const Comment = ({
 
   return (
     <React.Fragment key={commentIdentifier}>
-      <CommentWrapper isCommentAuthor={isCommentAuthor} isOneByOne={isOneByOne}>
-        <CommentContainer
-          isCommentAuthor={isCommentAuthor}
-          isOneByOne={isOneByOne}
-        >
-          <CommentDetails
-            isCommentAuthor={isCommentAuthor}
-            isOneByOne={isOneByOne}
-          >
-            {commentDetails}
-          </CommentDetails>
-          <CommentContent isCommentAuthor={isCommentAuthor}>
-            {!isOneByOne && (
-              <CommentAvatarContainer isCommentAuthor={isCommentAuthor}>
-                <Member member={creator} size={42} />
-              </CommentAvatarContainer>
-            )}
-            <CommentText
-              isOneByOne={isOneByOne}
-              isCommentAuthor={isCommentAuthor}
-            >
+      <CommentWrapper>
+        <CommentContainer>
+          <Member member={creator} size={40} />
+          <CommentContent>
+            <CommentText>
               <MentionsEditor
                 ref={commentEditorReference}
                 readOnly={!isEditing}
@@ -136,6 +104,7 @@ const Comment = ({
                 }}
               />
             </CommentText>
+            <CommentDetails>{commentDetails}</CommentDetails>
           </CommentContent>
         </CommentContainer>
         {isCommentAuthor && (

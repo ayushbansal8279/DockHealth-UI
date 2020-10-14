@@ -6,47 +6,28 @@ import { fontSizes } from 'styles/font';
 
 export const TaskCommentsContainer = styled(Collapse)`
   display: flex;
+  width: fit-content;
   border: 1px solid ${palette.coolGrey3};
   border-top: none;
   flex-direction: column;
-  padding: ${props => (props.in ? `${spacing.regular} ${spacing.regular}` : 0)};
-  padding-left: 70px;
-  border-left: 3px solid ${palette.brightBlue};
-  background-color: ${palette.blueGrey};
-`;
-
-export const TaskCommentsGroupedDay = styled.div`
-  display: flex;
-  margin-bottom: ${spacing.regular};
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-
-  & > div {
-    cursor: pointer;
-  }
+  padding: ${props =>
+    props.in ? `${spacing.regularPlus} ${spacing.regular}` : 0};
+  padding-left: 56px;
+  background-color: white;
+  max-width: 810px;
 `;
 
 export const TaskCommentContainer = styled.div`
   display: flex;
-  margin-top: ${props => props.isOneByOne && `-${spacing.small}`};
   margin-bottom: ${spacing.regular};
-  margin-left: ${props => props.isCurrentUser && '44px'};
   font-size: ${fontSizes.regular};
-  flex-direction: column;
-  align-items: ${props => props.isCurrentUser && 'flex-end'};
-  max-width: 720px;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
 `;
 
 export const TaskCommentContent = styled.div`
   display: flex;
+  flex-direction: column;
   width: fit-content;
-  flex-direction: ${props => props.isCurrentUser && 'row-reverse'};
+  cursor: pointer;
 `;
 
 export const SmallText = styled.span`
@@ -55,37 +36,24 @@ export const SmallText = styled.span`
 `;
 
 export const TaskCommentText = styled.div`
-  color: ${palette.coolGrey9};
+  color: ${palette.mediumGrey};
   font-weight: normal;
-  background-color: white;
-  border-radius: 42px;
-  padding: 10px ${spacing.regularPlus};
-  margin-left: ${props => props.isOneByOne && !props.isCurrentUser && '52px'};
-  margin-right: ${props => props.isOneByOne && props.isCurrentUser && '60px'};
   max-width: 575px;
 `;
 
 export const TaskCommentDetails = styled.div`
-  margin-left: ${props => !props.isCurrentUser && '52px'};
-  margin-right: ${props => props.isCurrentUser && '60px'};
-  margin-bottom: ${spacing.tiny};
-  font-size: ${fontSizes.small};
-  color: ${palette.coolGrey1};
+  color: ${palette.coolGrey2};
 `;
 
 export const TaskCommentAvatarContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-left: ${props => props.isCurrentUser && spacing.small};
-  margin-right: ${spacing.small};
+  margin-right: ${spacing.regular};
 `;
 
 export const ShowMoreButton = styled.button`
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};
-  margin-top: ${spacing.regularPlus};
-  margin-left: 60px; // per design
+  margin-left: 56px; // per design
   width: fit-content;
 `;

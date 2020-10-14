@@ -22,7 +22,6 @@ const TaskComment = ({
   commentMentions,
   dateCreated,
   highlightedValue,
-  isOneByOne,
   onClickComment,
 }) => {
   const previousCommentValue = useRef(null);
@@ -57,30 +56,22 @@ const TaskComment = ({
     dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
   }
 
-  const commentDetails = isOneByOne
-    ? `${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`
-    : `${creator.firstName} ${creator.lastName} ${dateLabel} @ ${moment(
-        dateUpdated,
-      ).format('h:mma')}`;
-
   const isCurrentUser =
     sessionStorage.getItem('userIdentifier') === creator?.userIdentifier;
 
+  const commentDetails = isCurrentUser
+    ? ''
+    : `${creator.firstName} ${creator.lastName}, ${dateLabel} @ ${moment(
+        dateUpdated,
+      ).format('h:mma')}`;
+
   return (
-    <TaskCommentContainer isCurrentUser={isCurrentUser} isOneByOne={isOneByOne}>
-      <TaskCommentDetails isCurrentUser={isCurrentUser}>
-        {commentDetails}
-      </TaskCommentDetails>
-      <TaskCommentContent
-        onClick={onClickComment}
-        isCurrentUser={isCurrentUser}
-      >
-        {!isOneByOne && (
-          <TaskCommentAvatarContainer isCurrentUser={isCurrentUser}>
-            <Member member={creator} size={42} />
-          </TaskCommentAvatarContainer>
-        )}
-        <TaskCommentText isOneByOne={isOneByOne} isCurrentUser={isCurrentUser}>
+    <TaskCommentContainer>
+      <TaskCommentAvatarContainer>
+        <Member member={creator} size={40} />
+      </TaskCommentAvatarContainer>
+      <TaskCommentContent onClick={onClickComment}>
+        <TaskCommentText>
           <MentionsEditor
             readOnly
             withEditedLabel={dateCreated !== dateUpdated}
@@ -89,6 +80,7 @@ const TaskComment = ({
             highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
           />
         </TaskCommentText>
+        <TaskCommentDetails>{commentDetails}</TaskCommentDetails>
       </TaskCommentContent>
     </TaskCommentContainer>
   );
