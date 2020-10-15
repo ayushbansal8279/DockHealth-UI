@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { isEmpty } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import TaskComments from 'views/Task/NewTasksView/TaskComments/TaskComments';
-import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
-import { Tasks as SubtasksContainer } from 'views/Task/NewTasksView/TasksGroup/styled';
+import TaskComments from 'components/tasklist/TaskComments/TaskComments';
+import { onDragEndSubtask } from 'components/tasklist/DragDrop.helpers';
+import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
 import TaskItem from './TaskItem';
 import { getMatchedComments } from './helpers';
 
