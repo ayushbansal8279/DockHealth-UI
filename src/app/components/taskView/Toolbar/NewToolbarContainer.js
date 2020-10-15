@@ -1,20 +1,20 @@
 import { connect } from 'react-redux';
-import {
-  completedTasksSelector,
-  tasksSelector,
-} from 'selectors/task-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import NewToolbar from './NewToolbar';
 import { TaskListTabName } from './config';
 
 const mapStateToProps = (state, ownProps) => {
-  const { members, showMembers, selectedTab } = ownProps;
+  const {
+    members,
+    showMembers,
+    selectedTab,
+    tasks: propertyTasks,
+    completedTasks: propertyCompletedTasks,
+  } = ownProps;
   const completedTasks =
-    selectedTab === TaskListTabName.COMPLETE
-      ? completedTasksSelector(state)
-      : [];
-  const openedTasks =
-    selectedTab === TaskListTabName.OPEN ? tasksSelector(state) : [];
+    selectedTab === TaskListTabName.COMPLETE ? propertyCompletedTasks : [];
+  const openedTasks = selectedTab === TaskListTabName.OPEN ? propertyTasks : [];
+
   const haveTasks =
     (openedTasks &&
       openedTasks.length > 0 &&

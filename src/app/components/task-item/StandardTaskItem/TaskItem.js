@@ -5,7 +5,8 @@ import { EditorState } from 'draft-js';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import Highlighter from 'react-highlight-words';
-import { prepareSubtask } from 'actions/task-actions';
+import { openDrawer } from 'actions/task-drawer-actions';
+import { prepareSubtask, storeAsCurrentTask } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
@@ -18,8 +19,8 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import palette from 'styles/palette';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
-import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
-import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
+import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
+import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
@@ -113,8 +114,6 @@ const TaskItem = ({
   isOpen,
   switchOpen,
   toggleCompleteTask,
-  openDrawer,
-  storeAsCurrentTask,
   toggleTaskPriority,
   task,
   dragHandleProps,
@@ -233,9 +232,10 @@ const TaskItem = ({
   );
 
   const onClickTaskItem = useCallback(() => {
-    openDrawer();
-    storeAsCurrentTask(task);
-  }, [openDrawer, storeAsCurrentTask, task]);
+    dispatch(openDrawer());
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
 
   const onCircleClick = useCallback(
     event => {
@@ -251,10 +251,11 @@ const TaskItem = ({
     event => {
       event.preventDefault();
       event.stopPropagation();
-      openDrawer();
-      storeAsCurrentTask(parentTask);
+      dispatch(openDrawer());
+      dispatch(storeAsCurrentTask(parentTask));
     },
-    [parentTask, openDrawer, storeAsCurrentTask],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [parentTask],
   );
 
   const onAddSubtaskLabelClick = useCallback(
@@ -278,20 +279,23 @@ const TaskItem = ({
 
   const onPatientClick = useCallback(() => {
     if (!patient) {
-      openDrawer(FocusDrawerFieldEnum.PATIENT);
-      storeAsCurrentTask(task);
+      dispatch(openDrawer(FocusDrawerFieldEnum.PATIENT));
+      dispatch(storeAsCurrentTask(task));
     }
-  }, [openDrawer, patient, storeAsCurrentTask, task]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patient, task]);
 
   const onCommentClick = useCallback(() => {
-    openDrawer(FocusDrawerFieldEnum.COMMENT);
-    storeAsCurrentTask(task);
-  }, [openDrawer, storeAsCurrentTask, task]);
+    dispatch(openDrawer(FocusDrawerFieldEnum.COMMENT));
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
 
   const onAttachmentsClick = useCallback(() => {
-    openDrawer(FocusDrawerFieldEnum.ATTACHMENT);
-    storeAsCurrentTask(task);
-  }, [openDrawer, storeAsCurrentTask, task]);
+    dispatch(openDrawer(FocusDrawerFieldEnum.ATTACHMENT));
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
 
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';

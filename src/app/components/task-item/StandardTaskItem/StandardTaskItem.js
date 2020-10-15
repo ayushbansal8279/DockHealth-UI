@@ -1,7 +1,10 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { openDrawer } from 'actions/task-drawer-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
 import { isEmpty } from 'ramda';
-import TaskComments from 'views/Task/NewTasksView/TaskComments/TaskComments';
+import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -24,8 +27,10 @@ const Task = ({
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks, patient, searchMetaData = {} } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
-  const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
+  const { highlightedValue } = restProps;
   const { matchingCommentIdentifiers = [] } = searchMetaData;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     switchOpen(isFullView);
@@ -52,8 +57,8 @@ const Task = ({
   );
 
   const onClickComment = useCallback(() => {
-    openDrawer();
-    storeAsCurrentTask(task);
+    dispatch(openDrawer());
+    dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

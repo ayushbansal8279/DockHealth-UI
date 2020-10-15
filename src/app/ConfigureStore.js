@@ -3,7 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 import { all } from 'redux-saga/effects';
 import thunk from 'redux-thunk';
 import reducers from './reducers/root-reducer';
-import watchTasksGroupsList from './sagas/tasks-groups-list-saga';
+import watchTasksGroupsList from './sagas/list-details-saga';
 import watchPatientTasks from './sagas/patient-tasks-saga';
 import watchPatient from './sagas/patient-saga';
 import watchDashboard from './sagas/dashboard-saga';

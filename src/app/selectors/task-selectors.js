@@ -4,7 +4,7 @@ import { sort } from 'ramda';
 import memoize from 'lodash.memoize';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import { tasksGroupListSelector } from './task-group-list-selectors';
+import { listDetailsGroupsSelector } from './list-details-selectors';
 
 export const listTasksSelector = state => state.listTasks;
 export const taskSelector = state => state.taskState;
@@ -18,6 +18,7 @@ export const completedTasksSelector = createSelector(
   listTasksSelector,
   ({ completedTasks }) => completedTasks,
 );
+
 export const completedTasksIsFetchingSelector = createSelector(
   listTasksSelector,
   ({ isCompletedTasksFetching }) => isCompletedTasksFetching,
@@ -127,7 +128,7 @@ export const searchedGroupsWithTasksSelector = createSelector(
 );
 
 export const searchedGroupsListSelector = createSelector(
-  tasksGroupListSelector,
+  listDetailsGroupsSelector,
   group =>
     memoize((searchValue, searchedGroupsWithTasks) =>
       !searchValue

@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import moment from 'moment';
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
@@ -18,6 +18,8 @@ import {
   CommentDetails,
   CommentContent,
   CommentWrapper,
+  CommentMemberContainer,
+  CommentActionsSection,
   EditCommentButton,
 } from './NewTaskDrawer.CommentSection.Styled';
 
@@ -44,18 +46,24 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
     }),
   );
 
+  useEffect(() => {
+    if (isEditing) {
+      // eslint-disable-next-line no-unused-expressions
+      commentEditorReference?.current?.focus();
+    }
+  }, [isEditing, commentEditorReference]);
+
   const isCommentAuthor =
     currentUser?.userIdentifier === creator.userIdentifier;
 
-  const commentDetails = isCommentAuthor
-    ? ``
-    : `${creator.firstName} ${creator.lastName}, ${moment(dateUpdated).format(
-        'MM/DD/YYYY',
-      )} @ ${moment(dateUpdated).format('h:mma')}`;
+  const commentDetails = `${creator.firstName} ${creator.lastName}, ${moment(
+    dateUpdated,
+  ).format('MM/DD/YYYY')} @ ${moment(dateUpdated).format('h:mma')}`;
 
   const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 
   const onCommentEdited = useCallback(() => {
+    unsetEditing();
     const updatedComment = convertFromEditorStateToOutput(commentState);
     const commentTokenizedText = updatedComment.tokenizedText;
 
@@ -63,7 +71,6 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
       return;
     }
 
-    unsetEditing();
     updateComment({
       commentIdentifier,
       comment: commentTokenizedText,
@@ -74,8 +81,10 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
   return (
     <React.Fragment key={commentIdentifier}>
       <CommentWrapper>
-        <CommentContainer>
+        <CommentMemberContainer>
           <Member member={creator} size={40} />
+        </CommentMemberContainer>
+        <CommentContainer isEditing={isEditing}>
           <CommentContent>
             <CommentText>
               <MentionsEditor
@@ -106,41 +115,43 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
             </CommentText>
             <CommentDetails>{commentDetails}</CommentDetails>
           </CommentContent>
+          <CommentActionsSection>
+            {isCommentAuthor && (
+              <>
+                <Spacing horizontal={4} />
+                <EditCommentButton isEditing={isEditing}>
+                  <RobotoTypography condensed variant="h5" color="inherit">
+                    <CommentActionLabel
+                      onClick={event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setEditing();
+                      }}
+                    >
+                      Edit
+                    </CommentActionLabel>
+                  </RobotoTypography>
+                </EditCommentButton>
+              </>
+            )}
+            {(isCommentAuthor || isAdmin) && (
+              <>
+                <Spacing horizontal={3} />
+                <RobotoTypography condensed variant="h5" color="inherit">
+                  <CommentActionLabel
+                    onClick={event => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      removeComment(comment);
+                    }}
+                  >
+                    Delete
+                  </CommentActionLabel>
+                </RobotoTypography>
+              </>
+            )}
+          </CommentActionsSection>
         </CommentContainer>
-        {isCommentAuthor && (
-          <>
-            <Spacing horizontal={4} />
-            <EditCommentButton isEditing={isEditing}>
-              <RobotoTypography condensed variant="h5" color="inherit">
-                <CommentActionLabel
-                  onClick={event => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setEditing();
-                  }}
-                >
-                  Edit
-                </CommentActionLabel>
-              </RobotoTypography>
-            </EditCommentButton>
-          </>
-        )}
-        {(isCommentAuthor || isAdmin) && (
-          <>
-            <Spacing horizontal={3} />
-            <RobotoTypography condensed variant="h5" color="inherit">
-              <CommentActionLabel
-                onClick={event => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  removeComment(comment);
-                }}
-              >
-                Delete
-              </CommentActionLabel>
-            </RobotoTypography>
-          </>
-        )}
       </CommentWrapper>
     </React.Fragment>
   );

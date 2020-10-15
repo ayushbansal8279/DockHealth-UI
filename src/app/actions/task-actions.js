@@ -5,7 +5,7 @@ import * as TaskApi from 'api/task-api';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
-import { getTasksGroupsList } from 'sagas/tasks-groups-list-saga';
+import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import * as ActionTypes from './action-types';
 // import * as TaskListActions from './tasklist-actions';
