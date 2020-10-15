@@ -22,8 +22,8 @@ export const CheckCircleIcon = styled.img`
   width: 20px;
   color: ${palette.white};
   opacity: ${props => (props.isOpen ? '1' : '0')};
-  transition: opacity 0.2s ease-out;
-  transition-delay: ${props => (props.isOpen ? '0.3s' : '0.1s')};
+  transition: opacity 0.1s ease-out;
+  transition-delay: ${props => (props.isOpen ? '0.1.1s' : '0.1s')};
 `;
 
 export const ChipBackground = styled.div`
