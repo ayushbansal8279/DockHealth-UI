@@ -169,7 +169,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case DUPLICATE_TASK_SUCCESS: {
       const updateTaskFromAction = tasks =>
-        tasks.concat([action.duplicatedTask]);
+        [action.duplicatedTask].concat(tasks);
 
       return updateStateCallback(state, updateTaskFromAction);
     }
