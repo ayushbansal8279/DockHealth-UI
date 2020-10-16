@@ -43,6 +43,7 @@ export const TaskCommentText = styled.div`
 
 export const TaskCommentDetails = styled.div`
   color: ${palette.coolGrey2};
+  font-size: ${fontSizes.small};
 `;
 
 export const TaskCommentAvatarContainer = styled.div`

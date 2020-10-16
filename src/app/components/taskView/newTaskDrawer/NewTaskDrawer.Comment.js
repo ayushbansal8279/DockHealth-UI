@@ -56,9 +56,19 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
   const isCommentAuthor =
     currentUser?.userIdentifier === creator.userIdentifier;
 
-  const commentDetails = `${creator.firstName} ${creator.lastName}, ${moment(
-    dateUpdated,
-  ).format('MM/DD/YYYY')} @ ${moment(dateUpdated).format('h:mma')}`;
+  let dateLabel = '';
+
+  if (moment(dateUpdated).isSame(new Date(), 'd')) {
+    dateLabel = 'Today';
+  } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
+    dateLabel = 'Yesterday';
+  } else {
+    dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
+  }
+
+  const commentDetails = `${creator.firstName} ${
+    creator.lastName
+  }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
   const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 

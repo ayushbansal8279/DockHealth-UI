@@ -1,9 +1,12 @@
 import React from 'react';
 
 import AddComment from './NewTaskDrawer.AddComment';
-import { CommentSectionContainer } from './NewTaskDrawer.CommentSection.Styled';
+import {
+  CommentSectionContainer,
+  CommentsListContainer,
+} from './NewTaskDrawer.CommentSection.Styled';
 import initializeCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
-import { renderCommentGroup } from './NewTaskDrawer.CommentSection.Utilities';
+import { renderComment } from './NewTaskDrawer.CommentSection.Utilities';
 
 const CommentSection = ({
   parentFormSubmit,
@@ -11,7 +14,7 @@ const CommentSection = ({
   modalActions,
 }) => {
   const {
-    groupedComments,
+    comments,
     currentUser,
     removeComment,
     updateComment,
@@ -25,13 +28,11 @@ const CommentSection = ({
         parentFormSubmit={parentFormSubmit}
         taskDrawerFocusField={taskDrawerFocusField}
       />
-      {Object.entries(groupedComments).map(
-        renderCommentGroup({
-          currentUser,
-          removeComment,
-          updateComment,
-        }),
-      )}
+      <CommentsListContainer>
+        {comments?.map(
+          renderComment({ currentUser, removeComment, updateComment }),
+        )}
+      </CommentsListContainer>
     </CommentSectionContainer>
   );
 };
