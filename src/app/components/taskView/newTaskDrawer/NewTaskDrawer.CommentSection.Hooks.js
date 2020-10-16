@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { deleteComment, updateComment, addComment } from 'actions/task-actions';
-import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
+// import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
 
 const initializeCommentSectionHooks = ({ modalActions }) => {
   const { selectedTask, currentUser } = useSelector(store => ({
@@ -12,20 +12,18 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
     currentUser: store.userState.userProfile,
   }));
 
-  const [groupedComments, setGroupedComments] = useState([]);
+  const [commentsList, setCommentsList] = useState([]);
 
   const { comments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
 
   useEffect(() => {
     if (isEmpty(comments)) {
-      setGroupedComments([]);
+      setCommentsList([]);
       return;
     }
 
-    const newGroupedComments = getGroupedComments({ comments });
-
-    setGroupedComments(newGroupedComments);
+    setCommentsList(commentsList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier]);
 
@@ -37,18 +35,17 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         selectedTask,
         comment,
       )(dispatch).then(() => {
-        const newGroupedComments = getGroupedComments({
-          comments: selectedTask.comments.filter(
-            ({ commentIdentifier }) =>
-              commentIdentifier !== comment.commentIdentifier,
-          ),
-        });
+        const newComments = selectedTask.comments.filter(
+          ({ commentIdentifier }) =>
+            commentIdentifier !== comment.commentIdentifier,
+        );
+
         selectedTask.comments = selectedTask.comments.filter(
           ({ commentIdentifier }) =>
             commentIdentifier !== comment.commentIdentifier,
         );
 
-        setGroupedComments(newGroupedComments);
+        setCommentsList(newComments);
         modalActions.closeModal();
       });
     },
@@ -68,13 +65,10 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         comment,
         creator: currentUser,
       })(dispatch).then(newComment => {
-        console.log(selectedTask);
-        const newGroupedComments = getGroupedComments({
-          comments: [newComment.data, ...selectedTask.comments],
-        });
+        const newComments = [newComment.data, ...selectedTask.comments];
         selectedTask.comments = [newComment.data, ...selectedTask.comments];
 
-        setGroupedComments(newGroupedComments);
+        setCommentsList(newComments);
 
         return newComment;
       }),
@@ -90,7 +84,7 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
 
   return {
     currentUser,
-    groupedComments,
+    comments,
     removeComment: openDeleteCommentConfirmationModal,
     updateComment: boundUpdateComment,
     addComment: boundAddComment,

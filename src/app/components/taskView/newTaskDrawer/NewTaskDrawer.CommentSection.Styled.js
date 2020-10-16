@@ -9,12 +9,6 @@ export const CommentSectionContainer = styled.div`
   margin: 0 -2rem;
 `;
 
-export const CommentGroupContainer = styled.div`
-  color: ${palette.coolGrey1};
-  padding-top: ${spacing.small};
-  padding-bottom: ${spacing.smallPlus};
-`;
-
 export const CommentActionLabel = styled.button`
   color: ${palette.lightGrey};
   cursor: pointer;
@@ -46,7 +40,7 @@ export const CommentContainer = styled.div`
   display: flex;
   width: 100%;
   padding: ${spacing.small} 0;
-  margin-left: ${spacing.small};
+  margin-left: ${spacing.smallPlus};
   font-size: ${fontSizes.regular};
   transition: background-color 0.25s ease-out;
   background-color: ${props => props.isEditing && 'white'};
@@ -68,18 +62,12 @@ export const CommentText = styled.div`
 
 export const CommentDetails = styled.div`
   color: ${palette.coolGrey2};
+  font-size: ${fontSizes.small};
 `;
 
 export const EditCommentButton = styled.div`
   height: fit-content;
   visibility: ${props => (props.isEditing ? 'hidden' : 'visible')};
-`;
-
-export const CommentGroupDateLabel = styled.div`
-  color: ${palette.coolGrey1};
-  font-weight: 400;
-  font-family: 'Roboto Condensed', sans-serif;
-  padding: 0 ${spacing.large} ${spacing.smallPlus};
 `;
 
 export const CommentMemberContainer = styled.div`
@@ -89,4 +77,9 @@ export const CommentMemberContainer = styled.div`
 export const CommentActionsSection = styled.div`
   display: flex;
   margin-right: ${spacing.regular};
+`;
+
+export const CommentsListContainer = styled.div`
+  padding-top: ${spacing.small};
+  padding-bottom: ${spacing.smallPlus};
 `;
