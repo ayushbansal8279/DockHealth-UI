@@ -6,7 +6,6 @@ import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import { getTaskDateLabel } from './helpers';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -47,9 +46,19 @@ const TaskComment = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
 
+  let dateLabel = '';
+
+  if (moment(dateUpdated).isSame(new Date(), 'd')) {
+    dateLabel = 'Today';
+  } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
+    dateLabel = 'Yesterday';
+  } else {
+    dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
+  }
+
   const commentDetails = `${creator.firstName} ${
     creator.lastName
-  }, ${getTaskDateLabel(dateUpdated)} @ ${moment(dateUpdated).format('h:mma')}`;
+  }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
   return (
     <TaskCommentContainer>
