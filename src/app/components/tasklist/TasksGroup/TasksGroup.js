@@ -143,7 +143,7 @@ const TasksGroup = ({
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
               {!isSearchApplied && !areFiltersApplied && (
-                <TasksGroupLabelCounter>{tasksAmount}</TasksGroupLabelCounter>
+                <TasksGroupLabelCounter>({tasksAmount})</TasksGroupLabelCounter>
               )}
             </TasksGroupLabel>
           </GroupNameSection>

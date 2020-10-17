@@ -647,8 +647,8 @@ class Home extends Component {
   };
 
   toggleSingleTaskPriority = task => {
-    const { taskActions } = this.props;
-    taskActions
+    const { actions } = this.props;
+    actions
       .toggleTaskPriority(
         task,
         task.priority === Priority.High ? Priority.Low : Priority.High,
@@ -658,10 +658,10 @@ class Home extends Component {
   };
 
   invokeToggleCompleteAction = task => {
-    const { taskActions, routeParams, currentUser } = this.props;
+    const { actions, routeParams, currentUser } = this.props;
     const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
 
-    taskActions
+    actions
       .toggleCompleteTask(task, selectedTab, currentUser)
       .then(() => {
         setTimeout(this.refreshTab, TASK_DISAPPEAR_DELAY);
@@ -689,26 +689,26 @@ class Home extends Component {
   };
 
   handleReassignTask = (task, assignee) => {
-    const { taskActions } = this.props;
-    taskActions
+    const { actions } = this.props;
+    actions
       .assignOrReassignTask(task, assignee?.userIdentifier)
       .then(this.handleTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
   handleUpdateDueDate = (task, dueDate) => {
-    const { taskActions } = this.props;
+    const { actions } = this.props;
 
-    taskActions
+    actions
       .updateDueDate(task, dueDate, true)
       .then(this.handleTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
   handleUpdateWorkflowStatus = (task, workflowStatus) => {
-    const { taskActions } = this.props;
+    const { actions } = this.props;
 
-    taskActions
+    actions
       .updateWorkflowStatus(task, workflowStatus)
       .then(this.handleTaskUpdate)
       .catch(() => this.refreshTab());

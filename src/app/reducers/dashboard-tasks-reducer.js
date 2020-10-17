@@ -10,7 +10,7 @@ const initialState = {
 
 const updateTaskInList = (lists, updateTaskCallback) =>
   lists.map(group => {
-    const updatedTasks = updateTaskCallback(group.tasks);
+    const updatedTasks = group.tasks ? updateTaskCallback(group.tasks) : [];
     return { ...group, tasks: updatedTasks };
   });
 

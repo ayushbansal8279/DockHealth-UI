@@ -47,7 +47,19 @@ axiosInstance.interceptors.response.use(identity, error => {
   }
 
   console.log('Connection error');
-  window.location.href = '/#/login';
+  // window.location.href = '/#/login';
+  showToast({
+    status: 'error',
+    title: 'Error',
+    text: 'A connection error has occured, please refresh the page',
+    confirmButtonText: 'Refresh page',
+    showConfirmButton: true,
+    showCloseButton: true,
+    timerProgressBar: false,
+    timer: 0,
+  }).then(({ value }) => {
+    if (value) window.location.reload();
+  });
 });
 
 export default axiosInstance;
