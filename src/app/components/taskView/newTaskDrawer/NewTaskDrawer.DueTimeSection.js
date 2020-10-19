@@ -61,7 +61,7 @@ const DueTimeSection = ({
   );
 
   const handleSaveDueTime = value => {
-    if (value !== undefined && value !== '') {
+    if (value !== undefined && value !== '' && value !== '__:__ __') {
       if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(value)) {
         setErrorMessage(
           'Time must be between 12:00 AM and 11:59 PM and include AM/PM',
