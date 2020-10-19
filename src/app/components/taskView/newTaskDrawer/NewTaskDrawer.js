@@ -263,6 +263,7 @@ const NewTaskDrawer = ({
                     handleKeyCommand={command => {
                       if (command === 'enter-command') {
                         descriptionReference.current.blur();
+                        parentFormSubmit();
                         return 'handled';
                       }
 

@@ -79,9 +79,9 @@ const DropdownInput = React.forwardRef(
         selectOption(value);
       }
 
-      setTimeout(() => {
-        reference.current.querySelector('input').focus();
-      }, 100);
+      // setTimeout(() => {
+      //   reference.current.querySelector('input').focus();
+      // }, 100);
     };
 
     const handleInputKeyDown = event => {
