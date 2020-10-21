@@ -57,6 +57,7 @@ export const Arrow = styled.img`
   padding-left: ${spacing.tiny};
   padding-right: ${spacing.smallPlus};
   transition: all 0.5s ease-in-out;
+  cursor: pointer;
 `;
 
 export const Tasks = styled(Collapse)`

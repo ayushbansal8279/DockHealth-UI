@@ -8,7 +8,7 @@ export const SLIM_VIEW = 'SLIM_VIEW';
 const DEFAULT_IS_OPEN_STATE = true;
 const DEFAULT_VIEW_TYPE = FULL_VIEW;
 
-const listSectionSavedState = sessionStorageKey => {
+const listSectionSavedState = ({ sessionStorageKey }) => {
   const storageState = useMemo(
     () => sessionStorageHelper.getItem(sessionStorageKey),
     // eslint-disable-next-line react-hooks/exhaustive-deps

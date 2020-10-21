@@ -419,7 +419,7 @@ class Home extends Component {
       routeParams: { taskListIdentifier },
     } = this.props;
 
-    let queryStartPosition = 0;
+    // let queryStartPosition = 0;
 
     if (cumulativeFlag) {
       queryStartPosition = completedTasks.reduce(
@@ -447,7 +447,7 @@ class Home extends Component {
         taskListIdentifier,
         status,
         cumulativeFlag,
-        queryStartPosition,
+        // queryStartPosition,
       );
     }
   };
@@ -456,17 +456,17 @@ class Home extends Component {
     taskListIdentifier,
     status,
     cumulativeFlag = false,
-    queryStartPosition = 0,
+    pageNumber = 1,
   ) => {
     const { actions } = this.props;
 
-    return actions.getListTasks(
+    return actions.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       undefined,
       undefined,
       status,
       cumulativeFlag,
-      queryStartPosition,
+      pageNumber,
     );
   };
 
@@ -720,6 +720,16 @@ class Home extends Component {
     tasksGroupsListActions.createTaskGroupList({ groupName });
   };
 
+  loadTasksForTaskGroup = ({ taskGroupIdentifier, pageNumber }) => {
+    const { tasksGroupsListActions } = this.props;
+    const payload = {
+      taskGroupIdentifier,
+      status: 'INCOMPLETE',
+      pageNumber: pageNumber + 1,
+    };
+    tasksGroupsListActions.getTasksForTaskGroups(payload);
+  };
+
   render() {
     const {
       members,
@@ -795,6 +805,7 @@ class Home extends Component {
               selectedTask={selectedTask}
               listUniqueKey={taskListIdentifier}
               taskCounters={taskCounters}
+              loadTasksForTaskGroup={this.loadTasksForTaskGroup}
             />
           )}
         </TaskViewContainer>

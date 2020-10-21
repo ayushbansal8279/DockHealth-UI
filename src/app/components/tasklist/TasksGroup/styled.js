@@ -105,3 +105,12 @@ export const PaginationButton = styled.button`
   font-size: ${fontSizes.regular};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
 `;
+
+export const ShowMoreButton = styled.button`
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.smallPlus};
+  margin-left: 56px; // per design
+  width: fit-content;
+`;

@@ -21,6 +21,7 @@ import {
   getFilteredTasksForList,
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
+  getTasksForTaskListByTaskGroup,
 } from 'api/task-api';
 import {
   TASK_GROUP_LIST_REQUEST,
@@ -31,6 +32,7 @@ import {
   SET_AS_CURRENT_TASK,
   INCREASE_INCOMPLETE_TASK_COUNTERS,
   ADD_TASK_SUCCESS,
+  REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
 } from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
@@ -51,6 +53,7 @@ export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
 export const DO_SORT_SUBTASKS_IN_GROUPS = 'DO_SORT_SUBTASKS_IN_GROUPS';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
+export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
 
 export const DO_REASSIGN_TASKS_TO_ANOTHER_GROUP =
   'DO_REASSIGN_TASKS_TO_ANOTHER_GROUP';
@@ -105,6 +108,11 @@ export const onEnterListDetails = payload => ({
   ...payload,
 });
 
+export const getTasksForTaskGroups = payload => ({
+  type: DO_GET_TASKS_FOR_GROUP,
+  ...payload,
+});
+
 export const TasksGroupsListActions = {
   getTasksGroupsList,
   createTaskGroupList,
@@ -113,6 +121,7 @@ export const TasksGroupsListActions = {
   sortTasksGroups,
   sortTasksInGroup,
   createTask,
+  getTasksForTaskGroups,
 };
 
 export function* doGetTasksGroupsList(payload) {
@@ -404,6 +413,27 @@ export function* doCreateTask(payload) {
   }
 }
 
+export function* doGetTasksForTaskGroup(payload) {
+  try {
+    const { taskGroupIdentifier, status, pageNumber } = payload;
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+
+    const groupOfTasks = yield call(
+      getTasksForTaskListByTaskGroup,
+      taskListIdentifier,
+      taskGroupIdentifier,
+      status,
+      pageNumber,
+    );
+    yield put({
+      type: REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+      groupOfTasks,
+    });
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export default function* watchTasksGroupsList() {
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
@@ -418,4 +448,5 @@ export default function* watchTasksGroupsList() {
     DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
     doReassignTasksToAnotherGroup,
   );
+  yield takeEvery(DO_GET_TASKS_FOR_GROUP, doGetTasksForTaskGroup);
 }

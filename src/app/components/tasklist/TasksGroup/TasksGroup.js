@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -33,6 +33,7 @@ import {
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   PaginationButton,
+  // ShowMoreButton,
 } from './styled';
 
 const TasksGroup = ({
@@ -42,6 +43,7 @@ const TasksGroup = ({
   groupId,
   currentUser,
   groupName,
+  groupTaskCounts,
   toggleTaskPriority,
   toggleCompleteTask,
   editGroupName,
@@ -72,13 +74,12 @@ const TasksGroup = ({
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
 
-  const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
-    groupSessionStorageKey,
-  );
+  const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
+    sessionStorageKey: groupSessionStorageKey,
+  });
 
   const areViewOptionsVisible = useMemo(() => {
     if (!isOpen) return false;
-
     return checkIfTasksHaveSubtasksOrCommnets(tasks);
   }, [isOpen, tasks]);
 
@@ -99,21 +100,31 @@ const TasksGroup = ({
     groupId,
   ]);
 
-  const tasksAmount = useMemo(
-    () =>
-      tasks?.reduce(
-        (counter, task) =>
-          counter +
-          task.subtasks?.filter(x =>
-            isCompletedGroup
-              ? x.status === 'COMPLETE'
-              : x.status === 'INCOMPLETE',
-          ).length +
-          1,
-        0,
-      ) || 0,
-    [isCompletedGroup, tasks],
-  );
+  useEffect(() => {
+    // default close if lazy loaded and open if tasks
+    if (groupTaskCounts > 0 && tasks?.length === 0) {
+      switchOpen(false);
+    }
+    if (groupTaskCounts > 0 && tasks?.length > 0) {
+      switchOpen(true);
+    }
+  }, [groupTaskCounts, tasks, switchOpen]);
+
+  // const tasksAmount = useMemo(
+  //   () =>
+  //     tasks?.reduce(
+  //       (counter, task) =>
+  //         counter +
+  //         task.subtasks?.filter(x =>
+  //           isCompletedGroup
+  //             ? x.status === 'COMPLETE'
+  //             : x.status === 'INCOMPLETE',
+  //         ).length +
+  //         1,
+  //       0,
+  //     ) || 0,
+  //   [isCompletedGroup, tasks],
+  // );
 
   const onQuickAddTask = useCallback(
     task =>
@@ -124,13 +135,20 @@ const TasksGroup = ({
     [groupId, quickAddTask],
   );
 
+  const onToggleGroupOpen = useCallback(() => {
+    if (!isOpen && groupTaskCounts > 0 && tasks?.length === 0) {
+      showMoreTasks();
+    }
+    onSwitchOpen();
+  }, [isOpen, groupTaskCounts, tasks, onSwitchOpen, showMoreTasks]);
+
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
         <Arrow
           alt="arrow"
           isOpen={isOpen}
-          onClick={onSwitchOpen}
+          onClick={onToggleGroupOpen}
           src={ArrowIcon}
         />
         <GroupNameSectionWrapper>
@@ -143,7 +161,9 @@ const TasksGroup = ({
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
               {!isSearchApplied && !areFiltersApplied && (
-                <TasksGroupLabelCounter>({tasksAmount})</TasksGroupLabelCounter>
+                <TasksGroupLabelCounter>
+                  ({groupTaskCounts})
+                </TasksGroupLabelCounter>
               )}
             </TasksGroupLabel>
           </GroupNameSection>
