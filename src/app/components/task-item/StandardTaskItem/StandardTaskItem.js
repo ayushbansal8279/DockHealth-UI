@@ -25,21 +25,31 @@ const Task = ({
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
-  const { comments, subtasks, patient, searchMetaData = {} } = task;
+  const {
+    comments,
+    subtasks,
+    patient,
+    searchMetaData = {},
+    subTasksCount,
+  } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { highlightedValue } = restProps;
   const { matchingCommentIdentifiers = [] } = searchMetaData;
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    switchOpen(isFullView);
-  }, [isFullView, switchOpen]);
 
   const renderedSubtasks =
     addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
       ? [...subtasks, subtaskShape]
       : subtasks;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (subTasksCount > 0 && isEmpty(renderedSubtasks)) {
+      switchOpen(false);
+    } else {
+      switchOpen(isFullView);
+    }
+  }, [isFullView, subTasksCount, renderedSubtasks, switchOpen]);
 
   const matchingComments = useMemo(
     () => getMatchedComments(comments, matchingCommentIdentifiers),
@@ -52,8 +62,8 @@ const Task = ({
   );
 
   const showSubtasks = useMemo(
-    () => !isEmpty(renderedSubtasks) && !isStartedDnD,
-    [renderedSubtasks, isStartedDnD],
+    () => (subTasksCount > 0 || !isEmpty(renderedSubtasks)) && !isStartedDnD,
+    [renderedSubtasks, subTasksCount, isStartedDnD],
   );
 
   const onClickComment = useCallback(() => {
@@ -74,6 +84,7 @@ const Task = ({
           currentUser={currentUser}
           reassignTask={reassignTask}
           subtasks={renderedSubtasks}
+          subTasksCount={subTasksCount}
           isDraggable={isDraggable}
           {...restProps}
         />
@@ -89,6 +100,7 @@ const Task = ({
       {showSubtasks && (
         <Subtasks
           subtasks={renderedSubtasks}
+          subTasksCount={subTasksCount}
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}

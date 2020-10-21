@@ -1249,3 +1249,18 @@ export function markTaskRead(task) {
         throw error;
       });
 }
+
+export const loadSubTasks = taskIdentifier => dispatch =>
+  TaskApi.getTaskDetails(taskIdentifier)
+    .then(task => {
+      // explicitly mark task as updated so we can show the flag
+      task.updated = true; // eslint-disable-line no-param-reassign
+      dispatch({
+        type: ActionTypes.LOAD_SUBTASKS_SUCCESS,
+        task,
+      });
+      return task;
+    })
+    .catch(error => {
+      throw error;
+    });

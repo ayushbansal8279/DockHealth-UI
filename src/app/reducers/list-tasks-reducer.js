@@ -16,6 +16,7 @@ import {
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   TASK_ARCHIVED,
   UPDATE_TASK_SUCCESS,
+  LOAD_SUBTASKS_SUCCESS,
   REFRESH_ANOTHER_TASK_SUCCESS,
   INCREASE_INCOMPLETE_TASK_COUNTERS,
   INCREASE_COMPLETE_TASK_COUNTERS,
@@ -242,15 +243,49 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case UPDATE_TASK_SUCCESS:
+    case LOAD_SUBTASKS_SUCCESS:
     case REFRESH_ANOTHER_TASK_SUCCESS: {
-      if (action.task.status === 'COMPLETE') {
-        return TaskBaseReducer(
-          state,
-          action,
-          updateCompletedTasksStateCallback,
-        );
-      }
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      const { task } = action;
+
+      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(
+        taskGroup => {
+          return {
+            ...taskGroup,
+            tasks: taskGroup.tasks.map(t => {
+              if (
+                t.taskIdentifier !== task.parentTaskIdentifier &&
+                t.taskIdentifier !== task.taskIdentifier
+              ) {
+                return t;
+              }
+
+              if (task.taskIdentifier === t.taskIdentifier) {
+                return { ...t, ...task };
+              }
+
+              return {
+                ...t,
+                subtasks: t.subtasks.map(subtask =>
+                  subtask.taskIdentifier === task.taskIdentifier
+                    ? { ...subtask, ...task }
+                    : subtask,
+                ),
+              };
+            }),
+          };
+        },
+      );
+      const updatedGroupedTasks = {
+        ...state.groupedTasks,
+        taskGroups: updatedTaskGroups,
+      };
+
+      return {
+        ...state,
+        groupedTasks: updatedGroupedTasks,
+      };
+
+      // return updateStateCallback(state, updateTaskFromAction);
     }
 
     default:
