@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
+import debounce from 'lodash.debounce';
 import EmptyTaskListBird from 'img/animals/bird';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import { Grid } from '@material-ui/core';
@@ -64,23 +65,6 @@ import {
 } from './styled';
 import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
 
-const searchDashboardTasks = (dashboardTasks, searchValue) =>
-  dashboardTasks.reduce((accumulator, currentValue) => {
-    const filteredTasks = currentValue.tasks?.filter(
-      ({ description, patient, assignedTo }) =>
-        description.toLowerCase().includes(searchValue.toLowerCase()) ||
-        patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        assignedTo?.firstName
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()) ||
-        assignedTo?.lastName.toLowerCase().includes(searchValue.toLowerCase()),
-    );
-    if (filteredTasks?.length === 0) return accumulator;
-
-    return [...accumulator, { ...currentValue, tasks: filteredTasks }];
-  }, []);
-
 const SORT_CONFIG = {
   default: 'DEFAULT',
   dueDateAsc: 'DUE_DATE_ASC',
@@ -96,24 +80,24 @@ const SORT_CONFIG = {
 };
 
 const SORT_METHODS = {
-  [SORT_CONFIG.default]: list => list.map(item => item),
+  [SORT_CONFIG.default]: list => list?.map(item => item),
   [SORT_CONFIG.dueDateAsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) => {
         if (!b?.dueDate) return 1;
         return a?.dueDate > b?.dueDate ? 1 : -1;
       }),
   [SORT_CONFIG.dueDateDsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) => {
         if (!a?.dueDate) return 1;
         return b?.dueDate > a?.dueDate ? 1 : -1;
       }),
   [SORT_CONFIG.workflowStatusAsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) => {
         const aWorkflowStauts = a?.workflowStatus || '';
         const bWorkflowStauts = b?.workflowStatus || '';
@@ -122,7 +106,7 @@ const SORT_METHODS = {
       }),
   [SORT_CONFIG.workflowStatusDsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) => {
         const aWorkflowStauts = a?.workflowStatus || '';
         const bWorkflowStauts = b?.workflowStatus || '';
@@ -130,37 +114,37 @@ const SORT_METHODS = {
       }),
   [SORT_CONFIG.patientAsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) =>
         a?.patient?.firstName?.localeCompare(b?.patient?.firstName),
       ),
   [SORT_CONFIG.patientDsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) =>
         b?.patient?.firstName?.localeCompare(a?.patient?.firstName),
       ),
   [SORT_CONFIG.assignedAsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) =>
         a?.assignedTo?.userName?.localeCompare(b?.assignedTo?.userName),
       ),
   [SORT_CONFIG.assignedDsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) =>
         b?.assignedTo?.userName?.localeCompare(a?.assignedTo?.userName),
       ),
   [SORT_CONFIG.listNameAsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) =>
         a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
       ),
   [SORT_CONFIG.listNameDsc]: list =>
     list
-      .map(item => item)
+      ?.map(item => item)
       .sort((a, b) =>
         b?.taskList?.listName?.localeCompare(a?.taskList?.listName),
       ),
@@ -193,6 +177,16 @@ export const DashboardTab = ({
   );
 };
 
+const debouncer = debounce(f => f(), 1100, { leading: true });
+
+function usePrevious(value) {
+  const reference = useRef();
+  useEffect(() => {
+    reference.current = value;
+  });
+  return reference.current;
+}
+
 const DashboardList = ({
   dashboardTasks,
   dashboardTasksIsLoading,
@@ -215,6 +209,9 @@ const DashboardList = ({
     updateDashboardSelectedFilters,
     reassignDashboardTask,
     fetchDashboardFilters,
+    fetchImplicitGroup,
+    fetchSearchedTermImplicitGroups,
+    initializeDashboardView,
   },
   megaFilter,
   areFiltersApplied,
@@ -229,6 +226,7 @@ const DashboardList = ({
     left: 0,
   });
   const [searchValue, setSearchValue] = useState('');
+  const previousSearchState = usePrevious({ searchValue });
   const [searchFocused, setSearchFocused] = useState(false);
   const [sortType, setSortType] = useState(SORT_CONFIG.default);
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
@@ -236,8 +234,8 @@ const DashboardList = ({
     userPreferColumn || 'DUE_DATE',
   );
 
-  const filteredDashboardTasks = dashboardTasks.filter(
-    ({ tasks }) => tasks && tasks.length !== 0,
+  const filteredDashboardTasks = dashboardTasks?.filter(
+    ({ metricValue }) => metricValue !== 0,
   );
   const { userIdentifier, usageState } = currentUser;
   const { filters, selectedFilters } = megaFilter;
@@ -263,6 +261,26 @@ const DashboardList = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboardTasks, selectedTab]);
+
+  useEffect(
+    () =>
+      debouncer(() => {
+        if (searchValue !== previousSearchState?.searchValue && searchFocused) {
+          fetchSearchedTermImplicitGroups(searchValue);
+        }
+
+        if (previousSearchState?.searchValue && !searchValue && searchFocused) {
+          initializeDashboardView();
+        }
+      }),
+    [
+      searchValue,
+      searchFocused,
+      fetchSearchedTermImplicitGroups,
+      initializeDashboardView,
+      previousSearchState,
+    ],
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -421,20 +439,15 @@ const DashboardList = ({
       />
     );
   };
-  const searchedDashboardTasks = useMemo(() => {
-    return searchValue
-      ? searchDashboardTasks(filteredDashboardTasks, searchValue)
-      : filteredDashboardTasks;
-  }, [searchValue, filteredDashboardTasks]);
 
   const activeTasksCount = useMemo(
     () =>
-      searchedDashboardTasks.reduce(
+      filteredDashboardTasks?.reduce(
         (accumulator, currentValue) =>
           accumulator + (currentValue.tasks?.length || 0),
         0,
       ),
-    [searchedDashboardTasks],
+    [filteredDashboardTasks],
   );
 
   const handleTaskUpdate = useCallback(
@@ -538,8 +551,8 @@ const DashboardList = ({
         <DashboardSkeletonLoader />
       ) : (
         <>
-          {!isEmpty(searchedDashboardTasks) ? (
-            searchedDashboardTasks?.map(item => (
+          {!isEmpty(filteredDashboardTasks) ? (
+            filteredDashboardTasks?.map(item => (
               <DashboardTasksGroup
                 key={item.groupType}
                 dashboardTasksGroup={item}
@@ -564,6 +577,11 @@ const DashboardList = ({
                 currentUser={currentUser}
                 reassignDashboardTask={reassignDashboardTask}
                 updateWorkflowStatus={updateWorkflowStatus}
+                fetchImplicitGroup={fetchImplicitGroup}
+                fetchSearchedTermImplicitGroups={
+                  fetchSearchedTermImplicitGroups
+                }
+                isSearching={!!searchValue}
               />
             ))
           ) : (
@@ -571,6 +589,7 @@ const DashboardList = ({
           )}
         </>
       )}
+
       <NewTaskDrawer
         modalActions={modalActions}
         onTaskUpdate={handleTaskUpdate}

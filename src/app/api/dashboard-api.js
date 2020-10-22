@@ -87,3 +87,67 @@ export function getDashboardStatistics(tab) {
       throw error;
     });
 }
+
+export function getTasksAssignedToUserByImplicitGroup(
+  groupType,
+  pageNumber = 1,
+) {
+  return axios
+    .get(
+      `/task/findTasksAssignedToUserByImplicitGroup?groupType=${groupType}&pageNumber=${pageNumber}&status=INCOMPLETE`,
+    )
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getTasksForOrganizationByImplicitGroup(
+  groupType,
+  pageNumber = 1,
+) {
+  return axios
+    .get(
+      `/task/findTasksForOrganizationByImplicitGroup?groupType=${groupType}&pageNumber=${pageNumber}&status=INCOMPLETE`,
+    )
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getDashboardTaskStasForImplicitGroups(tab) {
+  return axios
+    .get(
+      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab?.replace(
+        '-',
+        '',
+      )}`,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function searchTasksByAssignedToUserGroupedByImplicitGroups(searchTerm) {
+  return axios
+    .get(
+      `/task/searchTasksByAssignedToUserGroupedByImplicitGroups?searchTerm=${searchTerm}&status=INCOMPLETE`,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function searchTasksForOrganizationGroupedByImplicitGroups(searchTerm) {
+  return axios
+    .get(
+      `/task/searchTasksForOrganizationGroupedByImplicitGroups?searchTerm=${searchTerm}&status=INCOMPLETE`,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}

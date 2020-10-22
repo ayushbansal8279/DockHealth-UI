@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontWeights } from 'styles/font';
+import { fontWeights, fontSizes } from 'styles/font';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Switch } from '@material-ui/core';
 
@@ -119,4 +119,14 @@ export const TipsSwitchLabel = styled.label`
   font-weight: ${fontWeights.regular};
   vertical-align: middle;
   text-transform: uppercase;
+`;
+
+export const ShowMoreButton = styled.button`
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.smallPlus};
+  margin-top: ${spacing.regular};
+  margin-left: 72px;
+  width: fit-content;
 `;

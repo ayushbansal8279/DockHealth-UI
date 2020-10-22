@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* eslint-disable func-names */
+/* eslint-disable sonarjs/no-identical-functions */
 import {
   put,
   call,
@@ -10,7 +13,11 @@ import {
 import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
+  REQUEST_DASHBOARD_MORE_GROUP_TASKS,
   REQUEST_DASHBOARD_TASKS_SUCCESS,
+  REQUEST_DASHBOARD_GROUP_TASKS,
+  REQUEST_DASHBOARD_GROUP_TASKS_SUCCESS,
+  REQUEST_DASHBOARD_MORE_GROUP_TASKS_SUCCESS,
   REQUEST_DASHBOARD_TASKS_FAILURE,
   REQUEST_DASHBOARD_STATISTICS,
   REQUEST_DASHBOARD_STATISTICS_SUCCESS,
@@ -21,14 +28,17 @@ import {
 } from 'actions/action-types';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
-  getDashboardMyTasks,
-  getDashboardAllTasks,
   reorderTasksInGroup,
   getDashboardMyTasksFilters,
   getDashboardAllTasksFilters,
   getDashboardMyTasksByCriteria,
   getDashboardAllTasksByCriteria,
   getDashboardStatistics,
+  getDashboardTaskStasForImplicitGroups,
+  getTasksAssignedToUserByImplicitGroup,
+  getTasksForOrganizationByImplicitGroup,
+  searchTasksByAssignedToUserGroupedByImplicitGroups,
+  searchTasksForOrganizationGroupedByImplicitGroups,
 } from 'api/dashboard-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
@@ -55,6 +65,10 @@ const FETCH_DASHBOARD_FILTERS = 'FETCH_DASHBOARD_FILTERS';
 const DO_UPDATE_DASHBOARD_SELECTED_FILTERS =
   'DO_UPDATE_DASHBOARD_SELECTED_FILTERS';
 const DO_REASSIGN_DASHBOARD_TASK = 'DO_REASSIGN_DASHBOARD_TASK';
+const DO_FETCH_IMPLICIT_GROUPS = 'DO_FETCH_IMPLICIT_GROUPS';
+const DO_FETCH_IMPLICIT_GROUP = 'DO_FETCH_IMPLICIT_GROUP';
+const DO_FETCH_SEARCHED_TERM_FOR_IMPLICIT_GROUPS =
+  'DO_FETCH_SEARCHED_TERM_FOR_IMPLICIT_GROUPS';
 
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
@@ -120,6 +134,17 @@ export const reassignDashboardTask = (taskIdentifier, userId) => ({
   type: DO_REASSIGN_DASHBOARD_TASK,
   taskIdentifier,
   userId,
+});
+
+export const fetchImplicitGroup = (group, fetchMore) => ({
+  type: DO_FETCH_IMPLICIT_GROUP,
+  group,
+  fetchMore,
+});
+
+export const fetchSearchedTermImplicitGroups = searchTerm => ({
+  type: DO_FETCH_SEARCHED_TERM_FOR_IMPLICIT_GROUPS,
+  searchTerm,
 });
 
 const getTasksType = () => {
@@ -188,6 +213,128 @@ function* doFetchDashboardFilters() {
   }
 }
 
+function* doFetchImplicitGroup({ group, fetchMore }) {
+  try {
+    if (fetchMore) {
+      yield put({
+        type: REQUEST_DASHBOARD_MORE_GROUP_TASKS,
+        fetchedGroup: group,
+      });
+    } else {
+      yield put({
+        type: REQUEST_DASHBOARD_GROUP_TASKS,
+        fetchedGroup: group,
+      });
+    }
+
+    const isAllTasks = getTasksType() === 'all-tasks';
+    // eslint-disable-next-line consistent-return
+    const fetchedGroup = yield call(function*() {
+      try {
+        const { taskGroups, ...rest } = yield call(
+          isAllTasks
+            ? getTasksForOrganizationByImplicitGroup
+            : getTasksAssignedToUserByImplicitGroup,
+          group?.groupType,
+          fetchMore ? group?.pageNumber + 1 : 1,
+        );
+        const tasks = taskGroups
+          ?.map(item => item?.tasks)
+          ?.reduce((tasksList, tasksGroupList) => [
+            ...tasksList,
+            ...tasksGroupList,
+          ]);
+
+        return { ...group, ...rest, tasks };
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    yield put({
+      type: fetchMore
+        ? REQUEST_DASHBOARD_MORE_GROUP_TASKS_SUCCESS
+        : REQUEST_DASHBOARD_GROUP_TASKS_SUCCESS,
+      fetchedGroup,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* doFetchImplicitGroups() {
+  try {
+    const tasksType = getTasksType();
+    const isAllTasks = tasksType === 'all-tasks';
+    const dashboardGroups = yield call(
+      getDashboardTaskStasForImplicitGroups,
+      tasksType,
+    );
+
+    const dashboardTasksGroups = yield all(
+      dashboardGroups?.map(dashboardGroup =>
+        // eslint-disable-next-line consistent-return
+        call(function*(group) {
+          try {
+            if (group?.defaultOpen) {
+              const { taskGroups, ...rest } = yield call(
+                isAllTasks
+                  ? getTasksForOrganizationByImplicitGroup
+                  : getTasksAssignedToUserByImplicitGroup,
+                dashboardGroup?.groupType,
+              );
+              const tasks = taskGroups
+                ?.map(item => item?.tasks)
+                ?.reduce((tasksList, tasksGroupList) => [
+                  ...tasksList,
+                  ...tasksGroupList,
+                ]);
+
+              return { ...group, ...rest, tasks };
+            }
+            return { ...group, tasks: [] };
+          } catch (error) {
+            console.log(error);
+          }
+        }, dashboardGroup),
+      ),
+    );
+
+    yield put({
+      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
+      tasksList: dashboardTasksGroups,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* doFetchSearchedTermForImplicitGroups({ searchTerm }) {
+  try {
+    const tasksType = getTasksType();
+    const isAllTasks = tasksType === 'all-tasks';
+    yield put({ type: REQUEST_DASHBOARD_TASKS });
+
+    const dashboardTasksGroups = yield call(
+      isAllTasks
+        ? searchTasksForOrganizationGroupedByImplicitGroups
+        : searchTasksByAssignedToUserGroupedByImplicitGroups,
+      searchTerm,
+    );
+
+    yield put({
+      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
+      tasksList: dashboardTasksGroups?.map(group => ({
+        ...group,
+        metricValue: group?.tasks?.length || 0,
+        defaultOpen: true,
+      })),
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function* doReloadDashboardTasks() {
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
@@ -199,7 +346,9 @@ function* doReloadDashboardTasks() {
       ? doReloadDashboardAllTasksStatistics
       : doReloadDashboardMyTasksStatistics;
 
-    if (!selectedFilters || !isEmpty(selectedFilters)) {
+    if (!isEmpty(selectedFilters)) {
+      yield put({ type: REQUEST_DASHBOARD_TASKS });
+
       tasksList = isAllTasks
         ? (yield all([
             getDashboardAllTasksByCriteria(selectedFilters),
@@ -209,16 +358,18 @@ function* doReloadDashboardTasks() {
             getDashboardMyTasksByCriteria(selectedFilters),
             call(statisticsRequest),
           ]))[0];
-    } else {
-      tasksList = isAllTasks
-        ? (yield all([getDashboardAllTasks(), call(statisticsRequest)]))[0]
-        : (yield all([getDashboardMyTasks(), call(statisticsRequest)]))[0];
-    }
 
-    yield put({
-      type: REQUEST_DASHBOARD_TASKS_SUCCESS,
-      tasksList,
-    });
+      yield put({
+        type: REQUEST_DASHBOARD_TASKS_SUCCESS,
+        tasksList: tasksList.map(group => ({
+          ...group,
+          metricValue: group?.tasks?.length || 0,
+          defaultOpen: true,
+        })),
+      });
+    } else {
+      yield all([call(doFetchImplicitGroups), call(statisticsRequest)]);
+    }
   } catch (error) {
     yield put({
       type: REQUEST_DASHBOARD_TASKS_FAILURE,
@@ -301,7 +452,6 @@ function* doQuickAddDahboardTask({ payload }) {
     });
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
     yield put(fetchTasklistForUser());
-
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
   } catch (error) {
     yield call(doReloadDashboardTasks);
@@ -314,7 +464,6 @@ function* doUpdateDashboardTaskDueDate({ payload }) {
   try {
     const updatedTask = setDueDateHelper(task, dueDate);
     yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
-
     yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(reloadDashboardTasks());
@@ -367,4 +516,10 @@ export default function* watchDashboard() {
     doUpdateDashboardSelectedFilters,
   );
   yield takeEvery(DO_REASSIGN_DASHBOARD_TASK, doReassignDashboardTask);
+  yield takeLatest(DO_FETCH_IMPLICIT_GROUPS, doFetchImplicitGroups);
+  yield takeLatest(DO_FETCH_IMPLICIT_GROUP, doFetchImplicitGroup);
+  yield takeLatest(
+    DO_FETCH_SEARCHED_TERM_FOR_IMPLICIT_GROUPS,
+    doFetchSearchedTermForImplicitGroups,
+  );
 }

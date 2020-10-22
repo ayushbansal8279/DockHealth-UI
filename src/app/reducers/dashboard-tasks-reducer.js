@@ -22,7 +22,7 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 };
 
 const DashboardTasksReducer = (state = initialState, action) => {
-  const { type, tasksList, error } = action;
+  const { type, tasksList, fetchedGroup, error } = action;
   switch (type) {
     case types.REQUEST_DASHBOARD_TASKS:
       return {
@@ -35,6 +35,76 @@ const DashboardTasksReducer = (state = initialState, action) => {
         tasksList,
         isLoading: false,
       };
+
+    case types.REQUEST_DASHBOARD_GROUP_TASKS: {
+      const groupToUpdate = state?.tasksList?.find(
+        ({ groupType }) => groupType === fetchedGroup?.groupType,
+      );
+
+      const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
+      const newTasksList = [...state?.tasksList];
+      newTasksList[groupToUpdateIndex] = {
+        ...groupToUpdate,
+        isLoadingGroup: true,
+      };
+
+      return {
+        ...state,
+        tasksList: newTasksList,
+      };
+    }
+
+    case types.REQUEST_DASHBOARD_GROUP_TASKS_SUCCESS: {
+      const groupToUpdate = state?.tasksList?.find(
+        ({ groupType }) => groupType === fetchedGroup?.groupType,
+      );
+      const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
+      const newTasksList = [...state?.tasksList];
+      newTasksList[groupToUpdateIndex] = {
+        ...fetchedGroup,
+        isLoadingGroup: false,
+      };
+
+      return {
+        ...state,
+        tasksList: newTasksList,
+      };
+    }
+
+    case types.REQUEST_DASHBOARD_MORE_GROUP_TASKS: {
+      const groupToUpdate = state?.tasksList?.find(
+        ({ groupType }) => groupType === fetchedGroup?.groupType,
+      );
+      const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
+      const newTasksList = [...state?.tasksList];
+      newTasksList[groupToUpdateIndex] = {
+        ...groupToUpdate,
+        isLoadingMore: true,
+      };
+
+      return {
+        ...state,
+        tasksList: newTasksList,
+      };
+    }
+
+    case types.REQUEST_DASHBOARD_MORE_GROUP_TASKS_SUCCESS: {
+      const groupToUpdate = state?.tasksList?.find(
+        ({ groupType }) => groupType === fetchedGroup?.groupType,
+      );
+      const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
+      const newTasksList = [...state?.tasksList];
+      newTasksList[groupToUpdateIndex] = {
+        ...fetchedGroup,
+        isLoadingMore: false,
+        tasks: [...groupToUpdate?.tasks, ...fetchedGroup?.tasks],
+      };
+
+      return {
+        ...state,
+        tasksList: newTasksList,
+      };
+    }
 
     case types.REQUEST_DASHBOARD_TASKS_FAILURE:
       return {

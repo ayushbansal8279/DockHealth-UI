@@ -5,7 +5,6 @@ import {
   dashboardStatisticsSelector,
   dashboardStatisticsIsLoadingSelector,
 } from 'selectors/dashboard-statistics-selectors';
-import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import DashboardStatisticsIcon from 'img/dashboard-statistics';
 import DashboardStatisticsTile from './DashboardStatisticsTile';
@@ -117,9 +116,7 @@ const DashboardStatistics = ({
 
 const mapStateToProps = state => ({
   dashboardStatistics: dashboardStatisticsSelector(state),
-  dashboardIsLoading:
-    dashboardStatisticsIsLoadingSelector(state) ||
-    dashboardTasksIsLoadingSelector(state),
+  dashboardIsLoading: dashboardStatisticsIsLoadingSelector(state),
 });
 
 export default connect(mapStateToProps)(React.memo(DashboardStatistics));

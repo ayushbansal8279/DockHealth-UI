@@ -340,6 +340,7 @@ export const SlimTaskGridContainer = styled.div`
 export const AssignedBox = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-left: -40px;
 `;
 
