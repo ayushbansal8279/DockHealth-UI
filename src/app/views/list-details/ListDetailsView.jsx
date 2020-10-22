@@ -353,10 +353,6 @@ class Home extends Component {
     return this.refreshIncompleteTasks(withLoader);
   };
 
-  loadMoreTasks = () => {
-    this.refreshTab(false, true);
-  };
-
   refreshFilters = () => {
     const {
       routeParams: { taskListIdentifier, tabName },
@@ -421,12 +417,12 @@ class Home extends Component {
 
     // let queryStartPosition = 0;
 
-    if (cumulativeFlag) {
-      queryStartPosition = completedTasks.reduce(
-        (counter, task) => counter + task.subtasks.length + 1,
-        0,
-      );
-    }
+    // if (cumulativeFlag) {
+    //   queryStartPosition = completedTasks.reduce(
+    //     (counter, task) => counter + task.subtasks.length + 1,
+    //     0,
+    //   );
+    // }
 
     if (withLoader) {
       actions.loadingCompletedTasks();
@@ -730,6 +726,18 @@ class Home extends Component {
     tasksGroupsListActions.getTasksForTaskGroups(payload);
   };
 
+  loadMoreTasksForList = ({ status, pageNumber }) => {
+    const { actions, routeParams } = this.props;
+    actions.getListTasksGroupedByTaskGroup(
+      routeParams.taskListIdentifier,
+      undefined,
+      undefined,
+      status,
+      false,
+      pageNumber + 1,
+    );
+  };
+
   render() {
     const {
       members,
@@ -782,11 +790,11 @@ class Home extends Component {
               toggleCompleteTask={this.toggleTaskCompletedStatus}
               summaryTasksCount={taskCounters.complete}
               reassignTask={this.handleReassignTask}
-              showMoreTasks={this.loadMoreTasks}
               updateDueDate={this.handleUpdateDueDate}
               searchValue={searchValue}
               selectedTask={selectedTask}
               listUniqueKey={taskListIdentifier}
+              loadMoreTasksForList={this.loadMoreTasksForList}
             />
           ) : (
             <OpenedTasksView

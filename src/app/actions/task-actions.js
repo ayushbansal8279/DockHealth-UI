@@ -151,7 +151,9 @@ export function getListTasksGroupedByTaskGroup(
 
         const allTasks = [];
         groupedTasks.taskGroups.forEach(taskGroup => {
-          allTasks.push(taskGroup.tasks);
+          if (taskGroup.tasks) {
+            allTasks.push(taskGroup.tasks);
+          }
         });
         const selectedTask = allTasks.find(
           ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
@@ -1152,8 +1154,8 @@ export function getFilteredTasksForList(
 ) {
   const action =
     status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      ? ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS
+      : ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
 
   return dispatch => {
     if (withLoader) {
@@ -1170,9 +1172,9 @@ export function getFilteredTasksForList(
       status,
       selectedFilters,
     )
-      .then(tasks => {
-        dispatch({ type: action, tasks });
-        return tasks;
+      .then(groupedTasks => {
+        dispatch({ type: action, groupedTasks });
+        return groupedTasks;
       })
       .catch(error => {
         throw error;

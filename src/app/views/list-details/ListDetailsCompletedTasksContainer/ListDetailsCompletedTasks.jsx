@@ -10,12 +10,12 @@ import { TaskGroupsContainer } from '../styled';
 
 const ListDetailsCompletedTasks = ({
   tasks,
+  completedTasksGroup,
   currentUser,
   markComplete,
   toggleSingleTaskPriority,
   toggleCompleteTask,
   summaryTasksCount,
-  showMoreTasks,
   isFetchingMoreTasks,
   isFetchingData,
   updateDueDate,
@@ -25,6 +25,7 @@ const ListDetailsCompletedTasks = ({
   reassignTask,
   selectedTask,
   listUniqueKey,
+  loadMoreTasksForList,
 }) => {
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -44,7 +45,7 @@ const ListDetailsCompletedTasks = ({
     tasks?.reduce(
       (counter, task) =>
         counter +
-        task.subtasks?.filter(x => x.status === 'COMPLETE').length +
+        task?.subtasks?.filter(x => x.status === 'COMPLETE').length +
         1,
       0,
     ) || 0;
@@ -67,7 +68,6 @@ const ListDetailsCompletedTasks = ({
                   tasks={tasks}
                   isCompletedGroup
                   groupPagination
-                  showMoreTasks={showMoreTasks}
                   hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
                   isFetchingMoreTasks={isFetchingMoreTasks}
                   updateDueDate={updateDueDate}
@@ -78,6 +78,12 @@ const ListDetailsCompletedTasks = ({
                   isSearchApplied={isSearchApplied}
                   selectedTask={selectedTask}
                   listUniqueKey={listUniqueKey}
+                  showMoreTasks={() => {
+                    loadMoreTasksForList({
+                      status: 'COMPLETE',
+                      pageNumber: completedTasksGroup?.pageNumber || 0,
+                    });
+                  }}
                 />
               </DragDropContext>
             </TaskGroupsContainer>

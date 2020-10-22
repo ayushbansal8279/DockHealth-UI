@@ -2,7 +2,7 @@
 import { createSelector } from 'reselect';
 // import { sort } from 'ramda';
 import memoize from 'lodash.memoize';
-import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
+// import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { listDetailsGroupsSelector } from './list-details-selectors';
 
@@ -28,13 +28,13 @@ export const completedTasksIsFetchingMoreSelector = createSelector(
   ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
 );
 
-const addGroupIfNotExists = (groupedTasks, groupName) => {
-  if (groupedTasks[groupName]) {
-    return;
-  }
-  // eslint-disable-next-line no-param-reassign
-  groupedTasks[groupName] = [];
-};
+// const addGroupIfNotExists = (groupedTasks, groupName) => {
+//   if (groupedTasks[groupName]) {
+//     return;
+//   }
+//   // eslint-disable-next-line no-param-reassign
+//   groupedTasks[groupName] = [];
+// };
 
 // const addTaskToDefaultGroup = (groupedTasks, task) => {
 //   addGroupIfNotExists(groupedTasks, TASKGROUP_DEFAULT_TYPE);
@@ -81,6 +81,11 @@ export const groupTasksSelector = createSelector(
 
     return groupedTasksMap;
   },
+);
+
+export const groupCompletedTasksSelector = createSelector(
+  listTasksSelector,
+  ({ completedGroupedTasks }) => completedGroupedTasks?.taskGroups?.[0],
 );
 
 export const taskIsSelectedSelector = createSelector(

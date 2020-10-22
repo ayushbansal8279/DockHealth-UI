@@ -108,10 +108,35 @@ const TaskReducer = (state = initialState, action) => {
 
     case GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks } = action;
+      const group = groupedTasks.taskGroups[0];
+
+      const groupToUpdate = state.completedGroupedTasks.taskGroups?.find(
+        ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
+      );
+      const groupToUpdateIndex =
+        state.completedGroupedTasks?.taskGroups?.indexOf(groupToUpdate) || -1;
+      const updatedTaskGroups =
+        state.completedGroupedTasks?.taskGroups?.map(taskGroup =>
+          taskGroup.groupIdentifier === group?.groupIdentifier
+            ? {
+                ...taskGroup,
+                tasks: taskGroup.tasks.concat(group.tasks),
+                pageNumber: group.pageNumber,
+                hasMore: group.hasMore,
+              }
+            : taskGroup,
+        ) || [];
+      if (groupToUpdateIndex === -1) {
+        updatedTaskGroups.push(group);
+      }
+      const updatedGroupedTasks = {
+        ...state.completedGroupedTasks,
+        taskGroups: updatedTaskGroups,
+      };
 
       return {
         ...state,
-        completedGroupedTasks: groupedTasks,
+        completedGroupedTasks: updatedGroupedTasks,
         isCompletedTasksFetching: false,
         showingCompletedTasks: true,
         isFetching: false,
@@ -247,45 +272,53 @@ const TaskReducer = (state = initialState, action) => {
     case REFRESH_ANOTHER_TASK_SUCCESS: {
       const { task } = action;
 
-      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(
-        taskGroup => {
-          return {
-            ...taskGroup,
-            tasks: taskGroup.tasks.map(t => {
-              if (
-                t.taskIdentifier !== task.parentTaskIdentifier &&
-                t.taskIdentifier !== task.taskIdentifier
-              ) {
-                return t;
-              }
+      const groupedTasks =
+        task.status === 'COMPLETE'
+          ? state.completedGroupedTasks
+          : state.groupedTasks;
 
-              if (task.taskIdentifier === t.taskIdentifier) {
-                return { ...t, ...task };
-              }
+      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
+        return {
+          ...taskGroup,
+          tasks: taskGroup.tasks.map(t => {
+            if (
+              t.taskIdentifier !== task.parentTaskIdentifier &&
+              t.taskIdentifier !== task.taskIdentifier
+            ) {
+              return t;
+            }
 
-              return {
-                ...t,
-                subtasks: t.subtasks.map(subtask =>
-                  subtask.taskIdentifier === task.taskIdentifier
-                    ? { ...subtask, ...task }
-                    : subtask,
-                ),
-              };
-            }),
-          };
-        },
-      );
+            if (task.taskIdentifier === t.taskIdentifier) {
+              return { ...t, ...task };
+            }
+
+            return {
+              ...t,
+              subtasks: t.subtasks.map(subtask =>
+                subtask.taskIdentifier === task.taskIdentifier
+                  ? { ...subtask, ...task }
+                  : subtask,
+              ),
+            };
+          }),
+        };
+      });
       const updatedGroupedTasks = {
-        ...state.groupedTasks,
+        ...groupedTasks,
         taskGroups: updatedTaskGroups,
       };
+
+      if (task.status === 'COMPLETE') {
+        return {
+          ...state,
+          completedGroupedTasks: updatedGroupedTasks,
+        };
+      }
 
       return {
         ...state,
         groupedTasks: updatedGroupedTasks,
       };
-
-      // return updateStateCallback(state, updateTaskFromAction);
     }
 
     default:
