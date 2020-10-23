@@ -28,35 +28,6 @@ export const completedTasksIsFetchingMoreSelector = createSelector(
   ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
 );
 
-// const addGroupIfNotExists = (groupedTasks, groupName) => {
-//   if (groupedTasks[groupName]) {
-//     return;
-//   }
-//   // eslint-disable-next-line no-param-reassign
-//   groupedTasks[groupName] = [];
-// };
-
-// const addTaskToDefaultGroup = (groupedTasks, task) => {
-//   addGroupIfNotExists(groupedTasks, TASKGROUP_DEFAULT_TYPE);
-//   groupedTasks[TASKGROUP_DEFAULT_TYPE].push(task);
-// };
-
-// const sortByOrderProperty = (a, b) => {
-//   if (a.taskOrderProp === null && b.taskOrderProp === null) {
-//     return 0;
-//   }
-
-//   if (a.taskOrderProp === null) {
-//     return 1;
-//   }
-
-//   if (b.taskOrderProp === null) {
-//     return 1;
-//   }
-
-//   return a.taskOrderProp - b.taskOrderProp;
-// };
-
 export const tasksSelector = createSelector(
   listTasksSelector,
   ({ tasks }) => tasks,

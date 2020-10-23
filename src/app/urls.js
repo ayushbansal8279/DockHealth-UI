@@ -1,6 +1,5 @@
 const URLS = {
   taskGroupList: {
-    // get: listId => `task/group/getGroupsForTaskList/${listId}`,
     get: listId => `task/stats/getTaskStatsForListTaskGroups/${listId}`,
     add: 'task/group',
     edit: 'task/group',

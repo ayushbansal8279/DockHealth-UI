@@ -280,7 +280,7 @@ const TaskReducer = (state = initialState, action) => {
       const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
         return {
           ...taskGroup,
-          tasks: taskGroup.tasks.map(t => {
+          tasks: taskGroup?.tasks?.map(t => {
             if (
               t.taskIdentifier !== task.parentTaskIdentifier &&
               t.taskIdentifier !== task.taskIdentifier

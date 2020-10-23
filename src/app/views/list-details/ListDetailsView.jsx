@@ -415,15 +415,6 @@ class Home extends Component {
       routeParams: { taskListIdentifier },
     } = this.props;
 
-    // let queryStartPosition = 0;
-
-    // if (cumulativeFlag) {
-    //   queryStartPosition = completedTasks.reduce(
-    //     (counter, task) => counter + task.subtasks.length + 1,
-    //     0,
-    //   );
-    // }
-
     if (withLoader) {
       actions.loadingCompletedTasks();
     }

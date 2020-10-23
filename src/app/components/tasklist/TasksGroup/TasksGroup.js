@@ -110,22 +110,6 @@ const TasksGroup = ({
     }
   }, [groupTaskCounts, tasks, switchOpen]);
 
-  // const tasksAmount = useMemo(
-  //   () =>
-  //     tasks?.reduce(
-  //       (counter, task) =>
-  //         counter +
-  //         task.subtasks?.filter(x =>
-  //           isCompletedGroup
-  //             ? x.status === 'COMPLETE'
-  //             : x.status === 'INCOMPLETE',
-  //         ).length +
-  //         1,
-  //       0,
-  //     ) || 0,
-  //   [isCompletedGroup, tasks],
-  // );
-
   const onQuickAddTask = useCallback(
     task =>
       quickAddTask({

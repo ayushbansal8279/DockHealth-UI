@@ -7,7 +7,6 @@ const mapStateToProps = (state, ownProps) => {
   const {
     members,
     showMembers,
-    // selectedTab,
     tasks: openedTasks,
     completedTasks,
     openTasksAmount,
