@@ -21,6 +21,8 @@ import {
   INCREASE_INCOMPLETE_TASK_COUNTERS,
   INCREASE_COMPLETE_TASK_COUNTERS,
   REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+  REQUEST_TASKLIST_GROUP_TASKS,
+  // REQUEST_SUBTASKS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -100,10 +102,24 @@ const TaskReducer = (state = initialState, action) => {
         isFetchingMoreTasks: false,
       };
     }
+
     case GET_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks } = action;
+      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
+        return {
+          ...taskGroup,
+          isLoadingGroup: false,
+        };
+      });
 
-      return { ...state, groupedTasks, isFetching: false };
+      return {
+        ...state,
+        groupedTasks: {
+          ...groupedTasks,
+          taskGroups: updatedTaskGroups,
+        },
+        isFetching: false,
+      };
     }
 
     case GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
@@ -143,11 +159,47 @@ const TaskReducer = (state = initialState, action) => {
       };
     }
 
+    case REQUEST_TASKLIST_GROUP_TASKS: {
+      const { fetchedGroupIdentifier } = action;
+
+      const groupToUpdate = state.groupedTasks?.taskGroups?.find(
+        ({ groupIdentifier }) => groupIdentifier === fetchedGroupIdentifier,
+      );
+      const groupToUpdateIndex = state.groupedTasks?.taskGroups?.indexOf(
+        groupToUpdate,
+      );
+      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(taskGroup =>
+        taskGroup.groupIdentifier === fetchedGroupIdentifier
+          ? {
+              ...taskGroup,
+              isLoadingGroup: true,
+            }
+          : taskGroup,
+      );
+      if (groupToUpdateIndex === -1) {
+        updatedTaskGroups.push({
+          groupIdentifier: fetchedGroupIdentifier,
+          tasks: [],
+          hasMore: false,
+          pageNumber: 1,
+          isLoadingGroup: true,
+        });
+      }
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: updatedTaskGroups,
+        },
+      };
+    }
+
     case REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
       const { groupOfTasks } = action;
       const group = groupOfTasks.taskGroups[0];
 
-      const groupToUpdate = state.groupedTasks.taskGroups?.find(
+      const groupToUpdate = state.groupedTasks?.taskGroups?.find(
         ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
       );
       const groupToUpdateIndex = state.groupedTasks?.taskGroups?.indexOf(
@@ -160,21 +212,22 @@ const TaskReducer = (state = initialState, action) => {
               tasks: taskGroup.tasks.concat(group.tasks),
               pageNumber: group.pageNumber,
               hasMore: group.hasMore,
+              isLoadingGroup: false,
             }
           : taskGroup,
       );
       if (groupToUpdateIndex === -1) {
         // new group
+        group.isLoadingGroup = false;
         updatedTaskGroups.push(group);
       }
-      const updatedGroupedTasks = {
-        ...state.groupedTasks,
-        taskGroups: updatedTaskGroups,
-      };
 
       return {
         ...state,
-        groupedTasks: updatedGroupedTasks,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: updatedTaskGroups,
+        },
       };
     }
 

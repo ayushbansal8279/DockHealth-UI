@@ -137,6 +137,13 @@ const ListDetailsOpenedTasks = ({
                   : TASKGROUP_DEFAULT_TYPE
               ]?.tasks || []
             }
+            isLoadingGroup={
+              tasksGrouped[
+                groupType !== TASKGROUP_DEFAULT_TYPE
+                  ? taskGroupIdentifier
+                  : TASKGROUP_DEFAULT_TYPE
+              ]?.isLoadingGroup || false
+            }
             taskGroupIdentifier={taskGroupIdentifier}
             reorderSubtasksForTask={reorderSubtasksForTask}
             reassignTask={reassignTask}

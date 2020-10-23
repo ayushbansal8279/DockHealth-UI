@@ -32,6 +32,7 @@ import {
   SET_AS_CURRENT_TASK,
   INCREASE_INCOMPLETE_TASK_COUNTERS,
   ADD_TASK_SUCCESS,
+  REQUEST_TASKLIST_GROUP_TASKS,
   REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
 } from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
@@ -418,6 +419,10 @@ export function* doGetTasksForTaskGroup(payload) {
     const { taskGroupIdentifier, status, pageNumber } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
 
+    yield put({
+      type: REQUEST_TASKLIST_GROUP_TASKS,
+      fetchedGroupIdentifier: taskGroupIdentifier,
+    });
     const groupOfTasks = yield call(
       getTasksForTaskListByTaskGroup,
       taskListIdentifier,

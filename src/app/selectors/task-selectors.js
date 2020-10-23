@@ -47,6 +47,7 @@ export const groupTasksSelector = createSelector(
         tasks: taskGroup.tasks,
         hasMore: taskGroup.hasMore,
         pageNumber: taskGroup.pageNumber,
+        isLoadingGroup: taskGroup.isLoadingGroup,
       };
     });
 
