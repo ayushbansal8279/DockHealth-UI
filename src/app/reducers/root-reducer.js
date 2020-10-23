@@ -9,8 +9,8 @@ import InvitationReducer from './invitation-reducer';
 import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
 import OrganizationReducer from './organization-reducer';
-import patient from './patient';
-import PatientReducer from './patient-reducer';
+import PatientProfileReducer from './patient-profile-reducer';
+import PatientsListReducer from './patient-reducer';
 import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
 import ListDetailsReducer from './list-details-reducer';
@@ -32,14 +32,14 @@ const appReducer = combineReducers({
   alertsState: AlertsReducer,
   templateState: TemplateReducer,
   taskState: TaskReducer,
-  patientState: PatientReducer,
+  patientState: PatientsListReducer,
   userState: UserReducer,
   notification,
   taskListState: TaskListReducer,
   invitationState: InvitationReducer,
   peopleState: PeopleReducer,
   form: FormReducer,
-  patient,
+  patient: PatientProfileReducer,
   header: HeaderReducer,
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,

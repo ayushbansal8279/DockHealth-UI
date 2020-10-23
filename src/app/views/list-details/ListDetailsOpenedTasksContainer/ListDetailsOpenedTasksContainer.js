@@ -20,13 +20,13 @@ import ListDetailsOpenedTasks from './ListDetailsOpenedTasks';
 const mapStateToProps = (state, ownProps) => {
   const { searchValue, ...restOwnProps } = ownProps;
   const areFiltersApplied = hasFiltersAppliedSelector(state);
-  const tasks = groupTasksSelector(state);
-  const group = listDetailsGroupsSelector(state);
+  const groupedTasks = groupTasksSelector(state);
+  const groups = listDetailsGroupsSelector(state);
   const searchedGroupsWithTasks = !searchValue
-    ? tasks
-    : Object.keys(tasks).reduce((groupObject, currentKey) => {
+    ? groupedTasks
+    : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
         const searchedTasks = filterTasksBySearchValue(
-          tasks[currentKey],
+          groupedTasks[currentKey],
           searchValue,
         );
 
@@ -36,8 +36,8 @@ const mapStateToProps = (state, ownProps) => {
       }, {});
 
   const searchedGroupsList = !searchValue
-    ? group
-    : group.filter(
+    ? groups
+    : groups.filter(
         ({ taskGroupIdentifier, groupType }) =>
           Object.keys(searchedGroupsWithTasks).includes(taskGroupIdentifier) ||
           Object.keys(searchedGroupsWithTasks).includes(groupType),

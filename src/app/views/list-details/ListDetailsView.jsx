@@ -353,10 +353,6 @@ class Home extends Component {
     return this.refreshIncompleteTasks(withLoader);
   };
 
-  loadMoreTasks = () => {
-    this.refreshTab(false, true);
-  };
-
   refreshFilters = () => {
     const {
       routeParams: { taskListIdentifier, tabName },
@@ -419,15 +415,6 @@ class Home extends Component {
       routeParams: { taskListIdentifier },
     } = this.props;
 
-    let queryStartPosition = 0;
-
-    if (cumulativeFlag) {
-      queryStartPosition = completedTasks.reduce(
-        (counter, task) => counter + task.subtasks.length + 1,
-        0,
-      );
-    }
-
     if (withLoader) {
       actions.loadingCompletedTasks();
     }
@@ -447,7 +434,7 @@ class Home extends Component {
         taskListIdentifier,
         status,
         cumulativeFlag,
-        queryStartPosition,
+        // queryStartPosition,
       );
     }
   };
@@ -456,17 +443,17 @@ class Home extends Component {
     taskListIdentifier,
     status,
     cumulativeFlag = false,
-    queryStartPosition = 0,
+    pageNumber = 1,
   ) => {
     const { actions } = this.props;
 
-    return actions.getListTasks(
+    return actions.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       undefined,
       undefined,
       status,
       cumulativeFlag,
-      queryStartPosition,
+      pageNumber,
     );
   };
 
@@ -720,6 +707,28 @@ class Home extends Component {
     tasksGroupsListActions.createTaskGroupList({ groupName });
   };
 
+  loadTasksForTaskGroup = ({ taskGroupIdentifier, pageNumber }) => {
+    const { tasksGroupsListActions } = this.props;
+    const payload = {
+      taskGroupIdentifier,
+      status: 'INCOMPLETE',
+      pageNumber: pageNumber + 1,
+    };
+    tasksGroupsListActions.getTasksForTaskGroups(payload);
+  };
+
+  loadMoreTasksForList = ({ status, pageNumber }) => {
+    const { actions, routeParams } = this.props;
+    actions.getListTasksGroupedByTaskGroup(
+      routeParams.taskListIdentifier,
+      undefined,
+      undefined,
+      status,
+      false,
+      pageNumber + 1,
+    );
+  };
+
   render() {
     const {
       members,
@@ -772,11 +781,11 @@ class Home extends Component {
               toggleCompleteTask={this.toggleTaskCompletedStatus}
               summaryTasksCount={taskCounters.complete}
               reassignTask={this.handleReassignTask}
-              showMoreTasks={this.loadMoreTasks}
               updateDueDate={this.handleUpdateDueDate}
               searchValue={searchValue}
               selectedTask={selectedTask}
               listUniqueKey={taskListIdentifier}
+              loadMoreTasksForList={this.loadMoreTasksForList}
             />
           ) : (
             <OpenedTasksView
@@ -795,6 +804,7 @@ class Home extends Component {
               selectedTask={selectedTask}
               listUniqueKey={taskListIdentifier}
               taskCounters={taskCounters}
+              loadTasksForTaskGroup={this.loadTasksForTaskGroup}
             />
           )}
         </TaskViewContainer>

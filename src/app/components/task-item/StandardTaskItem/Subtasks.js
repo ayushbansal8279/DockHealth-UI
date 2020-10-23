@@ -27,7 +27,7 @@ const Subtasks = ({
   const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
 
   const subtasksOrder = useMemo(
-    () => subtasks.map(({ taskIdentifier }) => taskIdentifier),
+    () => subtasks?.map(({ taskIdentifier }) => taskIdentifier),
     [subtasks],
   );
 

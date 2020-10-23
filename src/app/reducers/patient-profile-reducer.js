@@ -19,8 +19,8 @@ import {
   UPDATE_PATIENT_NOTE,
   UPDATE_PATIENT_SUCCESS,
 } from 'actions/action-types';
-import TaskReducer from './task-reducer';
-import ListTasksReducer from './list-tasks-reducer';
+// import TaskReducer from './task-reducer';
+// import ListTasksReducer from './list-tasks-reducer';
 
 const initialState = {
   details: {},
@@ -119,16 +119,17 @@ const reducer = (state = initialState, action) => {
     }
 
     default: {
-      const { tasks, completedTasks, selectedTaskId } = state;
-      const taskState = TaskReducer({ selectedTaskId }, action);
-      const listTasks = ListTasksReducer({ tasks, completedTasks }, action);
+      // const { tasks, completedTasks, selectedTaskId, groupedTasks } = state;
+      // const taskState = TaskReducer({ selectedTaskId }, action);
+      // const listTasks = ListTasksReducer({ tasks, completedTasks, groupedTasks }, action);
 
-      return {
-        ...state,
-        tasks: listTasks.tasks,
-        completedTasks: listTasks.completedTasks,
-        selectedTaskId: taskState.selectedTaskId,
-      };
+      // return {
+      //   ...state,
+      //   tasks: listTasks.tasks,
+      //   completedTasks: listTasks.completedTasks,
+      //   selectedTaskId: taskState.selectedTaskId,
+      // };
+      return state;
     }
   }
 };

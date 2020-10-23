@@ -49,6 +49,14 @@ const getListAction = ({ status, cumulativeFlag }) => {
     : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 };
 
+const getListWithGroupsAction = ({ status }) => {
+  if (status === 'INCOMPLETE') {
+    return ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS;
+  }
+
+  return ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
+};
+
 function getTasksForCreatorSuccess(tasks) {
   return { type: ActionTypes.GET_TASKS_SUCCESS, tasks };
 }
@@ -105,6 +113,59 @@ export function getListTasks(
         }
 
         return tasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+export function getListTasksGroupedByTaskGroup(
+  taskListIdentifier,
+  sortBy,
+  filterBy,
+  status,
+  cumulativeFlag,
+  pageNumber = 1,
+) {
+  const action = getListWithGroupsAction({ status });
+
+  return dispatch => {
+    if (cumulativeFlag) {
+      dispatch({ type: ActionTypes.GET_MORE_TASKS_REQUEST });
+    }
+
+    return TaskApi.getListTasksGroupedByTaskGroup(
+      taskListIdentifier,
+      status,
+      sortBy,
+      filterBy,
+      pageNumber,
+    )
+      .then(groupedTasks => {
+        dispatch({ type: action, groupedTasks });
+
+        const selectedTaskIdentifier = sessionStorage.getItem(
+          'selectedTaskIdentifier',
+        );
+
+        const allTasks = [];
+        groupedTasks.taskGroups.forEach(taskGroup => {
+          if (taskGroup.tasks) {
+            allTasks.push(taskGroup.tasks);
+          }
+        });
+        const selectedTask = allTasks.find(
+          ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
+        );
+
+        if (selectedTask) {
+          dispatch(storeAsCurrentTask(selectedTask));
+          dispatch(openDrawer());
+          sessionStorage.removeItem('selectedTaskIdentifier');
+        }
+
+        return groupedTasks;
       })
       .catch(error => {
         throw error;
@@ -1093,8 +1154,8 @@ export function getFilteredTasksForList(
 ) {
   const action =
     status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      ? ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS
+      : ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
 
   return dispatch => {
     if (withLoader) {
@@ -1111,9 +1172,9 @@ export function getFilteredTasksForList(
       status,
       selectedFilters,
     )
-      .then(tasks => {
-        dispatch({ type: action, tasks });
-        return tasks;
+      .then(groupedTasks => {
+        dispatch({ type: action, groupedTasks });
+        return groupedTasks;
       })
       .catch(error => {
         throw error;
@@ -1190,3 +1251,18 @@ export function markTaskRead(task) {
         throw error;
       });
 }
+
+export const loadSubTasks = taskIdentifier => dispatch =>
+  TaskApi.getTaskDetails(taskIdentifier)
+    .then(task => {
+      // explicitly mark task as updated so we can show the flag
+      task.updated = true; // eslint-disable-line no-param-reassign
+      dispatch({
+        type: ActionTypes.LOAD_SUBTASKS_SUCCESS,
+        task,
+      });
+      return task;
+    })
+    .catch(error => {
+      throw error;
+    });

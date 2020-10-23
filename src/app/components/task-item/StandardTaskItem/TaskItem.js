@@ -6,7 +6,11 @@ import moment from 'moment';
 import { isEmpty } from 'ramda';
 import Highlighter from 'react-highlight-words';
 import { openDrawer } from 'actions/task-drawer-actions';
-import { prepareSubtask, storeAsCurrentTask } from 'actions/task-actions';
+import {
+  prepareSubtask,
+  storeAsCurrentTask,
+  loadSubTasks,
+} from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
@@ -124,6 +128,7 @@ const TaskItem = ({
   updateDueDate,
   updateWorkflowStatus,
   subtasks,
+  subTasksCount,
   dragAndDropDisabled,
   listNameVisible,
   patientVisible = true,
@@ -272,9 +277,16 @@ const TaskItem = ({
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
-      switchOpen(!isOpen);
+      if (subTasksCount > 0 && isEmpty(subtasks)) {
+        dispatch(loadSubTasks(taskIdentifier));
+        if (!isOpen) {
+          switchOpen(true);
+        }
+      } else {
+        switchOpen(!isOpen);
+      }
     },
-    [switchOpen, isOpen],
+    [subTasksCount, subtasks, dispatch, taskIdentifier, isOpen, switchOpen],
   );
 
   const onPatientClick = useCallback(() => {
@@ -366,12 +378,14 @@ const TaskItem = ({
                 `}</span>
             </CompletedBy>
             <SubtasksBox>
-              {!isEmpty(subtasks) && subtasks?.length > 0 && (
-                <SubtasksGroupLabel onClick={onSubtaskLabelClick}>
-                  <span>{subtasks?.length} subtasks</span>
-                  <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
-                </SubtasksGroupLabel>
-              )}
+              {(subTasksCount > 0 ||
+                (!isEmpty(subtasks) && subtasks?.length > 0)) &&
+                !isSubtask && (
+                  <SubtasksGroupLabel onClick={onSubtaskLabelClick}>
+                    <span>{subtasks?.length || subTasksCount} subtasks</span>
+                    <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
+                  </SubtasksGroupLabel>
+                )}
               {!isSubtask && isSelectedTask && (
                 <SubtasksAddLabel onClick={onAddSubtaskLabelClick}>
                   Add a subtask

@@ -41,7 +41,7 @@ export function getTaskStatsForUser(userIdentifier) {
 
 export function getListTasksByUser(
   taskListIdentifier,
-  status = 'COMPLETE',
+  status = 'INCOMPLETE',
   sortBy,
   filterBy,
   queryStartPosition = 0,
@@ -51,6 +51,28 @@ export function getListTasksByUser(
       params: {
         status,
         queryStartPosition,
+        sortBy: sortBy || undefined,
+        filterBy: filterBy || undefined,
+      },
+    })
+    .then(response => response?.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getListTasksGroupedByTaskGroup(
+  taskListIdentifier,
+  status = 'INCOMPLETE',
+  sortBy,
+  filterBy,
+  pageNumber = 1,
+) {
+  return axios
+    .get(`task/findListTasksGroupedByTaskGroup/${taskListIdentifier}`, {
+      params: {
+        status,
+        pageNumber,
         sortBy: sortBy || undefined,
         filterBy: filterBy || undefined,
       },
@@ -764,6 +786,22 @@ export function getFilteredTasksForPersonList(
     .post(
       `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?status=${status}`,
       selectedFilters,
+    )
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getTasksForTaskListByTaskGroup(
+  taskListIdentifier,
+  taskGroupIdentifier,
+  status,
+  pageNumber = 1,
+) {
+  return axios
+    .get(
+      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&pageNumber=${pageNumber}`,
     )
     .then(({ data }) => data)
     .catch(error => {

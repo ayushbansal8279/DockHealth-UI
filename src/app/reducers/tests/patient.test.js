@@ -3,7 +3,7 @@ import {
   FETCH_PATIENT_ERROR,
   FETCH_PATIENT_SUCCESS,
 } from 'actions/action-types';
-import reducer from '../patient';
+import reducer from '../patient-profile-reducer';
 
 describe('patient reducer', () => {
   it('should return initial state', () => {

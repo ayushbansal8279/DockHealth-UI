@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { createSelector } from 'reselect';
-import { sort } from 'ramda';
+// import { sort } from 'ramda';
 import memoize from 'lodash.memoize';
-import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
+// import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { listDetailsGroupsSelector } from './list-details-selectors';
 
@@ -28,35 +28,6 @@ export const completedTasksIsFetchingMoreSelector = createSelector(
   ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
 );
 
-const addGroupIfNotExists = (groupedTasks, groupName) => {
-  if (groupedTasks[groupName]) {
-    return;
-  }
-  // eslint-disable-next-line no-param-reassign
-  groupedTasks[groupName] = [];
-};
-
-const addTaskToDefaultGroup = (groupedTasks, task) => {
-  addGroupIfNotExists(groupedTasks, TASKGROUP_DEFAULT_TYPE);
-  groupedTasks[TASKGROUP_DEFAULT_TYPE].push(task);
-};
-
-const sortByOrderProperty = (a, b) => {
-  if (a.taskOrderProp === null && b.taskOrderProp === null) {
-    return 0;
-  }
-
-  if (a.taskOrderProp === null) {
-    return 1;
-  }
-
-  if (b.taskOrderProp === null) {
-    return 1;
-  }
-
-  return a.taskOrderProp - b.taskOrderProp;
-};
-
 export const tasksSelector = createSelector(
   listTasksSelector,
   ({ tasks }) => tasks,
@@ -64,38 +35,28 @@ export const tasksSelector = createSelector(
 
 export const groupTasksSelector = createSelector(
   listTasksSelector,
-  ({ tasks }) => {
-    if (!tasks) {
+  ({ groupedTasks }) => {
+    if (!groupedTasks) {
       return {};
     }
-    const groupedTasks = {};
+    const groupedTasksMap = {};
 
-    tasks.forEach(task => {
-      if (!task.taskGroups || task.taskGroups.length === 0) {
-        addTaskToDefaultGroup(groupedTasks, task);
-      } else {
-        task.taskGroups.forEach(taskGroup => {
-          if (taskGroup.groupType !== TASKGROUP_DEFAULT_TYPE) {
-            addGroupIfNotExists(groupedTasks, taskGroup.taskGroupIdentifier);
-            groupedTasks[taskGroup.taskGroupIdentifier].push({
-              ...task,
-              taskOrderProp: taskGroup.sortIndexOfTaskInGroup,
-            });
-          } else {
-            addTaskToDefaultGroup(groupedTasks, {
-              ...task,
-              taskOrderProp: taskGroup.sortIndexOfTaskInGroup,
-            });
-          }
-        });
-      }
+    // const sortIndexOfTaskInGroup = 1;
+    groupedTasks?.taskGroups?.forEach(taskGroup => {
+      groupedTasksMap[taskGroup.groupIdentifier] = {
+        tasks: taskGroup.tasks,
+        hasMore: taskGroup.hasMore,
+        pageNumber: taskGroup.pageNumber,
+      };
     });
 
-    return Object.keys(groupedTasks).reduce((groupsObject, key) => {
-      groupsObject[key] = sort(sortByOrderProperty, groupedTasks[key]);
-      return groupsObject;
-    }, {});
+    return groupedTasksMap;
   },
+);
+
+export const groupCompletedTasksSelector = createSelector(
+  listTasksSelector,
+  ({ completedGroupedTasks }) => completedGroupedTasks?.taskGroups?.[0],
 );
 
 export const taskIsSelectedSelector = createSelector(

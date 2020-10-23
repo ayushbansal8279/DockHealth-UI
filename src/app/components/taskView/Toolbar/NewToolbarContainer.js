@@ -7,38 +7,18 @@ const mapStateToProps = (state, ownProps) => {
   const {
     members,
     showMembers,
-    selectedTab,
-    tasks: propertyTasks,
-    completedTasks: propertyCompletedTasks,
+    tasks: openedTasks,
+    completedTasks,
+    openTasksAmount,
+    completedTasksAmount,
   } = ownProps;
-  const completedTasks =
-    selectedTab === TaskListTabName.COMPLETE ? propertyCompletedTasks : [];
-  const openedTasks = selectedTab === TaskListTabName.OPEN ? propertyTasks : [];
 
   const haveTasks =
-    (openedTasks &&
-      openedTasks.length > 0 &&
-      ownProps.selectedTab === TaskListTabName.OPEN) ||
-    (completedTasks &&
-      completedTasks.length > 0 &&
+    (openTasksAmount > 0 && ownProps.selectedTab === TaskListTabName.OPEN) ||
+    (completedTasksAmount > 0 &&
       ownProps.selectedTab === TaskListTabName.COMPLETE);
 
-  const tasksAndSubTasksCount =
-    ownProps.selectedTab === TaskListTabName.OPEN
-      ? openedTasks?.reduce(
-          (counter, task) =>
-            counter +
-            task.subtasks?.filter(x => x.status === 'INCOMPLETE').length +
-            1,
-          0,
-        ) || 0
-      : completedTasks?.reduce(
-          (counter, task) =>
-            counter +
-            task.subtasks?.filter(x => x.status === 'COMPLETE').length +
-            1,
-          0,
-        ) || 0;
+  const tasksAndSubTasksCount = openTasksAmount;
 
   return {
     printData: {
