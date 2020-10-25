@@ -16,13 +16,13 @@ import {
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   TASK_ARCHIVED,
   UPDATE_TASK_SUCCESS,
+  REQUEST_LOAD_SUBTASKS,
   LOAD_SUBTASKS_SUCCESS,
   REFRESH_ANOTHER_TASK_SUCCESS,
   INCREASE_INCOMPLETE_TASK_COUNTERS,
   INCREASE_COMPLETE_TASK_COUNTERS,
   REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
   REQUEST_TASKLIST_GROUP_TASKS,
-  // REQUEST_SUBTASKS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -38,6 +38,7 @@ const initialState = {
   taskCountStats: null,
   isFetchingMoreTasks: false,
   taskCounters: {},
+  // isFetchingSubTasks: false,
 };
 
 const mapTasksSuccess = task => ({
@@ -320,6 +321,54 @@ const TaskReducer = (state = initialState, action) => {
       return TaskBaseReducer(state, action, updateCompletedTasksStateCallback);
     }
 
+    case REQUEST_LOAD_SUBTASKS: {
+      // return { ...state, isFetchingSubTasks: true };
+      const { task } = action;
+
+      const groupedTasks =
+        task.status === 'COMPLETE'
+          ? state.completedGroupedTasks
+          : state.groupedTasks;
+
+      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
+        return {
+          ...taskGroup,
+          tasks: taskGroup?.tasks?.map(t => {
+            if (
+              t.taskIdentifier !== task.parentTaskIdentifier &&
+              t.taskIdentifier !== task.taskIdentifier
+            ) {
+              return t;
+            }
+
+            if (task.taskIdentifier === t.taskIdentifier) {
+              return { ...t, ...task, isFetchingSubTasks: true };
+            }
+
+            return {
+              ...t,
+            };
+          }),
+        };
+      });
+      const updatedGroupedTasks = {
+        ...groupedTasks,
+        taskGroups: updatedTaskGroups,
+      };
+
+      if (task.status === 'COMPLETE') {
+        return {
+          ...state,
+          completedGroupedTasks: updatedGroupedTasks,
+        };
+      }
+
+      return {
+        ...state,
+        groupedTasks: updatedGroupedTasks,
+      };
+    }
+
     case UPDATE_TASK_SUCCESS:
     case LOAD_SUBTASKS_SUCCESS:
     case REFRESH_ANOTHER_TASK_SUCCESS: {
@@ -352,6 +401,7 @@ const TaskReducer = (state = initialState, action) => {
                   ? { ...subtask, ...task }
                   : subtask,
               ),
+              isFetchingSubTasks: false,
             };
           }),
         };

@@ -278,7 +278,7 @@ const TaskItem = ({
     event => {
       event.stopPropagation();
       if (subTasksCount > 0 && isEmpty(subtasks)) {
-        dispatch(loadSubTasks(taskIdentifier));
+        dispatch(loadSubTasks(task));
         if (!isOpen) {
           switchOpen(true);
         }
@@ -286,7 +286,7 @@ const TaskItem = ({
         switchOpen(!isOpen);
       }
     },
-    [subTasksCount, subtasks, dispatch, taskIdentifier, isOpen, switchOpen],
+    [subTasksCount, subtasks, dispatch, task, isOpen, switchOpen],
   );
 
   const onPatientClick = useCallback(() => {

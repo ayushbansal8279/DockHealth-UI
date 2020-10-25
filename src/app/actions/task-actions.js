@@ -1252,17 +1252,23 @@ export function markTaskRead(task) {
       });
 }
 
-export const loadSubTasks = taskIdentifier => dispatch =>
-  TaskApi.getTaskDetails(taskIdentifier)
-    .then(task => {
+export const loadSubTasks = task => dispatch => {
+  dispatch({
+    type: ActionTypes.REQUEST_LOAD_SUBTASKS,
+    task,
+  });
+
+  return TaskApi.getTaskDetails(task?.taskIdentifier)
+    .then(loadedtask => {
       // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
+      loadedtask.updated = true; // eslint-disable-line no-param-reassign
       dispatch({
         type: ActionTypes.LOAD_SUBTASKS_SUCCESS,
-        task,
+        task: loadedtask,
       });
-      return task;
+      return loadedtask;
     })
     .catch(error => {
       throw error;
     });
+};
