@@ -49,17 +49,35 @@ const mapTasksSuccess = task => ({
   })),
 });
 
+const updateTaskInList = (taskGroups, updateTaskCallback) =>
+  taskGroups.map(group => {
+    const updatedTasks = group.tasks ? updateTaskCallback(group.tasks) : [];
+    return { ...group, tasks: updatedTasks };
+  });
+
 const updateTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    tasks: updateTaskFromAction(state.tasks || []),
+    groupedTasks: {
+      ...state.groupedTasks,
+      taskGroups: updateTaskInList(
+        state.groupedTasks?.taskGroups,
+        updateTaskFromAction,
+      ),
+    },
   };
 };
 
 const updateCompletedTasksStateCallback = (state, updateTaskFromAction) => {
   return {
     ...state,
-    completedTasks: updateTaskFromAction(state.completedTasks || []),
+    completedGroupedTasks: {
+      ...state.completedGroupedTasks,
+      taskGroups: updateTaskInList(
+        state.completedGroupedTasks?.taskGroups,
+        updateTaskFromAction,
+      ),
+    },
   };
 };
 
