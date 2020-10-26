@@ -151,6 +151,7 @@ export const SubtasksGroupLabel = styled.span`
   font-size: ${fontSizes.regular};
   cursor: pointer;
   margin-right: ${spacing.regularPlus};
+  width: 200px;
 `;
 
 export const StandardTaskItemCell = styled.div`
@@ -234,6 +235,16 @@ export const StandardTaskItemPanel = styled.div`
     & ${ThreeDots}, & ${AddPlaceholder}, & ${PriorityHoverIcon} {
       opacity: 1;
     }
+  }
+`;
+
+export const TaskItemParentTaskLabel = styled.div`
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey2};
+
+  & > span {
+    color: ${palette.brightBlue};
+    cursor: pointer;
   }
 `;
 

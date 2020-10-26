@@ -84,7 +84,7 @@ function findWithRegex(words, contentBlock, callback) {
   const text = contentBlock.getText();
 
   words.forEach(word => {
-    const matches = [...text.matchAll(word)];
+    const matches = [...text.matchAll(new RegExp(word, 'gi'))];
     matches.forEach(match =>
       callback(match.index, match.index + match[0].length),
     );

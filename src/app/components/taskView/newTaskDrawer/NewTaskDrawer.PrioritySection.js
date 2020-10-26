@@ -29,13 +29,13 @@ const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
 
 const PRIORITY_FIELD_NAME = 'priority';
 
-const PrioritySection = ({ setAutoSaveVisible }) => {
+const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
   const reference = useRef(null);
   const {
     currentPriorityFlagColor,
     saveTaskPriority,
     setValue,
-  } = initializePrioritySectionHooks({ setAutoSaveVisible });
+  } = initializePrioritySectionHooks({ setAutoSaveVisible, onTaskUpdate });
 
   const selectOption = value => {
     if (value === 'NONE') {

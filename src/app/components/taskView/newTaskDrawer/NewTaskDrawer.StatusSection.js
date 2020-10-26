@@ -28,13 +28,16 @@ const statusOptions = STATUSES.map(({ value, label, color }) => ({
 
 const STATUS_FIELD_NAME = 'workflowStatus';
 
-const StatusSection = ({ setAutoSaveVisible, refreshList }) => {
+const StatusSection = ({ setAutoSaveVisible, onTaskUpdate }) => {
   const reference = useRef(null);
   const {
     currentStatusFlagColor,
     saveTaskStatus,
     setValue,
-  } = initializeStatusSectionHooks({ setAutoSaveVisible, refreshList });
+  } = initializeStatusSectionHooks({
+    setAutoSaveVisible,
+    onTaskUpdate,
+  });
 
   const selectOption = value => {
     if (value === 'NO_STATUS') {

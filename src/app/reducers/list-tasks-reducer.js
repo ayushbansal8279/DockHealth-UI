@@ -15,6 +15,8 @@ import {
   TASK_ARCHIVED,
   UPDATE_TASK_SUCCESS,
   REFRESH_ANOTHER_TASK_SUCCESS,
+  INCREASE_INCOMPLETE_TASK_COUNTERS,
+  INCREASE_COMPLETE_TASK_COUNTERS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -125,7 +127,6 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         taskCounters: action.payload,
-        completedTasksCounter: action.payload.completedTasksCounter,
       };
 
     case CLEAR_TASKS_SEARCH:
@@ -133,6 +134,29 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: [],
         completedTasks: [],
+      };
+
+    case INCREASE_INCOMPLETE_TASK_COUNTERS: {
+      return {
+        ...state,
+        taskCounters: state.taskCounters
+          ? {
+              ...state.taskCounters,
+              incomplete: state.taskCounters?.incomplete + 1,
+            }
+          : {},
+      };
+    }
+
+    case INCREASE_COMPLETE_TASK_COUNTERS:
+      return {
+        ...state,
+        taskCounters: state.taskCounters
+          ? {
+              ...state.taskCounters,
+              complete: state.taskCounters.complete + 1,
+            }
+          : {},
       };
 
     case HIDE_COMPLETED_TASKS:

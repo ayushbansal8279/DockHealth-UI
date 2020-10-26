@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import * as AlertActions from 'alert/actions';
 import useBoolean from 'hooks/useBoolean';
@@ -26,6 +26,10 @@ const DueTimeSection = ({
   const [isFocus, setFocus, unsetFocus] = useBoolean(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setErrorMessage(null);
+  }, [selectedTask]);
 
   const clearDueTime = async () => {
     setDueTimeValue('dueTime', null);
@@ -57,17 +61,21 @@ const DueTimeSection = ({
   );
 
   const handleSaveDueTime = value => {
-    if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(value)) {
-      setErrorMessage(
-        'Time must be between 12:00 AM and 11:59 PM and include AM/PM',
-      );
-      return;
+    if (value !== undefined && value !== '' && value !== '__:__ __') {
+      if (!TIME_12H_FORMAT_REGULAR_EXPRESSION.test(value)) {
+        setErrorMessage(
+          'Time must be between 12:00 AM and 11:59 PM and include AM/PM',
+        );
+        return;
+      }
+      setErrorMessage(null);
+      saveDueDate({
+        updatedDueDate: dueDateValue,
+        updatedDueTime: value,
+      });
+    } else {
+      setErrorMessage(null);
     }
-    setErrorMessage(null);
-    saveDueDate({
-      updatedDueDate: dueDateValue,
-      updatedDueTime: value,
-    });
     unsetFocus();
   };
 

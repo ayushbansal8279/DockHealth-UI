@@ -35,7 +35,7 @@ export const STATUSES = [
   },
 ];
 
-const initializeStatusSectionHooks = ({ setAutoSaveVisible, refreshList }) => {
+const initializeStatusSectionHooks = ({ setAutoSaveVisible, onTaskUpdate }) => {
   const { watch, setValue } = useFormContext();
   const currentValue = watch('workflowStatus');
   const dispatch = useDispatch();
@@ -50,8 +50,8 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible, refreshList }) => {
           selectedTask,
           newTaskStatus,
         )(dispatch)
-          .then(() => {
-            refreshList();
+          .then(updatedTask => {
+            onTaskUpdate(updatedTask);
             setAutoSaveVisible();
           })
           .catch(() => {

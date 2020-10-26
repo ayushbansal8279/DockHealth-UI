@@ -1,13 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
-import { isEmpty, pick } from 'ramda';
+import { isEmpty } from 'ramda';
 import Highlighter from 'react-highlight-words';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
-import { prepareSubtask } from 'actions/task-actions';
+import { openDrawer } from 'actions/task-drawer-actions';
+import { prepareSubtask, storeAsCurrentTask } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
@@ -20,16 +19,14 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import palette from 'styles/palette';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
-import TaskComments from 'views/Task/NewTasksView/TaskComments/TaskComments';
-import TaskAssignMember from 'views/Task/NewTasksView/TaskAssignMember/TaskAssignMember';
-import TaskWorkflowStatus from 'views/Task/NewTasksView/TaskWorkflowStatus/TaskWorkflowStatus';
-import { onDragEndSubtask } from 'views/Task/NewTasksView/DragDrop.helpers';
-import { Tasks as SubtasksContainer } from 'views/Task/NewTasksView/TasksGroup/styled';
-import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
+import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import Spacing from 'components/common/Spacing';
 import TaskItemStatus from './TaskItemStatus';
 
 import {
@@ -73,14 +70,8 @@ import {
   SubtaskStylingLinkContainer,
   SubtaskStylingVerticalPart,
   SubtaskStylingHorizontalPart,
+  TaskItemParentTaskLabel,
 } from '../styled';
-
-const getMatchedComments = (comments, matchingCommentIdentifiers) =>
-  matchingCommentIdentifiers
-    ? comments.filter(({ commentIdentifier }) =>
-        matchingCommentIdentifiers.includes(commentIdentifier),
-      )
-    : comments;
 
 const getToolTipMultiLabelDetails = labels => {
   let toolTipMultiLabelDetails = '';
@@ -123,8 +114,6 @@ const TaskItem = ({
   isOpen,
   switchOpen,
   toggleCompleteTask,
-  openDrawer,
-  storeAsCurrentTask,
   toggleTaskPriority,
   task,
   dragHandleProps,
@@ -144,6 +133,7 @@ const TaskItem = ({
   isDraggable,
   isLast,
   showSubtaskStylingLink,
+  isNestedTask = false,
 }) => {
   const {
     taskIdentifier,
@@ -160,10 +150,12 @@ const TaskItem = ({
     workflowStatus,
     completedDt,
     completedBy,
-    taskList,
+    taskList = {},
     parentTaskIdentifier,
     searchMetaData = {},
+    parentTask,
   } = task;
+  const { listName, taskListIdentifier } = taskList;
 
   const {
     matchAssignedTo,
@@ -176,11 +168,6 @@ const TaskItem = ({
     matchWorkflowStatus,
   } = searchMetaData;
 
-  const dispatch = useDispatch();
-
-  const listName = taskList?.listName;
-  const taskListIdentifier = taskList?.taskListIdentifier;
-
   const [isHovered, setIsHoverd] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -189,6 +176,7 @@ const TaskItem = ({
       mentions: taskMentions,
     }),
   );
+  const dispatch = useDispatch();
   const previousDescription = useRef(null);
 
   useEffect(() => {
@@ -205,7 +193,6 @@ const TaskItem = ({
   }, [description]);
 
   const isCompleted = task.status === 'COMPLETE';
-
   const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
 
@@ -235,19 +222,97 @@ const TaskItem = ({
     (selectedTask?.taskIdentifier == null &&
       selectedTask?.parentTaskIdentifier === taskIdentifier);
 
+  const onMouseEnter = () => setIsHoverd(true);
+  const onMouseLeave = () => setIsHoverd(false);
+
+  const onPrioritySwtich = useCallback(
+    () => toggleTaskPriority(task),
+
+    [task, toggleTaskPriority],
+  );
+
+  const onClickTaskItem = useCallback(() => {
+    dispatch(openDrawer());
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
+
+  const onCircleClick = useCallback(
+    event => {
+      if (isTaskStatusTogglingEnabled) {
+        toggleCompleteTask(task);
+      }
+      event.stopPropagation();
+    },
+    [isTaskStatusTogglingEnabled, task, toggleCompleteTask],
+  );
+
+  const onParentLabelClick = useCallback(
+    event => {
+      event.preventDefault();
+      event.stopPropagation();
+      dispatch(openDrawer());
+      dispatch(storeAsCurrentTask(parentTask));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [parentTask],
+  );
+
+  const onAddSubtaskLabelClick = useCallback(
+    event => {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      prepareSubtask(taskIdentifier)(dispatch);
+    },
+    [taskIdentifier, dispatch],
+  );
+
+  const onSubtaskLabelClick = useCallback(
+    event => {
+      event.stopPropagation();
+      switchOpen(!isOpen);
+    },
+    [switchOpen, isOpen],
+  );
+
+  const onPatientClick = useCallback(() => {
+    if (!patient) {
+      dispatch(openDrawer(FocusDrawerFieldEnum.PATIENT));
+      dispatch(storeAsCurrentTask(task));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patient, task]);
+
+  const onCommentClick = useCallback(() => {
+    dispatch(openDrawer(FocusDrawerFieldEnum.COMMENT));
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
+
+  const onAttachmentsClick = useCallback(() => {
+    dispatch(openDrawer(FocusDrawerFieldEnum.ATTACHMENT));
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
+
+  const showDraggableDots = !dragAndDropDisabled && isDraggable;
+  const showPriority = task.priority === 'HIGH';
+
   return (
     <StandardTaskItemPanel
       isDragging={isDragging}
-      onMouseEnter={() => setIsHoverd(true)}
-      onMouseLeave={() => setIsHoverd(false)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <StandardTaskItemContainer isSelected={isSelectedTask}>
         {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-        {!dragAndDropDisabled && isDraggable && (
+        {showDraggableDots && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
-        <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
-          {task.priority === 'HIGH' ? (
+        <PrioritySwitch onClick={onPrioritySwtich}>
+          {showPriority ? (
             <img src={HighPriorityLabel} alt="Priority icon" />
           ) : (
             <PriorityHoverIcon
@@ -260,20 +325,12 @@ const TaskItem = ({
         <StandardTaskItemCell
           bolded
           paddingLeft="huge"
-          onClick={() => {
-            openDrawer();
-            storeAsCurrentTask(task);
-          }}
+          onClick={onClickTaskItem}
         >
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
             isClickable={isTaskStatusTogglingEnabled}
-            onClick={event => {
-              if (isTaskStatusTogglingEnabled) {
-                toggleCompleteTask(task);
-              }
-              event.stopPropagation();
-            }}
+            onClick={onCircleClick}
           />
           <DescriptionBox>
             <Description isCrossedOut={!isCompletedGroup && isCompleted}>
@@ -288,6 +345,17 @@ const TaskItem = ({
                 }
               />
             </Description>
+            {isSubtask && !isNestedTask && parentTask && (
+              <>
+                <TaskItemParentTaskLabel>
+                  Subtask of
+                  <span
+                    onClick={onParentLabelClick}
+                  >{` ${parentTask.description}`}</span>
+                </TaskItemParentTaskLabel>
+                {isCompleted && <Spacing vertical={2} />}
+              </>
+            )}
             <CompletedBy isCompleted={isCompleted}>
               <span>{`Completed by ${completedByName} ${completedDt &&
                 ` on ${
@@ -299,26 +367,13 @@ const TaskItem = ({
             </CompletedBy>
             <SubtasksBox>
               {!isEmpty(subtasks) && subtasks?.length > 0 && (
-                <SubtasksGroupLabel
-                  onClick={event => {
-                    event.stopPropagation();
-                    switchOpen(!isOpen);
-                  }}
-                >
+                <SubtasksGroupLabel onClick={onSubtaskLabelClick}>
                   <span>{subtasks?.length} subtasks</span>
                   <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
                 </SubtasksGroupLabel>
               )}
               {!isSubtask && isSelectedTask && (
-                <SubtasksAddLabel
-                  onClick={async event => {
-                    if (event) {
-                      event.preventDefault();
-                      event.stopPropagation();
-                    }
-                    prepareSubtask(taskIdentifier)(dispatch);
-                  }}
-                >
+                <SubtasksAddLabel onClick={onAddSubtaskLabelClick}>
                   Add a subtask
                 </SubtasksAddLabel>
               )}
@@ -327,14 +382,7 @@ const TaskItem = ({
         </StandardTaskItemCell>
         {patientVisible && (
           <StandardTaskItemCell width="164px">
-            <ClickablePatient
-              onClick={() => {
-                if (!patient) {
-                  openDrawer(FocusDrawerFieldEnum.PATIENT);
-                  storeAsCurrentTask(task);
-                }
-              }}
-            >
+            <ClickablePatient onClick={onPatientClick}>
               {task.status !== 'COMPLETE' && !isSubtask && !patient && (
                 <AddPlaceholder>+ Add Patient</AddPlaceholder>
               )}
@@ -396,12 +444,7 @@ const TaskItem = ({
                     : 'Add a new comment'
                 }
               >
-                <ClickableStandardTaskItemIcon
-                  onClick={() => {
-                    openDrawer(FocusDrawerFieldEnum.COMMENT);
-                    storeAsCurrentTask(task);
-                  }}
-                >
+                <ClickableStandardTaskItemIcon onClick={onCommentClick}>
                   <img
                     alt="comments"
                     src={getItemIcon(
@@ -467,12 +510,7 @@ const TaskItem = ({
                     : 'Add label'
                 }
               >
-                <ClickableStandardTaskItemIcon
-                  onClick={() => {
-                    openDrawer(FocusDrawerFieldEnum.LABEL);
-                    storeAsCurrentTask(task);
-                  }}
-                >
+                <ClickableStandardTaskItemIcon onClick={onCommentClick}>
                   <img
                     alt="labels"
                     src={getItemIcon(
@@ -494,13 +532,7 @@ const TaskItem = ({
                     : 'Add file'
                 }
               >
-                <ClickableStandardTaskItemIcon
-                  onClick={() => {
-                    openDrawer(FocusDrawerFieldEnum.ATTACHMENT);
-                    storeAsCurrentTask(task);
-                  }}
-                >
-                  {' '}
+                <ClickableStandardTaskItemIcon onClick={onAttachmentsClick}>
                   <img
                     alt="attachments"
                     src={getItemIcon(
@@ -554,196 +586,4 @@ const TaskItem = ({
   );
 };
 
-const Subtasks = ({
-  subtasks,
-  isOpen,
-  isFullView,
-  groupId,
-  parentTaskId,
-  reorderSubtasksForTask,
-  reassignTask,
-  currentUser,
-  parentHasPatient,
-  taskList,
-  isDraggable,
-  ...restProps
-}) => {
-  const [draggedId, setDraggableId] = useState(false);
-  const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
-  const subtasksOrder = subtasks.map(({ taskIdentifier }) => taskIdentifier);
-  const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
-
-  useEffect(() => {
-    reorderSubtasksInState(subtasks);
-  }, [subtasks]);
-
-  return (
-    <SubtasksContainer issubtasks="true" in={isOpen}>
-      <DragDropContext
-        onBeforeCapture={({ draggableId }) => {
-          setDraggableId(draggableId);
-        }}
-        onDragEnd={eventBundle =>
-          onDragEndSubtask({
-            eventBundle,
-            subtasksOrder,
-            reorderSubtasksForTask,
-            groupId,
-            parentTaskId,
-            orderedSubtasks,
-            reorderSubtasksInState,
-            setDraggableId,
-          })
-        }
-      >
-        <Droppable droppableId="droppable">
-          {provided => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {!isEmpty(orderedSubtasks) &&
-                orderedSubtasks?.map((subtask, index) => {
-                  const matchedComments = getMatchedComments(
-                    subtask.comments,
-                    subtask.searchMetaData?.matchingCommentIdentifiers,
-                  );
-
-                  return (
-                    <Draggable
-                      key={subtask.taskIdentifier}
-                      draggableId={String(subtask.taskIdentifier)}
-                      index={index}
-                      isDragDisabled={!isDraggable}
-                    >
-                      {(
-                        { innerRef, draggableProps, dragHandleProps },
-                        { isDragging: isDraggingSubtask },
-                      ) => (
-                        <div ref={innerRef} {...draggableProps}>
-                          <TaskItem
-                            dragHandleProps={dragHandleProps}
-                            key={subtask.taskIdentifier}
-                            task={{ ...subtask, taskList }}
-                            isDragging={isDraggingSubtask}
-                            currentUser={currentUser}
-                            reassignTask={reassignTask}
-                            parentHasPatient={parentHasPatient}
-                            isDraggable={isDraggable && subtasks?.length > 1}
-                            isLast={index + 1 === orderedSubtasks.length}
-                            showSubtaskStylingLink={!draggedId}
-                            {...restProps}
-                          />
-                          {draggedId !== String(subtask.taskIdentifier) &&
-                            !isEmpty(matchedComments) &&
-                            subtask?.description !== '' && (
-                              <TaskComments
-                                isOpen={isFullView}
-                                comments={matchedComments}
-                                highlightedValue={highlightedValue}
-                                onClickComment={() => {
-                                  openDrawer();
-                                  storeAsCurrentTask(subtask);
-                                }}
-                              />
-                            )}
-                        </div>
-                      )}
-                    </Draggable>
-                  );
-                })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </SubtasksContainer>
-  );
-};
-
-const Task = ({
-  task,
-  isFullView,
-  isStartedDnD,
-  isDragging,
-  draggableProvided,
-  groupId,
-  currentUser,
-  reassignTask,
-  isDraggable,
-  ...restProps
-}) => {
-  const [isOpen, switchOpen] = useState(false);
-  const { comments, subtasks, patient, searchMetaData } = task;
-  const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
-  const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
-
-  const {
-    addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
-  } = useSelector(state =>
-    pick(['addingNewSubtask', 'addingNewSubtaskParentId', 'subtaskShape'])(
-      state.taskState,
-    ),
-  );
-
-  useEffect(() => {
-    switchOpen(isFullView);
-  }, [isFullView, switchOpen]);
-
-  const renderedSubtasks =
-    addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
-      ? [...subtasks, subtaskShape]
-      : subtasks;
-
-  const matchingComments = getMatchedComments(
-    comments,
-    searchMetaData?.matchingCommentIdentifiers,
-  );
-
-  return (
-    <div {...draggableProps}>
-      <div ref={innerRef}>
-        <TaskItem
-          task={task}
-          isOpen={isOpen}
-          switchOpen={switchOpen}
-          dragHandleProps={dragHandleProps}
-          isDragging={isDragging}
-          currentUser={currentUser}
-          reassignTask={reassignTask}
-          subtasks={renderedSubtasks}
-          isDraggable={isDraggable}
-          {...restProps}
-        />
-      </div>
-
-      {!isEmpty(matchingComments) && !isStartedDnD && (
-        <TaskComments
-          isOpen={isFullView}
-          comments={matchingComments}
-          highlightedValue={highlightedValue}
-          onClickComment={() => {
-            openDrawer();
-            storeAsCurrentTask(task);
-          }}
-        />
-      )}
-      {!isEmpty(renderedSubtasks) && !isStartedDnD && (
-        <Subtasks
-          subtasks={renderedSubtasks}
-          isOpen={isOpen}
-          isFullView={isFullView}
-          groupId={groupId}
-          parentTaskId={task.taskIdentifier}
-          currentUser={currentUser}
-          reassignTask={reassignTask}
-          parentHasPatient={!!patient}
-          taskList={task?.taskList}
-          isDraggable={isDraggable}
-          {...restProps}
-        />
-      )}
-    </div>
-  );
-};
-
-export default Task;
+export default React.memo(TaskItem);

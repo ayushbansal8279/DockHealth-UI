@@ -1,9 +1,11 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
-import { getTasksGroupsList } from 'sagas/tasks-groups-list-saga';
+// eslint-disable-next-line import/no-cycle
+import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import * as ActionTypes from './action-types';
 // import * as TaskListActions from './tasklist-actions';
@@ -614,7 +616,7 @@ export const updateDueDate = (
   TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
     .then(() => {
       const newTask = task;
-      newTask.dueDate = dueDate;
+      newTask.dueDate = moment(dueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: newTask,
@@ -623,6 +625,7 @@ export const updateDueDate = (
       if (showGlobalConfirmation) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       }
+      return newTask;
     })
     .catch(() => {});
 
@@ -633,6 +636,7 @@ export const updatePatient = (task, patient) => dispatch =>
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: response,
       });
+      return response;
     })
     .catch(error => {
       throw error;
@@ -667,6 +671,7 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
       });
       reloadTaskListStats(dispatch, task);
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+      return newTask;
     })
     .catch(error => {
       throw error;

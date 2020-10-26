@@ -239,7 +239,7 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
             </Grid>
           </Grid>
         </SettingsSection>
-        <Grid container xs={12} justify="flex-end">
+        <Grid container justify="flex-end">
           <Grid item xs={12} md={4}>
             <Button
               variant="contained"

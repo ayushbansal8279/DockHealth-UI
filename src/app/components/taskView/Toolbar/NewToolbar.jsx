@@ -102,7 +102,7 @@ const getHiddenMembers = ({ hiddenMembers, activeUsersList }) =>
     }
 
     return (
-      <HiddenMembersTooltipContainer>
+      <HiddenMembersTooltipContainer key={hiddenMember?.userIdentifier}>
         <span>{hiddenMember?.userName?.slice(0, 16)}</span>
         {userStatusLabel}
       </HiddenMembersTooltipContainer>

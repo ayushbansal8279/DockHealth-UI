@@ -8,7 +8,7 @@ import * as AlertActions from 'alert/actions';
 const initializeDueDateSectionHooks = ({
   setAutoSaveVisible,
   setValue,
-  refreshList,
+  onTaskUpdate,
 }) => {
   const dispatch = useDispatch();
 
@@ -33,9 +33,9 @@ const initializeDueDateSectionHooks = ({
           dueDateTime,
           false,
         )(dispatch)
-          .then(() => {
+          .then(task => {
             setAutoSaveVisible();
-            refreshList();
+            onTaskUpdate(task);
           })
           .catch(() => {
             dispatch(
@@ -48,7 +48,7 @@ const initializeDueDateSectionHooks = ({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedTaskIdentifier, refreshList, selectedTask],
+    [selectedTaskIdentifier, selectedTask, onTaskUpdate],
   );
 
   const clearDueDate = async event => {
@@ -56,8 +56,8 @@ const initializeDueDateSectionHooks = ({
     setValue('dueDate', null);
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await updateDueDate(selectedTask, null, false)(dispatch);
-        refreshList();
+        const task = await updateDueDate(selectedTask, null, false)(dispatch);
+        onTaskUpdate(task);
         setAutoSaveVisible();
       } catch {
         dispatch(

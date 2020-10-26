@@ -213,6 +213,7 @@ export const PatientTasksSagaActions = {
   removeUserFromTaskList,
   cancelUserInviteToTaskList,
   changeMemberRole,
+  fetchPatientFilters,
 };
 
 function* getPatientLists() {

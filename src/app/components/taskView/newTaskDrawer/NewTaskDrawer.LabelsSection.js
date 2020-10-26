@@ -19,7 +19,7 @@ const LabelsSection = ({
   setAutoSaveVisible,
   setSelectedLabelsValue,
   taskDrawerFocusField,
-  refreshList,
+  onTaskUpdate,
 }) => {
   const {
     labels,
@@ -33,7 +33,7 @@ const LabelsSection = ({
     parentFormSubmit,
     setAutoSaveVisible,
     setSelectedLabelsValue,
-    refreshList,
+    onTaskUpdate,
   });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;

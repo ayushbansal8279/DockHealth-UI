@@ -12,9 +12,9 @@ import {
   IndexRedirect,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
-import PatientDetailsView from 'views/Patient/PatientDetailsView';
-import PatientTasksListView from 'views/Patient/PatientTasksListView';
-import GlobalSearchView from 'views/GlobalSearch/GlobalSearchView';
+import PatientDetailsView from 'views/patient-details/PatientDetailsView';
+import PatientTasksListView from 'views/patient-details/PatientTasksListView';
+import GlobalSearchView from 'views/global-search/GlobalSearchView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
@@ -22,7 +22,7 @@ import { closeDrawer } from 'actions/task-drawer-actions';
 import * as PatientTasksActions from 'actions/patient-tasks-actions';
 import * as GlobalSearchActions from 'actions/global-search-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
-import { onEnterTasksGroupsList } from 'sagas/tasks-groups-list-saga';
+import { onEnterListDetails } from 'sagas/list-details-saga';
 import { getPatient } from 'sagas/patient-saga';
 import {
   fetchStatsForPatientTasks,
@@ -31,7 +31,7 @@ import {
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
 import { initializeDashboardView } from 'sagas/dashboard-saga';
-import DashboardView from 'views/Dashboard/DashboardView';
+import DashboardView from 'views/dashboard/DashboardView';
 
 import {
   getMembersByTaskListId,
@@ -65,8 +65,7 @@ import ResetPasswordSuccess from './views/auth/ResetPasswordSuccess';
 import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
 import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
-// import Inbox from './views/Inbox';
-import ListDetailsView from './views/ListDetails/ListDetailsView';
+import ListDetailsView from './views/list-details/ListDetailsView';
 import OnboardingNewOrganizationInfoView from './views/onboarding/OnboardingNewOrganizationInfoView/OnboardingNewOrganizationInfoView';
 import OnboardingCreateOrganizationView from './views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView';
 import OnboardingBaaCheckView from './views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
@@ -79,8 +78,8 @@ import OnboardingTrialCheckView from './views/onboarding/OnboardingTrialCheckVie
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
-import PeopleView from './views/People/PeopleView';
-import PersonDetailsView from './views/PersonDetails/PersonDetailsView';
+import PeopleView from './views/people-list/PeopleView';
+import PersonDetailsView from './views/person-details/PersonDetailsView';
 import BillingsView from './views/self-serve/billings/BillingsView';
 import DocumentsView from './views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from './views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
@@ -219,11 +218,11 @@ export const Routes = ({ store }) => {
     }
   };
 
-  const onEnterTaskGroups = nextState => {
+  const onEnterListDetailsView = nextState => {
     const { params } = nextState;
 
     if (params?.taskListIdentifier) {
-      dispatch(onEnterTasksGroupsList());
+      dispatch(onEnterListDetails());
       dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
 
       dispatch(
@@ -439,19 +438,6 @@ export const Routes = ({ store }) => {
             component={PeopleView}
             onEnter={checkFeatureToggles}
           />
-          {/* <Route
-            path="/tasks/inbox(/:taskIdentifier)"
-            component={Inbox}
-            onChange={preselectTask}
-            onEnter={checkFeatureToggles}
-          /> */}
-          {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
-          {/* <Route
-            path="/tasks/Inbox(/:taskIdentifier)"
-            component={Inbox}
-            onChange={preselectTask}
-            onEnter={checkFeatureToggles}
-          /> */}
           <Route
             path="task-tour/:taskListIdentifier"
             component={TaskTourView}
@@ -467,7 +453,7 @@ export const Routes = ({ store }) => {
               onEnter={nextState => {
                 handleRedirection(nextState);
                 checkFeatureToggles(nextState);
-                onEnterTaskGroups(nextState);
+                onEnterListDetailsView(nextState);
               }}
               onLeave={() => {
                 dispatch(clearFiltersForMegaFilter());

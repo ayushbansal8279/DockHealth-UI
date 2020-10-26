@@ -54,7 +54,7 @@ const initializeLabelsSectionHooks = ({
   parentFormSubmit,
   setAutoSaveVisible,
   setSelectedLabelsValue,
-  refreshList,
+  onTaskUpdate,
 }) => {
   const { selectedTask, labels, areLabelsRequested } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
@@ -81,8 +81,7 @@ const initializeLabelsSectionHooks = ({
       'labels',
       getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
     );
-
-    refreshList();
+    onTaskUpdate(refreshedTask);
   };
 
   const saveAddOrRemoveLabel = async selectedLabels => {

@@ -2,9 +2,9 @@ import { Add } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
 import AdornedButton from 'components/common/AdornedButton';
-import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
+import InvitePeoplePopover from 'views/people-list/PeopleView.InvitePeoplePopover';
 
-const InviteButton = ({ fullWidth, getAllUsers }) => {
+const InviteButton = ({ getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);
   const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
 
@@ -18,7 +18,6 @@ const InviteButton = ({ fullWidth, getAllUsers }) => {
   return (
     <>
       <AdornedButton
-        fullWidth={fullWidth}
         adornment={<Add />}
         onClick={() => togglePopoverOpen(true)}
         innerRef={invitePeopleButtonReference}

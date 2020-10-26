@@ -43,6 +43,7 @@ const ConfirmMFACode = props => {
           });
           hashHistory.push('/');
           success('Logged in.');
+          userApi.captureLocalTimezone();
         })
         .catch(error => {
           setCustomError('Invalid authentication code.');
