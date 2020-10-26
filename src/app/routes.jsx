@@ -300,6 +300,17 @@ export const Routes = ({ store }) => {
     dispatch(closeDrawer());
   };
 
+  const onEnterGlobalSearch = () => {
+    setHeader(dispatch)({
+      layout: [
+        {
+          key: '',
+          component: null,
+        },
+      ],
+    });
+  };
+
   const onLeaveGlobalSearch = () => {
     dispatch(GlobalSearchActions.resetGlobalSearch());
     dispatch(closeDrawer());
@@ -383,6 +394,7 @@ export const Routes = ({ store }) => {
           <Route
             path="/search"
             component={GlobalSearchView}
+            onEnter={onEnterGlobalSearch}
             onLeave={onLeaveGlobalSearch}
           />
           <Route
