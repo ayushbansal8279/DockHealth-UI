@@ -790,7 +790,7 @@ class Home extends Component {
               changeGroupsOrder={this.changeGroupsOrder}
               reassignTask={this.handleReassignTask}
               updateDueDate={this.handleUpdateDueDate}
-              updateWorkflowStatus={this.updateWorkflowStatus}
+              updateWorkflowStatus={this.handleUpdateWorkflowStatus}
               searchValue={searchValue}
               selectedTask={selectedTask}
               listUniqueKey={taskListIdentifier}
