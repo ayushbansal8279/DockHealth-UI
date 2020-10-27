@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { setPaymentNewPlan } from 'actions/organization-actions';
@@ -46,6 +46,7 @@ const onSubscriptionPlanChosen = ({
 
 export default () => {
   const dispatch = useDispatch();
+  const scrollElementReference = useRef(null);
 
   const {
     selectedUsers,
@@ -134,7 +135,13 @@ export default () => {
           <SubscriptionsPlansView
             organization={organization}
             chosenPlan={chosenPlan}
-            setChosenPlan={setChosenPlan}
+            setChosenPlan={plan => {
+              setChosenPlan(plan);
+              // eslint-disable-next-line no-unused-expressions
+              scrollElementReference?.current?.scrollIntoView({
+                behavior: 'smooth',
+              });
+            }}
             currentPlan={currentPlan}
             setCurrentPlan={setCurrentPlan}
             annualPayment={annualPayment}
@@ -202,6 +209,7 @@ export default () => {
               >
                 Buy this plan
               </Button>
+              <div ref={scrollElementReference} />
             </>
           )}
         </BottomButtonContainer>
