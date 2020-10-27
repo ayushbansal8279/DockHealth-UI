@@ -10,12 +10,18 @@ import MODAL_MAP from './map';
 import './styled.css';
 
 const Modal = ({ modal, ...restProps }) => {
-  const { modalProps, modalName, isOpen } = modal;
+  const { modalProps = {}, modalName, isOpen } = modal;
   const { closeModal } = restProps;
+  const { closeOnClickBackground = true } = modalProps;
+
+  const handleCloseBackgroundModal = () => {
+    if (closeOnClickBackground) closeModal();
+    if (typeof modalProps?.onClose === 'function') modalProps.onClose();
+  };
 
   const handleCloseModal = () => {
     closeModal();
-    if (typeof modalProps.onClose === 'function') modalProps.onClose();
+    if (typeof modalProps?.onClose === 'function') modalProps.onClose();
   };
 
   const ModalComponent = MODAL_MAP[modalName];
@@ -24,7 +30,7 @@ const Modal = ({ modal, ...restProps }) => {
   return (
     <ReactModal
       isOpen={isOpen}
-      onRequestClose={handleCloseModal}
+      onRequestClose={handleCloseBackgroundModal}
       overlayClassName="modal-overlay"
       className="modal-content"
       {...restProps}

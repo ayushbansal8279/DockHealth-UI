@@ -24,6 +24,7 @@ import OnboardingInviteConfirmationModal from './components/OnboardingInviteConf
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
 import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
 import MentionsTourModal from './components/MentionsTourModal/MentionsTourModal';
+import TrialExpirationModal from './components/TrialExpirationModal/TrialExpirationModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -52,6 +53,7 @@ const MODAL_MAP = {
   ArchiveUser: ArchiveUserModal,
   SelectOwner: SelectOwnerModal,
   MentionsTour: MentionsTourModal,
+  TrialExpiration: TrialExpirationModal,
 };
 
 export default MODAL_MAP;

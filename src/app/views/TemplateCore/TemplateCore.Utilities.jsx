@@ -10,13 +10,13 @@ import {
   setCurrentPageInSessionStorage,
   useMobile,
 } from 'helpers/utility-functions';
+import { openModal } from 'modal/actions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
 const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const BAA_CHECK_PATH = '/onboarding/baa-check';
 const BAA_INVITATION_SENT_PATH = '/onboarding/baa-invitation-sent';
-const TRIAL_EXPIRATION_PATH = '/onboarding/trial-check';
 const TEAM_ORG_SETUP_PATH = '/onboarding/organization-setup';
 const HOME_PATH = '/tasks';
 
@@ -130,9 +130,10 @@ const checkUserAccountState = async ({
   } else if (
     checkTrialExpiration &&
     orgData?.subscriptionDetails?.trialEnded &&
-    pathname !== TRIAL_EXPIRATION_PATH
+    pathname !== '/subscriptions'
   ) {
-    hashHistory.replace(TRIAL_EXPIRATION_PATH);
+    dispatch(openModal('TrialExpiration', { closeOnClickBackground: false }));
+    hashHistory.push('/home/my-tasks');
   } else if (isMobile) {
     handleMobileRedirection({
       data,
