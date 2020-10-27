@@ -23,7 +23,7 @@ import {
 
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
-import DashboardSingleSkeletonLoader from 'views/dashboard/DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
+import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -146,7 +146,7 @@ const TasksGroup = ({
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-              {!isSearchApplied && !areFiltersApplied && (
+              {!isSearchApplied && !areFiltersApplied && groupTaskCounts && (
                 <TasksGroupLabelCounter>
                   ({groupTaskCounts})
                 </TasksGroupLabelCounter>
@@ -222,7 +222,7 @@ const TasksGroup = ({
           listNameVisible={listNameVisible}
           selectedTask={selectedTask}
         />
-        {isLoadingGroup && <DashboardSingleSkeletonLoader rows={4} />}
+        {isLoadingGroup && <SingleSkeletonLoader rows={4} />}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (
           <PaginationButton
             disabled={isFetchingMoreTasks}

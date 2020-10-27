@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { completedTasksIsFetchingMoreSelector } from 'selectors/task-selectors';
+import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import EmptyTaskListBear from 'img/animals/bear';
 import { DragDropContext } from 'react-beautiful-dnd';

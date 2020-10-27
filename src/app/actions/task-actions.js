@@ -7,8 +7,8 @@ import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
-// import * as TaskListActions from './tasklist-actions';
 import AlertMessages from '../alert/AlertMessages';
 
 export const clearPreparedSubtask = curry(dispatch =>
@@ -225,33 +225,6 @@ export function getCountOfTasksAssignedToMe(
       });
 }
 
-export function getTasksAssignedToSpecificUser(
-  userIdentifier,
-  taskListIdentifier,
-  sortBy,
-  filterBy,
-  status,
-  cumulativeFlag,
-) {
-  const action = getListAction({ status, cumulativeFlag });
-
-  return dispatch =>
-    TaskApi.getTasksAssignedToSpecificUser(
-      userIdentifier,
-      taskListIdentifier,
-      status,
-      sortBy,
-      filterBy,
-    )
-      .then(tasks => {
-        dispatch({ type: action, tasks });
-        return tasks;
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
 export function getCountOfTasksAssignedToSpecificUser(
   userIdentifier,
   taskListIdentifier,
@@ -354,6 +327,7 @@ export function loadingCompletedTasks() {
     dispatch({ type: ActionTypes.REQUEST_COMPLETED_TASKS });
   };
 }
+
 export function resetTaskSearch() {
   return dispatch => {
     dispatch({ type: ActionTypes.CLEAR_TASKS_SEARCH });
@@ -450,6 +424,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
       });
   };
 }
+
 export const moveTask = (task, taskList) => dispatch => {
   const updatedTask = {
     refiled: true,
@@ -594,6 +569,12 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
 
     return TaskApi[apiEndpoint](task)
       .then(() => {
+        if (!task.parentTaskIdentifier) {
+          setTimeout(
+            () => dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task }),
+            TASK_DISAPPEAR_DELAY,
+          );
+        }
         dispatch(AlertActions.showGlobalAlert(successMessage));
       })
       .catch(error => {
@@ -1182,31 +1163,6 @@ export function getFilteredTasksForList(
   };
 }
 
-export function getFilteredTasksForPeopleList(
-  userIdentifier,
-  status,
-  selectedFilters,
-) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
-
-  return dispatch =>
-    TaskApi.getFilteredTasksForPersonList(
-      userIdentifier,
-      status,
-      selectedFilters,
-    )
-      .then(tasks => {
-        dispatch({ type: action, tasks });
-        return tasks;
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
 const processTaskCountersSuccess = (data, dispatch) => {
   const payload = {
     incomplete: data
@@ -1223,12 +1179,6 @@ const processTaskCountersSuccess = (data, dispatch) => {
 
 export const getTaskStatsForList = taskListIdentifier => dispatch => {
   return TaskApi.getTaskStatsForList(taskListIdentifier).then(data => {
-    processTaskCountersSuccess(data, dispatch);
-  });
-};
-
-export const getTaskStatsForUser = userIdentifier => dispatch => {
-  return TaskApi.getTaskStatsForUser(userIdentifier).then(data => {
     processTaskCountersSuccess(data, dispatch);
   });
 };

@@ -108,26 +108,6 @@ export function addUserToOrganization(addedUserIdentifier) {
       });
 }
 
-export function getUserById(userIdentifier) {
-  return dispatch => {
-    return PeopleApi.getUserById(userIdentifier)
-      .then(user => {
-        dispatch({
-          type: ActionTypes.GET_USER_DETAILS_SUCCESS,
-          user,
-          userIdentifier,
-        });
-        return user;
-      })
-      .catch(error => {
-        dispatch({
-          type: ActionTypes.GET_USER_DETAILS_FAILURE,
-        });
-        throw error;
-      });
-  };
-}
-
 export function getUserAvatar(user) {
   return dispatch =>
     PeopleApi.getUserAvatar(user)
@@ -136,24 +116,6 @@ export function getUserAvatar(user) {
         return image;
       })
       .catch(error => {
-        throw error;
-      });
-}
-
-export function getUserByEmail({ email }) {
-  return dispatch =>
-    PeopleApi.getUserByEmail({ email })
-      .then(response => {
-        dispatch({
-          type: ActionTypes.GET_USER_DETAILS_SUCCESS,
-          user: response,
-        });
-        return response;
-      })
-      .catch(error => {
-        dispatch({
-          type: ActionTypes.GET_USER_DETAILS_FAILURE,
-        });
         throw error;
       });
 }

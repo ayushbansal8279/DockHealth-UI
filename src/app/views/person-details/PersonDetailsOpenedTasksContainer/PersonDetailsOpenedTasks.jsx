@@ -91,6 +91,7 @@ const PersonDetailsOpenedTasks = ({
                 selectedTask={selectedTask}
                 areFiltersApplied={areFiltersApplied}
                 listUniqueKey={listUniqueKey}
+                quickAddTask={quickAddTask}
               />
             </DragDropContext>
           ) : (

@@ -5,7 +5,7 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { isEmpty } from 'ramda';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
-import DashboardSingleSkeletonLoader from 'views/dashboard/DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
+import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -100,7 +100,7 @@ const Task = ({
       )}
       {task?.isFetchingSubTasks &&
         subTasksCount > 0 &&
-        isEmpty(renderedSubtasks) && <DashboardSingleSkeletonLoader rows={4} />}
+        isEmpty(renderedSubtasks) && <SingleSkeletonLoader rows={4} />}
       {showSubtasks && (
         <Subtasks
           subtasks={renderedSubtasks}

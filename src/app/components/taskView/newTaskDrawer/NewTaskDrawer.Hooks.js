@@ -151,7 +151,7 @@ const initializeTaskDrawerHooks = ({
     taskDrawerFocusField: store.taskDrawerState.focusField,
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
-    tasks: store.listTasks.tasks,
+    tasks: store.listDetails.tasks,
     taskLists: store.taskListState.tasklist,
     labels: isInbox
       ? store.taskLabelState.data.inboxLabels

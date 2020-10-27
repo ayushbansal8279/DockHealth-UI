@@ -22,11 +22,14 @@ import {
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
   getTasksForTaskListByTaskGroup,
+  searchTasksByTaskList,
 } from 'api/task-api';
 import {
   TASK_GROUP_LIST_REQUEST,
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
+  REQUEST_TASKS,
+  REQUEST_COMPLETED_TASKS,
   GET_TASKS_SUCCESS,
   GET_COMPLETED_TASKS_SUCCESS,
   SET_AS_CURRENT_TASK,
@@ -34,6 +37,8 @@ import {
   ADD_TASK_SUCCESS,
   REQUEST_TASKLIST_GROUP_TASKS,
   REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+  GET_TASKS_BY_GROUPS_SUCCESS,
+  GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS,
 } from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
@@ -55,9 +60,10 @@ export const DO_SORT_SUBTASKS_IN_GROUPS = 'DO_SORT_SUBTASKS_IN_GROUPS';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
-
 export const DO_REASSIGN_TASKS_TO_ANOTHER_GROUP =
   'DO_REASSIGN_TASKS_TO_ANOTHER_GROUP';
+export const DO_FETCH_TASKS_BY_SEARCHED_TERM =
+  'DO_FETCH_TASKS_BY_SEARCHED_TERM';
 
 export const getTasksGroupsList = payload => ({
   type: DO_GET_TASKS_GROUPS_LIST,
@@ -114,6 +120,11 @@ export const getTasksForTaskGroups = payload => ({
   ...payload,
 });
 
+export const fetchTasksBySearchedTerm = payload => ({
+  type: DO_FETCH_TASKS_BY_SEARCHED_TERM,
+  ...payload,
+});
+
 export const TasksGroupsListActions = {
   getTasksGroupsList,
   createTaskGroupList,
@@ -123,6 +134,7 @@ export const TasksGroupsListActions = {
   sortTasksInGroup,
   createTask,
   getTasksForTaskGroups,
+  fetchTasksBySearchedTerm,
 };
 
 export function* doGetTasksGroupsList(payload) {
@@ -438,6 +450,33 @@ export function* doGetTasksForTaskGroup(payload) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
 }
+export function* doFetchTasksBySearchedTerm(payload) {
+  try {
+    const { status, searchedTerm } = payload;
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+
+    yield put({
+      type: status === 'INCOMPLETE' ? REQUEST_TASKS : REQUEST_COMPLETED_TASKS,
+    });
+    const groupedTasks = yield call(
+      searchTasksByTaskList,
+      taskListIdentifier,
+      searchedTerm,
+      status,
+    );
+
+    const action =
+      status === 'INCOMPLETE'
+        ? GET_TASKS_BY_GROUPS_SUCCESS
+        : GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
+    yield put({
+      type: action,
+      groupedTasks,
+    });
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
 
 export default function* watchTasksGroupsList() {
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
@@ -454,4 +493,5 @@ export default function* watchTasksGroupsList() {
     doReassignTasksToAnotherGroup,
   );
   yield takeEvery(DO_GET_TASKS_FOR_GROUP, doGetTasksForTaskGroup);
+  yield takeEvery(DO_FETCH_TASKS_BY_SEARCHED_TERM, doFetchTasksBySearchedTerm);
 }

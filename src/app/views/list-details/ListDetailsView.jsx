@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
+import debounce from 'lodash.debounce';
 
 import Header from 'components/taskView/Header';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
@@ -45,7 +46,7 @@ import {
   tasksIsFetchingSelector,
   completedTasksSelector,
   tasksSelector,
-} from 'selectors/task-selectors';
+} from 'selectors/list-details-selectors';
 
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
 import {
@@ -64,6 +65,8 @@ const Priority = {
 };
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
+
+const debouncer = debounce(f => f(), 1100, { leading: true });
 
 class Home extends Component {
   state = { isTourOpen: false, tourConditionChecked: false, searchValue: '' };
@@ -411,7 +414,6 @@ class Home extends Component {
     const {
       actions,
       megaFilterActions,
-      completedTasks,
       routeParams: { taskListIdentifier },
     } = this.props;
 
@@ -628,9 +630,30 @@ class Home extends Component {
   };
 
   setSearchValue = searchValue => {
-    this.setState({
-      searchValue,
-    });
+    const {
+      tasksGroupsListActions: { fetchTasksBySearchedTerm },
+      routeParams: { tabName },
+    } = this.props;
+
+    debouncer(() => {
+      if (searchValue !== this.state.searchValue) {
+        let taskStatus = 'INCOMPLETE';
+        if (tabName === TaskListTabName.COMPLETE) {
+          taskStatus = 'COMPLETE';
+        }
+        fetchTasksBySearchedTerm({
+          status: taskStatus,
+          searchedTerm: searchValue,
+        });
+      }
+
+      if (this.state.searchValue && !searchValue) {
+        this.refreshFilters();
+      }
+    }),
+      this.setState({
+        searchValue,
+      });
   };
 
   toggleSingleTaskPriority = task => {
@@ -651,7 +674,9 @@ class Home extends Component {
     actions
       .toggleCompleteTask(task, selectedTab, currentUser)
       .then(() => {
-        setTimeout(this.refreshTab, TASK_DISAPPEAR_DELAY);
+        setTimeout(() => {
+          actions.getTaskStatsForList(routeParams.taskListIdentifier);
+        }, TASK_DISAPPEAR_DELAY);
       })
       .catch(() => this.refreshTab());
   };
@@ -839,7 +864,7 @@ const mapStateToProps = state => ({
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   filters: availableFiltersInInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
-  taskCounters: state.listTasks.taskCounters,
+  taskCounters: state.listDetails.taskCounters,
   pendingTaskLists: state.invitationState.pendingTasklists,
   isFetching: tasksIsFetchingSelector(state),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(state),

@@ -1,18 +1,69 @@
 import { createSelector } from 'reselect';
 
-export const listDetailsSelector = state => state.listDetails;
+export const listTasksSelector = state => state.listDetails;
+
+export const tasksIsFetchingSelector = createSelector(
+  listTasksSelector,
+  ({ isFetching }) => isFetching,
+);
+
+export const completedTasksSelector = createSelector(
+  listTasksSelector,
+  ({ completedTasks }) => completedTasks,
+);
+
+export const completedTasksIsFetchingSelector = createSelector(
+  listTasksSelector,
+  ({ isCompletedTasksFetching }) => isCompletedTasksFetching,
+);
+export const completedTasksIsFetchingMoreSelector = createSelector(
+  listTasksSelector,
+  ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
+);
+
+export const tasksSelector = createSelector(
+  listTasksSelector,
+  ({ tasks }) => tasks,
+);
+
+export const groupTasksSelector = createSelector(
+  listTasksSelector,
+  ({ groupedTasks }) => {
+    if (!groupedTasks) {
+      return {};
+    }
+    const groupedTasksMap = {};
+
+    // eslint-disable-next-line no-unused-expressions
+    groupedTasks?.taskGroups?.forEach(taskGroup => {
+      groupedTasksMap[taskGroup.groupIdentifier] = {
+        tasks: taskGroup.tasks,
+        hasMore: taskGroup.hasMore,
+        pageNumber: taskGroup.pageNumber,
+        isLoadingGroup: taskGroup.isLoadingGroup,
+      };
+    });
+
+    return groupedTasksMap;
+  },
+);
+
+export const groupCompletedTasksSelector = createSelector(
+  listTasksSelector,
+  ({ completedGroupedTasks }) => completedGroupedTasks?.taskGroups?.[0],
+);
 
 export const isFetchingGroupsSelector = createSelector(
-  listDetailsSelector,
+  listTasksSelector,
   ({ isFetchingGroups }) => isFetchingGroups,
 );
 
 export const areGroupsInitialized = createSelector(
-  listDetailsSelector,
+  listTasksSelector,
   ({ groupsInitialized }) => groupsInitialized,
 );
 
 export const listDetailsGroupsSelector = createSelector(
-  listDetailsSelector,
+  listTasksSelector,
   ({ listGroups }) => listGroups,
 );

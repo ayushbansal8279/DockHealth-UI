@@ -13,13 +13,12 @@ import PatientProfileReducer from './patient-profile-reducer';
 import PatientsListReducer from './patient-reducer';
 import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
-import ListDetailsReducer from './list-details-reducer';
 import TaskReducer from './task-reducer';
 import TaskListReducer from './tasklist-reducer';
 import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 import LocationReducer from '../location/reducers';
-import ListTasksReducer from './list-tasks-reducer';
+import ListDetailsReducer from './list-details-reducer';
 import PatientTasksReducer from './patient-tasks-reducer';
 import TemplateReducer from './template-reducer';
 import DashboardTasksReducer from './dashboard-tasks-reducer';
@@ -27,6 +26,7 @@ import DashboardStatisticsReducer from './dashboard-statistics-reducer';
 import GlobalSearchReducer from './global-search-reducer';
 import AlertsReducer from './alerts-reducer';
 import ActiveUsersReducer from './active-users-reducer';
+import PersonDetailsReducer from './person-details-reducer';
 
 const appReducer = combineReducers({
   alertsState: AlertsReducer,
@@ -46,16 +46,16 @@ const appReducer = combineReducers({
   authBase: AuthBaseReducer,
   taskLabelState: TaskLabelReducer,
   modal: ModalReducer,
-  listDetails: ListDetailsReducer,
   alertChip: AlertChipReducer,
   megaFilter: MegaFilterReducer,
   location: LocationReducer,
-  listTasks: ListTasksReducer,
+  listDetails: ListDetailsReducer,
   patientTasks: PatientTasksReducer,
   dashboardTasks: DashboardTasksReducer,
   dashboardStatistics: DashboardStatisticsReducer,
   globalSearch: GlobalSearchReducer,
   activeUsers: ActiveUsersReducer,
+  personDetails: PersonDetailsReducer,
 });
 
 export default function rootReducer(state, action) {

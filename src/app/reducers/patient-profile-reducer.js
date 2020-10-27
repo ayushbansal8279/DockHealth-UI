@@ -19,8 +19,6 @@ import {
   UPDATE_PATIENT_NOTE,
   UPDATE_PATIENT_SUCCESS,
 } from 'actions/action-types';
-// import TaskReducer from './task-reducer';
-// import ListTasksReducer from './list-tasks-reducer';
 
 const initialState = {
   details: {},

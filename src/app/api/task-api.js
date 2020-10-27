@@ -166,46 +166,7 @@ export function getCountOfTasksAssignedToMe(
     });
 }
 
-export function getTasksAssignedToSpecificUser(
-  userIdentifier,
-  taskListIdentifier,
-  status,
-  sortBy,
-  filterBy,
-) {
-  if (taskListIdentifier != undefined) {
-    if (sortBy != undefined || filterBy != undefined) {
-      return axios
-        .get(
-          `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&taskListId=${taskListIdentifier}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-        )
-        .then(response => response.data)
-        .catch(error => {
-          throw error;
-        });
-    }
-    return axios
-      .get(
-        `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&taskListId=${taskListIdentifier}&status=${status}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      })
-      .catch(error => {
-        throw error;
-      });
-  }
-  if (sortBy != undefined || filterBy != undefined) {
-    return axios
-      .get(
-        `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  }
+export function getTasksAssignedToSpecificUser(userIdentifier, status) {
   return axios
     .get(
       `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&status=${status}`,
@@ -768,7 +729,7 @@ export function getFilteredTasksForList(
 ) {
   return axios
     .post(
-      `task/filter/filterTasksByCriteria/${taskListIdentifier}?status=${status}`,
+      `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?status=${status}`,
       selectedFilters,
     )
     .then(({ data }) => data)
@@ -806,5 +767,16 @@ export function getTasksForTaskListByTaskGroup(
     .then(({ data }) => data)
     .catch(error => {
       throw error;
+    });
+}
+
+export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
+  return axios
+    .get(
+      `/task/searchTasksByTaskList/${taskListIdentifier}?searchTerm=${searchTerm}&status=${status}`,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }

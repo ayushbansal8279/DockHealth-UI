@@ -3,17 +3,14 @@ import {
   isFetchingGroupsSelector,
   areGroupsInitialized,
   listDetailsGroupsSelector,
-} from 'selectors/list-details-selectors';
-import {
   tasksIsFetchingSelector,
   groupTasksSelector,
-} from 'selectors/task-selectors';
+} from 'selectors/list-details-selectors';
 import {
   sortTasksInGroup,
   sortSubtasksInGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
 } from 'sagas/list-details-saga';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import ListDetailsOpenedTasks from './ListDetailsOpenedTasks';
 
@@ -22,26 +19,10 @@ const mapStateToProps = (state, ownProps) => {
   const areFiltersApplied = hasFiltersAppliedSelector(state);
   const groupedTasks = groupTasksSelector(state);
   const groups = listDetailsGroupsSelector(state);
-  const searchedGroupsWithTasks = !searchValue
-    ? groupedTasks
-    : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
-        const searchedTasks = filterTasksBySearchValue(
-          groupedTasks[currentKey],
-          searchValue,
-        );
 
-        if (searchedTasks.length === 0) return groupObject;
+  const searchedGroupsWithTasks = groupedTasks;
 
-        return { ...groupObject, [currentKey]: searchedTasks };
-      }, {});
-
-  const searchedGroupsList = !searchValue
-    ? groups
-    : groups.filter(
-        ({ taskGroupIdentifier, groupType }) =>
-          Object.keys(searchedGroupsWithTasks).includes(taskGroupIdentifier) ||
-          Object.keys(searchedGroupsWithTasks).includes(groupType),
-      );
+  const searchedGroupsList = groups;
 
   return {
     groupedTasks: searchedGroupsWithTasks,

@@ -3,7 +3,6 @@ import * as types from 'actions/action-types';
 const initialState = {
   peoplelist: [],
   isFetching: false,
-  personData: null,
 };
 
 const PeopleReducer = (state = initialState, action) => {
@@ -32,18 +31,6 @@ const PeopleReducer = (state = initialState, action) => {
               }
             : user,
         ),
-      };
-
-    case types.GET_USER_DETAILS_SUCCESS:
-      return {
-        ...state,
-        personData: action.user,
-      };
-
-    case types.GET_USER_DETAILS_FAILURE:
-      return {
-        ...state,
-        personData: null,
       };
 
     default:

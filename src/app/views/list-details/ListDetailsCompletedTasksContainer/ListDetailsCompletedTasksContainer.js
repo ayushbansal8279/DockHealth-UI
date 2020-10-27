@@ -3,9 +3,8 @@ import {
   groupCompletedTasksSelector,
   completedTasksIsFetchingSelector,
   completedTasksIsFetchingMoreSelector,
-} from 'selectors/task-selectors';
+} from 'selectors/list-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import ListDetailsCompletedTasks from './ListDetailsCompletedTasks';
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,9 +13,8 @@ const mapStateToProps = (state, ownProps) => {
   const { searchValue, ...restOwnProps } = ownProps;
 
   const completedTasks = completedTasksGroup?.tasks || [];
-  const filteredCompletedTasks = !searchValue
-    ? completedTasks
-    : filterTasksBySearchValue(completedTasks, searchValue);
+
+  const filteredCompletedTasks = completedTasks;
 
   return {
     isFetchingData: completedTasksIsFetchingSelector(state),
