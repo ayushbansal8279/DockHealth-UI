@@ -252,22 +252,6 @@ const capitalize = text =>
 
 const formatDateOfBirth = dob => dob && moment(dob).format('MMM D, YYYY');
 
-const calculateAgeFromDateOfBirth = dob => {
-  if (!dob) {
-    return '';
-  }
-
-  const yearsOld = moment().diff(moment(dob), 'years');
-
-  if (yearsOld < 0) {
-    return '';
-  }
-
-  const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
-
-  return `${yearsOld} ${yearsLabel}`;
-};
-
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   const dispatch = useDispatch();
   const selectPatient = useCallback(
@@ -306,6 +290,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
           firstName,
           middleName,
           dob,
+          age,
           gender,
         }) => (
           <ListRow
@@ -327,7 +312,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
             {!isCompact && (
               <>
                 <div>{formatDateOfBirth(dob)}</div>
-                <div>{calculateAgeFromDateOfBirth(dob)}</div>
+                <div>{age}</div>
                 <div>{capitalize(gender)}</div>
                 <QuickViewCell>
                   <QuickViewIcon

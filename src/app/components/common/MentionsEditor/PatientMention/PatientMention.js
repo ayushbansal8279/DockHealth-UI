@@ -74,6 +74,7 @@ const PatientMention = ({ mention, className, children }) => {
     lastName,
     middleName,
     dob,
+    age,
     gender,
     mrn,
     email,
@@ -123,10 +124,7 @@ const PatientMention = ({ mention, className, children }) => {
                     <PatientInfo>
                       {(dob || gender) && (
                         <InfoItem>
-                          {dob &&
-                            `${moment(dob).format(
-                              'MM/DD/YYYY',
-                            )} ${moment().diff(moment(dob), 'years')} yo`}
+                          {dob && `${age} `}
                           {gender && ` ${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}

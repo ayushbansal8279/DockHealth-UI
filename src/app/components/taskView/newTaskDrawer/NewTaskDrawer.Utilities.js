@@ -1,4 +1,3 @@
-import moment from 'moment';
 import React from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import Member from 'components/members/Member/Member';
@@ -23,25 +22,9 @@ export const TaskDrawerFields = {
   PATIENT: 1,
 };
 
-const getFormattedAge = ({ dob }) => {
-  if (!dob) {
-    return '';
-  }
-
-  const yearsOld = moment().diff(moment(dob), 'years');
-
-  if (yearsOld < 0) {
-    return '';
-  }
-
-  const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
-
-  return `${yearsOld} ${yearsLabel}`;
-};
-
 export const getFormattedPatients = ({ patients }) =>
   (patients ?? []).map(patient => {
-    const { patientIdentifier, firstName, lastName, mrn, dob } = patient;
+    const { patientIdentifier, firstName, lastName, mrn, age } = patient;
     const patientName = `${firstName} ${lastName}`.trim();
 
     return {
@@ -50,7 +33,7 @@ export const getFormattedPatients = ({ patients }) =>
       label: (
         <PatientLabelContainer key={patient?.patientIdentifier}>
           <CondensedH4>{patientName}</CondensedH4>
-          <CondensedH4 align="right">{getFormattedAge({ dob })}</CondensedH4>
+          <CondensedH4 align="right">{age}</CondensedH4>
           <CondensedH4 align="right">{mrn || ''}</CondensedH4>
         </PatientLabelContainer>
       ),
