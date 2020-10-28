@@ -24,7 +24,6 @@ const getPdfTaskData = props => {
   const {
     comments,
     subTasksCount,
-    subtasks,
     createdDateTime,
     updatedDateTime,
     status,
@@ -80,7 +79,7 @@ const getPdfTaskData = props => {
       : '';
 
   const bottomLabelsArray = [
-    subTasksCount>0 && `${subTasksCount} subtasks`,
+    subTasksCount > 0 && `${subTasksCount} subtasks`,
     isEmpty(comments) && `${comments.length} comments`,
   ].filter(Boolean);
 

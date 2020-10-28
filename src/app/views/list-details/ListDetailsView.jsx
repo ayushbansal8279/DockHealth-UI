@@ -799,7 +799,9 @@ class Home extends Component {
             printData={{
               completedTasks:
                 selectedTab === TaskListTabName.COMPLETE
-                  ? Object.values(completedGroupedTasks)?.flatMap(({ tasks }) => tasks)
+                  ? Object.values(completedGroupedTasks)?.flatMap(
+                      ({ tasks }) => tasks,
+                    )
                   : [],
               openedTasks:
                 selectedTab === TaskListTabName.OPEN
