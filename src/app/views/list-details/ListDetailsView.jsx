@@ -66,10 +66,23 @@ const Priority = {
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
-const debouncer = debounce(f => f(), 1100, { leading: true });
-
 class Home extends Component {
   state = { isTourOpen: false, tourConditionChecked: false, searchValue: '' };
+
+  searchWithDebounce = debounce(searchValue => {
+    const {
+      tasksGroupsListActions: { fetchTasksBySearchedTerm },
+      routeParams: { tabName },
+    } = this.props;
+
+    const taskStatus =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    return fetchTasksBySearchedTerm({
+      status: taskStatus,
+      searchedTerm: searchValue,
+    });
+  }, 400);
 
   async componentDidMount() {
     const {
@@ -630,30 +643,15 @@ class Home extends Component {
   };
 
   setSearchValue = searchValue => {
-    const {
-      tasksGroupsListActions: { fetchTasksBySearchedTerm },
-      routeParams: { tabName },
-    } = this.props;
+    this.setState({
+      searchValue,
+    });
 
-    debouncer(() => {
-      if (searchValue !== this.state.searchValue) {
-        let taskStatus = 'INCOMPLETE';
-        if (tabName === TaskListTabName.COMPLETE) {
-          taskStatus = 'COMPLETE';
-        }
-        fetchTasksBySearchedTerm({
-          status: taskStatus,
-          searchedTerm: searchValue,
-        });
-      }
-
-      if (this.state.searchValue && !searchValue) {
-        this.refreshFilters();
-      }
-    }),
-      this.setState({
-        searchValue,
-      });
+    if (searchValue) {
+      this.searchWithDebounce(searchValue);
+    } else {
+      this.refreshTab(true);
+    }
   };
 
   toggleSingleTaskPriority = task => {
@@ -804,7 +802,6 @@ class Home extends Component {
               currentUser={currentUser}
               toggleSingleTaskPriority={this.toggleSingleTaskPriority}
               toggleCompleteTask={this.toggleTaskCompletedStatus}
-              summaryTasksCount={taskCounters.complete}
               reassignTask={this.handleReassignTask}
               updateDueDate={this.handleUpdateDueDate}
               searchValue={searchValue}

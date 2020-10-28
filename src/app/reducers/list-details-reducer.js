@@ -172,7 +172,10 @@ const ListDetailsReducer = (state = initialState, action) => {
           taskGroup.groupIdentifier === group?.groupIdentifier
             ? {
                 ...taskGroup,
-                tasks: group.tasks,
+                tasks:
+                  group.pageNumber === 1
+                    ? group.tasks
+                    : taskGroup.tasks.concat(group.tasks),
                 pageNumber: group.pageNumber,
                 hasMore: group.hasMore,
               }

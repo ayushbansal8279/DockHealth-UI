@@ -1,12 +1,11 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
 
-import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -108,18 +107,25 @@ const ListDetailsOpenedTasks = ({
     [createTaskGroupList],
   );
 
+  const hasAnyTask = useMemo(() => {
+    return Object.values(tasksGrouped).some(({ tasks }) => tasks?.length > 0);
+  }, [tasksGrouped]);
+
   const renderTasks = useCallback(
     () =>
-      groupList?.map(
-        ({ groupName, taskGroupIdentifier, groupType, metricValue }, i) => (
+      groupList
+        ?.filter(
+          ({ taskGroupIdentifier }) =>
+            (!isSearchApplied && !areFiltersApplied) ||
+            tasksGrouped[taskGroupIdentifier]?.tasks?.length > 0,
+        )
+        .map(({ groupName, taskGroupIdentifier, metricValue }, i) => (
           <TasksGroup
             key={i}
-            isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
+            isDefaultGroup={groupName === 'DEFAULT'}
             groupId={taskGroupIdentifier}
             currentUser={currentUser}
-            groupName={
-              groupType !== TASKGROUP_DEFAULT_TYPE ? groupName : 'New tasks'
-            }
+            groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
             toggleTaskPriority={toggleSingleTaskPriority}
             editGroupName={editGroupName}
@@ -130,19 +136,9 @@ const ListDetailsOpenedTasks = ({
             changingGroupOrderDisabled={!changeGroupsOrder}
             isFirstGroup={i === 0}
             isLastGroup={i === groupList?.length - 1}
-            tasks={
-              tasksGrouped[
-                groupType !== TASKGROUP_DEFAULT_TYPE
-                  ? taskGroupIdentifier
-                  : TASKGROUP_DEFAULT_TYPE
-              ]?.tasks || []
-            }
+            tasks={tasksGrouped[taskGroupIdentifier]?.tasks || []}
             isLoadingGroup={
-              tasksGrouped[
-                groupType !== TASKGROUP_DEFAULT_TYPE
-                  ? taskGroupIdentifier
-                  : TASKGROUP_DEFAULT_TYPE
-              ]?.isLoadingGroup || false
+              tasksGrouped[taskGroupIdentifier]?.isLoadingGroup || false
             }
             taskGroupIdentifier={taskGroupIdentifier}
             reorderSubtasksForTask={reorderSubtasksForTask}
@@ -156,27 +152,15 @@ const ListDetailsOpenedTasks = ({
             listUniqueKey={listUniqueKey}
             areFiltersApplied={areFiltersApplied}
             groupPagination
-            hasMoreTasks={
-              tasksGrouped[
-                groupType !== TASKGROUP_DEFAULT_TYPE
-                  ? taskGroupIdentifier
-                  : TASKGROUP_DEFAULT_TYPE
-              ]?.hasMore || false
-            }
+            hasMoreTasks={tasksGrouped[taskGroupIdentifier]?.hasMore || false}
             showMoreTasks={() => {
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
-                pageNumber:
-                  tasksGrouped[
-                    groupType !== TASKGROUP_DEFAULT_TYPE
-                      ? taskGroupIdentifier
-                      : TASKGROUP_DEFAULT_TYPE
-                  ]?.pageNumber || 0,
+                pageNumber: tasksGrouped[taskGroupIdentifier]?.pageNumber || 0,
               });
             }}
           />
-        ),
-      ),
+        )),
     [
       areFiltersApplied,
       changeGroupsOrder,
@@ -204,7 +188,9 @@ const ListDetailsOpenedTasks = ({
 
   return (
     <TaskGroupsContainer>
-      {!isEmpty(groupedTasks) ? (
+      {isEmpty(groupedTasks) || (isSearchApplied && !hasAnyTask) ? (
+        renderEmptyState()
+      ) : (
         <>
           <DragDropContext
             onBeforeCapture={onBeforeCapture}
@@ -212,7 +198,7 @@ const ListDetailsOpenedTasks = ({
           >
             {renderTasks()}
           </DragDropContext>
-          {!!createTaskGroupList && !isSearchApplied && (
+          {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
             <GroupNameSection
               onEnterClick={onGroupNameClick}
               placeholder={messages.placeholder}
@@ -222,8 +208,6 @@ const ListDetailsOpenedTasks = ({
             </GroupNameSection>
           )}
         </>
-      ) : (
-        renderEmptyState()
       )}
     </TaskGroupsContainer>
   );

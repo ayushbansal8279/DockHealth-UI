@@ -22,6 +22,7 @@ const mapStateToProps = (state, ownProps) => {
     areFiltersApplied,
     completedTasksGroup,
     tasks: filteredCompletedTasks,
+    hasMoreTasks: completedTasksGroup?.hasMore,
     isSearchApplied: !!searchValue,
     ...restOwnProps,
   };

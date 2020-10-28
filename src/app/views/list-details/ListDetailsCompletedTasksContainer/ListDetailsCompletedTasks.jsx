@@ -15,7 +15,7 @@ const ListDetailsCompletedTasks = ({
   markComplete,
   toggleSingleTaskPriority,
   toggleCompleteTask,
-  summaryTasksCount,
+  hasMoreTasks,
   isFetchingMoreTasks,
   isFetchingData,
   updateDueDate,
@@ -41,15 +41,6 @@ const ListDetailsCompletedTasks = ({
     );
   };
 
-  const tasksAndSubTasks =
-    tasks?.reduce(
-      (counter, task) =>
-        counter +
-        task?.subtasks?.filter(x => x.status === 'COMPLETE').length +
-        1,
-      0,
-    ) || 0;
-
   return (
     <>
       {isFetchingData ? (
@@ -68,7 +59,7 @@ const ListDetailsCompletedTasks = ({
                   tasks={tasks}
                   isCompletedGroup
                   groupPagination
-                  hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
+                  hasMoreTasks={hasMoreTasks}
                   isFetchingMoreTasks={isFetchingMoreTasks}
                   updateDueDate={updateDueDate}
                   quickAddTaskVisible={false}
