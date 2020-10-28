@@ -245,7 +245,7 @@ function* doFetchImplicitGroup({ group, fetchMore }) {
             ...tasksGroupList,
           ]);
 
-        return { ...group, ...rest, tasks };
+        return { ...group, ...rest, ...taskGroups[0], tasks };
       } catch (error) {
         console.log(error);
       }
@@ -290,7 +290,7 @@ function* doFetchImplicitGroups() {
                   ...tasksGroupList,
                 ]);
 
-              return { ...group, ...rest, tasks };
+              return { ...group, ...rest, ...taskGroups[0], tasks };
             }
             return { ...group, tasks: [] };
           } catch (error) {
