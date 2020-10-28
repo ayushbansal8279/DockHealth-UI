@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import moment from 'moment';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import Arrow from 'components/common/Arrow/Arrow';
 import {
@@ -59,6 +58,7 @@ const PatientDetailsInformation = ({
   phoneMobile,
   phoneHome,
   dob,
+  age,
   mrn,
   gender,
   isOpenedDetails,
@@ -91,10 +91,7 @@ const PatientDetailsInformation = ({
                     {(dob || gender) && (
                       <>
                         <PatientInfo>
-                          {dob &&
-                            `${moment(dob).format(
-                              'MM/DD/YYYY',
-                            )} ${moment().diff(moment(dob), 'years')} yo `}
+                          {dob && `${age} `}
                           {gender && gender?.charAt(0)?.toUpperCase()}
                         </PatientInfo>
                         <PatientInfoDivider />

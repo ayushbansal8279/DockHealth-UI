@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js';
 import { createMentionEntities } from './create-mention-entities';
@@ -11,27 +10,11 @@ export const SUGGESTIONS_PLACEHOLDER = {
   type: 'DEFAULT',
 };
 
-export const getFormattedAge = ({ dob }) => {
-  if (!dob) {
-    return '';
-  }
-
-  const yearsOld = moment().diff(moment(dob), 'years');
-
-  if (yearsOld < 0) {
-    return '';
-  }
-
-  const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
-
-  return `${yearsOld} ${yearsLabel}`;
-};
-
 export const mapPatientsToSuggestions = patients =>
-  patients.map(({ patientIdentifier, firstName, lastName, dob, mrn }) => ({
+  patients.map(({ patientIdentifier, firstName, lastName, age, mrn }) => ({
     identifier: patientIdentifier,
     name: `${firstName} ${lastName}`,
-    age: getFormattedAge({ dob }),
+    age,
     mrn,
   }));
 
