@@ -89,7 +89,7 @@ const ListDetailsOpenedTasks = ({
       onDragEndTask({
         eventBundle,
         groupList,
-        tasks: tasksGrouped?.tasks,
+        tasks: tasksGrouped,
         reorderTasksInGroup,
         reassignTasksToAnotherGroup,
         updateTaskGroups,

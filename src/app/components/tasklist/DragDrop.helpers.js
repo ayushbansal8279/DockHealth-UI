@@ -42,7 +42,7 @@ export const onDragEndTask = ({
       ? sourceGroup.groupType
       : sourceGroup.taskGroupIdentifier;
 
-  const sourceTasks = tasks[sourceGroupKey];
+  const sourceTasks = tasks[sourceGroupKey]?.tasks;
 
   const sourceTasksOrder = sourceTasks?.map(
     ({ taskIdentifier }) => taskIdentifier,
