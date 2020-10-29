@@ -5,6 +5,9 @@ import { Grid, Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SlimTaskItem from 'components/task-item/SlimTaskItem/SlimTaskItem';
 import Arrow from 'components/common/Arrow/Arrow';
+import LoadMoreButton, {
+  LoadMoreSection,
+} from 'components/common/LoadMoreButton/LoadMoreButton';
 import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
 import {
   DashboardTasksGroupContainer,
@@ -12,7 +15,6 @@ import {
   DashboardTasksGroupList,
   DroppableBox,
   AssignedBox,
-  ShowMoreButton,
   // eslint-disable-next-line import/no-unresolved
 } from './styled';
 
@@ -370,11 +372,11 @@ const DashboardTasksGroup = ({
               </Droppable>
             </DragDropContext>
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
-              <ShowMoreButton
-                onClick={() => fetchImplicitGroup(dashboardTasksGroup, true)}
-              >
-                Show more
-              </ShowMoreButton>
+              <LoadMoreSection>
+                <LoadMoreButton
+                  onClick={() => fetchImplicitGroup(dashboardTasksGroup, true)}
+                />
+              </LoadMoreSection>
             )}
             {isLoadingMore && <DashboardSingleSkeletonLoader rows={3} />}
           </DashboardTasksGroupList>

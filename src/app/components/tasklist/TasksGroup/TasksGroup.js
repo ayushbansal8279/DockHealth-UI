@@ -5,9 +5,11 @@ import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
-import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import Spacing from 'components/common/Spacing';
+
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import LoadMoreButton, {
+  LoadMoreSection,
+} from 'components/common/LoadMoreButton/LoadMoreButton';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import listSectionSavedState, {
   FULL_VIEW,
@@ -33,8 +35,6 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
-  PaginationButton,
-  // ShowMoreButton,
 } from './styled';
 
 const TasksGroup = ({
@@ -60,7 +60,6 @@ const TasksGroup = ({
   draggedId,
   groupPagination,
   showMoreTasks,
-  isFetchingMoreTasks,
   hasMoreTasks,
   updateDueDate,
   updateWorkflowStatus,
@@ -224,19 +223,9 @@ const TasksGroup = ({
         />
         {isLoadingGroup && <SingleSkeletonLoader rows={4} />}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (
-          <PaginationButton
-            disabled={isFetchingMoreTasks}
-            type="button"
-            onClick={showMoreTasks}
-          >
-            Show more
-            {isFetchingMoreTasks && (
-              <>
-                <Spacing horizontal={4} />
-                <Loader size={LoaderSizes.small} />
-              </>
-            )}
-          </PaginationButton>
+          <LoadMoreSection>
+            {!isLoadingGroup && <LoadMoreButton onClick={showMoreTasks} />}
+          </LoadMoreSection>
         )}
       </Tasks>
     </TasksGroupContainer>
