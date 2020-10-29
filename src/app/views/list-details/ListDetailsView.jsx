@@ -794,8 +794,6 @@ class Home extends Component {
               loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
             }
             isFetching={isFetching || isCompletedTasksFetching}
-            tasks={[]}
-            completedTasks={[]}
             printData={{
               completedTasks:
                 selectedTab === TaskListTabName.COMPLETE
