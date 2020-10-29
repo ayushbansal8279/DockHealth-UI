@@ -39,7 +39,6 @@ export const groupTasksSelector = createSelector(
       groupedTasksMap[taskGroup.groupIdentifier] = {
         tasks: taskGroup.tasks,
         hasMore: taskGroup.hasMore,
-        pageNumber: taskGroup.pageNumber,
         isLoadingGroup: taskGroup.isLoadingGroup,
       };
     });

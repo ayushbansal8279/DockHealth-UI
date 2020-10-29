@@ -66,13 +66,15 @@ export function getListTasksGroupedByTaskGroup(
   status = 'INCOMPLETE',
   sortBy,
   filterBy,
-  pageNumber = 1,
+  startPosition = 0,
+  endPosition = 0,
 ) {
   return axios
     .get(`task/findListTasksGroupedByTaskGroup/${taskListIdentifier}`, {
       params: {
         status,
-        pageNumber,
+        startPosition,
+        endPosition,
         sortBy: sortBy || undefined,
         filterBy: filterBy || undefined,
       },
@@ -758,11 +760,12 @@ export function getTasksForTaskListByTaskGroup(
   taskListIdentifier,
   taskGroupIdentifier,
   status,
-  pageNumber = 1,
+  startPosition = 0,
+  endPosition = 0,
 ) {
   return axios
     .get(
-      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&pageNumber=${pageNumber}`,
+      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&startPosition=${startPosition}&endPosition=${endPosition}`,
     )
     .then(({ data }) => data)
     .catch(error => {

@@ -458,7 +458,8 @@ class Home extends Component {
     taskListIdentifier,
     status,
     cumulativeFlag = false,
-    pageNumber = 1,
+    startPosition = 0,
+    endPosition = 0,
   ) => {
     const { actions } = this.props;
 
@@ -468,7 +469,8 @@ class Home extends Component {
       undefined,
       status,
       cumulativeFlag,
-      pageNumber,
+      startPosition,
+      endPosition,
     );
   };
 
@@ -729,17 +731,17 @@ class Home extends Component {
     tasksGroupsListActions.createTaskGroupList({ groupName });
   };
 
-  loadTasksForTaskGroup = ({ taskGroupIdentifier, pageNumber }) => {
+  loadTasksForTaskGroup = ({ taskGroupIdentifier, startPosition }) => {
     const { tasksGroupsListActions } = this.props;
     const payload = {
       taskGroupIdentifier,
       status: 'INCOMPLETE',
-      pageNumber: pageNumber + 1,
+      startPosition,
     };
     tasksGroupsListActions.getTasksForTaskGroups(payload);
   };
 
-  loadMoreTasksForList = ({ status, pageNumber }) => {
+  loadMoreTasksForList = ({ status, startPosition }) => {
     const { actions, routeParams } = this.props;
     actions.getListTasksGroupedByTaskGroup(
       routeParams.taskListIdentifier,
@@ -747,7 +749,7 @@ class Home extends Component {
       undefined,
       status,
       false,
-      pageNumber + 1,
+      startPosition,
     );
   };
 

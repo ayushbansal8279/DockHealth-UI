@@ -90,11 +90,12 @@ export function getDashboardStatistics(tab) {
 
 export function getTasksAssignedToUserByImplicitGroup(
   groupType,
-  pageNumber = 1,
+  startPosition = 0,
+  endPosition = 0,
 ) {
   return axios
     .get(
-      `/task/findTasksAssignedToUserByImplicitGroup?groupType=${groupType}&pageNumber=${pageNumber}&status=INCOMPLETE`,
+      `/task/findTasksAssignedToUserByImplicitGroup?groupType=${groupType}&startPosition=${startPosition}&endPosition=${endPosition}&status=INCOMPLETE`,
     )
     .then(({ data }) => data)
     .catch(error => {
@@ -104,11 +105,12 @@ export function getTasksAssignedToUserByImplicitGroup(
 
 export function getTasksForOrganizationByImplicitGroup(
   groupType,
-  pageNumber = 1,
+  startPosition = 0,
+  endPosition = 0,
 ) {
   return axios
     .get(
-      `/task/findTasksForOrganizationByImplicitGroup?groupType=${groupType}&pageNumber=${pageNumber}&status=INCOMPLETE`,
+      `/task/findTasksForOrganizationByImplicitGroup?groupType=${groupType}&startPosition=${startPosition}&endPosition=${endPosition}&status=INCOMPLETE`,
     )
     .then(({ data }) => data)
     .catch(error => {

@@ -428,7 +428,7 @@ export function* doCreateTask(payload) {
 
 export function* doGetTasksForTaskGroup(payload) {
   try {
-    const { taskGroupIdentifier, status, pageNumber } = payload;
+    const { taskGroupIdentifier, status, startPosition, endPosition } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
 
     yield put({
@@ -440,7 +440,8 @@ export function* doGetTasksForTaskGroup(payload) {
       taskListIdentifier,
       taskGroupIdentifier,
       status,
-      pageNumber,
+      startPosition,
+      endPosition,
     );
     yield put({
       type: REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
