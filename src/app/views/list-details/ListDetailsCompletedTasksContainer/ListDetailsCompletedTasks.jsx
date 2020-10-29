@@ -72,7 +72,7 @@ const ListDetailsCompletedTasks = ({
                   showMoreTasks={() => {
                     loadMoreTasksForList({
                       status: 'COMPLETE',
-                      pageNumber: completedTasksGroup?.pageNumber || 0,
+                      startPosition: completedTasksGroup?.tasks?.length || 0,
                     });
                   }}
                 />

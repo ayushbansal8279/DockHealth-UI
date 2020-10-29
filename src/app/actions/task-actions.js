@@ -125,7 +125,8 @@ export function getListTasksGroupedByTaskGroup(
   filterBy,
   status,
   cumulativeFlag,
-  pageNumber = 1,
+  startPosition = 0,
+  endPosition = 0,
 ) {
   const action = getListWithGroupsAction({ status });
 
@@ -139,7 +140,8 @@ export function getListTasksGroupedByTaskGroup(
       status,
       sortBy,
       filterBy,
-      pageNumber,
+      startPosition,
+      endPosition,
     )
       .then(groupedTasks => {
         dispatch({ type: action, groupedTasks });

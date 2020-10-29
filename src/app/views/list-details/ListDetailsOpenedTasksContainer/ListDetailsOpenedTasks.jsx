@@ -156,7 +156,8 @@ const ListDetailsOpenedTasks = ({
             showMoreTasks={() => {
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
-                pageNumber: tasksGrouped[taskGroupIdentifier]?.pageNumber || 0,
+                startPosition:
+                  tasksGrouped[taskGroupIdentifier]?.tasks?.length || 0,
               });
             }}
           />

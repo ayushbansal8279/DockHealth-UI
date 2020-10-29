@@ -236,7 +236,7 @@ function* doFetchImplicitGroup({ group, fetchMore }) {
             ? getTasksForOrganizationByImplicitGroup
             : getTasksAssignedToUserByImplicitGroup,
           group?.groupType,
-          fetchMore ? group?.pageNumber + 1 : 1,
+          fetchMore ? group?.tasks?.length : 0,
         );
         const tasks = taskGroups
           ?.map(item => item?.tasks)

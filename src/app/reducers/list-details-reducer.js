@@ -201,11 +201,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           taskGroup.groupIdentifier === group?.groupIdentifier
             ? {
                 ...taskGroup,
-                tasks:
-                  group.pageNumber === 1
-                    ? group.tasks
-                    : taskGroup.tasks.concat(group.tasks),
-                pageNumber: group.pageNumber,
+                tasks: taskGroup.tasks.concat(group.tasks),
                 hasMore: group.hasMore,
               }
             : taskGroup,
@@ -249,7 +245,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           groupIdentifier: fetchedGroupIdentifier,
           tasks: [],
           hasMore: false,
-          pageNumber: 1,
           isLoadingGroup: true,
         });
       }
@@ -278,7 +273,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           ? {
               ...taskGroup,
               tasks: taskGroup.tasks.concat(group.tasks),
-              pageNumber: group.pageNumber,
               hasMore: group.hasMore,
               isLoadingGroup: false,
             }
