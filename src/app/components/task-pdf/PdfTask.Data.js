@@ -23,7 +23,7 @@ const getDueDateData = ({ dueDate }) => {
 const getPdfTaskData = props => {
   const {
     comments,
-    subtasks,
+    subTasksCount,
     createdDateTime,
     updatedDateTime,
     status,
@@ -79,7 +79,7 @@ const getPdfTaskData = props => {
       : '';
 
   const bottomLabelsArray = [
-    isEmpty(subtasks) && `${subtasks.length} subtasks`,
+    subTasksCount > 0 && `${subTasksCount} subtasks`,
     isEmpty(comments) && `${comments.length} comments`,
   ].filter(Boolean);
 

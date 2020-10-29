@@ -44,8 +44,8 @@ import {
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
-  completedTasksSelector,
-  tasksSelector,
+  groupCompletedTasksSelector,
+  groupTasksSelector,
 } from 'selectors/list-details-selectors';
 
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
@@ -761,8 +761,8 @@ class Home extends Component {
       modalActions,
       isFetching,
       isCompletedTasksFetching,
-      completedTasks,
-      tasks,
+      completedGroupedTasks,
+      groupedTasks,
       currentUser,
       selectedTask,
     } = this.props;
@@ -793,8 +793,19 @@ class Home extends Component {
               loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
             }
             isFetching={isFetching || isCompletedTasksFetching}
-            tasks={tasks}
-            completedTasks={completedTasks}
+            printData={{
+              completedTasks:
+                selectedTab === TaskListTabName.COMPLETE
+                  ? Object.values(completedGroupedTasks)?.flatMap(
+                      ({ tasks }) => tasks,
+                    )
+                  : [],
+              openedTasks:
+                selectedTab === TaskListTabName.OPEN
+                  ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
+                  : [],
+              taskListMembers: members,
+            }}
           />
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
@@ -864,8 +875,8 @@ const mapStateToProps = state => ({
   pendingTaskLists: state.invitationState.pendingTasklists,
   isFetching: tasksIsFetchingSelector(state),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(state),
-  tasks: tasksSelector(state),
-  completedTasks: completedTasksSelector(state),
+  groupedTasks: groupTasksSelector(state),
+  completedGroupedTasks: groupCompletedTasksSelector(state),
   selectedTask: state.taskState.selectedTask,
 });
 
