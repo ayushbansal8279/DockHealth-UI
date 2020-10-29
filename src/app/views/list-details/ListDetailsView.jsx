@@ -797,13 +797,14 @@ class Home extends Component {
             isFetching={isFetching || isCompletedTasksFetching}
             printData={{
               completedTasks:
-                selectedTab === TaskListTabName.COMPLETE
+                selectedTab === TaskListTabName.COMPLETE &&
+                completedGroupedTasks
                   ? Object.values(completedGroupedTasks)?.flatMap(
                       ({ tasks }) => tasks,
                     )
                   : [],
               openedTasks:
-                selectedTab === TaskListTabName.OPEN
+                selectedTab === TaskListTabName.OPEN && groupedTasks
                   ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
                   : [],
               taskListMembers: members,
