@@ -262,7 +262,8 @@ function* doFetchImplicitGroup({ group, fetchMore }) {
   }
 }
 
-function* doFetchImplicitGroups() {
+function* doFetchImplicitGroups(props = {}) {
+  const { customOpenGroupsByDefault } = props;
   try {
     const tasksType = getTasksType();
     const isAllTasks = tasksType === 'all-tasks';
@@ -275,8 +276,12 @@ function* doFetchImplicitGroups() {
       dashboardGroups?.map(dashboardGroup =>
         // eslint-disable-next-line consistent-return
         call(function*(group) {
+          const isCustomOpen =
+            customOpenGroupsByDefault?.some(
+              item => item === group?.groupType,
+            ) || false;
           try {
-            if (group?.defaultOpen) {
+            if (group?.defaultOpen || isCustomOpen) {
               const { taskGroups, ...rest } = yield call(
                 isAllTasks
                   ? getTasksForOrganizationByImplicitGroup
@@ -290,9 +295,19 @@ function* doFetchImplicitGroups() {
                   ...tasksGroupList,
                 ]);
 
-              return { ...group, ...rest, ...taskGroups[0], tasks };
+              return {
+                ...group,
+                ...rest,
+                ...taskGroups[0],
+                defaultOpen: true,
+                tasks,
+              };
             }
-            return { ...group, tasks: [] };
+
+            return {
+              ...group,
+              tasks: [],
+            };
           } catch (error) {
             console.log(error);
           }
@@ -335,7 +350,7 @@ function* doFetchSearchedTermForImplicitGroups({ searchTerm }) {
   }
 }
 
-function* doReloadDashboardTasks() {
+function* doReloadDashboardTasks({ customOpenGroupsByDefault }) {
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const isAllTasks = getTasksType() === 'all-tasks';
@@ -368,7 +383,10 @@ function* doReloadDashboardTasks() {
         })),
       });
     } else {
-      yield all([call(doFetchImplicitGroups), call(statisticsRequest)]);
+      yield all([
+        call(doFetchImplicitGroups, { customOpenGroupsByDefault }),
+        call(statisticsRequest),
+      ]);
     }
   } catch (error) {
     yield put({
@@ -421,7 +439,9 @@ function* doRedirectToParentTask({
 function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   try {
     yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
-    yield call(doReloadDashboardTasks);
+    yield call(doReloadDashboardTasks, {
+      customOpenGroupsByDefault: [taskGroupImplicitType],
+    });
   } catch (error) {
     console.error(error);
   }
