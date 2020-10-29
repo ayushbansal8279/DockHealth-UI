@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
-import { FormSwitch } from 'components/common/Switch/Switch';
 import { head } from 'ramda';
 import * as userApi from 'api/user-api';
 import * as AlertActions from 'alert/actions';
@@ -15,29 +14,21 @@ import {
 import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
 import Spacing from 'components/common/Spacing';
 import validationSchema from './validation-schema';
-import {
-  SectionSubtypography,
-  SectionTypography,
-  FormInfoText,
-  InputActionButton,
-} from './styled';
+import { FormInfoText, InputActionButton } from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 const onSubmit = ({ dispatch }) => async data => {
-  const { emailNotificationsEnabled, ...otherData } = data;
-
   try {
     const requestData = {
-      firstName: otherData.firstName,
-      lastName: otherData.lastName,
-      titles: [{ name: otherData.title }],
-      department: otherData.department,
-      workPhoneNumber:
-        otherData?.workPhoneNumber?.replace(/[\s()-]/g, '') || '',
+      firstName: data.firstName,
+      lastName: data.lastName,
+      titles: [{ name: data.title }],
+      department: data.department,
+      workPhoneNumber: data?.workPhoneNumber?.replace(/[\s()-]/g, '') || '',
     };
 
     await userApi.updateUser(requestData);
-    await userApi.updateUserNotoficationPrefs(emailNotificationsEnabled);
 
     dispatch(
       AlertActions.showGlobalAlert('Profile updated successfully!', 'success'),
@@ -45,14 +36,13 @@ const onSubmit = ({ dispatch }) => async data => {
 
     userApi.getUserById();
     userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
-    userApi.getUserNotoficationPrefs();
   } catch (error) {
     console.error(error);
     dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
   }
 };
 
-const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
+const UserProfileForm = ({ userProfile }) => {
   const dispatch = useDispatch();
 
   const defaultValues = useMemo(() => {
@@ -72,10 +62,8 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
             .replace(/^\+1/, '')
             .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
         : '',
-      emailNotificationsEnabled:
-        userNotificationPreferences.emailNotificationsEnabled || false,
     };
-  }, [userProfile, userNotificationPreferences]);
+  }, [userProfile]);
 
   const formMethods = useForm({
     defaultValues,
@@ -216,26 +204,6 @@ const UserProfileForm = ({ userProfile, userNotificationPreferences }) => {
               <Grid item md={6} xs={12}>
                 <UniversalInput name="department" label="Department" />
               </Grid>
-            </Grid>
-          </Grid>
-        </SettingsSection>
-        <SettingsSection>
-          <SectionHeader>Preferences</SectionHeader>
-          <Spacing vertical={5} />
-          <Grid container spacing={2}>
-            <Grid
-              container
-              item
-              alignItems="flex-start"
-              justify="space-between"
-            >
-              <div>
-                <SectionTypography>Emails</SectionTypography>
-                <SectionSubtypography>
-                  Notify me via email when there is a new activity.
-                </SectionSubtypography>
-              </div>
-              <FormSwitch name="emailNotificationsEnabled" />
             </Grid>
           </Grid>
         </SettingsSection>

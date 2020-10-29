@@ -37,13 +37,9 @@ import {
 const UserProfileView = () => {
   const dispatch = useDispatch();
 
-  const { userProfile, userNotificationPreferences } = useSelector(store => {
+  const { userProfile } = useSelector(store => {
     return {
       userProfile: store.userState.userProfile,
-      userNotificationPreferences: {
-        emailNotificationsEnabled: store.userState.userNotificationPrefs?.email,
-        pushNotificationsEnabled: store.userState.userNotificationPrefs?.push,
-      },
     };
   });
 
@@ -123,7 +119,7 @@ const UserProfileView = () => {
 
   return (
     <ViewContainer>
-      {!isEmpty(userProfile) && userNotificationPreferences && (
+      {!isEmpty(userProfile) && (
         <ProfileSettingsWrapper>
           <SettingsSection noMarginTop>
             <ViewHeader>Manage Your Profile</ViewHeader>
@@ -164,10 +160,7 @@ const UserProfileView = () => {
             </Grid>
           </SettingsSection>
           <Divider />
-          <UserProfileForm
-            userProfile={userProfile}
-            userNotificationPreferences={userNotificationPreferences}
-          />
+          <UserProfileForm userProfile={userProfile} />
           <Spacing vertical={8} />
           <Divider />
           <Spacing vertical={2} />

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Popover } from '@material-ui/core';
 import { updateUserDashboardPrefs } from 'api/user-api';
-import DashboardSettingsIcon from 'img/dashboard-settings-icon';
+import DashboardSettingsIcon from 'img/settings-icon';
 import {
   DashboardSettingsContainer,
   DashboardSettingsHeader,

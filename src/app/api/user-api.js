@@ -959,3 +959,13 @@ export const captureLocalTimezone = async () => {
     .put(`/user/captureLocalTimezone?timezoneOffset=${timezoneOffset}`, {})
     .then(({ data }) => data);
 };
+
+export const getNotificationSettings = () =>
+  axios.get('/user/userNotificationSettings').then(({ data }) => data);
+
+export const updateNotificationSettings = settings =>
+  axios
+    .put('/user/userNotificationSettings', {
+      notificationSettings: settings,
+    })
+    .then(({ data }) => data);

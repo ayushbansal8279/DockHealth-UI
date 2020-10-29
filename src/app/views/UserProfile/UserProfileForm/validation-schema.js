@@ -1,4 +1,4 @@
-import { boolean, object, string } from 'yup';
+import { object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
 const PHONE_MASK = /\([1-9]\d{2}\) \d{3}-\d{4}|^$/;
@@ -22,6 +22,4 @@ export default object().shape({
     })
     .matches(PHONE_MASK, MASK_MESSAGE)
     .notRequired(),
-  emailNotificationsEnabled: boolean(),
-  pushNotificationsEnabled: boolean(),
 });

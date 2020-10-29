@@ -7,6 +7,7 @@ import NewBlueBellIcon from 'img/notifications/new-blue-bell';
 import WhiteBellIcon from 'img/notifications/white-bell';
 import NewWhiteBellIcon from 'img/notifications/new-white-bell';
 import CrossedBellIcon from 'img/notifications/crossed-bell';
+import SettingsIcon from 'img/settings-icon';
 import {
   getActivityAlerts,
   clearActivityAlert,
@@ -18,8 +19,8 @@ import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
 import Switch from 'components/common/Switch/Switch';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { initializePusher } from 'helpers/pusher-instance';
-
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
+import ActivityAlertsSettings from './ActivityAlertsSettings/ActivityAlertsSettings';
 import {
   ActivityAlertsImg,
   ActivityAlertsPopover,
@@ -30,6 +31,8 @@ import {
   ActivityAlertsSwitchLabel,
   ActivityAlertsHeaderLabel,
   EmptyActivityAlerts,
+  SettingsButton,
+  ActivityAlertsOptions,
 } from './styled';
 
 const getIconsConfig = variant => {
@@ -95,6 +98,7 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [activityAlertsList, setActivityAlertsList] = useState(null);
+  const [selectedScreen, setSelectedScreen] = useState('LIST');
   const [hasUnreadAlertsState, setHasUnreadAlertsState] = useState(
     JSON.parse(sessionStorage.getItem('hasUnreadAlerts')),
   );
@@ -129,6 +133,10 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     if (isOpen) {
       getActivityAlertsWithLoader();
       setHasUnreadAlertsState(false);
+    }
+
+    if (!isOpen) {
+      setSelectedScreen('LIST');
     }
   }, [isOpen]);
 
@@ -178,47 +186,59 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
           horizontal: 'right',
         }}
       >
-        <ActivityAlertsHeader>
-          <ActivityAlertsHeaderLabel>
-            <ActivityAlertsPopoverLabel>
-              Notifications
-            </ActivityAlertsPopoverLabel>
-            <div>
-              <Switch
-                checked={alertsEnabledState}
-                onChange={() => {
-                  switchActivityAlerts(!alertsEnabledState);
-                }}
-              />
-              <ActivityAlertsSwitchLabel>
-                {alertsEnabledState ? 'ON' : 'OFF'}
-              </ActivityAlertsSwitchLabel>
-            </div>
-          </ActivityAlertsHeaderLabel>
-          {activityAlertsList?.length !== 0 && (
-            <ActivityAlertsClearAllLabel onClick={onClearAllAlerts}>
-              Clear all
-            </ActivityAlertsClearAllLabel>
-          )}
-        </ActivityAlertsHeader>
-        <ActivityAlertsList>
-          <ViewLoader isFetchingData={activityAlertsListIsFetching}>
-            {activityAlertsList?.length === 0 && (
-              <EmptyActivityAlerts>
-                There are no new notifications at this time
-              </EmptyActivityAlerts>
-            )}
-            {activityAlertsList?.length > 0 &&
-              activityAlertsList?.map(itemAlert => (
-                <ActivityAlertsItem
-                  itemAlert={itemAlert}
-                  onClearAlert={() =>
-                    onClearAlert(itemAlert?.activityAlertIdentifier)
-                  }
-                />
-              ))}
-          </ViewLoader>
-        </ActivityAlertsList>
+        {selectedScreen === 'LIST' && (
+          <>
+            <ActivityAlertsHeader>
+              <ActivityAlertsHeaderLabel>
+                <ActivityAlertsPopoverLabel>
+                  Notifications
+                </ActivityAlertsPopoverLabel>
+                <div>
+                  <Switch
+                    checked={alertsEnabledState}
+                    onChange={() => {
+                      switchActivityAlerts(!alertsEnabledState);
+                    }}
+                  />
+                  <ActivityAlertsSwitchLabel>
+                    {alertsEnabledState ? 'ON' : 'OFF'}
+                  </ActivityAlertsSwitchLabel>
+                </div>
+              </ActivityAlertsHeaderLabel>
+              <ActivityAlertsOptions>
+                {activityAlertsList?.length !== 0 && (
+                  <ActivityAlertsClearAllLabel onClick={onClearAllAlerts}>
+                    Clear all
+                  </ActivityAlertsClearAllLabel>
+                )}
+                <SettingsButton onClick={() => setSelectedScreen('SETTINGS')}>
+                  <img src={SettingsIcon} alt="settings" />
+                </SettingsButton>
+              </ActivityAlertsOptions>
+            </ActivityAlertsHeader>
+            <ActivityAlertsList>
+              <ViewLoader isFetchingData={activityAlertsListIsFetching}>
+                {activityAlertsList?.length === 0 && (
+                  <EmptyActivityAlerts>
+                    There are no new notifications at this time
+                  </EmptyActivityAlerts>
+                )}
+                {activityAlertsList?.length > 0 &&
+                  activityAlertsList?.map(itemAlert => (
+                    <ActivityAlertsItem
+                      itemAlert={itemAlert}
+                      onClearAlert={() =>
+                        onClearAlert(itemAlert?.activityAlertIdentifier)
+                      }
+                    />
+                  ))}
+              </ViewLoader>
+            </ActivityAlertsList>
+          </>
+        )}
+        {selectedScreen === 'SETTINGS' && (
+          <ActivityAlertsSettings setSelectedScreen={setSelectedScreen} />
+        )}
       </ActivityAlertsPopover>
     </>
   );

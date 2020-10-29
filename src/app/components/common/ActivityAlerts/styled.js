@@ -122,6 +122,7 @@ export const EmptyActivityAlerts = styled.div`
 export const ActivityAlertsHeaderLabel = styled.div`
   display: flex;
   align-items: center;
+  color: ${palette.mediumGrey};
 `;
 
 export const ActivityAlertsToastsContainer = styled.div`
@@ -130,4 +131,13 @@ export const ActivityAlertsToastsContainer = styled.div`
   height: 100%;
   width: 100%;
   right: -17px;
+`;
+
+export const SettingsButton = styled.button`
+  cursor: pointer;
+  margin-left: ${spacing.smallPlus};
+`;
+
+export const ActivityAlertsOptions = styled.div`
+  display: flex;
 `;
