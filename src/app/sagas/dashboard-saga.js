@@ -51,6 +51,7 @@ import {
 } from 'helpers/task-update-helper';
 import { fetchTasklistForUser } from 'sagas/tasklist-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import { dashboardGroupTasksCountSelector } from 'selectors/dashboard-tasks-selectors';
 import { isEmpty } from 'ramda';
 
 const INITIALIZE_DASHBOARD_VIEW = 'INITIALIZE_DASHBOARD_VIEW';
@@ -262,8 +263,9 @@ function* doFetchImplicitGroup({ group, fetchMore }) {
   }
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function* doFetchImplicitGroups(props = {}) {
-  const { customOpenGroupsByDefault } = props;
+  const { customGroupsSettings } = props;
   try {
     const tasksType = getTasksType();
     const isAllTasks = tasksType === 'all-tasks';
@@ -276,18 +278,30 @@ function* doFetchImplicitGroups(props = {}) {
       dashboardGroups?.map(dashboardGroup =>
         // eslint-disable-next-line consistent-return
         call(function*(group) {
-          const isCustomOpen =
-            customOpenGroupsByDefault?.some(
-              item => item === group?.groupType,
-            ) || false;
+          const customGroup = customGroupsSettings?.find(
+            item => item?.groupType === group?.groupType,
+          );
+
+          let customStartPosition = customGroup?.currentTasksCount || 0;
+
+          if (customGroup && customStartPosition) {
+            customStartPosition = yield select(
+              dashboardGroupTasksCountSelector,
+              group?.groupType,
+            );
+          }
+
           try {
-            if (group?.defaultOpen || isCustomOpen) {
+            if (group?.defaultOpen || customGroup) {
               const { taskGroups, ...rest } = yield call(
                 isAllTasks
                   ? getTasksForOrganizationByImplicitGroup
                   : getTasksAssignedToUserByImplicitGroup,
                 dashboardGroup?.groupType,
+                0,
+                customStartPosition || 0,
               );
+
               const tasks = taskGroups
                 ?.map(item => item?.tasks)
                 ?.reduce((tasksList, tasksGroupList) => [
@@ -350,7 +364,8 @@ function* doFetchSearchedTermForImplicitGroups({ searchTerm }) {
   }
 }
 
-function* doReloadDashboardTasks({ customOpenGroupsByDefault }) {
+function* doReloadDashboardTasks(props = {}) {
+  const { customGroupsSettings } = props;
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const isAllTasks = getTasksType() === 'all-tasks';
@@ -384,7 +399,7 @@ function* doReloadDashboardTasks({ customOpenGroupsByDefault }) {
       });
     } else {
       yield all([
-        call(doFetchImplicitGroups, { customOpenGroupsByDefault }),
+        call(doFetchImplicitGroups, { customGroupsSettings }),
         call(statisticsRequest),
       ]);
     }
@@ -440,7 +455,12 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   try {
     yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
     yield call(doReloadDashboardTasks, {
-      customOpenGroupsByDefault: [taskGroupImplicitType],
+      customGroupsSettings: [
+        {
+          groupType: taskGroupImplicitType,
+          currentTasksCount: tasksOrder.length,
+        },
+      ],
     });
   } catch (error) {
     console.error(error);

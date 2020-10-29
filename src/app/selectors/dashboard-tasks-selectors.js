@@ -11,3 +11,12 @@ export const dashboardTasksIsLoadingSelector = createSelector(
   dashboardTasksStateSelector,
   ({ isLoading }) => isLoading,
 );
+
+export const dashboardGroupTasksCountSelector = createSelector(
+  dashboardTasksStateSelector,
+  (_, groupType) => groupType,
+  ({ tasksList }, groupType) => {
+    const group = tasksList?.find(g => g.groupType === groupType);
+    return group?.tasks?.length || 0;
+  },
+);

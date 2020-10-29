@@ -196,8 +196,13 @@ const DashboardTasksGroup = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboardTasksGroup, fetchImplicitGroup, groupIsOpen, isSearching]);
+
   useEffect(() => {
     setNewTasks(dashboardTasks);
+
+    if (dashboardTasks?.length === 0) {
+      setGroupIsOpen(false);
+    }
   }, [dashboardTasks]);
 
   const gridConfig = isAllTasksTab
