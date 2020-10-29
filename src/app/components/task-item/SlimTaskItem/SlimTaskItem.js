@@ -44,7 +44,7 @@ import {
   SlimTaskListNameText,
 } from '../styled';
 
-const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
+const DueDateComponent = ({ dueDate, updateDueDate, task }) => {
   const dueDateQuickSelectOptions = [
     {
       label: 'Today',
@@ -73,10 +73,7 @@ const DueDateComponent = ({ dueDate, isOverdueTask, updateDueDate, task }) => {
         >
           <DueDateContainer>
             <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-            <img
-              alt="due-date"
-              src={getCalendarIcon(dueDate, true, isOverdueTask)}
-            />
+            <img alt="due-date" src={getCalendarIcon(dueDate, true)} />
             {!dueDate && <DueDateAddLabel>Add</DueDateAddLabel>}
           </DueDateContainer>
         </DueDateButton>

@@ -667,10 +667,9 @@ class Home extends Component {
 
   invokeToggleCompleteAction = task => {
     const { actions, routeParams, currentUser } = this.props;
-    const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
 
     actions
-      .toggleCompleteTask(task, selectedTab, currentUser)
+      .toggleCompleteTask(task, currentUser)
       .then(() => {
         setTimeout(() => {
           actions.getTaskStatsForList(routeParams.taskListIdentifier);

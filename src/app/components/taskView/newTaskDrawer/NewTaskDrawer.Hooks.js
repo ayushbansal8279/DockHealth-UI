@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
 import { getPatientsByName, addPatient } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
+import * as TaskApi from 'api/task-api';
 import {
   saveTask,
   storeAsCurrentTask,
@@ -27,6 +28,7 @@ import {
   prepareSubtask,
   markTaskRead,
 } from 'actions/task-actions';
+import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -163,7 +165,14 @@ const initializeTaskDrawerHooks = ({
     selectedFilters: selectedFiltersInMegaFilterSelector(store),
   }));
 
+  const { taskIdentifier, parentTask, subtasks, subTasksCount } =
+    selectedTask || {};
+
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
+  const [
+    parentDescriptionState,
+    setParentDescriptionState,
+  ] = useMentionsEditorState();
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const descriptionReference = useRef(null);
 
@@ -223,8 +232,7 @@ const initializeTaskDrawerHooks = ({
   const selectedTaskParent = useMemo(
     () =>
       tasks?.find(
-        ({ taskIdentifier }) =>
-          taskIdentifier === selectedTask?.parentTaskIdentifier,
+        ({ taskIdentifier: id }) => id === selectedTask?.parentTaskIdentifier,
       ) ?? null,
     [selectedTask, tasks],
   );
@@ -242,6 +250,41 @@ const initializeTaskDrawerHooks = ({
         return data;
       },
     );
+
+  const previousTaskIdentifierValue = useRef();
+
+  useEffect(() => {
+    if (
+      (taskIdentifier &&
+        taskIdentifier !== previousTaskIdentifierValue.current) ||
+      (subtasks?.length === 0 && subTasksCount > 0)
+    ) {
+      TaskApi.getTaskDetails(taskIdentifier).then(task => {
+        storeAsCurrentTask(task)(dispatch);
+        dispatch({ type: UPDATE_TASK_SUCCESS, task });
+      });
+    }
+    previousTaskIdentifierValue.current = taskIdentifier;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskIdentifier, subtasks]);
+
+  useEffect(() => {
+    if (parentTask) {
+      const { tokenizedDescription, description, taskMentions } = parentTask;
+      if (description) {
+        const newContent = createMentionEntities(
+          tokenizedDescription,
+          description,
+          taskMentions,
+        );
+
+        setParentDescriptionState(
+          EditorState.push(descriptionState, newContent),
+        );
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentTask]);
 
   useEffect(() => {
     if (taskListIdentifier) {
@@ -457,8 +500,12 @@ const initializeTaskDrawerHooks = ({
         if (assignToSelf && selectedTask.assignedTo) {
           assignedTo = selectedTask.assignedTo;
         }
-        await prepareSubtask(selectedTask.taskIdentifier, assignedTo)(dispatch);
-        afterAddSubTask();
+        await prepareSubtask(
+          selectedTask.taskIdentifier,
+          assignedTo,
+          selectedTask,
+        )(dispatch);
+        if (typeof afterAddSubTask === 'function') afterAddSubTask();
         onButtonClicked('Add subtask');
       } catch {
         noop();
@@ -636,6 +683,9 @@ const initializeTaskDrawerHooks = ({
     descriptionErrorState,
     setDescriptionErrorState,
     selectedFilters,
+    dispatch,
+    parentDescriptionState,
+    setParentDescriptionState,
   };
 };
 

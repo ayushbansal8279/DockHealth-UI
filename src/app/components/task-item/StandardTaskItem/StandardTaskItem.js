@@ -23,6 +23,7 @@ const Task = ({
   addingNewSubtask,
   addingNewSubtaskParentId,
   subtaskShape,
+  hideSubtasks,
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -63,8 +64,11 @@ const Task = ({
   );
 
   const showSubtasks = useMemo(
-    () => (subTasksCount > 0 || !isEmpty(renderedSubtasks)) && !isStartedDnD,
-    [renderedSubtasks, subTasksCount, isStartedDnD],
+    () =>
+      (subTasksCount > 0 || !isEmpty(renderedSubtasks)) &&
+      !isStartedDnD &&
+      !hideSubtasks,
+    [renderedSubtasks, subTasksCount, isStartedDnD, hideSubtasks],
   );
 
   const onClickComment = useCallback(() => {
@@ -87,6 +91,7 @@ const Task = ({
           subtasks={renderedSubtasks}
           subTasksCount={subTasksCount}
           isDraggable={isDraggable}
+          hideSubtasks={hideSubtasks}
           {...restProps}
         />
       </div>

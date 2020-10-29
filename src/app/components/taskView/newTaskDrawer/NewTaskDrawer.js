@@ -4,6 +4,7 @@ import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useRef, useEffect, useState } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
+import { storeAsCurrentTask } from 'actions/task-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
@@ -36,6 +37,7 @@ import {
   TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
+  styleFullRowThin,
   styleEmailRow,
   styleLeftColumn,
   styleRightColumn,
@@ -43,6 +45,9 @@ import {
   styleCommentRow,
   DescriptionContainer,
   DescriptionError,
+  ParentTaskButton,
+  ParentTaskDescription,
+  ParentTaskDescriptionPlaceholder,
 } from './NewTaskDrawer.Styled';
 import {
   getFormattedMembers,
@@ -52,6 +57,7 @@ import {
   TaskDrawerFields,
 } from './NewTaskDrawer.Utilities';
 import existingUserTaskDrawerTourHooks from './NewTaskDrawer.ExistingUserTourHooks';
+import NewTaskDrawerSubtasks from './NewTaskDrawerSubtasks/NewTaskDrawerSubtasks';
 
 const NewTaskDrawer = ({
   isInbox,
@@ -99,6 +105,9 @@ const NewTaskDrawer = ({
     descriptionReference,
     descriptionErrorState,
     setDescriptionErrorState,
+    dispatch,
+    parentDescriptionState,
+    setParentDescriptionState,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -218,6 +227,29 @@ const NewTaskDrawer = ({
                 }}
               />
               <Spacing vertical={2} />
+              {selectedTask?.parentTaskIdentifier && (
+                <Grid item xs={12} style={styleFullRowThin}>
+                  <Spacing vertical={4} />
+                  {selectedTask.parentTask ? (
+                    <ParentTaskButton
+                      onClick={() =>
+                        storeAsCurrentTask(selectedTask.parentTask)(dispatch)
+                      }
+                    >
+                      <ParentTaskDescription>
+                        <MentionsEditor
+                          readOnly
+                          withEditedLabel={selectedTask.parentTask.edited}
+                          state={parentDescriptionState}
+                          onChange={setParentDescriptionState}
+                        />
+                      </ParentTaskDescription>
+                    </ParentTaskButton>
+                  ) : (
+                    <ParentTaskDescriptionPlaceholder />
+                  )}
+                </Grid>
+              )}
               <Grid item xs={12} style={styleFullRow}>
                 <DescriptionContainer
                   isFocused={isDescriptionFocused}
@@ -470,6 +502,17 @@ const NewTaskDrawer = ({
                   parentFormSubmit={parentFormSubmit}
                 />
               </Grid>
+              {(selectedTask?.subTasksCount > 0 ||
+                selectedTask?.subtasks?.length > 0) && (
+                <Grid item xs={12}>
+                  <NewTaskDrawerSubtasks
+                    subtasks={selectedTask?.subtasks}
+                    subTasksCount={selectedTask?.subTasksCount}
+                    currentUser={currentUser}
+                    onAddSubTask={onAddSubTask({ assignToSelf })}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} style={styleCommentRow}>
                 <div ref={commentsSectionReference}>
                   <CommentSection

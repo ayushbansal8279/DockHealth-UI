@@ -9,8 +9,6 @@ import {
   UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
-  MARK_TASK_STATUS_SUCCESS,
-  MARK_COMPLETE_TASK_STATUS_SUCCESS,
   TASK_ARCHIVED,
 } from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
@@ -105,8 +103,6 @@ export default function(state = INITIAL_STATE, action = {}) {
         taskSearch: payload?.value,
       };
 
-    case MARK_TASK_STATUS_SUCCESS:
-    case MARK_COMPLETE_TASK_STATUS_SUCCESS:
     case TASK_ARCHIVED:
       return state;
 

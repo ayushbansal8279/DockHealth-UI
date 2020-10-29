@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { isEmpty } from 'ramda';
 
 import CalendarDimIcon from 'img/calendar-dim';
@@ -75,7 +76,13 @@ export const getCalendarOverDueIcon = hasUpdate => {
 export const getItemIcon = (type, value, isHovered, hasUpdate) =>
   ITEM_ICONS[type][getItemIconVersion(value, isHovered, hasUpdate)];
 
-export const getCalendarIcon = (value, isHovered, isOverDue, hasUpdate) =>
-  isOverDue
+export const getCalendarIcon = (value, isHovered, isCompleted, hasUpdate) => {
+  const isOverdue =
+    moment(value).format('HH:mm') !== '00:00'
+      ? moment(value).isBefore(moment())
+      : value && moment(value).isBefore(moment().startOf('day'));
+
+  return isOverdue && !isCompleted
     ? getCalendarOverDueIcon(hasUpdate)
     : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered, hasUpdate)];
+};

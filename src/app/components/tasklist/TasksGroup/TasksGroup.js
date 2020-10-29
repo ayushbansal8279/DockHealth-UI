@@ -220,6 +220,7 @@ const TasksGroup = ({
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
           selectedTask={selectedTask}
+          hideSubtasks={isSearchApplied || areFiltersApplied}
         />
         {isLoadingGroup && <SingleSkeletonLoader rows={4} />}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (

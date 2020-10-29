@@ -2,7 +2,6 @@
 import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
@@ -532,13 +531,8 @@ export function duplicateTask(task, includeAttachments) {
       });
 }
 
-export function toggleCompleteTask(task, tabName, currentUser = null) {
+export function toggleCompleteTask(task, currentUser = null) {
   return dispatch => {
-    const action =
-      tabName === TaskListTabName.COMPLETE
-        ? ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS
-        : ActionTypes.MARK_TASK_STATUS_SUCCESS;
-
     const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
         ? {
@@ -562,9 +556,8 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
     };
 
     dispatch({
-      type: action,
-      task,
-      ...newTaskData,
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: { ...task, ...newTaskData },
     });
 
     return TaskApi[apiEndpoint](task)
@@ -583,12 +576,7 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
   };
 }
 
-export function markComplete(task, status, listName, currentUser = null) {
-  const action =
-    listName === 'INCOMPLETE'
-      ? ActionTypes.MARK_TASK_STATUS_SUCCESS
-      : ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS;
-
+export function markComplete(task, status, currentUser = null) {
   return dispatch => {
     const { newStatus, apiEndpoint } =
       status === 'INCOMPLETE'
@@ -610,9 +598,8 @@ export function markComplete(task, status, listName, currentUser = null) {
         };
 
         dispatch({
-          type: action,
-          task,
-          ...newTaskData,
+          type: ActionTypes.UPDATE_TASK_SUCCESS,
+          task: { ...task, ...newTaskData },
         });
         reloadTaskListStats(dispatch, task);
 
@@ -881,10 +868,12 @@ export function storeAllTasks(tasks, completedTasks) {
 export const prepareSubtask = (
   parentTaskIdentifier,
   assignedTo,
+  parentTask,
 ) => dispatch => {
   const subtaskShape = {
     taskIdentifier: null,
     parentTaskIdentifier,
+    parentTask,
     description: '',
     subtasks: [],
     assignedTo,

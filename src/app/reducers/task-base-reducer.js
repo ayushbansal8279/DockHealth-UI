@@ -4,8 +4,6 @@ import {
   DELETE_TASK_COMMENT_SUCCESS,
   DELETE_TASK_SUCCESS,
   DUPLICATE_TASK_SUCCESS,
-  MARK_COMPLETE_TASK_STATUS_SUCCESS,
-  MARK_TASK_STATUS_SUCCESS,
   MOVE_TASK_SUCCESS,
   TASK_ARCHIVED,
   TASK_ATTACHMENT_ADDED,
@@ -17,29 +15,6 @@ import {
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
-
-const updateTask = (taskToUpdate, tasks) =>
-  tasks.map(t => {
-    if (
-      t.taskIdentifier !== taskToUpdate.parentTaskIdentifier &&
-      t.taskIdentifier !== taskToUpdate.taskIdentifier
-    ) {
-      return t;
-    }
-
-    if (taskToUpdate.taskIdentifier === t.taskIdentifier) {
-      return { ...t, ...taskToUpdate };
-    }
-
-    return {
-      ...t,
-      subtasks: t.subtasks.map(subtask =>
-        subtask.taskIdentifier === taskToUpdate.taskIdentifier
-          ? { ...subtask, ...taskToUpdate }
-          : subtask,
-      ),
-    };
-  });
 
 const isSubtask = ({ parentTaskIdentifier }) => parentTaskIdentifier !== null;
 const isParentOfAddedTask = addedTask => ({ taskIdentifier }) =>
@@ -170,28 +145,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case DUPLICATE_TASK_SUCCESS: {
       const updateTaskFromAction = tasks =>
         [action.duplicatedTask].concat(tasks);
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case MARK_TASK_STATUS_SUCCESS: {
-      const { task, status, completedDt, completedBy } = action;
-      const archivedByUser = true;
-      const taskData = { status, completedBy, completedDt, archivedByUser };
-
-      const taskToUpdate = { ...task, ...taskData };
-
-      const updateTaskFromAction = tasks => updateTask(taskToUpdate, tasks);
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
-      const { task, status, completedDt, completedBy } = action;
-      const taskData = { status, completedBy, completedDt };
-      const taskToUpdate = { ...task, ...taskData };
-
-      const updateTaskFromAction = tasks => updateTask(taskToUpdate, tasks);
 
       return updateStateCallback(state, updateTaskFromAction);
     }

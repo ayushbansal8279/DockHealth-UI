@@ -363,10 +363,9 @@ class PersonDetailsView extends PureComponent {
       routeParams,
       currentUser,
     } = this.props;
-    const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
 
     taskActions
-      .toggleCompleteTask(task, selectedTab, currentUser)
+      .toggleCompleteTask(task, currentUser)
       .then(() => {
         setTimeout(() => {
           personDetailsActions.getTaskStatsForUser(routeParams.userIdentifier);

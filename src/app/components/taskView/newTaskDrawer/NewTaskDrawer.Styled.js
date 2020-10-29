@@ -300,3 +300,21 @@ export const DescriptionError = styled.p`
   font-size: ${fontSizes.smallPlus};
   font-family: 'Roboto Condensed', sans-serif;
 `;
+
+export const ParentTaskButton = styled.button`
+  cursor: pointer;
+`;
+
+export const ParentTaskDescription = styled.p`
+  color: ${palette.brightBlue};
+  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.regular};
+  margin-bottom: 0;
+`;
+
+export const ParentTaskDescriptionPlaceholder = styled.div`
+  width: 50%;
+  height: 20px;
+  margin: 2px 0;
+  background: ${palette.coolGrey3};
+`;

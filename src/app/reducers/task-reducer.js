@@ -45,13 +45,37 @@ const TaskReducer = (state = initialState, action) => {
       return requestHistory(state);
 
     case UPDATE_TASK_SUCCESS: {
-      const { task } = action;
+      const { task: taskToUpdate } = action;
 
       if (state.selectedTask) {
-        return {
-          ...state,
-          selectedTask: { ...state.selectedTask, ...task },
-        };
+        if (state.selectedTask.taskIdentifier === taskToUpdate.taskIdentifier) {
+          return {
+            ...state,
+            selectedTask: { ...state.selectedTask, ...taskToUpdate },
+          };
+        }
+
+        const { selectedTask } = state;
+        let shouldUpdateSubtasks = false;
+
+        // eslint-disable-next-line no-unused-expressions
+        const updatedSubtasks = selectedTask.subtasks?.map(subtask => {
+          if (subtask.taskIdentifier === taskToUpdate.taskIdentifier) {
+            shouldUpdateSubtasks = true;
+            return { ...subtask, ...taskToUpdate };
+          }
+          return subtask;
+        });
+
+        if (shouldUpdateSubtasks) {
+          return {
+            ...state,
+            selectedTask: {
+              ...state.selectedTask,
+              subtasks: updatedSubtasks,
+            },
+          };
+        }
       }
 
       return state;

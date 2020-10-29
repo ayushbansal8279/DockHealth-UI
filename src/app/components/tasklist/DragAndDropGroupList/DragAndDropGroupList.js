@@ -20,6 +20,7 @@ const DragAndDropGroupList = ({
   dragAndDropDisabled,
   listNameVisible,
   selectedTask,
+  hideSubtasks,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -79,6 +80,7 @@ const DragAndDropGroupList = ({
                     addingNewSubtask={addingNewSubtask}
                     addingNewSubtaskParentId={addingNewSubtaskParentId}
                     subtaskShape={subtaskShape}
+                    hideSubtasks={hideSubtasks}
                   />
                 )}
               </Draggable>

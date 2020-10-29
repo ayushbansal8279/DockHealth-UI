@@ -139,6 +139,7 @@ const TaskItem = ({
   isLast,
   showSubtaskStylingLink,
   isNestedTask = false,
+  hideSubtasks,
 }) => {
   const {
     taskIdentifier,
@@ -205,11 +206,6 @@ const TaskItem = ({
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
-
-  const isOverdueTask =
-    moment(dueDate).format('HH:mm') !== '00:00'
-      ? moment(dueDate).isBefore(moment())
-      : dueDate && moment(dueDate).isBefore(moment().startOf('day'));
 
   const dueDateQuickSelectOptions = [
     {
@@ -377,21 +373,23 @@ const TaskItem = ({
                 }`}
                 `}</span>
             </CompletedBy>
-            <SubtasksBox>
-              {(subTasksCount > 0 ||
-                (!isEmpty(subtasks) && subtasks?.length > 0)) &&
-                !isSubtask && (
-                  <SubtasksGroupLabel onClick={onSubtaskLabelClick}>
-                    <span>{subtasks?.length || subTasksCount} subtasks</span>
-                    <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
-                  </SubtasksGroupLabel>
+            {!hideSubtasks && (
+              <SubtasksBox>
+                {(subTasksCount > 0 ||
+                  (!isEmpty(subtasks) && subtasks?.length > 0)) &&
+                  !isSubtask && (
+                    <SubtasksGroupLabel onClick={onSubtaskLabelClick}>
+                      <span>{subtasks?.length || subTasksCount} subtasks</span>
+                      <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
+                    </SubtasksGroupLabel>
+                  )}
+                {!isSubtask && isSelectedTask && (
+                  <SubtasksAddLabel onClick={onAddSubtaskLabelClick}>
+                    Add a subtask
+                  </SubtasksAddLabel>
                 )}
-              {!isSubtask && isSelectedTask && (
-                <SubtasksAddLabel onClick={onAddSubtaskLabelClick}>
-                  Add a subtask
-                </SubtasksAddLabel>
-              )}
-            </SubtasksBox>
+              </SubtasksBox>
+            )}
           </DescriptionBox>
         </StandardTaskItemCell>
         {patientVisible && (
@@ -505,7 +503,7 @@ const TaskItem = ({
                           src={getCalendarIcon(
                             dueDate,
                             isHovered,
-                            isOverdueTask && !isCompleted,
+                            isCompleted,
                             task.updatedDueDate,
                           )}
                         />

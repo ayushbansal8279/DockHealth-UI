@@ -43,6 +43,35 @@ const initialState = {
   groupsInitialized: false,
 };
 
+const updateTaskInGroupedTasks = (groupedTasks, task) =>
+  groupedTasks?.taskGroups?.map(taskGroup => {
+    return {
+      ...taskGroup,
+      tasks: taskGroup?.tasks?.map(t => {
+        if (
+          t.taskIdentifier !== task.parentTaskIdentifier &&
+          t.taskIdentifier !== task.taskIdentifier
+        ) {
+          return t;
+        }
+
+        if (task.taskIdentifier === t.taskIdentifier) {
+          return { ...t, ...task };
+        }
+
+        return {
+          ...t,
+          subtasks: t.subtasks.map(subtask =>
+            subtask.taskIdentifier === task.taskIdentifier
+              ? { ...subtask, ...task }
+              : subtask,
+          ),
+          isFetchingSubTasks: false,
+        };
+      }),
+    };
+  });
+
 const mapTasksSuccess = task => ({
   ...task,
   subtasks: task.subtasks?.map(subtask => ({
@@ -406,53 +435,26 @@ const ListDetailsReducer = (state = initialState, action) => {
     case REFRESH_ANOTHER_TASK_SUCCESS: {
       const { task } = action;
 
-      const groupedTasks =
-        task.status === 'COMPLETE'
-          ? state.completedGroupedTasks
-          : state.groupedTasks;
+      const updatedTaskGroups = updateTaskInGroupedTasks(
+        state.groupedTasks,
+        task,
+      );
 
-      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
-        return {
-          ...taskGroup,
-          tasks: taskGroup?.tasks?.map(t => {
-            if (
-              t.taskIdentifier !== task.parentTaskIdentifier &&
-              t.taskIdentifier !== task.taskIdentifier
-            ) {
-              return t;
-            }
-
-            if (task.taskIdentifier === t.taskIdentifier) {
-              return { ...t, ...task };
-            }
-
-            return {
-              ...t,
-              subtasks: t.subtasks.map(subtask =>
-                subtask.taskIdentifier === task.taskIdentifier
-                  ? { ...subtask, ...task }
-                  : subtask,
-              ),
-              isFetchingSubTasks: false,
-            };
-          }),
-        };
-      });
-      const updatedGroupedTasks = {
-        ...groupedTasks,
-        taskGroups: updatedTaskGroups,
-      };
-
-      if (task.status === 'COMPLETE') {
-        return {
-          ...state,
-          completedGroupedTasks: updatedGroupedTasks,
-        };
-      }
+      const updatedCompletedTaskGroups = updateTaskInGroupedTasks(
+        state.completedGroupedTasks,
+        task,
+      );
 
       return {
         ...state,
-        groupedTasks: updatedGroupedTasks,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: updatedTaskGroups,
+        },
+        completedGroupedTasks: {
+          ...state.completedGroupedTasks,
+          taskGroups: updatedCompletedTaskGroups,
+        },
       };
     }
 

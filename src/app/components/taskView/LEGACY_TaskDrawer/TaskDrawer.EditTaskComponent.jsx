@@ -9,10 +9,10 @@ import { markComplete } from 'actions/task-actions';
 import {
   formatLinkifyHref,
   mentionifyDescription,
+  showAlert,
 } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import TaskCheckbox from '../task/TaskCheckbox';
-import { showAlert } from 'helpers/utility-functions';
 
 const EditTaskContainer = styled.div`
   display: flex;
@@ -146,7 +146,11 @@ class EditTaskDescription extends Component {
         handleSubmit();
       });
     } else {
-      showAlert({status: 'error', title: 'Error', text: 'Task description cannot be empty'});
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Task description cannot be empty',
+      });
       this.resetTextContent();
       this.unsetComponentEditable();
     }
@@ -210,16 +214,6 @@ export default ({
 
   const { status } = currentTaskData || {};
 
-  const listName = incompleteTasks?.find(
-    ({ taskIdentifier, subtasks }) =>
-      taskIdentifier === selectedTaskIdentifier ||
-      subtasks?.find(
-        ({ taskIdentifier: subtaskId }) => subtaskId === selectedTaskIdentifier,
-      ),
-  )
-    ? 'INCOMPLETE'
-    : 'COMPLETE';
-
   const setDescription = useCallback(
     newDescription => {
       setValue('descriptionEdit', newDescription);
@@ -235,7 +229,6 @@ export default ({
           markComplete(
             currentTaskData ?? selectedTask,
             status,
-            listName,
             currentUser,
           )(dispatch).then((...allArguments) => {
             onMarkComplete(...allArguments);
