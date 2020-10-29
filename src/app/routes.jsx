@@ -376,7 +376,7 @@ export const Routes = ({ store }) => {
             checkUserIsAuthenticated({ checkTrialExpiration: true, callback });
           }}
         >
-          <IndexRedirect to="/home" />
+          <IndexRedirect to="/home/my-tasks" />
           <Route
             path="/home"
             component={DashboardView}
