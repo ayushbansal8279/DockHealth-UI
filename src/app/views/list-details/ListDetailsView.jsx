@@ -799,9 +799,7 @@ class Home extends Component {
               completedTasks:
                 selectedTab === TaskListTabName.COMPLETE &&
                 completedGroupedTasks
-                  ? Object.values(completedGroupedTasks)?.flatMap(
-                      ({ tasks }) => tasks,
-                    )
+                  ? completedGroupedTasks.tasks
                   : [],
               openedTasks:
                 selectedTab === TaskListTabName.OPEN && groupedTasks
