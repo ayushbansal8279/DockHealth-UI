@@ -16,8 +16,17 @@ export const MainSection = styled.div`
 
 export const IconsSection = styled.div`
   display: flex;
+  align-items: flex-start;
   margin-left: 42px;
   margin-top: ${spacing.small};
+`;
+
+export const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-itmes: center;
+  width: 40px;
+  height: 32px;
 `;
 
 export const CircleIcon = styled.img`

@@ -165,10 +165,11 @@ const initializeTaskDrawerHooks = ({
     selectedFilters: selectedFiltersInMegaFilterSelector(store),
   }));
 
-  const { taskIdentifier, parentTask, subtasks, subTasksCount } =
-    selectedTask || {};
+  const { taskIdentifier, subtasks, subTasksCount } = selectedTask || {};
 
+  const taskDrawerReference = useRef(null);
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
+  const [parentTask, setParentTask] = useState(null);
   const [
     parentDescriptionState,
     setParentDescriptionState,
@@ -255,11 +256,19 @@ const initializeTaskDrawerHooks = ({
 
   useEffect(() => {
     if (
+      selectedTask?.parentTask &&
+      taskIdentifier !== previousTaskIdentifierValue.current
+    ) {
+      setParentTask(selectedTask.parentTask);
+    }
+
+    if (
       (taskIdentifier &&
         taskIdentifier !== previousTaskIdentifierValue.current) ||
       (subtasks?.length === 0 && subTasksCount > 0)
     ) {
       TaskApi.getTaskDetails(taskIdentifier).then(task => {
+        setParentTask(task.parentTask || null);
         storeAsCurrentTask(task)(dispatch);
         dispatch({ type: UPDATE_TASK_SUCCESS, task });
       });
@@ -505,6 +514,7 @@ const initializeTaskDrawerHooks = ({
           assignedTo,
           selectedTask,
         )(dispatch);
+        taskDrawerReference.current.scrollTo({ top: 0, behavior: 'smooth' });
         if (typeof afterAddSubTask === 'function') afterAddSubTask();
         onButtonClicked('Add subtask');
       } catch {
@@ -686,6 +696,8 @@ const initializeTaskDrawerHooks = ({
     dispatch,
     parentDescriptionState,
     setParentDescriptionState,
+    parentTask,
+    taskDrawerReference,
   };
 };
 

@@ -6,6 +6,7 @@ import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 
+import { isNil } from 'ramda';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
@@ -145,11 +146,13 @@ const TasksGroup = ({
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-              {!isSearchApplied && !areFiltersApplied && groupTaskCounts && (
-                <TasksGroupLabelCounter>
-                  ({groupTaskCounts})
-                </TasksGroupLabelCounter>
-              )}
+              {!isSearchApplied &&
+                !areFiltersApplied &&
+                !isNil(groupTaskCounts) && (
+                  <TasksGroupLabelCounter>
+                    ({groupTaskCounts})
+                  </TasksGroupLabelCounter>
+                )}
             </TasksGroupLabel>
           </GroupNameSection>
         </GroupNameSectionWrapper>

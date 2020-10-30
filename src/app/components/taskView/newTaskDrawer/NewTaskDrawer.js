@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider } from '@material-ui/core';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
 import { storeAsCurrentTask } from 'actions/task-actions';
@@ -108,6 +108,8 @@ const NewTaskDrawer = ({
     dispatch,
     parentDescriptionState,
     setParentDescriptionState,
+    parentTask,
+    taskDrawerReference,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -116,8 +118,6 @@ const NewTaskDrawer = ({
   });
 
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
-
-  const taskDrawerReference = useRef(null);
 
   const {
     taskMenuReference,
@@ -230,16 +230,14 @@ const NewTaskDrawer = ({
               {selectedTask?.parentTaskIdentifier && (
                 <Grid item xs={12} style={styleFullRowThin}>
                   <Spacing vertical={4} />
-                  {selectedTask.parentTask ? (
+                  {parentTask ? (
                     <ParentTaskButton
-                      onClick={() =>
-                        storeAsCurrentTask(selectedTask.parentTask)(dispatch)
-                      }
+                      onClick={() => storeAsCurrentTask(parentTask)(dispatch)}
                     >
                       <ParentTaskDescription>
                         <MentionsEditor
                           readOnly
-                          withEditedLabel={selectedTask.parentTask.edited}
+                          withEditedLabel={parentTask.edited}
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
                         />

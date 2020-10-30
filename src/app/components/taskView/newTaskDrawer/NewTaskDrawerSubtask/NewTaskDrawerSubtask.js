@@ -16,7 +16,6 @@ import {
   getItemIcon,
   LABELS,
 } from 'components/task-item/icons';
-import Spacing from 'components/common/Spacing';
 import {
   Container,
   MainSection,
@@ -29,6 +28,7 @@ import {
   GoToParentButton,
   DueDate,
   DueDateContainer,
+  IconContainer,
 } from './styled';
 
 const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
@@ -110,28 +110,33 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
         </GoToParentButton>
       </MainSection>
       <IconsSection>
-        <img
-          alt="comments"
-          src={getItemIcon(COMMENTS, comments, true, updatedComment)}
-        />
-        <Spacing horizontal={4} />
-        <DueDateContainer>
-          <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+        <IconContainer>
           <img
-            alt="due-date"
-            src={getCalendarIcon(dueDate, true, isCompleted, updatedDueDate)}
+            alt="comments"
+            src={getItemIcon(COMMENTS, comments, true, updatedComment)}
           />
-        </DueDateContainer>
-        <Spacing horizontal={4} />
-        <img
-          alt="labels"
-          src={getItemIcon(LABELS, labels, true, updatedLabel)}
-        />
-        <Spacing horizontal={4} />
-        <img
-          alt="attachments"
-          src={getItemIcon(ATTACHMENTS, attachments, true, updatedAttachment)}
-        />
+        </IconContainer>
+        <IconContainer>
+          <DueDateContainer>
+            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+            <img
+              alt="due-date"
+              src={getCalendarIcon(dueDate, true, isCompleted, updatedDueDate)}
+            />
+          </DueDateContainer>
+        </IconContainer>
+        <IconContainer>
+          <img
+            alt="labels"
+            src={getItemIcon(LABELS, labels, true, updatedLabel)}
+          />
+        </IconContainer>
+        <IconContainer>
+          <img
+            alt="attachments"
+            src={getItemIcon(ATTACHMENTS, attachments, true, updatedAttachment)}
+          />
+        </IconContainer>
       </IconsSection>
     </Container>
   );
