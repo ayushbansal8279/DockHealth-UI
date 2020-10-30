@@ -31,6 +31,7 @@ function useOutsideAction(reference, onClickOutside) {
 
     // Bind the event listener
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
@@ -240,6 +241,7 @@ const TopSection = ({
                 paddingTop: '0',
                 paddingBottom: '0',
               }}
+              ref={optionsContainerReference}
             >
               {!isCompleted &&
                 selectedTask &&
@@ -257,7 +259,6 @@ const TopSection = ({
                     style={{
                       borderBottom: `1px solid ${palette.coolGrey3}`,
                     }}
-                    ref={optionsContainerReference}
                   >
                     <CondensedH4>Add Subtask</CondensedH4>
                   </ListItem>
