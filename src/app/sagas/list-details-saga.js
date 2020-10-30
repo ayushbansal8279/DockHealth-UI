@@ -412,10 +412,18 @@ export function* doCreateTask(payload) {
 
       if (filters && !isEmpty(filters)) {
         if (checkIfTaskMatchesFilters(createdTask, filters)) {
-          yield put({ type: ADD_TASK_SUCCESS, task: createdTask });
+          yield put({
+            type: ADD_TASK_SUCCESS,
+            task: createdTask,
+            taskGroupIdentifier,
+          });
         }
       } else {
-        yield put({ type: ADD_TASK_SUCCESS, task: createdTask });
+        yield put({
+          type: ADD_TASK_SUCCESS,
+          task: createdTask,
+          taskGroupIdentifier,
+        });
       }
 
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));

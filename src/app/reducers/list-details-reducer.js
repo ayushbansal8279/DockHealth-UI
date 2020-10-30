@@ -80,25 +80,34 @@ const mapTasksSuccess = task => ({
   })),
 });
 
-const updateTaskInList = (taskGroups, updateTaskCallback) =>
+const updateTaskInList = taskGroupIdentifier => (
+  taskGroups,
+  updateTaskCallback,
+) =>
   taskGroups?.map(group => {
-    const updatedTasks = group.tasks ? updateTaskCallback(group.tasks) : [];
-    return { ...group, tasks: updatedTasks };
+    if (!taskGroupIdentifier || taskGroupIdentifier === group.groupIdentifier) {
+      return { ...group, tasks: updateTaskCallback(group.tasks || []) };
+    }
+
+    return group;
   });
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => {
+const updateTasksStateCallback = taskGroupIdentifier => (
+  state,
+  updateTaskFromAction,
+) => {
   return {
     ...state,
     groupedTasks: {
       ...state.groupedTasks,
-      taskGroups: updateTaskInList(
+      taskGroups: updateTaskInList(taskGroupIdentifier)(
         state.groupedTasks?.taskGroups,
         updateTaskFromAction,
       ),
     },
     completedGroupedTasks: {
       ...state.completedGroupedTasks,
-      taskGroups: updateTaskInList(
+      taskGroups: updateTaskInList(taskGroupIdentifier)(
         state.completedGroupedTasks?.taskGroups,
         updateTaskFromAction,
       ),
@@ -453,7 +462,11 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     default:
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return TaskBaseReducer(
+        state,
+        action,
+        updateTasksStateCallback(action.taskGroupIdentifier || null),
+      );
   }
 };
 

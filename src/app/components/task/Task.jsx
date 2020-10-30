@@ -78,7 +78,11 @@ const Task = props => {
           ))}
       </div>
       {!isSubtask && isSelfOrSubtaskActive && task.status !== 'COMPLETE' && (
-        <AddSubtask padded taskIdentifier={task.taskIdentifier} />
+        <AddSubtask
+          padded
+          taskIdentifier={task.taskIdentifier}
+          parentTask={task}
+        />
       )}
     </>
   );

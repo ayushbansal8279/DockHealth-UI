@@ -265,9 +265,9 @@ const TaskItem = ({
         event.preventDefault();
         event.stopPropagation();
       }
-      prepareSubtask(taskIdentifier)(dispatch);
+      prepareSubtask(taskIdentifier, null, task)(dispatch);
     },
-    [taskIdentifier, dispatch],
+    [taskIdentifier, dispatch, task],
   );
 
   const onSubtaskLabelClick = useCallback(
