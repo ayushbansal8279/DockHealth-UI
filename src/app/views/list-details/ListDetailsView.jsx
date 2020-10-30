@@ -636,8 +636,13 @@ class Home extends Component {
   };
 
   handleTaskDelete = () => {
-    const { selectedFilters } = this.props;
+    const {
+      selectedFilters,
+      tasksGroupsListActions: { getTasksGroupsList },
+      routeParams: { taskListIdentifier },
+    } = this.props;
 
+    getTasksGroupsList({ taskListIdentifier, shouldSetRequestState: false });
     this.refreshFilters();
     if (selectedFilters && !isEmpty(selectedFilters)) {
       this.refreshTab();

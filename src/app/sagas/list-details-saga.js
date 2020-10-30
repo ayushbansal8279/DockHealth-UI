@@ -426,6 +426,10 @@ export function* doCreateTask(payload) {
         });
       }
 
+      yield call(doGetTasksGroupsList, {
+        taskListIdentifier,
+        shouldSetRequestState: false,
+      });
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
       yield put({ type: INCREASE_INCOMPLETE_TASK_COUNTERS });
     }
