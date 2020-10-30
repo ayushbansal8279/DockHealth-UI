@@ -44,6 +44,7 @@ import {
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-selectors';
+import { groupTasksSelector } from 'selectors/list-details-selectors';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -384,60 +385,6 @@ export function* doOnEnterListDetails() {
   }
 }
 
-export function* doCreateTask(payload) {
-  try {
-    const {
-      taskGroupIdentifier,
-      description,
-      patientIdentifier,
-      autoOpenDrawer,
-    } = payload;
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: TASK_GROUP_LIST_REQUEST });
-
-    if (taskListIdentifier) {
-      const createdTask = yield call(createTaskApi, {
-        taskGroupIdentifier,
-        taskListIdentifier,
-        description,
-        patientIdentifier,
-      });
-
-      if (autoOpenDrawer) {
-        yield put(storeAsCurrentTask(createdTask));
-        yield put(openDrawer());
-      }
-
-      const filters = yield select(selectedFiltersInMegaFilterSelector);
-
-      if (filters && !isEmpty(filters)) {
-        if (checkIfTaskMatchesFilters(createdTask, filters)) {
-          yield put({
-            type: ADD_TASK_SUCCESS,
-            task: createdTask,
-            taskGroupIdentifier,
-          });
-        }
-      } else {
-        yield put({
-          type: ADD_TASK_SUCCESS,
-          task: createdTask,
-          taskGroupIdentifier,
-        });
-      }
-
-      yield call(doGetTasksGroupsList, {
-        taskListIdentifier,
-        shouldSetRequestState: false,
-      });
-      yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
-      yield put({ type: INCREASE_INCOMPLETE_TASK_COUNTERS });
-    }
-  } catch (error) {
-    yield put({ type: TASK_GROUP_LIST_FAILURE });
-  }
-}
-
 export function* doGetTasksForTaskGroup(payload) {
   try {
     const { taskGroupIdentifier, status, startPosition, endPosition } = payload;
@@ -463,6 +410,69 @@ export function* doGetTasksForTaskGroup(payload) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
 }
+
+export function* doCreateTask(payload) {
+  try {
+    const {
+      taskGroupIdentifier,
+      description,
+      patientIdentifier,
+      autoOpenDrawer,
+    } = payload;
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield put({ type: TASK_GROUP_LIST_REQUEST });
+
+    if (taskListIdentifier) {
+      const createdTask = yield call(createTaskApi, {
+        taskGroupIdentifier,
+        taskListIdentifier,
+        description,
+        patientIdentifier,
+      });
+
+      const filters = yield select(selectedFiltersInMegaFilterSelector);
+
+      if (filters && !isEmpty(filters)) {
+        if (checkIfTaskMatchesFilters(createdTask, filters)) {
+          yield put({
+            type: ADD_TASK_SUCCESS,
+            task: createdTask,
+            taskGroupIdentifier,
+          });
+        }
+      } else {
+        const fetchedTasksGroups = yield select(groupTasksSelector);
+
+        if (!fetchedTasksGroups[taskGroupIdentifier]) {
+          yield call(doGetTasksForTaskGroup, {
+            taskGroupIdentifier,
+            status: 'INCOMPLETE',
+          });
+        } else {
+          yield put({
+            type: ADD_TASK_SUCCESS,
+            task: createdTask,
+            taskGroupIdentifier,
+          });
+        }
+      }
+
+      if (autoOpenDrawer) {
+        yield put(storeAsCurrentTask(createdTask));
+        yield put(openDrawer());
+      }
+      yield call(doGetTasksGroupsList, {
+        taskListIdentifier,
+        shouldSetRequestState: false,
+      });
+      yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
+      yield put({ type: INCREASE_INCOMPLETE_TASK_COUNTERS });
+    }
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export function* doFetchTasksBySearchedTerm(payload) {
   try {
     const { status, searchedTerm } = payload;
