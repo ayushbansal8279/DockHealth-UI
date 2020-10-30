@@ -67,7 +67,7 @@ const Task = ({
     () =>
       (subTasksCount > 0 || !isEmpty(renderedSubtasks)) &&
       !isStartedDnD &&
-      !hideSubtasks,
+      (!hideSubtasks || subTasksCount !== renderedSubtasks?.length),
     [renderedSubtasks, subTasksCount, isStartedDnD, hideSubtasks],
   );
 
