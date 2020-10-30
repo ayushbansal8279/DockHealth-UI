@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
 import Spacing from 'components/common/Spacing';
@@ -19,6 +19,24 @@ import {
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
 import initializeTaskDrawerTopSectionHooks from './NewTaskDrawer.TopSection.Hooks';
+
+function useOutsideAction(reference, onClickOutside) {
+  useEffect(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    function handleClickOutside(event) {
+      if (reference.current && !reference.current.contains(event.target)) {
+        onClickOutside();
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [reference, onClickOutside]);
+}
 
 const renderTaskList = ({
   closePopover,
@@ -106,6 +124,12 @@ const TopSection = ({
     selectedTask.attachments.length > 0
   );
 
+  const taskListsContainerReference = useRef(null);
+  useOutsideAction(taskListsContainerReference, closeFiledInPopover);
+
+  const optionsContainerReference = useRef(null);
+  useOutsideAction(optionsContainerReference, closeTaskMenuPopover);
+
   return (
     <>
       <Grid
@@ -156,7 +180,7 @@ const TopSection = ({
                   width: '550px',
                 }}
               >
-                <StyledList>
+                <StyledList ref={taskListsContainerReference}>
                   {(taskLists ?? []).map(
                     renderTaskList({
                       closePopover: closeFiledInPopover,
@@ -233,6 +257,7 @@ const TopSection = ({
                     style={{
                       borderBottom: `1px solid ${palette.coolGrey3}`,
                     }}
+                    ref={optionsContainerReference}
                   >
                     <CondensedH4>Add Subtask</CondensedH4>
                   </ListItem>
