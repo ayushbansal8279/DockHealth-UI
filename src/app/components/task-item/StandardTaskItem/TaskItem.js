@@ -299,6 +299,12 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
+  const onLabelClick = useCallback(() => {
+    dispatch(openDrawer(FocusDrawerFieldEnum.LABEL));
+    dispatch(storeAsCurrentTask(task));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
+
   const onAttachmentsClick = useCallback(() => {
     dispatch(openDrawer(FocusDrawerFieldEnum.ATTACHMENT));
     dispatch(storeAsCurrentTask(task));
@@ -522,7 +528,7 @@ const TaskItem = ({
                     : 'Add label'
                 }
               >
-                <ClickableStandardTaskItemIcon onClick={onCommentClick}>
+                <ClickableStandardTaskItemIcon onClick={onLabelClick}>
                   <img
                     alt="labels"
                     src={getItemIcon(
