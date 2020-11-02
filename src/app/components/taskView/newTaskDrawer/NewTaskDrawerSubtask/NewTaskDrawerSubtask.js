@@ -110,13 +110,13 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
         </GoToParentButton>
       </MainSection>
       <IconsSection>
-        <IconContainer>
+        <IconContainer marginTop={updatedComment ? -8 : 2}>
           <img
             alt="comments"
             src={getItemIcon(COMMENTS, comments, true, updatedComment)}
           />
         </IconContainer>
-        <IconContainer>
+        <IconContainer marginTop={updatedDueDate ? -6 : 0}>
           <DueDateContainer>
             <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
             <img
@@ -131,7 +131,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             src={getItemIcon(LABELS, labels, true, updatedLabel)}
           />
         </IconContainer>
-        <IconContainer>
+        <IconContainer marginTop={2}>
           <img
             alt="attachments"
             src={getItemIcon(ATTACHMENTS, attachments, true, updatedAttachment)}

@@ -255,6 +255,13 @@ const initializeTaskDrawerHooks = ({
   const previousTaskIdentifierValue = useRef();
 
   useEffect(() => {
+    if (taskIdentifier !== previousTaskIdentifierValue.current) {
+      // eslint-disable-next-line no-unused-expressions
+      taskDrawerReference?.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [taskIdentifier]);
+
+  useEffect(() => {
     if (
       selectedTask?.parentTask &&
       taskIdentifier !== previousTaskIdentifierValue.current
@@ -514,7 +521,6 @@ const initializeTaskDrawerHooks = ({
           assignedTo,
           selectedTask,
         )(dispatch);
-        taskDrawerReference.current.scrollTo({ top: 0, behavior: 'smooth' });
         if (typeof afterAddSubTask === 'function') afterAddSubTask();
         onButtonClicked('Add subtask');
       } catch {

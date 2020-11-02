@@ -24,9 +24,13 @@ export const IconsSection = styled.div`
 export const IconContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-itmes: center;
+  align-items: flex-start;
   width: 40px;
   height: 32px;
+
+  & img {
+    margin-top: ${({ marginTop }) => marginTop || 0}px;
+  }
 `;
 
 export const CircleIcon = styled.img`
