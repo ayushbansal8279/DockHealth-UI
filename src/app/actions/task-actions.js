@@ -517,12 +517,17 @@ export function deleteTask(task) {
 }
 
 export function duplicateTask(task, includeAttachments) {
+  const taskGroupIdentifier =
+    task.taskGroups?.length > 0
+      ? task.taskGroups[0].taskGroupIdentifier
+      : undefined;
   return dispatch =>
     TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
       .then(duplicatedTask => {
         dispatch({
           type: ActionTypes.DUPLICATE_TASK_SUCCESS,
           duplicatedTask,
+          taskGroupIdentifier,
         });
         reloadTaskListStats(dispatch, task);
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));

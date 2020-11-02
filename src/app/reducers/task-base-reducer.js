@@ -143,8 +143,22 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case DUPLICATE_TASK_SUCCESS: {
-      const updateTaskFromAction = tasks =>
-        [action.duplicatedTask].concat(tasks);
+      const mainTaskId = getMainTaskId(action.duplicatedTask);
+      const { duplicatedTask } = action;
+
+      const updateTaskFromAction = tasks => {
+        if (duplicatedTask.parentTaskIdentifier) {
+          return tasks.map(task =>
+            task.taskIdentifier === mainTaskId
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.concat([action.duplicatedTask]),
+                }
+              : task,
+          );
+        }
+        return [action.duplicatedTask].concat(tasks);
+      };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
