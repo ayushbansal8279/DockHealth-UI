@@ -46,12 +46,13 @@ const Task = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (subTasksCount > 0 && isEmpty(renderedSubtasks)) {
-      switchOpen(false);
-    } else {
-      switchOpen(isFullView);
+    const hasNewSubtask = renderedSubtasks.some(
+      ({ taskIdentifier }) => !taskIdentifier,
+    );
+    if (hasNewSubtask) {
+      switchOpen(true);
     }
-  }, [isFullView, subTasksCount, renderedSubtasks, switchOpen]);
+  }, [renderedSubtasks]);
 
   const matchingComments = useMemo(
     () => getMatchedComments(comments, matchingCommentIdentifiers),
