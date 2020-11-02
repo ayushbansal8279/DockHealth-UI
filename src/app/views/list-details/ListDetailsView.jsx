@@ -673,13 +673,21 @@ class Home extends Component {
   };
 
   invokeToggleCompleteAction = task => {
-    const { actions, routeParams, currentUser } = this.props;
+    const {
+      actions,
+      tasksGroupsListActions,
+      routeParams,
+      currentUser,
+    } = this.props;
 
     actions
       .toggleCompleteTask(task, currentUser)
       .then(() => {
         setTimeout(() => {
           actions.getTaskStatsForList(routeParams.taskListIdentifier);
+          tasksGroupsListActions.getTasksGroupsList({
+            shouldSetRequestState: false,
+          });
         }, TASK_DISAPPEAR_DELAY);
       })
       .catch(() => this.refreshTab());

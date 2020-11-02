@@ -317,7 +317,9 @@ const Toolbar = ({
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
                 onChange={event => onSearchChange(event?.target?.value)}
-                placeholder="Search Tasks and Comments"
+                placeholder={
+                  isSearchFocused ? 'Search Tasks and Comments' : 'Search'
+                }
               />
               <Spacing horizontal={5} />
             </SearchWrapper>
