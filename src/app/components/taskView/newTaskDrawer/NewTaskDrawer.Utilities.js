@@ -24,8 +24,18 @@ export const TaskDrawerFields = {
 
 export const getFormattedPatients = ({ patients }) =>
   (patients ?? []).map(patient => {
-    const { patientIdentifier, firstName, lastName, mrn, age } = patient;
-    const patientName = `${firstName} ${lastName}`.trim();
+    const {
+      patientIdentifier,
+      firstName,
+      middleName,
+      lastName,
+      mrn,
+      age,
+    } = patient;
+    const patientName =
+      middleName && middleName !== ''
+        ? `${firstName} ${middleName} ${lastName}`.trim()
+        : `${firstName} ${lastName}`.trim();
 
     return {
       key: patientIdentifier,

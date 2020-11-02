@@ -314,6 +314,11 @@ const TaskItem = ({
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
 
+  const patientName =
+    patient?.middleName && patient?.middleName !== ''
+      ? `${patient?.firstName} ${patient?.middleName} ${patient?.lastName}`
+      : `${patient?.firstName} ${patient?.lastName}`;
+
   return (
     <StandardTaskItemPanel
       isDragging={isDragging}
@@ -412,15 +417,13 @@ const TaskItem = ({
                       searchWords={
                         matchPatient
                           ? highlightedValue?.toLowerCase().split(/\s+/)
-                          : `${patient.firstName} ${patient.lastName}`
-                              .toLowerCase()
-                              .split(/\s+/)
+                          : `${patientName}`.toLowerCase().split(/\s+/)
                       }
                       autoEscape
-                      textToHighlight={`${patient.firstName} ${patient.lastName}`}
+                      textToHighlight={`${patient.patientName}`}
                     />
                   ) : (
-                    `${patient.firstName} ${patient.lastName}`
+                    `${patientName}`
                   )}
                 </ListItemLink>
               )}
