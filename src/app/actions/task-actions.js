@@ -156,14 +156,24 @@ export function getListTasksGroupedByTaskGroup(
             allTasks.push(taskGroup.tasks);
           }
         });
-        const selectedTask = allTasks.find(
-          ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
-        );
+        const selectedTask = allTasks
+          .reduce((allTasksArray, tasksArray) => [
+            ...allTasksArray,
+            ...tasksArray,
+          ])
+          .find(
+            ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
+          );
 
         if (selectedTask) {
           dispatch(storeAsCurrentTask(selectedTask));
           dispatch(openDrawer());
           sessionStorage.removeItem('selectedTaskIdentifier');
+        } else if (selectedTaskIdentifier) {
+          TaskApi.getTaskDetails(selectedTaskIdentifier).then(data => {
+            dispatch(storeAsCurrentTask(data));
+            dispatch(openDrawer());
+          });
         }
 
         return groupedTasks;
