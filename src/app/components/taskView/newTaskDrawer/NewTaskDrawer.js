@@ -374,6 +374,7 @@ const NewTaskDrawer = ({
                     taskDrawerOpen &&
                     taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
                   }
+                  showAllOptions
                 >
                   {formattedPatients}
                 </SelectInput>
