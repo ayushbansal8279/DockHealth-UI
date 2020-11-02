@@ -39,6 +39,7 @@ import {
   REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
   GET_TASKS_BY_GROUPS_SUCCESS,
   GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS,
+  REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
 } from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
@@ -276,21 +277,63 @@ export function* doSortTasksGroups(payload) {
   }
 }
 
+// eslint-disable-next-line consistent-return
+export function* doGetTasksForTaskGroup(payload) {
+  try {
+    const {
+      taskGroupIdentifier,
+      status,
+      startPosition,
+      endPosition,
+      refresh,
+      shouldSaveInStore = true,
+    } = payload;
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    if (!refresh) {
+      yield put({
+        type: REQUEST_TASKLIST_GROUP_TASKS,
+        fetchedGroupIdentifier: taskGroupIdentifier,
+      });
+    }
+
+    const groupOfTasks = yield call(
+      getTasksForTaskListByTaskGroup,
+      taskListIdentifier,
+      taskGroupIdentifier,
+      status,
+      startPosition,
+      endPosition,
+    );
+
+    if (shouldSaveInStore) {
+      yield put({
+        type: REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+        groupOfTasks,
+        refresh,
+      });
+    }
+
+    return groupOfTasks;
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export function* doSortTasksInGroup(payload) {
-  const { orderedTaskIds, taskGroupIdentifier } = payload;
+  const { orderedTaskIds, taskGroupIdentifier, endPosition } = payload;
 
   try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: TASK_GROUP_LIST_REQUEST });
-
     yield call(reorderTasksInGroup, {
       orderedTaskIds,
       taskGroupIdentifier,
     });
 
     yield all([
-      call(doGetTasksList, {
-        taskListIdentifier,
+      call(doGetTasksForTaskGroup, {
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+        endPosition,
       }),
       put(showGlobalAlert(AlertMessages.UPDATED)),
     ]);
@@ -331,11 +374,16 @@ export function* doSortSubtasksInGroup(payload) {
 }
 
 export function* doReassignTasksToAnotherGroup(payload) {
-  const { taskIdentifiers, taskGroupIdentifier, orderedTaskIds } = payload;
+  const {
+    taskIdentifiers,
+    taskGroupIdentifier,
+    sourceTaskGroupIdentifier,
+    endPosition,
+    sourceEndPosition,
+  } = payload;
 
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: TASK_GROUP_LIST_REQUEST });
 
     yield call(
       reassignTasksToAnotherGroupApi,
@@ -343,17 +391,34 @@ export function* doReassignTasksToAnotherGroup(payload) {
       taskIdentifiers,
     );
 
-    yield call(doSortTasksInGroup, {
-      orderedTaskIds,
-      taskGroupIdentifier,
+    const sourceGroup = yield call(doGetTasksForTaskGroup, {
+      taskGroupIdentifier: sourceTaskGroupIdentifier,
+      status: 'INCOMPLETE',
+      refresh: true,
+      endPosition: sourceEndPosition,
+      shouldSaveInStore: false,
     });
 
-    yield all([
-      call(doGetTasksList, {
-        taskListIdentifier,
-      }),
-      put(showGlobalAlert(AlertMessages.UPDATED)),
-    ]);
+    const destinationGroup = yield call(doGetTasksForTaskGroup, {
+      taskGroupIdentifier,
+      status: 'INCOMPLETE',
+      refresh: true,
+      endPosition,
+      shouldSaveInStore: false,
+    });
+
+    yield call(doGetTasksGroupsList, {
+      taskListIdentifier,
+      shouldSetRequestState: false,
+    });
+
+    yield put({
+      type: REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
+      groupsOfTasks: [sourceGroup, destinationGroup],
+      refresh: true,
+    });
+
+    yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }
@@ -368,7 +433,6 @@ export function* doOnEnterListDetails() {
 
     if (taskListIdentifier) {
       yield call(doGetTasksGroupsList, { taskListIdentifier });
-      // yield call(doGetTasksList, { taskListIdentifier });
     }
 
     const isSelectedTask = yield select(taskIsSelectedSelector);
@@ -380,32 +444,6 @@ export function* doOnEnterListDetails() {
     if (isSelectedTask) {
       yield put(openDrawer());
     }
-  } catch (error) {
-    yield put({ type: TASK_GROUP_LIST_FAILURE });
-  }
-}
-
-export function* doGetTasksForTaskGroup(payload) {
-  try {
-    const { taskGroupIdentifier, status, startPosition, endPosition } = payload;
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-
-    yield put({
-      type: REQUEST_TASKLIST_GROUP_TASKS,
-      fetchedGroupIdentifier: taskGroupIdentifier,
-    });
-    const groupOfTasks = yield call(
-      getTasksForTaskListByTaskGroup,
-      taskListIdentifier,
-      taskGroupIdentifier,
-      status,
-      startPosition,
-      endPosition,
-    );
-    yield put({
-      type: REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
-      groupOfTasks,
-    });
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
   }

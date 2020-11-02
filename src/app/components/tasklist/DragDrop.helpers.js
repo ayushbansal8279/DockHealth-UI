@@ -42,6 +42,7 @@ export const onDragEndTask = ({
       ? sourceGroup.groupType
       : sourceGroup.taskGroupIdentifier;
 
+  const sourceHasMore = tasks[sourceGroupKey]?.hasMore;
   const sourceTasks = tasks[sourceGroupKey]?.tasks;
 
   const sourceTasksOrder = sourceTasks?.map(
@@ -71,13 +72,17 @@ export const onDragEndTask = ({
 
       updateTaskGroups({
         ...tasks,
-        [sourceGroupKey]: reorderedTasks,
+        [sourceGroupKey]: {
+          hasMore: sourceHasMore,
+          tasks: reorderedTasks,
+        },
       });
 
       reorderTasksInGroup({
         orderedTaskIds: newSourceTasksOrder,
         taskGroupIdentifier,
         taskListIdentifier,
+        endPosition: reorderedTasks?.length,
       });
     }
 
@@ -93,7 +98,8 @@ export const onDragEndTask = ({
           ? destinationGroup.groupType
           : destinationGroup.taskGroupIdentifier;
 
-      const destinationTasks = tasks[destinationGroupKey] || [];
+      const destinationHasMore = tasks[destinationGroupKey]?.hasMore;
+      const destinationTasks = tasks[destinationGroupKey]?.tasks || [];
 
       const destinationTasksOrder = destinationTasks?.map(
         ({ taskIdentifier }) => taskIdentifier,
@@ -131,14 +137,24 @@ export const onDragEndTask = ({
 
       updateTaskGroups({
         ...tasks,
-        [sourceGroupKey]: reorderedSourceTasks,
-        [destinationGroupKey]: reorderedDestinationTasks,
+        [sourceGroupKey]: {
+          hasMore: sourceHasMore,
+          tasks: reorderedSourceTasks,
+        },
+        [destinationGroupKey]: {
+          hasMore: destinationHasMore,
+          tasks: reorderedDestinationTasks,
+        },
       });
+
+      const { taskGroupIdentifier: sourceTaskGroupIdentifier } = sourceGroup;
 
       reassignTasksToAnotherGroup({
         taskIdentifiers: [sourceTaskIdentifier],
-        orderedTaskIds: newDestinationTasksOrder,
         taskGroupIdentifier,
+        endPosition: reorderedDestinationTasks?.length,
+        sourceTaskGroupIdentifier,
+        sourceEndPosition: reorderedSourceTasks?.length,
       });
     }
   }

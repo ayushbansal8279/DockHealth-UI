@@ -24,6 +24,7 @@ import {
   TASK_GROUP_LIST_REQUEST,
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
+  REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -268,7 +269,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
-      const { groupOfTasks } = action;
+      const { groupOfTasks, refresh } = action;
       const group = groupOfTasks.taskGroups[0];
 
       const groupToUpdate = state.groupedTasks?.taskGroups?.find(
@@ -281,7 +282,9 @@ const ListDetailsReducer = (state = initialState, action) => {
         taskGroup.groupIdentifier === group?.groupIdentifier
           ? {
               ...taskGroup,
-              tasks: taskGroup.tasks.concat(group.tasks),
+              tasks: refresh
+                ? group.tasks
+                : taskGroup.tasks.concat(group.tasks),
               hasMore: group.hasMore,
               isLoadingGroup: false,
             }
@@ -292,6 +295,43 @@ const ListDetailsReducer = (state = initialState, action) => {
         group.isLoadingGroup = false;
         updatedTaskGroups.push(group);
       }
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: updatedTaskGroups,
+        },
+      };
+    }
+
+    case REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS: {
+      const { groupsOfTasks, refresh } = action;
+
+      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(
+        taskGroup => {
+          const taskGroupToUpdate = groupsOfTasks?.find(
+            group =>
+              taskGroup.groupIdentifier ===
+              group?.taskGroups[0]?.groupIdentifier,
+          );
+
+          if (taskGroupToUpdate) {
+            const group = taskGroupToUpdate.taskGroups[0];
+
+            return {
+              ...taskGroup,
+              tasks: refresh
+                ? group.tasks
+                : taskGroup.tasks.concat(group.tasks),
+              hasMore: group.hasMore,
+              isLoadingGroup: false,
+            };
+          }
+
+          return taskGroup;
+        },
+      );
 
       return {
         ...state,
