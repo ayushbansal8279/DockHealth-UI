@@ -23,11 +23,11 @@ const NewTaskDrawerSubtasks = ({
               currentUser={currentUser}
             />
           ))}
-          <AddSubtaskButton onClick={onAddSubTask}>
-            <span>+</span> Add subtask
-          </AddSubtaskButton>
         </>
       )}
+      <AddSubtaskButton onClick={onAddSubTask}>
+        <span>+</span> Add a subtask
+      </AddSubtaskButton>
     </Container>
   );
 };

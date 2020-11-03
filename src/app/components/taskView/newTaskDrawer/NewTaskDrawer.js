@@ -500,8 +500,7 @@ const NewTaskDrawer = ({
                   parentFormSubmit={parentFormSubmit}
                 />
               </Grid>
-              {(selectedTask?.subTasksCount > 0 ||
-                selectedTask?.subtasks?.length > 0) && (
+              {!selectedTask?.parentTaskIdentifier && (
                 <Grid item xs={12}>
                   <NewTaskDrawerSubtasks
                     subtasks={selectedTask?.subtasks}

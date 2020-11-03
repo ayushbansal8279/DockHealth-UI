@@ -18,18 +18,23 @@ export const AddSubtaskButton = styled.button`
   display: flex;
   align-items: center;
   margin-top: ${spacing.large};
-  margin-left: 42px;
+  margin-left: -${spacing.smallPlus};
   padding: ${spacing.smallPlus} ${spacing.regular};
-  background: ${palette.coolGrey4};
-  border: 1px solid ${palette.coolGrey3};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   color: ${palette.mediumGrey};
   text-transform: uppercase;
   cursor: pointer;
+  border: 1px solid white;
+  transition: all 0.3s ease-in-out;
 
   & > span {
     margin-right: ${spacing.small};
     color: ${palette.brightBlue};
+  }
+
+  &:hover {
+    background: ${palette.coolGrey4};
+    border: 1px solid ${palette.coolGrey3};
   }
 `;
