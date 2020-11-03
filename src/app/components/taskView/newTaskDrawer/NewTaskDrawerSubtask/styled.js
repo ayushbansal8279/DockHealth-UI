@@ -7,6 +7,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding: ${spacing.smallPlus} 0;
+  cursor: pointer;
 `;
 
 export const MainSection = styled.div`
@@ -17,7 +18,6 @@ export const MainSection = styled.div`
 export const IconsSection = styled.div`
   display: flex;
   align-items: flex-start;
-  margin-left: 42px;
   margin-top: ${spacing.small};
 `;
 
@@ -41,8 +41,7 @@ export const CircleIcon = styled.img`
 
 export const Description = styled.div`
   width: 100%;
-  margin-right: ${spacing.regularPlus};
-  padding-right: ${spacing.smallPlus};
+  padding-right: ${spacing.regularPlus};
   overflow-wrap: anywhere;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
@@ -62,6 +61,7 @@ export const CompletedBy = styled.div`
   align-items: flex-end;
   display: flex;
   height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
+  ${({ isCompleted }) => isCompleted && `margin-top: ${spacing.tiny}`};
   overflow: hidden;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
@@ -85,11 +85,11 @@ export const AddCrossIcon = styled.img`
 `;
 
 export const AssigneeContainer = styled.div`
-  widht: 42px;
-  padding: 0 ${spacing.smallPlus};
+  width: 34px;
+  margin: 0 ${spacing.smallPlus};
 `;
 
-export const GoToParentButton = styled.button`
+export const GoToParentIconContainer = styled.div`
   margin-left: ${spacing.smallPlus};
   cursor: pointer;
 `;

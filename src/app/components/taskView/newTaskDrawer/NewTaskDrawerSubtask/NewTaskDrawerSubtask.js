@@ -25,7 +25,7 @@ import {
   DescriptionContainer,
   CompletedBy,
   AssigneeContainer,
-  GoToParentButton,
+  GoToParentIconContainer,
   DueDate,
   DueDateContainer,
   IconContainer,
@@ -69,13 +69,18 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
   );
 
   return (
-    <Container>
+    <Container
+      onClick={() => {
+        storeAsCurrentTask(subtask)(dispatch);
+      }}
+    >
       <MainSection>
         <CircleIcon
           src={isCompleted ? CircleCompleted : Circle}
           isCompleted={isCompleted}
           isClickable
-          onClick={() => {
+          onClick={event => {
+            event.stopPropagation();
             dispatch(toggleCompleteTask(subtask, currentUser));
           }}
         />
@@ -98,46 +103,56 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
                 `}</span>
           </CompletedBy>
         </DescriptionContainer>
-        <AssigneeContainer>
-          {assignedTo && <Member member={assignedTo} size={34} />}
-        </AssigneeContainer>
-        <GoToParentButton
-          onClick={() => {
-            storeAsCurrentTask(subtask)(dispatch);
+        <IconsSection>
+          <IconContainer marginTop={updatedComment ? -8 : 2}>
+            <img
+              alt="comments"
+              src={getItemIcon(COMMENTS, comments, true, updatedComment)}
+            />
+          </IconContainer>
+          <IconContainer marginTop={updatedDueDate ? -6 : 0}>
+            <DueDateContainer>
+              <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+              <img
+                alt="due-date"
+                src={getCalendarIcon(
+                  dueDate,
+                  true,
+                  isCompleted,
+                  updatedDueDate,
+                )}
+              />
+            </DueDateContainer>
+          </IconContainer>
+          <IconContainer>
+            <img
+              alt="labels"
+              src={getItemIcon(LABELS, labels, true, updatedLabel)}
+            />
+          </IconContainer>
+          <IconContainer marginTop={2}>
+            <img
+              alt="attachments"
+              src={getItemIcon(
+                ATTACHMENTS,
+                attachments,
+                true,
+                updatedAttachment,
+              )}
+            />
+          </IconContainer>
+        </IconsSection>
+        <AssigneeContainer
+          onClick={event => {
+            event.stopPropagation();
           }}
         >
+          {assignedTo && <Member member={assignedTo} size={34} />}
+        </AssigneeContainer>
+        <GoToParentIconContainer>
           <img src={SimpleArrowRight} alt="Go to parent task" />
-        </GoToParentButton>
+        </GoToParentIconContainer>
       </MainSection>
-      <IconsSection>
-        <IconContainer marginTop={updatedComment ? -8 : 2}>
-          <img
-            alt="comments"
-            src={getItemIcon(COMMENTS, comments, true, updatedComment)}
-          />
-        </IconContainer>
-        <IconContainer marginTop={updatedDueDate ? -6 : 0}>
-          <DueDateContainer>
-            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-            <img
-              alt="due-date"
-              src={getCalendarIcon(dueDate, true, isCompleted, updatedDueDate)}
-            />
-          </DueDateContainer>
-        </IconContainer>
-        <IconContainer>
-          <img
-            alt="labels"
-            src={getItemIcon(LABELS, labels, true, updatedLabel)}
-          />
-        </IconContainer>
-        <IconContainer marginTop={2}>
-          <img
-            alt="attachments"
-            src={getItemIcon(ATTACHMENTS, attachments, true, updatedAttachment)}
-          />
-        </IconContainer>
-      </IconsSection>
     </Container>
   );
 };
