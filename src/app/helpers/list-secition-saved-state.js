@@ -6,7 +6,7 @@ export const FULL_VIEW = 'FULL_VIEW';
 export const SLIM_VIEW = 'SLIM_VIEW';
 
 const DEFAULT_IS_OPEN_STATE = true;
-const DEFAULT_VIEW_TYPE = FULL_VIEW;
+const DEFAULT_VIEW_TYPE = SLIM_VIEW;
 
 const listSectionSavedState = ({ sessionStorageKey }) => {
   const storageState = useMemo(
