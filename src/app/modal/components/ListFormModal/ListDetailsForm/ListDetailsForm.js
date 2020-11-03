@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
@@ -55,6 +55,7 @@ const ListDetailsForm = ({
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
+  const listNameReference = useRef(null);
 
   const formContext = useForm({
     defaultValues: {
@@ -86,6 +87,12 @@ const ListDetailsForm = ({
     );
 
     register({ name: 'listDescription' });
+
+    if (!list) {
+      // eslint-disable-next-line no-unused-expressions
+      listNameReference?.current?.focus();
+    }
+
     return () => {
       unregister('listName');
       unregister('listDescription');
@@ -116,7 +123,10 @@ const ListDetailsForm = ({
             <Title>{list ? 'Edit a list' : 'Create a list'}</Title>
           </Header>
           <Input
-            ref={register}
+            ref={event => {
+              register(event);
+              listNameReference.current = event;
+            }}
             fullWidth
             label={messages.form.listName.label}
             name="listName"
