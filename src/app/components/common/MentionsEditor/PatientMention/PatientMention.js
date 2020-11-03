@@ -114,6 +114,7 @@ const PatientMention = ({ mention, className, children }) => {
                   </Link>
                 </TopSection>
                 {(dob ||
+                  age ||
                   gender ||
                   mrn ||
                   email ||
@@ -122,9 +123,9 @@ const PatientMention = ({ mention, className, children }) => {
                   <>
                     <Spacing vertical={2} />
                     <PatientInfo>
-                      {(dob || gender) && (
+                      {(age || gender) && (
                         <InfoItem>
-                          {dob && `${age} `}
+                          {age && `${age} `}
                           {gender && ` ${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}

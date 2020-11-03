@@ -85,13 +85,19 @@ const PatientDetailsInformation = ({
               <PatientName>
                 {[firstName, middleName, lastName].join(' ')}
               </PatientName>
-              {(dob || gender || mrn || email || phoneMobile || phoneHome) && (
+              {(dob ||
+                age ||
+                gender ||
+                mrn ||
+                email ||
+                phoneMobile ||
+                phoneHome) && (
                 <PatientDetails>
                   <PatientDetailsInformations>
-                    {(dob || gender) && (
+                    {(age || gender) && (
                       <>
                         <PatientInfo>
-                          {dob && `${age} `}
+                          {age && `${age} `}
                           {gender && gender?.charAt(0)?.toUpperCase()}
                         </PatientInfo>
                         <PatientInfoDivider />

@@ -10,6 +10,7 @@ import {
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
   TASK_ARCHIVED,
+  MOVE_TASK_SUCCESS,
 } from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import TaskBaseReducer from './task-base-reducer';
@@ -96,6 +97,23 @@ export default function(state = INITIAL_STATE, action = {}) {
           taskIdentifier,
         ),
       };
+    }
+    case MOVE_TASK_SUCCESS: {
+      const { task, taskList } = action;
+      // remove task from existing tasklist
+      const updatedState = TaskBaseReducer(
+        state,
+        action,
+        updateTasksStateCallback,
+      );
+      // add task to new list
+      updatedState.lists = updatedState.lists.map(list => {
+        if (list.taskListIdentifier !== taskList.taskListIdentifier) {
+          return list;
+        }
+        return { ...list, tasks: list.tasks.concat([task]) };
+      });
+      return updatedState;
     }
     case SET_PATIENT_TASK_SEARCH_VALUE:
       return {

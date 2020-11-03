@@ -1,21 +1,11 @@
 import produce from 'immer';
-import {
-  always,
-  evolve,
-  lensProp,
-  map,
-  pathEq,
-  propEq,
-  set,
-  when,
-} from 'ramda';
+import { lensProp, pathEq, set, when } from 'ramda';
 import {
   ADD_PATIENT_NOTE,
   CLEAR_PATIENT,
   FETCH_PATIENT,
   FETCH_PATIENT_ERROR,
   FETCH_PATIENT_SUCCESS,
-  MOVE_TASK_SUCCESS,
   UPDATE_PATIENT_NOTE,
   UPDATE_PATIENT_SUCCESS,
 } from 'actions/action-types';
@@ -32,20 +22,6 @@ const updateDetails = patient =>
   when(
     pathEq(['details', 'patientIdentifier'], patient.patientIdentifier),
     set(lensProp('details'), patient),
-  );
-
-const moveTask = (task, taskList) =>
-  map(
-    when(
-      propEq(
-        'taskIdentifier',
-        task.parentTaskIdentifier || task.taskIdentifier,
-      ),
-      evolve({
-        taskList: always(taskList),
-        subtasks: map(set(lensProp('taskList'), taskList)),
-      }),
-    ),
   );
 
 const reducer = (state = initialState, action) => {
@@ -111,22 +87,7 @@ const reducer = (state = initialState, action) => {
       });
     }
 
-    case MOVE_TASK_SUCCESS: {
-      const { task, taskList } = action;
-      return { ...state, tasks: moveTask(task, taskList)(state.tasks) };
-    }
-
     default: {
-      // const { tasks, completedTasks, selectedTaskId, groupedTasks } = state;
-      // const taskState = TaskReducer({ selectedTaskId }, action);
-      // const listTasks = ListTasksReducer({ tasks, completedTasks, groupedTasks }, action);
-
-      // return {
-      //   ...state,
-      //   tasks: listTasks.tasks,
-      //   completedTasks: listTasks.completedTasks,
-      //   selectedTaskId: taskState.selectedTaskId,
-      // };
       return state;
     }
   }
