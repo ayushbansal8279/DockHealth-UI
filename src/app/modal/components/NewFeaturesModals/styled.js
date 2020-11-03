@@ -10,7 +10,7 @@ export const ModalWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 600px;
-  height: 700px;
+  height: ${({ height }) => height || 700}px;
   padding: ${spacing.huge};
   font-family: 'Montserrat', sans-serif;
   background-color: ${palette.white};
@@ -47,4 +47,13 @@ export const Step = styled.button`
   &:not(:first-of-type) {
     margin-left: ${spacing.tiny};
   }
+`;
+
+export const StepContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  text-align: center;
 `;

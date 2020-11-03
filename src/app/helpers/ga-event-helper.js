@@ -238,6 +238,15 @@ export const onMentionsTourModalEvent = stepKey => {
   });
 };
 
+export const onNotificationSettingsTourModalEvent = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventActions: 'Notification settings tour modal',
+    eventLabel: stepKey,
+  });
+};
+
 export const onLogin = () => {
   // ReactGA.set({
   //   userId: sessionStorage.userIdentifier,

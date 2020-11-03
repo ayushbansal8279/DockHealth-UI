@@ -6,8 +6,9 @@ import {
   TopLabel,
   StepsContainer,
   Step,
-} from './styled';
-import { CloseIconButton, CloseIcon } from '../styled';
+  StepContainer,
+} from '../styled';
+import { CloseIconButton, CloseIcon } from '../../styled';
 import {
   PresenceIndicatorsStep,
   PeopleMentionsStep,
@@ -33,9 +34,9 @@ const MentionsTourModal = ({ closeModal }) => {
         <CloseIcon />
       </CloseIconButton>
       {currentStep === 0 && <TopLabel>New features!</TopLabel>}
-      <div>
+      <StepContainer>
         <CurrentStepComponent />
-      </div>
+      </StepContainer>
       <div>
         <ButtonWrapper>
           {currentStep === TOUR_STEPS_COMPONENTS.length - 1 ? (

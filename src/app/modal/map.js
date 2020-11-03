@@ -23,8 +23,9 @@ import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal'
 import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
 import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
-import MentionsTourModal from './components/MentionsTourModal/MentionsTourModal';
+import MentionsTourModal from './components/NewFeaturesModals/MentionsTourModal/MentionsTourModal';
 import TrialExpirationModal from './components/TrialExpirationModal/TrialExpirationModal';
+import NotificationSettingsTourModal from './components/NewFeaturesModals/NotificationSettingsTourModal/NotificationSettingsTourModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -53,6 +54,7 @@ const MODAL_MAP = {
   ArchiveUser: ArchiveUserModal,
   SelectOwner: SelectOwnerModal,
   MentionsTour: MentionsTourModal,
+  NotificationSettingsTour: NotificationSettingsTourModal,
   TrialExpiration: TrialExpirationModal,
 };
 

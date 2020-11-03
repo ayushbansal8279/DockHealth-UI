@@ -40,6 +40,16 @@ const existingUserTourHooks = ({
             },
           }),
         );
+      } else if (!appFeaturesReviewed?.includes('NOTIFICATION_SETTINGS')) {
+        dispatch(
+          openModal('NotificationSettingsTour', {
+            onClose: () => {
+              updateUserDashboardPrefs({
+                appFeaturesReviewed: ['NOTIFICATION_SETTINGS'],
+              });
+            },
+          }),
+        );
       }
     }
   };
