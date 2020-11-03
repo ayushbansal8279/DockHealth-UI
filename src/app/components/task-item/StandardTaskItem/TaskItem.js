@@ -314,10 +314,9 @@ const TaskItem = ({
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
 
-  const patientName =
-    patient?.middleName && patient?.middleName !== ''
-      ? `${patient?.firstName} ${patient?.middleName} ${patient?.lastName}`
-      : `${patient?.firstName} ${patient?.lastName}`;
+  const patientName = patient?.middleName
+    ? `${patient?.firstName} ${patient?.middleName} ${patient?.lastName}`
+    : `${patient?.firstName} ${patient?.lastName}`;
 
   return (
     <StandardTaskItemPanel
