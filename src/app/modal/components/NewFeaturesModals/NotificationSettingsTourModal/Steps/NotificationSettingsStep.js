@@ -13,7 +13,7 @@ const NotificationSettingsStep = () => {
     <>
       <Spacing vertical={4} />
       <Image
-        height={195}
+        height={225}
         src={NotificationSettingsImage}
         alt="Notification settings"
       />
