@@ -32,15 +32,7 @@ const existingUserTourHooks = ({
     if (userProfile && userProfile.userPreference) {
       const { userPreference: { appFeaturesReviewed } = {} } = userProfile;
 
-      if (!appFeaturesReviewed?.includes('MENTIONS')) {
-        dispatch(
-          openModal('MentionsTour', {
-            onClose: () => {
-              updateUserDashboardPrefs({ appFeaturesReviewed: ['MENTIONS'] });
-            },
-          }),
-        );
-      } else if (!appFeaturesReviewed?.includes('NOTIFICATION_SETTINGS')) {
+      if (!appFeaturesReviewed?.includes('NOTIFICATION_SETTINGS')) {
         dispatch(
           openModal('NotificationSettingsTour', {
             onClose: () => {
