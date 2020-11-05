@@ -165,7 +165,7 @@ const initializeTaskDrawerHooks = ({
     selectedFilters: selectedFiltersInMegaFilterSelector(store),
   }));
 
-  const { taskIdentifier, subtasks, subTasksCount } = selectedTask || {};
+  const { taskIdentifier, subTasksCount, subtasks } = selectedTask || {};
 
   const taskDrawerReference = useRef(null);
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
@@ -199,10 +199,14 @@ const initializeTaskDrawerHooks = ({
 
   const onPatientInputChange = useCallback(
     (_event, value, reason) => {
-      if (reason === 'input' && value !== '') {
-        setIsLoadingPatients(true);
-        setPatientInputValue(value);
-        fetchPatientsWithDebounce(value);
+      setPatientInputValue(value);
+      if (reason === 'input') {
+        if (value !== '') {
+          setIsLoadingPatients(true);
+          fetchPatientsWithDebounce(value);
+        } else {
+          setPatients([]);
+        }
       }
     },
     [fetchPatientsWithDebounce],
@@ -276,13 +280,16 @@ const initializeTaskDrawerHooks = ({
     ) {
       TaskApi.getTaskDetails(taskIdentifier).then(task => {
         setParentTask(task.parentTask || null);
-        storeAsCurrentTask(task)(dispatch);
         dispatch({ type: UPDATE_TASK_SUCCESS, task });
       });
     }
     previousTaskIdentifierValue.current = taskIdentifier;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskIdentifier, subtasks]);
+
+  useEffect(() => {
+    setParentTask(null);
+  }, [taskDrawerOpen]);
 
   useEffect(() => {
     if (parentTask) {
