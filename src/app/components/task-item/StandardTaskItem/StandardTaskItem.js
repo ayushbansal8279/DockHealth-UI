@@ -24,6 +24,8 @@ const Task = ({
   addingNewSubtaskParentId,
   subtaskShape,
   hideSubtasks,
+  areFiltersApplied,
+  isSearchApplied,
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -52,7 +54,13 @@ const Task = ({
     if (hasNewSubtask) {
       switchOpen(true);
     }
-  }, [renderedSubtasks]);
+    if (
+      (areFiltersApplied || isSearchApplied) &&
+      renderedSubtasks?.length > 0
+    ) {
+      switchOpen(true);
+    }
+  }, [renderedSubtasks, areFiltersApplied, isSearchApplied]);
 
   const matchingComments = useMemo(
     () => getMatchedComments(comments, matchingCommentIdentifiers),
@@ -68,8 +76,17 @@ const Task = ({
     () =>
       (subTasksCount > 0 || !isEmpty(renderedSubtasks)) &&
       !isStartedDnD &&
-      (!hideSubtasks || subTasksCount !== renderedSubtasks?.length),
-    [renderedSubtasks, subTasksCount, isStartedDnD, hideSubtasks],
+      (!hideSubtasks ||
+        ((areFiltersApplied || isSearchApplied) &&
+          renderedSubtasks?.length > 0)),
+    [
+      subTasksCount,
+      renderedSubtasks,
+      isStartedDnD,
+      hideSubtasks,
+      areFiltersApplied,
+      isSearchApplied,
+    ],
   );
 
   const onClickComment = useCallback(() => {

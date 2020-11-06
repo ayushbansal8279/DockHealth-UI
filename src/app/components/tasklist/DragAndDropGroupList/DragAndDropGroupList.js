@@ -21,6 +21,8 @@ const DragAndDropGroupList = ({
   listNameVisible,
   selectedTask,
   hideSubtasks,
+  areFiltersApplied,
+  isSearchApplied,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -81,6 +83,8 @@ const DragAndDropGroupList = ({
                     addingNewSubtaskParentId={addingNewSubtaskParentId}
                     subtaskShape={subtaskShape}
                     hideSubtasks={hideSubtasks}
+                    areFiltersApplied={areFiltersApplied}
+                    isSearchApplied={isSearchApplied}
                   />
                 )}
               </Draggable>
