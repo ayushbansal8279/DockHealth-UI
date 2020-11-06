@@ -48,8 +48,8 @@ export const CommentContainer = styled.div`
 
 export const CommentContent = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
-  width: fit-content;
   padding: 0 ${spacing.regular};
 `;
 
@@ -57,6 +57,7 @@ export const CommentText = styled.div`
   color: ${palette.mediumGrey};
   font-weight: normal;
   max-width: 475px;
+  width: 100%;
 `;
 
 export const CommentDetails = styled.div`
