@@ -51,6 +51,7 @@ export const NestedList = styled(StyledList)`
     width: 100%;
     overflow-y: scroll;
     max-height: 120px;
+    scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
 
     @media screen and (min-height: 750px) {
       max-height: 190px;
@@ -258,6 +259,7 @@ export const StyledDropdown = styled.div`
   width: 100%;
   margin-bottom: ${spacing.regularPlus};
   overflow-y: scroll;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;
