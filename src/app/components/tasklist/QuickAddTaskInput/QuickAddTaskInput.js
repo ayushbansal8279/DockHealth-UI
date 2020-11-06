@@ -10,81 +10,89 @@ import {
   QuickAddHint,
 } from './styled';
 
-const QuickAddTaskInput = ({ quickAddTask, onFocus, validator }) => {
-  const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
-  const [hasInputValue, setHasInputValue] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleInputEnterDown = () => {
-    let validatorError = null;
-
-    const { rawText, tokenizedText, mentions } = convertFromEditorStateToOutput(
+const QuickAddTaskInput = React.forwardRef(
+  ({ quickAddTask, onFocus, validator }, reference) => {
+    const [
       newTaskDescription,
-    );
+      setNewTaskDescription,
+    ] = useMentionsEditorState();
+    const [hasInputValue, setHasInputValue] = useState(false);
+    const [error, setError] = useState(null);
 
-    // look for first patient mention to assign to created task
-    const { identifier: patientIdentifier } =
-      mentions?.find(({ type }) => type === '#mention') || {};
+    const handleInputEnterDown = () => {
+      let validatorError = null;
 
-    if (validator) {
-      validatorError = validator(rawText);
-      setError(validatorError);
-    }
+      const {
+        rawText,
+        tokenizedText,
+        mentions,
+      } = convertFromEditorStateToOutput(newTaskDescription);
 
-    if (rawText && !validatorError) {
-      quickAddTask({ description: tokenizedText, patientIdentifier });
-      setNewTaskDescription();
-      setHasInputValue(false);
+      // look for first patient mention to assign to created task
+      const { identifier: patientIdentifier } =
+        mentions?.find(({ type }) => type === '#mention') || {};
 
       if (validator) {
+        validatorError = validator(rawText);
+        setError(validatorError);
+      }
+
+      if (rawText && !validatorError) {
+        quickAddTask({ description: tokenizedText, patientIdentifier });
+        setNewTaskDescription();
+        setHasInputValue(false);
+
+        if (validator) {
+          setError(null);
+        }
+      }
+    };
+
+    const handleOnChange = state => {
+      if (error) {
         setError(null);
       }
-    }
-  };
+      setNewTaskDescription(state);
+      setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
+    };
 
-  const handleOnChange = state => {
-    if (error) {
-      setError(null);
-    }
-    setNewTaskDescription(state);
-    setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
-  };
+    return (
+      <>
+        <AddTaskInputWrapper hasError={!!error}>
+          <MentionsEditorContainer>
+            <MentionsEditor
+              ref={reference}
+              placeholder="Add a task and press enter on your keyboard"
+              onFocus={onFocus}
+              state={newTaskDescription}
+              onChange={handleOnChange}
+              keyBindingFn={event => {
+                if (event.keyCode === 13) {
+                  return 'enter-command';
+                }
+                return undefined;
+              }}
+              handleKeyCommand={command => {
+                if (command === 'enter-command') {
+                  handleInputEnterDown();
+                  return 'handled';
+                }
 
-  return (
-    <>
-      <AddTaskInputWrapper hasError={!!error}>
-        <MentionsEditorContainer>
-          <MentionsEditor
-            placeholder="Add a task and press enter on your keyboard"
-            onFocus={onFocus}
-            state={newTaskDescription}
-            onChange={handleOnChange}
-            keyBindingFn={event => {
-              if (event.keyCode === 13) {
-                return 'enter-command';
-              }
-              return undefined;
-            }}
-            handleKeyCommand={command => {
-              if (command === 'enter-command') {
-                handleInputEnterDown();
-                return 'handled';
-              }
-
-              return 'not-handled';
-            }}
-          />
-        </MentionsEditorContainer>
-        {hasInputValue && (
-          <>
-            <Spacing horizontal={4} />
-            <QuickAddHint>Press enter to save this task</QuickAddHint>
-          </>
-        )}
-      </AddTaskInputWrapper>
-      {error && <ErrorLabel>{error}</ErrorLabel>}
-    </>
-  );
-};
+                return 'not-handled';
+              }}
+            />
+          </MentionsEditorContainer>
+          {hasInputValue && (
+            <>
+              <Spacing horizontal={4} />
+              <QuickAddHint>Press enter to save this task</QuickAddHint>
+            </>
+          )}
+        </AddTaskInputWrapper>
+        {error && <ErrorLabel>{error}</ErrorLabel>}
+      </>
+    );
+  },
+);
 
 export default QuickAddTaskInput;

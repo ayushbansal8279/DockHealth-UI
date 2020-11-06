@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
@@ -47,6 +47,7 @@ const TaskListDetailsDropdown = ({
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
     sessionStorageKey,
   );
+  const quickAddTaskInputReference = useRef(null);
 
   const {
     addingNewSubtask,
@@ -119,7 +120,13 @@ const TaskListDetailsDropdown = ({
       <Tasks timeout={150} in={isOpen}>
         {!isCompleteTab && (
           <QuickAddTaskInput
-            quickAddTask={task => quickAddTask({ ...task, taskListIdentifier })}
+            ref={quickAddTaskInputReference}
+            quickAddTask={task => {
+              quickAddTask({ ...task, taskListIdentifier });
+              setTimeout(() => {
+                quickAddTaskInputReference.current.focus();
+              }, 0);
+            }}
           />
         )}
         <div>

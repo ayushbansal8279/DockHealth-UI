@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -79,6 +79,7 @@ const TasksGroup = ({
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
     sessionStorageKey: groupSessionStorageKey,
   });
+  const quickAddTaskInputReference = useRef(null);
 
   const areViewOptionsVisible = useMemo(() => {
     if (!isOpen) return false;
@@ -113,11 +114,15 @@ const TasksGroup = ({
   }, [groupTaskCounts, tasks, switchOpen]);
 
   const onQuickAddTask = useCallback(
-    task =>
+    task => {
       quickAddTask({
         ...task,
         taskGroupIdentifier: groupId,
-      }),
+      });
+      setTimeout(() => {
+        quickAddTaskInputReference.current.focus();
+      }, 0);
+    },
     [groupId, quickAddTask],
   );
 
@@ -198,6 +203,7 @@ const TasksGroup = ({
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
           <QuickAddTaskInput
+            ref={quickAddTaskInputReference}
             quickAddTask={onQuickAddTask}
             validator={value => {
               if ([...value]?.filter(char => char !== ' ').length < 2)

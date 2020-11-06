@@ -233,6 +233,7 @@ const DashboardList = ({
   const [dynamicColumnType, setDynamicColumnType] = useState(
     userPreferColumn || 'DUE_DATE',
   );
+  const quickAddTaskInputReference = useRef(null);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
     ({ metricValue }) => metricValue !== 0,
@@ -410,6 +411,7 @@ const DashboardList = ({
           assignedToIdentifier: userIdentifier,
           patientIdentifier,
         });
+        quickAddTaskInputReference.current.focus();
       },
     });
   };
@@ -531,6 +533,7 @@ const DashboardList = ({
           </ActionsContainer>
         </ToolbarContainer>
         <QuickAddTaskInput
+          ref={quickAddTaskInputReference}
           quickAddTask={handleQuickAddTask}
           onFocus={() => {
             if (isTaskDrawerOpen) {
