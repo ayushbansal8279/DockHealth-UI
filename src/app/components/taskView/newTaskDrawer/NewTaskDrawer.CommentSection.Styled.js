@@ -12,7 +12,6 @@ export const CommentSectionContainer = styled.div`
 export const CommentActionLabel = styled.button`
   color: ${palette.lightGrey};
   cursor: pointer;
-  opacity: 0;
   text-decoration: none;
   transition: all 0.25s ease-out;
   margin-top: ${spacing.tiny};
@@ -67,7 +66,6 @@ export const CommentDetails = styled.div`
 
 export const EditCommentButton = styled.div`
   height: fit-content;
-  visibility: ${props => (props.isEditing ? 'hidden' : 'visible')};
 `;
 
 export const CommentMemberContainer = styled.div`

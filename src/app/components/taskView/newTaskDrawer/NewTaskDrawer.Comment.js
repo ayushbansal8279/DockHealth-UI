@@ -103,7 +103,6 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
                 withEditedLabel={dateCreated !== dateUpdated}
                 state={commentState}
                 onChange={setCommentState}
-                onBlur={onCommentEdited}
                 keyBindingFn={event => {
                   if (event.keyCode === 13 && event.shiftKey) {
                     return undefined;
@@ -115,7 +114,7 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
                 }}
                 handleKeyCommand={command => {
                   if (command === 'enter-command') {
-                    commentEditorReference.current.blur();
+                    onCommentEdited();
                     return 'handled';
                   }
 
@@ -126,38 +125,80 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
             <CommentDetails>{commentDetails}</CommentDetails>
           </CommentContent>
           <CommentActionsSection>
-            {isCommentAuthor && (
+            {isEditing ? (
               <>
                 <Spacing horizontal={4} />
-                <EditCommentButton isEditing={isEditing}>
+                <EditCommentButton>
                   <RobotoTypography condensed variant="h5" color="inherit">
                     <CommentActionLabel
                       onClick={event => {
                         event.preventDefault();
                         event.stopPropagation();
-                        setEditing();
+                        onCommentEdited();
                       }}
                     >
-                      Edit
+                      Save
+                    </CommentActionLabel>
+                  </RobotoTypography>
+                </EditCommentButton>
+                <Spacing horizontal={3} />
+                <EditCommentButton>
+                  <RobotoTypography condensed variant="h5" color="inherit">
+                    <CommentActionLabel
+                      onClick={event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        unsetEditing();
+                        setCommentState(
+                          convertToEditorState({
+                            rawText: commentContent,
+                            tokenizedText: tokenizedComment,
+                            mentions: commentMentions,
+                          }),
+                        );
+                      }}
+                    >
+                      Cancel
                     </CommentActionLabel>
                   </RobotoTypography>
                 </EditCommentButton>
               </>
-            )}
-            {(isCommentAuthor || isAdmin) && (
+            ) : (
               <>
-                <Spacing horizontal={3} />
-                <RobotoTypography condensed variant="h5" color="inherit">
-                  <CommentActionLabel
-                    onClick={event => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      removeComment(comment);
-                    }}
-                  >
-                    Delete
-                  </CommentActionLabel>
-                </RobotoTypography>
+                {isCommentAuthor && (
+                  <>
+                    <Spacing horizontal={4} />
+                    <EditCommentButton>
+                      <RobotoTypography condensed variant="h5" color="inherit">
+                        <CommentActionLabel
+                          onClick={event => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            setEditing();
+                          }}
+                        >
+                          Edit
+                        </CommentActionLabel>
+                      </RobotoTypography>
+                    </EditCommentButton>
+                  </>
+                )}
+                {(isCommentAuthor || isAdmin) && (
+                  <>
+                    <Spacing horizontal={3} />
+                    <RobotoTypography condensed variant="h5" color="inherit">
+                      <CommentActionLabel
+                        onClick={event => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          removeComment(comment);
+                        }}
+                      >
+                        Delete
+                      </CommentActionLabel>
+                    </RobotoTypography>
+                  </>
+                )}
               </>
             )}
           </CommentActionsSection>

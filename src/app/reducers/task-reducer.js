@@ -7,6 +7,7 @@ import {
   SET_AS_CURRENT_TASK,
   UPDATE_TASK_SUCCESS,
   TASK_READ_SUCCESS,
+  UPDATE_TASK_COMMENT_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -76,6 +77,36 @@ const TaskReducer = (state = initialState, action) => {
             },
           };
         }
+      }
+
+      return state;
+    }
+
+    case UPDATE_TASK_COMMENT_SUCCESS: {
+      const { task, comment: updatedComment } = action;
+
+      // debugger;
+
+      if (task?.taskIdentifier === state.selectedTask?.taskIdentifier) {
+        return {
+          ...state,
+          selectedTask: {
+            ...state.selectedTask,
+            comments: state.selectedTask.comments.map(comment => {
+              if (
+                comment.commentIdentifier === updatedComment.commentIdentifier
+              ) {
+                return {
+                  ...comment,
+                  ...updatedComment,
+                  creator: comment.creator,
+                };
+              }
+
+              return comment;
+            }),
+          },
+        };
       }
 
       return state;
