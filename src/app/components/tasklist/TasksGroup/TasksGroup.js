@@ -85,7 +85,8 @@ const TasksGroup = ({
     return checkIfTasksHaveSubtasksOrCommnets(tasks);
   }, [isOpen, tasks]);
 
-  const isFullView = viewType === FULL_VIEW;
+  const isFullView =
+    viewType === FULL_VIEW || areFiltersApplied || isSearchApplied;
 
   const onSwitchOpen = useCallback(() => switchOpen(!isOpen), [
     switchOpen,
@@ -224,6 +225,8 @@ const TasksGroup = ({
           listNameVisible={listNameVisible}
           selectedTask={selectedTask}
           hideSubtasks={isSearchApplied || areFiltersApplied}
+          areFiltersApplied={areFiltersApplied}
+          isSearchApplied={isSearchApplied}
         />
         {isLoadingGroup && <SingleSkeletonLoader rows={4} />}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (
