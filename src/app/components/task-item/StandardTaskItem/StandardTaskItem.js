@@ -62,6 +62,12 @@ const Task = ({
     }
   }, [renderedSubtasks, areFiltersApplied, isSearchApplied]);
 
+  useEffect(() => {
+    if (!isFullView) {
+      switchOpen(false);
+    }
+  }, [isFullView]);
+
   const matchingComments = useMemo(
     () => getMatchedComments(comments, matchingCommentIdentifiers),
     [comments, matchingCommentIdentifiers],
