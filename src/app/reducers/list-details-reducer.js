@@ -198,7 +198,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
-      const { groupedTasks } = action;
+      const { groupedTasks, loadingMore } = action;
       const group = groupedTasks.taskGroups[0];
 
       const groupToUpdate = state.completedGroupedTasks.taskGroups?.find(
@@ -211,7 +211,9 @@ const ListDetailsReducer = (state = initialState, action) => {
           taskGroup.groupIdentifier === group?.groupIdentifier
             ? {
                 ...taskGroup,
-                tasks: taskGroup.tasks.concat(group.tasks),
+                tasks: loadingMore
+                  ? taskGroup.tasks.concat(group.tasks)
+                  : group.tasks,
                 hasMore: group.hasMore,
               }
             : taskGroup,
@@ -228,6 +230,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         ...state,
         completedGroupedTasks: updatedGroupedTasks,
         isCompletedTasksFetching: false,
+        isFetchingMoreTasks: false,
         showingCompletedTasks: true,
         isFetching: false,
       };

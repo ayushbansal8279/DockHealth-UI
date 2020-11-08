@@ -756,6 +756,8 @@ class Home extends Component {
 
   loadMoreTasksForList = ({ status, startPosition }) => {
     const { actions, routeParams } = this.props;
+    const loadingMore = true;
+    const endPosition = 0;
     actions.getListTasksGroupedByTaskGroup(
       routeParams.taskListIdentifier,
       undefined,
@@ -763,6 +765,8 @@ class Home extends Component {
       status,
       false,
       startPosition,
+      endPosition,
+      loadingMore,
     );
   };
 

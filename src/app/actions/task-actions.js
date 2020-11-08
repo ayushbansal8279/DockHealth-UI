@@ -127,12 +127,15 @@ export function getListTasksGroupedByTaskGroup(
   cumulativeFlag,
   startPosition = 0,
   endPosition = 0,
+  loadingMore = false,
 ) {
   const action = getListWithGroupsAction({ status });
 
   return dispatch => {
-    if (cumulativeFlag) {
-      dispatch({ type: ActionTypes.GET_MORE_TASKS_REQUEST });
+    if (loadingMore && status === 'COMPLETE') {
+      dispatch({
+        type: ActionTypes.GET_MORE_TASKS_REQUEST,
+      });
     }
 
     return TaskApi.getListTasksGroupedByTaskGroup(
@@ -144,7 +147,7 @@ export function getListTasksGroupedByTaskGroup(
       endPosition,
     )
       .then(groupedTasks => {
-        dispatch({ type: action, groupedTasks });
+        dispatch({ type: action, groupedTasks, loadingMore });
 
         const selectedTaskIdentifier = sessionStorage.getItem(
           'selectedTaskIdentifier',
