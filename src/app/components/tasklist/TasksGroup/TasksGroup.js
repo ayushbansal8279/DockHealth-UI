@@ -62,6 +62,7 @@ const TasksGroup = ({
   groupPagination,
   showMoreTasks,
   hasMoreTasks,
+  isFetchingMoreTasks,
   updateDueDate,
   updateWorkflowStatus,
   dragAndDropDisabled,
@@ -228,7 +229,9 @@ const TasksGroup = ({
           areFiltersApplied={areFiltersApplied}
           isSearchApplied={isSearchApplied}
         />
-        {isLoadingGroup && <SingleSkeletonLoader rows={4} />}
+        {(isLoadingGroup || isFetchingMoreTasks) && (
+          <SingleSkeletonLoader rows={4} />
+        )}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (
           <LoadMoreSection>
             {!isLoadingGroup && <LoadMoreButton onClick={showMoreTasks} />}
