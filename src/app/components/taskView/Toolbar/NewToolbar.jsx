@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch, connect } from 'react-redux';
 import { Button, Grid, ClickAwayListener } from '@material-ui/core';
-import { splitAt, isEmpty } from 'ramda';
+import { splitAt, isEmpty, isNil } from 'ramda';
 import {
   toggleListNotifications,
   getMembersByTaskListId,
@@ -10,6 +10,7 @@ import { openModal } from 'modal/actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import { isMemberPending } from 'helpers/list-members-helper';
+import localStorageHelper from 'helpers/local-storage-helper';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import PageContentHeader from 'components/common/NewPageContentHeader';
@@ -34,6 +35,8 @@ import {
   HiddenMembersTooltipContainer,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
+
+const INBOX_FIRST_TIME_KEY = 'INBOX_FIRST_TIME_KEY';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -136,7 +139,6 @@ const Toolbar = ({
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
-  const tipsAutoOpenChecked = useRef(false);
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -165,18 +167,21 @@ const Toolbar = ({
   const hiddenMembersCount = hiddenMembers?.length;
 
   useEffect(() => {
-    if (!tipsContent) {
+    if (!tipsContent || taskList?.listType !== 'INBOX') {
       return;
     }
 
-    if (openTasksAmount === 0 && !tipsAutoOpenChecked.current) {
+    const inboxFirstTimeValue = localStorageHelper.getItem(
+      INBOX_FIRST_TIME_KEY,
+    );
+
+    if (isNil(inboxFirstTimeValue) || inboxFirstTimeValue === true) {
       setTipsOpened(true);
-      tipsAutoOpenChecked.current = true;
-    } else if (openTasksAmount > 0) {
-      tipsAutoOpenChecked.current = true;
+      localStorageHelper.setItem(INBOX_FIRST_TIME_KEY, false);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openTasksAmount]);
+  }, [openTasksAmount, tipsContent, taskList]);
 
   return (
     <PageContentHeader>
