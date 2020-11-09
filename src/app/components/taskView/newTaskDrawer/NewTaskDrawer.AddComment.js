@@ -52,6 +52,7 @@ const AddComment = ({
           ref={addCommentReference}
           taskListIdentifier={taskListIdentifier}
           placeholder="Leave a comment and press enter on your keyboard to save"
+          isDrawerEditor
           onFocus={() => {
             onCommentFocus();
             setIsFocused(true);

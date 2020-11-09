@@ -10,7 +10,7 @@ export const initializeLinkifyPlugin = () =>
     component: EditorLink,
   });
 
-export const initializePeopleMentionPlugin = () =>
+export const initializePeopleMentionPlugin = isDrawerEditor =>
   createMentionPlugin({
     mentionPrefix: '@',
     mentionTrigger: '@',
@@ -30,6 +30,10 @@ export const initializePeopleMentionPlugin = () =>
         zIndex: 1001,
       };
 
+      if (!isDrawerEditor) {
+        styles.top = props.decoratorRect.top + 22;
+      }
+
       if (windowHeight - props.decoratorRect.top < 300) {
         styles.transform = `translateY(-100%) translateY(-${props.decoratorRect
           .height + 5}px)`;
@@ -39,7 +43,7 @@ export const initializePeopleMentionPlugin = () =>
     },
   });
 
-export const initializePatientMentionPlugin = () =>
+export const initializePatientMentionPlugin = isDrawerEditor =>
   createMentionPlugin({
     mentionPrefix: '#',
     mentionTrigger: '#',
@@ -58,6 +62,10 @@ export const initializePatientMentionPlugin = () =>
         width: 317,
         zIndex: 1001,
       };
+
+      if (!isDrawerEditor) {
+        styles.top = props.decoratorRect.top + 22;
+      }
 
       if (windowHeight - props.decoratorRect.top < 300) {
         styles.transform = `translateY(-100%) translateY(-${props.decoratorRect

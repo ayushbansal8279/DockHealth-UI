@@ -88,6 +88,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
           <Description isCrossedOut={isCompleted}>
             <MentionsEditor
               readOnly
+              isDrawerEditor
               withEditedLabel={edited}
               state={descriptionState}
               onChange={setDescriptionState}

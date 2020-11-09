@@ -68,12 +68,17 @@ const MentionsEditor = React.forwardRef(
       state,
       highlightedValues,
       taskListIdentifier,
+      isDrawerEditor = false,
     },
     reference,
   ) => {
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
-    const peopleMentionPlugin = useRef(initializePeopleMentionPlugin());
-    const patientMentionPlugin = useRef(initializePatientMentionPlugin());
+    const peopleMentionPlugin = useRef(
+      initializePeopleMentionPlugin(isDrawerEditor),
+    );
+    const patientMentionPlugin = useRef(
+      initializePatientMentionPlugin(isDrawerEditor),
+    );
 
     const [editorState, setEditorState] = useState(initialState);
 

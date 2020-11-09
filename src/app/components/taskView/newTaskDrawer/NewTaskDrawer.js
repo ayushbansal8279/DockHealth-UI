@@ -238,6 +238,7 @@ const NewTaskDrawer = ({
                       <ParentTaskDescription>
                         <MentionsEditor
                           readOnly
+                          isDrawerEditor
                           withEditedLabel={parentTask.edited}
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
@@ -268,6 +269,7 @@ const NewTaskDrawer = ({
                         ? 'What is the subtask?'
                         : 'What is the task?'
                     }
+                    isDrawerEditor
                     onFocus={() => {
                       setIsDescriptionFocused(true);
                     }}
