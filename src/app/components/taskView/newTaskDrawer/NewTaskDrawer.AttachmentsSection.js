@@ -29,7 +29,7 @@ const renderAttachmentButton = ({
   const IconComponent = getIconFromContentType({ contentType });
 
   return (
-    <UniversalTooltipContainer label={fileName}>
+    <UniversalTooltipContainer key={attachmentIdentifier} label={fileName}>
       <AttachmentButton
         download={fileName}
         onClick={() => {

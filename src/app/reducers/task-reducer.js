@@ -8,6 +8,7 @@ import {
   UPDATE_TASK_SUCCESS,
   TASK_READ_SUCCESS,
   UPDATE_TASK_COMMENT_SUCCESS,
+  TASK_ATTACHMENT_ADDED,
 } from 'actions/action-types';
 
 const initialState = {
@@ -44,6 +45,23 @@ const TaskReducer = (state = initialState, action) => {
   switch (action.type) {
     case REQUEST_HISTORY:
       return requestHistory(state);
+
+    case TASK_ATTACHMENT_ADDED: {
+      const mainTaskId = action.taskIdentifier;
+      const { taskAttachment } = action;
+
+      if (mainTaskId !== state.selectedTask?.taskIdentifier) {
+        return state;
+      }
+
+      return {
+        ...state,
+        selectedTask: {
+          ...state.selectedTask,
+          attachments: [taskAttachment].concat(state.selectedTask.attachments),
+        },
+      };
+    }
 
     case UPDATE_TASK_SUCCESS: {
       const { task: taskToUpdate } = action;
@@ -84,8 +102,6 @@ const TaskReducer = (state = initialState, action) => {
 
     case UPDATE_TASK_COMMENT_SUCCESS: {
       const { task, comment: updatedComment } = action;
-
-      // debugger;
 
       if (task?.taskIdentifier === state.selectedTask?.taskIdentifier) {
         return {
