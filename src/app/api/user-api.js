@@ -501,6 +501,7 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
 
           if (
             currentOrgIdentifier === 'undefined' ||
+            currentOrgIdentifier === 'null' ||
             currentOrgIdentifier === '' ||
             !currentOrgIdentifier
           ) {
