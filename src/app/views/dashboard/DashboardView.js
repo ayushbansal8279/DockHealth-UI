@@ -138,7 +138,7 @@ const DashboardView = ({
           )}
           <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
             {hasExistingLists && isFirstUserListCreationSuccess && (
-              <Confetti style={{ zIndex: 101 }} numberOfPieces={700} />
+              <Confetti style={{ zIndex: 101 }} recycle={false} />
             )}
             <DashboardScrollableList>
               <div>
