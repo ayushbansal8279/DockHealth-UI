@@ -116,6 +116,7 @@ const Task = ({
           subTasksCount={subTasksCount}
           isDraggable={isDraggable}
           hideSubtasks={hideSubtasks}
+          isFullView={isFullView}
           {...restProps}
         />
       </div>

@@ -140,6 +140,7 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   hideSubtasks,
+  isFullView,
 }) => {
   const {
     taskIdentifier,
@@ -197,6 +198,16 @@ const TaskItem = ({
     previousDescription.current = description;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
+
+  useEffect(() => {
+    if (isFullView && subTasksCount > 0) {
+      if (subtasks?.length === 0) {
+        dispatch(loadSubTasks(task));
+      }
+      switchOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFullView]);
 
   const isCompleted = task.status === 'COMPLETE';
   const isSubtask = !!parentTaskIdentifier;
