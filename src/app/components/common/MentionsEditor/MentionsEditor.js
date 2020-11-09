@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByName } from 'api/patient-api';
-import { getUserByName, getUserByFirstName } from 'api/people-api';
+import { getListMembersByName } from 'api/tasklist-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
@@ -37,12 +37,8 @@ const fetchPatientsWithDebounce = debounce(
 );
 
 const fetchPeopleWithDebounce = debounce(
-  (value, setPeopleSuggestions, areSuggestionsOpened) => {
-    const fetchPeopleMethod = value.includes(' ')
-      ? getUserByName
-      : getUserByFirstName;
-
-    fetchPeopleMethod(value).then(fetchedPeople => {
+  (taskListIdentifier, value, setPeopleSuggestions, areSuggestionsOpened) => {
+    getListMembersByName(taskListIdentifier, value).then(fetchedPeople => {
       if (areSuggestionsOpened.current) {
         const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
         setPeopleSuggestions(
@@ -71,6 +67,7 @@ const MentionsEditor = React.forwardRef(
       initialState,
       state,
       highlightedValues,
+      taskListIdentifier,
     },
     reference,
   ) => {
@@ -110,6 +107,7 @@ const MentionsEditor = React.forwardRef(
       if (value) {
         setPeopleSearchValue(value);
         fetchPeopleWithDebounce(
+          taskListIdentifier,
           value,
           setPeopleSuggestions,
           arePeopleSuggestionsOpened,
@@ -155,6 +153,7 @@ const MentionsEditor = React.forwardRef(
       patientMentionPlugin.current,
       linkifyPlugin.current,
     ];
+
     return (
       <StyledEditorContainer
         withEditedLabel={withEditedLabel && readOnly}
@@ -178,24 +177,25 @@ const MentionsEditor = React.forwardRef(
               : null
           }
         />
-
-        <PeopleMentionSuggestions
-          onSearchChange={onPeopleSearchChange}
-          suggestions={peopleSuggestions}
-          onAddMention={onAddMention}
-          entryComponent={PeopleSuggestionItem}
-          popoverComponent={
-            <PeopleSuggestionsPopover searchValue={peopleSearchValue} />
-          }
-          onOpen={() => {
-            arePeopleSuggestionsOpened.current = true;
-            setPeopleSearchValue('');
-          }}
-          onClose={() => {
-            arePeopleSuggestionsOpened.current = false;
-            setPeopleSearchValue(null);
-          }}
-        />
+        {taskListIdentifier && (
+          <PeopleMentionSuggestions
+            onSearchChange={onPeopleSearchChange}
+            suggestions={peopleSuggestions}
+            onAddMention={onAddMention}
+            entryComponent={PeopleSuggestionItem}
+            popoverComponent={
+              <PeopleSuggestionsPopover searchValue={peopleSearchValue} />
+            }
+            onOpen={() => {
+              arePeopleSuggestionsOpened.current = true;
+              setPeopleSearchValue('');
+            }}
+            onClose={() => {
+              arePeopleSuggestionsOpened.current = false;
+              setPeopleSearchValue(null);
+            }}
+          />
+        )}
         <PatientsMentionSuggestions
           onSearchChange={onPatientSearchChange}
           suggestions={patientSuggestions}

@@ -271,3 +271,12 @@ export const getTaskListStats = async ({ taskListIdentifier }) => {
     throw new Error(error?.response?.data?.errorMessage);
   }
 };
+
+export function getListMembersByName(taskListIdentifier, name) {
+  return axios
+    .get(`/user/findListMembersByFirstName/${taskListIdentifier}?name=${name}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}

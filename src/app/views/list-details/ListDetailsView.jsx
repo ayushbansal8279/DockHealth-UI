@@ -839,6 +839,7 @@ class Home extends Component {
             />
           ) : (
             <OpenedTasksView
+              taskListIdentifier={taskListIdentifier}
               quickAddTask={this.quickAddTask}
               createTaskGroupList={this.handleCreateGroup}
               editGroupName={this.editGroupName}

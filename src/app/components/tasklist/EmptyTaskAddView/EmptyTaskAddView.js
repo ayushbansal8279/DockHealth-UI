@@ -4,7 +4,7 @@ import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import EmptyListWrapper from './styled';
 
-const EmptyTaskAddView = ({ quickAddTask, children }) => {
+const EmptyTaskAddView = ({ quickAddTask, children, taskListIdentifier }) => {
   return (
     <EmptyListWrapper>
       <MontserratTypography variant="h3" weight="400" color="inherit">
@@ -12,6 +12,7 @@ const EmptyTaskAddView = ({ quickAddTask, children }) => {
       </MontserratTypography>
       <Spacing vertical={3} />
       <QuickAddTaskInput
+        taskListIdentifier={taskListIdentifier}
         quickAddTask={quickAddTask}
         validator={value => {
           if ([...value]?.filter(char => char !== ' ').length < 2)

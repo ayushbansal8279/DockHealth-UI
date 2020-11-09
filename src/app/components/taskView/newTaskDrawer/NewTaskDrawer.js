@@ -110,6 +110,7 @@ const NewTaskDrawer = ({
     setParentDescriptionState,
     parentTask,
     taskDrawerReference,
+    taskListIdentifier,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -240,6 +241,7 @@ const NewTaskDrawer = ({
                           withEditedLabel={parentTask.edited}
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
+                          taskListIdentifier={taskListIdentifier}
                         />
                       </ParentTaskDescription>
                     </ParentTaskButton>
@@ -260,6 +262,7 @@ const NewTaskDrawer = ({
                   </DescriptionLabel>
                   <MentionsEditor
                     ref={descriptionReference}
+                    taskListIdentifier={taskListIdentifier}
                     placeholder={
                       isAddingOrEditingSubtask
                         ? 'What is the subtask?'
@@ -517,6 +520,7 @@ const NewTaskDrawer = ({
                     parentFormSubmit={parentFormSubmit}
                     taskDrawerFocusField={taskDrawerFocusField}
                     modalActions={modalActions}
+                    taskListIdentifier={taskListIdentifier}
                   />
                 </div>
               </Grid>

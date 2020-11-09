@@ -11,6 +11,7 @@ export const renderComment = ({
   currentUser,
   removeComment,
   updateComment,
+  taskListIdentifier,
 }) => comment => {
   return (
     <Comment
@@ -20,6 +21,7 @@ export const renderComment = ({
       removeComment={removeComment}
       updateComment={updateComment}
       getFormattedCommentDate={getFormattedCommentDate}
+      taskListIdentifier={taskListIdentifier}
     />
   );
 };

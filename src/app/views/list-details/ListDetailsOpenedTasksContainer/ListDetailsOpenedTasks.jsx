@@ -42,6 +42,7 @@ const ListDetailsOpenedTasks = ({
   listUniqueKey,
   taskCounters,
   loadTasksForTaskGroup,
+  taskListIdentifier,
 }) => {
   const [tasksGrouped, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -57,7 +58,10 @@ const ListDetailsOpenedTasks = ({
 
     if (quickAddTask) {
       return (
-        <EmptyTaskAddView quickAddTask={quickAddTask}>
+        <EmptyTaskAddView
+          quickAddTask={quickAddTask}
+          taskListIdentifier={taskListIdentifier}
+        >
           {taskCounters?.complete > 0 ? (
             <EmptyListView
               title={['Way to go!', 'You’ve completed all of your tasks.']}
@@ -160,6 +164,7 @@ const ListDetailsOpenedTasks = ({
                   tasksGrouped[taskGroupIdentifier]?.tasks?.length || 0,
               });
             }}
+            taskListIdentifier={taskListIdentifier}
           />
         )),
     [
@@ -182,6 +187,7 @@ const ListDetailsOpenedTasks = ({
       toggleSingleTaskPriority,
       updateDueDate,
       updateWorkflowStatus,
+      taskListIdentifier,
     ],
   );
 

@@ -711,6 +711,7 @@ const initializeTaskDrawerHooks = ({
     setParentDescriptionState,
     parentTask,
     taskDrawerReference,
+    taskListIdentifier,
   };
 };
 

@@ -11,7 +11,12 @@ import {
 } from './NewTaskDrawer.AddComment.Styled';
 import { FocusDrawerFieldEnum } from './NewTaskDrawer.Utilities';
 
-const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
+const AddComment = ({
+  addComment,
+  parentFormSubmit,
+  taskDrawerFocusField,
+  taskListIdentifier,
+}) => {
   const [isFocused, setIsFocused] = useState(false);
   const {
     currentUser,
@@ -45,6 +50,7 @@ const AddComment = ({ addComment, parentFormSubmit, taskDrawerFocusField }) => {
       <AddCommentInputContainer isFocused={isFocused}>
         <MentionsEditor
           ref={addCommentReference}
+          taskListIdentifier={taskListIdentifier}
           placeholder="Leave a comment and press enter on your keyboard to save"
           onFocus={() => {
             onCommentFocus();

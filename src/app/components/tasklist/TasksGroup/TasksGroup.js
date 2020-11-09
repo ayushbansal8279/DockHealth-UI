@@ -73,6 +73,7 @@ const TasksGroup = ({
   selectedTask,
   taskGroupIdentifier,
   listUniqueKey,
+  taskListIdentifier,
 }) => {
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -206,6 +207,7 @@ const TasksGroup = ({
         {!!quickAddTask && !isSearchApplied && (
           <QuickAddTaskInput
             ref={quickAddTaskInputReference}
+            taskListIdentifier={taskListIdentifier}
             quickAddTask={onQuickAddTask}
             validator={value => {
               if ([...value]?.filter(char => char !== ' ').length < 2)

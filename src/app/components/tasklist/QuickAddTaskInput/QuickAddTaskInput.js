@@ -11,7 +11,7 @@ import {
 } from './styled';
 
 const QuickAddTaskInput = React.forwardRef(
-  ({ quickAddTask, onFocus, validator }, reference) => {
+  ({ quickAddTask, onFocus, validator, taskListIdentifier = null }, reference) => {
     const [
       newTaskDescription,
       setNewTaskDescription,
@@ -62,6 +62,7 @@ const QuickAddTaskInput = React.forwardRef(
           <MentionsEditorContainer>
             <MentionsEditor
               ref={reference}
+            taskListIdentifier={taskListIdentifier}
               placeholder="Add a task and press enter on your keyboard"
               onFocus={onFocus}
               state={newTaskDescription}

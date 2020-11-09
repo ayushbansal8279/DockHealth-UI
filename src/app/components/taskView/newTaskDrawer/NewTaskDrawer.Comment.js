@@ -25,7 +25,13 @@ import {
 
 const ADMIN_USER_ROLE = 'ADMIN';
 
-const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
+const Comment = ({
+  comment,
+  removeComment,
+  updateComment,
+  currentUser,
+  taskListIdentifier,
+}) => {
   const {
     comment: commentContent,
     commentMentions,
@@ -99,6 +105,7 @@ const Comment = ({ comment, removeComment, updateComment, currentUser }) => {
             <CommentText>
               <MentionsEditor
                 ref={commentEditorReference}
+                taskListIdentifier={taskListIdentifier}
                 readOnly={!isEditing}
                 withEditedLabel={dateCreated !== dateUpdated}
                 state={commentState}

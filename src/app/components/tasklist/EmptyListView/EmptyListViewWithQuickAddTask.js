@@ -3,9 +3,14 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import Spacing from 'components/common/Spacing';
 import { EmptyListContainer } from './styled';
 
-const EmptyListViewWithQuickAddTask = ({ quickAddTask, children }) => (
+const EmptyListViewWithQuickAddTask = ({
+  quickAddTask,
+  children,
+  taskListIdentifier,
+}) => (
   <EmptyListContainer>
     <QuickAddTaskInput
+      taskListIdentifier={taskListIdentifier}
       quickAddTask={quickAddTask}
       validator={value => {
         if ([...value]?.filter(char => char !== ' ').length < 2)

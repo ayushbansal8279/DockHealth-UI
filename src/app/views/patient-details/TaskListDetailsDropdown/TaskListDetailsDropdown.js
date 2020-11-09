@@ -121,6 +121,7 @@ const TaskListDetailsDropdown = ({
         {!isCompleteTab && (
           <QuickAddTaskInput
             ref={quickAddTaskInputReference}
+            taskListIdentifier={list?.taskListIdentifier}
             quickAddTask={task => {
               quickAddTask({ ...task, taskListIdentifier });
               setTimeout(() => {
