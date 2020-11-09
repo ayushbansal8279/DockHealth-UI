@@ -251,12 +251,24 @@ const TaskItem = ({
 
   const onCircleClick = useCallback(
     event => {
-      if (isTaskStatusTogglingEnabled) {
+      if (
+        isTaskStatusTogglingEnabled &&
+        (isSubtask ||
+          (isCompletedGroup && isCompleted) ||
+          (!isCompletedGroup && !isCompleted))
+      ) {
         toggleCompleteTask(task);
       }
       event.stopPropagation();
     },
-    [isTaskStatusTogglingEnabled, task, toggleCompleteTask],
+    [
+      isTaskStatusTogglingEnabled,
+      task,
+      toggleCompleteTask,
+      isSubtask,
+      isCompletedGroup,
+      isCompleted,
+    ],
   );
 
   const onParentLabelClick = useCallback(

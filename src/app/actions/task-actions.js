@@ -568,12 +568,12 @@ export function toggleCompleteTask(task, currentUser = null) {
 
     const newTaskData = {
       status: newStatus,
-      completedBy: newStatus === 'COMPLETE' ? currentUser : null,
-      completedDt:
-        newStatus === 'COMPLETE'
-          ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-          : null,
     };
+
+    if (newStatus === 'COMPLETE') {
+      newTaskData.completedBy = currentUser;
+      newTaskData.completedDt = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    }
 
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
