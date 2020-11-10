@@ -12,6 +12,7 @@ import { getUserAvatar } from 'api/people-api';
 import Avatar from 'components/common/Avatar';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
 import Loader from 'components/common/Loader/Loader';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -46,6 +47,20 @@ const MemberTableRow = styled(({ isSelected, ...props }) => (
     background-color: ${palette.coolGrey4};
   }
 `;
+
+const renderListName = (listname, showComma) => {
+  if (listname?.shortName) {
+    return (
+      <UniversalTooltipContainer placement="top" label={listname?.fullName}>
+        {showComma ? `${listname.shortName}, ` : listname.shortName}
+      </UniversalTooltipContainer>
+    );
+  }
+
+  return (
+    <span>{showComma ? `${listname.fullName}, ` : listname.fullName}</span>
+  );
+};
 
 const MemberTableCell = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
@@ -201,6 +216,8 @@ const OrganizationMemberRow = ({
   organizationMembers,
   isInvited, // eslint-disable-next-line sonarjs/cognitive-complexity
   bubbleColor,
+  taskLists,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   let userType = null;
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -277,6 +294,25 @@ const OrganizationMemberRow = ({
       user?.userIdentifier !== sessionStorage.userIdentifier,
   );
 
+  const listsNames =
+    orgUserRole === 'GUEST' && taskLists?.length > 0
+      ? taskLists
+          ?.map(({ listName }) => ({
+            fullName: listName,
+            shortName:
+              listName.length < 15 ? null : `${listName.slice(0, 14)}...`,
+          }))
+          .sort(function(a, b) {
+            if (a.fullName < b.fullName) {
+              return -1;
+            }
+            if (a.fullName > b.fullName) {
+              return 1;
+            }
+            return 0;
+          })
+      : [];
+
   return (
     <MemberTableRow container spacing={1} isSelected={isPopoverOpen}>
       <Grid item xs={1}>
@@ -291,7 +327,7 @@ const OrganizationMemberRow = ({
           />
         </MemberTableCell>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={3}>
         <MemberTableCell>
           {`${firstName} ${lastName} ${
             userIdentifier === sessionStorage.userIdentifier ? '(me)' : ''
@@ -330,13 +366,23 @@ const OrganizationMemberRow = ({
           />
         </MemberTableCell>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         <MemberTableCell
           isInvited={isInvited}
           isInactive={userStatus === 'INACTIVE'}
         >
           {showJoined && userStatus !== 'PENDING' && formattedRegistrationDate}
           {isInvited && <div>Invitation sent</div>}
+        </MemberTableCell>
+      </Grid>
+      <Grid item xs={2}>
+        <MemberTableCell>
+          {listsNames?.map((listname, index) =>
+            renderListName(
+              listname,
+              index < listsNames.length - 1 && listsNames.length > 1,
+            ),
+          )}
         </MemberTableCell>
       </Grid>
       <Grid item xs={2}>

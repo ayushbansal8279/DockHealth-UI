@@ -25,6 +25,7 @@ import {
   MemberTable,
   MemberTableHeader,
   SubscriptionLabelBox,
+  ColumnContainer,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
   USER_SUBSCRIPTION_STATUS,
@@ -210,7 +211,7 @@ const SubscriptionsViewMembersTable = ({
           <MemberTable isSmallScreen={isSmallScreen}>
             <MemberTableHeader container spacing={1}>
               <Grid item xs={1} />
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <SortingColumn
                   currentSortingOrder={currentSortingOrder}
                   currentSortingProperty={currentSortingProperty}
@@ -230,7 +231,8 @@ const SubscriptionsViewMembersTable = ({
                   USER TYPE
                 </SortingColumn>
               </Grid>
-              <Grid item xs={3}>
+
+              <Grid item xs={2}>
                 {showJoined && (
                   <SortingColumn
                     currentSortingOrder={currentSortingOrder}
@@ -241,6 +243,9 @@ const SubscriptionsViewMembersTable = ({
                     JOINED
                   </SortingColumn>
                 )}
+              </Grid>
+              <Grid item xs={2}>
+                <ColumnContainer>LISTS (Guests)</ColumnContainer>
               </Grid>
               <Grid item xs={2}>
                 {showSubscription && (
