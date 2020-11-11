@@ -29,6 +29,15 @@ const PatientDetailsHeader = ({
 
   const { allNotes, patientIdentifier } = patientDetails;
 
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const currentOrganization =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
+
   return (
     <PatientDetailsContainer>
       <PatientDetailsInformation
@@ -44,6 +53,8 @@ const PatientDetailsHeader = ({
           updatePatient={updatePatient}
           patientIdentifier={patientIdentifier}
           archivePatient={archivePatient}
+          currentUser={currentUser}
+          currentOrganization={currentOrganization}
         />
       )}
       <PatientDetailsNotes

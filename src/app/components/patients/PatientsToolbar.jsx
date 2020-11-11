@@ -84,6 +84,7 @@ const PatientsToolbar = ({
   refreshPatientList,
   setImportPopoverOpen,
   isGuest,
+  currentOrganization,
 }) => {
   const dispatch = useDispatch();
 
@@ -103,7 +104,7 @@ const PatientsToolbar = ({
         <Spacing horizontal={4} />
         <Search onChange={handleSearch} />
       </Grid>
-      {hasPatients && !isGuest && (
+      {hasPatients && !isGuest && !currentOrganization.emrIntegrationEnabled && (
         <>
           <ImportPatientsButtonWrapper>
             <StyledButton

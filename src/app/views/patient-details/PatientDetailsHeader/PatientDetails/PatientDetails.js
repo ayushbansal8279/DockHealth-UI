@@ -40,6 +40,7 @@ const PatientDetails = ({
   updatePatient,
   patientIdentifier,
   archivePatient,
+  currentOrganization,
 }) => {
   const formattedDob = dob ? moment(dob).format('MM/DD/YYYY') : null;
   const defaultValues = {
@@ -218,17 +219,17 @@ const PatientDetails = ({
             isRequired={false}
           />
         </PatientDetailsFormRow>
-        {!isActive && (
+        {!isActive && !currentOrganization.emrIntegrationEnabled && (
           <PatientDetailsButton isEdit onClick={() => setIsActive(true)}>
             EDIT
           </PatientDetailsButton>
         )}
-        {!isActive && (
+        {!isActive && !currentOrganization.emrIntegrationEnabled && (
           <PatientDetailsButton type="button" onClick={archivePatient}>
             ARCHIVE
           </PatientDetailsButton>
         )}
-        {isActive && (
+        {isActive && !currentOrganization.emrIntegrationEnabled && (
           <PatietnDetailsFormFooter>
             <PatientDetailsCancelButton
               onClick={() => {

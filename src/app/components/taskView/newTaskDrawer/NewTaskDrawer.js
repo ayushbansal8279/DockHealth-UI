@@ -85,6 +85,7 @@ const NewTaskDrawer = ({
     isSaving,
     selectedTask,
     currentUser,
+    currentOrganization,
     reFileTask,
     onDelete,
     onDuplicate,
@@ -371,7 +372,10 @@ const NewTaskDrawer = ({
                       ),
                   }}
                   endAdornmentActionLabel={
-                    isLoadingPatients ? null : 'Add patient'
+                    isLoadingPatients ||
+                    currentOrganization.emrIntegrationEnabled
+                      ? null
+                      : 'Add patient'
                   }
                   onEndAdornmentAcionClick={handleAddPatient}
                   endAdornmentEnabled

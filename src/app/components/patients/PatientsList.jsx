@@ -339,6 +339,7 @@ const PatientsList = ({
   setImportPopoverOpen,
   hasImportErrors,
   isGuest,
+  currentOrganization,
   isAllPatientsList,
   isFetching,
 }) => {
@@ -355,7 +356,10 @@ const PatientsList = ({
   }
 
   if (patients.length === 0) {
-    return !isAllPatientsList || isFiltered || isGuest ? (
+    return !isAllPatientsList ||
+      isFiltered ||
+      isGuest ||
+      !currentOrganization.emrIntegrationEnabled ? (
       <EmptyFilteredList />
     ) : (
       <>

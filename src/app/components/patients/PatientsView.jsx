@@ -68,9 +68,17 @@ const PatientsView = () => {
 
   const patientCount = patients?.length ?? 0;
 
-  const orgUserRole = useSelector(
-    store => store.userState.userProfile?.orgUserRole,
+  const userProfile = useSelector(store => store.userState.userProfile);
+  const orgUserRole = userProfile?.orgUserRole;
+
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
   );
+  const currentOrganization =
+    userProfile?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
 
   const isGuest = orgUserRole === 'GUEST';
 
@@ -180,6 +188,7 @@ const PatientsView = () => {
         refreshPatientList={refreshPatientList}
         setImportPopoverOpen={setImportPopoverOpen}
         isGuest={isGuest}
+        currentOrganization={currentOrganization}
       />
       <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>
@@ -195,6 +204,7 @@ const PatientsView = () => {
               setImportPopoverOpen={setImportPopoverOpen}
               hasImportErrors={hasImportErrors}
               isGuest={isGuest}
+              currentOrganization={currentOrganization}
               isAllPatientsList={selectedPatientFilter === 'ALL_PATIENTS'}
               isFetching={isFetching}
             />
