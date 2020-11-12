@@ -60,6 +60,7 @@ export const FileInputArea = styled.div`
   width: 348px;
   height: 142px;
   text-align: center;
+  outline: none;
 `;
 
 export const FileInputMessage = styled.div`

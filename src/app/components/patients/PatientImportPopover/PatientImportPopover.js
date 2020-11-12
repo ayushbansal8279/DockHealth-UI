@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import palette from 'styles/palette';
 import ExcelLogo from 'img/ExcelLogo.svg';
 import { Add as AddIcon } from '@material-ui/icons';
 import circleCompleted from 'img/circle-completed.svg';
@@ -23,22 +21,8 @@ import {
   ErrorMessage,
   FixErrorContainer,
   FixErrors,
-} from './PatientImportPopover.styled';
-
-const ProgressBar = styled.div`
-  width: 283px;
-  height: 4px;
-  background: linear-gradient(
-    to right,
-    ${palette.brightBlue} 0% ${props => props.fileProgress}%,
-    ${palette.coolGrey2} ${props => props.fileProgress}%
-      ${props => props.inverseProgress}%
-  );
-  border-radius: 4px;
-  display: inline-block;
-  margin-right: 5px;
-  align: left;
-`;
+  ProgressBar,
+} from './styled';
 
 const PatientImportPopover = ({
   closePopover,

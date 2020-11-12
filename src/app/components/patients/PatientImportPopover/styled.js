@@ -155,3 +155,18 @@ export const FixErrors = styled.a`
   text-align: left;
   margin-right: ${spacing.small};
 `;
+
+export const ProgressBar = styled.div`
+  width: 283px;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    ${palette.brightBlue} 0% ${props => props.fileProgress}%,
+    ${palette.coolGrey2} ${props => props.fileProgress}%
+      ${props => props.inverseProgress}%
+  );
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 5px;
+  align: left;
+`;

@@ -14,8 +14,6 @@ const initialState = {
   details: {},
   isLoading: false,
   error: null,
-  tasks: null,
-  completedTasks: null,
 };
 
 const updateDetails = patient =>
@@ -41,14 +39,12 @@ const reducer = (state = initialState, action) => {
     }
 
     case FETCH_PATIENT_SUCCESS: {
-      const { details, tasks, completedTasks } = payload;
+      const { details } = payload;
       return {
         ...state,
         isLoading: false,
         error: null,
         details,
-        tasks,
-        completedTasks,
       };
     }
 

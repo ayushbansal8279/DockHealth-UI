@@ -10,7 +10,6 @@ import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
 import OrganizationReducer from './organization-reducer';
 import PatientProfileReducer from './patient-profile-reducer';
-import PatientsListReducer from './patient-reducer';
 import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
 import TaskReducer from './task-reducer';
@@ -32,7 +31,6 @@ const appReducer = combineReducers({
   alertsState: AlertsReducer,
   templateState: TemplateReducer,
   taskState: TaskReducer,
-  patientState: PatientsListReducer,
   userState: UserReducer,
   notification,
   taskListState: TaskListReducer,

@@ -223,7 +223,13 @@ export function downloadPatientImportTemplate() {
     },
   })
     .then(response => {
-      return response;
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download', 'Patient_Data_Upload_Template.xlsx');
+      document.body.append(link);
+      link.click();
     })
     .catch(noop);
 }

@@ -33,6 +33,7 @@ import {
 import { initializeDashboardView } from 'sagas/dashboard-saga';
 import DashboardView from 'views/dashboard/DashboardView';
 
+import * as ActionTypes from 'actions/action-types';
 import {
   getMembersByTaskListId,
   getTaskListForUser,
@@ -77,7 +78,6 @@ import OnboardingTeamSetupView from './views/onboarding/OnboardingTeamSetupView/
 import OnboardingTrialCheckView from './views/onboarding/OnboardingTrialCheckView/OnboardingTrialCheckView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
-import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/people-list/PeopleView';
 import PersonDetailsView from './views/person-details/PersonDetailsView';
 import BillingsView from './views/self-serve/billings/BillingsView';
@@ -400,7 +400,17 @@ export const Routes = ({ store }) => {
           <Route
             path="/patients"
             component={PatientsView}
-            onEnter={checkFeatureToggles}
+            onEnter={nextState => {
+              setHeader(dispatch)({
+                layout: [
+                  {
+                    key: 'patients-header',
+                    component: <GenericHeader>Patients</GenericHeader>,
+                  },
+                ],
+              });
+              checkFeatureToggles(nextState);
+            }}
           />
           <Route
             path="/patient/:patientIdentifier"
@@ -411,6 +421,7 @@ export const Routes = ({ store }) => {
             }}
             onLeave={() => {
               dispatch(PatientTasksActions.clearPatientTasksState());
+              dispatch({ type: ActionTypes.CLEAR_PATIENT });
             }}
           >
             <IndexRoute
@@ -423,11 +434,6 @@ export const Routes = ({ store }) => {
               onEnter={onEnterPatientCompleteTasksListView}
             />
           </Route>
-          <Route
-            path="/editPatient/:patientIdentifier"
-            component={PatientEditView}
-            onEnter={checkFeatureToggles}
-          />
           <Route
             path="/activityfeed"
             component={TaskListActivityFeedView}

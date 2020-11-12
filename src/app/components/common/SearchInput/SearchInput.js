@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import SearchHeadsupIcon from 'img/search-headsup';
 import {
   StyledInput,
-  GlobalSearchInputWrapper,
+  SearchInputWrapper,
   InputIconWrapper,
   ClearButtonWrapper,
   ClearButton,
 } from './styled';
 
-const GlobalSearchInput = React.forwardRef(
-  ({ value, onValueChange, onClear }, reference) => {
+const SearchInput = React.forwardRef(
+  (
+    { value, onValueChange, onClear, onFocus, onBlur, placeholder = null },
+    reference,
+  ) => {
     const hasValueProps = value !== undefined;
 
     const [clearVisible, setClearVisible] = useState(value ?? false);
@@ -24,9 +27,9 @@ const GlobalSearchInput = React.forwardRef(
 
     const onInputChange = event => {
       const inputValue = event?.target?.value;
-      if (inputValue) {
+      if (inputValue && !clearVisible) {
         setClearVisible(true);
-      } else {
+      } else if (!inputValue && clearVisible) {
         setClearVisible(false);
       }
       onValueChange(inputValue);
@@ -34,13 +37,15 @@ const GlobalSearchInput = React.forwardRef(
 
     const inputProps = {
       onChange: onInputChange,
-      placeholder: 'Search',
+      placeholder: placeholder || 'Search',
+      onFocus,
+      onBlur,
     };
 
     if (hasValueProps) inputProps.value = value;
 
     return (
-      <GlobalSearchInputWrapper>
+      <SearchInputWrapper>
         <InputIconWrapper>
           <img src={SearchHeadsupIcon} alt="search" />
         </InputIconWrapper>
@@ -52,9 +57,9 @@ const GlobalSearchInput = React.forwardRef(
             </ClearButton>
           </ClearButtonWrapper>
         )}
-      </GlobalSearchInputWrapper>
+      </SearchInputWrapper>
     );
   },
 );
 
-export default GlobalSearchInput;
+export default SearchInput;

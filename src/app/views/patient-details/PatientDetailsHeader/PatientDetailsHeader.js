@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { isNil } from 'ramda';
 import { patientIsInitialyLoadingSelector } from 'selectors/patient-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   addPatientNote as addPatientNoteAction,
   editPatientNote as editPatientNoteAction,
@@ -24,9 +26,11 @@ const PatientDetailsHeader = ({
   deletePatientNote,
   updatePatient,
   archivePatient,
+  organization,
 }) => {
   const [isOpenedDetails, setIsOpenedDetails] = useState(false);
 
+  const { emrIntegrationEnabled } = organization || {};
   const { allNotes, patientIdentifier } = patientDetails;
 
   return (
@@ -44,6 +48,9 @@ const PatientDetailsHeader = ({
           updatePatient={updatePatient}
           patientIdentifier={patientIdentifier}
           archivePatient={archivePatient}
+          editingDisabled={
+            isNil(emrIntegrationEnabled) || emrIntegrationEnabled
+          }
         />
       )}
       <PatientDetailsNotes
@@ -61,6 +68,7 @@ const PatientDetailsHeader = ({
 const mapStateToProps = store => ({
   patientIsLoading: patientIsInitialyLoadingSelector(store),
   currentUser: store.userState.userProfile,
+  organization: organizationSelector,
 });
 
 const mapDispatchToProps = {
