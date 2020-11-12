@@ -1,4 +1,4 @@
-import { IconButton } from '@material-ui/core';
+import { Collapse, IconButton } from '@material-ui/core';
 import { omit } from 'ramda';
 import React from 'react';
 import styled from 'styled-components';
@@ -144,4 +144,10 @@ export const StyledButton = styled(props => (
 
 export const PatientsSidebarValue = styled.div`
   font-weight: 600;
+`;
+
+export const StyledCollapse = styled(Collapse)`
+  && {
+    width: 100%;
+  }
 `;

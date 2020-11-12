@@ -15,7 +15,6 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import { setHeader } from 'actions/header-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
-import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as ModalActions from 'modal/actions';
@@ -903,7 +902,6 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   tasksGroupsListActions: bindActionCreators(TasksGroupsListActions, dispatch),
-  patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeaderAction: setHeader(dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),

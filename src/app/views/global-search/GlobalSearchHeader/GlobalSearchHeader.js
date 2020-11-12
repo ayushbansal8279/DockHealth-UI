@@ -5,7 +5,7 @@ import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import * as TemplateActions from 'actions/template-actions';
 import Spacing from 'components/common/Spacing';
 import TaskCheckbox from 'components/task/TaskCheckbox';
-import GlobalSearchInput from '../GlobalSearchInput/GlobalSearchInput';
+import SearchInput from 'components/common/SearchInput/SearchInput';
 
 import { TopSectionGrid, InputWrapper, CheckboxDescription } from './styled';
 
@@ -29,7 +29,7 @@ const GlobalSearchHeader = ({
       alignItems="center"
     >
       <InputWrapper>
-        <GlobalSearchInput
+        <SearchInput
           ref={searchInputReference}
           onValueChange={search}
           onClear={() =>

@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
@@ -40,7 +41,7 @@ const PatientDetails = ({
   updatePatient,
   patientIdentifier,
   archivePatient,
-  currentOrganization,
+  editingDisabled,
 }) => {
   const formattedDob = dob ? moment(dob).format('MM/DD/YYYY') : null;
   const defaultValues = {
@@ -162,7 +163,7 @@ const PatientDetails = ({
             name="gender"
             defaultValue={genderValue}
             control={control}
-            error={errorMessages?.gender}
+            error={errorMessages?.gender || (editingDisabled && !genderValue)}
             isRequired={false}
           />
           <PatientDetailsInput
@@ -172,7 +173,7 @@ const PatientDetails = ({
             mask={isActive && '99/99/9999'}
             name="dob"
             register={register}
-            error={errorMessages?.dob}
+            error={errorMessages?.dob || (editingDisabled && !dob)}
             isRequired={false}
             defaultValue={dob ? moment(dob).format('MM/DD/YYYY') : null}
           />
@@ -182,7 +183,7 @@ const PatientDetails = ({
             placeholder="- -"
             name="mrn"
             register={register}
-            error={errorMessages?.mrn}
+            error={errorMessages?.mrn || (editingDisabled && !mrn)}
             isRequired={false}
           />
         </PatientDetailsFormRow>
@@ -219,29 +220,33 @@ const PatientDetails = ({
             isRequired={false}
           />
         </PatientDetailsFormRow>
-        {!isActive && !currentOrganization.emrIntegrationEnabled && (
-          <PatientDetailsButton isEdit onClick={() => setIsActive(true)}>
-            EDIT
-          </PatientDetailsButton>
-        )}
-        {!isActive && !currentOrganization.emrIntegrationEnabled && (
-          <PatientDetailsButton type="button" onClick={archivePatient}>
-            ARCHIVE
-          </PatientDetailsButton>
-        )}
-        {isActive && !currentOrganization.emrIntegrationEnabled && (
-          <PatietnDetailsFormFooter>
-            <PatientDetailsCancelButton
-              onClick={() => {
-                setIsActive(false);
-              }}
-            >
-              CANCEL
-            </PatientDetailsCancelButton>
-            <Button type="submit" variant="contained" size="small">
-              SAVE
-            </Button>
-          </PatietnDetailsFormFooter>
+        {!editingDisabled && (
+          <>
+            {!isActive && (
+              <PatientDetailsButton isEdit onClick={() => setIsActive(true)}>
+                EDIT
+              </PatientDetailsButton>
+            )}
+            {!isActive && (
+              <PatientDetailsButton type="button" onClick={archivePatient}>
+                ARCHIVE
+              </PatientDetailsButton>
+            )}
+            {isActive && (
+              <PatietnDetailsFormFooter>
+                <PatientDetailsCancelButton
+                  onClick={() => {
+                    setIsActive(false);
+                  }}
+                >
+                  CANCEL
+                </PatientDetailsCancelButton>
+                <Button type="submit" variant="contained" size="small">
+                  SAVE
+                </Button>
+              </PatietnDetailsFormFooter>
+            )}
+          </>
         )}
       </PatientDetailsForm>
     </Collapse>

@@ -6,7 +6,7 @@ import palette from 'styles/palette';
 const END_PADDING = 65;
 const START_PADDING = 55;
 
-export const GlobalSearchInputWrapper = styled.div`
+export const SearchInputWrapper = styled.div`
   position: relative;
   width: 100%;
   font-family: 'Montserrat', sans-serif;
@@ -29,6 +29,7 @@ export const StyledInput = styled.input`
 
   &::placeholder {
     color: ${palette.coolGrey2};
+    text-transform: uppercase;
   }
 `;
 

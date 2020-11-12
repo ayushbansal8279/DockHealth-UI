@@ -1,9 +1,9 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import React, { useRef, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
-import { uploadPatientData } from 'actions/patient-actions';
+import { uploadPatientData } from 'api/patient-api';
 import uploadFileIcon from 'img/uploadFileIcon.svg';
 import { useDropzone } from 'react-dropzone';
 import { CloseIconButton, CloseIcon } from '../styled';
@@ -27,11 +27,6 @@ const ImportPatientsModal = ({
   refreshPatientList,
 }) => {
   const inputFileReference = useRef(null);
-  const dispatch = useDispatch();
-
-  const onButtonClick = () => {
-    // inputFileReference.current.click();
-  };
 
   const [modalStep, setModalStep] = useState(step);
 
@@ -49,9 +44,9 @@ const ImportPatientsModal = ({
             refreshPatientList();
           }
         },
-      })(dispatch);
+      });
     }
-  }, [closeModal, dispatch, refreshPatientList, setImportPopoverOpen]);
+  }, [closeModal, refreshPatientList, setImportPopoverOpen]);
 
   const onDrop = useCallback(
     acceptedFiles => {
@@ -64,10 +59,10 @@ const ImportPatientsModal = ({
               refreshPatientList();
             }
           },
-        })(dispatch);
+        });
       });
     },
-    [closeModal, dispatch, refreshPatientList, setImportPopoverOpen],
+    [closeModal, refreshPatientList, setImportPopoverOpen],
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -146,13 +141,16 @@ const ImportPatientsModal = ({
                     <span>
                       Drag and drop your CSV or Excel template here or
                     </span>
-                    <button
-                      onClick={onButtonClick}
-                      style={{ color: palette.cyanBlue, paddingRight: '5px' }}
+                    <span
+                      style={{
+                        color: palette.cyanBlue,
+                        paddingRight: '5px',
+                        cursor: 'pointer',
+                      }}
                     >
                       {' '}
                       <span> Browse </span>{' '}
-                    </button>
+                    </span>
                     your local files.
                   </>
                 )}

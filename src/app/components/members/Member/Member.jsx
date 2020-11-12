@@ -26,6 +26,7 @@ const Member = React.forwardRef(
       activeUsersList,
     },
     reference,
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     const status = getMemberStatus(member);
     const alt = member ? (
@@ -60,7 +61,10 @@ const Member = React.forwardRef(
     const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
     const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
     const isIdle = !isEmpty(onlineActiveUser) && onlineActiveUser.idle;
-    const isOffline = isEmpty(onlineActiveUser);
+    const isOffline =
+      member?.userStatus !== 'INVITED' && isEmpty(onlineActiveUser);
+    const isInvited =
+      member?.userStatus === 'INVITED' && isEmpty(onlineActiveUser);
 
     const avatar = (
       <Avatar
@@ -89,21 +93,21 @@ const Member = React.forwardRef(
           >
             {avatar}
           </div>
-          <UniversalTooltip
-            open={isAvatarTooltipOpen}
-            placement="bottom"
-            anchorEl={avatarContainerReference.current}
-          >
-            {alt}
-            {member?.userStatus !== 'INVITED' &&
-              currentUserIdentifier !== member?.userIdentifier && (
-                <>
-                  {isOnline && 'online'}
-                  {isIdle && 'idle'}
-                  {isOffline && 'offline'}
-                </>
-              )}
-          </UniversalTooltip>
+          {currentUserIdentifier !== member?.userIdentifier && (
+            <UniversalTooltip
+              open={isAvatarTooltipOpen}
+              placement="bottom"
+              anchorEl={avatarContainerReference.current}
+              maxWidth="156px"
+            >
+              <>
+                {isOnline && 'Logged in and currently active on Dock'}
+                {isIdle && 'Message for idle goes here'}
+                {isOffline && 'Not logged into Dock at this time'}
+                {isInvited && 'User is not active on Dock, invite is pending'}
+              </>
+            </UniversalTooltip>
+          )}
         </>
       );
     }
