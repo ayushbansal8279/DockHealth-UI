@@ -24,7 +24,11 @@ import {
 import PatientMentionDetailsLoader from './PatientMentionDetailsLoader';
 import PatientMentionsNotesLoader from './PatientMentionsNotesLoader';
 
-const renderPatientNotes = (notes, { firstName, lastName }) => {
+const renderPatientNotes = (notes, { firstName, middleName, lastName }) => {
+  const patientName = middleName
+    ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`
+    : `${lastName}, ${firstName}`;
+
   return notes?.length > 0 ? (
     <>
       <Divider />
@@ -41,8 +45,7 @@ const renderPatientNotes = (notes, { firstName, lastName }) => {
             )}
             <NoteDescription>{description || <br />}</NoteDescription>
             <NoteInfo>
-              {firstName} {lastName}{' '}
-              {moment(dateUpdated).format('h:mma M/DD/YY')}
+              {patientName} {moment(dateUpdated).format('h:mma M/DD/YY')}
             </NoteInfo>
           </PatientNote>
         ))}
@@ -107,7 +110,9 @@ const PatientMention = ({ mention, className, children }) => {
               <>
                 <TopSection>
                   <PatientName>
-                    {[firstName, middleName, lastName].join(' ').toUpperCase()}
+                    {[`${lastName},`, firstName, middleName?.slice(0, 1)]
+                      .join(' ')
+                      .toUpperCase()}
                   </PatientName>
                   <Link to={`/patient/${patientIdentifier}`}>
                     <PatientLinkText>view patient</PatientLinkText>
