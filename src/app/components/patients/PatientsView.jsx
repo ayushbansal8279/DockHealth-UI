@@ -34,11 +34,6 @@ const PatientsView = () => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] = useBoolean(
     false,
   );
-  const currentOrganization =
-    userProfile?.userOrganizations?.find(
-      ({ organizationIdentifier }) =>
-        organizationIdentifier === currentOrganizationIdentifier,
-    ) || {};
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const isGuest = orgUserRole === 'GUEST';
