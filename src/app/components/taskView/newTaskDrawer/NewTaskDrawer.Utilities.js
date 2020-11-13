@@ -36,8 +36,8 @@ export const getFormattedPatients = ({ patients }) =>
       ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`.trim()
       : ` ${lastName}, ${firstName}`.trim();
     const displayPatientName = middleName
-      ? `${firstName} ${middleName} ${lastName}`.trim()
-      : `${firstName} ${lastName}`.trim();
+      ? `${lastName}, ${firstName} ${middleName}`.trim()
+      : `${lastName}, ${firstName}`.trim();
 
     return {
       key: patientIdentifier,
