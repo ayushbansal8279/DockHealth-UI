@@ -83,7 +83,7 @@ const PatientDetailsInformation = ({
           {!isLoadingDetails ? (
             <>
               <PatientName>
-                {[firstName, middleName, lastName].join(' ')}
+                {[`${lastName},`, firstName, middleName].join(' ')}
               </PatientName>
               {(dob ||
                 age ||

@@ -620,12 +620,12 @@ const initializeTaskDrawerHooks = ({
     const data = { firstName, lastName: lastNames.join(' ') };
 
     addPatient(data)
-      .then(async ({ patientIdentifier, firstName: name, lastName }) => {
+      .then(async ({ patientIdentifier, firstName: fName, lastName }) => {
         await fetchPatients(patient);
 
         await handlePatientSelect({
           value: patientIdentifier,
-          displayLabel: `${name} ${lastName}`,
+          displayLabel: `${lastName}, ${fName} `,
         });
 
         patientInputReference.current.querySelector('input').blur();

@@ -11,12 +11,16 @@ export const SUGGESTIONS_PLACEHOLDER = {
 };
 
 export const mapPatientsToSuggestions = patients =>
-  patients.map(({ patientIdentifier, firstName, lastName, age, mrn }) => ({
-    identifier: patientIdentifier,
-    name: `${firstName} ${lastName}`,
-    age,
-    mrn,
-  }));
+  patients.map(
+    ({ patientIdentifier, firstName, middleName, lastName, age, mrn }) => ({
+      identifier: patientIdentifier,
+      name: middleName
+        ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`
+        : `${lastName}, ${firstName}`,
+      age,
+      mrn,
+    }),
+  );
 
 export const mapPeopleToSuggestions = people =>
   people.map(person => ({

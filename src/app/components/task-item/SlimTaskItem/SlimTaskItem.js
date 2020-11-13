@@ -109,8 +109,10 @@ const PatientComponent = ({
           to={`patient/${taskPatient.patientIdentifier}`}
         >
           {taskPatient.middleName && taskPatient.middleName !== ''
-            ? `${taskPatient.firstName} ${taskPatient.middleName} ${taskPatient.lastName}`
-            : `${taskPatient.firstName} ${taskPatient.lastName}`}
+            ? `${taskPatient.lastName}, ${
+                taskPatient.firstName
+              } ${taskPatient.middleName?.slice(0, 1)}`
+            : `${taskPatient.lastName}, ${taskPatient.firstName}`}
         </SlimTaskItemPatientLink>
       )}
     </ClickablePatient>

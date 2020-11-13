@@ -33,8 +33,11 @@ export const getFormattedPatients = ({ patients }) =>
       age,
     } = patient;
     const patientName = middleName
-      ? `${firstName} ${middleName} ${lastName}`.trim()
-      : `${firstName} ${lastName}`.trim();
+      ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`.trim()
+      : ` ${lastName}, ${firstName}`.trim();
+    const displayPatientName = middleName
+      ? `${lastName}, ${firstName} ${middleName}`.trim()
+      : `${lastName}, ${firstName}`.trim();
 
     return {
       key: patientIdentifier,
@@ -46,7 +49,7 @@ export const getFormattedPatients = ({ patients }) =>
           <CondensedH4 align="right">{mrn || ''}</CondensedH4>
         </PatientLabelContainer>
       ),
-      displayLabel: patientName,
+      displayLabel: displayPatientName,
     };
   });
 

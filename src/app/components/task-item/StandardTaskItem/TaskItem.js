@@ -338,8 +338,11 @@ const TaskItem = ({
   const showPriority = task.priority === 'HIGH';
 
   const patientName = patient?.middleName
-    ? `${patient?.firstName} ${patient?.middleName} ${patient?.lastName}`
-    : `${patient?.firstName} ${patient?.lastName}`;
+    ? `${patient?.lastName}, ${patient?.firstName} ${patient?.middleName?.slice(
+        0,
+        1,
+      )}`
+    : `${patient?.lastName}, ${patient?.firstName}`;
 
   return (
     <StandardTaskItemPanel
