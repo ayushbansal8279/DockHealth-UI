@@ -16,7 +16,6 @@ const PatientsToolbar = ({
   refreshPatientList,
   setImportPopoverOpen,
   isGuest,
-  emrIntegrationEnabled,
   searchValue,
   onSearchChange,
   onAddPatientClick,
@@ -50,7 +49,7 @@ const PatientsToolbar = ({
             />
           </SearchInputWrapper>
         </Grid>
-        {hasPatients && !isGuest && !hideButtons && !emrIntegrationEnabled && (
+        {hasPatients && !isGuest && !hideButtons && (
           <Grid
             container
             item

@@ -17,6 +17,7 @@ import {
 import { patientDetailsSelector } from 'selectors/patient-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
@@ -40,6 +41,7 @@ const PatientDetailsView = ({
   patientTasksSagaActions,
   taskSearch,
   patientDetails,
+  organization,
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
@@ -100,7 +102,10 @@ const PatientDetailsView = ({
 
   return (
     <>
-      <PatientDetailsHeader patientDetails={patientDetails} />
+      <PatientDetailsHeader
+        patientDetails={patientDetails}
+        organization={organization}
+      />
       {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
         <Toolbar
           onSelectTab={navigateToTab}
@@ -169,6 +174,7 @@ const mapStateToProps = state => ({
   taskSearch: patientTaskSearchSelector(state),
   currentUser: userProfileSelector(state),
   patientDetails: patientDetailsSelector(state),
+  organization: organizationSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);

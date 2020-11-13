@@ -22,7 +22,7 @@ export const ListRow = styled.div`
   color: ${palette.mediumGrey};
   cursor: pointer;
 
-  & > * {
+  & > div {
     align-items: center;
     display: flex;
     padding-left: 1.75rem;

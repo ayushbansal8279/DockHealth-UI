@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { isNil } from 'ramda';
 import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
@@ -131,11 +132,10 @@ const PatientsView = () => {
         patientImportDetails={patientImportDetails}
         setImportPopoverOpen={setImportPopoverOpen}
         isGuest={isGuest}
-        emrIntegrationEnabled={emrIntegrationEnabled}
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onAddPatientClick={setIsSidebarOpen}
-        hideButtons={emrIntegrationEnabled}
+        hideButtons={isNil(emrIntegrationEnabled) || emrIntegrationEnabled}
       />
 
       <PatientsListContainer ref={patientsListContainerReference}>
