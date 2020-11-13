@@ -150,6 +150,9 @@ export const onDragEndTask = ({
       const { taskGroupIdentifier: sourceTaskGroupIdentifier } = sourceGroup;
 
       reassignTasksToAnotherGroup({
+        orderedTaskIds: reorderedDestinationTasks?.map(
+          ({ taskIdentifier }) => taskIdentifier,
+        ),
         taskIdentifiers: [sourceTaskIdentifier],
         taskGroupIdentifier,
         endPosition: reorderedDestinationTasks?.length,

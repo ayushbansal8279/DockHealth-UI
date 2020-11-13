@@ -380,6 +380,7 @@ export function* doReassignTasksToAnotherGroup(payload) {
     sourceTaskGroupIdentifier,
     endPosition,
     sourceEndPosition,
+    orderedTaskIds,
   } = payload;
 
   try {
@@ -390,6 +391,11 @@ export function* doReassignTasksToAnotherGroup(payload) {
       taskGroupIdentifier,
       taskIdentifiers,
     );
+
+    yield call(reorderTasksInGroup, {
+      orderedTaskIds,
+      taskGroupIdentifier,
+    });
 
     const sourceGroup = yield call(doGetTasksForTaskGroup, {
       taskGroupIdentifier: sourceTaskGroupIdentifier,
