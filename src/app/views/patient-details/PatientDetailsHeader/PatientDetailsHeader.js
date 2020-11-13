@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { isNil } from 'ramda';
 import { patientIsInitialyLoadingSelector } from 'selectors/patient-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
@@ -48,9 +47,7 @@ const PatientDetailsHeader = ({
           updatePatient={updatePatient}
           patientIdentifier={patientIdentifier}
           archivePatient={archivePatient}
-          editingDisabled={
-            isNil(emrIntegrationEnabled) || emrIntegrationEnabled
-          }
+          editingDisabled={emrIntegrationEnabled}
         />
       )}
       <PatientDetailsNotes

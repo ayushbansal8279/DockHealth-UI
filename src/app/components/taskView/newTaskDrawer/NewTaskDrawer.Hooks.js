@@ -182,6 +182,15 @@ const initializeTaskDrawerHooks = ({
   const patientInputReference = useRef(null);
   const [patientInputValue, setPatientInputValue] = useState('');
 
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const currentOrganization =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
+
   const fetchPatients = value =>
     getPatientsByName(value).then(fetchedPatients => {
       setPatients(fetchedPatients);
@@ -656,6 +665,7 @@ const initializeTaskDrawerHooks = ({
 
   return {
     currentUser,
+    currentOrganization,
     selectedTask,
     labels,
     areLabelsRequested,
