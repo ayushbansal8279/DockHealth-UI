@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { isNil } from 'ramda';
 import { patientIsInitialyLoadingSelector } from 'selectors/patient-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
@@ -33,15 +32,6 @@ const PatientDetailsHeader = ({
   const { emrIntegrationEnabled } = organization || {};
   const { allNotes, patientIdentifier } = patientDetails;
 
-  const currentOrganizationIdentifier = sessionStorage.getItem(
-    'currentOrganizationIdentifier',
-  );
-  const currentOrganization =
-    currentUser?.userOrganizations?.find(
-      ({ organizationIdentifier }) =>
-        organizationIdentifier === currentOrganizationIdentifier,
-    ) || {};
-
   return (
     <PatientDetailsContainer>
       <PatientDetailsInformation
@@ -57,9 +47,7 @@ const PatientDetailsHeader = ({
           updatePatient={updatePatient}
           patientIdentifier={patientIdentifier}
           archivePatient={archivePatient}
-          editingDisabled={
-            isNil(emrIntegrationEnabled) || emrIntegrationEnabled
-          }
+          editingDisabled={emrIntegrationEnabled}
         />
       )}
       <PatientDetailsNotes

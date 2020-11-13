@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { isNil } from 'ramda';
 import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
@@ -136,7 +135,7 @@ const PatientsView = () => {
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onAddPatientClick={setIsSidebarOpen}
-        hideButtons={isNil(emrIntegrationEnabled) || emrIntegrationEnabled}
+        hideButtons={emrIntegrationEnabled}
       />
 
       <PatientsListContainer ref={patientsListContainerReference}>
@@ -154,9 +153,7 @@ const PatientsView = () => {
               isGuest={isGuest}
               isFetching={isFetchingPatients}
               onAddPatientClick={setIsSidebarOpen}
-              emrIntegrationEnabled={
-                isNil(emrIntegrationEnabled) || emrIntegrationEnabled
-              }
+              emrIntegrationEnabled={emrIntegrationEnabled}
             />
             <SideClickListener />
           </Grid>
