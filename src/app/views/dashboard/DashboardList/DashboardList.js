@@ -236,7 +236,7 @@ const DashboardList = ({
   const quickAddTaskInputReference = useRef(null);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
-    ({ metricValue }) => metricValue !== 0,
+    (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
   );
   const { userIdentifier, usageState } = currentUser;
   const { filters, selectedFilters } = megaFilter;
@@ -446,7 +446,7 @@ const DashboardList = ({
     () =>
       filteredDashboardTasks?.reduce(
         (accumulator, currentValue) =>
-          accumulator + (currentValue.tasks?.length || 0),
+          accumulator + (currentValue?.tasks?.length || 0),
         0,
       ),
     [filteredDashboardTasks],
@@ -556,8 +556,8 @@ const DashboardList = ({
         <>
           {!isEmpty(filteredDashboardTasks) ? (
             filteredDashboardTasks?.map(item => (
-              <DashboardTasksGroup
-                key={item.groupType}
+              item && <DashboardTasksGroup
+                key={item?.groupType}
                 dashboardTasksGroup={item}
                 toggleDashboardTaskComplete={toggleDashboardTaskComplete}
                 redirectToParentTask={redirectToParentTask}
