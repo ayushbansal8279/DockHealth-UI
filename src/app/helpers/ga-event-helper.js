@@ -170,7 +170,7 @@ export const onAutoTourModalStepEnter = (modalName, stepKey) => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: `Auto | ${modalName}`,
+    eventAction: `Auto | ${modalName}`,
     eventLabel: stepKey,
   });
 };
@@ -179,7 +179,7 @@ export const onTourModalStepEnter = (modalName, stepKey) => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: modalName,
+    eventAction: modalName,
     eventLabel: stepKey,
   });
 };
@@ -188,7 +188,7 @@ export const onTaskDrawerTourStepEnter = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'Task drawer tour',
+    eventAction: 'Task drawer tour',
     eventLabel: stepKey,
   });
 };
@@ -197,7 +197,7 @@ export const onNewUserTourEnter = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'First user tour',
+    eventAction: 'First user tour',
     eventLabel: stepKey,
   });
 };
@@ -206,7 +206,7 @@ export const onInboxTourEnter = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'Inbox tour',
+    eventAction: 'Inbox tour',
     eventLabel: stepKey,
   });
 };
@@ -215,7 +215,7 @@ export const onListsTipsEvent = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'Lists tips',
+    eventAction: 'Lists tips',
     eventLabel: stepKey,
   });
 };
@@ -224,7 +224,7 @@ export const onListsTutorialModalEvent = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'Lists tutorial modal',
+    eventAction: 'Lists tutorial modal',
     eventLabel: stepKey,
   });
 };
@@ -233,7 +233,7 @@ export const onMentionsTourModalEvent = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'Mentions modal',
+    eventAction: 'Mentions modal',
     eventLabel: stepKey,
   });
 };
@@ -242,19 +242,23 @@ export const onNotificationSettingsTourModalEvent = stepKey => {
   sendEvent({
     usageEventType: 'USAGE_ACTION',
     eventCategory: USER_EDUCATION_CATEGORY,
-    eventActions: 'Notification settings tour modal',
+    eventAction: 'Notification settings tour modal',
     eventLabel: stepKey,
   });
 };
 
 export const onLogin = () => {
-  // ReactGA.set({
-  //   userId: sessionStorage.userIdentifier,
-  // });
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'User Auth',
+    eventAction: 'User Login',
+  });
 };
 
 export const onLogout = () => {
-  // ReactGA.set({
-  //   userId: null,
-  // });
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'User Auth',
+    eventAction: 'User Logout',
+  });
 };
