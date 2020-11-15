@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
-import { getPatientsByName } from 'api/patient-api';
+import { getPatientsByCriteria } from 'api/patient-api';
 import { getListMembersByName } from 'api/tasklist-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
@@ -22,7 +22,7 @@ import { StyledEditorContainer } from './styled';
 
 const fetchPatientsWithDebounce = debounce(
   (value, setPatientSuggestions, areSuggestionsOpened) => {
-    getPatientsByName(value).then(fetchedPatients => {
+    getPatientsByCriteria(value).then(fetchedPatients => {
       if (areSuggestionsOpened.current) {
         const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
         setPatientSuggestions(

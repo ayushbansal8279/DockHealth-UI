@@ -61,6 +61,16 @@ export function getPatientsByName(searchedPatientName) {
     });
 }
 
+export function getPatientsByCriteria(seacrhCriteria) {
+  return axios
+    .get(`patient/getPatientsByCriteria?seacrhCriteria=${seacrhCriteria}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
 export function getPatientById(patientIdentifier) {
   return axios
     .get(`patient/${patientIdentifier}`)
@@ -92,7 +102,9 @@ export function addPatient(patient) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: error?.response?.data?.errorMessage ?? 'Error adding patient. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error adding patient. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });

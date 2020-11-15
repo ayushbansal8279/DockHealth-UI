@@ -13,7 +13,7 @@ import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
-import { getPatientsByName, addPatient } from 'api/patient-api';
+import { getPatientsByCriteria, addPatient } from 'api/patient-api';
 import * as TaskListApi from 'api/tasklist-api';
 import * as TaskApi from 'api/task-api';
 import {
@@ -192,7 +192,7 @@ const initializeTaskDrawerHooks = ({
     ) || {};
 
   const fetchPatients = value =>
-    getPatientsByName(value).then(fetchedPatients => {
+    getPatientsByCriteria(value).then(fetchedPatients => {
       setPatients(fetchedPatients);
       return fetchedPatients;
     });
@@ -615,7 +615,7 @@ const initializeTaskDrawerHooks = ({
   };
 
   const handleAddPatient = patient => {
-    if(currentOrganization.emrIntegrationEnabled){
+    if (currentOrganization.emrIntegrationEnabled) {
       return;
     }
 

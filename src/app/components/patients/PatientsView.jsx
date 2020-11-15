@@ -51,7 +51,7 @@ const PatientsView = () => {
   }, []);
 
   const fetchPatientsBySearchTerm = useCallback(searchTerm => {
-    PatientApi.getPatientsByName(searchTerm)
+    PatientApi.getPatientsByCriteria(searchTerm)
       .then(fetchedPatients => {
         setPatients(fetchedPatients);
         setIsFetchingPatients(false);
