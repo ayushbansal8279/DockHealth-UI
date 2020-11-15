@@ -236,7 +236,7 @@ const DashboardList = ({
   const quickAddTaskInputReference = useRef(null);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
-    (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
+    taskGroupInfo => taskGroupInfo?.metricValue !== 0,
   );
   const { userIdentifier, usageState } = currentUser;
   const { filters, selectedFilters } = megaFilter;
@@ -555,38 +555,41 @@ const DashboardList = ({
       ) : (
         <>
           {!isEmpty(filteredDashboardTasks) ? (
-            filteredDashboardTasks?.map(item => (
-              item && <DashboardTasksGroup
-                key={item?.groupType}
-                dashboardTasksGroup={item}
-                toggleDashboardTaskComplete={toggleDashboardTaskComplete}
-                redirectToParentTask={redirectToParentTask}
-                storeAsCurrentTask={storeAsCurrentTask}
-                sortDashboardTasks={sortDashboardTasks}
-                openDrawer={openDrawer}
-                isTaskDrawerOpen={isTaskDrawerOpen}
-                selectedTaskIdentifier={selectedTaskIdentifier}
-                currentSortMethod={currentSortMethod}
-                currentSortType={sortType}
-                dynamicColumnType={dynamicColumnType}
-                onClickDynamincColumnSort={onClickDynamincColumnSort}
-                onClickAssignedSort={onClickAssignedSort}
-                onClickListNameSort={onClickListNameSort}
-                showClearSortFiltersModal={showClearSortFiltersModal}
-                isSortApplied={isSortApplied}
-                areFiltersApplied={areFiltersApplied}
-                isAllTasksTab={selectedTab === 'ALL_TASKS'}
-                updateDueDate={updateDashboardTaskDueDate}
-                currentUser={currentUser}
-                reassignDashboardTask={reassignDashboardTask}
-                updateWorkflowStatus={updateWorkflowStatus}
-                fetchImplicitGroup={fetchImplicitGroup}
-                fetchSearchedTermImplicitGroups={
-                  fetchSearchedTermImplicitGroups
-                }
-                isSearching={!!searchValue}
-              />
-            ))
+            filteredDashboardTasks?.map(
+              item =>
+                item && (
+                  <DashboardTasksGroup
+                    key={item?.groupType}
+                    dashboardTasksGroup={item}
+                    toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+                    redirectToParentTask={redirectToParentTask}
+                    storeAsCurrentTask={storeAsCurrentTask}
+                    sortDashboardTasks={sortDashboardTasks}
+                    openDrawer={openDrawer}
+                    isTaskDrawerOpen={isTaskDrawerOpen}
+                    selectedTaskIdentifier={selectedTaskIdentifier}
+                    currentSortMethod={currentSortMethod}
+                    currentSortType={sortType}
+                    dynamicColumnType={dynamicColumnType}
+                    onClickDynamincColumnSort={onClickDynamincColumnSort}
+                    onClickAssignedSort={onClickAssignedSort}
+                    onClickListNameSort={onClickListNameSort}
+                    showClearSortFiltersModal={showClearSortFiltersModal}
+                    isSortApplied={isSortApplied}
+                    areFiltersApplied={areFiltersApplied}
+                    isAllTasksTab={selectedTab === 'ALL_TASKS'}
+                    updateDueDate={updateDashboardTaskDueDate}
+                    currentUser={currentUser}
+                    reassignDashboardTask={reassignDashboardTask}
+                    updateWorkflowStatus={updateWorkflowStatus}
+                    fetchImplicitGroup={fetchImplicitGroup}
+                    fetchSearchedTermImplicitGroups={
+                      fetchSearchedTermImplicitGroups
+                    }
+                    isSearching={!!searchValue}
+                  />
+                ),
+            )
           ) : (
             <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
           )}
