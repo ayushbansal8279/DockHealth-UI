@@ -40,7 +40,7 @@ const PatientsView = () => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
 
   const fetchMyPatientsList = useCallback(() => {
-    PatientApi.getMyPatientsAll()
+    PatientApi.getSharedPatients()
       .then(patientsResponse => {
         setPatients(patientsResponse);
         setIsFetchingPatients(false);

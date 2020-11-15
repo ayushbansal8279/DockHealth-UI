@@ -12,7 +12,15 @@ export function getAllPatients() {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
-
+export function getSharedPatients() {
+  return axios
+    .get('patient/getSharedPatients?active=true')
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
 export function getMyPatientsAll() {
   return axios
     .get('patient/getPatientsForCurrentUser')
@@ -84,7 +92,7 @@ export function addPatient(patient) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error adding patient. Please try again.',
+        text: error?.response?.data?.errorMessage ?? 'Error adding patient. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });

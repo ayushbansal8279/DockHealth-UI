@@ -615,6 +615,10 @@ const initializeTaskDrawerHooks = ({
   };
 
   const handleAddPatient = patient => {
+    if(currentOrganization.emrIntegrationEnabled){
+      return;
+    }
+
     const [firstName, ...lastNames] = patient.split(' ');
 
     const data = { firstName, lastName: lastNames.join(' ') };
