@@ -821,12 +821,12 @@ export function getAccessTokensByAuthCode(authCode) {
 }
 
 export function getEnterpriseAccessTokensByAuthCode(authCode) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `grant_type=authorization_code&code=${authCode}`;
 
-      return axios.post(`${authUrl}/token`, authData).then(response => {
+      await axios.post(`${authUrl}/token`, authData).then(response => {
         const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
@@ -840,8 +840,9 @@ export function getEnterpriseAccessTokensByAuthCode(authCode) {
           eventCategory: 'AUTH',
           usageEventType: 'USAGE_ACTION',
         });
-        resolve('success');
       });
+      await captureLocalTimezone();
+      resolve('success');
     } catch (error) {
       reject(error);
       return Promise.reject(error);
