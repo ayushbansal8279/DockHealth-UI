@@ -121,6 +121,16 @@ export const StyledLink = styled(Link)`
   }
 `;
 
+export const StyledHyperLink = styled.a`
+  color: ${palette.darkBlue};
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: ${palette.darkBlue};
+  }
+`;
+
 export const StyledLabel = styled.div`
   font-family: 'Open Sans', sans-serif;
   font-size: ${props => props.remFontSize || 1}rem;

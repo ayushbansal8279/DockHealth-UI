@@ -9,7 +9,12 @@ import Spacing from 'components/common/Spacing';
 import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
-import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
+import {
+  NextButton,
+  StyledForm,
+  StyledLink,
+  StyledHyperLink,
+} from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -41,7 +46,7 @@ const LoginFormUsername = props => {
           .then(() => {
             window.location.href = '/#/tasks';
 
-            setShowLoginMessage(false);
+            // setShowLoginMessage(false);
           })
           .catch(error => {
             showAlert({ status: 'error', title: 'Error', text: error.message });
@@ -106,6 +111,11 @@ const LoginFormUsername = props => {
             </MontserratTypography>
             <Spacing vertical={4} />
             <Loader size={LoaderSizes.big} />
+            <Spacing vertical={6} />
+            <MontserratTypography variant="h4">
+              <span>Trouble signing in? </span>
+              <StyledHyperLink href="/#/login">LOGIN</StyledHyperLink>
+            </MontserratTypography>
           </div>
         )}
       </FormContext>
