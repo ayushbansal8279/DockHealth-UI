@@ -233,7 +233,7 @@ class Home extends Component {
     const pusher = initializePusher();
     let channel = pusher?.channel(channelName);
     if (!channel || !channel.subscribed) {
-      channel = pusher.subscribe(channelName);
+      channel = pusher?.subscribe(channelName);
     }
     // channel.bind('pusher:subscription_succeeded', function() {
     //   console.log('subscription_succeeded');
@@ -244,42 +244,43 @@ class Home extends Component {
     // console.log(channel);
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
-
-    channel.bind('task-update', data => {
-      // Since the app is going to be realtime, we don't want the same item to
-      // be shown twice. Device A publishes an entry, all other devices including itself
-      // receives the entry, so act like a basic filter
-      // console.log(data);
-      const currentTaskListIdentifier = taskListIdentifier;
-      if (
-        data.task?.taskList &&
-        data.task?.taskList.taskListIdentifier === currentTaskListIdentifier
-      ) {
+    if (channel){
+      channel.bind('task-update', data => {
+        // Since the app is going to be realtime, we don't want the same item to
+        // be shown twice. Device A publishes an entry, all other devices including itself
+        // receives the entry, so act like a basic filter
+        // console.log(data);
+        const currentTaskListIdentifier = taskListIdentifier;
         if (
-          (data.eventType?.startsWith('CREATE_TASK') ||
-            data.eventType?.startsWith('DUPLICATE_TASK')) &&
           data.task?.taskList &&
-          data.task?.creator.userIdentifier !== currentUserIdentifier
+          data.task?.taskList.taskListIdentifier === currentTaskListIdentifier
         ) {
-          const status = 'INCOMPLETE';
-          const filters = sessionStorageHelper.getItem(
-            `filter-${data.task.taskList.taskListIdentifier}-${status}`,
-          );
-
-          if (!filters) {
-            this.getTasksList(data.task.taskList.taskListIdentifier, status);
-          } else {
-            this.getFilteredTasks(
-              data.task.taskList.taskListIdentifier,
-              filters,
-              status,
+          if (
+            (data.eventType?.startsWith('CREATE_TASK') ||
+              data.eventType?.startsWith('DUPLICATE_TASK')) &&
+            data.task?.taskList &&
+            data.task?.creator.userIdentifier !== currentUserIdentifier
+          ) {
+            const status = 'INCOMPLETE';
+            const filters = sessionStorageHelper.getItem(
+              `filter-${data.task.taskList.taskListIdentifier}-${status}`,
             );
+
+            if (!filters) {
+              this.getTasksList(data.task.taskList.taskListIdentifier, status);
+            } else {
+              this.getFilteredTasks(
+                data.task.taskList.taskListIdentifier,
+                filters,
+                status,
+              );
+            }
           }
+          // eslint-disable-next-line no-unused-expressions
+          actions.refreshAnotherTask(data.task);
         }
-        // eslint-disable-next-line no-unused-expressions
-        actions.refreshAnotherTask(data.task);
-      }
-    });
+      });
+    }
   };
 
   setViewHeader = (taskListIdentifier, taskLists) => {

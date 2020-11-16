@@ -72,17 +72,19 @@ const DashboardSidebar = ({
     const pusher = initializePusher();
     let channel = pusher?.channel(channelName);
     if (!channel || !channel.subscribed) {
-      channel = pusher.subscribe(channelName);
+      channel = pusher?.subscribe(channelName);
     }
 
-    channel.bind('tasklist-update', () => {
-      invitationActions.findPendingTaskListsForUser();
-      taskListActions.getTaskListForUser();
-    });
+    if (channel) {
+      channel.bind('tasklist-update', () => {
+        invitationActions.findPendingTaskListsForUser();
+        taskListActions.getTaskListForUser();
+      });
+    }
 
     return () => {
       if (channel) {
-        channel = pusher.unsubscribe(channelName);
+        channel = pusher?.unsubscribe(channelName);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

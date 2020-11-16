@@ -20,16 +20,17 @@ const listenRealTimeAlerts = (currentUser, showAlert) => {
   const pusher = initializePusher();
   let channel = pusher?.channel(channelName);
   if (!channel || !channel.subscribed) {
-    channel = pusher.subscribe(channelName);
+    channel = pusher?.subscribe(channelName);
   }
-
-  channel.unbind('activity-alert');
-  channel.bind('activity-alert', ({ alert }) => {
-    if (alert) {
-      sessionStorage.setItem('hasUnreadAlerts', true);
-      showAlert(alert);
-    }
-  });
+  if(channel){
+    channel.unbind('activity-alert');
+    channel.bind('activity-alert', ({ alert }) => {
+      if (alert) {
+        sessionStorage.setItem('hasUnreadAlerts', true);
+        showAlert(alert);
+      }
+    });
+  }
 };
 
 const ActivityAlertsToasts = () => {

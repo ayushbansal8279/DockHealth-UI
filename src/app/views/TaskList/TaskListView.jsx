@@ -144,19 +144,21 @@ class TaskListView extends PureComponent {
     const pusher = initializePusher();
     let channel = pusher?.channel(channelName);
     if (!channel || !channel.subscribed) {
-      channel = pusher.subscribe(channelName);
+      channel = pusher?.subscribe(channelName);
     }
 
     this.setState({
       channelName,
     });
 
-    channel.bind('task-update', () => {
-      taskListAction.getTaskListForUser();
-    });
-    channel.bind('tasklist-update', () => {
-      taskListAction.getTaskListForUser();
-    });
+    if (channel){
+      channel.bind('task-update', () => {
+        taskListAction.getTaskListForUser();
+      });
+      channel.bind('tasklist-update', () => {
+        taskListAction.getTaskListForUser();
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -165,7 +167,7 @@ class TaskListView extends PureComponent {
     const pusher = initializePusher();
     let channel = pusher?.channel(channelName);
     if (channel) {
-      channel = pusher.unsubscribe(channelName);
+      channel = pusher?.unsubscribe(channelName);
     }
   }
 

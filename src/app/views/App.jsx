@@ -100,8 +100,8 @@ class App extends PureComponent {
       const presenceChannelName = `presence-dock-users-${userProfile.organizationIdentifier}`;
       this.presenceChannelName = presenceChannelName;
       let presenceChannel = pusherForPresence?.channel(presenceChannelName);
-      if (!presenceChannel || !presenceChannel.subscribed) {
-        presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+      if (pusherForPresence && (!presenceChannel || !presenceChannel.subscribed)) {
+        presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
 
         presenceChannel.bind('pusher:subscription_succeeded', function({
           members,

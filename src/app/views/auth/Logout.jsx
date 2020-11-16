@@ -17,13 +17,13 @@ class Logout extends PureComponent {
     const presenceChannelName = `presence-dock-users-${currentUser.organizationIdentifier}`;
     let presenceChannel = pusherForPresence?.channel(presenceChannelName);
     if (!presenceChannel || !presenceChannel.subscribed) {
-      presenceChannel = pusherForPresence.subscribe(presenceChannelName);
+      presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
     }
 
     return userApi
       .logout()
       .then(() => {
-        pusherForPresence.unsubscribe(presenceChannelName);
+        pusherForPresence?.unsubscribe(presenceChannelName);
         
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'YES',

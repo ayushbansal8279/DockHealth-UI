@@ -75,19 +75,20 @@ const listenRealTimeAlerts = (
   const pusher = initializePusher();
   let channel = pusher?.channel(channelName);
   if (!channel || !channel.subscribed) {
-    channel = pusher.subscribe(channelName);
+    channel = pusher?.subscribe(channelName);
   }
-
-  channel.bind('activity-alert', ({ alert }) => {
-    if (alert) {
-      if (isOpen) {
-        getActivityAlertsWithLoader();
-      } else {
-        sessionStorage.setItem('hasUnreadAlerts', true);
-        setHasUnreadAlertsState(true);
+  if(channel){
+    channel.bind('activity-alert', ({ alert }) => {
+      if (alert) {
+        if (isOpen) {
+          getActivityAlertsWithLoader();
+        } else {
+          sessionStorage.setItem('hasUnreadAlerts', true);
+          setHasUnreadAlertsState(true);
+        }
       }
-    }
-  });
+    });
+  }
 };
 
 const ActivityAlerts = ({ variant = 'blue' }) => {
