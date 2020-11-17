@@ -41,6 +41,8 @@ import {
   COMMENTS,
   LABELS,
   ATTACHMENTS,
+  getToolTipMultiLabelDetails,
+  getToolTipAttachmentsLabelDetails,
 } from '../icons';
 
 import {
@@ -76,32 +78,6 @@ import {
   SubtaskStylingHorizontalPart,
   TaskItemParentTaskLabel,
 } from '../styled';
-
-const getToolTipMultiLabelDetails = labels => {
-  let toolTipMultiLabelDetails = '';
-  if (labels.length === 1) {
-    toolTipMultiLabelDetails = `${labels[0].labelName}`;
-  } else if (labels.length === 2) {
-    toolTipMultiLabelDetails = `${labels[0].labelName}, ${labels[1].labelName}`;
-  } else if (labels.length > 2) {
-    toolTipMultiLabelDetails = `${labels[0].labelName}, ${
-      labels[1].labelName
-    } + ${labels.length - 2}`;
-  }
-  return toolTipMultiLabelDetails;
-};
-
-const getToolTipAttachmentsLabelDetails = attachments => {
-  let attachmentLabelDetails = '';
-  if (attachments.length === 1) {
-    attachmentLabelDetails = `${attachments[0].fileName}`;
-  } else if (attachments.length > 1) {
-    attachmentLabelDetails = `${
-      attachments[0].fileName
-    } + ${attachments.length - 1}`;
-  }
-  return attachmentLabelDetails;
-};
 
 const getSubtaskStylingLink = isLast => {
   if (isLast) return <SubtaskStylingLastLink />;
@@ -483,7 +459,9 @@ const TaskItem = ({
                 placement="top"
                 label={
                   getItemIconVersion(comments) === REGULAR
-                    ? `${comments?.length} comments`
+                    ? `${comments?.length} comment${
+                        comments.length > 1 ? 's' : ''
+                      }`
                     : 'Add a new comment'
                 }
               >
@@ -597,12 +575,17 @@ const TaskItem = ({
             task={task}
           >
             {assignedTo ? (
-              <>
+              <UniversalTooltipContainer
+                placement="top-end"
+                label={`Assigned to ${assignedTo.userName}`}
+              >
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                <Member member={assignedTo} size={34} />
-              </>
+                <Member member={assignedTo} size={34} showTooltip={false} />
+              </UniversalTooltipContainer>
             ) : (
-              <AddCrossIcon src={CrossIcon} size="34px" />
+              <UniversalTooltipContainer placement="top" label="Assign to">
+                <AddCrossIcon src={CrossIcon} size="34px" />
+              </UniversalTooltipContainer>
             )}
           </TaskAssignMember>
         </StandardTaskItemCell>

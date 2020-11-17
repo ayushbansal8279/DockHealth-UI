@@ -14,8 +14,11 @@ import {
   COMMENTS,
   getCalendarIcon,
   getItemIcon,
+  getToolTipAttachmentsLabelDetails,
+  getToolTipMultiLabelDetails,
   LABELS,
 } from 'components/task-item/icons';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import {
   Container,
   MainSection,
@@ -106,10 +109,21 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
         </DescriptionContainer>
         <IconsSection>
           <IconContainer marginTop={updatedComment ? -8 : 2}>
-            <img
-              alt="comments"
-              src={getItemIcon(COMMENTS, comments, true, updatedComment)}
-            />
+            <UniversalTooltipContainer
+              placement="top"
+              label={
+                comments?.length > 0
+                  ? `${comments?.length} comment${
+                      comments?.length > 1 ? 's' : ''
+                    }`
+                  : null
+              }
+            >
+              <img
+                alt="comments"
+                src={getItemIcon(COMMENTS, comments, true, updatedComment)}
+              />
+            </UniversalTooltipContainer>
           </IconContainer>
           <IconContainer marginTop={updatedDueDate ? -6 : 0}>
             <DueDateContainer>
@@ -126,21 +140,37 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             </DueDateContainer>
           </IconContainer>
           <IconContainer>
-            <img
-              alt="labels"
-              src={getItemIcon(LABELS, labels, true, updatedLabel)}
-            />
+            <UniversalTooltipContainer
+              placement="top"
+              label={
+                labels?.length > 0 ? getToolTipMultiLabelDetails(labels) : null
+              }
+            >
+              <img
+                alt="labels"
+                src={getItemIcon(LABELS, labels, true, updatedLabel)}
+              />
+            </UniversalTooltipContainer>
           </IconContainer>
           <IconContainer marginTop={2}>
-            <img
-              alt="attachments"
-              src={getItemIcon(
-                ATTACHMENTS,
-                attachments,
-                true,
-                updatedAttachment,
-              )}
-            />
+            <UniversalTooltipContainer
+              placement="top-end"
+              label={
+                attachments?.length > 0
+                  ? getToolTipAttachmentsLabelDetails(attachments)
+                  : ''
+              }
+            >
+              <img
+                alt="attachments"
+                src={getItemIcon(
+                  ATTACHMENTS,
+                  attachments,
+                  true,
+                  updatedAttachment,
+                )}
+              />
+            </UniversalTooltipContainer>
           </IconContainer>
         </IconsSection>
         <AssigneeContainer
@@ -148,7 +178,14 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             event.stopPropagation();
           }}
         >
-          {assignedTo && <Member member={assignedTo} size={34} />}
+          {assignedTo && (
+            <UniversalTooltipContainer
+              placement="top-end"
+              label={`Assigned to ${assignedTo.userName}`}
+            >
+              <Member member={assignedTo} size={34} showTooltip={false} />
+            </UniversalTooltipContainer>
+          )}
         </AssigneeContainer>
         <GoToParentIconContainer>
           <img src={SimpleArrowRight} alt="Go to parent task" />
