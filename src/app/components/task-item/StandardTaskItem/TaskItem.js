@@ -201,9 +201,6 @@ const TaskItem = ({
 
   useEffect(() => {
     if (isFullView && subTasksCount > 0) {
-      if (subtasks?.length === 0) {
-        dispatch(loadSubTasks(task));
-      }
       switchOpen(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
