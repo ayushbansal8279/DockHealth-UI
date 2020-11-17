@@ -48,6 +48,7 @@ import {
   ParentTaskButton,
   ParentTaskDescription,
   ParentTaskDescriptionPlaceholder,
+  DescriptionTextContainer,
 } from './NewTaskDrawer.Styled';
 import {
   getFormattedMembers,
@@ -262,50 +263,54 @@ const NewTaskDrawer = ({
                     <Spacing horizontal={3} />
                     <span>(required)</span>
                   </DescriptionLabel>
-                  <MentionsEditor
-                    ref={descriptionReference}
-                    taskListIdentifier={taskListIdentifier}
-                    placeholder={
-                      isAddingOrEditingSubtask
-                        ? 'What is the subtask?'
-                        : 'What is the task?'
-                    }
-                    isDrawerEditor
-                    onFocus={() => {
-                      setIsDescriptionFocused(true);
-                    }}
-                    onBlur={() => {
-                      handleTaskDescriptionUpdate();
-                      setIsDescriptionFocused(false);
-                    }}
-                    state={descriptionState}
-                    onChange={state => {
-                      if (descriptionErrorState) {
-                        const {
-                          tokenizedText,
-                        } = convertFromEditorStateToOutput(state);
-                        if (tokenizedText) {
-                          setDescriptionErrorState(false);
+                  <DescriptionTextContainer
+                    isCrossed={selectedTask?.status === 'COMPLETE'}
+                  >
+                    <MentionsEditor
+                      ref={descriptionReference}
+                      taskListIdentifier={taskListIdentifier}
+                      placeholder={
+                        isAddingOrEditingSubtask
+                          ? 'What is the subtask?'
+                          : 'What is the task?'
+                      }
+                      isDrawerEditor
+                      onFocus={() => {
+                        setIsDescriptionFocused(true);
+                      }}
+                      onBlur={() => {
+                        handleTaskDescriptionUpdate();
+                        setIsDescriptionFocused(false);
+                      }}
+                      state={descriptionState}
+                      onChange={state => {
+                        if (descriptionErrorState) {
+                          const {
+                            tokenizedText,
+                          } = convertFromEditorStateToOutput(state);
+                          if (tokenizedText) {
+                            setDescriptionErrorState(false);
+                          }
                         }
-                      }
-                      setDescriptionState(state);
-                    }}
-                    keyBindingFn={event => {
-                      if (event.keyCode === 13) {
-                        return 'enter-command';
-                      }
-                      return undefined;
-                    }}
-                    handleKeyCommand={command => {
-                      if (command === 'enter-command') {
-                        descriptionReference.current.blur();
-                        parentFormSubmit();
-                        return 'handled';
-                      }
+                        setDescriptionState(state);
+                      }}
+                      keyBindingFn={event => {
+                        if (event.keyCode === 13) {
+                          return 'enter-command';
+                        }
+                        return undefined;
+                      }}
+                      handleKeyCommand={command => {
+                        if (command === 'enter-command') {
+                          descriptionReference.current.blur();
+                          parentFormSubmit();
+                          return 'handled';
+                        }
 
-                      return 'not-handled';
-                    }}
-                  />
+                        return 'not-handled';
+                      }}
+                    />
+                  </DescriptionTextContainer>
                 </DescriptionContainer>
                 {descriptionErrorState && (
                   <DescriptionError>

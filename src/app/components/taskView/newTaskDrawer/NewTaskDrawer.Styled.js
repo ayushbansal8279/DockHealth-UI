@@ -280,6 +280,10 @@ export const DescriptionContainer = styled.div`
   ${({ hasError }) => hasError && `border-color: ${palette.error};`}
 `;
 
+export const DescriptionTextContainer = styled.div`
+  ${({ isCrossed }) => isCrossed && `text-decoration: line-through;`}
+`;
+
 export const DescriptionLabel = styled.label`
   display: block;
   margin-bottom: ${spacing.small};
