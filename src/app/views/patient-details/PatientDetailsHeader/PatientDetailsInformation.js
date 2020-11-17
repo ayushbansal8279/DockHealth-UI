@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { hashHistory } from 'react-router';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import Arrow from 'components/common/Arrow/Arrow';
 import {
@@ -71,13 +71,13 @@ const PatientDetailsInformation = ({
     <PatientDetailsInformationContainer>
       <PatientDetailsBio style={{ flexDirection: 'row' }}>
         <div style={{ width: '30px' }}>
-          <Link to="/patients">
+          <button type="button" onClick={hashHistory.goBack}>
             <img
               src={ArrowLeftIcon}
               alt="back-navigation"
               style={{ width: '20px' }}
             />
-          </Link>
+          </button>
         </div>
         <div>
           {!isLoadingDetails ? (
