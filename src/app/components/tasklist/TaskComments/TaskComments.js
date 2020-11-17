@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { ShowMoreButton, TaskCommentsContainer } from './styled';
+import {
+  ShowMoreButton,
+  TaskCommentsContainer,
+  CommentStylingLink,
+} from './styled';
 import TaskComment from './TaskComment';
 
 const TaskComments = ({
@@ -7,6 +11,8 @@ const TaskComments = ({
   comments,
   onClickComment,
   highlightedValue,
+  isLast,
+  showSubtaskStylingLink,
 }) => {
   const [showMore, setShowMore] = useState(
     !!(comments !== undefined && comments?.length > 3),
@@ -14,13 +20,16 @@ const TaskComments = ({
   const limitedComments = !showMore ? comments : comments?.slice(0, 3);
 
   return (
-    <TaskCommentsContainer timeout={150} in={isOpen}>
+    <TaskCommentsContainer timeout={150} in={isOpen} isLast={isLast}>
+      {!isLast && showSubtaskStylingLink && <CommentStylingLink />}
       {limitedComments?.map((comment, index) => (
         <TaskComment
           {...comment}
           key={index}
           highlightedValue={highlightedValue}
           onClickComment={onClickComment}
+          showMore={showMore}
+          isLastComment={index === limitedComments?.length - 1}
         />
       ))}
       {showMore && (

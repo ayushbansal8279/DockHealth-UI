@@ -87,6 +87,7 @@ const Subtasks = ({
                     draggedId !== String(taskIdentifier) &&
                     !isEmpty(matchedComments) &&
                     description !== '';
+                  const isLast = index + 1 === orderedSubtasks.length;
 
                   return (
                     <Draggable
@@ -109,7 +110,7 @@ const Subtasks = ({
                             reassignTask={reassignTask}
                             parentHasPatient={parentHasPatient}
                             isDraggable={isDraggable && subtasks?.length > 1}
-                            isLast={index + 1 === orderedSubtasks.length}
+                            isLast={isLast}
                             showSubtaskStylingLink={!draggedId}
                             isNestedTask
                             {...restProps}
@@ -119,6 +120,8 @@ const Subtasks = ({
                               isOpen={isFullView}
                               comments={matchedComments}
                               highlightedValue={highlightedValue}
+                              showSubtaskStylingLink={!draggedId}
+                              isLast={isLast}
                               onClickComment={() => {
                                 openDrawer();
                                 storeAsCurrentTask(subtask);

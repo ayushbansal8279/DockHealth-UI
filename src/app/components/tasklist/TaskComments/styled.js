@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Collapse } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -8,18 +8,25 @@ export const TaskCommentsContainer = styled(Collapse)`
   display: flex;
   width: fit-content;
   border: 1px solid ${palette.coolGrey3};
-  border-top: none;
+  border-top: 0;
   flex-direction: column;
-  padding: ${props =>
-    props.in ? `${spacing.regularPlus} ${spacing.regular}` : 0};
+  padding: ${props => (props.in ? `${spacing.smallExtraPlus}` : 0)};
   padding-left: 56px;
   background-color: white;
   max-width: 810px;
+  position: relative;
+
+  ${({ isLast }) =>
+    !isLast &&
+    css`
+      border-bottom: 0;
+    `}
 `;
 
 export const TaskCommentContainer = styled.div`
   display: flex;
-  margin-bottom: ${spacing.regular};
+  margin-bottom: ${({ isLastComment, showMore }) =>
+    isLastComment && !showMore ? 0 : spacing.smallExtraPlus};
   font-size: ${fontSizes.regular};
 `;
 
@@ -57,4 +64,15 @@ export const ShowMoreButton = styled.button`
   font-size: ${fontSizes.smallPlus};
   margin-left: 56px; // per design
   width: fit-content;
+`;
+
+export const CommentStylingLink = styled.div`
+  height: calc(1px + 100%);
+  width: 18px;
+  border-left: 1px solid ${palette.coolGrey2};
+  border-radius: 0;
+  position: absolute;
+  padding: 1px 0;
+  left: -19px;
+  top: -1px;
 `;

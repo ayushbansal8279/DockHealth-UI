@@ -32,6 +32,7 @@ import { createMentionEntities } from 'components/common/MentionsEditor/create-m
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import Spacing from 'components/common/Spacing';
 import TaskItemStatus from './TaskItemStatus';
+import { getSubtaskStylingLink } from './helpers';
 
 import {
   getItemIconVersion,
@@ -72,23 +73,8 @@ import {
   DueDateButton,
   SubtasksBox,
   SubtasksAddLabel,
-  SubtaskStylingLastLink,
-  SubtaskStylingLinkContainer,
-  SubtaskStylingVerticalPart,
-  SubtaskStylingHorizontalPart,
   TaskItemParentTaskLabel,
 } from '../styled';
-
-const getSubtaskStylingLink = isLast => {
-  if (isLast) return <SubtaskStylingLastLink />;
-
-  return (
-    <SubtaskStylingLinkContainer>
-      <SubtaskStylingVerticalPart />
-      <SubtaskStylingHorizontalPart />
-    </SubtaskStylingLinkContainer>
-  );
-};
 
 const TaskItem = ({
   isOpen,
