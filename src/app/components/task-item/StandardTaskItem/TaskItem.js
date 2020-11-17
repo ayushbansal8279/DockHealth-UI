@@ -31,9 +31,9 @@ import { useMentionsEditorState } from 'components/common/MentionsEditor/use-men
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import Spacing from 'components/common/Spacing';
+import PatientCard from 'components/patients/PatientCard/PatientCard';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
-
 import {
   getItemIconVersion,
   getItemIcon,
@@ -45,7 +45,6 @@ import {
   getToolTipMultiLabelDetails,
   getToolTipAttachmentsLabelDetails,
 } from '../icons';
-
 import {
   AddCrossIcon,
   AddPlaceholder,
@@ -394,22 +393,24 @@ const TaskItem = ({
                 <AddPlaceholder>+ Add Patient</AddPlaceholder>
               )}
               {patient && !parentHasPatient && (
-                <ListItemLink to={`patient/${patient.patientIdentifier}`}>
-                  {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                    <Highlighter
-                      highlightClassName="list-highlight"
-                      searchWords={
-                        matchPatient
-                          ? highlightedValue?.toLowerCase().split(/\s+/)
-                          : `${patientName}`.toLowerCase().split(/\s+/)
-                      }
-                      autoEscape
-                      textToHighlight={`${patient.patientName}`}
-                    />
-                  ) : (
-                    `${patientName}`
-                  )}
-                </ListItemLink>
+                <PatientCard patientIdentifier={patient.patientIdentifier}>
+                  <ListItemLink to={`patient/${patient.patientIdentifier}`}>
+                    {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                      <Highlighter
+                        highlightClassName="list-highlight"
+                        searchWords={
+                          matchPatient
+                            ? highlightedValue?.toLowerCase().split(/\s+/)
+                            : `${patientName}`.toLowerCase().split(/\s+/)
+                        }
+                        autoEscape
+                        textToHighlight={`${patient.patientName}`}
+                      />
+                    ) : (
+                      `${patientName}`
+                    )}
+                  </ListItemLink>
+                </PatientCard>
               )}
             </ClickablePatient>
           </StandardTaskItemCell>

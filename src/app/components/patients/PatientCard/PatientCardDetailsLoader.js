@@ -2,7 +2,7 @@ import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { SkeletonLoaderTextRow, SkeletonLoaderText } from './styled';
 
-const PatientMentionDetailsLoader = () => (
+const PatientCardDetailsLoader = () => (
   <>
     <SkeletonLoaderTextRow width={162}>
       <SkeletonLoaderText />
@@ -26,4 +26,4 @@ const PatientMentionDetailsLoader = () => (
   </>
 );
 
-export default PatientMentionDetailsLoader;
+export default PatientCardDetailsLoader;
