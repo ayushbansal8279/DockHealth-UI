@@ -46,7 +46,7 @@ export const AttachmentButton = styled.a`
   }
 `;
 
-export const AddAttachmentButton = styled.button`
+export const AddAttachmentButton = styled.div`
   align-items: center;
   border: 1px solid ${palette.coolGrey2};
   border-radius: 3px;

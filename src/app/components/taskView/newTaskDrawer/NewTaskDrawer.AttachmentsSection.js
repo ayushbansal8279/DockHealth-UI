@@ -32,7 +32,9 @@ const renderAttachmentButton = ({
     <UniversalTooltipContainer key={attachmentIdentifier} label={fileName}>
       <AttachmentButton
         download={fileName}
-        onClick={() => {
+        onClick={event => {
+          event.stopPropagation();
+          event.preventDefault();
           openAttachmentPreview(attachment);
         }}
       >
@@ -59,14 +61,12 @@ const renderAttachmentButton = ({
   );
 };
 
-const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
+const AttachmentsSection = ({ selectedTask }) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
     attachmentsLoading,
     removeTaskAttachment,
-    onAddAttachmentButtonClicked,
-    onAttachmentFileInputChange,
     attachmentFileInputReference,
     uploadProgress,
     currentlyUploadedAttachment,
@@ -74,7 +74,8 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
-  } = initializeAttachmentsSectionHooks({ parentFormSubmit });
+    dropzone: { getRootProps, getInputProps },
+  } = initializeAttachmentsSectionHooks();
 
   return (
     <AttachmentsContainer>
@@ -88,7 +89,7 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
       />
       <AttachmentFileInput
         ref={attachmentFileInputReference}
-        onChange={onAttachmentFileInputChange}
+        {...getInputProps()}
       />
       <Grid container>
         <Grid item xs={12}>
@@ -99,7 +100,13 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
         <Grid item xs={12}>
           <Spacing vertical={3} />
         </Grid>
-        <Grid item xs={12} container alignContent="center">
+        <Grid
+          item
+          xs={12}
+          container
+          alignContent="center"
+          {...getRootProps({ style: { outline: 'none' } })}
+        >
           {attachmentsLoading ? (
             <>
               <Loader />
@@ -123,10 +130,7 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
               <Spacing horizontal={4} />
             </>
           )}
-          <AddAttachmentButton
-            onClick={onAddAttachmentButtonClicked}
-            type="button"
-          >
+          <AddAttachmentButton>
             <RobotoTypography condensed variant="h4" color="inherit">
               +
             </RobotoTypography>
@@ -137,4 +141,4 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
   );
 };
 
-export default AtttachmentsSection;
+export default AttachmentsSection;

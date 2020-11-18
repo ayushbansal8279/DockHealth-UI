@@ -1,13 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState, useCallback, useRef, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { isEmpty } from 'ramda';
 
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
 
 import { getMemoTaskAttachment } from './NewTaskDrawer.AttachmentsSection.Utilities';
 
-const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
+const initializeAttachmentsSectionHooks = () => {
   const attachmentFileInputReference = useRef(null);
 
   const selectedTask = useSelector(store => store.taskState.selectedTask);
@@ -15,7 +17,27 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
 
-  const [currentTaskAttachments, setCurrentTaskAttachments] = useState([]);
+  const [currentTaskAttachments, currentTaskAttachmentsDispatch] = useReducer(
+    (state, action) => {
+      switch (action.type) {
+        case 'SET_ATTACHMENTS':
+          return [...action.attachments];
+        case 'ADD_ATTACHMENTS':
+          return [...state, ...action.attachments];
+        case 'REMOVE_ATTACHMENTS':
+          return [
+            ...state.filter(
+              ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
+                action.attachmentIdentifier !== currentAttachmentIdentifier,
+            ),
+          ];
+        default:
+          return state;
+      }
+    },
+    [],
+  );
+
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [
     attachmentsLoading,
@@ -37,6 +59,39 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   const [previewedAttachment, setPreviewedAttachment] = useState(null);
 
   const dispatch = useDispatch();
+
+  const onAttachmentFileInputChange = useCallback(
+    files => {
+      if (files && !isEmpty(files)) {
+        const [newAttachment, ...restAttachments] = files;
+
+        setCurrentlyUploadedAttachment(newAttachment);
+        setUploadProgress(0);
+        addTaskAttachment(selectedTaskIdentifier, newAttachment, {
+          onUploadProgress: ({ loaded, total }) => {
+            setUploadProgress(Math.round((loaded * 100) / total));
+          },
+        })(dispatch)
+          .then(addedAttachment => {
+            setCurrentlyUploadedAttachment(null);
+            currentTaskAttachmentsDispatch({
+              type: 'ADD_ATTACHMENTS',
+              attachments: [addedAttachment],
+            });
+            onAttachmentFileInputChange(restAttachments);
+          })
+          .catch(() => {
+            setCurrentlyUploadedAttachment(null);
+            onAttachmentFileInputChange(restAttachments);
+          });
+      }
+    },
+    [selectedTaskIdentifier, dispatch, currentTaskAttachmentsDispatch],
+  );
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: onAttachmentFileInputChange,
+  });
 
   const loadAttachmentsContent = useCallback(
     ({ attachmentsToReload }) => {
@@ -82,12 +137,16 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   );
 
   useEffect(() => {
-    setCurrentTaskAttachments(attachments);
+    currentTaskAttachmentsDispatch({
+      type: 'SET_ATTACHMENTS',
+      attachments,
+    });
+
     requestAnimationFrame(() => {
       // reloadAttachments({ attachmentsToReload: attachments });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTaskIdentifier]);
+  }, [selectedTaskIdentifier, currentTaskAttachmentsDispatch]);
 
   const boundRemoveTaskAttachment = useCallback(
     ({ attachmentIdentifier }) => {
@@ -95,34 +154,13 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
         selectedTaskIdentifier,
         attachmentIdentifier,
       )(dispatch).then(() => {
-        setCurrentTaskAttachments(
-          currentTaskAttachments.filter(
-            ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
-              attachmentIdentifier !== currentAttachmentIdentifier,
-          ),
-        );
+        currentTaskAttachmentsDispatch({
+          type: 'REMOVE_ATTACHMENTS',
+          attachmentIdentifier,
+        });
       });
     },
-    [selectedTaskIdentifier, dispatch, currentTaskAttachments],
-  );
-
-  const onAddAttachmentButtonClicked = useCallback(
-    event => {
-      if (!selectedTask || !selectedTask.taskIdentifier) {
-        parentFormSubmit();
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      const fileInputElement = attachmentFileInputReference.current;
-
-      if (fileInputElement) {
-        fileInputElement.value = null;
-        fileInputElement.dispatchEvent(new MouseEvent('click'));
-      }
-    },
-    [selectedTask, parentFormSubmit],
+    [selectedTaskIdentifier, dispatch, currentTaskAttachmentsDispatch],
   );
 
   const openAttachmentPreview = useCallback(
@@ -136,40 +174,12 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
     [loadAttachmentsContent, showAttachmentPreview],
   );
 
-  const onAttachmentFileInputChange = useCallback(() => {
-    const fileInputElement = attachmentFileInputReference.current;
-
-    if (fileInputElement) {
-      const [newAttachment] = fileInputElement.files;
-
-      setCurrentlyUploadedAttachment(newAttachment);
-      setUploadProgress(0);
-      addTaskAttachment(selectedTaskIdentifier, newAttachment, {
-        onUploadProgress: ({ loaded, total }) => {
-          setUploadProgress(Math.round((loaded * 100) / total));
-        },
-      })(dispatch)
-        .then(addedAttachment => {
-          setCurrentlyUploadedAttachment(null);
-          setCurrentTaskAttachments([
-            ...currentTaskAttachments,
-            addedAttachment,
-          ]);
-        })
-        .catch(() => {
-          setCurrentlyUploadedAttachment(null);
-        });
-    }
-  }, [selectedTaskIdentifier, dispatch, currentTaskAttachments]);
-
   return {
     attachmentsSources,
     currentTaskAttachments,
     attachmentsLoading,
     selectedTaskIdentifier,
     removeTaskAttachment: boundRemoveTaskAttachment,
-    onAddAttachmentButtonClicked,
-    onAttachmentFileInputChange,
     attachmentFileInputReference,
     uploadProgress,
     currentlyUploadedAttachment,
@@ -177,6 +187,10 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
+    dropzone: {
+      getRootProps,
+      getInputProps,
+    },
   };
 };
 

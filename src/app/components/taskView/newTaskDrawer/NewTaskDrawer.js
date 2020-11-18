@@ -13,7 +13,7 @@ import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
-import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
+import AttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
 import DueTimeSection from './NewTaskDrawer.DueTimeSection';
@@ -510,10 +510,7 @@ const NewTaskDrawer = ({
                 </div>
               </Grid>
               <Grid item xs={12} style={styleFullRow}>
-                <AtttachmentsSection
-                  selectedTask={selectedTask}
-                  parentFormSubmit={parentFormSubmit}
-                />
+                <AttachmentsSection selectedTask={selectedTask} />
               </Grid>
               {!selectedTask?.parentTaskIdentifier && (
                 <Grid item xs={12}>
