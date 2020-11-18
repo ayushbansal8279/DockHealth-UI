@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { Collapse } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
-export const TaskCommentsContainer = styled(Collapse)`
+export const TaskCommentsContainer = styled(({ isLast, ...restProps }) => (
+  <Collapse {...restProps} />
+))`
   display: flex;
   width: fit-content;
   border: 1px solid ${palette.coolGrey3};
