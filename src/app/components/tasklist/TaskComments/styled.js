@@ -31,7 +31,7 @@ export const TaskCommentContainer = styled.div`
   display: flex;
   margin-bottom: ${({ isLastComment, showMore }) =>
     isLastComment && !showMore ? 0 : spacing.smallExtraPlus};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export const TaskCommentContent = styled.div`

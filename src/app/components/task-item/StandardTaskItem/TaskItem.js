@@ -12,6 +12,7 @@ import {
   loadSubTasks,
 } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
+import debounce from 'lodash.debounce';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
@@ -53,8 +54,7 @@ import {
   ClickableStandardTaskItemIcon,
   Description,
   DescriptionBox,
-  DueDate,
-  DueDateContainer,
+  DueDateBasicLabel,
   GridImg,
   SubtasksGroupLabel,
   StandardTaskItemCell,
@@ -73,6 +73,12 @@ import {
   SubtasksBox,
   SubtasksAddLabel,
   TaskItemParentTaskLabel,
+  CommentIcon,
+  CalendarIcon,
+  LabelIcon,
+  AttachmentIcon,
+  DescriptionTooltip,
+  DescriptionTooltipContent,
 } from '../styled';
 
 const TaskItem = ({
@@ -144,8 +150,49 @@ const TaskItem = ({
       mentions: taskMentions,
     }),
   );
+  const [
+    isDescriptionTooltipVisible,
+    setIsDescriptionTooltipVisible,
+  ] = useState(false);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
+  const descriptionReference = useRef(null);
+
+  const checkIfShouldDisplayTooltip = useCallback(() => {
+    const descriptionTextElement = descriptionReference.current?.querySelector(
+      '.public-DraftStyleDefault-block',
+    );
+    if (
+      descriptionTextElement &&
+      descriptionTextElement.scrollWidth > descriptionTextElement.offsetWidth
+    ) {
+      setIsDescriptionTooltipVisible(true);
+    } else {
+      setIsDescriptionTooltipVisible(false);
+    }
+  }, []);
+
+  const handleResize = useCallback(
+    debounce(() => {
+      checkIfShouldDisplayTooltip();
+    }, 1000),
+    [],
+  );
+
+  useEffect(() => {
+    if (descriptionReference.current) {
+      checkIfShouldDisplayTooltip();
+    }
+  }, [checkIfShouldDisplayTooltip]);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (previousDescription.current !== null) {
@@ -335,9 +382,13 @@ const TaskItem = ({
             onClick={onCircleClick}
           />
           <DescriptionBox>
-            <Description isCrossedOut={!isCompletedGroup && isCompleted}>
+            <Description
+              ref={descriptionReference}
+              isCrossedOut={!isCompletedGroup && isCompleted}
+            >
               <MentionsEditor
                 readOnly
+                oneline
                 withEditedLabel={edited}
                 state={descriptionState}
                 onChange={setDescriptionState}
@@ -346,6 +397,13 @@ const TaskItem = ({
                   highlightedValue?.toLowerCase().split(/\s+/)
                 }
               />
+              {isDescriptionTooltipVisible && (
+                <DescriptionTooltip>
+                  <DescriptionTooltipContent>
+                    {description}
+                  </DescriptionTooltipContent>
+                </DescriptionTooltip>
+              )}
             </Description>
             {isSubtask && !isNestedTask && parentTask && (
               <>
@@ -453,7 +511,7 @@ const TaskItem = ({
                 }
               >
                 <ClickableStandardTaskItemIcon onClick={onCommentClick}>
-                  <img
+                  <CommentIcon
                     alt="comments"
                     src={getItemIcon(
                       COMMENTS,
@@ -490,11 +548,12 @@ const TaskItem = ({
                           : 'Add due date'
                       }
                     >
-                      <DueDateContainer>
-                        <DueDate>
-                          {dueDate && moment(dueDate).format('MM/DD')}
-                        </DueDate>
-                        <img
+                      {dueDate ? (
+                        <DueDateBasicLabel>
+                          {moment(dueDate).format('MM/DD')}
+                        </DueDateBasicLabel>
+                      ) : (
+                        <CalendarIcon
                           alt="due-date"
                           src={getCalendarIcon(
                             dueDate,
@@ -503,7 +562,7 @@ const TaskItem = ({
                             task.updatedDueDate,
                           )}
                         />
-                      </DueDateContainer>
+                      )}
                     </UniversalTooltipContainer>
                   </DueDateButton>
                 )}
@@ -519,7 +578,7 @@ const TaskItem = ({
                 }
               >
                 <ClickableStandardTaskItemIcon onClick={onLabelClick}>
-                  <img
+                  <LabelIcon
                     alt="labels"
                     src={getItemIcon(
                       LABELS,
@@ -541,7 +600,7 @@ const TaskItem = ({
                 }
               >
                 <ClickableStandardTaskItemIcon onClick={onAttachmentsClick}>
-                  <img
+                  <AttachmentIcon
                     alt="attachments"
                     src={getItemIcon(
                       ATTACHMENTS,
@@ -567,11 +626,11 @@ const TaskItem = ({
                 label={`Assigned to ${assignedTo.userName}`}
               >
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                <Member member={assignedTo} size={34} showTooltip={false} />
+                <Member member={assignedTo} size={25} showTooltip={false} />
               </UniversalTooltipContainer>
             ) : (
               <UniversalTooltipContainer placement="top" label="Assign to">
-                <AddCrossIcon src={CrossIcon} size="34px" />
+                <AddCrossIcon src={CrossIcon} size="25px" />
               </UniversalTooltipContainer>
             )}
           </TaskAssignMember>

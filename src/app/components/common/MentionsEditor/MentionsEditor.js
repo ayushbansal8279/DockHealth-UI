@@ -69,6 +69,7 @@ const MentionsEditor = React.forwardRef(
       highlightedValues,
       taskListIdentifier,
       isDrawerEditor = false,
+      oneline = false,
     },
     reference,
   ) => {
@@ -163,6 +164,7 @@ const MentionsEditor = React.forwardRef(
       <StyledEditorContainer
         withEditedLabel={withEditedLabel && readOnly}
         isReadOnly={readOnly}
+        isOneline={oneline}
         onClick={focus}
       >
         <Editor
