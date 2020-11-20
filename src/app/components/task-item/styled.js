@@ -79,25 +79,20 @@ export const CircleIcon = styled.img`
   margin-right: ${spacing.smallPlus};
 `;
 export const DescriptionTooltip = styled.div`
-  display: none;
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   position: absolute;
-  top: 100%;
-  left: -20px;
-  cursor: initial;
-`;
-
-export const DescriptionTooltipContent = styled.div`
-  position: fixed;
+  top: 30px;
+  left: 60px;
   max-width: 60vw;
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
   z-index: 10;
   font-size: ${fontSizes.smallPlus};
+  cursor: initial;
 `;
 
 export const Description = styled.div`
-  position: relative;
   width: 100%;
   margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
@@ -189,7 +184,7 @@ export const SubtasksGroupLabel = styled.span`
 `;
 
 export const StandardTaskItemCell = styled.div`
-  position: relative;
+  position: ${({ position }) => position || 'relative'};
   align-items: center;
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};

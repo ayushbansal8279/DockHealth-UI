@@ -78,7 +78,6 @@ import {
   LabelIcon,
   AttachmentIcon,
   DescriptionTooltip,
-  DescriptionTooltipContent,
 } from '../styled';
 
 const TaskItem = ({
@@ -375,6 +374,7 @@ const TaskItem = ({
           bolded
           paddingLeft="huge"
           onClick={onClickTaskItem}
+          position="static"
         >
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
@@ -398,11 +398,7 @@ const TaskItem = ({
                 }
               />
               {isDescriptionTooltipVisible && (
-                <DescriptionTooltip>
-                  <DescriptionTooltipContent>
-                    {description}
-                  </DescriptionTooltipContent>
-                </DescriptionTooltip>
+                <DescriptionTooltip>{description}</DescriptionTooltip>
               )}
             </Description>
             {isSubtask && !isNestedTask && parentTask && (
