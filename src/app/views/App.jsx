@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import ReactModal from 'react-modal';
 import { initializePusherForPresence } from 'helpers/pusher-instance';
 
+import { openModal } from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification';
@@ -64,6 +65,8 @@ class App extends PureComponent {
 
   presenceChannelName = null;
 
+  logoutTimeout = null;
+
   componentWillMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     const redirectToLink = sessionStorage.getItem('redirectToLink');
@@ -100,7 +103,10 @@ class App extends PureComponent {
       const presenceChannelName = `presence-dock-users-${userProfile.organizationIdentifier}`;
       this.presenceChannelName = presenceChannelName;
       let presenceChannel = pusherForPresence?.channel(presenceChannelName);
-      if (pusherForPresence && (!presenceChannel || !presenceChannel.subscribed)) {
+      if (
+        pusherForPresence &&
+        (!presenceChannel || !presenceChannel.subscribed)
+      ) {
         presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
 
         presenceChannel.bind('pusher:subscription_succeeded', function({
@@ -155,11 +161,7 @@ class App extends PureComponent {
     }
   }
 
-  onAction = () => {};
-
-  onActive = () => {};
-
-  onIdle = () => {
+  logout = () => {
     userApi
       .logout()
       .then(() => {
@@ -174,6 +176,23 @@ class App extends PureComponent {
       });
 
     hashHistory.push('/login');
+  };
+
+  onAction = () => {};
+
+  onActive = () => {};
+
+  onIdle = () => {
+    const { openModal: openModalAction } = this.props;
+    // log out after 5min from showing modal
+    const logoutTimeout = setTimeout(this.logout, 300000);
+
+    openModalAction('AutoLogout', {
+      onClose: () => {
+        clearTimeout(logoutTimeout);
+      },
+      onLogout: this.logout,
+    });
   };
 
   onActiveForPresence = () => {
@@ -195,9 +214,12 @@ class App extends PureComponent {
   };
 
   render() {
+    const {
+      userState: { userProfile },
+    } = this.props;
+
     const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
     const idleTimeout = systemTimeout / 2;
-    // const idleTimeout = 5000;
 
     const { children } = this.props;
     const isLessThen1024 = window?.innerWidth < 1024;
@@ -215,17 +237,19 @@ class App extends PureComponent {
             <Modal />
             <ActivityAlertsToasts />
             <div className="new-task" />
-            <IdleTimer
-              ref={reference => {
-                this.idleTimer = reference;
-              }}
-              element={document}
-              onActive={this.onActive}
-              onIdle={this.onIdle}
-              onAction={this.onAction}
-              debounce={250}
-              timeout={systemTimeout}
-            />
+            {userProfile && !isEmpty(userProfile) && (
+              <IdleTimer
+                ref={reference => {
+                  this.idleTimer = reference;
+                }}
+                element={document}
+                onActive={this.onActive}
+                onIdle={this.onIdle}
+                onAction={this.onAction}
+                debounce={250}
+                timeout={systemTimeout}
+              />
+            )}
             <IdleTimer
               ref={reference => {
                 this.idleTimerForPresence = reference;
@@ -272,6 +296,7 @@ const mapDispatchToProps = {
     type: 'active-users/removeActiveUser',
     user,
   }),
+  openModal,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
