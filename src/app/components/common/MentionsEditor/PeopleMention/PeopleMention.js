@@ -50,6 +50,10 @@ const PeopleMention = ({ mention, className, children }) => {
   const isIdle = onlineActiveUser && onlineActiveUser.idle;
   const isOffline = !onlineActiveUser;
 
+  const isActiveUser = !!(
+    personData?.userStatus === 'ACTIVE' || personData?.userStatus === 'INVITED'
+  );
+
   useEffect(() => {
     if (isHovered && !personData) {
       PeopleApi.getUserById(mention.identifier)
@@ -105,8 +109,12 @@ const PeopleMention = ({ mention, className, children }) => {
 
           {personData ? (
             <>
-              <RoleSection>
-                <Role>{getOrgRole(personData.orgUserRole)}</Role>
+              <RoleSection isActiveUser={isActiveUser}>
+                <Role>
+                  {isActiveUser
+                    ? getOrgRole(personData.orgUserRole)
+                    : 'Deactivated'}
+                </Role>
                 <Link to={`assignedToPerson/${personData.userIdentifier}`}>
                   <PersonTasksLink>view tasks</PersonTasksLink>
                 </Link>
