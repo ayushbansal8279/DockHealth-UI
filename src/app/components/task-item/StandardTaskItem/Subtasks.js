@@ -26,11 +26,6 @@ const Subtasks = ({
   const [draggedId, setDraggableId] = useState(false);
   const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
 
-  const subtasksOrder = useMemo(
-    () => subtasks?.map(({ taskIdentifier }) => taskIdentifier),
-    [subtasks],
-  );
-
   useEffect(() => {
     reorderSubtasksInState(subtasks);
   }, [subtasks]);
@@ -43,7 +38,6 @@ const Subtasks = ({
     eventBundle =>
       onDragEndSubtask({
         eventBundle,
-        subtasksOrder,
         reorderSubtasksForTask,
         groupId,
         parentTaskId,
@@ -51,13 +45,7 @@ const Subtasks = ({
         reorderSubtasksInState,
         setDraggableId,
       }),
-    [
-      groupId,
-      orderedSubtasks,
-      parentTaskId,
-      reorderSubtasksForTask,
-      subtasksOrder,
-    ],
+    [groupId, orderedSubtasks, parentTaskId, reorderSubtasksForTask],
   );
 
   const shouldRenderSubtasks = useMemo(() => !isEmpty(orderedSubtasks), [
