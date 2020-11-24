@@ -23,6 +23,7 @@ import {
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
   getTasksForTaskListByTaskGroup,
   searchTasksByTaskList,
+  getTaskDetails,
 } from 'api/task-api';
 import {
   TASK_GROUP_LIST_REQUEST,
@@ -206,6 +207,21 @@ export function* doGetTasksList(payload) {
   }
 }
 
+export function* doGetTaskDetails(payload) {
+  const { taskIdentifier } = payload;
+  try {
+    const selectedTask = yield call(getTaskDetails, taskIdentifier);
+
+    yield put({
+      type: SET_AS_CURRENT_TASK,
+      task: selectedTask,
+      taskContext: 'list',
+    });
+  } catch (error) {
+    yield put({ type: TASK_GROUP_LIST_FAILURE });
+  }
+}
+
 export function* doCreateTasksGroupList(payload) {
   const { groupName } = payload;
 
@@ -365,7 +381,7 @@ export function* doSortSubtasksInGroup(payload) {
         taskListIdentifier,
         shouldSetRequestState: false,
       }),
-      call(doGetTasksList, { taskListIdentifier }),
+      call(doGetTaskDetails, { taskIdentifier: parentTaskIdentifier }),
       yield put(showGlobalAlert(AlertMessages.UPDATED)),
     ]);
   } catch (error) {

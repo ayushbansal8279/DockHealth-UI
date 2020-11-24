@@ -165,7 +165,6 @@ export const onDragEndTask = ({
 
 export const onDragEndSubtask = ({
   eventBundle,
-  subtasksOrder,
   reorderSubtasksForTask,
   groupId,
   parentTaskId,
@@ -175,6 +174,10 @@ export const onDragEndSubtask = ({
 }) => {
   const { destination, source } = eventBundle;
   setDraggableId(null);
+
+  const subtasksOrder = orderedSubtasks?.map(
+    ({ taskIdentifier }) => taskIdentifier,
+  );
 
   if (destination && destination?.index !== source?.index) {
     const newSubtasksOrder = moveItemInArrayFromIndexToIndex(
