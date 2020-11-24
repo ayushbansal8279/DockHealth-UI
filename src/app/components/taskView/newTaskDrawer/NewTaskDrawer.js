@@ -30,7 +30,6 @@ import StatusSection from './NewTaskDrawer.StatusSection';
 import TaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
 import {
   DescriptionLabel,
-  AdornmentClear,
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
@@ -56,9 +55,11 @@ import {
   renderMemberoptionWithHighlighting,
   FocusDrawerFieldEnum,
   TaskDrawerFields,
+  getFormattedPatient,
 } from './NewTaskDrawer.Utilities';
 import existingUserTaskDrawerTourHooks from './NewTaskDrawer.ExistingUserTourHooks';
 import NewTaskDrawerSubtasks from './NewTaskDrawerSubtasks/NewTaskDrawerSubtasks';
+import NewTaskDrawerSelect from './NewTaskDrawerSelect/NewTaskDrawerSelect';
 
 const NewTaskDrawer = ({
   isInbox,
@@ -163,8 +164,6 @@ const NewTaskDrawer = ({
     dueDateValue && !isDueTimeEmpty
       ? moment(`${dueDateValue} ${dueTimeValue}`).isBefore(moment())
       : dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
-
-  const selectedPatientIdentifier = watch('patientIdentifier');
 
   const {
     assignedToInputReference,
@@ -328,70 +327,34 @@ const NewTaskDrawer = ({
                 </Grid>
               )}
               <Grid item xs={6} style={styleLeftColumn}>
-                <SelectInput
+                <NewTaskDrawerSelect
+                  ref={patientInputReference}
                   name="patientIdentifier"
                   label="Patient"
-                  renderItem={option => option.label}
                   placeholder="Who is the patient?"
                   disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
+                  selectedOption={getFormattedPatient(selectedTask?.patient)}
+                  options={formattedPatients}
+                  isLoadingOptions={isLoadingPatients}
                   onInputChange={onPatientInputChange}
-                  onItemSelected={async (option, event) => {
+                  onOptionSelect={async option => {
                     await handlePatientSelect(option);
                     patientInputReference.current.querySelector('input').blur();
-                    if (event.key === 'Enter') {
-                      assignedToInputReference.current
-                        .querySelector('input')
-                        .focus();
-                    }
                   }}
-                  ref={patientInputReference}
-                  noOptionsText={
-                    <Grid
-                      container
-                      direction="column"
-                      style={{ padding: '10px 10px' }}
-                    >
-                      {isLoadingPatients ? (
-                        <Grid container justify="center" alignItems="center">
-                          <Loader size={LoaderSizes.small} />
-                        </Grid>
-                      ) : (
-                        <RobotoTypography
-                          condensed
-                          variant="h4"
-                          color="inherit"
-                        >
-                          No record found
-                        </RobotoTypography>
-                      )}
-                    </Grid>
-                  }
-                  InputProps={{
-                    endAdornment:
-                      selectedTask &&
-                      selectedPatientIdentifier &&
-                      !disabledFileds.includes(TaskDrawerFields.PATIENT) ? (
-                        <AdornmentClear onClick={clearSelectedPatient} />
-                      ) : (
-                        ''
-                      ),
+                  onClear={async () => {
+                    await clearSelectedPatient();
+                    // eslint-disable-next-line no-unused-expressions
+                    patientInputReference.current
+                      ?.querySelector('input')
+                      .focus();
                   }}
-                  endAdornmentActionLabel={
-                    isLoadingPatients ||
-                    currentOrganization.emrIntegrationEnabled
+                  addItemLabel="Add patient"
+                  onAddItemClick={
+                    currentOrganization?.emrIntegrationEnabled
                       ? null
-                      : 'Add patient'
+                      : handleAddPatient
                   }
-                  onEndAdornmentAcionClick={handleAddPatient}
-                  endAdornmentEnabled
-                  autoFocusEnabled={
-                    taskDrawerOpen &&
-                    taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
-                  }
-                  showAllOptions
-                >
-                  {formattedPatients}
-                </SelectInput>
+                />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <SelectInput

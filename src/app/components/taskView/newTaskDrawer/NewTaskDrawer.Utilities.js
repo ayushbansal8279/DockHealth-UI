@@ -22,36 +22,42 @@ export const TaskDrawerFields = {
   PATIENT: 1,
 };
 
-export const getFormattedPatients = ({ patients }) =>
-  (patients ?? []).map(patient => {
-    const {
-      patientIdentifier,
-      firstName,
-      middleName,
-      lastName,
-      mrn,
-      age,
-    } = patient;
-    const patientName = middleName
-      ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`.trim()
-      : ` ${lastName}, ${firstName}`.trim();
-    const displayPatientName = middleName
-      ? `${lastName}, ${firstName} ${middleName}`.trim()
-      : `${lastName}, ${firstName}`.trim();
+export const getFormattedPatient = patient => {
+  if (!patient) {
+    return null;
+  }
 
-    return {
-      key: patientIdentifier,
-      value: patientIdentifier,
-      label: (
-        <PatientLabelContainer key={patient?.patientIdentifier}>
-          <CondensedH4>{patientName}</CondensedH4>
-          <CondensedH4 align="right">{age}</CondensedH4>
-          <CondensedH4 align="right">{mrn || ''}</CondensedH4>
-        </PatientLabelContainer>
-      ),
-      displayLabel: displayPatientName,
-    };
-  });
+  const {
+    patientIdentifier,
+    firstName,
+    middleName,
+    lastName,
+    mrn,
+    age,
+  } = patient;
+  const patientName = middleName
+    ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`.trim()
+    : ` ${lastName}, ${firstName}`.trim();
+  const displayPatientName = middleName
+    ? `${lastName}, ${firstName} ${middleName}`.trim()
+    : `${lastName}, ${firstName}`.trim();
+
+  return {
+    key: patientIdentifier,
+    value: patientIdentifier,
+    label: (
+      <PatientLabelContainer key={patient?.patientIdentifier}>
+        <CondensedH4 align="left">{patientName}</CondensedH4>
+        <CondensedH4 align="right">{age}</CondensedH4>
+        <CondensedH4 align="right">{mrn || ''}</CondensedH4>
+      </PatientLabelContainer>
+    ),
+    displayLabel: displayPatientName,
+  };
+};
+
+export const getFormattedPatients = ({ patients }) =>
+  (patients ?? []).map(getFormattedPatient);
 
 export const getFormattedMembers = ({ members, currentUser }) => {
   const filteredMembers = (members ?? []).filter(member => {
