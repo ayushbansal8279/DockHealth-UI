@@ -52,7 +52,7 @@ export const Step = styled.button`
 `;
 
 export const RoleFormWrapper = styled(Grid)`
-  height: 310px;
+  height: 340px;
   padding: ${spacing.regular} 0 ${spacing.regularPlus} 0;
   font-family: 'Roboto', sans-serif;
   color: ${palette.mediumGrey};
