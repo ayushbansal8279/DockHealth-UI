@@ -23,6 +23,8 @@ const TaskComment = ({
   dateCreated,
   highlightedValue,
   onClickComment,
+  isLastComment,
+  showMore,
 }) => {
   const previousCommentValue = useRef(null);
   const [commentState, setCommentState] = useMentionsEditorState(
@@ -61,7 +63,7 @@ const TaskComment = ({
   }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
   return (
-    <TaskCommentContainer>
+    <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
       <TaskCommentAvatarContainer>
         <Member member={creator} size={40} />
       </TaskCommentAvatarContainer>

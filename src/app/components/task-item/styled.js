@@ -24,11 +24,12 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
+  height: ${props => (props.isCompleted ? 1 : 0)}rem;
   overflow: hidden;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
+  font-size: ${fontSizes.small};
 
   > span {
     color: ${palette.brightBlue};
@@ -58,7 +59,7 @@ export const AddPlaceholder = styled.div`
   opacity: 0;
   &::first-letter {
     color: ${palette.orange};
-    font-size: ${fontSizes.regular};
+    font-size: ${fontSizes.smallPlus};
   }
 
   &:hover {
@@ -77,20 +78,40 @@ export const CircleIcon = styled.img`
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};
 `;
+export const DescriptionTooltip = styled.div`
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+  position: absolute;
+  top: 30px;
+  left: 60px;
+  max-width: 60vw;
+  padding: ${spacing.small};
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  z-index: 10;
+  font-size: ${fontSizes.smallPlus};
+  cursor: initial;
+`;
 
 export const Description = styled.div`
-  cursor: pointer;
   width: 100%;
   margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
+  cursor: pointer;
+
+  &:hover {
+    ${DescriptionTooltip} {
+      display: block;
+    }
+  }
 `;
 
 export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  flex: 1;
+  overflow: hidden;
 `;
 
 export const DueDateButton = styled.button`
@@ -107,7 +128,7 @@ export const DueDateAddLabel = styled.p`
   text-align: center;
   color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export const DueDate = styled.span`
@@ -117,6 +138,14 @@ export const DueDate = styled.span`
   position: absolute;
   text-align: center;
   line-height: initial;
+`;
+
+export const DueDateBasicLabel = styled.span`
+  padding: 2px ${spacing.tiny};
+  border-radius: 4px;
+  background: ${({ isOverdue }) => (isOverdue ? '#e84739' : '#949aa4')};
+  color: ${palette.white};
+  font-size: ${fontSizes.small};
 `;
 
 export const DueDateContainer = styled.div`
@@ -134,8 +163,8 @@ export const DueDateContainer = styled.div`
 `;
 
 export const GridImg = styled(Grid)`
-  align-items: center;
   display: flex;
+  align-items: center;
   justify-content: center;
   ${({ matched }) =>
     matched && `background: ${featurePalette.globalSearchHighlight};`}
@@ -148,30 +177,31 @@ export const SmallText = styled.span`
 
 export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   cursor: pointer;
   margin-right: ${spacing.regularPlus};
   width: 200px;
 `;
 
 export const StandardTaskItemCell = styled.div`
-  position: relative;
+  position: ${({ position }) => position || 'relative'};
   align-items: center;
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${props =>
     props.bolded ? fontWeights.bold : fontWeights.light};
   min-width: ${props => props.width};
   max-width: ${props => props.width};
-  padding: ${spacing.smallPlus} 0;
+  padding: ${spacing.tiny} 0;
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
   padding-right: ${props =>
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regularPlus};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
+  overflow: hidden;
 
   &:last-of-type {
     border-right: 0;
@@ -327,8 +357,8 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 67px;
-  height: 50px;
+  width: 75%;
+  height: 75%;
 `;
 
 export const SlimTaskGridContainer = styled.div`
@@ -423,4 +453,22 @@ export const SlimTaskListNameText = styled.p`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+export const CommentIcon = styled.img`
+  height: 22px;
+  margin-top: 2px;
+`;
+
+export const CalendarIcon = styled.img`
+  height: 22px;
+`;
+
+export const LabelIcon = styled.img`
+  height: 26px;
+  margin-top: 4px;
+`;
+
+export const AttachmentIcon = styled.img`
+  height: 20px;
 `;

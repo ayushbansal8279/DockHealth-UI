@@ -9,6 +9,19 @@ export const StyledEditorContainer = styled.div`
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
 
+  ${({ isOneline }) =>
+    isOneline &&
+    `
+      height: 1.5em;
+      overflow: hidden;
+
+      & .public-DraftStyleDefault-block {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    `}
+
   & .public-DraftEditor-content {
     height: auto;
   }

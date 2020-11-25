@@ -31,7 +31,8 @@ export const RoleSection = styled.div`
   width: 100%;
   height: 28px;
   padding: 0 ${spacing.small};
-  background-color: ${palette.darkBlue};
+  background-color: ${({ isActiveUser }) =>
+    isActiveUser ? palette.darkBlue : palette.coolGrey1};
   color: ${palette.white};
   font-weight: ${fontWeights.light};
 `;

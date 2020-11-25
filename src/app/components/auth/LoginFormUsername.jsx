@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
@@ -23,7 +23,7 @@ const validationSchema = object().shape({
 });
 
 const LoginFormUsername = props => {
-  const { onSubmit, userEmail } = props;
+  const { onSubmit } = props;
   const [showLoginMessage, setShowLoginMessage] = useState(false);
 
   const formMethods = useForm({
@@ -31,7 +31,7 @@ const LoginFormUsername = props => {
     reValidateMode: 'onSubmit',
   });
 
-  const { handleSubmit, setValue } = formMethods;
+  const { handleSubmit } = formMethods;
 
   useMount(() => {
     if (window.location.href) {
@@ -54,12 +54,6 @@ const LoginFormUsername = props => {
       }
     }
   });
-
-  useEffect(() => {
-    if (userEmail) {
-      setValue('username', userEmail);
-    }
-  }, [setValue, userEmail]);
 
   const titleContent = window.sessionStorage.getItem('confirmStatus')
     ? 'Your email is confirmed'

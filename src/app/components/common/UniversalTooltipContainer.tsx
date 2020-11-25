@@ -36,7 +36,7 @@ const UniversalTooltipContainer = ({
       )}
       <ElementWrapper
         ref={popoverReference}
-        onMouseEnter={showTooltip}
+        onMouseEnter={label ? showTooltip : null}
         onMouseLeave={hideTooltip}
       >
         {children}

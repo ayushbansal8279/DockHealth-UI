@@ -207,15 +207,14 @@ const initializeTaskDrawerHooks = ({
   );
 
   const onPatientInputChange = useCallback(
-    (_event, value, reason) => {
+    value => {
       setPatientInputValue(value);
-      if (reason === 'input') {
-        if (value !== '') {
-          setIsLoadingPatients(true);
-          fetchPatientsWithDebounce(value);
-        } else {
-          setPatients([]);
-        }
+      if (value !== '') {
+        setIsLoadingPatients(true);
+        fetchPatientsWithDebounce(value);
+      } else {
+        fetchPatientsWithDebounce.cancel();
+        setPatients([]);
       }
     },
     [fetchPatientsWithDebounce],

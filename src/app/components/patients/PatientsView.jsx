@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { hashHistory } from 'react-router';
 import { isNil } from 'ramda';
 import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
@@ -17,6 +18,10 @@ import {
   SideClickListener,
 } from './styled';
 import PatientSidebar from './PatientSidebar/PatientSidebar';
+
+const handleAfterPatientCreation = ({ patientIdentifier }) => {
+  hashHistory.push(`/patient/${patientIdentifier}`);
+};
 
 const PatientsView = () => {
   const patientsListContainerReference = useRef(null);
@@ -163,7 +168,7 @@ const PatientsView = () => {
                 height={patientsListContainerReference.current?.clientHeight}
               >
                 <PatientSidebar
-                  onPatientCreated={refreshPatients}
+                  onPatientCreated={handleAfterPatientCreation}
                   onClose={unsetIsSidebarOpen}
                 />
                 <SideClickListener onClick={unsetIsSidebarOpen} />

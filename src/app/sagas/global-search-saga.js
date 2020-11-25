@@ -5,11 +5,13 @@ import {
   debounce,
   call,
   takeLatest,
+  delay,
 } from 'redux-saga/effects';
 import {
   isSearchingCompletedTasksSelector,
   searchValueSelector,
 } from 'selectors/global-search-selectors';
+import * as ActionTypes from 'actions/action-types';
 import * as GlobalSearchActions from 'actions/global-search-actions';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
@@ -20,6 +22,7 @@ import {
   setDueDate as setDueDateHelper,
   setWorkflowStatus as setWorkflowStatusHelper,
   assignTask as assignTaskHelper,
+  TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
 import { userProfileSelector } from '../selectors/user-selectors';
 
@@ -177,6 +180,11 @@ function* doToggleTaskCompleteStatus({ payload }) {
           };
     yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
     yield call(TaskApi[apiEndpoint], task);
+
+    if (!task.parentTaskIdentifier) {
+      yield delay(TASK_DISAPPEAR_DELAY);
+      yield put({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+    }
 
     yield put(AlertActions.showGlobalAlert(successMessage));
   } catch (error) {

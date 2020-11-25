@@ -24,6 +24,7 @@ const GlobalSearchList = ({
   updateDueDate,
   updateWorkflowStatus,
   highlightedValue,
+  isCompletedList,
 }) => {
   const { listName, tasks } = list;
   const [isOpen, switchOpen] = useState(true);
@@ -69,7 +70,7 @@ const GlobalSearchList = ({
               task={task}
               groupId={tasks.taskIdentifier}
               draggableProvided={{}}
-              isCompletedGroup={false}
+              isCompletedGroup={isCompletedList}
               toggleCompleteTask={toggleTaskStatus}
               reassignTask={reassignTask}
               updateDueDate={updateDueDate}

@@ -8,7 +8,7 @@ import {
   SkeletonLoaderText,
 } from './styled';
 
-const PatientMentionsNotesLoader = () => (
+const PatientCardNotesLoader = () => (
   <>
     <Divider />
     <PatientNotesSection>
@@ -49,4 +49,4 @@ const PatientMentionsNotesLoader = () => (
   </>
 );
 
-export default PatientMentionsNotesLoader;
+export default PatientCardNotesLoader;

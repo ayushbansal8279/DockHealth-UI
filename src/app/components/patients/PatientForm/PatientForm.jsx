@@ -90,7 +90,7 @@ const onSubmit = ({
       if (patient && typeof onPatientEdited === 'function') {
         onPatientEdited(response);
         onPatientEditedEvent();
-      } else if (typeof onPatientEdited === 'function') {
+      } else if (typeof onPatientCreated === 'function') {
         onPatientCreated(response);
       }
       onCancel();

@@ -86,3 +86,29 @@ export const getCalendarIcon = (value, isHovered, isCompleted, hasUpdate) => {
     ? getCalendarOverDueIcon(hasUpdate)
     : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered, hasUpdate)];
 };
+
+export const getToolTipMultiLabelDetails = labels => {
+  let toolTipMultiLabelDetails = '';
+  if (labels.length === 1) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}`;
+  } else if (labels.length === 2) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}, ${labels[1].labelName}`;
+  } else if (labels.length > 2) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}, ${
+      labels[1].labelName
+    } + ${labels.length - 2}`;
+  }
+  return toolTipMultiLabelDetails;
+};
+
+export const getToolTipAttachmentsLabelDetails = attachments => {
+  let attachmentLabelDetails = '';
+  if (attachments.length === 1) {
+    attachmentLabelDetails = `${attachments[0].fileName}`;
+  } else if (attachments.length > 1) {
+    attachmentLabelDetails = `${
+      attachments[0].fileName
+    } + ${attachments.length - 1}`;
+  }
+  return attachmentLabelDetails;
+};

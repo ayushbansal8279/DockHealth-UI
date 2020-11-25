@@ -12,6 +12,7 @@ import {
   loadSubTasks,
 } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
+import debounce from 'lodash.debounce';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
@@ -31,8 +32,9 @@ import { useMentionsEditorState } from 'components/common/MentionsEditor/use-men
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import Spacing from 'components/common/Spacing';
+import PatientCard from 'components/patients/PatientCard/PatientCard';
 import TaskItemStatus from './TaskItemStatus';
-
+import { getSubtaskStylingLink } from './helpers';
 import {
   getItemIconVersion,
   getItemIcon,
@@ -41,8 +43,9 @@ import {
   COMMENTS,
   LABELS,
   ATTACHMENTS,
+  getToolTipMultiLabelDetails,
+  getToolTipAttachmentsLabelDetails,
 } from '../icons';
-
 import {
   AddCrossIcon,
   AddPlaceholder,
@@ -51,8 +54,7 @@ import {
   ClickableStandardTaskItemIcon,
   Description,
   DescriptionBox,
-  DueDate,
-  DueDateContainer,
+  DueDateBasicLabel,
   GridImg,
   SubtasksGroupLabel,
   StandardTaskItemCell,
@@ -70,49 +72,13 @@ import {
   DueDateButton,
   SubtasksBox,
   SubtasksAddLabel,
-  SubtaskStylingLastLink,
-  SubtaskStylingLinkContainer,
-  SubtaskStylingVerticalPart,
-  SubtaskStylingHorizontalPart,
   TaskItemParentTaskLabel,
+  CommentIcon,
+  CalendarIcon,
+  LabelIcon,
+  AttachmentIcon,
+  DescriptionTooltip,
 } from '../styled';
-
-const getToolTipMultiLabelDetails = labels => {
-  let toolTipMultiLabelDetails = '';
-  if (labels.length === 1) {
-    toolTipMultiLabelDetails = `${labels[0].labelName}`;
-  } else if (labels.length === 2) {
-    toolTipMultiLabelDetails = `${labels[0].labelName}, ${labels[1].labelName}`;
-  } else if (labels.length > 2) {
-    toolTipMultiLabelDetails = `${labels[0].labelName}, ${
-      labels[1].labelName
-    } + ${labels.length - 2}`;
-  }
-  return toolTipMultiLabelDetails;
-};
-
-const getToolTipAttachmentsLabelDetails = attachments => {
-  let attachmentLabelDetails = '';
-  if (attachments.length === 1) {
-    attachmentLabelDetails = `${attachments[0].fileName}`;
-  } else if (attachments.length > 1) {
-    attachmentLabelDetails = `${
-      attachments[0].fileName
-    } + ${attachments.length - 1}`;
-  }
-  return attachmentLabelDetails;
-};
-
-const getSubtaskStylingLink = isLast => {
-  if (isLast) return <SubtaskStylingLastLink />;
-
-  return (
-    <SubtaskStylingLinkContainer>
-      <SubtaskStylingVerticalPart />
-      <SubtaskStylingHorizontalPart />
-    </SubtaskStylingLinkContainer>
-  );
-};
 
 const TaskItem = ({
   isOpen,
@@ -183,8 +149,49 @@ const TaskItem = ({
       mentions: taskMentions,
     }),
   );
+  const [
+    isDescriptionTooltipVisible,
+    setIsDescriptionTooltipVisible,
+  ] = useState(false);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
+  const descriptionReference = useRef(null);
+
+  const checkIfShouldDisplayTooltip = useCallback(() => {
+    const descriptionTextElement = descriptionReference.current?.querySelector(
+      '.public-DraftStyleDefault-block',
+    );
+    if (
+      descriptionTextElement &&
+      descriptionTextElement.scrollWidth > descriptionTextElement.offsetWidth
+    ) {
+      setIsDescriptionTooltipVisible(true);
+    } else {
+      setIsDescriptionTooltipVisible(false);
+    }
+  }, []);
+
+  const handleResize = useCallback(
+    debounce(() => {
+      checkIfShouldDisplayTooltip();
+    }, 1000),
+    [],
+  );
+
+  useEffect(() => {
+    if (descriptionReference.current) {
+      checkIfShouldDisplayTooltip();
+    }
+  }, [checkIfShouldDisplayTooltip]);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (previousDescription.current !== null) {
@@ -367,6 +374,7 @@ const TaskItem = ({
           bolded
           paddingLeft="huge"
           onClick={onClickTaskItem}
+          position="static"
         >
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
@@ -374,9 +382,13 @@ const TaskItem = ({
             onClick={onCircleClick}
           />
           <DescriptionBox>
-            <Description isCrossedOut={!isCompletedGroup && isCompleted}>
+            <Description
+              ref={descriptionReference}
+              isCrossedOut={!isCompletedGroup && isCompleted}
+            >
               <MentionsEditor
                 readOnly
+                oneline
                 withEditedLabel={edited}
                 state={descriptionState}
                 onChange={setDescriptionState}
@@ -385,6 +397,9 @@ const TaskItem = ({
                   highlightedValue?.toLowerCase().split(/\s+/)
                 }
               />
+              {isDescriptionTooltipVisible && (
+                <DescriptionTooltip>{description}</DescriptionTooltip>
+              )}
             </Description>
             {isSubtask && !isNestedTask && parentTask && (
               <>
@@ -432,22 +447,24 @@ const TaskItem = ({
                 <AddPlaceholder>+ Add Patient</AddPlaceholder>
               )}
               {patient && !parentHasPatient && (
-                <ListItemLink to={`patient/${patient.patientIdentifier}`}>
-                  {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                    <Highlighter
-                      highlightClassName="list-highlight"
-                      searchWords={
-                        matchPatient
-                          ? highlightedValue?.toLowerCase().split(/\s+/)
-                          : `${patientName}`.toLowerCase().split(/\s+/)
-                      }
-                      autoEscape
-                      textToHighlight={`${patient.patientName}`}
-                    />
-                  ) : (
-                    `${patientName}`
-                  )}
-                </ListItemLink>
+                <PatientCard patientIdentifier={patient.patientIdentifier}>
+                  <ListItemLink to={`patient/${patient.patientIdentifier}`}>
+                    {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                      <Highlighter
+                        highlightClassName="list-highlight"
+                        searchWords={
+                          matchPatient
+                            ? highlightedValue?.toLowerCase().split(/\s+/)
+                            : `${patientName}`.toLowerCase().split(/\s+/)
+                        }
+                        autoEscape
+                        textToHighlight={`${patient.patientName}`}
+                      />
+                    ) : (
+                      `${patientName}`
+                    )}
+                  </ListItemLink>
+                </PatientCard>
               )}
             </ClickablePatient>
           </StandardTaskItemCell>
@@ -483,12 +500,14 @@ const TaskItem = ({
                 placement="top"
                 label={
                   getItemIconVersion(comments) === REGULAR
-                    ? `${comments?.length} comments`
+                    ? `${comments?.length} comment${
+                        comments.length > 1 ? 's' : ''
+                      }`
                     : 'Add a new comment'
                 }
               >
                 <ClickableStandardTaskItemIcon onClick={onCommentClick}>
-                  <img
+                  <CommentIcon
                     alt="comments"
                     src={getItemIcon(
                       COMMENTS,
@@ -525,11 +544,12 @@ const TaskItem = ({
                           : 'Add due date'
                       }
                     >
-                      <DueDateContainer>
-                        <DueDate>
-                          {dueDate && moment(dueDate).format('MM/DD')}
-                        </DueDate>
-                        <img
+                      {dueDate ? (
+                        <DueDateBasicLabel>
+                          {moment(dueDate).format('MM/DD')}
+                        </DueDateBasicLabel>
+                      ) : (
+                        <CalendarIcon
                           alt="due-date"
                           src={getCalendarIcon(
                             dueDate,
@@ -538,7 +558,7 @@ const TaskItem = ({
                             task.updatedDueDate,
                           )}
                         />
-                      </DueDateContainer>
+                      )}
                     </UniversalTooltipContainer>
                   </DueDateButton>
                 )}
@@ -554,7 +574,7 @@ const TaskItem = ({
                 }
               >
                 <ClickableStandardTaskItemIcon onClick={onLabelClick}>
-                  <img
+                  <LabelIcon
                     alt="labels"
                     src={getItemIcon(
                       LABELS,
@@ -576,7 +596,7 @@ const TaskItem = ({
                 }
               >
                 <ClickableStandardTaskItemIcon onClick={onAttachmentsClick}>
-                  <img
+                  <AttachmentIcon
                     alt="attachments"
                     src={getItemIcon(
                       ATTACHMENTS,
@@ -597,12 +617,17 @@ const TaskItem = ({
             task={task}
           >
             {assignedTo ? (
-              <>
+              <UniversalTooltipContainer
+                placement="top-end"
+                label={`Assigned to ${assignedTo.userName}`}
+              >
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                <Member member={assignedTo} size={34} />
-              </>
+                <Member member={assignedTo} size={25} showTooltip={false} />
+              </UniversalTooltipContainer>
             ) : (
-              <AddCrossIcon src={CrossIcon} size="34px" />
+              <UniversalTooltipContainer placement="top" label="Assign to">
+                <AddCrossIcon src={CrossIcon} size="25px" />
+              </UniversalTooltipContainer>
             )}
           </TaskAssignMember>
         </StandardTaskItemCell>

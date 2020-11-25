@@ -7,6 +7,7 @@ import {
   isLoadingGlobalSearchSelector,
   globalSearchListsSelector,
   searchValueSelector,
+  isSearchingCompletedTasksSelector,
 } from 'selectors/global-search-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
@@ -26,6 +27,7 @@ import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
 
 const GlobalSearchView = ({
   isLoadingView,
+  isSearchingCompletedTasks,
   lists,
   searchValue,
   currentUser,
@@ -60,21 +62,24 @@ const GlobalSearchView = ({
         <ViewSidePadding>
           <Spacing vertical={5} />
           {!isEmpty(lists)
-            ? lists?.map(list => (
-                <GlobalSearchList
-                  list={list}
-                  currentUser={currentUser}
-                  selectedTask={selectedTask}
-                  openDrawer={openDrawer}
-                  storeAsCurrentTask={storeAsCurrentTask}
-                  toggleTaskStatus={toggleTaskStatus}
-                  toggleTaskPriority={toggleTaskPriority}
-                  reassignTask={assignTask}
-                  updateDueDate={setDueDate}
-                  updateWorkflowStatus={setWorkflowStatus}
-                  highlightedValue={searchValue}
-                />
-              ))
+            ? lists?.map(list =>
+                list.tasks?.length > 0 ? (
+                  <GlobalSearchList
+                    list={list}
+                    currentUser={currentUser}
+                    selectedTask={selectedTask}
+                    openDrawer={openDrawer}
+                    storeAsCurrentTask={storeAsCurrentTask}
+                    toggleTaskStatus={toggleTaskStatus}
+                    toggleTaskPriority={toggleTaskPriority}
+                    reassignTask={assignTask}
+                    updateDueDate={setDueDate}
+                    updateWorkflowStatus={setWorkflowStatus}
+                    highlightedValue={searchValue}
+                    isCompletedList={isSearchingCompletedTasks}
+                  />
+                ) : null,
+              )
             : renderEmptyState()}
         </ViewSidePadding>
       </ViewLoader>
@@ -95,6 +100,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = store => ({
   isLoadingView: isLoadingGlobalSearchSelector(store),
+  isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),
   lists: globalSearchListsSelector(store),
   searchValue: searchValueSelector(store),
   currentUser: userProfileSelector(store),
