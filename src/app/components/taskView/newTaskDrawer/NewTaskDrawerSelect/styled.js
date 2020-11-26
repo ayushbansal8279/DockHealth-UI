@@ -23,8 +23,8 @@ export const ListItem = styled.li`
 
 export const ListItemButton = styled.button`
   width: 100%;
-  padding: 5px 12px;
   cursor: pointer;
+  font-family: 'Roboto Condensed', sans-serif;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
 `;

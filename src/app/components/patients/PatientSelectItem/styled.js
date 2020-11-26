@@ -7,6 +7,7 @@ export const SuggestionItemContainer = styled.div`
   display: grid;
   grid-gap: 0.5rem;
   grid-template-columns: 1fr 4rem 6rem;
+  align-items: center;
   width: 100%;
   height: 40px;
   width: 100%;
@@ -23,9 +24,8 @@ export const SuggestionItemContainer = styled.div`
 
 export const SuggestionText = styled.div`
   margin-bottom: 0;
+  text-align: start;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   font-family: inherit;
 `;
-
-export default SuggestionItemContainer;

@@ -1,11 +1,20 @@
 /* eslint-disable react/jsx-no-duplicate-props */
+import React, { useEffect, useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
-import React, { useEffect, useRef, useState } from 'react';
+import { isOutsideScrollView } from 'helpers/scroll-helper';
 import { RobotoTypography } from 'styles/theme';
-import { arrayOf, bool, func, node, shape, string } from 'prop-types';
+import {
+  arrayOf,
+  bool,
+  func,
+  node,
+  oneOfType,
+  shape,
+  string,
+} from 'prop-types';
 import {
   AddItemButton,
   ListContainer,
@@ -22,6 +31,7 @@ const NewTaskDrawerSelect = React.forwardRef(
       label,
       placeholder,
       disabled,
+      startAdornment,
       options,
       selectedOption,
       isLoadingOptions,
@@ -129,13 +139,24 @@ const NewTaskDrawerSelect = React.forwardRef(
           if (options?.length > 0) {
             setHoveredItemIndex(previousIndex => {
               let newIndex;
+
               if (previousIndex === 0) {
                 newIndex = options.length - 1;
               } else {
                 newIndex = previousIndex - 1;
               }
-              if (listReference.current?.children?.[newIndex])
-                listReference.current.children[newIndex].scrollIntoView(false);
+
+              if (
+                listReference.current?.children?.[newIndex] &&
+                isOutsideScrollView(
+                  listReference.current,
+                  listReference.current?.children?.[newIndex],
+                )
+              ) {
+                listReference.current.scrollTop =
+                  listReference.current?.children?.[newIndex].offsetTop;
+              }
+
               return newIndex;
             });
           }
@@ -161,12 +182,14 @@ const NewTaskDrawerSelect = React.forwardRef(
             }}
             parentType="select"
             inputProps={{
-              autocomplete: 'off',
+              autoComplete: 'off',
               value: inputValue,
               onChange: handleInputChange,
               onKeyDown: handleInputKeyDown,
             }}
             InputProps={{
+              startAdornment:
+                !isFocused && startAdornment ? startAdornment : null,
               endAdornment: !disabled ? (
                 <>
                   {typeof onAddItemClick === 'function' &&
@@ -213,7 +236,9 @@ const NewTaskDrawerSelect = React.forwardRef(
                         onMouseDown={() => handleOptionSelect(option)}
                         onMouseEnter={() => setHoveredItemIndex(index)}
                       >
-                        {option.label}
+                        {typeof option.label === 'function'
+                          ? option.label({ searchValue: inputValue })
+                          : option.label}
                       </ListItemButton>
                     </ListItem>
                   ))
@@ -245,11 +270,12 @@ NewTaskDrawerSelect.propTypes = {
   name: string.isRequired,
   label: string.isRequired,
   placeholder: string,
+  startAdornment: node,
   disabled: bool,
   options: arrayOf(
     shape({
       key: string,
-      label: node,
+      label: oneOfType([node, func]),
       displayLabel: string,
       value: string,
     }),
@@ -271,6 +297,7 @@ NewTaskDrawerSelect.propTypes = {
 NewTaskDrawerSelect.defaultProps = {
   placeholder: null,
   disabled: false,
+  startAdornment: null,
   options: [],
   selectedOption: null,
   isLoadingOptions: false,
