@@ -78,6 +78,8 @@ import {
   LabelIcon,
   AttachmentIcon,
   DescriptionTooltip,
+  DescriptionMainText,
+  DescriptionDuplicatedLabel,
 } from '../styled';
 
 const TaskItem = ({
@@ -111,6 +113,7 @@ const TaskItem = ({
   const {
     taskIdentifier,
     edited,
+    duplicated,
     assignedTo,
     attachments,
     comments,
@@ -386,17 +389,24 @@ const TaskItem = ({
               ref={descriptionReference}
               isCrossedOut={!isCompletedGroup && isCompleted}
             >
-              <MentionsEditor
-                readOnly
-                oneline
-                withEditedLabel={edited}
-                state={descriptionState}
-                onChange={setDescriptionState}
-                highlightedValues={
-                  matchDescription &&
-                  highlightedValue?.toLowerCase().split(/\s+/)
-                }
-              />
+              <DescriptionMainText>
+                <MentionsEditor
+                  readOnly
+                  oneline
+                  withEditedLabel={edited}
+                  state={descriptionState}
+                  onChange={setDescriptionState}
+                  highlightedValues={
+                    matchDescription &&
+                    highlightedValue?.toLowerCase().split(/\s+/)
+                  }
+                />
+              </DescriptionMainText>
+              {duplicated && (
+                <DescriptionDuplicatedLabel>
+                  (duplicated)
+                </DescriptionDuplicatedLabel>
+              )}
               {isDescriptionTooltipVisible && (
                 <DescriptionTooltip>{description}</DescriptionTooltip>
               )}
