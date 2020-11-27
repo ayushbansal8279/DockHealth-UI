@@ -170,6 +170,12 @@ export default () => {
           setUserSubscriptionStatus={setUserSubscriptionStatus}
           subscriptionPlanData={memberTableSubscriptionData}
           toggleInvitationPanelVisibility={toggleInvitationPanelVisibility}
+          buyButtonDisabled={buyButtonDisabled}
+          onClickBuyButton={onSubscriptionPlanChosen({
+            annualPayment,
+            chosenPlan,
+            dispatch,
+          })}
         />
         {invitationPanelVisible && (
           <InvitationPanel getAllUsers={getAllUsers} />

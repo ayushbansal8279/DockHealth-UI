@@ -36,14 +36,13 @@ export const SubscriptionPlanPanel = styled.div`
   color: ${palette.darkBlue};
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 1rem 2.5rem;
 `;
 
 export const SubscriptionPlanDarkPanel = styled.div`
   background-color: ${palette.darkBlue};
   color: ${palette.white};
-  padding: 1rem 1.5rem;
+  padding: 0.625rem 2rem;
 `;
 
 export const MediumGreyLabelContainer = styled.div`
@@ -55,7 +54,7 @@ export const SubscriptionEnterprisePanel = styled.div`
   color: ${palette.darkBlue};
   display: grid;
   grid-gap: 0.5rem;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 2fr 2fr 1fr;
   padding: 1.5rem;
   width: 100%;
 `;
@@ -86,4 +85,13 @@ export const TermsLabel = styled.p`
   font-size: 0.6875rem;
   margin: 1rem 0 3rem;
   padding: 0 0.5rem;
+`;
+
+export const SubscriptionPlanColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const SubscriptionPlanOptionColumn = styled(SubscriptionPlanColumn)`
+  justify-content: flex-end;
 `;
