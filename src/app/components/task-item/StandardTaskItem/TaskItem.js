@@ -632,11 +632,11 @@ const TaskItem = ({
                 label={`Assigned to ${assignedTo.userName}`}
               >
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                <Member member={assignedTo} size={25} showTooltip={false} />
+                <Member member={assignedTo} size={34} showTooltip={false} />
               </UniversalTooltipContainer>
             ) : (
               <UniversalTooltipContainer placement="top" label="Assign to">
-                <AddCrossIcon src={CrossIcon} size="25px" />
+                <AddCrossIcon src={CrossIcon} size="34px" />
               </UniversalTooltipContainer>
             )}
           </TaskAssignMember>
