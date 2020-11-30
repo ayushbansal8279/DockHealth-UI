@@ -64,7 +64,7 @@ export const getFormattedMembers = ({ members, currentUser }) => {
       label: (
         <MemberLabelContainer key={member?.userIdentifier}>
           <CondensedH4>{userName}</CondensedH4>
-          <Member member={member} size={30} />
+          <Member member={member} size={34} />
         </MemberLabelContainer>
       ),
       displayLabel: userName,
@@ -80,7 +80,7 @@ export const getFormattedMembers = ({ members, currentUser }) => {
         <CondensedH4>Unassigned</CondensedH4>
         <RemoveCircleOutlineRounded
           color="action"
-          style={{ height: '30px', width: '30px' }}
+          style={{ height: '34px', width: '34px' }}
         />
       </MemberLabelContainer>
     ),
@@ -101,7 +101,7 @@ export const getFormattedMembers = ({ members, currentUser }) => {
         }}
       >
         <CondensedH4>Assign to me</CondensedH4>
-        <Member member={currentUser} size={30} />
+        <Member member={currentUser} size={34} />
       </MemberLabelContainer>
     ),
     displayLabel: currentUserName,

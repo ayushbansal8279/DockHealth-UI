@@ -437,7 +437,7 @@ const initializeTaskDrawerHooks = ({
 
     return currentMember ? (
       <MemberAdornmentContainer>
-        <Member showTooltip={false} member={currentMember} size={30} />
+        <Member showTooltip={false} member={currentMember} size={34} />
       </MemberAdornmentContainer>
     ) : null;
   }, [currentAssignedToValue, members]);
@@ -447,7 +447,7 @@ const initializeTaskDrawerHooks = ({
       ({ userIdentifier }) => memberIdentifier === userIdentifier,
     );
     return currentMember ? (
-      <Member showTooltip={false} member={currentMember} size={30} />
+      <Member showTooltip={false} member={currentMember} size={34} />
     ) : null;
   };
 

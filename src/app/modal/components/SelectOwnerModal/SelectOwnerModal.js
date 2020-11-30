@@ -87,7 +87,7 @@ const SelectOwnerModal = ({
                   selectedUser?.userIdentifier === user?.userIdentifier
                 }
               >
-                <Member member={user} size={33} />
+                <Member member={user} size={34} />
                 <UserName>
                   {user?.firstName} {user?.lastName}
                 </UserName>

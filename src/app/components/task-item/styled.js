@@ -24,7 +24,7 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1 : 0)}rem;
+  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
   overflow: hidden;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
@@ -59,7 +59,7 @@ export const AddPlaceholder = styled.div`
   opacity: 0;
   &::first-letter {
     color: ${palette.orange};
-    font-size: ${fontSizes.smallPlus};
+    font-size: ${fontSizes.regular};
   }
 
   &:hover {
@@ -145,7 +145,7 @@ export const DueDateAddLabel = styled.p`
   text-align: center;
   color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
 `;
 
 export const DueDate = styled.span`
@@ -194,7 +194,7 @@ export const SmallText = styled.span`
 
 export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   cursor: pointer;
   margin-right: ${spacing.regularPlus};
   width: 200px;
@@ -206,12 +206,12 @@ export const StandardTaskItemCell = styled.div`
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   font-weight: ${props =>
     props.bolded ? fontWeights.bold : fontWeights.light};
   min-width: ${props => props.width};
   max-width: ${props => props.width};
-  padding: ${spacing.tiny} 0;
+  padding: ${spacing.smallPlus} 0;
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
   padding-right: ${props =>

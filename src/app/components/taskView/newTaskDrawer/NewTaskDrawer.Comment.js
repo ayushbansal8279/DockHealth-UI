@@ -98,7 +98,7 @@ const Comment = ({
     <React.Fragment key={commentIdentifier}>
       <CommentWrapper>
         <CommentMemberContainer>
-          <Member member={creator} size={40} />
+          <Member member={creator} size={34} />
         </CommentMemberContainer>
         <CommentContainer isEditing={isEditing}>
           <CommentContent>
