@@ -93,6 +93,8 @@ export const DescriptionTooltip = styled.div`
 `;
 
 export const Description = styled.div`
+  display: flex;
+  flex-direction: row;
   width: 100%;
   margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
@@ -105,6 +107,21 @@ export const Description = styled.div`
       display: block;
     }
   }
+`;
+
+export const DescriptionMainText = styled.div`
+  flex: 1;
+  overflow: hidden;
+`;
+
+export const DescriptionDuplicatedLabel = styled.p`
+  display: block;
+  font-size: ${fontSizes.small};
+  color: ${palette.coolGrey2};
+  margin-left: 8px;
+  margin-top: 2px;
+  margin-bottom: 0;
+  text-decoration: none;
 `;
 
 export const DescriptionBox = styled.div`

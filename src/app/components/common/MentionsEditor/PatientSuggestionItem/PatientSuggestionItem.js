@@ -1,6 +1,9 @@
+import PatientSelectItem from 'components/patients/PatientSelectItem/PatientSelectItem';
+import {
+  isOutsideScrollViewAtTheBottom,
+  isOutsideScrollViewAtTheTop,
+} from 'helpers/scroll-helper';
 import React, { useEffect, useRef } from 'react';
-import Highlighter from 'react-highlight-words';
-import { SuggestionItemContainer, SuggestionText } from './styled';
 
 const PatientSuggestionItem = ({
   mention,
@@ -15,14 +18,11 @@ const PatientSuggestionItem = ({
     const containerElement =
       suggestionItemReference.current.parentElement.parentElement;
     const { offsetTop: itemOffsetTop, offsetHeight: itemHeight } = itemElement;
-    const {
-      scrollTop: containerScrollTop,
-      offsetHeight: containerHeight,
-    } = containerElement;
+    const { offsetHeight: containerHeight } = containerElement;
 
-    if (itemOffsetTop >= containerScrollTop + containerHeight) {
+    if (isOutsideScrollViewAtTheBottom(containerElement, itemElement)) {
       containerElement.scrollTop = itemOffsetTop - containerHeight + itemHeight;
-    } else if (itemOffsetTop <= containerScrollTop - itemHeight) {
+    } else if (isOutsideScrollViewAtTheTop(containerElement, itemElement)) {
       containerElement.scrollTop = itemOffsetTop;
     }
   };
@@ -34,25 +34,14 @@ const PatientSuggestionItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
-  const { name, mrn, age } = mention;
-
   return (
-    <SuggestionItemContainer
+    <PatientSelectItem
       ref={suggestionItemReference}
-      {...parentProps}
+      patient={mention}
+      searchValue={searchValue}
       isFocused={isFocused}
-    >
-      <SuggestionText>
-        <Highlighter
-          highlightStyle={{ fontWeight: 'bold', background: 'none' }}
-          searchWords={searchValue?.toLowerCase().split(/\s+/)}
-          autoEscape
-          textToHighlight={name}
-        />
-      </SuggestionText>
-      <SuggestionText>{age}</SuggestionText>
-      <SuggestionText>{mrn}</SuggestionText>
-    </SuggestionItemContainer>
+      {...parentProps}
+    />
   );
 };
 

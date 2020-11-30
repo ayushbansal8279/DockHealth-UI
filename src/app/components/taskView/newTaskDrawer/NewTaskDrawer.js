@@ -48,6 +48,7 @@ import {
   ParentTaskDescription,
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
+  AdornmentContainer,
 } from './NewTaskDrawer.Styled';
 import {
   getFormattedMembers,
@@ -333,6 +334,7 @@ const NewTaskDrawer = ({
                   label="Patient"
                   placeholder="Who is the patient?"
                   disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
+                  startAdornment={<AdornmentContainer>+</AdornmentContainer>}
                   selectedOption={getFormattedPatient(selectedTask?.patient)}
                   options={formattedPatients}
                   isLoadingOptions={isLoadingPatients}

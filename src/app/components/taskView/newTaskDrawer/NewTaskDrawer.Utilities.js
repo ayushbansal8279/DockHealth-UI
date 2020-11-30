@@ -4,11 +4,8 @@ import Member from 'components/members/Member/Member';
 
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
-import {
-  MemberLabelContainer,
-  PatientLabelContainer,
-  CondensedH4,
-} from './NewTaskDrawer.Styled';
+import PatientSelectItem from 'components/patients/PatientSelectItem/PatientSelectItem';
+import { MemberLabelContainer, CondensedH4 } from './NewTaskDrawer.Styled';
 import palette from '../../../styles/palette';
 
 export const FocusDrawerFieldEnum = {
@@ -27,14 +24,7 @@ export const getFormattedPatient = patient => {
     return null;
   }
 
-  const {
-    patientIdentifier,
-    firstName,
-    middleName,
-    lastName,
-    mrn,
-    age,
-  } = patient;
+  const { patientIdentifier, firstName, middleName, lastName } = patient;
   const patientName = middleName
     ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`.trim()
     : ` ${lastName}, ${firstName}`.trim();
@@ -42,15 +32,16 @@ export const getFormattedPatient = patient => {
     ? `${lastName}, ${firstName} ${middleName}`.trim()
     : `${lastName}, ${firstName}`.trim();
 
+  const patientToDisplay = {
+    ...patient,
+    name: patientName,
+  };
+
   return {
     key: patientIdentifier,
     value: patientIdentifier,
-    label: (
-      <PatientLabelContainer key={patient?.patientIdentifier}>
-        <CondensedH4 align="left">{patientName}</CondensedH4>
-        <CondensedH4 align="right">{age}</CondensedH4>
-        <CondensedH4 align="right">{mrn || ''}</CondensedH4>
-      </PatientLabelContainer>
+    label: ({ searchValue }) => (
+      <PatientSelectItem patient={patientToDisplay} searchValue={searchValue} />
     ),
     displayLabel: displayPatientName,
   };
