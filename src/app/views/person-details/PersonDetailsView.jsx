@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
-
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -52,11 +50,9 @@ class PersonDetailsView extends PureComponent {
   };
 
   async componentDidMount() {
-    const {
-      personDetailsActions,
-      routeParams: { userIdentifier },
-      setHeader,
-    } = this.props;
+    const { personDetailsActions, history, match, setHeader } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     setHeader({
       layout: [
@@ -88,27 +84,28 @@ class PersonDetailsView extends PureComponent {
         isLoadingView: false,
       });
     } else {
-      hashHistory.push('people');
+      history.push('/core/people');
     }
   }
 
-  componentWillUpdate(nextProps) {
-    const { personDetailsActions, routeParams } = this.props;
+  UNSAFE_componentWillUpdate(nextProps) {
+    const { personDetailsActions, match } = this.props;
+    const { params } = match;
 
-    if (nextProps.routeParams.userIdentifier !== routeParams.userIdentifier) {
+    if (nextProps.match.params.userIdentifier !== params.userIdentifier) {
       personDetailsActions.resetTaskCounters();
       personDetailsActions.getTaskStatsForUser(
-        nextProps.routeParams.userIdentifier,
+        nextProps.match.params.userIdentifier,
       );
     }
 
     if (
-      nextProps.routeParams.userIdentifier === routeParams.userIdentifier &&
-      nextProps.routeParams.tabName !== routeParams.tabName
+      nextProps.match.params.userIdentifier === params.userIdentifier &&
+      nextProps.match.params.tabName !== params.tabName
     ) {
-      personDetailsActions.getTaskStatsForUser(routeParams.userIdentifier);
+      personDetailsActions.getTaskStatsForUser(params.userIdentifier);
 
-      if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
+      if (nextProps.match.params.tabName === TaskListTabName.COMPLETE) {
         this.refreshCompleteTasks();
       } else {
         this.refreshIncompleteTasks();
@@ -132,10 +129,9 @@ class PersonDetailsView extends PureComponent {
   }
 
   initTable = () => {
-    const {
-      personDetailsActions,
-      routeParams: { tabName, userIdentifier },
-    } = this.props;
+    const { personDetailsActions, match } = this.props;
+    const { params } = match;
+    const { tabName, userIdentifier } = params;
 
     personDetailsActions.getTaskStatsForUser(userIdentifier);
 
@@ -159,9 +155,9 @@ class PersonDetailsView extends PureComponent {
   };
 
   refreshTab = (withLoader = false) => {
-    const {
-      routeParams: { tabName },
-    } = this.props;
+    const { match } = this.props;
+    const { params } = match;
+    const { tabName } = params;
 
     this.refreshTabCounters();
 
@@ -173,10 +169,9 @@ class PersonDetailsView extends PureComponent {
   };
 
   refreshFilters = () => {
-    const {
-      megaFilterActions,
-      routeParams: { userIdentifier, tabName },
-    } = this.props;
+    const { megaFilterActions, match } = this.props;
+    const { params } = match;
+    const { tabName, userIdentifier } = params;
 
     const status =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
@@ -185,20 +180,17 @@ class PersonDetailsView extends PureComponent {
   };
 
   refreshTabCounters = () => {
-    const {
-      personDetailsActions,
-      routeParams: { userIdentifier },
-    } = this.props;
+    const { personDetailsActions, match } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     personDetailsActions.getTaskStatsForUser(userIdentifier);
   };
 
   refreshIncompleteTasks = (withLoader = true) => {
-    const {
-      personDetailsActions,
-      megaFilterActions,
-      routeParams: { userIdentifier },
-    } = this.props;
+    const { personDetailsActions, megaFilterActions, match } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     const status = 'INCOMPLETE';
 
@@ -218,11 +210,9 @@ class PersonDetailsView extends PureComponent {
   };
 
   refreshCompleteTasks = (withLoader = true) => {
-    const {
-      personDetailsActions,
-      megaFilterActions,
-      routeParams: { userIdentifier },
-    } = this.props;
+    const { personDetailsActions, megaFilterActions, match } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     const status = 'COMPLETE';
 
@@ -249,22 +239,21 @@ class PersonDetailsView extends PureComponent {
   };
 
   navigateToTab = tabName => {
-    const {
-      routeParams: { userIdentifier },
-    } = this.props;
+    const { match, history } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
-    hashHistory.push(
-      `/assignedToPerson/${userIdentifier}${
+    history.push(
+      `/core/assignedToPerson/${userIdentifier}${
         tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
       }`,
     );
   };
 
   handleFilterChange = updatedFilters => {
-    const {
-      routeParams: { tabName, userIdentifier },
-      megaFilterActions,
-    } = this.props;
+    const { match, megaFilterActions } = this.props;
+    const { params } = match;
+    const { tabName, userIdentifier } = params;
 
     const taskStatus =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
@@ -279,10 +268,9 @@ class PersonDetailsView extends PureComponent {
   };
 
   getFilteredTasks = (filters, taskStatus) => {
-    const {
-      routeParams: { userIdentifier },
-      personDetailsActions,
-    } = this.props;
+    const { match, personDetailsActions } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     return personDetailsActions.getFilteredTasksForPeopleList(
       userIdentifier,
@@ -295,9 +283,11 @@ class PersonDetailsView extends PureComponent {
     const {
       modalActions,
       personDetailsActions,
-      routeParams: { userIdentifier },
       currentUser,
+      match,
     } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     modalActions.openModal('ListPicker', {
       fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
@@ -360,15 +350,17 @@ class PersonDetailsView extends PureComponent {
     const {
       taskActions,
       personDetailsActions,
-      routeParams,
+      match,
       currentUser,
     } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
 
     taskActions
       .toggleCompleteTask(task, currentUser)
       .then(() => {
         setTimeout(() => {
-          personDetailsActions.getTaskStatsForUser(routeParams.userIdentifier);
+          personDetailsActions.getTaskStatsForUser(userIdentifier);
         }, TASK_DISAPPEAR_DELAY);
       })
       .catch(() => this.refreshTab());
@@ -422,7 +414,7 @@ class PersonDetailsView extends PureComponent {
   render() {
     const {
       personData,
-      routeParams,
+      match,
       modalActions,
       taskCounters,
       isFetching,
@@ -435,8 +427,10 @@ class PersonDetailsView extends PureComponent {
     } = this.props;
     const { isLoadingView, searchValue } = this.state;
     const { openModal } = modalActions;
+    const { params } = match;
+    const { tabName, userIdentifier } = params;
 
-    const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
+    const selectedTab = tabName || TaskListTabName.OPEN;
 
     return (
       !isLoadingView && (
@@ -479,7 +473,7 @@ class PersonDetailsView extends PureComponent {
                 updateDueDate={this.handleUpdateDueDate}
                 searchValue={searchValue}
                 selectedTask={selectedTask}
-                listUniqueKey={routeParams.userIdentifier}
+                listUniqueKey={userIdentifier}
                 areFiltersApplied={areFiltersApplied}
               />
             ) : (
@@ -495,7 +489,7 @@ class PersonDetailsView extends PureComponent {
                 updateWorkflowStatus={this.handleUpdateWorkflowStatus}
                 searchValue={searchValue}
                 selectedTask={selectedTask}
-                listUniqueKey={routeParams.userIdentifier}
+                listUniqueKey={userIdentifier}
                 areFiltersApplied={areFiltersApplied}
               />
             )}

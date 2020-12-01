@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';

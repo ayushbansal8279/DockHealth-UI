@@ -79,7 +79,7 @@ const Drawer = ({ children }) => {
                     trialEndLabel}
                 </span>
                 {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
-                  <TrialBannerLink to="/subscriptions">
+                  <TrialBannerLink to="/settings/subscriptions">
                     {hasMinimalUsagePeriodPassed
                       ? 'Subscribe Now'
                       : 'Learn more'}

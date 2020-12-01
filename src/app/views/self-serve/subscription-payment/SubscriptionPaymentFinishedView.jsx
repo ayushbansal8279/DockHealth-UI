@@ -1,7 +1,7 @@
 import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setHeader } from 'actions/header-actions';
 import {
@@ -17,20 +17,23 @@ import {
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
-const goToMainPage = () => {
-  hashHistory.replace('/');
+const goToMainPage = history => {
+  history.replace('/');
 };
 
-const SaveBillingElement = () => (
-  <>
-    <Spacing2 />
-    <Grid item sm={12} container justify="flex-end">
-      <Button onClick={goToMainPage} variant="contained">
-        Continue
-      </Button>
-    </Grid>
-  </>
-);
+const SaveBillingElement = () => {
+  const history = useHistory();
+  return (
+    <>
+      <Spacing2 />
+      <Grid item sm={12} container justify="flex-end">
+        <Button onClick={() => goToMainPage(history)} variant="contained">
+          Continue
+        </Button>
+      </Grid>
+    </>
+  );
+};
 
 const SubscriptionPaymentFinishedView = () => {
   const dispatch = useDispatch();

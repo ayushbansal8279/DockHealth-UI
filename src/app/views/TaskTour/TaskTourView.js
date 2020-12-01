@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
 import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
@@ -21,6 +21,7 @@ import {
 const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
   const taskLists = useSelector(taskListSelector);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -88,7 +89,7 @@ const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
           fullWidth
           onClick={() => {
             onNewUserTourEnter('Navigate to list button click');
-            hashHistory.push(`tasks/${taskListIdentifier}`);
+            history.push(`tasks/${taskListIdentifier}`);
           }}
         >
           Now create your own

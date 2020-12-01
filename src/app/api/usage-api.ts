@@ -12,7 +12,7 @@ interface SendEventProps {
   usageEventType: 'PAGE_VIEW' | 'USAGE_ACTION';
 }
 
-const sendEvent = (data: SendEventProps) => {
+const sendEvent = async (data: SendEventProps) => {
   let captureEvent = true;
   if (
     data &&
@@ -36,20 +36,18 @@ const sendEvent = (data: SendEventProps) => {
     captureEvent = false;
   }
   if (captureEvent) {
-
-    axios({
+    await axios({
       method: 'post',
       url: '/usage/event',
       data,
     });
   }
 
-  ReactGA.event({
+  await ReactGA.event({
     category: data.eventCategory,
     action: data.eventAction,
     label: data.eventLabel,
   });
 };
-
 
 export default sendEvent;

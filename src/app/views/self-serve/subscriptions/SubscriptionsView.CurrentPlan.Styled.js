@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { H2 } from './SubscriptionsView.Styled';

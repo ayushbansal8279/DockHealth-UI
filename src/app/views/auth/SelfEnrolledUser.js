@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const SelfEnrolledUser = () => {
   return (
@@ -69,7 +69,7 @@ const SelfEnrolledUser = () => {
       <div className="row expanded">
         <div className="columns large-12 top-buffer text-right details">
           <h4 className="subtitle">
-            <Link to="/tasks">
+            <Link to="/core/tasks">
               <button type="button" className="button secondary expand">
                 I agree
               </button>

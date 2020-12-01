@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Button from 'components/common/Button/Button';
 import TrialExpirationCover from 'img/modals/trial-expiration-cover';
 import CircleCompleted from 'img/circle-completed';
@@ -25,7 +25,7 @@ const TrialExpirationModal = ({ closeModal }) => {
           </ModalContentItem>
         </div>
 
-        <Link to="/subscriptions">
+        <Link to="/settings/subscriptions">
           <Button color="red" onClick={closeModal} size="small">
             SUBSCRIBE
           </Button>

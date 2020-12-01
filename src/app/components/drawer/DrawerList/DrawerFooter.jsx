@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { useHistory, Link } from 'react-router-dom';
 import palette from 'styles/palette';
 import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import Member from '../../members/Member/Member';
@@ -12,7 +12,8 @@ import {
 } from './styled';
 
 const StyledLink = React.forwardRef((props, reference) => {
-  const linkActive = hashHistory.getCurrentLocation().pathname === props.link;
+  const history = useHistory();
+  const linkActive = history?.location?.pathname === props.link;
 
   return (
     <Link
@@ -47,21 +48,21 @@ const getListElements = ({ isUserAdmin, organization }) => {
 
   return [
     {
-      link: '/userProfile',
+      link: '/settings/userProfile',
       label: 'Profile',
     },
     isUserAdmin && {
-      link: '/subscriptions',
+      link: '/settings/subscriptions',
       label: 'Subscriptions',
     },
     isUserAdmin &&
       !isSubscriptionTrial &&
       !isFreePlan && {
-        link: '/billing',
+        link: '/settings/billing',
         label: 'Billing',
       },
     {
-      link: '/documents',
+      link: '/settings/documents',
       label: 'Agreements',
     },
     {

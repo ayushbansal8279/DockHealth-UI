@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
@@ -36,6 +37,7 @@ import {
 
 const UserProfileView = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { userProfile } = useSelector(store => {
     return {
@@ -45,7 +47,7 @@ const UserProfileView = () => {
 
   useEffect(
     () => {
-      userApi.getUserNotoficationPrefs();
+      userApi.getUserNotificationPrefs();
 
       setHeader(dispatch)({
         layout: [
@@ -67,7 +69,7 @@ const UserProfileView = () => {
           userApi
             .leaveOrganization(userProfile.organizationIdentifier)
             .then(() => {
-              userApi.logout();
+              userApi.logout(history);
             })
             .catch(() => {
               dispatch(closeModalAction());

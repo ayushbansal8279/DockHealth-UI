@@ -3,6 +3,7 @@ import {
   FETCH_PATIENT,
   FETCH_PATIENT_ERROR,
   FETCH_PATIENT_SUCCESS,
+  CLEAR_PATIENT,
 } from './action-types';
 import { storeAsCurrentTask, storeAllTasks } from './task-actions';
 import { getMembersByTaskListId } from './tasklist-actions';
@@ -43,3 +44,5 @@ export const selectPatientTask = task => async dispatch => {
   }
   dispatch(storeAsCurrentTask(task));
 };
+
+export const clearPatientDetails = () => ({ type: CLEAR_PATIENT });

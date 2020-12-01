@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import Arrow from 'components/common/Arrow/Arrow';
 import {
@@ -66,12 +66,12 @@ const PatientDetailsInformation = ({
   isLoadingDetails,
 }) => {
   const { width } = useWindowDimensions();
-
+  const history = useHistory();
   return (
     <PatientDetailsInformationContainer>
       <PatientDetailsBio style={{ flexDirection: 'row' }}>
         <div style={{ width: '30px' }}>
-          <button type="button" onClick={hashHistory.goBack}>
+          <button type="button" onClick={history.goBack}>
             <img
               src={ArrowLeftIcon}
               alt="back-navigation"

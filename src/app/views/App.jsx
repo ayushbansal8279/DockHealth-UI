@@ -7,7 +7,7 @@ import React, { PureComponent } from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
 import IdleTimer from 'react-idle-timer';
-import { hashHistory } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
 import { initializePusherForPresence } from 'helpers/pusher-instance';
@@ -67,14 +67,15 @@ class App extends PureComponent {
 
   logoutTimeout = null;
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     const redirectToLink = sessionStorage.getItem('redirectToLink');
 
     if (redirectToHome && !redirectToLink) {
       sessionStorage.removeItem('redirectToHome');
-      if (window.location.hash !== '#/home/my-tasks') {
-        window.location.href = '#/home/my-tasks';
+      if (window.location.hash !== '#/core/home/my-tasks') {
+        window.location.href = '#/core/home/my-tasks';
       }
     }
 
@@ -162,8 +163,9 @@ class App extends PureComponent {
   }
 
   logout = () => {
+    const { history } = this.props;
     userApi
-      .logout()
+      .logout(history)
       .then(() => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           TIMEOUT_SUCCESS: 'YES',
@@ -175,7 +177,7 @@ class App extends PureComponent {
         });
       });
 
-    hashHistory.push('/login');
+    history.push('/auth/login');
   };
 
   onAction = () => {};
@@ -299,4 +301,4 @@ const mapDispatchToProps = {
   openModal,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

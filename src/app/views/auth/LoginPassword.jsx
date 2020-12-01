@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
@@ -17,6 +17,7 @@ import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
 const LoginPassword = () => {
   const [unconfirmedUserFlag, setUnconfirmedUserFlag] = useState(false);
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -52,19 +53,20 @@ const LoginPassword = () => {
                 data.challengeParam.CODE_DELIVERY_DESTINATION,
               );
             }
-            hashHistory.push(
+            history.push(
               `confirmMFACode?uname=${encodeURIComponent(form.username)}`,
             );
           } else {
             sessionStorage.setItem('sessionStartTime', new Date().getTime());
-            const nextPathname = sessionStorage.getItem('next-page') || '/';
-            if (nextPathname.includes('login')) {
-              hashHistory.push('/home/my-tasks');
+
+            const nextPathname = sessionStorage.getItem('next-page');
+            if (nextPathname && nextPathname !== '') {
+              sessionStorage.setItem('next-page', '');
+              history.push(nextPathname);
             } else {
-              hashHistory.push(nextPathname);
+              history.push('/core/home/my-tasks');
             }
 
-            sessionStorage.setItem('next-page', '');
             success('Logged in.');
             captureLocalTimezone();
           }
@@ -91,7 +93,7 @@ const LoginPassword = () => {
           });
         });
     },
-    [],
+    [history],
   );
 
   const onResendCode = useCallback(

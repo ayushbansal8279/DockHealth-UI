@@ -1,5 +1,5 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import OwlWithList from 'img/owl-with-list.png';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
@@ -19,6 +19,7 @@ const DashboardFirstVisitView = ({
   list,
   acceptInvitation,
 }) => {
+  const history = useHistory();
   return (
     <Wrapper>
       <TextWrapper>
@@ -41,7 +42,7 @@ const DashboardFirstVisitView = ({
                 onClick={() => {
                   acceptInvitation(list);
                   if (list) {
-                    hashHistory.push(`tasks/${list.taskListIdentifier}`);
+                    history.push(`tasks/${list.taskListIdentifier}`);
                   }
                 }}
               >

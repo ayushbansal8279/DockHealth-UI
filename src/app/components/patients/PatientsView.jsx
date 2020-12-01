@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { isNil } from 'ramda';
 import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
@@ -19,12 +19,13 @@ import {
 } from './styled';
 import PatientSidebar from './PatientSidebar/PatientSidebar';
 
-const handleAfterPatientCreation = ({ patientIdentifier }) => {
-  hashHistory.push(`/patient/${patientIdentifier}`);
+const handleAfterPatientCreation = ({ patientIdentifier }, history) => {
+  history.push(`/core/patient/${patientIdentifier}`);
 };
 
 const PatientsView = () => {
   const patientsListContainerReference = useRef(null);
+  const history = useHistory();
 
   const [patients, setPatients] = useState([]);
   const [isFetchingPatients, setIsFetchingPatients] = useState(false);
@@ -168,7 +169,9 @@ const PatientsView = () => {
                 height={patientsListContainerReference.current?.clientHeight}
               >
                 <PatientSidebar
-                  onPatientCreated={handleAfterPatientCreation}
+                  onPatientCreated={patient =>
+                    handleAfterPatientCreation(patient, history)
+                  }
                   onClose={unsetIsSidebarOpen}
                 />
                 <SideClickListener onClick={unsetIsSidebarOpen} />

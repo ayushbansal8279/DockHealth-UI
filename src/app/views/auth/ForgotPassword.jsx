@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
@@ -12,6 +12,7 @@ import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
 const ForgotPassword = () => {
   const [unconfirmedUserFlag, setUnconfirmedUserFlag] = useState(false);
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -48,9 +49,9 @@ const ForgotPassword = () => {
           if (resp.CodeDeliveryDetails) {
             const deliveryMedium = resp.CodeDeliveryDetails.DeliveryMedium;
             if (deliveryMedium === 'EMAIL') {
-              hashHistory.push('resetPasswordEmailSent');
+              history.push('resetPasswordEmailSent');
             } else {
-              hashHistory.push('resetPassword');
+              history.push('resetPassword');
             }
           }
         })
@@ -73,7 +74,7 @@ const ForgotPassword = () => {
           );
         });
     },
-    [],
+    [history],
   );
 
   const onResendCode = useCallback(

@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
@@ -38,7 +38,7 @@ const TitleContainer = styled.div`
   white-space: nowrap;
 `;
 
-const transformTaskList = ({ closeListPopover, taskList }) => ({
+const transformTaskList = ({ closeListPopover, taskList, history }) => ({
   listName,
   taskListIdentifier,
 }) => ({
@@ -47,7 +47,7 @@ const transformTaskList = ({ closeListPopover, taskList }) => ({
   label: listName,
   onClick: () => {
     closeListPopover();
-    hashHistory.push(`/tasks/${taskListIdentifier}`);
+    history.push(`/core/tasks/${taskListIdentifier}`);
   },
 });
 
@@ -55,7 +55,7 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
   const taskListIdentifier = taskList?.taskListIdentifier;
 
   const listPopoverReference = useRef(null);
-
+  const history = useHistory();
   const [isListPopoverOpen, openListPopover, closeListPopover] = useBoolean(
     false,
   );
@@ -68,14 +68,16 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
   const mergedTaskLists = [...taskLists, ...pendingTaskLists];
 
   const listPopoverItems = [
-    ...mergedTaskLists.map(transformTaskList({ closeListPopover, taskList })),
+    ...mergedTaskLists.map(
+      transformTaskList({ closeListPopover, taskList, history }),
+    ),
     {
       key: 'inbox',
       active: !taskListIdentifier,
       label: 'Inbox',
       onClick: () => {
         closeListPopover();
-        hashHistory.push(`/tasks/Inbox`);
+        history.push(`/core/tasks/Inbox`);
       },
     },
   ];

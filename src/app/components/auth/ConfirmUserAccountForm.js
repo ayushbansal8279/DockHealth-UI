@@ -1,15 +1,13 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import AuthField from '../common/AuthField';
 
 const validate = values => {
   const errors = {};
   if (!values.username) {
     errors.username = 'Required';
-  } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
-  ) {
+  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
     errors.username = 'Invalid email address';
   }
 
@@ -41,7 +39,7 @@ const ConfirmUserAccountForm = props => {
           xlinkHref="#icon-password"
         />
         <div className="columns small-12 text-right details">
-          <Link to="/resendCode">Resend code</Link>
+          <Link to="/auth/resendCode">Resend code</Link>
         </div>
         <div className="columns small-12 text-center top-buffer">
           <button
@@ -55,7 +53,7 @@ const ConfirmUserAccountForm = props => {
           </button>
         </div>
         <div className="columns large-12 top-buffer text-center details">
-          <Link to="/login">Login if you already have an account</Link>
+          <Link to="/auth/login">Login if you already have an account</Link>
         </div>
       </div>
     </form>

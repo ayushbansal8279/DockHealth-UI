@@ -10,7 +10,6 @@ import { Add, Close, List } from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import { useCss } from 'react-use';
 import { bindActionCreators } from 'redux';
 import { setHeader } from 'actions/header-actions';
@@ -151,7 +150,7 @@ class TaskListView extends PureComponent {
       channelName,
     });
 
-    if (channel){
+    if (channel) {
       channel.bind('task-update', () => {
         taskListAction.getTaskListForUser();
       });
@@ -234,10 +233,10 @@ class TaskListView extends PureComponent {
   };
 
   acceptInviteToTaskList = taskList => {
-    const { invitationAction, taskActions } = this.props;
+    const { invitationAction, taskActions, history } = this.props;
     invitationAction.acceptInviteToTaskList(taskList);
     taskActions.resetTaskSearch();
-    hashHistory.push(`tasks/${taskList.taskListIdentifier}`);
+    history.push(`/core/tasks/${taskList.taskListIdentifier}`);
   };
 
   rejectInviteToTaskList = taskList => {
@@ -254,16 +253,17 @@ class TaskListView extends PureComponent {
   };
 
   onClick = taskListIdentifier => {
-    const { taskActions } = this.props;
+    const { taskActions, history } = this.props;
+
     taskActions.resetTaskSearch();
-    hashHistory.push(`/tasks/${taskListIdentifier}`);
+    history.push(`/core/tasks/${taskListIdentifier}`);
   };
 
   onClickPendingList = taskListIdentifier => {
-    const { taskActions } = this.props;
+    const { taskActions, history } = this.props;
     taskActions.resetTaskSearch();
     this.acceptInviteToTaskList({ taskListIdentifier });
-    hashHistory.push(`/tasks/${taskListIdentifier}`);
+    history.push(`/core/tasks/${taskListIdentifier}`);
   };
 
   render() {

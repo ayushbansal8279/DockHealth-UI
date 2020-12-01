@@ -3,7 +3,6 @@ import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import { curry } from 'ramda';
-import { hashHistory } from 'react-router';
 import Swal from 'sweetalert2';
 
 export const noop = () => {};
@@ -155,15 +154,12 @@ export const showAlert = ({
   return swalPromise;
 };
 
-export const setCurrentPageInSessionStorage = () => {
-  const currentPathname = hashHistory.getCurrentLocation().pathname;
-
+export const setCurrentPageInSessionStorage = currentPathname => {
   sessionStorage.setItem('next-page', currentPathname);
 };
 
-export const setCurrentPageAfterLogin = () => {
-  setCurrentPageInSessionStorage();
-  hashHistory.push('/login');
+export const setCurrentPageAfterLogin = currentPathname => {
+  setCurrentPageInSessionStorage(currentPathname);
 };
 
 export const useSmallScreen = () => useMediaQuery('(max-width: 960px)');

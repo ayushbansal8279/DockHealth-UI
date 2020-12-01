@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import {
   OnboardingButton,
@@ -11,11 +11,12 @@ import {
   OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 
-const subscribeNow = () => {
-  hashHistory.push('subscriptions');
+const subscribeNow = history => {
+  history.push('subscriptions');
 };
 
 const OnboardingTrialCheckView = () => {
+  const history = useHistory();
   return (
     <div>
       <OnboardingH2Bold>Your free trial period has expired.</OnboardingH2Bold>
@@ -24,7 +25,7 @@ const OnboardingTrialCheckView = () => {
         <OnboardingButton
           type="button"
           variant="contained"
-          onClick={subscribeNow}
+          onClick={() => subscribeNow(history)}
         >
           <OnboardingH2Bold>Subscribe Now</OnboardingH2Bold>
         </OnboardingButton>

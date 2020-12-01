@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import {
   Title,
   Description,
@@ -11,6 +11,7 @@ import {
 } from './styled';
 
 const OnboardingNewOrganizationInfoView = () => {
+  const history = useHistory();
   return (
     <InfoContainer>
       <Title>New Organization</Title>
@@ -24,13 +25,13 @@ const OnboardingNewOrganizationInfoView = () => {
       </Description>
       <Spacing vertical={7} />
       <Grid container justify="flex-end">
-        <Button onClick={hashHistory.goBack} variant="text">
+        <Button onClick={history.goBack} variant="text">
           Cancel
         </Button>
         <ContinueButtonContainer>
           <Button
             fullWidth
-            onClick={() => hashHistory.push('/onboarding/create-organization')}
+            onClick={() => history.push('/onboarding/create-organization')}
           >
             Continue
           </Button>

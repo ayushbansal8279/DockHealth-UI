@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import {
@@ -17,6 +17,7 @@ const ConfirmMFACode = props => {
   const [customError, setCustomError] = useState('');
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useMount(() => {
     const { location } = props;
@@ -41,7 +42,7 @@ const ConfirmMFACode = props => {
           userApi.rememberDevice().then(result => {
             console.log(`added device to be remembered: ${result}`);
           });
-          hashHistory.push('/');
+          history.push('/');
           success('Logged in.');
           userApi.captureLocalTimezone();
         })
@@ -55,7 +56,7 @@ const ConfirmMFACode = props => {
           errorNotification(error.message || 'An error occurred.');
         });
     },
-    [username],
+    [history, username],
   );
 
   return (

@@ -458,7 +458,9 @@ const TaskItem = ({
               )}
               {patient && !parentHasPatient && (
                 <PatientCard patientIdentifier={patient.patientIdentifier}>
-                  <ListItemLink to={`patient/${patient.patientIdentifier}`}>
+                  <ListItemLink
+                    to={`/core/patient/${patient.patientIdentifier}`}
+                  >
                     {(matchPatient || matchPatientMRN) && highlightedValue ? (
                       <Highlighter
                         highlightClassName="list-highlight"
@@ -648,7 +650,7 @@ const TaskItem = ({
           >
             {listName && taskListIdentifier ? (
               <ListLink
-                to={`/tasks/${taskListIdentifier}${
+                to={`/core/tasks/${taskListIdentifier}${
                   task.status === 'COMPLETE' ? '/complete' : ''
                 }`}
               >

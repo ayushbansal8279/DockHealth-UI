@@ -1,6 +1,6 @@
 import React from 'react';
 import OrganizationForm from 'views/onboarding/OrganizationForm/OrganizationForm';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { createOrganization } from 'api/organization-api';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
@@ -29,11 +29,12 @@ const onSubmit = ({ dispatch }) => async ({
 
 const OnboardingCreateOrganizationSetup = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
     <OrganizationForm
       onSubmit={onSubmit({ dispatch })}
-      onCancel={hashHistory.goBack}
+      onCancel={history.goBack}
     />
   );
 };

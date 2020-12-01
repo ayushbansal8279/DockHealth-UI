@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import LoginFormUsername from 'components/auth/LoginFormUsername';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
-const onSubmit = form => {
+const onSubmit = (form, history) => {
   const { username } = form;
 
   window.sessionStorage.setItem('username', username);
@@ -22,12 +22,13 @@ const onSubmit = form => {
   ) {
     window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize`;
   } else {
-    hashHistory.push('loginUser');
+    history.push('loginUser');
   }
 };
 
 const LoginUser = props => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const confirmStatus = sessionStorage.getItem('confirmStatus');
 
@@ -41,8 +42,12 @@ const LoginUser = props => {
 
   useMount(() => {
     setConfirmationBaseState();
-    if (props.location?.query?.uname !== undefined) {
-      onSubmit({ username: props.location?.query?.uname });
+    const { match } = props;
+    const { params } = match;
+    const { uname } = params;
+
+    if (uname !== undefined) {
+      onSubmit({ username: uname });
     }
   });
 
@@ -50,7 +55,7 @@ const LoginUser = props => {
     setConfirmationBaseState();
   }, [confirmStatus, setConfirmationBaseState]);
 
-  return <LoginFormUsername onSubmit={onSubmit} />;
+  return <LoginFormUsername onSubmit={form => onSubmit(form, history)} />;
 };
 
 export default LoginUser;

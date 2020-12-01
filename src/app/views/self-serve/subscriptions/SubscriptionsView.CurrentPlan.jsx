@@ -94,7 +94,9 @@ const CurrentPlan = ({
                 {Boolean(planActiveUserCount) && (
                   <span>({planActiveUserCount} users) </span>
                 )}
-                <PlanColumnLink to="/billing">View billing</PlanColumnLink>
+                <PlanColumnLink to="/settings/billing">
+                  View billing
+                </PlanColumnLink>
               </Typography>
             </ThemeProvider>
           )}

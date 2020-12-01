@@ -1,7 +1,7 @@
 import { Button, Grid } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { setHeader } from 'actions/header-actions';
@@ -34,16 +34,16 @@ import {
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
-const finishSubscriptionPayment = () => {
-  hashHistory.replace('/subscription-payment-finished');
+const finishSubscriptionPayment = history => {
+  history.replace('/subscription-payment-finished');
 };
 
-const cancelSubscriptionPayment = () => {
-  hashHistory.push('/subscriptions');
+const cancelSubscriptionPayment = history => {
+  history.push('/subscriptions');
 };
 
-const goToSubscriptions = () => {
-  hashHistory.replace('/subscriptions');
+const goToSubscriptions = history => {
+  history.replace('/subscriptions');
 };
 
 /**
@@ -54,6 +54,7 @@ const onSubmit = ({
   billingFrequency,
   setProcessingPayment,
   unsetProcessingPayment,
+  history,
   // eslint-disable-next-line unicorn/consistent-function-scoping
 }) => ({ stripe }) => data => {
   setProcessingPayment();
@@ -75,7 +76,7 @@ const onSubmit = ({
       })
         .then(response => {
           if (response.statusCode === 'SUCCESS') {
-            finishSubscriptionPayment();
+            finishSubscriptionPayment(history);
           } else {
             showAlert({
               status: 'error',
@@ -151,6 +152,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
 
 const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { newPaymentPlan, currentUsers } = useSelector(store => ({
     ...store.organizationState,
@@ -159,13 +161,13 @@ const SubscriptionPaymentView = () => {
   }));
 
   const onCancelClick = useCallback(() => {
-    cancelSubscriptionPayment();
+    cancelSubscriptionPayment(history);
     setPaymentNewPlan({ newPlan: null })(dispatch);
-  }, [dispatch]);
+  }, [dispatch, history]);
 
   const onCancelPaymentClick = useCallback(() => {
-    cancelSubscriptionPayment();
-  }, []);
+    cancelSubscriptionPayment(history);
+  }, [history]);
 
   const [
     processingPayment,
@@ -175,7 +177,7 @@ const SubscriptionPaymentView = () => {
 
   useMount(() => {
     if (!newPaymentPlan || !currentUsers) {
-      goToSubscriptions();
+      goToSubscriptions(history);
     }
 
     setHeader(dispatch)({
@@ -243,7 +245,9 @@ const SubscriptionPaymentView = () => {
                       <b>{annualPayment ? 'Annually' : 'Monthly'}</b>
                     </MontserratTypography>
                   </DarkBlueTextContainer>
-                  <StyledLink to="/subscriptions">Change plans</StyledLink>
+                  <StyledLink to="/settings/subscriptions">
+                    Change plans
+                  </StyledLink>
                 </Grid>
               </PricingItemVerticallyExpanded>
               <Grid container alignItems="center" justify="flex-end">
@@ -307,6 +311,7 @@ const SubscriptionPaymentView = () => {
                   processingPayment,
                   setProcessingPayment,
                   unsetProcessingPayment,
+                  history,
                 })}
                 SaveBillingElement={getSaveBillingElement({
                   onCancelClick,

@@ -22,7 +22,7 @@ import {
   UPDATE_ORGANIZATION,
 } from './action-types';
 
-const handleOrganizationResponse = ({ fetchMethod, dispatch }) =>
+export const handleOrganizationResponse = ({ fetchMethod, dispatch }) =>
   fetchMethod()
     .then(data => {
       dispatch({

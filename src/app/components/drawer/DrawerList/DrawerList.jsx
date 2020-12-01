@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unresolved */
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, withRouter } from 'react-router';
+import { Link, withRouter } from 'react-router-dom';
 import useBoolean from 'hooks/useBoolean';
 import ListsIcon from 'img/drawer/ListsIcon';
 import PatientsIcon from 'img/drawer/PatientsIcon';
@@ -190,14 +190,14 @@ const getDrawerItems = ({ lists }) => [
     id: 'search',
     label: 'Search',
     icon: SearchIcon,
-    to: 'search',
+    to: '/core/search',
   },
   {
     id: 'home',
     label: 'Home',
     icon: HomeIcon,
     tabsPath: ['/my-tasks', '/all-tasks'],
-    to: '/home',
+    to: '/core/home',
     isIconFilled: false,
     defaultChildPath: '/my-tasks',
   },
@@ -205,14 +205,14 @@ const getDrawerItems = ({ lists }) => [
     id: 'lists',
     label: 'Lists',
     icon: ListsIcon,
-    to: 'tasks',
+    to: '/core/tasks',
     childItems: lists?.map(({ listName, taskListIdentifier }) => {
       const id = `${NESTED_LIST_PREFIX}-lists-${taskListIdentifier}`;
 
       return {
         id,
         label: listName,
-        to: `tasks/${taskListIdentifier}`,
+        to: `/core/tasks/${taskListIdentifier}`,
       };
     }),
   },
@@ -220,13 +220,13 @@ const getDrawerItems = ({ lists }) => [
     id: 'people',
     label: 'People',
     icon: PeopleIcon,
-    to: 'people',
+    to: '/core/people',
   },
   {
     id: 'patients',
     label: 'Patients',
     icon: PatientsIcon,
-    to: 'patients',
+    to: '/core/patients',
   },
 ];
 

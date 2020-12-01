@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
@@ -38,11 +38,13 @@ const ConfirmRegistration = props => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const history = useHistory();
 
   // eslint-disable-next-line consistent-return
   useMount(() => {
-    const { uname } = props.location.query;
-    const { code } = props.location.query;
+    const { match } = props;
+    const { params } = match;
+    const { uname, code } = params;
 
     if (uname && code) {
       setUserEmail(uname);
@@ -57,7 +59,7 @@ const ConfirmRegistration = props => {
 
           success('Registration confirmed. Please Login');
           window.sessionStorage.setItem('confirmStatus', true);
-          hashHistory.push(`login?uname=${encodeURIComponent(uname)}`);
+          history.push(`login?uname=${encodeURIComponent(uname)}`);
           // window.location.href = process.env.BRANCH_IO_APP_LINK;
         })
         .catch(error => {
@@ -69,7 +71,7 @@ const ConfirmRegistration = props => {
             message ===
             'User cannot confirm because user status is not UNCONFIRMED.'
           ) {
-            hashHistory.push('login');
+            history.push('login');
             // window.location.href = process.env.BRANCH_IO_APP_LINK;
             return;
           }
@@ -78,7 +80,7 @@ const ConfirmRegistration = props => {
           showDialog();
         });
     }
-    hashHistory.push('login');
+    history.push('login');
   });
 
   const onboardingDialogStyle = {
@@ -140,7 +142,7 @@ const ConfirmRegistration = props => {
           <span style={onboardingDialogStyle}>Please try to</span>
           <StyledAnchorDiv
             style={onboardingLinkStyle}
-            onClick={() => hashHistory.push('login')}
+            onClick={() => history.push('login')}
           >
             Sign In
           </StyledAnchorDiv>

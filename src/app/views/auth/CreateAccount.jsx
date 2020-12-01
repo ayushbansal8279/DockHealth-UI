@@ -5,7 +5,7 @@ import { parse } from 'query-string';
 import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
@@ -54,30 +54,12 @@ const validationSchema = object().shape({
     .matches(/\d{10}/, 'This field should contain a valid phone number'),
 });
 
-interface OnSubmitProps {
-  showDialog: Function;
-  setDialogTitle: (title: string) => void;
-  setDialogMessage: (message: string) => void;
-  locationParameters: any;
-}
-
-interface FormProps {
-  [key: string]: string;
-}
-
 const onSubmit = ({
   showDialog,
   setDialogTitle,
   setDialogMessage,
   locationParameters,
-}: // eslint-disable-next-line unicorn/consistent-function-scoping
-OnSubmitProps) => async ({
-  email,
-  password,
-  mobilePhoneNumber,
-  lastName,
-  firstName,
-}: FormProps) => {
+}) => async ({ email, password, mobilePhoneNumber, lastName, firstName }) => {
   const referral = locationParameters.referral
     ? locationParameters.referral
     : '';
@@ -114,7 +96,7 @@ OnSubmitProps) => async ({
   }
 };
 
-const resendEmail = async (email: string) => {
+const resendEmail = async email => {
   try {
     await resendConfirmationCode({
       username: email,
@@ -133,8 +115,8 @@ const resendEmail = async (email: string) => {
 };
 
 const getCustomTitleFromReferralConfig = async (
-  referralCode: any,
-  setCustomPageTitle: any,
+  referralCode,
+  setCustomPageTitle,
 ) => {
   if (referralCode !== undefined && referralCode !== 'undefined') {
     const referralConfig = await organizationApi.getConfigurationForReferral(
@@ -161,7 +143,7 @@ const CreateAccount = props => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
-
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const formMethods = useForm({
@@ -172,12 +154,14 @@ const CreateAccount = props => {
   const email = formMethods.watch('email');
   const { setValue } = formMethods;
 
-  const locationParameters = parse(hashHistory.getCurrentLocation()?.search);
+  const locationParameters = parse(history?.location?.search);
   const hasTrialReferral = Boolean(locationParameters.trial);
 
   useMount(() => {
-    const { uname } = props.location.query;
-    // console.log(`uname: ${uname} code:${code}`);
+    const { match } = props;
+    const { params } = match;
+    const { uname } = params;
+
     if (uname) {
       setValue('email', uname);
     }
@@ -285,7 +269,7 @@ const CreateAccount = props => {
             <span style={{ padding: '0rem 1rem' }}>
               I already have an account.
             </span>
-            <StyledLink to="/login">SIGN IN</StyledLink>
+            <StyledLink to="/auth/login">SIGN IN</StyledLink>
           </MontserratTypography>
         </FormContext>
       </StyledForm>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const PageNotFound = () => (
   <div>
@@ -12,7 +12,7 @@ const PageNotFound = () => (
     <div className="row expanded">
       <div className="columns large-12 top-buffer text-right details">
         <h4 className="subtitle">
-          <Link to="/login">Login here</Link>
+          <Link to="/auth/login">Login here</Link>
         </h4>
       </div>
     </div>

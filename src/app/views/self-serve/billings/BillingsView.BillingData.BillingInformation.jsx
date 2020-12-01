@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { getBillingEstimate } from 'actions/organization-actions';
@@ -55,8 +55,8 @@ const ExpirationLabel = styled.span`
     props.futureExpirationWarning ? palette.oPlusRed : palette.lightGrey};
 `;
 
-const goToSubscriptions = () => {
-  hashHistory.push('/subscriptions');
+const goToSubscriptions = history => {
+  history.push('/subscriptions');
 };
 
 const getCardBrandIconSource = ({ cardBrand }) => {
@@ -78,6 +78,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
   const { getValues } = useFormContext();
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { billingData, billingDetails } = useSelector(
     store => store.organizationState,
@@ -173,7 +174,9 @@ const BillingInformation = ({ setUpdatingBilling }) => {
           <span>{billingEstimateLabel}</span>
           <span> | </span>
           <span>{billingData?.activeUserCount ?? 0} users </span>
-          <LinkContainer onClick={goToSubscriptions}>view users</LinkContainer>
+          <LinkContainer onClick={() => goToSubscriptions(history)}>
+            view users
+          </LinkContainer>
         </MontserratTypography>
       </InformationInnerContainer>
     </InformationContainer>
