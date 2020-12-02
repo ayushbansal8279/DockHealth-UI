@@ -21,7 +21,14 @@ const PatientSelectItem = React.forwardRef(
           />
         </SuggestionText>
         <SuggestionText>{age}</SuggestionText>
-        <SuggestionText>{mrn}</SuggestionText>
+        <SuggestionText>
+          <Highlighter
+            highlightStyle={{ fontWeight: 'bold', background: 'none' }}
+            searchWords={searchValue?.toLowerCase().split(/\s+/)}
+            autoEscape
+            textToHighlight={mrn}
+          />
+        </SuggestionText>
       </SuggestionItemContainer>
     );
   },
