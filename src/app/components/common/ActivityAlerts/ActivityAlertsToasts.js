@@ -22,7 +22,7 @@ const listenRealTimeAlerts = (currentUser, showAlert) => {
   if (!channel || !channel.subscribed) {
     channel = pusher?.subscribe(channelName);
   }
-  if(channel){
+  if (channel) {
     channel.unbind('activity-alert');
     channel.bind('activity-alert', ({ alert }) => {
       if (alert) {
@@ -38,13 +38,9 @@ const ActivityAlertsToasts = () => {
   const [newAlert, setNewAlert] = useState({});
   const [lastElement, setLastElement] = useState(null);
 
-  const { currentUser, alertsEnabledState, alertsHideState } = useSelector(
-    store => ({
-      currentUser: store.userState.userProfile,
-      alertsEnabledState: store.alertsState.alertsEnabled,
-      alertsHideState: store.alertsState.alertToastHide,
-    }),
-  );
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
 
   const showActivityAlert = async alert => {
     const alertDetails = await getActivityAlertDetails(
@@ -54,10 +50,8 @@ const ActivityAlertsToasts = () => {
   };
 
   useEffect(() => {
-    if (alertsEnabledState && !alertsHideState) {
-      listenRealTimeAlerts(currentUser, showActivityAlert);
-    }
-  }, [currentUser, alertsHideState, alertsEnabledState]);
+    listenRealTimeAlerts(currentUser, showActivityAlert);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!isEmpty(newAlert)) {
@@ -71,10 +65,6 @@ const ActivityAlertsToasts = () => {
       setAlertsList([]);
     }
   }, [lastElement]);
-
-  if (!alertsEnabledState || alertsHideState) {
-    return null;
-  }
 
   return (
     <>

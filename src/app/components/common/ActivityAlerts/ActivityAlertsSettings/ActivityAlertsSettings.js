@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import {
-  getNotificationSettings,
-  updateNotificationSettings,
-} from 'api/user-api';
+import { updateNotificationSettings } from 'api/user-api';
+import Switch from 'components/common/Switch/Switch';
 import {
   ActivityAlertsPopoverLabel,
-  ActivityAlertsHeader,
   ActivityAlertsHeaderLabel,
+  ActivityAlertsSwitchLabel,
 } from '../styled';
 import {
+  ActivityAlertsSettingsHeader,
   ActivityAlertsSettingsContainer,
   ActivityAlertsSettingsItem,
   ActivityAlertsSettingsItemsContainer,
@@ -70,25 +69,15 @@ const ActivityAlertsSettingsRow = ({
   );
 };
 
-const ActivityAlertsSettings = ({ setSelectedScreen }) => {
-  const [notificationSettings, setNotificationSettings] = useState([]);
-
-  const refreshNotificationSettings = useCallback(() => {
-    (async function fetchData() {
-      const {
-        notificationSettings: notificationSettingsData,
-      } = await getNotificationSettings();
-      setNotificationSettings(notificationSettingsData);
-    })();
-  }, []);
-
-  useEffect(() => {
-    refreshNotificationSettings();
-  }, [refreshNotificationSettings]);
-
+const ActivityAlertsSettings = ({
+  setSelectedScreen,
+  notificationSettings,
+  hasAnyOptionTurnedOn,
+  refreshNotificationSettings,
+}) => {
   return (
     <ActivityAlertsSettingsContainer>
-      <ActivityAlertsHeader>
+      <ActivityAlertsSettingsHeader>
         <ActivityAlertsHeaderLabel>
           <ActivityAlertsPopoverLabel>
             <ArrowButton onClick={() => setSelectedScreen('LIST')}>
@@ -97,7 +86,24 @@ const ActivityAlertsSettings = ({ setSelectedScreen }) => {
             Settings
           </ActivityAlertsPopoverLabel>
         </ActivityAlertsHeaderLabel>
-      </ActivityAlertsHeader>
+        <div>
+          <Switch
+            checked={hasAnyOptionTurnedOn}
+            onChange={() => {
+              updateNotificationSettings(
+                notificationSettings.map(s => ({
+                  ...s,
+                  emailEnabled: !hasAnyOptionTurnedOn,
+                  pushNotificationEnabled: !hasAnyOptionTurnedOn,
+                })),
+              ).then(refreshNotificationSettings);
+            }}
+          />
+          <ActivityAlertsSwitchLabel>
+            {hasAnyOptionTurnedOn ? 'ON' : 'OFF'}
+          </ActivityAlertsSwitchLabel>
+        </div>
+      </ActivityAlertsSettingsHeader>
       <ActivityAlertsSettingsItemsContainer>
         <ActivityAlertsSettingsItemsHeader>
           <Grid container>
