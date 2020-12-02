@@ -5,6 +5,7 @@ import { useUnmount } from 'react-use';
 import { IntercomAPI } from 'react-intercom';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import {
   SubscriptionPlanDarkPanel,
@@ -182,6 +183,21 @@ const SubscriptionsPlansView = ({
               size="small"
               onClick={() => setAnnualPayment(BILLING_FREQUENCY.ANNUAL)}
             >
+              {chosenSubscriptionPlan &&
+                chosenBillingFrequency === BILLING_FREQUENCY.ANNUAL && (
+                  <>
+                    <img
+                      src={ConfirmEmailHeaderCheck}
+                      style={{
+                        float: 'left',
+                        height: '2.2rem',
+                        marginLeft: '-50px',
+                      }}
+                      alt="Dock Health"
+                    />
+                    <Spacing horizontal={5} />
+                  </>
+                )}
               PAY ANNUALLY
             </Button>
             <Spacing vertical={4} />
@@ -216,6 +232,21 @@ const SubscriptionsPlansView = ({
               size="small"
               onClick={() => setAnnualPayment(BILLING_FREQUENCY.MONTHLY)}
             >
+              {chosenSubscriptionPlan &&
+                chosenBillingFrequency === BILLING_FREQUENCY.MONTHLY && (
+                  <>
+                    <img
+                      src={ConfirmEmailHeaderCheck}
+                      style={{
+                        float: 'left',
+                        height: '2.2rem',
+                        marginLeft: '-50px',
+                      }}
+                      alt="Dock Health"
+                    />
+                    <Spacing horizontal={5} />
+                  </>
+                )}
               PAY MONTHLY
             </Button>
             <Spacing vertical={4} />
