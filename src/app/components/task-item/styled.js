@@ -223,6 +223,7 @@ export const StandardTaskItemContainer = styled.div`
   justify-content: flex-end;
   width: 100%;
   height: ${({ height }) => height};
+  ${({ noTopBorder }) => noTopBorder && `border-top: none;`}
 `;
 
 export const StatusBar = styled.div`
@@ -479,4 +480,8 @@ export const DescriptionLabel = styled.div`
   color: rgb(193, 204, 218);
   text-decoration: none;
   margin-top: 1px;
+`;
+
+export const ParentTaskContainer = styled.div`
+  margin-bottom: 3px;
 `;

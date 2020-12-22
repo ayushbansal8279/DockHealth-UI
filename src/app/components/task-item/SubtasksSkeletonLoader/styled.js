@@ -18,7 +18,7 @@ export const LoaderRow = styled.div`
   flex-direction: row;
 
   &:not(:last-of-type) {
-    margin-bottom: ${spacing.regularPlus};
+    margin-bottom: ${spacing.smallPlus};
   }
 `;
 
