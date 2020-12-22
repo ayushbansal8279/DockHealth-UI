@@ -24,7 +24,7 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? '0.8rem' : 0)}rem;
+  height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
   overflow: hidden;
   transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;

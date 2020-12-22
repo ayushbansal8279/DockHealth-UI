@@ -431,15 +431,17 @@ const TaskItem = ({
                 {isCompleted && <Spacing vertical={2} />}
               </>
             )}
-            <CompletedBy isCompleted={isCompleted}>
-              <span>{`Completed by ${completedByName} ${completedDt &&
-                ` on ${
-                  completedDt
-                    ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                    : ''
-                }`}
+            {isCompletedGroup && (
+              <CompletedBy isCompleted={isCompleted}>
+                <span>{`Completed by ${completedByName} ${completedDt &&
+                  ` on ${
+                    completedDt
+                      ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                      : ''
+                  }`}
                 `}</span>
-            </CompletedBy>
+              </CompletedBy>
+            )}
           </DescriptionBox>
         </MainStandardTaskItemCell>
         {!hideSubtasks && (
