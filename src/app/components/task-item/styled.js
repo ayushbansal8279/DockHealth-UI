@@ -103,6 +103,7 @@ export const Description = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
+  font-weight: ${fontWeights.regular};
 
   &:hover {
     ${DescriptionTooltip} {
