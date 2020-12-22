@@ -24,9 +24,8 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
+  height: ${props => (props.isCompleted ? '0.8rem' : 0)}rem;
   overflow: hidden;
-  padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
@@ -103,7 +102,6 @@ export const Description = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
-  font-weight: ${fontWeights.regular};
 
   &:hover {
     ${DescriptionTooltip} {
@@ -194,16 +192,17 @@ export const StandardTaskItemCell = styled.div`
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${props =>
-    props.bolded ? fontWeights.bold : fontWeights.light};
+    props.bolded ? fontWeights.regular : fontWeights.light};
+  color: ${palette.mediumGrey};
   min-width: ${props => props.width};
   max-width: ${props => props.width};
-  padding: ${spacing.smallPlus} 0;
+  padding: ${spacing.small} 0;
   padding-left: ${props =>
-    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
+    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
   padding-right: ${props =>
-    props.paddingLeft ? spacing[props.paddingRight] : spacing.regularPlus};
+    props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   overflow: hidden;
