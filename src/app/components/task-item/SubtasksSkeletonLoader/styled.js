@@ -3,8 +3,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
-  padding: ${spacing.regularPlus} ${spacing.regularPlus} ${spacing.regularPlus}
-    55px;
+  padding: ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus} 55px;
 `;
 
 export const LoaderGroup = styled.div`

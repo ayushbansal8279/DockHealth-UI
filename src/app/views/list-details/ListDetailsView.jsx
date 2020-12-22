@@ -244,7 +244,7 @@ class Home extends Component {
     // console.log(channel);
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
-    if (channel){
+    if (channel) {
       channel.bind('task-update', data => {
         // Since the app is going to be realtime, we don't want the same item to
         // be shown twice. Device A publishes an entry, all other devices including itself
