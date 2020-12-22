@@ -392,6 +392,7 @@ const TaskItem = ({
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
             isClickable={isTaskStatusTogglingEnabled}
+            isCompleted={isCompleted}
             onClick={onCircleClick}
           />
           <DescriptionBox>

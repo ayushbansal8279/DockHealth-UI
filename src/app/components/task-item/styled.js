@@ -76,6 +76,7 @@ export const AddCrossIcon = styled.img`
 export const CircleIcon = styled.img`
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};
+  ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
 `;
 export const DescriptionTooltip = styled.div`
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
