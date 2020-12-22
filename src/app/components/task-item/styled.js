@@ -83,7 +83,7 @@ export const DescriptionTooltip = styled.div`
   position: absolute;
   top: 30px;
   left: 60px;
-  max-width: 60vw;
+  max-width: 650px;
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
@@ -93,12 +93,13 @@ export const DescriptionTooltip = styled.div`
 `;
 
 export const Description = styled.div`
-  width: 100%;
-  margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: initial;
 
   &:hover {
     ${DescriptionTooltip} {
@@ -175,14 +176,6 @@ export const SmallText = styled.span`
   font-size: ${fontSizes.small};
 `;
 
-export const SubtasksGroupLabel = styled.span`
-  color: ${palette.lightGray};
-  font-size: ${fontSizes.smallPlus};
-  cursor: pointer;
-  margin-right: ${spacing.regularPlus};
-  width: 200px;
-`;
-
 export const StandardTaskItemCell = styled.div`
   position: ${({ position }) => position || 'relative'};
   align-items: center;
@@ -208,6 +201,10 @@ export const StandardTaskItemCell = styled.div`
   }
 `;
 
+export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
+  flex: 1;
+`;
+
 export const ClickablePatient = styled.span`
   align-self: center;
   cursor: pointer;
@@ -225,6 +222,7 @@ export const StandardTaskItemContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  height: ${({ height }) => height};
 `;
 
 export const StatusBar = styled.div`
@@ -337,14 +335,6 @@ export const SlimTaskItemListLink = styled(({ withMargin, ...otherProps }) => (
   margin-right: ${props => props.withMargin && spacing.large};
 `;
 
-export const Arrow = styled.img`
-  transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  padding-left: ${spacing.tiny};
-  padding-right: ${spacing.smallPlus};
-  transition: all 0.5s ease-in-out;
-`;
-
 export const MatchingWrapper = styled.div`
   height: 100%;
   width: 100%;
@@ -391,23 +381,6 @@ export const SlimTaskItemPatientLink = styled(Link)`
 
   &:hover {
     color: ${palette.brightBlue};
-  }
-`;
-
-export const SubtasksBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const SubtasksAddLabel = styled.button`
-  color: ${palette.brightBlue};
-  font-weight: normal;
-  cursor: pointer;
-  z-index: 99;
-  width: fit-content;
-
-  &:hover {
-    text-decoration: underline;
   }
 `;
 
@@ -471,4 +444,39 @@ export const LabelIcon = styled.img`
 
 export const AttachmentIcon = styled.img`
   height: 20px;
+`;
+
+export const SubtasksCellContent = styled.button`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+export const SubtasksCellText = styled.p`
+  margin-right: ${spacing.tiny};
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: ${({ isOpen }) => (isOpen ? palette.brightBlue : palette.coolGrey1)};
+`;
+
+export const SubtasksImg = styled.img`
+  width: 22px;
+  height: 15px;
+`;
+
+export const DescriptionWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+`;
+
+export const DescriptionLabel = styled.div`
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  color: rgb(193, 204, 218);
+  text-decoration: none;
+  margin-top: 1px;
 `;

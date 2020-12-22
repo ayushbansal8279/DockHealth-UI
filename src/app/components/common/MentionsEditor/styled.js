@@ -12,7 +12,7 @@ export const StyledEditorContainer = styled.div`
   ${({ isOneline }) =>
     isOneline &&
     `
-      height: 1.5em;
+      height: 1.3em;
       overflow: hidden;
 
       & .public-DraftStyleDefault-block {
