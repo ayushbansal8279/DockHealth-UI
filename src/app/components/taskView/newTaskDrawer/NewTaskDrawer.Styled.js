@@ -309,3 +309,10 @@ export const ParentTaskDescriptionPlaceholder = styled.div`
   margin: 2px 0;
   background: ${palette.coolGrey3};
 `;
+
+export const CompletedByLabel = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey2};
+`;
