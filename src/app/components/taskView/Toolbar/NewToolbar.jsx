@@ -50,7 +50,7 @@ const renderMemberAvatar = ({ taskListMembers }) => member => {
       isPending={isMemberPending(member)}
     >
       <Spacing horizontal={2} />
-      <Member member={taskListMember} size={40} />
+      <Member member={taskListMember} size={45} />
     </MemberWrapper>
   );
 };
@@ -255,7 +255,7 @@ const Toolbar = ({
                 <Spacing horizontal={2} />
                 {taskList?.listType !== 'INBOX' && (
                   <InviteMemberButton
-                    size={40}
+                    size={45}
                     onClick={() =>
                       dispatch(
                         openModal('InviteToList', {
