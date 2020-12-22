@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
@@ -219,6 +219,7 @@ const DashboardList = ({
   openTourModal,
   updateWorkflowStatus,
 }) => {
+  const history = useHistory();
   const { openModal } = modalActions;
   const [selectedTab, setSelectedTab] = useState('MY_TASKS');
   const [highlightPosition, setHighlightPosition] = useState({
@@ -481,7 +482,7 @@ const DashboardList = ({
                 setHighlightPosition={setHighlightPosition}
                 onClick={() => {
                   setSelectedTab('MY_TASKS');
-                  hashHistory.push('/home/my-tasks');
+                  history.push('/core/home/my-tasks');
                 }}
                 isSelected={selectedTab === 'MY_TASKS'}
               />
@@ -490,7 +491,7 @@ const DashboardList = ({
                 setHighlightPosition={setHighlightPosition}
                 onClick={() => {
                   setSelectedTab('ALL_TASKS');
-                  hashHistory.push('/home/all-tasks');
+                  history.push('/core/home/all-tasks');
                 }}
                 isSelected={selectedTab === 'ALL_TASKS'}
               />

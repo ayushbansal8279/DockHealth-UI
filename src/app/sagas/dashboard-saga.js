@@ -10,7 +10,6 @@ import {
   takeLatest,
   all,
 } from 'redux-saga/effects';
-import { hashHistory } from 'react-router';
 import {
   REQUEST_DASHBOARD_TASKS,
   REQUEST_DASHBOARD_MORE_GROUP_TASKS,
@@ -79,11 +78,13 @@ export const redirectToParentTask = (
   taskListIdentifier,
   taskIdentifer,
   taskStatus,
+  history,
 ) => ({
   type: REDIRECT_TO_PARENT_TASK,
   taskListIdentifier,
   taskIdentifer,
   taskStatus,
+  history,
 });
 
 export const toggleDashboardTaskComplete = task => ({
@@ -440,10 +441,11 @@ function* doRedirectToParentTask({
   taskListIdentifier,
   taskIdentifer,
   taskStatus,
+  history,
 }) {
   try {
     yield call(
-      hashHistory.push,
+      history.push,
       `tasks/${taskListIdentifier}/${taskStatus}/${taskIdentifer}`,
     );
   } catch (error) {

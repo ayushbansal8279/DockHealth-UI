@@ -46,7 +46,7 @@ const AddComment = ({
 
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
-      <Member member={currentUser} size={40} />
+      <Member member={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
         <MentionsEditor
           ref={addCommentReference}

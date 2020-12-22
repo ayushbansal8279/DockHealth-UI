@@ -133,6 +133,8 @@ const SubscriptionsViewMembersTable = ({
   setUserSubscriptionStatus = () => {},
   subscriptionPlanData,
   toggleInvitationPanelVisibility,
+  buyButtonDisabled,
+  onClickBuyButton,
 }) => {
   const {
     currentBreakPoint,
@@ -178,7 +180,7 @@ const SubscriptionsViewMembersTable = ({
         <>
           {showTableHeader && (
             <Grid container justify="space-between" alignItems="center">
-              <Grid item sm={12} md={6}>
+              <Grid item sm={12} md={3}>
                 <SubscriptionStatusSwitcher
                   isSmallScreen={isSmallScreen}
                   userSubscriptionStatus={userSubscriptionStatus}
@@ -188,7 +190,7 @@ const SubscriptionsViewMembersTable = ({
               <Grid
                 item
                 sm={12}
-                md={6}
+                md={9}
                 container
                 alignItems="center"
                 justify="flex-end"
@@ -204,6 +206,8 @@ const SubscriptionsViewMembersTable = ({
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
+                  buyButtonDisabled={buyButtonDisabled}
+                  onClickBuyButton={onClickBuyButton}
                 />
               </Grid>
             </Grid>

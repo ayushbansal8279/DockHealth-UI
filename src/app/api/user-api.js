@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { isNil } from 'ramda';
-import { hashHistory } from 'react-router';
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
@@ -13,24 +12,8 @@ import sendEvent from './usage-api';
 
 const store = configureStore();
 
-// const {
-//   CognitoUser,
-//   CognitoUserPool,
-//   CognitoUserAttribute,
-//   CognitoRefreshToken,
-// } = window.AWSCognito.CognitoIdentityServiceProvider;
-
 // eslint-disable-next-line import/no-mutable-exports
 export let resolvedCognitoUser = null;
-
-// window.AWSCognito.config.region = process.env.AWS_REGION;
-// window.AWSCognito.config.userPoolId = process.env.AWS_USERPOOLID;
-// window.AWSCognito.config.identityPoolId = process.env.AWS_IDENTITYPOOLID
-
-// const userPool = new CognitoUserPool({
-//   UserPoolId: process.env.AWS_USERPOOLID,
-//   ClientId: process.env.AWS_CLIENTAPP,
-// });
 
 Amplify.configure({
   // To get the AWS Credentials, you need to configure
@@ -45,19 +28,11 @@ Amplify.configure({
 
 // register a new user
 export function register(userData) {
-  // const attributeList = [];
   const attributes = {};
 
   const { username: unformattedUsername, password, ...user } = userData;
 
   const username = unformattedUsername?.toLowerCase();
-
-  // Object.keys(user).forEach(userDataKey => {
-  //   const userDataValue = user[userDataKey];
-  //   attributeList.push(
-  //     new CognitoUserAttribute({ Name: userDataKey, Value: userDataValue }),
-  //   );
-  // });
 
   Object.keys(user).forEach(userDataKey => {
     const userDataValue = user[userDataKey];
@@ -65,25 +40,6 @@ export function register(userData) {
   });
 
   return new Promise((resolve, reject) => {
-    /*
-    userPool.signUp(
-      username,
-      password,
-      attributeList,
-      null,
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolvedCognitoUser = result.user;
-          store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
-
-          resolve(result.user);
-        }
-      },
-    );
-    */
-
     Auth.signUp({
       username,
       password,
@@ -112,30 +68,13 @@ export function confirmRegistration(userData) {
     username = username.toLowerCase();
   }
 
-  // const cognitoUserData = {
-  //   Username: username,
-  //   Pool: userPool,
-  // };
-
   return new Promise((resolve, reject) => {
-    /*
-    const cognitoUser = new CognitoUser(cognitoUserData);
-    cognitoUser.confirmRegistration(confirmationCode, true, (error, result) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result.user);
-      }
-    });
-    */
-
     // After retrieving the confirmation code from the user
     Auth.confirmSignUp(username, confirmationCode, {
       // Optional. Force user confirmation irrespective of existing alias. By default set to True.
       forceAliasCreation: true,
     })
       .then(data => {
-        // console.log(data)
         resolve(data.user);
       })
       .catch(error => {
@@ -151,24 +90,7 @@ export function resendConfirmationCode(userData) {
     username = username.toLowerCase();
   }
 
-  // const cognitoUserData = {
-  //   Username: username,
-  //   Pool: userPool,
-  // };
-
   return new Promise((resolve, reject) => {
-    /*
-    const cognitoUser = new CognitoUser(cognitoUserData);
-    cognitoUser.resendConfirmationCode((error, result) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolvedCognitoUser = result.user;
-        resolve(resolvedCognitoUser);
-      }
-    });
-    */
-
     Auth.resendSignUp(username)
       .then(data => {
         console.log('code resent successfully');
@@ -187,9 +109,9 @@ export function changePassword(oldPassword, newPassword) {
   return Auth.changePassword(user, oldPassword, newPassword);
 }
 
-export function logout() {
+export function logout(history) {
   window.sessionStorage.removeItem('confirmStatus');
-  hashHistory.replace('login');
+  history.replace('login');
 
   return new Promise((resolve, reject) => {
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
@@ -262,63 +184,6 @@ export function login(loginUserName, password) {
         console.log(error);
         reject(error);
       });
-
-    /*
-    try{
-      const user = await Auth.signIn(username, password);
-      if (user.challengeName === 'SMS_MFA' ||
-            user.challengeName === 'SOFTWARE_TOKEN_MFA') {
-            // You need to get the code from the UI inputs
-            // and then trigger the following function with a button click
-            const code = getCodeFromUserInput();
-            // If MFA is enabled, sign-in should be confirmed with the confirmation code
-            const loggedUser = await Auth.confirmSignIn(
-                user,   // Return object from Auth.signIn()
-                code,   // Confirmation code  
-                mfaType // MFA Type e.g. SMS_MFA, SOFTWARE_TOKEN_MFA
-            );
-        } else if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-            const {requiredAttributes} = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
-            // You need to get the new password and required attributes from the UI inputs
-            // and then trigger the following function with a button click
-            // For example, the email and phone_number are required attributes
-            const {username, email, phone_number} = getInfoFromUserInput();
-            const loggedUser = await Auth.completeNewPassword(
-                user,              // the Cognito User Object
-                newPassword,       // the new password
-                // OPTIONAL, the required attributes
-                {
-                    email,
-                    phone_number,
-                }
-            );
-        } else if (user.challengeName === 'MFA_SETUP') {
-            // This happens when the MFA method is TOTP
-            // The user needs to setup the TOTP before using it
-            // More info please check the Enabling MFA part
-            Auth.setupTOTP(user);
-        } else {
-            // The user directly signs in
-            console.log(user);
-        }
-    } catch (err) {
-        if (err.code === 'UserNotConfirmedException') {
-            // The error happens if the user didn't finish the confirmation step when signing up
-            // In this case you need to resend the code and confirm the user
-            // About how to resend the code and confirm the user, please check the signUp part
-        } else if (err.code === 'PasswordResetRequiredException') {
-            // The error happens when the password is reset in the Cognito console
-            // In this case you need to call forgotPassword to reset the password
-            // Please check the Forgot Password part.
-        } else if (err.code === 'NotAuthorizedException') {
-            // The error happens when the incorrect password is provided
-        } else if (err.code === 'UserNotFoundException') {
-            // The error happens when the supplied username/email does not exist in the Cognito user pool
-        } else {
-            console.log(err);
-        }
-    }
-    */
   });
 }
 
@@ -332,24 +197,12 @@ export function sendMFACode(userData) {
   }
 
   return new Promise((resolve, reject) => {
-    /*
-    const cognitoUser = resolvedCognitoUser;
-    cognitoUser.sendMFACode(mfaCode, {
-      onSuccess: result => {
-        store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
-        resolve(result);
-      },
-      onFailure: reject,
-    });
-    */
-
     Auth.confirmSignIn(
       resolvedCognitoUser, // Return object from Auth.signIn()
       mfaCode, // Confirmation code
       'SMS_MFA', // MFA Type e.g. SMS_MFA, SOFTWARE_TOKEN_MFA
     )
       .then(loggedUser => {
-        // console.log(loggedUser);
         store.dispatch({ type: 'user/user', user: loggedUser });
         sessionStorage.setItem(
           'accessToken',
@@ -425,7 +278,6 @@ export function forgotPassword(userData) {
   return new Promise((resolve, reject) => {
     Auth.forgotPassword(username)
       .then(data => {
-        // console.log(data);
         resolve(data);
       })
       .catch(error => {
@@ -446,7 +298,6 @@ export function resetPassword(userData) {
   return new Promise((resolve, reject) => {
     Auth.forgotPasswordSubmit(username, verificationCode, password)
       .then(data => {
-        // console.log(data);
         resolve(data);
       })
       .catch(error => {
@@ -467,6 +318,7 @@ export function createUser(user) {
 }
 
 export async function getUserOrganization() {
+  // eslint-disable-next-line no-return-await
   return await axios.get('user/findUserOrganizations');
 }
 
@@ -533,6 +385,7 @@ export async function getUserByEmail(email, cognitoUser) {
     accessToken = sessionStorage.getItem('SSO_ACCESSTOKEN');
   }
 
+  // eslint-disable-next-line no-return-await
   return await getUserByEmailAndAccessToken(email, accessToken);
 }
 
@@ -607,7 +460,7 @@ export function deleteUserProfilePic() {
     });
 }
 
-export function getUserNotoficationPrefs() {
+export function getUserNotificationPrefs() {
   return axios.get('user/userNotificationPreferences').then(response => {
     store.dispatch({
       type: 'user/userNotificationPrefs',
@@ -704,56 +557,9 @@ export function performHealthCheck() {
 export function refreshAccessToken(email) {
   if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
     return Promise.resolve(null);
-    // const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
-    // return new Promise((resolve, reject) => {
-    //   try {
-    //     const refreshToken = sessionStorage.getItem('SSO_REFRESHTOKEN');
-    //     const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
-    //     return axios
-    //       .post(`${cognitoAuthUrl}/oauth2/token`, authData)
-    //       .then(response => {
-    //         const userRefreshToken = response?.data.refresh_token;
-    //         const userAccessToken = response?.data.access_token;
-    //         const userIDToken = response?.data.id_token;
-    //         sessionStorage.setItem('EnterpriseUserFlag', true);
-    //         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-    //         sessionStorage.setItem('SSO_IDTOKEN', userIDToken);
-    //         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
-    //         resolve('success');
-    //       });
-    //   } catch (error) {
-    //     reject(error);
-    //     return Promise.reject(error);
-    //   }
-    // });
   }
 
-  // const cognitoUserData = {
-  //   Username: email,
-  //   Pool: userPool,
-  // };
-
   return new Promise(async (resolve, reject) => {
-    /*
-    const cognitoUser = new CognitoUser(cognitoUserData);
-    cognitoUser.getSession((error, session) => {
-      if (error) {
-        reject(error);
-      } else {
-        const currentAccessToken = sessionStorage.getItem('accessToken');
-        axios.defaults.headers.common.Authorization = `Bearer ${session.accessToken.jwtToken}`;
-        sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
-        if (currentAccessToken !== session.accessToken.jwtToken) {
-          // eslint-disable-next-line no-unused-expressions
-          this?.getUserByEmail(email, cognitoUser);
-        }
-        resolve(session.isValid());
-      }
-      sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
-      resolve(session.isValid());
-    });
-    */
-
     const cognitoUser = await Auth.currentAuthenticatedUser();
     const currentSession = await Auth.currentSession();
     cognitoUser.refreshSession(
@@ -819,6 +625,13 @@ export function getAccessTokensByAuthCode(authCode) {
     }
   });
 }
+
+export const captureLocalTimezone = async () => {
+  const timezoneOffset = new Date().getTimezoneOffset() / 60;
+  return axios
+    .put(`/user/captureLocalTimezone?timezoneOffset=${timezoneOffset}`, {})
+    .then(({ data }) => data);
+};
 
 export function getEnterpriseAccessTokensByAuthCode(authCode) {
   return new Promise(async (resolve, reject) => {
@@ -954,13 +767,6 @@ export const getUserActiveTasksCount = userId =>
   axios.get(
     `/task/findCountOfAllTasksAssignedToSpecificUser?userId=${userId}&status=INCOMPLETE`,
   );
-
-export const captureLocalTimezone = async () => {
-  const timezoneOffset = new Date().getTimezoneOffset() / 60;
-  return axios
-    .put(`/user/captureLocalTimezone?timezoneOffset=${timezoneOffset}`, {})
-    .then(({ data }) => data);
-};
 
 export const getNotificationSettings = () =>
   axios.get('/user/userNotificationSettings').then(({ data }) => data);

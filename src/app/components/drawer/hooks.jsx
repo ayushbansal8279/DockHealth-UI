@@ -2,10 +2,8 @@
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { useMount } from 'react-use';
+import { useHistory } from 'react-router-dom';
 import { templateStateSelector } from 'selectors/template-selectors';
-import { getBillingDetails } from 'actions/organization-actions';
 import useBoolean from 'hooks/useBoolean';
 import {
   getSubscriptionIsTrial,
@@ -24,6 +22,7 @@ const initializeDrawerHooks = () => {
   const [activeId, setActiveId] = useState('');
   const [bannerVisibleFlag, setBannerVisibleFlag] = useState(false);
   const [bannerMessageLinkFlag, setBannerMessageLinkFlag] = useState(false);
+  const history = useHistory();
 
   const {
     organization,
@@ -54,10 +53,6 @@ const initializeDrawerHooks = () => {
   };
 
   const dispatch = useDispatch();
-
-  useMount(() => {
-    getBillingDetails({})(dispatch);
-  });
 
   const subscription = organization?.subscriptionDetails;
 
@@ -99,7 +94,7 @@ const initializeDrawerHooks = () => {
     trialLabelMinimalPeriodPassed,
   ]);
 
-  const currentLocationPathname = hashHistory.getCurrentLocation().pathname;
+  const currentLocationPathname = history.location.pathname;
   const cardExpiration = billingDetails?.cardExpiration;
 
   const creditCardExpirationMessage = useMemo(() => {
@@ -118,7 +113,7 @@ const initializeDrawerHooks = () => {
             <span>Your credit card will expire in </span>
             <span>{cardExpirationMoment.diff(currentMoment, 'days')}</span>
             <span> days! To avoid interuption, </span>
-            <TrialBannerLink to="/billing">
+            <TrialBannerLink to="/settings/billing">
               update your credit card information
             </TrialBannerLink>
             <span> now.</span>

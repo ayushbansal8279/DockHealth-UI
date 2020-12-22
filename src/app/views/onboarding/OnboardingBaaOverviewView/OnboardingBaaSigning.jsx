@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import {
   signOrganizationBAADocument,
@@ -92,6 +92,7 @@ const getPanelDetails = ({
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [
     isInvitationFormShown,
     showInvitationForm,
@@ -194,16 +195,16 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           organizationIdentifier,
         );
         await selectCurrentOrganization(organizationIdentifier, false);
-        hashHistory.push('home');
+        history.push('/core/home/my-tasks');
       } else {
         sessionStorage.removeItem('next-page');
-        hashHistory.push('login');
+        history.push('/auth/login');
       }
     } else {
       sessionStorage.removeItem('next-page');
-      hashHistory.push('login');
+      history.push('/auth/login');
     }
-  }, [currentUserProfile]);
+  }, [currentUserProfile, history]);
 
   const isSmallScreen = useSmallScreen();
 

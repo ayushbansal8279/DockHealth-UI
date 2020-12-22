@@ -10,7 +10,7 @@ import {
 } from 'ramda';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useToggle } from 'react-use';
 import { getTaskPage, getInboxTasks } from 'actions/task-actions';
 import { onTaskSortingChanged } from 'helpers/ga-event-helper';
@@ -40,6 +40,8 @@ export default ({
   const newlyAddedTaskIds = useSelector(
     store => store.listTasks.newlyAddedTaskIds,
   );
+
+  const history = useHistory();
 
   const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(store => ({
     addingNewSubtask: store.taskState.addingNewSubtask,
@@ -146,8 +148,7 @@ export default ({
       otherTaskListIdentifiers.includes(addingNewSubtaskParentId));
 
   const globalSearch =
-    hashHistory.getCurrentLocation()?.pathname?.startsWith('/taskSearch') ??
-    false;
+    history?.location?.pathname?.startsWith('/taskSearch') ?? false;
 
   const getCompletedTasks = () => {
     let outputPromise = Promise.resolve();

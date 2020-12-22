@@ -77,3 +77,8 @@ export const ArrowButton = styled.button`
   width: 12px;
   margin-right: ${spacing.smallPlus};
 `;
+
+export const ActivityAlertsSettingsHeader = styled.div`
+  display: flex;
+  padding: ${spacing.large} ${spacing.large} ${spacing.smallPlus};
+`;

@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core';
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { setPaymentNewPlan } from 'actions/organization-actions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
@@ -22,14 +22,15 @@ import {
   getSubscriptionPlanData,
 } from './SubscriptionsView.Utilities';
 
-const goToSubscriptionPayment = () => {
-  hashHistory.push('/subscription-payment');
+const goToSubscriptionPayment = history => {
+  history.push('/subscription-payment');
 };
 
 const onSubscriptionPlanChosen = ({
   annualPayment,
   chosenPlan,
   dispatch,
+  history,
 }) => () => {
   const { subscriptionPlan } = chosenPlan || {};
 
@@ -40,12 +41,13 @@ const onSubscriptionPlanChosen = ({
     };
 
     setPaymentNewPlan({ newPlan })(dispatch);
-    goToSubscriptionPayment();
+    goToSubscriptionPayment(history);
   }
 };
 
 export default () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const scrollElementReference = useRef(null);
 
   const {
@@ -170,6 +172,12 @@ export default () => {
           setUserSubscriptionStatus={setUserSubscriptionStatus}
           subscriptionPlanData={memberTableSubscriptionData}
           toggleInvitationPanelVisibility={toggleInvitationPanelVisibility}
+          buyButtonDisabled={buyButtonDisabled}
+          onClickBuyButton={onSubscriptionPlanChosen({
+            annualPayment,
+            chosenPlan,
+            dispatch,
+          })}
         />
         {invitationPanelVisible && (
           <InvitationPanel getAllUsers={getAllUsers} />
@@ -205,6 +213,7 @@ export default () => {
                   annualPayment,
                   chosenPlan,
                   dispatch,
+                  history,
                 })}
               >
                 Buy this plan

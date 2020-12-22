@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
 import { isEmpty } from 'ramda';
@@ -116,7 +116,7 @@ class PeopleContainer extends PureComponent {
             style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
           >
             <Link
-              to={`/assignedToPerson/${encodeURIComponent(
+              to={`/core/assignedToPerson/${encodeURIComponent(
                 person.userIdentifier,
               )}`}
             >
@@ -130,7 +130,7 @@ class PeopleContainer extends PureComponent {
               style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
             >
               <Link
-                to={`/assignedToPerson/${encodeURIComponent(
+                to={`/core/assignedToPerson/${encodeURIComponent(
                   person.userIdentifier,
                 )}`}
               >

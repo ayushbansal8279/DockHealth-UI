@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import moment from 'moment';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Spacing from 'components/common/Spacing';
 
 import SortArrow, {
@@ -221,7 +221,7 @@ const PatientsList = ({
                 }) => (
                   <Link
                     key={patientIdentifier}
-                    to={`/patient/${patientIdentifier}`}
+                    to={`/core/patient/${patientIdentifier}`}
                   >
                     <ListRow
                       isHighlighted={

@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef } from 'react';
 import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 import { EditorState } from 'draft-js';
 import { Grid } from '@material-ui/core';
 import Circle from 'img/circle';
@@ -106,7 +107,7 @@ const PatientComponent = ({
       )}
       {taskPatient && (
         <SlimTaskItemPatientLink
-          to={`patient/${taskPatient.patientIdentifier}`}
+          to={`/core/patient/${taskPatient.patientIdentifier}`}
         >
           {taskPatient.middleName && taskPatient.middleName !== ''
             ? `${taskPatient.lastName}, ${
@@ -190,6 +191,8 @@ const SlimTaskItem = ({
     completedBy,
     status,
   } = task;
+
+  const history = useHistory();
 
   const formattedTaskDescription =
     description?.length > 100
@@ -292,6 +295,7 @@ const SlimTaskItem = ({
                         parentTask?.taskList?.taskListIdentifier,
                         parentTask?.taskIdentifier,
                         parentTask?.status,
+                        history,
                       );
                     }}
                   >
@@ -335,7 +339,7 @@ const SlimTaskItem = ({
         <Grid container item {...gridConfig.listName}>
           {taskList && (
             <SlimTaskItemListLink
-              to={`tasks/${taskList?.taskListIdentifier}`}
+              to={`/core/tasks/${taskList?.taskListIdentifier}`}
               withMargin={isOverdueTask}
             >
               <UniversalTooltipContainer

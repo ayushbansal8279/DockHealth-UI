@@ -1,5 +1,4 @@
 import { put, call, takeEvery, takeLatest, select } from 'redux-saga/effects';
-import { hashHistory } from 'react-router';
 import {
   getPatientById,
   createPatientNote,
@@ -49,8 +48,9 @@ export const updatePatient = payload => ({
   ...payload,
 });
 
-export const archivePatient = () => ({
+export const archivePatient = history => ({
   type: DO_ARCHIVE_PATIENT,
+  history,
 });
 
 export function* doGetPatient() {
@@ -58,6 +58,7 @@ export function* doGetPatient() {
     const { patientIdentifier } = yield select(locationParametersSelector);
 
     yield put({ type: FETCH_PATIENT });
+
     const details = yield call(getPatientById, patientIdentifier);
 
     yield put({
@@ -155,7 +156,7 @@ export function* doUpdatePatient(payload) {
   }
 }
 
-export function* doArchivePatient() {
+export function* doArchivePatient({ history }) {
   try {
     const { patientIdentifier } = yield select(locationParametersSelector);
 
@@ -171,7 +172,7 @@ export function* doArchivePatient() {
     });
     yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
     yield put(closeModal());
-    yield put(hashHistory.push('/patients'));
+    yield put(history.push('/core/patients'));
   } catch (error) {
     yield put(closeModal());
     yield put({ type: FETCH_PATIENT_ERROR, error });

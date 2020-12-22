@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
@@ -12,6 +12,7 @@ import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
 const ResetPassword = props => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useMount(() => {
     setAuthBaseState({
@@ -41,7 +42,7 @@ const ResetPassword = props => {
             RESET_PASSWORD_SUCCESS: 'YES',
           });
           success('Reset password. Please login');
-          hashHistory.push('resetPasswordSuccess');
+          history.push('resetPasswordSuccess');
         })
         .catch(error => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
@@ -56,7 +57,7 @@ const ResetPassword = props => {
           });
         });
     },
-    [props],
+    [history, props],
   );
 
   const {

@@ -3,7 +3,6 @@ import { isEmpty, isNil } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
 import debounce from 'lodash.debounce';
 
 import Header from 'components/taskView/Header';
@@ -71,7 +70,7 @@ class Home extends Component {
   searchWithDebounce = debounce(searchValue => {
     const {
       tasksGroupsListActions: { fetchTasksBySearchedTerm },
-      routeParams: { tabName },
+      params: { tabName },
     } = this.props;
 
     const taskStatus =
@@ -84,49 +83,38 @@ class Home extends Component {
   }, 400);
 
   async componentDidMount() {
-    const {
-      routeParams,
-      currentUser,
-      taskLists,
-      pendingTaskLists = [],
-    } = this.props;
+    const { match, currentUser, taskLists, pendingTaskLists = [] } = this.props;
+    const { params } = match;
 
     this.initTable();
 
-    this.setViewHeader(routeParams.taskListIdentifier, [
+    this.setViewHeader(params.taskListIdentifier, [
       ...taskLists,
       ...pendingTaskLists,
     ]);
 
     this.refreshAccessToken(currentUser);
 
-    this.listenForRealTimeEvents(routeParams.taskListIdentifier, currentUser);
+    this.listenForRealTimeEvents(params.taskListIdentifier, currentUser);
   }
 
-  componentWillUpdate(nextProps) {
-    const {
-      actions,
-      routeParams,
-      taskLists,
-      currentUser,
-      taskCounters,
-    } = this.props;
+  UNSAFE_componentWillUpdate(nextProps) {
+    const { actions, match, taskLists, currentUser, taskCounters } = this.props;
+    const { params } = match;
 
     if (
       nextProps.taskCounters?.complete === 0 &&
-      nextProps.routeParams.taskListIdentifier ===
-        routeParams.taskListIdentifier &&
-      nextProps.routeParams.tabName === TaskListTabName.COMPLETE
+      nextProps.match.params.taskListIdentifier === params.taskListIdentifier &&
+      nextProps.match.params.tabName === TaskListTabName.COMPLETE
     ) {
       this.navigateToTab(TaskListTabName.OPEN);
     }
 
     if (
       taskLists !== nextProps.taskLists ||
-      nextProps.routeParams.taskListIdentifier !==
-        routeParams.taskListIdentifier
+      nextProps.match.params.taskListIdentifier !== params.taskListIdentifier
     ) {
-      this.setViewHeader(nextProps.routeParams.taskListIdentifier, [
+      this.setViewHeader(nextProps.match.params.taskListIdentifier, [
         ...nextProps?.taskLists,
         ...nextProps?.pendingTaskLists,
       ]);
@@ -149,12 +137,11 @@ class Home extends Component {
     }
 
     if (
-      nextProps.routeParams.taskListIdentifier ===
-        routeParams.taskListIdentifier &&
-      nextProps.routeParams.tabName !== routeParams.tabName
+      nextProps.match.params.taskListIdentifier === params.taskListIdentifier &&
+      nextProps.match.params.tabName !== params.tabName
     ) {
-      actions.getTaskStatsForList(routeParams.taskListIdentifier);
-      if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
+      actions.getTaskStatsForList(params.taskListIdentifier);
+      if (nextProps.match.params.tabName === TaskListTabName.COMPLETE) {
         this.refreshCompleteTasks();
       } else {
         this.refreshIncompleteTasks();
@@ -162,34 +149,33 @@ class Home extends Component {
     }
 
     if (
-      nextProps.routeParams.taskListIdentifier !==
-      routeParams.taskListIdentifier
+      nextProps.match.params.taskListIdentifier !== params.taskListIdentifier
     ) {
       const { taskListActions, megaFilterActions } = this.props;
 
       actions.loading();
       megaFilterActions.clearFiltersForMegaFilter();
       actions.resetTaskCounters();
-      actions.getTaskStatsForList(nextProps.routeParams.taskListIdentifier);
+      actions.getTaskStatsForList(nextProps.match.params.taskListIdentifier);
 
-      if (nextProps.routeParams.taskListIdentifier != null) {
+      if (nextProps.match.params.taskListIdentifier != null) {
         taskListActions.getTaskListById(
-          nextProps.routeParams.taskListIdentifier,
+          nextProps.match.params.taskListIdentifier,
         );
 
         const status =
-          nextProps.routeParams.tabName === TaskListTabName.COMPLETE
+          nextProps.match.params.tabName === TaskListTabName.COMPLETE
             ? 'COMPLETE'
             : 'INCOMPLETE';
         const filters = sessionStorageHelper.getItem(
-          `filter-${nextProps.routeParams.taskListIdentifier}-${status}`,
+          `filter-${nextProps.match.params.taskListIdentifier}-${status}`,
         );
 
         if (!filters) {
-          this.getTasksList(nextProps.routeParams.taskListIdentifier, status);
+          this.getTasksList(nextProps.match.params.taskListIdentifier, status);
         } else {
           this.getFilteredTasks(
-            nextProps.routeParams.taskListIdentifier,
+            nextProps.match.params.taskListIdentifier,
             filters,
             status,
           );
@@ -205,11 +191,10 @@ class Home extends Component {
         nextProps &&
         nextProps.currentUser &&
         currentUser.userIdentifier !== nextProps.currentUser.userIdentifier) ||
-      nextProps.routeParams.taskListIdentifier !==
-        routeParams.taskListIdentifier
+      nextProps.match.params.taskListIdentifier !== params.taskListIdentifier
     ) {
       this.listenForRealTimeEvents(
-        nextProps.routeParams.taskListIdentifier,
+        nextProps.match.params.taskListIdentifier,
         nextProps.currentUser,
       );
     }
@@ -329,10 +314,9 @@ class Home extends Component {
   };
 
   initTable = () => {
-    const {
-      actions,
-      routeParams: { tabName, taskListIdentifier },
-    } = this.props;
+    const { actions, match } = this.props;
+    const { params } = match;
+    const { tabName, taskListIdentifier } = params;
 
     actions.getTaskStatsForList(taskListIdentifier);
 
@@ -356,13 +340,12 @@ class Home extends Component {
   };
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
-    const {
-      routeParams: { tabName },
-    } = this.props;
+    const { match } = this.props;
+    const { params } = match;
 
     this.refreshTabCounters();
 
-    if (tabName === TaskListTabName.COMPLETE) {
+    if (params.tabName === TaskListTabName.COMPLETE) {
       return this.refreshCompleteTasks(cumulativeFlag, withLoader);
     }
 
@@ -370,10 +353,9 @@ class Home extends Component {
   };
 
   refreshFilters = () => {
-    const {
-      routeParams: { taskListIdentifier, tabName },
-      megaFilterActions,
-    } = this.props;
+    const { match, megaFilterActions } = this.props;
+    const { params } = match;
+    const { taskListIdentifier, tabName } = params;
 
     const status =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
@@ -382,21 +364,17 @@ class Home extends Component {
   };
 
   refreshTabCounters = () => {
-    const {
-      actions,
-      routeParams: { taskListIdentifier },
-    } = this.props;
+    const { actions, match } = this.props;
+    const { params } = match;
 
-    actions.getTaskStatsForList(taskListIdentifier);
+    actions.getTaskStatsForList(params.taskListIdentifier);
   };
 
   // TODO: Move to saga
   refreshIncompleteTasks = (withLoader = true) => {
-    const {
-      actions,
-      megaFilterActions,
-      routeParams: { taskListIdentifier },
-    } = this.props;
+    const { actions, megaFilterActions, match } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     const status = 'INCOMPLETE';
 
@@ -424,11 +402,9 @@ class Home extends Component {
 
   // TODO: Move to saga
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
-    const {
-      actions,
-      megaFilterActions,
-      routeParams: { taskListIdentifier },
-    } = this.props;
+    const { actions, megaFilterActions, match } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     if (withLoader) {
       actions.loadingCompletedTasks();
@@ -488,11 +464,9 @@ class Home extends Component {
 
   // TODO: Move to saga
   handleFilterChange = updatedFilters => {
-    const {
-      routeParams: { tabName, taskListIdentifier },
-      megaFilterActions,
-      actions,
-    } = this.props;
+    const { match, megaFilterActions, actions } = this.props;
+    const { params } = match;
+    const { tabName, taskListIdentifier } = params;
 
     let taskStatus = 'INCOMPLETE';
 
@@ -521,9 +495,9 @@ class Home extends Component {
   };
 
   downloadPDF = () => {
-    const {
-      routeParams: { taskListIdentifier },
-    } = this.props;
+    const { match } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     if (taskListIdentifier) {
       window.print();
@@ -561,12 +535,12 @@ class Home extends Component {
   };
 
   navigateToTab = tabName => {
-    const {
-      routeParams: { taskListIdentifier },
-    } = this.props;
+    const { match, history } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
-    hashHistory.push(
-      `/tasks/${taskListIdentifier}${
+    history.push(
+      `/core/tasks/${taskListIdentifier}${
         tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
       }`,
     );
@@ -589,8 +563,10 @@ class Home extends Component {
     const {
       modalActions,
       tasksGroupsListActions: { deleteTasksGroup },
-      routeParams: { taskListIdentifier },
+      match,
     } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     const modalProps = {
       confirm: () => {
@@ -604,8 +580,10 @@ class Home extends Component {
   editGroupName = (newGroupName, groupId) => {
     const {
       tasksGroupsListActions: { editTasksGroupName },
-      routeParams: { taskListIdentifier },
+      match,
     } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     if (newGroupName) {
       editTasksGroupName({ taskListIdentifier, groupId, newGroupName });
@@ -615,8 +593,11 @@ class Home extends Component {
   changeGroupsOrder = (oldTaskIndex, newTaskIndex, groupList) => {
     const {
       tasksGroupsListActions: { sortTasksGroups },
-      routeParams: { taskListIdentifier },
+      match,
     } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
+
     if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
       return;
     }
@@ -639,8 +620,10 @@ class Home extends Component {
     const {
       selectedFilters,
       tasksGroupsListActions: { getTasksGroupsList },
-      routeParams: { taskListIdentifier },
+      match,
     } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     getTasksGroupsList({ taskListIdentifier, shouldSetRequestState: false });
     this.refreshFilters();
@@ -673,18 +656,15 @@ class Home extends Component {
   };
 
   invokeToggleCompleteAction = task => {
-    const {
-      actions,
-      tasksGroupsListActions,
-      routeParams,
-      currentUser,
-    } = this.props;
+    const { actions, tasksGroupsListActions, match, currentUser } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
 
     actions
       .toggleCompleteTask(task, currentUser)
       .then(() => {
         setTimeout(() => {
-          actions.getTaskStatsForList(routeParams.taskListIdentifier);
+          actions.getTaskStatsForList(taskListIdentifier);
           tasksGroupsListActions.getTasksGroupsList({
             shouldSetRequestState: false,
           });
@@ -755,11 +735,13 @@ class Home extends Component {
   };
 
   loadMoreTasksForList = ({ status, startPosition }) => {
-    const { actions, routeParams } = this.props;
+    const { actions, match } = this.props;
+    const { params } = match;
+    const { taskListIdentifier } = params;
     const loadingMore = true;
     const endPosition = 0;
     actions.getListTasksGroupedByTaskGroup(
-      routeParams.taskListIdentifier,
+      taskListIdentifier,
       undefined,
       undefined,
       status,
@@ -774,8 +756,7 @@ class Home extends Component {
     const {
       members,
       taskLists,
-      routeParams,
-      routeParams: { taskListIdentifier },
+      match,
       taskCounters,
       modalActions,
       isFetching,
@@ -787,12 +768,14 @@ class Home extends Component {
     } = this.props;
 
     const { isTourOpen, searchValue } = this.state;
+    const { params } = match;
+    const { taskListIdentifier, tabName } = params;
 
     const loadedTasklist = taskLists
       ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
       : {};
 
-    const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
+    const selectedTab = tabName || TaskListTabName.OPEN;
 
     return (
       <>

@@ -1,7 +1,7 @@
-import { node } from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { withRouter } from 'react-router';
+import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom';
+
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
 import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
@@ -28,12 +28,13 @@ const getLeftSideContent = ({ currentAuthBaseState }) => {
   }
 };
 
-const TemplateAuthBase = ({ children }) => {
+const TemplateAuthBase = ({ childRoutes }) => {
   const currentAuthBaseState = useSelector(
     store => store.authBase.currentAuthBaseState,
   );
 
   const leftSideContent = getLeftSideContent({ currentAuthBaseState });
+  const { path } = useRouteMatch();
 
   return (
     <MainContainer>
@@ -42,14 +43,25 @@ const TemplateAuthBase = ({ children }) => {
       </LeftSideMainContainer>
       <RightSideMainContainer>
         <RightSideContentContainer>
-          <RightSideMaxWidthContainer>{children}</RightSideMaxWidthContainer>
+          <RightSideMaxWidthContainer>
+            <Switch>
+              {childRoutes?.map(route => (
+                <Route
+                  key={route.path}
+                  path={`${path}${route.path}`}
+                  component={route.RouteComponent}
+                />
+              ))}
+              <Redirect
+                from={`${path}/changePassword`}
+                to={`${path}/forgotPassword`}
+              />
+            </Switch>
+          </RightSideMaxWidthContainer>
         </RightSideContentContainer>
       </RightSideMainContainer>
     </MainContainer>
   );
 };
-TemplateAuthBase.propTypes = {
-  children: node.isRequired,
-};
 
-export default withRouter(TemplateAuthBase);
+export default TemplateAuthBase;

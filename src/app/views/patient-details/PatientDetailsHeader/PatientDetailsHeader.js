@@ -95,9 +95,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       };
       openModal('DeleteNote', modalProps);
     },
-    archivePatient: patientIdentifier => {
+    archivePatient: history => {
       const modalProps = {
-        confirm: () => archivePatient({ patientIdentifier }),
+        confirm: () => archivePatient(history),
       };
       openModal('ArchivePatient', modalProps);
     },

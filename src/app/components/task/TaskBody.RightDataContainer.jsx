@@ -1,6 +1,6 @@
 import { omit } from 'ramda';
 import React, { useRef } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import useBoolean from 'hooks/useBoolean';
 import ChevronRightIcon from 'img/chevron-right.svg';
 import palette, { getPriorityColor } from 'styles/palette';
@@ -95,7 +95,7 @@ export default ({
         <PatientTasklistPatient>
           {patient && !isSubtask && (
             <Link
-              to={`/patient/${patient.patientIdentifier}`}
+              to={`/core/patient/${patient.patientIdentifier}`}
               style={{ color: palette.lighterCyanBlue, fontSize: '0.875rem' }}
             >
               <div>

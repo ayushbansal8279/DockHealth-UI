@@ -2,7 +2,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { themeMontserratNormal } from 'styles/theme-montserrat';

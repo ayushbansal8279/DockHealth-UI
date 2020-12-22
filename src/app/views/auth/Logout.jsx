@@ -1,6 +1,5 @@
 import { isNil } from 'ramda';
 import { PureComponent } from 'react';
-import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { error } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
@@ -10,8 +9,7 @@ import { initializePusherForPresence } from 'helpers/pusher-instance';
 class Logout extends PureComponent {
   componentDidMount = () => {
     const durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
-
-    const { currentUser } = this.props;
+    const { currentUser, history } = this.props;
 
     const pusherForPresence = initializePusherForPresence();
     const presenceChannelName = `presence-dock-users-${currentUser.organizationIdentifier}`;
@@ -21,10 +19,11 @@ class Logout extends PureComponent {
     }
 
     return userApi
-      .logout()
+      .logout(history)
       .then(() => {
+        // eslint-disable-next-line no-unused-expressions
         pusherForPresence?.unsubscribe(presenceChannelName);
-        
+
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'YES',
         });

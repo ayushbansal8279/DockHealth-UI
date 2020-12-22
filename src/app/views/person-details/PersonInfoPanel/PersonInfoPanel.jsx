@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, hashHistory } from 'react-router';
+import { Link, useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import {
   getUserAvatar,
@@ -33,7 +33,7 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
     userIdentifier,
     workPhoneNumber,
   } = personData || {};
-
+  const history = useHistory();
   const [avatarContent, setAvatarContent] = useState(
     `${firstName.charAt(0)}${lastName.charAt(0)}`
       .trim()
@@ -64,7 +64,7 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
   const onConfirmArchive = () =>
     removeUserFromOrganization(userIdentifier)(dispatch)
       .then(() => {
-        hashHistory.push('/people');
+        history.push('/people');
       })
       .catch(error => {
         showAlert({
@@ -78,7 +78,7 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
 
   return (
     <InfoPanelContainer>
-      <Link to="/people">
+      <Link to="/core/people">
         <img
           src={ArrowLeftIcon}
           alt="back-navigation"

@@ -1,73 +1,73 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { bindActionCreators } from 'redux';
-import * as TaskListActions from 'actions/tasklist-actions';
+/* eslint-disable func-names */
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Switch, useRouteMatch, useHistory } from 'react-router-dom';
 import LoaderOverlay from 'components/common/Loader/LoaderOverlay';
 import Drawer from 'components/drawer/Drawer';
+import checkUserAuthentication from 'routing/helpers/check-user-authentication';
+import { RouteWrapper } from 'routing/components';
 
-class TemplateCore extends PureComponent {
-  state = {
-    loading: true,
-    locationPathname: null,
-  };
+const TemplateCoreSubscriptionPlan = ({
+  childRoutes,
+  onEnter,
+  onLeave,
+  setRedirection,
+}) => {
+  const { path } = useRouteMatch();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  static getDerivedStateFromProps(
-    { location: previousLocation },
-    { locationPathname: previousLocationPathname },
-  ) {
-    const locationPathname = previousLocation?.pathname?.replace(/^\//, '');
+  useEffect(() => {
+    (async function() {
+      setIsLoading(true);
+      const redirect = await checkUserAuthentication({
+        history,
+        dispatch,
+        isRequiredLogin: true,
+        isRequiredSubscription: false,
+      });
 
-    if (locationPathname && locationPathname !== previousLocationPathname) {
-      return {
-        locationPathname,
-      };
-    }
+      if (redirect) {
+        setRedirection(redirect);
+      } else if (onEnter) {
+        await onEnter({ dispatch });
+      }
+      setIsLoading(false);
+      setIsLoaded(true);
+    })();
 
-    return {};
-  }
+    return () => {
+      (async function() {
+        if (onLeave) {
+          await onLeave({ dispatch });
+        }
+      })();
+    };
+  }, [dispatch, history, onEnter, onLeave, setRedirection]);
 
-  async componentDidMount() {
-    const { taskListActions } = this.props;
-
-    // await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
-    this.unlockLoading();
-    taskListActions.getTaskListForUser().catch(error => {
-      console.log(error);
-      hashHistory.push('login');
-    });
-  }
-
-  unlockLoading = () => {
-    this.setState({
-      loading: false,
-    });
-  };
-
-  render() {
-    const { children } = this.props;
-    const { loading, locationPathname } = this.state;
-
-    if (loading) {
-      return <LoaderOverlay withBackground />;
-    }
-
-    return <Drawer locationPathname={locationPathname}>{children}</Drawer>;
-  }
-}
-
-TemplateCore.propTypes = {
-  children: PropTypes.node.isRequired,
+  return (
+    <Drawer locationPathname={history?.location?.pathname}>
+      {isLoading && <LoaderOverlay withBackground />}
+      {!isLoading && (
+        <Switch>
+          {isLoaded &&
+            childRoutes?.map(route => (
+              <RouteWrapper
+                key={route.path}
+                path={`${path}${route.path}`}
+                RouteComponent={route.RouteComponent}
+                onEnter={route.onEnter}
+                onUpdate={route.onUpdate}
+                onLeave={route.onLeave}
+                exact={route.exact}
+              />
+            ))}
+        </Switch>
+      )}
+    </Drawer>
+  );
 };
 
-const mapStateToProps = state => ({
-  user: state.userState.user,
-});
-
-const mapDispatchToProps = dispatch => ({
-  taskListActions: bindActionCreators(TaskListActions, dispatch),
-  dispatch,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TemplateCore);
+export default TemplateCoreSubscriptionPlan;

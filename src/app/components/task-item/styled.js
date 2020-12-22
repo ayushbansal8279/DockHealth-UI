@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
@@ -24,7 +24,7 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1 : 0)}rem;
+  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
   overflow: hidden;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
@@ -59,7 +59,7 @@ export const AddPlaceholder = styled.div`
   opacity: 0;
   &::first-letter {
     color: ${palette.orange};
-    font-size: ${fontSizes.smallPlus};
+    font-size: ${fontSizes.regular};
   }
 
   &:hover {
@@ -93,6 +93,10 @@ export const DescriptionTooltip = styled.div`
 `;
 
 export const Description = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
@@ -129,7 +133,7 @@ export const DueDateAddLabel = styled.p`
   text-align: center;
   color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
 `;
 
 export const DueDate = styled.span`
@@ -176,18 +180,26 @@ export const SmallText = styled.span`
   font-size: ${fontSizes.small};
 `;
 
+export const SubtasksGroupLabel = styled.span`
+  color: ${palette.lightGray};
+  font-size: ${fontSizes.regular};
+  cursor: pointer;
+  margin-right: ${spacing.regularPlus};
+  width: 200px;
+`;
+
 export const StandardTaskItemCell = styled.div`
   position: ${({ position }) => position || 'relative'};
   align-items: center;
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   font-weight: ${props =>
     props.bolded ? fontWeights.bold : fontWeights.light};
   min-width: ${props => props.width};
   max-width: ${props => props.width};
-  padding: ${spacing.tiny} 0;
+  padding: ${spacing.smallPlus} 0;
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
   padding-right: ${props =>

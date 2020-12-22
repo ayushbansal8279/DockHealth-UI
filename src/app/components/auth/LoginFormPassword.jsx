@@ -98,7 +98,7 @@ const LoginFormPassword = ({
         </NextButton>
         <Spacing vertical={6} />
         <MontserratTypography variant="h4">
-          <StyledLink to="/forgotPassword">FORGOT PASSWORD?</StyledLink>
+          <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
         </MontserratTypography>
       </FormContext>
     </StyledForm>

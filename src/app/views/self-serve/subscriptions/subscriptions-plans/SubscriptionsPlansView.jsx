@@ -15,6 +15,8 @@ import {
   MediumGreyLabelContainer,
   StyledAnchor,
   StyledAnchorDiv,
+  SubscriptionPlanColumn,
+  SubscriptionPlanOptionColumn,
 } from './SubscriptionsPlansView.Styled';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './SubscriptionsPlansView.PlanData';
 
@@ -30,6 +32,7 @@ const standardFeaturesList = [
   'View history of events',
   'Forward email to your task lists',
   'Add Attachments or call',
+  'Upload patient list',
 ];
 
 const renderStandardFeature = feature => (
@@ -45,11 +48,13 @@ const renderStandardFeature = feature => (
   </>
 );
 
-const enterpriseFeaturesList = [
+const enterpriseFeaturesList1 = [
   'EHR integration',
   'Custom email addresses',
   'Custom email scripts/integrations',
-  'Uploading of patient profiles',
+];
+
+const enterpriseFeaturesList2 = [
   'Custom protocols',
   'Modify BAA',
   'Single sign on',
@@ -168,6 +173,8 @@ const SubscriptionsPlansView = ({
               Per User per Month
             </MontserratTypography>
           </Grid>
+          <Spacing vertical={4} />
+          <Spacing vertical={5} />
           <Grid container direction="column">
             <Button
               variant="contained"
@@ -200,6 +207,8 @@ const SubscriptionsPlansView = ({
               Per User per Month
             </MontserratTypography>
           </Grid>
+          <Spacing vertical={4} />
+          <Spacing vertical={5} />
           <Grid container direction="column">
             <Button
               variant="contained"
@@ -220,7 +229,34 @@ const SubscriptionsPlansView = ({
       </SubscriptionsPlansInnerContainer>
       <Spacing vertical={5} />
       <SubscriptionEnterprisePanel>
-        <div>
+        <SubscriptionPlanColumn>
+          <MontserratTypography variant="h2">
+            <span>Dock </span>
+            <b>Enterprise</b>
+          </MontserratTypography>
+          <Spacing vertical={4} />
+          <MontserratTypography variant="h4" weight="bold">
+            Contact Us for Pricing
+          </MontserratTypography>
+          <Spacing vertical={4} />
+          <MediumGreyLabelContainer>
+            <MontserratTypography variant="h4">
+              <div>
+                <b>Have questions?</b>
+              </div>
+              <StyledAnchor href="mailto:support@dock.health?Subject=Dock%20Support">
+                email us
+              </StyledAnchor>
+              <span>, </span>
+              <StyledAnchorDiv onClick={activateIntercom}>chat</StyledAnchorDiv>
+              <span> or call us at </span>
+              <StyledAnchor href="tel:(857)-302-0441">
+                (857)-302-0441
+              </StyledAnchor>
+            </MontserratTypography>
+          </MediumGreyLabelContainer>
+        </SubscriptionPlanColumn>
+        <SubscriptionPlanOptionColumn>
           <Grid container wrap="nowrap" alignItems="center">
             <Done color="inherit" fontSize="small" fontWeight="bold" />
             <Spacing horizontal={3} />
@@ -231,51 +267,15 @@ const SubscriptionsPlansView = ({
             </MediumGreyLabelContainer>
           </Grid>
           <Spacing vertical={2} />
-          {enterpriseFeaturesList.map(renderEnterpriseFeature)}
-        </div>
+          {enterpriseFeaturesList1.map(renderEnterpriseFeature)}
+        </SubscriptionPlanOptionColumn>
+        <SubscriptionPlanOptionColumn>
+          {enterpriseFeaturesList2.map(renderEnterpriseFeature)}
+        </SubscriptionPlanOptionColumn>
         <div />
-        <Grid container direction="column">
-          <MontserratTypography variant="h2">
-            <span>Dock </span>
-            <b>Enterprise</b>
-          </MontserratTypography>
-          <Spacing vertical={4} />
-          <MontserratTypography variant="h4" weight="bold">
-            Contact Us for Pricing
-          </MontserratTypography>
-          <Spacing vertical={4} />
-          <MontserratTypography variant="h4">
-            <StyledAnchor href="mailto:support@dock.health?Subject=Dock%20Enterprise">
-              EMAIL US
-            </StyledAnchor>
-            <span>, </span>
-            <StyledAnchorDiv onClick={activateIntercom}>CHAT</StyledAnchorDiv>
-          </MontserratTypography>
-          <Spacing vertical={4} />
-          <MediumGreyLabelContainer>
-            <MontserratTypography variant="h4">
-              <span>or call us at </span>
-              <StyledAnchor href="tel:(857)-302-0441">
-                (857)-302-0441
-              </StyledAnchor>
-            </MontserratTypography>
-          </MediumGreyLabelContainer>
-        </Grid>
       </SubscriptionEnterprisePanel>
       <Spacing vertical={4} />
-      <MediumGreyLabelContainer>
-        <MontserratTypography variant="h4">
-          <b>Have questions? </b>
-          <StyledAnchor href="mailto:support@dock.health?Subject=Dock%20Support">
-            email us
-          </StyledAnchor>
-          <span>, </span>
-          <StyledAnchorDiv onClick={activateIntercom}>chat</StyledAnchorDiv>
-          <span> or call us at </span>
-          <StyledAnchor href="tel:(857)-302-0441">(857)-302-0441</StyledAnchor>
-        </MontserratTypography>
-      </MediumGreyLabelContainer>
-      <Spacing vertical={4} />
+
       {/* <TermsLabel style={{ fontWeight: 'bold', marginBottom: 0 }}> */}
       {/*   * How long is this free? */}
       {/* </TermsLabel> */}

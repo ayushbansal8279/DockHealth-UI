@@ -43,7 +43,7 @@ export const StyledEditorContainer = styled.div`
     `
     & .public-DraftEditor-content > div > div:last-of-type > div:after {
       display: inline-block;
-      content: '(Edited)';
+      content: '(edited)';
       font-size: 0.75rem;
       color: ${palette.coolGrey2};
       margin-left: 8px;

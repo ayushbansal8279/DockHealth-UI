@@ -9,7 +9,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import clsx from 'clsx';

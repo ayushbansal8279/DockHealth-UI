@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Spacing from 'components/common/Spacing';
 import { FormContext, useForm, useFieldArray } from 'react-hook-form';
@@ -63,6 +63,7 @@ const onSubmit = ({
   fieldsState,
   setFieldStateAtIndex,
   dispatch,
+  history,
 }) => ({ organizationMembers }) => {
   const filledFileds = organizationMembers.filter(
     ({ firstName, lastName, email }) => firstName && lastName && email,
@@ -114,7 +115,7 @@ const onSubmit = ({
   Promise.all(invitationPromises)
     .then(() => {
       setIsSaving(false);
-      hashHistory.push('/');
+      history.push('/');
       dispatch(
         openModal('OnboardingInviteConfirmation', {
           moreThanOneInvite: filledFileds.length > 1,
@@ -128,7 +129,7 @@ const onSubmit = ({
 
 const OnboardingTeamSetupView = () => {
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const [isSaving, setIsSaving] = useState(false);
   const [fieldsState, setFiledsState] = useState([]);
   const [
@@ -141,7 +142,7 @@ const OnboardingTeamSetupView = () => {
     (async () => {
       const { baaSigned } = await checkBAASignedStatus()(dispatch);
       if (!baaSigned) {
-        hashHistory.push('/onboarding/baa-overview');
+        history.push('/onboarding/baa-overview');
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,6 +206,7 @@ const OnboardingTeamSetupView = () => {
               fieldsState,
               setFieldStateAtIndex,
               dispatch,
+              history,
             }),
           )}
         >
@@ -329,7 +331,7 @@ const OnboardingTeamSetupView = () => {
                 fullWidth
                 type="button"
                 variant="text"
-                onClick={() => hashHistory.push('/')}
+                onClick={() => history.push('/')}
               >
                 Skip
               </Button>

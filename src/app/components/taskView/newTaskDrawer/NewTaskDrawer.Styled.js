@@ -59,24 +59,11 @@ export const EndAdornmentContainer = styled.div`
   width: 2ch;
 `;
 
-export const PatientLabelContainer = styled.div`
-  display: grid;
-  grid-gap: 0.5rem;
-  grid-template-columns: 1fr 4rem 6rem;
-  width: 100%;
-
-  > * {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
-
 export const MemberLabelContainer = styled.div`
   align-items: center;
   display: grid;
   grid-gap: 0.5rem;
-  grid-template-columns: 1fr 30px;
+  grid-template-columns: 1fr 34px;
   width: 100%;
 
   > * {

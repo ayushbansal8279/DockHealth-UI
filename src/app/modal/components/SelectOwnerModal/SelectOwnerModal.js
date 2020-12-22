@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { isEmpty } from 'ramda';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -35,6 +35,7 @@ const SelectOwnerModal = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState({});
+  const history = useHistory();
 
   const currentActiveUsersWithMemberRole = currentActiveUsers?.filter(
     user =>
@@ -87,7 +88,7 @@ const SelectOwnerModal = ({
                   selectedUser?.userIdentifier === user?.userIdentifier
                 }
               >
-                <Member member={user} size={33} />
+                <Member member={user} size={34} />
                 <UserName>
                   {user?.firstName} {user?.lastName}
                 </UserName>
@@ -119,9 +120,9 @@ const SelectOwnerModal = ({
                 confirm();
                 closeModal();
                 if (isRemovingFlow) {
-                  hashHistory.replace('/logout');
+                  history.replace('/auth/logout');
                 } else {
-                  hashHistory.push('/home/my-tasks');
+                  history.push('/core/home/my-tasks');
                 }
               });
             }}

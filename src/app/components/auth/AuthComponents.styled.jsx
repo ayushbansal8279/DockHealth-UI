@@ -2,7 +2,7 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';

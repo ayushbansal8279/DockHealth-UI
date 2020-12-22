@@ -1,10 +1,10 @@
 import React from 'react';
 import OrganizationForm from 'views/onboarding/OrganizationForm/OrganizationForm';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { updateOrganizationName } from 'actions/organization-actions';
 import { useDispatch } from 'react-redux';
 
-const onSubmit = ({ dispatch }) => ({
+const onSubmit = ({ dispatch, history }) => ({
   organizationName,
   organizationInitials,
   organizationThemeColor,
@@ -14,14 +14,15 @@ const onSubmit = ({ dispatch }) => ({
     organizationInitials,
     organizationProfileColor: organizationThemeColor,
   })(dispatch).then(() => {
-    hashHistory.push('/onboarding/team-setup');
+    history.push('/onboarding/team-setup');
   });
 };
 
 const OnboardingOrgSetupViewDesktop = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  return <OrganizationForm onSubmit={onSubmit({ dispatch })} />;
+  return <OrganizationForm onSubmit={onSubmit({ dispatch, history })} />;
 };
 
 export default OnboardingOrgSetupViewDesktop;

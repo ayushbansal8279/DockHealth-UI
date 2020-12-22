@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
@@ -19,15 +19,35 @@ import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
+import {
+  onEnterPatientOpenTasksListView,
+  onEnterPatientCompleteTasksListView,
+} from 'routing/TemplateCoreSubscriptionPlan/PatientDetails';
+import { RouteWrapper } from 'routing/components';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
 import PatientListSkeletonLoader from './PatientListSkeletonLoader/PatientListSkeletonLoader';
 import PatientToolbarSkeletonLoader from './PatientToolbarSkeletonLoader/PatientToolbarSkeletonLoader';
 
+import PatientTasksListView from './PatientTasksListView';
+
+const TABS = [
+  {
+    path: '/',
+    RouteComponent: PatientTasksListView,
+    onEnter: onEnterPatientOpenTasksListView,
+    exact: true,
+  },
+  {
+    path: '/complete',
+    RouteComponent: PatientTasksListView,
+    onEnter: onEnterPatientCompleteTasksListView,
+  },
+];
+
 const PatientDetailsView = ({
-  children,
-  routeParams: { patientIdentifier },
+  match,
   patientTasks: {
     isFetching,
     activeTab,
@@ -45,11 +65,15 @@ const PatientDetailsView = ({
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
+  const history = useHistory();
+  const { params } = match;
+  const { patientIdentifier } = params;
+  const { path } = useRouteMatch();
   const navigateToTab = tabName => {
-    hashHistory.push(
-      `/patient/${patientIdentifier}${
-        tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
-      }`,
+    history.push(
+      tabName === TaskListTabName.OPEN
+        ? `/core/patient/${patientIdentifier}/`
+        : `/core/patient/${patientIdentifier}/${TaskListTabName.COMPLETE}`,
     );
   };
 
@@ -141,13 +165,21 @@ const PatientDetailsView = ({
       ) : (
         <PatientToolbarSkeletonLoader />
       )}
-      <>
-        {isFetching ? (
-          <PatientListSkeletonLoader />
-        ) : (
-          <PatientListsContainer>{children}</PatientListsContainer>
-        )}
-      </>
+      <PatientListsContainer>
+        <Switch>
+          {TABS?.map(route => (
+            <RouteWrapper
+              key={route.path}
+              path={`${path}${route.path}`}
+              RouteComponent={
+                isFetching ? PatientListSkeletonLoader : route.RouteComponent
+              }
+              onEnter={route.onEnter}
+              exact={route.exact}
+            />
+          ))}
+        </Switch>
+      </PatientListsContainer>
       <NewTaskDrawer
         modalActions={modalActions}
         onTaskUpdate={handleTaskUpdate}

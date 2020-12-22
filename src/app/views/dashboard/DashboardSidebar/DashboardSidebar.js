@@ -6,7 +6,7 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import { initializePusher } from 'helpers/pusher-instance';
 import { selectCurrentOrganization as selectCurrentOrganizationAction } from 'api/user-api';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import palette from 'styles/palette';
@@ -56,6 +56,7 @@ const DashboardSidebar = ({
 
   const hoveredItemReference = useRef(null);
   const itemsMoreButtonReferences = useRef([]);
+  const history = useHistory();
 
   const [popoverLabel, setPopoverLabel] = useState(null);
   const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
@@ -207,7 +208,7 @@ const DashboardSidebar = ({
                   if (taskList?.status === 'PENDING')
                     acceptInvitation(taskList);
 
-                  hashHistory.push(`/tasks/${taskList?.taskListIdentifier}`);
+                  history.push(`/core/tasks/${taskList?.taskListIdentifier}`);
                 }}
               >
                 <ListItem

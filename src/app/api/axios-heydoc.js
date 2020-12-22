@@ -47,20 +47,7 @@ axiosInstance.interceptors.response.use(identity, error => {
     return undefined;
   }
 
-  console.log('Connection error');
-  window.location.href = '/#/home/my-tasks';
-  // showToast({
-  //   status: 'error',
-  //   title: 'Error',
-  //   text: 'A connection error has occured, please refresh the page',
-  //   confirmButtonText: 'Refresh page',
-  //   showConfirmButton: true,
-  //   showCloseButton: true,
-  //   timerProgressBar: false,
-  //   timer: 0,
-  // }).then(({ value }) => {
-  //   if (value) window.location.reload();
-  // });
+  window.location.href = '/#/core/home/my-tasks';
 });
 
 export default axiosInstance;

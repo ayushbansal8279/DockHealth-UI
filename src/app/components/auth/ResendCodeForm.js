@@ -1,15 +1,13 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import AuthField from '../common/AuthField';
 
 const validate = values => {
   const errors = {};
   if (!values.username) {
     errors.username = 'Required';
-  } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
-  ) {
+  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
     errors.username = 'Invalid email address';
   }
 
@@ -45,7 +43,7 @@ const ResendCodeForm = props => {
           </button>
         </div>
         <div className="columns small-12 top-buffer text-right details">
-          <Link to="/confirmRegistration">Confirm registration</Link>
+          <Link to="/auth/confirmRegistration">Confirm registration</Link>
         </div>
       </div>
     </form>

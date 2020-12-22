@@ -4,7 +4,7 @@
 import React from 'react';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
 import CircleCompleted from 'img/circle-completed';
@@ -29,6 +29,7 @@ const getInterpolatedText = (tpl, args) =>
 
 const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const {
     activityAlertTitle,
     activityAlertSubTitle,
@@ -81,14 +82,14 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
       if (organizationIdentifier === currentOrganizationIdentifier) {
         dispatch(storeAsCurrentTask(task));
         onClearAlert();
-        hashHistory.push(
-          `/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+        history.push(
+          `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
         );
       } else {
         sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
         selectCurrentOrganizationWithRedirection(
           organizationIdentifier,
-          `#/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+          `#/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
         );
       }
     };

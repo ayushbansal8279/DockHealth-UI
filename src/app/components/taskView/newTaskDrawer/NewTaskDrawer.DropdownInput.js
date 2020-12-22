@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import {
   any,
@@ -18,6 +19,7 @@ import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import InputPopover from './NewTaskDrawer.InputPopover';
 import TextInput from './NewTaskDrawer.TextInput';
+import { AdornmentContainer } from './NewTaskDrawer.Styled';
 
 const DropdownInputContainer = styled.div`
   width: 100%;
@@ -134,6 +136,9 @@ const DropdownInput = React.forwardRef(
           }}
           InputProps={{
             ...InputProps,
+            startAdornment: !isPopoverOpen ? (
+              <AdornmentContainer>+</AdornmentContainer>
+            ) : null,
           }}
           inputProps={{
             readOnly: true,

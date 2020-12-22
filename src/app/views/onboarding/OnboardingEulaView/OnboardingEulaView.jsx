@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useToggle } from 'react-use';
 import { acknowledgeEula } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
@@ -16,6 +16,7 @@ import {
 
 const OnboardingEulaView = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [isEulaAccepted, toggleEulaAccepted] = useToggle(false);
 
   const { userProfile } = useSelector(store => {
@@ -33,12 +34,12 @@ const OnboardingEulaView = () => {
         userProfile.orgUserRole === 'ADMIN' ||
         userProfile.orgUserRole === 'OWNER'
       ) {
-        hashHistory.push('/onboarding/baa-overview');
+        history.push('/onboarding/baa-overview');
       } else {
-        hashHistory.push('/');
+        history.push('/');
       }
     });
-  }, [dispatch, userProfile.orgUserRole]);
+  }, [dispatch, history, userProfile.orgUserRole]);
 
   const isSmallScreen = useSmallScreen();
 

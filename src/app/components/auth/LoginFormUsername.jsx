@@ -40,11 +40,11 @@ const LoginFormUsername = props => {
       if (queryValues.code !== undefined) {
         setShowLoginMessage(true);
 
-        const authCode = queryValues.code.replace('#/login', '');
+        const authCode = queryValues.code.replace('#/core/login', '');
 
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
           .then(() => {
-            window.location.href = '/#/tasks';
+            window.location.href = '/#/core/tasks';
 
             // setShowLoginMessage(false);
           })
@@ -90,7 +90,7 @@ const LoginFormUsername = props => {
             <Spacing vertical={6} />
             <MontserratTypography variant="h4">
               <span>New to Dock? </span>
-              <StyledLink to="/onboarding/create-account">
+              <StyledLink to="/auth/create-account">
                 CREATE AN ACCOUNT
               </StyledLink>
             </MontserratTypography>

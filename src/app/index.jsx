@@ -4,6 +4,7 @@ import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { Font } from '@react-pdf/renderer';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import { HashRouter } from 'react-router-dom';
 import moment from 'moment';
 import React from 'react';
 import { render } from 'react-dom';
@@ -16,7 +17,8 @@ import ErrorBoundary from './ErrorBoundary';
 import flags, { FlagsProvider } from './helpers/flags';
 import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
 import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
-import { Routes } from './routes';
+import Routes from './routing/routes';
+import App from './views/App';
 
 if (process.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -54,7 +56,7 @@ const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
   ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
   : { apiKey: 'NON_EXISTENT_API_KEY' };
 
-const App = () => {
+const Index = () => {
   Font.register({
     family: 'Open Sans',
     fonts: [
@@ -76,7 +78,11 @@ const App = () => {
           <Provider store={store}>
             <StripeProvider {...stripeProps}>
               <ErrorBoundary>
-                <Routes store={store} />
+                <HashRouter forceRefresh>
+                  <App>
+                    <Routes />
+                  </App>
+                </HashRouter>
               </ErrorBoundary>
             </StripeProvider>
           </Provider>
@@ -86,4 +92,4 @@ const App = () => {
   );
 };
 
-render(<App />, document.querySelector('#app'));
+render(<Index />, document.querySelector('#app'));

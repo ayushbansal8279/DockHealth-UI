@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useEffect } from 'react';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 import {
@@ -19,6 +19,7 @@ const initializeUserTourItems = ({
   const [firstListElement, setFirstListElement] = useState(null);
   const [inboxElement, setInboxElement] = useState(null);
   const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     if (currentUser?.usageState?.loginCount >= 5) return;
@@ -81,9 +82,7 @@ const initializeUserTourItems = ({
             buttonText="Add a task to this list"
             onButtonClick={() => {
               closeListCreationSuccessMessage();
-              hashHistory.push(
-                `task-tour/${firstListElement?.taskListIdentifier}`,
-              );
+              history.push(`task-tour/${firstListElement?.taskListIdentifier}`);
             }}
             width={526}
           />

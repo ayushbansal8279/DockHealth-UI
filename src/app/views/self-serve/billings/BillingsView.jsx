@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { setHeader } from 'actions/header-actions';
@@ -73,6 +73,7 @@ const onSubmit = ({ setError, dispatch, organizationIdentifier }) => ({
 
 const BillingsView = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [error, setError] = useState('');
 
@@ -89,8 +90,8 @@ const BillingsView = () => {
   const cancelUpdateBilling = () => {
     unsetUpdatingBilling();
 
-    if (hashHistory.getCurrentLocation().pathname === '/subscription-payment') {
-      hashHistory.push('/subscriptions');
+    if (history.getCurrentLocation().pathname === '/subscription-payment') {
+      history.push('/subscriptions');
     }
   };
 

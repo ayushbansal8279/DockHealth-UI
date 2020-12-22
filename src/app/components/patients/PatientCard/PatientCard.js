@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { Popper } from '@material-ui/core';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import Spacing from 'components/common/Spacing';
 import {
@@ -110,7 +110,7 @@ const PatientCard = ({ children, patientIdentifier }) => {
                       .join(' ')
                       .toUpperCase()}
                   </PatientName>
-                  <Link to={`/patient/${patientIdentifier}`}>
+                  <Link to={`/core/patient/${patientIdentifier}`}>
                     <PatientLinkText>view patient</PatientLinkText>
                   </Link>
                 </TopSection>

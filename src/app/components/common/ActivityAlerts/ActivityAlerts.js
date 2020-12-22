@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable sonarjs/no-duplicated-branches */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import BlueBellIcon from 'img/notifications/blue-bell';
 import NewBlueBellIcon from 'img/notifications/new-blue-bell';
@@ -12,11 +12,10 @@ import {
   getActivityAlerts,
   clearActivityAlert,
   clearAllActivityAlerts,
-  switchActivityAlerts,
   getActivityAlertsPreferences,
 } from 'api/activity-alerts-api';
+import { getNotificationSettings } from 'api/user-api';
 import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
-import Switch from 'components/common/Switch/Switch';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { initializePusher } from 'helpers/pusher-instance';
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
@@ -28,7 +27,6 @@ import {
   ActivityAlertsList,
   ActivityAlertsClearAllLabel,
   ActivityAlertsHeader,
-  ActivityAlertsSwitchLabel,
   ActivityAlertsHeaderLabel,
   EmptyActivityAlerts,
   SettingsButton,
@@ -77,7 +75,7 @@ const listenRealTimeAlerts = (
   if (!channel || !channel.subscribed) {
     channel = pusher?.subscribe(channelName);
   }
-  if(channel){
+  if (channel) {
     channel.bind('activity-alert', ({ alert }) => {
       if (alert) {
         if (isOpen) {
@@ -92,9 +90,8 @@ const listenRealTimeAlerts = (
 };
 
 const ActivityAlerts = ({ variant = 'blue' }) => {
-  const { currentUser, alertsEnabledState } = useSelector(store => ({
+  const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
-    alertsEnabledState: store.alertsState.alertsEnabled,
   }));
 
   const [isOpen, setIsOpen] = useState(false);
@@ -107,6 +104,7 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     activityAlertsListIsFetching,
     setActivityAlertsListIsFetching,
   ] = useState(null);
+  const [notificationSettings, setNotificationSettings] = useState([]);
 
   const iconReference = useRef(null);
   const dispatch = useDispatch();
@@ -122,11 +120,10 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     listenRealTimeAlerts(
       currentUser,
       setHasUnreadAlertsState,
-      alertsEnabledState,
       isOpen,
       getActivityAlertsWithLoader,
     );
-  }, [currentUser, alertsEnabledState, isOpen]);
+  }, [currentUser, isOpen]);
 
   useEffect(() => {
     swithAlertsToastsHide(isOpen)(dispatch);
@@ -141,6 +138,19 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     }
   }, [isOpen]);
 
+  const refreshNotificationSettings = useCallback(() => {
+    (async function fetchData() {
+      const {
+        notificationSettings: notificationSettingsData,
+      } = await getNotificationSettings();
+      setNotificationSettings(notificationSettingsData);
+    })();
+  }, []);
+
+  useEffect(() => {
+    refreshNotificationSettings();
+  }, [refreshNotificationSettings]);
+
   const onClearAlert = async activityAlertId => {
     await clearActivityAlert(activityAlertId).then(() => {
       getActivityAlertsWithLoader();
@@ -153,13 +163,18 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     });
   };
 
+  const hasAnyOptionTurnedOn = notificationSettings.some(
+    ({ emailEnabled, pushNotificationEnabled }) =>
+      emailEnabled || pushNotificationEnabled,
+  );
+
   const { BellIcon, NewBellIcon, MutedBellIcon } = getIconsConfig(variant);
 
   let CurrentBellIcon = BellIcon;
 
-  if (hasUnreadAlertsState && alertsEnabledState) {
+  if (hasUnreadAlertsState && hasAnyOptionTurnedOn) {
     CurrentBellIcon = NewBellIcon;
-  } else if (!alertsEnabledState) {
+  } else if (!hasAnyOptionTurnedOn) {
     CurrentBellIcon = MutedBellIcon;
   } else {
     CurrentBellIcon = BellIcon;
@@ -194,17 +209,6 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                 <ActivityAlertsPopoverLabel>
                   Notifications
                 </ActivityAlertsPopoverLabel>
-                <div>
-                  <Switch
-                    checked={alertsEnabledState}
-                    onChange={() => {
-                      switchActivityAlerts(!alertsEnabledState);
-                    }}
-                  />
-                  <ActivityAlertsSwitchLabel>
-                    {alertsEnabledState ? 'ON' : 'OFF'}
-                  </ActivityAlertsSwitchLabel>
-                </div>
               </ActivityAlertsHeaderLabel>
               <ActivityAlertsOptions>
                 {activityAlertsList?.length !== 0 && (
@@ -238,7 +242,12 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
           </>
         )}
         {selectedScreen === 'SETTINGS' && (
-          <ActivityAlertsSettings setSelectedScreen={setSelectedScreen} />
+          <ActivityAlertsSettings
+            setSelectedScreen={setSelectedScreen}
+            hasAnyOptionTurnedOn={hasAnyOptionTurnedOn}
+            notificationSettings={notificationSettings}
+            refreshNotificationSettings={refreshNotificationSettings}
+          />
         )}
       </ActivityAlertsPopover>
     </>

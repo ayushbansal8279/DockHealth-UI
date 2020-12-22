@@ -2,7 +2,7 @@ import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { hashHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { inviteAuthorizedSigner } from 'api/organization-api';
@@ -29,12 +29,12 @@ const validationSchema = object().shape({
     .matches(/\d{10}/, 'This field should have a valid phone number'),
 });
 
-const goToBaaInvitationSent = () => {
-  hashHistory.push('/onboarding/baa-invitation-sent');
+const goToBaaInvitationSent = history => {
+  history.push('/onboarding/baa-invitation-sent');
 };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onInvitationSubmit = () => async ({
+const onInvitationSubmit = history => async ({
   firstName,
   lastName,
   mobilePhoneNumber,
@@ -45,7 +45,7 @@ const onInvitationSubmit = () => async ({
     inviteAuthorizedSigner({ email, firstName, lastName, mobilePhoneNumber })
       .then(data => {
         if (data.statusCode === 'SUCCESS') {
-          goToBaaInvitationSent();
+          goToBaaInvitationSent(history);
         } else {
           showAlert({
             status: 'error',
@@ -71,6 +71,7 @@ const onInvitationSubmit = () => async ({
 };
 
 const InvitationForm = ({ hideInvitationForm }) => {
+  const history = useHistory();
   const formMethods = useForm({
     validationSchema,
     revalidationMode: 'onChange',
@@ -80,7 +81,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
 
   return (
     <form
-      onSubmit={formMethods.handleSubmit(onInvitationSubmit())}
+      onSubmit={formMethods.handleSubmit(onInvitationSubmit(history))}
       autoComplete="off"
       autoCorrect="off"
     >

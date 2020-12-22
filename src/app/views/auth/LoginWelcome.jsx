@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { NextButton, StyledLink } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -29,7 +29,7 @@ const LoginWelcome = () => (
     <Spacing vertical={5} />
     <MontserratTypography variant="h4">
       <span>Already have an account? </span>
-      <StyledLink to="/login">SIGN IN</StyledLink>
+      <StyledLink to="/auth/login">SIGN IN</StyledLink>
     </MontserratTypography>
   </Grid>
 );

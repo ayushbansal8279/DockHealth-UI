@@ -29,7 +29,6 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientTaskListsActiveTabSelector,
-  currentPatientIdentifierSelector,
   patientListHasTasksSelector,
 } from 'selectors/patient-tasks-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -42,6 +41,8 @@ import {
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
+
+import { locationParametersSelector } from '../location/selectors';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
   'DO_FETCH_STATS_FOR_PATIENT_TASKS';
@@ -218,7 +219,7 @@ export const PatientTasksSagaActions = {
 
 function* getPatientLists() {
   const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const { patientIdentifier } = yield select(locationParametersSelector);
   const activeTab = yield select(patientTaskListsActiveTabSelector);
   const status =
     activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
@@ -274,8 +275,7 @@ function* doRefreshPatientTasks() {
 
 function* doFetchStatsForPatientTasks() {
   try {
-    const patientIdentifier = yield select(currentPatientIdentifierSelector);
-
+    const { patientIdentifier } = yield select(locationParametersSelector);
     const stats = yield call(
       PatientTasksApi.fetchStatsForPatientTasks,
       patientIdentifier,
@@ -295,7 +295,7 @@ function* doFetchStatsForPatientTasks() {
 }
 
 function* doFetchPatientFilters() {
-  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const { patientIdentifier } = yield select(locationParametersSelector);
   const activeTab = yield select(patientTaskListsActiveTabSelector);
   const status =
     activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
@@ -433,7 +433,7 @@ function* doQuickAddPatientTask({ payload }) {
   const { description, taskListIdentifier } = payload;
 
   try {
-    const patientIdentifier = yield select(currentPatientIdentifierSelector);
+    const { patientIdentifier } = yield select(locationParametersSelector);
 
     const isFirstTask = !(yield select(patientListHasTasksSelector));
 
@@ -455,7 +455,7 @@ function* doQuickAddPatientTask({ payload }) {
 
 function* doUpdatePatientTasksFilters({ payload }) {
   const { selectedFilters } = payload;
-  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const { patientIdentifier } = yield select(locationParametersSelector);
   const activeTab = yield select(patientTaskListsActiveTabSelector);
   const status =
     activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
@@ -471,7 +471,7 @@ function* doUpdatePatientTasksFilters({ payload }) {
 }
 
 function* doInitializeSavedFiltersForPatient() {
-  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const { patientIdentifier } = yield select(locationParametersSelector);
   const activeTab = yield select(patientTaskListsActiveTabSelector);
   const status =
     activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';

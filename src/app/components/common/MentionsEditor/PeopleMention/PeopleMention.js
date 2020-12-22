@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Popper } from '@material-ui/core';
 import * as PeopleApi from 'api/people-api';
@@ -115,7 +115,9 @@ const PeopleMention = ({ mention, className, children }) => {
                     ? getOrgRole(personData.orgUserRole)
                     : 'Deactivated'}
                 </Role>
-                <Link to={`assignedToPerson/${personData.userIdentifier}`}>
+                <Link
+                  to={`/core/assignedToPerson/${personData.userIdentifier}`}
+                >
                   <PersonTasksLink>view tasks</PersonTasksLink>
                 </Link>
               </RoleSection>
