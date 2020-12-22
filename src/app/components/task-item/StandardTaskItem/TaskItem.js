@@ -440,23 +440,25 @@ const TaskItem = ({
             </CompletedBy>
           </DescriptionBox>
         </MainStandardTaskItemCell>
-        <StandardTaskItemCell
-          width="60px"
-          paddingLeft="tiny"
-          paddingRight="tiny"
-        >
-          {!isSubtask && subTasksCount > 0 && (
-            <SubtasksCellContent onClick={onSubtaskLabelClick}>
-              <SubtasksCellText isOpen={!hideSubtasks}>
-                {subTasksCount}
-              </SubtasksCellText>
-              <SubtasksImg
-                src={!hideSubtasks ? SubtasksIconActive : SubtasksIcon}
-                alt="Subtasks"
-              />
-            </SubtasksCellContent>
-          )}
-        </StandardTaskItemCell>
+        {!hideSubtasks && (
+          <StandardTaskItemCell
+            width="60px"
+            paddingLeft="tiny"
+            paddingRight="tiny"
+          >
+            {!isSubtask && subTasksCount > 0 && (
+              <SubtasksCellContent onClick={onSubtaskLabelClick}>
+                <SubtasksCellText isOpen={isOpen}>
+                  {subTasksCount}
+                </SubtasksCellText>
+                <SubtasksImg
+                  src={isOpen ? SubtasksIconActive : SubtasksIcon}
+                  alt="Subtasks"
+                />
+              </SubtasksCellContent>
+            )}
+          </StandardTaskItemCell>
+        )}
         {patientVisible && (
           <StandardTaskItemCell width="164px">
             <ClickablePatient onClick={onPatientClick}>
@@ -510,9 +512,9 @@ const TaskItem = ({
             )}
           </TaskWorkflowStatus>
         </StandardTaskItemCell>
-        <StandardTaskItemCell width="200px">
+        <StandardTaskItemCell width="150px">
           <Grid container>
-            <GridImg item xs={3} matched={matchComments}>
+            <GridImg item xs={4} matched={matchComments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -536,53 +538,7 @@ const TaskItem = ({
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3}>
-              <PopoverDatepicker
-                selectedDate={dueDate}
-                onDateChange={date => {
-                  const existingTime = dueDate
-                    ? moment(dueDate).format('HH:mm')
-                    : '';
-                  updateDueDate(task, moment(`${date} ${existingTime}`), true);
-                }}
-                quickSelectOptions={dueDateQuickSelectOptions}
-              >
-                {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-                  <DueDateButton
-                    type="button"
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                    ref={elementReference}
-                  >
-                    <UniversalTooltipContainer
-                      placement="top"
-                      label={
-                        getItemIconVersion(dueDate) === REGULAR
-                          ? 'Edit due date'
-                          : 'Add due date'
-                      }
-                    >
-                      {dueDate ? (
-                        <DueDateBasicLabel
-                          isOverdue={isDueDateOverdue(dueDate)}
-                        >
-                          {moment(dueDate).format('MM/DD')}
-                        </DueDateBasicLabel>
-                      ) : (
-                        <CalendarIcon
-                          src={
-                            isHovered
-                              ? EmptyCalendarIconHover
-                              : EmptyCalendarIcon
-                          }
-                          alt="Due date"
-                        />
-                      )}
-                    </UniversalTooltipContainer>
-                  </DueDateButton>
-                )}
-              </PopoverDatepicker>
-            </GridImg>
-            <GridImg item xs={3} matched={matchLabels}>
+            <GridImg item xs={4} matched={matchLabels}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -604,7 +560,7 @@ const TaskItem = ({
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3} matched={matchAttachments}>
+            <GridImg item xs={4} matched={matchAttachments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -628,7 +584,59 @@ const TaskItem = ({
             </GridImg>
           </Grid>
         </StandardTaskItemCell>
-        <StandardTaskItemCell width="60px" justify="center">
+        <StandardTaskItemCell
+          paddingLeft="tiny"
+          paddingRight="tiny"
+          width="60px"
+          justify="center"
+        >
+          <PopoverDatepicker
+            selectedDate={dueDate}
+            onDateChange={date => {
+              const existingTime = dueDate
+                ? moment(dueDate).format('HH:mm')
+                : '';
+              updateDueDate(task, moment(`${date} ${existingTime}`), true);
+            }}
+            quickSelectOptions={dueDateQuickSelectOptions}
+          >
+            {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+              <DueDateButton
+                type="button"
+                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                ref={elementReference}
+              >
+                <UniversalTooltipContainer
+                  placement="top"
+                  label={
+                    getItemIconVersion(dueDate) === REGULAR
+                      ? 'Edit due date'
+                      : 'Add due date'
+                  }
+                >
+                  {dueDate ? (
+                    <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                      {moment(dueDate).format('MM/DD')}
+                    </DueDateBasicLabel>
+                  ) : (
+                    <CalendarIcon
+                      src={
+                        isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon
+                      }
+                      alt="Due date"
+                    />
+                  )}
+                </UniversalTooltipContainer>
+              </DueDateButton>
+            )}
+          </PopoverDatepicker>
+        </StandardTaskItemCell>
+        <StandardTaskItemCell
+          width="60px"
+          justify="center"
+          paddingLeft="tiny"
+          paddingRight="tiny"
+        >
           <TaskAssignMember
             currentUser={currentUser}
             reassignTask={reassignTask}
