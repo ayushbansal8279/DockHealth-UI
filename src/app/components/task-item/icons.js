@@ -73,6 +73,11 @@ export const getCalendarOverDueIcon = hasUpdate => {
   return CalendarOverDueIcon;
 };
 
+export const isDueDateOverdue = value =>
+  moment(value).format('HH:mm') !== '00:00'
+    ? moment(value).isBefore(moment())
+    : value && moment(value).isBefore(moment().startOf('day'));
+
 export const getItemIcon = (type, value, isHovered, hasUpdate) =>
   ITEM_ICONS[type][getItemIconVersion(value, isHovered, hasUpdate)];
 

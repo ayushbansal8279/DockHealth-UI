@@ -57,6 +57,7 @@ import {
   FocusDrawerFieldEnum,
   TaskDrawerFields,
   getFormattedPatient,
+  getCompletedByLabel,
 } from './NewTaskDrawer.Utilities';
 import existingUserTaskDrawerTourHooks from './NewTaskDrawer.ExistingUserTourHooks';
 import NewTaskDrawerSubtasks from './NewTaskDrawerSubtasks/NewTaskDrawerSubtasks';
@@ -200,6 +201,8 @@ const NewTaskDrawer = ({
     selectedTask.taskIdentifier === null &&
     selectedTask.parentTaskIdentifier !== null;
 
+  const isSelectedTaskComplete = selectedTask?.status === 'COMPLETE';
+
   return (
     <>
       <TaskDrawerContainer
@@ -258,14 +261,19 @@ const NewTaskDrawer = ({
                   isFocused={isDescriptionFocused}
                   hasError={descriptionErrorState}
                 >
-                  <DescriptionLabel>
-                    {isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
-                    <Spacing horizontal={3} />
-                    <span>(required)</span>
-                  </DescriptionLabel>
-                  <DescriptionTextContainer
-                    isCrossed={selectedTask?.status === 'COMPLETE'}
-                  >
+                  <Grid container justify="space-between" alignItems="flex-end">
+                    <DescriptionLabel>
+                      {isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
+                      <Spacing horizontal={3} />
+                      <span>(required)</span>
+                    </DescriptionLabel>
+                    {isSelectedTaskComplete &&
+                      getCompletedByLabel(
+                        selectedTask.completedBy,
+                        selectedTask.completedDt,
+                      )}
+                  </Grid>
+                  <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
                     <MentionsEditor
                       ref={descriptionReference}
                       taskListIdentifier={taskListIdentifier}

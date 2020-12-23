@@ -25,6 +25,8 @@ export const ToolbarAvatarContainer = styled.div`
 `;
 
 export const MoreMembersButtonContainer = styled.div`
+  height: 45px;
+  width: 45px;
   align-items: center;
   border: 0.125rem solid ${palette.brightBlue};
   border-radius: 2.5rem;
@@ -32,13 +34,11 @@ export const MoreMembersButtonContainer = styled.div`
   display: flex;
   font-size: 0.875rem;
   font-weight: 300;
-  height: 2.5rem;
   justify-content: center;
   line-height: 1;
   min-height: 2.5rem;
   min-width: 2.5rem;
   padding: 0;
-  width: 2.5rem;
 `;
 
 export const HeaderActionButtonsGrid = styled(Grid)`

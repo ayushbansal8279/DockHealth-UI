@@ -9,6 +9,7 @@ import SubtasksSkeletonLoader from '../SubtasksSkeletonLoader/SubtasksSkeletonLo
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
+import { ParentTaskContainer } from '../styled';
 
 const Task = ({
   task,
@@ -102,7 +103,7 @@ const Task = ({
   }, []);
 
   return (
-    <div {...draggableProps}>
+    <ParentTaskContainer {...draggableProps}>
       <div ref={innerRef}>
         <TaskItem
           task={task}
@@ -147,7 +148,7 @@ const Task = ({
           {...restProps}
         />
       )}
-    </div>
+    </ParentTaskContainer>
   );
 };
 

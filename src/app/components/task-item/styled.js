@@ -24,9 +24,8 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
+  height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
   overflow: hidden;
-  padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
@@ -77,13 +76,14 @@ export const AddCrossIcon = styled.img`
 export const CircleIcon = styled.img`
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};
+  ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
 `;
 export const DescriptionTooltip = styled.div`
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   position: absolute;
   top: 30px;
   left: 60px;
-  max-width: 60vw;
+  max-width: 650px;
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
@@ -96,32 +96,19 @@ export const Description = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  margin-right: ${spacing.regularPlus};
   padding-right: ${spacing.smallPlus};
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: initial;
 
   &:hover {
     ${DescriptionTooltip} {
       display: block;
     }
   }
-`;
-
-export const DescriptionMainText = styled.div`
-  flex: 1;
-  overflow: hidden;
-`;
-
-export const DescriptionDuplicatedLabel = styled.p`
-  display: block;
-  font-size: ${fontSizes.small};
-  color: ${palette.coolGrey2};
-  margin-left: 8px;
-  margin-top: 2px;
-  margin-bottom: 0;
-  text-decoration: none;
 `;
 
 export const DescriptionBox = styled.div`
@@ -206,16 +193,17 @@ export const StandardTaskItemCell = styled.div`
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${props =>
-    props.bolded ? fontWeights.bold : fontWeights.light};
+    props.bolded ? fontWeights.regular : fontWeights.light};
+  color: ${palette.mediumGrey};
   min-width: ${props => props.width};
   max-width: ${props => props.width};
-  padding: ${spacing.smallPlus} 0;
+  padding: ${spacing.small} 0;
   padding-left: ${props =>
-    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
+    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
   padding-right: ${props =>
-    props.paddingLeft ? spacing[props.paddingRight] : spacing.regularPlus};
+    props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   overflow: hidden;
@@ -223,6 +211,10 @@ export const StandardTaskItemCell = styled.div`
   &:last-of-type {
     border-right: 0;
   }
+`;
+
+export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
+  flex: 1;
 `;
 
 export const ClickablePatient = styled.span`
@@ -242,6 +234,8 @@ export const StandardTaskItemContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  height: ${({ height }) => height};
+  ${({ noTopBorder }) => noTopBorder && `border-top: none;`}
 `;
 
 export const StatusBar = styled.div`
@@ -354,14 +348,6 @@ export const SlimTaskItemListLink = styled(({ withMargin, ...otherProps }) => (
   margin-right: ${props => props.withMargin && spacing.large};
 `;
 
-export const Arrow = styled.img`
-  transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  padding-left: ${spacing.tiny};
-  padding-right: ${spacing.smallPlus};
-  transition: all 0.5s ease-in-out;
-`;
-
 export const MatchingWrapper = styled.div`
   height: 100%;
   width: 100%;
@@ -408,23 +394,6 @@ export const SlimTaskItemPatientLink = styled(Link)`
 
   &:hover {
     color: ${palette.brightBlue};
-  }
-`;
-
-export const SubtasksBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const SubtasksAddLabel = styled.button`
-  color: ${palette.brightBlue};
-  font-weight: normal;
-  cursor: pointer;
-  z-index: 99;
-  width: fit-content;
-
-  &:hover {
-    text-decoration: underline;
   }
 `;
 
@@ -488,4 +457,43 @@ export const LabelIcon = styled.img`
 
 export const AttachmentIcon = styled.img`
   height: 20px;
+`;
+
+export const SubtasksCellContent = styled.button`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+export const SubtasksCellText = styled.p`
+  margin-right: ${spacing.tiny};
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: ${({ isOpen }) => (isOpen ? palette.brightBlue : palette.coolGrey1)};
+`;
+
+export const SubtasksImg = styled.img`
+  width: 22px;
+  height: 15px;
+`;
+
+export const DescriptionWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+`;
+
+export const DescriptionLabel = styled.div`
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  color: rgb(193, 204, 218);
+  text-decoration: none;
+  margin-top: 1px;
+`;
+
+export const ParentTaskContainer = styled.div`
+  margin-bottom: 3px;
 `;
