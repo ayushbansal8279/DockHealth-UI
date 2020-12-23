@@ -15,7 +15,7 @@ export const PatientDetailsNotesListContainer = styled.div`
   flex-direction: column;
   max-height: 225px;
 
-  overflow-y: scroll;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;

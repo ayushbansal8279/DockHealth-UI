@@ -11,7 +11,7 @@ export const PopoverContainer = styled.div`
 
 export const SuggestionsContainer = styled.div`
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;

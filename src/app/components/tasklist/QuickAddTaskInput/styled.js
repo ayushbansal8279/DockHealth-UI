@@ -51,7 +51,3 @@ export const ErrorLabel = styled.div`
   color: ${palette.red};
   font-size: ${fontSizes.smallPlus};
 `;
-
-export default {
-  AddTaskInputWrapper,
-};

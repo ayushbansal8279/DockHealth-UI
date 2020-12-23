@@ -544,6 +544,14 @@ const initializeTaskDrawerHooks = ({
     }
   };
 
+  const handleQuickAddTask = async newTask => {
+    const taskToCreate = {
+      ...newTask,
+      parentTaskIdentifier: selectedTask.taskIdentifier,
+    };
+    return saveTask(taskToCreate)(dispatch);
+  };
+
   const handleAssignedToSelect = async selectedOption => {
     const member = {
       userIdentifier: selectedOption.value,
@@ -704,6 +712,7 @@ const initializeTaskDrawerHooks = ({
     onDelete,
     onDuplicate,
     onAddSubTask,
+    handleQuickAddTask,
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,

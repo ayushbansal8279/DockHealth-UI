@@ -49,7 +49,7 @@ export const NestedList = styled(StyledList)`
     min-height: unset;
     padding-bottom: 0;
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 120px;
     scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
 
@@ -258,7 +258,7 @@ export const StyledDropdown = styled.div`
   overflow-x: hidden;
   width: 100%;
   margin-bottom: ${spacing.regularPlus};
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
 
   &::-webkit-scrollbar {

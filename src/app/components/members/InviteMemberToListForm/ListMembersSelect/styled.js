@@ -29,7 +29,7 @@ export const Placeholder = styled.p`
 export const SelectElementWrapper = styled.div`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : `calc(100% - 130px)`)};
   max-height: 132px;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 1;
 
   &::-webkit-scrollbar {
@@ -138,7 +138,7 @@ export const AvailablePeopleWrapper = styled.div`
   left: 0;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : `calc(100% - 130px)`)};
   max-height: 165px;
-  overflow-y: scroll;
+  overflow-y: auto;
   background: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   z-index: 100;

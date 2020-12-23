@@ -31,7 +31,7 @@ export const MemberListItem = styled.div`
 export const MembersListWrapper = styled.div`
   width: 100%;
   flex: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;

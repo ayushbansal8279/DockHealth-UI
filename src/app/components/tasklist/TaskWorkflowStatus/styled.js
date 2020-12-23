@@ -16,7 +16,7 @@ export const StyledPopover = styled(Popover)`
 
 export const Box = styled.div`
   max-height: 260px;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const StatusBox = styled.div`

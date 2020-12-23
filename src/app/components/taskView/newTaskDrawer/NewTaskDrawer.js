@@ -94,6 +94,7 @@ const NewTaskDrawer = ({
     onDelete,
     onDuplicate,
     onAddSubTask,
+    handleQuickAddTask,
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
@@ -485,13 +486,14 @@ const NewTaskDrawer = ({
               <Grid item xs={12} style={styleFullRow}>
                 <AttachmentsSection selectedTask={selectedTask} />
               </Grid>
-              {!selectedTask?.parentTaskIdentifier && (
+              {selectedTask && !selectedTask.parentTaskIdentifier && (
                 <Grid item xs={12}>
                   <NewTaskDrawerSubtasks
-                    subtasks={selectedTask?.subtasks}
-                    subTasksCount={selectedTask?.subTasksCount}
+                    subtasks={selectedTask.subtasks}
+                    subTasksCount={selectedTask.subTasksCount}
                     currentUser={currentUser}
-                    onAddSubTask={onAddSubTask({ assignToSelf })}
+                    taskListIdentifier={taskListIdentifier}
+                    onQuickAddTask={handleQuickAddTask}
                   />
                 </Grid>
               )}

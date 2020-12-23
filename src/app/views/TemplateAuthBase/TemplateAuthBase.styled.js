@@ -79,7 +79,7 @@ export const RightSideContentContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     max-height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 `;
 

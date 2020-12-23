@@ -70,7 +70,7 @@ const QuickAddTaskInput = React.forwardRef(
               placeholder="Add a task and press enter on your keyboard"
               onFocus={() => {
                 setIsFocused(true);
-                onFocus();
+                if (typeof onFocus === 'function') onFocus();
               }}
               onBlur={() => setIsFocused(false)}
               state={newTaskDescription}
