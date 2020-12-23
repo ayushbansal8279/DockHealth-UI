@@ -510,3 +510,16 @@ export const SubtasksBorderTop = styled.div`
   height: 1px;
   background: ${palette.coolGrey3};
 `;
+
+export const SingleSubtaskBorderBottom = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 0px;
+  width: 555px;
+  height: 1px;
+  background: ${palette.coolGrey3};
+`;
+
+export const SubtaskItemWrapper = styled.div`
+  position: relative;
+`;

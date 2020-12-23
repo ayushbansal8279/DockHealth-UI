@@ -7,6 +7,7 @@ import { onDragEndSubtask } from 'components/tasklist/DragDrop.helpers';
 import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
 import TaskItem from './TaskItem';
 import { getMatchedComments } from './helpers';
+import { SubtaskItemWrapper, SingleSubtaskBorderBottom } from '../styled';
 
 const Subtasks = ({
   subtasks,
@@ -88,7 +89,8 @@ const Subtasks = ({
                         { innerRef, draggableProps, dragHandleProps },
                         { isDragging: isDraggingSubtask },
                       ) => (
-                        <div ref={innerRef} {...draggableProps}>
+                        <SubtaskItemWrapper ref={innerRef} {...draggableProps}>
+                          {!isLast && <SingleSubtaskBorderBottom />}
                           <TaskItem
                             dragHandleProps={dragHandleProps}
                             key={subtask.taskIdentifier}
@@ -116,7 +118,7 @@ const Subtasks = ({
                               }}
                             />
                           )}
-                        </div>
+                        </SubtaskItemWrapper>
                       )}
                     </Draggable>
                   );

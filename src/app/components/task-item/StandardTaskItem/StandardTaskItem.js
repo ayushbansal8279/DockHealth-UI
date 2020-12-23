@@ -149,7 +149,9 @@ const Task = ({
         )}
       {showSubtasks && (
         <SubtasksWrapper>
-          {areSubtasksOpen && <SubtasksBorderTop />}
+          {areSubtasksOpen && task && !task.isFetchingSubTasks && (
+            <SubtasksBorderTop />
+          )}
           <Subtasks
             subtasks={renderedSubtasks}
             subTasksCount={subTasksCount}

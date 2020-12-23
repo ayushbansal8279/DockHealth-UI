@@ -350,7 +350,7 @@ const TaskItem = ({
     >
       <StandardTaskItemContainer
         isSelected={isSelectedTask}
-        height={hasParentTaskLabel ? 50 : 35}
+        height={hasParentTaskLabel || isCompletedGroup ? 50 : 35}
         noTopBorder={isSubtask}
       >
         {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
