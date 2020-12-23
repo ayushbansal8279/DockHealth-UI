@@ -144,7 +144,9 @@ const Task = ({
       )}
       {task?.isFetchingSubTasks &&
         subTasksCount > 0 &&
-        isEmpty(renderedSubtasks) && <SubtasksSkeletonLoader rows={4} />}
+        isEmpty(renderedSubtasks) && (
+          <SubtasksSkeletonLoader rows={subTasksCount} />
+        )}
       {showSubtasks && (
         <SubtasksWrapper>
           {areSubtasksOpen && <SubtasksBorderTop />}
