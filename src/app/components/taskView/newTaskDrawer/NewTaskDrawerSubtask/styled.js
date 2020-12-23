@@ -4,15 +4,17 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: ${spacing.smallPlus} 0;
-  cursor: pointer;
-`;
-
-export const MainSection = styled.div`
+  height: 37px;
   display: flex;
   align-items: center;
+  margin-bottom: 3px;
+  padding: 0 ${spacing.regular};
+  cursor: pointer;
+  border: 1px solid ${palette.coolGrey3};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const IconsSection = styled.div`
@@ -60,7 +62,7 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
+  height: ${props => (props.isCompleted ? 1 : 0)}rem;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
   overflow: hidden;
   transition: all 0.1s ease-out;

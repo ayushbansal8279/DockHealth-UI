@@ -21,7 +21,7 @@ export const AddSubtaskInputWrapper = styled.div`
   align-items: center;
   height: auto;
   margin-bottom: ${spacing.small};
-  padding: ${spacing.small} ${spacing.huge} ${spacing.small} ${spacing.regular};
+  padding: 6px ${spacing.huge} 6px ${spacing.regular};
   font-size: ${fontSizes.smallPlus};
   background-color: ${palette.white};
   text-align: left;
