@@ -3,6 +3,7 @@ import {
   ShowMoreButton,
   TaskCommentsContainer,
   CommentStylingLink,
+  TaskCommentsPadding,
 } from './styled';
 import TaskComment from './TaskComment';
 
@@ -21,22 +22,24 @@ const TaskComments = ({
 
   return (
     <TaskCommentsContainer timeout={150} in={isOpen} isLast={isLast}>
-      {!isLast && showSubtaskStylingLink && <CommentStylingLink />}
-      {limitedComments?.map((comment, index) => (
-        <TaskComment
-          {...comment}
-          key={index}
-          highlightedValue={highlightedValue}
-          onClickComment={onClickComment}
-          showMore={showMore}
-          isLastComment={index === limitedComments?.length - 1}
-        />
-      ))}
-      {showMore && (
-        <ShowMoreButton onClick={() => setShowMore(false)}>
-          Show more
-        </ShowMoreButton>
-      )}
+      <TaskCommentsPadding>
+        {!isLast && showSubtaskStylingLink && <CommentStylingLink />}
+        {limitedComments?.map((comment, index) => (
+          <TaskComment
+            {...comment}
+            key={index}
+            highlightedValue={highlightedValue}
+            onClickComment={onClickComment}
+            showMore={showMore}
+            isLastComment={index === limitedComments?.length - 1}
+          />
+        ))}
+        {showMore && (
+          <ShowMoreButton onClick={() => setShowMore(false)}>
+            Show more
+          </ShowMoreButton>
+        )}
+      </TaskCommentsPadding>
     </TaskCommentsContainer>
   );
 };

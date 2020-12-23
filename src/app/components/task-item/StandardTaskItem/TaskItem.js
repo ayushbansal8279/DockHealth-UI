@@ -3,13 +3,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
-import { isEmpty } from 'ramda';
 import Highlighter from 'react-highlight-words';
 import { openDrawer } from 'actions/task-drawer-actions';
 import {
   // prepareSubtask,
   storeAsCurrentTask,
-  loadSubTasks,
 } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import debounce from 'lodash.debounce';
@@ -98,7 +96,6 @@ const TaskItem = ({
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
-  subtasks,
   subTasksCount,
   dragAndDropDisabled,
   listNameVisible,
@@ -111,7 +108,6 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   hideSubtasks,
-  isFullView,
 }) => {
   const {
     taskIdentifier,
@@ -212,13 +208,6 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
 
-  useEffect(() => {
-    if (isFullView && subTasksCount > 0) {
-      switchOpen(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFullView]);
-
   const isCompleted = task.status === 'COMPLETE';
   const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
@@ -306,16 +295,13 @@ const TaskItem = ({
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
-      if (subTasksCount > 0 && isEmpty(subtasks)) {
-        dispatch(loadSubTasks(task));
-        if (!isOpen) {
-          switchOpen(true);
-        }
+      if (!isOpen) {
+        switchOpen(true);
       } else {
         switchOpen(!isOpen);
       }
     },
-    [subTasksCount, subtasks, dispatch, task, isOpen, switchOpen],
+    [isOpen, switchOpen],
   );
 
   const onPatientClick = useCallback(() => {

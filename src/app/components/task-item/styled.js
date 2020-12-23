@@ -497,3 +497,16 @@ export const DescriptionLabel = styled.div`
 export const ParentTaskContainer = styled.div`
   margin-bottom: 3px;
 `;
+
+export const SubtasksWrapper = styled.div`
+  position: relative;
+`;
+
+export const SubtasksBorderTop = styled.div`
+  position: absolute;
+  right: 0;
+  top: -1px;
+  width: 555px;
+  height: 1px;
+  background: ${palette.coolGrey3};
+`;

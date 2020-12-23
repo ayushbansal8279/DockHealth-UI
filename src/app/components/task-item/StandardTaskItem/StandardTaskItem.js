@@ -2,14 +2,18 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
-import { storeAsCurrentTask } from 'actions/task-actions';
+import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import { isEmpty } from 'ramda';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import SubtasksSkeletonLoader from '../SubtasksSkeletonLoader/SubtasksSkeletonLoader';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
-import { ParentTaskContainer } from '../styled';
+import {
+  ParentTaskContainer,
+  SubtasksBorderTop,
+  SubtasksWrapper,
+} from '../styled';
 
 const Task = ({
   task,
@@ -29,7 +33,7 @@ const Task = ({
   isSearchApplied,
   ...restProps
 }) => {
-  const [isOpen, switchOpen] = useState(false);
+  const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
   const {
     comments,
     subtasks,
@@ -48,26 +52,35 @@ const Task = ({
 
   const dispatch = useDispatch();
 
+  const handleSetSubtasksOpen = useCallback(
+    areOpen => {
+      if (subTasksCount > 0 && isEmpty(renderedSubtasks)) {
+        dispatch(loadSubTasks(task));
+      }
+      setAreSubtasksOpen(areOpen);
+    },
+    [task, renderedSubtasks, setAreSubtasksOpen, dispatch, subTasksCount],
+  );
+
   useEffect(() => {
     const hasNewSubtask = renderedSubtasks.some(
       ({ taskIdentifier }) => !taskIdentifier,
     );
     if (hasNewSubtask) {
-      switchOpen(true);
+      handleSetSubtasksOpen(true);
     }
     if (
       (areFiltersApplied || isSearchApplied) &&
       renderedSubtasks?.length > 0
     ) {
-      switchOpen(true);
+      handleSetSubtasksOpen(true);
     }
-  }, [renderedSubtasks, areFiltersApplied, isSearchApplied]);
-
-  useEffect(() => {
-    if (!isFullView) {
-      switchOpen(false);
-    }
-  }, [isFullView]);
+  }, [
+    renderedSubtasks,
+    areFiltersApplied,
+    isSearchApplied,
+    handleSetSubtasksOpen,
+  ]);
 
   const matchingComments = useMemo(
     () => getMatchedComments(comments, matchingCommentIdentifiers),
@@ -107,8 +120,8 @@ const Task = ({
       <div ref={innerRef}>
         <TaskItem
           task={task}
-          isOpen={isOpen}
-          switchOpen={switchOpen}
+          isOpen={areSubtasksOpen}
+          switchOpen={handleSetSubtasksOpen}
           dragHandleProps={dragHandleProps}
           isDragging={isDragging}
           currentUser={currentUser}
@@ -133,20 +146,23 @@ const Task = ({
         subTasksCount > 0 &&
         isEmpty(renderedSubtasks) && <SubtasksSkeletonLoader rows={4} />}
       {showSubtasks && (
-        <Subtasks
-          subtasks={renderedSubtasks}
-          subTasksCount={subTasksCount}
-          isOpen={isOpen}
-          isFullView={isFullView}
-          groupId={groupId}
-          parentTaskId={task.taskIdentifier}
-          currentUser={currentUser}
-          reassignTask={reassignTask}
-          parentHasPatient={!!patient}
-          taskList={task?.taskList}
-          isDraggable={isDraggable}
-          {...restProps}
-        />
+        <SubtasksWrapper>
+          {areSubtasksOpen && <SubtasksBorderTop />}
+          <Subtasks
+            subtasks={renderedSubtasks}
+            subTasksCount={subTasksCount}
+            isOpen={areSubtasksOpen}
+            isFullView={isFullView}
+            groupId={groupId}
+            parentTaskId={task.taskIdentifier}
+            currentUser={currentUser}
+            reassignTask={reassignTask}
+            parentHasPatient={!!patient}
+            taskList={task?.taskList}
+            isDraggable={isDraggable}
+            {...restProps}
+          />
+        </SubtasksWrapper>
       )}
     </ParentTaskContainer>
   );
