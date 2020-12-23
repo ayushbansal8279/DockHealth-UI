@@ -1,12 +1,10 @@
 import { Add } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
-import { Button } from '@material-ui/core';
 import { useToggle } from 'react-use';
-import Spacing from 'components/common/Spacing';
 import AdornedButton from 'components/common/AdornedButton';
 import InvitePeoplePopover from 'views/people-list/PeopleView.InvitePeoplePopover';
 
-const InviteButton = ({ getAllUsers, buyButtonDisabled, onClickBuyButton }) => {
+const InviteButton = ({ getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);
   const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
 
@@ -32,15 +30,6 @@ const InviteButton = ({ getAllUsers, buyButtonDisabled, onClickBuyButton }) => {
         anchor={invitePeopleButtonReference.current}
         getAllUsers={getAllUsers}
       />
-      <Spacing horizontal={5} />
-      <Button
-        disabled={buyButtonDisabled}
-        variant="contained"
-        size="small"
-        onClick={onClickBuyButton}
-      >
-        Buy this plan
-      </Button>
     </>
   );
 };

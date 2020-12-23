@@ -172,6 +172,7 @@ export default () => {
           setUserSubscriptionStatus={setUserSubscriptionStatus}
           subscriptionPlanData={memberTableSubscriptionData}
           toggleInvitationPanelVisibility={toggleInvitationPanelVisibility}
+          plansViewVisible={plansViewVisible}
           buyButtonDisabled={buyButtonDisabled}
           onClickBuyButton={onSubscriptionPlanChosen({
             annualPayment,
@@ -218,9 +219,9 @@ export default () => {
               >
                 Buy this plan
               </Button>
-              <div ref={scrollElementReference} />
             </>
           )}
+          <div ref={scrollElementReference} />
         </BottomButtonContainer>
       </SubscriptionsViewContainer>
     </SubscriptionsViewOuterContainer>

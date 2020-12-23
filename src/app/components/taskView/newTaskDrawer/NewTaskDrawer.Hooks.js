@@ -618,9 +618,14 @@ const initializeTaskDrawerHooks = ({
       return;
     }
 
-    const [firstName, ...lastNames] = patient.split(' ');
-
-    const data = { firstName, lastName: lastNames.join(' ') };
+    let data = {};
+    if (patient.includes(',')) {
+      const [lastName, ...firstNames] = patient.split(',');
+      data = { lastName, firstName: firstNames.join(' ').trim() };
+    } else {
+      const [firstName, ...lastNames] = patient.split(' ');
+      data = { firstName, lastName: lastNames.join(' ') };
+    }
 
     addPatient(data)
       .then(async ({ patientIdentifier, firstName: fName, lastName }) => {
