@@ -9,6 +9,7 @@ import {
   TASK_READ_SUCCESS,
   UPDATE_TASK_COMMENT_SUCCESS,
   TASK_ATTACHMENT_ADDED,
+  ADD_TASK_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -180,6 +181,30 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         addingNewTask,
       };
+    }
+
+    case ADD_TASK_SUCCESS: {
+      const { task: addedTask } = action;
+      const { selectedTask } = state;
+
+      const isAddedTaskSubtaskOfSelectedTask =
+        addedTask.parentTaskIdentifier &&
+        addedTask.parentTaskIdentifier === selectedTask?.taskIdentifier;
+
+      if (isAddedTaskSubtaskOfSelectedTask) {
+        return {
+          ...state,
+          selectedTask: {
+            ...selectedTask,
+            subtasks: selectedTask.subtasks
+              ? selectedTask.subtasks.concat([addedTask])
+              : [addedTask],
+            subTasksCount: selectedTask.subTasksCount + 1,
+          },
+        };
+      }
+
+      return state;
     }
 
     default:
