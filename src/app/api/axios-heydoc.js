@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(identity, error => {
   }
 
   // donot show the error for login
-  if (window.location.hash && window.location.hash.includes('/login')) {
+  if (window.location.hash && window.location.hash.includes('/auth/login')) {
     return undefined;
   }
 

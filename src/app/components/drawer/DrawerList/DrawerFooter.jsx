@@ -66,7 +66,7 @@ const getListElements = ({ isUserAdmin, organization }) => {
       label: 'Agreements',
     },
     {
-      link: '/logout',
+      link: '/auth/logout',
       label: 'Logout',
     },
   ].filter(Boolean);

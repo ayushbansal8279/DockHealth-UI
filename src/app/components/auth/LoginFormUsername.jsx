@@ -108,7 +108,7 @@ const LoginFormUsername = props => {
             <Spacing vertical={6} />
             <MontserratTypography variant="h4">
               <span>Trouble signing in? </span>
-              <StyledHyperLink href="/#/login">LOGIN</StyledHyperLink>
+              <StyledHyperLink href="/#/auth/login">LOGIN</StyledHyperLink>
             </MontserratTypography>
           </div>
         )}
