@@ -97,7 +97,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             onChange={setDescriptionState}
           />
           {edited && <DescriptionLabel>(edited)</DescriptionLabel>}
-          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}f
+          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
         </Description>
         <CompletedBy isCompleted={isCompleted}>
           <span>{`Completed by ${completedByName} ${completedDt &&
