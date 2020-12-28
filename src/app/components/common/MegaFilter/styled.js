@@ -106,7 +106,7 @@ export const MegaFilterBoldedLabel = styled.span`
 export const Filters = styled.div`
   display: flex;
   padding-bottom: ${spacing.regularPlus};
-  overflow-x: scroll;
+  overflow-x: auto;
 
   & > div {
     margin-right: ${spacing.large};
@@ -135,7 +135,7 @@ export const StyledFilter = styled.div``;
 export const FilterList = styled.div`
   max-height: 380px; // per design
   margin-top: ${spacing.regular};
-  overflow-y: scroll;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;

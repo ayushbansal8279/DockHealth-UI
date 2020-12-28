@@ -55,19 +55,23 @@ const TaskComment = ({
   } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
     dateLabel = 'Yesterday';
   } else {
-    dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
+    dateLabel = moment(dateUpdated).format('MMMM D, YYYY');
   }
 
-  const commentDetails = `${creator.firstName} ${
-    creator.lastName
-  }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
+  const commentAuthor = `${creator.firstName} ${creator.lastName}`.trim();
+
+  const commentDate = ` ${dateLabel} @ ${moment(dateUpdated).format('h:mm a')}`;
 
   return (
     <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
       <TaskCommentAvatarContainer>
-        <Member member={creator} size={34} />
+        <Member member={creator} size={30} />
       </TaskCommentAvatarContainer>
       <TaskCommentContent onClick={onClickComment}>
+        <TaskCommentDetails>
+          <b>{commentAuthor}</b>
+          {commentDate}
+        </TaskCommentDetails>
         <TaskCommentText>
           <MentionsEditor
             readOnly
@@ -77,7 +81,6 @@ const TaskComment = ({
             highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
           />
         </TaskCommentText>
-        <TaskCommentDetails>{commentDetails}</TaskCommentDetails>
       </TaskCommentContent>
     </TaskCommentContainer>
   );

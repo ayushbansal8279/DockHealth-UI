@@ -10,10 +10,10 @@ export const AddTaskInputWrapper = styled.div`
   align-items: center;
   height: auto;
   margin-bottom: ${spacing.small};
-  padding: ${spacing.smallPlus} ${spacing.huge};
+  padding: ${spacing.small} ${spacing.huge};
   border: 1px solid
     ${props => (props.hasError ? palette.red : palette.coolGrey3)};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   background-color: ${palette.white};
   box-shadow: inset 0 1px 2px rgba(46, 58, 67, 0.1);
   text-align: left;
@@ -51,7 +51,3 @@ export const ErrorLabel = styled.div`
   color: ${palette.red};
   font-size: ${fontSizes.smallPlus};
 `;
-
-export default {
-  AddTaskInputWrapper,
-};

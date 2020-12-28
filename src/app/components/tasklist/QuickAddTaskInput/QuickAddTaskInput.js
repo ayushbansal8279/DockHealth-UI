@@ -11,13 +11,17 @@ import {
 } from './styled';
 
 const QuickAddTaskInput = React.forwardRef(
-  ({ quickAddTask, onFocus, validator, taskListIdentifier = null }, reference) => {
+  (
+    { quickAddTask, onFocus, validator, taskListIdentifier = null },
+    reference,
+  ) => {
     const [
       newTaskDescription,
       setNewTaskDescription,
     ] = useMentionsEditorState();
     const [hasInputValue, setHasInputValue] = useState(false);
     const [error, setError] = useState(null);
+    const [isFocused, setIsFocused] = useState(false);
 
     const handleInputEnterDown = () => {
       let validatorError = null;
@@ -62,9 +66,13 @@ const QuickAddTaskInput = React.forwardRef(
           <MentionsEditorContainer>
             <MentionsEditor
               ref={reference}
-            taskListIdentifier={taskListIdentifier}
+              taskListIdentifier={taskListIdentifier}
               placeholder="Add a task and press enter on your keyboard"
-              onFocus={onFocus}
+              onFocus={() => {
+                setIsFocused(true);
+                if (typeof onFocus === 'function') onFocus();
+              }}
+              onBlur={() => setIsFocused(false)}
               state={newTaskDescription}
               onChange={handleOnChange}
               keyBindingFn={event => {
@@ -83,7 +91,7 @@ const QuickAddTaskInput = React.forwardRef(
               }}
             />
           </MentionsEditorContainer>
-          {hasInputValue && (
+          {hasInputValue && isFocused && (
             <>
               <Spacing horizontal={4} />
               <QuickAddHint>Press enter to save this task</QuickAddHint>

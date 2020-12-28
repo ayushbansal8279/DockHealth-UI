@@ -71,7 +71,11 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         return isSubtask(addedTask)
           ? tasks.map(task =>
               isParentOfAddedTask(addedTask)(task)
-                ? { ...task, subtasks: task.subtasks.concat([addedTask]) }
+                ? {
+                    ...task,
+                    subtasks: task.subtasks.concat([addedTask]),
+                    subTasksCount: task.subTasksCount + 1,
+                  }
                 : task,
             )
           : [addedTask].concat(tasks);

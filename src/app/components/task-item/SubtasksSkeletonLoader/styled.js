@@ -3,8 +3,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
-  padding: ${spacing.regularPlus} ${spacing.regularPlus} ${spacing.regularPlus}
-    55px;
+  padding: 0 ${spacing.smallPlus} 0 55px;
 `;
 
 export const LoaderGroup = styled.div`
@@ -16,10 +15,7 @@ export const LoaderGroup = styled.div`
 export const LoaderRow = styled.div`
   display: flex;
   flex-direction: row;
-
-  &:not(:last-of-type) {
-    margin-bottom: ${spacing.regularPlus};
-  }
+  margin: ${spacing.smallPlus} 0;
 `;
 
 export const LoaderElement = styled.div`

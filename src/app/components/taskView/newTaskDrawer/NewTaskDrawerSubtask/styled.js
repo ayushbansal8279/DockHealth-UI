@@ -4,15 +4,17 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: ${spacing.smallPlus} 0;
-  cursor: pointer;
-`;
-
-export const MainSection = styled.div`
+  height: 37px;
   display: flex;
   align-items: center;
+  margin-bottom: 3px;
+  padding: 0 ${spacing.regular};
+  cursor: pointer;
+  border: 1px solid ${palette.coolGrey3};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const IconsSection = styled.div`
@@ -44,8 +46,8 @@ export const Description = styled.div`
   padding-right: ${spacing.regularPlus};
   overflow-wrap: anywhere;
   color: ${palette.mediumGrey};
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regular};
 
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
 `;
@@ -60,15 +62,15 @@ export const CompletedBy = styled.div`
   width: 100%;
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 1.2 : 0)}rem;
-  ${({ isCompleted }) => isCompleted && `margin-top: ${spacing.tiny}`};
-  overflow: hidden;
+  height: ${props => (props.isCompleted ? 1 : 0)}rem;
   padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
+  overflow: hidden;
   transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
 
   > span {
     color: ${palette.brightBlue};
+    font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regular};
     line-height: 1;
     transition: transform 0.4s ease-out;

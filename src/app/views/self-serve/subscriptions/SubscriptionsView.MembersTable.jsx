@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import { func } from 'prop-types';
 import {
   ascend,
@@ -133,6 +133,7 @@ const SubscriptionsViewMembersTable = ({
   setUserSubscriptionStatus = () => {},
   subscriptionPlanData,
   toggleInvitationPanelVisibility,
+  plansViewVisible,
   buyButtonDisabled,
   onClickBuyButton,
 }) => {
@@ -206,9 +207,20 @@ const SubscriptionsViewMembersTable = ({
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
-                  buyButtonDisabled={buyButtonDisabled}
-                  onClickBuyButton={onClickBuyButton}
                 />
+                {plansViewVisible && (
+                  <>
+                    <Spacing horizontal={5} />
+                    <Button
+                      disabled={buyButtonDisabled}
+                      variant="contained"
+                      size="small"
+                      onClick={onClickBuyButton}
+                    >
+                      Buy this plan
+                    </Button>
+                  </>
+                )}
               </Grid>
             </Grid>
           )}

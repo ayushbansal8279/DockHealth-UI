@@ -4,8 +4,13 @@ import Member from 'components/members/Member/Member';
 
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
+import moment from 'moment';
 import PatientSelectItem from 'components/patients/PatientSelectItem/PatientSelectItem';
-import { MemberLabelContainer, CondensedH4 } from './NewTaskDrawer.Styled';
+import {
+  MemberLabelContainer,
+  CondensedH4,
+  CompletedByLabel,
+} from './NewTaskDrawer.Styled';
 import palette from '../../../styles/palette';
 
 export const FocusDrawerFieldEnum = {
@@ -17,6 +22,21 @@ export const FocusDrawerFieldEnum = {
 
 export const TaskDrawerFields = {
   PATIENT: 1,
+};
+
+export const getCompletedByLabel = (completedBy, completedDt) => {
+  const completedByName =
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+      .trim()
+      .replace(/^\.$/, '') || 'Unknown';
+
+  return (
+    <CompletedByLabel>{`Completed by ${completedByName} ${completedDt &&
+      ` on ${
+        completedDt ? `on ${moment(completedDt).format('MM/DD/YYYY')}` : ''
+      }`}
+  `}</CompletedByLabel>
+  );
 };
 
 export const getFormattedPatient = patient => {

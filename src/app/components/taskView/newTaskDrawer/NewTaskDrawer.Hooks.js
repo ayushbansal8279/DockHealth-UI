@@ -544,6 +544,14 @@ const initializeTaskDrawerHooks = ({
     }
   };
 
+  const handleQuickAddTask = async newTask => {
+    const taskToCreate = {
+      ...newTask,
+      parentTaskIdentifier: selectedTask.taskIdentifier,
+    };
+    return saveTask(taskToCreate)(dispatch);
+  };
+
   const handleAssignedToSelect = async selectedOption => {
     const member = {
       userIdentifier: selectedOption.value,
@@ -618,9 +626,14 @@ const initializeTaskDrawerHooks = ({
       return;
     }
 
-    const [firstName, ...lastNames] = patient.split(' ');
-
-    const data = { firstName, lastName: lastNames.join(' ') };
+    let data = {};
+    if (patient.includes(',')) {
+      const [lastName, ...firstNames] = patient.split(',');
+      data = { lastName, firstName: firstNames.join(' ').trim() };
+    } else {
+      const [firstName, ...lastNames] = patient.split(' ');
+      data = { firstName, lastName: lastNames.join(' ') };
+    }
 
     addPatient(data)
       .then(async ({ patientIdentifier, firstName: fName, lastName }) => {
@@ -699,6 +712,7 @@ const initializeTaskDrawerHooks = ({
     onDelete,
     onDuplicate,
     onAddSubTask,
+    handleQuickAddTask,
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,

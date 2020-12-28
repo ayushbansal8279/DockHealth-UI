@@ -21,7 +21,6 @@ import {
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import {
   Container,
-  MainSection,
   IconsSection,
   CircleIcon,
   Description,
@@ -77,120 +76,113 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
         storeAsCurrentTask(subtask)(dispatch);
       }}
     >
-      <MainSection>
-        <CircleIcon
-          src={isCompleted ? CircleCompleted : Circle}
-          isCompleted={isCompleted}
-          isClickable
-          onClick={event => {
-            event.stopPropagation();
-            dispatch(toggleCompleteTask(subtask, currentUser));
-          }}
-        />
-        <DescriptionContainer>
-          <Description isCrossedOut={isCompleted}>
-            <MentionsEditor
-              readOnly
-              isDrawerEditor
-              withEditedLabel={edited}
-              state={descriptionState}
-              onChange={setDescriptionState}
-            />
-          </Description>
-          <CompletedBy isCompleted={isCompleted}>
-            <span>{`Completed by ${completedByName} ${completedDt &&
-              ` on ${
-                completedDt
-                  ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                  : ''
-              }`}
+      <CircleIcon
+        src={isCompleted ? CircleCompleted : Circle}
+        isCompleted={isCompleted}
+        isClickable
+        onClick={event => {
+          event.stopPropagation();
+          dispatch(toggleCompleteTask(subtask, currentUser));
+        }}
+      />
+      <DescriptionContainer>
+        <Description isCrossedOut={isCompleted}>
+          <MentionsEditor
+            readOnly
+            isDrawerEditor
+            withEditedLabel={edited}
+            state={descriptionState}
+            onChange={setDescriptionState}
+          />
+        </Description>
+        <CompletedBy isCompleted={isCompleted}>
+          <span>{`Completed by ${completedByName} ${completedDt &&
+            ` on ${
+              completedDt
+                ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                : ''
+            }`}
                 `}</span>
-          </CompletedBy>
-        </DescriptionContainer>
-        <IconsSection>
-          <IconContainer marginTop={updatedComment ? -8 : 2}>
-            <UniversalTooltipContainer
-              placement="top"
-              label={
-                comments?.length > 0
-                  ? `${comments?.length} comment${
-                      comments?.length > 1 ? 's' : ''
-                    }`
-                  : null
-              }
-            >
-              <img
-                alt="comments"
-                src={getItemIcon(COMMENTS, comments, true, updatedComment)}
-              />
-            </UniversalTooltipContainer>
-          </IconContainer>
-          <IconContainer marginTop={updatedDueDate ? -6 : 0}>
-            <DueDateContainer>
-              <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-              <img
-                alt="due-date"
-                src={getCalendarIcon(
-                  dueDate,
-                  true,
-                  isCompleted,
-                  updatedDueDate,
-                )}
-              />
-            </DueDateContainer>
-          </IconContainer>
-          <IconContainer>
-            <UniversalTooltipContainer
-              placement="top"
-              label={
-                labels?.length > 0 ? getToolTipMultiLabelDetails(labels) : null
-              }
-            >
-              <img
-                alt="labels"
-                src={getItemIcon(LABELS, labels, true, updatedLabel)}
-              />
-            </UniversalTooltipContainer>
-          </IconContainer>
-          <IconContainer marginTop={2}>
-            <UniversalTooltipContainer
-              placement="top-end"
-              label={
-                attachments?.length > 0
-                  ? getToolTipAttachmentsLabelDetails(attachments)
-                  : ''
-              }
-            >
-              <img
-                alt="attachments"
-                src={getItemIcon(
-                  ATTACHMENTS,
-                  attachments,
-                  true,
-                  updatedAttachment,
-                )}
-              />
-            </UniversalTooltipContainer>
-          </IconContainer>
-        </IconsSection>
-        <AssigneeContainer
-          onClick={event => {
-            event.stopPropagation();
-          }}
-        >
-          {assignedTo && (
-            <UniversalTooltipContainer
-              placement="top-end"
-              label={`Assigned to ${assignedTo.userName}`}
-            >
-              <Member member={assignedTo} size={34} showTooltip={false} />
-            </UniversalTooltipContainer>
-          )}
-        </AssigneeContainer>
-        <GoToParentIconContainer>
-          <img src={SimpleArrowRight} alt="Go to parent task" />
-        </GoToParentIconContainer>
-      </MainSection>
+        </CompletedBy>
+      </DescriptionContainer>
+      <IconsSection>
+        <IconContainer marginTop={updatedComment ? -8 : 2}>
+          <UniversalTooltipContainer
+            placement="top"
+            label={
+              comments?.length > 0
+                ? `${comments?.length} comment${
+                    comments?.length > 1 ? 's' : ''
+                  }`
+                : null
+            }
+          >
+            <img
+              alt="comments"
+              src={getItemIcon(COMMENTS, comments, true, updatedComment)}
+            />
+          </UniversalTooltipContainer>
+        </IconContainer>
+        <IconContainer marginTop={updatedDueDate ? -6 : 0}>
+          <DueDateContainer>
+            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+            <img
+              alt="due-date"
+              src={getCalendarIcon(dueDate, true, isCompleted, updatedDueDate)}
+            />
+          </DueDateContainer>
+        </IconContainer>
+        <IconContainer>
+          <UniversalTooltipContainer
+            placement="top"
+            label={
+              labels?.length > 0 ? getToolTipMultiLabelDetails(labels) : null
+            }
+          >
+            <img
+              alt="labels"
+              src={getItemIcon(LABELS, labels, true, updatedLabel)}
+            />
+          </UniversalTooltipContainer>
+        </IconContainer>
+        <IconContainer marginTop={2}>
+          <UniversalTooltipContainer
+            placement="top-end"
+            label={
+              attachments?.length > 0
+                ? getToolTipAttachmentsLabelDetails(attachments)
+                : ''
+            }
+          >
+            <img
+              alt="attachments"
+              src={getItemIcon(
+                ATTACHMENTS,
+                attachments,
+                true,
+                updatedAttachment,
+              )}
+            />
+          </UniversalTooltipContainer>
+        </IconContainer>
+      </IconsSection>
+      <AssigneeContainer
+        onClick={event => {
+          event.stopPropagation();
+        }}
+      >
+        {assignedTo && (
+          <UniversalTooltipContainer
+            placement="top-end"
+            label={`Assigned to ${assignedTo.userName}`}
+          >
+            <Member member={assignedTo} size={30} showTooltip={false} />
+          </UniversalTooltipContainer>
+        )}
+      </AssigneeContainer>
+      <GoToParentIconContainer>
+        <img src={SimpleArrowRight} alt="Go to parent task" />
+      </GoToParentIconContainer>
     </Container>
   );
 };

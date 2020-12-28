@@ -4,33 +4,31 @@ import styled, { css } from 'styled-components';
 import { Collapse } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 
-export const TaskCommentsContainer = styled(({ isLast, ...restProps }) => (
-  <Collapse {...restProps} />
-))`
-  display: flex;
-  width: fit-content;
-  border: 1px solid ${palette.coolGrey3};
-  border-top: 0;
-  flex-direction: column;
-  padding: ${props => (props.in ? `${spacing.smallExtraPlus}` : 0)};
-  padding-left: 56px;
-  background-color: white;
-  max-width: 810px;
+export const TaskCommentsContainer = styled(Collapse)`
+  width: 100%;
+  padding-right: 555px;
+`;
+
+export const TaskCommentsPadding = styled.div`
   position: relative;
-
-  ${({ isLast }) =>
-    !isLast &&
-    css`
-      border-bottom: 0;
-    `}
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 34px;
+  padding-right: 34px;
+  border: 1px solid ${palette.coolGrey3};
+  border-top: none;
+  background-color: white;
 `;
 
 export const TaskCommentContainer = styled.div`
   display: flex;
-  margin-bottom: ${({ isLastComment, showMore }) =>
-    isLastComment && !showMore ? 0 : spacing.smallExtraPlus};
+  padding: ${spacing.smallPlus} 0;
+  border-bottom: 1px solid ${palette.coolGrey3};
+  ${({ isLastComment, showMore }) =>
+    isLastComment && !showMore && `border-bottom: none`};
   font-size: ${fontSizes.smallPlus};
 `;
 
@@ -39,6 +37,7 @@ export const TaskCommentContent = styled.div`
   flex-direction: column;
   width: fit-content;
   cursor: pointer;
+  font-size: ${fontSizes.small};
 `;
 
 export const SmallText = styled.span`
@@ -53,8 +52,12 @@ export const TaskCommentText = styled.div`
 `;
 
 export const TaskCommentDetails = styled.div`
-  color: ${palette.coolGrey2};
-  font-size: ${fontSizes.small};
+  color: ${palette.coolGrey1};
+  margin-bottom: ${spacing.tiny};
+
+  & b {
+    font-weight: ${fontWeights.bold};
+  }
 `;
 
 export const TaskCommentAvatarContainer = styled.div`
@@ -62,12 +65,12 @@ export const TaskCommentAvatarContainer = styled.div`
 `;
 
 export const ShowMoreButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
-  color: ${palette.brightBlue};
-  font-size: ${fontSizes.smallPlus};
-  margin-left: 56px; // per design
   width: fit-content;
+  margin: ${spacing.small} 0;
+  font-size: ${fontSizes.smallPlus};
+  color: ${palette.brightBlue};
+  font-family: 'Roboto Condensed', sans-serif;
+  cursor: pointer;
 `;
 
 export const CommentStylingLink = styled.div`

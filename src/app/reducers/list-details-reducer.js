@@ -479,12 +479,16 @@ const ListDetailsReducer = (state = initialState, action) => {
     case UPDATE_TASK_SUCCESS:
     case LOAD_SUBTASKS_SUCCESS:
     case REFRESH_ANOTHER_TASK_SUCCESS: {
-      const { task } = action;
+      let { task } = action;
 
-      const updatedTaskGroups = updateTaskInGroupedTasks(
-        state.groupedTasks,
-        task,
-      );
+      if (action.type === LOAD_SUBTASKS_SUCCESS) {
+        task = { ...task, isFetchingSubTasks: false };
+      }
+
+      const updatedTaskGroups = updateTaskInGroupedTasks(state.groupedTasks, {
+        ...task,
+        isFetchingSubTasks: false,
+      });
 
       const updatedCompletedTaskGroups = updateTaskInGroupedTasks(
         state.completedGroupedTasks,

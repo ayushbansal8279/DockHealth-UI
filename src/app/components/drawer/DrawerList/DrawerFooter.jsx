@@ -112,7 +112,7 @@ const DrawerFooter = ({ setActiveId, user, settingsVisible = true }) => {
     <>
       <ListDivider />
       <DrawerMemberContainer>
-        <Member showTooltip={false} member={user} size={40} />
+        <Member showTooltip={false} member={user} size={45} />
       </DrawerMemberContainer>
       {settingsVisible && (
         <StyledDropdown>

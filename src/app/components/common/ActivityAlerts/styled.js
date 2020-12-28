@@ -78,7 +78,7 @@ export const ActivityAlertsPopoverLabel = styled.div`
 export const ActivityAlertsList = styled.div`
   padding: ${spacing.small} ${spacing.large} ${spacing.large};
   max-height: 600px;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ActivityAlertsClearAllLabel = styled.div`
@@ -126,7 +126,7 @@ export const ActivityAlertsHeaderLabel = styled.div`
 `;
 
 export const ActivityAlertsToastsContainer = styled.div`
-  overflow-y: scroll;
+  overflow-y: auto;
   position: absolute;
   height: 100%;
   width: 100%;

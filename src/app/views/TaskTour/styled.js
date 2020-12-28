@@ -32,7 +32,7 @@ export const TaskTourImgNarrow = styled.img`
 
 export const ImageWrapper = styled.div`
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ButtonWrapper = styled.div`

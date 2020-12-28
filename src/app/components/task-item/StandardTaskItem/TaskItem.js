@@ -3,18 +3,15 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
-import { isEmpty } from 'ramda';
 import Highlighter from 'react-highlight-words';
 import { openDrawer } from 'actions/task-drawer-actions';
 import {
-  prepareSubtask,
+  // prepareSubtask,
   storeAsCurrentTask,
-  loadSubTasks,
 } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
-import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
@@ -22,6 +19,10 @@ import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
+import SubtasksIcon from 'img/subtasks-grey.svg';
+import SubtasksIconActive from 'img/subtasks-blue.svg';
+import EmptyCalendarIcon from 'img/calendar-dim.svg';
+import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import palette from 'styles/palette';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
@@ -38,13 +39,13 @@ import { getSubtaskStylingLink } from './helpers';
 import {
   getItemIconVersion,
   getItemIcon,
-  getCalendarIcon,
   REGULAR,
   COMMENTS,
   LABELS,
   ATTACHMENTS,
   getToolTipMultiLabelDetails,
   getToolTipAttachmentsLabelDetails,
+  isDueDateOverdue,
 } from '../icons';
 import {
   AddCrossIcon,
@@ -56,8 +57,8 @@ import {
   DescriptionBox,
   DueDateBasicLabel,
   GridImg,
-  SubtasksGroupLabel,
   StandardTaskItemCell,
+  MainStandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
   ThreeDots,
@@ -67,19 +68,19 @@ import {
   PriorityHoverIcon,
   ListLink,
   ListItemLink,
-  Arrow,
   AssigneeMatchingWrapper,
   DueDateButton,
-  SubtasksBox,
-  SubtasksAddLabel,
   TaskItemParentTaskLabel,
   CommentIcon,
   CalendarIcon,
   LabelIcon,
   AttachmentIcon,
   DescriptionTooltip,
-  DescriptionMainText,
-  DescriptionDuplicatedLabel,
+  SubtasksCellContent,
+  SubtasksCellText,
+  SubtasksImg,
+  DescriptionLabel,
+  DescriptionWrapper,
 } from '../styled';
 
 const TaskItem = ({
@@ -95,7 +96,6 @@ const TaskItem = ({
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
-  subtasks,
   subTasksCount,
   dragAndDropDisabled,
   listNameVisible,
@@ -108,7 +108,6 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   hideSubtasks,
-  isFullView,
 }) => {
   const {
     taskIdentifier,
@@ -209,13 +208,6 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
 
-  useEffect(() => {
-    if (isFullView && subTasksCount > 0) {
-      switchOpen(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFullView]);
-
   const isCompleted = task.status === 'COMPLETE';
   const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
@@ -289,30 +281,27 @@ const TaskItem = ({
     [parentTask],
   );
 
-  const onAddSubtaskLabelClick = useCallback(
-    event => {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      prepareSubtask(taskIdentifier, null, task)(dispatch);
-    },
-    [taskIdentifier, dispatch, task],
-  );
+  // const onAddSubtaskLabelClick = useCallback(
+  //   event => {
+  //     if (event) {
+  //       event.preventDefault();
+  //       event.stopPropagation();
+  //     }
+  //     prepareSubtask(taskIdentifier, null, task)(dispatch);
+  //   },
+  //   [taskIdentifier, dispatch, task],
+  // );
 
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
-      if (subTasksCount > 0 && isEmpty(subtasks)) {
-        dispatch(loadSubTasks(task));
-        if (!isOpen) {
-          switchOpen(true);
-        }
+      if (!isOpen) {
+        switchOpen(true);
       } else {
         switchOpen(!isOpen);
       }
     },
-    [subTasksCount, subtasks, dispatch, task, isOpen, switchOpen],
+    [isOpen, switchOpen],
   );
 
   const onPatientClick = useCallback(() => {
@@ -351,13 +340,19 @@ const TaskItem = ({
       )}`
     : `${patient?.lastName}, ${patient?.firstName}`;
 
+  const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
+
   return (
     <StandardTaskItemPanel
       isDragging={isDragging}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <StandardTaskItemContainer isSelected={isSelectedTask}>
+      <StandardTaskItemContainer
+        isSelected={isSelectedTask}
+        height={hasParentTaskLabel || isCompletedGroup ? 50 : 35}
+        noTopBorder={isSubtask}
+      >
         {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
         {showDraggableDots && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
@@ -373,27 +368,28 @@ const TaskItem = ({
             />
           )}
         </PrioritySwitch>
-        <StandardTaskItemCell
+        <MainStandardTaskItemCell
           bolded
           paddingLeft="huge"
+          paddingRight="small"
           onClick={onClickTaskItem}
           position="static"
         >
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
             isClickable={isTaskStatusTogglingEnabled}
+            isCompleted={isCompleted}
             onClick={onCircleClick}
           />
           <DescriptionBox>
-            <Description
-              ref={descriptionReference}
-              isCrossedOut={!isCompletedGroup && isCompleted}
-            >
-              <DescriptionMainText>
+            <DescriptionWrapper>
+              <Description
+                ref={descriptionReference}
+                isCrossedOut={!isCompletedGroup && isCompleted}
+              >
                 <MentionsEditor
                   readOnly
                   oneline
-                  withEditedLabel={edited}
                   state={descriptionState}
                   onChange={setDescriptionState}
                   highlightedValues={
@@ -401,17 +397,16 @@ const TaskItem = ({
                     highlightedValue?.toLowerCase().split(/\s+/)
                   }
                 />
-              </DescriptionMainText>
-              {duplicated && (
-                <DescriptionDuplicatedLabel>
-                  (duplicated)
-                </DescriptionDuplicatedLabel>
+                {isDescriptionTooltipVisible && (
+                  <DescriptionTooltip>{description}</DescriptionTooltip>
+                )}
+              </Description>
+              {edited && !duplicated && (
+                <DescriptionLabel>(edited)</DescriptionLabel>
               )}
-              {isDescriptionTooltipVisible && (
-                <DescriptionTooltip>{description}</DescriptionTooltip>
-              )}
-            </Description>
-            {isSubtask && !isNestedTask && parentTask && (
+              {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
+            </DescriptionWrapper>
+            {hasParentTaskLabel && (
               <>
                 <TaskItemParentTaskLabel>
                   Subtask of
@@ -422,34 +417,38 @@ const TaskItem = ({
                 {isCompleted && <Spacing vertical={2} />}
               </>
             )}
-            <CompletedBy isCompleted={isCompleted}>
-              <span>{`Completed by ${completedByName} ${completedDt &&
-                ` on ${
-                  completedDt
-                    ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                    : ''
-                }`}
+            {isCompletedGroup && (
+              <CompletedBy isCompleted={isCompleted}>
+                <span>{`Completed by ${completedByName} ${completedDt &&
+                  ` on ${
+                    completedDt
+                      ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                      : ''
+                  }`}
                 `}</span>
-            </CompletedBy>
-            {!hideSubtasks && (
-              <SubtasksBox>
-                {(subTasksCount > 0 ||
-                  (!isEmpty(subtasks) && subtasks?.length > 0)) &&
-                  !isSubtask && (
-                    <SubtasksGroupLabel onClick={onSubtaskLabelClick}>
-                      <span>{subtasks?.length || subTasksCount} subtasks</span>
-                      <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
-                    </SubtasksGroupLabel>
-                  )}
-                {!isSubtask && isSelectedTask && (
-                  <SubtasksAddLabel onClick={onAddSubtaskLabelClick}>
-                    Add a subtask
-                  </SubtasksAddLabel>
-                )}
-              </SubtasksBox>
+              </CompletedBy>
             )}
           </DescriptionBox>
-        </StandardTaskItemCell>
+        </MainStandardTaskItemCell>
+        {!hideSubtasks && (
+          <StandardTaskItemCell
+            width="60px"
+            paddingLeft="tiny"
+            paddingRight="tiny"
+          >
+            {!isSubtask && subTasksCount > 0 && (
+              <SubtasksCellContent onClick={onSubtaskLabelClick}>
+                <SubtasksCellText isOpen={isOpen}>
+                  {subTasksCount}
+                </SubtasksCellText>
+                <SubtasksImg
+                  src={isOpen ? SubtasksIconActive : SubtasksIcon}
+                  alt="Subtasks"
+                />
+              </SubtasksCellContent>
+            )}
+          </StandardTaskItemCell>
+        )}
         {patientVisible && (
           <StandardTaskItemCell width="164px">
             <ClickablePatient onClick={onPatientClick}>
@@ -505,9 +504,9 @@ const TaskItem = ({
             )}
           </TaskWorkflowStatus>
         </StandardTaskItemCell>
-        <StandardTaskItemCell width="200px">
+        <StandardTaskItemCell width="150px">
           <Grid container>
-            <GridImg item xs={3} matched={matchComments}>
+            <GridImg item xs={4} matched={matchComments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -531,52 +530,7 @@ const TaskItem = ({
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3}>
-              <PopoverDatepicker
-                selectedDate={dueDate}
-                onDateChange={date => {
-                  const existingTime = dueDate
-                    ? moment(dueDate).format('HH:mm')
-                    : '';
-                  updateDueDate(task, moment(`${date} ${existingTime}`), true);
-                }}
-                quickSelectOptions={dueDateQuickSelectOptions}
-              >
-                {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-                  <DueDateButton
-                    type="button"
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                    ref={elementReference}
-                  >
-                    <UniversalTooltipContainer
-                      placement="top"
-                      label={
-                        getItemIconVersion(dueDate) === REGULAR
-                          ? 'Edit due date'
-                          : 'Add due date'
-                      }
-                    >
-                      {dueDate ? (
-                        <DueDateBasicLabel>
-                          {moment(dueDate).format('MM/DD')}
-                        </DueDateBasicLabel>
-                      ) : (
-                        <CalendarIcon
-                          alt="due-date"
-                          src={getCalendarIcon(
-                            dueDate,
-                            isHovered,
-                            isCompleted,
-                            task.updatedDueDate,
-                          )}
-                        />
-                      )}
-                    </UniversalTooltipContainer>
-                  </DueDateButton>
-                )}
-              </PopoverDatepicker>
-            </GridImg>
-            <GridImg item xs={3} matched={matchLabels}>
+            <GridImg item xs={4} matched={matchLabels}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -598,7 +552,7 @@ const TaskItem = ({
                 </ClickableStandardTaskItemIcon>
               </UniversalTooltipContainer>
             </GridImg>
-            <GridImg item xs={3} matched={matchAttachments}>
+            <GridImg item xs={4} matched={matchAttachments}>
               <UniversalTooltipContainer
                 placement="top"
                 label={
@@ -622,7 +576,59 @@ const TaskItem = ({
             </GridImg>
           </Grid>
         </StandardTaskItemCell>
-        <StandardTaskItemCell width="80px" justify="center">
+        <StandardTaskItemCell
+          paddingLeft="tiny"
+          paddingRight="tiny"
+          width="60px"
+          justify="center"
+        >
+          <PopoverDatepicker
+            selectedDate={dueDate}
+            onDateChange={date => {
+              const existingTime = dueDate
+                ? moment(dueDate).format('HH:mm')
+                : '';
+              updateDueDate(task, moment(`${date} ${existingTime}`), true);
+            }}
+            quickSelectOptions={dueDateQuickSelectOptions}
+          >
+            {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+              <DueDateButton
+                type="button"
+                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                ref={elementReference}
+              >
+                <UniversalTooltipContainer
+                  placement="top"
+                  label={
+                    getItemIconVersion(dueDate) === REGULAR
+                      ? 'Edit due date'
+                      : 'Add due date'
+                  }
+                >
+                  {dueDate ? (
+                    <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                      {moment(dueDate).format('MM/DD')}
+                    </DueDateBasicLabel>
+                  ) : (
+                    <CalendarIcon
+                      src={
+                        isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon
+                      }
+                      alt="Due date"
+                    />
+                  )}
+                </UniversalTooltipContainer>
+              </DueDateButton>
+            )}
+          </PopoverDatepicker>
+        </StandardTaskItemCell>
+        <StandardTaskItemCell
+          width="60px"
+          justify="center"
+          paddingLeft="tiny"
+          paddingRight="tiny"
+        >
           <TaskAssignMember
             currentUser={currentUser}
             reassignTask={reassignTask}
@@ -634,11 +640,11 @@ const TaskItem = ({
                 label={`Assigned to ${assignedTo.userName}`}
               >
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                <Member member={assignedTo} size={34} showTooltip={false} />
+                <Member member={assignedTo} size={30} showTooltip={false} />
               </UniversalTooltipContainer>
             ) : (
               <UniversalTooltipContainer placement="top" label="Assign to">
-                <AddCrossIcon src={CrossIcon} size="34px" />
+                <AddCrossIcon src={CrossIcon} size="28px" />
               </UniversalTooltipContainer>
             )}
           </TaskAssignMember>
