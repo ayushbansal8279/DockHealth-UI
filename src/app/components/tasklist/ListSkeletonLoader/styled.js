@@ -14,18 +14,16 @@ export const LoaderGroup = styled.div`
 
 export const LoaderRow = styled.div`
   display: flex;
+  height: 35px;
+  margin-bottom: 3px;
   flex-direction: row;
   align-items: center;
-
-  &:not(:last-of-type) {
-    margin-bottom: 22px;
-  }
 `;
 
 export const CircleLoaderElement = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
   background-color: ${palette.coolGrey3};
 `;
 

@@ -42,9 +42,11 @@ export const CircleIcon = styled.img`
 `;
 
 export const Description = styled.div`
+  display: flex;
+  justify-conent: space-between;
   width: 100%;
   padding-right: ${spacing.regularPlus};
-  overflow-wrap: anywhere;
+  overflow: hidden;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
@@ -52,10 +54,19 @@ export const Description = styled.div`
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
 `;
 
+export const DescriptionLabel = styled.div`
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  color: rgb(193, 204, 218);
+  text-decoration: none;
+  margin-top: 1px;
+`;
+
 export const DescriptionContainer = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const CompletedBy = styled.div`
