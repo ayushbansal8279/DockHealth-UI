@@ -9,11 +9,8 @@ import SubtasksSkeletonLoader from '../SubtasksSkeletonLoader/SubtasksSkeletonLo
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
-import {
-  ParentTaskContainer,
-  SubtasksBorderTop,
-  SubtasksWrapper,
-} from '../styled';
+import { ParentTaskContainer, SubtasksWrapper } from '../styled';
+import QuickAddSubatask from './QuickAddSubtask';
 
 const Task = ({
   task,
@@ -31,16 +28,21 @@ const Task = ({
   hideSubtasks,
   areFiltersApplied,
   isSearchApplied,
+  listNameVisible,
+  patientVisible = true,
   ...restProps
 }) => {
+  const [quickAddSubtaskOpen, setQuickAddSubtaskOpen] = useState(false);
   const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
   const {
+    taskIdentifier,
     comments,
     subtasks,
     patient,
     searchMetaData = {},
     subTasksCount,
-  } = task;
+    taskList,
+  } = task || {};
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { highlightedValue } = restProps;
   const { matchingCommentIdentifiers = [] } = searchMetaData;
@@ -64,7 +66,7 @@ const Task = ({
 
   useEffect(() => {
     const hasNewSubtask = renderedSubtasks.some(
-      ({ taskIdentifier }) => !taskIdentifier,
+      ({ taskIdentifier: subtaskIdentifier }) => !subtaskIdentifier,
     );
     if (hasNewSubtask) {
       handleSetSubtasksOpen(true);
@@ -109,6 +111,11 @@ const Task = ({
     ],
   );
 
+  const handleSubtaskAdd = useCallback(() => {
+    setAreSubtasksOpen(true);
+    setQuickAddSubtaskOpen(true);
+  }, []);
+
   const onClickComment = useCallback(() => {
     dispatch(openDrawer());
     dispatch(storeAsCurrentTask(task));
@@ -121,6 +128,8 @@ const Task = ({
         <TaskItem
           task={task}
           isOpen={areSubtasksOpen}
+          listNameVisible={listNameVisible}
+          patientVisible={patientVisible}
           switchOpen={handleSetSubtasksOpen}
           dragHandleProps={dragHandleProps}
           isDragging={isDragging}
@@ -131,6 +140,8 @@ const Task = ({
           isDraggable={isDraggable}
           hideSubtasks={hideSubtasks}
           isFullView={isFullView}
+          onSubtaskAdd={handleSubtaskAdd}
+          quickAddSubtaskOpen={quickAddSubtaskOpen}
           {...restProps}
         />
       </div>
@@ -147,11 +158,8 @@ const Task = ({
         isEmpty(renderedSubtasks) && (
           <SubtasksSkeletonLoader rows={subTasksCount} />
         )}
-      {showSubtasks && (
-        <SubtasksWrapper>
-          {areSubtasksOpen && task && !task.isFetchingSubTasks && (
-            <SubtasksBorderTop />
-          )}
+      <SubtasksWrapper>
+        {showSubtasks && (
           <Subtasks
             subtasks={renderedSubtasks}
             subTasksCount={subTasksCount}
@@ -162,12 +170,23 @@ const Task = ({
             currentUser={currentUser}
             reassignTask={reassignTask}
             parentHasPatient={!!patient}
-            taskList={task?.taskList}
+            taskList={taskList}
             isDraggable={isDraggable}
+            listNameVisible={listNameVisible}
+            patientVisible={patientVisible}
             {...restProps}
           />
-        </SubtasksWrapper>
-      )}
+        )}
+        {quickAddSubtaskOpen && (
+          <QuickAddSubatask
+            patientVisible={patientVisible}
+            listNameVisible={listNameVisible}
+            setQuickAddOpen={setQuickAddSubtaskOpen}
+            taskListIdentifier={taskList?.taskListIdentifier}
+            parentTaskIdentifier={taskIdentifier}
+          />
+        )}
+      </SubtasksWrapper>
     </ParentTaskContainer>
   );
 };

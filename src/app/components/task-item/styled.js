@@ -76,6 +76,7 @@ export const AddCrossIcon = styled.img`
 export const CircleIcon = styled.img`
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};
+  align-self: center;
   ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
 `;
 export const DescriptionTooltip = styled.div`
@@ -189,7 +190,7 @@ export const SubtasksGroupLabel = styled.span`
 
 export const StandardTaskItemCell = styled.div`
   position: ${({ position }) => position || 'relative'};
-  align-items: center;
+  align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
   display: flex;
@@ -234,8 +235,8 @@ export const StandardTaskItemContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  height: ${({ height }) => height};
-  ${({ noTopBorder }) => noTopBorder && `border-top: none;`}
+  height: ${({ height }) => height || 35}px;
+  border-top: none;
 `;
 
 export const StatusBar = styled.div`
@@ -276,6 +277,17 @@ export const StandardTaskItemPanel = styled.div`
     & ${ThreeDots}, & ${AddPlaceholder}, & ${PriorityHoverIcon} {
       opacity: 1;
     }
+  }
+
+  &:before {
+    position: absolute;
+    top: -1px;
+    right: 0;
+    display: block;
+    width: 100%;
+    content: '';
+    border-top: 1px solid ${palette.coolGrey3};
+    z-index: 1;
   }
 `;
 
@@ -500,26 +512,13 @@ export const ParentTaskContainer = styled.div`
 
 export const SubtasksWrapper = styled.div`
   position: relative;
-`;
-
-export const SubtasksBorderTop = styled.div`
-  position: absolute;
-  right: 0;
-  top: -1px;
-  width: 555px;
-  height: 1px;
-  background: ${palette.coolGrey3};
-`;
-
-export const SingleSubtaskBorderBottom = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 0px;
-  width: 555px;
-  height: 1px;
-  background: ${palette.coolGrey3};
+  padding-left: ${spacing.giga};
 `;
 
 export const SubtaskItemWrapper = styled.div`
   position: relative;
+`;
+
+export const AddSubtaskButton = styled.button`
+  cursor: pointer;
 `;
