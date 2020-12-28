@@ -1,7 +1,15 @@
 /* eslint-disable consistent-return */
-import { isAuthenticated, updateStoreWithCurrentUser } from 'api/user-api';
+import {
+  isAuthenticated,
+  updateStoreWithCurrentUser,
+  getEnterpriseAccessTokensByAuthCode,
+} from 'api/user-api';
+import queryString from 'query-string';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import { setCurrentPageInSessionStorage } from 'helpers/utility-functions';
+import {
+  setCurrentPageInSessionStorage,
+  showAlert,
+} from 'helpers/utility-functions';
 import { CREATE_ACCOUNT_PATH, DEFAULT_REDIRECT_PATH } from './paths';
 import checkUserAccountState from './check-user-account-state';
 
@@ -41,9 +49,24 @@ const checkUserAuthentication = async ({
   checkTrialExpiration,
 }) => {
   try {
-    const { isLoggedIn, user } = await isAuthenticated();
     const { location } = history;
-    const { pathname } = location;
+    const { pathname, search } = location;
+
+    const queryValues = queryString.parse(search);
+
+    if (queryValues.code !== undefined) {
+      const authCode = queryValues.code.replace('#/auth/login', '');
+
+      await getEnterpriseAccessTokensByAuthCode(authCode)
+        .then(() => {
+          return '/core/tasks';
+        })
+        .catch(error => {
+          showAlert({ status: 'error', title: 'Error', text: error.message });
+        });
+    }
+
+    const { isLoggedIn, user } = await isAuthenticated();
 
     if (!isLoggedIn && pathname === CREATE_ACCOUNT_PATH) {
       return null;

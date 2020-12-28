@@ -40,7 +40,7 @@ const LoginFormUsername = props => {
       if (queryValues.code !== undefined) {
         setShowLoginMessage(true);
 
-        const authCode = queryValues.code.replace('#/core/login', '');
+        const authCode = queryValues.code.replace('#/auth/login', '');
 
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
           .then(() => {
