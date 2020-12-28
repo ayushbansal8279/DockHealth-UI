@@ -350,13 +350,11 @@ const BillingData = ({
   onSubmit,
   SaveBillingElement,
 }) => {
-  const { billingDetails, userProfile, hasDiscountCode } = useSelector(
-    store => ({
-      billingDetails: store.organizationState.billingDetails,
-      userProfile: store.userState.userProfile,
-      hasDiscountCode: store.organizationState?.referralConfig?.hasDiscountCode,
-    }),
-  );
+  const { billingDetails, hasDiscountCode } = useSelector(store => ({
+    billingDetails: store.organizationState.billingDetails,
+    userProfile: store.userState.userProfile,
+    hasDiscountCode: store.organizationState?.referralConfig?.hasDiscountCode,
+  }));
 
   const formMethods = useForm({
     validationSchema,
@@ -397,9 +395,7 @@ const BillingData = ({
       cardLastFour,
     } = billingDetails || {};
 
-    const currentUserName = `${userProfile.firstName} ${userProfile.lastName}`.trim();
-
-    setValue('nameOnCard', billingName ?? currentUserName);
+    setValue('nameOnCard', billingName ?? '');
     setValue('cardExpiration', cardExpiration ?? '**/**');
     setValue(
       'cardNumber',
