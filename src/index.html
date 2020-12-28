@@ -151,6 +151,7 @@
 
     <script>
       let userAgentString = navigator.userAgent; 
+      console.log(userAgentString);
           
       // Detect Chrome 
       // let chromeAgent =  
@@ -159,7 +160,7 @@
       // Detect Internet Explorer 
       let IExplorerAgent =  
           userAgentString.indexOf("MSIE") > -1 ||  
-          userAgentString.indexOf("rv:") > -1; 
+          (userAgentString.indexOf("rv:") > -1 && userAgentString.indexOf("Firefox") == -1); 
           
       // if(chromeAgent){
       //   alert('detected Chrome');
