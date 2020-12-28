@@ -68,6 +68,45 @@ const Routes = () => {
 
   return (
     <Switch>
+      {AUTH_ROUTES.map(route => (
+        <Redirect
+          exact
+          key={route.path}
+          from={route.path}
+          to={`/auth${route.path}`}
+        />
+      ))}
+      {ONBOARDING_ROUTES.map(route => (
+        <Redirect
+          exact
+          key={route.path}
+          from={route.path}
+          to={`/onboarding${route.path}`}
+        />
+      ))}
+      {TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES.map(route => (
+        <Redirect
+          exact
+          key={route.path}
+          from={route.path}
+          to={`/core${route.path}`}
+        />
+      ))}
+      {SETTINGS_ROUTES.map(route => (
+        <Redirect
+          exact
+          key={route.path}
+          from={route.path}
+          to={`/settings${route.path}`}
+        />
+      ))}
+      {SIMPLE_ROUTES?.map(route => (
+        <Route
+          key={route.path}
+          path={route.path}
+          component={route.RouteComponent}
+        />
+      ))}
       <Route
         path="/auth"
         render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
@@ -116,41 +155,6 @@ const Routes = () => {
           />
         )}
       />
-      {SIMPLE_ROUTES?.map(route => (
-        <Route
-          key={route.path}
-          path={route.path}
-          component={route.RouteComponent}
-        />
-      ))}
-      {AUTH_ROUTES.map(route => (
-        <Redirect
-          key={route.path}
-          from={route.path}
-          to={`/auth${route.path}`}
-        />
-      ))}
-      {ONBOARDING_ROUTES.map(route => (
-        <Redirect
-          key={route.path}
-          from={route.path}
-          to={`/onboarding${route.path}`}
-        />
-      ))}
-      {TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES.map(route => (
-        <Redirect
-          key={route.path}
-          from={route.path}
-          to={`/core${route.path}`}
-        />
-      ))}
-      {SETTINGS_ROUTES.map(route => (
-        <Redirect
-          key={route.path}
-          from={route.path}
-          to={`/settings${route.path}`}
-        />
-      ))}
       <Redirect to="/core/home/my-tasks" />
     </Switch>
   );
