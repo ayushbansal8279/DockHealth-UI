@@ -1,28 +1,37 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import Circle from 'img/circle';
+import { validateNewSubtask } from 'helpers/validation-helper';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import Spacing from 'components/common/Spacing';
-import { validateNewSubtask } from 'helpers/validation-helper';
+import { saveTask } from 'actions/task-actions';
 import {
-  AddSubtaskInputWrapper,
-  ErrorLabel,
-  MentionsEditorContainer,
-  QuickAddHint,
-} from './styled';
+  StandardTaskItemContainer,
+  MainStandardTaskItemCell,
+  StandardTaskItemCell,
+  CircleIcon,
+} from '../styled';
 
-const NewTaskDrawerQuickAddSubtask = ({
-  onQuickAddTask,
-  onFocus,
-  onBlur,
+const QuickAddSubatask = ({
+  setQuickAddOpen,
+  patientVisible,
+  listNameVisible,
+  parentTaskIdentifier,
   taskListIdentifier = null,
 }) => {
   const editorReference = useRef(null);
   const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
   const [hasInputValue, setHasInputValue] = useState(false);
   const [error, setError] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setTimeout(() => {
+      editorReference.current.focus();
+    }, []);
+  }, []);
 
   const resetInputState = () => {
     setDisabled(false);
@@ -46,9 +55,11 @@ const NewTaskDrawerQuickAddSubtask = ({
     setError(validatorError);
 
     if (rawText && !validatorError) {
-      onQuickAddTask({
+      saveTask({
         description: tokenizedText,
-      })
+        taskListIdentifier,
+        parentTaskIdentifier,
+      })(dispatch)
         .then(resetInputState)
         .catch(resetInputState);
     }
@@ -63,19 +74,21 @@ const NewTaskDrawerQuickAddSubtask = ({
   };
 
   return (
-    <AddSubtaskInputWrapper hidePlaceholder={hasInputValue}>
-      <MentionsEditorContainer>
+    <StandardTaskItemContainer>
+      <MainStandardTaskItemCell
+        bolded
+        position="static"
+        alignItems="flex-start"
+        paddingLeft="huge"
+        paddingRight="small"
+      >
+        <CircleIcon src={Circle} />
         <MentionsEditor
           ref={editorReference}
           taskListIdentifier={taskListIdentifier}
           disabled={isDisabled}
-          onFocus={() => {
-            setIsFocused(true);
-            if (typeof onFocus === 'function') onFocus();
-          }}
           onBlur={() => {
-            setIsFocused(false);
-            if (typeof onBlur === 'function') onBlur();
+            if (!hasInputValue) setQuickAddOpen(false);
           }}
           state={newTaskDescription}
           onChange={handleOnChange}
@@ -93,18 +106,17 @@ const NewTaskDrawerQuickAddSubtask = ({
 
             return 'not-handled';
           }}
-          isDrawerEditor
         />
-      </MentionsEditorContainer>
-      {hasInputValue && isFocused && !error && (
-        <>
-          <Spacing horizontal={4} />
-          <QuickAddHint>Hit enter to save</QuickAddHint>
-        </>
-      )}
-      {error && <ErrorLabel>{error}</ErrorLabel>}
-    </AddSubtaskInputWrapper>
+      </MainStandardTaskItemCell>
+      <StandardTaskItemCell width="60px" />
+      {patientVisible && <StandardTaskItemCell width="164px" />}
+      <StandardTaskItemCell width="120px" />
+      <StandardTaskItemCell width="150px" />
+      <StandardTaskItemCell width="60px" />
+      <StandardTaskItemCell width="60px" />
+      {listNameVisible && <StandardTaskItemCell width="168px" />}
+    </StandardTaskItemContainer>
   );
 };
 
-export default NewTaskDrawerQuickAddSubtask;
+export default QuickAddSubatask;

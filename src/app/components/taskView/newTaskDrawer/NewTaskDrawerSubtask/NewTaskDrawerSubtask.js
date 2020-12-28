@@ -31,6 +31,7 @@ import {
   DueDate,
   DueDateContainer,
   IconContainer,
+  DescriptionLabel,
 } from './styled';
 
 const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
@@ -38,8 +39,9 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
 
   const {
     status,
-    edited,
     description,
+    edited,
+    duplicated,
     tokenizedDescription,
     taskMentions,
     completedBy,
@@ -89,11 +91,13 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
         <Description isCrossedOut={isCompleted}>
           <MentionsEditor
             readOnly
+            oneline
             isDrawerEditor
-            withEditedLabel={edited}
             state={descriptionState}
             onChange={setDescriptionState}
           />
+          {edited && <DescriptionLabel>(edited)</DescriptionLabel>}
+          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}f
         </Description>
         <CompletedBy isCompleted={isCompleted}>
           <span>{`Completed by ${completedByName} ${completedDt &&

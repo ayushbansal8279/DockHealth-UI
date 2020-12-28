@@ -81,6 +81,7 @@ import {
   SubtasksImg,
   DescriptionLabel,
   DescriptionWrapper,
+  AddSubtaskButton,
 } from '../styled';
 
 const TaskItem = ({
@@ -99,7 +100,7 @@ const TaskItem = ({
   subTasksCount,
   dragAndDropDisabled,
   listNameVisible,
-  patientVisible = true,
+  patientVisible,
   selectedTask,
   parentHasPatient,
   highlightedValue,
@@ -108,6 +109,8 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   hideSubtasks,
+  quickAddSubtaskOpen,
+  onSubtaskAdd = () => {},
 }) => {
   const {
     taskIdentifier,
@@ -281,17 +284,6 @@ const TaskItem = ({
     [parentTask],
   );
 
-  // const onAddSubtaskLabelClick = useCallback(
-  //   event => {
-  //     if (event) {
-  //       event.preventDefault();
-  //       event.stopPropagation();
-  //     }
-  //     prepareSubtask(taskIdentifier, null, task)(dispatch);
-  //   },
-  //   [taskIdentifier, dispatch, task],
-  // );
-
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
@@ -351,7 +343,6 @@ const TaskItem = ({
       <StandardTaskItemContainer
         isSelected={isSelectedTask}
         height={hasParentTaskLabel || isCompletedGroup ? 50 : 35}
-        noTopBorder={isSubtask}
       >
         {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
         {showDraggableDots && (
@@ -433,19 +424,32 @@ const TaskItem = ({
         {!hideSubtasks && (
           <StandardTaskItemCell
             width="60px"
+            justify="center"
             paddingLeft="tiny"
             paddingRight="tiny"
           >
-            {!isSubtask && subTasksCount > 0 && (
-              <SubtasksCellContent onClick={onSubtaskLabelClick}>
-                <SubtasksCellText isOpen={isOpen}>
-                  {subTasksCount}
-                </SubtasksCellText>
-                <SubtasksImg
-                  src={isOpen ? SubtasksIconActive : SubtasksIcon}
-                  alt="Subtasks"
-                />
-              </SubtasksCellContent>
+            {!isSubtask && (
+              <>
+                {subTasksCount > 0 ? (
+                  <SubtasksCellContent onClick={onSubtaskLabelClick}>
+                    <SubtasksCellText isOpen={isOpen}>
+                      {subTasksCount}
+                    </SubtasksCellText>
+                    <SubtasksImg
+                      src={isOpen ? SubtasksIconActive : SubtasksIcon}
+                      alt="Subtasks"
+                    />
+                  </SubtasksCellContent>
+                ) : (
+                  <>
+                    {isHovered && !quickAddSubtaskOpen && (
+                      <AddSubtaskButton type="button" onClick={onSubtaskAdd}>
+                        <AddPlaceholder>+ Add</AddPlaceholder>
+                      </AddSubtaskButton>
+                    )}
+                  </>
+                )}
+              </>
             )}
           </StandardTaskItemCell>
         )}

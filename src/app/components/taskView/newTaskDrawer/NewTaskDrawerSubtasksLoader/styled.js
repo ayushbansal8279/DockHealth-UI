@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 
 export const LoaderGroup = styled.div`
   &:not(:last-of-type) {
@@ -10,11 +9,12 @@ export const LoaderGroup = styled.div`
 
 export const LoaderRow = styled.div`
   display: flex;
+  height: 35px;
   flex-direction: row;
   align-items: center;
 
   &:not(:last-of-type) {
-    margin-bottom: ${spacing.regularPlus};
+    margin-bottom: 3px;
   }
 `;
 
@@ -30,8 +30,8 @@ export const LoaderFillElement = styled(LoaderElement)`
 `;
 
 export const CircleLoaderElement = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
   background-color: ${palette.coolGrey3};
 `;
