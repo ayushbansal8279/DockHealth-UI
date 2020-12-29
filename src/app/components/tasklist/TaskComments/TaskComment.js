@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
 import Member from 'components/members/Member/Member';
@@ -12,6 +12,7 @@ import {
   TaskCommentText,
   TaskCommentDetails,
   TaskCommentContent,
+  MoreButton,
 } from './styled';
 
 const TaskComment = ({
@@ -26,6 +27,7 @@ const TaskComment = ({
   isLastComment,
   showMore,
 }) => {
+  const commentTextReference = useRef(null);
   const previousCommentValue = useRef(null);
   const [commentState, setCommentState] = useMentionsEditorState(
     convertToEditorState({
@@ -34,6 +36,7 @@ const TaskComment = ({
       mentions: commentMentions,
     }),
   );
+  const [wholeCommentVisible, setWholeCommentVisible] = useState(false);
 
   useEffect(() => {
     if (previousCommentValue.current !== null) {
@@ -62,6 +65,10 @@ const TaskComment = ({
 
   const commentDate = ` ${dateLabel} @ ${moment(dateUpdated).format('h:mm a')}`;
 
+  const hasMore =
+    commentTextReference.current?.scrollHeight >
+    commentTextReference.current?.offsetHeight;
+
   return (
     <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
       <TaskCommentAvatarContainer>
@@ -72,7 +79,10 @@ const TaskComment = ({
           <b>{commentAuthor}</b>
           {commentDate}
         </TaskCommentDetails>
-        <TaskCommentText>
+        <TaskCommentText
+          ref={commentTextReference}
+          wholeCommentVisible={wholeCommentVisible}
+        >
           <MentionsEditor
             readOnly
             withEditedLabel={dateCreated !== dateUpdated}
@@ -80,6 +90,18 @@ const TaskComment = ({
             onChange={setCommentState}
             highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
           />
+          {hasMore && !wholeCommentVisible && (
+            <MoreButton
+              type="button"
+              onClick={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                setWholeCommentVisible(true);
+              }}
+            >
+              ... <span>more</span>
+            </MoreButton>
+          )}
         </TaskCommentText>
       </TaskCommentContent>
     </TaskCommentContainer>

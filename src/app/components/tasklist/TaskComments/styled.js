@@ -46,9 +46,27 @@ export const SmallText = styled.span`
 `;
 
 export const TaskCommentText = styled.div`
+  position: relative;
+  padding-right: ${spacing.giga};
   color: ${palette.mediumGrey};
   font-weight: normal;
   max-width: 575px;
+  overflow: hidden;
+  max-height: ${({ wholeCommentVisible }) =>
+    !wholeCommentVisible ? `2.2rem` : 'auto'};
+`;
+
+export const MoreButton = styled.button`
+  position: absolute;
+  bottom: 1px;
+  right: 0;
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.light};
+  cursor: pointer;
+
+  & > span {
+    color: ${palette.brightBlue};
+  }
 `;
 
 export const TaskCommentDetails = styled.div`
