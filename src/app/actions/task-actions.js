@@ -1164,6 +1164,12 @@ export function getFilteredTasksForList(
     )
       .then(groupedTasks => {
         dispatch({ type: action, groupedTasks });
+        if (groupedTasks.taskFilterOptions) {
+          dispatch({
+            type: ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS,
+            filters: groupedTasks.taskFilterOptions,
+          });
+        }
         return groupedTasks;
       })
       .catch(error => {
