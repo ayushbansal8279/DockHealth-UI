@@ -13,6 +13,8 @@ export const MegaFilterPopover = withStyles({
     width: 'calc(100% - 160px)',
     border: 'none',
     boxShadow: '0px 4px 10px rgba(204, 204, 204, 0.25)',
+    borderBottomStyle: 'inset',
+    borderRightStyle: 'inset',
     maxWidth: '884px',
     ...props.customStyles,
   }),

@@ -484,6 +484,7 @@ class Home extends Component {
     );
 
     if (isEmpty(updatedFilters)) {
+      this.refreshFilters();
       return this.getTasksList(taskListIdentifier, taskStatus);
     }
 
@@ -765,6 +766,7 @@ class Home extends Component {
       groupedTasks,
       currentUser,
       selectedTask,
+      selectedFilters,
     } = this.props;
 
     const { isTourOpen, searchValue } = this.state;
@@ -807,6 +809,17 @@ class Home extends Component {
                   : [],
               taskListMembers: members,
             }}
+            tasks={
+              selectedTab === TaskListTabName.OPEN && groupedTasks
+                ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
+                : []
+            }
+            completedTasks={
+              selectedTab === TaskListTabName.COMPLETE && completedGroupedTasks
+                ? completedGroupedTasks.tasks
+                : []
+            }
+            selectedFilters={selectedFilters}
           />
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView

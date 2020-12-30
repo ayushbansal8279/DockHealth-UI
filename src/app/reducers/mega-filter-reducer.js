@@ -82,6 +82,28 @@ export default function(state = INITIAL_STATE, action = {}) {
         filters: assignTypesToFilters(filters),
         isLoading: false,
       };
+    case types.FETCH_MEGA_FILTERS_UPDATE_SUCCESS:
+      if (Object.keys(filters).length > 0) {
+        return {
+          ...state,
+          filters: state.filters?.map(filterGroup => {
+            return {
+              ...filterGroup,
+              list: filterGroup.list?.map(item => {
+                const filterItem = filters[filterGroup.filterKey]?.find(
+                  f => f.key === item.key,
+                );
+                return {
+                  ...item,
+                  taskCount: filterItem ? filterItem.taskCount : '',
+                };
+              }),
+            };
+          }),
+          isLoading: false,
+        };
+      }
+      return state;
     case types.FETCH_MEGA_FILTERS_FAILURE:
       return { ...state, error, isLoading: false };
     case types.SELECT_FILTERS_FROM_MEGA_FILTER:

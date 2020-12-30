@@ -1,7 +1,25 @@
+/* eslint-disable unicorn/no-nested-ternary */
 import { connect } from 'react-redux';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
+import { isEmpty } from 'ramda';
 import NewToolbar from './NewToolbar';
 import { TaskListTabName } from './config';
+
+const determineTaskCounts = ({
+  selectedFilters,
+  isFetching,
+  tasks,
+  tasksCount,
+  status,
+}) => {
+  return selectedFilters && !isEmpty(selectedFilters) && !isFetching
+    ? tasks?.reduce(
+        (counter, task) =>
+          counter + task.subtasks?.filter(x => x.status === status).length + 1,
+        0,
+      ) || 0
+    : tasksCount;
+};
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -11,6 +29,8 @@ const mapStateToProps = (state, ownProps) => {
     completedTasks,
     openTasksAmount,
     completedTasksAmount,
+    selectedFilters,
+    isFetching,
   } = ownProps;
 
   const haveTasks =
@@ -18,7 +38,22 @@ const mapStateToProps = (state, ownProps) => {
     (completedTasksAmount > 0 &&
       ownProps.selectedTab === TaskListTabName.COMPLETE);
 
-  const tasksAndSubTasksCount = openTasksAmount;
+  const tasksAndSubTasksCount =
+    ownProps.selectedTab === TaskListTabName.OPEN
+      ? determineTaskCounts({
+          selectedFilters,
+          isFetching,
+          tasks: openedTasks,
+          tasksCount: openTasksAmount,
+          status: 'INCOMPLETE',
+        })
+      : determineTaskCounts({
+          selectedFilters,
+          isFetching,
+          tasks: completedTasks,
+          tasksCount: completedTasksAmount,
+          status: 'COMPLETE',
+        });
 
   return {
     printData: {
