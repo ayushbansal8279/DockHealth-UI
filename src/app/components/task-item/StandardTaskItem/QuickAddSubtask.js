@@ -93,14 +93,22 @@ const QuickAddSubatask = ({
           state={newTaskDescription}
           onChange={handleOnChange}
           keyBindingFn={event => {
-            if (event.keyCode === 13) {
+            if (event.key === 'Enter') {
               return 'enter-command';
+            }
+            if (event.key === 'Escape') {
+              return 'escape-command';
             }
             return undefined;
           }}
           handleKeyCommand={command => {
             if (command === 'enter-command') {
               handleInputEnterDown();
+              return 'handled';
+            }
+
+            if (command === 'escape-command') {
+              editorReference.current.blur();
               return 'handled';
             }
 
