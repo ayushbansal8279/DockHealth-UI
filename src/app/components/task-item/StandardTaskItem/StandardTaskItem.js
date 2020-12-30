@@ -32,7 +32,6 @@ const Task = ({
   patientVisible = true,
   ...restProps
 }) => {
-  const [quickAddSubtaskOpen, setQuickAddSubtaskOpen] = useState(false);
   const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
   const {
     taskIdentifier,
@@ -42,6 +41,7 @@ const Task = ({
     searchMetaData = {},
     subTasksCount,
     taskList,
+    subtaskQuickAddOpen,
   } = task || {};
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { highlightedValue } = restProps;
@@ -65,23 +65,18 @@ const Task = ({
   );
 
   useEffect(() => {
-    const hasNewSubtask = renderedSubtasks.some(
-      ({ taskIdentifier: subtaskIdentifier }) => !subtaskIdentifier,
-    );
-    if (hasNewSubtask) {
-      handleSetSubtasksOpen(true);
-    }
     if (
-      (areFiltersApplied || isSearchApplied) &&
-      renderedSubtasks?.length > 0
+      !areSubtasksOpen &&
+      (areFiltersApplied || isSearchApplied || subtaskQuickAddOpen)
     ) {
       handleSetSubtasksOpen(true);
     }
   }, [
-    renderedSubtasks,
     areFiltersApplied,
     isSearchApplied,
     handleSetSubtasksOpen,
+    areSubtasksOpen,
+    subtaskQuickAddOpen,
   ]);
 
   const matchingComments = useMemo(
@@ -96,7 +91,9 @@ const Task = ({
 
   const showSubtasks = useMemo(
     () =>
-      (subTasksCount > 0 || !isEmpty(renderedSubtasks)) &&
+      (subTasksCount > 0 ||
+        !isEmpty(renderedSubtasks) ||
+        subtaskQuickAddOpen) &&
       !isStartedDnD &&
       (!hideSubtasks ||
         ((areFiltersApplied || isSearchApplied) &&
@@ -108,13 +105,9 @@ const Task = ({
       hideSubtasks,
       areFiltersApplied,
       isSearchApplied,
+      subtaskQuickAddOpen,
     ],
   );
-
-  const handleSubtaskAdd = useCallback(() => {
-    setAreSubtasksOpen(true);
-    setQuickAddSubtaskOpen(true);
-  }, []);
 
   const onClickComment = useCallback(() => {
     dispatch(openDrawer());
@@ -140,8 +133,6 @@ const Task = ({
           isDraggable={isDraggable}
           hideSubtasks={hideSubtasks}
           isFullView={isFullView}
-          onSubtaskAdd={handleSubtaskAdd}
-          quickAddSubtaskOpen={quickAddSubtaskOpen}
           {...restProps}
         />
       </div>
@@ -153,40 +144,40 @@ const Task = ({
           onClickComment={onClickComment}
         />
       )}
-      {task?.isFetchingSubTasks &&
-        subTasksCount > 0 &&
-        isEmpty(renderedSubtasks) && (
-          <SubtasksSkeletonLoader rows={subTasksCount} />
-        )}
-      <SubtasksWrapper>
-        {showSubtasks && (
-          <Subtasks
-            subtasks={renderedSubtasks}
-            subTasksCount={subTasksCount}
-            isOpen={areSubtasksOpen}
-            isFullView={isFullView}
-            groupId={groupId}
-            parentTaskId={task.taskIdentifier}
-            currentUser={currentUser}
-            reassignTask={reassignTask}
-            parentHasPatient={!!patient}
-            taskList={taskList}
-            isDraggable={isDraggable}
-            listNameVisible={listNameVisible}
-            patientVisible={patientVisible}
-            {...restProps}
-          />
-        )}
-        {quickAddSubtaskOpen && (
-          <QuickAddSubatask
-            patientVisible={patientVisible}
-            listNameVisible={listNameVisible}
-            setQuickAddOpen={setQuickAddSubtaskOpen}
-            taskListIdentifier={taskList?.taskListIdentifier}
-            parentTaskIdentifier={taskIdentifier}
-          />
-        )}
-      </SubtasksWrapper>
+      {showSubtasks && (
+        <>
+          {task?.isFetchingSubTasks ? (
+            <SubtasksSkeletonLoader rows={subTasksCount} />
+          ) : (
+            <SubtasksWrapper>
+              <Subtasks
+                subtasks={renderedSubtasks}
+                subTasksCount={subTasksCount}
+                isOpen={areSubtasksOpen}
+                isFullView={isFullView}
+                groupId={groupId}
+                parentTaskId={task.taskIdentifier}
+                currentUser={currentUser}
+                reassignTask={reassignTask}
+                parentHasPatient={!!patient}
+                taskList={taskList}
+                isDraggable={isDraggable}
+                listNameVisible={listNameVisible}
+                patientVisible={patientVisible}
+                {...restProps}
+              />
+              {subtaskQuickAddOpen && (
+                <QuickAddSubatask
+                  patientVisible={patientVisible}
+                  listNameVisible={listNameVisible}
+                  taskListIdentifier={taskList?.taskListIdentifier}
+                  parentTaskIdentifier={taskIdentifier}
+                />
+              )}
+            </SubtasksWrapper>
+          )}
+        </>
+      )}
     </ParentTaskContainer>
   );
 };

@@ -5,7 +5,7 @@ import { validateNewSubtask } from 'helpers/validation-helper';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { saveTask } from 'actions/task-actions';
+import { closeQuickAddSubtask, saveTask } from 'actions/task-actions';
 import {
   StandardTaskItemContainer,
   MainStandardTaskItemCell,
@@ -14,7 +14,6 @@ import {
 } from '../styled';
 
 const QuickAddSubatask = ({
-  setQuickAddOpen,
   patientVisible,
   listNameVisible,
   parentTaskIdentifier,
@@ -88,7 +87,8 @@ const QuickAddSubatask = ({
           taskListIdentifier={taskListIdentifier}
           disabled={isDisabled}
           onBlur={() => {
-            if (!hasInputValue) setQuickAddOpen(false);
+            if (!hasInputValue)
+              dispatch(closeQuickAddSubtask(parentTaskIdentifier));
           }}
           state={newTaskDescription}
           onChange={handleOnChange}

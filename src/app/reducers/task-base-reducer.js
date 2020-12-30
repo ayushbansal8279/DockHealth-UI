@@ -11,6 +11,8 @@ import {
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_COMMENT_SUCCESS,
   REFRESH_ANOTHER_TASK_SUCCESS,
+  OPEN_QUICK_ADD_SUBTASK_INPUT,
+  CLOSE_QUICK_ADD_SUBTASK_INPUT,
 } from 'actions/action-types';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -167,6 +169,48 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       };
 
       return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case OPEN_QUICK_ADD_SUBTASK_INPUT: {
+      const { taskIdentifier } = action;
+
+      if (taskIdentifier) {
+        const updateTaskFromAction = tasks => {
+          return tasks.map(task =>
+            task.taskIdentifier === taskIdentifier
+              ? {
+                  ...task,
+                  subtaskQuickAddOpen: true,
+                }
+              : task,
+          );
+        };
+
+        return updateStateCallback(state, updateTaskFromAction);
+      }
+
+      return state;
+    }
+
+    case CLOSE_QUICK_ADD_SUBTASK_INPUT: {
+      const { taskIdentifier } = action;
+
+      if (taskIdentifier) {
+        const updateTaskFromAction = tasks => {
+          return tasks.map(task =>
+            task.taskIdentifier === taskIdentifier
+              ? {
+                  ...task,
+                  subtaskQuickAddOpen: false,
+                }
+              : task,
+          );
+        };
+
+        return updateStateCallback(state, updateTaskFromAction);
+      }
+
+      return state;
     }
 
     case MOVE_TASK_SUCCESS: {

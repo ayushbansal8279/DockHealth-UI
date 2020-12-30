@@ -1237,3 +1237,13 @@ export const loadSubTasks = task => dispatch => {
       throw error;
     });
 };
+
+export const openQuickAddSubtask = taskIdentifier => ({
+  type: ActionTypes.OPEN_QUICK_ADD_SUBTASK_INPUT,
+  taskIdentifier,
+});
+
+export const closeQuickAddSubtask = taskIdentifier => ({
+  type: ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT,
+  taskIdentifier,
+});

@@ -4,7 +4,11 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
-import { deleteTask, duplicateTask } from 'actions/task-actions';
+import {
+  deleteTask,
+  duplicateTask,
+  openQuickAddSubtask,
+} from 'actions/task-actions';
 import { openModal } from 'modal/actions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
 
@@ -138,7 +142,10 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
         </li>
         {!isSubtask && (
           <li>
-            <MenuItemButtom type="button" onClick={() => {}}>
+            <MenuItemButtom
+              type="button"
+              onClick={() => dispatch(openQuickAddSubtask(task.taskIdentifier))}
+            >
               Create Subtask
             </MenuItemButtom>
           </li>

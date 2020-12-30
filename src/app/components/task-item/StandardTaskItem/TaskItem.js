@@ -5,10 +5,7 @@ import { EditorState } from 'draft-js';
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
 import { openDrawer } from 'actions/task-drawer-actions';
-import {
-  // prepareSubtask,
-  storeAsCurrentTask,
-} from 'actions/task-actions';
+import { openQuickAddSubtask, storeAsCurrentTask } from 'actions/task-actions';
 import { Grid } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
@@ -110,8 +107,6 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   hideSubtasks,
-  quickAddSubtaskOpen,
-  onSubtaskAdd = () => {},
 }) => {
   const {
     taskIdentifier,
@@ -133,6 +128,7 @@ const TaskItem = ({
     parentTaskIdentifier,
     searchMetaData = {},
     parentTask,
+    subtaskQuickAddOpen,
   } = task;
   const { listName, taskListIdentifier } = taskList;
 
@@ -453,8 +449,13 @@ const TaskItem = ({
                     </SubtasksCellContent>
                   ) : (
                     <>
-                      {isHovered && !quickAddSubtaskOpen && (
-                        <AddSubtaskButton type="button" onClick={onSubtaskAdd}>
+                      {isHovered && !isSubtask && !subtaskQuickAddOpen && (
+                        <AddSubtaskButton
+                          type="button"
+                          onClick={() =>
+                            dispatch(openQuickAddSubtask(taskIdentifier))
+                          }
+                        >
                           <AddPlaceholder>+ Add</AddPlaceholder>
                         </AddSubtaskButton>
                       )}
