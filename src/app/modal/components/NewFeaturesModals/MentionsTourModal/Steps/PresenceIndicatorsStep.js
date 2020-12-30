@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
 import PresenceIndicatorsImage from 'img/tour/mentions/presence-indicators-anim.gif';
 import { onMentionsTourModalEvent } from 'helpers/ga-event-helper';
-import { Image, Title, Description } from './styled';
+import { Image, Title, Description } from '../../styled';
 
 const PresenceIndicatorsStep = () => {
   useEffect(() => {

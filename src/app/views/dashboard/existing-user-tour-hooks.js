@@ -32,12 +32,12 @@ const existingUserTourHooks = ({
     if (userProfile && userProfile.userPreference) {
       const { userPreference: { appFeaturesReviewed } = {} } = userProfile;
 
-      if (!appFeaturesReviewed?.includes('NOTIFICATION_SETTINGS')) {
+      if (!appFeaturesReviewed?.includes('TASK_DENSITY')) {
         dispatch(
-          openModal('NotificationSettingsTour', {
+          openModal('TaskDensityTour', {
             onClose: () => {
               updateUserDashboardPrefs({
-                appFeaturesReviewed: ['NOTIFICATION_SETTINGS'],
+                appFeaturesReviewed: ['TASK_DENSITY'],
               });
             },
           }),

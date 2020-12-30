@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
 import NotificationSettingsImage from 'img/tour/notification-settings/notification-settings';
 import { onNotificationSettingsTourModalEvent } from 'helpers/ga-event-helper';
-import { Image, Title, Description } from './styled';
+import { Image, Title, Description } from '../../styled';
 
 const NotificationSettingsStep = () => {
   useEffect(() => {

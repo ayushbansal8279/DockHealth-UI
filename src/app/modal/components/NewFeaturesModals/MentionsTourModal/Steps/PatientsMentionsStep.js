@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PatientsMentionsImage from 'img/tour/mentions/patients-mentions-anim.gif';
 import Spacing from 'components/common/Spacing';
 import { onMentionsTourModalEvent } from 'helpers/ga-event-helper';
-import { Image, Title, Description } from './styled';
+import { Image, Title, Description } from '../../styled';
 
 const PatientsMentionsStep = () => {
   useEffect(() => {

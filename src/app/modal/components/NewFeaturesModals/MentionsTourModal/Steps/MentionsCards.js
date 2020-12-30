@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import MentionsCardsImage from 'img/tour/mentions/mentions-cards-anim.gif';
 import { onMentionsTourModalEvent } from 'helpers/ga-event-helper';
 import Spacing from 'components/common/Spacing';
-import { Image, Title, Description } from './styled';
+import { Image, Title, Description } from '../../styled';
 
 const MentionsCards = () => {
   useEffect(() => {

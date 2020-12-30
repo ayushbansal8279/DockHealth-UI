@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
 import SpeedOptimizationImage from 'img/tour/notification-settings/speed-optimization';
 import { onNotificationSettingsTourModalEvent } from 'helpers/ga-event-helper';
-import { Image, Title, Description } from './styled';
+import { Image, Title, Description } from '../../styled';
 
 const SpeedOptimizationStep = () => {
   useEffect(() => {

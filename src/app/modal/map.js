@@ -27,6 +27,7 @@ import MentionsTourModal from './components/NewFeaturesModals/MentionsTourModal/
 import TrialExpirationModal from './components/TrialExpirationModal/TrialExpirationModal';
 import NotificationSettingsTourModal from './components/NewFeaturesModals/NotificationSettingsTourModal/NotificationSettingsTourModal';
 import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
+import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -56,6 +57,7 @@ const MODAL_MAP = {
   SelectOwner: SelectOwnerModal,
   MentionsTour: MentionsTourModal,
   NotificationSettingsTour: NotificationSettingsTourModal,
+  TaskDensityTour: TaskDensityTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
 };
