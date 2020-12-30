@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
@@ -21,8 +22,10 @@ const ConfirmMFACode = props => {
 
   useMount(() => {
     const { location } = props;
-    setUsername(location.query.uname);
-
+    const queryValues = queryString.parse(location.search);
+    if (queryValues.uname !== undefined) {
+      setUsername(queryValues.uname.uname);
+    }
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.REGAIN_CONTROL,
     })(dispatch);
@@ -42,7 +45,7 @@ const ConfirmMFACode = props => {
           userApi.rememberDevice().then(result => {
             console.log(`added device to be remembered: ${result}`);
           });
-          history.push('/');
+          history.push('/core/home/my-tasks');
           success('Logged in.');
           userApi.captureLocalTimezone();
         })
