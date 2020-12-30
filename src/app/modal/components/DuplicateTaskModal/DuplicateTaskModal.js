@@ -16,7 +16,7 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
-const DuplicateTaskModal = ({ skip, confirm }) => {
+const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -39,7 +39,10 @@ const DuplicateTaskModal = ({ skip, confirm }) => {
               size="small"
               variant="outlined"
               type="button"
-              onClick={skip}
+              onClick={() => {
+                skip();
+                closeModal();
+              }}
             >
               Do not duplicate
             </Button>
@@ -52,7 +55,10 @@ const DuplicateTaskModal = ({ skip, confirm }) => {
               size="small"
               variant="contained"
               type="button"
-              onClick={confirm}
+              onClick={() => {
+                confirm();
+                closeModal();
+              }}
             >
               Yes
             </Button>

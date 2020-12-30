@@ -1,52 +1,68 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Backdrop, MenuContainer, MenuItemButtom } from './styled';
+import { useDispatch } from 'react-redux';
+import palette from 'styles/palette';
+import { deleteTask, duplicateTask } from 'actions/task-actions';
+import { openModal } from 'modal/actions';
+import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
 
-const TaskItemContextMenu = ({ position, isSubtask, onClose }) => {
+const TaskItemContextMenu = ({ position, task, onClose }) => {
   const menuReference = useRef(null);
+  const dispatch = useDispatch();
+
+  const isSubtask = !!task.parentTaskIdentifier;
 
   const handleKeyDown = useCallback(event => {
-    function handleBackwardTab(elements) {
-      if (document.activeElement === elements[0]) {
+    function handleBackward() {
+      event.preventDefault();
+      let elements = menuReference.current.querySelectorAll(
+        'button:not([disabled])',
+      );
+      elements = [...elements];
+      const activeIndex = elements.indexOf(document.activeElement);
+      if (activeIndex === 0) {
         event.preventDefault();
         elements[elements.length - 1].focus();
+      } else if (activeIndex === -1) {
+        elements[0].focus();
+      } else {
+        elements[activeIndex - 1].focus();
       }
     }
 
-    function handleForwardTab(elements) {
-      if (document.activeElement === elements[elements.length - 1]) {
+    function handleForward() {
+      event.preventDefault();
+      let elements = menuReference.current.querySelectorAll(
+        'button:not([disabled])',
+      );
+      elements = [...elements];
+
+      const activeIndex = elements.indexOf(document.activeElement);
+      if (activeIndex === elements.length - 1) {
         event.preventDefault();
         elements[0].focus();
+      } else if (activeIndex === -1) {
+        elements[0].focus();
+      } else {
+        elements[activeIndex + 1].focus();
       }
     }
 
     if (event.key === 'Tab') {
-      const focusableElements = menuReference.current.querySelectorAll(
-        'button:not([disabled])',
-      );
-      const anyElementFocused = [...focusableElements].some(
-        element => element === document.activeElement,
-      );
-
-      if (!anyElementFocused) {
-        event.preventDefault();
-        if (event.shiftKey) {
-          focusableElements[focusableElements.length - 1].focus();
-        } else {
-          focusableElements[0].focus();
-        }
-        return;
-      }
-
       if (event.shiftKey) {
-        handleBackwardTab(focusableElements);
+        handleBackward();
       } else {
-        handleForwardTab(focusableElements);
+        handleForward();
       }
-    } else if (event.key === 'Esc') {
+    } else if (event.key === 'Escape') {
       event.preventDefault();
       onClose();
+    } else if (event.key === 'ArrowDown') {
+      handleForward();
+    } else if (event.key === 'ArrowUp') {
+      handleBackward();
     }
   }, []);
 
@@ -82,6 +98,18 @@ const TaskItemContextMenu = ({ position, isSubtask, onClose }) => {
     };
   }, []);
 
+  const handleDuplicateTask = () => {
+    if (task.attachments?.length > 0) {
+      const modalProps = {
+        confirm: () => dispatch(duplicateTask(task, true)),
+        skip: () => dispatch(duplicateTask(task)),
+      };
+      dispatch(openModal('DuplicateTask', modalProps));
+    } else {
+      dispatch(duplicateTask(task));
+    }
+  };
+
   return (
     <Backdrop
       open
@@ -96,23 +124,35 @@ const TaskItemContextMenu = ({ position, isSubtask, onClose }) => {
         positionTop={position.y}
         positionLeft={position.x}
       >
-        <li>
-          <MenuItemButtom tabindex="0" type="button" onClick={() => {}}>
-            Option 1
-          </MenuItemButtom>
-        </li>
-        <li>
-          <MenuItemButtom type="button" onClick={() => {}}>
-            Option 2
-          </MenuItemButtom>
-        </li>
-        {isSubtask && (
+        {!isSubtask && (
           <li>
-            <MenuItemButtom type="button" onClick={() => {}}>
-              Option 2
+            <MenuItemButtom tabindex="0" type="button" onClick={() => {}}>
+              Move to list
             </MenuItemButtom>
           </li>
         )}
+        <li>
+          <MenuItemButtom type="button" onClick={handleDuplicateTask}>
+            Duplicate {isSubtask ? 'Subtask' : 'Task'}
+          </MenuItemButtom>
+        </li>
+        {!isSubtask && (
+          <li>
+            <MenuItemButtom type="button" onClick={() => {}}>
+              Create Subtask
+            </MenuItemButtom>
+          </li>
+        )}
+        <Divider />
+        <li>
+          <MenuItemButtom
+            type="button"
+            color={palette.oPlusRed}
+            onClick={() => dispatch(deleteTask(task))}
+          >
+            Delete {isSubtask ? 'Subtask' : 'Task'}
+          </MenuItemButtom>
+        </li>
       </MenuContainer>
     </Backdrop>
   );
@@ -123,13 +163,14 @@ TaskItemContextMenu.propTypes = {
     x: PropTypes.number,
     y: PropTypes.number,
   }),
-  isSubtask: PropTypes.bool,
+  task: PropTypes.shape({
+    parentTaskIdentifier: PropTypes.string,
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
 TaskItemContextMenu.defaultProps = {
   position: null,
-  isSubtask: false,
 };
 
 export default TaskItemContextMenu;

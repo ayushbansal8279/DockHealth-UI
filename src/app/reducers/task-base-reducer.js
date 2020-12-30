@@ -130,6 +130,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
             task.taskIdentifier === mainTaskId
               ? {
                   ...task,
+                  subTasksCount: task.subTasksCount - 1,
                   subtasks: task.subtasks.filter(
                     ({ taskIdentifier }) =>
                       taskIdentifier !== action.task.taskIdentifier,
@@ -156,7 +157,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
             task.taskIdentifier === mainTaskId
               ? {
                   ...task,
-                  subtasks: task.subtasks.concat([action.duplicatedTask]),
+                  subTasksCount: task.subTasksCount + 1,
+                  subtasks: [action.duplicatedTask, ...task.subtasks],
                 }
               : task,
           );

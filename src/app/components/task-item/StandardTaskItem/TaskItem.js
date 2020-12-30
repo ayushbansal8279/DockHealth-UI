@@ -687,7 +687,7 @@ const TaskItem = ({
       {contextMenu && (
         <TaskItemContextMenu
           position={contextMenu}
-          isSubtask={isSubtask}
+          task={task}
           onClose={() => setContextMenu(null)}
         />
       )}

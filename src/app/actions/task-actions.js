@@ -529,7 +529,7 @@ export function deleteTask(task) {
       });
 }
 
-export function duplicateTask(task, includeAttachments) {
+export function duplicateTask(task, includeAttachments = false) {
   const taskGroupIdentifier =
     task.taskGroups?.length > 0
       ? task.taskGroups[0].taskGroupIdentifier
