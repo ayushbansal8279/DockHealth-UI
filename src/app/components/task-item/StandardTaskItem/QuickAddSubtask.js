@@ -18,6 +18,7 @@ const QuickAddSubatask = ({
   listNameVisible,
   parentTaskIdentifier,
   taskListIdentifier = null,
+  onFocus,
 }) => {
   const editorReference = useRef(null);
   const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
@@ -27,9 +28,7 @@ const QuickAddSubatask = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setTimeout(() => {
-      editorReference.current.focus();
-    }, []);
+    if (editorReference.current) editorReference.current.focus();
   }, []);
 
   const resetInputState = () => {
@@ -90,6 +89,7 @@ const QuickAddSubatask = ({
             if (!hasInputValue)
               dispatch(closeQuickAddSubtask(parentTaskIdentifier));
           }}
+          onFocus={onFocus}
           state={newTaskDescription}
           onChange={handleOnChange}
           keyBindingFn={event => {

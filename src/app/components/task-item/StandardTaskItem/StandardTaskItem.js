@@ -1,11 +1,16 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import { isEmpty } from 'ramda';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
-import SubtasksSkeletonLoader from '../SubtasksSkeletonLoader/SubtasksSkeletonLoader';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -32,6 +37,7 @@ const Task = ({
   patientVisible = true,
   ...restProps
 }) => {
+  const parentTaskReference = useRef(null);
   const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
   const {
     taskIdentifier,
@@ -109,6 +115,15 @@ const Task = ({
     ],
   );
 
+  const handleQuickAddOnFocus = () => {
+    setTimeout(() => {
+      parentTaskReference.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }, 500);
+  };
+
   const onClickComment = useCallback(() => {
     dispatch(openDrawer());
     dispatch(storeAsCurrentTask(task));
@@ -116,7 +131,7 @@ const Task = ({
   }, []);
 
   return (
-    <ParentTaskContainer {...draggableProps}>
+    <ParentTaskContainer ref={parentTaskReference} {...draggableProps}>
       <div ref={innerRef}>
         <TaskItem
           task={task}
@@ -145,38 +160,36 @@ const Task = ({
         />
       )}
       {showSubtasks && (
-        <>
-          {task?.isFetchingSubTasks ? (
-            <SubtasksSkeletonLoader rows={subTasksCount} />
-          ) : (
-            <SubtasksWrapper>
-              <Subtasks
-                subtasks={renderedSubtasks}
-                subTasksCount={subTasksCount}
-                isOpen={areSubtasksOpen}
-                isFullView={isFullView}
-                groupId={groupId}
-                parentTaskId={task.taskIdentifier}
-                currentUser={currentUser}
-                reassignTask={reassignTask}
-                parentHasPatient={!!patient}
-                taskList={taskList}
-                isDraggable={isDraggable}
-                listNameVisible={listNameVisible}
+        <SubtasksWrapper>
+          <Subtasks
+            isFetchingSubTasks={task?.isFetchingSubTasks}
+            parentTask={task}
+            subtasks={renderedSubtasks}
+            subTasksCount={subTasksCount}
+            isOpen={areSubtasksOpen}
+            isFullView={isFullView}
+            groupId={groupId}
+            parentTaskId={task.taskIdentifier}
+            currentUser={currentUser}
+            reassignTask={reassignTask}
+            parentHasPatient={!!patient}
+            taskList={taskList}
+            isDraggable={isDraggable}
+            listNameVisible={listNameVisible}
+            patientVisible={patientVisible}
+            {...restProps}
+          />
+          {subtaskQuickAddOpen &&
+            (renderedSubtasks?.length > 0 || subTasksCount === 0) && (
+              <QuickAddSubatask
                 patientVisible={patientVisible}
-                {...restProps}
+                listNameVisible={listNameVisible}
+                taskListIdentifier={taskList?.taskListIdentifier}
+                parentTaskIdentifier={taskIdentifier}
+                onFocus={handleQuickAddOnFocus}
               />
-              {subtaskQuickAddOpen && (
-                <QuickAddSubatask
-                  patientVisible={patientVisible}
-                  listNameVisible={listNameVisible}
-                  taskListIdentifier={taskList?.taskListIdentifier}
-                  parentTaskIdentifier={taskIdentifier}
-                />
-              )}
-            </SubtasksWrapper>
-          )}
-        </>
+            )}
+        </SubtasksWrapper>
       )}
     </ParentTaskContainer>
   );

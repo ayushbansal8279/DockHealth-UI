@@ -8,6 +8,7 @@ import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/style
 import TaskItem from './TaskItem';
 import { getMatchedComments } from './helpers';
 import { SubtaskItemWrapper } from '../styled';
+import SubtasksSkeletonLoader from '../SubtasksSkeletonLoader/SubtasksSkeletonLoader';
 
 const Subtasks = ({
   subtasks,
@@ -21,6 +22,8 @@ const Subtasks = ({
   parentHasPatient,
   taskList,
   isDraggable,
+  subTasksCount,
+  isFetchingSubTasks,
   ...restProps
 }) => {
   const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
@@ -55,78 +58,89 @@ const Subtasks = ({
 
   return (
     <SubtasksContainer in={isOpen}>
-      <DragDropContext onBeforeCapture={onBeforeCapture} onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
-          {provided => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {shouldRenderSubtasks &&
-                orderedSubtasks?.map((subtask, index) => {
-                  const {
-                    comments = [],
-                    searchMetaData = {},
-                    taskIdentifier,
-                    description,
-                  } = subtask;
-                  const { matchingCommentIdentifiers } = searchMetaData;
-                  const matchedComments = getMatchedComments(
-                    comments,
-                    matchingCommentIdentifiers,
-                  );
-                  const shouldRenderComments =
-                    draggedId !== String(taskIdentifier) &&
-                    !isEmpty(matchedComments) &&
-                    description !== '';
-                  const isLast = index + 1 === orderedSubtasks.length;
+      {!isFetchingSubTasks ? (
+        <DragDropContext
+          onBeforeCapture={onBeforeCapture}
+          onDragEnd={onDragEnd}
+        >
+          <Droppable droppableId="droppable">
+            {provided => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {shouldRenderSubtasks &&
+                  orderedSubtasks?.map((subtask, index) => {
+                    const {
+                      comments = [],
+                      searchMetaData = {},
+                      taskIdentifier,
+                      description,
+                    } = subtask;
+                    const { matchingCommentIdentifiers } = searchMetaData;
+                    const matchedComments = getMatchedComments(
+                      comments,
+                      matchingCommentIdentifiers,
+                    );
+                    const shouldRenderComments =
+                      draggedId !== String(taskIdentifier) &&
+                      !isEmpty(matchedComments) &&
+                      description !== '';
+                    const isLast = index + 1 === orderedSubtasks.length;
 
-                  return (
-                    <Draggable
-                      key={subtask.taskIdentifier}
-                      draggableId={String(subtask.taskIdentifier)}
-                      index={index}
-                      isDragDisabled={!isDraggable}
-                    >
-                      {(
-                        { innerRef, draggableProps, dragHandleProps },
-                        { isDragging: isDraggingSubtask },
-                      ) => (
-                        <SubtaskItemWrapper ref={innerRef} {...draggableProps}>
-                          <TaskItem
-                            dragHandleProps={dragHandleProps}
-                            key={subtask.taskIdentifier}
-                            task={{ ...subtask, taskList }}
-                            isDragging={isDraggingSubtask}
-                            currentUser={currentUser}
-                            reassignTask={reassignTask}
-                            parentHasPatient={parentHasPatient}
-                            isDraggable={isDraggable && subtasks?.length > 1}
-                            isLast={isLast}
-                            showSubtaskStylingLink={!draggedId}
-                            isNestedTask
-                            {...restProps}
-                          />
-                          {shouldRenderComments && (
-                            <TaskComments
-                              isOpen={isFullView}
-                              comments={matchedComments}
-                              highlightedValue={highlightedValue}
-                              showSubtaskStylingLink={!draggedId}
+                    return (
+                      <Draggable
+                        key={subtask.taskIdentifier}
+                        draggableId={String(subtask.taskIdentifier)}
+                        index={index}
+                        isDragDisabled={!isDraggable}
+                      >
+                        {(
+                          { innerRef, draggableProps, dragHandleProps },
+                          { isDragging: isDraggingSubtask },
+                        ) => (
+                          <SubtaskItemWrapper
+                            ref={innerRef}
+                            {...draggableProps}
+                          >
+                            <TaskItem
+                              dragHandleProps={dragHandleProps}
+                              key={subtask.taskIdentifier}
+                              task={{ ...subtask, taskList }}
+                              isDragging={isDraggingSubtask}
+                              currentUser={currentUser}
+                              reassignTask={reassignTask}
+                              parentHasPatient={parentHasPatient}
+                              isDraggable={isDraggable && subtasks?.length > 1}
                               isLast={isLast}
-                              onClickComment={() => {
-                                openDrawer();
-                                storeAsCurrentTask(subtask);
-                              }}
+                              showSubtaskStylingLink={!draggedId}
+                              isNestedTask
+                              subTasksCount={subTasksCount}
+                              {...restProps}
                             />
-                          )}
-                        </SubtaskItemWrapper>
-                      )}
-                    </Draggable>
-                  );
-                })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                            {shouldRenderComments && (
+                              <TaskComments
+                                isOpen={isFullView}
+                                comments={matchedComments}
+                                highlightedValue={highlightedValue}
+                                showSubtaskStylingLink={!draggedId}
+                                isLast={isLast}
+                                onClickComment={() => {
+                                  openDrawer();
+                                  storeAsCurrentTask(subtask);
+                                }}
+                              />
+                            )}
+                          </SubtaskItemWrapper>
+                        )}
+                      </Draggable>
+                    );
+                  })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      ) : (
+        <SubtasksSkeletonLoader rows={subTasksCount} />
+      )}
     </SubtasksContainer>
   );
 };
