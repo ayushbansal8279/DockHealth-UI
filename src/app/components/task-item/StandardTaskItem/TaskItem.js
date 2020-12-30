@@ -83,6 +83,7 @@ import {
   DescriptionWrapper,
   AddSubtaskButton,
 } from '../styled';
+import TaskItemContextMenu from '../SlimTaskItem/TaskItemContextMenu/TaskItemContextMenu';
 
 const TaskItem = ({
   isOpen,
@@ -154,6 +155,7 @@ const TaskItem = ({
       mentions: taskMentions,
     }),
   );
+  const [contextMenu, setContextMenu] = useState(null);
   const [
     isDescriptionTooltipVisible,
     setIsDescriptionTooltipVisible,
@@ -182,6 +184,11 @@ const TaskItem = ({
     }, 1000),
     [],
   );
+
+  const handleTaskItemRightClick = useCallback(event => {
+    event.preventDefault();
+    setContextMenu({ x: event.pageX, y: event.pageY });
+  }, []);
 
   useEffect(() => {
     if (descriptionReference.current) {
@@ -335,344 +342,356 @@ const TaskItem = ({
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
   return (
-    <StandardTaskItemPanel
-      isDragging={isDragging}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      <StandardTaskItemContainer
-        isSelected={isSelectedTask}
-        height={hasParentTaskLabel || isCompletedGroup ? 50 : 35}
+    <>
+      <StandardTaskItemPanel
+        onContextMenu={handleTaskItemRightClick}
+        isDragging={isDragging}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
-        {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-        {showDraggableDots && (
-          <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
-        )}
-        <PrioritySwitch onClick={onPrioritySwtich}>
-          {showPriority ? (
-            <img src={HighPriorityLabel} alt="Priority icon" />
-          ) : (
-            <PriorityHoverIcon
-              className="low"
-              src={LowPriorityHoverLabel}
-              alt="No priority"
-            />
-          )}
-        </PrioritySwitch>
-        <MainStandardTaskItemCell
-          bolded
-          paddingLeft="huge"
-          paddingRight="small"
-          onClick={onClickTaskItem}
-          position="static"
+        <StandardTaskItemContainer
+          isSelected={isSelectedTask}
+          height={hasParentTaskLabel || isCompletedGroup ? 50 : 35}
         >
-          <CircleIcon
-            src={isCompleted ? CircleCompleted : Circle}
-            isClickable={isTaskStatusTogglingEnabled}
-            isCompleted={isCompleted}
-            onClick={onCircleClick}
-          />
-          <DescriptionBox>
-            <DescriptionWrapper>
-              <Description
-                ref={descriptionReference}
-                isCrossedOut={!isCompletedGroup && isCompleted}
-              >
-                <MentionsEditor
-                  readOnly
-                  oneline
-                  state={descriptionState}
-                  onChange={setDescriptionState}
-                  highlightedValues={
-                    matchDescription &&
-                    highlightedValue?.toLowerCase().split(/\s+/)
-                  }
-                />
-                {isDescriptionTooltipVisible && (
-                  <DescriptionTooltip>{description}</DescriptionTooltip>
+          {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
+          {showDraggableDots && (
+            <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+          )}
+          <PrioritySwitch onClick={onPrioritySwtich}>
+            {showPriority ? (
+              <img src={HighPriorityLabel} alt="Priority icon" />
+            ) : (
+              <PriorityHoverIcon
+                className="low"
+                src={LowPriorityHoverLabel}
+                alt="No priority"
+              />
+            )}
+          </PrioritySwitch>
+          <MainStandardTaskItemCell
+            bolded
+            paddingLeft="huge"
+            paddingRight="small"
+            onClick={onClickTaskItem}
+            position="static"
+          >
+            <CircleIcon
+              src={isCompleted ? CircleCompleted : Circle}
+              isClickable={isTaskStatusTogglingEnabled}
+              isCompleted={isCompleted}
+              onClick={onCircleClick}
+            />
+            <DescriptionBox>
+              <DescriptionWrapper>
+                <Description
+                  ref={descriptionReference}
+                  isCrossedOut={!isCompletedGroup && isCompleted}
+                >
+                  <MentionsEditor
+                    readOnly
+                    oneline
+                    state={descriptionState}
+                    onChange={setDescriptionState}
+                    highlightedValues={
+                      matchDescription &&
+                      highlightedValue?.toLowerCase().split(/\s+/)
+                    }
+                  />
+                  {isDescriptionTooltipVisible && (
+                    <DescriptionTooltip>{description}</DescriptionTooltip>
+                  )}
+                </Description>
+                {edited && !duplicated && (
+                  <DescriptionLabel>(edited)</DescriptionLabel>
                 )}
-              </Description>
-              {edited && !duplicated && (
-                <DescriptionLabel>(edited)</DescriptionLabel>
+                {duplicated && (
+                  <DescriptionLabel>(duplicated)</DescriptionLabel>
+                )}
+              </DescriptionWrapper>
+              {hasParentTaskLabel && (
+                <>
+                  <TaskItemParentTaskLabel>
+                    Subtask of
+                    <span
+                      onClick={onParentLabelClick}
+                    >{` ${parentTask.description}`}</span>
+                  </TaskItemParentTaskLabel>
+                  {isCompleted && <Spacing vertical={2} />}
+                </>
               )}
-              {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
-            </DescriptionWrapper>
-            {hasParentTaskLabel && (
-              <>
-                <TaskItemParentTaskLabel>
-                  Subtask of
-                  <span
-                    onClick={onParentLabelClick}
-                  >{` ${parentTask.description}`}</span>
-                </TaskItemParentTaskLabel>
-                {isCompleted && <Spacing vertical={2} />}
-              </>
-            )}
-            {isCompletedGroup && (
-              <CompletedBy isCompleted={isCompleted}>
-                <span>{`Completed by ${completedByName} ${completedDt &&
-                  ` on ${
-                    completedDt
-                      ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                      : ''
-                  }`}
+              {isCompletedGroup && (
+                <CompletedBy isCompleted={isCompleted}>
+                  <span>{`Completed by ${completedByName} ${completedDt &&
+                    ` on ${
+                      completedDt
+                        ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                        : ''
+                    }`}
                 `}</span>
-              </CompletedBy>
-            )}
-          </DescriptionBox>
-        </MainStandardTaskItemCell>
-        {!hideSubtasks && (
+                </CompletedBy>
+              )}
+            </DescriptionBox>
+          </MainStandardTaskItemCell>
+          {!hideSubtasks && (
+            <StandardTaskItemCell
+              width="60px"
+              justify="center"
+              paddingLeft="tiny"
+              paddingRight="tiny"
+            >
+              {!isSubtask && (
+                <>
+                  {subTasksCount > 0 ? (
+                    <SubtasksCellContent onClick={onSubtaskLabelClick}>
+                      <SubtasksCellText isOpen={isOpen}>
+                        {subTasksCount}
+                      </SubtasksCellText>
+                      <SubtasksImg
+                        src={isOpen ? SubtasksIconActive : SubtasksIcon}
+                        alt="Subtasks"
+                      />
+                    </SubtasksCellContent>
+                  ) : (
+                    <>
+                      {isHovered && !quickAddSubtaskOpen && (
+                        <AddSubtaskButton type="button" onClick={onSubtaskAdd}>
+                          <AddPlaceholder>+ Add</AddPlaceholder>
+                        </AddSubtaskButton>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </StandardTaskItemCell>
+          )}
+          {patientVisible && (
+            <StandardTaskItemCell width="164px">
+              <ClickablePatient onClick={onPatientClick}>
+                {task.status !== 'COMPLETE' && !isSubtask && !patient && (
+                  <AddPlaceholder>+ Add Patient</AddPlaceholder>
+                )}
+                {patient && !parentHasPatient && (
+                  <PatientCard patientIdentifier={patient.patientIdentifier}>
+                    <ListItemLink
+                      to={`/core/patient/${patient.patientIdentifier}`}
+                    >
+                      {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                        <Highlighter
+                          highlightClassName="list-highlight"
+                          searchWords={
+                            matchPatient
+                              ? highlightedValue?.toLowerCase().split(/\s+/)
+                              : `${patientName}`.toLowerCase().split(/\s+/)
+                          }
+                          autoEscape
+                          textToHighlight={`${patient.patientName}`}
+                        />
+                      ) : (
+                        `${patientName}`
+                      )}
+                    </ListItemLink>
+                  </PatientCard>
+                )}
+              </ClickablePatient>
+            </StandardTaskItemCell>
+          )}
+          <StandardTaskItemCell
+            width="120px"
+            paddingLeft="smallPlus"
+            paddingRight="tiny"
+          >
+            <TaskWorkflowStatus
+              task={task}
+              isCompletedGroup={isCompletedGroup}
+              updateWorkflowStatus={updateWorkflowStatus}
+            >
+              {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
+              {task.status !== 'COMPLETE' && workflowStatus && (
+                <TaskItemStatus
+                  workflowStatus={workflowStatus}
+                  isMatching={matchWorkflowStatus}
+                  highlightedValue={highlightedValue}
+                  labelWidth="100px"
+                />
+              )}
+              {task.status !== 'COMPLETE' && !workflowStatus && (
+                <AddPlaceholder>+ Add Status</AddPlaceholder>
+              )}
+            </TaskWorkflowStatus>
+          </StandardTaskItemCell>
+          <StandardTaskItemCell width="150px">
+            <Grid container>
+              <GridImg item xs={4} matched={matchComments}>
+                <UniversalTooltipContainer
+                  placement="top"
+                  label={
+                    getItemIconVersion(comments) === REGULAR
+                      ? `${comments?.length} comment${
+                          comments.length > 1 ? 's' : ''
+                        }`
+                      : 'Add a new comment'
+                  }
+                >
+                  <ClickableStandardTaskItemIcon onClick={onCommentClick}>
+                    <CommentIcon
+                      alt="comments"
+                      src={getItemIcon(
+                        COMMENTS,
+                        comments,
+                        isHovered,
+                        task.updatedComment,
+                      )}
+                    />
+                  </ClickableStandardTaskItemIcon>
+                </UniversalTooltipContainer>
+              </GridImg>
+              <GridImg item xs={4} matched={matchLabels}>
+                <UniversalTooltipContainer
+                  placement="top"
+                  label={
+                    getItemIconVersion(labels) === REGULAR
+                      ? getToolTipMultiLabelDetails(labels)
+                      : 'Add label'
+                  }
+                >
+                  <ClickableStandardTaskItemIcon onClick={onLabelClick}>
+                    <LabelIcon
+                      alt="labels"
+                      src={getItemIcon(
+                        LABELS,
+                        labels,
+                        isHovered,
+                        task.updatedLabel,
+                      )}
+                    />
+                  </ClickableStandardTaskItemIcon>
+                </UniversalTooltipContainer>
+              </GridImg>
+              <GridImg item xs={4} matched={matchAttachments}>
+                <UniversalTooltipContainer
+                  placement="top"
+                  label={
+                    getItemIconVersion(attachments) === REGULAR
+                      ? getToolTipAttachmentsLabelDetails(attachments)
+                      : 'Add file'
+                  }
+                >
+                  <ClickableStandardTaskItemIcon onClick={onAttachmentsClick}>
+                    <AttachmentIcon
+                      alt="attachments"
+                      src={getItemIcon(
+                        ATTACHMENTS,
+                        attachments,
+                        isHovered,
+                        task.updatedAttachment,
+                      )}
+                    />
+                  </ClickableStandardTaskItemIcon>
+                </UniversalTooltipContainer>
+              </GridImg>
+            </Grid>
+          </StandardTaskItemCell>
+          <StandardTaskItemCell
+            paddingLeft="tiny"
+            paddingRight="tiny"
+            width="60px"
+            justify="center"
+          >
+            <PopoverDatepicker
+              selectedDate={dueDate}
+              onDateChange={date => {
+                const existingTime = dueDate
+                  ? moment(dueDate).format('HH:mm')
+                  : '';
+                updateDueDate(task, moment(`${date} ${existingTime}`), true);
+              }}
+              quickSelectOptions={dueDateQuickSelectOptions}
+            >
+              {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+                <DueDateButton
+                  type="button"
+                  onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                  ref={elementReference}
+                >
+                  <UniversalTooltipContainer
+                    placement="top"
+                    label={
+                      getItemIconVersion(dueDate) === REGULAR
+                        ? 'Edit due date'
+                        : 'Add due date'
+                    }
+                  >
+                    {dueDate ? (
+                      <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                        {moment(dueDate).format('MM/DD')}
+                      </DueDateBasicLabel>
+                    ) : (
+                      <CalendarIcon
+                        src={
+                          isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon
+                        }
+                        alt="Due date"
+                      />
+                    )}
+                  </UniversalTooltipContainer>
+                </DueDateButton>
+              )}
+            </PopoverDatepicker>
+          </StandardTaskItemCell>
           <StandardTaskItemCell
             width="60px"
             justify="center"
             paddingLeft="tiny"
             paddingRight="tiny"
           >
-            {!isSubtask && (
-              <>
-                {subTasksCount > 0 ? (
-                  <SubtasksCellContent onClick={onSubtaskLabelClick}>
-                    <SubtasksCellText isOpen={isOpen}>
-                      {subTasksCount}
-                    </SubtasksCellText>
-                    <SubtasksImg
-                      src={isOpen ? SubtasksIconActive : SubtasksIcon}
-                      alt="Subtasks"
-                    />
-                  </SubtasksCellContent>
-                ) : (
-                  <>
-                    {isHovered && !quickAddSubtaskOpen && (
-                      <AddSubtaskButton type="button" onClick={onSubtaskAdd}>
-                        <AddPlaceholder>+ Add</AddPlaceholder>
-                      </AddSubtaskButton>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </StandardTaskItemCell>
-        )}
-        {patientVisible && (
-          <StandardTaskItemCell width="164px">
-            <ClickablePatient onClick={onPatientClick}>
-              {task.status !== 'COMPLETE' && !isSubtask && !patient && (
-                <AddPlaceholder>+ Add Patient</AddPlaceholder>
-              )}
-              {patient && !parentHasPatient && (
-                <PatientCard patientIdentifier={patient.patientIdentifier}>
-                  <ListItemLink
-                    to={`/core/patient/${patient.patientIdentifier}`}
-                  >
-                    {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                      <Highlighter
-                        highlightClassName="list-highlight"
-                        searchWords={
-                          matchPatient
-                            ? highlightedValue?.toLowerCase().split(/\s+/)
-                            : `${patientName}`.toLowerCase().split(/\s+/)
-                        }
-                        autoEscape
-                        textToHighlight={`${patient.patientName}`}
-                      />
-                    ) : (
-                      `${patientName}`
-                    )}
-                  </ListItemLink>
-                </PatientCard>
-              )}
-            </ClickablePatient>
-          </StandardTaskItemCell>
-        )}
-        <StandardTaskItemCell
-          width="120px"
-          paddingLeft="smallPlus"
-          paddingRight="tiny"
-        >
-          <TaskWorkflowStatus
-            task={task}
-            isCompletedGroup={isCompletedGroup}
-            updateWorkflowStatus={updateWorkflowStatus}
-          >
-            {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
-            {task.status !== 'COMPLETE' && workflowStatus && (
-              <TaskItemStatus
-                workflowStatus={workflowStatus}
-                isMatching={matchWorkflowStatus}
-                highlightedValue={highlightedValue}
-                labelWidth="100px"
-              />
-            )}
-            {task.status !== 'COMPLETE' && !workflowStatus && (
-              <AddPlaceholder>+ Add Status</AddPlaceholder>
-            )}
-          </TaskWorkflowStatus>
-        </StandardTaskItemCell>
-        <StandardTaskItemCell width="150px">
-          <Grid container>
-            <GridImg item xs={4} matched={matchComments}>
-              <UniversalTooltipContainer
-                placement="top"
-                label={
-                  getItemIconVersion(comments) === REGULAR
-                    ? `${comments?.length} comment${
-                        comments.length > 1 ? 's' : ''
-                      }`
-                    : 'Add a new comment'
-                }
-              >
-                <ClickableStandardTaskItemIcon onClick={onCommentClick}>
-                  <CommentIcon
-                    alt="comments"
-                    src={getItemIcon(
-                      COMMENTS,
-                      comments,
-                      isHovered,
-                      task.updatedComment,
-                    )}
-                  />
-                </ClickableStandardTaskItemIcon>
-              </UniversalTooltipContainer>
-            </GridImg>
-            <GridImg item xs={4} matched={matchLabels}>
-              <UniversalTooltipContainer
-                placement="top"
-                label={
-                  getItemIconVersion(labels) === REGULAR
-                    ? getToolTipMultiLabelDetails(labels)
-                    : 'Add label'
-                }
-              >
-                <ClickableStandardTaskItemIcon onClick={onLabelClick}>
-                  <LabelIcon
-                    alt="labels"
-                    src={getItemIcon(
-                      LABELS,
-                      labels,
-                      isHovered,
-                      task.updatedLabel,
-                    )}
-                  />
-                </ClickableStandardTaskItemIcon>
-              </UniversalTooltipContainer>
-            </GridImg>
-            <GridImg item xs={4} matched={matchAttachments}>
-              <UniversalTooltipContainer
-                placement="top"
-                label={
-                  getItemIconVersion(attachments) === REGULAR
-                    ? getToolTipAttachmentsLabelDetails(attachments)
-                    : 'Add file'
-                }
-              >
-                <ClickableStandardTaskItemIcon onClick={onAttachmentsClick}>
-                  <AttachmentIcon
-                    alt="attachments"
-                    src={getItemIcon(
-                      ATTACHMENTS,
-                      attachments,
-                      isHovered,
-                      task.updatedAttachment,
-                    )}
-                  />
-                </ClickableStandardTaskItemIcon>
-              </UniversalTooltipContainer>
-            </GridImg>
-          </Grid>
-        </StandardTaskItemCell>
-        <StandardTaskItemCell
-          paddingLeft="tiny"
-          paddingRight="tiny"
-          width="60px"
-          justify="center"
-        >
-          <PopoverDatepicker
-            selectedDate={dueDate}
-            onDateChange={date => {
-              const existingTime = dueDate
-                ? moment(dueDate).format('HH:mm')
-                : '';
-              updateDueDate(task, moment(`${date} ${existingTime}`), true);
-            }}
-            quickSelectOptions={dueDateQuickSelectOptions}
-          >
-            {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-              <DueDateButton
-                type="button"
-                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                ref={elementReference}
-              >
+            <TaskAssignMember
+              currentUser={currentUser}
+              reassignTask={reassignTask}
+              task={task}
+            >
+              {assignedTo ? (
                 <UniversalTooltipContainer
-                  placement="top"
-                  label={
-                    getItemIconVersion(dueDate) === REGULAR
-                      ? 'Edit due date'
-                      : 'Add due date'
-                  }
+                  placement="top-end"
+                  label={`Assigned to ${assignedTo.userName}`}
                 >
-                  {dueDate ? (
-                    <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
-                      {moment(dueDate).format('MM/DD')}
-                    </DueDateBasicLabel>
-                  ) : (
-                    <CalendarIcon
-                      src={
-                        isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon
-                      }
-                      alt="Due date"
-                    />
-                  )}
+                  <AssigneeMatchingWrapper matched={matchAssignedTo} />
+                  <Member member={assignedTo} size={30} showTooltip={false} />
                 </UniversalTooltipContainer>
-              </DueDateButton>
-            )}
-          </PopoverDatepicker>
-        </StandardTaskItemCell>
-        <StandardTaskItemCell
-          width="60px"
-          justify="center"
-          paddingLeft="tiny"
-          paddingRight="tiny"
-        >
-          <TaskAssignMember
-            currentUser={currentUser}
-            reassignTask={reassignTask}
-            task={task}
-          >
-            {assignedTo ? (
-              <UniversalTooltipContainer
-                placement="top-end"
-                label={`Assigned to ${assignedTo.userName}`}
-              >
-                <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                <Member member={assignedTo} size={30} showTooltip={false} />
-              </UniversalTooltipContainer>
-            ) : (
-              <UniversalTooltipContainer placement="top" label="Assign to">
-                <AddCrossIcon src={CrossIcon} size="28px" />
-              </UniversalTooltipContainer>
-            )}
-          </TaskAssignMember>
-        </StandardTaskItemCell>
-        {listNameVisible && (
-          <StandardTaskItemCell
-            color={listName ? palette.brightBlue : palette.coolGrey2}
-            width="168px"
-          >
-            {listName && taskListIdentifier ? (
-              <ListLink
-                to={`/core/tasks/${taskListIdentifier}${
-                  task.status === 'COMPLETE' ? '/complete' : ''
-                }`}
-              >
-                {listName}
-              </ListLink>
-            ) : (
-              'Unfiled'
-            )}
+              ) : (
+                <UniversalTooltipContainer placement="top" label="Assign to">
+                  <AddCrossIcon src={CrossIcon} size="28px" />
+                </UniversalTooltipContainer>
+              )}
+            </TaskAssignMember>
           </StandardTaskItemCell>
-        )}
-      </StandardTaskItemContainer>
-    </StandardTaskItemPanel>
+          {listNameVisible && (
+            <StandardTaskItemCell
+              color={listName ? palette.brightBlue : palette.coolGrey2}
+              width="168px"
+            >
+              {listName && taskListIdentifier ? (
+                <ListLink
+                  to={`/core/tasks/${taskListIdentifier}${
+                    task.status === 'COMPLETE' ? '/complete' : ''
+                  }`}
+                >
+                  {listName}
+                </ListLink>
+              ) : (
+                'Unfiled'
+              )}
+            </StandardTaskItemCell>
+          )}
+        </StandardTaskItemContainer>
+      </StandardTaskItemPanel>
+      {contextMenu && (
+        <TaskItemContextMenu
+          position={contextMenu}
+          isSubtask={isSubtask}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
+    </>
   );
 };
 

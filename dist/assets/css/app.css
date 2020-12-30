@@ -295,6 +295,12 @@ html [type='button'],
   /* 2 */
 }
 
+ul,
+li {
+  text-indent: 0;
+  list-style: none;
+}
+
 button,
 [type='button'],
 [type='reset'],
