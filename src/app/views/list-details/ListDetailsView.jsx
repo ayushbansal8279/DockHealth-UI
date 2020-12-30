@@ -680,7 +680,11 @@ class Home extends Component {
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
     );
-    if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+    if (
+      task.status === 'INCOMPLETE' &&
+      (hasIncompletedSubtasks ||
+        task.subTasksCount - task.subTasksCompletedCount > 0)
+    ) {
       const modalProps = {
         confirm: () => {
           modalActions.closeModal();
