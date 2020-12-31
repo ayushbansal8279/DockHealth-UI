@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
@@ -22,14 +23,11 @@ const ResetPassword = props => {
 
   const onSubmit = useCallback(
     form => {
-      let {
-        location: {
-          query: { uname, code },
-        },
-      } = props;
-
-      code = code ?? form.code;
-      uname = uname ?? window.sessionStorage.getItem('username');
+      const { location } = props;
+      const queryValues = queryString.parse(location.search);
+      const code = queryValues.code ?? form.code;
+      const uname =
+        queryValues.uname ?? window.sessionStorage.getItem('username');
 
       return userApi
         .resetPassword({
@@ -60,13 +58,10 @@ const ResetPassword = props => {
     [history, props],
   );
 
-  const {
-    location: {
-      query: { code, uname },
-    },
-  } = props;
+  const { location } = props;
+  const queryValues = queryString.parse(location.search);
 
-  const authTokenReceived = Boolean(code && uname);
+  const authTokenReceived = Boolean(queryValues.code && queryValues.uname);
 
   return (
     <ResetPasswordForm
