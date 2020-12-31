@@ -1,0 +1,143 @@
+import styled from 'styled-components';
+import spacing from 'styles/spacing';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import palette from 'styles/palette';
+import { fontSizes } from 'styles/font';
+
+export const StepsContainer = styled.div`
+  display: flex;
+  height: 100%;
+  widht: auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  transform: translateX(-${({ stepIndex }) => stepIndex * 384 || 0}px);
+  transition: transform 0.3s ease-out;
+`;
+
+export const Step = styled.div`
+  height: 100%;
+  flex: 384px 0 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Container = styled.div`
+  height: 384px;
+  width: 384px;
+  overflow: hidden;
+`;
+
+export const QuickAddInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  font-size: ${fontSizes.smallPlus};
+
+  &:before {
+    position: absolute;
+    top: 50%;
+    left: ${spacing.regularPlus};
+    display: block;
+    content: '+';
+    transform: translateY(-50%);
+    color: ${palette.orange};
+    font-size: ${fontSizes.regular};
+  }
+
+  ${({ isFocused }) =>
+    isFocused &&
+    `
+      &:before {
+        opacity: 0;
+      }
+    `}
+`;
+
+export const QuickAddInput = styled.input`
+  height: auto;
+  padding: ${spacing.smallPlus} ${spacing.huge};
+  margin-bottom: 0;
+  border-color: ${palette.coolGrey2};
+  border-top: none;
+  font-size: ${fontSizes.regular};
+  box-shadow: none;
+
+  &:disabled {
+    background-color: transparent;
+  }
+
+  &:focus {
+    border-top: none;
+    border-color: ${palette.coolGrey2};
+    box-shadow: none;
+  }
+`;
+
+export const Title = styled.h2`
+  margin-bottom: ${spacing.small};
+  font-size: ${fontSizes.regularPlus};
+  text-transform: uppercase;
+  color: ${palette.brightBlue};
+  font-family: Roboto Condensed;
+  text-align: left;
+`;
+
+export const Description = styled.p`
+  margin-bottom: 0;
+  color: ${palette.darkGrey};
+  font-size: ${fontSizes.regular};
+  text-align: center;
+`;
+
+export const ListsWrapper = styled.div`
+  flex: 1;
+  width: 100%;
+  border: 1px solid ${palette.coolGrey2};
+  overflow: auto;
+`;
+
+export const ListItemText = styled.p`
+  margin: 0;
+  font-size: ${fontSizes.regular};
+  text-align: left;
+`;
+
+export const NextArrow = styled(ChevronRightIcon)`
+  color: ${palette.lightGrey};
+`;
+
+export const ListItem = styled.button`
+  display: block;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+  cursor: ${({ isSelected }) => (isSelected ? 'initial' : 'pointer')};
+  appearance: none;
+  border-radius: 0;
+  outline: none;
+  background-color: ${({ isSelected }) =>
+    isSelected ? palette.darkBlue : 'transparent'};
+
+  &:hover {
+    background-color: ${({ isSelected }) =>
+      isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
+  }
+
+  & ${ListItemText} {
+    color: ${({ isSelected }) =>
+      isSelected ? palette.white : palette.darkGrey};
+  }
+
+  & ${NextArrow} {
+    color: ${({ isSelected }) =>
+      isSelected ? palette.white : palette.lightGrey};
+  }
+`;
+
+export const EmptyMessage = styled.p`
+  color: ${palette.coolGrey2};
+  margin-top: ${spacing.huge};
+  text-align: center;
+`;

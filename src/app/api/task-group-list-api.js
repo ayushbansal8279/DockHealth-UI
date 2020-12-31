@@ -50,3 +50,12 @@ export const sortGroups = payload =>
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
     });
+
+export function getGroupsForTaskList(taskListIdentifier) {
+  return axios
+    .get(`/task/group/getGroupsForTaskList/${taskListIdentifier}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}

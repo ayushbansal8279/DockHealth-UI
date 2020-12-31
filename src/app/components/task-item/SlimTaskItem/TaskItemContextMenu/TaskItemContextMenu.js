@@ -102,7 +102,7 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
     };
   }, []);
 
-  const handleDuplicateTask = () => {
+  const handleDuplicateTask = useCallback(() => {
     if (task.attachments?.length > 0) {
       const modalProps = {
         confirm: () => dispatch(duplicateTask(task, true)),
@@ -112,7 +112,11 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
     } else {
       dispatch(duplicateTask(task));
     }
-  };
+  }, []);
+
+  const handleMoveTask = useCallback(() => {
+    dispatch(openModal('SelectTaskDestination', { task }));
+  }, []);
 
   return (
     <Backdrop
@@ -130,7 +134,7 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
       >
         {!isSubtask && (
           <li>
-            <MenuItemButtom tabindex="0" type="button" onClick={() => {}}>
+            <MenuItemButtom tabindex="0" type="button" onClick={handleMoveTask}>
               Move to list
             </MenuItemButtom>
           </li>
