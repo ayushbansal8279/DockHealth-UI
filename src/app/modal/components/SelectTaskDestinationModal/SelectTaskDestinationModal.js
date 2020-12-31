@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, IconButton } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useDispatch, useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -13,6 +14,7 @@ import Button from 'components/common/Button/Button';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import {
   Container,
+  TitleWithButtonWrapper,
   Title,
   ListItem,
   EmptyMessage,
@@ -132,7 +134,9 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
                         }
                       >
                         <ListItemText>{list.listName}</ListItemText>
-                        {list.listType !== 'INBOX' && <NextArrow />}
+                        <IconButton onClick={() => setStepIndex(1)}>
+                          <NextArrow />
+                        </IconButton>
                       </ListItem>
                     ))
                   ) : (
@@ -159,7 +163,18 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
           <Step>
             {selectedList && (
               <>
-                <Title>{selectedList.listName}</Title>
+                <TitleWithButtonWrapper>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStepIndex(0);
+                      setSelectedList(null);
+                    }}
+                  >
+                    <ArrowBackIcon />
+                  </button>
+                  <Title>{selectedList.listName}</Title>
+                </TitleWithButtonWrapper>
                 <Box m={1} />
               </>
             )}

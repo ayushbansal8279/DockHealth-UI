@@ -72,8 +72,23 @@ export const QuickAddInput = styled.input`
   }
 `;
 
+export const TitleWithButtonWrapper = styled.div`
+  position: relative;
+  padding-left: 36px;
+  overflow: visible;
+
+  & > button {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: ${palette.brightBlue};
+    cursor: pointer;
+  }
+`;
+
 export const Title = styled.h2`
-  margin-bottom: ${spacing.small};
+  margin: 0;
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   color: ${palette.brightBlue};
