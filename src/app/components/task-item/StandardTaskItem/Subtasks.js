@@ -115,19 +115,20 @@ const Subtasks = ({
                               subTasksCount={subTasksCount}
                               {...restProps}
                             />
-                            {shouldRenderComments && (
-                              <TaskComments
-                                isOpen={isFullView}
-                                comments={matchedComments}
-                                highlightedValue={highlightedValue}
-                                showSubtaskStylingLink={!draggedId}
-                                isLast={isLast}
-                                onClickComment={() => {
-                                  openDrawer();
-                                  storeAsCurrentTask(subtask);
-                                }}
-                              />
-                            )}
+                            {shouldRenderComments &&
+                              (subtasks?.length > 0 || subTasksCount === 0) && (
+                                <TaskComments
+                                  isOpen={isFullView}
+                                  comments={matchedComments}
+                                  highlightedValue={highlightedValue}
+                                  showSubtaskStylingLink={!draggedId}
+                                  isLast={isLast}
+                                  onClickComment={() => {
+                                    openDrawer();
+                                    storeAsCurrentTask(subtask);
+                                  }}
+                                />
+                              )}
                           </SubtaskItemWrapper>
                         )}
                       </Draggable>
