@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import React, { useState } from 'react';
+import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { success } from 'actions/notification-actions';
@@ -42,9 +43,9 @@ const ConfirmRegistration = props => {
 
   // eslint-disable-next-line consistent-return
   useMount(() => {
-    const { match } = props;
-    const { params } = match;
-    const { uname, code } = params;
+    const { location } = props;
+    const queryValues = queryString.parse(location.search);
+    const { uname, code } = queryValues;
 
     if (uname && code) {
       setUserEmail(uname);

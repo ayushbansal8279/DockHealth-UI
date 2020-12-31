@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid } from '@material-ui/core';
-import { parse } from 'query-string';
+import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -154,13 +154,13 @@ const CreateAccount = props => {
   const email = formMethods.watch('email');
   const { setValue } = formMethods;
 
-  const locationParameters = parse(history?.location?.search);
+  const locationParameters = queryString.parse(history?.location?.search);
   const hasTrialReferral = Boolean(locationParameters.trial);
 
   useMount(() => {
-    const { match } = props;
-    const { params } = match;
-    const { uname } = params;
+    const { location } = props;
+    const queryValues = queryString.parse(location.search);
+    const { uname } = queryValues;
 
     if (uname) {
       setValue('email', uname);

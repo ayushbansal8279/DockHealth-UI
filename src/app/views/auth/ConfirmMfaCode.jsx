@@ -24,7 +24,7 @@ const ConfirmMFACode = props => {
     const { location } = props;
     const queryValues = queryString.parse(location.search);
     if (queryValues.uname !== undefined) {
-      setUsername(queryValues.uname.uname);
+      setUsername(queryValues.uname);
     }
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.REGAIN_CONTROL,

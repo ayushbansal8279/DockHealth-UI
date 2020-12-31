@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
+import queryString from 'query-string';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import LoginFormUsername from 'components/auth/LoginFormUsername';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
@@ -42,12 +43,12 @@ const LoginUser = props => {
 
   useMount(() => {
     setConfirmationBaseState();
-    const { match } = props;
-    const { params } = match;
-    const { uname } = params;
+    const { location } = props;
+    const queryValues = queryString.parse(location.search);
+    const { uname } = queryValues;
 
     if (uname !== undefined) {
-      onSubmit({ username: uname });
+      onSubmit({ username: uname }, history);
     }
   });
 
