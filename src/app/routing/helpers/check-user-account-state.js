@@ -21,7 +21,6 @@ const checkUserAccountState = async ({
   user,
   history,
   dispatch,
-  checkTrialExpiration,
   isRequiredSubscription,
 }) => {
   try {
@@ -74,7 +73,6 @@ const checkUserAccountState = async ({
     }
 
     if (
-      checkTrialExpiration &&
       orgData?.subscriptionDetails?.trialEnded &&
       pathname !== SUBS_SETTINGS_PATH &&
       isRequiredSubscription

@@ -5,6 +5,7 @@ import { Switch, useRouteMatch, useHistory, Redirect } from 'react-router-dom';
 import LoaderOverlay from 'components/common/Loader/LoaderOverlay';
 import Drawer from 'components/drawer/Drawer';
 import checkUserAuthentication from 'routing/helpers/check-user-authentication';
+import checkUserAccountState from 'routing/helpers/check-user-account-state';
 import { RouteWrapper } from 'routing/components';
 
 const TemplateCoreSubscriptionPlan = ({
@@ -22,15 +23,23 @@ const TemplateCoreSubscriptionPlan = ({
   useEffect(() => {
     (async function() {
       setIsLoading(true);
-      const redirect = await checkUserAuthentication({
+      // eslint-disable-next-line prefer-const
+      let { redirectPath, user } = await checkUserAuthentication({
         history,
         dispatch,
         isRequiredLogin: true,
-        isRequiredSubscription: true,
       });
+      if (!redirectPath) {
+        redirectPath = await checkUserAccountState({
+          user,
+          history,
+          dispatch,
+          isRequiredSubscription: true,
+        });
+      }
 
-      if (redirect) {
-        setRedirection(redirect);
+      if (redirectPath) {
+        setRedirection(redirectPath);
       } else if (onEnter) {
         await onEnter({ dispatch });
       }

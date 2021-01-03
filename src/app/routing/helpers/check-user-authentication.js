@@ -11,7 +11,6 @@ import {
   showAlert,
 } from 'helpers/utility-functions';
 import { CREATE_ACCOUNT_PATH, DEFAULT_REDIRECT_PATH } from './paths';
-import checkUserAccountState from './check-user-account-state';
 
 const getBrowserInfo = () => {
   const ua = navigator.userAgent;
@@ -41,13 +40,7 @@ const getBrowserInfo = () => {
   };
 };
 
-const checkUserAuthentication = async ({
-  dispatch,
-  history,
-  isRequiredLogin,
-  isRequiredSubscription,
-  checkTrialExpiration,
-}) => {
+const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
   try {
     const { location } = history;
     const { pathname, search } = location;
@@ -59,7 +52,7 @@ const checkUserAuthentication = async ({
 
       await getEnterpriseAccessTokensByAuthCode(authCode)
         .then(() => {
-          return '/core/tasks';
+          return { redirectPath: '/core/tasks', user: null };
         })
         .catch(error => {
           showAlert({ status: 'error', title: 'Error', text: error.message });
@@ -69,12 +62,12 @@ const checkUserAuthentication = async ({
     const { isLoggedIn, user } = await isAuthenticated();
 
     if (!isLoggedIn && pathname === CREATE_ACCOUNT_PATH) {
-      return null;
+      return { redirectPath: null, user };
     }
 
     if ((!isLoggedIn || !user) && isRequiredLogin) {
       await setCurrentPageInSessionStorage(pathname);
-      return DEFAULT_REDIRECT_PATH;
+      return { redirectPath: DEFAULT_REDIRECT_PATH, user };
     }
 
     if (isLoggedIn && isRequiredLogin) {
@@ -85,16 +78,10 @@ const checkUserAuthentication = async ({
       });
 
       await updateStoreWithCurrentUser(user);
-      return await checkUserAccountState({
-        history,
-        user,
-        checkTrialExpiration,
-        isRequiredSubscription,
-        dispatch,
-      });
+      return { redirectPath: null, user };
     }
 
-    return null;
+    return { redirectPath: null, user };
   } catch (error) {
     history.push(DEFAULT_REDIRECT_PATH);
   }
