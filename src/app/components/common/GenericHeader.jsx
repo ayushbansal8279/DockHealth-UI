@@ -57,7 +57,7 @@ const GenericHeader = ({
         </Grid>
         <AlertsLogoContainer>
           <ActivityAlerts variant="white" />
-          <Link to="/">
+          <Link to="/core/home/my-tasks">
             <DockHeaderImage />
           </Link>
         </AlertsLogoContainer>

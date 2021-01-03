@@ -26,14 +26,14 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
     // eslint-disable-next-line func-names
     (async function() {
       setIsLoading(true);
-      const redirect = await checkUserAuthentication({
+      const { redirectPath } = await checkUserAuthentication({
         history,
         dispatch,
         isRequiredLogin: true,
       });
 
-      if (redirect) {
-        setRedirection(redirect);
+      if (redirectPath) {
+        setRedirection(redirectPath);
       }
 
       setIsLoading(false);
@@ -47,7 +47,7 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
       {!isLoading && (
         <OnboardingBackground>
           <OnboardingNavbar>
-            <a href="/">
+            <a href="/#/core/home/my-tasks">
               <OnboardingLogo alt="Dock Health logo" src={DockHeaderLogo} />
             </a>
           </OnboardingNavbar>

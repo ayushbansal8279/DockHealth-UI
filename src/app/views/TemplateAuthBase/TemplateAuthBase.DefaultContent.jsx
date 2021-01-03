@@ -27,7 +27,7 @@ const TemplateAuthBaseDefaultContent = () => {
       alignItems="flex-start"
       direction="column"
     >
-      <a href="/#/">
+      <a href="/#/core/home/my-tasks">
         <DockLogoImage />
       </a>
       <Spacing vertical={5} />

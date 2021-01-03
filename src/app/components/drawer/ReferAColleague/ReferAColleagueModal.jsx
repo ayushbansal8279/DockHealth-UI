@@ -163,7 +163,7 @@ export default function ReferAColleagueModal({ ...props }) {
                   alignItems="left"
                   direction="column"
                 >
-                  <a href="/#/">
+                  <a href="/#/core/home/my-tasks">
                     <DockLogoImage />
                   </a>
                   <Spacing vertical={5} />
