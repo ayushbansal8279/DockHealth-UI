@@ -18,7 +18,7 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 
 export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
   const { params } = match;
-  const { patientIdentifier } = params;
+  const { patientIdentifier, tabName } = params;
 
   setHeader(dispatch)({
     layout: [
@@ -30,6 +30,16 @@ export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
   });
   await dispatch(initializePatient(patientIdentifier));
   await dispatch(getPatient());
+
+  if (tabName === TaskListTabName.COMPLETE) {
+    dispatch(setActiveTab(TaskListTabName.COMPLETE));
+  } else {
+    dispatch(setActiveTab(TaskListTabName.OPEN));
+  }
+  dispatch(fetchStatsForPatientTasks());
+  dispatch(initalizeSavedFilters());
+  dispatch(fetchPatientTasks());
+  dispatch(fetchPatientFilters());
 };
 
 export const onLeavePatientDetailsView = ({ dispatch }) => {
@@ -37,18 +47,10 @@ export const onLeavePatientDetailsView = ({ dispatch }) => {
   dispatch(clearPatientDetails());
 };
 
-export const onEnterPatientOpenTasksListView = ({ dispatch }) => {
-  dispatch(fetchStatsForPatientTasks());
-  dispatch(setActiveTab(TaskListTabName.OPEN));
-  dispatch(initalizeSavedFilters());
-  dispatch(fetchPatientTasks());
-  dispatch(fetchPatientFilters());
+export const onEnterPatientOpenTasksListView = () => {
+  // do nothing
 };
 
-export const onEnterPatientCompleteTasksListView = ({ dispatch }) => {
-  dispatch(fetchStatsForPatientTasks());
-  dispatch(setActiveTab(TaskListTabName.COMPLETE));
-  dispatch(initalizeSavedFilters());
-  dispatch(fetchPatientTasks());
-  dispatch(fetchPatientFilters());
+export const onEnterPatientCompleteTasksListView = () => {
+  // do nothing
 };
