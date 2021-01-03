@@ -119,7 +119,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: PatientsView,
   },
   {
-    path: '/patient/:patientIdentifier',
+    path: '/patient/:patientIdentifier/:tabName?',
     RouteComponent: PatientDetailsView,
     onEnter: onEnterPatientDetailsView,
     onLeave: onLeavePatientDetailsView,
