@@ -27,7 +27,7 @@ const TemplateAuthBaseRegainControlContent = () => {
       justify="center"
       alignItems="flex-start"
     >
-      <a href="/#/">
+      <a href="/#/core/home/my-tasks">
         <DockLogoImage />
       </a>
       <Spacing vertical={4} />
