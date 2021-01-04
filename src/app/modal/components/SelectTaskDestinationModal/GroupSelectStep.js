@@ -94,7 +94,7 @@ const GroupSelectStep = ({
                 {groups?.length > 0 ? (
                   groups.map(group => (
                     <ListItem
-                      key={group.groupIdentifier}
+                      key={group.taskGroupIdentifier}
                       isSelected={
                         selectedGroup?.taskGroupIdentifier ===
                         group.taskGroupIdentifier
