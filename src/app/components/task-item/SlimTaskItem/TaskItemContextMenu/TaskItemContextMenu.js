@@ -8,6 +8,7 @@ import {
   deleteTask,
   duplicateTask,
   openQuickAddSubtask,
+  moveTask,
 } from 'actions/task-actions';
 import { openModal } from 'modal/actions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
@@ -115,7 +116,16 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
   }, []);
 
   const handleMoveTask = useCallback(() => {
-    dispatch(openModal('SelectTaskDestination', { task }));
+    dispatch(
+      openModal('SelectTaskDestination', {
+        task,
+        confirm: ({ taskListIdentifier, taskGroupIdentifier }) => {
+          dispatch(
+            moveTask(task, { taskListIdentifier }, taskGroupIdentifier || null),
+          );
+        },
+      }),
+    );
   }, []);
 
   return (

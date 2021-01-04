@@ -439,13 +439,21 @@ export function saveTask(newTask, shouldReloadGroups = false) {
   };
 }
 
-export const moveTask = (task, taskList) => dispatch => {
+export const moveTask = (
+  task,
+  taskList,
+  taskGroupIdentifier = null,
+) => dispatch => {
   const updatedTask = {
     refiled: true,
     ...shapeTask(task),
     taskList,
     taskListIdentifier: taskList.taskListIdentifier,
   };
+
+  if (taskGroupIdentifier) {
+    updatedTask.taskGroupIdentifier = taskGroupIdentifier;
+  }
 
   return TaskApi.updateTask(updatedTask)
     .then(() => {

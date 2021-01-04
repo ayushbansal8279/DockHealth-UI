@@ -19,6 +19,7 @@ export const Step = styled.div`
   flex: 384px 0 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const Container = styled.div`
@@ -94,6 +95,9 @@ export const Title = styled.h2`
   color: ${palette.brightBlue};
   font-family: Roboto Condensed;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const Description = styled.p`
@@ -110,28 +114,29 @@ export const ListsWrapper = styled.div`
   overflow: auto;
 `;
 
-export const ListItemText = styled.p`
+export const ListItemTextButton = styled.button`
+  flex: 1;
   margin: 0;
+  padding: ${spacing.smallPlus} ${spacing.regularPlus};
   font-size: ${fontSizes.regular};
   text-align: left;
+  outline: none;
+  cursor: ${({ isSelected }) => (isSelected ? 'initial' : 'pointer')};
 `;
 
 export const NextArrow = styled(ChevronRightIcon)`
   color: ${palette.lightGrey};
 `;
 
-export const ListItem = styled.button`
+export const ListItem = styled.div`
   display: block;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: ${spacing.smallPlus} ${spacing.regularPlus};
-  cursor: ${({ isSelected }) => (isSelected ? 'initial' : 'pointer')};
   appearance: none;
   border-radius: 0;
-  outline: none;
   background-color: ${({ isSelected }) =>
     isSelected ? palette.darkBlue : 'transparent'};
 
@@ -140,7 +145,7 @@ export const ListItem = styled.button`
       isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
   }
 
-  & ${ListItemText} {
+  & ${ListItemTextButton} {
     color: ${({ isSelected }) =>
       isSelected ? palette.white : palette.darkGrey};
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Grid, IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,10 @@ import {
   addTaskList,
   getSharedTaskListsWithCurrentUser,
 } from 'api/tasklist-api';
-import { getGroupsForTaskList } from 'api/task-group-list-api';
+import {
+  getGroupsForTaskList,
+  createGroupAssignedToList,
+} from 'api/task-group-list-api';
 import Button from 'components/common/Button/Button';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import {
@@ -21,7 +24,7 @@ import {
   ListsWrapper,
   QuickAddInput,
   QuickAddInputWrapper,
-  ListItemText,
+  ListItemTextButton,
   NextArrow,
   StepsContainer,
   Step,
@@ -35,27 +38,30 @@ import {
 
 const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
   const addListReference = useRef(null);
+  const addGroupReference = useRef(null);
   const [selectedList, setSelectedList] = useState(null);
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [lists, setLists] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [isFetchingGroups, setIsFetchingGroups] = useState(true);
   const [groups, setGroups] = useState(null);
   const [isSavingList, setSavingList] = useState(false);
-  const [inputFocused, setInputFocused, unsetInputFocused] = useBoolean(false);
+  const [
+    listInputFocused,
+    setListInputFocused,
+    unsetListInputFocused,
+  ] = useBoolean(false);
+  const [
+    groupInputFocused,
+    setGroupInputFocused,
+    unsetGroupInputFocused,
+  ] = useBoolean(false);
 
   const [stepIndex, setStepIndex] = useState(0);
 
   const currentUser = useSelector(userProfileSelector);
 
   const dispatch = useDispatch();
-
-  // const handleListSelectSave = taskListIdentifier => {
-  //   if (isSavingList || !taskListIdentifier) {
-  //     return;
-  //   }
-  //   confirm(taskListIdentifier);
-  //   closeModal();
-  // };
 
   const handleAddNewList = listName => {
     if (isSavingList) return;
@@ -67,9 +73,29 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
     })
       .then(createdLists => {
         setSavingList(false);
-        // handleListSelectSave(taskListIdentifier);
         setLists(previousLists => setLists([...previousLists, createdLists]));
+        addListReference.current.value = '';
         dispatch(getTaskListForUser());
+      })
+      .catch(() => {
+        setSavingList(false);
+      });
+  };
+
+  const handleAddNewGroup = groupName => {
+    if (isSavingList || !selectedList) return;
+
+    setSavingList(true);
+    createGroupAssignedToList({
+      taskListIdentifier: selectedList?.taskListIdentifier,
+      groupName,
+    })
+      .then(createdGroup => {
+        setSavingList(false);
+        setGroups(previousGroups =>
+          setGroups([...previousGroups, createdGroup]),
+        );
+        addGroupReference.current.value = '';
       })
       .catch(() => {
         setSavingList(false);
@@ -109,6 +135,23 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
     }
   }, [selectedList]);
 
+  const handleConfirm = useCallback(() => {
+    if (!selectedList) return;
+
+    const responseData = {
+      taskListIdentifier: selectedList?.taskListIdentifier,
+    };
+    if (selectedGroup) {
+      responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+    }
+    if (typeof confirm === 'function') {
+      confirm(responseData);
+      closeModal();
+    } else {
+      console.warn('You have to provide confirm callback');
+    }
+  }, [confirm, selectedGroup, selectedList, closeModal]);
+
   return (
     <ModalWrapperWithPadding>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -126,15 +169,27 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
                     lists.map(list => (
                       <ListItem
                         key={list.taskListIdentifier}
-                        onClick={() => setSelectedList(list)}
-                        type="button"
                         isSelected={
                           selectedList?.taskListIdentifier ===
                           list.taskListIdentifier
                         }
                       >
-                        <ListItemText>{list.listName}</ListItemText>
-                        <IconButton onClick={() => setStepIndex(1)}>
+                        <ListItemTextButton
+                          onClick={() => setSelectedList(list)}
+                          type="button"
+                          isSelected={
+                            selectedList?.taskListIdentifier ===
+                            list.taskListIdentifier
+                          }
+                        >
+                          {list.listName}
+                        </ListItemTextButton>
+                        <IconButton
+                          onClick={() => {
+                            setSelectedList(list);
+                            setStepIndex(1);
+                          }}
+                        >
                           <NextArrow />
                         </IconButton>
                       </ListItem>
@@ -143,13 +198,13 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
                     <EmptyMessage>List is empty</EmptyMessage>
                   )}
                 </ListsWrapper>
-                <QuickAddInputWrapper isFocused={inputFocused}>
+                <QuickAddInputWrapper isFocused={listInputFocused}>
                   <QuickAddInput
                     ref={addListReference}
                     type="text"
                     placeholder="Add list"
-                    onFocus={setInputFocused}
-                    onBlur={unsetInputFocused}
+                    onFocus={setListInputFocused}
+                    onBlur={unsetListInputFocused}
                     disabled={isSavingList}
                     onKeyDown={event =>
                       event.key === 'Enter' &&
@@ -169,6 +224,7 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
                     onClick={() => {
                       setStepIndex(0);
                       setSelectedList(null);
+                      setSelectedGroup(null);
                     }}
                   >
                     <ArrowBackIcon />
@@ -176,6 +232,52 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
                   <Title>{selectedList.listName}</Title>
                 </TitleWithButtonWrapper>
                 <Box m={1} />
+                <ViewLoader isFetchingData={isFetchingGroups}>
+                  <>
+                    <ListsWrapper>
+                      {groups?.length > 0 ? (
+                        groups.map(group => (
+                          <ListItem
+                            key={group.groupIdentifier}
+                            isSelected={
+                              selectedGroup?.taskGroupIdentifier ===
+                              group.taskGroupIdentifier
+                            }
+                          >
+                            <ListItemTextButton
+                              onClick={() => setSelectedGroup(group)}
+                              type="button"
+                              isSelected={
+                                selectedGroup?.taskGroupIdentifier ===
+                                group.taskGroupIdentifier
+                              }
+                            >
+                              {group.groupName === 'DEFAULT'
+                                ? 'New tasks'
+                                : group.groupName}
+                            </ListItemTextButton>
+                          </ListItem>
+                        ))
+                      ) : (
+                        <EmptyMessage>List is empty</EmptyMessage>
+                      )}
+                    </ListsWrapper>
+                    <QuickAddInputWrapper isFocused={groupInputFocused}>
+                      <QuickAddInput
+                        ref={addGroupReference}
+                        type="text"
+                        placeholder="Add group"
+                        onFocus={setGroupInputFocused}
+                        onBlur={unsetGroupInputFocused}
+                        disabled={isSavingList}
+                        onKeyDown={event =>
+                          event.key === 'Enter' &&
+                          handleAddNewGroup(event.target.value)
+                        }
+                      />
+                    </QuickAddInputWrapper>
+                  </>
+                </ViewLoader>
               </>
             )}
           </Step>
@@ -195,7 +297,12 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
         </FlexButtonWrapper>
         <Box m={1} />
         <FlexButtonWrapper>
-          <Button fullWidth size="small" onClick={() => setStepIndex(1)}>
+          <Button
+            fullWidth
+            size="small"
+            disabled={!selectedList}
+            onClick={handleConfirm}
+          >
             Move
           </Button>
         </FlexButtonWrapper>
