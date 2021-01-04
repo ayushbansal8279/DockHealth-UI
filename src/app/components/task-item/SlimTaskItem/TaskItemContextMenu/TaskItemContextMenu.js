@@ -119,6 +119,7 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
     dispatch(
       openModal('SelectTaskDestination', {
         task,
+        confirmText: 'Move',
         confirm: ({ taskListIdentifier, taskGroupIdentifier }) => {
           dispatch(
             moveTask(task, { taskListIdentifier }, taskGroupIdentifier || null),

@@ -11,7 +11,12 @@ import {
 import ListSelectStep from './ListSelectStep';
 import GroupSelectStep from './GroupSelectStep';
 
-const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
+const SelectTaskDestinationModal = ({
+  closeModal,
+  confirm,
+  confirmText,
+  task,
+}) => {
   const [stepIndex, setStepIndex] = useState(0);
   const [selectedList, setSelectedList] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -84,7 +89,7 @@ const SelectTaskDestinationModal = ({ closeModal, confirm, task }) => {
             disabled={!selectedList}
             onClick={handleConfirm}
           >
-            Move
+            {confirmText || 'Save'}
           </Button>
         </FlexButtonWrapper>
       </Grid>
