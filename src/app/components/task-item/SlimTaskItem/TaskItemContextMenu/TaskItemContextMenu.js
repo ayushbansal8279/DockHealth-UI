@@ -25,15 +25,19 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
       let elements = menuReference.current.querySelectorAll(
         'button:not([disabled])',
       );
+      // converting `NodeList` to an array
       elements = [...elements];
-      const activeIndex = elements.indexOf(document.activeElement);
-      if (activeIndex === 0) {
-        event.preventDefault();
-        elements[elements.length - 1].focus();
-      } else if (activeIndex === -1) {
-        elements[0].focus();
-      } else {
-        elements[activeIndex - 1].focus();
+
+      if (elements?.length > 1) {
+        const activeIndex = elements.indexOf(document.activeElement);
+        if (activeIndex === 0) {
+          event.preventDefault();
+          elements[elements.length - 1].focus();
+        } else if (activeIndex === -1) {
+          elements[0].focus();
+        } else {
+          elements[activeIndex - 1].focus();
+        }
       }
     }
 
@@ -42,16 +46,19 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
       let elements = menuReference.current.querySelectorAll(
         'button:not([disabled])',
       );
+      // converting `NodeList` to an array
       elements = [...elements];
 
-      const activeIndex = elements.indexOf(document.activeElement);
-      if (activeIndex === elements.length - 1) {
-        event.preventDefault();
-        elements[0].focus();
-      } else if (activeIndex === -1) {
-        elements[0].focus();
-      } else {
-        elements[activeIndex + 1].focus();
+      if (elements?.length > 1) {
+        const activeIndex = elements.indexOf(document.activeElement);
+        if (activeIndex === elements.length - 1) {
+          event.preventDefault();
+          elements[0].focus();
+        } else if (activeIndex === -1) {
+          elements[0].focus();
+        } else {
+          elements[activeIndex + 1].focus();
+        }
       }
     }
 
@@ -92,17 +99,6 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
     }
   }, []);
 
-  useEffect(() => {
-    checkMenuPosition();
-    const focusedElementBeforeOpen = document.activeElement;
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      focusedElementBeforeOpen.focus();
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
   const handleDuplicateTask = useCallback(() => {
     if (task.attachments?.length > 0) {
       const modalProps = {
@@ -128,6 +124,19 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
       }),
     );
   }, []);
+
+  useEffect(() => {
+    checkMenuPosition();
+    const focusedElementBeforeOpen = document.activeElement;
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      focusedElementBeforeOpen.focus();
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  if (!position || !position.x || !position.y) return null;
 
   return (
     <Backdrop
@@ -182,17 +191,14 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
 
 TaskItemContextMenu.propTypes = {
   position: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number,
-  }),
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
   task: PropTypes.shape({
+    taskIdentifier: PropTypes.string.isRequired,
     parentTaskIdentifier: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
-};
-
-TaskItemContextMenu.defaultProps = {
-  position: null,
 };
 
 export default TaskItemContextMenu;

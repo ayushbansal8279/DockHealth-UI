@@ -75,7 +75,7 @@ export const QuickAddInput = styled.input`
 
 export const TitleWithButtonWrapper = styled.div`
   position: relative;
-  padding-left: 36px;
+  padding-left: ${spacing.giga};
   overflow: visible;
 
   & > button {

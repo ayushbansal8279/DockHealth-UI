@@ -82,6 +82,9 @@ import {
 } from '../styled';
 import TaskItemContextMenu from '../SlimTaskItem/TaskItemContextMenu/TaskItemContextMenu';
 
+const STANDARD_TASK_HEIGHT = 35;
+const EXTENDED_TASK_HEIGHT = 50;
+
 const TaskItem = ({
   isOpen,
   switchOpen,
@@ -347,7 +350,11 @@ const TaskItem = ({
       >
         <StandardTaskItemContainer
           isSelected={isSelectedTask}
-          height={hasParentTaskLabel || isCompletedGroup ? 50 : 35}
+          height={
+            hasParentTaskLabel || isCompletedGroup
+              ? EXTENDED_TASK_HEIGHT
+              : STANDARD_TASK_HEIGHT
+          }
         >
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
           {showDraggableDots && (
