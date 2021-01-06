@@ -14,15 +14,15 @@ const styles = {
     transition: ANIMATION,
     zIndex: 1,
     boxShadow: 'none',
-    borderBottomColor: props => !props.borderOnFocus && palette.coolGrey2,
+    borderBottomColor: props => !props.borderOnFocus && palette.coolGrey1,
     '& label': {
-      color: palette.coolGrey2,
+      color: palette.coolGrey1,
     },
     '& label.Mui-focused': {
-      color: palette.coolGrey2,
+      color: palette.coolGrey1,
     },
     '& .MuiInput-underline:after': {
-      borderBottomColor: palette.coolGrey2,
+      borderBottomColor: palette.coolGrey1,
     },
     '& .MuiInput-input': {
       boxShadow: 'none',
@@ -55,7 +55,7 @@ const styles = {
   },
   focused: {
     border: BORDER,
-    borderBottomColor: palette.coolGrey2,
+    borderBottomColor: palette.coolGrey1,
     '&$error': {
       border: BORDER,
       borderBottomColor: palette.error,

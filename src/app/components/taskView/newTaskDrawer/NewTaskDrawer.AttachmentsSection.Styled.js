@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 
 export const AttachmentsContainer = styled.div`
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
 `;
 
 export const RemoveAttachmentButtonContainer = styled.div`
@@ -22,7 +22,7 @@ export const RemoveAttachmentButtonContainer = styled.div`
 
 export const AttachmentButton = styled.a`
   align-items: center;
-  border: 1px solid ${palette.coolGrey2};
+  border: 1px solid ${palette.coolGrey1};
   border-radius: 3px;
   color: ${palette.darkGrey};
   display: inline-flex;
@@ -35,7 +35,7 @@ export const AttachmentButton = styled.a`
   transition: all 0.25s ease-out;
 
   &:hover {
-    border-color: ${opacify(palette.coolGrey2, 0)};
+    border-color: ${opacify(palette.coolGrey1, 0)};
     color: ${palette.darkGrey};
 
     ${RemoveAttachmentButtonContainer} {

@@ -9,7 +9,7 @@ const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
 export const DueTimeLabelContainer = styled.div`
   align-items: center;
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
   font-size: 12px;
   padding-bottom: 12px;
   display: flex;
@@ -20,7 +20,7 @@ export const DueTimeInputMaskContainer = styled.div`
   display: flex;
   border: 0.0625rem solid transparent;
   border-bottom-color: ${props =>
-    props.hasError ? palette.error : palette.coolGrey2};
+    props.hasError ? palette.error : palette.coolGrey1};
   border-radius: 0;
   height: 24px;
   padding-bottom: 12px;
