@@ -12,23 +12,25 @@ import Member from 'components/members/Member/Member';
 import {
   ATTACHMENTS,
   COMMENTS,
-  getCalendarIcon,
+  // getCalendarIcon,
   getItemIcon,
   getToolTipAttachmentsLabelDetails,
   getToolTipMultiLabelDetails,
   LABELS,
+  isDueDateOverdue,
 } from 'components/task-item/icons';
+import { DueDateBasicLabel, CalendarIcon } from 'components/task-item/styled';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import EmptyCalendarIcon from 'img/calendar-dim.svg';
 import {
   Container,
   IconsSection,
   CircleIcon,
   Description,
   DescriptionContainer,
-  CompletedBy,
+  // CompletedBy,
   AssigneeContainer,
   GoToParentIconContainer,
-  DueDate,
   DueDateContainer,
   IconContainer,
   DescriptionLabel,
@@ -44,13 +46,13 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
     duplicated,
     tokenizedDescription,
     taskMentions,
-    completedBy,
-    completedDt,
+    // completedBy,
+    // completedDt,
     assignedTo,
     comments,
     updatedComment,
     dueDate,
-    updatedDueDate,
+    // updatedDueDate,
     labels,
     updatedLabel,
     attachments,
@@ -59,10 +61,10 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
 
   const isCompleted = status === 'COMPLETE';
 
-  const completedByName =
-    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
-      .trim()
-      .replace(/^\.$/, '') || 'Unknown';
+  // const completedByName =
+  //   `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+  //     .trim()
+  //     .replace(/^\.$/, '') || 'Unknown';
 
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -99,7 +101,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
           {edited && <DescriptionLabel>(edited)</DescriptionLabel>}
           {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
         </Description>
-        <CompletedBy isCompleted={isCompleted}>
+        {/* <CompletedBy isCompleted={isCompleted}>
           <span>{`Completed by ${completedByName} ${completedDt &&
             ` on ${
               completedDt
@@ -107,10 +109,10 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
                 : ''
             }`}
                 `}</span>
-        </CompletedBy>
+        </CompletedBy> */}
       </DescriptionContainer>
       <IconsSection>
-        <IconContainer marginTop={updatedComment ? -8 : 2}>
+        <IconContainer marginTop={updatedComment ? -8 : 0}>
           <UniversalTooltipContainer
             placement="top"
             label={
@@ -127,15 +129,6 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             />
           </UniversalTooltipContainer>
         </IconContainer>
-        <IconContainer marginTop={updatedDueDate ? -6 : 0}>
-          <DueDateContainer>
-            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-            <img
-              alt="due-date"
-              src={getCalendarIcon(dueDate, true, isCompleted, updatedDueDate)}
-            />
-          </DueDateContainer>
-        </IconContainer>
         <IconContainer>
           <UniversalTooltipContainer
             placement="top"
@@ -149,7 +142,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             />
           </UniversalTooltipContainer>
         </IconContainer>
-        <IconContainer marginTop={2}>
+        <IconContainer marginTop={0}>
           <UniversalTooltipContainer
             placement="top-end"
             label={
@@ -169,6 +162,24 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             />
           </UniversalTooltipContainer>
         </IconContainer>
+        {/* <IconContainer marginTop={updatedDueDate ? -6 : 0}>
+          <DueDateContainer>
+            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+            <img
+              alt="due-date"
+              src={getCalendarIcon(dueDate, true, isCompleted, updatedDueDate)}
+            />
+          </DueDateContainer>
+        </IconContainer> */}
+        <DueDateContainer>
+          {dueDate ? (
+            <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+              {moment(dueDate).format('MM/DD')}
+            </DueDateBasicLabel>
+          ) : (
+            <CalendarIcon src={EmptyCalendarIcon} alt="Due date" />
+          )}
+        </DueDateContainer>
       </IconsSection>
       <AssigneeContainer
         onClick={event => {

@@ -28,7 +28,8 @@ export const IconContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   width: 40px;
-  height: 32px;
+  height: 22px;
+  margin-bottom: 4px;
 
   & img {
     margin-top: ${({ marginTop }) => marginTop || 0}px;
