@@ -26,7 +26,7 @@ const PatientSelectItem = React.forwardRef(
             highlightStyle={{ fontWeight: 'bold', background: 'none' }}
             searchWords={searchValue?.toLowerCase().split(/\s+/)}
             autoEscape
-            textToHighlight={mrn}
+            textToHighlight={mrn ?? ''}
           />
         </SuggestionText>
       </SuggestionItemContainer>
