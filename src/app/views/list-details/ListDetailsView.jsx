@@ -70,8 +70,9 @@ class Home extends Component {
   searchWithDebounce = debounce(searchValue => {
     const {
       tasksGroupsListActions: { fetchTasksBySearchedTerm },
-      params: { tabName },
     } = this.props;
+
+    const tabName = this.props?.params?.tabName;
 
     const taskStatus =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
