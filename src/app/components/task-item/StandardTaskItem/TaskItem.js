@@ -21,6 +21,7 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
+import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
 import EmptyCalendarIcon from 'img/calendar-dim.svg';
 import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import palette from 'styles/palette';
@@ -287,13 +288,15 @@ const TaskItem = ({
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
-      if (!isOpen) {
-        switchOpen(true);
-      } else {
-        switchOpen(!isOpen);
+      if (!hideSubtasks) {
+        if (!isOpen) {
+          switchOpen(true);
+        } else {
+          switchOpen(!isOpen);
+        }
       }
     },
-    [isOpen, switchOpen],
+    [isOpen, switchOpen, hideSubtasks],
   );
 
   const onPatientClick = useCallback(() => {
@@ -421,38 +424,45 @@ const TaskItem = ({
             )}
           </DescriptionBox>
         </MainStandardTaskItemCell>
-        {!hideSubtasks && (
-          <StandardTaskItemCell
-            width="60px"
-            justify="center"
-            paddingLeft="tiny"
-            paddingRight="tiny"
-          >
-            {!isSubtask && (
-              <>
-                {subTasksCount > 0 ? (
-                  <SubtasksCellContent onClick={onSubtaskLabelClick}>
-                    <SubtasksCellText isOpen={isOpen}>
-                      {subTasksCount}
-                    </SubtasksCellText>
-                    <SubtasksImg
-                      src={isOpen ? SubtasksIconActive : SubtasksIcon}
-                      alt="Subtasks"
-                    />
-                  </SubtasksCellContent>
-                ) : (
-                  <>
-                    {isHovered && !quickAddSubtaskOpen && (
-                      <AddSubtaskButton type="button" onClick={onSubtaskAdd}>
-                        <AddPlaceholder>+ Add</AddPlaceholder>
-                      </AddSubtaskButton>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </StandardTaskItemCell>
-        )}
+        {/* {!hideSubtasks && ( */}
+        <StandardTaskItemCell
+          width="60px"
+          justify="center"
+          paddingLeft="tiny"
+          paddingRight="tiny"
+        >
+          {!isSubtask && (
+            <>
+              {subTasksCount > 0 ? (
+                <SubtasksCellContent onClick={onSubtaskLabelClick}>
+                  <SubtasksCellText isOpen={isOpen} isDisabled={hideSubtasks}>
+                    {subTasksCount}
+                  </SubtasksCellText>
+                  <SubtasksImg
+                    src={
+                      hideSubtasks
+                        ? SubtasksIconDisabled
+                        : // eslint-disable-next-line unicorn/no-nested-ternary
+                        isOpen
+                        ? SubtasksIconActive
+                        : SubtasksIcon
+                    }
+                    alt="Subtasks"
+                  />
+                </SubtasksCellContent>
+              ) : (
+                <>
+                  {isHovered && !quickAddSubtaskOpen && !hideSubtasks && (
+                    <AddSubtaskButton type="button" onClick={onSubtaskAdd}>
+                      <AddPlaceholder>+ Add</AddPlaceholder>
+                    </AddSubtaskButton>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </StandardTaskItemCell>
+        {/* )} */}
         {patientVisible && (
           <StandardTaskItemCell width="164px">
             <ClickablePatient onClick={onPatientClick}>
