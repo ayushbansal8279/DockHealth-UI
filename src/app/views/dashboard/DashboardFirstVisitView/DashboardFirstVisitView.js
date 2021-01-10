@@ -42,7 +42,7 @@ const DashboardFirstVisitView = ({
                 onClick={() => {
                   acceptInvitation(list);
                   if (list) {
-                    history.push(`tasks/${list.taskListIdentifier}`);
+                    history.push(`/tasks/${list.taskListIdentifier}`);
                   }
                 }}
               >
