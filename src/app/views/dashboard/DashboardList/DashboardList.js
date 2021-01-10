@@ -48,7 +48,6 @@ import {
   megaFilterSelector,
   hasFiltersAppliedSelector,
 } from 'selectors/mega-filter-selectors';
-import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import DashboardSettings from '../DashboardSettings/DashboardSettings';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -453,23 +452,10 @@ const DashboardList = ({
     [filteredDashboardTasks],
   );
 
-  const handleTaskUpdate = useCallback(
-    updatedTask => {
-      fetchDashboardFilters();
-      if (
-        !checkIfTaskMatchesFilters(updatedTask, selectedFilters) ||
-        userIdentifier !== updatedTask.assignedTo?.userIdentifier
-      ) {
-        reloadDashboardTasks();
-      }
-    },
-    [
-      selectedFilters,
-      reloadDashboardTasks,
-      fetchDashboardFilters,
-      userIdentifier,
-    ],
-  );
+  const handleTaskUpdate = useCallback(() => {
+    fetchDashboardFilters();
+    reloadDashboardTasks();
+  }, [reloadDashboardTasks, fetchDashboardFilters]);
 
   return (
     <>
