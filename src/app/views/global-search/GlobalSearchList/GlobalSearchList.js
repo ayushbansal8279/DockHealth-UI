@@ -11,6 +11,10 @@ import {
   ListNameSection,
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
+import LoadMoreButton, {
+  LoadMoreSection,
+} from 'components/common/LoadMoreButton/LoadMoreButton';
+import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
 
 const GlobalSearchList = ({
   list,
@@ -25,8 +29,10 @@ const GlobalSearchList = ({
   updateWorkflowStatus,
   highlightedValue,
   isCompletedList,
+  getMoreTasksForTaskList,
+  isLoadingMore,
 }) => {
-  const { listName, tasks } = list;
+  const { listName, tasks, hasMore: hasMoreTasks } = list;
   const [isOpen, switchOpen] = useState(true);
   const {
     addingNewSubtask,
@@ -37,6 +43,10 @@ const GlobalSearchList = ({
     addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
     subtaskShape: state.taskState.subtaskShape,
   }));
+
+  const showMoreTasks = () => {
+    getMoreTasksForTaskList(list.taskListIdentifier, list.tasks?.length);
+  };
 
   return (
     <ListDetailsContainer>
@@ -86,6 +96,12 @@ const GlobalSearchList = ({
             <Spacing vertical={3} />
           </>
         ))}
+        {isLoadingMore && <SingleSkeletonLoader rows={4} />}
+        {hasMoreTasks && (
+          <LoadMoreSection>
+            {!isLoadingMore && <LoadMoreButton onClick={showMoreTasks} />}
+          </LoadMoreSection>
+        )}
       </Tasks>
     </ListDetailsContainer>
   );

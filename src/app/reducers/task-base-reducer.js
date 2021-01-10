@@ -13,6 +13,8 @@ import {
   REFRESH_ANOTHER_TASK_SUCCESS,
   OPEN_QUICK_ADD_SUBTASK_INPUT,
   CLOSE_QUICK_ADD_SUBTASK_INPUT,
+  REQUEST_LOAD_SUBTASKS,
+  LOAD_SUBTASKS_SUCCESS,
 } from 'actions/action-types';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -311,9 +313,38 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_SUCCESS:
-    case REFRESH_ANOTHER_TASK_SUCCESS: {
+    case REQUEST_LOAD_SUBTASKS: {
       const { task } = action;
+
+      const updateTaskFromAction = tasks =>
+        tasks.map(t => {
+          if (
+            t.taskIdentifier !== task.parentTaskIdentifier &&
+            t.taskIdentifier !== task.taskIdentifier
+          ) {
+            return t;
+          }
+
+          if (task.taskIdentifier === t.taskIdentifier) {
+            return { ...t, ...task, isFetchingSubTasks: true };
+          }
+
+          return {
+            ...t,
+          };
+        });
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case UPDATE_TASK_SUCCESS:
+    case LOAD_SUBTASKS_SUCCESS:
+    case REFRESH_ANOTHER_TASK_SUCCESS: {
+      let { task } = action;
+
+      if (action.type === LOAD_SUBTASKS_SUCCESS) {
+        task = { ...task, isFetchingSubTasks: false };
+      }
 
       const updateTaskFromAction = tasks =>
         tasks.map(t => {

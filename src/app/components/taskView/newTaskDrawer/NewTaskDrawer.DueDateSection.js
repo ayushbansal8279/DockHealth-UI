@@ -61,10 +61,6 @@ const DueDateSection = ({
         updatedDueTime: currentDueTime || '',
       });
       setAutoSaveVisible();
-
-      setTimeout(() => {
-        inputReference.focus();
-      }, 150);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [

@@ -55,6 +55,11 @@ import {
 } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 
 import {
+  onEnterPatientsView,
+  onLeavePatientsView,
+} from './TemplateCoreSubscriptionPlan/PatientsView';
+
+import {
   onEnterPatientDetailsView,
   onLeavePatientDetailsView,
 } from './TemplateCoreSubscriptionPlan/PatientDetails';
@@ -117,6 +122,8 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/patients',
     RouteComponent: PatientsView,
+    onEnter: onEnterPatientsView,
+    onLeave: onLeavePatientsView,
   },
   {
     path: '/patient/:patientIdentifier/:tabName?',

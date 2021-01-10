@@ -155,9 +155,9 @@ const getTasksType = () => {
 
   switch (tab) {
     case 'all-tasks':
-      return 'all-tasks';
+      return 'AllTasks';
     case 'my-tasks':
-      return 'my-tasks';
+      return 'MyTasks';
     default:
       return '';
   }
@@ -193,7 +193,7 @@ function* doReloadDashboardAllTasksStatistics() {
 
 function* doFetchDashboardFilters() {
   const tasksType = getTasksType();
-  const isAllTasks = tasksType === 'all-tasks';
+  const isAllTasks = tasksType === 'AllTasks';
 
   try {
     const filters = isAllTasks
@@ -229,7 +229,7 @@ function* doFetchImplicitGroup({ group, fetchMore }) {
       });
     }
 
-    const isAllTasks = getTasksType() === 'all-tasks';
+    const isAllTasks = getTasksType() === 'AllTasks';
     // eslint-disable-next-line consistent-return
     const fetchedGroup = yield call(function*() {
       try {
@@ -269,7 +269,7 @@ function* doFetchImplicitGroups(props = {}) {
   const { customGroupsSettings } = props;
   try {
     const tasksType = getTasksType();
-    const isAllTasks = tasksType === 'all-tasks';
+    const isAllTasks = tasksType === 'AllTasks';
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tasksType,
@@ -342,7 +342,7 @@ function* doFetchImplicitGroups(props = {}) {
 function* doFetchSearchedTermForImplicitGroups({ searchTerm }) {
   try {
     const tasksType = getTasksType();
-    const isAllTasks = tasksType === 'all-tasks';
+    const isAllTasks = tasksType === 'AllTasks';
     yield put({ type: REQUEST_DASHBOARD_TASKS });
 
     const dashboardTasksGroups = yield call(
@@ -369,7 +369,7 @@ function* doReloadDashboardTasks(props = {}) {
   const { customGroupsSettings } = props;
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    const isAllTasks = getTasksType() === 'all-tasks';
+    const isAllTasks = getTasksType() === 'AllTasks';
 
     let tasksList = [];
 

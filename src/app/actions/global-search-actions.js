@@ -7,6 +7,9 @@ import {
   GLOBAL_SEARCH_REQUEST_FAILURE,
   RESET_GLOBAL_SEARCH,
   UPDATE_GLOBAL_SEARCH_TASK,
+  GLOBAL_SEARCH_MORE_REQUEST,
+  GLOBAL_SEARCH_MORE_REQUEST_SUCCESS,
+  GLOBAL_SEARCH_MORE_REQUEST_FAILURE,
 } from 'actions/action-types';
 
 export const searchCompletedTasks = () => ({
@@ -42,4 +45,17 @@ export const resetGlobalSearch = () => ({
 export const updateGlobalSearchTask = task => ({
   type: UPDATE_GLOBAL_SEARCH_TASK,
   payload: { task },
+});
+
+export const requestGlobalSearchMore = () => ({
+  type: GLOBAL_SEARCH_MORE_REQUEST,
+});
+
+export const requestGlobalSearchMoreSuccess = lists => ({
+  type: GLOBAL_SEARCH_MORE_REQUEST_SUCCESS,
+  payload: { lists },
+});
+
+export const requestGlobalSearchMoreFailure = () => ({
+  type: GLOBAL_SEARCH_MORE_REQUEST_FAILURE,
 });

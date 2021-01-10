@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import Spacing from 'components/common/Spacing';
 import {
   isLoadingGlobalSearchSelector,
+  isLoadingMoreGlobalSearchSelector,
   globalSearchListsSelector,
   searchValueSelector,
   isSearchingCompletedTasksSelector,
@@ -27,6 +28,7 @@ import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
 
 const GlobalSearchView = ({
   isLoadingView,
+  isLoadingMore,
   isSearchingCompletedTasks,
   lists,
   searchValue,
@@ -45,6 +47,7 @@ const GlobalSearchView = ({
     setDueDate,
     setWorkflowStatus,
     assignTask,
+    getMoreTasksForTaskList,
   } = globalSearchSagaActions;
 
   const renderEmptyState = () => {
@@ -77,6 +80,8 @@ const GlobalSearchView = ({
                     updateWorkflowStatus={setWorkflowStatus}
                     highlightedValue={searchValue}
                     isCompletedList={isSearchingCompletedTasks}
+                    getMoreTasksForTaskList={getMoreTasksForTaskList}
+                    isLoadingMore={isLoadingMore}
                   />
                 ) : null,
               )
@@ -100,6 +105,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = store => ({
   isLoadingView: isLoadingGlobalSearchSelector(store),
+  isLoadingMore: isLoadingMoreGlobalSearchSelector(store),
   isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),
   lists: globalSearchListsSelector(store),
   searchValue: searchValueSelector(store),

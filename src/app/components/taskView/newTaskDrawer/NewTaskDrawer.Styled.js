@@ -96,7 +96,7 @@ export const CondensedH5 = ({ ...props }) => (
 );
 
 export const HorizontalLabel = styled.span`
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
   fontfamily: ${FONT_FAMILY};
   margin-right: 5px;
   & > * {
@@ -262,7 +262,7 @@ export const DescriptionContainer = styled.div`
   transition: all 0.2s ease-out;
 
   border-bottom: 1px solid
-    ${({ isFocused }) => (isFocused ? palette.coolGrey2 : 'transparent')};
+    ${({ isFocused }) => (isFocused ? palette.coolGrey1 : 'transparent')};
 
   ${({ hasError }) => hasError && `border-color: ${palette.error};`}
 `;
@@ -275,9 +275,9 @@ export const DescriptionLabel = styled.label`
   display: block;
   margin-bottom: ${spacing.small};
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
   text-transform: uppercase;
 
   & > span {
@@ -314,5 +314,5 @@ export const CompletedByLabel = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
 `;

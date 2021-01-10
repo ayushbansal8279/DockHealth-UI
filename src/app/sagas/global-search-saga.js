@@ -31,6 +31,7 @@ const DO_REFRESH_TASKS = 'DO_REFRESH_TASKS';
 const DO_SET_SEARCH_COMPLETED_TASKS = 'DO_SET_SEARCH_COMPLETED_TASKS';
 const DO_SET_SEARCH_VALUE = 'DO_SET_SEARCH_VALUE';
 const DO_CLEAR_SEARCH_VALUE = 'DO_CLEAR_SEARCH_VALUE';
+const DO_SEARCH_MORE_TASKS = 'DO_SEARCH_MORE_TASKS';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS =
   'DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY =
@@ -98,6 +99,11 @@ const assignTask = (task, assignee) => ({
   },
 });
 
+const getMoreTasksForTaskList = (taskListIdentifier, taskCount) => ({
+  type: DO_SEARCH_MORE_TASKS,
+  payload: { taskListIdentifier, taskCount },
+});
+
 export const GlobalSearchSagaActions = {
   searchTasks,
   refreshTasks,
@@ -109,6 +115,7 @@ export const GlobalSearchSagaActions = {
   setDueDate,
   setWorkflowStatus,
   assignTask,
+  getMoreTasksForTaskList,
 };
 
 function* doRefreshTasks() {
@@ -121,7 +128,9 @@ function* doRefreshTasks() {
     const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
     if (searchValue) {
       const response = yield call(TaskApi.searchTasks, searchValue, status);
-      yield put(GlobalSearchActions.requestGlobalSearchSuccess(response));
+      yield put(
+        GlobalSearchActions.requestGlobalSearchSuccess(response.taskLists),
+      );
     } else {
       yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
     }
@@ -134,6 +143,37 @@ function* doRefreshTasks() {
 function* doSearchTasks() {
   yield put(GlobalSearchActions.requestGlobalSearch());
   yield call(doRefreshTasks);
+}
+
+function* doGetMoreTasksForTaskList({ payload }) {
+  try {
+    yield put(GlobalSearchActions.requestGlobalSearchMore());
+    const { taskListIdentifier, taskCount } = payload;
+
+    const isSearchingCompletedTasks = yield select(
+      isSearchingCompletedTasksSelector,
+    );
+    const searchValue = yield select(searchValueSelector);
+
+    const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
+    if (searchValue && taskListIdentifier) {
+      const response = yield call(
+        TaskApi.searchTasks,
+        searchValue,
+        status,
+        taskListIdentifier,
+        null,
+        null,
+        taskCount,
+      );
+      yield put(
+        GlobalSearchActions.requestGlobalSearchMoreSuccess(response.taskLists),
+      );
+    }
+  } catch (error) {
+    yield put(GlobalSearchActions.requestGlobalSearchMoreFailure());
+    console.error('error', error);
+  }
 }
 
 function* doSetSearchValue({ payload }) {
@@ -274,4 +314,5 @@ export default function* watchGlobalSearch() {
   yield takeLatest(DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS, doSetWorkflowStatus);
   yield takeLatest(DO_ASSIGN_GLOBAL_SEARCH_TASK, doAssignTask);
   yield takeLatest(DO_CLEAR_SEARCH_VALUE, doClearSearchValue);
+  yield takeLatest(DO_SEARCH_MORE_TASKS, doGetMoreTasksForTaskList);
 }

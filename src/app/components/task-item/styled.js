@@ -484,7 +484,13 @@ export const SubtasksCellText = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  color: ${({ isOpen }) => (isOpen ? palette.brightBlue : palette.coolGrey1)};
+  color: ${({ isOpen, isDisabled }) =>
+    isDisabled
+      ? palette.coolGrey2
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      isOpen
+      ? palette.brightBlue
+      : palette.coolGrey1};
 `;
 
 export const SubtasksImg = styled.img`

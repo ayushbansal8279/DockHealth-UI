@@ -61,7 +61,7 @@ export const CommentText = styled.div`
 `;
 
 export const CommentDetails = styled.div`
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
   font-size: ${fontSizes.small};
 `;
 

@@ -301,14 +301,28 @@ export function getCountOfTasksAssignedByMe(
       });
 }
 
-export function searchTasks(searchTerm, sortBy, filterBy, status) {
+export function searchTasks(
+  searchTerm,
+  sortBy,
+  filterBy,
+  status,
+  startPosition,
+  endPosition,
+) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
   return dispatch =>
-    TaskApi.searchTasks(searchTerm, status, sortBy, filterBy)
+    TaskApi.searchTasks(
+      searchTerm,
+      status,
+      sortBy,
+      filterBy,
+      startPosition,
+      endPosition,
+    )
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
