@@ -7,6 +7,7 @@ const initialState = {
   searchValue: '',
   lists: [],
   isLoading: false,
+  isLoadingMore: false,
   error: '',
 };
 
@@ -55,6 +56,36 @@ const GlobalSearchReducer = (state = initialState, action) => {
         ...state,
         lists: payload?.lists,
         isLoading: false,
+      };
+
+    case types.GLOBAL_SEARCH_MORE_REQUEST:
+      return {
+        ...state,
+        isLoadingMore: true,
+      };
+
+    case types.GLOBAL_SEARCH_MORE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        lists: state.lists?.map(list => {
+          const matchingList = payload.lists?.find(
+            ({ taskListIdentifier }) =>
+              taskListIdentifier === list?.taskListIdentifier,
+          );
+
+          if (matchingList) {
+            return {
+              ...list,
+              tasks: list.tasks.concat(matchingList.tasks),
+              hasMore: matchingList.hasMore,
+            };
+          }
+
+          return {
+            ...list,
+          };
+        }),
+        isLoadingMore: false,
       };
 
     case types.UPDATE_GLOBAL_SEARCH_TASK: {

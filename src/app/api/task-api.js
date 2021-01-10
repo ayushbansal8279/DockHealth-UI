@@ -239,11 +239,19 @@ export function getCountOfTasksAssignedByMe(
     });
 }
 
-export function searchTasks(searchTerm, status, sortBy, filterBy) {
+export function searchTasks(
+  searchTerm,
+  status,
+  taskListIdentifier = '',
+  sortBy,
+  filterBy,
+  startPosition = 0,
+  endPosition = 0,
+) {
   if (sortBy != undefined || filterBy != undefined) {
     return axios
       .get(
-        `task/searchTasks?searchTerm=${searchTerm}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
+        `task/searchTasks?searchTerm=${searchTerm}&status=${status}&taskListIdentifier=${taskListIdentifier}&sortBy=${sortBy}&filterBy=${filterBy}&startPosition=${startPosition}&endPosition=${endPosition}`,
       )
       .then(response => response.data)
       .catch(error => {
@@ -251,7 +259,9 @@ export function searchTasks(searchTerm, status, sortBy, filterBy) {
       });
   }
   return axios
-    .get(`task/searchTasks?searchTerm=${searchTerm}&status=${status}`)
+    .get(
+      `task/searchTasks?searchTerm=${searchTerm}&status=${status}&taskListIdentifier=${taskListIdentifier}&startPosition=${startPosition}&endPosition=${endPosition}`,
+    )
     .then(response => response.data)
     .catch(error => {
       throw error;
