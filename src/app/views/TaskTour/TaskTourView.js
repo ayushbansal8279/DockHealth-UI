@@ -89,7 +89,7 @@ const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
           fullWidth
           onClick={() => {
             onNewUserTourEnter('Navigate to list button click');
-            history.push(`tasks/${taskListIdentifier}`);
+            history.push(`/tasks/${taskListIdentifier}`);
           }}
         >
           Now create your own
