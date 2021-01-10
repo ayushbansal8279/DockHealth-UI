@@ -121,10 +121,7 @@ export function getTasksForOrganizationByImplicitGroup(
 export function getDashboardTaskStasForImplicitGroups(tab) {
   return axios
     .get(
-      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab?.replace(
-        '-',
-        '',
-      )}`,
+      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab}`,
     )
     .then(response => response.data)
     .catch(error => {
