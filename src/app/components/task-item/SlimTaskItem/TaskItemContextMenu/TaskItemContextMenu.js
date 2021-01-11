@@ -13,7 +13,7 @@ import {
 import { openModal } from 'modal/actions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
 
-const TaskItemContextMenu = ({ position, task, onClose }) => {
+const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
   const menuReference = useRef(null);
   const dispatch = useDispatch();
 
@@ -164,7 +164,7 @@ const TaskItemContextMenu = ({ position, task, onClose }) => {
             Duplicate {isSubtask ? 'Subtask' : 'Task'}
           </MenuItemButtom>
         </li>
-        {!isSubtask && (
+        {!isSubtask && !contextFiltered && (
           <li>
             <MenuItemButtom
               type="button"

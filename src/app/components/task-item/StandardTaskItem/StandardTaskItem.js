@@ -148,6 +148,7 @@ const Task = ({
           isDraggable={isDraggable}
           hideSubtasks={hideSubtasks}
           isFullView={isFullView}
+          contextFiltered={isSearchApplied || areFiltersApplied}
           {...restProps}
         />
       </div>

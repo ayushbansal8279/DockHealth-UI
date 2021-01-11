@@ -111,6 +111,7 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   hideSubtasks,
+  contextFiltered,
 }) => {
   const {
     taskIdentifier,
@@ -705,6 +706,7 @@ const TaskItem = ({
           position={contextMenu}
           task={task}
           onClose={() => setContextMenu(null)}
+          contextFiltered={contextFiltered}
         />
       )}
     </>
