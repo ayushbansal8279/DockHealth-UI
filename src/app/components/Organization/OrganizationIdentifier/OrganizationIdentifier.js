@@ -8,10 +8,16 @@ const OrganizationIdentifier = ({
   organizationName,
   isOpen,
   onSelect = () => {},
+  onMouseEnterName = () => {},
+  onMouseLeaveName = () => {},
 }) => (
   <OrganizationIdentifierContainer {...identifierConfig} onClick={onSelect}>
     <OrganizationTile {...tileConfig} />
-    {isOpen && <span>{organizationName}</span>}
+    {isOpen && (
+      <span onMouseEnter={onMouseEnterName} onMouseLeave={onMouseLeaveName}>
+        {organizationName}
+      </span>
+    )}
   </OrganizationIdentifierContainer>
 );
 

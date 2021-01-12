@@ -9,7 +9,17 @@ export const userSelector = createSelector(
 
 export const userProfileSelector = createSelector(
   userStateSelector,
-  ({ userProfile }) => userProfile,
+  ({ userProfile }) => userProfile || {},
+);
+
+export const userProfilePictureSelector = createSelector(
+  userStateSelector,
+  ({ userProfilePic }) => userProfilePic,
+);
+
+export const userOrganizationsSelector = createSelector(
+  userProfileSelector,
+  ({ userOrganizations }) => userOrganizations,
 );
 
 export const userProfileDashbaordPrefsSelector = createSelector(

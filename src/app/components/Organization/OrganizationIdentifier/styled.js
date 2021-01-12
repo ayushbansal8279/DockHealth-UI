@@ -14,6 +14,7 @@ export const OrganizationIdentifierContainer = styled.div`
   padding-right: ${props => spacing[props.right] || props.right}px;
   color: ${props => props.fontColor || 'white'};
   overflow: hidden;
+  cursor: pointer;
 
   & > span {
     margin-left: ${spacing.small};

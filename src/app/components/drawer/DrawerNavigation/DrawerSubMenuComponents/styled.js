@@ -1,0 +1,266 @@
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { Popover } from '@material-ui/core';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import spacing from 'styles/spacing';
+import palette from 'styles/palette';
+import { fontWeights, fontSizes } from 'styles/font';
+
+export const SubMenuDivider = styled.hr`
+  width: 100%;
+  height: 1px;
+  margin: 0;
+  border-color: ${palette.coolGrey3};
+`;
+
+export const SubMenuLink = styled(Link)`
+  display: block;
+  width: 100%;
+  padding: ${spacing.small};
+  text-align: left;
+  color: ${palette.coolGrey1};
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    color: ${palette.mediumGrey};
+  }
+`;
+
+export const BlueSubMenuLink = styled(SubMenuLink)`
+  color: ${palette.brightBlue};
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
+`;
+
+export const DrawerItemOptions = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const DrawerSubmenuLabel = styled.div`
+  color: ${palette.coolGrey1};
+  font-weight: ${fontWeights.bold};
+`;
+
+export const DrawerAddLink = styled(Link)`
+  color: ${palette.coolGrey1};
+  outline: none;
+  border: none;
+  background-color: ${palette.coolGrey4};
+  border-radius: 9px;
+  font-weight: ${fontWeights.bold};
+  padding: ${spacing.tiny} 10px;
+
+  & > span {
+    color: ${palette.orange};
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const DrawerAddButton = styled.div`
+  color: ${palette.coolGrey1};
+  outline: none;
+  border: none;
+  background-color: #f9fafc;
+  border-radius: 9px;
+  font-weight: ${fontWeights.bold};
+  padding: ${spacing.tiny} 10px;
+
+  & > span {
+    color: ${palette.orange};
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const RolloverPopover = styled(Popover)`
+  && {
+    pointer-events: none;
+    transform: translateX(-${spacing.small});
+  }
+`;
+
+export const RolloverPopoverLabel = styled.label`
+  padding: 0 ${spacing.small};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  color: ${palette.brightBlue};
+`;
+
+export const SpacingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+// Profile submenu
+export const ProfileSubmenuContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: ${spacing.regular} 0;
+`;
+
+export const ReferButton = styled.button`
+  padding: ${spacing.tiny} ${spacing.regularPlus};
+  background: ${palette.brightBlue};
+  color: ${palette.white};
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  border-radius: 22px;
+  cursor: pointer;
+`;
+
+export const Top = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const UserName = styled.p`
+  flex: 1;
+  margin-bottom: 0;
+  font-weight: ${fontWeights.bold};
+  overflow: hidden;
+`;
+
+export const Title = styled.p`
+  width: 100%;
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPlus};
+`;
+
+export const BeforeIcon = styled(NavigateBeforeIcon)`
+  && {
+    color: ${palette.mediumGrey};
+    cursor: pointer;
+  }
+`;
+
+const IMAGE_SIZE = 140;
+
+export const UserImage = styled.img`
+  width: ${IMAGE_SIZE}px;
+  height: ${IMAGE_SIZE}px;
+`;
+
+export const UserInitialCircle = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${IMAGE_SIZE}px;
+  height: ${IMAGE_SIZE}px;
+  border-radius: ${IMAGE_SIZE / 2}px;
+  background-color: ${({ color }) => color || palette.coolGrey2};
+  font-family: 'Montserrant', sans-serif;
+  font-size: ${IMAGE_SIZE / 40}rem;
+  font-weight: ${fontWeights.bold};
+  color: ${palette.white};
+  text-transform: lowercase;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: ${IMAGE_SIZE - 10}px;
+    height: ${IMAGE_SIZE - 10}px;
+    border: 5px solid ${palette.white};
+    border-radius: ${(IMAGE_SIZE - 10) / 2}px;
+  }
+`;
+
+// Organization submenu
+export const DrawerOrganizationHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 6px 0;
+
+  & > div {
+    word-break: break-all;
+  }
+`;
+
+export const DrawerOrganizationLabel = styled.div`
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
+  white-space: normal;
+`;
+
+export const DrawerMyOrganizationLabel = styled(DrawerSubmenuLabel)`
+  color: ${palette.coolGrey1};
+  font-weight: ${fontWeights.bold};
+  padding: ${spacing.giga} ${spacing.smallPlus} ${spacing.smallPlus};
+  border-bottom: 1px solid ${palette.coolGrey2};
+  font-size: ${fontSizes.smallPlus};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const DrawerOrganizationsList = styled.div`
+  padding: ${spacing.large} ${spacing.smallPlus} ${spacing.small};
+  border-bottom: 1px solid ${palette.coolGrey2};
+`;
+
+// Lists
+export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
+  color: ${palette.coolGrey1};
+  font-weight: ${fontWeights.bold};
+  padding: ${spacing.smallPlus};
+  border-bottom: 1px solid ${palette.coolGrey2};
+  font-size: ${fontSizes.smallPlus};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const DrawerListsList = styled.div`
+  padding: ${spacing.largePlus} 0 ${spacing.largePlus} ${spacing.smallPlus};
+  border-bottom: 1px solid ${palette.coolGrey2};
+`;
+
+export const DrawerListsItem = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: ${palette.coolGrey1};
+  font-size: ${fontSizes.smallPlus};
+  cursor: pointer;
+`;
+
+export const DrawerListsItemNewLabel = styled.div`
+  position: absolute;
+  top: -4px;
+  left: 0;
+  color: ${palette.brightBlue};
+  font-size: 10px;
+  font-weight: 400;
+  font-family: Roboto Condensed;
+`;
+
+export const DrawerListsNewLabel = styled.div`
+  color: white;
+  background-color: ${palette.midnightBlue};
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 10px 18px;
+  margin-top: ${spacing.smallExtraPlus};
+`;

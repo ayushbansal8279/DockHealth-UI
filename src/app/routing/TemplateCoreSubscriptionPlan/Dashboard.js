@@ -1,11 +1,8 @@
 import {
-  initializeHiddenNavbarTemplate,
-  removeHiddenNavbarTemplate,
-} from 'sagas/template-saga';
-import {
   initializeDashboardView,
   reloadDashboardTasks,
 } from 'sagas/dashboard-saga';
+import * as TemplateActions from 'actions/template-actions';
 import { clearFiltersForMegaFilter } from 'actions/mega-filter-actions';
 import {
   REQUEST_DASHBOARD_TASKS,
@@ -14,7 +11,7 @@ import {
 import { closeDrawer } from 'actions/task-drawer-actions';
 
 export const onEnterDashboard = ({ dispatch }) => {
-  dispatch(initializeHiddenNavbarTemplate());
+  dispatch(TemplateActions.hideHeader());
   dispatch(initializeDashboardView());
 };
 
@@ -25,7 +22,7 @@ export const onUpdateDashboard = ({ dispatch }) => {
 };
 
 export const onLeaveDashboard = ({ dispatch }) => {
-  dispatch(removeHiddenNavbarTemplate());
+  dispatch(TemplateActions.showHeader());
   dispatch(clearFiltersForMegaFilter());
   dispatch(closeDrawer());
 };

@@ -1,14 +1,12 @@
 import {
   SHOW_TEMPLATE_HEADER,
   HIDE_TEMPLATE_HEADER,
-  ENABLE_NAVBAR_FULL_MODE,
-  DISABLE_NAVBAR_FULL_MODE,
-  SHOW_NAVBAR_SETTINGS,
-  HIDE_NAVBAR_SETTINGS,
-  SET_CUSTOM_NAVBAR_FULL_WIDTH,
-  RESET_CUSTOM_NAVBAR_FULL_WIDTH,
   SHOW_NAVBAR,
   HIDE_NAVBAR,
+  SHOW_SUB_MENU,
+  HIDE_SUB_MENU,
+  OPEN_NOTIFICATIONS,
+  CLEAR_NOTIFICATIONS,
 } from 'actions/action-types';
 
 export const showNavbar = () => ({
@@ -27,29 +25,20 @@ export const showHeader = () => ({
   type: SHOW_TEMPLATE_HEADER,
 });
 
-export const hideNavbarSettings = () => ({
-  type: HIDE_NAVBAR_SETTINGS,
+export const showSubMenu = subMenuKey => ({
+  type: SHOW_SUB_MENU,
+  subMenuKey,
 });
 
-export const showNavbarSettings = () => ({
-  type: SHOW_NAVBAR_SETTINGS,
+export const hideSubMenu = () => ({
+  type: HIDE_SUB_MENU,
 });
 
-export const enableNavbarFullMode = () => ({
-  type: ENABLE_NAVBAR_FULL_MODE,
+export const openNotifications = notificationsPage => ({
+  type: OPEN_NOTIFICATIONS,
+  notificationsPage,
 });
 
-export const disableNavbarFullMode = () => ({
-  type: DISABLE_NAVBAR_FULL_MODE,
-});
-
-export const setCustomNavbarWidth = width => ({
-  type: SET_CUSTOM_NAVBAR_FULL_WIDTH,
-  payload: {
-    width,
-  },
-});
-
-export const resetCustomNavbarWidth = () => ({
-  type: RESET_CUSTOM_NAVBAR_FULL_WIDTH,
+export const clearNotifications = () => ({
+  type: CLEAR_NOTIFICATIONS,
 });

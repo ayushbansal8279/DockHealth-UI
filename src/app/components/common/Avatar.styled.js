@@ -15,7 +15,7 @@ export const AvatarContainer = styled.div`
   ${props =>
     props.withShadow &&
     `box-shadow: 0px 4px 4px ${opacify(palette.black, 0.25)}`};
-  cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
+  cursor: ${props => (props.withCursor ? 'pointer' : 'inherit')};
   display: inline-flex;
   min-height: ${props => props.size ?? 110}px;
   min-width: ${props => props.size ?? 110}px;

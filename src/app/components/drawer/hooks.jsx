@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { templateStateSelector } from 'selectors/template-selectors';
-import useBoolean from 'hooks/useBoolean';
 import {
   getSubscriptionIsTrial,
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
-import * as TemplateActions from 'actions/template-actions';
 import { selectCurrentOrganization } from 'api/user-api';
 import { TrialBannerLink, useDrawerClasses } from './styled';
 
@@ -18,8 +16,6 @@ const CARD_EXPIRATION_WARNING_DAYS = 15;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const initializeDrawerHooks = () => {
-  const [isOpen, open, close] = useBoolean(false);
-  const [activeId, setActiveId] = useState('');
   const [bannerVisibleFlag, setBannerVisibleFlag] = useState(false);
   const [bannerMessageLinkFlag, setBannerMessageLinkFlag] = useState(false);
   const history = useHistory();
@@ -29,20 +25,13 @@ const initializeDrawerHooks = () => {
     billingDetails,
     messageBannerBar,
     user,
-    lists,
+    // lists,
     header,
-    templateState: {
-      isHeaderVisible,
-      isNavbarInFullMode,
-      areNavbarSettingsVisible,
-      navbarFullWidth,
-      isNavbarVisible,
-    },
+    templateState: { isHeaderVisible, isNavbarVisible },
   } = useSelector(store => ({
     ...store.organizationState,
     messageBannerBar: store.organizationState?.referralConfig?.messageBannerBar,
     user: store.userState.userProfile,
-    lists: store.taskListState.tasklist,
     header: store.header,
     templateState: templateStateSelector(store),
   }));
@@ -51,8 +40,6 @@ const initializeDrawerHooks = () => {
     email: user.email,
     name: `${user.firstName} ${user.lastName}`,
   };
-
-  const dispatch = useDispatch();
 
   const subscription = organization?.subscriptionDetails;
 
@@ -134,9 +121,6 @@ const initializeDrawerHooks = () => {
   // const bannerVisibleFlag = isSubscriptionTrial;
 
   const drawerClasses = useDrawerClasses({
-    header,
-    isOpen: isNavbarInFullMode || isOpen,
-    navbarFullWidth: navbarFullWidth || 260,
     isNavbarVisible,
     bannerVisible: bannerVisibleFlag || hasCreditCardExpirationMessage,
   });
@@ -166,17 +150,12 @@ const initializeDrawerHooks = () => {
     ) || {};
 
   return {
-    isOpen,
-    open,
-    close,
-    activeId,
-    setActiveId,
     bannerVisibleFlag,
     setBannerVisibleFlag,
     bannerMessageLinkFlag,
     setBannerMessageLinkFlag,
     user,
-    lists,
+    // lists,
     header,
     intercomUser,
     organization,
@@ -198,9 +177,6 @@ const initializeDrawerHooks = () => {
     hasCreditCardExpirationMessage,
     drawerClasses,
     isHeaderVisible,
-    isNavbarInFullMode,
-    areNavbarSettingsVisible,
-    hideNavbar: () => dispatch(TemplateActions.hideNavbar()),
     selectCurrentOrganization: organizationIdentifier =>
       selectCurrentOrganization(organizationIdentifier),
     currentOrganization,

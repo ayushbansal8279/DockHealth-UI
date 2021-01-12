@@ -4,10 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { isNil } from 'ramda';
 import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
+import GenericHeader from 'components/common/GenericHeader';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
+import { setHeader } from 'actions/header-actions';
 import * as PatientApi from 'api/patient-api';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
@@ -40,6 +42,7 @@ const PatientsView = () => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] = useBoolean(
     false,
   );
+  const dispatch = useDispatch();
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const isGuest = orgUserRole === 'GUEST';
@@ -76,6 +79,14 @@ const PatientsView = () => {
   }, [searchValue, fetchMyPatientsList, fetchPatientsBySearchTerm]);
 
   useEffect(() => {
+    setHeader(dispatch)({
+      layout: [
+        {
+          key: 'patients-header',
+          component: <GenericHeader>Patients</GenericHeader>,
+        },
+      ],
+    });
     setIsFetchingPatients(true);
     refreshPatients();
     // eslint-disable-next-line react-hooks/exhaustive-deps

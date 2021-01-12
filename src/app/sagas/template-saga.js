@@ -15,8 +15,6 @@ export const removeHiddenNavbarTemplate = () => ({
 function* doInitializeHiddenNavbarTemplate() {
   yield all([
     put(TemplateActions.hideHeader()),
-    put(TemplateActions.enableNavbarFullMode()),
-    put(TemplateActions.setCustomNavbarWidth(380)),
     put(TemplateActions.hideNavbar()),
   ]);
 }
@@ -24,8 +22,6 @@ function* doInitializeHiddenNavbarTemplate() {
 function* doRemoveHiddenNavbarTemplate() {
   yield all([
     put(TemplateActions.showHeader()),
-    put(TemplateActions.disableNavbarFullMode()),
-    put(TemplateActions.resetCustomNavbarWidth()),
     put(TemplateActions.showNavbar()),
   ]);
 }

@@ -16,6 +16,7 @@ import {
 } from 'api/activity-alerts-api';
 import { getNotificationSettings } from 'api/user-api';
 import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
+import { clearNotifications } from 'actions/template-actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { initializePusher } from 'helpers/pusher-instance';
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
@@ -89,10 +90,15 @@ const listenRealTimeAlerts = (
   }
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const ActivityAlerts = ({ variant = 'blue' }) => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const { currentUser, notificationsOpen, notificationsPage } = useSelector(
+    store => ({
+      currentUser: store.userState.userProfile,
+      notificationsOpen: store.templateState.notificationsOpen,
+      notificationsPage: store.templateState.notificationsPage,
+    }),
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const [activityAlertsList, setActivityAlertsList] = useState(null);
@@ -114,6 +120,16 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     await getActivityAlerts(setActivityAlertsList);
     setActivityAlertsListIsFetching(false);
   };
+
+  useEffect(() => {
+    if (notificationsOpen && !isOpen) {
+      setIsOpen(true);
+      if (notificationsPage !== '') {
+        setSelectedScreen(notificationsPage);
+      }
+      dispatch(clearNotifications());
+    }
+  }, [notificationsOpen, notificationsPage]);
 
   useEffect(() => {
     getActivityAlertsPreferences();

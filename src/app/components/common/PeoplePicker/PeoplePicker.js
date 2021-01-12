@@ -9,7 +9,7 @@ import CrossIcon from 'img/cross';
 import useBoolean from 'hooks/useBoolean';
 import Member from 'components/members/Member/Member';
 import Input from 'components/common/Input/Input';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+import AdditionalInfoTooltip from 'components/common/AdditionalInfoTooltip/AdditionalInfoTooltip';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { TickIconContainer } from '../../ListForm/styled';
 import InviteForm from './InviteForm/InviteForm';
@@ -198,7 +198,7 @@ const PeoplePicker = ({
             <PeopleLabel hasSelectedPeople={joinedPeopleNames}>
               <span>{peopleLabel}</span>
               {tooltipDescritpion && (
-                <Tooltip description={tooltipDescritpion} />
+                <AdditionalInfoTooltip description={tooltipDescritpion} />
               )}
             </PeopleLabel>
             <PeopleNames>

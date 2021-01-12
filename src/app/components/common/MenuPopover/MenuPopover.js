@@ -1,5 +1,10 @@
 import React from 'react';
-import { StyledPopover, ButtonsWrapper, Button } from './styled';
+import {
+  StyledPopover,
+  ButtonsWrapper,
+  PrimaryButton,
+  SecondaryButton,
+} from './styled';
 
 const MenuPopover = ({
   anchorEl,
@@ -7,12 +12,16 @@ const MenuPopover = ({
   onClose,
   options,
   onAfterOptionClick = null,
+  itemType = 'primary',
 }) => {
   const handleOptionClick = (event, onClick) => {
     if (typeof onAfterOptionClick === 'function') onAfterOptionClick();
 
     onClick();
   };
+
+  const ButtonComponent =
+    itemType === 'secondary' ? SecondaryButton : PrimaryButton;
 
   return (
     <StyledPopover
@@ -33,13 +42,13 @@ const MenuPopover = ({
         {options?.map(({ key, label, onClick }) => {
           if (key !== undefined && key !== '') {
             return (
-              <Button
+              <ButtonComponent
                 key={key}
                 onClick={event => handleOptionClick(event, onClick)}
                 type="button"
               >
                 {label}
-              </Button>
+              </ButtonComponent>
             );
           }
           return null;

@@ -10,7 +10,7 @@ const mdBreakpoint = 960;
 export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 700px;
   width: 100%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {
@@ -19,6 +19,7 @@ export const MainContainer = styled.div`
 `;
 
 export const LeftSideMainContainer = styled.div`
+  position: relative;
   align-items: center;
   background-color: ${palette.white};
   display: flex;
@@ -121,8 +122,8 @@ export const CloseButton = styled(IconButton)`
     font-size: 1.125rem;
     margin-left: auto;
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 10px;
+    left: 10px;
   }
 `;
 

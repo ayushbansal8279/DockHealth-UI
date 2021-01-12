@@ -29,6 +29,7 @@ import NotificationSettingsTourModal from './components/NewFeaturesModals/Notifi
 import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
 import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
 import SelectTaskDestinationModal from './components/SelectTaskDestinationModal/SelectTaskDestinationModal';
+import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -62,6 +63,7 @@ const MODAL_MAP = {
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
   SelectTaskDestination: SelectTaskDestinationModal,
+  ReferAColleague: ReferAColleagueModal,
 };
 
 export default MODAL_MAP;

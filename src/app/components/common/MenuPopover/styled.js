@@ -18,7 +18,7 @@ export const ButtonsWrapper = styled.div`
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
 `;
 
-export const Button = styled.button`
+export const PrimaryButton = styled.button`
   display: block;
   width: 100%;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
@@ -27,6 +27,22 @@ export const Button = styled.button`
   outline: none;
   color: ${palette.darkGrey};
   font-family: 'Montserrat', sans-serif;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.blueGrey};
+  }
+`;
+
+export const SecondaryButton = styled.button`
+  display: block;
+  width: 100%;
+  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+  font-weight: 400;
+  text-align: left;
+  outline: none;
+  color: ${palette.coolGrey9};
+  font-family: Roboto Condensed;
 
   &:hover {
     cursor: pointer;

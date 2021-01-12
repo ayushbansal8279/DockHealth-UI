@@ -16,13 +16,13 @@ import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
-import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
+// import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
 import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
 import {
   DashboardViewWrapper,
-  DashboardSidebarWrapper,
+  // DashboardSidebarWrapper,
   DashboardContentWrapper,
   DashboardHeaderContainer,
   MenuButton,
@@ -120,7 +120,7 @@ const DashboardView = ({
     <DashboardViewWrapper>
       <ViewLoader isFetchingData={!currentUserLoaded}>
         <>
-          {hasExistingLists && (
+          {/* {hasExistingLists && (
             <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
               <DashboardSidebar
                 shouldDisplayFirstListCreationMessage={
@@ -135,7 +135,7 @@ const DashboardView = ({
                 currentUser={currentUser}
               />
             </DashboardSidebarWrapper>
-          )}
+          )} */}
           <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
             {hasExistingLists && isFirstUserListCreationSuccess && (
               <Confetti style={{ zIndex: 101 }} recycle={false} />

@@ -7,66 +7,52 @@ import palette from 'styles/palette';
 export const DrawerContainer = styled.div`
   display: flex;
   height: 100%;
-  flex-flow: column nowrap;
-  overflow: hidden;
+  width: 100vw;
+  flex-flow: row nowrap;
 `;
 
 export const useDrawerClasses = makeStyles({
   appBar: {
-    backgroundColor: palette.midnightBlue,
-    color: palette.white,
+    backgroundColor: palette.white,
+    color: palette.mediumGrey,
     fontSize: '2.25rem',
     height: '5rem',
-    marginLeft: 85,
     marginBottom: ({ bannerVisible }) => (bannerVisible ? '2.875rem' : 0),
     padding: '0.75rem 1.25rem 1rem',
     position: 'relative',
-    transition: 'all 0.2s ease-out',
-    width: 'calc(100% - 85px)',
-  },
-  appBarOpen: {
-    marginLeft: ({ navbarFullWidth }) => navbarFullWidth,
-    width: ({ navbarFullWidth }) => `calc(100% - ${navbarFullWidth}px)`,
-  },
-  appBarBorder: {
-    backgroundColor: palette.coolGrey2,
-    height: '0.25rem',
-    left: 0,
-    position: 'absolute',
-    top: '4.75rem',
     width: '100%',
-    zIndex: 1,
+    boxShadow: 'none',
   },
   drawer: {
+    position: 'relative',
+    zIndex: 10,
     flexShrink: 0,
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
+    position: 'static',
     transform: ({ isNavbarVisible }) =>
       isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)',
     backgroundColor: palette.midnightBlue,
     border: 0,
     overflow: 'initial',
-    width: ({ isOpen, navbarFullWidth }) => (isOpen ? navbarFullWidth : 85),
-    transition: 'width 0.2s ease-out, transform 0.2s ease-out',
+    width: 'auto',
   },
 });
 
-export const ContentContainer = styled.div`
-  ${({ isFullView, open }) =>
-    !isFullView
-      ? `
-      ${open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
-      ${open ? 'margin-left: 260px;' : 'margin-left: 85px;'}
-    `
-      : `
-      width: 100%;
-      margin-left: 0;
-    `}
-  height: 100%;
-  overflow-y: auto;
+export const MainContainer = styled.div`
   position: relative;
-  transition: width 0.2s ease-out, margin 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  z-index: 9;
+`;
+
+export const ContentContainer = styled.div`
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
 `;
 
 export const TrialBannerContainer = styled(Grid)`
