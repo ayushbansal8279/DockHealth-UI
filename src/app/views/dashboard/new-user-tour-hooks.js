@@ -1,44 +1,58 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as TemplateActions from 'actions/template-actions';
-import { hasInboxList } from 'selectors/task-list-selectors';
 import { LISTS_SUBMENU_KEY } from 'components/drawer/DrawerNavigation/DrawerNavigation';
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
-import {
-  DASHBOARD_FIRST_TIME_KEY,
-  STORAGE_DASHBOARD_TOUR_INBOX_KEY,
-} from 'views/dashboard/existing-user-tour-hooks';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { isNil } from 'ramda';
 import { onNewUserTourEnter, onInboxTourEnter } from 'helpers/ga-event-helper';
-import { useDispatch, useSelector } from 'react-redux';
+import Tour from 'components/tour-wizard/Tour/Tour';
+import { DashboardTourWrapper, DashboardTourBackground } from './styled';
+import { FIRST_TOUR_STEPS } from './dashboard-tour-steps';
 
-const DashboardUserTour = ({
+export const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
+export const STORAGE_DASHBOARD_TOUR_INBOX_KEY =
+  'STORAGE_DASHBOARD_TOUR_INBOX_KEY';
+
+const newUserTourHooks = ({
   firstCreatedUserListIdentifier,
   setFirstCreatedUserListIdentifier,
+  lists,
+  isNewUser,
 }) => {
   const dispatch = useDispatch();
+
+  const [openedModalTour, setOpenendModalTour] = useState(null);
+  const isModalAutoTriggered = useRef(true);
+
   const [firstListElement, setFirstListElement] = useState(null);
   const [firstListIdentifier, setFirstListIdentifier] = useState(null);
   const [inboxListElement, setInboxListElement] = useState(null);
   const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
   const history = useHistory();
 
-  const hasInbox = useSelector(hasInboxList);
+  const hasAnyTask = lists?.some(list => list.numberOfTasks > 0);
+  const hasInbox = lists?.some(({ listType }) => listType === 'INBOX');
 
   const startUserModalFlow = () => {
     const dashboardFirstTimeValue = localStorageHelper.getItem(
       DASHBOARD_FIRST_TIME_KEY,
     );
 
-    if (dashboardFirstTimeValue === false) {
+    if (isNil(dashboardFirstTimeValue) || dashboardFirstTimeValue) {
+      setOpenendModalTour(1);
+    } else {
       const dashboardInboxTourValue = localStorageHelper.getItem(
         STORAGE_DASHBOARD_TOUR_INBOX_KEY,
       );
 
-      if (isNil(dashboardInboxTourValue) || dashboardInboxTourValue) {
+      if (
+        (isNil(dashboardInboxTourValue) || dashboardInboxTourValue) &&
+        hasInbox
+      ) {
         dispatch(TemplateActions.showSubMenu(LISTS_SUBMENU_KEY));
         setTimeout(() => {
           const inboxElement = document.querySelector(
@@ -52,8 +66,27 @@ const DashboardUserTour = ({
     }
   };
 
+  const closeFirstModalTour = () => {
+    isModalAutoTriggered.current = true;
+    setOpenendModalTour(null);
+    localStorageHelper.setItem(DASHBOARD_FIRST_TIME_KEY, false);
+  };
+
+  const forceOpenTourModal = () => {
+    if (!openedModalTour) {
+      isModalAutoTriggered.current = false;
+      setOpenendModalTour(1);
+    }
+  };
+
   useEffect(() => {
-    if (firstCreatedUserListIdentifier) {
+    if (!isNewUser) return;
+
+    if (
+      firstCreatedUserListIdentifier &&
+      !inboxPopoverOpen &&
+      !openedModalTour
+    ) {
       const targetListIdentifier = firstCreatedUserListIdentifier;
       setFirstCreatedUserListIdentifier(false);
       dispatch(TemplateActions.showSubMenu(LISTS_SUBMENU_KEY));
@@ -65,19 +98,34 @@ const DashboardUserTour = ({
         setFirstListElement(listElement);
         onNewUserTourEnter('Create list congrats');
       });
-    } else if (hasInbox) {
+    } else if (hasAnyTask) {
       startUserModalFlow();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstCreatedUserListIdentifier]);
+  }, [firstCreatedUserListIdentifier, isNewUser]);
 
   const closeInboxPopup = () => {
     setInboxPopoverOpen(false);
     localStorageHelper.setItem(STORAGE_DASHBOARD_TOUR_INBOX_KEY, false);
   };
 
-  return (
+  const renderNewUserTour = () => (
     <>
+      {openedModalTour && (
+        <>
+          <DashboardTourWrapper>
+            {openedModalTour === 1 && (
+              <Tour
+                modalName="Home tour modal"
+                modalAutoTriggered={isModalAutoTriggered?.current}
+                steps={FIRST_TOUR_STEPS}
+                onClose={closeFirstModalTour}
+              />
+            )}
+          </DashboardTourWrapper>
+          <DashboardTourBackground onClick={closeFirstModalTour} />
+        </>
+      )}
       <TourPopover
         anchorEl={firstListElement}
         position="right-start"
@@ -111,6 +159,12 @@ const DashboardUserTour = ({
       </TourPopover>
     </>
   );
+
+  return {
+    tourModalIsOpen: openedModalTour === 1,
+    forceOpenTourModal,
+    renderNewUserTour,
+  };
 };
 
-export default DashboardUserTour;
+export default newUserTourHooks;

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useMemo, useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import Confetti from 'react-confetti';
@@ -26,12 +26,10 @@ import {
   DashboardListWrapper,
 } from './styled';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
-import existingUserTourHooks from './existing-user-tour-hooks';
-import DashboardUserTour from './DashboardUserTour/DashboardUserTour';
+import newUserTourHooks from './new-user-tour-hooks';
 
 const DashboardView = ({
   isTaskDrawerOpen,
-  isLoadingDashboard,
   lists = [],
   pendingLists = [],
   currentUser,
@@ -40,6 +38,7 @@ const DashboardView = ({
   acceptInviteToTaskList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
   const [
     firstCreatedUserListIdentifier,
     setFirstCreatedUserListIdentifier,
@@ -59,6 +58,8 @@ const DashboardView = ({
   const firstUserList = allLists?.find(list => list.listType !== 'INBOX');
 
   const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
+
+  const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
   const refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
@@ -97,25 +98,37 @@ const DashboardView = ({
     });
   };
 
+  useEffect(() => {
+    if (currentUser && !isEmpty(currentUser) && !isNewUser) {
+      const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
+
+      if (!appFeaturesReviewed?.includes('TASK_DENSITY')) {
+        dispatch(
+          openModal('TaskDensityTour', {
+            onClose: () => {
+              UserApi.updateUserDashboardPrefs({
+                appFeaturesReviewed: ['TASK_DENSITY'],
+              });
+            },
+          }),
+        );
+      }
+    }
+  }, [currentUser, dispatch, isNewUser, openModal]);
+
   const {
-    renderExistingUserTour,
     tourModalIsOpen,
     forceOpenTourModal,
-  } = existingUserTourHooks({
-    isLoadingDashboard,
-    createListViewVisible,
-    currentUserLoaded,
+    renderNewUserTour,
+  } = newUserTourHooks({
+    firstCreatedUserListIdentifier,
+    setFirstCreatedUserListIdentifier,
     lists,
+    isNewUser,
   });
 
   const location = window.location?.hash?.split('/');
   const dashboardTab = location.slice(-1)[0];
-
-  // useEffect(() => {
-  //   if (allLists?.length > 0) {
-  //     setFirstCreatedUserListIdentifier('8fde553e-24b0-495f-944b-98b1e8764344');
-  //   }
-  // }, []);
 
   return (
     <DashboardViewWrapper>
@@ -169,14 +182,7 @@ const DashboardView = ({
           </DashboardScrollableList>
         </DashboardContentWrapper>
       </ViewLoader>
-      {currentUser?.usageState?.loginCount <= 5 ? (
-        renderExistingUserTour()
-      ) : (
-        <DashboardUserTour
-          firstCreatedUserListIdentifier={firstCreatedUserListIdentifier}
-          setFirstCreatedUserListIdentifier={setFirstCreatedUserListIdentifier}
-        />
-      )}
+      {isNewUser && renderNewUserTour()}
     </DashboardViewWrapper>
   );
 };
