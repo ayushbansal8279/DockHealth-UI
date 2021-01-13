@@ -42,7 +42,8 @@ const DashboardView = ({
   const [
     firstCreatedUserListIdentifier,
     setFirstCreatedUserListIdentifier,
-  ] = useState(false);
+  ] = useState(null);
+  const [openConfetti, setOpenConfetti] = useState(false);
 
   const currentUserLoaded = currentUser && !isEmpty(currentUser);
   const { usageState } = currentUser ?? {};
@@ -84,16 +85,19 @@ const DashboardView = ({
     refreshAccessToken(currentUser);
   });
 
-  const handleCreateList = () => {
+  const handleCreateFirstList = () => {
+    let firstListIdentifier;
     onNewUserTourEnter('Opened create list modal');
     openModal('ListForm', {
+      onListCreationSuccess: taskListIdentifier => {
+        onNewUserTourEnter('Create list success');
+        firstListIdentifier = taskListIdentifier;
+      },
       onClose: () => {
         fetchTasklistForUser();
         UserApi.getUserByEmail(currentUser.email, currentUser);
-      },
-      onListCreationSuccess: taskListIdentifier => {
-        onNewUserTourEnter('Create list success');
-        setFirstCreatedUserListIdentifier(taskListIdentifier);
+        setFirstCreatedUserListIdentifier(firstListIdentifier);
+        setOpenConfetti(true);
       },
     });
   };
@@ -134,7 +138,7 @@ const DashboardView = ({
     <DashboardViewWrapper>
       <ViewLoader isFetchingData={!currentUserLoaded}>
         <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
-          {firstCreatedUserListIdentifier && <StyledConfetti recycle={false} />}
+          {openConfetti && <StyledConfetti recycle={false} />}
           <DashboardScrollableList>
             <div>
               <DashboardHeaderContainer>
@@ -151,7 +155,7 @@ const DashboardView = ({
               <DashboardFirstVisitViewWrapper>
                 <DashboardFirstVisitView
                   hasInvitedLists={hasOnlyInvitedLists}
-                  onCreateList={handleCreateList}
+                  onCreateList={handleCreateFirstList}
                   onTakeATour={() => {
                     onNewUserTourEnter('Video tutorial');
                     openModal('Video', {

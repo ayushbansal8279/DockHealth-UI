@@ -88,7 +88,7 @@ const newUserTourHooks = ({
       !openedModalTour
     ) {
       const targetListIdentifier = firstCreatedUserListIdentifier;
-      setFirstCreatedUserListIdentifier(false);
+      setFirstCreatedUserListIdentifier(null);
       dispatch(TemplateActions.showSubMenu(LISTS_SUBMENU_KEY));
       setTimeout(() => {
         const listElement = document.querySelector(
@@ -138,7 +138,7 @@ const newUserTourHooks = ({
           buttonText="Add a task to this list"
           onButtonClick={() => {
             setFirstListIdentifier(null);
-            history.push(`task-tour/${firstListIdentifier}`);
+            history.push(`/core/task-tour/${firstListIdentifier}`);
           }}
           width={526}
         />

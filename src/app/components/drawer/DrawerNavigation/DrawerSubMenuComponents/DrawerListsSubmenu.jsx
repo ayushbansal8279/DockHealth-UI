@@ -197,6 +197,7 @@ const DrawerListsSubmenu = () => {
       <DrawerListsList>
         {lists?.map((list, index) => (
           <DrawerListsItem
+            key={list.taskListIdentifier}
             data-list-id={list.taskListIdentifier}
             className={
               list.listType === 'INBOX'

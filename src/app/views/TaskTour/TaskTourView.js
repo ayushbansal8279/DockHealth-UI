@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
 import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
@@ -18,10 +18,11 @@ import {
   ButtonWrapper,
 } from './styled';
 
-const TaskTourView = ({ routeParams: { taskListIdentifier } }) => {
+const TaskTourView = () => {
   const taskLists = useSelector(taskListSelector);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { taskListIdentifier } = useParams();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 

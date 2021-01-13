@@ -233,7 +233,7 @@ export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
 export const DrawerListsList = styled.div`
   padding: ${spacing.largePlus} 0 ${spacing.largePlus} ${spacing.smallPlus};
   border-bottom: 1px solid ${palette.coolGrey2};
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const DrawerListsItem = styled.div`
