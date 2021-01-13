@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
-const SUB_MENU_WIDTH = 200;
+const SUB_MENU_WIDTH = 300;
 
 export const DrawerContentContainer = styled.nav`
   display: flex;

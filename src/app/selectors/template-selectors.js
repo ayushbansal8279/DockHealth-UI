@@ -11,13 +11,3 @@ export const subMenuKeySelector = createSelector(
   templateStateSelector,
   ({ subMenuKey }) => subMenuKey,
 );
-
-// export const isNavbarInFullModeSelector = createSelector(
-//   templateStateSelector,
-//   ({ isNavbarInFullMode }) => isNavbarInFullMode,
-// );
-
-// export const areNavbarSettingsVisibleSelector = createSelector(
-//   templateStateSelector,
-//   ({ areNavbarSettingsVisible }) => areNavbarSettingsVisible,
-// );
