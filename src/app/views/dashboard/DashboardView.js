@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
-import Confetti from 'react-confetti';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { listsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -24,6 +23,7 @@ import {
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
   DashboardListWrapper,
+  StyledConfetti,
 } from './styled';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import newUserTourHooks from './new-user-tour-hooks';
@@ -134,9 +134,7 @@ const DashboardView = ({
     <DashboardViewWrapper>
       <ViewLoader isFetchingData={!currentUserLoaded}>
         <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
-          {firstCreatedUserListIdentifier && (
-            <Confetti style={{ zIndex: 101 }} recycle={false} />
-          )}
+          {firstCreatedUserListIdentifier && <StyledConfetti recycle={false} />}
           <DashboardScrollableList>
             <div>
               <DashboardHeaderContainer>
@@ -182,7 +180,7 @@ const DashboardView = ({
           </DashboardScrollableList>
         </DashboardContentWrapper>
       </ViewLoader>
-      {isNewUser && renderNewUserTour()}
+      {renderNewUserTour()}
     </DashboardViewWrapper>
   );
 };

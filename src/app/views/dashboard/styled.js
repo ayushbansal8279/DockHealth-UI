@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import Confetti from 'react-confetti';
 
 export const DashboardViewWrapper = styled.div`
   display: flex;
@@ -67,4 +68,11 @@ export const DashboardFirstVisitViewWrapper = styled.div`
 
 export const DashboardListWrapper = styled.div`
   ${({ fullWidth }) => !fullWidth && 'max-width: 1440px;'}
+`;
+
+export const StyledConfetti = styled(Confetti)`
+  z-index: 101;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 `;
