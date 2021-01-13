@@ -3,11 +3,9 @@ import { connect } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import Confetti from 'react-confetti';
-import MenuIcon from 'img/menu-icon';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { listsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import * as TemplateActions from 'actions/template-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskListSagaActions from 'sagas/tasklist-saga';
@@ -16,29 +14,26 @@ import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
-// import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
 import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
 import {
   DashboardViewWrapper,
-  // DashboardSidebarWrapper,
   DashboardContentWrapper,
   DashboardHeaderContainer,
-  MenuButton,
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
   DashboardListWrapper,
 } from './styled';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import existingUserTourHooks from './existing-user-tour-hooks';
+import DashboardUserTour from './DashboardUserTour/DashboardUserTour';
 
 const DashboardView = ({
   isTaskDrawerOpen,
   isLoadingDashboard,
   lists = [],
   pendingLists = [],
-  showNavbar,
   currentUser,
   openModal,
   fetchTasklistForUser,
@@ -46,8 +41,8 @@ const DashboardView = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [
-    isFirstUserListCreationSuccess,
-    setIsFirstUserListCreationSuccess,
+    firstCreatedUserListIdentifier,
+    setFirstCreatedUserListIdentifier,
   ] = useState(false);
 
   const currentUserLoaded = currentUser && !isEmpty(currentUser);
@@ -95,9 +90,9 @@ const DashboardView = ({
         fetchTasklistForUser();
         UserApi.getUserByEmail(currentUser.email, currentUser);
       },
-      onListCreationSuccess: () => {
+      onListCreationSuccess: taskListIdentifier => {
         onNewUserTourEnter('Create list success');
-        setIsFirstUserListCreationSuccess(true);
+        setFirstCreatedUserListIdentifier(taskListIdentifier);
       },
     });
   };
@@ -116,82 +111,72 @@ const DashboardView = ({
   const location = window.location?.hash?.split('/');
   const dashboardTab = location.slice(-1)[0];
 
+  // useEffect(() => {
+  //   if (allLists?.length > 0) {
+  //     setFirstCreatedUserListIdentifier('8fde553e-24b0-495f-944b-98b1e8764344');
+  //   }
+  // }, []);
+
   return (
     <DashboardViewWrapper>
       <ViewLoader isFetchingData={!currentUserLoaded}>
-        <>
-          {/* {hasExistingLists && (
-            <DashboardSidebarWrapper isHidden={shouldHideSidebar}>
-              <DashboardSidebar
-                shouldDisplayFirstListCreationMessage={
-                  isFirstUserListCreationSuccess
-                }
-                lists={allLists}
-                showNavbar={showNavbar}
-                closeListCreationSuccessMessage={() =>
-                  setIsFirstUserListCreationSuccess(false)
-                }
-                acceptInvitation={acceptInviteToTaskList}
-                currentUser={currentUser}
-              />
-            </DashboardSidebarWrapper>
-          )} */}
-          <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
-            {hasExistingLists && isFirstUserListCreationSuccess && (
-              <Confetti style={{ zIndex: 101 }} recycle={false} />
-            )}
-            <DashboardScrollableList>
-              <div>
+        <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
+          {firstCreatedUserListIdentifier && (
+            <Confetti style={{ zIndex: 101 }} recycle={false} />
+          )}
+          <DashboardScrollableList>
+            <div>
+              <DashboardHeaderContainer>
+                <DashboardHeader
+                  isUserFirstTime={
+                    createListViewVisible || firstCreatedUserListIdentifier
+                  }
+                  currentUser={currentUser}
+                />
+              </DashboardHeaderContainer>
+              <Spacing vertical={3} />
+            </div>
+            {createListViewVisible ? (
+              <DashboardFirstVisitViewWrapper>
+                <DashboardFirstVisitView
+                  hasInvitedLists={hasOnlyInvitedLists}
+                  onCreateList={handleCreateList}
+                  onTakeATour={() => {
+                    onNewUserTourEnter('Video tutorial');
+                    openModal('Video', {
+                      title: 'Emailing a Task to Dock Health',
+                      url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
+                    });
+                  }}
+                  list={firstUserList}
+                  acceptInvitation={acceptInviteToTaskList}
+                />
+              </DashboardFirstVisitViewWrapper>
+            ) : (
+              <DashboardListWrapper fullWidth={createListViewVisible}>
                 <DashboardHeaderContainer>
-                  {!hasExistingLists && (
-                    <MenuButton onClick={showNavbar}>
-                      <img src={MenuIcon} alt="menu" />
-                    </MenuButton>
-                  )}
-                  <DashboardHeader
-                    isUserFirstTime={
-                      createListViewVisible || isFirstUserListCreationSuccess
-                    }
-                    currentUser={currentUser}
-                  />
+                  <DashboardStatistics dashboardTab={dashboardTab} />
                 </DashboardHeaderContainer>
-                <Spacing vertical={3} />
-              </div>
-              {createListViewVisible ? (
-                <DashboardFirstVisitViewWrapper>
-                  <DashboardFirstVisitView
-                    hasInvitedLists={hasOnlyInvitedLists}
-                    onCreateList={handleCreateList}
-                    onTakeATour={() => {
-                      onNewUserTourEnter('Video tutorial');
-                      openModal('Video', {
-                        title: 'Emailing a Task to Dock Health',
-                        url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
-                      });
-                    }}
-                    list={firstUserList}
-                    acceptInvitation={acceptInviteToTaskList}
-                  />
-                </DashboardFirstVisitViewWrapper>
-              ) : (
-                <DashboardListWrapper fullWidth={createListViewVisible}>
-                  <DashboardHeaderContainer>
-                    <DashboardStatistics dashboardTab={dashboardTab} />
-                  </DashboardHeaderContainer>
-                  <DashboardList
-                    currentUser={currentUser}
-                    isTaskDrawerOpen={isTaskDrawerOpen}
-                    dashboardTab={dashboardTab}
-                    tourModalIsOpen={tourModalIsOpen}
-                    openTourModal={forceOpenTourModal}
-                  />
-                </DashboardListWrapper>
-              )}
-            </DashboardScrollableList>
-          </DashboardContentWrapper>
-          {renderExistingUserTour()}
-        </>
+                <DashboardList
+                  currentUser={currentUser}
+                  isTaskDrawerOpen={isTaskDrawerOpen}
+                  dashboardTab={dashboardTab}
+                  tourModalIsOpen={tourModalIsOpen}
+                  openTourModal={forceOpenTourModal}
+                />
+              </DashboardListWrapper>
+            )}
+          </DashboardScrollableList>
+        </DashboardContentWrapper>
       </ViewLoader>
+      {currentUser?.usageState?.loginCount <= 5 ? (
+        renderExistingUserTour()
+      ) : (
+        <DashboardUserTour
+          firstCreatedUserListIdentifier={firstCreatedUserListIdentifier}
+          setFirstCreatedUserListIdentifier={setFirstCreatedUserListIdentifier}
+        />
+      )}
     </DashboardViewWrapper>
   );
 };
@@ -205,7 +190,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  showNavbar: TemplateActions.showNavbar,
   openModal: openModalAction,
   setTaskListAsCurrentList: TaskListActions.setTaskListAsCurrentList,
   fetchTasklistForUser: TaskListSagaActions.fetchTasklistForUser,

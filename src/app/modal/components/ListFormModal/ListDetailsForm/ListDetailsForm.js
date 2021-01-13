@@ -32,7 +32,7 @@ const onSubmit = ({
         nextStep();
 
         if (typeof onListCreationSuccess === 'function')
-          onListCreationSuccess();
+          onListCreationSuccess(updatedList.taskListIdentifier);
       }
     })
     .catch(error => {

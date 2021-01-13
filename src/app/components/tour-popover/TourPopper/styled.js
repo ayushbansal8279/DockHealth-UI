@@ -56,8 +56,7 @@ export const PopperWrapper = styled.div`
   position: relative;
   ${({ yAxisMargin }) =>
     yAxisMargin && `margin: ${spacing.regular} ${spacing.tiny};`}
-  ${({ xAxisMargin }) =>
-    xAxisMargin && `margin: ${spacing.tiny} ${spacing.regular};`}
+  ${({ xAxisMargin }) => xAxisMargin && `margin: 0 ${spacing.regular};`}
   background: ${palette.darkBlue};
   border-radius: 5px;
 `;

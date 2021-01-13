@@ -21,3 +21,8 @@ export const listsSelector = createSelector(
   taskListStateSelector,
   ({ tasklist }) => tasklist,
 );
+
+export const hasInboxList = createSelector(
+  taskListStateSelector,
+  ({ tasklist }) => tasklist?.some(({ listType }) => listType === 'INBOX'),
+);

@@ -26,16 +26,16 @@ import {
 import IconNavigationItem from './IconNavigationItem';
 import NavigationItem from './NavigationItem';
 
-const ORGANIZATION_KEY = 'ORGANIZATION';
-const PROFILE_KEY = 'PROFILE';
-const LISTS_KEY = 'LISTS';
-const SETTINGS_KEY = 'SETTINGS';
+const ORGANIZATION_SUBMENU_KEY = 'ORGANIZATION';
+const PROFILE_SUBMENU_KEY = 'PROFILE';
+export const LISTS_SUBMENU_KEY = 'LISTS';
+const SETTINGS_SUBMENU_KEY = 'SETTINGS';
 
 const SUBMENU_COMPONENTS = {
-  [ORGANIZATION_KEY]: DrawerOrganizationSubmenu,
-  [PROFILE_KEY]: DrawerProfileSubmenu,
-  [LISTS_KEY]: DrawerListsSubmenu,
-  [SETTINGS_KEY]: DrawerSettingsSubmenu,
+  [ORGANIZATION_SUBMENU_KEY]: DrawerOrganizationSubmenu,
+  [PROFILE_SUBMENU_KEY]: DrawerProfileSubmenu,
+  [LISTS_SUBMENU_KEY]: DrawerListsSubmenu,
+  [SETTINGS_SUBMENU_KEY]: DrawerSettingsSubmenu,
 };
 
 const DrawerNavigation = ({
@@ -95,8 +95,8 @@ const DrawerNavigation = ({
           <Grid container direction="column">
             <NavigationItem
               name="Organization"
-              subMenuKey={ORGANIZATION_KEY}
-              subMenuOpen={openedSubMenuKey === ORGANIZATION_KEY}
+              subMenuKey={ORGANIZATION_SUBMENU_KEY}
+              subMenuOpen={openedSubMenuKey === ORGANIZATION_SUBMENU_KEY}
               onItemClick={handleNavigationItemClick}
             >
               <>
@@ -124,9 +124,9 @@ const DrawerNavigation = ({
             />
             <IconNavigationItem
               name="Lists"
-              subMenuKey={LISTS_KEY}
+              subMenuKey={LISTS_SUBMENU_KEY}
               icon={ListsIcon}
-              subMenuOpen={openedSubMenuKey === LISTS_KEY}
+              subMenuOpen={openedSubMenuKey === LISTS_SUBMENU_KEY}
               path="/core/tasks"
               onItemClick={handleNavigationItemClick}
             />
@@ -147,17 +147,17 @@ const DrawerNavigation = ({
             {isUserAdmin && (
               <IconNavigationItem
                 name="Admin"
-                subMenuKey={SETTINGS_KEY}
+                subMenuKey={SETTINGS_SUBMENU_KEY}
                 icon={SettingsIcon}
-                subMenuOpen={openedSubMenuKey === SETTINGS_KEY}
+                subMenuOpen={openedSubMenuKey === SETTINGS_SUBMENU_KEY}
                 path={['/settings/billing', '/settings/subscriptions']}
                 onItemClick={handleNavigationItemClick}
               />
             )}
             <NavigationItem
               name="Account"
-              subMenuKey={PROFILE_KEY}
-              subMenuOpen={openedSubMenuKey === PROFILE_KEY}
+              subMenuKey={PROFILE_SUBMENU_KEY}
+              subMenuOpen={openedSubMenuKey === PROFILE_SUBMENU_KEY}
               onItemClick={handleNavigationItemClick}
             >
               <>

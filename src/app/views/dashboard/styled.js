@@ -12,17 +12,6 @@ export const DashboardViewWrapper = styled.div`
   background-color: ${palette.white};
 `;
 
-export const DashboardSidebarWrapper = styled.div`
-  height: 100%;
-  width: ${({ isHidden }) => (isHidden ? 0 : 280)}px;
-  border-right: 1px solid ${palette.coolGrey2};
-  background-color: ${palette.coolGrey4};
-  transition: width 0.3s ease-out;
-
-  @media (min-width: 1153px) {
-    width: ${({ isHidden }) => (isHidden ? 0 : 380)}px;
-  }
-`;
 export const DashboardScrollableList = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,12 +54,6 @@ export const DashboardHeaderContainer = styled.div`
   align-items: center;
   flex-direction: row;
   padding: 0 55px;
-`;
-
-export const MenuButton = styled.button`
-  margin-right: 88px; // per design
-  outline: none;
-  cursor: pointer;
 `;
 
 export const DashboardFirstVisitViewWrapper = styled.div`

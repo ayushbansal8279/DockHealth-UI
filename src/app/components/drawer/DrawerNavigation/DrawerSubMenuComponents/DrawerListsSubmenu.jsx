@@ -196,7 +196,14 @@ const DrawerListsSubmenu = () => {
       )}
       <DrawerListsList>
         {lists?.map((list, index) => (
-          <DrawerListsItem>
+          <DrawerListsItem
+            data-list-id={list.taskListIdentifier}
+            className={
+              list.listType === 'INBOX'
+                ? 'drawer-menu-list-inbox'
+                : `drawer-menu-list-item`
+            }
+          >
             <div
               onMouseEnter={event => handleMouseEnter(event, list?.listName)}
               onMouseLeave={() => setPopoverLabel(null)}
