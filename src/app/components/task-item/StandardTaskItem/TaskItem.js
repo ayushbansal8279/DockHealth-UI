@@ -515,6 +515,9 @@ const TaskItem = ({
             width="120px"
             paddingLeft="smallPlus"
             paddingRight="tiny"
+            onContextMenu={event => {
+              event.stopPropagation();
+            }}
           >
             <TaskWorkflowStatus
               task={task}
@@ -612,6 +615,9 @@ const TaskItem = ({
             paddingRight="tiny"
             width="60px"
             justify="center"
+            onContextMenu={event => {
+              event.stopPropagation();
+            }}
           >
             <PopoverDatepicker
               selectedDate={dueDate}
@@ -659,6 +665,9 @@ const TaskItem = ({
             justify="center"
             paddingLeft="tiny"
             paddingRight="tiny"
+            onContextMenu={event => {
+              event.stopPropagation();
+            }}
           >
             <TaskAssignMember
               currentUser={currentUser}
