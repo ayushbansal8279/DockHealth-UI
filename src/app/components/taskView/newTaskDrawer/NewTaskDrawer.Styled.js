@@ -20,14 +20,14 @@ export const TaskDrawerContainer = styled.div`
   padding: 0rem;
   position: fixed;
   right: 0;
-  top: ${({ top }) => top}px;
+  top: 0;
   -webkit-transform: translateX(${({ open }) => (open ? 0 : 100)}%);
   transform: translateX(${({ open }) => (open ? 0 : 100)}%);
   -webkit-transition: -webkit-transform 100ms ease;
   transition: transform 100ms ease;
   will-change: transform;
   width: 756px;
-  z-index: 100;
+  z-index: 1101;
 `;
 
 export const TaskDrawerBackground = styled.div`

@@ -253,9 +253,6 @@ const initializeTaskDrawerHooks = ({
   const isAddingOrEditingSubtask =
     Boolean(selectedTaskParent) || addingNewSubtask;
 
-  const { top } =
-    document.querySelector('#content-container')?.getBoundingClientRect() || {};
-
   const refreshMembers = () =>
     TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL').then(
       data => {
@@ -687,7 +684,6 @@ const initializeTaskDrawerHooks = ({
     areLabelsRequested,
     taskDrawerOpen,
     taskDrawerFocusField,
-    top,
     onSubmit: onSubmit({
       selectedTask,
       taskList,

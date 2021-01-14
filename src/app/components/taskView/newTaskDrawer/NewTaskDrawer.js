@@ -77,7 +77,6 @@ const NewTaskDrawer = ({
   const {
     taskDrawerOpen,
     taskDrawerFocusField,
-    top,
     onSubmit,
     formMethods,
     isAddingOrEditingSubtask,
@@ -208,7 +207,6 @@ const NewTaskDrawer = ({
     <>
       <TaskDrawerContainer
         open={taskDrawerOpen}
-        top={top}
         onClose={() => closeTaskDrawer()}
         ref={taskDrawerReference}
       >
