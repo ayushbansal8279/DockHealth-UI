@@ -3,6 +3,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import SimpleArrowRight from 'img/simple-arrow-right';
 import { storeAsCurrentTask, toggleCompleteTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -13,7 +14,6 @@ import Member from 'components/members/Member/Member';
 import {
   ATTACHMENTS,
   COMMENTS,
-  // getCalendarIcon,
   getItemIcon,
   getToolTipAttachmentsLabelDetails,
   getToolTipMultiLabelDetails,
@@ -21,7 +21,6 @@ import {
   isDueDateOverdue,
 } from 'components/task-item/icons';
 import { DueDateBasicLabel, CalendarIcon } from 'components/task-item/styled';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import EmptyCalendarIcon from 'img/calendar-dim.svg';
 import {
   Container,
@@ -119,9 +118,9 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
       <IconsSection>
         <IconContainer marginTop={updatedComment ? -8 : 0}>
           <button type="button" onClick={handleCommentIconClick}>
-            <UniversalTooltipContainer
+            <Tooltip
               placement="top"
-              label={
+              title={
                 comments?.length > 0
                   ? `${comments?.length} comment${
                       comments?.length > 1 ? 's' : ''
@@ -133,14 +132,14 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
                 alt="comments"
                 src={getItemIcon(COMMENTS, comments, true, updatedComment)}
               />
-            </UniversalTooltipContainer>
+            </Tooltip>
           </button>
         </IconContainer>
         <IconContainer>
           <button type="button" onClick={handleLabelIconClick}>
-            <UniversalTooltipContainer
+            <Tooltip
               placement="top"
-              label={
+              title={
                 labels?.length > 0 ? getToolTipMultiLabelDetails(labels) : null
               }
             >
@@ -148,14 +147,14 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
                 alt="labels"
                 src={getItemIcon(LABELS, labels, true, updatedLabel)}
               />
-            </UniversalTooltipContainer>
+            </Tooltip>
           </button>
         </IconContainer>
         <IconContainer marginTop={0}>
           <button type="button" onClick={handleAttachementIconClick}>
-            <UniversalTooltipContainer
+            <Tooltip
               placement="top-end"
-              label={
+              title={
                 attachments?.length > 0
                   ? getToolTipAttachmentsLabelDetails(attachments)
                   : ''
@@ -170,7 +169,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
                   updatedAttachment,
                 )}
               />
-            </UniversalTooltipContainer>
+            </Tooltip>
           </button>
         </IconContainer>
         <DueDateContainer>
@@ -188,14 +187,14 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
           event.stopPropagation();
         }}
       >
-        {assignedTo && (
-          <UniversalTooltipContainer
+        {assignedTo ? (
+          <Tooltip
             placement="top-end"
-            label={`Assigned to ${assignedTo.userName}`}
+            title={`Assigned to ${assignedTo.userName}`}
           >
             <Member member={assignedTo} size={30} showTooltip={false} />
-          </UniversalTooltipContainer>
-        )}
+          </Tooltip>
+        ) : null}
       </AssigneeContainer>
       <GoToParentIconContainer>
         <img src={SimpleArrowRight} alt="Go to parent task" />

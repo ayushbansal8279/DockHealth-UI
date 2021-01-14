@@ -22,7 +22,6 @@ import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
 import EmptyCalendarIcon from 'img/calendar-dim.svg';
 import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import palette from 'styles/palette';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
@@ -32,6 +31,7 @@ import { createMentionEntities } from 'components/common/MentionsEditor/create-m
 import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
 import Spacing from 'components/common/Spacing';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
 import {
@@ -539,9 +539,9 @@ const TaskItem = ({
           <StandardTaskItemCell width="150px">
             <Grid container>
               <GridImg item xs={4} matched={matchComments}>
-                <UniversalTooltipContainer
+                <Tooltip
                   placement="top"
-                  label={
+                  title={
                     getItemIconVersion(comments) === REGULAR
                       ? `${comments?.length} comment${
                           comments.length > 1 ? 's' : ''
@@ -560,12 +560,12 @@ const TaskItem = ({
                       )}
                     />
                   </ClickableStandardTaskItemIcon>
-                </UniversalTooltipContainer>
+                </Tooltip>
               </GridImg>
               <GridImg item xs={4} matched={matchLabels}>
-                <UniversalTooltipContainer
+                <Tooltip
                   placement="top"
-                  label={
+                  title={
                     getItemIconVersion(labels) === REGULAR
                       ? getToolTipMultiLabelDetails(labels)
                       : 'Add label'
@@ -582,12 +582,12 @@ const TaskItem = ({
                       )}
                     />
                   </ClickableStandardTaskItemIcon>
-                </UniversalTooltipContainer>
+                </Tooltip>
               </GridImg>
               <GridImg item xs={4} matched={matchAttachments}>
-                <UniversalTooltipContainer
+                <Tooltip
                   placement="top"
-                  label={
+                  title={
                     getItemIconVersion(attachments) === REGULAR
                       ? getToolTipAttachmentsLabelDetails(attachments)
                       : 'Add file'
@@ -604,7 +604,7 @@ const TaskItem = ({
                       )}
                     />
                   </ClickableStandardTaskItemIcon>
-                </UniversalTooltipContainer>
+                </Tooltip>
               </GridImg>
             </Grid>
           </StandardTaskItemCell>
@@ -630,9 +630,9 @@ const TaskItem = ({
                   onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                   ref={elementReference}
                 >
-                  <UniversalTooltipContainer
+                  <Tooltip
                     placement="top"
-                    label={
+                    title={
                       getItemIconVersion(dueDate) === REGULAR
                         ? 'Edit due date'
                         : 'Add due date'
@@ -650,7 +650,7 @@ const TaskItem = ({
                         alt="Due date"
                       />
                     )}
-                  </UniversalTooltipContainer>
+                  </Tooltip>
                 </DueDateButton>
               )}
             </PopoverDatepicker>
@@ -667,17 +667,17 @@ const TaskItem = ({
               task={task}
             >
               {assignedTo ? (
-                <UniversalTooltipContainer
+                <Tooltip
                   placement="top-end"
-                  label={`Assigned to ${assignedTo.userName}`}
+                  title={`Assigned to ${assignedTo.userName}`}
                 >
                   <AssigneeMatchingWrapper matched={matchAssignedTo} />
                   <Member member={assignedTo} size={30} showTooltip={false} />
-                </UniversalTooltipContainer>
+                </Tooltip>
               ) : (
-                <UniversalTooltipContainer placement="top" label="Assign to">
+                <Tooltip placement="top" title="Assign to">
                   <AddCrossIcon src={CrossIcon} size="28px" />
-                </UniversalTooltipContainer>
+                </Tooltip>
               )}
             </TaskAssignMember>
           </StandardTaskItemCell>
