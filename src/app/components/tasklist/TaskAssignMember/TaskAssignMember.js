@@ -34,7 +34,10 @@ const TaskAssignMember = ({ children, currentUser, task, reassignTask }) => {
           horizontal: 'right',
         }}
         open={isOpen}
-        onClose={() => openPopover(false)}
+        onClose={event => {
+          event.stopPropagation();
+          openPopover(false);
+        }}
       >
         <>
           {isOpen && (

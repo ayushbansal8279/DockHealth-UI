@@ -20,7 +20,7 @@ export const Container = styled.div`
 export const IconsSection = styled.div`
   display: flex;
   align-items: flex-start;
-  margin-top: ${spacing.small};
+  margin-top: ${spacing.tiny};
 `;
 
 export const IconContainer = styled.div`
@@ -99,7 +99,7 @@ export const DueDate = styled.span`
 export const DueDateContainer = styled.div`
   position: relative;
   display: flex;
-  width: 37.98px; // per design
+  width: 60px;
   justify-content: center;
   text-align: center;
 `;

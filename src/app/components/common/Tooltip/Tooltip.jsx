@@ -36,7 +36,7 @@ const Tooltip = ({
       arrow={arrow}
       hideTooltip={hideTooltip || !title}
     >
-      <button type="button">{children}</button>
+      <div>{children}</div>
     </StyledMaterialTooltip>
   );
 };

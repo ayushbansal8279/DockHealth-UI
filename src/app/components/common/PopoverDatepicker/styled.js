@@ -41,4 +41,5 @@ export const Backdrop = styled.button`
   overflow: hidden;
   z-index: 2000;
   appearance: none;
+  cursor: initial;
 `;

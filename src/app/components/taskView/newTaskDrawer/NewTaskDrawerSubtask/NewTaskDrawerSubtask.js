@@ -10,8 +10,10 @@ import {
   storeAsCurrentTask,
   toggleCompleteTask,
   assignOrReassignTask,
+  updateDueDate,
 } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
+import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
@@ -45,6 +47,17 @@ import {
   DescriptionLabel,
 } from './styled';
 import { FocusDrawerFieldEnum } from '../NewTaskDrawer.Utilities';
+
+const DUE_DATE_PICKER_OPTIONS = [
+  {
+    label: 'Today',
+    date: moment(),
+  },
+  {
+    label: 'Tomorrow',
+    date: moment().add(1, 'days'),
+  },
+];
 
 const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
   const dispatch = useDispatch();
@@ -158,7 +171,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             </Tooltip>
           </button>
         </IconContainer>
-        <IconContainer marginTop={0}>
+        <IconContainer marginTop={2}>
           <button type="button" onClick={handleAttachementIconClick}>
             <Tooltip
               placement="top-end"
@@ -180,16 +193,44 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
             </Tooltip>
           </button>
         </IconContainer>
-        <DueDateContainer>
-          {dueDate ? (
-            <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
-              {moment(dueDate).format('MM/DD')}
-            </DueDateBasicLabel>
-          ) : (
-            <CalendarIcon src={EmptyCalendarIcon} alt="Due date" />
-          )}
-        </DueDateContainer>
       </IconsSection>
+      <DueDateContainer>
+        <PopoverDatepicker
+          selectedDate={dueDate}
+          onDateChange={date => {
+            const existingTime = dueDate ? moment(dueDate).format('HH:mm') : '';
+            updateDueDate(
+              subtask,
+              moment(`${date} ${existingTime}`),
+              true,
+            )(dispatch);
+          }}
+          quickSelectOptions={DUE_DATE_PICKER_OPTIONS}
+        >
+          {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+            <button
+              type="button"
+              onClick={event => {
+                event.stopPropagation();
+                setIsPopoverOpen(!isPopoverOpen);
+              }}
+              ref={elementReference}
+            >
+              {dueDate ? (
+                <Tooltip placement="top" title="Edit due date">
+                  <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                    {moment(dueDate).format('MM/DD')}
+                  </DueDateBasicLabel>
+                </Tooltip>
+              ) : (
+                <Tooltip placement="top" title="Add due date">
+                  <CalendarIcon src={EmptyCalendarIcon} alt="Due date" />
+                </Tooltip>
+              )}
+            </button>
+          )}
+        </PopoverDatepicker>
+      </DueDateContainer>
       <AssigneeContainer>
         <TaskAssignMember
           currentUser={currentUser}

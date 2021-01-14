@@ -53,11 +53,16 @@ const PopoverDatepicker = ({
   );
 
   return (
-    <>
+    <div
+      onClick={event => {
+        event.stopPropagation();
+      }}
+    >
       {isPopoverOpen && (
         <Backdrop
           type="button"
-          onClick={() => {
+          onClick={event => {
+            event.stopPropagation();
             if (onBackdrop) onBackdrop();
             setIsPopoverOpen(false);
           }}
@@ -96,14 +101,14 @@ const PopoverDatepicker = ({
           {isCalendarOpen && (
             <Datepicker
               selectedDate={selectedDate}
-              onDateChange={onDateChange}
+              onDateChange={handleDatePick}
               minDate={minDate}
               maxDate={maxDate}
             />
           )}
         </StyledPopover>
       </Popper>
-    </>
+    </div>
   );
 };
 

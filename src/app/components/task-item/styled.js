@@ -119,12 +119,6 @@ export const DescriptionBox = styled.div`
   overflow: hidden;
 `;
 
-export const DueDateButton = styled.button`
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
 export const DueDateAddLabel = styled.p`
   display: none;
   position: absolute;

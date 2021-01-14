@@ -67,7 +67,6 @@ import {
   ListLink,
   ListItemLink,
   AssigneeMatchingWrapper,
-  DueDateButton,
   TaskItemParentTaskLabel,
   CommentIcon,
   CalendarIcon,
@@ -625,7 +624,7 @@ const TaskItem = ({
               quickSelectOptions={dueDateQuickSelectOptions}
             >
               {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-                <DueDateButton
+                <button
                   type="button"
                   onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                   ref={elementReference}
@@ -651,7 +650,7 @@ const TaskItem = ({
                       />
                     )}
                   </Tooltip>
-                </DueDateButton>
+                </button>
               )}
             </PopoverDatepicker>
           </StandardTaskItemCell>

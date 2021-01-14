@@ -37,7 +37,6 @@ import {
   SlimTaskGridContainer,
   AssignedBox,
   SlimTaskWorkflowStatusContainer,
-  DueDateButton,
   SlimTaskItemPatientLink,
   DueDateAddLabel,
   AddCrossIcon,
@@ -67,7 +66,7 @@ const DueDateComponent = ({ dueDate, updateDueDate, task }) => {
       quickSelectOptions={dueDateQuickSelectOptions}
     >
       {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-        <DueDateButton
+        <button
           type="button"
           onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           ref={elementReference}
@@ -77,7 +76,7 @@ const DueDateComponent = ({ dueDate, updateDueDate, task }) => {
             <img alt="due-date" src={getCalendarIcon(dueDate, true)} />
             {!dueDate && <DueDateAddLabel>Add</DueDateAddLabel>}
           </DueDateContainer>
-        </DueDateButton>
+        </button>
       )}
     </PopoverDatepicker>
   );
