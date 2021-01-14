@@ -380,13 +380,6 @@ export function getHighPriorityTasksByTaskList(taskListIdentifier) {
       });
 }
 
-export const reloadTaskListStats = (dispatch, task) => {
-  if (task.taskList) {
-    // Do Nothing
-    // TaskListActions.getTaskListStats(task.taskList)(dispatch);
-  }
-};
-
 export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
@@ -396,7 +389,6 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             type: ActionTypes.UPDATE_TASK_SUCCESS,
             task,
           });
-          reloadTaskListStats(dispatch, task);
           return task;
         })
         .catch(error => {
@@ -425,7 +417,6 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
-          reloadTaskListStats(dispatch, task);
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
           dispatch({
@@ -439,7 +430,6 @@ export function saveTask(newTask, shouldReloadGroups = false) {
               }),
             );
           }
-          reloadTaskListStats(dispatch, task);
         }
 
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
@@ -476,7 +466,6 @@ export const moveTask = (
         task,
         taskList,
       });
-      reloadTaskListStats(dispatch, task);
     })
     .catch(error => {
       throw error;
@@ -542,7 +531,6 @@ export function deleteTask(task) {
     TaskApi.deleteTask(task.taskIdentifier)
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
-        reloadTaskListStats(dispatch, task);
         dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
         return task;
       })
@@ -564,7 +552,6 @@ export function duplicateTask(task, includeAttachments = false) {
           duplicatedTask,
           taskGroupIdentifier,
         });
-        reloadTaskListStats(dispatch, task);
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
         return duplicatedTask;
       })
@@ -643,7 +630,6 @@ export function markComplete(task, status, currentUser = null) {
           type: ActionTypes.UPDATE_TASK_SUCCESS,
           task: { ...task, ...newTaskData },
         });
-        reloadTaskListStats(dispatch, task);
 
         return {
           ...task,
@@ -692,7 +678,6 @@ export const updateDueDate = (
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: newTask,
       });
-      reloadTaskListStats(dispatch, task);
       if (showGlobalConfirmation) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       }
@@ -740,7 +725,6 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: newTask,
       });
-      reloadTaskListStats(dispatch, task);
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       return newTask;
     })
@@ -768,7 +752,6 @@ export function toggleTaskPriority(task, priority) {
           task: newTask,
         });
 
-        reloadTaskListStats(dispatch, task);
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
 
         return task;
@@ -787,11 +770,6 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
           type: ActionTypes.UPDATE_TASK_SUCCESS,
           task: assignedTask,
         });
-        dispatch({
-          type: ActionTypes.SET_AS_CURRENT_TASK,
-          task: assignedTask,
-        });
-        reloadTaskListStats(dispatch, assignedTask);
         return assignedTask;
       })
       .catch(error => {
@@ -992,7 +970,6 @@ export const refreshAnotherTask = selectedTask => dispatch =>
         type: ActionTypes.REFRESH_ANOTHER_TASK_SUCCESS,
         task,
       });
-      reloadTaskListStats(dispatch, selectedTask);
       return task;
     })
     .catch(error => {
@@ -1008,7 +985,6 @@ export const refreshTask = selectedTask => dispatch =>
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task,
       });
-      reloadTaskListStats(dispatch, selectedTask);
       return task;
     })
     .catch(error => {
@@ -1036,7 +1012,6 @@ export const archiveTask = (task, currentUserProfile) => dispatch =>
         task: responseTask,
         currentUserProfile,
       });
-      reloadTaskListStats(dispatch, task);
     })
     .catch(error => {
       throw error;

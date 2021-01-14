@@ -1,16 +1,22 @@
 import moment from 'moment';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
+import CrossIcon from 'img/cross';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import SimpleArrowRight from 'img/simple-arrow-right';
-import { storeAsCurrentTask, toggleCompleteTask } from 'actions/task-actions';
+import {
+  storeAsCurrentTask,
+  toggleCompleteTask,
+  assignOrReassignTask,
+} from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import Member from 'components/members/Member/Member';
+import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
 import {
   ATTACHMENTS,
   COMMENTS,
@@ -20,7 +26,11 @@ import {
   LABELS,
   isDueDateOverdue,
 } from 'components/task-item/icons';
-import { DueDateBasicLabel, CalendarIcon } from 'components/task-item/styled';
+import {
+  DueDateBasicLabel,
+  CalendarIcon,
+  AddCrossIcon,
+} from 'components/task-item/styled';
 import EmptyCalendarIcon from 'img/calendar-dim.svg';
 import {
   Container,
@@ -66,6 +76,13 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
     }),
   );
 
+  const handleReassignSubtask = useCallback(
+    (task, selectedMember) => {
+      assignOrReassignTask(task, selectedMember?.userIdentifier)(dispatch);
+    },
+    [dispatch],
+  );
+
   const handleCommentIconClick = () => {
     dispatch(openDrawer(FocusDrawerFieldEnum.COMMENT));
   };
@@ -105,15 +122,6 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
           {edited && <DescriptionLabel>(edited)</DescriptionLabel>}
           {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
         </Description>
-        {/* <CompletedBy isCompleted={isCompleted}>
-          <span>{`Completed by ${completedByName} ${completedDt &&
-            ` on ${
-              completedDt
-                ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                : ''
-            }`}
-                `}</span>
-        </CompletedBy> */}
       </DescriptionContainer>
       <IconsSection>
         <IconContainer marginTop={updatedComment ? -8 : 0}>
@@ -182,19 +190,25 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
           )}
         </DueDateContainer>
       </IconsSection>
-      <AssigneeContainer
-        onClick={event => {
-          event.stopPropagation();
-        }}
-      >
-        {assignedTo ? (
-          <Tooltip
-            placement="top-end"
-            title={`Assigned to ${assignedTo.userName}`}
-          >
-            <Member member={assignedTo} size={30} showTooltip={false} />
-          </Tooltip>
-        ) : null}
+      <AssigneeContainer>
+        <TaskAssignMember
+          currentUser={currentUser}
+          reassignTask={handleReassignSubtask}
+          task={subtask}
+        >
+          {assignedTo ? (
+            <Tooltip
+              placement="top-end"
+              title={`Assigned to ${assignedTo.userName}`}
+            >
+              <Member member={assignedTo} size={30} showTooltip={false} />
+            </Tooltip>
+          ) : (
+            <Tooltip placement="top" title="Assign to">
+              <AddCrossIcon src={CrossIcon} size="28px" />
+            </Tooltip>
+          )}
+        </TaskAssignMember>
       </AssigneeContainer>
       <GoToParentIconContainer>
         <img src={SimpleArrowRight} alt="Go to parent task" />

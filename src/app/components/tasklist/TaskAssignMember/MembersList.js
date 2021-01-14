@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
+import * as TaskListApi from 'api/tasklist-api';
 import Member from 'components/members/Member/Member';
 import MagnifierIcon from 'img/magnifier';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
@@ -15,13 +16,10 @@ import {
   LoaderContainer,
 } from './styled';
 
-const MembersList = ({
-  reassignTask,
-  task,
-  members,
-  currentUser,
-  isFetchingMembers = false,
-}) => {
+const MembersList = ({ reassignTask, task, currentUser }) => {
+  const listId = task?.taskList?.taskListIdentifier;
+  const [members, setMembers] = useState(null);
+  const [isFetchingMembers, setIsFetchingMembers] = useState(true);
   const membersWithoutCurrentUser = members?.filter(
     ({ userId }) => userId !== currentUser?.userId,
   );
@@ -38,6 +36,19 @@ const MembersList = ({
     }
   }, [inputReference]);
 
+  useEffect(() => {
+    setIsFetchingMembers(true);
+    TaskListApi.getMembersByTaskListId(listId, 'ALL')
+      .then(data => {
+        setMembers(data);
+        setIsFetchingMembers(false);
+      })
+      .catch(error => {
+        setIsFetchingMembers(false);
+        throw error;
+      });
+  }, [listId]);
+
   return (
     <>
       <InputBox>
@@ -53,7 +64,8 @@ const MembersList = ({
           .includes(searchValue.toLowerCase()) && (
           <AssignToMeBox>
             <MemberRow
-              onClick={() => {
+              onClick={event => {
+                event.stopPropagation();
                 reassignTask(task, currentUser);
               }}
             >
@@ -68,7 +80,8 @@ const MembersList = ({
               {'unassigned'.includes(searchValue.toLowerCase()) && (
                 <MemberRow
                   key="unassigned"
-                  onClick={() => {
+                  onClick={event => {
+                    event.stopPropagation();
                     reassignTask(task, {});
                   }}
                 >
@@ -82,7 +95,8 @@ const MembersList = ({
               {filteredMembers?.map(member => (
                 <MemberRow
                   key={member?.userId}
-                  onClick={() => {
+                  onClick={event => {
+                    event.stopPropagation();
                     reassignTask(task, member);
                   }}
                 >

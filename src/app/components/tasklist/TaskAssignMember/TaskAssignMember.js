@@ -1,27 +1,28 @@
 import React, { useRef, useState } from 'react';
 import { StyledPopover } from './styled';
 import MembersList from './MembersList';
-import MembersForList from './MembersForList';
 
 const TaskAssignMember = ({ children, currentUser, task, reassignTask }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
 
-  const handleReasigningTask = (taskIdentifier, userId, taskListIdentifier) => {
-    reassignTask(taskIdentifier, userId, taskListIdentifier);
+  const handleReasigningTask = (reassignedTask, user, taskListIdentifier) => {
+    reassignTask(reassignedTask, user, taskListIdentifier);
     openPopover(false);
   };
 
   return (
     <>
-      <div
-        onClick={() => {
+      <button
+        type="button"
+        onClick={event => {
+          event.stopPropagation();
           openPopover(true);
         }}
         ref={assignMemberButtonReference}
       >
         {children}
-      </div>
+      </button>
       <StyledPopover
         anchorEl={assignMemberButtonReference?.current}
         anchorOrigin={{
@@ -37,8 +38,7 @@ const TaskAssignMember = ({ children, currentUser, task, reassignTask }) => {
       >
         <>
           {isOpen && (
-            <MembersForList
-              component={MembersList}
+            <MembersList
               task={task}
               reassignTask={handleReasigningTask}
               currentUser={currentUser}
