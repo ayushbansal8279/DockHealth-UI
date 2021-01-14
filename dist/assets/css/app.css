@@ -545,6 +545,7 @@ button {
   border-radius: 0;
   background: transparent;
   line-height: 1;
+  cursor: pointer;
 }
 
 [data-whatinput='mouse'] button {

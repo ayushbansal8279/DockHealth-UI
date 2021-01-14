@@ -70,27 +70,6 @@ export const DescriptionContainer = styled.div`
   overflow: hidden;
 `;
 
-export const CompletedBy = styled.div`
-  width: 100%;
-  align-items: flex-end;
-  display: flex;
-  height: ${props => (props.isCompleted ? 1 : 0)}rem;
-  padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
-  overflow: hidden;
-  transition: all 0.1s ease-out;
-  transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
-
-  > span {
-    color: ${palette.brightBlue};
-    font-size: ${fontSizes.small};
-    font-weight: ${fontWeights.regular};
-    line-height: 1;
-    transition: transform 0.4s ease-out;
-    transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
-    transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
-  }
-`;
-
 export const AddCrossIcon = styled.img`
   border: 0.0625rem dashed ${palette.coolGrey1};
   border-radius: 50%;

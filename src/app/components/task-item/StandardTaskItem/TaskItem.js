@@ -327,7 +327,7 @@ const TaskItem = ({
   }, [task]);
 
   const onAttachmentsClick = useCallback(() => {
-    dispatch(openDrawer(FocusDrawerFieldEnum.ATTACHMENT));
+    dispatch(openDrawer(FocusDrawerFieldEnum.ATTACHEMENT));
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);

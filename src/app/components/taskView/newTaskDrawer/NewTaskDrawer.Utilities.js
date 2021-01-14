@@ -16,7 +16,7 @@ import palette from '../../../styles/palette';
 export const FocusDrawerFieldEnum = {
   PATIENT: 'patient',
   COMMENT: 'comment',
-  ATTACHMENT: 'attachment',
+  ATTACHEMENT: 'attachement',
   LABEL: 'label',
 };
 
