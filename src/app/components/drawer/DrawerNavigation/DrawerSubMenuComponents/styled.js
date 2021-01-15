@@ -242,7 +242,7 @@ export const DrawerListsItem = styled.div`
   justify-content: space-between;
   align-items: center;
   color: ${palette.coolGrey1};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   cursor: pointer;
 `;
 
