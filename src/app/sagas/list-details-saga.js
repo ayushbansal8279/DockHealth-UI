@@ -344,17 +344,15 @@ export function* doSortTasksInGroup(payload) {
       taskGroupIdentifier,
     });
 
-    yield all([
-      call(doGetTasksForTaskGroup, {
-        taskGroupIdentifier,
-        status: 'INCOMPLETE',
-        refresh: true,
-        endPosition,
-      }),
-      put(showGlobalAlert(AlertMessages.UPDATED)),
-    ]);
+    yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
   } catch (error) {
     yield put({ type: TASK_GROUP_LIST_FAILURE });
+    yield call(doGetTasksForTaskGroup, {
+      taskGroupIdentifier,
+      status: 'INCOMPLETE',
+      refresh: true,
+      endPosition,
+    });
   }
 }
 
