@@ -37,6 +37,8 @@ export const BlueSubMenuLink = styled(SubMenuLink)`
 export const DrawerItemOptions = styled.div`
   display: flex;
   align-items: center;
+  color: ${palette.coolGrey1};
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export const DrawerSubmenuLabel = styled.div`
@@ -241,7 +243,7 @@ export const DrawerListsItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${palette.coolGrey1};
+  color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   cursor: pointer;
 `;
