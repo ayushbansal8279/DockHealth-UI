@@ -29,7 +29,7 @@ import {
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
 const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
-const MAX_LABEL_LENGTH = 24;
+const MAX_LABEL_LENGTH = 28;
 
 const DrawerListsSubmenu = () => {
   const history = useHistory();
@@ -216,7 +216,7 @@ const DrawerListsSubmenu = () => {
               }}
             >
               {list?.listName?.length > MAX_LABEL_LENGTH
-                ? `${list.listName?.slice(0, 21)}...`
+                ? `${list.listName?.slice(0, MAX_LABEL_LENGTH)}...`
                 : list?.listName}
             </div>
             {list?.status === 'PENDING' && (
