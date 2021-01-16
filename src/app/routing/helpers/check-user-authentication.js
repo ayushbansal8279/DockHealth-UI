@@ -53,7 +53,7 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
 
       await getEnterpriseAccessTokensByAuthCode(authCode, issValue)
         .then(() => {
-          return { redirectPath: '/core/tasks', user: null };
+          return { redirectPath: '/core/home', user: null };
         })
         .catch(error => {
           showAlert({ status: 'error', title: 'Error', text: error.message });

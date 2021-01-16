@@ -45,7 +45,7 @@ const LoginFormUsername = props => {
 
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
           .then(() => {
-            window.location.href = '/#/core/tasks';
+            window.location.href = '/#/core/home';
 
             // setShowLoginMessage(false);
           })
