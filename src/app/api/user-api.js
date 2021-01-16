@@ -577,11 +577,11 @@ export function refreshAccessToken(email) {
   });
 }
 
-export function getAccessTokensByAuthCode(authCode) {
+export function getAccessTokensByAuthCode(authCode, iss) {
   return new Promise((resolve, reject) => {
     try {
       const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
-      const authData = `grant_type=authorization_code&code=${authCode}`;
+      const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
       return axios
         .post(`${cognitoAuthUrl}/oauth2/token`, authData)
@@ -633,11 +633,11 @@ export const captureLocalTimezone = async () => {
     .then(({ data }) => data);
 };
 
-export function getEnterpriseAccessTokensByAuthCode(authCode) {
+export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
   return new Promise(async (resolve, reject) => {
     try {
       const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
-      const authData = `grant_type=authorization_code&code=${authCode}`;
+      const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
       await axios.post(`${authUrl}/token`, authData).then(response => {
         const userRefreshToken = response?.data.refresh_token;

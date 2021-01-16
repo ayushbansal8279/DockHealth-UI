@@ -41,8 +41,9 @@ const LoginFormUsername = props => {
         setShowLoginMessage(true);
 
         const authCode = queryValues.code.replace('#/auth/login', '');
+        const issValue = queryValues.iss.replace('#/', '');
 
-        UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
+        UserApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
           .then(() => {
             window.location.href = '/#/core/tasks';
 

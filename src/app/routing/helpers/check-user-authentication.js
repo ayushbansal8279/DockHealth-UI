@@ -49,8 +49,9 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
 
     if (queryValues.code !== undefined) {
       const authCode = queryValues.code.replace('#/auth/login', '');
+      const issValue = queryValues.iss.replace('#/', '');
 
-      await getEnterpriseAccessTokensByAuthCode(authCode)
+      await getEnterpriseAccessTokensByAuthCode(authCode, issValue)
         .then(() => {
           return { redirectPath: '/core/tasks', user: null };
         })
