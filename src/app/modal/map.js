@@ -28,6 +28,7 @@ import TrialExpirationModal from './components/TrialExpirationModal/TrialExpirat
 import NotificationSettingsTourModal from './components/NewFeaturesModals/NotificationSettingsTourModal/NotificationSettingsTourModal';
 import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
 import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
+import RightClickTourModal from './components/NewFeaturesModals/RightClickTourModal/RightClickTourModal';
 import SelectTaskDestinationModal from './components/SelectTaskDestinationModal/SelectTaskDestinationModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 
@@ -60,6 +61,7 @@ const MODAL_MAP = {
   MentionsTour: MentionsTourModal,
   NotificationSettingsTour: NotificationSettingsTourModal,
   TaskDensityTour: TaskDensityTourModal,
+  RightClickTour: RightClickTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
   SelectTaskDestination: SelectTaskDestinationModal,

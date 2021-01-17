@@ -97,6 +97,8 @@ class Home extends Component {
     this.refreshAccessToken(currentUser);
 
     this.listenForRealTimeEvents(params.taskListIdentifier, currentUser);
+
+    this.launchNewFeaturesModal();
   }
 
   UNSAFE_componentWillUpdate(nextProps) {
@@ -756,6 +758,25 @@ class Home extends Component {
       endPosition,
       loadingMore,
     );
+  };
+
+  launchNewFeaturesModal = () => {
+    const { currentUser, modalActions } = this.props;
+    const isNewUser = currentUser?.usageState?.loginCount <= 5;
+
+    if (currentUser && !isEmpty(currentUser) && !isNewUser) {
+      const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
+
+      if (!appFeaturesReviewed?.includes('RIGHT_CLICK')) {
+        modalActions.openModal('RightClickTour', {
+          onClose: () => {
+            userApi.updateUserDashboardPrefs({
+              appFeaturesReviewed: ['RIGHT_CLICK'],
+            });
+          },
+        });
+      }
+    }
   };
 
   render() {
