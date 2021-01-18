@@ -59,6 +59,7 @@ const DrawerNavigation = ({
   } = MenuTourHooks({
     menuDrawerOpen: null,
     hideTour: false,
+    isUserAdmin,
   });
 
   const SubMenuComponent = openedSubMenuKey

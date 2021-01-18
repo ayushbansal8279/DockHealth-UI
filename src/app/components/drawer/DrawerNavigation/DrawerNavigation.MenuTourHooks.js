@@ -8,41 +8,64 @@ import { onMenuTourStepEnter } from 'helpers/ga-event-helper';
 
 const MENU_DRAWER_FIRST_TIME_KEY = 'MENU_DRAWER_FIRST_TIME_KEY';
 
-const menuTourHooks = ({ menuDrawerOpen, hideTour }) => {
+const menuTourHooks = ({ menuDrawerOpen, hideTour, isUserAdmin }) => {
   const [openedTourStep, setOpenedTourStep] = useState(null);
 
   const orgMenuReference = useRef(null);
   const settingsMenuReference = useRef(null);
   const profileMenuReference = useRef(null);
 
-  const tourSteps = [
-    {
-      index: 0,
-      reference: orgMenuReference,
-      position: 'right-start',
-      afterScrollPosition: 'center',
-      title: 'Access your Organization',
-      description:
-        'We understand there are instances when people work with more than one oganization. If you own your own practice yet are a partner at anpther practice, you may want to use Dock at both organizations but keep your patients and people you work with separate. Here is where you add and access your organizations.',
-    },
-    {
-      index: 1,
-      reference: settingsMenuReference,
-      position: 'right-end',
-      afterScrollPosition: 'end',
-      title: 'Manage users and subscription',
-      description:
-        'Click the gear to see your subscription and manage your users.  Invite or remove users from your organization from here.',
-    },
-    {
-      index: 2,
-      reference: profileMenuReference,
-      position: 'right-end',
-      title: 'Access your profile',
-      description:
-        'Click the bubble to access your profile or to logout of Dock.',
-    },
-  ];
+  const orgMenuStep = {
+    reference: orgMenuReference,
+    position: 'right-start',
+    afterScrollPosition: 'center',
+    title: 'Access your Organization',
+    description:
+      'We understand there are instances when people work with more than one oganization. If you own your own practice yet are a partner at anpther practice, you may want to use Dock at both organizations but keep your patients and people you work with separate. Here is where you add and access your organizations.',
+  };
+
+  const settingsMenuStep = {
+    reference: settingsMenuReference,
+    position: 'right-end',
+    afterScrollPosition: 'end',
+    title: 'Manage users and subscription',
+    description:
+      'Click the gear to see your subscription and manage your users.  Invite or remove users from your organization from here.',
+  };
+
+  const profileMenuStep = {
+    reference: profileMenuReference,
+    position: 'right-end',
+    title: 'Access your profile',
+    description:
+      'Click the bubble to access your profile or to logout of Dock.',
+  };
+
+  const tourSteps = isUserAdmin
+    ? [
+        {
+          index: 0,
+          ...orgMenuStep,
+        },
+        {
+          index: 1,
+          ...settingsMenuStep,
+        },
+        {
+          index: 2,
+          ...profileMenuStep,
+        },
+      ]
+    : [
+        {
+          index: 0,
+          ...orgMenuStep,
+        },
+        {
+          index: 1,
+          ...profileMenuStep,
+        },
+      ];
 
   const previousHideTourValue = useRef(null);
 
