@@ -133,7 +133,6 @@ const DrawerNavigation = ({
               name="Home"
               icon={HomeIcon}
               path="/core/home"
-              strokeIcon
               onItemClick={handleNavigationItemClick}
             />
             <IconNavigationItem

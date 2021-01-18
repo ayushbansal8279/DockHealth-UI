@@ -47,25 +47,21 @@ export const NavigationButton = styled.button`
 `;
 
 export const NavigationIconContainer = styled.div`
-&& {
+  && {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 47px;
-    ${({ strokeIcon, isActive, subMenuOpen }) => {
-      const cssProperty = strokeIcon ? 'stroke' : 'fill';
+    color: ${({ isActive }) =>
+      isActive ? palette.oPlusRed : palette.coolGrey2};
 
-      return `
-    & svg {
-      ${cssProperty}: ${isActive ? palette.oPlusRed : palette.coolGrey2};
-      
-    }
-    
-    &:hover {
-      & svg {
-        ${!isActive && !subMenuOpen && `${cssProperty}: ${palette.white};`}
-      }`;
-    }}
-    }
+    ${({ subMenuOpen, isActive }) =>
+      !subMenuOpen &&
+      !isActive &&
+      `
+        &:hover {
+          color: ${palette.white};
+        }
+    `}
   }
 `;

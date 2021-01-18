@@ -6,6 +6,7 @@ export default () => (
     height="18"
     viewBox="0 0 17 11"
     xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
   >
     <path
       fillRule="evenodd"
