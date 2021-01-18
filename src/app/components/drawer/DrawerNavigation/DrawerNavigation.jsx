@@ -17,6 +17,7 @@ import DrawerOrganizationSubmenu from './DrawerSubMenuComponents/DrawerOrganizat
 import DrawerProfileSubmenu from './DrawerSubMenuComponents/DrawerProfileSubmenu';
 import DrawerSettingsSubmenu from './DrawerSubMenuComponents/DrawerSettingsSubmenu';
 import DrawerListsSubmenu from './DrawerSubMenuComponents/DrawerListsSubmenu';
+import MenuTourHooks from './DrawerNavigation.MenuTourHooks';
 
 import {
   DrawerContentContainer,
@@ -49,6 +50,16 @@ const DrawerNavigation = ({
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
+
+  const {
+    orgMenuReference,
+    settingsMenuReference,
+    profileMenuReference,
+    renderMenuTourPopover,
+  } = MenuTourHooks({
+    menuDrawerOpen: null,
+    hideTour: false,
+  });
 
   const SubMenuComponent = openedSubMenuKey
     ? SUBMENU_COMPONENTS[openedSubMenuKey]
@@ -93,22 +104,24 @@ const DrawerNavigation = ({
       <DrawerContentContainer isOpen={!!SubMenuComponent}>
         <MainMenuContainer>
           <Grid container direction="column">
-            <NavigationItem
-              name="Organization"
-              subMenuKey={ORGANIZATION_SUBMENU_KEY}
-              subMenuOpen={openedSubMenuKey === ORGANIZATION_SUBMENU_KEY}
-              onItemClick={handleNavigationItemClick}
-            >
-              <>
-                <Spacing vertical={3} />
-                <OrganizationTile
-                  size={40}
-                  organizationProfileColor={organizationProfileColor}
-                  organizationInitials={organizationInitials}
-                />
-                <Spacing vertical={3} />
-              </>
-            </NavigationItem>
+            <div ref={orgMenuReference}>
+              <NavigationItem
+                name="Organization"
+                subMenuKey={ORGANIZATION_SUBMENU_KEY}
+                subMenuOpen={openedSubMenuKey === ORGANIZATION_SUBMENU_KEY}
+                onItemClick={handleNavigationItemClick}
+              >
+                <>
+                  <Spacing vertical={3} />
+                  <OrganizationTile
+                    size={40}
+                    organizationProfileColor={organizationProfileColor}
+                    organizationInitials={organizationInitials}
+                  />
+                  <Spacing vertical={3} />
+                </>
+              </NavigationItem>
+            </div>
             <IconNavigationItem
               name="Search"
               icon={SearchIcon}
@@ -145,27 +158,31 @@ const DrawerNavigation = ({
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (
-              <IconNavigationItem
-                name="Admin"
-                subMenuKey={SETTINGS_SUBMENU_KEY}
-                icon={SettingsIcon}
-                subMenuOpen={openedSubMenuKey === SETTINGS_SUBMENU_KEY}
-                path={['/settings/billing', '/settings/subscriptions']}
-                onItemClick={handleNavigationItemClick}
-              />
+              <div ref={settingsMenuReference}>
+                <IconNavigationItem
+                  name="Admin"
+                  subMenuKey={SETTINGS_SUBMENU_KEY}
+                  icon={SettingsIcon}
+                  subMenuOpen={openedSubMenuKey === SETTINGS_SUBMENU_KEY}
+                  path={['/settings/billing', '/settings/subscriptions']}
+                  onItemClick={handleNavigationItemClick}
+                />
+              </div>
             )}
-            <NavigationItem
-              name="Account"
-              subMenuKey={PROFILE_SUBMENU_KEY}
-              subMenuOpen={openedSubMenuKey === PROFILE_SUBMENU_KEY}
-              onItemClick={handleNavigationItemClick}
-            >
-              <>
-                <Spacing vertical={3} />
-                <Member showTooltip={false} member={currentUser} size={40} />
-                <Spacing vertical={3} />
-              </>
-            </NavigationItem>
+            <div ref={profileMenuReference}>
+              <NavigationItem
+                name="Account"
+                subMenuKey={PROFILE_SUBMENU_KEY}
+                subMenuOpen={openedSubMenuKey === PROFILE_SUBMENU_KEY}
+                onItemClick={handleNavigationItemClick}
+              >
+                <>
+                  <Spacing vertical={3} />
+                  <Member showTooltip={false} member={currentUser} size={40} />
+                  <Spacing vertical={3} />
+                </>
+              </NavigationItem>
+            </div>
           </Grid>
         </MainMenuContainer>
         <SubMenuContainer>
@@ -176,6 +193,7 @@ const DrawerNavigation = ({
             />
           )}
         </SubMenuContainer>
+        {renderMenuTourPopover()}
       </DrawerContentContainer>
     </ClickAwayListener>
   );

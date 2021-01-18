@@ -262,3 +262,12 @@ export const onLogout = () => {
     eventAction: 'User Logout',
   });
 };
+
+export const onMenuTourStepEnter = stepKey => {
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: USER_EDUCATION_CATEGORY,
+    eventAction: 'Menu tour',
+    eventLabel: stepKey,
+  });
+};
