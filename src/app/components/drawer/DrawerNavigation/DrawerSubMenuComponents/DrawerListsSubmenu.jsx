@@ -14,6 +14,7 @@ import { openModal, closeModal } from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
+import palette from 'styles/palette';
 import {
   DrawerMyListsLabel,
   DrawerListsList,
@@ -230,12 +231,12 @@ const DrawerListsSubmenu = () => {
                     itemsMoreButtonReferences.current[index] = element;
                 }}
                 size="small"
-                color="secondary"
+                color={palette.coolGrey1}
                 onClick={() => {
                   openListMenuPopover(list, index);
                 }}
               >
-                <MoreVert />
+                <MoreVert style={{ color: palette.coolGrey1 }} />
               </IconButton>
             </DrawerItemOptions>
           </DrawerListsItem>

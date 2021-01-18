@@ -7,7 +7,7 @@ const DrawerSettingsSubmenu = () => {
     <Box widht={1}>
       <Box m={2} />
       <SubMenuLink to="/settings/billing">Billing</SubMenuLink>
-      <SubMenuLink to="/settings/subscriptions">Subscripiptions</SubMenuLink>
+      <SubMenuLink to="/settings/subscriptions">Subscription</SubMenuLink>
     </Box>
   );
 };
