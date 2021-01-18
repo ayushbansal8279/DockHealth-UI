@@ -38,11 +38,6 @@ import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDet
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import { TaskViewContainer } from './styled';
 
-const Priority = {
-  High: 'HIGH',
-  Low: 'LOW',
-};
-
 class PersonDetailsView extends PureComponent {
   state = {
     isLoadingView: true,
@@ -335,17 +330,6 @@ class PersonDetailsView extends PureComponent {
     });
   };
 
-  toggleSingleTaskPriority = task => {
-    const { taskActions } = this.props;
-    taskActions
-      .toggleTaskPriority(
-        task,
-        task.priority === Priority.High ? Priority.Low : Priority.High,
-      )
-      .then(this.handleTaskUpdate)
-      .catch(() => this.refreshTab());
-  };
-
   invokeToggleCompleteAction = task => {
     const {
       taskActions,
@@ -466,7 +450,6 @@ class PersonDetailsView extends PureComponent {
                 isFetchingTasks={isCompletedTasksFetching}
                 tasks={completedTasks}
                 currentUser={currentUser}
-                toggleSingleTaskPriority={this.toggleSingleTaskPriority}
                 toggleCompleteTask={this.toggleTaskCompletedStatus}
                 summaryTasksCount={taskCounters.complete}
                 reassignTask={this.handleReassignTask}
@@ -481,7 +464,6 @@ class PersonDetailsView extends PureComponent {
                 isFetchingTasks={isFetching}
                 tasks={tasks}
                 currentUser={currentUser}
-                toggleSingleTaskPriority={this.toggleSingleTaskPriority}
                 toggleCompleteTask={this.toggleTaskCompletedStatus}
                 quickAddTask={this.handleQuickAddTask}
                 reassignTask={this.handleReassignTask}

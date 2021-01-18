@@ -13,7 +13,6 @@ const ListDetailsCompletedTasks = ({
   completedTasksGroup,
   currentUser,
   markComplete,
-  toggleSingleTaskPriority,
   toggleCompleteTask,
   hasMoreTasks,
   isFetchingMoreTasks,
@@ -54,7 +53,6 @@ const ListDetailsCompletedTasks = ({
                   groupName="Completed"
                   currentUser={currentUser}
                   markComplete={markComplete}
-                  toggleTaskPriority={toggleSingleTaskPriority}
                   toggleCompleteTask={toggleCompleteTask}
                   tasks={tasks}
                   isCompletedGroup

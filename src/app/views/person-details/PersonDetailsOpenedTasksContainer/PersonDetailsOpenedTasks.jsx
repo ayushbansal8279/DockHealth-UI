@@ -21,7 +21,6 @@ const PersonDetailsOpenedTasks = ({
   tasks,
   currentUser,
   toggleCompleteTask,
-  toggleSingleTaskPriority,
   quickAddTask,
   reassignTask,
   updateDueDate,
@@ -77,7 +76,6 @@ const PersonDetailsOpenedTasks = ({
                 groupId={TASKGROUP_DEFAULT_TYPE}
                 currentUser={currentUser}
                 groupName="All tasks"
-                toggleTaskPriority={toggleSingleTaskPriority}
                 changingGroupOrderDisabled
                 tasks={filteredTasks || []}
                 taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}

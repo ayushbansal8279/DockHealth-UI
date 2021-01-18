@@ -51,7 +51,6 @@ const PatientTasksListView = ({
   const { storeAsCurrentTask } = taskActions;
   const {
     togglePatientTaskStatus,
-    togglePatientTaskPriority,
     reassignPatientTask,
     updatePatientTaskDueDate,
     updatePatientTaskWorkflowStatus,
@@ -116,7 +115,6 @@ const PatientTasksListView = ({
           openDrawer={openDrawer}
           storeAsCurrentTask={storeAsCurrentTask}
           toggleTaskStatus={handleToggleTaskStatus}
-          toggleTaskPriority={togglePatientTaskPriority}
           reassignTask={reassignPatientTask}
           updateDueDate={updatePatientTaskDueDate}
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}

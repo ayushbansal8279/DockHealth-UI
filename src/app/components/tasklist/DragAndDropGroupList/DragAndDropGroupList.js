@@ -10,7 +10,6 @@ const DragAndDropGroupList = ({
   isFullView,
   toggleCompleteTask,
   draggedId,
-  toggleTaskPriority,
   tasks,
   reorderSubtasksForTask,
   reassignTask,
@@ -63,7 +62,6 @@ const DragAndDropGroupList = ({
                     isFullView={isFullView}
                     isDragging={isDragging}
                     isStartedDnD={draggedId === task.taskIdentifier}
-                    toggleTaskPriority={toggleTaskPriority}
                     task={task}
                     groupId={groupId}
                     draggableProvided={draggableProvided}

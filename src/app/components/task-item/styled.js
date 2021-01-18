@@ -48,9 +48,19 @@ export const PrioritySwitch = styled.button`
   cursor: ${({ isClickable = true }) => (isClickable ? 'pointer' : 'initial')};
 `;
 
-export const PriorityHoverIcon = styled.img`
-  opacity: 0;
-  background-color: ${palette.coolGrey4};
+export const PriorityIndicator = styled.div`
+  width: 2px;
+  height: 100%;
+  background-color: red;
+  position: absolute;
+  left: 0;
+`;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${spacing.smallPlus};
 `;
 
 export const AddPlaceholder = styled.div`
@@ -262,13 +272,17 @@ export const ThreeDots = styled.img`
   }
 `;
 
+export const StandardTaskThreeDots = styled(ThreeDots)`
+  left: -12px;
+`;
+
 export const StandardTaskItemPanel = styled.div`
   position: relative;
   ${props =>
     props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'};
 
   &:hover {
-    & ${ThreeDots}, & ${AddPlaceholder}, & ${PriorityHoverIcon} {
+    & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
     }
   }
@@ -316,7 +330,7 @@ export const SlimTaskItemContainer = styled.div`
   transition: background-color linear 0.2s;
 
   &:hover {
-    & ${PriorityHoverIcon}, ${ThreeDots}, ${AddPlaceholder} {
+    & ${ThreeDots}, ${AddPlaceholder} {
       opacity: 1;
     }
   }

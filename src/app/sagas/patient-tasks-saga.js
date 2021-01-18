@@ -34,7 +34,6 @@ import {
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
 import {
-  toggleTaskPriority,
   toggleTaskCompletedStatus,
   assignTask as assignTaskHelper,
   setDueDate as setDueDateHelper,
@@ -49,8 +48,6 @@ export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
 export const DO_FETCH_PATIENT_TASKS = 'DO_FETCH_PATIENT_TASKS';
 export const DO_REFRESH_PATIENT_TASKS = 'DO_REFRESH_PATIENT_TASKS';
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
-export const DO_TOGGLE_PATIENT_TASK_PRIORITY =
-  'DO_TOGGLE_PATIENT_TASK_PRIORITY';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
 export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_PATIENT_TASK_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
@@ -99,11 +96,6 @@ export const togglePatientTaskStatus = task => ({
   payload: {
     task,
   },
-});
-
-export const togglePatientTaskPriority = task => ({
-  type: DO_TOGGLE_PATIENT_TASK_PRIORITY,
-  payload: { task },
 });
 
 export const updatePatientTask = (taskIdentifier, newTaskData) => ({
@@ -201,7 +193,6 @@ export const PatientTasksSagaActions = {
   fetchPatientTasks,
   refreshPatientTasks,
   togglePatientTaskStatus,
-  togglePatientTaskPriority,
   updatePatientTask,
   reassignPatientTask,
   updatePatientTaskDueDate,
@@ -341,25 +332,6 @@ function* doToggleTaskCompleteStatus({ payload }) {
     yield put(AlertActions.showGlobalAlert(successMessage));
 
     yield delay(TASK_DISAPPEAR_DELAY);
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
-  } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
-  }
-}
-
-function* doToggleTaskPriority({ payload }) {
-  const { task } = payload;
-
-  const updatedTask = toggleTaskPriority(task);
-
-  const apiEndpoint =
-    updatedTask.priority === 'HIGH' ? 'markHighPriority' : 'markLowPriority';
-
-  try {
-    yield put(updatePatientTask(updatedTask.taskIdentifier, updatedTask));
-
-    yield call(TaskApi[apiEndpoint], updatedTask.taskIdentifier);
-    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
   } catch (error) {
     yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
@@ -552,7 +524,6 @@ export default function* watchPatientTasks() {
   yield takeLatest(DO_FETCH_PATIENT_TASKS, doFetchPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
   yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
-  yield takeLatest(DO_TOGGLE_PATIENT_TASK_PRIORITY, doToggleTaskPriority);
   yield takeLatest(DO_REASSIGN_TASK, doReassignTask);
   yield takeLatest(DO_UPDATE_DUE_DATE, doUpdateDueDate);
   yield takeLatest(

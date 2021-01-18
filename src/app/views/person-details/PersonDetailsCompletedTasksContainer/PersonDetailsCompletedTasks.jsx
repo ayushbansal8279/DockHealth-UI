@@ -17,7 +17,6 @@ const PersonDetailsCompletedTasks = ({
   openDrawer,
   currentUser,
   storeAsCurrentTask,
-  toggleSingleTaskPriority,
   toggleCompleteTask,
   summaryTasksCount,
   updateDueDate,
@@ -72,7 +71,6 @@ const PersonDetailsCompletedTasks = ({
                   currentUser={currentUser}
                   openDrawer={openDrawer}
                   storeAsCurrentTask={storeAsCurrentTask}
-                  toggleTaskPriority={toggleSingleTaskPriority}
                   toggleCompleteTask={toggleCompleteTask}
                   tasks={filteredTasks}
                   isCompletedGroup

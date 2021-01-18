@@ -58,11 +58,6 @@ import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpened
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import { LIST_TOUR_STEPS } from './list-tour-steps';
 
-const Priority = {
-  High: 'HIGH',
-  Low: 'LOW',
-};
-
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 class Home extends Component {
@@ -523,7 +518,6 @@ class Home extends Component {
 
   handleRetry = (error, callback) => {
     if (error.message === 'Network Error') {
-      console.log('refresh token on Network Error');
       userApi
         .refreshAccessToken(sessionStorage.getItem('username'))
         .then(callback)
@@ -540,7 +534,6 @@ class Home extends Component {
     }
 
     const refreshAccessTokenTimeoutId = setTimeout(() => {
-      console.log('refresh token on timeout');
       userApi.refreshAccessToken(user.username);
       this.refreshAccessToken(user);
     }, systemTimeout);
@@ -659,17 +652,6 @@ class Home extends Component {
     } else {
       this.refreshTab(true);
     }
-  };
-
-  toggleSingleTaskPriority = task => {
-    const { actions } = this.props;
-    actions
-      .toggleTaskPriority(
-        task,
-        task.priority === Priority.High ? Priority.Low : Priority.High,
-      )
-      .then(this.handleTaskUpdate)
-      .catch(() => this.refreshTab());
   };
 
   invokeToggleCompleteAction = task => {
@@ -848,7 +830,6 @@ class Home extends Component {
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
               currentUser={currentUser}
-              toggleSingleTaskPriority={this.toggleSingleTaskPriority}
               toggleCompleteTask={this.toggleTaskCompletedStatus}
               reassignTask={this.handleReassignTask}
               updateDueDate={this.handleUpdateDueDate}
@@ -865,7 +846,6 @@ class Home extends Component {
               editGroupName={this.editGroupName}
               currentUser={currentUser}
               toggleCompleteTask={this.toggleTaskCompletedStatus}
-              toggleSingleTaskPriority={this.toggleSingleTaskPriority}
               deleteGroup={this.deleteGroup}
               changeGroupsOrder={this.changeGroupsOrder}
               reassignTask={this.handleReassignTask}

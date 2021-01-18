@@ -14,8 +14,6 @@ import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member/Member';
-import HighPriorityLabel from 'img/priority-high-label-icon.svg';
-import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
 import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
@@ -32,6 +30,7 @@ import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskD
 import Spacing from 'components/common/Spacing';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
 import {
@@ -59,11 +58,9 @@ import {
   MainStandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
-  ThreeDots,
-  PrioritySwitch,
+  StandardTaskThreeDots,
   CompletedBy,
   InfoText,
-  PriorityHoverIcon,
   ListLink,
   ListItemLink,
   AssigneeMatchingWrapper,
@@ -79,6 +76,8 @@ import {
   DescriptionLabel,
   DescriptionWrapper,
   AddSubtaskButton,
+  PriorityIndicator,
+  BulkContainer,
 } from '../styled';
 import TaskItemContextMenu from '../SlimTaskItem/TaskItemContextMenu/TaskItemContextMenu';
 
@@ -89,7 +88,6 @@ const TaskItem = ({
   isOpen,
   switchOpen,
   toggleCompleteTask,
-  toggleTaskPriority,
   task,
   dragHandleProps,
   isDragging,
@@ -246,12 +244,6 @@ const TaskItem = ({
   const onMouseEnter = () => setIsHoverd(true);
   const onMouseLeave = () => setIsHoverd(false);
 
-  const onPrioritySwtich = useCallback(
-    () => toggleTaskPriority(task),
-
-    [task, toggleTaskPriority],
-  );
-
   const onClickTaskItem = useCallback(() => {
     dispatch(openDrawer());
     dispatch(storeAsCurrentTask(task));
@@ -351,6 +343,9 @@ const TaskItem = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
+        {showDraggableDots && (
+          <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+        )}
         <StandardTaskItemContainer
           isSelected={isSelectedTask}
           height={
@@ -359,24 +354,16 @@ const TaskItem = ({
               : STANDARD_TASK_HEIGHT
           }
         >
+          {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
           {showDraggableDots && (
-            <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+            <BulkContainer>
+              <BulkCheckbox />
+            </BulkContainer>
           )}
-          <PrioritySwitch onClick={onPrioritySwtich}>
-            {showPriority ? (
-              <img src={HighPriorityLabel} alt="Priority icon" />
-            ) : (
-              <PriorityHoverIcon
-                className="low"
-                src={LowPriorityHoverLabel}
-                alt="No priority"
-              />
-            )}
-          </PrioritySwitch>
           <MainStandardTaskItemCell
             bolded
-            paddingLeft="huge"
+            paddingLeft="smallPlus"
             paddingRight="small"
             onClick={onClickTaskItem}
             position="static"

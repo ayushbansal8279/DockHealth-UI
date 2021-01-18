@@ -36,7 +36,6 @@ const TaskListDetailsDropdown = ({
   storeAsCurrentTask,
   isCompleteTab,
   toggleTaskStatus,
-  toggleTaskPriority,
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
@@ -138,7 +137,6 @@ const TaskListDetailsDropdown = ({
               isFullView={isFullView}
               openDrawer={openDrawer}
               storeAsCurrentTask={storeAsCurrentTask}
-              toggleTaskPriority={toggleTaskPriority}
               task={task}
               groupId={tasks.taskIdentifier}
               draggableProvided={{}}

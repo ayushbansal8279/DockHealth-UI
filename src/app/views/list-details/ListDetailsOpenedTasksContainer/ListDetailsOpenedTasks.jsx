@@ -24,7 +24,6 @@ const ListDetailsOpenedTasks = ({
   toggleCompleteTask,
   groupedTasks,
   groupList,
-  toggleSingleTaskPriority,
   editGroupName,
   quickAddTask,
   deleteGroup,
@@ -131,7 +130,6 @@ const ListDetailsOpenedTasks = ({
             currentUser={currentUser}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
-            toggleTaskPriority={toggleSingleTaskPriority}
             editGroupName={editGroupName}
             quickAddTask={quickAddTask}
             deleteGroup={deleteGroup}
@@ -184,7 +182,6 @@ const ListDetailsOpenedTasks = ({
       selectedTask,
       tasksGrouped,
       toggleCompleteTask,
-      toggleSingleTaskPriority,
       updateDueDate,
       updateWorkflowStatus,
       taskListIdentifier,
