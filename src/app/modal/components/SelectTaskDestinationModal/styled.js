@@ -91,7 +91,6 @@ export const TitleWithButtonWrapper = styled.div`
 export const Title = styled.h2`
   margin: 0;
   font-size: ${fontSizes.regularPlus};
-  text-transform: uppercase;
   color: ${palette.brightBlue};
   font-family: Roboto Condensed;
   text-align: left;

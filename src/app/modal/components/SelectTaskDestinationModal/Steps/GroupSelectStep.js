@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import useBoolean from 'hooks/useBoolean';
 import {
@@ -17,14 +17,17 @@ import {
   QuickAddInputWrapper,
   ListItemTextButton,
   Step,
-} from './styled';
+  NextArrow,
+} from '../styled';
 
 const GroupSelectStep = ({
   selectedList,
   setSelectedList,
   selectedGroup,
   setSelectedGroup,
-  previousStep,
+  setPreviousStep,
+  subtasksPresent,
+  setNextStep,
 }) => {
   const addGroupReference = useRef(null);
   const [isFetchingGroups, setIsFetchingGroups] = useState(true);
@@ -37,7 +40,7 @@ const GroupSelectStep = ({
   ] = useBoolean(false);
 
   const handleAddNewGroup = groupName => {
-    if (savingGroup || !selectedList) return;
+    if (savingGroup || !selectedList || !groupName) return;
 
     setSavingGroup(true);
     createGroupAssignedToList({
@@ -57,8 +60,9 @@ const GroupSelectStep = ({
   };
 
   useEffect(() => {
-    if (selectedList?.taskListIdentifier && selectedList.listType !== 'INBOX') {
+    if (selectedList?.taskListIdentifier) {
       setIsFetchingGroups(true);
+      setGroups(null);
       getGroupsForTaskList(selectedList.taskListIdentifier)
         .then(responseGroups => {
           setGroups(responseGroups);
@@ -78,7 +82,7 @@ const GroupSelectStep = ({
             <button
               type="button"
               onClick={() => {
-                previousStep();
+                setPreviousStep();
                 setSelectedList(null);
                 setSelectedGroup(null);
               }}
@@ -112,6 +116,16 @@ const GroupSelectStep = ({
                           ? 'New tasks'
                           : group.groupName}
                       </ListItemTextButton>
+                      {subtasksPresent && (
+                        <IconButton
+                          onClick={() => {
+                            setSelectedGroup(group);
+                            setNextStep();
+                          }}
+                        >
+                          <NextArrow />
+                        </IconButton>
+                      )}
                     </ListItem>
                   ))
                 ) : (

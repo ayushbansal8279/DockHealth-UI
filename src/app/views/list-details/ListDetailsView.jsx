@@ -10,6 +10,7 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
+import BulkEditOptionsBar from 'components/tasklist/BulkEditOptionsBar/BulkEditOptionsBar';
 
 import { setHeader } from 'actions/header-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
@@ -65,7 +66,21 @@ const Priority = {
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 class Home extends Component {
-  state = { isTourOpen: false, tourConditionChecked: false, searchValue: '' };
+  state = {
+    isTourOpen: false,
+    tourConditionChecked: false,
+    searchValue: '',
+    selectedTasks: [
+      {
+        taskIdentifier: '00000000-0000-0000-0000-000000000000',
+        parentTaskIdentifier: '10000000-0000-0000-0000-000000000000',
+      },
+      {
+        taskIdentifier: '00000000-0000-0000-0000-000000000000',
+        parentTaskIdentifier: '10000000-0000-0000-0000-000000000000',
+      },
+    ],
+  };
 
   searchWithDebounce = debounce(searchValue => {
     const {
@@ -758,6 +773,10 @@ class Home extends Component {
     );
   };
 
+  handleCloseBulkEdit = () => {
+    this.setState({ selectedTasks: [] });
+  };
+
   render() {
     const {
       members,
@@ -774,7 +793,7 @@ class Home extends Component {
       selectedFilters,
     } = this.props;
 
-    const { isTourOpen, searchValue } = this.state;
+    const { isTourOpen, searchValue, selectedTasks } = this.state;
     const { params } = match;
     const { taskListIdentifier, tabName } = params;
 
@@ -867,6 +886,10 @@ class Home extends Component {
           onTaskUpdate={this.handleTaskUpdate}
           onTaskDelete={this.handleTaskDelete}
           onTaskCreation={this.handleTaskUpdate}
+        />
+        <BulkEditOptionsBar
+          selectedTasks={selectedTasks}
+          onClose={this.handleCloseBulkEdit}
         />
         {isTourOpen && (
           <>

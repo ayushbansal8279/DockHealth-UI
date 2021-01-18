@@ -11,7 +11,7 @@ export const TaskViewContainer = styled.div`
   flex: 1;
   flex-direction: column;
   justify-content: flex-start;
-  height: 100%;
+  padding-bottom: ${spacing.giga};
   background-color: ${palette.coolGrey4};
 `;
 

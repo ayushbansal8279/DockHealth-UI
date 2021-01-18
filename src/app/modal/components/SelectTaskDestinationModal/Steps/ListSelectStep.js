@@ -19,13 +19,12 @@ import {
   ListItemTextButton,
   NextArrow,
   Step,
-} from './styled';
+} from '../styled';
 
 const ListSelectStep = ({
-  currentTaskListIdentifier,
   selectedList,
   setSelectedList,
-  nextStep,
+  setNextStep,
   closeModal,
 }) => {
   const dispatch = useDispatch();
@@ -45,12 +44,7 @@ const ListSelectStep = ({
     if (currentUser?.userIdentifier) {
       getSharedTaskListsWithCurrentUser(currentUser.userIdentifier)
         .then(responseLists => {
-          setLists(
-            responseLists.filter(
-              ({ taskListIdentifier }) =>
-                taskListIdentifier !== currentTaskListIdentifier,
-            ),
-          );
+          setLists(responseLists);
           setIsFetchingLists(false);
         })
         .catch(() => {
@@ -61,7 +55,7 @@ const ListSelectStep = ({
   }, [currentUser]);
 
   const handleAddNewList = listName => {
-    if (savingList) return;
+    if (savingList || !listName) return;
 
     setSavingList(true);
     addTaskList({
@@ -81,7 +75,7 @@ const ListSelectStep = ({
 
   return (
     <Step>
-      <Title>Lists</Title>
+      <Title>LISTS</Title>
       <Box m={1} />
       <ViewLoader isFetchingData={isFetchingLists}>
         <>
@@ -107,7 +101,7 @@ const ListSelectStep = ({
                   <IconButton
                     onClick={() => {
                       setSelectedList(list);
-                      nextStep();
+                      setNextStep();
                     }}
                   >
                     <NextArrow />
