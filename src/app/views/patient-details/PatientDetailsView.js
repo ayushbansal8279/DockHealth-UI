@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
@@ -7,6 +13,7 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskDrawerFields } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import BulkEditOptionsBar from 'components/tasklist/BulkEditOptionsBar/BulkEditOptionsBar';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
@@ -65,10 +72,55 @@ const PatientDetailsView = ({
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
+  const [bulkEditTasks, setBulkEditTasks] = useState([]);
+  const previousSelectedFilters = useRef();
+
+  useEffect(() => {
+    previousSelectedFilters.current = selectedFilters;
+  }, [selectedFilters]);
+
   const history = useHistory();
   const { params } = match;
   const { patientIdentifier } = params;
   const { path } = useRouteMatch();
+
+  const onSelectBulkEditTask = useCallback(
+    taskIdentifier => setBulkEditTasks([...bulkEditTasks, taskIdentifier]),
+    [bulkEditTasks],
+  );
+
+  const onUnselectBulkEditTask = useCallback(
+    taskIdentifier =>
+      setBulkEditTasks(
+        bulkEditTasks?.filter(
+          bulkTaskIdentifier => bulkTaskIdentifier !== taskIdentifier,
+        ),
+      ),
+    [bulkEditTasks],
+  );
+
+  const getTaskIsSelectedInBulkEdit = useCallback(
+    taskIdentifier => bulkEditTasks?.includes(taskIdentifier),
+    [bulkEditTasks],
+  );
+
+  const onClickBulkEditTask = useCallback(
+    taskIdentifier =>
+      getTaskIsSelectedInBulkEdit(taskIdentifier)
+        ? onUnselectBulkEditTask(taskIdentifier)
+        : onSelectBulkEditTask(taskIdentifier),
+    [getTaskIsSelectedInBulkEdit, onUnselectBulkEditTask, onSelectBulkEditTask],
+  );
+
+  const bulkEditTaskActions = useMemo(
+    () => ({
+      getTaskIsSelectedInBulkEdit,
+      onClickBulkEditTask,
+      onUnselectBulkEditTask,
+    }),
+    [getTaskIsSelectedInBulkEdit, onClickBulkEditTask, onUnselectBulkEditTask],
+  );
+
   const navigateToTab = tabName => {
     history.push(
       tabName === TaskListTabName.OPEN
@@ -108,6 +160,17 @@ const PatientDetailsView = ({
     refreshPatientTasks,
     fetchPatientFilters,
   } = patientTasksSagaActions;
+
+  useEffect(() => {
+    if (
+      (searchValue && searchValue !== '') ||
+      activeTab === TaskListTabName.COMPLETE ||
+      (Object.keys(previousSelectedFilters?.current).length === 0 &&
+        Object.keys(selectedFilters).length !== 0)
+    ) {
+      setBulkEditTasks([]);
+    }
+  }, [searchValue, activeTab, previousSelectedFilters, selectedFilters]);
 
   const handleSearchValueChange = value => {
     setSearchValue(value);
@@ -172,7 +235,21 @@ const PatientDetailsView = ({
               key={route.path}
               path={`${path}${route.path}`}
               RouteComponent={
-                isFetching ? PatientListSkeletonLoader : route.RouteComponent
+                isFetching
+                  ? PatientListSkeletonLoader
+                  : props => {
+                      const RouteCompoent = route.RouteComponent;
+                      return (
+                        <RouteCompoent
+                          {...props}
+                          bulkEditTaskActions={
+                            activeTab === TaskListTabName.OPEN
+                              ? bulkEditTaskActions
+                              : null
+                          }
+                        />
+                      );
+                    }
               }
               onEnter={route.onEnter}
               exact={route.exact}
@@ -186,6 +263,10 @@ const PatientDetailsView = ({
         onTaskCreation={handleTaskUpdate}
         onTaskDelete={fetchPatientFilters}
         disabledFileds={[TaskDrawerFields.PATIENT]}
+      />
+      <BulkEditOptionsBar
+        selectedTasks={bulkEditTasks}
+        onClose={() => setBulkEditTasks([])}
       />
     </>
   );
