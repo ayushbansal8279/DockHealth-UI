@@ -211,8 +211,8 @@ class Home extends Component {
 
     if (
       ((searchValue && searchValue !== '') ||
-        (Object.keys(previousProps.selectedFilters).length === 0 &&
-          Object.keys(selectedFilters).length !== 0) ||
+        (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
+          Object.keys(selectedFilters || []).length !== 0) ||
         tabName === TaskListTabName.COMPLETE) &&
       !previousState.shouldResetBulkEditTasks &&
       !shouldResetBulkEditTasks
@@ -224,8 +224,8 @@ class Home extends Component {
     if (
       (!searchValue ||
         searchValue === '' ||
-        (Object.keys(previousProps.selectedFilters).length !== 0 &&
-          Object.keys(selectedFilters).length === 0) ||
+        (Object.keys(previousProps?.selectedFilters || []).length !== 0 &&
+          Object.keys(selectedFilters || []).length === 0) ||
         tabName === TaskListTabName.OPEN) &&
       previousState.shouldResetBulkEditTasks
     ) {
