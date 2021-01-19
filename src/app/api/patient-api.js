@@ -81,6 +81,16 @@ export function getPatientById(patientIdentifier) {
     });
 }
 
+export function lookupEMRPatient(patientId) {
+  return axios
+    .get(`patient/lookupEMRPatient/${patientId}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
 export function removePatient(patientIdentifier) {
   return axios
     .delete(`patient/${patientIdentifier}`)

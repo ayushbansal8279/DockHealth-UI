@@ -643,11 +643,18 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
         const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
+        const organizationIdentifier = response?.data.organizationIdentifier;
+        const patientIdentifier = response?.data.patientIdentifier;
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('accessToken', userAccessToken);
+        sessionStorage.setItem(
+          'OrganizationIdentifier',
+          organizationIdentifier,
+        );
+        sessionStorage.setItem('PatientIdentifier', patientIdentifier);
         sendEvent({
           eventAction: 'LOGIN_SUCCESS',
           eventCategory: 'AUTH',

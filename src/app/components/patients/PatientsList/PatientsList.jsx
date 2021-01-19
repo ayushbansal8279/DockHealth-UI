@@ -1,12 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import moment from 'moment';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Spacing from 'components/common/Spacing';
 
 import SortArrow, {
   SORT_ORDER_TYPES,
 } from 'components/common/SortArrow/SortArrow';
+import { lookupEMRPatient } from 'api/patient-api';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import PatientListLoader from '../PatientsListLoader/PatientListLoader';
 import EmptyPatientsList from '../EmptyPatientsList/EmptyPatientsList';
@@ -73,6 +74,7 @@ const PatientsList = ({
   const [sortKey, setSortKey] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
   const [hoveredHeader, setHoveredHeader] = useState(null);
+  const history = useHistory();
 
   const sortedPatients = useMemo(() => {
     if (!patients?.length > 0) {
@@ -218,10 +220,22 @@ const PatientsList = ({
                   dob,
                   age,
                   gender,
+                  fromEMR,
                 }) => (
-                  <Link
+                  <div
                     key={patientIdentifier}
-                    to={`/core/patient/${patientIdentifier}`}
+                    onClick={async () => {
+                      if (fromEMR) {
+                        const patient = await lookupEMRPatient(
+                          patientIdentifier,
+                        );
+                        history.push(
+                          `/core/patient/${patient.patientIdentifier}`,
+                        );
+                      } else {
+                        history.push(`/core/patient/${patientIdentifier}`);
+                      }
+                    }}
                   >
                     <ListRow
                       isHighlighted={
@@ -243,7 +257,7 @@ const PatientsList = ({
                         </>
                       )}
                     </ListRow>
-                  </Link>
+                  </div>
                 ),
               )}
             </NonEmptyListTable>
