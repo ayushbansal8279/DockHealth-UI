@@ -645,16 +645,25 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
         const email = response?.data.profile;
         const organizationIdentifier = response?.data.organizationIdentifier;
         const patientIdentifier = response?.data.patientIdentifier;
+        console.log(`patientIdentifier: ${patientIdentifier}`);
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('accessToken', userAccessToken);
-        sessionStorage.setItem(
-          'OrganizationIdentifier',
-          organizationIdentifier,
-        );
-        sessionStorage.setItem('PatientIdentifier', patientIdentifier);
+        if (organizationIdentifier && organizationIdentifier !== '') {
+          sessionStorage.setItem(
+            'OrganizationIdentifier',
+            organizationIdentifier,
+          );
+          sessionStorage.setItem(
+            'currentOrganizationIdentifier',
+            organizationIdentifier,
+          );
+        }
+        if (patientIdentifier && patientIdentifier !== '') {
+          sessionStorage.setItem('PatientIdentifier', patientIdentifier);
+        }
         sendEvent({
           eventAction: 'LOGIN_SUCCESS',
           eventCategory: 'AUTH',
