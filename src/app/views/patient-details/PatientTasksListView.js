@@ -46,7 +46,6 @@ const PatientTasksListView = ({
   modalActions,
   taskSearch,
   areFiltersApplied,
-  bulkEditTaskActions,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
@@ -121,7 +120,6 @@ const PatientTasksListView = ({
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
           refreshView={refreshPatientTasks}
-          bulkEditTaskActions={bulkEditTaskActions}
         />
       ))
     : renderEmptyListView();

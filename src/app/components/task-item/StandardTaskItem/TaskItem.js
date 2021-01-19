@@ -5,6 +5,7 @@ import React, {
   useRef,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { EditorState } from 'draft-js';
@@ -37,6 +38,7 @@ import Spacing from 'components/common/Spacing';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
+import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
 import {
@@ -115,7 +117,6 @@ const TaskItem = ({
   isNestedTask = false,
   hideSubtasks,
   contextFiltered,
-  bulkEditTaskActions,
 }) => {
   const {
     taskIdentifier,
@@ -168,6 +169,8 @@ const TaskItem = ({
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
   const descriptionReference = useRef(null);
+
+  const bulkEditTaskActions = useContext(BulkEditContext);
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
     const descriptionTextElement = descriptionReference.current?.querySelector(

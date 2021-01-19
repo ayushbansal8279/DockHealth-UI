@@ -10,7 +10,7 @@ import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
-import BulkEditOptionsBar from 'components/tasklist/BulkEditOptionsBar/BulkEditOptionsBar';
+import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import { setHeader } from 'actions/header-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
@@ -65,7 +65,7 @@ class Home extends Component {
     isTourOpen: false,
     tourConditionChecked: false,
     searchValue: '',
-    selectedBulkEditTasks: [],
+    shouldResetBulkEditTasks: false,
   };
 
   searchWithDebounce = debounce(searchValue => {
@@ -202,14 +202,35 @@ class Home extends Component {
     }
   }
 
-  componentDidUpdate(previousProps) {
-    const { selectedFilters } = this.props;
+  componentDidUpdate(previousProps, previousState) {
+    const { searchValue, shouldResetBulkEditTasks } = this.state;
+    const { selectedFilters, match } = this.props;
+
+    const { params } = match;
+    const { tabName } = params;
+
     if (
-      Object.keys(previousProps.selectedFilters).length === 0 &&
-      Object.keys(selectedFilters).length !== 0
+      ((searchValue && searchValue !== '') ||
+        (Object.keys(previousProps.selectedFilters).length === 0 &&
+          Object.keys(selectedFilters).length !== 0) ||
+        tabName === TaskListTabName.COMPLETE) &&
+      !previousState.shouldResetBulkEditTasks &&
+      !shouldResetBulkEditTasks
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ selectedBulkEditTasks: [] });
+      this.setState({ shouldResetBulkEditTasks: true });
+    }
+
+    if (
+      (!searchValue ||
+        searchValue === '' ||
+        (Object.keys(previousProps.selectedFilters).length !== 0 &&
+          Object.keys(selectedFilters).length === 0) ||
+        tabName === TaskListTabName.OPEN) &&
+      previousState.shouldResetBulkEditTasks
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ shouldResetBulkEditTasks: false });
     }
   }
 
@@ -550,10 +571,6 @@ class Home extends Component {
     const { match, history } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
-    const { selectedBulkEditTasks } = this.state;
-    if (selectedBulkEditTasks?.length !== 0) {
-      this.setState({ selectedBulkEditTasks: [] });
-    }
 
     history.push(
       `/core/tasks/${taskListIdentifier}${
@@ -649,12 +666,6 @@ class Home extends Component {
   };
 
   setSearchValue = searchValue => {
-    const { selectedBulkEditTasks } = this.state;
-
-    if (selectedBulkEditTasks?.length !== 0) {
-      this.setState({ selectedBulkEditTasks: [] });
-    }
-
     this.setState({
       searchValue,
     });
@@ -767,39 +778,6 @@ class Home extends Component {
     );
   };
 
-  handleCloseBulkEdit = () => {
-    this.setState({ selectedBulkEditTasks: [] });
-  };
-
-  onSelectBulkEditTask = taskIdentifier => {
-    const { selectedBulkEditTasks } = this.state;
-
-    this.setState({
-      selectedBulkEditTasks: [...selectedBulkEditTasks, taskIdentifier],
-    });
-  };
-
-  onUnselectBulkEditTask = taskIdentifier => {
-    const { selectedBulkEditTasks } = this.state;
-
-    this.setState({
-      selectedBulkEditTasks: selectedBulkEditTasks?.filter(
-        bulkTaskIdentifier => bulkTaskIdentifier !== taskIdentifier,
-      ),
-    });
-  };
-
-  getTaskIsSelectedInBulkEdit = taskIdentifier => {
-    const { selectedBulkEditTasks } = this.state;
-    return selectedBulkEditTasks?.includes(taskIdentifier);
-  };
-
-  onClickBulkEditTask = taskIdentifier => {
-    return this.getTaskIsSelectedInBulkEdit(taskIdentifier)
-      ? this.onUnselectBulkEditTask(taskIdentifier)
-      : this.onSelectBulkEditTask(taskIdentifier);
-  };
-
   render() {
     const {
       members,
@@ -816,7 +794,7 @@ class Home extends Component {
       selectedFilters,
     } = this.props;
 
-    const { isTourOpen, searchValue, selectedBulkEditTasks } = this.state;
+    const { isTourOpen, searchValue, shouldResetBulkEditTasks } = this.state;
     const { params } = match;
     const { taskListIdentifier, tabName } = params;
 
@@ -828,95 +806,93 @@ class Home extends Component {
 
     return (
       <>
-        <TaskViewContainer>
-          <Toolbar
-            members={members}
-            onSelectTab={this.navigateToTab}
-            selectedTab={selectedTab}
-            taskList={loadedTasklist || undefined}
-            openTasksAmount={taskCounters.incomplete}
-            completedTasksAmount={taskCounters.complete}
-            onSearchChange={this.setSearchValue}
-            searchValue={searchValue}
-            onSelectFilters={this.handleFilterChange}
-            pdfTitle={loadedTasklist?.listName}
-            tipsContent={
-              loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
-            }
-            isFetching={isFetching || isCompletedTasksFetching}
-            printData={{
-              completedTasks:
-                selectedTab === TaskListTabName.COMPLETE &&
-                completedGroupedTasks
-                  ? completedGroupedTasks.tasks
-                  : [],
-              openedTasks:
-                selectedTab === TaskListTabName.OPEN && groupedTasks
-                  ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
-                  : [],
-              taskListMembers: members,
-            }}
-            tasks={
-              selectedTab === TaskListTabName.OPEN && groupedTasks
-                ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
-                : []
-            }
-            completedTasks={
-              selectedTab === TaskListTabName.COMPLETE && completedGroupedTasks
-                ? completedGroupedTasks.tasks
-                : []
-            }
-            selectedFilters={selectedFilters}
-          />
-          {selectedTab === TaskListTabName.COMPLETE ? (
-            <CompletedTasksView
-              currentUser={currentUser}
-              toggleCompleteTask={this.toggleTaskCompletedStatus}
-              reassignTask={this.handleReassignTask}
-              updateDueDate={this.handleUpdateDueDate}
-              searchValue={searchValue}
-              selectedTask={selectedTask}
-              listUniqueKey={taskListIdentifier}
-              loadMoreTasksForList={this.loadMoreTasksForList}
+        <BulkEditSection shouldResetBulkEditTasks={shouldResetBulkEditTasks}>
+          <div>
+            <TaskViewContainer>
+              <Toolbar
+                members={members}
+                onSelectTab={this.navigateToTab}
+                selectedTab={selectedTab}
+                taskList={loadedTasklist || undefined}
+                openTasksAmount={taskCounters.incomplete}
+                completedTasksAmount={taskCounters.complete}
+                onSearchChange={this.setSearchValue}
+                searchValue={searchValue}
+                onSelectFilters={this.handleFilterChange}
+                pdfTitle={loadedTasklist?.listName}
+                tipsContent={
+                  loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
+                }
+                isFetching={isFetching || isCompletedTasksFetching}
+                printData={{
+                  completedTasks:
+                    selectedTab === TaskListTabName.COMPLETE &&
+                    completedGroupedTasks
+                      ? completedGroupedTasks.tasks
+                      : [],
+                  openedTasks:
+                    selectedTab === TaskListTabName.OPEN && groupedTasks
+                      ? Object.values(groupedTasks)?.flatMap(
+                          ({ tasks }) => tasks,
+                        )
+                      : [],
+                  taskListMembers: members,
+                }}
+                tasks={
+                  selectedTab === TaskListTabName.OPEN && groupedTasks
+                    ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
+                    : []
+                }
+                completedTasks={
+                  selectedTab === TaskListTabName.COMPLETE &&
+                  completedGroupedTasks
+                    ? completedGroupedTasks.tasks
+                    : []
+                }
+                selectedFilters={selectedFilters}
+              />
+              {selectedTab === TaskListTabName.COMPLETE ? (
+                <CompletedTasksView
+                  currentUser={currentUser}
+                  toggleCompleteTask={this.toggleTaskCompletedStatus}
+                  reassignTask={this.handleReassignTask}
+                  updateDueDate={this.handleUpdateDueDate}
+                  searchValue={searchValue}
+                  selectedTask={selectedTask}
+                  listUniqueKey={taskListIdentifier}
+                  loadMoreTasksForList={this.loadMoreTasksForList}
+                />
+              ) : (
+                <OpenedTasksView
+                  taskListIdentifier={taskListIdentifier}
+                  quickAddTask={this.quickAddTask}
+                  createTaskGroupList={this.handleCreateGroup}
+                  editGroupName={this.editGroupName}
+                  currentUser={currentUser}
+                  toggleCompleteTask={this.toggleTaskCompletedStatus}
+                  deleteGroup={this.deleteGroup}
+                  changeGroupsOrder={this.changeGroupsOrder}
+                  reassignTask={this.handleReassignTask}
+                  updateDueDate={this.handleUpdateDueDate}
+                  updateWorkflowStatus={this.handleUpdateWorkflowStatus}
+                  searchValue={searchValue}
+                  selectedTask={selectedTask}
+                  listUniqueKey={taskListIdentifier}
+                  taskCounters={taskCounters}
+                  loadTasksForTaskGroup={this.loadTasksForTaskGroup}
+                />
+              )}
+            </TaskViewContainer>
+            <NewTaskDrawer
+              modalActions={modalActions}
+              fromFirstAddTask={taskCounters?.incomplete === 0}
+              hideTour={isTourOpen}
+              onTaskUpdate={this.handleTaskUpdate}
+              onTaskDelete={this.handleTaskDelete}
+              onTaskCreation={this.handleTaskUpdate}
             />
-          ) : (
-            <OpenedTasksView
-              taskListIdentifier={taskListIdentifier}
-              quickAddTask={this.quickAddTask}
-              createTaskGroupList={this.handleCreateGroup}
-              editGroupName={this.editGroupName}
-              currentUser={currentUser}
-              toggleCompleteTask={this.toggleTaskCompletedStatus}
-              deleteGroup={this.deleteGroup}
-              changeGroupsOrder={this.changeGroupsOrder}
-              reassignTask={this.handleReassignTask}
-              updateDueDate={this.handleUpdateDueDate}
-              updateWorkflowStatus={this.handleUpdateWorkflowStatus}
-              searchValue={searchValue}
-              selectedTask={selectedTask}
-              listUniqueKey={taskListIdentifier}
-              taskCounters={taskCounters}
-              loadTasksForTaskGroup={this.loadTasksForTaskGroup}
-              bulkEditTaskActions={{
-                getTaskIsSelectedInBulkEdit: this.getTaskIsSelectedInBulkEdit,
-                onClickBulkEditTask: this.onClickBulkEditTask,
-                onUnselectBulkEditTask: this.onUnselectBulkEditTask,
-              }}
-            />
-          )}
-        </TaskViewContainer>
-        <NewTaskDrawer
-          modalActions={modalActions}
-          fromFirstAddTask={taskCounters?.incomplete === 0}
-          hideTour={isTourOpen}
-          onTaskUpdate={this.handleTaskUpdate}
-          onTaskDelete={this.handleTaskDelete}
-          onTaskCreation={this.handleTaskUpdate}
-        />
-        <BulkEditOptionsBar
-          selectedTasks={selectedBulkEditTasks}
-          onClose={this.handleCloseBulkEdit}
-        />
+          </div>
+        </BulkEditSection>
         {isTourOpen && (
           <>
             <ListTourWrapper>

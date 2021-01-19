@@ -13,7 +13,7 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskDrawerFields } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
-import BulkEditOptionsBar from 'components/tasklist/BulkEditOptionsBar/BulkEditOptionsBar';
+import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
@@ -72,8 +72,7 @@ const PatientDetailsView = ({
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
-  const [bulkEditTasks, setBulkEditTasks] = useState([]);
-  const previousSelectedFilters = useRef();
+  const previousSelectedFilters = useRef(selectedFilters);
 
   useEffect(() => {
     previousSelectedFilters.current = selectedFilters;
@@ -83,43 +82,6 @@ const PatientDetailsView = ({
   const { params } = match;
   const { patientIdentifier } = params;
   const { path } = useRouteMatch();
-
-  const onSelectBulkEditTask = useCallback(
-    taskIdentifier => setBulkEditTasks([...bulkEditTasks, taskIdentifier]),
-    [bulkEditTasks],
-  );
-
-  const onUnselectBulkEditTask = useCallback(
-    taskIdentifier =>
-      setBulkEditTasks(
-        bulkEditTasks?.filter(
-          bulkTaskIdentifier => bulkTaskIdentifier !== taskIdentifier,
-        ),
-      ),
-    [bulkEditTasks],
-  );
-
-  const getTaskIsSelectedInBulkEdit = useCallback(
-    taskIdentifier => bulkEditTasks?.includes(taskIdentifier),
-    [bulkEditTasks],
-  );
-
-  const onClickBulkEditTask = useCallback(
-    taskIdentifier =>
-      getTaskIsSelectedInBulkEdit(taskIdentifier)
-        ? onUnselectBulkEditTask(taskIdentifier)
-        : onSelectBulkEditTask(taskIdentifier),
-    [getTaskIsSelectedInBulkEdit, onUnselectBulkEditTask, onSelectBulkEditTask],
-  );
-
-  const bulkEditTaskActions = useMemo(
-    () => ({
-      getTaskIsSelectedInBulkEdit,
-      onClickBulkEditTask,
-      onUnselectBulkEditTask,
-    }),
-    [getTaskIsSelectedInBulkEdit, onClickBulkEditTask, onUnselectBulkEditTask],
-  );
 
   const navigateToTab = tabName => {
     history.push(
@@ -161,17 +123,6 @@ const PatientDetailsView = ({
     fetchPatientFilters,
   } = patientTasksSagaActions;
 
-  useEffect(() => {
-    if (
-      (searchValue && searchValue !== '') ||
-      activeTab === TaskListTabName.COMPLETE ||
-      (Object.keys(previousSelectedFilters?.current).length === 0 &&
-        Object.keys(selectedFilters).length !== 0)
-    ) {
-      setBulkEditTasks([]);
-    }
-  }, [searchValue, activeTab, previousSelectedFilters, selectedFilters]);
-
   const handleSearchValueChange = value => {
     setSearchValue(value);
     setPatientTaskSearch(value);
@@ -187,88 +138,81 @@ const PatientDetailsView = ({
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
   );
 
+  const shouldResetBulkEditTasks = useMemo(
+    () =>
+      (searchValue && searchValue !== '') ||
+      activeTab === TaskListTabName.COMPLETE ||
+      (Object.keys(previousSelectedFilters?.current).length === 0 &&
+        Object.keys(selectedFilters).length !== 0),
+    [searchValue, activeTab, previousSelectedFilters, selectedFilters],
+  );
+
   return (
-    <>
-      <PatientDetailsHeader
-        patientDetails={patientDetails}
-        organization={organization}
-      />
-      {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
-        <Toolbar
-          onSelectTab={navigateToTab}
-          selectedTab={activeTab}
-          printData={{
-            completedTasks:
-              activeTab === TaskListTabName.COMPLETE
-                ? lists.flatMap(({ tasks }) => tasks)
-                : [],
-            openedTasks:
-              activeTab === TaskListTabName.OPEN
-                ? lists.flatMap(({ tasks }) => tasks)
-                : [],
-            taskListMembers: allMembers,
-          }}
-          openTasksAmount={incompleteTasksCount}
-          completedTasksAmount={completeTasksCount}
-          onSearchChange={handleSearchValueChange}
-          showNotifications={false}
-          searchValue={searchValue}
-          onSelectFilters={patientTasksFilterChange}
-          showMembers={false}
-          megaFilter={megaFilter}
-          haveTasks={hasTasks}
-          patientColumnVisible={false}
-          listNameColumnVisible
-          pdfTitle={
-            patientDetails
-              ? `Patient: ${patientDetails.firstName} ${patientDetails.lastName}`
-              : null
-          }
+    <BulkEditSection shouldResetBulkEditTasks={shouldResetBulkEditTasks}>
+      <div>
+        <PatientDetailsHeader
+          patientDetails={patientDetails}
+          organization={organization}
         />
-      ) : (
-        <PatientToolbarSkeletonLoader />
-      )}
-      <PatientListsContainer>
-        <Switch>
-          {TABS?.map(route => (
-            <RouteWrapper
-              key={route.path}
-              path={`${path}${route.path}`}
-              RouteComponent={
-                isFetching
-                  ? PatientListSkeletonLoader
-                  : props => {
-                      const RouteCompoent = route.RouteComponent;
-                      return (
-                        <RouteCompoent
-                          {...props}
-                          bulkEditTaskActions={
-                            activeTab === TaskListTabName.OPEN
-                              ? bulkEditTaskActions
-                              : null
-                          }
-                        />
-                      );
-                    }
-              }
-              onEnter={route.onEnter}
-              exact={route.exact}
-            />
-          ))}
-        </Switch>
-      </PatientListsContainer>
-      <NewTaskDrawer
-        modalActions={modalActions}
-        onTaskUpdate={handleTaskUpdate}
-        onTaskCreation={handleTaskUpdate}
-        onTaskDelete={fetchPatientFilters}
-        disabledFileds={[TaskDrawerFields.PATIENT]}
-      />
-      <BulkEditOptionsBar
-        selectedTasks={bulkEditTasks}
-        onClose={() => setBulkEditTasks([])}
-      />
-    </>
+        {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
+          <Toolbar
+            onSelectTab={navigateToTab}
+            selectedTab={activeTab}
+            printData={{
+              completedTasks:
+                activeTab === TaskListTabName.COMPLETE
+                  ? lists.flatMap(({ tasks }) => tasks)
+                  : [],
+              openedTasks:
+                activeTab === TaskListTabName.OPEN
+                  ? lists.flatMap(({ tasks }) => tasks)
+                  : [],
+              taskListMembers: allMembers,
+            }}
+            openTasksAmount={incompleteTasksCount}
+            completedTasksAmount={completeTasksCount}
+            onSearchChange={handleSearchValueChange}
+            showNotifications={false}
+            searchValue={searchValue}
+            onSelectFilters={patientTasksFilterChange}
+            showMembers={false}
+            megaFilter={megaFilter}
+            haveTasks={hasTasks}
+            patientColumnVisible={false}
+            listNameColumnVisible
+            pdfTitle={
+              patientDetails
+                ? `Patient: ${patientDetails.firstName} ${patientDetails.lastName}`
+                : null
+            }
+          />
+        ) : (
+          <PatientToolbarSkeletonLoader />
+        )}
+        <PatientListsContainer>
+          <Switch>
+            {TABS?.map(route => (
+              <RouteWrapper
+                key={route.path}
+                path={`${path}${route.path}`}
+                RouteComponent={
+                  isFetching ? PatientListSkeletonLoader : route.RouteComponent
+                }
+                onEnter={route.onEnter}
+                exact={route.exact}
+              />
+            ))}
+          </Switch>
+        </PatientListsContainer>
+        <NewTaskDrawer
+          modalActions={modalActions}
+          onTaskUpdate={handleTaskUpdate}
+          onTaskCreation={handleTaskUpdate}
+          onTaskDelete={fetchPatientFilters}
+          disabledFileds={[TaskDrawerFields.PATIENT]}
+        />
+      </div>
+    </BulkEditSection>
   );
 };
 

@@ -41,7 +41,6 @@ const TaskListDetailsDropdown = ({
   updateWorkflowStatus,
   quickAddTask,
   refreshView,
-  bulkEditTaskActions,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
@@ -152,7 +151,6 @@ const TaskListDetailsDropdown = ({
               addingNewSubtask={addingNewSubtask}
               addingNewSubtaskParentId={addingNewSubtaskParentId}
               subtaskShape={subtaskShape}
-              bulkEditTaskActions={bulkEditTaskActions}
             />
           ))}
         </div>
