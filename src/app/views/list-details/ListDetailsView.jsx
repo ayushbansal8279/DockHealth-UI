@@ -65,16 +65,7 @@ class Home extends Component {
     isTourOpen: false,
     tourConditionChecked: false,
     searchValue: '',
-    selectedTasks: [
-      {
-        taskIdentifier: '00000000-0000-0000-0000-000000000000',
-        parentTaskIdentifier: '10000000-0000-0000-0000-000000000000',
-      },
-      {
-        taskIdentifier: '00000000-0000-0000-0000-000000000000',
-        parentTaskIdentifier: '10000000-0000-0000-0000-000000000000',
-      },
-    ],
+    selectedBulkEditTasks: [],
   };
 
   searchWithDebounce = debounce(searchValue => {
@@ -208,6 +199,17 @@ class Home extends Component {
         nextProps.match.params.taskListIdentifier,
         nextProps.currentUser,
       );
+    }
+  }
+
+  componentDidUpdate(previousProps) {
+    const { selectedFilters } = this.props;
+    if (
+      Object.keys(previousProps.selectedFilters).length === 0 &&
+      Object.keys(selectedFilters).length !== 0
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ selectedBulkEditTasks: [] });
     }
   }
 
@@ -548,6 +550,10 @@ class Home extends Component {
     const { match, history } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
+    const { selectedBulkEditTasks } = this.state;
+    if (selectedBulkEditTasks?.length !== 0) {
+      this.setState({ selectedBulkEditTasks: [] });
+    }
 
     history.push(
       `/core/tasks/${taskListIdentifier}${
@@ -643,6 +649,12 @@ class Home extends Component {
   };
 
   setSearchValue = searchValue => {
+    const { selectedBulkEditTasks } = this.state;
+
+    if (selectedBulkEditTasks?.length !== 0) {
+      this.setState({ selectedBulkEditTasks: [] });
+    }
+
     this.setState({
       searchValue,
     });
@@ -756,7 +768,36 @@ class Home extends Component {
   };
 
   handleCloseBulkEdit = () => {
-    this.setState({ selectedTasks: [] });
+    this.setState({ selectedBulkEditTasks: [] });
+  };
+
+  onSelectBulkEditTask = taskIdentifier => {
+    const { selectedBulkEditTasks } = this.state;
+
+    this.setState({
+      selectedBulkEditTasks: [...selectedBulkEditTasks, taskIdentifier],
+    });
+  };
+
+  onUnselectBulkEditTask = taskIdentifier => {
+    const { selectedBulkEditTasks } = this.state;
+
+    this.setState({
+      selectedBulkEditTasks: selectedBulkEditTasks?.filter(
+        bulkTaskIdentifier => bulkTaskIdentifier !== taskIdentifier,
+      ),
+    });
+  };
+
+  getTaskIsSelectedInBulkEdit = taskIdentifier => {
+    const { selectedBulkEditTasks } = this.state;
+    return selectedBulkEditTasks?.includes(taskIdentifier);
+  };
+
+  onClickBulkEditTask = taskIdentifier => {
+    return this.getTaskIsSelectedInBulkEdit(taskIdentifier)
+      ? this.onUnselectBulkEditTask(taskIdentifier)
+      : this.onSelectBulkEditTask(taskIdentifier);
   };
 
   render() {
@@ -775,7 +816,7 @@ class Home extends Component {
       selectedFilters,
     } = this.props;
 
-    const { isTourOpen, searchValue, selectedTasks } = this.state;
+    const { isTourOpen, searchValue, selectedBulkEditTasks } = this.state;
     const { params } = match;
     const { taskListIdentifier, tabName } = params;
 
@@ -856,6 +897,11 @@ class Home extends Component {
               listUniqueKey={taskListIdentifier}
               taskCounters={taskCounters}
               loadTasksForTaskGroup={this.loadTasksForTaskGroup}
+              bulkEditTaskActions={{
+                getTaskIsSelectedInBulkEdit: this.getTaskIsSelectedInBulkEdit,
+                onClickBulkEditTask: this.onClickBulkEditTask,
+                onUnselectBulkEditTask: this.onUnselectBulkEditTask,
+              }}
             />
           )}
         </TaskViewContainer>
@@ -868,7 +914,7 @@ class Home extends Component {
           onTaskCreation={this.handleTaskUpdate}
         />
         <BulkEditOptionsBar
-          selectedTasks={selectedTasks}
+          selectedTasks={selectedBulkEditTasks}
           onClose={this.handleCloseBulkEdit}
         />
         {isTourOpen && (

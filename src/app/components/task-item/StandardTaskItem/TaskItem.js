@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
@@ -109,6 +115,7 @@ const TaskItem = ({
   isNestedTask = false,
   hideSubtasks,
   contextFiltered,
+  bulkEditTaskActions,
 }) => {
   const {
     taskIdentifier,
@@ -250,6 +257,11 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
+  const isCheckedByBulkEdit = useMemo(
+    () => bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(taskIdentifier),
+    [bulkEditTaskActions, taskIdentifier],
+  );
+
   const onCircleClick = useCallback(
     event => {
       if (
@@ -260,15 +272,22 @@ const TaskItem = ({
       ) {
         toggleCompleteTask(task);
       }
+
+      if (isCheckedByBulkEdit && bulkEditTaskActions?.onUnselectBulkEditTask) {
+        bulkEditTaskActions.onUnselectBulkEditTask(taskIdentifier);
+      }
       event.stopPropagation();
     },
     [
       isTaskStatusTogglingEnabled,
-      task,
-      toggleCompleteTask,
       isSubtask,
       isCompletedGroup,
       isCompleted,
+      isCheckedByBulkEdit,
+      bulkEditTaskActions,
+      toggleCompleteTask,
+      task,
+      taskIdentifier,
     ],
   );
 
@@ -356,9 +375,14 @@ const TaskItem = ({
         >
           {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-          {showDraggableDots && (
+          {bulkEditTaskActions && (
             <BulkContainer>
-              <BulkCheckbox />
+              <BulkCheckbox
+                isChecked={isCheckedByBulkEdit}
+                onClick={() =>
+                  bulkEditTaskActions?.onClickBulkEditTask(taskIdentifier)
+                }
+              />
             </BulkContainer>
           )}
           <MainStandardTaskItemCell

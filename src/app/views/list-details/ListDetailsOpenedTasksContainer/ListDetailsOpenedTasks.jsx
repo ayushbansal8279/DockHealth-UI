@@ -42,6 +42,7 @@ const ListDetailsOpenedTasks = ({
   taskCounters,
   loadTasksForTaskGroup,
   taskListIdentifier,
+  bulkEditTaskActions,
 }) => {
   const [tasksGrouped, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -163,6 +164,7 @@ const ListDetailsOpenedTasks = ({
               });
             }}
             taskListIdentifier={taskListIdentifier}
+            bulkEditTaskActions={bulkEditTaskActions}
           />
         )),
     [
@@ -185,6 +187,7 @@ const ListDetailsOpenedTasks = ({
       updateDueDate,
       updateWorkflowStatus,
       taskListIdentifier,
+      bulkEditTaskActions,
     ],
   );
 

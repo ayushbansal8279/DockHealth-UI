@@ -6,12 +6,14 @@ export const Icon = styled.svg`
   stroke: ${palette.brightBlue};
 `;
 
-export const BulkCheckboxInput = styled.div`
-  display: inline-block;
+export const BulkCheckboxInput = styled.button`
   width: 12px;
   height: 12px;
   border-radius: 2px;
-  border: 1px solid ${palette.coolGrey3};
+  border: ${props =>
+    props.isChecked
+      ? `1px solid ${palette.brightBlue}`
+      : `1px solid ${palette.coolGrey3}`};
   transition: all 150ms;
   cursor: pointer;
   display: flex;
@@ -23,6 +25,6 @@ export const BulkCheckboxInput = styled.div`
   }
 
   ${Icon} {
-    visibility: ${props => (props.checked ? 'visible' : 'hidden')};
+    visibility: ${props => (props.isChecked ? 'visible' : 'hidden')};
   }
 `;

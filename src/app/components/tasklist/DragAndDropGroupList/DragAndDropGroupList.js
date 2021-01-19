@@ -22,6 +22,7 @@ const DragAndDropGroupList = ({
   hideSubtasks,
   areFiltersApplied,
   isSearchApplied,
+  bulkEditTaskActions,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -83,6 +84,7 @@ const DragAndDropGroupList = ({
                     hideSubtasks={hideSubtasks}
                     areFiltersApplied={areFiltersApplied}
                     isSearchApplied={isSearchApplied}
+                    bulkEditTaskActions={bulkEditTaskActions}
                   />
                 )}
               </Draggable>

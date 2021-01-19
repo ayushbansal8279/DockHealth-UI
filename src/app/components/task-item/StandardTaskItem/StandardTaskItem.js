@@ -35,6 +35,7 @@ const Task = ({
   isSearchApplied,
   listNameVisible,
   patientVisible = true,
+  bulkEditTaskActions,
   ...restProps
 }) => {
   const parentTaskReference = useRef(null);
@@ -149,6 +150,7 @@ const Task = ({
           hideSubtasks={hideSubtasks}
           isFullView={isFullView}
           contextFiltered={isSearchApplied || areFiltersApplied}
+          bulkEditTaskActions={bulkEditTaskActions}
           {...restProps}
         />
       </div>
@@ -178,6 +180,7 @@ const Task = ({
             isDraggable={isDraggable}
             listNameVisible={listNameVisible}
             patientVisible={patientVisible}
+            bulkEditTaskActions={bulkEditTaskActions}
             {...restProps}
           />
           {subtaskQuickAddOpen &&

@@ -73,6 +73,7 @@ const TasksGroup = ({
   taskGroupIdentifier,
   listUniqueKey,
   taskListIdentifier,
+  bulkEditTaskActions,
 }) => {
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -234,6 +235,7 @@ const TasksGroup = ({
           hideSubtasks={isSearchApplied || areFiltersApplied}
           areFiltersApplied={areFiltersApplied}
           isSearchApplied={isSearchApplied}
+          bulkEditTaskActions={bulkEditTaskActions}
         />
         {(isLoadingGroup || isFetchingMoreTasks) && (
           <SingleSkeletonLoader rows={4} />
