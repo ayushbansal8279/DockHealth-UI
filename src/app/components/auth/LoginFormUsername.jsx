@@ -49,7 +49,7 @@ const LoginFormUsername = props => {
               'PatientIdentifier',
             );
             if (patientIdentifier && patientIdentifier !== '') {
-              window.location.href = `/#/core/patient/${patientIdentifier}'`;
+              window.location.href = `/#/core/patient/${patientIdentifier}`;
             } else {
               window.location.href = '/#/core/home';
             }
