@@ -170,7 +170,7 @@ const TaskItem = ({
   const previousDescription = useRef(null);
   const descriptionReference = useRef(null);
 
-  const bulkEditTaskActions = useContext(BulkEditContext);
+  const { bulkEditIsActive, bulkEditTaskActions } = useContext(BulkEditContext);
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
     const descriptionTextElement = descriptionReference.current?.querySelector(
@@ -345,7 +345,8 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
-  const showDraggableDots = !dragAndDropDisabled && isDraggable;
+  const showDraggableDots =
+    !dragAndDropDisabled && isDraggable && !bulkEditIsActive;
   const showPriority = task.priority === 'HIGH';
 
   const patientName = patient?.middleName

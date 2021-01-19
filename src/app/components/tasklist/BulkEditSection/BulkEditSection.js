@@ -51,6 +51,10 @@ const BulkEditSection = ({ children, shouldResetBulkEditTasks }) => {
     [getTaskIsSelectedInBulkEdit, onClickBulkEditTask, onUnselectBulkEditTask],
   );
 
+  const bulkEditIsActive = useMemo(() => bulkEditTasks?.length !== 0, [
+    bulkEditTasks,
+  ]);
+
   useEffect(() => {
     if (shouldResetBulkEditTasks && bulkEditTasks.length !== 0) {
       onClearBulkEditTask();
@@ -58,8 +62,8 @@ const BulkEditSection = ({ children, shouldResetBulkEditTasks }) => {
   }, [shouldResetBulkEditTasks, bulkEditTasks, onClearBulkEditTask]);
 
   return (
-    <BulkEditContext.Provider value={bulkEditTaskActions}>
-      {React.cloneElement(children, { bulkEditTaskActions })}
+    <BulkEditContext.Provider value={{ bulkEditTaskActions, bulkEditIsActive }}>
+      {React.cloneElement(children)}
       <BulkEditOptionsBar
         selectedTasks={bulkEditTasks}
         onClose={onClearBulkEditTask}
