@@ -466,6 +466,11 @@ export const moveTask = (
         task,
         taskList,
       });
+      dispatch(
+        getTasksGroupsList({
+          taskListIdentifier: taskList.taskListIdentifier,
+        }),
+      );
     })
     .catch(error => {
       throw error;
@@ -532,6 +537,11 @@ export function deleteTask(task) {
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
         dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
+        dispatch(
+          getTasksGroupsList({
+            taskListIdentifier: task?.taskList?.taskListIdentifier,
+          }),
+        );
         return task;
       })
       .catch(error => {
@@ -553,6 +563,11 @@ export function duplicateTask(task, includeAttachments = false) {
           taskGroupIdentifier,
         });
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
+        dispatch(
+          getTasksGroupsList({
+            taskListIdentifier: task?.taskList?.taskListIdentifier,
+          }),
+        );
         return duplicatedTask;
       })
       .catch(error => {
