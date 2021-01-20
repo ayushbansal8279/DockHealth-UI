@@ -241,7 +241,8 @@ const TaskItem = ({
   const isSelectedTask =
     selectedTask?.taskIdentifier === taskIdentifier ||
     (selectedTask?.taskIdentifier == null &&
-      selectedTask?.parentTaskIdentifier === taskIdentifier);
+      selectedTask?.parentTaskIdentifier === taskIdentifier) ||
+    contextMenu != null;
 
   const onMouseEnter = () => setIsHoverd(true);
   const onMouseLeave = () => setIsHoverd(false);
