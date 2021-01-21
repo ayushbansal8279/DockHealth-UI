@@ -114,11 +114,20 @@ const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
   const handleMoveTask = useCallback(() => {
     dispatch(
       openModal('SelectTaskDestination', {
-        task,
+        tasksToMove: [task],
         confirmText: 'Move',
-        confirm: ({ taskListIdentifier, taskGroupIdentifier }) => {
+        confirm: ({
+          taskListIdentifier,
+          taskGroupIdentifier,
+          parentTaskIdentifier,
+        }) => {
           dispatch(
-            moveTask(task, { taskListIdentifier }, taskGroupIdentifier || null),
+            moveTask(
+              task,
+              { taskListIdentifier },
+              taskGroupIdentifier || null,
+              parentTaskIdentifier || null,
+            ),
           );
         },
       }),
@@ -152,13 +161,11 @@ const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
         positionTop={position.y}
         positionLeft={position.x}
       >
-        {!isSubtask && (
-          <li>
-            <MenuItemButtom tabindex="0" type="button" onClick={handleMoveTask}>
-              Move to list
-            </MenuItemButtom>
-          </li>
-        )}
+        <li>
+          <MenuItemButtom tabindex="0" type="button" onClick={handleMoveTask}>
+            Move to list
+          </MenuItemButtom>
+        </li>
         <li>
           <MenuItemButtom type="button" onClick={handleDuplicateTask}>
             Duplicate {isSubtask ? 'Subtask' : 'Task'}

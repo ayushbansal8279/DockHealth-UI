@@ -18,7 +18,6 @@ import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
-  toggleTaskPriority as toggleTaskPriorityHelper,
   setDueDate as setDueDateHelper,
   setWorkflowStatus as setWorkflowStatusHelper,
   assignTask as assignTaskHelper,
@@ -70,11 +69,6 @@ const toggleTaskStatus = task => ({
   },
 });
 
-const toggleTaskPriority = task => ({
-  type: DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY,
-  payload: { task },
-});
-
 const setDueDate = (task, dueDate) => ({
   type: DO_SET_GLOBAL_SEARCH_DUE_DATE,
   payload: {
@@ -110,7 +104,6 @@ export const GlobalSearchSagaActions = {
   setSearchValue,
   clearSearchValue,
   setSearchCompletedTasks,
-  toggleTaskPriority,
   toggleTaskStatus,
   setDueDate,
   setWorkflowStatus,
@@ -136,7 +129,6 @@ function* doRefreshTasks() {
     }
   } catch (error) {
     yield put(GlobalSearchActions.requestGlobalSearchFailure());
-    console.error('error', error);
   }
 }
 
@@ -172,7 +164,6 @@ function* doGetMoreTasksForTaskList({ payload }) {
     }
   } catch (error) {
     yield put(GlobalSearchActions.requestGlobalSearchMoreFailure());
-    console.error('error', error);
   }
 }
 
@@ -228,26 +219,6 @@ function* doToggleTaskCompleteStatus({ payload }) {
 
     yield put(AlertActions.showGlobalAlert(successMessage));
   } catch (error) {
-    console.error('error', error);
-    yield put(refreshTasks());
-  }
-}
-
-function* doToggleTaskPriority({ payload }) {
-  const { task } = payload;
-
-  const updatedTask = toggleTaskPriorityHelper(task);
-
-  const apiEndpoint =
-    updatedTask.priority === 'HIGH' ? 'markHighPriority' : 'markLowPriority';
-
-  try {
-    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
-
-    yield call(TaskApi[apiEndpoint], updatedTask.taskIdentifier);
-    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
-    console.error('error', error);
     yield put(refreshTasks());
   }
 }
@@ -305,7 +276,6 @@ export default function* watchGlobalSearch() {
   yield takeEvery(DO_SEARCH_TASKS, doSearchTasks);
   yield takeEvery(DO_REFRESH_TASKS, doRefreshTasks);
   yield takeEvery(DO_SET_SEARCH_COMPLETED_TASKS, doSetSearchCompletedTasks);
-  yield takeLatest(DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY, doToggleTaskPriority);
   yield takeLatest(
     DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS,
     doToggleTaskCompleteStatus,

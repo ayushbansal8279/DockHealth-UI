@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-import Attachment from 'img/modals/attachment';
+import CircleCompletedGrey from 'img/circle-completed-grey';
 import { redTheme } from '../../themes/red-theme';
 
 import {
@@ -16,19 +16,21 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
-const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
+const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
-          <ModalMainIcon src={Attachment} alt="Attachment" />
+          <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
           <Typography color="textSecondary" variant="h2">
-            DUPLICATE ATTACHMENTS
+            A SUBTASKS ARE INCOMPLETE
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Would you like to duplicate attachments?
+            You’re about to complete a primary tasks which have a subtasks that
+            are incomplete. Marking the primary tasks as complete will also
+            complete all subtasks.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
@@ -39,16 +41,13 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
               size="small"
               variant="outlined"
               type="button"
-              onClick={() => {
-                skip();
-                closeModal();
-              }}
+              onClick={closeModal}
             >
-              Do not duplicate
+              Do not complete
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={88}>
+          <FixedWidthButtonWrapper width={172}>
             <Button
               fullWidth
               color="red"
@@ -60,7 +59,7 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
                 closeModal();
               }}
             >
-              Yes
+              Complete all
             </Button>
           </FixedWidthButtonWrapper>
         </ButtonsContainer>
@@ -69,4 +68,4 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
   );
 };
 
-export default DuplicateTaskModal;
+export default BulkCompleteTasksModal;

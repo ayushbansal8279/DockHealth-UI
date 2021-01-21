@@ -48,9 +48,19 @@ export const PrioritySwitch = styled.button`
   cursor: ${({ isClickable = true }) => (isClickable ? 'pointer' : 'initial')};
 `;
 
-export const PriorityHoverIcon = styled.img`
-  opacity: 0;
-  background-color: ${palette.coolGrey4};
+export const PriorityIndicator = styled.div`
+  width: 2px;
+  height: 100%;
+  background-color: red;
+  position: absolute;
+  left: 0;
+`;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${spacing.smallPlus};
 `;
 
 export const AddPlaceholder = styled.div`
@@ -251,7 +261,7 @@ export const TaskIconsBox = styled.div`
 export const ThreeDots = styled.img`
   position: absolute;
   left: ${spacing.smallPlus};
-  z-index: 1;
+  z-index: 2;
   top: 50%;
   transform: translateY(-50%);
   opacity: 0;
@@ -262,13 +272,17 @@ export const ThreeDots = styled.img`
   }
 `;
 
+export const StandardTaskThreeDots = styled(ThreeDots)`
+  left: -12px;
+`;
+
 export const StandardTaskItemPanel = styled.div`
   position: relative;
   ${props =>
     props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'};
 
   &:hover {
-    & ${ThreeDots}, & ${AddPlaceholder}, & ${PriorityHoverIcon} {
+    & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
     }
   }
@@ -316,7 +330,7 @@ export const SlimTaskItemContainer = styled.div`
   transition: background-color linear 0.2s;
 
   &:hover {
-    & ${PriorityHoverIcon}, ${ThreeDots}, ${AddPlaceholder} {
+    & ${ThreeDots}, ${AddPlaceholder} {
       opacity: 1;
     }
   }
@@ -411,6 +425,7 @@ export const SubtaskStylingLinkContainer = styled.div`
   top: -1px;
   display: flex;
   align-items: center;
+  z-index: 1;
 `;
 
 export const SubtaskStylingVerticalPart = styled.div`
@@ -418,12 +433,14 @@ export const SubtaskStylingVerticalPart = styled.div`
   height: 100%;
   background-color: ${palette.coolGrey2};
   padding: 1px 0;
+  z-index: 1;
 `;
 
 export const SubtaskStylingHorizontalPart = styled.div`
   height: 1px;
   width: 100%;
   background-color: ${palette.coolGrey2};
+  z-index: 1;
 `;
 
 export const SubtaskStylingLastLink = styled.div`
@@ -437,6 +454,7 @@ export const SubtaskStylingLastLink = styled.div`
   padding: 1px 0;
   left: -19px;
   top: -1px;
+  z-index: 1;
 `;
 
 export const SlimTaskListNameText = styled.p`

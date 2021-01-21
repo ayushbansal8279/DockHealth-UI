@@ -447,6 +447,7 @@ export const moveTask = (
   task,
   taskList,
   taskGroupIdentifier = null,
+  parentTaskIdentifier = null,
 ) => dispatch => {
   const updatedTask = {
     refiled: true,
@@ -457,6 +458,10 @@ export const moveTask = (
 
   if (taskGroupIdentifier) {
     updatedTask.taskGroupIdentifier = taskGroupIdentifier;
+  }
+
+  if (parentTaskIdentifier) {
+    updatedTask.parentTaskIdentifier = parentTaskIdentifier;
   }
 
   return TaskApi.updateTask(updatedTask)

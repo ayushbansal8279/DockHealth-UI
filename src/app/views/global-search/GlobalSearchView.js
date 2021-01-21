@@ -42,7 +42,6 @@ const GlobalSearchView = ({
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
-    toggleTaskPriority,
     toggleTaskStatus,
     setDueDate,
     setWorkflowStatus,
@@ -74,7 +73,6 @@ const GlobalSearchView = ({
                     openDrawer={openDrawer}
                     storeAsCurrentTask={storeAsCurrentTask}
                     toggleTaskStatus={toggleTaskStatus}
-                    toggleTaskPriority={toggleTaskPriority}
                     reassignTask={assignTask}
                     updateDueDate={setDueDate}
                     updateWorkflowStatus={setWorkflowStatus}

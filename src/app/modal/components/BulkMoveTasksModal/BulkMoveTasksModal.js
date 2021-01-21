@@ -1,11 +1,11 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-import Attachment from 'img/modals/attachment';
+import folderUser from 'img/modals/user-folder';
 import { redTheme } from '../../themes/red-theme';
-
 import {
   ModalWrapper,
   ModalMainIcon,
@@ -16,51 +16,53 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
-const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
+const PrimaryText = styled.span`
+  font-size: 18px;
+  font-weight: 400;
+`;
+
+const BulkMoveTasksModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
-          <ModalMainIcon src={Attachment} alt="Attachment" />
-          <Typography color="textSecondary" variant="h2">
-            DUPLICATE ATTACHMENTS
+          <ModalMainIcon src={folderUser} alt="folder_user" />
+          <Typography color="textPrimary" variant="h2" align="center">
+            <PrimaryText>All subtasks will move with main task</PrimaryText>
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Would you like to duplicate attachments?
+            Main tasks and sub tasks cannot be separated upon moving
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
-              size="small"
               variant="outlined"
               type="button"
-              onClick={() => {
-                skip();
-                closeModal();
-              }}
+              color="red"
+              size="small"
+              onClick={closeModal}
             >
-              Do not duplicate
+              CANCEL
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={88}>
+          <FixedWidthButtonWrapper width={136}>
             <Button
               fullWidth
-              color="red"
-              size="small"
               variant="contained"
               type="button"
+              size="small"
+              color="red"
               onClick={() => {
                 confirm();
                 closeModal();
               }}
             >
-              Yes
+              MOVE ALL
             </Button>
           </FixedWidthButtonWrapper>
         </ButtonsContainer>
@@ -69,4 +71,4 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
   );
 };
 
-export default DuplicateTaskModal;
+export default BulkMoveTasksModal;

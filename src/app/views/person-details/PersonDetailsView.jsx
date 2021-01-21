@@ -29,6 +29,7 @@ import sessionStorageHelper from 'helpers/session-storage-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
 import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
@@ -38,15 +39,11 @@ import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDet
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import { TaskViewContainer } from './styled';
 
-const Priority = {
-  High: 'HIGH',
-  Low: 'LOW',
-};
-
 class PersonDetailsView extends PureComponent {
   state = {
     isLoadingView: true,
     searchValue: '',
+    shouldResetBulkEditTasks: false,
   };
 
   async componentDidMount() {
@@ -110,6 +107,38 @@ class PersonDetailsView extends PureComponent {
       } else {
         this.refreshIncompleteTasks();
       }
+    }
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    const { searchValue, shouldResetBulkEditTasks } = this.state;
+    const { selectedFilters, match } = this.props;
+
+    const { params } = match;
+    const { tabName } = params;
+
+    if (
+      ((searchValue && searchValue !== '') ||
+        (Object.keys(previousProps?.selectedFilters || [].length === 0) &&
+          Object.keys(selectedFilters || []).length !== 0) ||
+        tabName === TaskListTabName.COMPLETE) &&
+      !previousState.shouldResetBulkEditTasks &&
+      !shouldResetBulkEditTasks
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ shouldResetBulkEditTasks: true });
+    }
+
+    if (
+      (!searchValue ||
+        searchValue === '' ||
+        (Object.keys(previousProps?.selectedFilters || []).length !== 0 &&
+          Object.keys(selectedFilters || []).length === 0) ||
+        tabName === TaskListTabName.OPEN) &&
+      previousState.shouldResetBulkEditTasks
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ shouldResetBulkEditTasks: false });
     }
   }
 
@@ -335,17 +364,6 @@ class PersonDetailsView extends PureComponent {
     });
   };
 
-  toggleSingleTaskPriority = task => {
-    const { taskActions } = this.props;
-    taskActions
-      .toggleTaskPriority(
-        task,
-        task.priority === Priority.High ? Priority.Low : Priority.High,
-      )
-      .then(this.handleTaskUpdate)
-      .catch(() => this.refreshTab());
-  };
-
   invokeToggleCompleteAction = task => {
     const {
       taskActions,
@@ -425,7 +443,7 @@ class PersonDetailsView extends PureComponent {
       completedTasks,
       areFiltersApplied,
     } = this.props;
-    const { isLoadingView, searchValue } = this.state;
+    const { isLoadingView, searchValue, shouldResetBulkEditTasks } = this.state;
     const { openModal } = modalActions;
     const { params } = match;
     const { tabName, userIdentifier } = params;
@@ -435,65 +453,73 @@ class PersonDetailsView extends PureComponent {
     return (
       !isLoadingView && (
         <>
-          <PersonInfoPanel
-            personData={personData}
-            archivePerson={props => openModal('ArchivePerson', { ...props })}
-          />
-          <TaskViewContainer>
-            <Toolbar
-              showNotifications={false}
-              members={[personData]}
-              showMembers={false}
-              onSelectTab={this.navigateToTab}
-              selectedTab={selectedTab}
-              openTasksAmount={taskCounters.incomplete}
-              completedTasksAmount={taskCounters.complete}
-              onSearchChange={this.setSearchValue}
-              searchValue={searchValue}
-              onSelectFilters={this.handleFilterChange}
-              listNameColumnVisible
-              pdfTitle={
-                personData
-                  ? `${personData.firstName} ${personData.lastName}`
-                  : null
-              }
-              isFetching={isFetching || isCompletedTasksFetching}
-              tasks={tasks}
-              completedTasks={completedTasks}
-            />
-            {selectedTab === TaskListTabName.COMPLETE ? (
-              <CompletedTasksView
-                isFetchingTasks={isCompletedTasksFetching}
-                tasks={completedTasks}
-                currentUser={currentUser}
-                toggleSingleTaskPriority={this.toggleSingleTaskPriority}
-                toggleCompleteTask={this.toggleTaskCompletedStatus}
-                summaryTasksCount={taskCounters.complete}
-                reassignTask={this.handleReassignTask}
-                updateDueDate={this.handleUpdateDueDate}
-                searchValue={searchValue}
-                selectedTask={selectedTask}
-                listUniqueKey={userIdentifier}
-                areFiltersApplied={areFiltersApplied}
+          <BulkEditSection
+            shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+            refreshTasksOnBulkAction={this.refreshTab}
+            inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
+          >
+            <div>
+              <PersonInfoPanel
+                personData={personData}
+                archivePerson={props =>
+                  openModal('ArchivePerson', { ...props })
+                }
               />
-            ) : (
-              <OpenedTasksView
-                isFetchingTasks={isFetching}
-                tasks={tasks}
-                currentUser={currentUser}
-                toggleSingleTaskPriority={this.toggleSingleTaskPriority}
-                toggleCompleteTask={this.toggleTaskCompletedStatus}
-                quickAddTask={this.handleQuickAddTask}
-                reassignTask={this.handleReassignTask}
-                updateDueDate={this.handleUpdateDueDate}
-                updateWorkflowStatus={this.handleUpdateWorkflowStatus}
-                searchValue={searchValue}
-                selectedTask={selectedTask}
-                listUniqueKey={userIdentifier}
-                areFiltersApplied={areFiltersApplied}
-              />
-            )}
-          </TaskViewContainer>
+              <TaskViewContainer>
+                <Toolbar
+                  showNotifications={false}
+                  members={[personData]}
+                  showMembers={false}
+                  onSelectTab={this.navigateToTab}
+                  selectedTab={selectedTab}
+                  openTasksAmount={taskCounters.incomplete}
+                  completedTasksAmount={taskCounters.complete}
+                  onSearchChange={this.setSearchValue}
+                  searchValue={searchValue}
+                  onSelectFilters={this.handleFilterChange}
+                  listNameColumnVisible
+                  pdfTitle={
+                    personData
+                      ? `${personData.firstName} ${personData.lastName}`
+                      : null
+                  }
+                  isFetching={isFetching || isCompletedTasksFetching}
+                  tasks={tasks}
+                  completedTasks={completedTasks}
+                />
+                {selectedTab === TaskListTabName.COMPLETE ? (
+                  <CompletedTasksView
+                    isFetchingTasks={isCompletedTasksFetching}
+                    tasks={completedTasks}
+                    currentUser={currentUser}
+                    toggleCompleteTask={this.toggleTaskCompletedStatus}
+                    summaryTasksCount={taskCounters.complete}
+                    reassignTask={this.handleReassignTask}
+                    updateDueDate={this.handleUpdateDueDate}
+                    searchValue={searchValue}
+                    selectedTask={selectedTask}
+                    listUniqueKey={userIdentifier}
+                    areFiltersApplied={areFiltersApplied}
+                  />
+                ) : (
+                  <OpenedTasksView
+                    isFetchingTasks={isFetching}
+                    tasks={tasks}
+                    currentUser={currentUser}
+                    toggleCompleteTask={this.toggleTaskCompletedStatus}
+                    quickAddTask={this.handleQuickAddTask}
+                    reassignTask={this.handleReassignTask}
+                    updateDueDate={this.handleUpdateDueDate}
+                    updateWorkflowStatus={this.handleUpdateWorkflowStatus}
+                    searchValue={searchValue}
+                    selectedTask={selectedTask}
+                    listUniqueKey={userIdentifier}
+                    areFiltersApplied={areFiltersApplied}
+                  />
+                )}
+              </TaskViewContainer>
+            </div>
+          </BulkEditSection>
           <NewTaskDrawer
             modalActions={modalActions}
             onTaskUpdate={this.handleTaskUpdate}

@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
@@ -7,6 +13,7 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskDrawerFields } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
@@ -65,10 +72,17 @@ const PatientDetailsView = ({
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
+  const previousSelectedFilters = useRef(selectedFilters);
+
+  useEffect(() => {
+    previousSelectedFilters.current = selectedFilters;
+  }, [selectedFilters]);
+
   const history = useHistory();
   const { params } = match;
   const { patientIdentifier } = params;
   const { path } = useRouteMatch();
+
   const navigateToTab = tabName => {
     history.push(
       tabName === TaskListTabName.OPEN
@@ -124,70 +138,90 @@ const PatientDetailsView = ({
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
   );
 
+  const refreshTab = useCallback(() => {
+    fetchPatientFilters();
+    refreshPatientTasks();
+  }, [refreshPatientTasks, fetchPatientFilters]);
+
+  const shouldResetBulkEditTasks = useMemo(
+    () =>
+      (searchValue && searchValue !== '') ||
+      activeTab === TaskListTabName.COMPLETE ||
+      (Object.keys(previousSelectedFilters?.current).length === 0 &&
+        Object.keys(selectedFilters).length !== 0),
+    [searchValue, activeTab, previousSelectedFilters, selectedFilters],
+  );
+
   return (
-    <>
-      <PatientDetailsHeader
-        patientDetails={patientDetails}
-        organization={organization}
-      />
-      {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
-        <Toolbar
-          onSelectTab={navigateToTab}
-          selectedTab={activeTab}
-          printData={{
-            completedTasks:
-              activeTab === TaskListTabName.COMPLETE
-                ? lists.flatMap(({ tasks }) => tasks)
-                : [],
-            openedTasks:
-              activeTab === TaskListTabName.OPEN
-                ? lists.flatMap(({ tasks }) => tasks)
-                : [],
-            taskListMembers: allMembers,
-          }}
-          openTasksAmount={incompleteTasksCount}
-          completedTasksAmount={completeTasksCount}
-          onSearchChange={handleSearchValueChange}
-          showNotifications={false}
-          searchValue={searchValue}
-          onSelectFilters={patientTasksFilterChange}
-          showMembers={false}
-          megaFilter={megaFilter}
-          haveTasks={hasTasks}
-          patientColumnVisible={false}
-          listNameColumnVisible
-          pdfTitle={
-            patientDetails
-              ? `Patient: ${patientDetails.firstName} ${patientDetails.lastName}`
-              : null
-          }
+    <BulkEditSection
+      shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+      refreshTasksOnBulkAction={refreshTab}
+      inactiveBulkEdit={activeTab === TaskListTabName.COMPLETE}
+    >
+      <div>
+        <PatientDetailsHeader
+          patientDetails={patientDetails}
+          organization={organization}
         />
-      ) : (
-        <PatientToolbarSkeletonLoader />
-      )}
-      <PatientListsContainer>
-        <Switch>
-          {TABS?.map(route => (
-            <RouteWrapper
-              key={route.path}
-              path={`${path}${route.path}`}
-              RouteComponent={
-                isFetching ? PatientListSkeletonLoader : route.RouteComponent
-              }
-              onEnter={route.onEnter}
-              exact={route.exact}
-            />
-          ))}
-        </Switch>
-      </PatientListsContainer>
-      <NewTaskDrawer
-        modalActions={modalActions}
-        onTaskUpdate={handleTaskUpdate}
-        onTaskCreation={handleTaskUpdate}
-        onTaskDelete={fetchPatientFilters}
-        disabledFileds={[TaskDrawerFields.PATIENT]}
-      />
-    </>
+        {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
+          <Toolbar
+            onSelectTab={navigateToTab}
+            selectedTab={activeTab}
+            printData={{
+              completedTasks:
+                activeTab === TaskListTabName.COMPLETE
+                  ? lists.flatMap(({ tasks }) => tasks)
+                  : [],
+              openedTasks:
+                activeTab === TaskListTabName.OPEN
+                  ? lists.flatMap(({ tasks }) => tasks)
+                  : [],
+              taskListMembers: allMembers,
+            }}
+            openTasksAmount={incompleteTasksCount}
+            completedTasksAmount={completeTasksCount}
+            onSearchChange={handleSearchValueChange}
+            showNotifications={false}
+            searchValue={searchValue}
+            onSelectFilters={patientTasksFilterChange}
+            showMembers={false}
+            megaFilter={megaFilter}
+            haveTasks={hasTasks}
+            patientColumnVisible={false}
+            listNameColumnVisible
+            pdfTitle={
+              patientDetails
+                ? `Patient: ${patientDetails.firstName} ${patientDetails.lastName}`
+                : null
+            }
+          />
+        ) : (
+          <PatientToolbarSkeletonLoader />
+        )}
+        <PatientListsContainer>
+          <Switch>
+            {TABS?.map(route => (
+              <RouteWrapper
+                key={route.path}
+                path={`${path}${route.path}`}
+                RouteComponent={
+                  isFetching ? PatientListSkeletonLoader : route.RouteComponent
+                }
+                onEnter={route.onEnter}
+                exact={route.exact}
+              />
+            ))}
+          </Switch>
+        </PatientListsContainer>
+        <NewTaskDrawer
+          modalActions={modalActions}
+          onTaskUpdate={handleTaskUpdate}
+          onTaskCreation={handleTaskUpdate}
+          onTaskDelete={fetchPatientFilters}
+          disabledFileds={[TaskDrawerFields.PATIENT]}
+        />
+      </div>
+    </BulkEditSection>
   );
 };
 

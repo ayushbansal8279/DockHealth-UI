@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { Divider, Popper } from '@material-ui/core';
 
 import Datepicker from 'components/common/Datepicker/Datepicker';
@@ -19,19 +20,33 @@ const PopoverDatepicker = ({
   quickSelectOptions,
   minDate,
   maxDate,
+  openCalendarWithOptions = false,
+  usePortal,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const elementReference = useRef(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(openCalendarWithOptions);
 
   useEffect(() => {
-    if (!quickSelectOptions || quickSelectOptions.length === 0)
+    if (!quickSelectOptions || quickSelectOptions.length === 0) {
       setIsCalendarOpen(true);
-  }, [quickSelectOptions]);
+    }
+  }, [quickSelectOptions, openCalendarWithOptions]);
+
+  // useEffect(() => {
+  //   if (openCalendarWithOptions && isPopoverOpen) {
+  //     setIsCalendarOpen(true);
+  //   }
+  // }, [openCalendarWithOptions, isPopoverOpen]);
 
   const handleDatePick = pickedDate => {
-    if (isCalendarOpen && quickSelectOptions?.length > 0)
+    if (
+      (isCalendarOpen && quickSelectOptions?.length > 0) ||
+      openCalendarWithOptions
+    ) {
       setIsCalendarOpen(false);
+    }
 
     setIsPopoverOpen(false);
     onDateChange(pickedDate);
@@ -58,16 +73,30 @@ const PopoverDatepicker = ({
         event.stopPropagation();
       }}
     >
-      {isPopoverOpen && (
-        <Backdrop
-          type="button"
-          onClick={event => {
-            event.stopPropagation();
-            if (onBackdrop) onBackdrop();
-            setIsPopoverOpen(false);
-          }}
-        />
-      )}
+      {isPopoverOpen &&
+        (usePortal ? (
+          ReactDOM.createPortal(
+            <Backdrop
+              type="button"
+              onClick={event => {
+                event.stopPropagation();
+                if (onBackdrop) onBackdrop();
+                setIsPopoverOpen(false);
+              }}
+            />,
+            document.querySelector('#portal'),
+          )
+        ) : (
+          <Backdrop
+            type="button"
+            // eslint-disable-next-line sonarjs/no-identical-functions
+            onClick={event => {
+              event.stopPropagation();
+              if (onBackdrop) onBackdrop();
+              setIsPopoverOpen(false);
+            }}
+          />
+        ))}
       {children({ setIsPopoverOpen, isPopoverOpen, elementReference })}
       <Popper
         style={{ zIndex: 2001 }}

@@ -16,6 +16,7 @@ const TaskWorkflowStatus = ({
   task,
   isCompletedGroup,
   updateWorkflowStatus,
+  isDisabled,
 }) => {
   const assignWorkflowStatusReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
@@ -28,6 +29,7 @@ const TaskWorkflowStatus = ({
           if (!isCompletedGroup) openPopover(true);
         }}
         ref={assignWorkflowStatusReference}
+        disabled={isDisabled}
       >
         {children}
       </Button>

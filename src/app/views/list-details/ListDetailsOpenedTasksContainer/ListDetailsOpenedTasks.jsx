@@ -1,6 +1,12 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useContext,
+} from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
@@ -16,6 +22,7 @@ import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupN
 import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import { onDragEndTask } from 'components/tasklist/DragDrop.helpers';
 import ListSkeletonLoader from 'components/tasklist/ListSkeletonLoader/ListSkeletonLoader';
+import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { TaskGroupsContainer } from '../styled';
 
 const ListDetailsOpenedTasks = ({
@@ -24,7 +31,6 @@ const ListDetailsOpenedTasks = ({
   toggleCompleteTask,
   groupedTasks,
   groupList,
-  toggleSingleTaskPriority,
   editGroupName,
   quickAddTask,
   deleteGroup,
@@ -115,6 +121,10 @@ const ListDetailsOpenedTasks = ({
     return Object.values(tasksGrouped).some(({ tasks }) => tasks?.length > 0);
   }, [tasksGrouped]);
 
+  const { bulkEditIsActive } = useContext(BulkEditContext);
+
+  const dragAndDropDisabled = bulkEditIsActive;
+
   const renderTasks = useCallback(
     () =>
       groupList
@@ -126,12 +136,12 @@ const ListDetailsOpenedTasks = ({
         .map(({ groupName, taskGroupIdentifier, metricValue }, i) => (
           <TasksGroup
             key={i}
+            dragAndDropDisabled={dragAndDropDisabled}
             isDefaultGroup={groupName === 'DEFAULT'}
             groupId={taskGroupIdentifier}
             currentUser={currentUser}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
-            toggleTaskPriority={toggleSingleTaskPriority}
             editGroupName={editGroupName}
             quickAddTask={quickAddTask}
             deleteGroup={deleteGroup}
@@ -168,26 +178,26 @@ const ListDetailsOpenedTasks = ({
           />
         )),
     [
-      areFiltersApplied,
-      changeGroupsOrder,
-      currentUser,
-      deleteGroup,
-      draggedId,
-      editGroupName,
       groupList,
       isSearchApplied,
-      listUniqueKey,
-      loadTasksForTaskGroup,
-      quickAddTask,
-      reassignTask,
-      reorderSubtasksForTask,
-      selectedTask,
+      areFiltersApplied,
       tasksGrouped,
+      dragAndDropDisabled,
+      currentUser,
+      editGroupName,
+      quickAddTask,
+      deleteGroup,
+      changeGroupsOrder,
+      reorderSubtasksForTask,
+      reassignTask,
+      draggedId,
       toggleCompleteTask,
-      toggleSingleTaskPriority,
       updateDueDate,
       updateWorkflowStatus,
+      selectedTask,
+      listUniqueKey,
       taskListIdentifier,
+      loadTasksForTaskGroup,
     ],
   );
 

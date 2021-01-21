@@ -23,7 +23,6 @@ const GlobalSearchList = ({
   openDrawer,
   storeAsCurrentTask,
   toggleTaskStatus,
-  toggleTaskPriority,
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
@@ -76,7 +75,6 @@ const GlobalSearchList = ({
               currentUser={currentUser}
               openDrawer={openDrawer}
               storeAsCurrentTask={storeAsCurrentTask}
-              toggleTaskPriority={toggleTaskPriority}
               task={task}
               groupId={tasks.taskIdentifier}
               draggableProvided={{}}

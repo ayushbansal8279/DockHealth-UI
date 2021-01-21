@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-import Attachment from 'img/modals/attachment';
+import TrashCan from 'img/modals/trash-can';
 import { redTheme } from '../../themes/red-theme';
 
 import {
@@ -16,19 +16,25 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
-const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
+const BulkDeleteTasksModal = ({
+  closeModal,
+  confirm,
+  hasIncompleteParentTasks,
+}) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
-          <ModalMainIcon src={Attachment} alt="Attachment" />
-          <Typography color="textSecondary" variant="h2">
-            DUPLICATE ATTACHMENTS
+          <ModalMainIcon src={TrashCan} alt="Task" />
+          <Typography color="textPrimary" variant="h2">
+            DELETE TASKS
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Would you like to duplicate attachments?
+            {hasIncompleteParentTasks
+              ? 'You’re about to delete a primary tasks which have a subtasks that are not selected. Deleting the primary tasks will also delete all subtasks.'
+              : 'Are you sure you want to delete these tasks? This action cannot be undone.'}
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
@@ -39,16 +45,13 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
               size="small"
               variant="outlined"
               type="button"
-              onClick={() => {
-                skip();
-                closeModal();
-              }}
+              onClick={closeModal}
             >
-              Do not duplicate
+              Cancel
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={88}>
+          <FixedWidthButtonWrapper width={231}>
             <Button
               fullWidth
               color="red"
@@ -60,7 +63,7 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
                 closeModal();
               }}
             >
-              Yes
+              Delete Permanently
             </Button>
           </FixedWidthButtonWrapper>
         </ButtonsContainer>
@@ -69,4 +72,4 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
   );
 };
 
-export default DuplicateTaskModal;
+export default BulkDeleteTasksModal;

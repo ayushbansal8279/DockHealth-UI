@@ -548,6 +548,10 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: initial;
+}
+
 [data-whatinput='mouse'] button {
   outline: 0;
 }

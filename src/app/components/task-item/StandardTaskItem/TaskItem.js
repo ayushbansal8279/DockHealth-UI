@@ -1,5 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useContext,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
@@ -14,8 +21,6 @@ import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member/Member';
-import HighPriorityLabel from 'img/priority-high-label-icon.svg';
-import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
 import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
@@ -32,6 +37,8 @@ import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskD
 import Spacing from 'components/common/Spacing';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
+import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
 import {
@@ -59,11 +66,9 @@ import {
   MainStandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
-  ThreeDots,
-  PrioritySwitch,
+  StandardTaskThreeDots,
   CompletedBy,
   InfoText,
-  PriorityHoverIcon,
   ListLink,
   ListItemLink,
   AssigneeMatchingWrapper,
@@ -79,6 +84,8 @@ import {
   DescriptionLabel,
   DescriptionWrapper,
   AddSubtaskButton,
+  PriorityIndicator,
+  BulkContainer,
 } from '../styled';
 import TaskItemContextMenu from '../SlimTaskItem/TaskItemContextMenu/TaskItemContextMenu';
 
@@ -89,7 +96,6 @@ const TaskItem = ({
   isOpen,
   switchOpen,
   toggleCompleteTask,
-  toggleTaskPriority,
   task,
   dragHandleProps,
   isDragging,
@@ -164,6 +170,81 @@ const TaskItem = ({
   const previousDescription = useRef(null);
   const descriptionReference = useRef(null);
 
+  const isSubtask = !!parentTaskIdentifier;
+
+  const { bulkEditIsActive, bunchBulkEditTaskActions } = useContext(
+    BulkEditContext,
+  );
+
+  const bulkEditTaskActions = useMemo(
+    () =>
+      isSubtask
+        ? bunchBulkEditTaskActions?.subtaskActions
+        : bunchBulkEditTaskActions?.parentActions,
+    [bunchBulkEditTaskActions, isSubtask],
+  );
+
+  const preventSubtasksCount = useRef(subTasksCount);
+  const preventAttachmentsLength = useRef(attachments?.length);
+  const hasAttachments = useMemo(() => attachments?.length > 0, [attachments]);
+
+  const bulkEditActionPayload = useMemo(
+    () =>
+      isSubtask
+        ? { parentTaskIdentifier, taskIdentifier, hasAttachments }
+        : { taskIdentifier, subTasksCount, hasAttachments },
+    [
+      isSubtask,
+      parentTaskIdentifier,
+      taskIdentifier,
+      subTasksCount,
+      hasAttachments,
+    ],
+  );
+
+  const isCheckedByBulkEdit = useMemo(
+    () =>
+      bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(bulkEditActionPayload),
+    [bulkEditTaskActions, bulkEditActionPayload],
+  );
+
+  useEffect(() => {
+    if (subTasksCount !== preventSubtasksCount?.current) {
+      preventSubtasksCount.current = subTasksCount;
+
+      if (
+        !isSubtask &&
+        bulkEditTaskActions?.onUpdateSelectedBulkEditTask &&
+        isCheckedByBulkEdit
+      ) {
+        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
+          taskIdentifier,
+          subTasksCount,
+        });
+      }
+    }
+
+    if (
+      attachments?.length !== preventAttachmentsLength?.current &&
+      isCheckedByBulkEdit
+    ) {
+      preventAttachmentsLength.current = attachments?.length;
+
+      if (bulkEditTaskActions?.onUpdateSelectedBulkEditTask)
+        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
+          taskIdentifier,
+          hasAttachments: attachments?.length > 0,
+        });
+    }
+  }, [
+    attachments,
+    bulkEditTaskActions,
+    isSubtask,
+    subTasksCount,
+    taskIdentifier,
+    isCheckedByBulkEdit,
+  ]);
+
   const checkIfShouldDisplayTooltip = useCallback(() => {
     const descriptionTextElement = descriptionReference.current?.querySelector(
       '.public-DraftStyleDefault-block',
@@ -219,7 +300,6 @@ const TaskItem = ({
   }, [description]);
 
   const isCompleted = task.status === 'COMPLETE';
-  const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
 
   const completedByName =
@@ -247,12 +327,6 @@ const TaskItem = ({
   const onMouseEnter = () => setIsHoverd(true);
   const onMouseLeave = () => setIsHoverd(false);
 
-  const onPrioritySwtich = useCallback(
-    () => toggleTaskPriority(task),
-
-    [task, toggleTaskPriority],
-  );
-
   const onClickTaskItem = useCallback(() => {
     dispatch(openDrawer());
     dispatch(storeAsCurrentTask(task));
@@ -269,15 +343,22 @@ const TaskItem = ({
       ) {
         toggleCompleteTask(task);
       }
+
+      if (isCheckedByBulkEdit && bulkEditTaskActions?.onUnselectBulkEditTask) {
+        bulkEditTaskActions.onUnselectBulkEditTask(bulkEditActionPayload);
+      }
       event.stopPropagation();
     },
     [
       isTaskStatusTogglingEnabled,
-      task,
-      toggleCompleteTask,
       isSubtask,
       isCompletedGroup,
       isCompleted,
+      isCheckedByBulkEdit,
+      bulkEditTaskActions,
+      toggleCompleteTask,
+      task,
+      bulkEditActionPayload,
     ],
   );
 
@@ -332,7 +413,8 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
-  const showDraggableDots = !dragAndDropDisabled && isDraggable;
+  const showDraggableDots =
+    !dragAndDropDisabled && isDraggable && !bulkEditIsActive;
   const showPriority = task.priority === 'HIGH';
 
   const patientName = patient?.middleName
@@ -352,32 +434,34 @@ const TaskItem = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
+        {showDraggableDots && (
+          <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+        )}
         <StandardTaskItemContainer
-          isSelected={isSelectedTask}
+          isSelected={isSelectedTask || isCheckedByBulkEdit}
           height={
             hasParentTaskLabel || isCompletedGroup
               ? EXTENDED_TASK_HEIGHT
               : STANDARD_TASK_HEIGHT
           }
         >
+          {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-          {showDraggableDots && (
-            <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
-          )}
-          <PrioritySwitch onClick={onPrioritySwtich}>
-            {showPriority ? (
-              <img src={HighPriorityLabel} alt="Priority icon" />
-            ) : (
-              <PriorityHoverIcon
-                className="low"
-                src={LowPriorityHoverLabel}
-                alt="No priority"
+          {bulkEditTaskActions && (
+            <BulkContainer>
+              <BulkCheckbox
+                isChecked={isCheckedByBulkEdit}
+                onClick={() =>
+                  bulkEditTaskActions?.onClickBulkEditTask(
+                    bulkEditActionPayload,
+                  )
+                }
               />
-            )}
-          </PrioritySwitch>
+            </BulkContainer>
+          )}
           <MainStandardTaskItemCell
             bolded
-            paddingLeft="huge"
+            paddingLeft="smallPlus"
             paddingRight="small"
             onClick={onClickTaskItem}
             position="static"

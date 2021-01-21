@@ -46,7 +46,6 @@ const TasksGroup = ({
   currentUser,
   groupName,
   groupTaskCounts,
-  toggleTaskPriority,
   toggleCompleteTask,
   editGroupName,
   quickAddTask,
@@ -223,7 +222,6 @@ const TasksGroup = ({
           currentUser={currentUser}
           isFullView={isFullView}
           toggleCompleteTask={toggleCompleteTask}
-          toggleTaskPriority={toggleTaskPriority}
           draggedId={draggedId}
           reorderSubtasksForTask={reorderSubtasksForTask}
           isCompletedGroup={isCompletedGroup}

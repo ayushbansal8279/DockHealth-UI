@@ -236,6 +236,7 @@ class App extends PureComponent {
       <AppContainer id="appHome">
         {!showRotateScreenPage && (
           <>
+            <div id="portal" />
             <Modal />
             <ActivityAlertsToasts />
             <div className="new-task" />

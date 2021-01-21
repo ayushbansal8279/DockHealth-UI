@@ -31,6 +31,9 @@ import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTour
 import RightClickTourModal from './components/NewFeaturesModals/RightClickTourModal/RightClickTourModal';
 import SelectTaskDestinationModal from './components/SelectTaskDestinationModal/SelectTaskDestinationModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
+import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
+import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkCompleteTasksModal';
+import BulkMoveTasksModal from './components/BulkMoveTasksModal/BulkMoveTasksModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -66,6 +69,9 @@ const MODAL_MAP = {
   AutoLogout: AutoLogoutModal,
   SelectTaskDestination: SelectTaskDestinationModal,
   ReferAColleague: ReferAColleagueModal,
+  BulkDeleteTasks: BulkDeleteTasksModal,
+  BulkCompleteTasks: BulkCompleteTasksModal,
+  BulkMoveTasks: BulkMoveTasksModal,
 };
 
 export default MODAL_MAP;

@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable sonarjs/no-identical-functions */
 import { noop, showAlert } from 'helpers/utility-functions';
+import { isNil } from 'ramda';
 import axios from './axios-heydoc';
 import URLS from '../urls';
 
@@ -775,7 +776,9 @@ export function getTasksForTaskListByTaskGroup(
 ) {
   return axios
     .get(
-      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&startPosition=${startPosition}&endPosition=${endPosition}`,
+      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&startPosition=${startPosition}${
+        !isNil(endPosition) ? `&endPosition=${endPosition}` : ''
+      }`,
     )
     .then(({ data }) => data)
     .catch(error => {
@@ -793,3 +796,6 @@ export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export const bulkEditTasks = bulkEditOption =>
+  axios.put('/task/bulkEdit', bulkEditOption);

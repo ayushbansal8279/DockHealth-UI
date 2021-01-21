@@ -33,16 +33,6 @@ export const updateTaskOrSubtaskInListsArray = (
     return { ...list, tasks: newTasks };
   });
 
-export const toggleTaskPriority = task => {
-  const { priority } = task;
-  const newPriority =
-    !priority || priority === 'NONE' || priority === 'LOW' || priority === null
-      ? 'HIGH'
-      : 'LOW';
-
-  return { ...task, priority: newPriority };
-};
-
 export const toggleTaskCompletedStatus = (task, currentUser) => {
   const newStatus = task.status === 'INCOMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
 
