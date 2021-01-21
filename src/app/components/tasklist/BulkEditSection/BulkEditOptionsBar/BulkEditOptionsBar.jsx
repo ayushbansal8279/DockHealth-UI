@@ -1,13 +1,18 @@
-import React, { useMemo } from 'react';
+/* eslint-disable sonarjs/no-identical-functions */
+import React, { useMemo, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import palette from 'styles/palette';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
-import CalendarIcon from 'img/bulk-edit/CalendarIcon';
-import StatusIcon from 'img/bulk-edit/StatusIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
+import BulkEditAssignToOption from './BulkEditAssignToOption';
+import BulkEditDueDateOption from './BulkEditDueDateOption';
+import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
+
 import {
   IconButton,
   IconBox,
@@ -16,52 +21,296 @@ import {
   ButtonsWrapper,
   Container,
   TasksText,
-  AssigneeIcon,
 } from './styled';
 
-const BulkEditOptionsBar = ({ selectedTasks = [], onClose }) => {
+const BulkEditOptionsBar = ({
+  selectedTasks = [],
+  onClose,
+  isDisabled,
+  refreshTasksOnBulkAction,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
   const dispatch = useDispatch();
+  const { taskListIdentifier } = useParams();
+  const { parentTasks = [], subtasks = [] } = selectedTasks;
 
-  const allTasksSameType = useMemo(() => {
-    let allSameType = true;
+  const allTasksSameType = useMemo(
+    () =>
+      (parentTasks.length > 0 && subtasks.length === 0) ||
+      (subtasks.length > 0 && parentTasks.length === 0),
+    [parentTasks, subtasks],
+  );
 
-    for (let i = 0; i < selectedTasks.length; i += 1) {
-      if (i !== 0) {
-        allSameType =
-          !!selectedTasks[i].parentTaskIdentifier ===
-          !!selectedTasks[i - 1].parentTaskIdentifier;
+  const allParentTasksHaveRelatedSubtasks = useMemo(
+    () =>
+      parentTasks.every(
+        parentTask =>
+          parentTask?.subTasksCount ===
+          subtasks?.filter(
+            subtask =>
+              subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
+          )?.length,
+      ),
+    [parentTasks, subtasks],
+  );
 
-        if (!allSameType) {
-          break;
+  const allTasksAreRelated = useMemo(
+    () =>
+      parentTasks.every(parentTask => {
+        if (parentTask?.subTasksCount === 0) return true;
+
+        const relatedCount = subtasks?.filter(
+          subtask =>
+            subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
+        )?.length;
+
+        if (relatedCount === 0 && parentTask?.subTasksCount > 0) return true;
+
+        return relatedCount > 0;
+      }) &&
+      subtasks?.every(subtask =>
+        parentTasks?.find(
+          parentTask =>
+            parentTask?.taskIdentifier === subtask.parentTaskIdentifier,
+        ),
+      ),
+    [parentTasks, subtasks],
+  );
+
+  const disabledMoveAction = useMemo(
+    () => !allTasksSameType && !allTasksAreRelated,
+    [allTasksSameType, allTasksAreRelated],
+  );
+
+  const allSelectedTasks = useMemo(() => [...parentTasks, ...subtasks], [
+    parentTasks,
+    subtasks,
+  ]);
+
+  const allSelectedTasksIdentifiers = useMemo(
+    () => [
+      ...parentTasks?.map(({ taskIdentifier }) => taskIdentifier),
+      ...subtasks?.map(({ taskIdentifier }) => taskIdentifier),
+    ],
+    [parentTasks, subtasks],
+  );
+
+  const allSelectedTasksLength = useMemo(() => allSelectedTasks.length, [
+    allSelectedTasks,
+  ]);
+
+  const handleChangeWorkflowStatusTasks = useCallback(
+    workflowStatus => {
+      bulkEditTasksApi({
+        bulkEditType: 'STATUS',
+        taskIdentifiers: allSelectedTasksIdentifiers,
+        workflowStatus,
+      }).then(() => {
+        if (
+          refreshTasksOnBulkAction &&
+          typeof refreshTasksOnBulkAction === 'function'
+        ) {
+          refreshTasksOnBulkAction();
         }
+
+        if (onClose && typeof onClose === 'function') {
+          onClose();
+        }
+      });
+    },
+    [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose],
+  );
+
+  const handleChangeDateTasks = useCallback(
+    dueDate => {
+      bulkEditTasksApi({
+        bulkEditType: 'DUE_DATE',
+        taskIdentifiers: allSelectedTasksIdentifiers,
+        dueDate,
+      }).then(() => {
+        if (
+          refreshTasksOnBulkAction &&
+          typeof refreshTasksOnBulkAction === 'function'
+        ) {
+          refreshTasksOnBulkAction();
+        }
+
+        if (onClose && typeof onClose === 'function') {
+          onClose();
+        }
+      });
+    },
+    [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose],
+  );
+
+  const handleChangeAssigneTasks = useCallback(
+    assignedUserIdentifier => {
+      bulkEditTasksApi({
+        bulkEditType: 'ASSIGN',
+        taskIdentifiers: allSelectedTasksIdentifiers,
+        assignedToIdentifier: assignedUserIdentifier,
+      }).then(() => {
+        if (
+          refreshTasksOnBulkAction &&
+          typeof refreshTasksOnBulkAction === 'function'
+        ) {
+          refreshTasksOnBulkAction();
+        }
+
+        if (onClose && typeof onClose === 'function') {
+          onClose();
+        }
+      });
+    },
+    [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose],
+  );
+
+  const handleDuplicateTasks = useCallback(() => {
+    bulkEditTasksApi({
+      bulkEditType: 'DUPLICATE',
+      taskIdentifiers: allSelectedTasksIdentifiers,
+    }).then(() => {
+      if (
+        refreshTasksOnBulkAction &&
+        typeof refreshTasksOnBulkAction === 'function'
+      ) {
+        refreshTasksOnBulkAction();
       }
-    }
 
-    return allSameType;
-  }, [selectedTasks]);
+      if (onClose && typeof onClose === 'function') {
+        onClose();
+      }
+    });
+  }, [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose]);
 
-  function handleMoveTasks() {
-    // TODO: in confirm method need to move selectedTasks to selected destination
+  const handleMoveTasks = useCallback(async () => {
+    // eslint-disable-next-line func-names
+    const formattedSelectedTasks = await (function() {
+      if (parentTasks.length > 0 && subtasks.length === 0) return parentTasks;
+      if (subtasks.length > 0 && parentTasks.length === 0) return subtasks;
+
+      return parentTasks.map(parentTask => ({
+        ...parentTasks,
+        subtasks: subtasks?.filter(
+          subtask =>
+            subtask?.parentTaskIdentifier === parentTask.taskIdentifier,
+        ),
+      }));
+    })();
+
     dispatch(
       openModal('SelectTaskDestination', {
-        tasksToMove: selectedTasks,
+        tasksToMove: formattedSelectedTasks,
         confirmText: 'Move',
         confirm: selectedDestination => {
-          console.log('selectedDestination', selectedDestination);
+          bulkEditTasksApi({
+            bulkEditType: 'MOVE',
+            taskIdentifiers: allSelectedTasksIdentifiers,
+            ...selectedDestination,
+          }).then(() => {
+            if (
+              refreshTasksOnBulkAction &&
+              typeof refreshTasksOnBulkAction === 'function'
+            ) {
+              refreshTasksOnBulkAction();
+            }
+
+            if (onClose && typeof onClose === 'function') {
+              onClose();
+            }
+          });
         },
       }),
     );
-  }
+  }, [
+    allSelectedTasksIdentifiers,
+    dispatch,
+    onClose,
+    parentTasks,
+    refreshTasksOnBulkAction,
+    subtasks,
+  ]);
+
+  const handleCompleteTasks = useCallback(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const confirmAction = () =>
+      bulkEditTasksApi({
+        bulkEditType: 'COMPLETE',
+        taskIdentifiers: allSelectedTasksIdentifiers,
+      }).then(() => {
+        if (
+          refreshTasksOnBulkAction &&
+          typeof refreshTasksOnBulkAction === 'function'
+        ) {
+          refreshTasksOnBulkAction();
+        }
+
+        if (onClose && typeof onClose === 'function') {
+          onClose();
+        }
+      });
+
+    if (allParentTasksHaveRelatedSubtasks) {
+      confirmAction();
+    } else {
+      dispatch(
+        openModal('BulkCompleteTasks', {
+          confirm: confirmAction,
+        }),
+      );
+    }
+  }, [
+    allParentTasksHaveRelatedSubtasks,
+    allSelectedTasksIdentifiers,
+    refreshTasksOnBulkAction,
+    onClose,
+    dispatch,
+  ]);
+
+  const handleDeleteTasks = useCallback(() => {
+    dispatch(
+      openModal('BulkDeleteTasks', {
+        hasIncompleteParentTasks: !allParentTasksHaveRelatedSubtasks,
+        confirm: () => {
+          bulkEditTasksApi({
+            bulkEditType: 'DELETE',
+            taskIdentifiers: allSelectedTasksIdentifiers,
+          }).then(() => {
+            if (
+              refreshTasksOnBulkAction &&
+              typeof refreshTasksOnBulkAction === 'function'
+            ) {
+              refreshTasksOnBulkAction();
+            }
+
+            if (onClose && typeof onClose === 'function') {
+              onClose();
+            }
+          });
+        },
+      }),
+    );
+  }, [
+    dispatch,
+    allParentTasksHaveRelatedSubtasks,
+    allSelectedTasksIdentifiers,
+    refreshTasksOnBulkAction,
+    onClose,
+  ]);
 
   return (
-    <Container open={selectedTasks?.length > 0}>
+    <Container open={allSelectedTasksLength > 0} isDisabled={isDisabled}>
       <TasksText>
-        {`${selectedTasks.length} Task${
-          selectedTasks.length > 1 ? 's' : ''
+        {`${allSelectedTasksLength} Task${
+          allSelectedTasksLength > 1 ? 's' : ''
         } Selected`}
       </TasksText>
       <ButtonsWrapper>
-        <IconButton type="button" onClick={() => {}}>
+        <IconButton
+          type="button"
+          onClick={handleDuplicateTasks}
+          disabled={isDisabled}
+        >
           <IconBox>
             <DuplicateIcon />
           </IconBox>
@@ -69,7 +318,7 @@ const BulkEditOptionsBar = ({ selectedTasks = [], onClose }) => {
         </IconButton>
         <IconButton
           type="button"
-          disabled={!allTasksSameType}
+          disabled={disabledMoveAction || isDisabled}
           onClick={handleMoveTasks}
         >
           <IconBox>
@@ -77,37 +326,41 @@ const BulkEditOptionsBar = ({ selectedTasks = [], onClose }) => {
           </IconBox>
           <p>Move</p>
         </IconButton>
-        <IconButton type="button" onClick={() => {}}>
+        <IconButton
+          type="button"
+          onClick={handleCompleteTasks}
+          disabled={isDisabled}
+        >
           <IconBox>
             <CompleteIcon />
           </IconBox>
           <p>Complete</p>
         </IconButton>
-        <IconButton type="button" onClick={() => {}}>
-          <IconBox>
-            <StatusIcon />
-          </IconBox>
-          <p>Status</p>
-        </IconButton>
-        <IconButton type="button" onClick={() => {}}>
-          <IconBox>
-            <CalendarIcon />
-          </IconBox>
-          <p>Date</p>
-        </IconButton>
-        <IconButton type="button" onClick={() => {}}>
-          <IconBox>
-            <AssigneeIcon />
-          </IconBox>
-          <p>Assignee</p>
-        </IconButton>
-        <IconButton type="button" color={palette.oPlusRed} onClick={() => {}}>
+        <BulkEditWorkflowStatusOption
+          handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
+          isDisabled={isDisabled}
+        />
+        <BulkEditDueDateOption
+          handleChangeDateTasks={handleChangeDateTasks}
+          isDisabled={isDisabled}
+        />
+        <BulkEditAssignToOption
+          taskListIdentifier={taskListIdentifier}
+          handleChangeAssigneTasks={handleChangeAssigneTasks}
+          isDisabled={isDisabled}
+        />
+        <IconButton
+          type="button"
+          color={palette.oPlusRed}
+          onClick={handleDeleteTasks}
+          disabled={isDisabled}
+        >
           <IconBox>
             <DeleteIcon />
           </IconBox>
           <p>Delete</p>
         </IconButton>
-        <CloseButton type="button" onClick={onClose}>
+        <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
           <CloseIcon />
         </CloseButton>
       </ButtonsWrapper>

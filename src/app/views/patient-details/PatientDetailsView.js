@@ -138,6 +138,11 @@ const PatientDetailsView = ({
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
   );
 
+  const refreshTab = useCallback(() => {
+    fetchPatientFilters();
+    refreshPatientTasks({ withLoader: true });
+  }, [refreshPatientTasks, fetchPatientFilters]);
+
   const shouldResetBulkEditTasks = useMemo(
     () =>
       (searchValue && searchValue !== '') ||
@@ -148,7 +153,11 @@ const PatientDetailsView = ({
   );
 
   return (
-    <BulkEditSection shouldResetBulkEditTasks={shouldResetBulkEditTasks}>
+    <BulkEditSection
+      shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+      refreshTasksOnBulkAction={refreshTab}
+      inactiveBulkEdit={activeTab === TaskListTabName.COMPLETE}
+    >
       <div>
         <PatientDetailsHeader
           patientDetails={patientDetails}

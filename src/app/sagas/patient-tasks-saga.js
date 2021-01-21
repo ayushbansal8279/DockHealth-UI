@@ -87,8 +87,9 @@ export const fetchPatientTasks = () => ({
   type: DO_FETCH_PATIENT_TASKS,
 });
 
-export const refreshPatientTasks = () => ({
+export const refreshPatientTasks = ({ withLoader }) => ({
   type: DO_REFRESH_PATIENT_TASKS,
+  withLoader,
 });
 
 export const togglePatientTaskStatus = task => ({
@@ -248,8 +249,11 @@ function* doFetchPatientTasks() {
   }
 }
 
-function* doRefreshPatientTasks() {
+function* doRefreshPatientTasks({ withLoader }) {
   try {
+    if (withLoader) {
+      yield put({ type: REQUEST_PATIENT_TASKS });
+    }
     const lists = yield getPatientLists();
 
     yield put(fetchPatientFilters());

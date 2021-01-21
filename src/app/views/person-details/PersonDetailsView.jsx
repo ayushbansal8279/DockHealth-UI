@@ -453,7 +453,11 @@ class PersonDetailsView extends PureComponent {
     return (
       !isLoadingView && (
         <>
-          <BulkEditSection shouldResetBulkEditTasks={shouldResetBulkEditTasks}>
+          <BulkEditSection
+            shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+            refreshTasksOnBulkAction={() => this.refreshTab(true)}
+            inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
+          >
             <div>
               <PersonInfoPanel
                 personData={personData}

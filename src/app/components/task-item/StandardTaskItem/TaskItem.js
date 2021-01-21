@@ -170,7 +170,27 @@ const TaskItem = ({
   const previousDescription = useRef(null);
   const descriptionReference = useRef(null);
 
-  const { bulkEditIsActive, bulkEditTaskActions } = useContext(BulkEditContext);
+  const isSubtask = !!parentTaskIdentifier;
+
+  const { bulkEditIsActive, bunchBulkEditTaskActions } = useContext(
+    BulkEditContext,
+  );
+
+  const bulkEditTaskActions = useMemo(
+    () =>
+      isSubtask
+        ? bunchBulkEditTaskActions?.subtaskActions
+        : bunchBulkEditTaskActions?.parentActions,
+    [bunchBulkEditTaskActions, isSubtask],
+  );
+
+  const bulkEditActionPayload = useMemo(
+    () =>
+      isSubtask
+        ? { parentTaskIdentifier, taskIdentifier }
+        : { taskIdentifier, subTasksCount },
+    [isSubtask, parentTaskIdentifier, taskIdentifier, subTasksCount],
+  );
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
     const descriptionTextElement = descriptionReference.current?.querySelector(
@@ -227,7 +247,6 @@ const TaskItem = ({
   }, [description]);
 
   const isCompleted = task.status === 'COMPLETE';
-  const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
 
   const completedByName =
@@ -260,9 +279,12 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
+  // console.log(bulkEditActionPayload);
+
   const isCheckedByBulkEdit = useMemo(
-    () => bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(taskIdentifier),
-    [bulkEditTaskActions, taskIdentifier],
+    () =>
+      bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(bulkEditActionPayload),
+    [bulkEditTaskActions, bulkEditActionPayload],
   );
 
   const onCircleClick = useCallback(
@@ -277,7 +299,7 @@ const TaskItem = ({
       }
 
       if (isCheckedByBulkEdit && bulkEditTaskActions?.onUnselectBulkEditTask) {
-        bulkEditTaskActions.onUnselectBulkEditTask(taskIdentifier);
+        bulkEditTaskActions.onUnselectBulkEditTask(bulkEditActionPayload);
       }
       event.stopPropagation();
     },
@@ -290,7 +312,7 @@ const TaskItem = ({
       bulkEditTaskActions,
       toggleCompleteTask,
       task,
-      taskIdentifier,
+      bulkEditActionPayload,
     ],
   );
 
@@ -370,7 +392,7 @@ const TaskItem = ({
           <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <StandardTaskItemContainer
-          isSelected={isSelectedTask}
+          isSelected={isSelectedTask || isCheckedByBulkEdit}
           height={
             hasParentTaskLabel || isCompletedGroup
               ? EXTENDED_TASK_HEIGHT
@@ -384,7 +406,9 @@ const TaskItem = ({
               <BulkCheckbox
                 isChecked={isCheckedByBulkEdit}
                 onClick={() =>
-                  bulkEditTaskActions?.onClickBulkEditTask(taskIdentifier)
+                  bulkEditTaskActions?.onClickBulkEditTask(
+                    bulkEditActionPayload,
+                  )
                 }
               />
             </BulkContainer>

@@ -796,3 +796,6 @@ export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export const bulkEditTasks = bulkEditOption =>
+  axios.put('/task/bulkEdit', bulkEditOption);

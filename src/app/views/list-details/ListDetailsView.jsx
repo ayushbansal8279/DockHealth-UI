@@ -806,7 +806,11 @@ class Home extends Component {
 
     return (
       <>
-        <BulkEditSection shouldResetBulkEditTasks={shouldResetBulkEditTasks}>
+        <BulkEditSection
+          shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+          refreshTasksOnBulkAction={() => this.refreshTab(true)}
+          inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
+        >
           <div>
             <TaskViewContainer>
               <Toolbar

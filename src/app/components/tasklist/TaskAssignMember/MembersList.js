@@ -16,8 +16,13 @@ import {
   LoaderContainer,
 } from './styled';
 
-const MembersList = ({ reassignTask, task, currentUser }) => {
-  const listId = task?.taskList?.taskListIdentifier;
+const MembersList = ({
+  reassignTask,
+  task,
+  currentUser,
+  taskListIdentifier,
+}) => {
+  const listId = taskListIdentifier || task?.taskList?.taskListIdentifier;
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(true);
   const membersWithoutCurrentUser = members?.filter(

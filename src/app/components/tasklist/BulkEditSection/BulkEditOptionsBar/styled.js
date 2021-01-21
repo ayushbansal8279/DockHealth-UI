@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import styled from 'styled-components';
 import MaterialCloseIcon from '@material-ui/icons/Close';
 import { fontSizes, fontWeights } from 'styles/font';
@@ -75,10 +76,15 @@ export const CloseButton = styled.button`
   height: 100%;
   width: 60px;
   color: ${palette.black};
+  color: ${({ disabled }) => (disabled ? palette.coolGrey2 : palette.black)};
 
-  &:hover {
-    background-color: ${palette.brightBlueWithAlpha};
-  }
+  ${({ disabled }) =>
+    !disabled &&
+    `
+      &:hover {
+        background-color: ${palette.brightBlueWithAlpha};
+      }
+  `}
 `;
 
 export const CloseIcon = styled(MaterialCloseIcon)`
