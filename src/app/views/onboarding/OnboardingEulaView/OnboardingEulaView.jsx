@@ -56,8 +56,8 @@ const OnboardingEulaView = () => {
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h4">
-        We would love to set up you and your team set up to be HIPAA compliant
-        which requires signing a few documents.
+        Let’s start by getting you and your team HIPAA compliant on Dock. This
+        requires a few clicks and a signature.
       </MontserratTypography>
       <Spacing vertical={6} />
       <Grid container>
