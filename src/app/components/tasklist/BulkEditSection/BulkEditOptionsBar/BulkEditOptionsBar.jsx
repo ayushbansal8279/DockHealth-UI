@@ -10,6 +10,7 @@ import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import * as AlertActions from 'alert/actions';
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
@@ -125,12 +126,26 @@ const BulkEditOptionsBar = ({
           refreshTasksOnBulkAction();
         }
 
+        dispatch(
+          AlertActions.showGlobalAlert(
+            allSelectedTasksLength > 1
+              ? `${allSelectedTasksLength} TASKS SAVED`
+              : `${allSelectedTasksLength} TASK SAVED`,
+          ),
+        );
+
         if (onClose && typeof onClose === 'function') {
           onClose();
         }
       });
     },
-    [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose],
+    [
+      allSelectedTasksIdentifiers,
+      refreshTasksOnBulkAction,
+      dispatch,
+      allSelectedTasksLength,
+      onClose,
+    ],
   );
 
   const handleChangeDateTasks = useCallback(
@@ -147,12 +162,26 @@ const BulkEditOptionsBar = ({
           refreshTasksOnBulkAction();
         }
 
+        dispatch(
+          AlertActions.showGlobalAlert(
+            allSelectedTasksLength > 1
+              ? `${allSelectedTasksLength} TASKS SAVED`
+              : `${allSelectedTasksLength} TASK SAVED`,
+          ),
+        );
+
         if (onClose && typeof onClose === 'function') {
           onClose();
         }
       });
     },
-    [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose],
+    [
+      allSelectedTasksIdentifiers,
+      refreshTasksOnBulkAction,
+      dispatch,
+      allSelectedTasksLength,
+      onClose,
+    ],
   );
 
   const handleChangeAssigneTasks = useCallback(
@@ -169,12 +198,26 @@ const BulkEditOptionsBar = ({
           refreshTasksOnBulkAction();
         }
 
+        dispatch(
+          AlertActions.showGlobalAlert(
+            allSelectedTasksLength > 1
+              ? `${allSelectedTasksLength} TASKS ASSIGNED`
+              : `${allSelectedTasksLength} TASK ASSIGNED`,
+          ),
+        );
+
         if (onClose && typeof onClose === 'function') {
           onClose();
         }
       });
     },
-    [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose],
+    [
+      allSelectedTasksIdentifiers,
+      refreshTasksOnBulkAction,
+      dispatch,
+      allSelectedTasksLength,
+      onClose,
+    ],
   );
 
   const handleDuplicateTasks = useCallback(() => {
@@ -189,11 +232,25 @@ const BulkEditOptionsBar = ({
         refreshTasksOnBulkAction();
       }
 
+      dispatch(
+        AlertActions.showGlobalAlert(
+          allSelectedTasksLength > 1
+            ? `${allSelectedTasksLength} TASKS DUPLICATED`
+            : `${allSelectedTasksLength} TASK DUPLICATED`,
+        ),
+      );
+
       if (onClose && typeof onClose === 'function') {
         onClose();
       }
     });
-  }, [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose]);
+  }, [
+    allSelectedTasksIdentifiers,
+    refreshTasksOnBulkAction,
+    dispatch,
+    allSelectedTasksLength,
+    onClose,
+  ]);
 
   const handleMoveTasks = useCallback(async () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -209,6 +266,14 @@ const BulkEditOptionsBar = ({
         ) {
           refreshTasksOnBulkAction();
         }
+
+        dispatch(
+          AlertActions.showGlobalAlert(
+            allSelectedTasksLength > 1
+              ? `${allSelectedTasksLength} TASKS MOVED`
+              : `${allSelectedTasksLength} TASK MOVED`,
+          ),
+        );
 
         if (onClose && typeof onClose === 'function') {
           onClose();
@@ -266,6 +331,7 @@ const BulkEditOptionsBar = ({
     );
   }, [
     allSelectedTasksIdentifiers,
+    allSelectedTasksLength,
     dispatch,
     onClose,
     parentTasks,
@@ -287,6 +353,14 @@ const BulkEditOptionsBar = ({
           refreshTasksOnBulkAction();
         }
 
+        dispatch(
+          AlertActions.showGlobalAlert(
+            allSelectedTasksLength > 1
+              ? `${allSelectedTasksLength} TASKS COMPLETED`
+              : `${allSelectedTasksLength} TASK COMPLETED`,
+          ),
+        );
+
         if (onClose && typeof onClose === 'function') {
           onClose();
         }
@@ -305,8 +379,9 @@ const BulkEditOptionsBar = ({
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
     refreshTasksOnBulkAction,
-    onClose,
     dispatch,
+    allSelectedTasksLength,
+    onClose,
   ]);
 
   const handleDeleteTasks = useCallback(() => {
@@ -325,6 +400,14 @@ const BulkEditOptionsBar = ({
               refreshTasksOnBulkAction();
             }
 
+            dispatch(
+              AlertActions.showGlobalAlert(
+                allSelectedTasksLength > 1
+                  ? `${allSelectedTasksLength} TASKS DELETED`
+                  : `${allSelectedTasksLength} TASK DELETED`,
+              ),
+            );
+
             if (onClose && typeof onClose === 'function') {
               onClose();
             }
@@ -337,6 +420,7 @@ const BulkEditOptionsBar = ({
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
     refreshTasksOnBulkAction,
+    allSelectedTasksLength,
     onClose,
   ]);
 

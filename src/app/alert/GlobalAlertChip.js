@@ -57,11 +57,11 @@ class GlobalAlertChip extends Component {
     return (
       <GlobalChipWrapper isSideBarAlert={isSideBarAlert}>
         <ChipContainer isOpen={isGlobalOpen} onClick={this.handleCloseAlert}>
-          {type === 'success' &&
+          {type === 'success' && (
             <CheckCircleIcon src={CheckmarkYellow} isOpen={isGlobalOpen} />
-          }
+          )}
           <ChipLabel>{text}</ChipLabel>
-          <ChipBackground type={type}/>
+          <ChipBackground type={type} />
         </ChipContainer>
       </GlobalChipWrapper>
     );
