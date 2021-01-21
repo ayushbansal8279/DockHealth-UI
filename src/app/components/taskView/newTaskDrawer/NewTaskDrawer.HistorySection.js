@@ -126,6 +126,7 @@ const HistorySection = ({ selectedTask }) => {
             onClick={
               isHistoryLoading ? undefined : onToggleHistoryButtonClicked
             }
+            style={{ cursor: 'pointer' }}
           >
             <HorizontalLabel>HISTORY</HorizontalLabel>
             {!isNewTask && (
