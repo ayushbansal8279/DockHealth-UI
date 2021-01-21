@@ -146,9 +146,12 @@ const BulkEditSection = ({
     ],
   );
 
-  const bulkEditIsActive = useMemo(() => bulkEditTasks?.length !== 0, [
-    bulkEditTasks,
-  ]);
+  const bulkEditIsActive = useMemo(
+    () =>
+      bulkEditTasks?.parentTasks?.length !== 0 ||
+      bulkEditTasks?.subtasks?.length !== 0,
+    [bulkEditTasks],
+  );
 
   useEffect(() => {
     if (
