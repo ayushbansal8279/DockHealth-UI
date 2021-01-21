@@ -184,12 +184,20 @@ const TaskItem = ({
     [bunchBulkEditTaskActions, isSubtask],
   );
 
+  const hasAttachments = useMemo(() => attachments?.length > 0, [attachments]);
+
   const bulkEditActionPayload = useMemo(
     () =>
       isSubtask
-        ? { parentTaskIdentifier, taskIdentifier }
-        : { taskIdentifier, subTasksCount },
-    [isSubtask, parentTaskIdentifier, taskIdentifier, subTasksCount],
+        ? { parentTaskIdentifier, taskIdentifier, hasAttachments }
+        : { taskIdentifier, subTasksCount, hasAttachments },
+    [
+      isSubtask,
+      parentTaskIdentifier,
+      taskIdentifier,
+      subTasksCount,
+      hasAttachments,
+    ],
   );
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
@@ -278,8 +286,6 @@ const TaskItem = ({
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
-
-  // console.log(bulkEditActionPayload);
 
   const isCheckedByBulkEdit = useMemo(
     () =>

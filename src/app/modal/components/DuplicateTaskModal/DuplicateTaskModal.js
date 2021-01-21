@@ -23,7 +23,7 @@ const DuplicateTaskModal = ({ skip, confirm, closeModal }) => {
         <ModalIconContainer>
           <ModalMainIcon src={Attachment} alt="Attachment" />
           <Typography color="textSecondary" variant="h2">
-            DUPLICATE ATTACHMENT
+            DUPLICATE ATTACHMENTS
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>

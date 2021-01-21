@@ -221,30 +221,49 @@ const BulkEditOptionsBar = ({
   );
 
   const handleDuplicateTasks = useCallback(() => {
-    bulkEditTasksApi({
-      bulkEditType: 'DUPLICATE',
-      taskIdentifiers: allSelectedTasksIdentifiers,
-    }).then(() => {
-      if (
-        refreshTasksOnBulkAction &&
-        typeof refreshTasksOnBulkAction === 'function'
-      ) {
-        refreshTasksOnBulkAction();
-      }
+    const anyTaskHasAttachment = allSelectedTasks?.some(
+      task => task?.hasAttachments,
+    );
 
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const confirmAction = (includeAttachmentsForDuplication = false) =>
+      bulkEditTasksApi({
+        bulkEditType: 'DUPLICATE',
+        taskIdentifiers: allSelectedTasksIdentifiers,
+        includeAttachmentsForDuplication,
+      }).then(() => {
+        if (
+          refreshTasksOnBulkAction &&
+          typeof refreshTasksOnBulkAction === 'function'
+        ) {
+          refreshTasksOnBulkAction();
+        }
+
+        dispatch(
+          AlertActions.showGlobalAlert(
+            allSelectedTasksLength > 1
+              ? `${allSelectedTasksLength} TASKS DUPLICATED`
+              : `${allSelectedTasksLength} TASK DUPLICATED`,
+          ),
+        );
+
+        if (onClose && typeof onClose === 'function') {
+          onClose();
+        }
+      });
+
+    if (anyTaskHasAttachment) {
       dispatch(
-        AlertActions.showGlobalAlert(
-          allSelectedTasksLength > 1
-            ? `${allSelectedTasksLength} TASKS DUPLICATED`
-            : `${allSelectedTasksLength} TASK DUPLICATED`,
-        ),
+        openModal('DuplicateTask', {
+          confirm: () => confirmAction(true),
+          skip: () => confirmAction(false),
+        }),
       );
-
-      if (onClose && typeof onClose === 'function') {
-        onClose();
-      }
-    });
+    } else {
+      confirmAction();
+    }
   }, [
+    allSelectedTasks,
     allSelectedTasksIdentifiers,
     refreshTasksOnBulkAction,
     dispatch,
