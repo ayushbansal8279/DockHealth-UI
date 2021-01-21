@@ -15,6 +15,7 @@ const BulkEditSection = ({
   shouldResetBulkEditTasks,
   refreshTasksOnBulkAction,
   inactiveBulkEdit,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [bulkEditTasks, setBulkEditTasks] = useState({
     parentTasks: [],
@@ -70,6 +71,20 @@ const BulkEditSection = ({
     ],
   );
 
+  const onUpdateSelectedBulkEditParentTask = useCallback(
+    ({ taskIdentifier, ...changes }) => {
+      setBulkEditTasks({
+        ...bulkEditTasks,
+        parentTasks: bulkEditTasks?.parentTasks?.map(parentTask =>
+          parentTask?.taskIdentifier === taskIdentifier
+            ? { ...parentTask, ...changes }
+            : parentTask,
+        ),
+      });
+    },
+    [bulkEditTasks],
+  );
+
   const onSelectBulkEditSubtask = useCallback(
     ({ taskIdentifier, parentTaskIdentifier, hasAttachments }) =>
       setBulkEditTasks({
@@ -118,6 +133,20 @@ const BulkEditSection = ({
     ],
   );
 
+  const onUpdateSelectedBulkEditSubtasks = useCallback(
+    ({ taskIdentifier, ...changes }) => {
+      setBulkEditTasks({
+        ...bulkEditTasks,
+        subtasks: bulkEditTasks?.subtasks?.map(subtask =>
+          subtask?.taskIdentifier === taskIdentifier
+            ? { ...subtask, ...changes }
+            : subtask,
+        ),
+      });
+    },
+    [bulkEditTasks],
+  );
+
   const onClearBulkEditTasks = useCallback(
     () => setBulkEditTasks({ parentTasks: [], subtasks: [] }),
     [],
@@ -129,11 +158,13 @@ const BulkEditSection = ({
         getTaskIsSelectedInBulkEdit: getParentTaskIsSelectedInBulkEdit,
         onClickBulkEditTask: onClickBulkEditParentTask,
         onUnselectBulkEditTask: onUnselectBulkEditParentTask,
+        onUpdateSelectedBulkEditTask: onUpdateSelectedBulkEditParentTask,
       },
       subtaskActions: {
         getTaskIsSelectedInBulkEdit: getSubtaskIsSelectedInBulkEdit,
         onClickBulkEditTask: onClickBulkEditSubtask,
         onUnselectBulkEditTask: onUnselectBulkEditSubtask,
+        onUpdateSelectedBulkEditTask: onUpdateSelectedBulkEditSubtasks,
       },
     }),
     [
@@ -143,6 +174,8 @@ const BulkEditSection = ({
       getSubtaskIsSelectedInBulkEdit,
       onClickBulkEditSubtask,
       onUnselectBulkEditSubtask,
+      onUpdateSelectedBulkEditSubtasks,
+      onUpdateSelectedBulkEditParentTask,
     ],
   );
 

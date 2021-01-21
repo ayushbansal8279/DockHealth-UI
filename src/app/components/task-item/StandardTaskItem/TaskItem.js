@@ -184,6 +184,8 @@ const TaskItem = ({
     [bunchBulkEditTaskActions, isSubtask],
   );
 
+  const preventSubtasksCount = useRef(subTasksCount);
+  const preventAttachmentsLength = useRef(attachments?.length);
   const hasAttachments = useMemo(() => attachments?.length > 0, [attachments]);
 
   const bulkEditActionPayload = useMemo(
@@ -199,6 +201,49 @@ const TaskItem = ({
       hasAttachments,
     ],
   );
+
+  const isCheckedByBulkEdit = useMemo(
+    () =>
+      bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(bulkEditActionPayload),
+    [bulkEditTaskActions, bulkEditActionPayload],
+  );
+
+  useEffect(() => {
+    if (subTasksCount !== preventSubtasksCount?.current) {
+      preventSubtasksCount.current = subTasksCount;
+
+      if (
+        !isSubtask &&
+        bulkEditTaskActions?.onUpdateSelectedBulkEditTask &&
+        isCheckedByBulkEdit
+      ) {
+        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
+          taskIdentifier,
+          subTasksCount,
+        });
+      }
+    }
+
+    if (
+      attachments?.length !== preventAttachmentsLength?.current &&
+      isCheckedByBulkEdit
+    ) {
+      preventAttachmentsLength.current = attachments?.length;
+
+      if (bulkEditTaskActions?.onUpdateSelectedBulkEditTask)
+        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
+          taskIdentifier,
+          hasAttachments: attachments?.length > 0,
+        });
+    }
+  }, [
+    attachments,
+    bulkEditTaskActions,
+    isSubtask,
+    subTasksCount,
+    taskIdentifier,
+    isCheckedByBulkEdit,
+  ]);
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
     const descriptionTextElement = descriptionReference.current?.querySelector(
@@ -286,12 +331,6 @@ const TaskItem = ({
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
-
-  const isCheckedByBulkEdit = useMemo(
-    () =>
-      bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(bulkEditActionPayload),
-    [bulkEditTaskActions, bulkEditActionPayload],
-  );
 
   const onCircleClick = useCallback(
     event => {
