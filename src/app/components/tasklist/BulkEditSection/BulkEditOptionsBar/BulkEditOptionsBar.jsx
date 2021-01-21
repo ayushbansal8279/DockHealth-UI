@@ -9,6 +9,7 @@ import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
@@ -22,6 +23,17 @@ import {
   Container,
   TasksText,
 } from './styled';
+
+const IconWithTooltip = ({ text, children }) => {
+  if (text)
+    return (
+      <Tooltip placement="top" title={text}>
+        {children}
+      </Tooltip>
+    );
+
+  return children;
+};
 
 const BulkEditOptionsBar = ({
   selectedTasks = [],
@@ -346,16 +358,24 @@ const BulkEditOptionsBar = ({
           </IconBox>
           <p>Duplicate</p>
         </IconButton>
-        <IconButton
-          type="button"
-          disabled={disabledMoveAction || isDisabled}
-          onClick={handleMoveTasks}
+        <IconWithTooltip
+          text={
+            disabledMoveAction
+              ? 'Cannot move subtasks without main tasks'
+              : null
+          }
         >
-          <IconBox>
-            <MoveIcon />
-          </IconBox>
-          <p>Move</p>
-        </IconButton>
+          <IconButton
+            type="button"
+            disabled={disabledMoveAction || isDisabled}
+            onClick={handleMoveTasks}
+          >
+            <IconBox>
+              <MoveIcon />
+            </IconBox>
+            <p>Move</p>
+          </IconButton>
+        </IconWithTooltip>
         <IconButton
           type="button"
           onClick={handleCompleteTasks}
