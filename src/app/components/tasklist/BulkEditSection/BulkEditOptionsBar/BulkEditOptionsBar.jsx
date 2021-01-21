@@ -184,42 +184,72 @@ const BulkEditOptionsBar = ({
   }, [allSelectedTasksIdentifiers, refreshTasksOnBulkAction, onClose]);
 
   const handleMoveTasks = useCallback(async () => {
-    // eslint-disable-next-line func-names
-    const formattedSelectedTasks = await (function() {
-      if (parentTasks.length > 0 && subtasks.length === 0) return parentTasks;
-      if (subtasks.length > 0 && parentTasks.length === 0) return subtasks;
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const standardConfirmAction = selectedDestination =>
+      bulkEditTasksApi({
+        bulkEditType: 'MOVE',
+        taskIdentifiers: allSelectedTasksIdentifiers,
+        ...selectedDestination,
+      }).then(() => {
+        if (
+          refreshTasksOnBulkAction &&
+          typeof refreshTasksOnBulkAction === 'function'
+        ) {
+          refreshTasksOnBulkAction();
+        }
 
-      return parentTasks.map(parentTask => ({
+        if (onClose && typeof onClose === 'function') {
+          onClose();
+        }
+      });
+
+    // eslint-disable-next-line func-names
+    const moveTaskConfig = await (function() {
+      if (
+        parentTasks.length > 0 &&
+        subtasks.length === 0 &&
+        parentTasks?.every(task => task?.subTasksCount === 0)
+      ) {
+        return { tasks: parentTasks, confirmAction: standardConfirmAction };
+      }
+      if (subtasks.length > 0 && parentTasks.length === 0) {
+        return { tasks: subtasks, confirmAction: standardConfirmAction };
+      }
+
+      const formattedSelectedTasks = parentTasks.map(parentTask => ({
         ...parentTasks,
         subtasks: subtasks?.filter(
           subtask =>
             subtask?.parentTaskIdentifier === parentTask.taskIdentifier,
         ),
       }));
+
+      const anyTaskIsIncomplete = formattedSelectedTasks?.some(
+        task => task?.subTasksCount !== task?.subtasks?.length,
+      );
+
+      return {
+        tasks: formattedSelectedTasks,
+        confirmAction: anyTaskIsIncomplete
+          ? selectedDestination =>
+              dispatch(
+                openModal('BulkMoveTasks', {
+                  confirm: () => standardConfirmAction(selectedDestination),
+                }),
+              )
+          : standardConfirmAction,
+        preventClosingModal: anyTaskIsIncomplete,
+      };
     })();
+
+    const { tasks, confirmAction, preventClosingModal } = moveTaskConfig;
 
     dispatch(
       openModal('SelectTaskDestination', {
-        tasksToMove: formattedSelectedTasks,
+        tasksToMove: tasks,
         confirmText: 'Move',
-        confirm: selectedDestination => {
-          bulkEditTasksApi({
-            bulkEditType: 'MOVE',
-            taskIdentifiers: allSelectedTasksIdentifiers,
-            ...selectedDestination,
-          }).then(() => {
-            if (
-              refreshTasksOnBulkAction &&
-              typeof refreshTasksOnBulkAction === 'function'
-            ) {
-              refreshTasksOnBulkAction();
-            }
-
-            if (onClose && typeof onClose === 'function') {
-              onClose();
-            }
-          });
-        },
+        confirm: confirmAction,
+        preventClosingModal,
       }),
     );
   }, [

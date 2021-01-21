@@ -32,6 +32,7 @@ import SelectTaskDestinationModal from './components/SelectTaskDestinationModal/
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
 import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkCompleteTasksModal';
+import BulkMoveTasksModal from './components/BulkMoveTasksModal/BulkMoveTasksModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -68,6 +69,7 @@ const MODAL_MAP = {
   ReferAColleague: ReferAColleagueModal,
   BulkDeleteTasks: BulkDeleteTasksModal,
   BulkCompleteTasks: BulkCompleteTasksModal,
+  BulkMoveTasks: BulkMoveTasksModal,
 };
 
 export default MODAL_MAP;

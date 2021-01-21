@@ -17,6 +17,7 @@ const SelectTaskDestinationModal = ({
   confirm,
   confirmText,
   tasksToMove = [],
+  preventClosingModal = false,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [stepIndex, setStepIndex] = useState(0);
@@ -49,7 +50,6 @@ const SelectTaskDestinationModal = ({
 
   useEffect(() => {
     if (!allTasksSameType) {
-      console.warn('All tasks to move must have the same type (subtask/task)');
       closeModal();
     }
   }, [allTasksSameType, closeModal]);
@@ -71,11 +71,18 @@ const SelectTaskDestinationModal = ({
 
     if (typeof confirm === 'function') {
       confirm(responseData);
-      closeModal();
+      if (!preventClosingModal) closeModal();
     } else {
       console.warn('You have to provide confirm callback');
     }
-  }, [confirm, selectedParentTask, selectedGroup, selectedList, closeModal]);
+  }, [
+    confirm,
+    selectedParentTask,
+    selectedGroup,
+    selectedList,
+    closeModal,
+    preventClosingModal,
+  ]);
 
   const handleNextStep = useCallback(() => {
     setStepIndex(previousStepIndex => previousStepIndex + 1);
