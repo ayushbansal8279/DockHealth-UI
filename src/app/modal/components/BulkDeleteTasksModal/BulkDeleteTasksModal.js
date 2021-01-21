@@ -33,7 +33,7 @@ const BulkDeleteTasksModal = ({
         <ModalDescriptionContainer>
           <Typography variant="body1">
             {hasIncompleteParentTasks
-              ? 'You’re about to delete a primary tasks which have a subtasks that are not selected. Deleting the primary tasks will also delete all subtasks.'
+              ? 'Deleting these tasks will also delete related subtasks. This action cannot be undone.'
               : 'Are you sure you want to delete these tasks? This action cannot be undone.'}
           </Typography>
         </ModalDescriptionContainer>
