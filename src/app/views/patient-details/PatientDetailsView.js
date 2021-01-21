@@ -140,7 +140,7 @@ const PatientDetailsView = ({
 
   const refreshTab = useCallback(() => {
     fetchPatientFilters();
-    refreshPatientTasks({ withLoader: true });
+    refreshPatientTasks();
   }, [refreshPatientTasks, fetchPatientFilters]);
 
   const shouldResetBulkEditTasks = useMemo(

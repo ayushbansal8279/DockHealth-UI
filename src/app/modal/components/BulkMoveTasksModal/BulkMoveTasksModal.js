@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -15,6 +16,11 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
+const PrimaryText = styled.span`
+  font-size: 18px;
+  font-weight: 400;
+`;
+
 const BulkMoveTasksModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
@@ -22,7 +28,7 @@ const BulkMoveTasksModal = ({ closeModal, confirm }) => {
         <ModalIconContainer>
           <ModalMainIcon src={folderUser} alt="folder_user" />
           <Typography color="textPrimary" variant="h2" align="center">
-            All subtasks will move with main task
+            <PrimaryText>All subtasks will move with main task</PrimaryText>
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
@@ -44,7 +50,7 @@ const BulkMoveTasksModal = ({ closeModal, confirm }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={124}>
+          <FixedWidthButtonWrapper width={136}>
             <Button
               fullWidth
               variant="contained"
@@ -56,7 +62,7 @@ const BulkMoveTasksModal = ({ closeModal, confirm }) => {
                 closeModal();
               }}
             >
-              MOVE
+              MOVE ALL
             </Button>
           </FixedWidthButtonWrapper>
         </ButtonsContainer>

@@ -455,7 +455,7 @@ class PersonDetailsView extends PureComponent {
         <>
           <BulkEditSection
             shouldResetBulkEditTasks={shouldResetBulkEditTasks}
-            refreshTasksOnBulkAction={() => this.refreshTab(true)}
+            refreshTasksOnBulkAction={this.refreshTab}
             inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
           >
             <div>

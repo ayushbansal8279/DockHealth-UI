@@ -23,7 +23,7 @@ const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
         <ModalIconContainer>
           <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
           <Typography color="textSecondary" variant="h2">
-            A SUBTASKS IS INCOMPLETE
+            A SUBTASKS ARE INCOMPLETE
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>

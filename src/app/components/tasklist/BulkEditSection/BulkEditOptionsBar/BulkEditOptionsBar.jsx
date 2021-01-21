@@ -128,9 +128,7 @@ const BulkEditOptionsBar = ({
 
         dispatch(
           AlertActions.showGlobalAlert(
-            allSelectedTasksLength > 1
-              ? `${allSelectedTasksLength} TASKS SAVED`
-              : `${allSelectedTasksLength} TASK SAVED`,
+            `${allSelectedTasksLength} STATUS CHANGED`,
           ),
         );
 
@@ -165,8 +163,8 @@ const BulkEditOptionsBar = ({
         dispatch(
           AlertActions.showGlobalAlert(
             allSelectedTasksLength > 1
-              ? `${allSelectedTasksLength} TASKS SAVED`
-              : `${allSelectedTasksLength} TASK SAVED`,
+              ? `${allSelectedTasksLength} DUE DATES CHANGED`
+              : `${allSelectedTasksLength} DUE DATE CHANGED`,
           ),
         );
 
