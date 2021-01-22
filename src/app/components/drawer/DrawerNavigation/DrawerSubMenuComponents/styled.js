@@ -246,6 +246,7 @@ export const DrawerListsItem = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   cursor: pointer;
+  padding-bottom: ${spacing.tiny};
 `;
 
 export const DrawerListsItemNewLabel = styled.div`
