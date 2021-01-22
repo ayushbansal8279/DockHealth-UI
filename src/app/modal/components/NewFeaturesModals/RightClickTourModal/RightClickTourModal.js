@@ -9,9 +9,9 @@ import {
   StepContainer,
 } from '../styled';
 import { CloseIconButton, CloseIcon } from '../../styled';
-import { RightClickStep } from './Steps';
+import { RightClickStep, BulkSelectionStep } from './Steps';
 
-const TOUR_STEPS_COMPONENTS = [RightClickStep];
+const TOUR_STEPS_COMPONENTS = [RightClickStep, BulkSelectionStep];
 
 const RightClickTourModal = ({ closeModal }) => {
   const [currentStep, setCurrentStep] = useState(0);
