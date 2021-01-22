@@ -49,6 +49,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     taskIdentifier,
     status,
     comments,
+    dueDate,
   } = activityTask;
   const { taskListIdentifier, listName } = taskList;
   const {
@@ -64,6 +65,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     ) || {};
   const { comment, creator = {} } = alertComment;
   const { userName } = creator;
+  const dueTime = moment(dueDate).format('hh:mm A');
 
   let onGoFunction = null;
 
@@ -72,7 +74,8 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     activityAlertType === 'CREATE_COMMENT' ||
     activityAlertType === 'MARK_COMPLETE' ||
     activityAlertType === 'MENTION_TASK' ||
-    activityAlertType === 'MENTION_COMMENT'
+    activityAlertType === 'MENTION_COMMENT' ||
+    activityAlertType === 'TASK_IS_DUE_TODAY'
   ) {
     onGoFunction = () => {
       const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -101,6 +104,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
     task_list_name: listName,
     task_description: description,
     comment_creator: userName,
+    due_time: !dueTime || dueTime === '12:00 AM' ? '' : `at ${dueTime}`,
   });
 
   const subtitle = getInterpolatedText(activityAlertSubTitle, {
