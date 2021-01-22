@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import DockHeaderLogo from 'img/dock-header-logo.svg';
+import DockHeaderLogo from 'img/logo/dock-logo';
 import { themeMontserratNormal } from 'styles/theme-montserrat';
 import ActivityAlerts from 'components/common/ActivityAlerts/ActivityAlerts';
 import Loader, { LoaderSizes } from './Loader/Loader';
@@ -30,6 +30,7 @@ const DockHeaderImage = styled.img.attrs({
   alt: 'Dock Health',
   src: DockHeaderLogo,
 })`
+  width: 110px;
   height: auto;
   object-fit: contain;
 `;
