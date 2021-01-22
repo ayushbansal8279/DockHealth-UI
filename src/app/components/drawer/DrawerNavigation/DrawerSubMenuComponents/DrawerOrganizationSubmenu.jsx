@@ -1,10 +1,18 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
+import { getUserById, leaveOrganization, logout } from 'api/user-api';
 import { openNotifications } from 'actions/template-actions';
+import {
+  openModal as openModalAction,
+  closeModal as closeModalAction,
+} from 'modal/actions';
+import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
+import AlertTypes from 'alert/AlertTypes';
+
 import OrganizationIdentifier from 'components/Organization/OrganizationIdentifier/OrganizationIdentifier';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Spacing from 'components/common/Spacing';
@@ -31,6 +39,7 @@ const DrawerOrganizationSubmenu = ({
   const history = useHistory();
   const userOrganizations = useSelector(userOrganizationsSelector);
   const { orgUserRole } = currentUser;
+
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
@@ -67,6 +76,37 @@ const DrawerOrganizationSubmenu = ({
     }
   };
 
+  const handleLeaveOrganiztion = useCallback(() => {
+    dispatch(
+      openModalAction('LeaveOrganization', {
+        confirm: () => {
+          leaveOrganization(currentUser?.organizationIdentifier)
+            .then(() => {
+              logout(history);
+            })
+            .catch(() => {
+              dispatch(closeModalAction());
+              dispatch(
+                showGlobalAlertAction(
+                  'Something went wrong!',
+                  AlertTypes.ERROR,
+                ),
+              );
+            });
+        },
+      }),
+    );
+  }, [currentUser, dispatch, history]);
+
+  const handleEditOrganization = useCallback(() => {
+    dispatch(
+      openModalAction('EditOrganization', {
+        userProfile: currentUser,
+        onSuccess: getUserById,
+      }),
+    );
+  }, [currentUser, dispatch]);
+
   return (
     <>
       <DrawerOrganizationHeader>
@@ -91,14 +131,12 @@ const DrawerOrganizationSubmenu = ({
             MASTER_ROLES.includes(orgUserRole) && {
               key: 'edit_org',
               label: 'Edit Organization',
-              onClick: () =>
-                history.push('/settings/userProfile/edit-organization'),
+              onClick: handleEditOrganization,
             },
             GUEST_ROLE === orgUserRole && {
               key: 'leave_org',
               label: 'Leave Organization',
-              onClick: () =>
-                history.push('/settings/userProfile/leave-organization'),
+              onClick: handleLeaveOrganiztion,
             },
             MASTER_ROLES.includes(orgUserRole) && {
               key: 'manage_users',

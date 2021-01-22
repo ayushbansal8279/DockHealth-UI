@@ -76,7 +76,7 @@ import {
 
 export const SETTINGS_ROUTES = [
   {
-    path: '/userprofile/:section?',
+    path: '/userprofile',
     RouteComponent: UserProfileView,
   },
   {

@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/header-actions';
@@ -38,9 +38,6 @@ import {
 const UserProfileView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  // eslint-disable-next-line unicorn/prevent-abbreviations
-  const { params = {} } = useRouteMatch();
-  const { section } = params;
 
   const { userProfile } = useSelector(store => {
     return {
@@ -89,22 +86,6 @@ const UserProfileView = () => {
   }, [dispatch, history, userProfile.organizationIdentifier]);
 
   const userOrgRole = getOrgRole(userProfile?.orgUserRole);
-
-  useEffect(() => {
-    if (section === 'leave-organization') {
-      handleLeaveOrganiztion();
-    } else if (
-      section === 'edit-organization' &&
-      ['ADMIN', 'OWNER'].includes(userProfile?.orgUserRole)
-    ) {
-      dispatch(
-        openModalAction('EditOrganization', {
-          userProfile,
-          onSuccess: userApi.getUserById,
-        }),
-      );
-    }
-  }, [dispatch, handleLeaveOrganiztion, section, userProfile, userOrgRole]);
 
   const renderOrganizationActionButton = () => {
     switch (userProfile.orgUserRole) {
