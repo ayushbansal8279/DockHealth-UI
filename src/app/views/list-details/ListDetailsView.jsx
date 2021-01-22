@@ -7,7 +7,7 @@ import debounce from 'lodash.debounce';
 
 import Header from 'components/taskView/Header';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
-import Tour from 'components/tour-wizard/Tour/Tour';
+// import Tour from 'components/tour-wizard/Tour/Tour';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -49,14 +49,14 @@ import {
 
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
 import {
-  ListTourWrapper,
-  ListTourBackground,
+  // ListTourWrapper,
+  // ListTourBackground,
   TaskViewContainer,
 } from './styled';
 
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
-import { LIST_TOUR_STEPS } from './list-tour-steps';
+// import { LIST_TOUR_STEPS } from './list-tour-steps';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
@@ -918,7 +918,7 @@ class Home extends Component {
             />
           </div>
         </BulkEditSection>
-        {isTourOpen && (
+        {/* {isTourOpen && (
           <>
             <ListTourWrapper>
               <Tour
@@ -929,7 +929,7 @@ class Home extends Component {
             </ListTourWrapper>
             <ListTourBackground onClick={this.closeTourModal} />
           </>
-        )}
+        )} */}
       </>
     );
   }
