@@ -10,7 +10,7 @@ import {
   openQuickAddSubtask,
   moveTask,
 } from 'actions/task-actions';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
 
 const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
@@ -111,6 +111,18 @@ const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
     }
   }, []);
 
+  const handleDeleteTask = useCallback(() => {
+    const modalProps = {
+      confirm: async () => {
+        await dispatch(deleteTask(task));
+        dispatch(closeModal());
+      },
+    };
+    const modalName =
+      task.parentTaskIdentifier !== null ? 'DeleteSubtask' : 'DeleteTask';
+    dispatch(openModal(modalName, modalProps));
+  }, []);
+
   const handleMoveTask = useCallback(() => {
     dispatch(
       openModal('SelectTaskDestination', {
@@ -186,7 +198,7 @@ const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
           <MenuItemButtom
             type="button"
             color={palette.oPlusRed}
-            onClick={() => dispatch(deleteTask(task))}
+            onClick={handleDeleteTask}
           >
             Delete {isSubtask ? 'Subtask' : 'Task'}
           </MenuItemButtom>
