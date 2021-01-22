@@ -28,9 +28,7 @@ const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            You’re about to complete a primary tasks which have a subtasks that
-            are incomplete. Marking the primary tasks as complete will also
-            complete all subtasks.
+            Marking this task as complete will also complete related subtasks.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
