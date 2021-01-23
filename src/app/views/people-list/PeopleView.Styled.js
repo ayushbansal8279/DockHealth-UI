@@ -1,7 +1,9 @@
 import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette, { opacify } from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const SearchContainer = styled.div`
   margin: 2rem 0;
@@ -72,4 +74,36 @@ export const PopoverSectionButton = styled.button`
   justify-content: center;
   margin: 0;
   width: 8.75rem;
+`;
+
+export const ManageUsersContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  width: 100%;
+  border: 1px solid ${palette.blueOcean};
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  background-color: ${palette.white};
+`;
+
+export const HeaderMessage = styled.div`
+  align-items: left;
+  width: 100%;
+  padding-left: 0.5rem;
+`;
+
+export const HeaderMessageTitle = styled.h2`
+  margin-bottom: ${spacing.small};
+  font-size: ${fontSizes.regularPlus};
+  font-weight: ${fontWeights.bold};
+  font-family: 'Montserrat', sans-serif;
+`;
+
+export const HeaderMessageDescription = styled.p`
+  display: block;
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPLus};
+  font-weight: ${fontWeights.extraLight};
+  font-family: 'Montserrat', sans-serif;
 `;
