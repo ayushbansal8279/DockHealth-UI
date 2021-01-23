@@ -1,13 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, IconButton } from '@material-ui/core';
 import useBoolean from 'hooks/useBoolean';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  addTaskList,
-  getSharedTaskListsWithCurrentUser,
-} from 'api/tasklist-api';
-import { getTaskListForUser } from 'actions/tasklist-actions';
+import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import {
   Title,
@@ -26,12 +22,13 @@ const ListSelectStep = ({
   setSelectedList,
   setNextStep,
   closeModal,
+  addListInput,
+  lists,
+  setLists,
+  onAddList,
+  savingList,
 }) => {
-  const dispatch = useDispatch();
-  const addListReference = useRef(null);
   const [isFetchingLists, setIsFetchingLists] = useState(true);
-  const [lists, setLists] = useState(null);
-  const [savingList, setSavingList] = useState(false);
   const [
     listInputFocused,
     setListInputFocused,
@@ -39,6 +36,7 @@ const ListSelectStep = ({
   ] = useBoolean(false);
 
   const currentUser = useSelector(userProfileSelector);
+  const addListInputReference = addListInput;
 
   useEffect(() => {
     if (currentUser?.userIdentifier) {
@@ -55,22 +53,10 @@ const ListSelectStep = ({
   }, [currentUser]);
 
   const handleAddNewList = listName => {
-    if (savingList || !listName) return;
-
-    setSavingList(true);
-    addTaskList({
-      memberIdentifiers: [currentUser.userIdentifier],
-      listName,
-    })
-      .then(createdLists => {
-        setSavingList(false);
-        setLists(previousLists => setLists([...previousLists, createdLists]));
-        addListReference.current.value = '';
-        dispatch(getTaskListForUser());
-      })
-      .catch(() => {
-        setSavingList(false);
-      });
+    if (listName) {
+      onAddList(listName);
+      addListInputReference.current.value = '';
+    }
   };
 
   return (
@@ -114,11 +100,20 @@ const ListSelectStep = ({
           </ListsWrapper>
           <QuickAddInputWrapper isFocused={listInputFocused}>
             <QuickAddInput
-              ref={addListReference}
+              ref={addListInputReference}
               type="text"
               placeholder="Add list"
               onFocus={setListInputFocused}
               onBlur={unsetListInputFocused}
+              onChange={() => {
+                if (addListInputReference?.current?.value) {
+                  setSelectedList({
+                    listName: addListInputReference?.current?.value,
+                  });
+                } else {
+                  setSelectedList(null);
+                }
+              }}
               disabled={savingList}
               onKeyDown={event =>
                 event.key === 'Enter' && handleAddNewList(event.target.value)
