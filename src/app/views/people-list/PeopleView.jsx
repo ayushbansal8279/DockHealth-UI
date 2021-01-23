@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as PeopleActions from 'actions/people-actions';
@@ -14,7 +15,15 @@ import SafariFixGrid from 'components/common/SafariFixGrid';
 import Spacing from 'components/common/Spacing';
 import PeopleContainer from 'components/people/PeopleContainer';
 import Search from 'components/taskView/Search/Search';
+import Button from 'components/common/Button/Button';
+import LightbulbBig from 'img/lightbulb-big';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
+import {
+  ManageUsersContainer,
+  HeaderMessage,
+  HeaderMessageTitle,
+  HeaderMessageDescription,
+} from './PeopleView.Styled';
 
 const LoaderContainer = styled.div`
   display: flex;
@@ -87,9 +96,25 @@ class PeopleView extends PureComponent {
             <Search onChange={this.handleSearch} />
           </Grid>
         </PageContentHeader>
-        <Spacing vertical={4} />
         <SafariFixGrid container xs={12} item justify="center">
           <Grid item xs={9}>
+            <Spacing vertical={4} />
+            <ManageUsersContainer>
+              <img alt="lightbulb" src={LightbulbBig} />
+              <HeaderMessage>
+                <HeaderMessageTitle>
+                  Manage users in subscription and users
+                </HeaderMessageTitle>
+                <HeaderMessageDescription>
+                  Add, remove users and change roles for people within your
+                  organization.
+                </HeaderMessageDescription>
+              </HeaderMessage>
+              <Link to="/settings/subscriptions">
+                <Button variant="contained">Manage Users</Button>
+              </Link>
+            </ManageUsersContainer>
+            <Spacing vertical={4} />
             {isFetching ? (
               <LoaderContainer>
                 <Loader />
