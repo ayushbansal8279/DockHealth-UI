@@ -10,8 +10,8 @@ const PageContentHeader = styled.div<{ paneled?: boolean }>`
       ? `border: 0.125rem solid ${palette.unknownGrey2}; margin-bottom: 1.5rem;`
       : `border-bottom: 0.0625rem solid ${palette.coolGrey3};`}
   display: flex;
-  height: 5.75rem;
-  min-height: 5.75rem;
+  height: 3.75rem;
+  min-height: 3.75rem;
   justify-content: space-between;
   padding: 0 2rem;
   width: 100%;
