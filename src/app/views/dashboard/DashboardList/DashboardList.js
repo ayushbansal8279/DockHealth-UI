@@ -401,7 +401,7 @@ const DashboardList = ({
     modalActions.openModal('ListPicker', {
       fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
       listCreationPayload: {
-        memberIdentifiers:
+        adminIdentifiers:
           currentUser.userIdentifier !== userIdentifier ? [userIdentifier] : [],
       },
       confirm: taskListIdentifier => {
