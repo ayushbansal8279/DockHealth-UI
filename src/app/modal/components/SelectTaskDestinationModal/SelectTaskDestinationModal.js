@@ -1,6 +1,16 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { getTaskListForUser } from 'actions/tasklist-actions';
+import { addTaskList } from 'api/tasklist-api';
 import { Container, StepsContainer } from './styled';
 import {
   ModalWrapperWithPadding,
@@ -20,10 +30,16 @@ const SelectTaskDestinationModal = ({
   preventClosingModal = false,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
   const [stepIndex, setStepIndex] = useState(0);
   const [selectedList, setSelectedList] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedParentTask, setSelectedParentTask] = useState(null);
+
+  const addListInput = useRef(null);
+  const [lists, setLists] = useState(null);
+  const [savingList, setSavingList] = useState(false);
+  const currentUser = useSelector(userProfileSelector);
 
   const [subtasksPresent, allTasksSameType] = useMemo(() => {
     let allSameType = true;
@@ -54,35 +70,73 @@ const SelectTaskDestinationModal = ({
     }
   }, [allTasksSameType, closeModal]);
 
-  const handleConfirm = useCallback(() => {
-    if (!selectedList) return;
+  const handleAddNewList = useCallback(
+    async (listName, callback) => {
+      if (savingList || !listName) return;
 
-    const responseData = {
-      taskListIdentifier: selectedList?.taskListIdentifier,
-    };
+      setSavingList(true);
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      await addTaskList({
+        adminIdentifiers: [currentUser.userIdentifier],
+        listName,
+      })
+        .then(createdList => {
+          setSavingList(false);
+          setSelectedList(createdList);
+          setLists(previousLists => setLists([...previousLists, createdList]));
+          addListInput.current.value = '';
+          dispatch(getTaskListForUser());
+          callback(createdList);
+        })
+        .catch(() => {
+          setSavingList(false);
+        });
+    },
+    [currentUser.userIdentifier, dispatch, savingList],
+  );
 
-    if (selectedGroup) {
-      responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
-    }
+  const handleConfirm = useCallback(
+    createdList => {
+      const taskList = createdList || selectedList;
 
-    if (selectedParentTask) {
-      responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
-    }
+      if (!taskList) return;
 
-    if (typeof confirm === 'function') {
-      confirm(responseData);
-      if (!preventClosingModal) closeModal();
+      const responseData = {
+        taskListIdentifier: taskList?.taskListIdentifier,
+      };
+
+      if (selectedGroup) {
+        responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+      }
+
+      if (selectedParentTask) {
+        responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
+      }
+
+      if (typeof confirm === 'function') {
+        confirm(responseData);
+        if (!preventClosingModal) closeModal();
+      } else {
+        console.warn('You have to provide confirm callback');
+      }
+    },
+    [
+      confirm,
+      selectedParentTask,
+      selectedGroup,
+      selectedList,
+      closeModal,
+      preventClosingModal,
+    ],
+  );
+
+  const handleConfirmWrapper = useCallback(async () => {
+    if (addListInput?.current?.value) {
+      await handleAddNewList(addListInput?.current?.value, handleConfirm);
     } else {
-      console.warn('You have to provide confirm callback');
+      handleConfirm();
     }
-  }, [
-    confirm,
-    selectedParentTask,
-    selectedGroup,
-    selectedList,
-    closeModal,
-    preventClosingModal,
-  ]);
+  }, [handleAddNewList, handleConfirm]);
 
   const handleNextStep = useCallback(() => {
     setStepIndex(previousStepIndex => previousStepIndex + 1);
@@ -104,6 +158,11 @@ const SelectTaskDestinationModal = ({
             setSelectedList={setSelectedList}
             setNextStep={handleNextStep}
             closeModal={closeModal}
+            addListInput={addListInput}
+            lists={lists}
+            setLists={setLists}
+            onAddList={handleAddNewList}
+            savingList={savingList}
           />
           <GroupSelectStep
             selectedList={selectedList}
@@ -148,7 +207,7 @@ const SelectTaskDestinationModal = ({
                 ? !selectedList || !selectedGroup || !selectedParentTask
                 : !selectedList
             }
-            onClick={handleConfirm}
+            onClick={handleConfirmWrapper}
           >
             {confirmText || 'Save'}
           </Button>
