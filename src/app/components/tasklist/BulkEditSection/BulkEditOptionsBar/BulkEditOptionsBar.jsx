@@ -112,6 +112,14 @@ const BulkEditOptionsBar = ({
     allSelectedTasks,
   ]);
 
+  const allSelectedTaskListIdentifiers = useMemo(
+    () => [
+      ...parentTasks?.map(task => task.taskList?.taskListIdentifier),
+      ...subtasks?.map(task => task.taskList?.taskListIdentifier),
+    ],
+    [parentTasks, subtasks],
+  );
+
   const handleChangeWorkflowStatusTasks = useCallback(
     workflowStatus => {
       bulkEditTasksApi({
@@ -497,6 +505,7 @@ const BulkEditOptionsBar = ({
         />
         <BulkEditAssignToOption
           taskListIdentifier={taskListIdentifier}
+          selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
           handleChangeAssigneTasks={handleChangeAssigneTasks}
           isDisabled={isDisabled}
         />

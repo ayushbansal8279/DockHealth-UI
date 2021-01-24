@@ -132,7 +132,7 @@ const PatientDetailsView = ({
     updatedTask => {
       fetchPatientFilters();
       if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
-        refreshPatientTasks();
+        refreshPatientTasks({ withLoader: false });
       }
     },
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
@@ -140,7 +140,7 @@ const PatientDetailsView = ({
 
   const refreshTab = useCallback(() => {
     fetchPatientFilters();
-    refreshPatientTasks();
+    refreshPatientTasks({ withLoader: true });
   }, [refreshPatientTasks, fetchPatientFilters]);
 
   const shouldResetBulkEditTasks = useMemo(

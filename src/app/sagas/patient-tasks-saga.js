@@ -336,9 +336,15 @@ function* doToggleTaskCompleteStatus({ payload }) {
     yield put(AlertActions.showGlobalAlert(successMessage));
 
     yield delay(TASK_DISAPPEAR_DELAY);
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   }
 }
 
@@ -355,9 +361,15 @@ function* doReassignTask({ payload }) {
       assignee?.userIdentifier,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   }
 }
 
@@ -370,9 +382,15 @@ function* doUpdateDueDate({ payload }) {
 
     yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   }
 }
 
@@ -388,9 +406,15 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
       workflowStatus,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   }
 }
 
@@ -399,9 +423,15 @@ function* doUpdatePatientTaskInList({ payload }) {
 
   try {
     yield put(updatePatientTask(task?.taskIdentifier, task));
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   }
 }
 
@@ -423,9 +453,15 @@ function* doQuickAddPatientTask({ payload }) {
       patientIdentifier,
     });
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   } catch (error) {
-    yield all([put(refreshPatientTasks()), put(fetchStatsForPatientTasks())]);
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(fetchStatsForPatientTasks()),
+    ]);
   }
 }
 
@@ -443,7 +479,7 @@ function* doUpdatePatientTasksFilters({ payload }) {
       status,
     ),
   );
-  yield put(refreshPatientTasks());
+  yield put(refreshPatientTasks({ withLoader: true }));
 }
 
 function* doInitializeSavedFiltersForPatient() {
@@ -472,9 +508,9 @@ function* doInviteUserToTaskList({ payload }) {
       userIdentifier,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   } catch (error) {
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   }
 }
 
@@ -483,9 +519,9 @@ function* doRemoveUserFromTaskList({ payload }) {
   try {
     yield call(TaskListApi.removeUserFromTaskList, taskListIdentifier, member);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   } catch (error) {
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   }
 }
 
@@ -498,9 +534,9 @@ function* doCancelUserInviteToTaskList({ payload }) {
       userEmail,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   } catch (error) {
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   }
 }
 
@@ -514,9 +550,9 @@ function* doChangeMemberRole({ payload }) {
       role,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   } catch (error) {
-    yield put(refreshPatientTasks());
+    yield put(refreshPatientTasks({ withLoader: false }));
   }
 }
 
