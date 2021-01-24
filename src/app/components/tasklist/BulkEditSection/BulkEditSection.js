@@ -25,12 +25,12 @@ const BulkEditSection = ({
   const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
 
   const onSelectBulkEditParentTask = useCallback(
-    ({ taskIdentifier, subTasksCount, hasAttachments }) =>
+    ({ taskIdentifier, subTasksCount, hasAttachments, taskList }) =>
       setBulkEditTasks({
         ...bulkEditTasks,
         parentTasks: [
           ...bulkEditTasks.parentTasks,
-          { taskIdentifier, subTasksCount, hasAttachments },
+          { taskIdentifier, subTasksCount, hasAttachments, taskList },
         ],
       }),
     [bulkEditTasks],
@@ -56,13 +56,14 @@ const BulkEditSection = ({
   );
 
   const onClickBulkEditParentTask = useCallback(
-    ({ taskIdentifier, subTasksCount, hasAttachments }) =>
+    ({ taskIdentifier, subTasksCount, hasAttachments, taskList }) =>
       getParentTaskIsSelectedInBulkEdit({ taskIdentifier })
         ? onUnselectBulkEditParentTask({ taskIdentifier })
         : onSelectBulkEditParentTask({
             taskIdentifier,
             subTasksCount,
             hasAttachments,
+            taskList,
           }),
     [
       getParentTaskIsSelectedInBulkEdit,
@@ -86,12 +87,12 @@ const BulkEditSection = ({
   );
 
   const onSelectBulkEditSubtask = useCallback(
-    ({ taskIdentifier, parentTaskIdentifier, hasAttachments }) =>
+    ({ taskIdentifier, parentTaskIdentifier, hasAttachments, taskList }) =>
       setBulkEditTasks({
         ...bulkEditTasks,
         subtasks: [
           ...bulkEditTasks?.subtasks,
-          { taskIdentifier, parentTaskIdentifier, hasAttachments },
+          { taskIdentifier, parentTaskIdentifier, hasAttachments, taskList },
         ],
       }),
     [bulkEditTasks],
@@ -118,13 +119,14 @@ const BulkEditSection = ({
   );
 
   const onClickBulkEditSubtask = useCallback(
-    ({ taskIdentifier, parentTaskIdentifier, hasAttachments }) =>
+    ({ taskIdentifier, parentTaskIdentifier, hasAttachments, taskList }) =>
       getSubtaskIsSelectedInBulkEdit({ taskIdentifier })
         ? onUnselectBulkEditSubtask({ taskIdentifier })
         : onSelectBulkEditSubtask({
             taskIdentifier,
             parentTaskIdentifier,
             hasAttachments,
+            taskList,
           }),
     [
       getSubtaskIsSelectedInBulkEdit,

@@ -4,6 +4,7 @@ import * as TaskListApi from 'api/tasklist-api';
 import Member from 'components/members/Member/Member';
 import MagnifierIcon from 'img/magnifier';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
+import { pipe, sortBy, prop, uniqBy, innerJoin } from 'ramda';
 
 import {
   AssignToMeBox,
@@ -16,11 +17,34 @@ import {
   LoaderContainer,
 } from './styled';
 
+const convert = pipe(sortBy(prop('userName')), uniqBy(prop('userIdentifier')));
+
+async function collectedAllListMembers(taskListIdentifiers, setMembers) {
+  let listMemembers = [];
+  await taskListIdentifiers.map(async tlIdentifier => {
+    const data = await TaskListApi.getMembersByTaskListId(tlIdentifier, 'ALL');
+    if (listMemembers.length === 0) {
+      listMemembers = listMemembers.concat(data);
+    } else {
+      listMemembers = innerJoin(
+        (existingRecord, newRecord) =>
+          existingRecord.userIdentifier === newRecord.userIdentifier,
+        listMemembers,
+        data,
+      );
+    }
+    listMemembers = convert(listMemembers);
+    setMembers(listMemembers);
+  });
+  return listMemembers;
+}
+
 const MembersList = ({
   reassignTask,
   task,
   currentUser,
   taskListIdentifier,
+  selectedTaskListIdentifiers,
 }) => {
   const listId = taskListIdentifier || task?.taskList?.taskListIdentifier;
   const [members, setMembers] = useState(null);
@@ -43,16 +67,24 @@ const MembersList = ({
 
   useEffect(() => {
     setIsFetchingMembers(true);
-    TaskListApi.getMembersByTaskListId(listId, 'ALL')
-      .then(data => {
-        setMembers(data);
-        setIsFetchingMembers(false);
-      })
-      .catch(error => {
-        setIsFetchingMembers(false);
-        throw error;
-      });
-  }, [listId]);
+    if (listId) {
+      TaskListApi.getMembersByTaskListId(listId, 'ALL')
+        .then(data => {
+          setMembers(data);
+          setIsFetchingMembers(false);
+        })
+        .catch(error => {
+          setIsFetchingMembers(false);
+          throw error;
+        });
+    } else {
+      if (selectedTaskListIdentifiers) {
+        setMembers([]);
+        collectedAllListMembers(selectedTaskListIdentifiers, setMembers);
+      }
+      setIsFetchingMembers(false);
+    }
+  }, [listId, selectedTaskListIdentifiers]);
 
   return (
     <>

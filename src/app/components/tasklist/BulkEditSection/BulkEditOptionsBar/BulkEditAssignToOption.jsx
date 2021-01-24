@@ -7,6 +7,7 @@ import { IconButton, IconBox, AssigneeIcon } from './styled';
 const BulkEditAssignToOption = ({
   handleChangeAssigneTasks,
   taskListIdentifier,
+  selectedTaskListIdentifiers,
   isDisabled,
 }) => {
   const assignMemberButtonReference = useRef(null);
@@ -57,6 +58,7 @@ const BulkEditAssignToOption = ({
               reassignTask={handleReasigningTask}
               currentUser={currentUser}
               taskListIdentifier={taskListIdentifier}
+              selectedTaskListIdentifiers={selectedTaskListIdentifiers}
             />
           )}
         </>
