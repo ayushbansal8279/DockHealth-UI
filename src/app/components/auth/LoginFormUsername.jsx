@@ -41,7 +41,10 @@ const LoginFormUsername = props => {
         setShowLoginMessage(true);
 
         const authCode = queryValues.code.replace('#/auth/login', '');
-        const issValue = queryValues.iss.replace('#/', '');
+        let issValue = '';
+        if (queryValues.iss) {
+          issValue = queryValues.iss.replace('#/', '');
+        }
 
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
           .then(() => {
