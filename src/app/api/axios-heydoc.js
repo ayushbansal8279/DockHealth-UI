@@ -47,7 +47,7 @@ axiosInstance.interceptors.response.use(identity, error => {
     return undefined;
   }
 
-  window.location.href = '/#/core/home/my-tasks';
+  window.location.href = '/#/auth/login';
 });
 
 export default axiosInstance;
