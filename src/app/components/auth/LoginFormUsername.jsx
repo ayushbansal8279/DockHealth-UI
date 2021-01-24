@@ -51,9 +51,11 @@ const LoginFormUsername = props => {
             const patientIdentifier = sessionStorage.getItem(
               'PatientIdentifier',
             );
-            if (patientIdentifier 
-              && patientIdentifier !== '' 
-              && patientIdentifier !== 'null') {
+            if (
+              patientIdentifier &&
+              patientIdentifier !== '' &&
+              patientIdentifier !== 'null'
+            ) {
               window.location.href = `/#/core/patient/${patientIdentifier}`;
             } else {
               window.location.href = '/#/core/home';
