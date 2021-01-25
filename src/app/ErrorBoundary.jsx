@@ -20,7 +20,7 @@ class ErrorBoundary extends Component {
         `We are sorry, we have run into an error. ${error?.message}` ??
         'Could not complete your request, please try again later',
       showConfirmButton: true,
-      confirmButtonText: 'Go to Lists',
+      confirmButtonText: 'Go to Home',
       allowOutsideClick: false,
       allowEscapeKey: false,
       confirmationCallback: () => {
