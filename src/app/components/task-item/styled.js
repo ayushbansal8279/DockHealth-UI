@@ -9,6 +9,7 @@ import palette, { featurePalette } from 'styles/palette';
 
 export const ListItemLink = styled(Link)`
   color: ${palette.mediumGrey};
+
   &:hover {
     color: ${palette.brightBlue};
     text-decoration: underline;
@@ -225,6 +226,9 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
 export const ClickablePatient = styled.span`
   align-self: center;
   cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const ClickableStandardTaskItemIcon = styled.span`
