@@ -15,8 +15,33 @@ const BulkEditAssignToOption = ({
 
   const currentUser = useSelector(store => store.userState.userProfile);
 
-  const handleReasigningTask = (_, { userIdentifier }) => {
-    handleChangeAssigneTasks(userIdentifier);
+  const handleReasigningTask = (
+    _,
+    {
+      bubbleColor,
+      firstName,
+      initials,
+      lastName,
+      profileThumbnailPictureHash,
+      specialtyList,
+      titleList,
+      userId,
+      userIdentifier,
+      userName,
+    },
+  ) => {
+    handleChangeAssigneTasks({
+      bubbleColor,
+      firstName,
+      initials,
+      lastName,
+      profileThumbnailPictureHash,
+      specialtyList,
+      titleList,
+      userId,
+      userIdentifier,
+      userName,
+    });
     openPopover(false);
   };
 

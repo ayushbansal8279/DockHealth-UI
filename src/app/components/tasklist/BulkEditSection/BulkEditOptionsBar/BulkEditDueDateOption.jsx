@@ -19,9 +19,10 @@ const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
   return (
     <PopoverDatepicker
       onDateChange={date => {
-        const startTime = moment()
+        const startTime = moment
+          .utc()
           .startOf('day')
-          .format('HH:mm:ss.Z');
+          .format('HH:mm:ss.SSSZ');
         handleChangeDateTasks(`${date}T${startTime}`);
       }}
       quickSelectOptions={dueDateQuickSelectOptions}

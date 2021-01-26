@@ -11,6 +11,13 @@ import MoveIcon from 'img/bulk-edit/MoveIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
+import {
+  bulkEditAssignUser,
+  bulkEditWorkflowStatus,
+  bulkEditDueDate,
+  bulkEditDelete,
+  bulkEditComplete,
+} from 'actions/task-actions';
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
@@ -41,6 +48,7 @@ const BulkEditOptionsBar = ({
   onClose,
   isDisabled,
   refreshTasksOnBulkAction,
+  currentUser,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -122,107 +130,122 @@ const BulkEditOptionsBar = ({
 
   const handleChangeWorkflowStatusTasks = useCallback(
     workflowStatus => {
+      bulkEditWorkflowStatus(
+        allSelectedTasksIdentifiers,
+        workflowStatus,
+      )(dispatch);
+
       bulkEditTasksApi({
         bulkEditType: 'STATUS',
         taskIdentifiers: allSelectedTasksIdentifiers,
         workflowStatus,
-      }).then(() => {
-        if (
-          refreshTasksOnBulkAction &&
-          typeof refreshTasksOnBulkAction === 'function'
-        ) {
-          refreshTasksOnBulkAction();
-        }
+      })
+        .then(() => {
+          dispatch(
+            AlertActions.showGlobalAlert(
+              `${allSelectedTasksLength} STATUS CHANGED`,
+            ),
+          );
 
-        dispatch(
-          AlertActions.showGlobalAlert(
-            `${allSelectedTasksLength} STATUS CHANGED`,
-          ),
-        );
-
-        if (onClose && typeof onClose === 'function') {
-          onClose();
-        }
-      });
+          if (onClose && typeof onClose === 'function') {
+            onClose();
+          }
+        })
+        .catch(() => {
+          if (
+            refreshTasksOnBulkAction &&
+            typeof refreshTasksOnBulkAction === 'function'
+          ) {
+            refreshTasksOnBulkAction();
+          }
+        });
     },
     [
       allSelectedTasksIdentifiers,
-      refreshTasksOnBulkAction,
       dispatch,
       allSelectedTasksLength,
       onClose,
+      refreshTasksOnBulkAction,
     ],
   );
 
   const handleChangeDateTasks = useCallback(
     dueDate => {
+      bulkEditDueDate(allSelectedTasksIdentifiers, dueDate)(dispatch);
+
       bulkEditTasksApi({
         bulkEditType: 'DUE_DATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         dueDate,
-      }).then(() => {
-        if (
-          refreshTasksOnBulkAction &&
-          typeof refreshTasksOnBulkAction === 'function'
-        ) {
-          refreshTasksOnBulkAction();
-        }
+      })
+        .then(() => {
+          dispatch(
+            AlertActions.showGlobalAlert(
+              allSelectedTasksLength > 1
+                ? `${allSelectedTasksLength} DUE DATES CHANGED`
+                : `${allSelectedTasksLength} DUE DATE CHANGED`,
+            ),
+          );
 
-        dispatch(
-          AlertActions.showGlobalAlert(
-            allSelectedTasksLength > 1
-              ? `${allSelectedTasksLength} DUE DATES CHANGED`
-              : `${allSelectedTasksLength} DUE DATE CHANGED`,
-          ),
-        );
-
-        if (onClose && typeof onClose === 'function') {
-          onClose();
-        }
-      });
+          if (onClose && typeof onClose === 'function') {
+            onClose();
+          }
+        })
+        .catch(() => {
+          if (
+            refreshTasksOnBulkAction &&
+            typeof refreshTasksOnBulkAction === 'function'
+          ) {
+            refreshTasksOnBulkAction();
+          }
+        });
     },
     [
       allSelectedTasksIdentifiers,
-      refreshTasksOnBulkAction,
       dispatch,
       allSelectedTasksLength,
       onClose,
+      refreshTasksOnBulkAction,
     ],
   );
 
   const handleChangeAssigneTasks = useCallback(
-    assignedUserIdentifier => {
+    assignedUser => {
+      bulkEditAssignUser(allSelectedTasksIdentifiers, assignedUser)(dispatch);
+
       bulkEditTasksApi({
         bulkEditType: 'ASSIGN',
         taskIdentifiers: allSelectedTasksIdentifiers,
-        assignedToIdentifier: assignedUserIdentifier,
-      }).then(() => {
-        if (
-          refreshTasksOnBulkAction &&
-          typeof refreshTasksOnBulkAction === 'function'
-        ) {
-          refreshTasksOnBulkAction();
-        }
+        assignedToIdentifier: assignedUser?.userIdentifier,
+      })
+        .then(() => {
+          dispatch(
+            AlertActions.showGlobalAlert(
+              allSelectedTasksLength > 1
+                ? `${allSelectedTasksLength} TASKS ASSIGNED`
+                : `${allSelectedTasksLength} TASK ASSIGNED`,
+            ),
+          );
 
-        dispatch(
-          AlertActions.showGlobalAlert(
-            allSelectedTasksLength > 1
-              ? `${allSelectedTasksLength} TASKS ASSIGNED`
-              : `${allSelectedTasksLength} TASK ASSIGNED`,
-          ),
-        );
-
-        if (onClose && typeof onClose === 'function') {
-          onClose();
-        }
-      });
+          if (onClose && typeof onClose === 'function') {
+            onClose();
+          }
+        })
+        .catch(() => {
+          if (
+            refreshTasksOnBulkAction &&
+            typeof refreshTasksOnBulkAction === 'function'
+          ) {
+            refreshTasksOnBulkAction();
+          }
+        });
     },
     [
       allSelectedTasksIdentifiers,
-      refreshTasksOnBulkAction,
       dispatch,
       allSelectedTasksLength,
       onClose,
+      refreshTasksOnBulkAction,
     ],
   );
 
@@ -366,30 +389,35 @@ const BulkEditOptionsBar = ({
 
   const handleCompleteTasks = useCallback(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const confirmAction = () =>
+    const confirmAction = () => {
+      bulkEditComplete(allSelectedTasksIdentifiers, currentUser)(dispatch);
+
       bulkEditTasksApi({
         bulkEditType: 'COMPLETE',
         taskIdentifiers: allSelectedTasksIdentifiers,
-      }).then(() => {
-        if (
-          refreshTasksOnBulkAction &&
-          typeof refreshTasksOnBulkAction === 'function'
-        ) {
-          refreshTasksOnBulkAction();
-        }
+      })
+        .then(() => {
+          dispatch(
+            AlertActions.showGlobalAlert(
+              allSelectedTasksLength > 1
+                ? `${allSelectedTasksLength} TASKS COMPLETED`
+                : `${allSelectedTasksLength} TASK COMPLETED`,
+            ),
+          );
 
-        dispatch(
-          AlertActions.showGlobalAlert(
-            allSelectedTasksLength > 1
-              ? `${allSelectedTasksLength} TASKS COMPLETED`
-              : `${allSelectedTasksLength} TASK COMPLETED`,
-          ),
-        );
-
-        if (onClose && typeof onClose === 'function') {
-          onClose();
-        }
-      });
+          if (onClose && typeof onClose === 'function') {
+            onClose();
+          }
+        })
+        .catch(() => {
+          if (
+            refreshTasksOnBulkAction &&
+            typeof refreshTasksOnBulkAction === 'function'
+          ) {
+            refreshTasksOnBulkAction();
+          }
+        });
+    };
 
     if (allParentTasksHaveRelatedSubtasks) {
       confirmAction();
@@ -403,10 +431,11 @@ const BulkEditOptionsBar = ({
   }, [
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
-    refreshTasksOnBulkAction,
+    currentUser,
     dispatch,
     allSelectedTasksLength,
     onClose,
+    refreshTasksOnBulkAction,
   ]);
 
   const handleDeleteTasks = useCallback(() => {
@@ -414,29 +443,33 @@ const BulkEditOptionsBar = ({
       openModal('BulkDeleteTasks', {
         hasIncompleteParentTasks: !allParentTasksHaveRelatedSubtasks,
         confirm: () => {
+          bulkEditDelete(allSelectedTasksIdentifiers)(dispatch);
+
           bulkEditTasksApi({
             bulkEditType: 'DELETE',
             taskIdentifiers: allSelectedTasksIdentifiers,
-          }).then(() => {
-            if (
-              refreshTasksOnBulkAction &&
-              typeof refreshTasksOnBulkAction === 'function'
-            ) {
-              refreshTasksOnBulkAction();
-            }
+          })
+            .then(() => {
+              dispatch(
+                AlertActions.showGlobalAlert(
+                  allSelectedTasksLength > 1
+                    ? `${allSelectedTasksLength} TASKS DELETED`
+                    : `${allSelectedTasksLength} TASK DELETED`,
+                ),
+              );
 
-            dispatch(
-              AlertActions.showGlobalAlert(
-                allSelectedTasksLength > 1
-                  ? `${allSelectedTasksLength} TASKS DELETED`
-                  : `${allSelectedTasksLength} TASK DELETED`,
-              ),
-            );
-
-            if (onClose && typeof onClose === 'function') {
-              onClose();
-            }
-          });
+              if (onClose && typeof onClose === 'function') {
+                onClose();
+              }
+            })
+            .catch(() => {
+              if (
+                refreshTasksOnBulkAction &&
+                typeof refreshTasksOnBulkAction === 'function'
+              ) {
+                refreshTasksOnBulkAction();
+              }
+            });
         },
       }),
     );

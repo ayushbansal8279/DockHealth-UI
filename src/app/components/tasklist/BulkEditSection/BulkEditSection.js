@@ -22,7 +22,10 @@ const BulkEditSection = ({
     subtasks: [],
   });
 
-  const isTaskDrawerOpen = useSelector(store => store.taskDrawerState.open);
+  const { isTaskDrawerOpen, currentUser } = useSelector(store => ({
+    isTaskDrawerOpen: store.taskDrawerState.open,
+    currentUser: store.userState.userProfile,
+  }));
 
   const onSelectBulkEditParentTask = useCallback(
     ({ taskIdentifier, subTasksCount, hasAttachments, taskList }) =>
@@ -212,6 +215,7 @@ const BulkEditSection = ({
         onClose={onClearBulkEditTasks}
         isDisabled={isTaskDrawerOpen}
         refreshTasksOnBulkAction={refreshTasksOnBulkAction}
+        currentUser={currentUser}
       />
     </BulkEditContext.Provider>
   );

@@ -1264,3 +1264,64 @@ export const closeQuickAddSubtask = taskIdentifier => ({
   type: ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT,
   taskIdentifier,
 });
+
+export const bulkEditAssignUser = (tasksToUpdate, assignedTo) => dispatch => {
+  dispatch({
+    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    tasksToUpdate,
+    fields: {
+      assignedTo,
+    },
+  });
+};
+
+export const bulkEditWorkflowStatus = (
+  tasksToUpdate,
+  workflowStatus,
+) => dispatch => {
+  dispatch({
+    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    tasksToUpdate,
+    fields: { workflowStatus },
+  });
+};
+
+export const bulkEditDueDate = (tasksToUpdate, dueDate) => dispatch => {
+  dispatch({
+    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    tasksToUpdate,
+    fields: { dueDate },
+  });
+};
+
+export const bulkEditDelete = tasksToDelete => dispatch => {
+  dispatch({
+    type: ActionTypes.DELETE_TASKS_SUCCESS,
+    tasksToDelete,
+  });
+};
+
+export function bulkEditComplete(taskToComplete, currentUser = null) {
+  return dispatch => {
+    const newTaskData = {
+      status: 'COMPLETE',
+      completedBy: currentUser,
+      completedDt: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+    };
+
+    dispatch({
+      type: ActionTypes.UPDATE_TASKS_SUCCESS,
+      tasksToUpdate: taskToComplete,
+      fields: newTaskData,
+    });
+
+    setTimeout(
+      () =>
+        dispatch({
+          type: ActionTypes.COMPLETE_TASKS_SUCCESS,
+          tasksToDelete: taskToComplete,
+        }),
+      1500,
+    );
+  };
+}

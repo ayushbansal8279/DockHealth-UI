@@ -15,6 +15,9 @@ import {
   CLOSE_QUICK_ADD_SUBTASK_INPUT,
   REQUEST_LOAD_SUBTASKS,
   LOAD_SUBTASKS_SUCCESS,
+  UPDATE_TASKS_SUCCESS,
+  DELETE_TASKS_SUCCESS,
+  COMPLETE_TASKS_SUCCESS,
 } from 'actions/action-types';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -419,6 +422,69 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         });
 
       return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case UPDATE_TASKS_SUCCESS: {
+      const { tasksToUpdate, fields } = action;
+      const updateTasksFromAction = currentTasks =>
+        currentTasks?.map(task => {
+          let newTask = task;
+          if (tasksToUpdate?.includes(newTask?.taskIdentifier)) {
+            newTask = { ...newTask, ...fields };
+          }
+
+          if (newTask?.subtasks?.length > 0) {
+            const subtasks = newTask?.subtasks?.map(subtask =>
+              tasksToUpdate?.includes(subtask?.taskIdentifier)
+                ? { ...subtask, ...fields }
+                : subtask,
+            );
+            newTask = { ...newTask, subtasks };
+          }
+
+          return newTask;
+        });
+
+      return updateStateCallback(state, updateTasksFromAction);
+    }
+    case DELETE_TASKS_SUCCESS: {
+      const { tasksToDelete } = action;
+      const updateTasksFromAction = currentTasks =>
+        currentTasks
+          ?.filter(task => {
+            if (tasksToDelete?.includes(task?.taskIdentifier)) {
+              return false;
+            }
+
+            return true;
+          })
+          .map(task => {
+            if (task?.subtasks?.length > 0) {
+              const subtasks = task?.subtasks?.filter(
+                subtask => !tasksToDelete?.includes(subtask?.taskIdentifier),
+              );
+              return { ...task, subtasks };
+            }
+
+            return task;
+          });
+
+      return updateStateCallback(state, updateTasksFromAction);
+    }
+
+    case COMPLETE_TASKS_SUCCESS: {
+      const { tasksToDelete } = action;
+      const updateTasksFromAction = currentTasks =>
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        currentTasks?.filter(task => {
+          if (tasksToDelete?.includes(task?.taskIdentifier)) {
+            return false;
+          }
+
+          return true;
+        });
+
+      return updateStateCallback(state, updateTasksFromAction);
     }
 
     default:
