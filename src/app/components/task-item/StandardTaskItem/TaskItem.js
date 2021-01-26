@@ -87,7 +87,7 @@ import {
   PriorityIndicator,
   BulkContainer,
 } from '../styled';
-import TaskItemContextMenu from '../SlimTaskItem/TaskItemContextMenu/TaskItemContextMenu';
+import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
 const STANDARD_TASK_HEIGHT = 35;
 const EXTENDED_TASK_HEIGHT = 50;
