@@ -262,7 +262,7 @@ export async function isAuthenticated() {
   try {
     console.log('authenticating current user');
     const user = await Auth.currentAuthenticatedUser({
-      bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
     console.log('getting current session');
     const authData = await Auth.currentSession();
@@ -271,7 +271,7 @@ export async function isAuthenticated() {
     return { isLoggedIn: true, user };
   } catch (error) {
     console.log(error);
-    if(sessionStorage.getItem('accessToken')){
+    if (sessionStorage.getItem('accessToken')) {
       console.log('has valid accessToken');
       const authUser = sessionStorage.getItem('authUser');
       return { isLoggedIn: true, user: authUser };
