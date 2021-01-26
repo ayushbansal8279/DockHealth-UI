@@ -110,7 +110,6 @@ export function changePassword(oldPassword, newPassword) {
 }
 
 export function logout(history) {
-  console.log('in user logout');
   window.sessionStorage.removeItem('confirmStatus');
   history.replace('login');
 
@@ -122,7 +121,6 @@ export function logout(history) {
       sessionStorage.removeItem('SSO_USEREMAIL');
       resolve();
     } else {
-      console.log('Auth.signout');
       Auth.signOut()
         .then(() => {
           resolvedCognitoUser = null;
@@ -131,6 +129,7 @@ export function logout(history) {
           sessionStorage.removeItem('accessToken');
           sessionStorage.removeItem('userIdentifier');
           sessionStorage.removeItem('userProfile');
+          sessionStorage.removeItem('authUser');
           sessionStorage.removeItem('sessionStartTime');
           sessionStorage.removeItem('currentOrganizationIdentifier');
           sessionStorage.removeItem('notificationsEnabled');
@@ -170,7 +169,6 @@ export function login(loginUserName, password) {
           resolve(user);
         } else {
           store.dispatch({ type: 'user/user', user });
-          console.log(`login user: ${JSON.stringify(user)}`);
           sessionStorage.setItem(
             'accessToken',
             user.signInUserSession.accessToken.jwtToken,
@@ -264,9 +262,7 @@ export async function isAuthenticated() {
     const user = await Auth.currentAuthenticatedUser({
       bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
-    console.log('getting current session');
     const authData = await Auth.currentSession();
-    console.log(`got auth data: ${JSON.stringify(authData)}`);
     sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
     return { isLoggedIn: true, user };
   } catch (error) {
@@ -414,7 +410,6 @@ export function getUserById() {
 }
 
 export function updateStoreWithCurrentUser(cognitoUser) {
-  console.log(`storing user: ${cognitoUser}`);
   resolvedCognitoUser = cognitoUser;
   sessionStorage.setItem('authUser', JSON.stringify(cognitoUser));
   store.dispatch({ type: 'user/user', user: cognitoUser });
@@ -570,7 +565,6 @@ export function performHealthCheck() {
 }
 
 export function refreshAccessToken(email) {
-  console.log('in refreshAccessToken');
   if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
     return Promise.resolve(null);
   }
@@ -580,11 +574,9 @@ export function refreshAccessToken(email) {
       bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
     const currentSession = await Auth.currentSession();
-    console.log('calling refreshSession');
     cognitoUser.refreshSession(
       currentSession.refreshToken,
       (error, session) => {
-        console.log('refreshed session');
         const { accessToken } = session;
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken.jwtToken}`;
         sessionStorage.setItem('accessToken', accessToken.jwtToken);
