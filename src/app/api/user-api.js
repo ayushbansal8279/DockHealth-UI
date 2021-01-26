@@ -273,7 +273,7 @@ export async function isAuthenticated() {
     console.log(error);
     if (sessionStorage.getItem('accessToken')) {
       console.log('has valid accessToken');
-      const authUser = sessionStorage.getItem('authUser');
+      const authUser = JSON.parse(sessionStorage.getItem('authUser'));
       return { isLoggedIn: true, user: authUser };
     }
     return { isLoggedIn: false, user: null };
@@ -416,7 +416,7 @@ export function getUserById() {
 export function updateStoreWithCurrentUser(cognitoUser) {
   console.log(`storing user: ${cognitoUser}`);
   resolvedCognitoUser = cognitoUser;
-  sessionStorage.setItem('authUser', cognitoUser);
+  sessionStorage.setItem('authUser', JSON.stringify(cognitoUser));
   store.dispatch({ type: 'user/user', user: cognitoUser });
 }
 
