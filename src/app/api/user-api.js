@@ -169,7 +169,6 @@ export function login(loginUserName, password) {
         ) {
           resolve(user);
         } else {
-          resolvedCognitoUser = user
           store.dispatch({ type: 'user/user', user });
           console.log(`login user: ${JSON.stringify(user)}`);
           sessionStorage.setItem(
@@ -263,7 +262,7 @@ export async function isAuthenticated() {
   try {
     console.log('authenticating current user');
     const user = await Auth.currentAuthenticatedUser({
-      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+      bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
     console.log('getting current session');
     const authData = await Auth.currentSession();
@@ -272,24 +271,12 @@ export async function isAuthenticated() {
     return { isLoggedIn: true, user };
   } catch (error) {
     console.log(error);
-    try {
-      console.log('authenticating user - bypass cache');
-      const user = await Auth.currentAuthenticatedUser({
-        bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-      });
-      console.log('getting current session');
-      const authData = await Auth.currentSession();
-      console.log(`got auth data: ${JSON.stringify(authData)}`);
-      sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
-      return { isLoggedIn: true, user };
-    } catch (error) {
-      console.log(error);
-      if(sessionStorage.getItem('accessToken')){
-        console.log('has valid accessToken');
-        return { isLoggedIn: true, user: resolvedCognitoUser };
-      }
-      return { isLoggedIn: false, user: null };
+    if(sessionStorage.getItem('accessToken')){
+      console.log('has valid accessToken');
+      const authUser = sessionStorage.getItem('authUser');
+      return { isLoggedIn: true, user: authUser };
     }
+    return { isLoggedIn: false, user: null };
   }
 }
 
@@ -429,6 +416,7 @@ export function getUserById() {
 export function updateStoreWithCurrentUser(cognitoUser) {
   console.log(`storing user: ${cognitoUser}`);
   resolvedCognitoUser = cognitoUser;
+  sessionStorage.setItem('authUser', cognitoUser);
   store.dispatch({ type: 'user/user', user: cognitoUser });
 }
 
