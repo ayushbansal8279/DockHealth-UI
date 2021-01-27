@@ -212,7 +212,8 @@ class Home extends Component {
     const { tabName } = params;
 
     if (
-      ((searchValue && searchValue !== '') ||
+      (((previousState?.searchValue === '' || !previousState?.searchValue) &&
+        (searchValue || searchValue !== '')) ||
         (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
           Object.keys(selectedFilters || []).length !== 0) ||
         tabName === TaskListTabName.COMPLETE) &&
@@ -224,8 +225,10 @@ class Home extends Component {
     }
 
     if (
-      (!searchValue ||
-        searchValue === '' ||
+      (searchValue ||
+        searchValue !== '' ||
+        ((previousState?.searchValue !== '' || previousState?.searchValue) &&
+          (searchValue || searchValue !== '')) ||
         (Object.keys(previousProps?.selectedFilters || []).length !== 0 &&
           Object.keys(selectedFilters || []).length === 0) ||
         tabName === TaskListTabName.OPEN) &&
@@ -831,6 +834,7 @@ class Home extends Component {
           shouldResetBulkEditTasks={shouldResetBulkEditTasks}
           refreshTasksOnBulkAction={this.refreshTab}
           inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
+          searchValue={searchValue}
         >
           <div>
             <TaskViewContainer>

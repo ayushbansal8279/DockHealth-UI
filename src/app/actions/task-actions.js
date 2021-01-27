@@ -1265,32 +1265,48 @@ export const closeQuickAddSubtask = taskIdentifier => ({
   taskIdentifier,
 });
 
-export const bulkEditAssignUser = (tasksToUpdate, assignedTo) => dispatch => {
+export const bulkEditAssignUser = (
+  tasksToUpdate,
+  assignedTo,
+  filters,
+  searchValue,
+) => dispatch => {
   dispatch({
     type: ActionTypes.UPDATE_TASKS_SUCCESS,
     tasksToUpdate,
     fields: {
       assignedTo,
     },
+    filters,
+    searchValue,
   });
 };
 
 export const bulkEditWorkflowStatus = (
   tasksToUpdate,
   workflowStatus,
+  filters,
+  searchValue,
 ) => dispatch => {
   dispatch({
     type: ActionTypes.UPDATE_TASKS_SUCCESS,
     tasksToUpdate,
     fields: { workflowStatus },
+    filters,
+    searchValue,
   });
 };
 
-export const bulkEditDueDate = (tasksToUpdate, dueDate) => dispatch => {
+export const bulkEditDueDate = (
+  tasksToUpdate,
+  dueDate,
+  filters,
+) => dispatch => {
   dispatch({
     type: ActionTypes.UPDATE_TASKS_SUCCESS,
     tasksToUpdate,
     fields: { dueDate },
+    filters,
   });
 };
 

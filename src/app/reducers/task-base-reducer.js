@@ -1,3 +1,4 @@
+import { isEmpty } from 'ramda';
 import {
   ADD_TASK_COMMENT_SUCCESS,
   ADD_TASK_SUCCESS,
@@ -19,6 +20,8 @@ import {
   DELETE_TASKS_SUCCESS,
   COMPLETE_TASKS_SUCCESS,
 } from 'actions/action-types';
+import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
+import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
@@ -425,9 +428,9 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case UPDATE_TASKS_SUCCESS: {
-      const { tasksToUpdate, fields } = action;
-      const updateTasksFromAction = currentTasks =>
-        currentTasks?.map(task => {
+      const { tasksToUpdate, fields, filters, searchValue } = action;
+      const updateTasksFromAction = currentTasks => {
+        let newTasks = currentTasks?.map(task => {
           let newTask = task;
           if (tasksToUpdate?.includes(newTask?.taskIdentifier)) {
             newTask = { ...newTask, ...fields };
@@ -445,6 +448,20 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           return newTask;
         });
 
+        if (!isEmpty(filters)) {
+          newTasks = newTasks.filter(task =>
+            checkIfTaskMatchesFilters(task, filters),
+          );
+        }
+
+        if (searchValue && searchValue !== '') {
+          newTasks = newTasks.filter(task =>
+            checkIfTaskMatchesSearch(task, searchValue),
+          );
+        }
+
+        return newTasks;
+      };
       return updateStateCallback(state, updateTasksFromAction);
     }
     case DELETE_TASKS_SUCCESS: {

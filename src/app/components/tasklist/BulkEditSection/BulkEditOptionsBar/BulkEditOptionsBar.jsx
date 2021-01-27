@@ -3,7 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import palette from 'styles/palette';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
@@ -17,7 +17,11 @@ import {
   bulkEditDueDate,
   bulkEditDelete,
   bulkEditComplete,
+  getTaskStatsForList,
 } from 'actions/task-actions';
+import { getTasksGroupsList } from 'sagas/list-details-saga';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
@@ -49,10 +53,12 @@ const BulkEditOptionsBar = ({
   isDisabled,
   refreshTasksOnBulkAction,
   currentUser,
+  searchValue,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
   const { taskListIdentifier } = useParams();
+  const filters = useSelector(selectedFiltersInMegaFilterSelector);
   const { parentTasks = [], subtasks = [] } = selectedTasks;
 
   const allTasksSameType = useMemo(
@@ -133,6 +139,8 @@ const BulkEditOptionsBar = ({
       bulkEditWorkflowStatus(
         allSelectedTasksIdentifiers,
         workflowStatus,
+        filters,
+        searchValue,
       )(dispatch);
 
       bulkEditTasksApi({
@@ -162,6 +170,8 @@ const BulkEditOptionsBar = ({
     },
     [
       allSelectedTasksIdentifiers,
+      filters,
+      searchValue,
       dispatch,
       allSelectedTasksLength,
       onClose,
@@ -171,7 +181,7 @@ const BulkEditOptionsBar = ({
 
   const handleChangeDateTasks = useCallback(
     dueDate => {
-      bulkEditDueDate(allSelectedTasksIdentifiers, dueDate)(dispatch);
+      bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
 
       bulkEditTasksApi({
         bulkEditType: 'DUE_DATE',
@@ -202,6 +212,7 @@ const BulkEditOptionsBar = ({
     },
     [
       allSelectedTasksIdentifiers,
+      filters,
       dispatch,
       allSelectedTasksLength,
       onClose,
@@ -211,7 +222,12 @@ const BulkEditOptionsBar = ({
 
   const handleChangeAssigneTasks = useCallback(
     assignedUser => {
-      bulkEditAssignUser(allSelectedTasksIdentifiers, assignedUser)(dispatch);
+      bulkEditAssignUser(
+        allSelectedTasksIdentifiers,
+        assignedUser,
+        filters,
+        searchValue,
+      )(dispatch);
 
       bulkEditTasksApi({
         bulkEditType: 'ASSIGN',
@@ -242,6 +258,8 @@ const BulkEditOptionsBar = ({
     },
     [
       allSelectedTasksIdentifiers,
+      filters,
+      searchValue,
       dispatch,
       allSelectedTasksLength,
       onClose,
@@ -397,6 +415,9 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
       })
         .then(() => {
+          dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
+          getTaskStatsForList(taskListIdentifier)(dispatch);
+
           dispatch(
             AlertActions.showGlobalAlert(
               allSelectedTasksLength > 1
@@ -433,6 +454,7 @@ const BulkEditOptionsBar = ({
     allSelectedTasksIdentifiers,
     currentUser,
     dispatch,
+    taskListIdentifier,
     allSelectedTasksLength,
     onClose,
     refreshTasksOnBulkAction,
@@ -450,6 +472,9 @@ const BulkEditOptionsBar = ({
             taskIdentifiers: allSelectedTasksIdentifiers,
           })
             .then(() => {
+              dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
+              getTaskStatsForList(taskListIdentifier)(dispatch);
+
               dispatch(
                 AlertActions.showGlobalAlert(
                   allSelectedTasksLength > 1
@@ -477,9 +502,10 @@ const BulkEditOptionsBar = ({
     dispatch,
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
-    refreshTasksOnBulkAction,
     allSelectedTasksLength,
+    taskListIdentifier,
     onClose,
+    refreshTasksOnBulkAction,
   ]);
 
   return (
