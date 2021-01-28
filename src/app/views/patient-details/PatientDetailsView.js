@@ -72,11 +72,11 @@ const PatientDetailsView = ({
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
+  const [shouldResetBulkEditTasks, setShouldResetBulkEditTasks] = useState(
+    false,
+  );
   const previousSelectedFilters = useRef(selectedFilters);
-
-  useEffect(() => {
-    previousSelectedFilters.current = selectedFilters;
-  }, [selectedFilters]);
+  const previousSearchValue = useRef(null);
 
   const history = useHistory();
   const { params } = match;
@@ -143,14 +143,42 @@ const PatientDetailsView = ({
     refreshPatientTasks({ withLoader: true });
   }, [refreshPatientTasks, fetchPatientFilters]);
 
-  const shouldResetBulkEditTasks = useMemo(
-    () =>
-      (searchValue && searchValue !== '') ||
-      activeTab === TaskListTabName.COMPLETE ||
-      (Object.keys(previousSelectedFilters?.current).length === 0 &&
-        Object.keys(selectedFilters).length !== 0),
-    [searchValue, activeTab, previousSelectedFilters, selectedFilters],
-  );
+  useEffect(() => {
+    if (
+      previousSearchValue?.current !== searchValue ||
+      Object.keys(previousSelectedFilters?.current).length !==
+        Object.keys(selectedFilters).length ||
+      (activeTab === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      setShouldResetBulkEditTasks(true);
+    }
+
+    if (
+      (searchValue === previousSearchValue?.current ||
+        (Object.keys(previousSelectedFilters?.current).length === 0 &&
+          Object.keys(selectedFilters).length !== 0) ||
+        activeTab === TaskListTabName.OPEN) &&
+      shouldResetBulkEditTasks
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      setShouldResetBulkEditTasks(false);
+    }
+  }, [
+    searchValue,
+    activeTab,
+    previousSelectedFilters,
+    selectedFilters,
+    shouldResetBulkEditTasks,
+  ]);
+
+  useEffect(() => {
+    previousSelectedFilters.current = selectedFilters;
+  }, [selectedFilters]);
+
+  useEffect(() => {
+    previousSearchValue.current = searchValue;
+  }, [searchValue]);
 
   return (
     <BulkEditSection

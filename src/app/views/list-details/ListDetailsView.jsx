@@ -212,27 +212,21 @@ class Home extends Component {
     const { tabName } = params;
 
     if (
-      (((previousState?.searchValue === '' || !previousState?.searchValue) &&
-        (searchValue || searchValue !== '')) ||
-        (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
-          Object.keys(selectedFilters || []).length !== 0) ||
-        tabName === TaskListTabName.COMPLETE) &&
-      !previousState.shouldResetBulkEditTasks &&
-      !shouldResetBulkEditTasks
+      previousState?.searchValue !== searchValue ||
+      Object.keys(previousProps?.selectedFilters || []).length !==
+        Object.keys(selectedFilters || []).length ||
+      (tabName === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ shouldResetBulkEditTasks: true });
     }
 
     if (
-      (searchValue ||
-        searchValue !== '' ||
-        ((previousState?.searchValue !== '' || previousState?.searchValue) &&
-          (searchValue || searchValue !== '')) ||
-        (Object.keys(previousProps?.selectedFilters || []).length !== 0 &&
-          Object.keys(selectedFilters || []).length === 0) ||
+      (searchValue === previousState?.searchValue ||
+        (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
+          Object.keys(selectedFilters || []).length !== 0) ||
         tabName === TaskListTabName.OPEN) &&
-      previousState.shouldResetBulkEditTasks
+      shouldResetBulkEditTasks
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ shouldResetBulkEditTasks: false });

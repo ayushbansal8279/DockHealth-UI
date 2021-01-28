@@ -18,7 +18,10 @@ import {
   personTaskCountersSelector,
   personDataSelector,
 } from 'selectors/person-details-selectors';
-import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
+import {
+  hasFiltersAppliedSelector,
+  selectedFiltersInMegaFilterSelector,
+} from 'selectors/mega-filter-selectors';
 
 import { mobileAnalyticsClient } from 'api/analytics-api';
 
@@ -110,6 +113,7 @@ class PersonDetailsView extends PureComponent {
     }
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
     const { selectedFilters, match } = this.props;
@@ -118,24 +122,21 @@ class PersonDetailsView extends PureComponent {
     const { tabName } = params;
 
     if (
-      ((searchValue && searchValue !== '') ||
-        (Object.keys(previousProps?.selectedFilters || [].length === 0) &&
-          Object.keys(selectedFilters || []).length !== 0) ||
-        tabName === TaskListTabName.COMPLETE) &&
-      !previousState.shouldResetBulkEditTasks &&
-      !shouldResetBulkEditTasks
+      previousState?.searchValue !== searchValue ||
+      Object.keys(previousProps?.selectedFilters || []).length !==
+        Object.keys(selectedFilters || []).length ||
+      (tabName === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ shouldResetBulkEditTasks: true });
     }
 
     if (
-      (!searchValue ||
-        searchValue === '' ||
-        (Object.keys(previousProps?.selectedFilters || []).length !== 0 &&
-          Object.keys(selectedFilters || []).length === 0) ||
+      (searchValue === previousState?.searchValue ||
+        (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
+          Object.keys(selectedFilters || []).length !== 0) ||
         tabName === TaskListTabName.OPEN) &&
-      previousState.shouldResetBulkEditTasks
+      shouldResetBulkEditTasks
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ shouldResetBulkEditTasks: false });
@@ -545,6 +546,7 @@ function mapStateToProps(state) {
     taskCounters: personTaskCountersSelector(state),
     selectedTask: state.taskState.selectedTask,
     areFiltersApplied: hasFiltersAppliedSelector(state),
+    selectedFilters: selectedFiltersInMegaFilterSelector(state),
   };
 }
 
