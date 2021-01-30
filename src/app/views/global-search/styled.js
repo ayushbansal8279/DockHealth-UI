@@ -2,7 +2,12 @@ import styled from 'styled-components';
 import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
+
+export const EmptyGlobalSearchImage = styled.img`
+  width: 420px;
+  height: 270px;
+`;
 
 export const GlobalSearchWrapper = styled.div`
   position: relative;
@@ -35,4 +40,26 @@ export const GlobalSearchStickyHeader = styled.div`
 
 export const ViewSidePadding = styled.div`
   padding: 0 43px;
+`;
+
+export const EmptyGlobaSearchWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Text = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
+  color: ${palette.mediumGrey};
+`;
+
+export const EmptySearchText = styled(Text)`
+  text-transform: uppercase;
+`;
+
+export const EmptyResultsText = styled(Text)`
+  font-size: ${fontSizes.huge};
 `;

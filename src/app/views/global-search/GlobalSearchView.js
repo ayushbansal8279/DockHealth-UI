@@ -2,6 +2,7 @@ import React from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Box } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import {
   isLoadingGlobalSearchSelector,
@@ -10,18 +11,23 @@ import {
   searchValueSelector,
   isSearchingCompletedTasksSelector,
 } from 'selectors/global-search-selectors';
+import EmptyGlobalSearch from 'img/empty-global-search.png';
+import EmptyGlobalSearchResults from 'img/empty-global-search-results';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
-import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,
   ViewSidePadding,
+  EmptyGlobalSearchImage,
+  EmptyGlobaSearchWrapper,
+  EmptySearchText,
+  EmptyResultsText,
 } from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
 import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
@@ -50,9 +56,34 @@ const GlobalSearchView = ({
   } = globalSearchSagaActions;
 
   const renderEmptyState = () => {
-    if (searchValue) return <NoSearchResultsView />;
-
-    return null;
+    return (
+      <EmptyGlobaSearchWrapper>
+        <Box m={4} />
+        {searchValue ? (
+          <>
+            <EmptyResultsText>
+              Sorry, we couldn&apos;t find anything for your search
+            </EmptyResultsText>
+            <Box m={3} />
+            <EmptyGlobalSearchImage
+              src={EmptyGlobalSearchResults}
+              alt="No results"
+            />
+          </>
+        ) : (
+          <>
+            <EmptySearchText>
+              Search tasks, comments, dates and more!
+            </EmptySearchText>
+            <Box m={3} />
+            <EmptyGlobalSearchImage
+              src={EmptyGlobalSearch}
+              alt="Empty global search"
+            />
+          </>
+        )}
+      </EmptyGlobaSearchWrapper>
+    );
   };
 
   return (
