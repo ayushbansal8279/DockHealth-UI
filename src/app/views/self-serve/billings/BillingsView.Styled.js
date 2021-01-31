@@ -68,3 +68,14 @@ export const StyledLabel = styled.label`
     color: ${palette.coolGrey2};
   }
 `;
+
+export const Anchor = styled.a`
+  color: ${palette.cyanBlue};
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: ${palette.cyanBlue};
+    filter: brightness(1.35);
+  }
+`;

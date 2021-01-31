@@ -1,4 +1,4 @@
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -10,7 +10,6 @@ import {
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import { noop, showAlert } from 'helpers/utility-functions';
@@ -22,28 +21,25 @@ import {
   getSubscriptionPlanData,
 } from '../subscriptions/SubscriptionsView.Utilities';
 import {
-  Anchor,
   DarkBlueTextContainer,
-  H3,
   PricingGridContainer,
   PricingItemDivider,
   PricingItemVerticallyExpanded,
-  Spacing2,
   StyledLink,
   SubscriptionPaymentViewContainer,
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
 const finishSubscriptionPayment = history => {
-  history.replace('/subscription-payment-finished');
+  history.replace('/settings/subscription-payment-finished');
 };
 
 const cancelSubscriptionPayment = history => {
-  history.push('/subscriptions');
+  history.push('/settings/subscriptions');
 };
 
 const goToSubscriptions = history => {
-  history.replace('/subscriptions');
+  history.replace('/settings/subscriptions');
 };
 
 /**
@@ -108,48 +104,6 @@ const onSubmit = ({
     });
 };
 
-const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
-  <>
-    <Spacing2 />
-    <Grid item sm={12} container wrap="nowrap" justify="flex-end">
-      <H3>
-        <span>By selecting Subscribe I agree to the </span>
-        <Anchor
-          href="https://www.dock.health/terms-and-conditions"
-          target="_blank"
-        >
-          Terms and Conditions
-        </Anchor>
-      </H3>
-    </Grid>
-    <Grid item sm={12} container justify="flex-end" wrap="nowrap">
-      <Button
-        onClick={onCancelClick}
-        variant="text"
-        size="small"
-        disabled={processingPayment}
-      >
-        <MontserratTypography
-          variant="h4"
-          textDecoration="underline"
-          weight="600"
-        >
-          CANCEL
-        </MontserratTypography>
-      </Button>
-      <Spacing horizontal={4} />
-      <Button
-        type="submit"
-        variant="contained"
-        size="small"
-        disabled={processingPayment}
-      >
-        {processingPayment ? <Loader size={LoaderSizes.medium} /> : 'Subscribe'}
-      </Button>
-    </Grid>
-  </>
-);
-
 const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -160,7 +114,7 @@ const SubscriptionPaymentView = () => {
       store.userState?.userProfile?.organizationIdentifier,
   }));
 
-  const onCancelClick = useCallback(() => {
+  const onCancelSaveBillingClick = useCallback(() => {
     cancelSubscriptionPayment(history);
     setPaymentNewPlan({ newPlan: null })(dispatch);
   }, [dispatch, history]);
@@ -313,11 +267,9 @@ const SubscriptionPaymentView = () => {
                   unsetProcessingPayment,
                   history,
                 })}
-                SaveBillingElement={getSaveBillingElement({
-                  onCancelClick,
-                  newPaymentPlan,
-                  processingPayment,
-                })}
+                firstTimeSaveBillingDetails
+                processingPayment={processingPayment}
+                cancelSaveBillingClick={onCancelSaveBillingClick}
               />
             </Elements>
           </Grid>

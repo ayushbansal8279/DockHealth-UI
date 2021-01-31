@@ -32,7 +32,7 @@ import {
   FormContainer,
   StyledFormHelperText,
 } from './BillingsView.BillingData.Components';
-import { StyledCollapse, StyledLabel } from './BillingsView.Styled';
+import { StyledCollapse, StyledLabel, H3, Anchor } from './BillingsView.Styled';
 
 const REQUIRED_MESSAGE = 'This field is required.';
 
@@ -162,6 +162,48 @@ const BillingElement = ({
   );
 };
 
+const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
+  <>
+    <Spacing vertical={2} />
+    <Grid item sm={12} container wrap="nowrap" justify="flex-end">
+      <H3>
+        <span>By selecting Subscribe I agree to the </span>
+        <Anchor
+          href="https://www.dock.health/terms-and-conditions"
+          target="_blank"
+        >
+          Terms and Conditions
+        </Anchor>
+      </H3>
+    </Grid>
+    <Grid item sm={12} container justify="flex-end" wrap="nowrap">
+      <Button
+        onClick={cancelSaveBillingClick}
+        variant="text"
+        size="small"
+        disabled={processingPayment}
+      >
+        <MontserratTypography
+          variant="h4"
+          textDecoration="underline"
+          weight="600"
+        >
+          CANCEL
+        </MontserratTypography>
+      </Button>
+      <Spacing horizontal={4} />
+      <Button
+        type="submit"
+        variant="contained"
+        size="small"
+        disabled={processingPayment}
+      >
+        {processingPayment ? <Loader size={LoaderSizes.medium} /> : 'Subscribe'}
+      </Button>
+    </Grid>
+  </>
+);
+
 const UpdateBillingElement = ({
   isUpdatingBilling,
   cancelUpdateBilling,
@@ -208,7 +250,9 @@ const CreditPaymentForm = ({
   setValue,
   values,
   errors,
-  SaveBillingElement,
+  firstTimeSaveBillingDetails,
+  processingPayment,
+  cancelSaveBillingClick,
   hasDiscountCode,
   processingUpdate,
 }) => {
@@ -232,7 +276,7 @@ const CreditPaymentForm = ({
           required
         />
       </Grid>
-      <Grid item sm={12} md={6}>
+      <Grid item sm={12} md={6} style={{ placeSelf: 'flex-end' }}>
         <CardNumberElementContainer>
           <BillingElement
             id="card-number"
@@ -329,8 +373,13 @@ const CreditPaymentForm = ({
           <UniversalMontserratInput name="discountCode" label="Discount code" />
         </Grid>
       )}
-      {SaveBillingElement && <SaveBillingElement />}
-      {!SaveBillingElement && (
+      {firstTimeSaveBillingDetails && (
+        <SaveBillingElement
+          processingPayment={processingPayment}
+          cancelSaveBillingClick={cancelSaveBillingClick}
+        />
+      )}
+      {!firstTimeSaveBillingDetails && (
         <UpdateBillingElement
           isUpdatingBilling={isUpdatingBilling}
           cancelUpdateBilling={cancelUpdateBilling}
@@ -348,7 +397,9 @@ const BillingData = ({
   unsetUpdatingBilling,
   cancelUpdateBilling,
   onSubmit,
-  SaveBillingElement,
+  firstTimeSaveBillingDetails,
+  processingPayment,
+  cancelSaveBillingClick,
 }) => {
   const { billingDetails, hasDiscountCode } = useSelector(store => ({
     billingDetails: store.organizationState.billingDetails,
@@ -450,7 +501,9 @@ const BillingData = ({
           setValue={setValue}
           values={values}
           errors={errorsValues}
-          SaveBillingElement={SaveBillingElement}
+          firstTimeSaveBillingDetails={firstTimeSaveBillingDetails}
+          processingPayment={processingPayment}
+          cancelSaveBillingClick={cancelSaveBillingClick}
           hasDiscountCode={hasDiscountCode}
           processingUpdate={processingUpdate}
         />
