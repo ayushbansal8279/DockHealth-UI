@@ -178,6 +178,7 @@ export default () => {
             annualPayment,
             chosenPlan,
             dispatch,
+            history,
           })}
         />
         {invitationPanelVisible && (

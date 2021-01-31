@@ -17,8 +17,8 @@ import {
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
-const goToMainPage = history => {
-  history.replace('/');
+const goToMainPage = () => {
+  window.location.href = '/#/settings/subscriptions';
 };
 
 const SaveBillingElement = () => {

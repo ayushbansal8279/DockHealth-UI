@@ -129,6 +129,7 @@ export function logout(history) {
           sessionStorage.removeItem('accessToken');
           sessionStorage.removeItem('userIdentifier');
           sessionStorage.removeItem('userProfile');
+          sessionStorage.removeItem('authUser');
           sessionStorage.removeItem('sessionStartTime');
           sessionStorage.removeItem('currentOrganizationIdentifier');
           sessionStorage.removeItem('notificationsEnabled');
@@ -203,6 +204,7 @@ export function sendMFACode(userData) {
       'SMS_MFA', // MFA Type e.g. SMS_MFA, SOFTWARE_TOKEN_MFA
     )
       .then(loggedUser => {
+        resolvedCognitoUser = loggedUser;
         store.dispatch({ type: 'user/user', user: loggedUser });
         sessionStorage.setItem(
           'accessToken',
@@ -256,6 +258,7 @@ export async function isAuthenticated() {
   }
 
   try {
+    console.log('authenticating current user');
     const user = await Auth.currentAuthenticatedUser({
       bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
@@ -264,6 +267,11 @@ export async function isAuthenticated() {
     return { isLoggedIn: true, user };
   } catch (error) {
     console.log(error);
+    if (sessionStorage.getItem('accessToken')) {
+      console.log('has valid accessToken');
+      const authUser = JSON.parse(sessionStorage.getItem('authUser'));
+      return { isLoggedIn: true, user: authUser };
+    }
     return { isLoggedIn: false, user: null };
   }
 }
@@ -402,6 +410,8 @@ export function getUserById() {
 }
 
 export function updateStoreWithCurrentUser(cognitoUser) {
+  resolvedCognitoUser = cognitoUser;
+  sessionStorage.setItem('authUser', JSON.stringify(cognitoUser));
   store.dispatch({ type: 'user/user', user: cognitoUser });
 }
 
@@ -560,7 +570,9 @@ export function refreshAccessToken(email) {
   }
 
   return new Promise(async (resolve, reject) => {
-    const cognitoUser = await Auth.currentAuthenticatedUser();
+    const cognitoUser = await Auth.currentAuthenticatedUser({
+      bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+    });
     const currentSession = await Auth.currentSession();
     cognitoUser.refreshSession(
       currentSession.refreshToken,

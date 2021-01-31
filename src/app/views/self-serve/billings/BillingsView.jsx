@@ -90,8 +90,8 @@ const BillingsView = () => {
   const cancelUpdateBilling = () => {
     unsetUpdatingBilling();
 
-    if (history.getCurrentLocation().pathname === '/subscription-payment') {
-      history.push('/subscriptions');
+    if (history.location === '/settings/subscription-payment') {
+      history.push('/settings/subscriptions');
     }
   };
 

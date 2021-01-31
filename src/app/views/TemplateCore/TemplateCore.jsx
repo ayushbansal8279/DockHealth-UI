@@ -8,12 +8,7 @@ import checkUserAuthentication from 'routing/helpers/check-user-authentication';
 import checkUserAccountState from 'routing/helpers/check-user-account-state';
 import { RouteWrapper } from 'routing/components';
 
-const TemplateCoreSubscriptionPlan = ({
-  childRoutes,
-  onEnter,
-  onLeave,
-  setRedirection,
-}) => {
+const TemplateCore = ({ childRoutes, onEnter, onLeave, setRedirection }) => {
   const { path } = useRouteMatch();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -78,4 +73,4 @@ const TemplateCoreSubscriptionPlan = ({
   );
 };
 
-export default TemplateCoreSubscriptionPlan;
+export default TemplateCore;
