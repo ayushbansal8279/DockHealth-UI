@@ -45,6 +45,7 @@ import {
   tasksIsFetchingSelector,
   groupCompletedTasksSelector,
   groupTasksSelector,
+  taskDetailsSortSelector,
 } from 'selectors/list-details-selectors';
 
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
@@ -676,6 +677,12 @@ class Home extends Component {
     }
   };
 
+  sortListTasks = (key, order) => {
+    const { taskListActions } = this.props;
+
+    taskListActions.sortListTasks(key, order);
+  };
+
   invokeToggleCompleteAction = task => {
     const { actions, tasksGroupsListActions, match, currentUser } = this.props;
     const { params } = match;
@@ -810,6 +817,7 @@ class Home extends Component {
       currentUser,
       selectedTask,
       selectedFilters,
+      sort,
     } = this.props;
 
     const { isTourOpen, searchValue, shouldResetBulkEditTasks } = this.state;
@@ -884,6 +892,8 @@ class Home extends Component {
                   selectedTask={selectedTask}
                   listUniqueKey={taskListIdentifier}
                   loadMoreTasksForList={this.loadMoreTasksForList}
+                  sort={sort}
+                  onSortChange={this.sortListTasks}
                 />
               ) : (
                 <OpenedTasksView
@@ -899,6 +909,8 @@ class Home extends Component {
                   updateDueDate={this.handleUpdateDueDate}
                   updateWorkflowStatus={this.handleUpdateWorkflowStatus}
                   searchValue={searchValue}
+                  sort={sort}
+                  onSortChange={this.sortListTasks}
                   selectedTask={selectedTask}
                   listUniqueKey={taskListIdentifier}
                   taskCounters={taskCounters}
@@ -934,6 +946,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
+  sort: taskDetailsSortSelector(state),
   taskLists: taskListSelector(state),
   currentUser: userProfileSelector(state),
   selectedFilters: selectedFiltersInMegaFilterSelector(state),

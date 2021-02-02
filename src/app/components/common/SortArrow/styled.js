@@ -3,36 +3,15 @@ import palette from 'styles/palette';
 
 export const SortArrowContainer = styled.button`
   position: relative;
-  height: 19px;
-  width: 19px;
-  border-radius: 9.5px;
+  height: 13px;
+  width: 9px;
   cursor: pointer;
-  background-color: transparent;
   transition: all 0.3s ease-in-out;
+  transform-origin: 50% 45%;
+  color: ${({ ordered }) => (ordered ? palette.mediumGrey : palette.coolGrey1)};
+  ${({ isUp }) => isUp && `transform: rotate(180deg)`};
 
-  ${({ withBackground, hideIcon }) =>
-    !withBackground && `opacity: ${hideIcon ? 0 : 1};`}
-
-  ${({ withBackground }) =>
-    withBackground &&
-    `
-    background-color: ${palette.orange};
-
-    &:hover {
-      background-color: ${palette.darkOrange}
-    }
-  `}
+  ${({ hideIcon, ordered }) => !ordered && `opacity: ${hideIcon ? 0 : 1};`}
 `;
 
-export const ArrowIcon = styled.img`
-  position: absolute;
-  top: ${({ isUp }) => (isUp ? `48%` : `54%`)};
-  left: 50%;
-
-  display: block;
-  height: 6px;
-  width: 14px;
-  transition: all 0.3s ease-in-out;
-
-  transform: translate(-50%, -50%) ${({ isUp }) => isUp && `rotate(180deg)`};
-`;
+export default SortArrowContainer;

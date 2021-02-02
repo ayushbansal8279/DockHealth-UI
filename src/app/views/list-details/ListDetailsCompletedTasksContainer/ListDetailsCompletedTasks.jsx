@@ -25,6 +25,8 @@ const ListDetailsCompletedTasks = ({
   selectedTask,
   listUniqueKey,
   loadMoreTasksForList,
+  sort,
+  onSortChange,
 }) => {
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -73,6 +75,8 @@ const ListDetailsCompletedTasks = ({
                       startPosition: completedTasksGroup?.tasks?.length || 0,
                     });
                   }}
+                  sort={sort}
+                  onSortChange={onSortChange}
                 />
               </DragDropContext>
             </TaskGroupsContainer>

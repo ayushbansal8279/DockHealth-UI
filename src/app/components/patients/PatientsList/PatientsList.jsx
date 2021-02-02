@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import Spacing from 'components/common/Spacing';
 
 import SortArrow, {
-  SORT_ORDER_TYPES,
+  SortOrderType,
 } from 'components/common/SortArrow/SortArrow';
 import { lookupEMRPatient } from 'api/patient-api';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
@@ -89,7 +89,7 @@ const PatientsList = ({
   }, [sortKey, patients]);
 
   const sortedPatientsWithOrderType = useMemo(() => {
-    if (sortOrder && sortOrder === SORT_ORDER_TYPES.desc) {
+    if (sortOrder && sortOrder === SortOrderType.DESC) {
       const foundIndex = sortedPatients.findIndex(patient => !patient[sortKey]);
 
       if (foundIndex === -1) {
@@ -109,24 +109,24 @@ const PatientsList = ({
     key => {
       if (key === sortKey) {
         switch (sortOrder) {
-          case SORT_ORDER_TYPES.default:
-            setSortOrder(SORT_ORDER_TYPES.asc);
+          case SortOrderType.DEFAULT:
+            setSortOrder(SortOrderType.ASC);
             break;
-          case SORT_ORDER_TYPES.asc:
-            setSortOrder(SORT_ORDER_TYPES.desc);
+          case SortOrderType.ASC:
+            setSortOrder(SortOrderType.DESC);
             break;
-          case SORT_ORDER_TYPES.desc:
-            setSortOrder(SORT_ORDER_TYPES.default);
+          case SortOrderType.DESC:
+            setSortOrder(SortOrderType.DEFAULT);
             setSortKey(null);
             break;
           default:
             setSortKey(null);
-            setSortOrder(SORT_ORDER_TYPES.default);
+            setSortOrder(SortOrderType.DEFAULT);
             break;
         }
       } else {
         setSortKey(key);
-        setSortOrder(SORT_ORDER_TYPES.asc);
+        setSortOrder(SortOrderType.ASC);
       }
     },
     [sortKey, sortOrder],

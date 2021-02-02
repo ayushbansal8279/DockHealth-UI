@@ -120,3 +120,13 @@ export function quickAddTask(newTask) {
       });
   };
 }
+
+export function sortPersonTasks(key, order) {
+  return {
+    type: ActionTypes.SORT_PERSON_TASKS,
+    payload: {
+      key,
+      order,
+    },
+  };
+}

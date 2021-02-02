@@ -66,3 +66,8 @@ export const listDetailsGroupsSelector = createSelector(
   listTasksSelector,
   ({ listGroups }) => listGroups,
 );
+
+export const taskDetailsSortSelector = createSelector(
+  listTasksSelector,
+  ({ sort }) => sort,
+);

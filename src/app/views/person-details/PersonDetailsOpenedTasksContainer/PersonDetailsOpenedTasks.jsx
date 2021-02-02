@@ -29,6 +29,8 @@ const PersonDetailsOpenedTasks = ({
   areFiltersApplied,
   selectedTask,
   listUniqueKey,
+  sort,
+  onSortChange,
 }) => {
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
@@ -90,6 +92,8 @@ const PersonDetailsOpenedTasks = ({
                 areFiltersApplied={areFiltersApplied}
                 listUniqueKey={listUniqueKey}
                 quickAddTask={quickAddTask}
+                sort={sort}
+                onSortChange={onSortChange}
               />
             </DragDropContext>
           ) : (

@@ -31,3 +31,8 @@ export const personDataSelector = createSelector(
   personSelector,
   ({ personData }) => personData,
 );
+
+export const personDetailsSortSelector = createSelector(
+  personSelector,
+  ({ sort }) => sort,
+);

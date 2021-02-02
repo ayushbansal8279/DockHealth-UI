@@ -27,6 +27,7 @@ import {
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
 import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
+import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -36,6 +37,7 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
+  GroupHeader,
 } from './styled';
 
 const TasksGroup = ({
@@ -73,6 +75,8 @@ const TasksGroup = ({
   taskGroupIdentifier,
   listUniqueKey,
   taskListIdentifier,
+  sort,
+  onSortChange,
 }) => {
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -215,6 +219,62 @@ const TasksGroup = ({
               return null;
             }}
           />
+        )}
+        {tasks?.length > 0 && (
+          <GroupHeader>
+            <ColumnSortHeader width={60} />
+            <ColumnSortHeader
+              id="DESCRIPTION"
+              label="Tasks"
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+            <ColumnSortHeader
+              id="SUBTASK"
+              label="Sub"
+              width={60}
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+            <ColumnSortHeader
+              id="PATIENT"
+              label="Patient"
+              width={164}
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+            <ColumnSortHeader
+              id="STATUS"
+              label="Status"
+              width={120}
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+            <ColumnSortHeader width={150} />
+            <ColumnSortHeader
+              id="DATE"
+              label="Date"
+              width={60}
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+            <ColumnSortHeader
+              id="ASSIGN"
+              label="Assign"
+              width={80}
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+            {listNameVisible && (
+              <ColumnSortHeader
+                id="LISTNAME"
+                label="List"
+                width={168}
+                sort={sort}
+                onSortChange={onSortChange}
+              />
+            )}
+          </GroupHeader>
         )}
         <DragAndDropGroupList
           groupId={groupId}

@@ -459,3 +459,13 @@ export const getPersonTasklistAccumulatedStats = () => dispatch => {
     type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
   });
 };
+
+export function sortListTasks(key, order) {
+  return {
+    type: ActionTypes.SORT_LIST_TASKS,
+    payload: {
+      key,
+      order,
+    },
+  };
+}

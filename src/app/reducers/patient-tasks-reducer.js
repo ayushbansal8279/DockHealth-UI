@@ -11,6 +11,7 @@ import {
   SET_PATIENT_TASK_SEARCH_VALUE,
   TASK_ARCHIVED,
   MOVE_TASK_SUCCESS,
+  SORT_PATIENT_TASKS,
 } from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import TaskBaseReducer from './task-base-reducer';
@@ -24,6 +25,10 @@ const INITIAL_STATE = {
   completeTasksCount: null,
   isFetching: false,
   error: false,
+  sort: {
+    key: null,
+    order: null,
+  },
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
@@ -123,6 +128,18 @@ export default function(state = INITIAL_STATE, action = {}) {
 
     case TASK_ARCHIVED:
       return state;
+
+    case SORT_PATIENT_TASKS: {
+      const { key, order } = action.payload || {};
+
+      return {
+        ...state,
+        sort: {
+          key,
+          order,
+        },
+      };
+    }
 
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);

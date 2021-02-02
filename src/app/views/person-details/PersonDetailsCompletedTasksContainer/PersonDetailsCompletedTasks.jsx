@@ -26,6 +26,8 @@ const PersonDetailsCompletedTasks = ({
   reassignTask,
   selectedTask,
   listUniqueKey,
+  sort,
+  onSortChange,
 }) => {
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
 
@@ -85,6 +87,8 @@ const PersonDetailsCompletedTasks = ({
                   isSearchApplied={searchValue}
                   selectedTask={selectedTask}
                   listUniqueKey={listUniqueKey}
+                  sort={sort}
+                  onSortChange={onSortChange}
                 />
               </DragDropContext>
             </TaskGroupsContainer>

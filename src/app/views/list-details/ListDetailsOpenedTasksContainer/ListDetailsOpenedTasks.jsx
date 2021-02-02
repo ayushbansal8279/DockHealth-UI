@@ -49,6 +49,8 @@ const ListDetailsOpenedTasks = ({
   taskCounters,
   loadTasksForTaskGroup,
   taskListIdentifier,
+  sort,
+  onSortChange,
 }) => {
   const [tasksGrouped, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -175,6 +177,8 @@ const ListDetailsOpenedTasks = ({
               });
             }}
             taskListIdentifier={taskListIdentifier}
+            sort={sort}
+            onSortChange={onSortChange}
           />
         )),
     [
@@ -198,6 +202,8 @@ const ListDetailsOpenedTasks = ({
       listUniqueKey,
       taskListIdentifier,
       loadTasksForTaskGroup,
+      sort,
+      onSortChange,
     ],
   );
 

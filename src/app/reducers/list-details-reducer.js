@@ -25,6 +25,7 @@ import {
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
   REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
+  SORT_LIST_TASKS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -42,6 +43,10 @@ const initialState = {
   isFetchingGroups: false,
   listGroupsError: '',
   groupsInitialized: false,
+  sort: {
+    key: null,
+    order: null,
+  },
 };
 
 const updateTaskInGroupedTasks = (groupedTasks, task) =>
@@ -504,6 +509,18 @@ const ListDetailsReducer = (state = initialState, action) => {
         completedGroupedTasks: {
           ...state.completedGroupedTasks,
           taskGroups: updatedCompletedTaskGroups,
+        },
+      };
+    }
+
+    case SORT_LIST_TASKS: {
+      const { key, order } = action.payload || {};
+
+      return {
+        ...state,
+        sort: {
+          key,
+          order,
         },
       };
     }

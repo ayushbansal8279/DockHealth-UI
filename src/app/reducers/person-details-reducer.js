@@ -7,6 +7,7 @@ import {
   GET_PERSON_TASK_COUNTERS_SUCCESS,
   GET_PERSON_DETAILS_SUCCESS,
   GET_PERSON_DETAILS_FAILURE,
+  SORT_PERSON_TASKS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -17,6 +18,10 @@ const initialState = {
   isFetching: false,
   isCompletedTasksFetching: false,
   taskCounters: {},
+  sort: {
+    key: null,
+    order: null,
+  },
 };
 
 const mapTasksSuccess = task => ({
@@ -96,6 +101,18 @@ const PersonDetailsReducer = (state = initialState, action) => {
         ...state,
         taskCounters: action.payload,
       };
+
+    case SORT_PERSON_TASKS: {
+      const { key, order } = action.payload || {};
+
+      return {
+        ...state,
+        sort: {
+          key,
+          order,
+        },
+      };
+    }
 
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);

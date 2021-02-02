@@ -20,13 +20,9 @@ const mapStateToProps = (state, ownProps) => {
   const groupedTasks = groupTasksSelector(state);
   const groups = listDetailsGroupsSelector(state);
 
-  const searchedGroupsWithTasks = groupedTasks;
-
-  const searchedGroupsList = groups;
-
   return {
-    groupedTasks: searchedGroupsWithTasks,
-    groupList: searchedGroupsList,
+    groupedTasks,
+    groupList: groups,
     areFiltersApplied,
     isFetchingData:
       (isFetchingGroupsSelector(state) && !areGroupsInitialized(state)) ||

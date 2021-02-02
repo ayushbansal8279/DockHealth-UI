@@ -747,7 +747,7 @@ const TaskItem = ({
             </PopoverDatepicker>
           </StandardTaskItemCell>
           <StandardTaskItemCell
-            width="60px"
+            width="80px"
             justify="center"
             paddingLeft="tiny"
             paddingRight="tiny"

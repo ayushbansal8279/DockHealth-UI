@@ -17,6 +17,7 @@ import {
   completedTasksSelector,
   personTaskCountersSelector,
   personDataSelector,
+  personDetailsSortSelector,
 } from 'selectors/person-details-selectors';
 import {
   hasFiltersAppliedSelector,
@@ -430,6 +431,11 @@ class PersonDetailsView extends PureComponent {
       .catch(() => this.refreshTab());
   };
 
+  sortPersonTasks = (key, order) => {
+    const { personDetailsActions } = this.props;
+    personDetailsActions.sortPersonTasks(key, order);
+  };
+
   render() {
     const {
       personData,
@@ -443,6 +449,7 @@ class PersonDetailsView extends PureComponent {
       tasks,
       completedTasks,
       areFiltersApplied,
+      sort,
     } = this.props;
     const { isLoadingView, searchValue, shouldResetBulkEditTasks } = this.state;
     const { openModal } = modalActions;
@@ -502,6 +509,8 @@ class PersonDetailsView extends PureComponent {
                     selectedTask={selectedTask}
                     listUniqueKey={userIdentifier}
                     areFiltersApplied={areFiltersApplied}
+                    sort={sort}
+                    onSortChange={this.sortPersonTasks}
                   />
                 ) : (
                   <OpenedTasksView
@@ -517,6 +526,8 @@ class PersonDetailsView extends PureComponent {
                     selectedTask={selectedTask}
                     listUniqueKey={userIdentifier}
                     areFiltersApplied={areFiltersApplied}
+                    sort={sort}
+                    onSortChange={this.sortPersonTasks}
                   />
                 )}
               </TaskViewContainer>
@@ -536,6 +547,7 @@ class PersonDetailsView extends PureComponent {
 
 function mapStateToProps(state) {
   return {
+    sort: personDetailsSortSelector(state),
     tasks: tasksSelector(state),
     completedTasks: completedTasksSelector(state),
     isFetching: tasksIsFetchingSelector(state),
