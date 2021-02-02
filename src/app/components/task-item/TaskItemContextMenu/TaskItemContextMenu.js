@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
+import * as TaskApi from 'api/task-api';
+import * as ActionTypes from 'actions/action-types';
 import {
   deleteTask,
   duplicateTask,
@@ -99,8 +101,31 @@ const TaskItemContextMenu = ({ position, task, onClose, contextFiltered }) => {
     }
   }, []);
 
-  const handleDuplicateTask = useCallback(() => {
-    if (task.attachments?.length > 0) {
+  const handleDuplicateTask = useCallback(async () => {
+    let taskToDuplicate = { ...task };
+    let subtaskHasAttachment = false;
+
+    if (task.subTasksCount > task.subtasks?.length) {
+      try {
+        taskToDuplicate = await TaskApi.getTaskDetails(task?.taskIdentifier);
+        taskToDuplicate.updated = true;
+        dispatch({
+          type: ActionTypes.LOAD_SUBTASKS_SUCCESS,
+          task: taskToDuplicate,
+        });
+      } catch (error) {
+        subtaskHasAttachment = true;
+      }
+    }
+
+    if (taskToDuplicate.subtasks?.length > 0) {
+      subtaskHasAttachment =
+        taskToDuplicate.subtasks?.some(
+          ({ attachments }) => attachments?.length > 0,
+        ) || false;
+    }
+
+    if (taskToDuplicate.attachments?.length > 0 || subtaskHasAttachment) {
       const modalProps = {
         confirm: () => dispatch(duplicateTask(task, true)),
         skip: () => dispatch(duplicateTask(task)),
