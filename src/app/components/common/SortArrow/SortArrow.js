@@ -15,7 +15,7 @@ const SortArrow = ({ orderType, onClick = () => {}, isParentHovered }) => {
       onClick={onClick}
       hideIcon={!isParentHovered}
       ordered={!!orderType}
-      isUp={orderType === SortOrderType.DESC}
+      isUp={orderType === SortOrderType.ASC}
     >
       <SortArrowIcon />
     </SortArrowContainer>
