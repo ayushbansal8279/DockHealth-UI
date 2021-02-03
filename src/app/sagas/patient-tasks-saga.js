@@ -31,6 +31,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientTaskListsActiveTabSelector,
   patientListHasTasksSelector,
+  patientTasksSortSelector,
 } from 'selectors/patient-tasks-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
@@ -227,11 +228,15 @@ function* getPatientLists() {
   const status =
     activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
+  const sort = yield select(patientTasksSortSelector);
+
   let lists;
+
   if (!selectedFilters || !isEmpty(selectedFilters)) {
     lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
       patientIdentifier,
+      sort,
       selectedFilters,
       status,
     );
@@ -239,6 +244,7 @@ function* getPatientLists() {
     lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifier,
       patientIdentifier,
+      sort,
       status,
     );
   }

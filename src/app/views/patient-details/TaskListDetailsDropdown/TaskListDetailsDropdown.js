@@ -136,20 +136,20 @@ const TaskListDetailsDropdown = ({
         <SortHeaderRow>
           <ColumnSortHeader width={60} />
           <ColumnSortHeader
-            id="DESCRIPTION"
+            id="TASK_DESCRIPTION"
             label="Tasks"
             sort={sort}
             onSortChange={onSortChange}
           />
           <ColumnSortHeader
-            id="SUBTASK"
+            id="SUBTASK_COUNT"
             label="Sub"
             width={60}
             sort={sort}
             onSortChange={onSortChange}
           />
           <ColumnSortHeader
-            id="STATUS"
+            id="WORKFLOW_STATUS"
             label="Status"
             width={120}
             sort={sort}
@@ -157,14 +157,14 @@ const TaskListDetailsDropdown = ({
           />
           <ColumnSortHeader width={150} />
           <ColumnSortHeader
-            id="DATE"
+            id="DUE_DT"
             label="Date"
             width={60}
             sort={sort}
             onSortChange={onSortChange}
           />
           <ColumnSortHeader
-            id="ASSIGN"
+            id="ASSIGNED_TO"
             label="Assign"
             width={80}
             sort={sort}
