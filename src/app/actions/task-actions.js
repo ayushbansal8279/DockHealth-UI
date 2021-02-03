@@ -1156,6 +1156,7 @@ export function reassignTask(taskIdentifier, userId) {
 export function getFilteredTasksForList(
   taskListIdentifier,
   status,
+  sortBy,
   selectedFilters,
   withLoader = true,
 ) {
@@ -1177,6 +1178,7 @@ export function getFilteredTasksForList(
     return TaskApi.getFilteredTasksForList(
       taskListIdentifier,
       status,
+      sortBy,
       selectedFilters,
     )
       .then(groupedTasks => {

@@ -76,7 +76,8 @@ export function getListTasksGroupedByTaskGroup(
         status,
         startPosition,
         endPosition,
-        sortBy: sortBy || undefined,
+        sortBy: sortBy?.key || undefined,
+        sortDirection: sortBy?.order || undefined,
         filterBy: filterBy || undefined,
       },
     })
@@ -738,12 +739,20 @@ export const reassignTasksToAnotherGroup = (
 export function getFilteredTasksForList(
   taskListIdentifier,
   status = 'INCOMPLETE',
+  sortBy,
   selectedFilters,
 ) {
   return axios
     .post(
-      `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?status=${status}`,
+      `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}`,
       selectedFilters,
+      {
+        params: {
+          status,
+          sortBy: sortBy?.key || undefined,
+          sortDirection: sortBy?.order || undefined,
+        },
+      },
     )
     .then(({ data }) => data)
     .catch(error => {

@@ -31,3 +31,8 @@ export const completeTasksCountSelector = createSelector(
   patientTasksStateSelector,
   ({ completeTasksCount }) => completeTasksCount,
 );
+
+export const patientTasksSortSelector = createSelector(
+  patientTasksStateSelector,
+  ({ sort }) => sort,
+);

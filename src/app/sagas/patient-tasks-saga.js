@@ -23,6 +23,7 @@ import {
   FETCH_MEGA_FILTERS_SUCCESS,
   FETCH_MEGA_FILTERS_FAILURE,
   SET_PATIENT_TASK_SEARCH_VALUE,
+  SORT_PATIENT_TASKS,
 } from 'actions/action-types';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 
@@ -66,6 +67,7 @@ export const DO_REMOVE_USER_FROM_TASKLIST = 'DO_REMOVE_USER_FROM_TASKLIST';
 export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
   'DO_CANCEL_USER_INVITE_TO_TASKLIST';
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
+export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 
 export const quickAddPatientTask = ({ description, taskListIdentifier }) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -189,6 +191,14 @@ export const changeMemberRole = (taskListIdentifier, member, role) => ({
   },
 });
 
+export const sortPatientTasks = (key, order) => ({
+  type: DO_SORT_PATIENT_TASKS,
+  payload: {
+    key,
+    order,
+  },
+});
+
 export const PatientTasksSagaActions = {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
@@ -207,6 +217,7 @@ export const PatientTasksSagaActions = {
   cancelUserInviteToTaskList,
   changeMemberRole,
   fetchPatientFilters,
+  sortPatientTasks,
 };
 
 function* getPatientLists() {
@@ -556,6 +567,11 @@ function* doChangeMemberRole({ payload }) {
   }
 }
 
+function* doSortPatientTasks({ payload }) {
+  yield put({ type: SORT_PATIENT_TASKS, payload });
+  yield put(refreshPatientTasks({ withLoader: false }));
+}
+
 export default function* watchPatientTasks() {
   yield takeLatest(
     DO_FETCH_STATS_FOR_PATIENT_TASKS,
@@ -589,4 +605,5 @@ export default function* watchPatientTasks() {
     doCancelUserInviteToTaskList,
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
+  yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
 }

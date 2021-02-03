@@ -46,7 +46,10 @@ import {
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-selectors';
-import { groupTasksSelector } from 'selectors/list-details-selectors';
+import {
+  groupTasksSelector,
+  taskDetailsSortSelector,
+} from 'selectors/list-details-selectors';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -167,6 +170,8 @@ export function* doGetTasksList(payload) {
 
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
+    const sort = yield select(taskDetailsSortSelector); // TODO: get sort
+
     let tasks;
 
     if (!selectedFilters || isEmpty(selectedFilters)) {
@@ -183,6 +188,7 @@ export function* doGetTasksList(payload) {
         getFilteredTasksForList,
         taskListIdentifier,
         status,
+        sort,
         selectedFilters,
       );
     }

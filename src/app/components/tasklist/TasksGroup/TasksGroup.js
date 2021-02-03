@@ -28,6 +28,7 @@ import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSect
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
 import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
+import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -37,7 +38,6 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
-  GroupHeader,
 } from './styled';
 
 const TasksGroup = ({
@@ -221,16 +221,16 @@ const TasksGroup = ({
           />
         )}
         {tasks?.length > 0 && (
-          <GroupHeader>
+          <SortHeaderRow>
             <ColumnSortHeader width={60} />
             <ColumnSortHeader
-              id="DESCRIPTION"
+              id="TASK_DESCRIPTION"
               label="Tasks"
               sort={sort}
               onSortChange={onSortChange}
             />
             <ColumnSortHeader
-              id="SUBTASK"
+              id="SUBTASK_COUNT"
               label="Sub"
               width={60}
               sort={sort}
@@ -244,7 +244,7 @@ const TasksGroup = ({
               onSortChange={onSortChange}
             />
             <ColumnSortHeader
-              id="STATUS"
+              id="WORKFLOW_STATUS"
               label="Status"
               width={120}
               sort={sort}
@@ -252,14 +252,14 @@ const TasksGroup = ({
             />
             <ColumnSortHeader width={150} />
             <ColumnSortHeader
-              id="DATE"
+              id="DUE_DT"
               label="Date"
               width={60}
               sort={sort}
               onSortChange={onSortChange}
             />
             <ColumnSortHeader
-              id="ASSIGN"
+              id="ASSIGNED_TO"
               label="Assign"
               width={80}
               sort={sort}
@@ -274,7 +274,7 @@ const TasksGroup = ({
                 onSortChange={onSortChange}
               />
             )}
-          </GroupHeader>
+          </SortHeaderRow>
         )}
         <DragAndDropGroupList
           groupId={groupId}

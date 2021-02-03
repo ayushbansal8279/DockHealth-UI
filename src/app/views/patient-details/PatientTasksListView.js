@@ -13,6 +13,7 @@ import {
   patientTaskListsSelector,
   patientTaskListsActiveTabSelector,
   patientTaskSearchSelector,
+  patientTasksSortSelector,
 } from 'selectors/patient-tasks-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -46,6 +47,7 @@ const PatientTasksListView = ({
   modalActions,
   taskSearch,
   areFiltersApplied,
+  sort,
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
@@ -56,6 +58,7 @@ const PatientTasksListView = ({
     updatePatientTaskWorkflowStatus,
     quickAddPatientTask,
     refreshPatientTasks,
+    sortPatientTasks,
   } = patientTasksSagaActions;
 
   const handleQuickAddTask = ({ description }) => {
@@ -120,6 +123,8 @@ const PatientTasksListView = ({
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
           refreshView={refreshPatientTasks}
+          sort={sort}
+          onSortChange={sortPatientTasks}
         />
       ))
     : renderEmptyListView();
@@ -136,6 +141,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
+  sort: patientTasksSortSelector(state),
   patientLists: patientTaskListsSelector(state),
   activeTab: patientTaskListsActiveTabSelector(state),
   currentUser: userProfileSelector(state),

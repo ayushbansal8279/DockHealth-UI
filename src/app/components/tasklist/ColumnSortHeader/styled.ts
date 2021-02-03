@@ -23,3 +23,14 @@ export const SortArrowWrapper = styled.div`
   left: 3px;
   transform: translateY(-50%);
 `;
+
+export const SortHeaderRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  background: ${palette.white};
+  border: 1px solid ${palette.coolGrey3};
+  margin-bottom: 3px;
+`;

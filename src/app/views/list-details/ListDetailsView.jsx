@@ -207,11 +207,17 @@ class Home extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, match } = this.props;
+    const { selectedFilters, match, sort } = this.props;
 
     const { params } = match;
     const { tabName } = params;
 
+    if (
+      previousProps.sort.key !== sort.key ||
+      previousProps.sort.order !== sort.order
+    ) {
+      this.refreshTab();
+    }
     if (
       previousState?.searchValue !== searchValue ||
       Object.keys(previousProps?.selectedFilters || []).length !==
@@ -471,11 +477,11 @@ class Home extends Component {
     startPosition = 0,
     endPosition = 0,
   ) => {
-    const { actions } = this.props;
+    const { actions, sort } = this.props;
 
     return actions.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
-      undefined,
+      sort,
       undefined,
       status,
       cumulativeFlag,
@@ -486,11 +492,12 @@ class Home extends Component {
 
   // TODO: Move to saga
   getFilteredTasks = (taskListIdentifier, filters, taskStatus, withLoader) => {
-    const { actions } = this.props;
+    const { actions, sort } = this.props;
 
     return actions.getFilteredTasksForList(
       taskListIdentifier,
       taskStatus,
+      sort,
       filters,
       withLoader,
     );

@@ -26,6 +26,8 @@ import {
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
+import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -41,6 +43,8 @@ const TaskListDetailsDropdown = ({
   updateWorkflowStatus,
   quickAddTask,
   refreshView,
+  sort,
+  onSortChange,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
@@ -129,6 +133,44 @@ const TaskListDetailsDropdown = ({
             }}
           />
         )}
+        <SortHeaderRow>
+          <ColumnSortHeader width={60} />
+          <ColumnSortHeader
+            id="DESCRIPTION"
+            label="Tasks"
+            sort={sort}
+            onSortChange={onSortChange}
+          />
+          <ColumnSortHeader
+            id="SUBTASK"
+            label="Sub"
+            width={60}
+            sort={sort}
+            onSortChange={onSortChange}
+          />
+          <ColumnSortHeader
+            id="STATUS"
+            label="Status"
+            width={120}
+            sort={sort}
+            onSortChange={onSortChange}
+          />
+          <ColumnSortHeader width={150} />
+          <ColumnSortHeader
+            id="DATE"
+            label="Date"
+            width={60}
+            sort={sort}
+            onSortChange={onSortChange}
+          />
+          <ColumnSortHeader
+            id="ASSIGN"
+            label="Assign"
+            width={80}
+            sort={sort}
+            onSortChange={onSortChange}
+          />
+        </SortHeaderRow>
         <div>
           {tasks?.map(task => (
             <StandardTaskItem
