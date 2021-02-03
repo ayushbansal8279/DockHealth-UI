@@ -117,7 +117,7 @@ class PersonDetailsView extends PureComponent {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, match } = this.props;
+    const { selectedFilters, match, sort } = this.props;
 
     const { params } = match;
     const { tabName } = params;
@@ -142,6 +142,13 @@ class PersonDetailsView extends PureComponent {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ shouldResetBulkEditTasks: false });
     }
+
+    if (
+      previousProps.sort?.key !== sort?.key ||
+      previousProps.sort?.order !== sort?.order
+    ) {
+      this.refreshTab();
+    }
   }
 
   componentWillUnmount() {
@@ -151,13 +158,27 @@ class PersonDetailsView extends PureComponent {
   }
 
   getTasks(userIdentifier, status) {
-    const { personDetailsActions } = this.props;
+    const { personDetailsActions, sort } = this.props;
 
     return personDetailsActions.getTasksAssignedToSpecificUser(
       userIdentifier,
+      sort,
       status,
     );
   }
+
+  getFilteredTasks = (filters, status) => {
+    const { match, personDetailsActions, sort } = this.props;
+    const { params } = match;
+    const { userIdentifier } = params;
+
+    return personDetailsActions.getFilteredTasksForPeopleList(
+      userIdentifier,
+      sort,
+      filters,
+      status,
+    );
+  };
 
   initTable = () => {
     const { personDetailsActions, match } = this.props;
@@ -296,18 +317,6 @@ class PersonDetailsView extends PureComponent {
     );
 
     return this.getFilteredTasks(updatedFilters, taskStatus);
-  };
-
-  getFilteredTasks = (filters, taskStatus) => {
-    const { match, personDetailsActions } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    return personDetailsActions.getFilteredTasksForPeopleList(
-      userIdentifier,
-      taskStatus,
-      filters,
-    );
   };
 
   handleQuickAddTask = task => {

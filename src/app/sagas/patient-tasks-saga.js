@@ -227,7 +227,6 @@ function* getPatientLists() {
   const activeTab = yield select(patientTaskListsActiveTabSelector);
   const status =
     activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
   const sort = yield select(patientTasksSortSelector);
 
   let lists;

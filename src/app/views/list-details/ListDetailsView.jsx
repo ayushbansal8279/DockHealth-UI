@@ -213,8 +213,8 @@ class Home extends Component {
     const { tabName } = params;
 
     if (
-      previousProps.sort.key !== sort.key ||
-      previousProps.sort.order !== sort.order
+      previousProps.sort?.key !== sort?.key ||
+      previousProps.sort?.order !== sort?.order
     ) {
       this.refreshTab();
     }

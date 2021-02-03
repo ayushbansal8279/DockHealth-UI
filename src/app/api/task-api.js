@@ -170,11 +170,15 @@ export function getCountOfTasksAssignedToMe(
     });
 }
 
-export function getTasksAssignedToSpecificUser(userIdentifier, status) {
+export function getTasksAssignedToSpecificUser(userIdentifier, sortBy, status) {
   return axios
-    .get(
-      `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&status=${status}`,
-    )
+    .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
+      params: {
+        status,
+        sortBy: sortBy?.key || undefined,
+        sortDirection: sortBy?.order || undefined,
+      },
+    })
     .then(response => response.data)
     .catch(error => {
       throw error;
@@ -762,13 +766,21 @@ export function getFilteredTasksForList(
 
 export function getFilteredTasksForPersonList(
   userIdentifier,
-  status = 'INCOMPLETE',
+  sortBy,
   selectedFilters,
+  status = 'INCOMPLETE',
 ) {
   return axios
     .post(
-      `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?status=${status}`,
+      `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
       selectedFilters,
+      {
+        params: {
+          status,
+          sortBy: sortBy?.key || undefined,
+          sortDirection: sortBy?.order || undefined,
+        },
+      },
     )
     .then(({ data }) => data)
     .catch(error => {

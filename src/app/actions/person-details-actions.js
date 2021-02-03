@@ -16,14 +16,14 @@ export function loadingCompletedTasks() {
   };
 }
 
-export function getTasksAssignedToSpecificUser(userIdentifier, status) {
+export function getTasksAssignedToSpecificUser(userIdentifier, sortBy, status) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_PERSON_TASKS_SUCCESS
       : ActionTypes.GET_PERSON_COMPLETED_TASKS_SUCCESS;
 
   return dispatch =>
-    TaskApi.getTasksAssignedToSpecificUser(userIdentifier, status)
+    TaskApi.getTasksAssignedToSpecificUser(userIdentifier, sortBy, status)
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
@@ -59,8 +59,9 @@ export const resetTaskCounters = () => ({
 
 export function getFilteredTasksForPeopleList(
   userIdentifier,
-  status,
+  sortBy,
   selectedFilters,
+  status,
 ) {
   const action =
     status === 'INCOMPLETE'
@@ -70,8 +71,9 @@ export function getFilteredTasksForPeopleList(
   return dispatch =>
     TaskApi.getFilteredTasksForPersonList(
       userIdentifier,
-      status,
+      sortBy,
       selectedFilters,
+      status,
     )
       .then(tasks => {
         dispatch({ type: action, tasks });
