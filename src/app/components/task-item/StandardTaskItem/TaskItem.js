@@ -78,7 +78,7 @@ import {
   LabelIcon,
   AttachmentIcon,
   DescriptionTooltip,
-  SubtasksCellContent,
+  SubtasksCellContentButton,
   SubtasksCellText,
   SubtasksImg,
   DescriptionLabel,
@@ -533,10 +533,12 @@ const TaskItem = ({
             {!isSubtask && (
               <>
                 {subTasksCount > 0 ? (
-                  <SubtasksCellContent onClick={onSubtaskLabelClick}>
-                    <SubtasksCellText isOpen={isOpen} isDisabled={hideSubtasks}>
-                      {subTasksCount}
-                    </SubtasksCellText>
+                  <SubtasksCellContentButton
+                    isOpen={isOpen}
+                    disabled={hideSubtasks}
+                    onClick={onSubtaskLabelClick}
+                  >
+                    <SubtasksCellText>{subTasksCount}</SubtasksCellText>
                     <SubtasksImg
                       src={
                         hideSubtasks
@@ -548,7 +550,7 @@ const TaskItem = ({
                       }
                       alt="Subtasks"
                     />
-                  </SubtasksCellContent>
+                  </SubtasksCellContentButton>
                 ) : (
                   <>
                     {isHovered && !isSubtask && !subtaskQuickAddOpen && (

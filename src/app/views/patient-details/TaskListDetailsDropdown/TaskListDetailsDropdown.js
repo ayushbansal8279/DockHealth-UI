@@ -43,6 +43,7 @@ const TaskListDetailsDropdown = ({
   updateWorkflowStatus,
   quickAddTask,
   refreshView,
+  hideSubtasks,
   sort,
   onSortChange,
 }) => {
@@ -193,6 +194,7 @@ const TaskListDetailsDropdown = ({
               addingNewSubtask={addingNewSubtask}
               addingNewSubtaskParentId={addingNewSubtaskParentId}
               subtaskShape={subtaskShape}
+              hideSubtasks={hideSubtasks}
             />
           ))}
         </div>

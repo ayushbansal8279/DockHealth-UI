@@ -123,6 +123,7 @@ const PatientTasksListView = ({
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
           refreshView={refreshPatientTasks}
+          hideSubtasks={areFiltersApplied || !!taskSearch || !!sort?.key}
           sort={sort}
           onSortChange={sortPatientTasks}
         />

@@ -487,12 +487,17 @@ export const AttachmentIcon = styled.img`
   height: 20px;
 `;
 
-export const SubtasksCellContent = styled.button`
+export const SubtasksCellContentButton = styled.button`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  color: ${({ isOpen }) => (isOpen ? palette.brightBlue : palette.coolGrey1)};
+
+  &:disabled {
+    color: ${palette.coolGrey2};
+  }
 `;
 
 export const SubtasksCellText = styled.p`
@@ -500,13 +505,7 @@ export const SubtasksCellText = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  color: ${({ isOpen, isDisabled }) =>
-    isDisabled
-      ? palette.coolGrey2
-      : // eslint-disable-next-line unicorn/no-nested-ternary
-      isOpen
-      ? palette.brightBlue
-      : palette.coolGrey1};
+  color: inherit;
 `;
 
 export const SubtasksImg = styled.img`
