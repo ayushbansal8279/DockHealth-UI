@@ -218,6 +218,7 @@ class Home extends Component {
     ) {
       this.refreshTab();
     }
+
     if (
       previousState?.searchValue !== searchValue ||
       Object.keys(previousProps?.selectedFilters || []).length !==

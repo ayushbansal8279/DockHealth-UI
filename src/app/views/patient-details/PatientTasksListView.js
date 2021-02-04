@@ -61,6 +61,11 @@ const PatientTasksListView = ({
     sortPatientTasks,
   } = patientTasksSagaActions;
 
+  const isListFlattened =
+    areFiltersApplied ||
+    !!taskSearch ||
+    (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
+
   const handleQuickAddTask = ({ description }) => {
     modalActions.openModal('ListPicker', {
       fetchMethod: getTaskListForUser,
@@ -123,7 +128,7 @@ const PatientTasksListView = ({
           updateWorkflowStatus={updatePatientTaskWorkflowStatus}
           quickAddTask={quickAddPatientTask}
           refreshView={refreshPatientTasks}
-          hideSubtasks={areFiltersApplied || !!taskSearch || !!sort?.key}
+          hideSubtasks={isListFlattened}
           sort={sort}
           onSortChange={sortPatientTasks}
         />

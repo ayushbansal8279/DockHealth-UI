@@ -553,16 +553,19 @@ const TaskItem = ({
                   </SubtasksCellContentButton>
                 ) : (
                   <>
-                    {isHovered && !isSubtask && !subtaskQuickAddOpen && (
-                      <AddSubtaskButton
-                        type="button"
-                        onClick={() =>
-                          dispatch(openQuickAddSubtask(taskIdentifier))
-                        }
-                      >
-                        <AddPlaceholder>+ Add</AddPlaceholder>
-                      </AddSubtaskButton>
-                    )}
+                    {isHovered &&
+                      !isSubtask &&
+                      !subtaskQuickAddOpen &&
+                      !hideSubtasks && (
+                        <AddSubtaskButton
+                          type="button"
+                          onClick={() =>
+                            dispatch(openQuickAddSubtask(taskIdentifier))
+                          }
+                        >
+                          <AddPlaceholder>+ Add</AddPlaceholder>
+                        </AddSubtaskButton>
+                      )}
                   </>
                 )}
               </>

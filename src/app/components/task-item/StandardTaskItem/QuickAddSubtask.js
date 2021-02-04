@@ -121,7 +121,7 @@ const QuickAddSubatask = ({
       <StandardTaskItemCell width="120px" />
       <StandardTaskItemCell width="150px" />
       <StandardTaskItemCell width="60px" />
-      <StandardTaskItemCell width="60px" />
+      <StandardTaskItemCell width="80px" />
       {listNameVisible && <StandardTaskItemCell width="168px" />}
     </StandardTaskItemContainer>
   );

@@ -99,6 +99,11 @@ const TasksGroup = ({
     isOpen,
   ]);
 
+  const isListFlattened =
+    isSearchApplied ||
+    areFiltersApplied ||
+    (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
+
   const onGroupNameSectionClick = useCallback(
     newGroupName => editGroupName(newGroupName, groupId),
     [editGroupName, groupId],
@@ -291,7 +296,7 @@ const TasksGroup = ({
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
           selectedTask={selectedTask}
-          hideSubtasks={isSearchApplied || areFiltersApplied || !!sort?.key}
+          hideSubtasks={isListFlattened}
           areFiltersApplied={areFiltersApplied}
           isSearchApplied={isSearchApplied}
         />
