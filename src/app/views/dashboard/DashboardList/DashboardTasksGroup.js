@@ -14,9 +14,9 @@ import {
   DashboardTasksGroupLabel,
   DashboardTasksGroupList,
   DroppableBox,
-  AssignedBox,
-  // eslint-disable-next-line import/no-unresolved
 } from './styled';
+import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
+import { DashboardColumnKey } from '../config';
 
 const GRID_CONFIG = {
   primary: {
@@ -108,42 +108,30 @@ const GRID_CONFIG = {
   },
 };
 
-const getDynamicColumnLabel = (dynamicColumnType, currentSortType) => {
+const getDynamicColumnLabel = dynamicColumnType => {
   switch (dynamicColumnType) {
-    case 'DUE_DATE': {
+    case DashboardColumnKey.DUE_DATE: {
       return {
+        id: DashboardColumnKey.DUE_DATE,
         label: 'Due',
-        isOpen: currentSortType === 'DUE_DATE_ASC',
-        showDefaultArrow:
-          currentSortType !== 'DUE_DATE_ASC' &&
-          currentSortType !== 'DUE_DATE_DSC',
       };
     }
-    case 'PATIENT': {
+    case DashboardColumnKey.PATIENT: {
       return {
+        id: DashboardColumnKey.PATIENT,
         label: 'Patient',
-        isOpen: currentSortType === 'PATIENT_ASC',
-        showDefaultArrow:
-          currentSortType !== 'PATIENT_ASC' &&
-          currentSortType !== 'PATIENT_DSC',
       };
     }
-    case 'STATUS': {
+    case DashboardColumnKey.STATUS: {
       return {
+        id: DashboardColumnKey.STATUS,
         label: 'Status',
-        isOpen: currentSortType === 'WORKFLOW_STATUS_ASC',
-        showDefaultArrow:
-          currentSortType !== 'WORKFLOW_STATUS_ASC' &&
-          currentSortType !== 'WORKFLOW_STATUS_DSC',
       };
     }
     default: {
       return {
+        id: DashboardColumnKey.DUE_DATE,
         label: 'Due',
-        isOpen: currentSortType === 'DUE_DATE_ASC',
-        showDefaultArrow:
-          currentSortType !== 'DUE_DATE_ASC' &&
-          currentSortType !== 'DUE_DATE_DSC',
       };
     }
   }
@@ -159,10 +147,8 @@ const DashboardTasksGroup = ({
   isTaskDrawerOpen,
   selectedTaskIdentifier,
   currentSortMethod,
-  currentSortType,
-  onClickDynamincColumnSort,
-  onClickAssignedSort,
-  onClickListNameSort,
+  currentSort,
+  onSortChange,
   showClearSortFiltersModal,
   isSortApplied,
   isAllTasksTab,
@@ -208,10 +194,8 @@ const DashboardTasksGroup = ({
   const gridConfig = isAllTasksTab
     ? GRID_CONFIG.secondary
     : GRID_CONFIG.primary;
-  const dynamicColumnLabel = getDynamicColumnLabel(
-    dynamicColumnType,
-    currentSortType,
-  );
+
+  const dynamicColumn = getDynamicColumnLabel(dynamicColumnType);
 
   return (
     <DashboardTasksGroupContainer>
@@ -233,58 +217,35 @@ const DashboardTasksGroup = ({
           </Grid>
           <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
             {groupIsOpen && (
-              <Arrow
-                isOpen={dynamicColumnLabel?.isOpen}
-                setOpen={onClickDynamincColumnSort}
-                showDefaultArrow={dynamicColumnLabel?.showDefaultArrow}
-                justifyContent="flex-start"
-                paddingLeft="0"
-                arrowType="secondary"
-                isDisabled={!groupIsOpen}
-                showArrow={groupIsOpen}
-              >
-                <span>{dynamicColumnLabel?.label}</span>
-              </Arrow>
+              <DashboardColumnSortHeader
+                id={dynamicColumn.id}
+                label={dynamicColumn.label}
+                sort={currentSort}
+                onSortChange={onSortChange}
+              />
             )}
           </Grid>
           {isAllTasksTab && (
             <Grid item {...gridConfig.assignedPerson}>
               {groupIsOpen && (
-                <AssignedBox>
-                  <Arrow
-                    isOpen={currentSortType === 'ASSIGNED_ASC'}
-                    setOpen={onClickAssignedSort}
-                    showDefaultArrow={
-                      currentSortType !== 'ASSIGNED_ASC' &&
-                      currentSortType !== 'ASSIGNED_DSC'
-                    }
-                    justifyContent="flex-start"
-                    paddingLeft="0"
-                    arrowType="secondary"
-                    isDisabled={!groupIsOpen}
-                  >
-                    <span>Assigned To</span>
-                  </Arrow>
-                </AssignedBox>
+                <DashboardColumnSortHeader
+                  id="ASSIGNED"
+                  label="Assigned To"
+                  sort={currentSort}
+                  onSortChange={onSortChange}
+                />
               )}
             </Grid>
           )}
+
           <Grid item {...gridConfig.listName}>
             {groupIsOpen && (
-              <Arrow
-                isOpen={currentSortType === 'LIST_NAME_ASC'}
-                setOpen={onClickListNameSort}
-                showDefaultArrow={
-                  currentSortType !== 'LIST_NAME_ASC' &&
-                  currentSortType !== 'LIST_NAME_DSC'
-                }
-                justifyContent="flex-start"
-                paddingLeft="0"
-                arrowType="secondary"
-                isDisabled={!groupIsOpen}
-              >
-                <span>List</span>
-              </Arrow>
+              <DashboardColumnSortHeader
+                id="LIST_NAME"
+                label="List"
+                sort={currentSort}
+                onSortChange={onSortChange}
+              />
             )}
           </Grid>
         </Grid>

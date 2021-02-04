@@ -688,7 +688,7 @@ class Home extends Component {
   sortListTasks = (key, order) => {
     const { taskListActions } = this.props;
 
-    taskListActions.sortListTasks(key, order);
+    taskListActions.sortListTasks(order ? key : null, order);
   };
 
   invokeToggleCompleteAction = task => {

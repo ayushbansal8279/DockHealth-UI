@@ -442,7 +442,7 @@ class PersonDetailsView extends PureComponent {
 
   sortPersonTasks = (key, order) => {
     const { personDetailsActions } = this.props;
-    personDetailsActions.sortPersonTasks(key, order);
+    personDetailsActions.sortPersonTasks(order ? key : null, order);
   };
 
   render() {

@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isEmpty } from 'ramda';
+import { identity, isEmpty, reverse, compose } from 'ramda';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 import EmptyTaskListBird from 'img/animals/bird';
@@ -48,6 +48,7 @@ import {
   megaFilterSelector,
   hasFiltersAppliedSelector,
 } from 'selectors/mega-filter-selectors';
+import { SortOrderType } from 'helpers/sorting-helper';
 import DashboardSettings from '../DashboardSettings/DashboardSettings';
 
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -63,38 +64,17 @@ import {
   TipsSwitchLabel,
 } from './styled';
 import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
-
-const SORT_CONFIG = {
-  default: 'DEFAULT',
-  dueDateAsc: 'DUE_DATE_ASC',
-  dueDateDsc: 'DUE_DATE_DSC',
-  workflowStatusAsc: 'WORKFLOW_STATUS_ASC',
-  workflowStatusDsc: 'WORKFLOW_STATUS_DSC',
-  patientAsc: 'PATIENT_ASC',
-  patientDsc: 'PATIENT_DSC',
-  assignedAsc: 'ASSIGNED_ASC',
-  assignedDsc: 'ASSIGNED_DSC',
-  listNameAsc: 'LIST_NAME_ASC',
-  listNameDsc: 'LIST_NAME_DSC',
-};
+import { DashboardColumnKey } from '../config';
 
 const SORT_METHODS = {
-  [SORT_CONFIG.default]: list => list?.map(item => item),
-  [SORT_CONFIG.dueDateAsc]: list =>
+  [DashboardColumnKey.DUE_DATE]: list =>
     list
       ?.map(item => item)
       .sort((a, b) => {
         if (!b?.dueDate) return 1;
         return a?.dueDate > b?.dueDate ? 1 : -1;
       }),
-  [SORT_CONFIG.dueDateDsc]: list =>
-    list
-      ?.map(item => item)
-      .sort((a, b) => {
-        if (!a?.dueDate) return 1;
-        return b?.dueDate > a?.dueDate ? 1 : -1;
-      }),
-  [SORT_CONFIG.workflowStatusAsc]: list =>
+  [DashboardColumnKey.WORKFLOW_STATUS]: list =>
     list
       ?.map(item => item)
       .sort((a, b) => {
@@ -103,49 +83,23 @@ const SORT_METHODS = {
 
         return aWorkflowStauts.localeCompare(bWorkflowStauts);
       }),
-  [SORT_CONFIG.workflowStatusDsc]: list =>
-    list
-      ?.map(item => item)
-      .sort((a, b) => {
-        const aWorkflowStauts = a?.workflowStatus || '';
-        const bWorkflowStauts = b?.workflowStatus || '';
-        return bWorkflowStauts.localeCompare(aWorkflowStauts);
-      }),
-  [SORT_CONFIG.patientAsc]: list =>
+  [DashboardColumnKey.PATIENT]: list =>
     list
       ?.map(item => item)
       .sort((a, b) =>
         a?.patient?.firstName?.localeCompare(b?.patient?.firstName),
       ),
-  [SORT_CONFIG.patientDsc]: list =>
-    list
-      ?.map(item => item)
-      .sort((a, b) =>
-        b?.patient?.firstName?.localeCompare(a?.patient?.firstName),
-      ),
-  [SORT_CONFIG.assignedAsc]: list =>
+  [DashboardColumnKey.ASSIGNED]: list =>
     list
       ?.map(item => item)
       .sort((a, b) =>
         a?.assignedTo?.userName?.localeCompare(b?.assignedTo?.userName),
       ),
-  [SORT_CONFIG.assignedDsc]: list =>
-    list
-      ?.map(item => item)
-      .sort((a, b) =>
-        b?.assignedTo?.userName?.localeCompare(a?.assignedTo?.userName),
-      ),
-  [SORT_CONFIG.listNameAsc]: list =>
+  [DashboardColumnKey.LIST_NAME]: list =>
     list
       ?.map(item => item)
       .sort((a, b) =>
         a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
-      ),
-  [SORT_CONFIG.listNameDsc]: list =>
-    list
-      ?.map(item => item)
-      .sort((a, b) =>
-        b?.taskList?.listName?.localeCompare(a?.taskList?.listName),
       ),
 };
 
@@ -228,10 +182,13 @@ const DashboardList = ({
   const [searchValue, setSearchValue] = useState('');
   const previousSearchState = usePrevious({ searchValue });
   const [searchFocused, setSearchFocused] = useState(false);
-  const [sortType, setSortType] = useState(SORT_CONFIG.default);
+  const [currentSort, setCurrentSort] = useState({
+    key: null,
+    order: null,
+  });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
   const [dynamicColumnType, setDynamicColumnType] = useState(
-    userPreferColumn || 'DUE_DATE',
+    userPreferColumn || DashboardColumnKey.DUE_DATE,
   );
   const quickAddTaskInputReference = useRef(null);
 
@@ -241,8 +198,29 @@ const DashboardList = ({
   const { userIdentifier, usageState } = currentUser;
   const { filters, selectedFilters } = megaFilter;
 
-  const currentSortMethod = SORT_METHODS[sortType];
-  const isSortApplied = sortType !== SORT_CONFIG.default;
+  const isSortApplied = !!currentSort?.key;
+
+  const { key: sortKey, order: sortOrder } = currentSort;
+
+  const currentSortMethod = useMemo(() => {
+    if (!sortKey) return identity;
+
+    return SORT_METHODS[sortKey];
+  }, [sortKey]);
+
+  const currentSortMethodWithOrder = useMemo(() => {
+    if (sortOrder === SortOrderType.DESC) {
+      return compose(reverse, currentSortMethod);
+    }
+    return currentSortMethod;
+  }, [sortOrder, currentSortMethod]);
+
+  function resetSort() {
+    setCurrentSort({
+      key: null,
+      order: null,
+    });
+  }
 
   useEffect(() => {
     if (currentUser) {
@@ -295,101 +273,28 @@ const DashboardList = ({
   useEffect(() => {
     setSearchValue('');
     setSearchFocused(false);
-    setSortType(SORT_CONFIG.default);
+    resetSort();
   }, [selectedTab]);
 
   useEffect(() => {
-    setSortType(SORT_CONFIG.default);
+    resetSort();
   }, [dynamicColumnType]);
 
-  const onClickDynamincColumnSort = () => {
-    if (dynamicColumnType === 'DUE_DATE') {
-      switch (sortType) {
-        case SORT_CONFIG.dueDateAsc: {
-          setSortType(SORT_CONFIG.dueDateDsc);
-          break;
-        }
-        case SORT_CONFIG.dueDateDsc: {
-          setSortType(SORT_CONFIG.dueDateAsc);
-          break;
-        }
-        default: {
-          setSortType(SORT_CONFIG.dueDateAsc);
-          break;
-        }
-      }
-    } else if (dynamicColumnType === 'STATUS') {
-      switch (sortType) {
-        case SORT_CONFIG.workflowStatusAsc: {
-          setSortType(SORT_CONFIG.workflowStatusDsc);
-          break;
-        }
-        case SORT_CONFIG.workflowStatusDsc: {
-          setSortType(SORT_CONFIG.workflowStatusAsc);
-          break;
-        }
-        default: {
-          setSortType(SORT_CONFIG.workflowStatusAsc);
-          break;
-        }
-      }
-    } else if (dynamicColumnType === 'PATIENT') {
-      switch (sortType) {
-        case SORT_CONFIG.patientAsc: {
-          setSortType(SORT_CONFIG.patientDsc);
-          break;
-        }
-        case SORT_CONFIG.patientDsc: {
-          setSortType(SORT_CONFIG.patientAsc);
-          break;
-        }
-        default: {
-          setSortType(SORT_CONFIG.patientAsc);
-          break;
-        }
-      }
-    }
-  };
-
-  const onClickAssignedSort = () => {
-    switch (sortType) {
-      case SORT_CONFIG.assignedAsc: {
-        setSortType(SORT_CONFIG.assignedDsc);
-        break;
-      }
-      case SORT_CONFIG.assignedDsc: {
-        setSortType(SORT_CONFIG.assignedAsc);
-        break;
-      }
-      default: {
-        setSortType(SORT_CONFIG.assignedAsc);
-        break;
-      }
-    }
-  };
-
-  const onClickListNameSort = () => {
-    switch (sortType) {
-      case SORT_CONFIG.listNameAsc: {
-        setSortType(SORT_CONFIG.listNameDsc);
-        break;
-      }
-      case SORT_CONFIG.listNameDsc: {
-        setSortType(SORT_CONFIG.listNameAsc);
-        break;
-      }
-      default: {
-        setSortType(SORT_CONFIG.listNameAsc);
-        break;
-      }
-    }
-  };
+  const handleSortChange = useCallback(
+    (key, order) => {
+      setCurrentSort({
+        key: order ? key : null,
+        order,
+      });
+    },
+    [setCurrentSort],
+  );
 
   const showClearSortFiltersModal = () => {
-    if (sortType !== SORT_CONFIG.default || areFiltersApplied) {
+    if (isSortApplied || areFiltersApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
-          setSortType(SORT_CONFIG.default);
+          resetSort();
           updateDashboardSelectedFilters({});
         },
         closeOnConfirm: true,
@@ -555,12 +460,10 @@ const DashboardList = ({
                     openDrawer={openDrawer}
                     isTaskDrawerOpen={isTaskDrawerOpen}
                     selectedTaskIdentifier={selectedTaskIdentifier}
-                    currentSortMethod={currentSortMethod}
-                    currentSortType={sortType}
+                    currentSort={currentSort}
+                    currentSortMethod={currentSortMethodWithOrder}
+                    onSortChange={handleSortChange}
                     dynamicColumnType={dynamicColumnType}
-                    onClickDynamincColumnSort={onClickDynamincColumnSort}
-                    onClickAssignedSort={onClickAssignedSort}
-                    onClickListNameSort={onClickListNameSort}
                     showClearSortFiltersModal={showClearSortFiltersModal}
                     isSortApplied={isSortApplied}
                     areFiltersApplied={areFiltersApplied}

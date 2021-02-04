@@ -1,12 +1,7 @@
 import React from 'react';
 import SortArrowIcon from 'img/SortArrowIcon';
+import { SortOrderType } from 'helpers/sorting-helper';
 import { SortArrowContainer } from './styled';
-
-export const SortOrderType = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-  DEFAULT: null,
-};
 
 const SortArrow = ({ orderType, onClick = () => {}, isParentHovered }) => {
   return (

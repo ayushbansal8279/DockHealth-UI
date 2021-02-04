@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import { Box } from '@material-ui/core';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
-import { SortArrowWrapper, SortButton } from './styled';
+import { SortHeaderButton, SortArrowWrapper } from './styled';
 
 interface ColumnSortHeaderProps {
   id: string;
@@ -11,10 +12,9 @@ interface ColumnSortHeaderProps {
   onSortChange?: (key: string | null, order: string | null) => void;
 }
 
-const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
+const DashboardColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   id,
   label,
-  width,
   sort,
   onSortChange,
 }) => {
@@ -46,10 +46,9 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   }, [id, sort, onSortChange]);
 
   return (
-    <SortButton
+    <SortHeaderButton
       disabled={!label}
       type="button"
-      width={width}
       onClick={switchSort}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -62,9 +61,10 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           />
         </SortArrowWrapper>
       )}
+      <Box m={0.5} />
       {label}
-    </SortButton>
+    </SortHeaderButton>
   );
 };
 
-export default ColumnSortHeader;
+export default DashboardColumnSortHeader;

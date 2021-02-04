@@ -10,6 +10,7 @@ import {
   DashboardSettingsLabel,
   DashboardSettingsIcon as StyledDashboardSettingsIcon,
 } from './styled';
+import { DashboardColumnKey } from '../config';
 
 const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
   const iconReference = useRef(null);
@@ -39,10 +40,12 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
             <DashboardSettingsInput
               id="patient-radio"
               type="radio"
-              checked={dynamicColumnType === 'PATIENT'}
+              checked={dynamicColumnType === DashboardColumnKey.PATIENT}
               onClick={() => {
-                setDynamicColumnType('PATIENT');
-                updateUserDashboardPrefs({ displayColumns: ['PATIENT'] });
+                setDynamicColumnType(DashboardColumnKey.PATIENT);
+                updateUserDashboardPrefs({
+                  displayColumns: [DashboardColumnKey.PATIENT],
+                });
                 setIsOpen(false);
               }}
             />
@@ -54,10 +57,12 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
             <DashboardSettingsInput
               id="due-date-radio"
               type="radio"
-              checked={dynamicColumnType === 'DUE_DATE'}
+              checked={dynamicColumnType === DashboardColumnKey.DUE_DATE}
               onClick={() => {
-                setDynamicColumnType('DUE_DATE');
-                updateUserDashboardPrefs({ displayColumns: ['DUE_DATE'] });
+                setDynamicColumnType(DashboardColumnKey.DUE_DATE);
+                updateUserDashboardPrefs({
+                  displayColumns: [DashboardColumnKey.DUE_DATE],
+                });
                 setIsOpen(false);
               }}
             />
@@ -69,10 +74,12 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
             <DashboardSettingsInput
               id="status-radio"
               type="radio"
-              checked={dynamicColumnType === 'STATUS'}
+              checked={dynamicColumnType === DashboardColumnKey.STATUS}
               onClick={() => {
-                setDynamicColumnType('STATUS');
-                updateUserDashboardPrefs({ displayColumns: ['STATUS'] });
+                setDynamicColumnType(DashboardColumnKey.STATUS);
+                updateUserDashboardPrefs({
+                  displayColumns: [DashboardColumnKey.STATUS],
+                });
                 setIsOpen(false);
               }}
             />

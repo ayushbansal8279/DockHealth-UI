@@ -11,6 +11,8 @@ export function arrayMove(array, oldIndex, newIndex) {
   return arrayCopy;
 }
 
-export default {
-  arrayMove,
+export const SortOrderType = {
+  ASC: 'ASC',
+  DESC: 'DESC',
+  DEFAULT: null,
 };

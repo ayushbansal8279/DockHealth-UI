@@ -4,9 +4,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Spacing from 'components/common/Spacing';
 
-import SortArrow, {
-  SortOrderType,
-} from 'components/common/SortArrow/SortArrow';
+import SortArrow from 'components/common/SortArrow/SortArrow';
+import { SortOrderType } from 'helpers/sorting-helper';
 import { lookupEMRPatient } from 'api/patient-api';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import PatientListLoader from '../PatientsListLoader/PatientListLoader';

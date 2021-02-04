@@ -104,11 +104,6 @@ export const DashboardTabHighlight = styled.div`
   transition: left 0.2s ease-out;
 `;
 
-export const AssignedBox = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
 export const EmptyStateContainer = styled.div`
   padding: 0 55px;
 `;

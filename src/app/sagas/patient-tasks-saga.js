@@ -573,7 +573,15 @@ function* doChangeMemberRole({ payload }) {
 }
 
 function* doSortPatientTasks({ payload }) {
-  yield put({ type: SORT_PATIENT_TASKS, payload });
+  const { key, order } = payload;
+
+  yield put({
+    type: SORT_PATIENT_TASKS,
+    payload: {
+      key: order ? key : null,
+      order,
+    },
+  });
   yield put(refreshPatientTasks({ withLoader: false }));
 }
 
