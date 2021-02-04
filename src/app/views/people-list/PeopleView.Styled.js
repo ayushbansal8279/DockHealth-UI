@@ -85,6 +85,7 @@ export const ManageUsersContainer = styled.div`
   border: 1px solid ${palette.blueOcean};
   padding: 0.5rem 1rem 0.5rem 1rem;
   background-color: ${palette.white};
+  max-width: 1179px;
 `;
 
 export const HeaderMessage = styled.div`

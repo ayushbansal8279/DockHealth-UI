@@ -72,15 +72,18 @@ export const Title = styled(H1)`
 export const SubscriptionsViewOuterContainer = styled.div`
   background-color: ${palette.white};
   display: flex;
-  position: absolute;
   min-height: 100%;
   justify-content: center;
   left: 0;
   top: 0;
   width: 100%;
+  overflow-y: auto;
+  padding-bottom: 24px;
 `;
 
 export const SubscriptionsViewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 3rem 2rem;
   max-width: 1200px;
   width: 1200px;

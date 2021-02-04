@@ -97,7 +97,7 @@ class PeopleView extends PureComponent {
           </Grid>
         </PageContentHeader>
         <SafariFixGrid container xs={12} item justify="center">
-          <Grid item xs={9}>
+          <Grid item xs={8}>
             <Spacing vertical={4} />
             <ManageUsersContainer>
               <img alt="lightbulb" src={LightbulbBig} />

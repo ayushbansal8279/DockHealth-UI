@@ -14,6 +14,11 @@ export const MemberTable = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${spacing.smallPlus};
+
+  & > div {
+    height: initial !important;
+    width: initial !important;
+  }
 `;
 
 export const MemberTableHeader = styled(Grid)`

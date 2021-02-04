@@ -1,63 +1,20 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import moment from 'moment';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Spacing from 'components/common/Spacing';
-
-import SortArrow from 'components/common/SortArrow/SortArrow';
-import { SortOrderType } from 'helpers/sorting-helper';
 import { lookupEMRPatient } from 'api/patient-api';
+import SafariFixGrid from 'components/common/SafariFixGrid';
+import { Grid } from '@material-ui/core';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import PatientListLoader from '../PatientsListLoader/PatientListLoader';
 import EmptyPatientsList from '../EmptyPatientsList/EmptyPatientsList';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
-import { ListHeader, ListRow, NonEmptyListTable } from './styled';
+import { NonEmptyListTable } from './styled';
 
-const SORTING_METHODS = {
-  lastName: (a, b) =>
-    a.lastName.trim().localeCompare(b.lastName.trim()) ||
-    a.firstName.trim().localeCompare(b.firstName.trim()),
-  mrn: (a, b) => {
-    if (!a.mrn?.trim()) return 1;
-
-    if (!b.mrn?.trim()) return -1;
-
-    return a.mrn.localeCompare(b.mrn);
-  },
-  dob: (a, b) => {
-    if (!a?.dob) return 1;
-
-    if (!b?.dob) return -1;
-
-    return b?.dob > a?.dob ? -1 : 1;
-  },
-  age: (a, b) => {
-    if (!a?.dob) return 1;
-
-    if (!b?.dob) return -1;
-
-    return b?.dob > a?.dob ? 1 : -1;
-  },
-  gender: (a, b) => {
-    if (!a.gender?.trim()) return 1;
-
-    if (!b.gender?.trim()) return -1;
-
-    return a.gender.localeCompare(b.gender);
-  },
-};
-
-const capitalize = text =>
-  typeof text === 'string'
-    ? text.charAt(0).toUpperCase() + text.slice(1)
-    : text;
-
-const formatDateOfBirth = dob => dob && moment(dob).format('MMM D, YYYY');
+import { StyledDataGrid } from './DataGridStyles';
 
 const PatientsList = ({
   patients,
   isFiltered,
-  isCompact,
   highlightedPatientIdentifier,
   patientImportDetails,
   refreshPatientList,
@@ -70,67 +27,59 @@ const PatientsList = ({
   emrIntegrationEnabled,
 }) => {
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  const [sortKey, setSortKey] = useState(null);
-  const [sortOrder, setSortOrder] = useState(null);
-  const [hoveredHeader, setHoveredHeader] = useState(null);
   const history = useHistory();
 
-  const sortedPatients = useMemo(() => {
-    if (!patients?.length > 0) {
-      return patients;
-    }
+  const columns = [
+    {
+      field: 'patient',
+      headerName: 'PATIENT',
+      valueGetter: parameters =>
+        `${parameters.getValue('lastName') || 'unknown'}, ${parameters.getValue(
+          'firstName',
+        )}`,
+      sortComparator: (v1, v2, parameters1, parameters2) => {
+        if (
+          parameters1.row.lastName?.toLowerCase() >
+          parameters2.row.lastName?.toLowerCase()
+        )
+          return 1;
+        if (
+          parameters1.row.lastName?.toLowerCase() <
+          parameters2.row.lastName?.toLowerCase()
+        )
+          return -1;
 
-    if (!sortKey) {
-      return patients;
-    }
-
-    return patients.slice().sort(SORTING_METHODS[sortKey]);
-  }, [sortKey, patients]);
-
-  const sortedPatientsWithOrderType = useMemo(() => {
-    if (sortOrder && sortOrder === SortOrderType.DESC) {
-      const foundIndex = sortedPatients.findIndex(patient => !patient[sortKey]);
-
-      if (foundIndex === -1) {
-        return sortedPatients.slice().reverse();
-      }
-
-      const partWithValues = sortedPatients.slice(0, foundIndex);
-      const partWithoutValues = sortedPatients.slice(foundIndex);
-
-      return partWithValues.reverse().concat(partWithoutValues);
-    }
-
-    return sortedPatients;
-  }, [sortedPatients, sortOrder, sortKey]);
-
-  const handleSortChange = useCallback(
-    key => {
-      if (key === sortKey) {
-        switch (sortOrder) {
-          case SortOrderType.DEFAULT:
-            setSortOrder(SortOrderType.ASC);
-            break;
-          case SortOrderType.ASC:
-            setSortOrder(SortOrderType.DESC);
-            break;
-          case SortOrderType.DESC:
-            setSortOrder(SortOrderType.DEFAULT);
-            setSortKey(null);
-            break;
-          default:
-            setSortKey(null);
-            setSortOrder(SortOrderType.DEFAULT);
-            break;
-        }
-      } else {
-        setSortKey(key);
-        setSortOrder(SortOrderType.ASC);
-      }
+        return 0;
+      },
+      flex: 1,
+      cellClassName: 'patient-cell',
     },
-    [sortKey, sortOrder],
-  );
+    {
+      field: 'mrn',
+      headerName: 'MRN',
+      flex: 0.5,
+    },
+    {
+      field: 'dob',
+      headerName: 'DOB',
+      flex: 0.5,
+    },
+    {
+      field: 'age',
+      headerName: 'AGE',
+      flex: 0.5,
+    },
+    {
+      field: 'gender',
+      headerName: 'GENDER',
+      flex: 0.5,
+    },
+  ];
 
+  const formattedPatients = patients?.map(patient => ({
+    id: patient?.patientIdentifier,
+    ...patient,
+  }));
   return (
     <>
       {isFetching ? (
@@ -138,128 +87,41 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 ? (
-            <NonEmptyListTable
-              listLength={patients?.length ?? 0}
-              highlightedPatientIdentifier={highlightedPatientIdentifier}
-            >
-              <ListHeader isCompact={isCompact}>
-                <div
-                  onMouseEnter={() => setHoveredHeader('lastName')}
-                  onMouseLeave={() => setHoveredHeader(null)}
+            <SafariFixGrid container xs={12} item justify="center">
+              <Grid item xs={8}>
+                <NonEmptyListTable
+                  listLength={patients?.length ?? 0}
+                  highlightedPatientIdentifier={highlightedPatientIdentifier}
                 >
-                  Name
-                  <Spacing horizontal={3} />
-                  <SortArrow
-                    orderType={sortKey === 'lastName' && sortOrder}
-                    onClick={() => handleSortChange('lastName')}
-                    isParentHovered={hoveredHeader === 'lastName'}
-                  />
-                </div>
-                <div
-                  onMouseEnter={() => setHoveredHeader('mrn')}
-                  onMouseLeave={() => setHoveredHeader(null)}
-                >
-                  MRN
-                  <Spacing horizontal={3} />
-                  <SortArrow
-                    orderType={sortKey === 'mrn' && sortOrder}
-                    onClick={() => handleSortChange('mrn')}
-                    isParentHovered={hoveredHeader === 'mrn'}
-                  />
-                </div>
-                {!isCompact && (
-                  <>
-                    <div
-                      onMouseEnter={() => setHoveredHeader('dob')}
-                      onMouseLeave={() => setHoveredHeader(null)}
-                    >
-                      DOB
-                      <Spacing horizontal={3} />
-                      <SortArrow
-                        orderType={sortKey === 'dob' && sortOrder}
-                        onClick={() => handleSortChange('dob')}
-                        isParentHovered={hoveredHeader === 'dob'}
-                      />
-                    </div>
-                    <div
-                      onMouseEnter={() => setHoveredHeader('age')}
-                      onMouseLeave={() => setHoveredHeader(null)}
-                    >
-                      Age
-                      <Spacing horizontal={3} />
-                      <SortArrow
-                        orderType={sortKey === 'age' && sortOrder}
-                        onClick={() => handleSortChange('age')}
-                        isParentHovered={hoveredHeader === 'age'}
-                      />
-                    </div>
-                    <div
-                      onMouseEnter={() => setHoveredHeader('gender')}
-                      onMouseLeave={() => setHoveredHeader(null)}
-                    >
-                      <Spacing horizontal={3} />
-                      Gender
-                      <Spacing horizontal={3} />
-                      <SortArrow
-                        orderType={sortKey === 'gender' && sortOrder}
-                        onClick={() => handleSortChange('gender')}
-                        isParentHovered={hoveredHeader === 'gender'}
-                      />
-                    </div>
-                  </>
-                )}
-              </ListHeader>
-              {sortedPatientsWithOrderType.map(
-                ({
-                  patientIdentifier,
-                  mrn,
-                  lastName,
-                  firstName,
-                  middleName,
-                  dob,
-                  age,
-                  gender,
-                  fromEMR,
-                }) => (
-                  <div
-                    key={patientIdentifier}
-                    onClick={async () => {
-                      if (fromEMR) {
-                        const patient = await lookupEMRPatient(
-                          patientIdentifier,
-                        );
-                        history.push(
-                          `/core/patient/${patient.patientIdentifier}`,
-                        );
-                      } else {
-                        history.push(`/core/patient/${patientIdentifier}`);
+                  <StyledDataGrid
+                    columns={columns}
+                    rows={formattedPatients}
+                    rowHeight={35}
+                    headerHeight={45}
+                    hideFooter
+                    hideFooterPagination
+                    autoHeight
+                    disableColumnMenu
+                    disableSelectionOnClick
+                    onCellClick={async ({ row, field }) => {
+                      if (field === 'patient') {
+                        const { fromEMR, patientIdentifier } = row;
+                        if (fromEMR) {
+                          const patient = await lookupEMRPatient(
+                            patientIdentifier,
+                          );
+                          history.push(
+                            `/core/patient/${patient.patientIdentifier}`,
+                          );
+                        } else {
+                          history.push(`/core/patient/${patientIdentifier}`);
+                        }
                       }
                     }}
-                  >
-                    <ListRow
-                      isHighlighted={
-                        patientIdentifier === highlightedPatientIdentifier
-                      }
-                      isCompact={isCompact}
-                    >
-                      <div>
-                        {`${capitalize(lastName) || '—'}, ${capitalize(
-                          firstName,
-                        ) || '—'} ${capitalize(middleName) || ''}`}
-                      </div>
-                      <div>{mrn}</div>
-                      {!isCompact && (
-                        <>
-                          <div>{formatDateOfBirth(dob)}</div>
-                          <div>{age}</div>
-                          <div>{capitalize(gender)}</div>
-                        </>
-                      )}
-                    </ListRow>
-                  </div>
-                ),
-              )}
-            </NonEmptyListTable>
+                  />
+                </NonEmptyListTable>
+              </Grid>
+            </SafariFixGrid>
           ) : (
             <>
               {isFiltered || isGuest || emrIntegrationEnabled ? (

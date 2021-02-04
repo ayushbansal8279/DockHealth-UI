@@ -1,89 +1,35 @@
+import React, { useEffect, useMemo } from 'react';
 import { Grid, Button } from '@material-ui/core';
+import moment from 'moment';
 import { func } from 'prop-types';
-import {
-  ascend,
-  descend,
-  filter,
-  identity,
-  includes,
-  isEmpty,
-  reject,
-  sortWith,
-} from 'ramda';
-import React, { useEffect } from 'react';
+import { filter, includes, isEmpty, reject } from 'ramda';
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/taskView/Search/Search';
+import Member from 'components/members/Member/Member';
+
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
-import SortingColumn, {
-  SORTING_PROPERTIES,
-  SORTING_PROPERTIES_PREDICATES,
-} from './SubscriptionsView.MembersTable.SortingColumn';
 import {
   MembersTableContainer,
   MemberTable,
-  MemberTableHeader,
-  SubscriptionLabelBox,
-  ColumnContainer,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
   USER_SUBSCRIPTION_STATUS,
 } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
-import OrganizationMemberRow, {
-  EmptyOrganizationMemberRow,
-} from './SubscriptionsView.OrganizationMemberRow';
+import MemberTypeOptions from './SubscriptionsView.MemberTypeOptions';
+import EmptyOrganizationMemberRow from './SubscriptionsView.EmptyOrganizationMemberRow';
+import { getUserTypeLabel } from './SubscriptionsView.MembersTable.helpers';
+import { StyledDataGrid } from './DataGridStyles';
 
 const MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT = 10;
-
-const renderOrganizationMemberRow = ({
-  toggleSelectedUser,
-  isUserSelected,
-  isSmallScreen,
-  showJoined,
-  showSubscription,
-  chosenSubscriptionPlan,
-  subscriptionPlanData,
-  organizationMembers,
-}) => props => {
-  const { firstName, lastName, email, userIdentifier, userStatus } = props;
-  const key = `${firstName}${lastName}${userIdentifier}${email}`;
-
-  return (
-    <OrganizationMemberRow
-      key={key}
-      toggleSelectedUser={toggleSelectedUser}
-      isUserSelected={isUserSelected}
-      isSmallScreen={isSmallScreen}
-      showJoined={showJoined}
-      showSubscription={showSubscription}
-      chosenSubscriptionPlan={chosenSubscriptionPlan}
-      subscriptionPlanData={subscriptionPlanData}
-      organizationMembers={organizationMembers}
-      isInvited={userStatus === 'INVITED'}
-      userIdentifier={userIdentifier}
-      {...props}
-    />
-  );
-};
 
 const getFilteredOrganizationMembers = ({
   organizationMembers,
   selectedUsers,
   userSubscriptionStatus,
   currentSearch,
-  currentSortingOrder,
-  currentSortingProperty,
 }) => {
-  const sortingMethod = currentSortingOrder === 'asc' ? ascend : descend;
-  const sortingPredicate =
-    SORTING_PROPERTIES_PREDICATES[currentSortingProperty] ?? identity;
-
-  const sortedOrganizationMembers = sortWith(
-    [sortingMethod(sortingPredicate)],
-    organizationMembers ?? [],
-  );
-
   let filteredOrganizationMembers;
 
   switch (userSubscriptionStatus) {
@@ -91,18 +37,18 @@ const getFilteredOrganizationMembers = ({
       filteredOrganizationMembers = filter(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
-        sortedOrganizationMembers,
+        organizationMembers,
       );
       break;
     case USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED:
       filteredOrganizationMembers = reject(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
-        sortedOrganizationMembers,
+        organizationMembers,
       );
       break;
     default:
-      filteredOrganizationMembers = sortedOrganizationMembers;
+      filteredOrganizationMembers = organizationMembers;
       break;
   }
 
@@ -136,6 +82,7 @@ const SubscriptionsViewMembersTable = ({
   plansViewVisible,
   buyButtonDisabled,
   onClickBuyButton,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     currentBreakPoint,
@@ -145,14 +92,129 @@ const SubscriptionsViewMembersTable = ({
     isUserSelected,
     currentSearch,
     setCurrentSearch,
-    currentSortingProperty,
-    currentSortingOrder,
-    setSortingProperty,
   } = initializeMembersTableHooks({
     setSelectedUsers,
     selectedUsers,
     getAllUsers,
   });
+
+  const columns = useMemo(
+    () => [
+      {
+        field: 'userName',
+        headerName: 'USER',
+        flex: 1,
+        renderCell: ({ row }) => {
+          return (
+            <>
+              <Member size={22} member={row} />
+              <Spacing horizontal={4} />
+              <span className="member-cell">{row?.userName}</span>
+            </>
+          );
+        },
+      },
+      {
+        field: 'email',
+        headerName: 'EMAIL',
+        flex: 1,
+      },
+      {
+        field: 'orgUserRole',
+        headerName: 'USER STATUS',
+        flex: 0.5,
+        renderCell: ({ row }) => {
+          const {
+            firstName,
+            lastName,
+            email,
+            userIdentifier,
+            userStatus,
+          } = row;
+          const key = `${firstName}${lastName}${userIdentifier}${email}`;
+
+          return (
+            <MemberTypeOptions
+              key={key}
+              toggleSelectedUser={toggleSelectedUser}
+              isUserSelected={isUserSelected}
+              showJoined={showJoined}
+              showSubscription={showSubscription}
+              chosenSubscriptionPlan={chosenSubscriptionPlan}
+              subscriptionPlanData={subscriptionPlanData}
+              organizationMembers={organizationMembers}
+              isInvited={userStatus === 'INVITED'}
+              userIdentifier={userIdentifier}
+              selectedUsers={selectedUsers}
+              {...row}
+            />
+          );
+        },
+        sortComparator: (v1, v2, parameters1, parameters2) => {
+          const {
+            userStatus: userStatus1,
+            orgUserRole: orgUserRole1,
+            eulaAcknowledged: eulaAcknowledged1,
+          } = parameters1.row;
+          const {
+            userStatus: userStatus2,
+            orgUserRole: orgUserRole2,
+            eulaAcknowledged: eulaAcknowledged2,
+          } = parameters2.row;
+
+          const { label: label1 } = getUserTypeLabel({
+            userStatus: userStatus1,
+            orgUserRole: orgUserRole1,
+            eulaAcknowledged: eulaAcknowledged1,
+          });
+
+          const { label: label2 } = getUserTypeLabel({
+            userStatus: userStatus2,
+            orgUserRole: orgUserRole2,
+            eulaAcknowledged: eulaAcknowledged2,
+          });
+
+          if (label1.toLowerCase() > label2.toLowerCase()) return 1;
+          if (label1.toLowerCase() < label2.toLowerCase()) return -1;
+
+          return 0;
+        },
+      },
+      {
+        field: 'registrationDate',
+        headerName: 'JOINED',
+        flex: 0.5,
+        renderCell: ({ row }) => {
+          const { registrationDate, userStatus } = row;
+
+          const registrationMoment = moment(registrationDate);
+          const formattedRegistrationDate = registrationMoment.isValid()
+            ? registrationMoment.format('LL')
+            : '';
+
+          if (userStatus === 'INVITED') return <span>Invitation sent</span>;
+
+          return (
+            <>
+              {showJoined && userStatus !== 'PENDING' && (
+                <span>{formattedRegistrationDate}</span>
+              )}
+            </>
+          );
+        },
+      },
+    ],
+    [
+      chosenSubscriptionPlan,
+      isUserSelected,
+      organizationMembers,
+      selectedUsers,
+      showJoined,
+      showSubscription,
+      subscriptionPlanData,
+      toggleSelectedUser,
+    ],
+  );
 
   const isSmallScreen = currentBreakPoint === 'sm';
   const filteredOrganizationMembers = getFilteredOrganizationMembers({
@@ -160,8 +222,6 @@ const SubscriptionsViewMembersTable = ({
     selectedUsers,
     userSubscriptionStatus,
     currentSearch,
-    currentSortingOrder,
-    currentSortingProperty,
   });
 
   const filteredOrganizationMembersCount = filteredOrganizationMembers.length;
@@ -172,6 +232,15 @@ const SubscriptionsViewMembersTable = ({
         MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT,
     );
   }, [filteredOrganizationMembersCount, toggleInvitationPanelVisibility]);
+
+  const filteredOrganizationMembersWithId = useMemo(
+    () =>
+      filteredOrganizationMembers.map(member => ({
+        id: member.userIdentifier,
+        ...member,
+      })),
+    [filteredOrganizationMembers],
+  );
 
   return (
     <MembersTableContainer>
@@ -225,67 +294,20 @@ const SubscriptionsViewMembersTable = ({
             </Grid>
           )}
           <MemberTable isSmallScreen={isSmallScreen}>
-            <MemberTableHeader container spacing={1}>
-              <Grid item xs={1} />
-              <Grid item xs={3}>
-                <SortingColumn
-                  currentSortingOrder={currentSortingOrder}
-                  currentSortingProperty={currentSortingProperty}
-                  sortingProperty={SORTING_PROPERTIES.NAME}
-                  setSortingProperty={setSortingProperty}
-                >
-                  NAME
-                </SortingColumn>
-              </Grid>
-              <Grid item xs={2}>
-                <SortingColumn
-                  currentSortingOrder={currentSortingOrder}
-                  currentSortingProperty={currentSortingProperty}
-                  sortingProperty={SORTING_PROPERTIES.USER_TYPE}
-                  setSortingProperty={setSortingProperty}
-                >
-                  USER TYPE
-                </SortingColumn>
-              </Grid>
-
-              <Grid item xs={2}>
-                {showJoined && (
-                  <SortingColumn
-                    currentSortingOrder={currentSortingOrder}
-                    currentSortingProperty={currentSortingProperty}
-                    sortingProperty={SORTING_PROPERTIES.JOINED}
-                    setSortingProperty={setSortingProperty}
-                  >
-                    JOINED
-                  </SortingColumn>
-                )}
-              </Grid>
-              <Grid item xs={2}>
-                <ColumnContainer>LISTS (Guests)</ColumnContainer>
-              </Grid>
-              <Grid item xs={2}>
-                {showSubscription && (
-                  <SubscriptionLabelBox>SUBSCRIPTION</SubscriptionLabelBox>
-                )}
-              </Grid>
-            </MemberTableHeader>
-
             {isEmpty(filteredOrganizationMembers) ? (
               <EmptyOrganizationMemberRow />
             ) : (
-              filteredOrganizationMembers.map(
-                renderOrganizationMemberRow({
-                  toggleSelectedUser,
-                  isUserSelected,
-                  isSmallScreen,
-                  showJoined,
-                  showSubscription,
-                  selectedUsers,
-                  subscriptionPlanData,
-                  chosenSubscriptionPlan,
-                  organizationMembers,
-                }),
-              )
+              <StyledDataGrid
+                columns={columns}
+                rows={filteredOrganizationMembersWithId}
+                rowHeight={35}
+                headerHeight={45}
+                hideFooter
+                hideFooterPagination
+                autoHeight
+                disableColumnMenu
+                disableSelectionOnClick
+              />
             )}
           </MemberTable>
         </>

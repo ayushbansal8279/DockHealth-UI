@@ -27,10 +27,6 @@ const initializeMembersTableHooks = ({
   const [currentSearch, setCurrentSearchRaw] = useState('');
   const [isAllUsersSelected, toggleAllUsersSelectedRaw] = useToggle(false);
 
-  const [currentSortingProperty, setCurrentSortingProperty] = useState('');
-
-  const [currentSortingOrder, setCurrentSortingOrder] = useState('asc');
-
   const toggleAllUsersSelected = useCallback(
     event => {
       const newAllUsersSelected = event.target.checked;
@@ -111,19 +107,6 @@ const initializeMembersTableHooks = ({
     [selectedUsers],
   );
 
-  const setSortingProperty = useCallback(
-    sortingProperty => {
-      if (currentSortingProperty === sortingProperty) {
-        setCurrentSortingOrder(currentSortingOrder === 'asc' ? 'desc' : 'asc');
-      } else {
-        setCurrentSortingOrder('asc');
-      }
-
-      setCurrentSortingProperty(sortingProperty);
-    },
-    [currentSortingOrder, currentSortingProperty],
-  );
-
   return {
     currentBreakPoint,
     organizationMembers,
@@ -134,11 +117,6 @@ const initializeMembersTableHooks = ({
     setCurrentSearch,
     isAllUsersSelected,
     toggleAllUsersSelected,
-    currentSortingProperty,
-    currentSortingOrder,
-    setCurrentSortingProperty,
-    setCurrentSortingOrder,
-    setSortingProperty,
   };
 };
 
