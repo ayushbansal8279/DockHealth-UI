@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 import React, { PureComponent } from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
@@ -117,30 +118,32 @@ class PersonDetailsView extends PureComponent {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, match, sort } = this.props;
+    const { selectedFilters, sort } = this.props;
 
-    const { params } = match;
-    const { tabName } = params;
+    if (!shouldResetBulkEditTasks) {
+      if (previousState?.searchValue !== searchValue) {
+        this.setState({ shouldResetBulkEditTasks: true });
+      }
 
-    if (
-      previousState?.searchValue !== searchValue ||
-      Object.keys(previousProps?.selectedFilters || []).length !==
-        Object.keys(selectedFilters || []).length ||
-      (tabName === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
-    ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ shouldResetBulkEditTasks: true });
+      if (
+        Object.keys(previousProps?.selectedFilters || []).length !==
+        Object.keys(selectedFilters || []).length
+      ) {
+        this.setState({ shouldResetBulkEditTasks: true });
+      }
     }
 
-    if (
-      (searchValue === previousState?.searchValue ||
-        (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
-          Object.keys(selectedFilters || []).length !== 0) ||
-        tabName === TaskListTabName.OPEN) &&
-      shouldResetBulkEditTasks
-    ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ shouldResetBulkEditTasks: false });
+    if (shouldResetBulkEditTasks) {
+      if (searchValue === previousState?.searchValue) {
+        this.setState({ shouldResetBulkEditTasks: false });
+      }
+
+      if (
+        Object.keys(previousProps?.selectedFilters || []).length === 0 &&
+        Object.keys(selectedFilters || []).length !== 0
+      ) {
+        this.setState({ shouldResetBulkEditTasks: false });
+      }
     }
 
     if (
@@ -294,6 +297,8 @@ class PersonDetailsView extends PureComponent {
     const { match, history } = this.props;
     const { params } = match;
     const { userIdentifier } = params;
+
+    this.setState({ shouldResetBulkEditTasks: true });
 
     history.push(
       `/core/assignedToPerson/${userIdentifier}${

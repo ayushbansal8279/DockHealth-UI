@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable sonarjs/cognitive-complexity */
 import { isEmpty, isNil } from 'ramda';
 import React, { Component } from 'react';
@@ -207,10 +208,7 @@ class Home extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, match, sort } = this.props;
-
-    const { params } = match;
-    const { tabName } = params;
+    const { selectedFilters, sort } = this.props;
 
     if (
       previousProps.sort?.key !== sort?.key ||
@@ -219,25 +217,30 @@ class Home extends Component {
       this.refreshTab();
     }
 
-    if (
-      previousState?.searchValue !== searchValue ||
-      Object.keys(previousProps?.selectedFilters || []).length !==
-        Object.keys(selectedFilters || []).length ||
-      (tabName === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
-    ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ shouldResetBulkEditTasks: true });
+    if (!shouldResetBulkEditTasks) {
+      if (previousState?.searchValue !== searchValue) {
+        this.setState({ shouldResetBulkEditTasks: true });
+      }
+
+      if (
+        Object.keys(previousProps?.selectedFilters || []).length !==
+        Object.keys(selectedFilters || []).length
+      ) {
+        this.setState({ shouldResetBulkEditTasks: true });
+      }
     }
 
-    if (
-      (searchValue === previousState?.searchValue ||
-        (Object.keys(previousProps?.selectedFilters || []).length === 0 &&
-          Object.keys(selectedFilters || []).length !== 0) ||
-        tabName === TaskListTabName.OPEN) &&
-      shouldResetBulkEditTasks
-    ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ shouldResetBulkEditTasks: false });
+    if (shouldResetBulkEditTasks) {
+      if (searchValue === previousState?.searchValue) {
+        this.setState({ shouldResetBulkEditTasks: false });
+      }
+
+      if (
+        Object.keys(previousProps?.selectedFilters || []).length === 0 &&
+        Object.keys(selectedFilters || []).length !== 0
+      ) {
+        this.setState({ shouldResetBulkEditTasks: false });
+      }
     }
   }
 
@@ -579,6 +582,8 @@ class Home extends Component {
     const { match, history } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
+
+    this.setState({ shouldResetBulkEditTasks: true });
 
     history.push(
       `/core/tasks/${taskListIdentifier}${
