@@ -211,10 +211,12 @@ class Home extends Component {
     const { selectedFilters, sort } = this.props;
 
     if (
-      previousProps.sort?.key !== sort?.key ||
-      previousProps.sort?.order !== sort?.order
+      (previousProps.sort?.key !== sort?.key ||
+        previousProps.sort?.order !== sort?.order) &&
+      previousProps.match.params.taskListIdentifier ===
+        params.taskListIdentifier
     ) {
-      this.refreshTab();
+      this.refreshTab(true);
     }
 
     if (!shouldResetBulkEditTasks) {
@@ -245,7 +247,9 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
-    const { actions } = this.props;
+    const { actions, taskListActions } = this.props;
+
+    taskListActions.sortListTasks(null, null);
 
     actions.resetTaskCounters();
   }

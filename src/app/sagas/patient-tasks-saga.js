@@ -582,7 +582,7 @@ function* doSortPatientTasks({ payload }) {
       order,
     },
   });
-  yield put(refreshPatientTasks({ withLoader: false }));
+  yield put(refreshPatientTasks({ withLoader: true }));
 }
 
 export default function* watchPatientTasks() {

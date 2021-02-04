@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Box } from '@material-ui/core';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
-import { SortHeaderButton, SortArrowWrapper } from './styled';
+import { SortHeaderButton } from './styled';
 
 interface ColumnSortHeaderProps {
   id: string;
@@ -54,12 +54,10 @@ const DashboardColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {id && label && typeof onSortChange === 'function' && (
-        <SortArrowWrapper>
-          <SortArrow
-            isParentHovered={isHovered}
-            orderType={id === sort?.key && sort?.order}
-          />
-        </SortArrowWrapper>
+        <SortArrow
+          isParentHovered={isHovered}
+          orderType={id === sort?.key && sort?.order}
+        />
       )}
       <Box m={0.5} />
       {label}

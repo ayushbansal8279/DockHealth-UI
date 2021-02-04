@@ -215,7 +215,12 @@ const DashboardTasksGroup = ({
               </span>
             </Arrow>
           </Grid>
-          <Grid item {...gridConfig.dynamicColumn[dynamicColumnType]}>
+          <Grid
+            container
+            item
+            alignItems="center"
+            {...gridConfig.dynamicColumn[dynamicColumnType]}
+          >
             {groupIsOpen && (
               <DashboardColumnSortHeader
                 id={dynamicColumn.id}
@@ -226,7 +231,12 @@ const DashboardTasksGroup = ({
             )}
           </Grid>
           {isAllTasksTab && (
-            <Grid item {...gridConfig.assignedPerson}>
+            <Grid
+              container
+              item
+              alignItems="center"
+              {...gridConfig.assignedPerson}
+            >
               {groupIsOpen && (
                 <DashboardColumnSortHeader
                   id="ASSIGNED"
@@ -238,7 +248,7 @@ const DashboardTasksGroup = ({
             </Grid>
           )}
 
-          <Grid item {...gridConfig.listName}>
+          <Grid container item alignItems="center" {...gridConfig.listName}>
             {groupIsOpen && (
               <DashboardColumnSortHeader
                 id="LIST_NAME"

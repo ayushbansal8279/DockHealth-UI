@@ -150,12 +150,14 @@ class PersonDetailsView extends PureComponent {
       previousProps.sort?.key !== sort?.key ||
       previousProps.sort?.order !== sort?.order
     ) {
-      this.refreshTab();
+      this.refreshTab(true);
     }
   }
 
   componentWillUnmount() {
     const { personDetailsActions } = this.props;
+
+    personDetailsActions.sortPersonTasks(null, null);
 
     personDetailsActions.resetTaskCounters();
   }
