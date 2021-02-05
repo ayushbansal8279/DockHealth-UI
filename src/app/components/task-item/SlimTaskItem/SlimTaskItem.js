@@ -61,7 +61,11 @@ const DueDateComponent = ({ dueDate, updateDueDate, task }) => {
       selectedDate={dueDate}
       onDateChange={date => {
         const existingTime = dueDate ? moment(dueDate).format('HH:mm') : '';
-        updateDueDate(task, moment(`${date} ${existingTime}`), true);
+        updateDueDate(
+          task,
+          moment(`${date} ${existingTime}`, 'YYYY-MM-DD HH:mm'),
+          true,
+        );
       }}
       quickSelectOptions={dueDateQuickSelectOptions}
     >
