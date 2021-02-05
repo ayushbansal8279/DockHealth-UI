@@ -208,7 +208,8 @@ class Home extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, sort } = this.props;
+    const { selectedFilters, sort, match } = this.props;
+    const { params } = match;
 
     if (
       (previousProps.sort?.key !== sort?.key ||
