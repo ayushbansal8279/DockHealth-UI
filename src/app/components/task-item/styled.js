@@ -278,6 +278,8 @@ export const ThreeDots = styled.img`
 
 export const StandardTaskThreeDots = styled(ThreeDots)`
   left: -12px;
+  background-color: ${palette.coolGrey4};
+  padding: 2px 1px 2px 2px;
 `;
 
 export const StandardTaskItemPanel = styled.div`
