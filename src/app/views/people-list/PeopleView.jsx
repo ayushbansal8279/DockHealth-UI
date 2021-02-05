@@ -103,10 +103,10 @@ class PeopleView extends PureComponent {
               <img alt="lightbulb" src={LightbulbBig} />
               <HeaderMessage>
                 <HeaderMessageTitle>
-                  Manage users in subscription and users
+                  Manage people in the Subscription and Users section.
                 </HeaderMessageTitle>
                 <HeaderMessageDescription>
-                  Add, remove users and change roles for people within your
+                  Invite, remove, and change roles for people within your
                   organization.
                 </HeaderMessageDescription>
               </HeaderMessage>
