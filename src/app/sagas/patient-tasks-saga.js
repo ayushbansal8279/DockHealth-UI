@@ -42,8 +42,7 @@ import {
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
-
-import { locationParametersSelector } from '../location/selectors';
+import { locationParametersSelector } from 'location/selectors';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
   'DO_FETCH_STATS_FOR_PATIENT_TASKS';

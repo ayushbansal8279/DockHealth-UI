@@ -15,6 +15,7 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import palette from 'styles/palette';
+import { locationParametersSelector } from 'location/selectors';
 import {
   DrawerMyListsLabel,
   DrawerListsList,
@@ -25,19 +26,22 @@ import {
   DrawerItemOptions,
   DrawerListsItemNewLabel,
   DrawerListsNewLabel,
+  ListNameText,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
 const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
-const MAX_LABEL_LENGTH = 28;
-
 const DrawerListsSubmenu = () => {
   const history = useHistory();
+  const { taskListIdentifier: activeTaskListIdentifier } = useSelector(
+    locationParametersSelector,
+  );
   const { activeLists, pendingLists } = useSelector(store => ({
     activeLists: listsSelector(store),
     pendingLists: store.invitationState.pendingTasklists,
   }));
+
   const dispatch = useDispatch();
 
   const hoveredItemReference = useRef(null);
@@ -71,8 +75,9 @@ const DrawerListsSubmenu = () => {
 
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
+    const { scrollWidth, offsetWidth } = target;
 
-    if (listName?.length > MAX_LABEL_LENGTH) {
+    if (scrollWidth > offsetWidth) {
       hoveredItemReference.current = target;
       setPopoverLabel(listName);
     }
@@ -206,20 +211,22 @@ const DrawerListsSubmenu = () => {
                 : `drawer-menu-list-item`
             }
           >
-            <div
+            <ListNameText
+              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
               onMouseEnter={event => handleMouseEnter(event, list?.listName)}
               onMouseLeave={() => setPopoverLabel(null)}
               onClick={() => {
+                if (activeTaskListIdentifier === list?.taskListIdentifier)
+                  return;
+
                 if (list?.status === 'PENDING') {
                   dispatch(InvitationActions.acceptInviteToTaskList(list));
                 }
                 history.push(`/tasks/${list.taskListIdentifier}`);
               }}
             >
-              {list?.listName?.length > MAX_LABEL_LENGTH
-                ? `${list.listName?.slice(0, MAX_LABEL_LENGTH)}...`
-                : list?.listName}
-            </div>
+              {list?.listName}
+            </ListNameText>
             {list?.status === 'PENDING' && (
               <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
             )}

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { RESET_APP } from 'actions/action-types';
 import ModalReducer from 'modal/reducers';
+import LocationReducer from 'location/reducers';
 import AlertChipReducer from 'alert/reducer';
 import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
@@ -16,7 +17,6 @@ import TaskReducer from './task-reducer';
 import TaskListReducer from './tasklist-reducer';
 import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
-import LocationReducer from '../location/reducers';
 import ListDetailsReducer from './list-details-reducer';
 import PatientTasksReducer from './patient-tasks-reducer';
 import TemplateReducer from './template-reducer';

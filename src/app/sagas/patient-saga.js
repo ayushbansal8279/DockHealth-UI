@@ -15,7 +15,7 @@ import {
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { locationParametersSelector } from '../location/selectors';
+import { locationParametersSelector } from 'location/selectors';
 
 export const DO_GET_PATIENT = 'DO_GET_PATIENT';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';

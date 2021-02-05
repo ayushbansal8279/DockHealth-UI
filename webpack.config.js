@@ -134,6 +134,7 @@ const config = (environment, options) => {
         alert: path.resolve(__dirname, 'src/app/alert'),
         sagas: path.resolve(__dirname, 'src/app/sagas'),
         routing: path.resolve(__dirname, 'src/app/routing'),
+        location: path.resolve(__dirname, 'src/app/location'),
       },
     },
     devServer: {

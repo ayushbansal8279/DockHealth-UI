@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import { Route, useRouteMatch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setLocationAndParameters } from '../location/actions';
+import { setLocationAndParameters } from 'location/actions';
 
 export const RouteWrapper = ({
   path,

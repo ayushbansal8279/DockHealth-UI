@@ -245,7 +245,6 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-  cursor: pointer;
   padding-bottom: ${spacing.tiny};
 `;
 
@@ -267,4 +266,22 @@ export const DrawerListsNewLabel = styled.div`
   font-weight: 400;
   padding: 10px 18px;
   margin-top: ${spacing.smallExtraPlus};
+`;
+
+export const ListNameText = styled.div`
+  flex: 1;
+  padding-right: ${spacing.small};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  ${({ isActive }) =>
+    isActive
+      ? `color: ${palette.brightBlue};`
+      : `
+          &:hover {
+            color: ${palette.brightBlue};
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        `}
 `;
