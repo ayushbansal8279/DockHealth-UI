@@ -66,6 +66,7 @@ export const PatientNoteOption = styled.label`
 
 export const PatientNote = styled.div`
   display: flex;
+  flex-shrink: 0;
   flex-direction: row;
   padding: ${spacing.regular} ${spacing.regular};
   margin: 0 ${spacing.regularPlus};
