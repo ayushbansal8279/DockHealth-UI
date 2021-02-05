@@ -7,6 +7,7 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/taskView/Search/Search';
 import Member from 'components/members/Member/Member';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
@@ -67,6 +68,28 @@ const getFilteredOrganizationMembers = ({
     : filteredOrganizationMembers;
 };
 
+const getTrialPlanPricePerUser = ({ planIsTrial, planPricePerUser }) => {
+  if (planIsTrial) {
+    return '';
+  }
+
+  return `${planPricePerUser}/month`;
+};
+
+const renderListNames = listNames => {
+  if (listNames.length === 0) return '';
+
+  const label = listNames.map(({ fullName }, index) =>
+    index + 1 === listNames.length ? fullName : `${fullName}, `,
+  );
+
+  return (
+    <UniversalTooltipContainer placement="top" label={label}>
+      +{listNames?.length}
+    </UniversalTooltipContainer>
+  );
+};
+
 const SubscriptionsViewMembersTable = ({
   selectedUsers,
   setSelectedUsers,
@@ -96,6 +119,13 @@ const SubscriptionsViewMembersTable = ({
     setSelectedUsers,
     selectedUsers,
     getAllUsers,
+  });
+
+  const { planPricePerUser, planIsTrial } = subscriptionPlanData || {};
+
+  const trialPlanPricePerUser = getTrialPlanPricePerUser({
+    planIsTrial,
+    planPricePerUser,
   });
 
   const columns = useMemo(
@@ -203,6 +233,50 @@ const SubscriptionsViewMembersTable = ({
           );
         },
       },
+      {
+        field: 'taskLists',
+        headerName: 'LISTS (Guests)',
+        flex: 0.5,
+        sortable: false,
+        renderCell: ({ row }) => {
+          const { orgUserRole, taskLists } = row;
+
+          const listsNames =
+            orgUserRole === 'GUEST' && taskLists?.length > 0
+              ? taskLists
+                  ?.map(({ listName }) => ({
+                    fullName: listName,
+                    shortName:
+                      listName.length < 15
+                        ? null
+                        : `${listName.slice(0, 14)}...`,
+                  }))
+                  // eslint-disable-next-line func-names
+                  .sort(function(a, b) {
+                    if (a.fullName < b.fullName) {
+                      return -1;
+                    }
+                    if (a.fullName > b.fullName) {
+                      return 1;
+                    }
+                    return 0;
+                  })
+              : [];
+
+          return renderListNames(listsNames);
+        },
+      },
+      {
+        field: 'subscription',
+        headerName: 'SUBSCRIPTION',
+        flex: 0.5,
+        sortable: false,
+        renderCell: () => {
+          if (showSubscription) return <span>{trialPlanPricePerUser}</span>;
+
+          return '';
+        },
+      },
     ],
     [
       chosenSubscriptionPlan,
@@ -213,6 +287,7 @@ const SubscriptionsViewMembersTable = ({
       showSubscription,
       subscriptionPlanData,
       toggleSelectedUser,
+      trialPlanPricePerUser,
     ],
   );
 
