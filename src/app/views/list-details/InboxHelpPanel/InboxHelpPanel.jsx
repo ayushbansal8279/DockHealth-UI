@@ -40,7 +40,7 @@ const InboxHelpPanel = ({ arrowAnchorElement }) => (
       </MontserratTypography>
       <Spacing vertical={4} />
       <Grid container spacing={2}>
-        <Grid item xs={5}>
+        <Grid item xs={7}>
           <SmallRobotoTypography variant="h4" weight="500">
             Add any or all special characters below into the subject line of the
             email you are forwarding and Dock will organize them accordingly.
@@ -48,10 +48,18 @@ const InboxHelpPanel = ({ arrowAnchorElement }) => (
           <Spacing vertical={5} />
           <MontserratTypography variant="h4">
             <span>Subject line: </span>
-            <b>#ListName</b>
+            <b>&gt;ListName</b>
           </MontserratTypography>
           <SmallRobotoTypography variant="h4" weight="500">
-            Add the list name after # to send an email directly to that list.
+            Add the list name after &gt; to send an email directly to that list
+          </SmallRobotoTypography>
+          <Spacing vertical={4} />
+          <MontserratTypography variant="h4">
+            <span>Subject line: </span>
+            <b>^ListGroup</b>
+          </MontserratTypography>
+          <SmallRobotoTypography variant="h4" weight="500">
+            Add the task to an existing task group in the list specified
           </SmallRobotoTypography>
           <Spacing vertical={4} />
           <MontserratTypography variant="h4">
@@ -79,8 +87,32 @@ const InboxHelpPanel = ({ arrowAnchorElement }) => (
             Assign the task to a user within a list (user must be a member of
             this list, e.g. @ElonMusk)
           </SmallRobotoTypography>
+          <Spacing vertical={4} />
+          <MontserratTypography variant="h4">
+            <span>Subject line: </span>
+            <b>#FirstLast</b>
+          </MontserratTypography>
+          <SmallRobotoTypography variant="h4" weight="500">
+            Assign an existing patient to the task (e.g. #JohnDoe)
+          </SmallRobotoTypography>
+          <Spacing vertical={4} />
+          <MontserratTypography variant="h4">
+            <span>Subject line: </span>
+            <b>+LabelName</b>
+          </MontserratTypography>
+          <SmallRobotoTypography variant="h4" weight="500">
+            Add an existing label to the task
+          </SmallRobotoTypography>
+          <Spacing vertical={4} />
+          <MontserratTypography variant="h4">
+            <span>Subject line: </span>
+            <b>:Status</b>
+          </MontserratTypography>
+          <SmallRobotoTypography variant="h4" weight="500">
+            Set a default task status
+          </SmallRobotoTypography>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={5}>
           <img alt="pointing" src={InboxTip} />
         </Grid>
       </Grid>
