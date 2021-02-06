@@ -459,8 +459,8 @@ export const moveTask = (
   if (taskGroupIdentifier) {
     updatedTask.taskGroupIdentifier = taskGroupIdentifier;
   }
-
   if (parentTaskIdentifier) {
+    updatedTask.parentTaskId = null;
     updatedTask.parentTaskIdentifier = parentTaskIdentifier;
   }
 
@@ -471,6 +471,20 @@ export const moveTask = (
         task,
         taskList,
       });
+      if (parentTaskIdentifier) {
+        dispatch(
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          refreshAnotherTask({
+            taskIdentifier: task.parentTaskIdentifier,
+          }),
+        );
+        dispatch(
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          refreshAnotherTask({
+            taskIdentifier: parentTaskIdentifier,
+          }),
+        );
+      }
       dispatch(
         getTasksGroupsList({
           taskListIdentifier: taskList.taskListIdentifier,
