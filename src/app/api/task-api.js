@@ -794,11 +794,16 @@ export function getTasksForTaskListByTaskGroup(
   status,
   startPosition = 0,
   endPosition = 0,
+  sort,
 ) {
   return axios
     .get(
       `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&startPosition=${startPosition}${
         !isNil(endPosition) ? `&endPosition=${endPosition}` : ''
+      }${
+        !isNil(sort)
+          ? `&sortBy=${sort?.key || undefined}&sortDirection=${sort?.order}`
+          : ''
       }`,
     )
     .then(({ data }) => data)

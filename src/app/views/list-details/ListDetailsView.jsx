@@ -774,17 +774,18 @@ class Home extends Component {
     tasksGroupsListActions.createTaskGroupList({ groupName });
   };
 
-  loadTasksForTaskGroup = ({ taskGroupIdentifier, startPosition }) => {
+  loadTasksForTaskGroup = ({ taskGroupIdentifier, startPosition, sort }) => {
     const { tasksGroupsListActions } = this.props;
     const payload = {
       taskGroupIdentifier,
       status: 'INCOMPLETE',
       startPosition,
+      sort,
     };
     tasksGroupsListActions.getTasksForTaskGroups(payload);
   };
 
-  loadMoreTasksForList = ({ status, startPosition }) => {
+  loadMoreTasksForList = ({ status, startPosition, sort }) => {
     const { actions, match } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
@@ -792,7 +793,7 @@ class Home extends Component {
     const endPosition = 0;
     actions.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
-      undefined,
+      sort,
       undefined,
       status,
       false,

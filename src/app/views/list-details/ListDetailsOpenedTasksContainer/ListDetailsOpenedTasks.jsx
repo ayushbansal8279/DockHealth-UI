@@ -174,6 +174,7 @@ const ListDetailsOpenedTasks = ({
                 taskGroupIdentifier,
                 startPosition:
                   tasksGrouped[taskGroupIdentifier]?.tasks?.length || 0,
+                sort,
               });
             }}
             taskListIdentifier={taskListIdentifier}

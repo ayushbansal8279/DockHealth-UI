@@ -309,6 +309,7 @@ export function* doGetTasksForTaskGroup(payload) {
       endPosition,
       refresh,
       shouldSaveInStore = true,
+      sort,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
     if (!refresh) {
@@ -325,6 +326,7 @@ export function* doGetTasksForTaskGroup(payload) {
       status,
       startPosition,
       endPosition,
+      sort,
     );
 
     if (shouldSaveInStore) {

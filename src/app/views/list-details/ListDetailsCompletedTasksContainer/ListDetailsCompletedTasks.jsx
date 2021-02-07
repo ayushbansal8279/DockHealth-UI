@@ -73,6 +73,7 @@ const ListDetailsCompletedTasks = ({
                     loadMoreTasksForList({
                       status: 'COMPLETE',
                       startPosition: completedTasksGroup?.tasks?.length || 0,
+                      sort,
                     });
                   }}
                   sort={sort}
