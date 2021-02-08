@@ -774,18 +774,26 @@ class Home extends Component {
     tasksGroupsListActions.createTaskGroupList({ groupName });
   };
 
-  loadTasksForTaskGroup = ({ taskGroupIdentifier, startPosition, sort }) => {
+  loadTasksForTaskGroup = ({
+    taskGroupIdentifier,
+    startPosition,
+    sort,
+    viewMode,
+    refresh,
+  }) => {
     const { tasksGroupsListActions } = this.props;
     const payload = {
       taskGroupIdentifier,
       status: 'INCOMPLETE',
       startPosition,
       sort,
+      viewMode,
+      refresh,
     };
     tasksGroupsListActions.getTasksForTaskGroups(payload);
   };
 
-  loadMoreTasksForList = ({ status, startPosition, sort }) => {
+  loadMoreTasksForList = ({ status, startPosition, sort, viewMode }) => {
     const { actions, match } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
@@ -800,6 +808,7 @@ class Home extends Component {
       startPosition,
       endPosition,
       loadingMore,
+      viewMode,
     );
   };
 

@@ -69,6 +69,7 @@ export function getListTasksGroupedByTaskGroup(
   filterBy,
   startPosition = 0,
   endPosition = 0,
+  viewMode,
 ) {
   return axios
     .get(`task/findListTasksGroupedByTaskGroup/${taskListIdentifier}`, {
@@ -79,6 +80,7 @@ export function getListTasksGroupedByTaskGroup(
         sortBy: sortBy?.key || undefined,
         sortDirection: sortBy?.order || undefined,
         filterBy: filterBy || undefined,
+        viewMode: viewMode || undefined,
       },
     })
     .then(response => response?.data)
@@ -795,16 +797,17 @@ export function getTasksForTaskListByTaskGroup(
   startPosition = 0,
   endPosition = 0,
   sort,
+  viewMode,
 ) {
   return axios
     .get(
       `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}?status=${status}&startPosition=${startPosition}${
         !isNil(endPosition) ? `&endPosition=${endPosition}` : ''
       }${
-        !isNil(sort)
+        !isNil(sort?.key)
           ? `&sortBy=${sort?.key || undefined}&sortDirection=${sort?.order}`
           : ''
-      }`,
+      }${!isNil(viewMode) ? `&viewMode=${viewMode}` : ''}`,
     )
     .then(({ data }) => data)
     .catch(error => {

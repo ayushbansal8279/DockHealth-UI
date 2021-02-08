@@ -77,6 +77,7 @@ const TasksGroup = ({
   taskListIdentifier,
   sort,
   onSortChange,
+  onTaskGroupViewModeChange,
 }) => {
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -192,7 +193,10 @@ const TasksGroup = ({
                 <ViewIcon
                   alt="slim-view"
                   src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
-                  onClick={() => setViewType(SLIM_VIEW)}
+                  onClick={() => {
+                    setViewType(SLIM_VIEW);
+                    onTaskGroupViewModeChange(SLIM_VIEW);
+                  }}
                 />
               </UniversalTooltipContainer>
             </ViewIconBox>
@@ -204,7 +208,10 @@ const TasksGroup = ({
                 <ViewIcon
                   alt="full-view"
                   src={isFullView ? FullViewActiveIcon : FullViewIcon}
-                  onClick={() => setViewType(FULL_VIEW)}
+                  onClick={() => {
+                    setViewType(FULL_VIEW);
+                    onTaskGroupViewModeChange(FULL_VIEW);
+                  }}
                 />
               </UniversalTooltipContainer>
             </ViewIconBox>

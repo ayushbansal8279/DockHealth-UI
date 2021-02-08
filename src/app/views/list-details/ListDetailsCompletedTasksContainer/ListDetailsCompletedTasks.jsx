@@ -76,6 +76,14 @@ const ListDetailsCompletedTasks = ({
                       sort,
                     });
                   }}
+                  onTaskGroupViewModeChange={viewMode => {
+                    loadMoreTasksForList({
+                      status: 'COMPLETE',
+                      startPosition: 0,
+                      sort,
+                      viewMode,
+                    });
+                  }}
                   sort={sort}
                   onSortChange={onSortChange}
                 />

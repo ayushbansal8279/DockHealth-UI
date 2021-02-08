@@ -128,6 +128,7 @@ export function getListTasksGroupedByTaskGroup(
   startPosition = 0,
   endPosition = 0,
   loadingMore = false,
+  viewMode,
 ) {
   const action = getListWithGroupsAction({ status });
 
@@ -145,6 +146,7 @@ export function getListTasksGroupedByTaskGroup(
       filterBy,
       startPosition,
       endPosition,
+      viewMode,
     )
       .then(groupedTasks => {
         dispatch({ type: action, groupedTasks, loadingMore });

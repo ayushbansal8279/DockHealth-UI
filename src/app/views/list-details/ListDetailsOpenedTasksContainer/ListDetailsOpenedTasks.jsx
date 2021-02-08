@@ -177,6 +177,14 @@ const ListDetailsOpenedTasks = ({
                 sort,
               });
             }}
+            onTaskGroupViewModeChange={viewMode => {
+              loadTasksForTaskGroup({
+                taskGroupIdentifier,
+                startPosition: 0,
+                sort,
+                viewMode,
+              });
+            }}
             taskListIdentifier={taskListIdentifier}
             sort={sort}
             onSortChange={onSortChange}
