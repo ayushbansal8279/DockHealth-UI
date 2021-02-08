@@ -5,9 +5,9 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import GenericHeader from '../common/GenericHeader';
 import ListPopover from '../common/ListPopover';
-import { RotatableHeaderChevron } from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 
 const StyledTitle = styled(Typography)`

@@ -14,7 +14,7 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import PageContentHeader from 'components/common/NewPageContentHeader';
-import RotatableChevron from 'components/common/RotatableChevron';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltip from 'components/common/UniversalTooltip';
 import Search from 'components/task-view/Search/Search';

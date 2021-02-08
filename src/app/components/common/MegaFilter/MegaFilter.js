@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { isEmpty, isNil, partition } from 'ramda';
-import RotatableChevron from 'components/common/RotatableChevron';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import palette from 'styles/palette';
 import {
   getFilterRowComponent,

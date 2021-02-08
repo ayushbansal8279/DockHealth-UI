@@ -3,7 +3,7 @@ import React from 'react';
 import NotificationsCheck from 'img/toolbar-notifications-check';
 import palette from 'styles/palette';
 import ListPopover from 'components/common/ListPopover';
-import RotatableChevron from 'components/common/RotatableChevron';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import { ToolbarLabel } from './styled';
