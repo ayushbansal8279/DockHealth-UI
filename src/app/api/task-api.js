@@ -66,7 +66,6 @@ export function getListTasksGroupedByTaskGroup(
   taskListIdentifier,
   status = 'INCOMPLETE',
   sortBy,
-  filterBy,
   startPosition = 0,
   endPosition = 0,
 ) {
@@ -78,7 +77,6 @@ export function getListTasksGroupedByTaskGroup(
         endPosition,
         sortBy: sortBy?.key || undefined,
         sortDirection: sortBy?.order || undefined,
-        filterBy: filterBy || undefined,
       },
     })
     .then(response => response?.data)
