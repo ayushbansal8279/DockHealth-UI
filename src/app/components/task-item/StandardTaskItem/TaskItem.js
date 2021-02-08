@@ -21,6 +21,7 @@ import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member/Member';
+import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
 import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
@@ -529,7 +530,7 @@ const TaskItem = ({
             paddingLeft="tiny"
             paddingRight="tiny"
           >
-            {!isSubtask && (
+            {!isSubtask ? (
               <>
                 {subTasksCount > 0 ? (
                   <SubtasksCellContentButton
@@ -568,6 +569,8 @@ const TaskItem = ({
                   </>
                 )}
               </>
+            ) : (
+              <SingleSubtaskIcon />
             )}
           </StandardTaskItemCell>
           {patientVisible && (
