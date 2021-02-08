@@ -19,7 +19,7 @@ const DragAndDropGroupList = ({
   dragAndDropDisabled,
   listNameVisible,
   selectedTask,
-  hideSubtasks,
+  subtasksDisabled,
   areFiltersApplied,
   isSearchApplied,
 }) => {
@@ -80,7 +80,7 @@ const DragAndDropGroupList = ({
                     addingNewSubtask={addingNewSubtask}
                     addingNewSubtaskParentId={addingNewSubtaskParentId}
                     subtaskShape={subtaskShape}
-                    hideSubtasks={hideSubtasks}
+                    subtasksDisabled={subtasksDisabled}
                     areFiltersApplied={areFiltersApplied}
                     isSearchApplied={isSearchApplied}
                   />

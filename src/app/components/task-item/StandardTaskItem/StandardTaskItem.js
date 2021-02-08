@@ -30,7 +30,7 @@ const Task = ({
   addingNewSubtask,
   addingNewSubtaskParentId,
   subtaskShape,
-  hideSubtasks,
+  subtasksDisabled,
   areFiltersApplied,
   isSearchApplied,
   listNameVisible,
@@ -101,14 +101,14 @@ const Task = ({
         !isEmpty(renderedSubtasks) ||
         subtaskQuickAddOpen) &&
       !isStartedDnD &&
-      (!hideSubtasks ||
+      (!subtasksDisabled ||
         ((areFiltersApplied || isSearchApplied) &&
           renderedSubtasks?.length > 0)),
     [
       subTasksCount,
       renderedSubtasks,
       isStartedDnD,
-      hideSubtasks,
+      subtasksDisabled,
       areFiltersApplied,
       isSearchApplied,
       subtaskQuickAddOpen,
@@ -146,9 +146,8 @@ const Task = ({
           subtasks={renderedSubtasks}
           subTasksCount={subTasksCount}
           isDraggable={isDraggable}
-          hideSubtasks={hideSubtasks}
+          subtasksDisabled={subtasksDisabled}
           isFullView={isFullView}
-          contextFiltered={isSearchApplied || areFiltersApplied}
           {...restProps}
         />
       </div>

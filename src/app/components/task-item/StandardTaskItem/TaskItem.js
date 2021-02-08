@@ -115,8 +115,7 @@ const TaskItem = ({
   isLast,
   showSubtaskStylingLink,
   isNestedTask = false,
-  hideSubtasks,
-  contextFiltered,
+  subtasksDisabled,
 }) => {
   const {
     taskIdentifier,
@@ -377,7 +376,7 @@ const TaskItem = ({
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
-      if (!hideSubtasks) {
+      if (!subtasksDisabled) {
         if (!isOpen) {
           switchOpen(true);
         } else {
@@ -385,7 +384,7 @@ const TaskItem = ({
         }
       }
     },
-    [isOpen, switchOpen, hideSubtasks],
+    [isOpen, switchOpen, subtasksDisabled],
   );
 
   const onPatientClick = useCallback(() => {
@@ -535,13 +534,13 @@ const TaskItem = ({
                 {subTasksCount > 0 ? (
                   <SubtasksCellContentButton
                     isOpen={isOpen}
-                    disabled={hideSubtasks}
+                    disabled={subtasksDisabled}
                     onClick={onSubtaskLabelClick}
                   >
                     <SubtasksCellText>{subTasksCount}</SubtasksCellText>
                     <SubtasksImg
                       src={
-                        hideSubtasks
+                        subtasksDisabled
                           ? SubtasksIconDisabled
                           : // eslint-disable-next-line unicorn/no-nested-ternary
                           isOpen
@@ -556,7 +555,7 @@ const TaskItem = ({
                     {isHovered &&
                       !isSubtask &&
                       !subtaskQuickAddOpen &&
-                      !hideSubtasks && (
+                      !subtasksDisabled && (
                         <AddSubtaskButton
                           type="button"
                           onClick={() =>
@@ -810,7 +809,7 @@ const TaskItem = ({
           position={contextMenu}
           task={task}
           onClose={() => setContextMenu(null)}
-          contextFiltered={contextFiltered}
+          subtasksDisabled={subtasksDisabled}
         />
       )}
     </>

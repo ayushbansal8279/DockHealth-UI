@@ -296,7 +296,7 @@ const TasksGroup = ({
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
           selectedTask={selectedTask}
-          hideSubtasks={isListFlattened}
+          subtasksDisabled={isListFlattened}
           areFiltersApplied={areFiltersApplied}
           isSearchApplied={isSearchApplied}
         />
