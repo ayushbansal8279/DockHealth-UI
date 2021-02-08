@@ -638,9 +638,9 @@ class Home extends Component {
   };
 
   handleTaskUpdate = updatedTask => {
-    const { selectedFilters } = this.props;
+    const { selectedFilters, sort } = this.props;
 
-    if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+    if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters) || sort?.key) {
       this.refreshTab();
     } else {
       this.refreshFilters();
