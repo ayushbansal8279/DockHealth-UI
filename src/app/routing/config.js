@@ -39,8 +39,7 @@ import SubscriptionPaymentFinishedView from '../views/self-serve/subscription-pa
 import SubscriptionPaymentView from '../views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from '../views/self-serve/subscriptions/SubscriptionsView';
 import SupportView from '../views/Support/SupportView';
-import TaskListActivityFeedView from '../views/TaskList/TaskListActivityFeedView';
-// import TaskListView from '../views/TaskList/TaskListView';
+import TaskListActivityFeedView from '../views/ActivityFeed/TaskListActivityFeedView';
 import UserProfileView from '../views/UserProfile/UserProfileView';
 
 import {
@@ -149,11 +148,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/task-tour/:taskListIdentifier',
     RouteComponent: TaskTourView,
   },
-  // {
-  //   path: '/tasks',
-  //   RouteComponent: TaskListView,
-  //   exact: true,
-  // },
   {
     path: '/tasks/:taskListIdentifier/:tabName?/:taskIdentifier?',
     RouteComponent: ListDetailsView,

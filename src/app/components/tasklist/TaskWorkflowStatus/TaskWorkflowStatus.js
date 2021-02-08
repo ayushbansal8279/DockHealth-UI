@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { STATUSES } from 'components/taskView/newTaskDrawer/NewTaskDrawer.StatusSection.Hooks';
-import { CondensedH4 } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Styled';
+import { STATUSES } from 'components/task-view/newTaskDrawer/NewTaskDrawer.StatusSection.Hooks';
+import { CondensedH4 } from 'components/task-view/newTaskDrawer/NewTaskDrawer.Styled';
 import {
   StyledPopover,
   Box,

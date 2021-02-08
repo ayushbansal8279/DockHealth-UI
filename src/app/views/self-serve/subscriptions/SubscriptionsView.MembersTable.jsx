@@ -5,7 +5,7 @@ import { func } from 'prop-types';
 import { filter, includes, isEmpty, reject } from 'ramda';
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import Search from 'components/taskView/Search/Search';
+import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 

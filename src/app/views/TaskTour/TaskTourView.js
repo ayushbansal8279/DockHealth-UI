@@ -5,7 +5,7 @@ import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
 import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
 import { setHeader } from 'actions/header-actions';
 import { taskListSelector } from 'selectors/task-list-selectors';
-import Header from 'components/taskView/Header';
+import Header from 'components/task-view/Header';
 import Button from 'components/common/Button/Button';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import {

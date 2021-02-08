@@ -34,7 +34,7 @@ import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import { FocusDrawerFieldEnum } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import { FocusDrawerFieldEnum } from 'components/task-view/newTaskDrawer/NewTaskDrawer.Utilities';
 import Spacing from 'components/common/Spacing';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import Tooltip from 'components/common/Tooltip/Tooltip';

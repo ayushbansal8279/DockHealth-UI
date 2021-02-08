@@ -9,10 +9,10 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
-import Toolbar from 'components/taskView/Toolbar/NewToolbar';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
-import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { TaskDrawerFields } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Utilities';
+import Toolbar from 'components/task-view/Toolbar/NewToolbar';
+import { TaskListTabName } from 'components/task-view/Toolbar/config';
+import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
+import { TaskDrawerFields } from 'components/task-view/newTaskDrawer/NewTaskDrawer.Utilities';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';

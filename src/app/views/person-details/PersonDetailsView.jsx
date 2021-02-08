@@ -28,12 +28,12 @@ import {
 import { mobileAnalyticsClient } from 'api/analytics-api';
 
 import GenericHeader from 'components/common/GenericHeader';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
-import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
-import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
+import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';

@@ -4,7 +4,7 @@ import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import Search from 'components/taskView/Search/Search';
+import Search from 'components/task-view/Search/Search';
 
 const faqArticles = [
   {

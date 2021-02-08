@@ -2,9 +2,7 @@ import React, { PureComponent } from 'react';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import * as TaskListActions from 'actions/tasklist-actions';
-import MemberInitials from '../members/MemberInitials';
 
 class TaskListActivityFeedContainer extends PureComponent {
   constructor(props) {
@@ -13,23 +11,22 @@ class TaskListActivityFeedContainer extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.findActivityFeedForAllTaskListsByUserId(0);
+    const { findActivityFeedForAllTaskListsByUserId } = this.props;
+
+    findActivityFeedForAllTaskListsByUserId(0);
   }
 
-  handleClick = (e, taskListIdentifier) => {
-    e.preventDefault();
+  handleClick = event => {
+    event.preventDefault();
   };
 
   renderList = auditlist =>
-    auditlist.map(audit => {
+    auditlist?.map(audit => {
       return (
         <div
           className="task-item row expanded condense align-middle"
           key={`audit${audit.auditId}`}
         >
-          <div className="columns shrink">
-            <MemberInitials member={audit.user} />
-          </div>
           <div className="columns">
             <span className="task-title">{audit.activityFeed}</span>
           </div>
@@ -44,20 +41,22 @@ class TaskListActivityFeedContainer extends PureComponent {
 
   // Lists TaskLists
   renderTaskListName() {
-    return this.props.activityFeedForAllUserList.map(auditsandtasklist => {
+    const { activityFeedForAllUserList } = this.props;
+
+    return activityFeedForAllUserList.map(auditsandtasklist => {
       return (
         <li
           className="slim accordion-item"
           data-accordion-item
           key={`taskList${auditsandtasklist.taskListIdentifier}`}
         >
-          <a
-            onClick={e => this.preventRedirect(e)}
-            href="#"
+          <button
+            type="button"
+            onClick={this.handleClick}
             className="accordion-title"
           >
             {auditsandtasklist.listName}
-          </a>
+          </button>
           <div className="accordion-content" data-tab-content>
             {this.renderList(auditsandtasklist.auditList) &&
             this.renderList(auditsandtasklist.auditList).length > 0 ? (

@@ -6,7 +6,7 @@ import {
 } from 'actions/mega-filter-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { TaskListTabName } from 'components/task-view/Toolbar/config';
 
 export const onEnterListDetailsView = ({ match, dispatch }) => {
   const { params } = match;

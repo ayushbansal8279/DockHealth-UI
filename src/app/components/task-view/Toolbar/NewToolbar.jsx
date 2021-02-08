@@ -17,7 +17,7 @@ import PageContentHeader from 'components/common/NewPageContentHeader';
 import RotatableChevron from 'components/common/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltip from 'components/common/UniversalTooltip';
-import Search from 'components/taskView/Search/Search';
+import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import Member from 'components/members/Member/Member';

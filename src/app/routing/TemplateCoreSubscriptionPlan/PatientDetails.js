@@ -14,7 +14,7 @@ import {
 import { clearPatientDetails } from 'actions/patient';
 import { setHeader } from 'actions/header-actions';
 import GenericHeader from 'components/common/GenericHeader';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { TaskListTabName } from 'components/task-view/Toolbar/config';
 
 export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
   const { params } = match;

@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 
-import Header from 'components/taskView/Header';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import Header from 'components/task-view/Header';
+import { TaskListTabName } from 'components/task-view/Toolbar/config';
 // import Tour from 'components/tour-wizard/Tour/Tour';
-import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import Toolbar from 'components/taskView/Toolbar/NewToolbarContainer';
+import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
+import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import { setHeader } from 'actions/header-actions';

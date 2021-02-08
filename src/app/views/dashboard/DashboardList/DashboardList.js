@@ -30,7 +30,7 @@ import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import Search from 'components/taskView/Search/Search';
+import Search from 'components/task-view/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   storeAsCurrentTask as storeAsCurrentTaskAction,
@@ -41,7 +41,7 @@ import {
   closeDrawer as closeDrawerAction,
 } from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
-import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import {

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import TaskListActivityFeedContainer from 'components/LEGACY_list/TaskListActivityFeedContainer';
+import TaskListActivityFeedContainer from './TaskListActivityFeedContainer';
 
 class TaskListActivityFeedView extends PureComponent {
   componentDidMount() {
@@ -17,11 +16,6 @@ class TaskListActivityFeedView extends PureComponent {
           <div className="large-12 columns">
             <div className="top-bar">
               <div className="top-bar-left">
-                <button
-                  className="menu-icon hide-for-medium"
-                  type="button"
-                  data-toggle="sidebar"
-                />
                 <h3>Activity</h3>
               </div>
             </div>

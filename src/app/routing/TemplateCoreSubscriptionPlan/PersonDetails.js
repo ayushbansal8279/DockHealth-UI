@@ -2,7 +2,7 @@ import {
   getFiltersForPeopleListMegaFilter,
   clearFiltersForMegaFilter,
 } from 'actions/mega-filter-actions';
-import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import { closeDrawer } from 'actions/task-drawer-actions';
 
 export const onEnterPersonDetails = ({ dispatch, match }) => {
