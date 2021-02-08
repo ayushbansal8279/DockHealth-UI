@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useToggle } from 'react-use';
 import { acknowledgeEula } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
-import TaskCheckbox from 'components/task/TaskCheckbox';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useSmallScreen } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -62,7 +62,7 @@ const OnboardingEulaView = () => {
       <Spacing vertical={6} />
       <Grid container>
         <Grid item sm={12} container wrap="nowrap" alignItems="center">
-          <TaskCheckbox
+          <Checkbox
             checked={isEulaAccepted}
             onChange={toggleEulaAccepted}
             color={palette.darkGreyBlue}
