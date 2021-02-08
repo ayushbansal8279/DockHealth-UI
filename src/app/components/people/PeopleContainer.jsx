@@ -35,11 +35,20 @@ class PeopleContainer extends PureComponent {
         flex: 1,
         renderCell: ({ row }) => {
           return (
-            <>
+            <div
+              className="people-cell-container"
+              onClick={() =>
+                history.push(
+                  `/core/assignedToPerson/${encodeURIComponent(
+                    row.userIdentifier,
+                  )}`,
+                )
+              }
+            >
               <Member size={22} member={row} />
               <Spacing horizontal={4} />
               <span className="people-cell">{row?.userName}</span>
-            </>
+            </div>
           );
         },
       },
@@ -87,15 +96,6 @@ class PeopleContainer extends PureComponent {
             autoHeight
             disableSelectionOnClick
             disableColumnMenu
-            onCellClick={({ row, field }) => {
-              if (field === 'userName') {
-                history.push(
-                  `/core/assignedToPerson/${encodeURIComponent(
-                    row.userIdentifier,
-                  )}`,
-                );
-              }
-            }}
           />
         )}
       </>

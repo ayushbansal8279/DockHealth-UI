@@ -9,6 +9,7 @@ import spacing from 'styles/spacing';
 export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
     max-width: 1179px;
+    background-color: ${palette.blueGrey};
   }
 
   .MuiDataGrid-colCellTitleContainer {
@@ -60,14 +61,14 @@ export const StyledDataGrid = styled(DataGrid)`
     cursor: default;
 
     &:hover {
-      > .member-cell {
+      * > .member-cell {
         text-decoration: underline;
         color: ${palette.brightBlue};
       }
     }
 
     &:nth-child(odd) {
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba(255, 255, 255, 0.4) !important;
     }
   }
 `;

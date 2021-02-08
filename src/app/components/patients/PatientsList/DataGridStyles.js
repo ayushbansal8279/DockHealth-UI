@@ -60,7 +60,8 @@ export const StyledDataGrid = styled(DataGrid)`
     cursor: default;
 
     &:hover {
-      > .patient-cell {
+      * > .patient-cell {
+        cursor: pointer;
         text-decoration: underline;
         color: ${palette.brightBlue};
       }

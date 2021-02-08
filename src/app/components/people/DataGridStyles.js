@@ -57,10 +57,12 @@ export const StyledDataGrid = styled(DataGrid)`
 
   .MuiDataGrid-row {
     background-color: white;
+    cursor: default;
 
     &:hover {
       background-color: none;
       * > .people-cell {
+        cursor: pointer;
         text-decoration: underline;
         color: ${palette.brightBlue};
       }
@@ -69,5 +71,10 @@ export const StyledDataGrid = styled(DataGrid)`
     &:nth-child(odd) {
       background-color: rgba(255, 255, 255, 0.4);
     }
+  }
+
+  .people-cell-container {
+    display: flex;
+    align-items: center;
   }
 `;

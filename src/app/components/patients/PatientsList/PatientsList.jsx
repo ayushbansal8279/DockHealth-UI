@@ -33,10 +33,6 @@ const PatientsList = ({
     {
       field: 'patient',
       headerName: 'PATIENT',
-      valueGetter: parameters =>
-        `${parameters.getValue('lastName') || 'unknown'}, ${parameters.getValue(
-          'firstName',
-        )}`,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         if (
           parameters1.row.lastName?.toLowerCase() >
@@ -52,7 +48,23 @@ const PatientsList = ({
         return 0;
       },
       flex: 1,
-      cellClassName: 'patient-cell',
+      renderCell: ({ row }) => (
+        <span
+          onClick={async () => {
+            const { fromEMR, patientIdentifier } = row;
+            if (fromEMR) {
+              const patient = await lookupEMRPatient(patientIdentifier);
+
+              history.push(`/core/patient/${patient.patientIdentifier}`);
+            } else {
+              history.push(`/core/patient/${patientIdentifier}`);
+            }
+          }}
+          className="patient-cell"
+        >
+          {row.lastName}, {row.firstName}
+        </span>
+      ),
     },
     {
       field: 'mrn',
@@ -103,21 +115,6 @@ const PatientsList = ({
                     autoHeight
                     disableColumnMenu
                     disableSelectionOnClick
-                    onCellClick={async ({ row, field }) => {
-                      if (field === 'patient') {
-                        const { fromEMR, patientIdentifier } = row;
-                        if (fromEMR) {
-                          const patient = await lookupEMRPatient(
-                            patientIdentifier,
-                          );
-                          history.push(
-                            `/core/patient/${patient.patientIdentifier}`,
-                          );
-                        } else {
-                          history.push(`/core/patient/${patientIdentifier}`);
-                        }
-                      }
-                    }}
                   />
                 </NonEmptyListTable>
               </Grid>
