@@ -5,14 +5,16 @@ import {
 } from './reducer';
 import AlertTypes from './AlertTypes';
 
+const DEFAULT_ERROR_TEXT = 'Something went wrong. Try again.';
+
 export const showGlobalAlert = (text, type = AlertTypes.SUCCESS) => ({
   type: SHOW_GLOBAL_ALERT,
   payload: { text, type },
 });
 
-export const showGlobalErrorAlert = (text, type = AlertTypes.ERROR) => ({
+export const showGlobalErrorAlert = (text = DEFAULT_ERROR_TEXT) => ({
   type: SHOW_GLOBAL_ALERT,
-  payload: { text, type },
+  payload: { text, type: AlertTypes.ERROR },
 });
 
 export const showSideBarAlert = (text, type = AlertTypes.SUCCESS) => ({

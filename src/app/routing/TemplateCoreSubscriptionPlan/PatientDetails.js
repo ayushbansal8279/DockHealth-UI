@@ -4,14 +4,12 @@ import {
   clearPatientTasksState,
   setActiveTab,
 } from 'actions/patient-tasks-actions';
-import { getPatient } from 'sagas/patient-saga';
 import {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import { clearPatientDetails } from 'actions/patient-profile-actions';
 import { setHeader } from 'actions/header-actions';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
@@ -29,7 +27,6 @@ export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
     ],
   });
   await dispatch(initializePatient(patientIdentifier));
-  await dispatch(getPatient());
 
   if (tabName === TaskListTabName.COMPLETE) {
     dispatch(setActiveTab(TaskListTabName.COMPLETE));
@@ -44,7 +41,6 @@ export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
 
 export const onLeavePatientDetailsView = ({ dispatch }) => {
   dispatch(clearPatientTasksState());
-  dispatch(clearPatientDetails());
 };
 
 export const onEnterPatientOpenTasksListView = () => {

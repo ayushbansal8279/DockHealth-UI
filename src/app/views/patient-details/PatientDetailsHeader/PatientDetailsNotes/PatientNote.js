@@ -48,7 +48,7 @@ const PatientNote = ({
             onKeyDown={async event => {
               if (event.keyCode === 13 && updatedDescription?.length > 0) {
                 await editPatientNote({
-                  note: updatedDescription,
+                  description: updatedDescription,
                   patientNoteIdentifier,
                 });
                 setEditableNote(null);

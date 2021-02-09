@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
 
 import { Button, Collapse } from '@material-ui/core';
 import PatientDetailsInput from './PatientDetailsInput';
@@ -57,7 +56,6 @@ const PatientDetails = ({
     gender,
     mrn,
   };
-  const history = useHistory();
   const [isActive, setIsActive] = useState(false);
   const {
     register,
@@ -124,7 +122,7 @@ const PatientDetails = ({
       <PatientDetailsForm
         onSubmit={handleSubmit(data => {
           setIsActive(false);
-          updatePatient({ patient: { ...data, patientIdentifier } });
+          updatePatient({ ...data, patientIdentifier });
         })}
       >
         <PatientDetailsFormRow>
@@ -230,10 +228,7 @@ const PatientDetails = ({
               </PatientDetailsButton>
             )}
             {!isActive && (
-              <PatientDetailsButton
-                type="button"
-                onClick={() => archivePatient(history)}
-              >
+              <PatientDetailsButton type="button" onClick={archivePatient}>
                 ARCHIVE
               </PatientDetailsButton>
             )}

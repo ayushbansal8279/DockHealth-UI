@@ -21,7 +21,6 @@ import {
   patientListHasTasksSelector,
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
-import { patientDetailsSelector } from 'selectors/patient-selectors';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -67,7 +66,6 @@ const PatientDetailsView = ({
   hasTasks,
   patientTasksSagaActions,
   taskSearch,
-  patientDetails,
   organization,
 }) => {
   const { selectedFilters } = megaFilter;
@@ -75,6 +73,7 @@ const PatientDetailsView = ({
   const [shouldResetBulkEditTasks, setShouldResetBulkEditTasks] = useState(
     false,
   );
+  const [patient, setPatient] = useState({});
   const previousSelectedFilters = useRef(selectedFilters);
   const previousSearchValue = useRef(null);
 
@@ -189,8 +188,9 @@ const PatientDetailsView = ({
     >
       <div>
         <PatientDetailsHeader
-          patientDetails={patientDetails}
+          patientIdentifier={patientIdentifier}
           organization={organization}
+          onPatientUpdate={setPatient}
         />
         {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
           <Toolbar
@@ -219,8 +219,8 @@ const PatientDetailsView = ({
             patientColumnVisible={false}
             listNameColumnVisible
             pdfTitle={
-              patientDetails
-                ? `Patient: ${patientDetails.firstName} ${patientDetails.lastName}`
+              patient
+                ? `Patient: ${patient.firstName} ${patient.lastName}`
                 : null
             }
           />
@@ -268,7 +268,6 @@ const mapStateToProps = state => ({
   hasTasks: patientListHasTasksSelector(state),
   taskSearch: patientTaskSearchSelector(state),
   currentUser: userProfileSelector(state),
-  patientDetails: patientDetailsSelector(state),
   organization: organizationSelector(state),
 });
 
