@@ -208,7 +208,7 @@ class Home extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, sort, match } = this.props;
+    const { selectedFilters, sort, match, taskListActions } = this.props;
     const { params } = match;
 
     if (
@@ -217,7 +217,8 @@ class Home extends Component {
       previousProps.match.params.taskListIdentifier ===
         params.taskListIdentifier
     ) {
-      this.refreshTab(true);
+      taskListActions.requestAllTasklistGroupTasks();
+      this.refreshTab();
     }
 
     if (!shouldResetBulkEditTasks) {

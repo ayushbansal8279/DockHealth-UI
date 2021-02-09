@@ -26,6 +26,7 @@ import {
   TASK_GROUP_LIST_FAILURE,
   REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
   SORT_LIST_TASKS,
+  REQUEST_ALL_TASKLIST_GROUP_TASKS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -238,6 +239,19 @@ const ListDetailsReducer = (state = initialState, action) => {
         isFetchingMoreTasks: false,
         showingCompletedTasks: true,
         isFetching: false,
+      };
+    }
+
+    case REQUEST_ALL_TASKLIST_GROUP_TASKS: {
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(taskGroup => ({
+            ...taskGroup,
+            isLoadingGroup: true,
+          })),
+        },
       };
     }
 
