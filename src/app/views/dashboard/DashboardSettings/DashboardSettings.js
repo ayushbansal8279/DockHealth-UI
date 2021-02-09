@@ -74,11 +74,11 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
             <DashboardSettingsInput
               id="status-radio"
               type="radio"
-              checked={dynamicColumnType === DashboardColumnKey.STATUS}
+              checked={dynamicColumnType === DashboardColumnKey.WORKFLOW_STATUS}
               onClick={() => {
-                setDynamicColumnType(DashboardColumnKey.STATUS);
+                setDynamicColumnType(DashboardColumnKey.WORKFLOW_STATUS);
                 updateUserDashboardPrefs({
-                  displayColumns: [DashboardColumnKey.STATUS],
+                  displayColumns: [DashboardColumnKey.WORKFLOW_STATUS],
                 });
                 setIsOpen(false);
               }}

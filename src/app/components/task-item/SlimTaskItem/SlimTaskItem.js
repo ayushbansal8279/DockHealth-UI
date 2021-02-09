@@ -153,7 +153,7 @@ const getDynamicColumn = type => {
       return PatientComponent;
     }
 
-    case 'STATUS': {
+    case 'WORKFLOW_STATUS': {
       return WorkflowStatusComponent;
     }
 

@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { identity, isEmpty, reverse, compose } from 'ramda';
+import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 import EmptyTaskListBird from 'img/animals/bird';
@@ -64,40 +64,33 @@ import {
   TipsSwitchLabel,
 } from './styled';
 import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
-import { DashboardColumnKey } from '../config';
+import { DashboardColumnKey, DashboardKeyPropertyName } from '../config';
 
 const SORT_METHODS = {
   [DashboardColumnKey.DUE_DATE]: list =>
-    list
-      ?.map(item => item)
-      .sort((a, b) => {
-        if (!b?.dueDate) return 1;
-        return a?.dueDate > b?.dueDate ? 1 : -1;
-      }),
+    list?.slice().sort((a, b) => {
+      if (!a?.dueDate) return 1;
+      return a?.dueDate > b?.dueDate ? 1 : -1;
+    }),
   [DashboardColumnKey.WORKFLOW_STATUS]: list =>
     list
-      ?.map(item => item)
-      .sort((a, b) => {
-        const aWorkflowStauts = a?.workflowStatus || '';
-        const bWorkflowStauts = b?.workflowStatus || '';
-
-        return aWorkflowStauts.localeCompare(bWorkflowStauts);
-      }),
+      ?.slice()
+      .sort((a, b) => a?.workflowStatus?.localeCompare(b.workflowStatus)),
   [DashboardColumnKey.PATIENT]: list =>
     list
-      ?.map(item => item)
+      ?.slice()
       .sort((a, b) =>
         a?.patient?.firstName?.localeCompare(b?.patient?.firstName),
       ),
   [DashboardColumnKey.ASSIGNED]: list =>
     list
-      ?.map(item => item)
+      ?.slice()
       .sort((a, b) =>
         a?.assignedTo?.userName?.localeCompare(b?.assignedTo?.userName),
       ),
   [DashboardColumnKey.LIST_NAME]: list =>
     list
-      ?.map(item => item)
+      ?.slice()
       .sort((a, b) =>
         a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
       ),
@@ -210,10 +203,28 @@ const DashboardList = ({
 
   const currentSortMethodWithOrder = useMemo(() => {
     if (sortOrder === SortOrderType.DESC) {
-      return compose(reverse, currentSortMethod);
+      return tasks => {
+        if (!tasks || tasks.length === 0) {
+          return tasks;
+        }
+
+        const ascSortedTasks = currentSortMethod(tasks);
+        const firstIndexWithoutValue = ascSortedTasks.findIndex(
+          task => !task[DashboardKeyPropertyName[sortKey]],
+        );
+
+        if (firstIndexWithoutValue === -1) {
+          return ascSortedTasks.slice().reverse();
+        }
+
+        return ascSortedTasks
+          .slice(0, firstIndexWithoutValue)
+          .reverse()
+          .concat(ascSortedTasks.slice(firstIndexWithoutValue));
+      };
     }
     return currentSortMethod;
-  }, [sortOrder, currentSortMethod]);
+  }, [sortKey, sortOrder, currentSortMethod]);
 
   function resetSort() {
     setCurrentSort({

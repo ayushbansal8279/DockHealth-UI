@@ -6,3 +6,11 @@ export const DashboardColumnKey = {
   ASSIGNED: 'ASSIGNED',
   LIST_NAME: 'LIST_NAME',
 };
+
+export const DashboardKeyPropertyName = {
+  DUE_DATE: 'dueDate',
+  WORKFLOW_STATUS: 'workflowStatus',
+  PATIENT: 'patient',
+  ASSIGNED: 'assignedTo',
+  LIST_NAME: 'taskList',
+};
