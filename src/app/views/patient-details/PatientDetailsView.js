@@ -9,6 +9,7 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
+import * as PatientApi from 'api/patient-api';
 import Toolbar from 'components/task-view/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
@@ -74,6 +75,7 @@ const PatientDetailsView = ({
     false,
   );
   const [patient, setPatient] = useState({});
+  const [isLoadingPatient, setIsLoadingPatient] = useState(false);
   const previousSelectedFilters = useRef(selectedFilters);
   const previousSearchValue = useRef(null);
 
@@ -81,6 +83,26 @@ const PatientDetailsView = ({
   const { params } = match;
   const { patientIdentifier } = params;
   const { path } = useRouteMatch();
+
+  const fetchPatient = useCallback(
+    () =>
+      PatientApi.getPatientById(patientIdentifier)
+        .then(fetchedPatient => {
+          setPatient(fetchedPatient);
+          return fetchedPatient;
+        })
+        .catch(() => {}),
+    [patientIdentifier],
+  );
+
+  useEffect(() => {
+    if (patientIdentifier) {
+      setIsLoadingPatient(true);
+      fetchPatient().then(() => {
+        setIsLoadingPatient(false);
+      });
+    }
+  }, [patientIdentifier, fetchPatient]);
 
   const navigateToTab = tabName => {
     history.push(
@@ -188,9 +210,11 @@ const PatientDetailsView = ({
     >
       <div>
         <PatientDetailsHeader
-          patientIdentifier={patientIdentifier}
+          patient={patient}
+          isLoadingPatient={isLoadingPatient}
           organization={organization}
-          onPatientUpdate={setPatient}
+          setPatient={setPatient}
+          refreshPatient={fetchPatient}
         />
         {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
           <Toolbar
