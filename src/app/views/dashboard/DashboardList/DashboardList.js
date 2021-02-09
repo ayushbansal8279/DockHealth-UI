@@ -41,7 +41,7 @@ import {
   closeDrawer as closeDrawerAction,
 } from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
-import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
+import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
 import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import {

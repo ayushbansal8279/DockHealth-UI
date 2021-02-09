@@ -4,9 +4,10 @@ import Spacing from 'components/common/Spacing';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import { RobotoTypography } from 'styles/theme';
 import moment from 'moment';
+import palette from 'styles/palette';
+import SmallSwitchChevronUp from 'img/small-switch-chevron-up';
+import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
 import { HorizontalLabel } from './NewTaskDrawer.Styled';
-import SmallSwitchChevronUp from '../../../img/small-switch-chevron-up';
-import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 import {
   PersonNameLabelContainer,
   AuditDetailsLabelContainer,
@@ -16,7 +17,6 @@ import {
   HistoryLabel,
 } from './NewTaskDrawer.HistorySection.Styled';
 
-import palette from '../../../styles/palette';
 import initializeTaskDrawerHistorySectionHooks from './NewTaskDrawer.HistorySection.Hooks';
 
 const renderHistoryItem = ({

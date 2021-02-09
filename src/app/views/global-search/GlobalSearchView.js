@@ -19,7 +19,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
-import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
+import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
 import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,

@@ -5,6 +5,7 @@ import { Close, MoreHoriz } from '@material-ui/icons';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
+import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
 import InputPopover from './NewTaskDrawer.InputPopover';
 import {
   FiledInSelect,
@@ -16,7 +17,6 @@ import {
   ListNameContainer,
   ListNameSelectContainer,
 } from './NewTaskDrawer.Styled';
-import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
 import initializeTaskDrawerTopSectionHooks from './NewTaskDrawer.TopSection.Hooks';
 

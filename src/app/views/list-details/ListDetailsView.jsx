@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 // import Tour from 'components/tour-wizard/Tour/Tour';
-import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
+import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
 import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 

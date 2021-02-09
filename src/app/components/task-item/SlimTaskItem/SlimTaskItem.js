@@ -14,7 +14,7 @@ import Member from 'components/members/Member/Member';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
-import { FocusDrawerFieldEnum } from 'components/task-view/newTaskDrawer/NewTaskDrawer.Utilities';
+import { FocusDrawerFieldEnum } from 'components/task-drawer/NewTaskDrawer.Utilities';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';

@@ -2,6 +2,7 @@ import React from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import Member from 'components/members/Member/Member';
 
+import palette from 'styles/palette';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import moment from 'moment';
@@ -11,7 +12,6 @@ import {
   CondensedH4,
   CompletedByLabel,
 } from './NewTaskDrawer.Styled';
-import palette from '../../../styles/palette';
 
 export const FocusDrawerFieldEnum = {
   PATIENT: 'patient',
