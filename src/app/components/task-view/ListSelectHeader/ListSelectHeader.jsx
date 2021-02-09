@@ -1,42 +1,13 @@
-import { Typography } from '@material-ui/core';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
-import GenericHeader from '../common/GenericHeader';
-import ListPopover from '../common/ListPopover';
-import Spacing from '../common/Spacing';
-
-const StyledTitle = styled(Typography)`
-  && {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    filter: brightness(1);
-    flex-flow: row nowrap;
-    transition: filter 0.25s ease-out;
-
-    &:hover {
-      filter: brightness(1.25);
-    }
-  }
-`;
-
-const HeaderTitleContainer = styled.div`
-  flex: 1;
-  overflow: hidden;
-`;
-
-const TitleContainer = styled.div`
-  font-size: 1.5rem;
-  max-width: 32rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+import GenericHeader from 'components/common/GenericHeader';
+import ListPopover from 'components/common/ListPopover';
+import Spacing from 'components/common/Spacing';
+import { HeaderTitleContainer, StyledTitle, TitleContainer } from './styled';
 
 const transformTaskList = ({ closeListPopover, taskList, history }) => ({
   listName,
@@ -51,7 +22,7 @@ const transformTaskList = ({ closeListPopover, taskList, history }) => ({
   },
 });
 
-const Header = ({ hasTitle, title, isFetching, taskList }) => {
+const ListSelectHeader = ({ hasTitle, title, isFetching, taskList }) => {
   const taskListIdentifier = taskList?.taskListIdentifier;
 
   const listPopoverReference = useRef(null);
@@ -106,4 +77,4 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
   );
 };
 
-export default Header;
+export default ListSelectHeader;

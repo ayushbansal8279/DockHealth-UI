@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 
-import Header from 'components/task-view/Header';
+import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 // import Tour from 'components/tour-wizard/Tour/Tour';
 import NewTaskDrawer from 'components/task-view/newTaskDrawer/NewTaskDrawer';
@@ -328,7 +328,7 @@ class Home extends Component {
 
     if (loadedTasklist?.listName) {
       const headerComponent = (
-        <Header
+        <ListSelectHeader
           isFetching={false}
           title={loadedTasklist.listName}
           taskList={loadedTasklist}
