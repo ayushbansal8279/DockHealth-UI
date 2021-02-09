@@ -660,11 +660,12 @@ const initializeTaskDrawerHooks = ({
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        await updateTaskDescription(
+        const updatedTask = await updateTaskDescription(
           selectedTask,
           updatedTaskDescription,
         )(dispatch);
         setAutoSaveVisible();
+        onTaskUpdate(updatedTask);
       } catch {
         dispatch(
           AlertActions.showGlobalAlert(

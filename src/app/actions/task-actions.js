@@ -690,6 +690,7 @@ export const updateTaskDescription = (task, description) => dispatch =>
           type: ActionTypes.UPDATE_TASK_SUCCESS,
           task: newTask,
         });
+        return newTask;
       },
     )
     .catch(error => {
