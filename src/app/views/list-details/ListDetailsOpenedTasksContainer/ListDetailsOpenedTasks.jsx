@@ -156,6 +156,9 @@ const ListDetailsOpenedTasks = ({
             isLoadingGroup={
               tasksGrouped[taskGroupIdentifier]?.isLoadingGroup || false
             }
+            isFetchingMoreTasks={
+              tasksGrouped[taskGroupIdentifier]?.isFetchingMoreTasks || false
+            }
             taskGroupIdentifier={taskGroupIdentifier}
             reorderSubtasksForTask={reorderSubtasksForTask}
             reassignTask={reassignTask}
