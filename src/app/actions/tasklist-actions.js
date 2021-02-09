@@ -469,3 +469,9 @@ export function sortListTasks(key, order) {
     },
   };
 }
+
+export function requestAllTasklistGroupTasks() {
+  return {
+    type: ActionTypes.REQUEST_ALL_TASKLIST_GROUP_TASKS,
+  };
+}

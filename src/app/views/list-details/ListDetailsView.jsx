@@ -20,7 +20,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as ModalActions from 'modal/actions';
 
-import { TasksGroupsListActions } from 'sagas/list-details-saga';
+import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 
 import * as userApi from 'api/user-api';
 
@@ -72,7 +72,7 @@ class Home extends Component {
 
   searchWithDebounce = debounce(searchValue => {
     const {
-      tasksGroupsListActions: { fetchTasksBySearchedTerm },
+      listDetailsSagaActions: { fetchTasksBySearchedTerm },
     } = this.props;
 
     const tabName = this.props?.params?.tabName;
@@ -208,7 +208,7 @@ class Home extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, sort, match } = this.props;
+    const { selectedFilters, sort, match, taskListActions } = this.props;
     const { params } = match;
 
     if (
@@ -217,7 +217,8 @@ class Home extends Component {
       previousProps.match.params.taskListIdentifier ===
         params.taskListIdentifier
     ) {
-      this.refreshTab(true);
+      taskListActions.requestAllTasklistGroupTasks();
+      this.refreshTab();
     }
 
     if (!shouldResetBulkEditTasks) {
@@ -388,17 +389,12 @@ class Home extends Component {
     return this.getFilteredTasks(taskListIdentifier, filters, status);
   };
 
-  refreshTab = (withLoader = false, cumulativeFlag = false) => {
-    const { match } = this.props;
+  refreshTab = (withLoader = false) => {
+    const { listDetailsSagaActions, actions, match } = this.props;
     const { params } = match;
 
-    this.refreshTabCounters();
-
-    if (params.tabName === TaskListTabName.COMPLETE) {
-      return this.refreshCompleteTasks(cumulativeFlag, withLoader);
-    }
-
-    return this.refreshIncompleteTasks(withLoader);
+    actions.getTaskStatsForList(params.taskListIdentifier);
+    listDetailsSagaActions.fetchGroupedTasks({ withLoader });
   };
 
   refreshFilters = () => {
@@ -410,13 +406,6 @@ class Home extends Component {
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
     megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-  };
-
-  refreshTabCounters = () => {
-    const { actions, match } = this.props;
-    const { params } = match;
-
-    actions.getTaskStatsForList(params.taskListIdentifier);
   };
 
   // TODO: Move to saga
@@ -450,7 +439,7 @@ class Home extends Component {
   };
 
   // TODO: Move to saga
-  refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
+  refreshCompleteTasks = (withLoader = true) => {
     const { actions, megaFilterActions, match } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
@@ -470,19 +459,13 @@ class Home extends Component {
     if (filters && !isEmpty(filters)) {
       this.getFilteredTasks(taskListIdentifier, filters, status, withLoader);
     } else {
-      this.getTasksList(
-        taskListIdentifier,
-        status,
-        cumulativeFlag,
-        // queryStartPosition,
-      );
+      this.getTasksList(taskListIdentifier, status);
     }
   };
 
   getTasksList = (
     taskListIdentifier,
     status,
-    cumulativeFlag = false,
     startPosition = 0,
     endPosition = 0,
   ) => {
@@ -491,9 +474,7 @@ class Home extends Component {
     return actions.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       sort,
-      undefined,
       status,
-      cumulativeFlag,
       startPosition,
       endPosition,
     );
@@ -598,7 +579,7 @@ class Home extends Component {
   };
 
   quickAddTask = task => {
-    const { tasksGroupsListActions, taskCounters } = this.props;
+    const { listDetailsSagaActions, taskCounters } = this.props;
 
     if (task?.description) {
       const payload = {
@@ -606,14 +587,14 @@ class Home extends Component {
         autoOpenDrawer: taskCounters?.incomplete === 0,
       };
 
-      tasksGroupsListActions.createTask(payload);
+      listDetailsSagaActions.createTask(payload);
     }
   };
 
   deleteGroup = groupId => {
     const {
       modalActions,
-      tasksGroupsListActions: { deleteTasksGroup },
+      listDetailsSagaActions: { deleteTasksGroup },
       match,
     } = this.props;
     const { params } = match;
@@ -630,7 +611,7 @@ class Home extends Component {
 
   editGroupName = (newGroupName, groupId) => {
     const {
-      tasksGroupsListActions: { editTasksGroupName },
+      listDetailsSagaActions: { editTasksGroupName },
       match,
     } = this.props;
     const { params } = match;
@@ -643,7 +624,7 @@ class Home extends Component {
 
   changeGroupsOrder = (oldTaskIndex, newTaskIndex, groupList) => {
     const {
-      tasksGroupsListActions: { sortTasksGroups },
+      listDetailsSagaActions: { sortTasksGroups },
       match,
     } = this.props;
     const { params } = match;
@@ -658,9 +639,9 @@ class Home extends Component {
   };
 
   handleTaskUpdate = updatedTask => {
-    const { selectedFilters } = this.props;
+    const { selectedFilters, sort } = this.props;
 
-    if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+    if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters) || sort?.key) {
       this.refreshTab();
     } else {
       this.refreshFilters();
@@ -670,7 +651,7 @@ class Home extends Component {
   handleTaskDelete = () => {
     const {
       selectedFilters,
-      tasksGroupsListActions: { getTasksGroupsList },
+      listDetailsSagaActions: { getTasksGroupsList },
       match,
     } = this.props;
     const { params } = match;
@@ -702,7 +683,7 @@ class Home extends Component {
   };
 
   invokeToggleCompleteAction = task => {
-    const { actions, tasksGroupsListActions, match, currentUser } = this.props;
+    const { actions, listDetailsSagaActions, match, currentUser } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
 
@@ -711,7 +692,7 @@ class Home extends Component {
       .then(() => {
         setTimeout(() => {
           actions.getTaskStatsForList(taskListIdentifier);
-          tasksGroupsListActions.getTasksGroupsList({
+          listDetailsSagaActions.getTasksGroupsList({
             shouldSetRequestState: false,
           });
         }, TASK_DISAPPEAR_DELAY);
@@ -769,9 +750,9 @@ class Home extends Component {
   };
 
   handleCreateGroup = groupName => {
-    const { tasksGroupsListActions } = this.props;
+    const { listDetailsSagaActions } = this.props;
 
-    tasksGroupsListActions.createTaskGroupList({ groupName });
+    listDetailsSagaActions.createTaskGroupList({ groupName });
   };
 
   loadTasksForTaskGroup = ({
@@ -781,7 +762,7 @@ class Home extends Component {
     viewMode,
     refresh,
   }) => {
-    const { tasksGroupsListActions } = this.props;
+    const { listDetailsSagaActions } = this.props;
     const payload = {
       taskGroupIdentifier,
       status: 'INCOMPLETE',
@@ -790,24 +771,21 @@ class Home extends Component {
       viewMode,
       refresh,
     };
-    tasksGroupsListActions.getTasksForTaskGroups(payload);
+    listDetailsSagaActions.getTasksForTaskGroups(payload);
   };
 
   loadMoreTasksForList = ({ status, startPosition, sort, viewMode }) => {
     const { actions, match } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
-    const loadingMore = true;
-    const endPosition = 0;
+
     actions.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       sort,
-      undefined,
       status,
-      false,
       startPosition,
-      endPosition,
-      loadingMore,
+      0,
+      true,
       viewMode,
     );
   };
@@ -992,7 +970,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
-  tasksGroupsListActions: bindActionCreators(TasksGroupsListActions, dispatch),
+  listDetailsSagaActions: bindActionCreators(ListDetailsSagaActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeaderAction: setHeader(dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),

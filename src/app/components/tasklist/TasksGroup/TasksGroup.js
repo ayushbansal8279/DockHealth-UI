@@ -232,7 +232,7 @@ const TasksGroup = ({
             }}
           />
         )}
-        {tasks?.length > 0 && (
+        {(tasks?.length > 0 || isLoadingGroup) && (
           <SortHeaderRow>
             <ColumnSortHeader width={60} />
             <ColumnSortHeader
@@ -288,25 +288,27 @@ const TasksGroup = ({
             )}
           </SortHeaderRow>
         )}
-        <DragAndDropGroupList
-          groupId={groupId}
-          tasks={tasks}
-          currentUser={currentUser}
-          isFullView={isFullView}
-          toggleCompleteTask={toggleCompleteTask}
-          draggedId={draggedId}
-          reorderSubtasksForTask={reorderSubtasksForTask}
-          isCompletedGroup={isCompletedGroup}
-          reassignTask={reassignTask}
-          updateDueDate={updateDueDate}
-          updateWorkflowStatus={updateWorkflowStatus}
-          dragAndDropDisabled={dragAndDropDisabled}
-          listNameVisible={listNameVisible}
-          selectedTask={selectedTask}
-          hideSubtasks={isListFlattened}
-          areFiltersApplied={areFiltersApplied}
-          isSearchApplied={isSearchApplied}
-        />
+        {(!isLoadingGroup || isFetchingMoreTasks) && (
+          <DragAndDropGroupList
+            groupId={groupId}
+            tasks={tasks}
+            currentUser={currentUser}
+            isFullView={isFullView}
+            toggleCompleteTask={toggleCompleteTask}
+            draggedId={draggedId}
+            reorderSubtasksForTask={reorderSubtasksForTask}
+            isCompletedGroup={isCompletedGroup}
+            reassignTask={reassignTask}
+            updateDueDate={updateDueDate}
+            updateWorkflowStatus={updateWorkflowStatus}
+            dragAndDropDisabled={dragAndDropDisabled}
+            listNameVisible={listNameVisible}
+            selectedTask={selectedTask}
+            subtasksDisabled={isListFlattened}
+            areFiltersApplied={areFiltersApplied}
+            isSearchApplied={isSearchApplied}
+          />
+        )}
         {(isLoadingGroup || isFetchingMoreTasks) && (
           <SingleSkeletonLoader rows={4} />
         )}

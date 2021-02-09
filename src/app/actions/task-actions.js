@@ -122,9 +122,7 @@ export function getListTasks(
 export function getListTasksGroupedByTaskGroup(
   taskListIdentifier,
   sortBy,
-  filterBy,
   status,
-  cumulativeFlag,
   startPosition = 0,
   endPosition = 0,
   loadingMore = false,
@@ -143,7 +141,6 @@ export function getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       status,
       sortBy,
-      filterBy,
       startPosition,
       endPosition,
       viewMode,

@@ -21,6 +21,7 @@ import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member/Member';
+import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
 import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
@@ -115,8 +116,7 @@ const TaskItem = ({
   isLast,
   showSubtaskStylingLink,
   isNestedTask = false,
-  hideSubtasks,
-  contextFiltered,
+  subtasksDisabled,
 }) => {
   const {
     taskIdentifier,
@@ -377,7 +377,7 @@ const TaskItem = ({
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
-      if (!hideSubtasks) {
+      if (!subtasksDisabled) {
         if (!isOpen) {
           switchOpen(true);
         } else {
@@ -385,7 +385,7 @@ const TaskItem = ({
         }
       }
     },
-    [isOpen, switchOpen, hideSubtasks],
+    [isOpen, switchOpen, subtasksDisabled],
   );
 
   const onPatientClick = useCallback(() => {
@@ -530,18 +530,18 @@ const TaskItem = ({
             paddingLeft="tiny"
             paddingRight="tiny"
           >
-            {!isSubtask && (
+            {!isSubtask ? (
               <>
                 {subTasksCount > 0 ? (
                   <SubtasksCellContentButton
                     isOpen={isOpen}
-                    disabled={hideSubtasks}
+                    disabled={subtasksDisabled}
                     onClick={onSubtaskLabelClick}
                   >
                     <SubtasksCellText>{subTasksCount}</SubtasksCellText>
                     <SubtasksImg
                       src={
-                        hideSubtasks
+                        subtasksDisabled
                           ? SubtasksIconDisabled
                           : // eslint-disable-next-line unicorn/no-nested-ternary
                           isOpen
@@ -556,7 +556,7 @@ const TaskItem = ({
                     {isHovered &&
                       !isSubtask &&
                       !subtaskQuickAddOpen &&
-                      !hideSubtasks && (
+                      !subtasksDisabled && (
                         <AddSubtaskButton
                           type="button"
                           onClick={() =>
@@ -569,6 +569,8 @@ const TaskItem = ({
                   </>
                 )}
               </>
+            ) : (
+              <SingleSubtaskIcon />
             )}
           </StandardTaskItemCell>
           {patientVisible && (
@@ -810,7 +812,7 @@ const TaskItem = ({
           position={contextMenu}
           task={task}
           onClose={() => setContextMenu(null)}
-          contextFiltered={contextFiltered}
+          subtasksDisabled={subtasksDisabled}
         />
       )}
     </>

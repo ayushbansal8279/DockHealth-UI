@@ -66,7 +66,6 @@ export function getListTasksGroupedByTaskGroup(
   taskListIdentifier,
   status = 'INCOMPLETE',
   sortBy,
-  filterBy,
   startPosition = 0,
   endPosition = 0,
   viewMode,
@@ -79,7 +78,6 @@ export function getListTasksGroupedByTaskGroup(
         endPosition,
         sortBy: sortBy?.key || undefined,
         sortDirection: sortBy?.order || undefined,
-        filterBy: filterBy || undefined,
         viewMode: viewMode || undefined,
       },
     })

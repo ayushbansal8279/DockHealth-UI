@@ -21,34 +21,34 @@ import { DashboardColumnKey } from '../config';
 const GRID_CONFIG = {
   primary: {
     description: {
-      PATIENT: {
+      [DashboardColumnKey.PATIENT]: {
         sm: 5,
         md: 6,
         lg: 8,
       },
-      DUE_DATE: {
+      [DashboardColumnKey.DUE_DATE]: {
         sm: 5,
         md: 6,
         lg: 8,
       },
-      STATUS: {
+      [DashboardColumnKey.WORKFLOW_STATUS]: {
         sm: 5,
         md: 6,
         lg: 8,
       },
     },
     dynamicColumn: {
-      PATIENT: {
+      [DashboardColumnKey.PATIENT]: {
         sm: 3,
         md: 3,
         lg: 2,
       },
-      DUE_DATE: {
+      [DashboardColumnKey.DUE_DATE]: {
         sm: 3,
         md: 3,
         lg: 2,
       },
-      STATUS: {
+      [DashboardColumnKey.WORKFLOW_STATUS]: {
         sm: 3,
         md: 3,
         lg: 2,
@@ -62,34 +62,34 @@ const GRID_CONFIG = {
   },
   secondary: {
     description: {
-      PATIENT: {
+      [DashboardColumnKey.PATIENT]: {
         sm: 3,
         md: 4,
         lg: 6,
       },
-      DUE_DATE: {
+      [DashboardColumnKey.DUE_DATE]: {
         sm: 3,
         md: 4,
         lg: 6,
       },
-      STATUS: {
+      [DashboardColumnKey.WORKFLOW_STATUS]: {
         sm: 3,
         md: 4,
         lg: 6,
       },
     },
     dynamicColumn: {
-      PATIENT: {
+      [DashboardColumnKey.PATIENT]: {
         sm: 3,
         md: 2,
         lg: 2,
       },
-      DUE_DATE: {
+      [DashboardColumnKey.DUE_DATE]: {
         sm: 3,
         md: 2,
         lg: 2,
       },
-      STATUS: {
+      [DashboardColumnKey.WORKFLOW_STATUS]: {
         sm: 3,
         md: 2,
         lg: 2,
@@ -122,9 +122,9 @@ const getDynamicColumnLabel = dynamicColumnType => {
         label: 'Patient',
       };
     }
-    case DashboardColumnKey.STATUS: {
+    case DashboardColumnKey.WORKFLOW_STATUS: {
       return {
-        id: DashboardColumnKey.STATUS,
+        id: DashboardColumnKey.WORKFLOW_STATUS,
         label: 'Status',
       };
     }
