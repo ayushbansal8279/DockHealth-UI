@@ -6,7 +6,6 @@ import {
   DELETE_TASK_SUCCESS,
   DUPLICATE_TASK_SUCCESS,
   MOVE_TASK_SUCCESS,
-  TASK_ARCHIVED,
   TASK_ATTACHMENT_ADDED,
   TASK_ATTACHMENT_REMOVED,
   UPDATE_TASK_SUCCESS,
@@ -239,24 +238,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
               },
         );
       };
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case TASK_ARCHIVED: {
-      const { task: actionTask } = action;
-
-      const updateTaskFromAction = tasks =>
-        tasks.map(task => {
-          if (task.taskIdentifier === actionTask.taskIdentifier) {
-            return {
-              ...task,
-              archivedByUser: true,
-            };
-          }
-
-          return task;
-        });
 
       return updateStateCallback(state, updateTaskFromAction);
     }

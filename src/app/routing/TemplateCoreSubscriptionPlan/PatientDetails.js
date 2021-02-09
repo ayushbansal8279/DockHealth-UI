@@ -11,7 +11,7 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import { clearPatientDetails } from 'actions/patient';
+import { clearPatientDetails } from 'actions/patient-profile-actions';
 import { setHeader } from 'actions/header-actions';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';

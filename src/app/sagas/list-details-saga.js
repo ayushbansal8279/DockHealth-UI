@@ -570,6 +570,7 @@ export function* doFetchTasksBySearchedTerm(payload) {
       status === 'INCOMPLETE'
         ? GET_TASKS_BY_GROUPS_SUCCESS
         : GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
+
     yield put({
       type: action,
       groupedTasks,

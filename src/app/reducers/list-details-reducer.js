@@ -1,15 +1,8 @@
 import {
-  CLEAR_TASKS_SEARCH,
-  GET_COMPLETED_TASKS_SUCCESS,
-  GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE,
-  GET_TASKS_SUCCESS,
   GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS,
   GET_TASKS_BY_GROUPS_SUCCESS,
-  GET_TASKS_COUNT_SUCCESS,
-  HIDE_COMPLETED_TASKS,
   REQUEST_COMPLETED_TASKS,
   REQUEST_TASKS,
-  TASK_NEW_PAGE_DOWNLOADED,
   GET_MORE_TASKS_REQUEST,
   TASK_COUNTERS_SUCCESS,
   RESET_TASK_COUNTERS,
@@ -79,14 +72,6 @@ const updateTaskInGroupedTasks = (groupedTasks, task) =>
     };
   });
 
-const mapTasksSuccess = task => ({
-  ...task,
-  subtasks: task.subtasks?.map(subtask => ({
-    ...subtask,
-    patient: task.patient,
-  })),
-});
-
 const updateTaskInList = taskGroupIdentifier => (
   taskGroups,
   updateTaskCallback,
@@ -146,43 +131,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         listGroupsError: 'Something went wrong',
         isFetchingGroups: false,
       };
-
-    case GET_TASKS_SUCCESS: {
-      let { tasks } = action;
-
-      tasks = tasks.map(mapTasksSuccess);
-
-      return { ...state, tasks, isFetching: false };
-    }
-
-    case GET_COMPLETED_TASKS_SUCCESS: {
-      let { tasks } = action;
-
-      tasks = tasks.map(mapTasksSuccess);
-
-      return {
-        ...state,
-        completedTasks: tasks,
-        isCompletedTasksFetching: false,
-        showingCompletedTasks: true,
-        isFetching: false,
-      };
-    }
-
-    case GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE: {
-      let { tasks } = action;
-
-      tasks = tasks.map(mapTasksSuccess);
-
-      return {
-        ...state,
-        completedTasks: state.completedTasks.concat(tasks),
-        isCompletedTasksFetching: false,
-        showingCompletedTasks: true,
-        isFetching: false,
-        isFetchingMoreTasks: false,
-      };
-    }
 
     case GET_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks } = action;
@@ -366,11 +314,6 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case GET_TASKS_COUNT_SUCCESS: {
-      const { stats } = action;
-      return { ...state, taskCountStats: stats };
-    }
-
     case REQUEST_TASKS:
       return {
         ...state,
@@ -399,13 +342,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         taskCounters: action.payload,
       };
 
-    case CLEAR_TASKS_SEARCH:
-      return {
-        ...state,
-        tasks: [],
-        completedTasks: [],
-      };
-
     case INCREASE_INCOMPLETE_TASK_COUNTERS: {
       return {
         ...state,
@@ -428,23 +364,6 @@ const ListDetailsReducer = (state = initialState, action) => {
             }
           : {},
       };
-
-    case HIDE_COMPLETED_TASKS:
-      return { ...state, showingCompletedTasks: false, completedTasks: [] };
-
-    case TASK_NEW_PAGE_DOWNLOADED: {
-      const { tasks: actionTasks, status } = action;
-
-      const stateTasksKey = status === 'COMPLETE' ? 'completedTasks' : 'tasks';
-
-      return {
-        ...state,
-        [stateTasksKey]: [
-          ...(state[stateTasksKey] || []),
-          ...(actionTasks || []),
-        ],
-      };
-    }
 
     case GET_MORE_TASKS_REQUEST: {
       return { ...state, isFetchingMoreTasks: true };

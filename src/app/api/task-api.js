@@ -4,21 +4,6 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import URLS from '../urls';
 
-const ERROR_RETRIEVING_TASKS_MESSAGE =
-  'Error in retrieving tasks. Please try again.';
-
-/**
- * Get all tasks for a user
- */
-export function getTasksForCreator() {
-  return axios
-    .get('task/findTasksCreatedByUser')
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function getTaskStatsForList(taskListIdentifier) {
   return axios
     .get(`/task/stats/getTaskStatsForList/${taskListIdentifier}`)
@@ -34,28 +19,6 @@ export function getTaskStatsForUser(userIdentifier) {
   return axios
     .get(`/task/stats/getTaskStatsForUser/${userIdentifier}`)
     .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getListTasksByUser(
-  taskListIdentifier,
-  status = 'INCOMPLETE',
-  sortBy,
-  filterBy,
-  queryStartPosition = 0,
-) {
-  return axios
-    .get(`task/findListTasksByUser/${taskListIdentifier}`, {
-      params: {
-        status,
-        queryStartPosition,
-        sortBy: sortBy || undefined,
-        filterBy: filterBy || undefined,
-      },
-    })
-    .then(response => response?.data)
     .catch(error => {
       throw error;
     });
@@ -86,89 +49,6 @@ export function getListTasksGroupedByTaskGroup(
     });
 }
 
-export function getListTasksCountByUser(
-  taskListIdentifier,
-  status = 'COMPLETE',
-  filterBy,
-) {
-  return axios
-    .get(`task/findCountOfListTasksByUser/${taskListIdentifier}`, {
-      params: {
-        status,
-        filterBy: filterBy || undefined,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getTasksAssignedToMe(
-  taskListIdentifier,
-  status,
-  sortBy,
-  filterBy,
-) {
-  if (taskListIdentifier != undefined) {
-    if (sortBy != undefined || filterBy != undefined) {
-      return axios
-        .get(
-          `task/findTasksAssignedToUser?taskListId=${taskListIdentifier}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-        )
-        .then(response => response.data)
-        .catch(error => {
-          throw error;
-        });
-    }
-    return axios
-      .get(
-        `task/findTasksAssignedToUser?taskListId=${taskListIdentifier}&status=${status}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      })
-      .catch(error => {
-        throw error;
-      });
-  }
-  if (sortBy != undefined || filterBy != undefined) {
-    return axios
-      .get(
-        `task/findTasksAssignedToUser?status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  }
-  return axios
-    .get(`task/findTasksAssignedToUser?status=${status}`)
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getCountOfTasksAssignedToMe(
-  taskListIdentifier,
-  status = 'COMPLETE',
-  filterBy,
-) {
-  return axios
-    .get(`task/findCountOfTasksAssignedToUser`, {
-      params: {
-        status,
-        filterBy: filterBy || undefined,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function getTasksAssignedToSpecificUser(userIdentifier, sortBy, status) {
   return axios
     .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
@@ -176,66 +56,6 @@ export function getTasksAssignedToSpecificUser(userIdentifier, sortBy, status) {
         status,
         sortBy: sortBy?.key || undefined,
         sortDirection: sortBy?.order || undefined,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getCountOfTasksAssignedToSpecificUser(
-  userIdentifier,
-  taskListIdentifier,
-  status = 'COMPLETE',
-  filterBy,
-) {
-  return axios
-    .get(`task/findCountOfTasksAssignedToSpecificUser`, {
-      params: {
-        userId: userIdentifier,
-        status,
-        filterBy: filterBy || undefined,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getTasksAssignedByMe(
-  taskListIdentifier,
-  status,
-  sortBy,
-  filterBy,
-) {
-  return axios({
-    method: 'get',
-    url: `task/findTasksAssignedByUser`,
-    params: {
-      taskListIdentifier,
-      status,
-      sortBy,
-      filterBy,
-    },
-  })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getCountOfTasksAssignedByMe(
-  taskListIdentifier,
-  status = 'COMPLETE',
-  filterBy,
-) {
-  return axios
-    .get(`task/findCountOfTasksAssignedByUser`, {
-      params: {
-        status,
-        filterBy: filterBy || undefined,
       },
     })
     .then(response => response.data)
@@ -504,95 +324,6 @@ export function updateComment(comment) {
     });
 }
 
-export function getHighPriorityTasksByTaskList(taskListIdentifier) {
-  return axios
-    .get(`task/findHighPriorityListTasks/${taskListIdentifier}?startPosition=0`)
-    .then(response => response.data)
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text: ERROR_RETRIEVING_TASKS_MESSAGE,
-      });
-      throw error;
-    });
-}
-
-export function getListTasksByPatient(
-  patientIdentifier,
-  status,
-  taskListIdentifier,
-) {
-  return axios
-    .get(
-      `task/findListTasksByPatient/${patientIdentifier}/taskList/${taskListIdentifier}?status=${status}`,
-    )
-    .then(response => response.data)
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text: ERROR_RETRIEVING_TASKS_MESSAGE,
-      });
-      throw error;
-    });
-}
-
-export function getAllTasksByPatient(
-  patientIdentifier,
-  status,
-  sortBy,
-  filterBy,
-) {
-  if (sortBy != undefined || filterBy != undefined) {
-    return axios
-      .get(
-        `task/findAllListTasksByPatient/${patientIdentifier}?status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        showAlert({
-          status: 'error',
-          title: 'Error',
-          text: ERROR_RETRIEVING_TASKS_MESSAGE,
-        });
-        throw error;
-      });
-  }
-  return axios
-    .get(`task/findAllListTasksByPatient/${patientIdentifier}?status=${status}`)
-    .then(response => response.data)
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text: ERROR_RETRIEVING_TASKS_MESSAGE,
-      });
-      throw error;
-    });
-}
-
-export function getInboxTasks(
-  status,
-  sortBy,
-  filterBy,
-  queryStartPosition = 0,
-) {
-  return axios
-    .get(`task/findInboxTasks`, {
-      params: {
-        status,
-        queryStartPosition,
-        sortBy,
-        filterBy,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function flagUnread(taskIdentifier, unread) {
   return axios
     .put(`task/flagUserTaskAsUnread/${taskIdentifier}?flagUnread=${unread}`)
@@ -681,16 +412,6 @@ export function getTaskAttachment(taskAttachmentId) {
 export function getTaskDetails(taskIdentifier) {
   return axios
     .get(`task/${taskIdentifier}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-export function flagArchivedForUser(taskIdentifier, flagArchived) {
-  return axios
-    .put(
-      `task/flagUserTaskAsArchived/${taskIdentifier}?flagArchived=${flagArchived}`,
-    )
     .then(({ data }) => data)
     .catch(error => {
       throw error;

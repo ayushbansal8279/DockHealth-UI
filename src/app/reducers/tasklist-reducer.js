@@ -23,7 +23,6 @@ import {
   RESET_TASKLIST_STATS,
   SET_AS_CURRENT_LIST,
   SET_CURRENT_LIST,
-  SET_GENERIC_LIST_COUNTS,
   TOGGLE_LIST_NOTIFICATIONS_SUCCESS,
   UPDATE_TASKLIST_SUCCESS,
   CANCEL_TASKLIST_INVITE_SUCCESS,
@@ -204,12 +203,6 @@ const TaskListReducer = (state = initialState, action) => {
         currentList: { notifications: receiveNotifications },
       };
     }
-
-    case SET_GENERIC_LIST_COUNTS:
-      return {
-        ...state,
-        genericLists: action.lists,
-      };
 
     case UPDATE_TASKLIST_SUCCESS:
       return {

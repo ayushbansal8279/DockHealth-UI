@@ -9,7 +9,6 @@ import {
   UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
-  TASK_ARCHIVED,
   MOVE_TASK_SUCCESS,
   SORT_PATIENT_TASKS,
 } from 'actions/action-types';
@@ -125,9 +124,6 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         taskSearch: payload?.value,
       };
-
-    case TASK_ARCHIVED:
-      return state;
 
     case SORT_PATIENT_TASKS: {
       const { key, order } = action.payload || {};

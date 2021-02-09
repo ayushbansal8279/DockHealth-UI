@@ -414,15 +414,6 @@ export function leaveList(taskListIdentifier) {
       .catch(noop);
 }
 
-export function getGenericListCounts() {
-  return dispatch =>
-    TaskListApi.findGenericListCountsForUser()
-      .then(lists => {
-        dispatch({ type: ActionTypes.SET_GENERIC_LIST_COUNTS, lists });
-      })
-      .catch(noop);
-}
-
 export function downloadPDF(taskListIdentifier) {
   return TaskListApi.downloadPDF(taskListIdentifier)
     .then(() => 'success')
