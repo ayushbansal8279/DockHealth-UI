@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import * as userApi from 'api/user-api';
 import OrganizationAvatar from 'components/Organization/OrganizationAvatar/OrganizationAvatar';
 import {
@@ -49,14 +49,16 @@ const UserProfileView = () => {
     () => {
       userApi.getUserNotificationPrefs();
 
-      setHeader(dispatch)({
-        layout: [
-          {
-            key: 'title',
-            component: <GenericHeader>Profile & Settings</GenericHeader>,
-          },
-        ],
-      });
+      dispatch(
+        setHeader({
+          layout: [
+            {
+              key: 'title',
+              component: <GenericHeader>Profile & Settings</GenericHeader>,
+            },
+          ],
+        }),
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

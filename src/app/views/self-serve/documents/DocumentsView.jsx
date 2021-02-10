@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
@@ -29,15 +29,17 @@ const DocumentsView = () => {
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
   useMount(() => {
-    setHeader(dispatch)({
-      layout: [
-        {
-          key: 'title',
-          component: <GenericHeader>Documents & Agreements</GenericHeader>,
-          alignItems: 'center',
-        },
-      ],
-    });
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'title',
+            component: <GenericHeader>Documents & Agreements</GenericHeader>,
+            alignItems: 'center',
+          },
+        ],
+      }),
+    );
   });
 
   const onBaaLabelClick = useCallback(() => {

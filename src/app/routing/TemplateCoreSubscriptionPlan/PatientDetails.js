@@ -10,7 +10,7 @@ import {
   fetchPatientFilters,
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 
@@ -18,14 +18,16 @@ export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
   const { params } = match;
   const { patientIdentifier, tabName } = params;
 
-  setHeader(dispatch)({
-    layout: [
-      {
-        key: 'patient-header',
-        component: <GenericHeader>Patient</GenericHeader>,
-      },
-    ],
-  });
+  dispatch(
+    setHeader({
+      layout: [
+        {
+          key: 'patient-header',
+          component: <GenericHeader>Patient</GenericHeader>,
+        },
+      ],
+    }),
+  );
   await dispatch(initializePatient(patientIdentifier));
 
   if (tabName === TaskListTabName.COMPLETE) {

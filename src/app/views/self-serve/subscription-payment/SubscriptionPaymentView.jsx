@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import {
   getBillingEstimate,
   setPaymentNewPlan,
@@ -134,15 +134,17 @@ const SubscriptionPaymentView = () => {
       goToSubscriptions(history);
     }
 
-    setHeader(dispatch)({
-      layout: [
-        {
-          key: 'title',
-          component: <GenericHeader />,
-          alignItems: 'center',
-        },
-      ],
-    });
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'title',
+            component: <GenericHeader />,
+            alignItems: 'center',
+          },
+        ],
+      }),
+    );
 
     getBillingEstimate()(dispatch);
   });

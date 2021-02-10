@@ -13,7 +13,7 @@ import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
 import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
-import { setHeader } from 'actions/header-actions';
+import * as TemplateActions from 'actions/template-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -319,7 +319,7 @@ class Home extends Component {
   };
 
   setViewHeader = (taskListIdentifier, taskLists) => {
-    const { setHeaderAction } = this.props;
+    const { templateActions } = this.props;
 
     const loadedTasklist =
       taskLists?.length > 0
@@ -337,7 +337,7 @@ class Home extends Component {
         />
       );
 
-      setHeaderAction({
+      templateActions.setHeader({
         layout: [
           {
             key: 'header',
@@ -972,7 +972,7 @@ const mapDispatchToProps = dispatch => ({
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   listDetailsSagaActions: bindActionCreators(ListDetailsSagaActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
-  setHeaderAction: setHeader(dispatch),
+  templateActions: bindActionCreators(TemplateActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });

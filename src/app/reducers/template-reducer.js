@@ -1,3 +1,4 @@
+import { omit } from 'ramda';
 import {
   SHOW_TEMPLATE_HEADER,
   HIDE_TEMPLATE_HEADER,
@@ -7,7 +8,17 @@ import {
   HIDE_SUB_MENU,
   OPEN_NOTIFICATIONS,
   CLEAR_NOTIFICATIONS,
+  HIDE_HEADER,
+  SET_HEADER,
+  UNSET_HEADER,
 } from 'actions/action-types';
+import palette from 'styles/palette';
+
+const initialHeaderState = {
+  show: false,
+  backgroundColor: palette.white,
+  latout: [],
+};
 
 const initialState = {
   isHeaderVisible: true,
@@ -15,6 +26,7 @@ const initialState = {
   subMenuKey: null,
   notificationsOpen: false,
   notificationsPage: '',
+  header: initialHeaderState,
 };
 
 const TemplateReducer = (state = initialState, action) => {
@@ -50,6 +62,40 @@ const TemplateReducer = (state = initialState, action) => {
     case CLEAR_NOTIFICATIONS: {
       return { ...state, notificationsOpen: false, notificationsPage: '' };
     }
+
+    case SET_HEADER: {
+      const headerData = action?.headerData ?? {};
+
+      return {
+        ...state,
+        header: {
+          ...initialHeaderState,
+          show: true,
+          ...headerData,
+        },
+      };
+    }
+
+    case UNSET_HEADER: {
+      const headerData = action?.headerData ?? {};
+
+      return {
+        ...state,
+        header: {
+          ...state.header,
+          ...omit(['show'], headerData),
+        },
+      };
+    }
+
+    case HIDE_HEADER:
+      return {
+        ...state,
+        header: {
+          ...state.header,
+          show: false,
+        },
+      };
 
     default: {
       return { ...state };

@@ -1,9 +1,8 @@
 import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import {
   getBillingDetails,
   getBillingEstimate,
@@ -22,12 +21,11 @@ const goToMainPage = () => {
 };
 
 const SaveBillingElement = () => {
-  const history = useHistory();
   return (
     <>
       <Spacing2 />
       <Grid item sm={12} container justify="flex-end">
-        <Button onClick={() => goToMainPage(history)} variant="contained">
+        <Button onClick={() => goToMainPage()} variant="contained">
           Continue
         </Button>
       </Grid>
@@ -43,15 +41,17 @@ const SubscriptionPaymentFinishedView = () => {
   );
 
   useMount(() => {
-    setHeader(dispatch)({
-      layout: [
-        {
-          key: 'title',
-          component: <GenericHeader />,
-          alignItems: 'center',
-        },
-      ],
-    });
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'title',
+            component: <GenericHeader />,
+            alignItems: 'center',
+          },
+        ],
+      }),
+    );
 
     getOrganizationById({ organizationIdentifier })(dispatch);
     getBillingDetails({ organizationIdentifier })(dispatch);

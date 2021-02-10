@@ -9,7 +9,7 @@ import useBoolean from 'hooks/useBoolean';
 import GenericHeader from 'components/common/GenericHeader';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import * as PatientApi from 'api/patient-api';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
@@ -79,14 +79,16 @@ const PatientsView = () => {
   }, [searchValue, fetchMyPatientsList, fetchPatientsBySearchTerm]);
 
   useEffect(() => {
-    setHeader(dispatch)({
-      layout: [
-        {
-          key: 'patients-header',
-          component: <GenericHeader>Patients</GenericHeader>,
-        },
-      ],
-    });
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'patients-header',
+            component: <GenericHeader>Patients</GenericHeader>,
+          },
+        ],
+      }),
+    );
     setIsFetchingPatients(true);
     refreshPatients();
     // eslint-disable-next-line react-hooks/exhaustive-deps

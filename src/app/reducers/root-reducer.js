@@ -5,7 +5,6 @@ import LocationReducer from 'location/reducers';
 import AlertChipReducer from 'alert/reducer';
 import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
-import HeaderReducer from './header-reducer';
 import InvitationReducer from './invitation-reducer';
 import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
@@ -34,7 +33,6 @@ const appReducer = combineReducers({
   invitationState: InvitationReducer,
   peopleState: PeopleReducer,
   form: FormReducer,
-  header: HeaderReducer,
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,
   authBase: AuthBaseReducer,

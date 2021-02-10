@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import SupportSectionViewFaq from './SupportView.Faq';
@@ -21,14 +21,16 @@ const SupportSectionView = () => {
   const dispatch = useDispatch();
 
   useMount(() => {
-    setHeader(dispatch)({
-      layout: [
-        {
-          key: 'generic-header',
-          component: <GenericHeader>Support</GenericHeader>,
-        },
-      ],
-    });
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'generic-header',
+            component: <GenericHeader>Support</GenericHeader>,
+          },
+        ],
+      }),
+    );
   });
 
   return (

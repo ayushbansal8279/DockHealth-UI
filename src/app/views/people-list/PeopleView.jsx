@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { setHeader as setHeaderRaw } from 'actions/header-actions';
+import * as TemplateActions from 'actions/template-actions';
 import * as PeopleActions from 'actions/people-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import Loader from 'components/common/Loader/Loader';
@@ -69,9 +69,9 @@ class PeopleView extends PureComponent {
   };
 
   resetHeader = () => {
-    const { setHeader } = this.props;
+    const { templateActions } = this.props;
 
-    setHeader({
+    templateActions.setHeader({
       layout: [
         {
           key: 'people-header',
@@ -147,7 +147,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   peopleActions: bindActionCreators(PeopleActions, dispatch),
-  setHeader: setHeaderRaw(dispatch),
+  templateActions: bindActionCreators(TemplateActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PeopleView);

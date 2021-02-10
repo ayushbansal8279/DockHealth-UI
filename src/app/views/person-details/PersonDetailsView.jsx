@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setHeader as setHeaderRaw } from 'actions/header-actions';
+import * as TemplateActions from 'actions/template-actions';
 import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
@@ -52,11 +52,16 @@ class PersonDetailsView extends PureComponent {
   };
 
   async componentDidMount() {
-    const { personDetailsActions, history, match, setHeader } = this.props;
+    const {
+      personDetailsActions,
+      history,
+      match,
+      templateActions,
+    } = this.props;
     const { params } = match;
     const { userIdentifier } = params;
 
-    setHeader({
+    templateActions.setHeader({
       layout: [
         {
           key: 'generic-header',
@@ -582,7 +587,7 @@ function mapDispatchToProps(dispatch) {
   return {
     taskActions: bindActionCreators(TaskActions, dispatch),
     personDetailsActions: bindActionCreators(PersonDetailsActions, dispatch),
-    setHeader: setHeaderRaw(dispatch),
+    templateActions: bindActionCreators(TemplateActions, dispatch),
     closeTaskDrawer: () => closeDrawer()(dispatch),
     clearTask: () => TaskActions.storeAsCurrentTask(null)(dispatch),
     megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),

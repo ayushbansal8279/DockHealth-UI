@@ -7,6 +7,9 @@ import {
   HIDE_SUB_MENU,
   OPEN_NOTIFICATIONS,
   CLEAR_NOTIFICATIONS,
+  SET_HEADER,
+  UNSET_HEADER,
+  HIDE_HEADER,
 } from 'actions/action-types';
 
 export const showNavbar = () => ({
@@ -42,3 +45,20 @@ export const openNotifications = notificationsPage => ({
 export const clearNotifications = () => ({
   type: CLEAR_NOTIFICATIONS,
 });
+
+export const setHeader = headerData => ({
+  type: SET_HEADER,
+  headerData,
+});
+
+export const unsetHeader = dispatch => () => {
+  dispatch({
+    type: HIDE_HEADER,
+  });
+
+  setTimeout(() => {
+    dispatch({
+      type: UNSET_HEADER,
+    });
+  }, 200);
+};

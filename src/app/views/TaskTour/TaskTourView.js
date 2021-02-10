@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
 import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import { taskListSelector } from 'selectors/task-list-selectors';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import Button from 'components/common/Button/Button';
@@ -56,15 +56,17 @@ const TaskTourView = () => {
       );
 
       if (loadedTasklist.listName) {
-        setHeader(dispatch)({
-          layout: [
-            {
-              key: 'header',
-              component: headerComponent,
-              xs: 12,
-            },
-          ],
-        });
+        dispatch(
+          setHeader({
+            layout: [
+              {
+                key: 'header',
+                component: headerComponent,
+                xs: 12,
+              },
+            ],
+          }),
+        );
       }
     };
 

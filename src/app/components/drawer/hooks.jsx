@@ -26,13 +26,11 @@ const initializeDrawerHooks = () => {
     messageBannerBar,
     user,
     // lists,
-    header,
-    templateState: { isHeaderVisible, isNavbarVisible },
+    templateState: { isHeaderVisible, isNavbarVisible, header },
   } = useSelector(store => ({
     ...store.organizationState,
     messageBannerBar: store.organizationState?.referralConfig?.messageBannerBar,
     user: store.userState.userProfile,
-    header: store.header,
     templateState: templateStateSelector(store),
   }));
 

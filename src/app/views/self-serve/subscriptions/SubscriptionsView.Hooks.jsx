@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
-import { setHeader } from 'actions/header-actions';
+import { setHeader } from 'actions/template-actions';
 import {
   getBillingDetails,
   getBillingEstimate,
@@ -68,15 +68,17 @@ const initializeSubscriptionsViewHooks = () => {
   useMount(() => {
     selectUsersForPlan({ users: null })(dispatch);
 
-    setHeader(dispatch)({
-      layout: [
-        {
-          key: 'title',
-          component: <GenericHeader>Subscription & Users</GenericHeader>,
-          alignItems: 'center',
-        },
-      ],
-    });
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'title',
+            component: <GenericHeader>Subscription & Users</GenericHeader>,
+            alignItems: 'center',
+          },
+        ],
+      }),
+    );
 
     getBillingDetails({ organizationIdentifier })(dispatch);
 
