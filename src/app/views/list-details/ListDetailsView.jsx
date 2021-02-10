@@ -19,18 +19,19 @@ import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as ModalActions from 'modal/actions';
+import * as ListDetailsActions from 'actions/list-details-actions';
 
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 
 import * as userApi from 'api/user-api';
 
 import { noop } from 'helpers/utility-functions';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { arrayMove } from 'helpers/sorting-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { initializePusher } from 'helpers/pusher-instance';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import { TaskStatus } from 'helpers/task-helpers';
 
 import {
   taskListSelector,
@@ -90,8 +91,6 @@ class Home extends Component {
     const { match, currentUser, taskLists, pendingTaskLists = [] } = this.props;
     const { params } = match;
 
-    this.initTable();
-
     this.setViewHeader(params.taskListIdentifier, [
       ...taskLists,
       ...pendingTaskLists,
@@ -105,7 +104,7 @@ class Home extends Component {
   }
 
   UNSAFE_componentWillUpdate(nextProps) {
-    const { actions, match, taskLists, currentUser, taskCounters } = this.props;
+    const { match, taskLists, currentUser, taskCounters } = this.props;
     const { params } = match;
 
     if (
@@ -139,56 +138,6 @@ class Home extends Component {
 
       if (nextProps.taskCounters?.incomplete > 0 && !tourConditionChecked) {
         this.openTourModal();
-      }
-    }
-
-    if (
-      nextProps.match.params.taskListIdentifier === params.taskListIdentifier &&
-      nextProps.match.params.tabName !== params.tabName
-    ) {
-      actions.getTaskStatsForList(params.taskListIdentifier);
-      if (nextProps.match.params.tabName === TaskListTabName.COMPLETE) {
-        this.refreshCompleteTasks();
-      } else {
-        this.refreshIncompleteTasks();
-      }
-    }
-
-    if (
-      nextProps.match.params.taskListIdentifier !== params.taskListIdentifier
-    ) {
-      const { taskListActions, megaFilterActions } = this.props;
-
-      actions.loading();
-      megaFilterActions.clearFiltersForMegaFilter();
-      actions.resetTaskCounters();
-      actions.getTaskStatsForList(nextProps.match.params.taskListIdentifier);
-
-      if (nextProps.match.params.taskListIdentifier != null) {
-        taskListActions.getTaskListById(
-          nextProps.match.params.taskListIdentifier,
-        );
-
-        const status =
-          nextProps.match.params.tabName === TaskListTabName.COMPLETE
-            ? 'COMPLETE'
-            : 'INCOMPLETE';
-        const filters = sessionStorageHelper.getItem(
-          `filter-${nextProps.match.params.taskListIdentifier}-${status}`,
-        );
-
-        if (!filters) {
-          this.getTasksList(nextProps.match.params.taskListIdentifier, status);
-        } else {
-          this.getFilteredTasks(
-            nextProps.match.params.taskListIdentifier,
-            filters,
-            status,
-          );
-        }
-
-        // Start with no selected tasks
-        actions.storeAsCurrentTask(null);
       }
     }
 
@@ -249,9 +198,7 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
-    const { actions, taskListActions } = this.props;
-
-    taskListActions.sortListTasks(null, null);
+    const { actions } = this.props;
 
     actions.resetTaskCounters();
   }
@@ -296,22 +243,8 @@ class Home extends Component {
             data.task?.taskList &&
             data.task?.creator.userIdentifier !== currentUserIdentifier
           ) {
-            const status = 'INCOMPLETE';
-            const filters = sessionStorageHelper.getItem(
-              `filter-${data.task.taskList.taskListIdentifier}-${status}`,
-            );
-
-            if (!filters) {
-              this.getTasksList(data.task.taskList.taskListIdentifier, status);
-            } else {
-              this.getFilteredTasks(
-                data.task.taskList.taskListIdentifier,
-                filters,
-                status,
-              );
-            }
+            this.refreshTab();
           }
-          // eslint-disable-next-line no-unused-expressions
           actions.refreshAnotherTask(data.task);
         }
       });
@@ -363,38 +296,26 @@ class Home extends Component {
     localStorageHelper.setItem(LIST_DETAILS_FIRST_TIME_KEY, false);
   };
 
-  initTable = () => {
-    const { actions, match } = this.props;
-    const { params } = match;
-    const { tabName, taskListIdentifier } = params;
-
-    actions.getTaskStatsForList(taskListIdentifier);
-
-    let status = 'INCOMPLETE';
-
-    if (tabName === TaskListTabName.COMPLETE) {
-      actions.loadingCompletedTasks();
-      status = 'COMPLETE';
-    } else {
-      actions.loading();
-    }
-
-    const filters = sessionStorageHelper.getItem(
-      `filter-${taskListIdentifier}-${status}`,
-    );
-
-    if (!filters) {
-      return this.getTasksList(taskListIdentifier, status);
-    }
-    return this.getFilteredTasks(taskListIdentifier, filters, status);
-  };
-
   refreshTab = (withLoader = false) => {
-    const { listDetailsSagaActions, actions, match } = this.props;
-    const { params } = match;
+    const { listDetailsActions, megaFilterActions, match } = this.props;
+    const { params } = match || {};
+    const { taskListIdentifier, tabName } = params || {};
 
-    actions.getTaskStatsForList(params.taskListIdentifier);
-    listDetailsSagaActions.fetchGroupedTasks({ withLoader });
+    const status =
+      tabName === TaskListTabName.COMPLETE
+        ? TaskStatus.COMPLETE
+        : TaskStatus.INCOMPLETE;
+
+    megaFilterActions.getFiltersForMegaFilter(
+      params.taskListIdentifier,
+      status,
+    );
+    listDetailsActions.getListDetailsTaskCounters(params.taskListIdentifier);
+    listDetailsActions.getListDetailsGroupedTasks({
+      withLoader,
+      taskListIdentifier,
+      status,
+    });
   };
 
   refreshFilters = () => {
@@ -403,64 +324,11 @@ class Home extends Component {
     const { taskListIdentifier, tabName } = params;
 
     const status =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+      tabName === TaskListTabName.COMPLETE
+        ? TaskStatus.COMPLETE
+        : TaskStatus.INCOMPLETE;
 
     megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-  };
-
-  // TODO: Move to saga
-  refreshIncompleteTasks = (withLoader = true) => {
-    const { actions, megaFilterActions, match } = this.props;
-    const { params } = match;
-    const { taskListIdentifier } = params;
-
-    const status = 'INCOMPLETE';
-
-    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-
-    const filters = sessionStorageHelper.getItem(
-      `filter-${taskListIdentifier}-${status}`,
-    );
-
-    if (withLoader) {
-      actions.loading();
-    }
-
-    if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(
-        taskListIdentifier,
-        filters,
-        status,
-        withLoader,
-      );
-    }
-
-    return this.getTasksList(taskListIdentifier, status);
-  };
-
-  // TODO: Move to saga
-  refreshCompleteTasks = (withLoader = true) => {
-    const { actions, megaFilterActions, match } = this.props;
-    const { params } = match;
-    const { taskListIdentifier } = params;
-
-    if (withLoader) {
-      actions.loadingCompletedTasks();
-    }
-
-    const status = 'COMPLETE';
-
-    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-
-    const filters = sessionStorageHelper.getItem(
-      `filter-${taskListIdentifier}-${status}`,
-    );
-
-    if (filters && !isEmpty(filters)) {
-      this.getFilteredTasks(taskListIdentifier, filters, status, withLoader);
-    } else {
-      this.getTasksList(taskListIdentifier, status);
-    }
   };
 
   getTasksList = (
@@ -677,13 +545,18 @@ class Home extends Component {
   };
 
   sortListTasks = (key, order) => {
-    const { taskListActions } = this.props;
-
-    taskListActions.sortListTasks(order ? key : null, order);
+    const { listDetailsActions } = this.props;
+    listDetailsActions.sortListDetailsTasks(order ? key : null, order);
   };
 
   invokeToggleCompleteAction = task => {
-    const { actions, listDetailsSagaActions, match, currentUser } = this.props;
+    const {
+      actions,
+      listDetailsActions,
+      listDetailsSagaActions,
+      match,
+      currentUser,
+    } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
 
@@ -691,7 +564,7 @@ class Home extends Component {
       .toggleCompleteTask(task, currentUser)
       .then(() => {
         setTimeout(() => {
-          actions.getTaskStatsForList(taskListIdentifier);
+          listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
           listDetailsSagaActions.getTasksGroupsList({
             shouldSetRequestState: false,
           });
@@ -975,6 +848,7 @@ const mapDispatchToProps = dispatch => ({
   templateActions: bindActionCreators(TemplateActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
+  listDetailsActions: bindActionCreators(ListDetailsActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

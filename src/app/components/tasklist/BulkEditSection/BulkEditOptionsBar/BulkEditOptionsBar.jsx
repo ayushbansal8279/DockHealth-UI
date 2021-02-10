@@ -17,8 +17,8 @@ import {
   bulkEditDueDate,
   bulkEditDelete,
   bulkEditComplete,
-  getTaskStatsForList,
 } from 'actions/task-actions';
+import { getListDetailsTaskCounters } from 'actions/list-details-actions';
 import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
@@ -416,7 +416,7 @@ const BulkEditOptionsBar = ({
       })
         .then(() => {
           dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
-          getTaskStatsForList(taskListIdentifier)(dispatch);
+          dispatch(getListDetailsTaskCounters(taskListIdentifier));
 
           dispatch(
             AlertActions.showGlobalAlert(
@@ -473,8 +473,7 @@ const BulkEditOptionsBar = ({
           })
             .then(() => {
               dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
-              getTaskStatsForList(taskListIdentifier)(dispatch);
-
+              dispatch(getListDetailsTaskCounters(taskListIdentifier));
               dispatch(
                 AlertActions.showGlobalAlert(
                   allSelectedTasksLength > 1

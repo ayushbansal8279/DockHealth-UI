@@ -18,7 +18,7 @@ import {
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
   REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
-  SORT_LIST_TASKS,
+  SORT_LIST_DETAILS_TASKS,
   REQUEST_ALL_TASKLIST_GROUP_TASKS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
@@ -448,7 +448,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case SORT_LIST_TASKS: {
+    case SORT_LIST_DETAILS_TASKS: {
       const { key, order } = action.payload || {};
 
       return {

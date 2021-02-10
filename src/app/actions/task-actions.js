@@ -711,26 +711,6 @@ export function getFilteredTasksForList(
   };
 }
 
-const processTaskCountersSuccess = (data, dispatch) => {
-  const payload = {
-    incomplete: data
-      ? data.find(({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT')
-          ?.metricValue
-      : 0,
-    complete: data
-      ? data.find(({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT')
-          ?.metricValue
-      : 0,
-  };
-  dispatch({ type: ActionTypes.TASK_COUNTERS_SUCCESS, payload });
-};
-
-export const getTaskStatsForList = taskListIdentifier => dispatch => {
-  return TaskApi.getTaskStatsForList(taskListIdentifier).then(data => {
-    processTaskCountersSuccess(data, dispatch);
-  });
-};
-
 export const resetTaskCounters = () => ({
   type: ActionTypes.RESET_TASK_COUNTERS,
 });

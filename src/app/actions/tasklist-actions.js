@@ -451,16 +451,6 @@ export const getPersonTasklistAccumulatedStats = () => dispatch => {
   });
 };
 
-export function sortListTasks(key, order) {
-  return {
-    type: ActionTypes.SORT_LIST_TASKS,
-    payload: {
-      key,
-      order,
-    },
-  };
-}
-
 export function requestAllTasklistGroupTasks() {
   return {
     type: ActionTypes.REQUEST_ALL_TASKLIST_GROUP_TASKS,

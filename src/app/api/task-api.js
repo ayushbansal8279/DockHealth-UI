@@ -4,17 +4,6 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import URLS from '../urls';
 
-export function getTaskStatsForList(taskListIdentifier) {
-  return axios
-    .get(`/task/stats/getTaskStatsForList/${taskListIdentifier}`)
-    .then(resp => {
-      return resp?.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function getTaskStatsForUser(userIdentifier) {
   return axios
     .get(`/task/stats/getTaskStatsForUser/${userIdentifier}`)
