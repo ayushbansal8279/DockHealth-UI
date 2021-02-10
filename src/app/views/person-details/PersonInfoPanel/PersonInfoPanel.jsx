@@ -7,7 +7,7 @@ import {
   getUserAvatar,
   removeUserFromOrganization,
 } from 'actions/people-actions';
-import Avatar from 'components/common/Avatar';
+import Avatar from 'components/common/Avatar/Avatar';
 import { formatPhoneNumber, noop, showAlert } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import ArrowLeftIcon from 'img/arrow-left';

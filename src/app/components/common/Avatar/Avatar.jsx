@@ -9,7 +9,7 @@ import {
   OnlineIndicator,
   OfflineIndicator,
   IdleIndicator,
-} from './Avatar.styled';
+} from './styled';
 
 export default React.forwardRef(
   (

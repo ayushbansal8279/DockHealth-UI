@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import AvatarEdit from 'react-avatar-edit';
 import palette from 'styles/palette';
-import Avatar from 'components/common/Avatar';
+import Avatar from 'components/common/Avatar/Avatar';
 import initializeUserAvatarHooks from './hooks';
 import {
   OuterAvatarContainer,

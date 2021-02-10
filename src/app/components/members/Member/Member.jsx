@@ -5,7 +5,7 @@ import { isEmpty } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { getMemberStatus } from 'helpers/list-members-helper';
-import Avatar from 'components/common/Avatar';
+import Avatar from 'components/common/Avatar/Avatar';
 import UniversalTooltip from 'components/common/UniversalTooltip';
 import { TooltipName, TooltipStatus } from './styled';
 

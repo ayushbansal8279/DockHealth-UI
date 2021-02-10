@@ -42,7 +42,7 @@ import {
 } from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
-import MegaFilter from 'components/common/MegaFilter/MegaFilter';
+import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import {
   megaFilterSelector,

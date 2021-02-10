@@ -4,9 +4,8 @@ import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import ArrowUpIcon from 'img/arrow-up.svg';
-import { AvatarImageContainer } from 'components/common/Avatar.styled';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import { PaddedButtonLabel } from './styled';
+import { PaddedButtonLabel, AvatarImageContainer } from './styled';
 
 const getSmallButtonContent = ({
   fileLoaded,
