@@ -40,6 +40,7 @@ export const groupTasksSelector = createSelector(
         tasks: taskGroup.tasks,
         hasMore: taskGroup.hasMore,
         isLoadingGroup: taskGroup.isLoadingGroup,
+        isFetchingMoreTasks: taskGroup.isFetchingMoreTasks,
       };
     });
 

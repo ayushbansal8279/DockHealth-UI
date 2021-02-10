@@ -324,12 +324,11 @@ export function* doGetTasksForTaskGroup(payload) {
       viewMode,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    if (!refresh) {
-      yield put({
-        type: REQUEST_TASKLIST_GROUP_TASKS,
-        fetchedGroupIdentifier: taskGroupIdentifier,
-      });
-    }
+    yield put({
+      type: REQUEST_TASKLIST_GROUP_TASKS,
+      fetchedGroupIdentifier: taskGroupIdentifier,
+      refresh,
+    });
 
     const groupOfTasks = yield call(
       getTasksForTaskListByTaskGroup,

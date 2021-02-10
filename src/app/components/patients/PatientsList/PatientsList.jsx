@@ -35,6 +35,22 @@ const PatientsList = ({
       headerName: 'PATIENT',
       sortComparator: (v1, v2, parameters1, parameters2) => {
         if (
+          parameters1.row.lastName?.toLowerCase() ===
+          parameters2.row.lastName?.toLowerCase()
+        ) {
+          if (
+            parameters1.row.firstName?.toLowerCase() >
+            parameters2.row.firstName?.toLowerCase()
+          )
+            return 1;
+          if (
+            parameters1.row.firstName?.toLowerCase() <
+            parameters2.row.firstName?.toLowerCase()
+          )
+            return -1;
+        }
+
+        if (
           parameters1.row.lastName?.toLowerCase() >
           parameters2.row.lastName?.toLowerCase()
         )
@@ -70,21 +86,164 @@ const PatientsList = ({
       field: 'mrn',
       headerName: 'MRN',
       flex: 0.5,
+      sortComparator: (v1, v2, parameters1, parameters2) => {
+        const { api } = parameters2;
+        const sortModel = api.getSortModel();
+
+        if (parameters1.row.mrn === parameters2.row.mrn) {
+          return 0;
+        }
+
+        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'mrn') {
+          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
+          if (parameters1.row.mrn === null || parameters1.row.mrn === '') {
+            return -1;
+          }
+
+          if (parameters2.row.mrn === null || parameters2.row.mrn === '') {
+            return 1;
+          }
+
+          return parameters2.row.mrn < parameters1.row.mrn ? 1 : -1;
+        }
+
+        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
+        if (parameters1.row.mrn === null || parameters1.row.mrn === '') {
+          return 1;
+        }
+
+        if (parameters2.row.mrn === null || parameters2.row.mrn === '') {
+          return -1;
+        }
+
+        return parameters1.row.mrn < parameters2.row.mrn ? -1 : 1;
+      },
     },
     {
       field: 'dob',
       headerName: 'DOB',
       flex: 0.5,
+      sortComparator: (v1, v2, parameters1, parameters2) => {
+        const { api } = parameters2;
+        const sortModel = api.getSortModel();
+
+        if (parameters1.row.dob === parameters2.row.dob) {
+          return 0;
+        }
+
+        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'dob') {
+          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
+          if (parameters1.row.dob === null || parameters1.row.dob === '') {
+            return -1;
+          }
+
+          if (parameters2.row.dob === null || parameters2.row.dob === '') {
+            return 1;
+          }
+
+          return parameters2.row.dob < parameters1.row.dob ? 1 : -1;
+        }
+
+        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
+        if (parameters1.row.dob === null || parameters1.row.dob === '') {
+          return 1;
+        }
+
+        if (parameters2.row.dob === null || parameters2.row.dob === '') {
+          return -1;
+        }
+
+        return parameters1.row.dob < parameters2.row.dob ? -1 : 1;
+      },
     },
     {
       field: 'age',
       headerName: 'AGE',
       flex: 0.5,
+      sortComparator: (v1, v2, parameters1, parameters2) => {
+        const { api } = parameters2;
+        const sortModel = api.getSortModel();
+
+        if (parameters1.row.age === parameters2.row.age) {
+          return 0;
+        }
+
+        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
+          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
+          if (parameters1.row.age === null || parameters1.row.age === '') {
+            return -1;
+          }
+
+          if (parameters2.row.age === null || parameters2.row.age === '') {
+            return 1;
+          }
+
+          return parameters2.row.age < parameters1.row.age ? 1 : -1;
+        }
+
+        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
+        if (parameters1.row.age === null || parameters1.row.age === '') {
+          return 1;
+        }
+
+        if (parameters2.row.age === null || parameters2.row.age === '') {
+          return -1;
+        }
+
+        return parameters1.row.age < parameters2.row.age ? -1 : 1;
+      },
     },
     {
       field: 'gender',
       headerName: 'GENDER',
       flex: 0.5,
+      sortComparator: (v1, v2, parameters1, parameters2) => {
+        const { api } = parameters2;
+        const sortModel = api.getSortModel();
+
+        if (
+          parameters1.row.gender?.toLowerCase() ===
+          parameters2.row.gender?.toLowerCase()
+        ) {
+          return 0;
+        }
+
+        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'gender') {
+          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
+          if (
+            parameters1.row.gender === null ||
+            parameters1.row.gender === ''
+          ) {
+            return -1;
+          }
+
+          if (
+            parameters2.row.gender === null ||
+            parameters2.row.gender === ''
+          ) {
+            return 1;
+          }
+
+          return parameters2.row.gender?.toLowerCase() <
+            parameters1.row.gender?.toLowerCase()
+            ? 1
+            : -1;
+        }
+
+        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
+        if (parameters1.row.gender === null || parameters1.row.gender === '') {
+          return 1;
+        }
+
+        if (parameters2.row.gender === null || parameters2.row.gender === '') {
+          return -1;
+        }
+
+        return parameters1.row.gender?.toLowerCase() <
+          parameters2.row.gender?.toLowerCase()
+          ? -1
+          : 1;
+      },
     },
   ];
 

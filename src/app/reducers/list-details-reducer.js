@@ -256,7 +256,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case REQUEST_TASKLIST_GROUP_TASKS: {
-      const { fetchedGroupIdentifier } = action;
+      const { fetchedGroupIdentifier, refresh } = action;
 
       const groupToUpdate = state.groupedTasks?.taskGroups?.find(
         ({ groupIdentifier }) => groupIdentifier === fetchedGroupIdentifier,
@@ -268,7 +268,8 @@ const ListDetailsReducer = (state = initialState, action) => {
         taskGroup.groupIdentifier === fetchedGroupIdentifier
           ? {
               ...taskGroup,
-              isLoadingGroup: true,
+              isLoadingGroup: !!refresh,
+              isFetchingMoreTasks: !refresh,
             }
           : taskGroup,
       );
@@ -309,6 +310,7 @@ const ListDetailsReducer = (state = initialState, action) => {
                 : taskGroup.tasks.concat(group.tasks),
               hasMore: group.hasMore,
               isLoadingGroup: false,
+              isFetchingMoreTasks: false,
             }
           : taskGroup,
       );
