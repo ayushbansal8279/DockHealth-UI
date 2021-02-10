@@ -73,21 +73,17 @@ const Task = ({
   useEffect(() => {
     if (
       !areSubtasksOpen &&
-      (areFiltersApplied ||
-        isSearchApplied ||
-        subtaskQuickAddOpen ||
-        subTasksCount === subtasks.length)
+      (subtaskQuickAddOpen || isFullView) &&
+      !subtasksDisabled
     ) {
       handleSetSubtasksOpen(true);
     }
   }, [
-    areFiltersApplied,
-    isSearchApplied,
     handleSetSubtasksOpen,
     areSubtasksOpen,
     subtaskQuickAddOpen,
-    subTasksCount,
-    subtasks,
+    isFullView,
+    subtasksDisabled,
   ]);
 
   const matchingComments = useMemo(
