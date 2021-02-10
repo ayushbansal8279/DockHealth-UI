@@ -28,10 +28,10 @@ const listSectionSavedState = ({ sessionStorageKey }) => {
     if (isOpen === DEFAULT_IS_OPEN_STATE && viewType === DEFAULT_VIEW_TYPE) {
       sessionStorageHelper.removeItem(sessionStorageKey);
     } else {
-      sessionStorageHelper.setItem(sessionStorageKey, {
-        isOpen,
-        viewType,
-      });
+      // sessionStorageHelper.setItem(sessionStorageKey, {
+      //   isOpen,
+      //   viewType,
+      // });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, viewType]);

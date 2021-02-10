@@ -175,6 +175,7 @@ const ListDetailsOpenedTasks = ({
                 startPosition:
                   tasksGrouped[taskGroupIdentifier]?.tasks?.length || 0,
                 sort,
+                refresh: false,
               });
             }}
             onTaskGroupViewModeChange={viewMode => {
@@ -183,6 +184,7 @@ const ListDetailsOpenedTasks = ({
                 startPosition: 0,
                 sort,
                 viewMode,
+                refresh: true,
               });
             }}
             taskListIdentifier={taskListIdentifier}
