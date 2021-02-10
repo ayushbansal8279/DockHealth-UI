@@ -29,6 +29,7 @@ import * as ListDetailsApi from 'api/list-details-api';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ActionTypes from 'actions/action-types';
+import * as ActionTypesSaga from 'actions/action-types-saga';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -682,22 +683,25 @@ function* doFilterListDetailsTasks({ payload }) {
 
 export default function* watchTasksGroupsList() {
   yield takeLatest(
-    ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
+    ActionTypesSaga.GET_LIST_DETAILS_TASK_COUNTERS,
     doGetListDetailsCounters,
   );
   yield takeLatest(
-    ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
+    ActionTypesSaga.GET_LIST_DETAILS_GROUPED_TASKS,
     doGetGroupedTasks,
   );
   yield takeLatest(
-    ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
+    ActionTypesSaga.REFRESH_LIST_DETAILS_GROUPED_TASKS,
     doRefreshGroupedTasks,
   );
   yield takeLatest(
-    ActionTypes.FILTER__LIST_DETAILS_TASKS,
+    ActionTypesSaga.FILTER__LIST_DETAILS_TASKS,
     doFilterListDetailsTasks,
   );
-  yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
+  yield takeLatest(
+    ActionTypesSaga.SORT_LIST_DETAILS_TASKS,
+    doSortListDetailsTasks,
+  );
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
