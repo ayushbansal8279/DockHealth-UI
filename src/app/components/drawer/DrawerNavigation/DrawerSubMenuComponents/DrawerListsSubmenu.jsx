@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { listsSelector } from 'selectors/task-list-selectors';
+import { pendingListsSelector } from 'selectors/invitation-selectors';
 import { openModal, closeModal } from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
@@ -37,10 +38,8 @@ const DrawerListsSubmenu = () => {
   const { taskListIdentifier: activeTaskListIdentifier } = useSelector(
     locationParametersSelector,
   );
-  const { activeLists, pendingLists } = useSelector(store => ({
-    activeLists: listsSelector(store),
-    pendingLists: store.invitationState.pendingTasklists,
-  }));
+  const activeLists = useSelector(listsSelector);
+  const pendingLists = useSelector(pendingListsSelector);
 
   const dispatch = useDispatch();
 
@@ -64,6 +63,14 @@ const DrawerListsSubmenu = () => {
     activeLists,
     pendingLists,
   ]);
+
+  useEffect(() => {
+    if (lists?.length === 0) {
+      dispatch(TaskListActions.getTaskListForUser());
+      dispatch(InvitationActions.findPendingTaskListsForUser());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const openListMenuPopover = (list, indexOnList) => {
     setCurrentListMenuPopupReference({
