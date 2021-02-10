@@ -17,7 +17,6 @@ import * as TemplateActions from 'actions/template-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskActions from 'actions/task-actions';
-import * as TaskListActions from 'actions/tasklist-actions';
 import * as ModalActions from 'modal/actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 
@@ -38,10 +37,7 @@ import {
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  selectedFiltersInMegaFilterSelector,
-  availableFiltersInInMegaFilterSelector,
-} from 'selectors/mega-filter-selectors';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
@@ -307,69 +303,6 @@ class Home extends Component {
         : TaskStatus.INCOMPLETE;
 
     megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-  };
-
-  getTasksList = (
-    taskListIdentifier,
-    status,
-    startPosition = 0,
-    endPosition = 0,
-  ) => {
-    const { actions, sort } = this.props;
-
-    return actions.getListTasksGroupedByTaskGroup(
-      taskListIdentifier,
-      sort,
-      status,
-      startPosition,
-      endPosition,
-    );
-  };
-
-  // TODO: Move to saga
-  getFilteredTasks = (taskListIdentifier, filters, taskStatus, withLoader) => {
-    const { actions, sort } = this.props;
-
-    return actions.getFilteredTasksForList(
-      taskListIdentifier,
-      taskStatus,
-      sort,
-      filters,
-      withLoader,
-    );
-  };
-
-  // TODO: Move to saga
-  handleFilterChange = updatedFilters => {
-    const { match, megaFilterActions, actions } = this.props;
-    const { params } = match;
-    const { tabName, taskListIdentifier } = params;
-
-    let taskStatus = 'INCOMPLETE';
-
-    if (tabName === TaskListTabName.COMPLETE) {
-      actions.loadingCompletedTasks();
-      taskStatus = 'COMPLETE';
-    } else {
-      actions.loading();
-    }
-
-    megaFilterActions.selectFiltersForMegaFilter(
-      updatedFilters,
-      taskListIdentifier,
-      taskStatus,
-    );
-
-    if (isEmpty(updatedFilters)) {
-      this.refreshFilters();
-      return this.getTasksList(taskListIdentifier, taskStatus);
-    }
-
-    return this.getFilteredTasks(
-      taskListIdentifier,
-      updatedFilters,
-      taskStatus,
-    );
   };
 
   downloadPDF = () => {
@@ -702,7 +635,7 @@ class Home extends Component {
                 completedTasksAmount={taskCounters.complete}
                 onSearchChange={this.setSearchValue}
                 searchValue={searchValue}
-                onSelectFilters={this.handleFilterChange}
+                onSelectFilters={listDetailsActions.filterListDetailsTasks}
                 pdfTitle={loadedTasklist?.listName}
                 tipsContent={
                   loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
@@ -803,7 +736,6 @@ const mapStateToProps = state => ({
   taskLists: taskListSelector(state),
   currentUser: userProfileSelector(state),
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
-  filters: availableFiltersInInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
   taskCounters: state.listDetails.taskCounters,
   pendingTaskLists: state.invitationState.pendingTasklists,
@@ -816,7 +748,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
-  taskListActions: bindActionCreators(TaskListActions, dispatch),
   listDetailsSagaActions: bindActionCreators(ListDetailsSagaActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   templateActions: bindActionCreators(TemplateActions, dispatch),

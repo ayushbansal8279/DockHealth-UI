@@ -27,6 +27,7 @@ import {
 } from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
 import * as ListDetailsActions from 'actions/list-details-actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ActionTypes from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
@@ -42,6 +43,7 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -237,7 +239,7 @@ function* doGetGroupedTasks({ payload }) {
 }
 
 function* doRefreshGroupedTasks({ payload }) {
-  const { withLoader, loadingMore } = payload;
+  const { withLoader = true } = payload || {};
   const { taskListIdentifier, tabName } = yield select(
     locationParametersSelector,
   );
@@ -252,7 +254,6 @@ function* doRefreshGroupedTasks({ payload }) {
       taskListIdentifier,
       status,
       withLoader,
-      loadingMore,
     }),
   );
 }
@@ -498,13 +499,46 @@ function* doReassignTasksToAnotherGroup(payload) {
 
 function* doOnEnterListDetails() {
   try {
-    const { taskListIdentifier, taskIdentifier } = yield select(
+    const { taskListIdentifier, taskIdentifier, tabName } = yield select(
       locationParametersSelector,
     );
+
+    const status =
+      tabName?.toLowerCase() === 'complete'
+        ? TaskStatus.COMPLETE
+        : TaskStatus.INCOMPLETE;
+
     yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
 
-    if (taskListIdentifier) {
-      yield call(doGetTasksGroupsList, { taskListIdentifier });
+    if (taskListIdentifier && status) {
+      const filters = sessionStorageHelper.getItem(
+        `filter-${taskListIdentifier}-${status}`,
+      );
+
+      if (filters) {
+        yield put(
+          MegaFilterActions.selectFiltersForMegaFilter(
+            filters,
+            taskListIdentifier,
+            status,
+          ),
+        );
+      }
+
+      yield all([
+        status === TaskStatus.INCOMPLETE &&
+          call(doGetTasksGroupsList, { taskListIdentifier }),
+        put(
+          MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
+        ),
+        put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
+        put(
+          ListDetailsActions.getListDetailsGroupedTasks({
+            taskListIdentifier,
+            status,
+          }),
+        ),
+      ]);
     }
 
     const isSelectedTask = yield select(taskIsSelectedSelector);
@@ -621,9 +655,29 @@ function* doSortListDetailsTasks({ payload }) {
     put(ListDetailsActions.requestAllListDetailsGroups()),
     put(ListDetailsActions.setListDetailsTasksSort(order ? key : null, order)),
   ]);
-  yield put(
-    ListDetailsActions.refreshListDetailsGroupedTasks({ withLoader: false }),
+  yield put(ListDetailsActions.refreshListDetailsGroupedTasks(false));
+}
+
+function* doFilterListDetailsTasks({ payload }) {
+  const { filters } = payload;
+
+  const { taskListIdentifier, tabName } = yield select(
+    locationParametersSelector,
   );
+
+  const status =
+    tabName?.toLowerCase() === 'complete'
+      ? TaskStatus.COMPLETE
+      : TaskStatus.INCOMPLETE;
+
+  yield put(
+    MegaFilterActions.selectFiltersForMegaFilter(
+      filters,
+      taskListIdentifier,
+      status,
+    ),
+  );
+  yield put(ListDetailsActions.refreshListDetailsGroupedTasks());
 }
 
 export default function* watchTasksGroupsList() {
@@ -638,6 +692,10 @@ export default function* watchTasksGroupsList() {
   yield takeLatest(
     ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
     doRefreshGroupedTasks,
+  );
+  yield takeLatest(
+    ActionTypes.FILTER__LIST_DETAILS_TASKS,
+    doFilterListDetailsTasks,
   );
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);

@@ -13,29 +13,15 @@ export const resetListDetailsTaskCounters = () => ({
   type: ActionTypes.RESET_LIST_DETAILS_TASK_COUNTERS,
 });
 
-export const getListDetailsGroupedTasks = ({
-  withLoader,
-  loadingMore,
-  taskListIdentifier,
-  status,
-}) => ({
+export const getListDetailsGroupedTasks = payload => ({
   type: ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
-  payload: {
-    withLoader,
-    loadingMore,
-    taskListIdentifier,
-    status,
-  },
+  payload,
 });
 
-export const refreshListDetailsGroupedTasks = ({
-  withLoader,
-  loadingMore,
-}) => ({
+export const refreshListDetailsGroupedTasks = withLoader => ({
   type: ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
   payload: {
     withLoader,
-    loadingMore,
   },
 });
 
@@ -45,6 +31,15 @@ export function sortListDetailsTasks(key, order) {
     payload: {
       key,
       order,
+    },
+  };
+}
+
+export function filterListDetailsTasks(filters) {
+  return {
+    type: ActionTypes.FILTER__LIST_DETAILS_TASKS,
+    payload: {
+      filters,
     },
   };
 }
