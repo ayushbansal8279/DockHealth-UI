@@ -11,7 +11,6 @@ import { mobileAnalyticsClient } from 'api/analytics-api';
 import Loader from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import PageContentHeader from 'components/common/PageContentHeader';
-import SafariFixGrid from 'components/common/SafariFixGrid';
 import Spacing from 'components/common/Spacing';
 import PeopleContainer from 'components/people/PeopleContainer';
 import Search from 'components/task-view/Search/Search';
@@ -96,7 +95,7 @@ class PeopleView extends PureComponent {
             <Search onChange={this.handleSearch} />
           </Grid>
         </PageContentHeader>
-        <SafariFixGrid container xs={12} item justify="center">
+        <Grid container xs={12} item justify="center">
           <Grid item xs={8}>
             <Spacing vertical={4} />
             <ManageUsersContainer>
@@ -126,7 +125,7 @@ class PeopleView extends PureComponent {
               />
             )}
           </Grid>
-        </SafariFixGrid>
+        </Grid>
         {this.invitePeopleButtonReference.current && (
           <InvitePeoplePopover
             anchor={this.invitePeopleButtonReference.current}

@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { lookupEMRPatient } from 'api/patient-api';
-import SafariFixGrid from 'components/common/SafariFixGrid';
 import { Grid } from '@material-ui/core';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import PatientListLoader from '../PatientsListLoader/PatientListLoader';
@@ -258,7 +257,7 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 ? (
-            <SafariFixGrid container xs={12} item justify="center">
+            <Grid container xs={12} item justify="center">
               <Grid item xs={8}>
                 <NonEmptyListTable
                   listLength={patients?.length ?? 0}
@@ -277,7 +276,7 @@ const PatientsList = ({
                   />
                 </NonEmptyListTable>
               </Grid>
-            </SafariFixGrid>
+            </Grid>
           ) : (
             <>
               {isFiltered || isGuest || emrIntegrationEnabled ? (
