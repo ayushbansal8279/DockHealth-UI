@@ -26,6 +26,7 @@ import {
   getTaskDetails,
 } from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
+import * as ListDetailsActions from 'actions/list-details-actions';
 import * as ActionTypes from 'actions/action-types';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
@@ -40,6 +41,7 @@ import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from 'location/selectors';
+import { TaskStatus } from 'helpers/task-helpers';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -152,7 +154,7 @@ function* doGetListDetailsCounters({ payload }) {
   );
 
   yield put({
-    type: ActionTypes.TASK_COUNTERS_SUCCESS,
+    type: ActionTypes.LIST_DETAILS_TASK_COUNTERS_SUCCESS,
     payload: processTaskCountersSuccess(responseData),
   });
 }
@@ -176,22 +178,14 @@ function* doGetTasksGroupsList(payload) {
 }
 
 function* doGetGroupedTasks({ payload }) {
-  const { withLoader = true, loadingMore = false } = payload;
-
-  let { taskListIdentifier, status } = payload;
+  const {
+    withLoader = true,
+    loadingMore = false,
+    taskListIdentifier,
+    status,
+  } = payload;
 
   try {
-    if (!taskListIdentifier || !status) {
-      const parameters = yield select(locationParametersSelector);
-
-      if (!taskListIdentifier) {
-        taskListIdentifier = parameters.taskListIdentifier;
-      }
-      if (!status) {
-        status = parameters.status;
-      }
-    }
-
     const isCompletedTasksContext = status?.toLowerCase() === 'complete';
 
     if (withLoader) {
@@ -240,6 +234,27 @@ function* doGetGroupedTasks({ payload }) {
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
   }
+}
+
+function* doRefreshGroupedTasks({ payload }) {
+  const { withLoader, loadingMore } = payload;
+  const { taskListIdentifier, tabName } = yield select(
+    locationParametersSelector,
+  );
+
+  const status =
+    tabName?.toLowerCase() === 'complete'
+      ? TaskStatus.COMPLETE
+      : TaskStatus.INCOMPLETE;
+
+  yield put(
+    ListDetailsActions.getListDetailsGroupedTasks({
+      taskListIdentifier,
+      status,
+      withLoader,
+      loadingMore,
+    }),
+  );
 }
 
 function* doGetTaskDetails(payload) {
@@ -296,13 +311,14 @@ function* doDeleteTasksGroup(payload) {
 
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
+
     yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     yield call(deleteGroup, groupId);
     yield call(doGetTasksGroupsList, {
       taskListIdentifier,
       shouldSetRequestState: false,
     });
-    yield call(doGetGroupedTasks);
+    yield call(doRefreshGroupedTasks);
     yield put(showGlobalAlert(AlertMessages.DELETED));
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -599,6 +615,17 @@ function* doFetchTasksBySearchedTerm(payload) {
   }
 }
 
+function* doSortListDetailsTasks({ payload }) {
+  const { key, order } = payload;
+  yield all([
+    put(ListDetailsActions.requestAllListDetailsGroups()),
+    put(ListDetailsActions.setListDetailsTasksSort(order ? key : null, order)),
+  ]);
+  yield put(
+    ListDetailsActions.refreshListDetailsGroupedTasks({ withLoader: false }),
+  );
+}
+
 export default function* watchTasksGroupsList() {
   yield takeLatest(
     ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
@@ -608,6 +635,11 @@ export default function* watchTasksGroupsList() {
     ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
     doGetGroupedTasks,
   );
+  yield takeLatest(
+    ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
+    doRefreshGroupedTasks,
+  );
+  yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);

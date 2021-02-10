@@ -36,7 +36,8 @@ export const onEnterListDetailsView = ({ match, dispatch }) => {
 
 export const onLeaveListDetailsView = ({ dispatch }) => {
   dispatch(MegaFilterActions.clearFiltersForMegaFilter());
-  dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
+  dispatch(ListDetailsActions.resetListDetailsTaskCounters());
+  dispatch(ListDetailsActions.setListDetailsTasksSort(null, null));
   dispatch(TaskDrawerActions.closeDrawer());
   dispatch(TaskActions.storeAsCurrentTask(null));
 };

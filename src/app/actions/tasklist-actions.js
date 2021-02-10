@@ -450,9 +450,3 @@ export const getPersonTasklistAccumulatedStats = () => dispatch => {
     type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
   });
 };
-
-export function requestAllTasklistGroupTasks() {
-  return {
-    type: ActionTypes.REQUEST_ALL_TASKLIST_GROUP_TASKS,
-  };
-}

@@ -4,8 +4,8 @@ import {
   REQUEST_COMPLETED_TASKS,
   REQUEST_TASKS,
   GET_MORE_TASKS_REQUEST,
-  TASK_COUNTERS_SUCCESS,
-  RESET_TASK_COUNTERS,
+  LIST_DETAILS_TASK_COUNTERS_SUCCESS,
+  RESET_LIST_DETAILS_TASK_COUNTERS,
   UPDATE_TASK_SUCCESS,
   REQUEST_LOAD_SUBTASKS,
   LOAD_SUBTASKS_SUCCESS,
@@ -18,8 +18,8 @@ import {
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
   REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
-  SORT_LIST_DETAILS_TASKS,
-  REQUEST_ALL_TASKLIST_GROUP_TASKS,
+  SET_LIST_DETAILS_TASKS_SORT,
+  REQUEST_ALL_LIST_DETAILS_GROUPS,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -190,7 +190,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_ALL_TASKLIST_GROUP_TASKS: {
+    case REQUEST_ALL_LIST_DETAILS_GROUPS: {
       return {
         ...state,
         groupedTasks: {
@@ -330,13 +330,13 @@ const ListDetailsReducer = (state = initialState, action) => {
         isCompletedTasksFetching: true,
       };
 
-    case RESET_TASK_COUNTERS:
+    case RESET_LIST_DETAILS_TASK_COUNTERS:
       return {
         ...state,
         taskCounters: {},
       };
 
-    case TASK_COUNTERS_SUCCESS:
+    case LIST_DETAILS_TASK_COUNTERS_SUCCESS:
       return {
         ...state,
         taskCounters: action.payload,
@@ -448,7 +448,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case SORT_LIST_DETAILS_TASKS: {
+    case SET_LIST_DETAILS_TASKS_SORT: {
       const { key, order } = action.payload || {};
 
       return {

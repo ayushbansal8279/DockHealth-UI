@@ -157,18 +157,7 @@ class Home extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, sort, match, taskListActions } = this.props;
-    const { params } = match;
-
-    if (
-      (previousProps.sort?.key !== sort?.key ||
-        previousProps.sort?.order !== sort?.order) &&
-      previousProps.match.params.taskListIdentifier ===
-        params.taskListIdentifier
-    ) {
-      taskListActions.requestAllTasklistGroupTasks();
-      this.refreshTab();
-    }
+    const { selectedFilters } = this.props;
 
     if (!shouldResetBulkEditTasks) {
       if (previousState?.searchValue !== searchValue) {
@@ -195,12 +184,6 @@ class Home extends Component {
         this.setState({ shouldResetBulkEditTasks: false });
       }
     }
-  }
-
-  componentWillUnmount() {
-    const { actions } = this.props;
-
-    actions.resetTaskCounters();
   }
 
   listenForRealTimeEvents = (taskListIdentifier, currentUser) => {
@@ -306,15 +289,10 @@ class Home extends Component {
         ? TaskStatus.COMPLETE
         : TaskStatus.INCOMPLETE;
 
-    megaFilterActions.getFiltersForMegaFilter(
-      params.taskListIdentifier,
-      status,
-    );
+    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
     listDetailsActions.getListDetailsTaskCounters(params.taskListIdentifier);
-    listDetailsActions.getListDetailsGroupedTasks({
+    listDetailsActions.refreshListDetailsGroupedTasks({
       withLoader,
-      taskListIdentifier,
-      status,
     });
   };
 
@@ -544,11 +522,6 @@ class Home extends Component {
     }
   };
 
-  sortListTasks = (key, order) => {
-    const { listDetailsActions } = this.props;
-    listDetailsActions.sortListDetailsTasks(order ? key : null, order);
-  };
-
   invokeToggleCompleteAction = task => {
     const {
       actions,
@@ -684,6 +657,7 @@ class Home extends Component {
 
   render() {
     const {
+      listDetailsActions,
       members,
       taskLists,
       match,
@@ -772,7 +746,7 @@ class Home extends Component {
                   listUniqueKey={taskListIdentifier}
                   loadMoreTasksForList={this.loadMoreTasksForList}
                   sort={sort}
-                  onSortChange={this.sortListTasks}
+                  onSortChange={listDetailsActions.sortListDetailsTasks}
                 />
               ) : (
                 <OpenedTasksView
@@ -789,7 +763,7 @@ class Home extends Component {
                   updateWorkflowStatus={this.handleUpdateWorkflowStatus}
                   searchValue={searchValue}
                   sort={sort}
-                  onSortChange={this.sortListTasks}
+                  onSortChange={listDetailsActions.sortListDetailsTasks}
                   selectedTask={selectedTask}
                   listUniqueKey={taskListIdentifier}
                   taskCounters={taskCounters}

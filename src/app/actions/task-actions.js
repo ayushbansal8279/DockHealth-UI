@@ -711,10 +711,6 @@ export function getFilteredTasksForList(
   };
 }
 
-export const resetTaskCounters = () => ({
-  type: ActionTypes.RESET_TASK_COUNTERS,
-});
-
 export function markTaskRead(task) {
   return dispatch =>
     TaskApi.flagUnread(task?.taskIdentifier, false)
