@@ -14,6 +14,11 @@ export const StyledDataGrid = styled(DataGrid)`
   .MuiDataGrid-colCellTitleContainer {
     display: flex;
     align-items: center;
+    &:hover {
+      & > .Sorting-Arrow {
+        opacity: 0.5;
+      }
+    }
   }
 
   .MuiDataGrid-cell {
@@ -69,6 +74,15 @@ export const StyledDataGrid = styled(DataGrid)`
 
     &:nth-child(odd) {
       background-color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  .Sorting-Arrow {
+    opacity: 0;
+
+    &:hover {
+      background-color: transparent;
+      cursor: default;
     }
   }
 `;

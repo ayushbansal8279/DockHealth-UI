@@ -14,6 +14,12 @@ export const StyledDataGrid = styled(DataGrid)`
   .MuiDataGrid-colCellTitleContainer {
     display: flex;
     align-items: center;
+
+    &:hover {
+      & > .Sorting-Arrow {
+        opacity: 0.5;
+      }
+    }
   }
 
   .MuiDataGrid-cell {
@@ -76,5 +82,14 @@ export const StyledDataGrid = styled(DataGrid)`
   .people-cell-container {
     display: flex;
     align-items: center;
+  }
+
+  .Sorting-Arrow {
+    opacity: 0;
+
+    &:hover {
+      background-color: transparent;
+      cursor: default;
+    }
   }
 `;

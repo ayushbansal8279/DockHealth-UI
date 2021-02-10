@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, IconButton, Button } from '@material-ui/core';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import moment from 'moment';
 import { func } from 'prop-types';
 import { filter, includes, isEmpty, reject } from 'ramda';
@@ -8,7 +9,6 @@ import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
-
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import {
@@ -90,6 +90,28 @@ const renderListNames = listNames => {
   );
 };
 
+const renderColumnHeader = props => {
+  const { colDef, api, field } = props;
+  const { headerName } = colDef;
+  const { sorting } = api.getState();
+  const { sortModel } = sorting;
+  const showArrowPlaceholder =
+    sortModel.length === 0 || sortModel[0].field !== field;
+
+  return (
+    <>
+      <div className="MuiDataGrid-colCellTitle">
+        <span>{headerName}</span>
+      </div>
+      {showArrowPlaceholder && (
+        <IconButton className="Sorting-Arrow" size="small">
+          <ArrowUpwardIcon fontSize="inherit" />
+        </IconButton>
+      )}
+    </>
+  );
+};
+
 const SubscriptionsViewMembersTable = ({
   selectedUsers,
   setSelectedUsers,
@@ -134,6 +156,7 @@ const SubscriptionsViewMembersTable = ({
         field: 'userName',
         headerName: 'USER',
         flex: 1,
+        renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
           return (
             <>
@@ -147,12 +170,14 @@ const SubscriptionsViewMembersTable = ({
       {
         field: 'email',
         headerName: 'EMAIL',
+        renderHeader: renderColumnHeader,
         flex: 1,
       },
       {
         field: 'orgUserRole',
         headerName: 'USER STATUS',
         flex: 0.5,
+        renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
           const {
             firstName,
@@ -214,6 +239,7 @@ const SubscriptionsViewMembersTable = ({
         field: 'registrationDate',
         headerName: 'JOINED',
         flex: 0.5,
+        renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
           const { registrationDate, userStatus } = row;
 

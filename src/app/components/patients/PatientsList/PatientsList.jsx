@@ -1,15 +1,37 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Grid, IconButton } from '@material-ui/core';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { lookupEMRPatient } from 'api/patient-api';
-import { Grid } from '@material-ui/core';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import PatientListLoader from '../PatientsListLoader/PatientListLoader';
 import EmptyPatientsList from '../EmptyPatientsList/EmptyPatientsList';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
 import { NonEmptyListTable } from './styled';
-
 import { StyledDataGrid } from './DataGridStyles';
+
+const renderColumnHeader = props => {
+  const { colDef, api, field } = props;
+  const { headerName } = colDef;
+  const { sorting } = api.getState();
+  const { sortModel } = sorting;
+  const showArrowPlaceholder =
+    sortModel.length === 0 || sortModel[0].field !== field;
+
+  return (
+    <>
+      <div className="MuiDataGrid-colCellTitle">
+        <span>{headerName}</span>
+      </div>
+      {showArrowPlaceholder && (
+        <IconButton className="Sorting-Arrow" size="small">
+          <ArrowUpwardIcon fontSize="inherit" />
+        </IconButton>
+      )}
+    </>
+  );
+};
 
 const PatientsList = ({
   patients,
@@ -32,6 +54,25 @@ const PatientsList = ({
     {
       field: 'patient',
       headerName: 'PATIENT',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <span
+          onClick={async () => {
+            const { fromEMR, patientIdentifier } = row;
+            if (fromEMR) {
+              const patient = await lookupEMRPatient(patientIdentifier);
+
+              history.push(`/core/patient/${patient.patientIdentifier}`);
+            } else {
+              history.push(`/core/patient/${patientIdentifier}`);
+            }
+          }}
+          className="patient-cell"
+        >
+          {row.lastName}, {row.firstName}
+        </span>
+      ),
+      flex: 1,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         if (
           parameters1.row.lastName?.toLowerCase() ===
@@ -62,28 +103,11 @@ const PatientsList = ({
 
         return 0;
       },
-      flex: 1,
-      renderCell: ({ row }) => (
-        <span
-          onClick={async () => {
-            const { fromEMR, patientIdentifier } = row;
-            if (fromEMR) {
-              const patient = await lookupEMRPatient(patientIdentifier);
-
-              history.push(`/core/patient/${patient.patientIdentifier}`);
-            } else {
-              history.push(`/core/patient/${patientIdentifier}`);
-            }
-          }}
-          className="patient-cell"
-        >
-          {row.lastName}, {row.firstName}
-        </span>
-      ),
     },
     {
       field: 'mrn',
       headerName: 'MRN',
+      renderHeader: renderColumnHeader,
       flex: 0.5,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
@@ -121,6 +145,7 @@ const PatientsList = ({
     {
       field: 'dob',
       headerName: 'DOB',
+      renderHeader: renderColumnHeader,
       flex: 0.5,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
@@ -158,6 +183,7 @@ const PatientsList = ({
     {
       field: 'age',
       headerName: 'AGE',
+      renderHeader: renderColumnHeader,
       flex: 0.5,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
@@ -195,6 +221,7 @@ const PatientsList = ({
     {
       field: 'gender',
       headerName: 'GENDER',
+      renderHeader: renderColumnHeader,
       flex: 0.5,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
