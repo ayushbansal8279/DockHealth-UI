@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import Avatar from 'components/common/Avatar';
-import ActivityAlerts from 'components/common/ActivityAlerts/ActivityAlerts';
+import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import AppLogo from 'img/logo/dock-logo';
 import { getUserAvatar } from 'api/people-api';
 import { noop } from 'helpers/utility-functions';

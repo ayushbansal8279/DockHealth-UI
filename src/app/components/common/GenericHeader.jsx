@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import DockHeaderLogo from 'img/logo/dock-logo';
 import { themeMontserratNormal } from 'styles/theme-montserrat';
-import ActivityAlerts from 'components/common/ActivityAlerts/ActivityAlerts';
+import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import Loader, { LoaderSizes } from './Loader/Loader';
 
 const GenericHeaderContainer = styled.div`

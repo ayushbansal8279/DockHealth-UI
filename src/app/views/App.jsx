@@ -16,7 +16,7 @@ import { openModal } from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification';
-import ActivityAlertsToasts from 'components/common/ActivityAlerts/ActivityAlertsToasts';
+import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import { featurePalette } from 'styles/palette';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
