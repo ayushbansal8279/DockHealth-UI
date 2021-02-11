@@ -5,7 +5,6 @@ import Intercom from 'react-intercom';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import initializeDrawerHooks from './hooks';
-// import DrawerList from './DrawerList/DrawerList';
 import {
   ContentContainer,
   DrawerContainer,
@@ -24,16 +23,7 @@ const renderHeaderColumn = ({ key, component, ...otherProps }) => (
 
 const Drawer = ({ children }) => {
   const {
-    // isOpen,
-    // open,
-    // close,
-    // activeId,
-    // setActiveId,
     user,
-    // lists,
-    // isNavbarInFullMode,
-    // areNavbarSettingsVisible,
-    // hideNavbar,
     currentOrganization,
     selectCurrentOrganization,
     header,

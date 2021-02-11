@@ -25,7 +25,6 @@ const initializeDrawerHooks = () => {
     billingDetails,
     messageBannerBar,
     user,
-    // lists,
     templateState: { isHeaderVisible, isNavbarVisible, header },
   } = useSelector(store => ({
     ...store.organizationState,
@@ -153,7 +152,6 @@ const initializeDrawerHooks = () => {
     bannerMessageLinkFlag,
     setBannerMessageLinkFlag,
     user,
-    // lists,
     header,
     intercomUser,
     organization,
