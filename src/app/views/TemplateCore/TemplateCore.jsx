@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Switch, useRouteMatch, useHistory } from 'react-router-dom';
 import LoaderOverlay from 'components/common/Loader/LoaderOverlay';
-import Drawer from 'components/drawer/Drawer';
+import NavigationTemplate from 'components/navigation/NavigationTemplate/NavigationTemplate';
 import checkUserAuthentication from 'routing/helpers/check-user-authentication';
 import checkUserAccountState from 'routing/helpers/check-user-account-state';
 import { RouteWrapper } from 'routing/components';
@@ -51,7 +51,7 @@ const TemplateCore = ({ childRoutes, onEnter, onLeave, setRedirection }) => {
   }, [dispatch, history, onEnter, onLeave, setRedirection]);
 
   return (
-    <Drawer locationPathname={history?.location?.pathname}>
+    <NavigationTemplate locationPathname={history?.location?.pathname}>
       {isLoading && <LoaderOverlay withBackground />}
       {!isLoading && (
         <Switch>
@@ -69,7 +69,7 @@ const TemplateCore = ({ childRoutes, onEnter, onLeave, setRedirection }) => {
             ))}
         </Switch>
       )}
-    </Drawer>
+    </NavigationTemplate>
   );
 };
 

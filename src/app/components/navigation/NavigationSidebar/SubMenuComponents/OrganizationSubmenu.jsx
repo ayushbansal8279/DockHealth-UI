@@ -31,7 +31,7 @@ import {
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
 const GUEST_ROLE = 'GUEST';
 
-const DrawerOrganizationSubmenu = ({
+const OrganizationSubmenu = ({
   currentUser = {},
   selectCurrentOrganization,
 }) => {
@@ -203,4 +203,4 @@ const DrawerOrganizationSubmenu = ({
   );
 };
 
-export default DrawerOrganizationSubmenu;
+export default OrganizationSubmenu;

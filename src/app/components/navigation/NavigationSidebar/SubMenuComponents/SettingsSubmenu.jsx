@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core';
 import React from 'react';
 import { SubMenuLink } from './styled';
 
-const DrawerSettingsSubmenu = () => {
+const SettingsSubmenu = () => {
   return (
     <Box widht={1}>
       <Box m={2} />
@@ -14,4 +14,4 @@ const DrawerSettingsSubmenu = () => {
   );
 };
 
-export default DrawerSettingsSubmenu;
+export default SettingsSubmenu;

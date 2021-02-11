@@ -4,6 +4,7 @@ import React from 'react';
 import Intercom from 'react-intercom';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
+import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
 import initializeDrawerHooks from './hooks';
 import {
   ContentContainer,
@@ -13,7 +14,6 @@ import {
   TrialBannerContainer,
   TrialBannerLink,
 } from './styled';
-import DrawerNavigation from './DrawerNavigation/DrawerNavigation';
 
 const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   <Grid item container key={key} {...otherProps}>
@@ -21,7 +21,7 @@ const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   </Grid>
 );
 
-const Drawer = ({ children }) => {
+const NavigationTemplate = ({ children }) => {
   const {
     user,
     currentOrganization,
@@ -49,7 +49,7 @@ const Drawer = ({ children }) => {
         variant="permanent"
         anchor="left"
       >
-        <DrawerNavigation
+        <NavigationSidebar
           currentUser={user}
           currentOrganization={currentOrganization}
           selectCurrentOrganization={selectCurrentOrganization}
@@ -100,4 +100,4 @@ const Drawer = ({ children }) => {
   );
 };
 
-export default Drawer;
+export default NavigationTemplate;

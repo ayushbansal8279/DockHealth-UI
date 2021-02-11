@@ -22,7 +22,7 @@ import {
   BlueSubMenuLink,
 } from './styled';
 
-const DrawerProfileSubmenu = () => {
+const ProfileSubmenu = () => {
   const dispatch = useDispatch();
   const { user, profilePicture } = useSelector(store => ({
     user: userProfileSelector(store),
@@ -90,4 +90,4 @@ const DrawerProfileSubmenu = () => {
   );
 };
 
-export default DrawerProfileSubmenu;
+export default ProfileSubmenu;

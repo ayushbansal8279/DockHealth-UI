@@ -33,7 +33,7 @@ import {
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
 const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
-const DrawerListsSubmenu = () => {
+const ListsSubmenu = () => {
   const history = useHistory();
   const { taskListIdentifier: activeTaskListIdentifier } = useSelector(
     locationParametersSelector,
@@ -283,4 +283,4 @@ const DrawerListsSubmenu = () => {
   );
 };
 
-export default DrawerListsSubmenu;
+export default ListsSubmenu;

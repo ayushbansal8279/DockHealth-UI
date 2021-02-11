@@ -5,19 +5,19 @@ import { useHistory } from 'react-router-dom';
 import Spacing from 'components/common/Spacing';
 import { subMenuKeySelector } from 'selectors/template-selectors';
 import * as TemplateActions from 'actions/template-actions';
-import SearchIcon from 'img/drawer/SearchIcon';
-import HomeIcon from 'img/drawer/HomeIcon';
-import ListsIcon from 'img/drawer/ListsIcon';
-import PeopleIcon from 'img/drawer/PeopleIcon';
-import PatientsIcon from 'img/drawer/PatientsIcon';
-import SettingsIcon from 'img/drawer/SettingsIcon';
+import SearchIcon from 'img/navigation/SearchIcon';
+import HomeIcon from 'img/navigation/HomeIcon';
+import ListsIcon from 'img/navigation/ListsIcon';
+import PeopleIcon from 'img/navigation/PeopleIcon';
+import PatientsIcon from 'img/navigation/PatientsIcon';
+import SettingsIcon from 'img/navigation/SettingsIcon';
 import Member from 'components/members/Member/Member';
 import OrganizationTile from 'components/Organization/OrganizationTile/OrganizationTile';
-import DrawerOrganizationSubmenu from './DrawerSubMenuComponents/DrawerOrganizationSubmenu';
-import DrawerProfileSubmenu from './DrawerSubMenuComponents/DrawerProfileSubmenu';
-import DrawerSettingsSubmenu from './DrawerSubMenuComponents/DrawerSettingsSubmenu';
-import DrawerListsSubmenu from './DrawerSubMenuComponents/DrawerListsSubmenu';
-import MenuTourHooks from './DrawerNavigation.MenuTourHooks';
+import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
+import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
+import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
+import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
+import menuTourHooks from './menu-tour-hooks';
 
 import {
   DrawerContentContainer,
@@ -33,13 +33,13 @@ export const LISTS_SUBMENU_KEY = 'LISTS';
 const SETTINGS_SUBMENU_KEY = 'SETTINGS';
 
 const SUBMENU_COMPONENTS = {
-  [ORGANIZATION_SUBMENU_KEY]: DrawerOrganizationSubmenu,
-  [PROFILE_SUBMENU_KEY]: DrawerProfileSubmenu,
-  [LISTS_SUBMENU_KEY]: DrawerListsSubmenu,
-  [SETTINGS_SUBMENU_KEY]: DrawerSettingsSubmenu,
+  [ORGANIZATION_SUBMENU_KEY]: OrganizationSubmenu,
+  [PROFILE_SUBMENU_KEY]: ProfileSubmenu,
+  [LISTS_SUBMENU_KEY]: ListsSubmenu,
+  [SETTINGS_SUBMENU_KEY]: SettingsSubmenu,
 };
 
-const DrawerNavigation = ({
+const NavigationSidebar = ({
   currentUser,
   currentOrganization,
   selectCurrentOrganization,
@@ -56,7 +56,7 @@ const DrawerNavigation = ({
     settingsMenuReference,
     profileMenuReference,
     renderMenuTourPopover,
-  } = MenuTourHooks({
+  } = menuTourHooks({
     menuDrawerOpen: null,
     hideTour: false,
     isUserAdmin,
@@ -199,4 +199,4 @@ const DrawerNavigation = ({
   );
 };
 
-export default DrawerNavigation;
+export default NavigationSidebar;
