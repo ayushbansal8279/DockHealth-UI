@@ -62,12 +62,12 @@ const Task = ({
 
   const handleSetSubtasksOpen = useCallback(
     areOpen => {
-      if (subTasksCount > 0 && isEmpty(renderedSubtasks)) {
+      if (subTasksCount > 0 && isEmpty(renderedSubtasks) && !subtasksDisabled) {
         dispatch(loadSubTasks(task));
       }
       setAreSubtasksOpen(areOpen);
     },
-    [task, renderedSubtasks, setAreSubtasksOpen, dispatch, subTasksCount],
+    [subTasksCount, renderedSubtasks, subtasksDisabled, dispatch, task],
   );
 
   useEffect(() => {

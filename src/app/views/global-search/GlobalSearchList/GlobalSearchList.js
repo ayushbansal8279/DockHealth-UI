@@ -90,6 +90,7 @@ const GlobalSearchList = ({
               addingNewSubtask={addingNewSubtask}
               addingNewSubtaskParentId={addingNewSubtaskParentId}
               subtaskShape={subtaskShape}
+              subtasksDisabled
             />
             <Spacing vertical={3} />
           </>
