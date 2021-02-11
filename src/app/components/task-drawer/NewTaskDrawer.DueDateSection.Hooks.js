@@ -21,13 +21,20 @@ const initializeDueDateSectionHooks = ({
       if (updatedDueTimeValue === '__:__ __') {
         updatedDueTimeValue = '';
       }
+
       if (selectedTask && selectedTask.taskIdentifier != null) {
-        const dueDate = updatedDueDate ? moment(`${updatedDueDate}`) : null;
+        const dueDate = updatedDueDate
+          ? moment(`${updatedDueDate}`, 'YYYYY-MM-DD')
+          : null;
 
         const dueDateTime =
           updatedDueDate && updatedDueTimeValue
-            ? moment(`${updatedDueDate} ${updatedDueTimeValue}`)
+            ? moment(
+                `${updatedDueDate} ${updatedDueTimeValue}`,
+                'YYYY-MM-DD HH:mm',
+              )
             : dueDate;
+
         updateDueDate(
           selectedTask,
           dueDateTime,
