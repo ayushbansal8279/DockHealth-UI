@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
-import StandardTaskItem from 'components/task-item/StandardTaskItem/StandardTaskItem';
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
   Arrow,
   Tasks,

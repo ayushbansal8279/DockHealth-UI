@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import StandardTaskItem from 'components/task-item/StandardTaskItem/StandardTaskItem';
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import { DroppablePlaceholder } from './styled';
 
 const DragAndDropGroupList = ({

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Grid, Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import SlimTaskItem from 'components/task-item/SlimTaskItem/SlimTaskItem';
+import SlimTaskItem from 'components/task/SlimTaskItem/SlimTaskItem';
 import Arrow from 'components/common/Arrow/Arrow';
 import LoadMoreButton, {
   LoadMoreSection,

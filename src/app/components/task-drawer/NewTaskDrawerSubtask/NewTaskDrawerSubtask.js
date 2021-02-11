@@ -27,12 +27,12 @@ import {
   getToolTipMultiLabelDetails,
   LABELS,
   isDueDateOverdue,
-} from 'components/task-item/icons';
+} from 'components/task/icons';
 import {
   DueDateBasicLabel,
   CalendarIcon,
   AddCrossIcon,
-} from 'components/task-item/styled';
+} from 'components/task/styled';
 import EmptyCalendarIcon from 'img/calendar-dim.svg';
 import {
   Container,

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { getPatientName } from 'helpers/utility-functions';
-import { getWorkflowStatusConfig } from 'components/task-item/StandardTaskItem/TaskItemStatus';
+import { getWorkflowStatusConfig } from 'components/task/StandardTaskItem/TaskItemStatus';
 
 const getDueDateData = ({ dueDate }) => {
   const dueDateMoment = moment(dueDate ?? null);
