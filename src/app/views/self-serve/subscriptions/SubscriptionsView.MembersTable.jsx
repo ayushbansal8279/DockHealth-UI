@@ -8,7 +8,7 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
-import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import {
@@ -79,14 +79,14 @@ const getTrialPlanPricePerUser = ({ planIsTrial, planPricePerUser }) => {
 const renderListNames = listNames => {
   if (listNames.length === 0) return '';
 
-  const label = listNames.map(({ fullName }, index) =>
+  const title = listNames.map(({ fullName }, index) =>
     index + 1 === listNames.length ? fullName : `${fullName}, `,
   );
 
   return (
-    <UniversalTooltipContainer placement="top" label={label}>
+    <Tooltip placement="top" title={title}>
       +{listNames?.length}
-    </UniversalTooltipContainer>
+    </Tooltip>
   );
 };
 

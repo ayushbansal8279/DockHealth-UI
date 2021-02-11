@@ -9,7 +9,7 @@ import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
-import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import Member from 'components/members/Member/Member';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
@@ -345,16 +345,15 @@ const SlimTaskItem = ({
               to={`/core/tasks/${taskList?.taskListIdentifier}`}
               withMargin={isOverdueTask}
             >
-              <UniversalTooltipContainer
+              <Tooltip
                 placement="top"
-                label={taskList?.listName}
-                maxWidth="240px"
-                disabled={!showTooltip}
+                title={taskList?.listName}
+                hideTooltip={!showTooltip}
               >
                 <SlimTaskListNameText>
                   {formattedTaskListName}
                 </SlimTaskListNameText>
-              </UniversalTooltipContainer>
+              </Tooltip>
             </SlimTaskItemListLink>
           )}
         </Grid>

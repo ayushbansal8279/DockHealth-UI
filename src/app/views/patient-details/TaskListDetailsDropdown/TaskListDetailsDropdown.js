@@ -25,7 +25,7 @@ import {
   IconsBox,
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
-import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 
@@ -96,28 +96,25 @@ const TaskListDetailsDropdown = ({
         )}
         <IconsBox>
           <ViewIconBox isHidden={!areViewOptionsVisible}>
-            <UniversalTooltipContainer
-              placement="top-end"
-              label="Slim view. Just the task shows"
-            >
+            <Tooltip placement="top-end" title="Slim view. Just the task shows">
               <ViewIcon
                 alt="slim-view"
                 src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
                 onClick={() => setViewType(SLIM_VIEW)}
               />
-            </UniversalTooltipContainer>
+            </Tooltip>
           </ViewIconBox>
           <ViewIconBox isHidden={!areViewOptionsVisible}>
-            <UniversalTooltipContainer
+            <Tooltip
               placement="top-end"
-              label="Full view. Task and comments show"
+              title="Full view. Task and comments show"
             >
               <ViewIcon
                 alt="full-view"
                 src={isFullView ? FullViewActiveIcon : FullViewIcon}
                 onClick={() => setViewType(FULL_VIEW)}
               />
-            </UniversalTooltipContainer>
+            </Tooltip>
           </ViewIconBox>
         </IconsBox>
       </ListDetailsHeader>

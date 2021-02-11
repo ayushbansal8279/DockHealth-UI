@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useRef } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { splitAt } from 'ramda';
 import { openModal } from 'modal/actions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import Spacing from 'components/common/Spacing';
-import UniversalTooltip from 'components/common/UniversalTooltip/UniversalTooltip';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
-import useBoolean from 'hooks/useBoolean';
-
 import { MoreMembersButtonContainer, MemberWrapper } from './styled';
 
 const getMembersNames = ({ members }) =>
@@ -29,14 +26,8 @@ const getMembersNames = ({ members }) =>
 
 const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
   const dispatch = useDispatch();
-  const moreMembersButtonReference = useRef(null);
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
-  const [
-    isShowMoreMembersTooltipOpen,
-    showMoreMembersTooltip,
-    hideMoreMembersTooltip,
-  ] = useBoolean(false);
 
   return (
     <>
@@ -52,20 +43,14 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
       {hiddenMembersCount > 0 && (
         <>
           <Spacing horizontal={1} />
-          <UniversalTooltip
+          <Tooltip
             placement="bottom"
-            open={isShowMoreMembersTooltipOpen}
-            anchorEl={moreMembersButtonReference.current}
+            title={getMembersNames({ members: hiddenMembers })}
           >
-            {getMembersNames({ members: hiddenMembers })}
-          </UniversalTooltip>
-          <MoreMembersButtonContainer
-            onMouseEnter={showMoreMembersTooltip}
-            onMouseLeave={hideMoreMembersTooltip}
-            ref={moreMembersButtonReference}
-          >
-            +{hiddenMembersCount}
-          </MoreMembersButtonContainer>
+            <MoreMembersButtonContainer>
+              +{hiddenMembersCount}
+            </MoreMembersButtonContainer>
+          </Tooltip>
         </>
       )}
       <Spacing horizontal={2} />

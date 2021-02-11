@@ -6,7 +6,7 @@ import { RobotoTypography } from 'styles/theme';
 
 import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import initializeAttachmentsSectionHooks from './NewTaskDrawer.AttachmentsSection.Hooks';
 import {
   AttachmentButton,
@@ -29,7 +29,7 @@ const renderAttachmentButton = ({
   const IconComponent = getIconFromContentType({ contentType });
 
   return (
-    <UniversalTooltipContainer key={attachmentIdentifier} label={fileName}>
+    <Tooltip key={attachmentIdentifier} title={fileName}>
       <AttachmentButton
         download={fileName}
         onClick={event => {
@@ -57,7 +57,7 @@ const renderAttachmentButton = ({
           </IconButton>
         </RemoveAttachmentButtonContainer>
       </AttachmentButton>
-    </UniversalTooltipContainer>
+    </Tooltip>
   );
 };
 
