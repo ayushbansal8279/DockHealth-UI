@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
-import Spacing from 'components/common/Spacing';
 import StandardTaskItem from 'components/task-item/StandardTaskItem/StandardTaskItem';
 import {
   Arrow,
@@ -69,30 +68,27 @@ const GlobalSearchList = ({
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
-          <>
-            <StandardTaskItem
-              key={task.taskIdentifier}
-              currentUser={currentUser}
-              openDrawer={openDrawer}
-              storeAsCurrentTask={storeAsCurrentTask}
-              task={task}
-              groupId={tasks.taskIdentifier}
-              draggableProvided={{}}
-              isCompletedGroup={isCompletedList}
-              toggleCompleteTask={toggleTaskStatus}
-              reassignTask={reassignTask}
-              updateDueDate={updateDueDate}
-              updateWorkflowStatus={updateWorkflowStatus}
-              dragAndDropDisabled
-              selectedTask={selectedTask}
-              isFullView
-              highlightedValue={highlightedValue}
-              addingNewSubtask={addingNewSubtask}
-              addingNewSubtaskParentId={addingNewSubtaskParentId}
-              subtaskShape={subtaskShape}
-            />
-            <Spacing vertical={3} />
-          </>
+          <StandardTaskItem
+            key={task.taskIdentifier}
+            currentUser={currentUser}
+            openDrawer={openDrawer}
+            storeAsCurrentTask={storeAsCurrentTask}
+            task={task}
+            groupId={tasks.taskIdentifier}
+            draggableProvided={{}}
+            isCompletedGroup={isCompletedList}
+            toggleCompleteTask={toggleTaskStatus}
+            reassignTask={reassignTask}
+            updateDueDate={updateDueDate}
+            updateWorkflowStatus={updateWorkflowStatus}
+            dragAndDropDisabled
+            selectedTask={selectedTask}
+            isFullView
+            highlightedValue={highlightedValue}
+            addingNewSubtask={addingNewSubtask}
+            addingNewSubtaskParentId={addingNewSubtaskParentId}
+            subtaskShape={subtaskShape}
+          />
         ))}
         {isLoadingMore && <SingleSkeletonLoader rows={4} />}
         {hasMoreTasks && (
