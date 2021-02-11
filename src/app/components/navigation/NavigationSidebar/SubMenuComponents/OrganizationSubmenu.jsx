@@ -13,7 +13,7 @@ import {
 import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
 import AlertTypes from 'alert/AlertTypes';
 
-import OrganizationIdentifier from 'components/Organization/OrganizationIdentifier/OrganizationIdentifier';
+import OrganizationIdentifier from 'components/org/OrganizationIdentifier/OrganizationIdentifier';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Spacing from 'components/common/Spacing';
 

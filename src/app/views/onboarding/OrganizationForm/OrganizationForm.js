@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
-import OrganizationAvatarInput from 'components/Organization/OrganizationAvatarInput/OrganizationAvatarInput';
-import OrganizationColorPicker from 'components/Organization/OrganizationColorPicker/OrganizationColorPicker';
+import OrganizationAvatarInput from 'components/org/OrganizationAvatarInput/OrganizationAvatarInput';
+import OrganizationColorPicker from 'components/org/OrganizationColorPicker/OrganizationColorPicker';
 import {
   Title,
   FormWrapper,

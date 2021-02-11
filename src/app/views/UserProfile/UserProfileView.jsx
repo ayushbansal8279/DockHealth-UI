@@ -6,7 +6,7 @@ import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/template-actions';
 import * as userApi from 'api/user-api';
-import OrganizationAvatar from 'components/Organization/OrganizationAvatar/OrganizationAvatar';
+import OrganizationAvatar from 'components/org/OrganizationAvatar/OrganizationAvatar';
 import {
   openModal as openModalAction,
   closeModal as closeModalAction,

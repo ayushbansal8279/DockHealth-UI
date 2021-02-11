@@ -12,7 +12,7 @@ import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import Member from 'components/members/Member/Member';
-import OrganizationTile from 'components/Organization/OrganizationTile/OrganizationTile';
+import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
