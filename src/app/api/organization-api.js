@@ -146,20 +146,22 @@ export const downloadSignedDocument = () =>
     return response.data;
   });
 
-export const checkBAASignedStatus = memoizeWith(
-  identity,
-  organizationIdentifier =>
-    axios
-      .get(
-        `/organization/checkBAASignedStatus?organizationIdentifier=${organizationIdentifier}`,
-      )
-      .then(response => {
-        if (response.data) {
-          return response.data;
-        }
+export const checkBAASignedStatus = organizationIdentifier =>
+  axios
+    .get(
+      `/organization/checkBAASignedStatus?organizationIdentifier=${organizationIdentifier}`,
+    )
+    .then(response => {
+      if (response.data) {
+        return response.data;
+      }
 
-        throw new Error('Unable to check BAA signature status');
-      }),
+      throw new Error('Unable to check BAA signature status');
+    });
+
+export const checkBAASignedStatusWithMemo = memoizeWith(
+  identity,
+  checkBAASignedStatus,
 );
 
 export const getConfigurationForReferral = referralCode =>

@@ -182,7 +182,7 @@ export const checkBAASignedStatus = organizationIdentifier => dispatch => {
 
   return handleOrganizationResponse({
     fetchMethod: () =>
-      OrganizationApi.checkBAASignedStatus(organizationIdentifier),
+      OrganizationApi.checkBAASignedStatusWithMemo(organizationIdentifier),
     dispatch,
   });
 };

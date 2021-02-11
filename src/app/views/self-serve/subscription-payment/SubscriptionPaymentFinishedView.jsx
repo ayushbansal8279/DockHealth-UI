@@ -56,6 +56,7 @@ const SubscriptionPaymentFinishedView = () => {
     getOrganizationById({ organizationIdentifier })(dispatch);
     getBillingDetails({ organizationIdentifier })(dispatch);
     getBillingEstimate()(dispatch);
+    sessionStorage.setItem('refreshOrgMemo', true);
   });
 
   return (
