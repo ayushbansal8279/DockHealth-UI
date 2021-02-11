@@ -9,7 +9,7 @@ import {
   selectUsersForPlan,
 } from 'actions/organization-actions';
 import { findAllUsers, loading } from 'actions/people-actions';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import useBoolean from 'hooks/useBoolean';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './subscriptions-plans/SubscriptionsPlansView.PlanData';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';

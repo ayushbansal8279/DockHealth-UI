@@ -1,6 +1,6 @@
 import React from 'react';
 import { setHeader } from 'actions/template-actions';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 
 export const onEnterPatientsView = ({ dispatch }) => {
   dispatch(

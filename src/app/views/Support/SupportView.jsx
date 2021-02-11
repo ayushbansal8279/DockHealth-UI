@@ -4,7 +4,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { setHeader } from 'actions/template-actions';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import SupportSectionViewFaq from './SupportView.Faq';
 import SupportSectionViewVideos from './SupportView.Videos';

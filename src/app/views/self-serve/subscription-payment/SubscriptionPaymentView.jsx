@@ -10,7 +10,7 @@ import {
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import { noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';

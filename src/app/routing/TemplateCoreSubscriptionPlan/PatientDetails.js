@@ -11,7 +11,7 @@ import {
   initalizeSavedFilters,
 } from 'sagas/patient-tasks-saga';
 import { setHeader } from 'actions/template-actions';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 
 export const onEnterPatientDetailsView = async ({ match, dispatch }) => {

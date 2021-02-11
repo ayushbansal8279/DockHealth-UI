@@ -8,7 +8,7 @@ import {
   getBillingEstimate,
   getOrganizationById,
 } from 'actions/organization-actions';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import {
   H2,
   Spacing2,

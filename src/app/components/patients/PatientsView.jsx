@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { setHeader } from 'actions/template-actions';

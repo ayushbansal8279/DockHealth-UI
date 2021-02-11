@@ -9,7 +9,7 @@ import {
   getInvoiceDetails,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';

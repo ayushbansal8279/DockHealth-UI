@@ -2,7 +2,7 @@ import React from 'react';
 import { resetGlobalSearch } from 'actions/global-search-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import { setHeader } from 'actions/template-actions';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 
 export const onEnterGlobalSearch = ({ dispatch }) => {
   dispatch(

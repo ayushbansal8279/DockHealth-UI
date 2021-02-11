@@ -9,7 +9,7 @@ import * as TemplateActions from 'actions/template-actions';
 import * as PeopleActions from 'actions/people-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import Loader from 'components/common/Loader/Loader';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import PageContentHeader from 'components/common/PageContentHeader';
 import Spacing from 'components/common/Spacing';
 import PeopleContainer from 'components/people/PeopleContainer';

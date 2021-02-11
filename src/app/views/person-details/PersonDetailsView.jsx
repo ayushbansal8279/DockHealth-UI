@@ -27,7 +27,7 @@ import {
 
 import { mobileAnalyticsClient } from 'api/analytics-api';
 
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';

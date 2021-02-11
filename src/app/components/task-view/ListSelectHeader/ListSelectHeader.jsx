@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import ListPopover from 'components/common/ListPopover';
 import Spacing from 'components/common/Spacing';
 import { HeaderTitleContainer, StyledTitle, TitleContainer } from './styled';

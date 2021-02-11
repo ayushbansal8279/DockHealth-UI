@@ -13,7 +13,7 @@ import {
 } from 'modal/actions';
 import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
 import AlertTypes from 'alert/AlertTypes';
-import GenericHeader from 'components/common/GenericHeader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
