@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'ramda';
-import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { getMemberStatus } from 'helpers/list-members-helper';
 import Avatar from 'components/common/Avatar/Avatar';
-import UniversalTooltip from 'components/common/UniversalTooltip/UniversalTooltip';
-import { TooltipName, TooltipStatus } from './styled';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+import { TooltipName, TooltipStatus, TooltipContent } from './styled';
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
@@ -46,13 +45,6 @@ const Member = React.forwardRef(
       </MontserratTypography>
     );
 
-    const avatarContainerReference = useRef(null);
-    const [
-      isAvatarTooltipOpen,
-      showAvatarTooltip,
-      hideAvatarTooltip,
-    ] = useBoolean(false);
-
     const onlineActiveUser =
       activeUsersList?.find(({ userIdentifier }) => {
         return userIdentifier === member?.userIdentifier;
@@ -66,53 +58,39 @@ const Member = React.forwardRef(
     const isInvited =
       member?.userStatus === 'INVITED' && isEmpty(onlineActiveUser);
 
-    const avatar = (
-      <Avatar
-        ref={reference}
-        size={size ?? 55}
-        color={color || member?.bubbleColor}
-        className={className}
-        onClick={onClick}
-        isInactive={isInactive}
-        showOnlineIndicator={currentUserIdentifier !== member?.userIdentifier}
-        isOnline={isOnline}
-        isIdle={isIdle}
-        isOffline={isOffline}
-      >
-        {children || avatarContent}
-      </Avatar>
-    );
-
-    if (showTooltip && alt) {
-      return (
-        <>
-          <div
-            ref={avatarContainerReference}
-            onMouseEnter={showAvatarTooltip}
-            onMouseLeave={hideAvatarTooltip}
+    return (
+      <>
+        <Tooltip
+          title={
+            <TooltipContent>
+              {isOnline && 'Logged in and currently active on Dock'}
+              {isIdle && 'Message for idle goes here'}
+              {isOffline && 'Not logged into Dock at this time'}
+              {isInvited && 'User is not active on Dock, invite is pending'}
+            </TooltipContent>
+          }
+          placement="bottom"
+          hideTooltip={!showTooltip}
+        >
+          <Avatar
+            ref={reference}
+            size={size ?? 55}
+            color={color || member?.bubbleColor}
+            className={className}
+            onClick={onClick}
+            isInactive={isInactive}
+            showOnlineIndicator={
+              currentUserIdentifier !== member?.userIdentifier
+            }
+            isOnline={isOnline}
+            isIdle={isIdle}
+            isOffline={isOffline}
           >
-            {avatar}
-          </div>
-          {currentUserIdentifier !== member?.userIdentifier && (
-            <UniversalTooltip
-              open={isAvatarTooltipOpen}
-              placement="bottom"
-              anchorEl={avatarContainerReference.current}
-              maxWidth="156px"
-            >
-              <>
-                {isOnline && 'Logged in and currently active on Dock'}
-                {isIdle && 'Message for idle goes here'}
-                {isOffline && 'Not logged into Dock at this time'}
-                {isInvited && 'User is not active on Dock, invite is pending'}
-              </>
-            </UniversalTooltip>
-          )}
-        </>
-      );
-    }
-
-    return avatar;
+            {children || avatarContent}
+          </Avatar>
+        </Tooltip>
+      </>
+    );
   },
 );
 

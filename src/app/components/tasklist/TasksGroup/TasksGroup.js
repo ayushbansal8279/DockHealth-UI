@@ -11,7 +11,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltip';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
@@ -186,10 +186,7 @@ const TasksGroup = ({
         {!changingGroupOrderDisabled && (
           <IconsBox>
             <ViewIconBox isHidden={!areViewOptionsVisible}>
-              <UniversalTooltipContainer
-                placement="top-end"
-                label="Slim view. Just the task shows"
-              >
+              <Tooltip placement="top" title="Slim view. Just the task shows">
                 <ViewIcon
                   alt="slim-view"
                   src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
@@ -198,12 +195,12 @@ const TasksGroup = ({
                     onTaskGroupViewModeChange(SLIM_VIEW);
                   }}
                 />
-              </UniversalTooltipContainer>
+              </Tooltip>
             </ViewIconBox>
             <ViewIconBox isHidden={!areViewOptionsVisible}>
-              <UniversalTooltipContainer
-                placement="top-end"
-                label="Full view. Task and comments show"
+              <Tooltip
+                placement="top"
+                title="Full view. Task and comments show"
               >
                 <ViewIcon
                   alt="full-view"
@@ -213,7 +210,7 @@ const TasksGroup = ({
                     onTaskGroupViewModeChange(FULL_VIEW);
                   }}
                 />
-              </UniversalTooltipContainer>
+              </Tooltip>
             </ViewIconBox>
           </IconsBox>
         )}

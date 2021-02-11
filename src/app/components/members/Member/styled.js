@@ -11,3 +11,7 @@ export const TooltipName = styled.p`
 export const TooltipStatus = styled(TooltipName)`
   font-weight: ${fontWeights.light};
 `;
+
+export const TooltipContent = styled.div`
+  max-width: 156px;
+`;

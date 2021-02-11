@@ -16,7 +16,7 @@ import palette from 'styles/palette';
 import PageContentHeader from 'components/common/NewPageContentHeader';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
-import UniversalTooltip from 'components/common/UniversalTooltip/UniversalTooltip';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
@@ -137,18 +137,12 @@ const Toolbar = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const moreButtonReference = useRef(null);
-  const moreMembersButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
-  const [
-    isShowMoreMembersTooltipOpen,
-    showMoreMembersTooltip,
-    hideMoreMembersTooltip,
-  ] = useBoolean(false);
 
   const notificationsEnabled = taskList?.notifications;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -232,24 +226,17 @@ const Toolbar = ({
                 {hiddenMembersCount > 0 && (
                   <>
                     <Spacing horizontal={1} />
-                    <UniversalTooltip
+                    <Tooltip
                       placement="bottom-end"
-                      open={isShowMoreMembersTooltipOpen}
-                      anchorEl={moreMembersButtonReference.current}
-                      endSpacing="4px"
-                    >
-                      {getHiddenMembers({
+                      title={getHiddenMembers({
                         hiddenMembers,
                         activeUsersList,
                       })}
-                    </UniversalTooltip>
-                    <MoreMembersButtonContainer
-                      onMouseEnter={showMoreMembersTooltip}
-                      onMouseLeave={hideMoreMembersTooltip}
-                      ref={moreMembersButtonReference}
                     >
-                      +{hiddenMembersCount}
-                    </MoreMembersButtonContainer>
+                      <MoreMembersButtonContainer>
+                        +{hiddenMembersCount}
+                      </MoreMembersButtonContainer>
+                    </Tooltip>
                   </>
                 )}
                 <Spacing horizontal={2} />
