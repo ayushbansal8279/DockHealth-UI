@@ -25,7 +25,7 @@ import {
   IconsBox,
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 

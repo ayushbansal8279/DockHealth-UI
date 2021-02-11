@@ -1,5 +1,4 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import React, { useRef } from 'react';
 import { useToggle } from 'react-use';
 import {
   StyledErrorLabel,
@@ -8,29 +7,30 @@ import {
   StyledInputIcon,
   StyledLabel,
   StyledPasswordSwitch,
-} from './AuthField.styled';
+} from './styled';
 
-const onCrossIconClick = ({ clearError, hasError, name, setValue }) => () => {
+const onCrossIconClick = ({ onChange, hasError }) => () => {
   if (hasError) {
-    clearError(name);
-    setValue(name, '');
+    onChange('');
   }
 };
 
-const AuthFieldHooks = ({
-  name,
+const AuthField = ({
+  input,
   invisible,
   label,
   type,
-  onChange,
-  ...props
+  meta: { touched, error, pristine },
+  autoFocus = false,
+  customError = '',
+  setCustomError = () => {},
 }) => {
-  const { errors, register, clearError, setValue } = useFormContext();
-  const error = errors?.[name]?.message;
-
+  const inputReference = useRef(null);
   const [passwordShown, togglePasswordShown] = useToggle(false);
 
-  const hasError = Boolean(error);
+  const errorValue = customError || error;
+
+  const hasError = Boolean(!pristine && touched && errorValue);
 
   let inputClassName = '';
 
@@ -39,26 +39,30 @@ const AuthFieldHooks = ({
   const isPassword = type === 'password';
   const inputType = isPassword && passwordShown ? 'text' : type;
 
+  const { onChange: oldOnChange, ...otherInput } = input;
+
+  const onChange = event => {
+    oldOnChange(event);
+    setCustomError('');
+  };
+
   return (
     <>
-      {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
+      {hasError && <StyledErrorLabel>{errorValue}</StyledErrorLabel>}
       <StyledInputContainer
         invisible={invisible}
         className={inputClassName.trim()}
       >
         <StyledInput
-          ref={register}
-          name={name}
+          ref={inputReference}
           type={inputType}
+          autoFocus={autoFocus}
+          {...otherInput}
+          onChange={onChange}
           className={inputClassName.trim()}
           isPassword={isPassword}
-          onChange={onChange}
-          placeholder=" "
-          {...props}
         />
-        <StyledInputIcon
-          onClick={onCrossIconClick({ clearError, hasError, name, setValue })}
-        />
+        <StyledInputIcon onClick={onCrossIconClick({ onChange, hasError })} />
         {isPassword && (
           <StyledPasswordSwitch onClick={togglePasswordShown}>
             {passwordShown ? 'Hide' : 'Show'}
@@ -70,4 +74,4 @@ const AuthFieldHooks = ({
   );
 };
 
-export default AuthFieldHooks;
+export default AuthField;

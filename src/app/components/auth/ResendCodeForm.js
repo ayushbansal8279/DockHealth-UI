@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
-import AuthField from '../common/AuthField';
+import AuthField from 'components/auth/AuthField/AuthField';
 
 const validate = values => {
   const errors = {};

@@ -6,7 +6,7 @@ import { RobotoTypography } from 'styles/theme';
 
 import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
 import initializeAttachmentsSectionHooks from './NewTaskDrawer.AttachmentsSection.Hooks';
 import {
   AttachmentButton,

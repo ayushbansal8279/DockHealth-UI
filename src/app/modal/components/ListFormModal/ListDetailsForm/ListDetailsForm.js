@@ -6,9 +6,9 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import { Grid } from '@material-ui/core';
 import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';
-import messages from 'components/ListForm/messages';
 import Button from 'components/common/Button/Button';
 import { Title, ButtonWrapper, Header } from '../styled';
+import messages from './messages';
 import { StyledForm } from './styled';
 
 const onSubmit = ({

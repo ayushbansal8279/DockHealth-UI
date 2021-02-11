@@ -8,7 +8,7 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import {

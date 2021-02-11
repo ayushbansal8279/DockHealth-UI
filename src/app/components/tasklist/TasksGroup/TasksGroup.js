@@ -11,7 +11,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltip';
 import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,

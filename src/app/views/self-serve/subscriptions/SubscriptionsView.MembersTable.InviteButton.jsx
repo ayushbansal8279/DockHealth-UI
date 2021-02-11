@@ -1,7 +1,7 @@
 import { Add } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
-import AdornedButton from 'components/common/AdornedButton';
+import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import InvitePeoplePopover from 'views/people-list/PeopleView.InvitePeoplePopover';
 
 const InviteButton = ({ getAllUsers }) => {

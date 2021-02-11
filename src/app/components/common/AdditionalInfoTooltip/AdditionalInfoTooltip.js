@@ -1,6 +1,6 @@
 import React from 'react';
 import QuestionMark from 'img/question-mark';
-import UniversalTooltipContainer from '../UniversalTooltipContainer';
+import UniversalTooltipContainer from '../UniversalTooltip/UniversalTooltipContainer';
 
 const AdditionalInfoTooltip = ({ description }) => (
   <UniversalTooltipContainer label={description}>

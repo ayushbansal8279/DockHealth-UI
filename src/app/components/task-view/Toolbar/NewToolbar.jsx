@@ -16,7 +16,7 @@ import palette from 'styles/palette';
 import PageContentHeader from 'components/common/NewPageContentHeader';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
-import UniversalTooltip from 'components/common/UniversalTooltip';
+import UniversalTooltip from 'components/common/UniversalTooltip/UniversalTooltip';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';

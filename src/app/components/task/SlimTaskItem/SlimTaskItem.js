@@ -9,7 +9,7 @@ import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import ThreeDotsIcon from 'img/three-dots';
-import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import UniversalTooltipContainer from 'components/common/UniversalTooltip/UniversalTooltipContainer';
 import Member from 'components/members/Member/Member';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';

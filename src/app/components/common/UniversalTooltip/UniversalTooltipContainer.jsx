@@ -1,17 +1,7 @@
-import { PopperProps } from '@material-ui/core';
 import React, { useRef } from 'react';
-import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import UniversalTooltip from './UniversalTooltip';
-
-interface UniversalTooltipContainerProps extends PopperProps {
-  label?: React.ReactNode;
-  disabled?: boolean;
-}
-
-const ElementWrapper: any = styled.div`
-  display: inline-block;
-`;
+import { ElementWrapper } from './styled';
 
 const UniversalTooltipContainer = ({
   children,
@@ -19,7 +9,7 @@ const UniversalTooltipContainer = ({
   open,
   disabled,
   ...props
-}: UniversalTooltipContainerProps) => {
+}) => {
   const [isTooltipShown, showTooltip, hideTooltip] = useBoolean(false);
   const popoverReference = useRef(null);
 

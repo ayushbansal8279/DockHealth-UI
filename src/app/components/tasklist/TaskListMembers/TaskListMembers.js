@@ -5,7 +5,7 @@ import { splitAt } from 'ramda';
 import { openModal } from 'modal/actions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import Spacing from 'components/common/Spacing';
-import UniversalTooltip from 'components/common/UniversalTooltip';
+import UniversalTooltip from 'components/common/UniversalTooltip/UniversalTooltip';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import useBoolean from 'hooks/useBoolean';
