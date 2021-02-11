@@ -88,6 +88,7 @@ const GlobalSearchList = ({
             addingNewSubtask={addingNewSubtask}
             addingNewSubtaskParentId={addingNewSubtaskParentId}
             subtaskShape={subtaskShape}
+            subtasksDisabled
           />
         ))}
         {isLoadingMore && <SingleSkeletonLoader rows={4} />}
