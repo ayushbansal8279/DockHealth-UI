@@ -1,4 +1,4 @@
-import { memoizeWith, identity } from 'ramda';
+import memoize from 'lodash.memoize';
 import axios from './axios-heydoc';
 
 export const get = ({ organizationIdentifier }) => {
@@ -146,12 +146,16 @@ export const downloadSignedDocument = () =>
     return response.data;
   });
 
-export const checkBAASignedStatus = organizationIdentifier =>
+export const checkBAASignedStatus = (organizationIdentifier, resetCachedOrg) =>
   axios
     .get(
       `/organization/checkBAASignedStatus?organizationIdentifier=${organizationIdentifier}`,
     )
     .then(response => {
+      if (resetCachedOrg) {
+        sessionStorage.removeItem('refreshOrgMemo');
+      }
+
       if (response.data) {
         return response.data;
       }
@@ -159,10 +163,10 @@ export const checkBAASignedStatus = organizationIdentifier =>
       throw new Error('Unable to check BAA signature status');
     });
 
-export const checkBAASignedStatusWithMemo = memoizeWith(
-  identity,
-  checkBAASignedStatus,
-);
+const keyResolver = (...arguments_) => JSON.stringify(arguments_);
+
+export const checkBAASignedStatusWithMemo = () =>
+  memoize(checkBAASignedStatus, keyResolver);
 
 export const getConfigurationForReferral = referralCode =>
   axios.get(`/referral/config/${referralCode}`).then(response => {

@@ -1,10 +1,10 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { isNil } from 'ramda';
+import Amplify from '@aws-amplify/core';
 import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
-import Amplify from '@aws-amplify/core';
 import Auth from '@aws-amplify/auth';
 import configureStore from '../ConfigureStore';
 import axios from './axios-heydoc';
@@ -93,7 +93,6 @@ export function resendConfirmationCode(userData) {
   return new Promise((resolve, reject) => {
     Auth.resendSignUp(username)
       .then(data => {
-        console.log('code resent successfully');
         resolvedCognitoUser = data.user;
         resolve(data.user);
       })
@@ -258,7 +257,6 @@ export async function isAuthenticated() {
   }
 
   try {
-    console.log('authenticating current user');
     const user = await Auth.currentAuthenticatedUser({
       bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
@@ -268,7 +266,6 @@ export async function isAuthenticated() {
   } catch (error) {
     console.log(error);
     if (sessionStorage.getItem('accessToken')) {
-      console.log('has valid accessToken');
       const authUser = JSON.parse(sessionStorage.getItem('authUser'));
       return { isLoggedIn: true, user: authUser };
     }
@@ -564,7 +561,7 @@ export function performHealthCheck() {
     });
 }
 
-export function refreshAccessToken(email) {
+export function refreshAccessToken() {
   if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
     return Promise.resolve(null);
   }
@@ -589,55 +586,6 @@ export function refreshAccessToken(email) {
   });
 }
 
-export function getAccessTokensByAuthCode(authCode, iss) {
-  return new Promise((resolve, reject) => {
-    try {
-      const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
-      const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
-
-      return axios
-        .post(`${cognitoAuthUrl}/oauth2/token`, authData)
-        .then(response => {
-          const userRefreshToken = response?.data.refresh_token;
-          const userAccessToken = response?.data.access_token;
-          axios.defaults.headers.common.Authorization = `Bearer ${userAccessToken}`;
-
-          return axios
-            .get(`${cognitoAuthUrl}/oauth2/userInfo`)
-            .then(cognitoResponse => {
-              getUserByEmailAndAccessToken(
-                cognitoResponse?.data.email,
-                userAccessToken,
-              );
-
-              sessionStorage.setItem('EnterpriseUserFlag', true);
-
-              const cognitoUserData = {
-                Username: cognitoResponse?.data.email,
-                Pool: userPool,
-              };
-
-              const cognitoUser = new CognitoUser(cognitoUserData);
-              const refreshToken = new CognitoRefreshToken({
-                RefreshToken: userRefreshToken,
-              });
-
-              cognitoUser.refreshSession(refreshToken, error => {
-                if (error) {
-                  reject(error);
-                } else {
-                  resolve('success');
-                }
-              });
-            });
-        });
-    } catch (error) {
-      reject(error);
-      return Promise.reject(error);
-    }
-  });
-}
-
 export const captureLocalTimezone = async () => {
   const timezoneOffset = new Date().getTimezoneOffset() / 60;
   return axios
@@ -657,12 +605,12 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
         const email = response?.data.profile;
         const organizationIdentifier = response?.data.organizationIdentifier;
         const patientIdentifier = response?.data.patientIdentifier;
-        console.log(`patientIdentifier: ${patientIdentifier}`);
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('accessToken', userAccessToken);
+
         if (organizationIdentifier && organizationIdentifier !== '') {
           sessionStorage.setItem(
             'OrganizationIdentifier',
@@ -673,6 +621,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
             organizationIdentifier,
           );
         }
+
         if (patientIdentifier && patientIdentifier !== '') {
           sessionStorage.setItem('PatientIdentifier', patientIdentifier);
         }

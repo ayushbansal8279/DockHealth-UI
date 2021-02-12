@@ -167,6 +167,7 @@ class App extends PureComponent {
     userApi
       .logout(history)
       .then(() => {
+        sessionStorage.setItem('refreshOrgMemo', true);
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           TIMEOUT_SUCCESS: 'YES',
         });
