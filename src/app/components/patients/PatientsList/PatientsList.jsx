@@ -189,33 +189,33 @@ const PatientsList = ({
         const { api } = parameters2;
         const sortModel = api.getSortModel();
 
-        if (parameters1.row.age === parameters2.row.age) {
+        if (parameters1.row.dob === parameters2.row.dob) {
           return 0;
         }
 
         if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
           // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (parameters1.row.age === null || parameters1.row.age === '') {
+          if (parameters1.row.dob === null || parameters1.row.dob === '') {
             return -1;
           }
 
-          if (parameters2.row.age === null || parameters2.row.age === '') {
+          if (parameters2.row.dob === null || parameters2.row.dob === '') {
             return 1;
           }
 
-          return parameters2.row.age < parameters1.row.age ? 1 : -1;
+          return parameters2.row.dob < parameters1.row.dob ? -1 : 1;
         }
 
         // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (parameters1.row.age === null || parameters1.row.age === '') {
+        if (parameters1.row.dob === null || parameters1.row.dob === '') {
           return 1;
         }
 
-        if (parameters2.row.age === null || parameters2.row.age === '') {
+        if (parameters2.row.dob === null || parameters2.row.dob === '') {
           return -1;
         }
 
-        return parameters1.row.age < parameters2.row.age ? -1 : 1;
+        return parameters1.row.dob < parameters2.row.dob ? 1 : -1;
       },
     },
     {
