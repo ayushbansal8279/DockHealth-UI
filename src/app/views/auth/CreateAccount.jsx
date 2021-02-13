@@ -220,7 +220,7 @@ const CreateAccount = props => {
               <MontserratTypography variant="h2">
                 {hasCustomPageTitle
                   ? customPageTitle
-                  : 'Start your free 15 day trial'}
+                  : 'Start your free 30 day trial'}
               </MontserratTypography>
               <Spacing vertical={4} />
             </>
