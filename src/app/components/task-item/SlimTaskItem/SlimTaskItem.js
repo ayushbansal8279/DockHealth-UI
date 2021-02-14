@@ -1,13 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import { EditorState } from 'draft-js';
-import { Grid } from '@material-ui/core';
 import Circle from 'img/circle';
 import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
-import HighPriorityLabel from 'img/priority-high-label-icon.svg';
+import EmptyCalendarIcon from 'img/calendar-dim.svg';
+import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
 import Member from 'components/members/Member/Member';
@@ -20,7 +20,8 @@ import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 
-import { getCalendarIcon } from '../icons';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+import { getItemIconVersion, REGULAR, isDueDateOverdue } from '../icons';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
 import {
   ClickablePatient,
@@ -29,22 +30,27 @@ import {
   SlimTaskItemDescription,
   SlimTaskItemParentTaskLabel,
   SlimTaskItemListLink,
-  PrioritySwitch,
   ThreeDots,
   CompletedBy,
-  DueDate,
-  DueDateContainer,
-  SlimTaskGridContainer,
   AssignedBox,
   SlimTaskWorkflowStatusContainer,
   SlimTaskItemPatientLink,
-  DueDateAddLabel,
   AddCrossIcon,
   AddPlaceholder,
   SlimTaskListNameText,
+  MainStandardTaskItemCell,
+  StandardTaskItemCell,
+  DescriptionBox,
+  DescriptionWrapper,
+  PriorityIndicator,
+  DueDateBasicLabel,
+  CalendarIcon,
 } from '../styled';
 
-const DueDateComponent = ({ dueDate, updateDueDate, task }) => {
+const STANDARD_TASK_HEIGHT = 35;
+const EXTENDED_TASK_HEIGHT = 50;
+
+const DueDateComponent = ({ dueDate, updateDueDate, task, isHovered }) => {
   const dueDateQuickSelectOptions = [
     {
       label: 'Today',
@@ -75,11 +81,30 @@ const DueDateComponent = ({ dueDate, updateDueDate, task }) => {
           onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           ref={elementReference}
         >
-          <DueDateContainer>
+          {/* <DueDateContainer>
             <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
             <img alt="due-date" src={getCalendarIcon(dueDate, true)} />
             {!dueDate && <DueDateAddLabel>Add</DueDateAddLabel>}
-          </DueDateContainer>
+          </DueDateContainer> */}
+          <Tooltip
+            placement="top"
+            title={
+              getItemIconVersion(dueDate) === REGULAR
+                ? 'Edit due date'
+                : 'Add due date'
+            }
+          >
+            {dueDate ? (
+              <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                {moment(dueDate).format('MM/DD')}
+              </DueDateBasicLabel>
+            ) : (
+              <CalendarIcon
+                src={isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon}
+                alt="Due date"
+              />
+            )}
+          </Tooltip>
         </button>
       )}
     </PopoverDatepicker>
@@ -106,7 +131,7 @@ const PatientComponent = ({
       }}
     >
       {status !== 'COMPLETE' && !taskPatient && (
-        <AddPlaceholder>+ Patient</AddPlaceholder>
+        <AddPlaceholder>+ Add Patient</AddPlaceholder>
       )}
       {taskPatient && (
         <SlimTaskItemPatientLink
@@ -137,7 +162,7 @@ const WorkflowStatusComponent = ({
         <TaskItemStatus workflowStatus={workflowStatus} />
       )}
       {task.status !== 'COMPLETE' && !workflowStatus && (
-        <AddPlaceholder>+ Status</AddPlaceholder>
+        <AddPlaceholder> + Add Status</AddPlaceholder>
       )}
     </TaskWorkflowStatus>
   </SlimTaskWorkflowStatusContainer>
@@ -196,6 +221,7 @@ const SlimTaskItem = ({
   } = task;
 
   const history = useHistory();
+  const [isHovered, setIsHoverd] = useState(false);
 
   const formattedTaskDescription =
     description?.length > 100
@@ -250,22 +276,38 @@ const SlimTaskItem = ({
   const isCompleted = status === 'COMPLETE';
   const DynamicColumnComponent = getDynamicColumn(dynamicColumnType);
 
+  const onMouseEnter = () => setIsHoverd(true);
+  const onMouseLeave = () => setIsHoverd(false);
+
   return (
-    <SlimTaskItemContainer isDragging={isDragging} isSelected={isSelected}>
-      {isDraggable && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
-      <PrioritySwitch left="42px" onClick={() => {}} isClickable={false}>
-        {priority === 'HIGH' && (
-          <img src={HighPriorityLabel} alt="Priority icon" />
-        )}
-      </PrioritySwitch>
-      <Grid container justify="space-between" alignItems="stretch">
-        <Grid container item {...gridConfig.description[dynamicColumnType]}>
-          <SlimTaskGridContainer>
-            <CircleIcon
-              src={isCompleted ? CircleCompleted : Circle}
-              onClick={toggleTaskComplete}
-              isClickable
-            />
+    <SlimTaskItemContainer
+      isDragging={isDragging}
+      isSelected={isSelected}
+      height={parentTask ? EXTENDED_TASK_HEIGHT : STANDARD_TASK_HEIGHT}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {isDraggable && (
+        <ThreeDots
+          src={ThreeDotsIcon}
+          {...dragHandleProps}
+          style={{ marginLeft: '-30px' }}
+        />
+      )}
+      {priority === 'HIGH' && <PriorityIndicator />}
+      <MainStandardTaskItemCell
+        bolded
+        paddingLeft="smallPlus"
+        paddingRight="small"
+        position="static"
+      >
+        <CircleIcon
+          src={isCompleted ? CircleCompleted : Circle}
+          onClick={toggleTaskComplete}
+          isClickable
+        />
+        <DescriptionBox>
+          <DescriptionWrapper>
             <SlimTaskItemDescription>
               <div
                 onClick={() => {
@@ -307,58 +349,73 @@ const SlimTaskItem = ({
                 </SlimTaskItemParentTaskLabel>
               )}
             </SlimTaskItemDescription>
-          </SlimTaskGridContainer>
-        </Grid>
-        <Grid container item {...gridConfig.dynamicColumn[dynamicColumnType]}>
-          <DynamicColumnComponent
-            {...{
-              ...task,
-              isOverdueTask: isOverdueTask && !isCompleted,
-              updateDueDate,
-              task,
-              openDrawer,
-              storeAsCurrentTask,
-              updateWorkflowStatus,
-            }}
-          />
-        </Grid>
-        {showAssignedPerson && (
-          <Grid container item {...gridConfig.assignedPerson}>
-            <AssignedBox>
-              <TaskAssignMember
-                currentUser={currentUser}
-                reassignTask={reassignTask}
-                task={task}
-              >
-                {assignedTo ? (
-                  <Member member={assignedTo} size={34} />
-                ) : (
-                  <AddCrossIcon src={CrossIcon} size="34px" />
-                )}
-              </TaskAssignMember>
-            </AssignedBox>
-          </Grid>
-        )}
-        <Grid container item {...gridConfig.listName}>
-          {taskList && (
-            <SlimTaskItemListLink
-              to={`/core/tasks/${taskList?.taskListIdentifier}`}
-              withMargin={isOverdueTask}
+          </DescriptionWrapper>
+        </DescriptionBox>
+      </MainStandardTaskItemCell>
+      <StandardTaskItemCell
+        paddingLeft="tiny"
+        paddingRight="tiny"
+        {...gridConfig.dynamicColumn[dynamicColumnType]}
+      >
+        <DynamicColumnComponent
+          {...{
+            ...task,
+            isOverdueTask: isOverdueTask && !isCompleted,
+            updateDueDate,
+            task,
+            openDrawer,
+            storeAsCurrentTask,
+            updateWorkflowStatus,
+            isHovered,
+          }}
+        />
+      </StandardTaskItemCell>
+      {showAssignedPerson && (
+        <StandardTaskItemCell
+          justify="center"
+          paddingLeft="tiny"
+          paddingRight="tiny"
+          {...gridConfig.assignedPerson}
+        >
+          <AssignedBox>
+            <TaskAssignMember
+              currentUser={currentUser}
+              reassignTask={reassignTask}
+              task={task}
             >
-              <UniversalTooltipContainer
-                placement="top"
-                label={taskList?.listName}
-                maxWidth="240px"
-                disabled={!showTooltip}
-              >
-                <SlimTaskListNameText>
-                  {formattedTaskListName}
-                </SlimTaskListNameText>
-              </UniversalTooltipContainer>
-            </SlimTaskItemListLink>
-          )}
-        </Grid>
-      </Grid>
+              {assignedTo ? (
+                <Member member={assignedTo} size={30} />
+              ) : (
+                <AddCrossIcon src={CrossIcon} size="30px" />
+              )}
+            </TaskAssignMember>
+          </AssignedBox>
+        </StandardTaskItemCell>
+      )}
+      {taskList && (
+        <StandardTaskItemCell
+          justify="left"
+          paddingLeft="tiny"
+          paddingRight="tiny"
+          {...gridConfig.listName}
+        >
+          <SlimTaskItemListLink
+            to={`/core/tasks/${taskList?.taskListIdentifier}`}
+            withMargin={isOverdueTask}
+          >
+            <UniversalTooltipContainer
+              placement="top"
+              label={taskList?.listName}
+              maxWidth="240px"
+              disabled={!showTooltip}
+            >
+              <SlimTaskListNameText>
+                {formattedTaskListName}
+              </SlimTaskListNameText>
+            </UniversalTooltipContainer>
+          </SlimTaskItemListLink>
+        </StandardTaskItemCell>
+      )}
     </SlimTaskItemContainer>
   );
 };

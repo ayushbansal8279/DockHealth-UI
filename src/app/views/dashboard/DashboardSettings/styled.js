@@ -33,4 +33,6 @@ export const DashboardSettingsInput = styled.input`
 
 export const DashboardSettingsIcon = styled.img`
   cursor: pointer;
+  height: 28px;
+  margin-top: 4px;
 `;

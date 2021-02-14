@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable sonarjs/no-duplicated-branches */
 import React, { useState, useEffect, useCallback } from 'react';
-import { Grid, Collapse } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SlimTaskItem from 'components/task-item/SlimTaskItem/SlimTaskItem';
 import Arrow from 'components/common/Arrow/Arrow';
@@ -12,6 +12,7 @@ import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardS
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
+  DashboardTasksGroupLabelName,
   DashboardTasksGroupList,
   DroppableBox,
 } from './styled';
@@ -22,88 +23,71 @@ const GRID_CONFIG = {
   primary: {
     description: {
       [DashboardColumnKey.PATIENT]: {
-        sm: 5,
-        md: 6,
-        lg: 8,
+        width: '150px',
       },
       [DashboardColumnKey.DUE_DATE]: {
-        sm: 5,
-        md: 6,
-        lg: 8,
+        width: '100px',
+        justify: 'center',
       },
       [DashboardColumnKey.WORKFLOW_STATUS]: {
-        sm: 5,
-        md: 6,
-        lg: 8,
+        width: '120px',
+        padding: '0 0',
+        paddingLeft: 'none',
       },
     },
     dynamicColumn: {
       [DashboardColumnKey.PATIENT]: {
-        sm: 3,
-        md: 3,
-        lg: 2,
+        width: '150px',
       },
       [DashboardColumnKey.DUE_DATE]: {
-        sm: 3,
-        md: 3,
-        lg: 2,
+        width: '100px',
+        justify: 'center',
       },
       [DashboardColumnKey.WORKFLOW_STATUS]: {
-        sm: 3,
-        md: 3,
-        lg: 2,
+        width: '120px',
+        padding: '0 0',
+        paddingLeft: 'none',
       },
     },
     listName: {
-      sm: 4,
-      md: 3,
-      lg: 2,
+      width: '180px',
     },
   },
   secondary: {
     description: {
       [DashboardColumnKey.PATIENT]: {
-        sm: 3,
-        md: 4,
-        lg: 6,
+        width: '150px',
       },
       [DashboardColumnKey.DUE_DATE]: {
-        sm: 3,
-        md: 4,
-        lg: 6,
+        width: '100px',
+        justify: 'center',
       },
       [DashboardColumnKey.WORKFLOW_STATUS]: {
-        sm: 3,
-        md: 4,
-        lg: 6,
+        width: '120px',
+        padding: '0 0',
+        paddingLeft: 'none',
       },
     },
     dynamicColumn: {
       [DashboardColumnKey.PATIENT]: {
-        sm: 3,
-        md: 2,
-        lg: 2,
+        width: '150px',
       },
       [DashboardColumnKey.DUE_DATE]: {
-        sm: 3,
-        md: 2,
-        lg: 2,
+        width: '100px',
+        justify: 'center',
       },
       [DashboardColumnKey.WORKFLOW_STATUS]: {
-        sm: 3,
-        md: 2,
-        lg: 2,
+        width: '120px',
+        padding: '0 0',
+        paddingLeft: 'none',
       },
     },
     assignedPerson: {
-      sm: 3,
-      md: 3,
-      lg: 2,
+      width: '80px',
+      justify: 'center',
     },
     listName: {
-      sm: 3,
-      md: 3,
-      lg: 2,
+      width: '180px',
     },
   },
 };
@@ -200,65 +184,54 @@ const DashboardTasksGroup = ({
   return (
     <DashboardTasksGroupContainer>
       <DashboardTasksGroupLabel>
-        <Grid container>
-          <Grid item {...gridConfig.description[dynamicColumnType]}>
-            <Arrow
-              isOpen={groupIsOpen}
-              setOpen={onSwitchGroup}
-              justifyContent="flex-start"
-              paddingLeft="0"
-              arrowType="triangle"
-              arrowPlacement="left"
-            >
-              <span>
-                {groupName} ({metricValue})
-              </span>
-            </Arrow>
-          </Grid>
-          <Grid
-            container
-            item
-            alignItems="center"
-            {...gridConfig.dynamicColumn[dynamicColumnType]}
+        <DashboardTasksGroupLabelName>
+          <Arrow
+            isOpen={groupIsOpen}
+            setOpen={onSwitchGroup}
+            justifyContent="flex-start"
+            paddingLeft="0"
+            arrowType="triangle"
+            arrowPlacement="left"
           >
-            {groupIsOpen && (
-              <DashboardColumnSortHeader
-                id={dynamicColumn.id}
-                label={dynamicColumn.label}
-                sort={currentSort}
-                onSortChange={onSortChange}
-              />
-            )}
-          </Grid>
-          {isAllTasksTab && (
-            <Grid
-              container
-              item
-              alignItems="center"
-              {...gridConfig.assignedPerson}
-            >
-              {groupIsOpen && (
-                <DashboardColumnSortHeader
-                  id="ASSIGNED"
-                  label="Assigned To"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              )}
-            </Grid>
+            <span>
+              {groupName} ({metricValue})
+            </span>
+          </Arrow>
+        </DashboardTasksGroupLabelName>
+        <DashboardTasksGroupLabelName
+          {...gridConfig.dynamicColumn[dynamicColumnType]}
+        >
+          {groupIsOpen && (
+            <DashboardColumnSortHeader
+              id={dynamicColumn.id}
+              label={dynamicColumn.label}
+              sort={currentSort}
+              onSortChange={onSortChange}
+            />
           )}
-
-          <Grid container item alignItems="center" {...gridConfig.listName}>
+        </DashboardTasksGroupLabelName>
+        {isAllTasksTab && (
+          <DashboardTasksGroupLabelName {...gridConfig.assignedPerson}>
             {groupIsOpen && (
               <DashboardColumnSortHeader
-                id="LIST_NAME"
-                label="List"
+                id="ASSIGNED"
+                label="Assign"
                 sort={currentSort}
                 onSortChange={onSortChange}
               />
             )}
-          </Grid>
-        </Grid>
+          </DashboardTasksGroupLabelName>
+        )}
+        <DashboardTasksGroupLabelName {...gridConfig.listName}>
+          {groupIsOpen && (
+            <DashboardColumnSortHeader
+              id="LIST_NAME"
+              label="List"
+              sort={currentSort}
+              onSortChange={onSortChange}
+            />
+          )}
+        </DashboardTasksGroupLabelName>
       </DashboardTasksGroupLabel>
       {isLoadingGroup && <DashboardSingleSkeletonLoader rows={4} />}
       {!isLoadingGroup && (

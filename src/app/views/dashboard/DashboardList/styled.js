@@ -11,7 +11,7 @@ export const ToolbarContainer = styled(Grid)`
   position: relative;
   height: 42px;
   border-bottom: 2px solid ${palette.blueGrey};
-  margin-bottom: ${spacing.largePlus};
+  margin-bottom: ${spacing.regular};
   flex-direction: column-reverse !important;
   align-items: flex-start !important;
   flex-wrap: inherit !important;
@@ -42,11 +42,11 @@ export const StickyHeader = styled.div`
   top: 0;
   z-index: 100;
   background-color: ${palette.white};
-  padding: 0 55px ${spacing.regular} 55px;
+  padding: 0 55px ${spacing.small} 55px;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
-  padding-bottom: 50px;
+  padding-bottom: 30px;
 
   &:last-child {
     padding-bottom: 0;
@@ -54,23 +54,43 @@ export const DashboardTasksGroupContainer = styled.div`
 `;
 
 export const DashboardTasksGroupLabel = styled.div`
-  font-size: 1.125rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  font-size: ${fontWeights.regular};
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.regularPlus};
-  padding: ${spacing.smallPlus};
+  padding: ${spacing.tiny};
   border-bottom: 1px solid ${palette.coolGrey2};
   margin: 0 55px;
   background-color: ${palette.coolGrey4};
+`;
+
+export const DashboardTasksGroupLabelName = styled.div`
+  position: relative;
+  flex: ${({ width }) => (width ? `${width} 0 0` : '1')};
+  padding: 8px 16px;
+  height: 35px;
+  overflow: visible;
+
+  text-align: left;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regularPlus};
+  text-transform: uppercase;
+  color: ${palette.mediumGrey};
 `;
 
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${spacing.large};
+  margin-left: 55px;
+  margin-right: 55px;
 `;
 
 export const DroppableBox = styled.div`
-  background-color: ${palette.coolGrey3};
+  // background-color: ${palette.coolGrey3};
   border-radius: 4px;
 `;
 

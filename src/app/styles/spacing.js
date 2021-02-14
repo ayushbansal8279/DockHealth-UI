@@ -1,4 +1,5 @@
 const spacing = {
+  none: '0px',
   tiny: '4px',
   small: '8px',
   smallPlus: '12px',
