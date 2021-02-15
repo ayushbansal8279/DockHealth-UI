@@ -19,21 +19,16 @@ export const Container = styled.div`
 
 export const IconsSection = styled.div`
   display: flex;
-  align-items: flex-start;
-  margin-top: ${spacing.tiny};
+  justify-content: space-around;
+  align-items: center;
 `;
 
 export const IconContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   width: 40px;
   height: 22px;
-  margin-bottom: 4px;
-
-  & img {
-    margin-top: ${({ marginTop }) => marginTop || 0}px;
-  }
 `;
 
 export const CircleIcon = styled.img`

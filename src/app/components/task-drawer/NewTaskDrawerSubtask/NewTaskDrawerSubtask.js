@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
@@ -19,21 +19,14 @@ import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import Member from 'components/members/Member/Member';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import { DueDateBasicLabel, AddCrossIcon } from 'components/task/styled';
 import {
-  ATTACHMENTS,
-  COMMENTS,
-  getItemIcon,
-  getToolTipAttachmentsLabelDetails,
-  getToolTipMultiLabelDetails,
-  LABELS,
+  getAttachmentsIconTooltipTitle,
+  getCommentsIconTooltipTitle,
+  getLabelsIconTooltipTitle,
   isDueDateOverdue,
-} from 'components/task/icons';
-import {
-  DueDateBasicLabel,
-  CalendarIcon,
-  AddCrossIcon,
-} from 'components/task/styled';
-import EmptyCalendarIcon from 'img/calendar-dim.svg';
+} from 'helpers/task-helpers';
 import {
   Container,
   IconsSection,
@@ -61,6 +54,7 @@ const DUE_DATE_PICKER_OPTIONS = [
 
 const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
   const dispatch = useDispatch();
+  const [isHovered, setIsHovered] = useState(false);
 
   const {
     status,
@@ -70,9 +64,9 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
     tokenizedDescription,
     taskMentions,
     assignedTo,
+    dueDate,
     comments,
     updatedComment,
-    dueDate,
     labels,
     updatedLabel,
     attachments,
@@ -110,6 +104,8 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
 
   return (
     <Container
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={() => {
         storeAsCurrentTask(subtask)(dispatch);
       }}
@@ -137,61 +133,57 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
         </Description>
       </DescriptionContainer>
       <IconsSection>
-        <IconContainer marginTop={updatedComment ? -8 : 0}>
-          <button type="button" onClick={handleCommentIconClick}>
-            <Tooltip
-              placement="top"
-              title={
-                comments?.length > 0
-                  ? `${comments?.length} comment${
-                      comments?.length > 1 ? 's' : ''
-                    }`
-                  : null
-              }
-            >
-              <img
-                alt="comments"
-                src={getItemIcon(COMMENTS, comments, true, updatedComment)}
-              />
-            </Tooltip>
-          </button>
+        <IconContainer>
+          <Tooltip
+            placement="top"
+            title={
+              comments?.length > 0
+                ? getCommentsIconTooltipTitle(comments)
+                : null
+            }
+          >
+            <TaskIcon
+              type="comments"
+              onClick={handleCommentIconClick}
+              isActive={comments?.length > 0}
+              isNew={updatedComment}
+              isHovered={isHovered}
+            />
+          </Tooltip>
         </IconContainer>
         <IconContainer>
-          <button type="button" onClick={handleLabelIconClick}>
-            <Tooltip
-              placement="top"
-              title={
-                labels?.length > 0 ? getToolTipMultiLabelDetails(labels) : null
-              }
-            >
-              <img
-                alt="labels"
-                src={getItemIcon(LABELS, labels, true, updatedLabel)}
-              />
-            </Tooltip>
-          </button>
+          <Tooltip
+            placement="top"
+            title={
+              labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : null
+            }
+          >
+            <TaskIcon
+              type="labels"
+              onClick={handleLabelIconClick}
+              isActive={labels?.length > 0}
+              isNew={updatedLabel}
+              isHovered={isHovered}
+            />
+          </Tooltip>
         </IconContainer>
-        <IconContainer marginTop={2}>
-          <button type="button" onClick={handleAttachementIconClick}>
-            <Tooltip
-              placement="top-end"
-              title={
-                attachments?.length > 0
-                  ? getToolTipAttachmentsLabelDetails(attachments)
-                  : ''
-              }
-            >
-              <img
-                alt="attachments"
-                src={getItemIcon(
-                  ATTACHMENTS,
-                  attachments,
-                  true,
-                  updatedAttachment,
-                )}
-              />
-            </Tooltip>
-          </button>
+        <IconContainer>
+          <Tooltip
+            placement="top-end"
+            title={
+              attachments?.length > 0
+                ? getAttachmentsIconTooltipTitle(attachments)
+                : ''
+            }
+          >
+            <TaskIcon
+              type="attachments"
+              onClick={handleAttachementIconClick}
+              isActive={attachments?.length > 0}
+              isNew={updatedAttachment}
+              isHovered={isHovered}
+            />
+          </Tooltip>
         </IconContainer>
       </IconsSection>
       <DueDateContainer>
@@ -224,7 +216,7 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
                 </Tooltip>
               ) : (
                 <Tooltip placement="top" title="Add due date">
-                  <CalendarIcon src={EmptyCalendarIcon} alt="Due date" />
+                  <TaskIcon type="calendar" isHovered={isHovered} />
                 </Tooltip>
               )}
             </button>

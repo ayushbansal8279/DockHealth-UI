@@ -469,10 +469,6 @@ export const SlimTaskListNameText = styled.p`
   }
 `;
 
-export const CalendarIcon = styled.img`
-  height: 22px;
-`;
-
 export const SubtasksCellContentButton = styled.button`
   width: 100%;
   display: flex;

@@ -6,8 +6,8 @@ import { EditorState } from 'draft-js';
 import Circle from 'img/circle';
 import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
-import EmptyCalendarIcon from 'img/calendar-dim.svg';
-import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
+// import EmptyCalendarIcon from 'img/calendar-dim.svg';
+// import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Member from 'components/members/Member/Member';
@@ -19,8 +19,8 @@ import { useMentionsEditorState } from 'components/common/MentionsEditor/use-men
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-
-import { getItemIconVersion, REGULAR, isDueDateOverdue } from '../icons';
+import { isDueDateOverdue } from 'helpers/task-helpers';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
 import {
   ClickablePatient,
@@ -43,7 +43,6 @@ import {
   DescriptionWrapper,
   PriorityIndicator,
   DueDateBasicLabel,
-  CalendarIcon,
 } from '../styled';
 
 const STANDARD_TASK_HEIGHT = 35;
@@ -80,28 +79,16 @@ const DueDateComponent = ({ dueDate, updateDueDate, task, isHovered }) => {
           onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           ref={elementReference}
         >
-          {/* <DueDateContainer>
-            <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-            <img alt="due-date" src={getCalendarIcon(dueDate, true)} />
-            {!dueDate && <DueDateAddLabel>Add</DueDateAddLabel>}
-          </DueDateContainer> */}
           <Tooltip
             placement="top"
-            title={
-              getItemIconVersion(dueDate) === REGULAR
-                ? 'Edit due date'
-                : 'Add due date'
-            }
+            title={dueDate ? 'Edit due date' : 'Add due date'}
           >
             {dueDate ? (
               <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
                 {moment(dueDate).format('MM/DD')}
               </DueDateBasicLabel>
             ) : (
-              <CalendarIcon
-                src={isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon}
-                alt="Due date"
-              />
+              <TaskIcon type="calendar" isHovered={isHovered} />
             )}
           </Tooltip>
         </button>
