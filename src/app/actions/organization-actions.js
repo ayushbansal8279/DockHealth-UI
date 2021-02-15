@@ -181,8 +181,13 @@ export const checkBAASignedStatus = organizationIdentifier => dispatch => {
   });
 
   return handleOrganizationResponse({
-    fetchMethod: () =>
-      OrganizationApi.checkBAASignedStatus(organizationIdentifier),
+    fetchMethod: () => {
+      const checkBAASignedStatusWithMemo = OrganizationApi.checkBAASignedStatusWithMemo(
+        organizationIdentifier,
+      );
+
+      return checkBAASignedStatusWithMemo(organizationIdentifier);
+    },
     dispatch,
   });
 };
