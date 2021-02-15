@@ -19,7 +19,6 @@ import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as ModalActions from 'modal/actions';
-
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 
 import * as userApi from 'api/user-api';
@@ -682,6 +681,11 @@ class Home extends Component {
     taskListActions.sortListTasks(order ? key : null, order);
   };
 
+  resetSort = () => {
+    const { taskListActions } = this.props;
+    taskListActions.sortListTasks(null, null);
+  };
+
   invokeToggleCompleteAction = task => {
     const { actions, listDetailsSagaActions, match, currentUser } = this.props;
     const { params } = match;
@@ -921,6 +925,7 @@ class Home extends Component {
                   listUniqueKey={taskListIdentifier}
                   taskCounters={taskCounters}
                   loadTasksForTaskGroup={this.loadTasksForTaskGroup}
+                  resetSort={this.resetSort}
                 />
               )}
             </TaskViewContainer>

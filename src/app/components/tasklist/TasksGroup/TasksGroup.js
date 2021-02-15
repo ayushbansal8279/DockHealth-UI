@@ -78,6 +78,8 @@ const TasksGroup = ({
   sort,
   onSortChange,
   onTaskGroupViewModeChange,
+  shouldShowBlockModalOnDrag,
+  showClearSortFiltersModal,
 }) => {
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -307,6 +309,8 @@ const TasksGroup = ({
             subtasksDisabled={isListFlattened}
             areFiltersApplied={areFiltersApplied}
             isSearchApplied={isSearchApplied}
+            shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
+            showClearSortFiltersModal={showClearSortFiltersModal}
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (

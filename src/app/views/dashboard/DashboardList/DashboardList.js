@@ -329,11 +329,10 @@ const DashboardList = ({
   );
 
   const showClearSortFiltersModal = () => {
-    if (isSortApplied || areFiltersApplied) {
+    if (isSortApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
           resetSort();
-          updateDashboardSelectedFilters({});
         },
         closeOnConfirm: true,
       });
