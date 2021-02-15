@@ -27,8 +27,8 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            This page has an active sort or filter. In order to enable drag and
-            drop we’ll need to clear the sort.
+            This page has an active sort. In order to enable drag and drop we’ll
+            need to clear the sort.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>

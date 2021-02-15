@@ -87,6 +87,8 @@ const TasksGroup = ({
   sort,
   onSortChange,
   onTaskGroupViewModeChange,
+  shouldShowBlockModalOnDrag,
+  showClearSortFiltersModal,
 }) => {
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -154,7 +156,7 @@ const TasksGroup = ({
     onSwitchOpen();
   }, [isOpen, groupTaskCounts, tasks, onSwitchOpen, showMoreTasks]);
 
-  const { bunchBulkEditTaskActions } = useContext(BulkEditContext);
+  const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
   const { groupActions } = bunchBulkEditTaskActions;
 
   const subtasks = useMemo(
@@ -346,6 +348,8 @@ const TasksGroup = ({
             subtasksDisabled={isListFlattened}
             areFiltersApplied={areFiltersApplied}
             isSearchApplied={isSearchApplied}
+            shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
+            showClearSortFiltersModal={showClearSortFiltersModal}
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (

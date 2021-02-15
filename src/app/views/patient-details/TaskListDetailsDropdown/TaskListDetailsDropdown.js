@@ -79,7 +79,7 @@ const TaskListDetailsDropdown = ({
 
   const listMembers = listUsers;
 
-  const { bunchBulkEditTaskActions } = useContext(BulkEditContext);
+  const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
   const { groupActions } = bunchBulkEditTaskActions;
 
   const subtasks = useMemo(

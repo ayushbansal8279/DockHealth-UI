@@ -7,10 +7,13 @@ import React, {
   useMemo,
   useContext,
 } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
+import { openModal as openModalAction } from 'modal/actions';
 
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -51,9 +54,11 @@ const ListDetailsOpenedTasks = ({
   taskListIdentifier,
   sort,
   onSortChange,
+  resetSort,
 }) => {
   const [tasksGrouped, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     updateTaskGroups(groupedTasks);
@@ -127,6 +132,21 @@ const ListDetailsOpenedTasks = ({
 
   const dragAndDropDisabled = bulkEditIsActive;
 
+  const isSortApplied = !!sort?.key && !!sort?.order;
+
+  const showClearSortFiltersModal = useCallback(() => {
+    if (isSortApplied) {
+      dispatch(
+        openModalAction('ClearSortFilters', {
+          confirm: () => {
+            resetSort();
+          },
+          closeOnConfirm: true,
+        }),
+      );
+    }
+  }, [isSortApplied, dispatch, resetSort]);
+
   const renderTasks = useCallback(
     () =>
       groupList
@@ -193,6 +213,8 @@ const ListDetailsOpenedTasks = ({
             taskListIdentifier={taskListIdentifier}
             sort={sort}
             onSortChange={onSortChange}
+            shouldShowBlockModalOnDrag={isSortApplied}
+            showClearSortFiltersModal={showClearSortFiltersModal}
           />
         )),
     [
@@ -215,9 +237,11 @@ const ListDetailsOpenedTasks = ({
       selectedTask,
       listUniqueKey,
       taskListIdentifier,
-      loadTasksForTaskGroup,
       sort,
       onSortChange,
+      isSortApplied,
+      showClearSortFiltersModal,
+      loadTasksForTaskGroup,
     ],
   );
 
@@ -231,7 +255,8 @@ const ListDetailsOpenedTasks = ({
         <>
           <DragDropContext
             onBeforeCapture={onBeforeCapture}
-            onDragEnd={onDragEnd}
+            onBeforeDragStart={showClearSortFiltersModal}
+            onDragEnd={!isSortApplied ? onDragEnd : () => {}}
           >
             {renderTasks()}
           </DragDropContext>

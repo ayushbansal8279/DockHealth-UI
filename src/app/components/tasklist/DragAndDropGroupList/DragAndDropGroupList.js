@@ -22,6 +22,8 @@ const DragAndDropGroupList = ({
   subtasksDisabled,
   areFiltersApplied,
   isSearchApplied,
+  shouldShowBlockModalOnDrag,
+  showClearSortFiltersModal,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -37,7 +39,10 @@ const DragAndDropGroupList = ({
   }));
 
   return (
-    <Droppable droppableId={groupId} isDropDisabled={isCompletedGroup}>
+    <Droppable
+      droppableId={groupId}
+      isDropDisabled={isCompletedGroup || shouldShowBlockModalOnDrag}
+    >
       {(providedDroppable, snapshot) => {
         setIsDraggingOverGroup(snapshot?.isDraggingOver);
         return (
@@ -83,6 +88,8 @@ const DragAndDropGroupList = ({
                     subtasksDisabled={subtasksDisabled}
                     areFiltersApplied={areFiltersApplied}
                     isSearchApplied={isSearchApplied}
+                    shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
+                    showClearSortFiltersModal={showClearSortFiltersModal}
                   />
                 )}
               </Draggable>

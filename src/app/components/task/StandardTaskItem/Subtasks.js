@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+
 import { isEmpty } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
@@ -24,6 +25,8 @@ const Subtasks = ({
   isDraggable,
   subTasksCount,
   isFetchingSubTasks,
+  shouldShowBlockModalOnDrag,
+  showClearSortFiltersModal,
   ...restProps
 }) => {
   const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
@@ -61,7 +64,8 @@ const Subtasks = ({
       {!isFetchingSubTasks ? (
         <DragDropContext
           onBeforeCapture={onBeforeCapture}
-          onDragEnd={onDragEnd}
+          onBeforeDragStart={showClearSortFiltersModal}
+          onDragEnd={!shouldShowBlockModalOnDrag ? onDragEnd : () => {}}
         >
           <Droppable droppableId="droppable">
             {provided => (

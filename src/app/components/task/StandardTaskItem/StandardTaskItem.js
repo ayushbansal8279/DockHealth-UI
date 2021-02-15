@@ -35,6 +35,8 @@ const Task = ({
   isSearchApplied,
   listNameVisible,
   patientVisible = true,
+  shouldShowBlockModalOnDrag,
+  showClearSortFiltersModal,
   ...restProps
 }) => {
   const parentTaskReference = useRef(null);
@@ -178,6 +180,8 @@ const Task = ({
             isDraggable={isDraggable}
             listNameVisible={listNameVisible}
             patientVisible={patientVisible}
+            showClearSortFiltersModal={showClearSortFiltersModal}
+            shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
             {...restProps}
           />
           {subtaskQuickAddOpen &&
