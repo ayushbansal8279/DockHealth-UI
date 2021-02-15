@@ -25,8 +25,6 @@ import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
 import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
-// import EmptyCalendarIcon from 'img/calendar-dim.svg';
-// import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import palette from 'styles/palette';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';

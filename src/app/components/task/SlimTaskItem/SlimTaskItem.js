@@ -6,8 +6,6 @@ import { EditorState } from 'draft-js';
 import Circle from 'img/circle';
 import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
-// import EmptyCalendarIcon from 'img/calendar-dim.svg';
-// import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import ThreeDotsIcon from 'img/three-dots';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Member from 'components/members/Member/Member';
