@@ -113,13 +113,6 @@ const config = (environment, options) => {
         '.ttf',
       ],
       alias: {
-        'chart.js': path.resolve(
-          __dirname,
-          'node_modules',
-          'chart.js',
-          'dist',
-          'Chart.min.js',
-        ),
         actions: path.resolve(__dirname, 'src/app/actions'),
         api: path.resolve(__dirname, 'src/app/api'),
         components: path.resolve(__dirname, 'src/app/components'),
