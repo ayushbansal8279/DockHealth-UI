@@ -232,10 +232,6 @@ export const ClickablePatient = styled.span`
   overflow: hidden;
 `;
 
-export const ClickableStandardTaskItemIcon = styled.span`
-  cursor: pointer;
-`;
-
 export const StandardTaskItemContainer = styled.div`
   position: relative;
   background-color: ${props =>
@@ -473,22 +469,8 @@ export const SlimTaskListNameText = styled.p`
   }
 `;
 
-export const CommentIcon = styled.img`
-  height: 22px;
-  margin-top: 2px;
-`;
-
 export const CalendarIcon = styled.img`
   height: 22px;
-`;
-
-export const LabelIcon = styled.img`
-  height: 26px;
-  margin-top: 4px;
-`;
-
-export const AttachmentIcon = styled.img`
-  height: 20px;
 `;
 
 export const SubtasksCellContentButton = styled.button`

@@ -25,8 +25,8 @@ import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
 import SubtasksIcon from 'img/subtasks-grey.svg';
 import SubtasksIconActive from 'img/subtasks-blue.svg';
 import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
-import EmptyCalendarIcon from 'img/calendar-dim.svg';
-import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
+// import EmptyCalendarIcon from 'img/calendar-dim.svg';
+// import EmptyCalendarIconHover from 'img/calendar-icon-hover.svg';
 import palette from 'styles/palette';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
@@ -40,25 +40,20 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import {
+  getLabelsIconTooltipTitle,
+  getAttachmentsIconTooltipTitle,
+  getCommentsIconTooltipTitle,
+  isDueDateOverdue,
+} from 'helpers/task-helpers';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
-import {
-  getItemIconVersion,
-  getItemIcon,
-  REGULAR,
-  COMMENTS,
-  LABELS,
-  ATTACHMENTS,
-  getToolTipMultiLabelDetails,
-  getToolTipAttachmentsLabelDetails,
-  isDueDateOverdue,
-} from '../icons';
 import {
   AddCrossIcon,
   AddPlaceholder,
   CircleIcon,
   ClickablePatient,
-  ClickableStandardTaskItemIcon,
   Description,
   DescriptionBox,
   DueDateBasicLabel,
@@ -74,10 +69,6 @@ import {
   ListItemLink,
   AssigneeMatchingWrapper,
   TaskItemParentTaskLabel,
-  CommentIcon,
-  CalendarIcon,
-  LabelIcon,
-  AttachmentIcon,
   DescriptionTooltip,
   SubtasksCellContentButton,
   SubtasksCellText,
@@ -631,68 +622,54 @@ const TaskItem = ({
                 <Tooltip
                   placement="top"
                   title={
-                    getItemIconVersion(comments) === REGULAR
-                      ? `${comments?.length} comment${
-                          comments.length > 1 ? 's' : ''
-                        }`
+                    comments?.length > 0
+                      ? getCommentsIconTooltipTitle(comments)
                       : 'Add a new comment'
                   }
                 >
-                  <ClickableStandardTaskItemIcon onClick={onCommentClick}>
-                    <CommentIcon
-                      alt="comments"
-                      src={getItemIcon(
-                        COMMENTS,
-                        comments,
-                        isHovered,
-                        task.updatedComment,
-                      )}
-                    />
-                  </ClickableStandardTaskItemIcon>
+                  <TaskIcon
+                    type="comments"
+                    isHovered={isHovered}
+                    isActive={comments?.length > 0}
+                    isNew={task.updatedComment}
+                    onClick={onCommentClick}
+                  />
                 </Tooltip>
               </GridImg>
               <GridImg item xs={4} matched={matchLabels}>
                 <Tooltip
                   placement="top"
                   title={
-                    getItemIconVersion(labels) === REGULAR
-                      ? getToolTipMultiLabelDetails(labels)
+                    labels?.length > 0
+                      ? getLabelsIconTooltipTitle(labels)
                       : 'Add label'
                   }
                 >
-                  <ClickableStandardTaskItemIcon onClick={onLabelClick}>
-                    <LabelIcon
-                      alt="labels"
-                      src={getItemIcon(
-                        LABELS,
-                        labels,
-                        isHovered,
-                        task.updatedLabel,
-                      )}
-                    />
-                  </ClickableStandardTaskItemIcon>
+                  <TaskIcon
+                    type="labels"
+                    isHovered={isHovered}
+                    isActive={labels?.length > 0}
+                    isNew={task.updatedlabel}
+                    onClick={onLabelClick}
+                  />
                 </Tooltip>
               </GridImg>
               <GridImg item xs={4} matched={matchAttachments}>
                 <Tooltip
                   placement="top"
                   title={
-                    getItemIconVersion(attachments) === REGULAR
-                      ? getToolTipAttachmentsLabelDetails(attachments)
+                    attachments?.length > 0
+                      ? getAttachmentsIconTooltipTitle(attachments)
                       : 'Add file'
                   }
                 >
-                  <ClickableStandardTaskItemIcon onClick={onAttachmentsClick}>
-                    <AttachmentIcon
-                      alt="attachments"
-                      src={getItemIcon(
-                        ATTACHMENTS,
-                        attachments,
-                        isHovered,
-                        task.updatedAttachment,
-                      )}
-                    />
-                  </ClickableStandardTaskItemIcon>
+                  <TaskIcon
+                    type="attachments"
+                    onClick={onAttachmentsClick}
+                    isHovered={isHovered}
+                    isActive={attachments?.length > 0}
+                    isNew={task.updatedAttachment}
+                  />
                 </Tooltip>
               </GridImg>
             </Grid>
@@ -729,23 +706,14 @@ const TaskItem = ({
                 >
                   <Tooltip
                     placement="top"
-                    title={
-                      getItemIconVersion(dueDate) === REGULAR
-                        ? 'Edit due date'
-                        : 'Add due date'
-                    }
+                    title={dueDate ? 'Edit due date' : 'Add due date'}
                   >
                     {dueDate ? (
                       <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
                         {moment(dueDate).format('MM/DD')}
                       </DueDateBasicLabel>
                     ) : (
-                      <CalendarIcon
-                        src={
-                          isHovered ? EmptyCalendarIconHover : EmptyCalendarIcon
-                        }
-                        alt="Due date"
-                      />
+                      <TaskIcon type="calendar" isHovered={isHovered} />
                     )}
                   </Tooltip>
                 </button>
