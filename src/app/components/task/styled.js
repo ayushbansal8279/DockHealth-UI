@@ -150,7 +150,7 @@ export const DueDate = styled.span`
   line-height: initial;
 `;
 
-export const DueDateBasicLabel = styled.span`
+export const DueDateBasicLabel = styled.div`
   padding: 2px ${spacing.tiny};
   border-radius: 4px;
   background: ${({ isOverdue }) => (isOverdue ? '#e84739' : '#949aa4')};
@@ -206,6 +206,7 @@ export const StandardTaskItemCell = styled.div`
   min-width: ${props => props.width};
   max-width: ${props => props.width};
   padding: ${spacing.small} 0;
+  padding: ${props => props.padding || `${spacing.small} 0`};
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
   padding-right: ${props =>
@@ -323,17 +324,17 @@ export const InfoText = styled.p`
 // SlimTaskItem
 export const SlimTaskItemContainer = styled.div`
   display: flex;
-  min-height: 70px;
   align-ttems: center;
   width: 100%;
+  height: ${({ height }) => height || 35}px;
   position: relative;
   background-color: ${props =>
     props.isSelected ? palette.brightBlueWithAlpha : 'white'};
-  padding: 0 55px;
-  border-radius: ${props => (props.isDragging ? '4px' : '0px')};
+  border: 1px solid ${palette.coolGrey3};
   box-shadow: ${props =>
     props.isDragging ? '0px 0px 20px rgba(204, 204, 204, 0.8)' : '0px'};
   transition: background-color linear 0.2s;
+  margin-bottom: 2px;
 
   &:hover {
     & ${ThreeDots}, ${AddPlaceholder} {
@@ -345,7 +346,7 @@ export const SlimTaskItemContainer = styled.div`
 export const SlimTaskItemDescription = styled.div`
   cursor: pointer;
   color: ${palette.mediumGrey};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
 
   & > div {
@@ -370,7 +371,7 @@ export const SlimTaskItemListLink = styled(({ withMargin, ...otherProps }) => (
   align-itmes: center;
   align-self: center;
   color: ${palette.brightBlue};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   margin-right: ${props => props.withMargin && spacing.large};
 `;
 
@@ -401,7 +402,6 @@ export const AssignedBox = styled.div`
   justify-content: center;
   align-items: center;
   flex: 1;
-  margin-left: -40px;
 `;
 
 export const SlimTaskWorkflowStatusContainer = styled.div`
@@ -410,13 +410,14 @@ export const SlimTaskWorkflowStatusContainer = styled.div`
   position: relative;
   padidng-top: ${spacing.regular});
   padidng-bottom: ${spacing.regular});
-  padding-left: ${props => props.withPadding && spacing.regularPlus};
+  padding-left: ${props => props.withPadding && spacing.smallPlus};
   font-size: ${fontSizes.smallPlus};
+  height: 100%
 `;
 
 export const SlimTaskItemPatientLink = styled(Link)`
   color: ${palette.darkGrey};
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
 
   &:hover {
     color: ${palette.brightBlue};

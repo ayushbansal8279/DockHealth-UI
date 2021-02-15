@@ -452,7 +452,7 @@ const DashboardList = ({
           }}
         />
       </StickyHeader>
-      <Spacing vertical={5} />
+      <Spacing vertical={1} />
       {dashboardTasksIsLoading || completeTaskCount === undefined ? (
         <DashboardSkeletonLoader />
       ) : (

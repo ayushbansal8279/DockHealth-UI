@@ -64,7 +64,7 @@ export const DashboardStatisticsTileIconContainer = styled.div`
 export const DashboardStatisticsContainer = styled.div`
   padding: ${spacing.regular};
   background-color: ${palette.coolGrey4};
-  margin: ${spacing.huge} 0;
+  margin: ${spacing.smallPlus} 0;
   width: 100%;
 `;
 
