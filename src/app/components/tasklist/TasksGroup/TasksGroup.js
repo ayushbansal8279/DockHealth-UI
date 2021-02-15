@@ -1,12 +1,18 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useCallback, useEffect, useRef } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+  useContext,
+} from 'react';
+import { isNil } from 'ramda';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 
-import { isNil } from 'ramda';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
@@ -24,6 +30,8 @@ import {
   Arrow,
 } from 'components/tasklist/DropdownListSection/styled';
 
+import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
 import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
@@ -38,6 +46,7 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
+  BulkContainer,
 } from './styled';
 
 const TasksGroup = ({
@@ -145,6 +154,23 @@ const TasksGroup = ({
     onSwitchOpen();
   }, [isOpen, groupTaskCounts, tasks, onSwitchOpen, showMoreTasks]);
 
+  const { bunchBulkEditTaskActions } = useContext(BulkEditContext);
+  const { groupActions } = bunchBulkEditTaskActions;
+
+  const subtasks = useMemo(
+    () =>
+      tasks && tasks?.length > 0
+        ? tasks?.reduce(
+            (previousSubtasks, currentTask) =>
+              currentTask?.subtasks?.length > 0
+                ? [...previousSubtasks, ...currentTask?.subtasks]
+                : previousSubtasks,
+            [],
+          )
+        : [],
+    [tasks],
+  );
+
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
@@ -231,7 +257,23 @@ const TasksGroup = ({
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <SortHeaderRow>
-            <ColumnSortHeader width={60} />
+            {bunchBulkEditTaskActions && (
+              <BulkContainer>
+                <BulkCheckbox
+                  isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
+                    tasks,
+                    subtasks,
+                  )}
+                  onClick={() =>
+                    groupActions?.onClickBulkEditGroup({
+                      parentTasks: tasks,
+                      subtasks,
+                    })
+                  }
+                />
+              </BulkContainer>
+            )}
+            <ColumnSortHeader width={bunchBulkEditTaskActions ? 36 : 60} />
             <ColumnSortHeader
               id="TASK_DESCRIPTION"
               label="Tasks"

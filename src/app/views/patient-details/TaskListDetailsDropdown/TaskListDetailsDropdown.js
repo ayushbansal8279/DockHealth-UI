@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
@@ -8,6 +8,9 @@ import SlimViewActiveIcon from 'img/slim-view-active';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
+
 import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
@@ -28,6 +31,7 @@ import {
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
+import { BulkContainer } from '../styled';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -74,6 +78,23 @@ const TaskListDetailsDropdown = ({
   const { listName, taskListIdentifier, listUsers } = list;
 
   const listMembers = listUsers;
+
+  const { bunchBulkEditTaskActions } = useContext(BulkEditContext);
+  const { groupActions } = bunchBulkEditTaskActions;
+
+  const subtasks = useMemo(
+    () =>
+      tasks && tasks?.length > 0
+        ? tasks?.reduce(
+            (previousSubtasks, currentTask) =>
+              currentTask?.subtasks?.length > 0
+                ? [...previousSubtasks, ...currentTask?.subtasks]
+                : previousSubtasks,
+            [],
+          )
+        : [],
+    [tasks],
+  );
 
   return (
     <ListDetailsContainer>
@@ -132,7 +153,23 @@ const TaskListDetailsDropdown = ({
           />
         )}
         <SortHeaderRow>
-          <ColumnSortHeader width={60} />
+          {bunchBulkEditTaskActions && (
+            <BulkContainer>
+              <BulkCheckbox
+                isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
+                  tasks,
+                  subtasks,
+                )}
+                onClick={() =>
+                  groupActions?.onClickBulkEditGroup({
+                    parentTasks: tasks,
+                    subtasks,
+                  })
+                }
+              />
+            </BulkContainer>
+          )}
+          <ColumnSortHeader width={bunchBulkEditTaskActions ? 36 : 60} />
           <ColumnSortHeader
             id="TASK_DESCRIPTION"
             label="Tasks"

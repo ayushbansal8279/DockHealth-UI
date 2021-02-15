@@ -158,6 +158,96 @@ const BulkEditSection = ({
     [],
   );
 
+  const getGroupIsSelectedInBulkEdit = useCallback(
+    (parentTasks, subtasks) =>
+      parentTasks?.every(t => getParentTaskIsSelectedInBulkEdit(t)) &&
+      subtasks?.every(t => getSubtaskIsSelectedInBulkEdit(t)),
+    [getParentTaskIsSelectedInBulkEdit, getSubtaskIsSelectedInBulkEdit],
+  );
+
+  const onClickBulkEditGroup = useCallback(
+    ({ parentTasks = [], subtasks = [] }) => {
+      const groupIsSelected = getGroupIsSelectedInBulkEdit(
+        parentTasks,
+        subtasks,
+      );
+
+      if (groupIsSelected) {
+        setBulkEditTasks({
+          parentTasks: bulkEditTasks?.parentTasks?.filter(
+            t =>
+              !parentTasks.some(pT => pT.taskIdentifier === t.taskIdentifier),
+          ),
+          subtasks: bulkEditTasks?.subtasks?.filter(
+            t => !subtasks.some(sT => sT.taskIdentifier === t.taskIdentifier),
+          ),
+        });
+      } else {
+        let parentTasksToPut = [];
+        let subtasksToPut = [];
+
+        if (parentTasks) {
+          parentTasks.forEach(
+            ({ taskIdentifier, subTasksCount, attachments, taskList }) => {
+              const parentTaskIsSelected = getParentTaskIsSelectedInBulkEdit({
+                taskIdentifier,
+              });
+              if (!parentTaskIsSelected) {
+                parentTasksToPut = [
+                  ...parentTasksToPut,
+                  {
+                    taskIdentifier,
+                    subTasksCount,
+                    hasAttachments: attachments?.length > 0,
+                    taskList,
+                  },
+                ];
+              }
+            },
+          );
+        }
+
+        if (subtasks) {
+          subtasks.forEach(
+            ({
+              taskIdentifier,
+              parentTaskIdentifier,
+              attachments,
+              taskList,
+            }) => {
+              const subTaskIsSelected = getSubtaskIsSelectedInBulkEdit({
+                taskIdentifier,
+              });
+
+              if (!subTaskIsSelected) {
+                subtasksToPut = [
+                  ...subtasksToPut,
+                  {
+                    taskIdentifier,
+                    parentTaskIdentifier,
+                    hasAttachments: attachments?.length > 0,
+                    taskList,
+                  },
+                ];
+              }
+            },
+          );
+        }
+
+        setBulkEditTasks({
+          parentTasks: [...bulkEditTasks?.parentTasks, ...parentTasksToPut],
+          subtasks: [...bulkEditTasks?.subtasks, ...subtasksToPut],
+        });
+      }
+    },
+    [
+      bulkEditTasks,
+      getGroupIsSelectedInBulkEdit,
+      getParentTaskIsSelectedInBulkEdit,
+      getSubtaskIsSelectedInBulkEdit,
+    ],
+  );
+
   const bunchBulkEditTaskActions = useMemo(
     () => ({
       parentActions: {
@@ -172,16 +262,22 @@ const BulkEditSection = ({
         onUnselectBulkEditTask: onUnselectBulkEditSubtask,
         onUpdateSelectedBulkEditTask: onUpdateSelectedBulkEditSubtasks,
       },
+      groupActions: {
+        getGroupIsSelectedInBulkEdit,
+        onClickBulkEditGroup,
+      },
     }),
     [
       getParentTaskIsSelectedInBulkEdit,
       onClickBulkEditParentTask,
       onUnselectBulkEditParentTask,
+      onUpdateSelectedBulkEditParentTask,
       getSubtaskIsSelectedInBulkEdit,
       onClickBulkEditSubtask,
       onUnselectBulkEditSubtask,
       onUpdateSelectedBulkEditSubtasks,
-      onUpdateSelectedBulkEditParentTask,
+      getGroupIsSelectedInBulkEdit,
+      onClickBulkEditGroup,
     ],
   );
 

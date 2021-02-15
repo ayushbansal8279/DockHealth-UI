@@ -113,3 +113,10 @@ export const ShowMoreButton = styled.button`
   margin-left: 56px; // per design
   width: fit-content;
 `;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${spacing.smallPlus};
+`;
