@@ -2,8 +2,8 @@ import { Grid, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
-import AuthTemplateTopBackgroundTop from 'img/Bubble_Pattern_Top.svg';
-import AuthTemplateTopBackgroundBottom from 'img/Bubble_Pattern_Bottom.svg';
+import AuthTemplateTopBackgroundTop from 'img/bubble-pattern-top.svg';
+import AuthTemplateTopBackgroundBottom from 'img/bubble-pattern-bottom.svg';
 
 const mdBreakpoint = 960;
 

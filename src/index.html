@@ -21,10 +21,12 @@
     <link rel="stylesheet" href="assets/css/app.css" />
 
     <link
-    href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700|Roboto+Condensed:300,400,700|Roboto:300,400,500,600,700&display=swap" rel="stylesheet">
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700|Roboto+Condensed:300,400,700|Roboto:300,400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
 
     <script src="https://js.stripe.com/v3/"></script>
-    
+
     <style>
       .mainContainer {
         display: flex;
@@ -35,13 +37,9 @@
       .leftSide {
         align-items: center;
         background-color: #213a56;
-        background-image: linear-gradient(
-            to bottom,
-            #213a56,
-            #213a56
-          ),
-          url('img/Bubble_Pattern_Top.svg'),
-          url('img/Bubble_Pattern_Bottom.svg');
+        background-image: linear-gradient(to bottom, #213a56, #213a56),
+          url('img/bubble-pattern-top.svg'),
+          url('img/bubble-pattern-bottom.svg');
         background-repeat: repeat-x;
         background-position: bottom, top;
         display: flex;
@@ -59,7 +57,7 @@
       }
       .rightSide {
         align-items: center;
-        background-color:  #ffffff;
+        background-color: #ffffff;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -86,13 +84,13 @@
           width: 100%;
         }
       }
-      
+
       @media screen and (min-height: 750px) {
         .leftSide {
           padding-bottom: 7rem;
         }
       }
-      
+
       @media screen and (min-width: 960px) {
         .leftSideContent {
           max-width: 525px;
@@ -110,19 +108,22 @@
         }
       }
     </style>
-
   </head>
   <body>
-    <div id="UnsupportedSection" style="display:none"> 
+    <div id="UnsupportedSection" style="display:none">
       <div class="mainContainer">
         <div class="leftSide">
           <div class="leftSideContent">
             <div>
-              <img src='https://app.dock.health/assets/img/dock-logo.png' width="242px" height="108px"/>
-              <div style="height:50px">
-              </div>
+              <img
+                src="https://app.dock.health/assets/img/dock-logo.png"
+                width="242px"
+                height="108px"
+              />
+              <div style="height:50px"></div>
               <h4 style="font-family: 'Montserrat', sans-serif; ">
-                A simple, HIPAA compliant task management and collaboration platform built specifically for healthcare.
+                A simple, HIPAA compliant task management and collaboration
+                platform built specifically for healthcare.
               </h4>
             </div>
           </div>
@@ -130,18 +131,21 @@
         <div class="rightSide">
           <div class="rightSideContent">
             <div>
-              <img href='img/dock-header-logo.svg'/>
-              <div style="height:50px">
-              </div>
+              <img href="img/dock-header-logo.svg" />
+              <div style="height:50px"></div>
               <h3 style="font-family: 'Montserrat', sans-serif; ">
                 Dock Health is not supported on the Internet Explorer browser.
               </h3>
               <h4>
-                Please use <a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a>, Firefox or Safari
+                Please use
+                <a href="https://www.google.com/chrome/" target="_blank"
+                  >Google Chrome</a
+                >, Firefox or Safari
               </h4>
-              <br/>
+              <br />
               <h4>
-                You may open this link <span id="currentLink"></span> in any of the above browsers.
+                You may open this link <span id="currentLink"></span> in any of
+                the above browsers.
               </h4>
             </div>
           </div>
@@ -150,32 +154,31 @@
     </div>
 
     <script>
-      let userAgentString = navigator.userAgent; 
+      let userAgentString = navigator.userAgent;
       console.log(userAgentString);
-          
-      // Detect Chrome 
-      // let chromeAgent =  
-      //     userAgentString.indexOf("Chrome") > -1; 
-          
-      // Detect Internet Explorer 
-      let IExplorerAgent =  
-          userAgentString.indexOf("MSIE") > -1 ||  
-          (userAgentString.indexOf("rv:") > -1 && userAgentString.indexOf("Firefox") == -1); 
-          
+
+      // Detect Chrome
+      // let chromeAgent =
+      //     userAgentString.indexOf("Chrome") > -1;
+
+      // Detect Internet Explorer
+      let IExplorerAgent =
+        userAgentString.indexOf('MSIE') > -1 ||
+        (userAgentString.indexOf('rv:') > -1 &&
+          userAgentString.indexOf('Firefox') == -1);
+
       // if(chromeAgent){
       //   alert('detected Chrome');
       // }
-      if(IExplorerAgent){
+      if (IExplorerAgent) {
         // alert('detected IE');
         // document.write('<h2>Dock Health is not supported on IE.</h2><h2>Please use Chrome, Firefox or Safari.</h2><br/>Open this link: <a href="'+window.location.href+'">'+window.location.href+'</a>');
-        document.getElementById("UnsupportedSection").style.display = "block";
-        document.getElementById("currentLink").innerText = window.location.href;
-      }else{
+        document.getElementById('UnsupportedSection').style.display = 'block';
+        document.getElementById('currentLink').innerText = window.location.href;
+      } else {
         document.write('<div id="app" />');
       }
-
-    </script>    
+    </script>
     <!-- <div id="app" /> -->
-
   </body>
 </html>
