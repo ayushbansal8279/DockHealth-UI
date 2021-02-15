@@ -8,7 +8,20 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { identity, isEmpty } from 'ramda';
+import {
+  identity,
+  isEmpty,
+  pipe,
+  prop,
+  path,
+  sortWith,
+  ascend,
+  descend,
+  defaultTo,
+  toLower,
+  trim,
+  ifElse,
+} from 'ramda';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 import EmptyTaskListBird from 'img/animals/bird';
@@ -64,36 +77,64 @@ import {
   TipsSwitchLabel,
 } from './styled';
 import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
-import { DashboardColumnKey, DashboardKeyPropertyName } from '../config';
+import { DashboardColumnKey } from '../config';
 
 const SORT_METHODS = {
-  [DashboardColumnKey.DUE_DATE]: list =>
-    list?.slice().sort((a, b) => {
-      if (!a?.dueDate) return 1;
-      return a?.dueDate > b?.dueDate ? 1 : -1;
-    }),
-  [DashboardColumnKey.WORKFLOW_STATUS]: list =>
-    list
-      ?.slice()
-      .sort((a, b) => a?.workflowStatus?.localeCompare(b.workflowStatus)),
-  [DashboardColumnKey.PATIENT]: list =>
-    list
-      ?.slice()
-      .sort((a, b) =>
-        a?.patient?.firstName?.localeCompare(b?.patient?.firstName),
+  [DashboardColumnKey.DUE_DATE]: sortWith([
+    ascend(pipe(prop('dueDate'), defaultTo('~'))),
+  ]),
+  [DashboardColumnKey.WORKFLOW_STATUS]: sortWith([
+    ascend(pipe(prop('workflowStatus'), defaultTo('~'), toLower)),
+  ]),
+  [DashboardColumnKey.PATIENT]: sortWith([
+    ascend(
+      ifElse(
+        path(['patient', 'patientName']),
+        pipe(path(['patient', 'patientName']), defaultTo('~'), toLower),
+        pipe(
+          path(['parentTask', 'patient', 'patientName']),
+          defaultTo('~'),
+          toLower,
+        ),
       ),
-  [DashboardColumnKey.ASSIGNED]: list =>
-    list
-      ?.slice()
-      .sort((a, b) =>
-        a?.assignedTo?.userName?.localeCompare(b?.assignedTo?.userName),
+    ),
+  ]),
+  [DashboardColumnKey.ASSIGNED]: sortWith([
+    ascend(pipe(path(['assignedTo', 'userName']), defaultTo('~'), toLower)),
+  ]),
+  [DashboardColumnKey.LIST_NAME]: sortWith([
+    ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
+  ]),
+};
+
+const SORT_DESC_METHODS = {
+  [DashboardColumnKey.DUE_DATE]: sortWith([
+    descend(pipe(prop('dueDate'), defaultTo(' '))),
+  ]),
+  [DashboardColumnKey.WORKFLOW_STATUS]: sortWith([
+    descend(pipe(prop('workflowStatus'), defaultTo(' '), toLower)),
+  ]),
+  [DashboardColumnKey.PATIENT]: sortWith([
+    descend(
+      ifElse(
+        path(['patient', 'patientName']),
+        pipe(path(['patient', 'patientName']), defaultTo(' '), toLower),
+        pipe(
+          path(['parentTask', 'patient', 'patientName']),
+          defaultTo(' '),
+          toLower,
+        ),
       ),
-  [DashboardColumnKey.LIST_NAME]: list =>
-    list
-      ?.slice()
-      .sort((a, b) =>
-        a?.taskList?.listName?.localeCompare(b?.taskList?.listName),
-      ),
+    ),
+  ]),
+  [DashboardColumnKey.ASSIGNED]: sortWith([
+    descend(pipe(path(['assignedTo', 'userName']), defaultTo(' '), toLower)),
+  ]),
+  [DashboardColumnKey.LIST_NAME]: sortWith([
+    descend(
+      pipe(path(['taskList', 'listName']), defaultTo(' '), toLower, trim),
+    ),
+  ]),
 };
 
 export const DashboardTab = ({
@@ -197,34 +238,20 @@ const DashboardList = ({
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
-
     return SORT_METHODS[sortKey];
+  }, [sortKey]);
+
+  const currentSortDescMethod = useMemo(() => {
+    if (!sortKey) return identity;
+    return SORT_DESC_METHODS[sortKey];
   }, [sortKey]);
 
   const currentSortMethodWithOrder = useMemo(() => {
     if (sortOrder === SortOrderType.DESC) {
-      return tasks => {
-        if (!tasks || tasks.length === 0) {
-          return tasks;
-        }
-
-        const ascSortedTasks = currentSortMethod(tasks);
-        const firstIndexWithoutValue = ascSortedTasks.findIndex(
-          task => !task[DashboardKeyPropertyName[sortKey]],
-        );
-
-        if (firstIndexWithoutValue === -1) {
-          return ascSortedTasks.slice().reverse();
-        }
-
-        return ascSortedTasks
-          .slice(0, firstIndexWithoutValue)
-          .reverse()
-          .concat(ascSortedTasks.slice(firstIndexWithoutValue));
-      };
+      return currentSortDescMethod;
     }
     return currentSortMethod;
-  }, [sortKey, sortOrder, currentSortMethod]);
+  }, [sortOrder, currentSortMethod, currentSortDescMethod]);
 
   function resetSort() {
     setCurrentSort({
@@ -471,8 +498,8 @@ const DashboardList = ({
                     openDrawer={openDrawer}
                     isTaskDrawerOpen={isTaskDrawerOpen}
                     selectedTaskIdentifier={selectedTaskIdentifier}
-                    currentSort={currentSort}
                     currentSortMethod={currentSortMethodWithOrder}
+                    currentSort={currentSort}
                     onSortChange={handleSortChange}
                     dynamicColumnType={dynamicColumnType}
                     showClearSortFiltersModal={showClearSortFiltersModal}
