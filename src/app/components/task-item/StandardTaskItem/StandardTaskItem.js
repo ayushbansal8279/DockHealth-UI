@@ -64,12 +64,24 @@ const Task = ({
 
   const handleSetSubtasksOpen = useCallback(
     areOpen => {
-      if (subTasksCount > 0 && isEmpty(renderedSubtasks) && !subtasksDisabled) {
+      if (
+        subTasksCount > 0 &&
+        isEmpty(renderedSubtasks) &&
+        !subtasksDisabled &&
+        !isFullView
+      ) {
         dispatch(loadSubTasks(task));
       }
       setAreSubtasksOpen(areOpen);
     },
-    [subTasksCount, renderedSubtasks, subtasksDisabled, dispatch, task],
+    [
+      subTasksCount,
+      renderedSubtasks,
+      subtasksDisabled,
+      dispatch,
+      task,
+      isFullView,
+    ],
   );
 
   useEffect(() => {
