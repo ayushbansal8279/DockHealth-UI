@@ -17,6 +17,7 @@ const DashboardFirstVisitView = ({
   onCreateList,
   // onTakeATour,
   list,
+  sampleList,
   acceptInvitation,
 }) => {
   const history = useHistory();
@@ -66,6 +67,19 @@ const DashboardFirstVisitView = ({
               {/* <Button fullWidth variant="text" onClick={onTakeATour}>
                 Take tour of Dock
               </Button> */}
+              {sampleList && (
+                <Button
+                  fullWidth
+                  variant="text"
+                  onClick={() => {
+                    if (list) {
+                      history.push(`/tasks/${sampleList?.taskListIdentifier}`);
+                    }
+                  }}
+                >
+                  Go to the sample list
+                </Button>
+              )}
             </ButtonsContainer>
           </>
         )}
