@@ -3,8 +3,8 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useMount, useToggle } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
-import EyeClosed from 'img/eye-closed.svg';
-import EyeOpen from 'img/eye-open.svg';
+import EyeClose from 'img/auth/eye-close.svg';
+import EyeOpen from 'img/auth/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
@@ -81,7 +81,7 @@ const LoginFormPassword = ({
           endAdornment={
             <PasswordToggle onClick={togglePasswordShown}>
               <img
-                src={isPasswordShown ? EyeOpen : EyeClosed}
+                src={isPasswordShown ? EyeOpen : EyeClose}
                 alt={isPasswordShown ? 'Password shown' : 'Password hidden'}
               />
             </PasswordToggle>

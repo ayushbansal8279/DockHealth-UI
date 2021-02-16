@@ -490,11 +490,6 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
-export const SubtasksImg = styled.img`
-  width: 22px;
-  height: 15px;
-`;
-
 export const DescriptionWrapper = styled.div`
   display: flex;
   width: 100%;

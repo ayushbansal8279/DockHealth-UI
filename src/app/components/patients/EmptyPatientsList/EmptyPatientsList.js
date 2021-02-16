@@ -4,7 +4,7 @@ import { downloadPatientImportTemplate } from 'api/patient-api';
 
 import Spacing from 'components/common/Spacing';
 import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
-import ExcelLogo from 'img/ExcelLogo.svg';
+import ExcelLogo from 'img/excel-logo.svg';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import {
   EmptyListContainer,

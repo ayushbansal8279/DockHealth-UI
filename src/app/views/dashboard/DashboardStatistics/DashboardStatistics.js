@@ -6,7 +6,7 @@ import {
   dashboardStatisticsIsLoadingSelector,
 } from 'selectors/dashboard-statistics-selectors';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import DashboardStatisticsIcon from 'img/dashboard-statistics';
+import DashboardStatisticsIcon from 'img/dashboard/dashboard-statistics';
 import DashboardStatisticsTile from './DashboardStatisticsTile';
 
 import {

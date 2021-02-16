@@ -3,7 +3,6 @@ import { DialogProps, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { range } from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
-// import Lightbulb from 'img/lightbulb.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import { onListsTutorialModalEvent } from 'helpers/ga-event-helper';
@@ -82,10 +81,7 @@ const HelpfulTipsDialog = ({
   return (
     <DialogComponent open={open} fullWidth>
       <HeaderContainer>
-        <IconButton size="small" disabled>
-          {/* <img alt="Lightbulb" src={Lightbulb} /> */}
-        </IconButton>
-        {/* <div style={{ height: '1.15rem' }}>Helpful Tips</div> */}
+        <IconButton size="small" disabled />
         <div style={{ height: '1.15rem' }}>&nbsp;</div>
         <IconButton
           size="small"

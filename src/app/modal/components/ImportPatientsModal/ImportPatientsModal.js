@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import { uploadPatientData } from 'api/patient-api';
-import uploadFileIcon from 'img/uploadFileIcon.svg';
+import UploadFileIcon from 'img/upload-file.svg';
 import { useDropzone } from 'react-dropzone';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -132,7 +132,7 @@ const ImportPatientsModal = ({
               Dock here.
             </ContentMessage>
             <FileInputArea {...getRootProps()}>
-              <FileInputImage src={uploadFileIcon} alt="file upload icon" />
+              <FileInputImage src={UploadFileIcon} alt="file upload icon" />
               <FileInputMessage>
                 {isDragActive ? (
                   <span>Drop the files here ...</span>

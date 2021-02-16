@@ -3,7 +3,7 @@ import ReactHtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
-import EnvelopeIcon from 'img/envelope-new-new.svg';
+import EnvelopeIcon from 'img/envelope.svg';
 import palette from 'styles/palette';
 
 const EmailBodyContainer = styled.div`

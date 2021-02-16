@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ExcelLogo from 'img/ExcelLogo.svg';
+import ExcelLogo from 'img/excel-logo.svg';
 import { Add as AddIcon } from '@material-ui/icons';
 import circleCompleted from 'img/circle-completed.svg';
 import {

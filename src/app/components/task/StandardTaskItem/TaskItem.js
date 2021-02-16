@@ -22,9 +22,7 @@ import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member/Member';
 import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
-import SubtasksIcon from 'img/subtasks-grey.svg';
-import SubtasksIconActive from 'img/subtasks-blue.svg';
-import SubtasksIconDisabled from 'img/subtasks-disabled.svg';
+import SubtasksIcon from 'img/SubtasksIcon';
 import palette from 'styles/palette';
 import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
@@ -70,7 +68,6 @@ import {
   DescriptionTooltip,
   SubtasksCellContentButton,
   SubtasksCellText,
-  SubtasksImg,
   DescriptionLabel,
   DescriptionWrapper,
   AddSubtaskButton,
@@ -522,17 +519,7 @@ const TaskItem = ({
                     onClick={onSubtaskLabelClick}
                   >
                     <SubtasksCellText>{subTasksCount}</SubtasksCellText>
-                    <SubtasksImg
-                      src={
-                        subtasksDisabled
-                          ? SubtasksIconDisabled
-                          : // eslint-disable-next-line unicorn/no-nested-ternary
-                          isOpen
-                          ? SubtasksIconActive
-                          : SubtasksIcon
-                      }
-                      alt="Subtasks"
-                    />
+                    <SubtasksIcon />
                   </SubtasksCellContentButton>
                 ) : (
                   <>
