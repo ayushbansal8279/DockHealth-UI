@@ -1,10 +1,8 @@
 import React, { useMemo, useRef, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
-import FullViewIcon from 'img/full-view';
-import FullViewActiveIcon from 'img/full-view-active';
-import SlimViewIcon from 'img/slim-view';
-import SlimViewActiveIcon from 'img/slim-view-active';
+import FullViewIcon from 'img/list/FullViewIcon';
+import SlimViewIcon from 'img/list/SlimViewIcon';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -23,7 +21,7 @@ import {
   ListDetailsContainer,
   ListDetailsHeader,
   ListNameSection,
-  ViewIcon,
+  ViewTypeButton,
   ViewIconBox,
   IconsBox,
   ListNameContainer,
@@ -118,11 +116,13 @@ const TaskListDetailsDropdown = ({
         <IconsBox>
           <ViewIconBox isHidden={!areViewOptionsVisible}>
             <Tooltip placement="top-end" title="Slim view. Just the task shows">
-              <ViewIcon
-                alt="slim-view"
-                src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
+              <ViewTypeButton
+                type="button"
+                active={!isFullView}
                 onClick={() => setViewType(SLIM_VIEW)}
-              />
+              >
+                <SlimViewIcon />
+              </ViewTypeButton>
             </Tooltip>
           </ViewIconBox>
           <ViewIconBox isHidden={!areViewOptionsVisible}>
@@ -130,11 +130,13 @@ const TaskListDetailsDropdown = ({
               placement="top-end"
               title="Full view. Task and comments show"
             >
-              <ViewIcon
-                alt="full-view"
-                src={isFullView ? FullViewActiveIcon : FullViewIcon}
+              <ViewTypeButton
+                type="button"
+                active={isFullView}
                 onClick={() => setViewType(FULL_VIEW)}
-              />
+              >
+                <FullViewIcon />
+              </ViewTypeButton>
             </Tooltip>
           </ViewIconBox>
         </IconsBox>

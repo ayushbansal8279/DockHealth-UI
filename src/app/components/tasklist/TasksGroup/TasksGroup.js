@@ -8,10 +8,8 @@ import React, {
 } from 'react';
 import { isNil } from 'ramda';
 import ArrowIcon from 'img/arrow';
-import FullViewIcon from 'img/full-view';
-import FullViewActiveIcon from 'img/full-view-active';
-import SlimViewIcon from 'img/slim-view';
-import SlimViewActiveIcon from 'img/slim-view-active';
+import FullViewIcon from 'img/list/FullViewIcon';
+import SlimViewIcon from 'img/list/SlimViewIcon';
 
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
@@ -24,7 +22,7 @@ import listSectionSavedState, {
 } from 'helpers/list-secition-saved-state';
 import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
 import {
-  ViewIcon,
+  ViewTypeButton,
   ViewIconBox,
   IconsBox,
   Arrow,
@@ -215,14 +213,16 @@ const TasksGroup = ({
           <IconsBox>
             <ViewIconBox isHidden={!areViewOptionsVisible}>
               <Tooltip placement="top" title="Slim view. Just the task shows">
-                <ViewIcon
-                  alt="slim-view"
-                  src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
+                <ViewTypeButton
+                  type="button"
+                  active={!isFullView}
                   onClick={() => {
                     setViewType(SLIM_VIEW);
                     onTaskGroupViewModeChange(SLIM_VIEW);
                   }}
-                />
+                >
+                  <SlimViewIcon />
+                </ViewTypeButton>
               </Tooltip>
             </ViewIconBox>
             <ViewIconBox isHidden={!areViewOptionsVisible}>
@@ -230,14 +230,16 @@ const TasksGroup = ({
                 placement="top"
                 title="Full view. Task and comments show"
               >
-                <ViewIcon
-                  alt="full-view"
-                  src={isFullView ? FullViewActiveIcon : FullViewIcon}
+                <ViewTypeButton
+                  type="button"
+                  active={isFullView}
                   onClick={() => {
                     setViewType(FULL_VIEW);
                     onTaskGroupViewModeChange(FULL_VIEW);
                   }}
-                />
+                >
+                  <FullViewIcon />
+                </ViewTypeButton>
               </Tooltip>
             </ViewIconBox>
           </IconsBox>

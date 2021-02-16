@@ -2,6 +2,7 @@ import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
+import palette from 'styles/palette';
 
 export const ListDetailsContainer = styled.div`
   display: flex;
@@ -45,9 +46,10 @@ export const IconsBox = styled.div`
   display: flex;
 `;
 
-export const ViewIcon = styled.img`
+export const ViewTypeButton = styled.button`
   margin-left: ${spacing.regularPlus};
   margin-bottom: ${spacing.tiny};
+  color: ${({ active }) => (active ? palette.brightBlue : palette.coolGrey2)};
   cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
 `;
 
