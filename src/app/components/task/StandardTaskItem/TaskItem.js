@@ -109,7 +109,7 @@ const TaskItem = ({
   dragAndDropDisabled,
   listNameVisible,
   patientVisible,
-  selectedTask,
+  isSelected,
   parentHasPatient,
   highlightedValue,
   isDraggable,
@@ -319,12 +319,6 @@ const TaskItem = ({
     },
   ];
 
-  const isSelectedTask =
-    selectedTask?.taskIdentifier === taskIdentifier ||
-    (selectedTask?.taskIdentifier == null &&
-      selectedTask?.parentTaskIdentifier === taskIdentifier) ||
-    contextMenu != null;
-
   const onMouseEnter = () => setIsHoverd(true);
   const onMouseLeave = () => setIsHoverd(false);
 
@@ -439,7 +433,7 @@ const TaskItem = ({
           <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <StandardTaskItemContainer
-          isSelected={isSelectedTask || isCheckedByBulkEdit}
+          isSelected={isSelected || isCheckedByBulkEdit}
           height={
             hasParentTaskLabel || isCompletedGroup
               ? EXTENDED_TASK_HEIGHT

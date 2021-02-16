@@ -27,6 +27,8 @@ const Subtasks = ({
   isFetchingSubTasks,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
+  selectedTaskIdentifier,
+  allTasksHighlighted,
   ...restProps
 }) => {
   const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
@@ -117,6 +119,10 @@ const Subtasks = ({
                               showSubtaskStylingLink={!draggedId}
                               isNestedTask
                               subTasksCount={subTasksCount}
+                              isSelected={
+                                selectedTaskIdentifier ===
+                                  subtask?.taskIdentifier || allTasksHighlighted
+                              }
                               {...restProps}
                             />
                             {shouldRenderComments &&

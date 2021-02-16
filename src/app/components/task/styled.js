@@ -246,6 +246,7 @@ export const StandardTaskItemContainer = styled.div`
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
+  transition: background-color 0.3s ease-out;
 `;
 
 export const StatusBar = styled.div`
