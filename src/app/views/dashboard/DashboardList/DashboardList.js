@@ -54,7 +54,7 @@ import {
   closeDrawer as closeDrawerAction,
 } from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
-import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import {
@@ -523,7 +523,7 @@ const DashboardList = ({
         </>
       )}
 
-      <NewTaskDrawer
+      <TaskDrawer
         modalActions={modalActions}
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}

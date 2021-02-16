@@ -33,7 +33,7 @@ import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
 import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
-import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
@@ -554,7 +554,7 @@ class PersonDetailsView extends PureComponent {
               </TaskViewContainer>
             </div>
           </BulkEditSection>
-          <NewTaskDrawer
+          <TaskDrawer
             modalActions={modalActions}
             onTaskUpdate={this.handleTaskUpdate}
             onTaskDelete={this.handleTaskDelete}

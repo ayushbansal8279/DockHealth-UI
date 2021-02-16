@@ -12,7 +12,7 @@ import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import Toolbar from 'components/task-view/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
-import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { TaskDrawerFields } from 'components/task-drawer/NewTaskDrawer.Utilities';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import * as ModalActions from 'modal/actions';
@@ -271,7 +271,7 @@ const PatientDetailsView = ({
             ))}
           </Switch>
         </PatientListsContainer>
-        <NewTaskDrawer
+        <TaskDrawer
           modalActions={modalActions}
           onTaskUpdate={handleTaskUpdate}
           onTaskCreation={handleTaskUpdate}

@@ -13,21 +13,21 @@ import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
-import AttachmentsSection from './NewTaskDrawer.AttachmentsSection';
-import CommentSection from './NewTaskDrawer.CommentSection';
-import DueDateSection from './NewTaskDrawer.DueDateSection';
-import DueTimeSection from './NewTaskDrawer.DueTimeSection';
-import initializeTaskDrawerHooks from './NewTaskDrawer.Hooks';
-import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
-import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
-import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
-import LabelsSection from './NewTaskDrawer.LabelsSection';
-import PrioritySection from './NewTaskDrawer.PrioritySection';
-import TopSection from './NewTaskDrawer.TopSection';
-import HistorySection from './NewTaskDrawer.HistorySection';
-import SelectInput from './NewTaskDrawer.SelectInput';
-import StatusSection from './NewTaskDrawer.StatusSection';
-import TaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
+import AttachmentsSection from '../NewTaskDrawer.AttachmentsSection';
+import CommentSection from '../NewTaskDrawer.CommentSection';
+import DueDateSection from '../NewTaskDrawer.DueDateSection';
+import DueTimeSection from '../NewTaskDrawer.DueTimeSection';
+import initializeTaskDrawerHooks from '../NewTaskDrawer.Hooks';
+import initializeTaskDrawerPopoverHooks from '../NewTaskDrawer.PopoverHooks';
+import initializeDueDateSectionHooks from '../NewTaskDrawer.DueDateSection.Hooks';
+import InviteMemberPopover from '../NewTaskDrawer.InviteMemberPopover';
+import LabelsSection from '../NewTaskDrawer.LabelsSection';
+import PrioritySection from '../NewTaskDrawer.PrioritySection';
+import TopSection from '../NewTaskDrawer.TopSection';
+import HistorySection from '../NewTaskDrawer.HistorySection';
+import SelectInput from '../NewTaskDrawer.SelectInput';
+import StatusSection from '../NewTaskDrawer.StatusSection';
+import TaskDrawerEmailBodyContainer from '../NewTaskDrawer.EmailBody';
 import {
   DescriptionLabel,
   EnvelopeIconContainer,
@@ -49,7 +49,7 @@ import {
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
   AdornmentContainer,
-} from './NewTaskDrawer.Styled';
+} from '../NewTaskDrawer.Styled';
 import {
   getFormattedMembers,
   getFormattedPatients,
@@ -58,12 +58,12 @@ import {
   TaskDrawerFields,
   getFormattedPatient,
   getCompletedByLabel,
-} from './NewTaskDrawer.Utilities';
-import existingUserTaskDrawerTourHooks from './NewTaskDrawer.ExistingUserTourHooks';
-import NewTaskDrawerSubtasks from './NewTaskDrawerSubtasks/NewTaskDrawerSubtasks';
-import NewTaskDrawerSelect from './NewTaskDrawerSelect/NewTaskDrawerSelect';
+} from '../NewTaskDrawer.Utilities';
+import existingUserTaskDrawerTourHooks from '../NewTaskDrawer.ExistingUserTourHooks';
+import NewTaskDrawerSubtasks from '../NewTaskDrawerSubtasks/NewTaskDrawerSubtasks';
+import NewTaskDrawerSelect from '../NewTaskDrawerSelect/NewTaskDrawerSelect';
 
-const NewTaskDrawer = ({
+const TaskDrawer = ({
   isInbox,
   modalActions,
   onTaskUpdate = () => {},
@@ -578,4 +578,4 @@ const NewTaskDrawer = ({
   );
 };
 
-export default NewTaskDrawer;
+export default TaskDrawer;

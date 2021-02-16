@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 // import Tour from 'components/tour-wizard/Tour/Tour';
-import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
@@ -707,7 +707,7 @@ class Home extends Component {
                 />
               )}
             </TaskViewContainer>
-            <NewTaskDrawer
+            <TaskDrawer
               modalActions={modalActions}
               fromFirstAddTask={taskCounters?.incomplete === 0}
               hideTour={isTourOpen}

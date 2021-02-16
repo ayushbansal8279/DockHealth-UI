@@ -19,7 +19,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
-import NewTaskDrawer from 'components/task-drawer/NewTaskDrawer';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,
@@ -117,7 +117,7 @@ const GlobalSearchView = ({
             : renderEmptyState()}
         </ViewSidePadding>
       </ViewLoader>
-      <NewTaskDrawer modalActions={modalActions} />
+      <TaskDrawer modalActions={modalActions} />
     </GlobalSearchWrapper>
   );
 };
