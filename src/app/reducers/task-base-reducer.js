@@ -21,6 +21,7 @@ import {
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
+import { TaskStatus } from 'helpers/task-helpers';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
@@ -418,12 +419,27 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           }
 
           if (newTask?.subtasks?.length > 0) {
-            const subtasks = newTask?.subtasks?.map(subtask =>
-              tasksToUpdate?.includes(subtask?.taskIdentifier)
-                ? { ...subtask, ...fields }
-                : subtask,
-            );
-            newTask = { ...newTask, subtasks };
+            newTask.subtasks = newTask?.subtasks?.map(subtask => {
+              if (tasksToUpdate?.includes(subtask?.taskIdentifier)) {
+                if (
+                  fields.status === TaskStatus.COMPLETE &&
+                  subtask.status === TaskStatus.INCOMPLETE
+                ) {
+                  newTask.subTasksCompletedCount += 1;
+                }
+
+                if (
+                  fields.status === TaskStatus.INCOMPLETE &&
+                  subtask.status === TaskStatus.COMPLETE
+                ) {
+                  newTask.subTasksCompletedCount -= 1;
+                }
+
+                return { ...subtask, ...fields };
+              }
+
+              return subtask;
+            });
           }
 
           return newTask;
