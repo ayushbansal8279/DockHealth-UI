@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
@@ -32,6 +32,18 @@ import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
+import Button from 'components/common/Button/Button';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import envelope from 'img/modals/envelope-red';
+import { redTheme } from 'modal/themes/red-theme';
+import {
+  ModalWrapper,
+  ModalMainIcon,
+  ModalIconContainer,
+  ModalDescriptionContainer,
+  ButtonsContainer,
+  FixedWidthButtonWrapper,
+} from 'modal/components/styled';
 import {
   OnboardingDialog,
   OnboardingHeader,
@@ -56,6 +68,7 @@ const validationSchema = object().shape({
 
 const onSubmit = ({
   showDialog,
+  showUserExistsDialog,
   setDialogTitle,
   setDialogMessage,
   locationParameters,
@@ -80,11 +93,11 @@ const onSubmit = ({
     showDialog();
   } catch (error) {
     if (error?.code === 'UsernameExistsException') {
-      setDialogTitle(`User Already Exists.`);
+      setDialogTitle(`Email already associated with an account`);
       setDialogMessage(
-        `User with ${email} already exists. Please go to your email and click on the link so that we can confirm your email address.`,
+        `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
       );
-      showDialog();
+      showUserExistsDialog();
       return;
     }
     showAlert({
@@ -140,6 +153,11 @@ const StyledForm = styled.form`
 
 const CreateAccount = props => {
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
+  const [
+    isUserExistsDialogShown,
+    showUserExistsDialog,
+    hideUserExistsDialog,
+  ] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
@@ -210,6 +228,7 @@ const CreateAccount = props => {
             setDialogMessage,
             setDialogTitle,
             showDialog,
+            showUserExistsDialog,
             locationParameters,
           }),
         )}
@@ -323,6 +342,68 @@ const CreateAccount = props => {
           </StyledAnchorDiv>
         </MontserratTypography>
         <Spacing vertical={5} />
+      </OnboardingDialog>
+      <OnboardingDialog open={isUserExistsDialogShown} fullWidth maxWidth="sm">
+        <MuiThemeProvider theme={redTheme}>
+          <ModalWrapper style={{ width: '500px' }}>
+            <ModalIconContainer>
+              <ModalMainIcon src={envelope} alt="envelope" />
+              <Typography color="textPrimary" variant="h2" align="center">
+                {dialogTitle}{' '}
+              </Typography>
+            </ModalIconContainer>
+            <ModalDescriptionContainer>
+              <MontserratTypography variant="h4">
+                <span style={onboardingMessageStyle}> {dialogMessage} </span>
+              </MontserratTypography>
+              <Spacing vertical={5} />
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  I didn&apos;t get the email.{' '}
+                </span>
+                <StyledAnchorDiv
+                  style={onboardingLinkStyle}
+                  onClick={() => resendEmail(email)}
+                >
+                  Resend email
+                </StyledAnchorDiv>
+              </MontserratTypography>
+
+              <Spacing vertical={5} />
+
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  {' '}
+                  The email address is wrong.{' '}
+                </span>
+                <StyledAnchorDiv
+                  onClick={hideUserExistsDialog}
+                  style={onboardingLinkStyle}
+                >
+                  Change email address
+                </StyledAnchorDiv>
+              </MontserratTypography>
+              <Spacing vertical={2} />
+            </ModalDescriptionContainer>
+            <ButtonsContainer>
+              <FixedWidthButtonWrapper width={300}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  type="button"
+                  size="small"
+                  color="red"
+                  onClick={() => {
+                    hideUserExistsDialog();
+                    history.push(`/auth/login`);
+                  }}
+                >
+                  Login To My Account
+                </Button>
+              </FixedWidthButtonWrapper>
+            </ButtonsContainer>
+          </ModalWrapper>
+        </MuiThemeProvider>
       </OnboardingDialog>
     </StyledGrid>
   );
