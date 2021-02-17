@@ -15,11 +15,10 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../NewTaskDrawer.AttachmentsSection';
 import CommentSection from '../NewTaskDrawer.CommentSection';
-import DueDateSection from '../NewTaskDrawer.DueDateSection';
-import DueTimeSection from '../NewTaskDrawer.DueTimeSection';
+import DueDateInput from '../DueDateSection/DueDateInput';
+import DueTimeInput from '../DueDateSection/DueTimeInput';
 import initializeTaskDrawerHooks from '../NewTaskDrawer.Hooks';
 import initializeTaskDrawerPopoverHooks from '../NewTaskDrawer.PopoverHooks';
-import initializeDueDateSectionHooks from '../NewTaskDrawer.DueDateSection.Hooks';
 import InviteMemberPopover from '../NewTaskDrawer.InviteMemberPopover';
 import LabelsSection from '../NewTaskDrawer.LabelsSection';
 import PrioritySection from '../NewTaskDrawer.PrioritySection';
@@ -141,11 +140,6 @@ const TaskDrawer = ({
   });
 
   const { handleSubmit, setValue, watch } = formMethods;
-
-  const { saveDueDate } = initializeDueDateSectionHooks({
-    setAutoSaveVisible,
-    onTaskUpdate,
-  });
 
   const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({
@@ -429,7 +423,7 @@ const TaskDrawer = ({
               </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <div ref={dueDateSectionReference}>
-                  <DueDateSection
+                  <DueDateInput
                     selectedTask={selectedTask}
                     isOverDue={isOverDue}
                     setAutoSaveVisible={setAutoSaveVisible}
@@ -440,13 +434,13 @@ const TaskDrawer = ({
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <HiddenFieldContainer visible={dueDateValue}>
-                  <DueTimeSection
+                  <DueTimeInput
                     dueTimeReference={dueTimeReference}
                     selectedTask={selectedTask}
                     dueDateValue={dueDateValue}
                     isOverDue={isOverDue}
                     setDueTimeValue={setValue}
-                    saveDueDate={saveDueDate}
+                    onTaskUpdate={onTaskUpdate}
                     setAutoSaveVisible={setAutoSaveVisible}
                   />
                 </HiddenFieldContainer>

@@ -1,11 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable import/prefer-default-export */
 import React from 'react';
-import InputMask from 'react-input-mask';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import InputMask from 'react-input-mask';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
+
+export const DueDateLabelContainer = styled.div`
+  align-items: center;
+  color: ${palette.coolGrey1};
+  cursor: pointer;
+  display: flex;
+  padding: 0.5rem;
+
+  ${({ isHovered }) =>
+    isHovered &&
+    `
+      background-color: ${palette.coolGrey4};
+  
+      && > * {
+        font-weight: bold;
+      }
+    `}
+`;
 
 export const DueTimeLabelContainer = styled.div`
   align-items: center;

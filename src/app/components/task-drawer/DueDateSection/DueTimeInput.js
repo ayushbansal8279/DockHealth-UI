@@ -3,24 +3,25 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import * as AlertActions from 'alert/actions';
 import useBoolean from 'hooks/useBoolean';
-import { AdornmentClear } from './NewTaskDrawer.Styled';
+import initializeDueDateSectionHooks from './hooks';
+import { AdornmentClear } from '../NewTaskDrawer.Styled';
 import {
   DueTimeLabelContainer,
   DueTimeInputMaskContainer,
   DueTimeInputMask,
   DueTimeErrorMessage,
-} from './NewTaskDrawer.DueTimeSection.Styled';
+} from './styled';
 
 const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 
-const DueTimeSection = ({
+const DueTimeInput = ({
   dueTimeReference,
   selectedTask,
   dueDateValue,
   isOverDue,
   setDueTimeValue,
-  saveDueDate,
   setAutoSaveVisible,
+  onTaskUpdate,
 }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [isFocus, setFocus, unsetFocus] = useBoolean(false);
@@ -30,6 +31,11 @@ const DueTimeSection = ({
   useEffect(() => {
     setErrorMessage(null);
   }, [selectedTask]);
+
+  const { saveDueDate } = initializeDueDateSectionHooks({
+    setAutoSaveVisible,
+    onTaskUpdate,
+  });
 
   const clearDueTime = async () => {
     setDueTimeValue('dueTime', null);
@@ -124,4 +130,4 @@ const DueTimeSection = ({
   );
 };
 
-export default DueTimeSection;
+export default DueTimeInput;

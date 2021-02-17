@@ -9,16 +9,16 @@ import { RobotoTypography } from 'styles/theme';
 
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import palette from 'styles/palette';
-import DropdownInput from './NewTaskDrawer.DropdownInput';
-import { AdornmentClear } from './NewTaskDrawer.Styled';
-import { DueDateLabelContainer } from './NewTaskDrawer.DueDateSection.Styled';
-import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
+import DropdownInput from '../NewTaskDrawer.DropdownInput';
+import { AdornmentClear } from '../NewTaskDrawer.Styled';
+import { DueDateLabelContainer } from './styled';
+import initializeDueDateSectionHooks from './hooks';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YY';
 const SET_DATE_VALUE = 'set-date';
 
-const DueDateSection = ({
+const DueDateInput = ({
   selectedTask,
   isOverDue,
   setAutoSaveVisible,
@@ -206,4 +206,4 @@ const DueDateSection = ({
   );
 };
 
-export default DueDateSection;
+export default DueDateInput;
