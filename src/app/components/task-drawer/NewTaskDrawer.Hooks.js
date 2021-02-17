@@ -42,13 +42,12 @@ import { noop } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
-import { getFormattedLabels } from './NewTaskDrawer.Utilities';
+import {
+  getFormattedLabels,
+  TIME_12H_FORMAT,
+  DATE_ISO_FORMAT,
+} from './NewTaskDrawer.Utilities';
 
-// const REQUIRED_MESSAGE = 'This field is required';
-// const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
-const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-const TIME_12H_FORMAT = 'hh:mm A';
-// const TIME_24H_FORMAT = 'HH:mm';
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
 const onSubmit = ({
@@ -228,8 +227,6 @@ const initializeTaskDrawerHooks = ({
 
   const [isSaving, setSaving] = useState(false);
 
-  const dueTimeReference = useRef();
-
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
@@ -374,27 +371,10 @@ const initializeTaskDrawerHooks = ({
       selectedTask?.assignedTo?.userIdentifier ?? null,
     );
     const dueDateMoment = moment(selectedTask?.dueDate ?? null);
-
     if (dueDateMoment.isValid()) {
       setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
-      const dueTimeValue = dueDateMoment.format(TIME_12H_FORMAT);
-      if (dueTimeValue === '00:00 AM' || dueTimeValue === '12:00 AM') {
-        setValue('dueTime', null);
-        if (dueTimeReference && dueTimeReference.current) {
-          dueTimeReference.current.value = null;
-        }
-      } else {
-        setValue('dueTime', dueTimeValue);
-        if (dueTimeReference && dueTimeReference.current) {
-          dueTimeReference.current.value = dueTimeValue;
-        }
-      }
     } else {
       setValue('dueDate', null);
-      setValue('dueTime', null);
-      if (dueTimeReference && dueTimeReference.current) {
-        dueTimeReference.current.value = null;
-      }
     }
 
     setValue('priority', selectedTask?.priority ?? null);
@@ -717,7 +697,6 @@ const initializeTaskDrawerHooks = ({
     members,
     isFetchingMembers,
     clearSelectedPatient,
-    dueTimeReference,
     onPatientInputChange,
     patientInputReference,
     patientInputValue,

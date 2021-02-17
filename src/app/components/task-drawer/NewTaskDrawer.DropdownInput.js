@@ -17,7 +17,7 @@ import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 
 import useBoolean from 'hooks/useBoolean';
-import InputPopover from './NewTaskDrawer.InputPopover';
+import InputPopover from './InputPopover/InputPopover';
 import TextInput from './NewTaskDrawer.TextInput';
 import { AdornmentContainer } from './NewTaskDrawer.Styled';
 

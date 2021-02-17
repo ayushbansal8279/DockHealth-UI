@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import InputMask from 'react-input-mask';
+import { fontWeights } from 'styles/font';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
@@ -58,7 +59,8 @@ export const DueTimeInputMask = styled(
 )`
   && {
     border: none;
-    color: ${({ isOverDue }) => (isOverDue ? 'red' : palette.mediumGrey)};
+    color: ${({ isOverDue }) =>
+      isOverDue ? palette.oPlusRed : palette.mediumGrey};
     font-family: ${FONT_FAMILY};
     font-weight: bold;
     width: 90%;
@@ -68,4 +70,24 @@ export const DueTimeInputMask = styled(
       outline: none;
     }
   }
+`;
+
+export const TimeOptionsContainer = styled.div`
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  font-family: 'Roboto Condensed', sans-serif;
+`;
+
+export const TimeOptionButton = styled.button`
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  text-align: left;
+  font-family: inherit;
+  color: ${palette.coolGrey1};
+  background-color: ${({ isActive }) =>
+    isActive ? palette.coolGrey4 : 'transparent'};
+
+  ${({ isSelected }) => isSelected && `font-weight: ${fontWeights.bold};`}
 `;

@@ -16,7 +16,7 @@ const initializeDueDateSectionHooks = ({
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
   const saveDueDate = useCallback(
-    ({ updatedDueDate, updatedDueTime }) => {
+    async ({ updatedDueDate, updatedDueTime }) => {
       let updatedDueTimeValue = updatedDueTime;
       if (updatedDueTimeValue === '__:__ __') {
         updatedDueTimeValue = '';
@@ -35,7 +35,7 @@ const initializeDueDateSectionHooks = ({
               )
             : dueDate;
 
-        updateDueDate(
+        return updateDueDate(
           selectedTask,
           dueDateTime,
           false,
@@ -43,6 +43,7 @@ const initializeDueDateSectionHooks = ({
           .then(task => {
             setAutoSaveVisible();
             onTaskUpdate(task);
+            return task;
           })
           .catch(() => {
             dispatch(
@@ -53,6 +54,7 @@ const initializeDueDateSectionHooks = ({
             );
           });
       }
+      return Promise.reject();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedTaskIdentifier, selectedTask, onTaskUpdate],

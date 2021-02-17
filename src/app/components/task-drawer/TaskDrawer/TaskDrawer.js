@@ -3,7 +3,6 @@
 import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { FormContext } from 'react-hook-form';
-import moment from 'moment';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
@@ -99,7 +98,6 @@ const TaskDrawer = ({
     setAutoSaveVisible,
     members,
     clearSelectedPatient,
-    dueTimeReference,
     onPatientInputChange,
     patientInputReference,
     refreshMembers,
@@ -139,7 +137,7 @@ const TaskDrawer = ({
     hideTour,
   });
 
-  const { handleSubmit, setValue, watch } = formMethods;
+  const { handleSubmit, setValue } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({
@@ -147,19 +145,6 @@ const TaskDrawer = ({
     isFetchingMembers: true,
     currentUser,
   });
-
-  const dueDateValue = watch('dueDate');
-  const dueTimeValue = dueTimeReference?.current?.value;
-
-  const isDueTimeEmpty = !(
-    dueTimeReference?.current?.value &&
-    dueTimeReference?.current?.value !== '' &&
-    dueTimeReference?.current?.value !== '__:__ __'
-  );
-  const isOverDue =
-    dueDateValue && !isDueTimeEmpty
-      ? moment(`${dueDateValue} ${dueTimeValue}`).isBefore(moment())
-      : dueDateValue && moment(dueDateValue).isBefore(moment().startOf('day'));
 
   const {
     assignedToInputReference,
@@ -425,21 +410,15 @@ const TaskDrawer = ({
                 <div ref={dueDateSectionReference}>
                   <DueDateInput
                     selectedTask={selectedTask}
-                    isOverDue={isOverDue}
                     setAutoSaveVisible={setAutoSaveVisible}
                     onTaskUpdate={onTaskUpdate}
-                    dueTimeReference={dueTimeReference}
                   />
                 </div>
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
-                <HiddenFieldContainer visible={dueDateValue}>
+                <HiddenFieldContainer visible={selectedTask?.dueDate}>
                   <DueTimeInput
-                    dueTimeReference={dueTimeReference}
-                    selectedTask={selectedTask}
-                    dueDateValue={dueDateValue}
-                    isOverDue={isOverDue}
-                    setDueTimeValue={setValue}
+                    dueDate={selectedTask?.dueDate}
                     onTaskUpdate={onTaskUpdate}
                     setAutoSaveVisible={setAutoSaveVisible}
                   />

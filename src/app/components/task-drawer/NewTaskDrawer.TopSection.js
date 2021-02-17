@@ -7,7 +7,7 @@ import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
-import InputPopover from './NewTaskDrawer.InputPopover';
+import InputPopover from './InputPopover/InputPopover';
 import {
   FiledInSelect,
   StyledList,
