@@ -12,6 +12,7 @@ import * as AlertActions from 'alert/actions';
 import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
 import { isDueDateOverdue } from 'helpers/task-helpers';
+import { isOutsideScrollView } from 'helpers/scroll-helper';
 import initializeDueDateSectionHooks from './hooks';
 import { AdornmentClear } from '../NewTaskDrawer.Styled';
 import InputPopover from '../InputPopover/InputPopover';
@@ -45,10 +46,13 @@ function generateTimeOptions() {
 }
 
 const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
-  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
+  const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
+    false,
+  );
   const inputWrapperReference = useRef(null);
+  const optionsContainerReference = useRef(null);
   const [options, setOptions] = useState([]);
-  const [activeElementIndex, setActiveElementIndex] = useState(0);
+  const [activeElementIndex, setActiveElementIndex] = useState(null);
 
   const DUE_TIME_FIELD_NAME = 'dueTime';
 
@@ -103,74 +107,166 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
     onTaskUpdate,
   });
 
-  const clearDueTime = async () => {
-    setValue(DUE_TIME_FIELD_NAME, '');
-    try {
-      clearError(DUE_TIME_FIELD_NAME);
-      await saveDueDate({
-        updatedDueDate: dueDateValue,
-        updatedDueTime: '',
-      });
-      setAutoSaveVisible();
-    } catch {
-      dispatch(
-        AlertActions.showGlobalAlert(
-          'Error updating due date and time, please try again later',
-          'error',
-        ),
-      );
-    }
-  };
-
   const handleSaveDueTime = useCallback(
-    (value, event) => {
-      // eslint-disable-next-line no-unused-expressions
-      event?.stopPropagation();
-      // eslint-disable-next-line no-unused-expressions
-      event?.preventDefault();
-
+    value => {
       if (
         !selectedTaskDueDateMoment.isValid() ||
         value !== selectedTaskDueDateMoment.format(TIME_12H_FORMAT)
       ) {
-        if (!isDueTimeValid(value)) {
+        if (!isDueTimeValid(value) && !isDueTimeInputEmpty(value)) {
           setError(
             DUE_TIME_FIELD_NAME,
             'manual',
             'Time must be between 12:00 am and 11:59 pm and include am/pm',
           );
+          unsetIsPopoverOpen();
           return;
         }
         clearError(DUE_TIME_FIELD_NAME);
         setValue(DUE_TIME_FIELD_NAME, value);
+        setActiveElementIndex(null);
         saveDueDate({
           updatedDueDate: dueDateValue,
           updatedDueTime: value,
-        });
+        })
+          .then(() => {})
+          .catch(() => {
+            dispatch(
+              AlertActions.showGlobalErrorAlert(
+                'Error updating due date and time, please try again later',
+              ),
+            );
+          });
       }
-      unsetFocused();
-      // eslint-disable-next-line no-unused-expressions
-      inputWrapperReference.current?.querySelector('input')?.blur();
+      unsetIsPopoverOpen();
     },
     [
       clearError,
+      dispatch,
       dueDateValue,
       saveDueDate,
       selectedTaskDueDateMoment,
       setError,
       setValue,
-      unsetFocused,
+      unsetIsPopoverOpen,
     ],
   );
 
-  const handleBlurEvent = useCallback(() => {
+  const handleInputBlur = useCallback(() => {
     if (isDueTimeInputEmpty(dueTimeValue) || !isDueTimeValid(dueTimeValue)) {
       resetDueTimeInput();
     } else {
       handleSaveDueTime(dueTimeValue);
     }
-    unsetFocused();
-  }, [dueTimeValue, handleSaveDueTime, resetDueTimeInput, unsetFocused]);
+    unsetIsPopoverOpen();
+  }, [dueTimeValue, handleSaveDueTime, resetDueTimeInput, unsetIsPopoverOpen]);
+
+  const handleInputKeyDown = useCallback(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
+    event => {
+      switch (event.key) {
+        case 'Escape':
+          // eslint-disable-next-line no-unused-expressions
+          event.target?.blur();
+          break;
+
+        case 'Enter':
+          event.preventDefault();
+          event.stopPropagation();
+          handleSaveDueTime(
+            activeElementIndex !== null && activeElementIndex !== undefined
+              ? options[activeElementIndex]
+              : dueTimeValue,
+          );
+          break;
+
+        case 'ArrowDown':
+          event.preventDefault();
+          event.stopPropagation();
+          setActiveElementIndex(selectedIndex => {
+            const newIndex =
+              selectedIndex === options.length - 1 || selectedIndex == null
+                ? 0
+                : selectedIndex + 1;
+
+            if (
+              optionsContainerReference.current?.children?.[newIndex] &&
+              isOutsideScrollView(
+                optionsContainerReference.current,
+                optionsContainerReference.current?.children?.[newIndex],
+              )
+            ) {
+              optionsContainerReference.current.children[
+                newIndex
+              ].scrollIntoView(false);
+            }
+            return newIndex;
+          });
+          break;
+
+        case 'ArrowUp':
+          event.preventDefault();
+          event.stopPropagation();
+          setActiveElementIndex(selectedIndex => {
+            const newIndex =
+              selectedIndex === 0 || selectedIndex === null
+                ? options.length - 1
+                : selectedIndex - 1;
+            if (
+              optionsContainerReference.current?.children?.[newIndex] &&
+              isOutsideScrollView(
+                optionsContainerReference.current,
+                optionsContainerReference.current?.children?.[newIndex],
+              )
+            ) {
+              optionsContainerReference.current.scrollTop =
+                optionsContainerReference.current?.children?.[
+                  newIndex
+                ].offsetTop;
+            }
+            return newIndex;
+          });
+          break;
+
+        default:
+          break;
+      }
+    },
+    [activeElementIndex, dueTimeValue, handleSaveDueTime, options],
+  );
+
+  const handleInputChange = useCallback(
+    event => {
+      const newValue = event.target?.value?.toLowerCase();
+      if (errors.dueTime) clearError(DUE_TIME_FIELD_NAME);
+      if (!isPopoverOpen) setIsPopoverOpen();
+      setValue(DUE_TIME_FIELD_NAME, newValue);
+      const foundOptionIndex = !isDueTimeInputEmpty(newValue)
+        ? options.findIndex(option => option.startsWith(newValue.split('_')[0]))
+        : -1;
+      setActiveElementIndex(foundOptionIndex === -1 ? null : foundOptionIndex);
+      if (
+        foundOptionIndex !== -1 &&
+        isOutsideScrollView(
+          optionsContainerReference.current,
+          optionsContainerReference.current?.children?.[foundOptionIndex],
+        )
+      ) {
+        optionsContainerReference.current.scrollTop =
+          optionsContainerReference.current?.children?.[
+            foundOptionIndex
+          ].offsetTop;
+      }
+    },
+    [
+      clearError,
+      errors.dueTime,
+      isPopoverOpen,
+      options,
+      setIsPopoverOpen,
+      setValue,
+    ],
+  );
 
   return (
     <div>
@@ -193,21 +289,15 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
           value={dueTimeValue}
           placeholder="00:00 am"
           alwaysShowMask
-          onBlur={handleBlurEvent}
-          onFocus={setFocused}
-          onChange={event => {
-            if (errors.dueTime) clearError(DUE_TIME_FIELD_NAME);
-            setValue(DUE_TIME_FIELD_NAME, event.target?.value?.toLowerCase());
-          }}
-          onKeyDown={event =>
-            event.key === 'Enter' && handleSaveDueTime(dueTimeValue, event)
-          }
+          onBlur={handleInputBlur}
+          onFocus={setIsPopoverOpen}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
           isOverDue={isDueDateOverdue(dueDate)}
-          isFocus={isFocused}
           autocomplete="off"
         />
         <AdornmentClear
-          onClick={clearDueTime}
+          onClick={() => handleSaveDueTime('')}
           style={{
             marginLeft: '20px',
             marginBottom: '2px',
@@ -216,17 +306,19 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
       </DueTimeInputMaskContainer>
       <InputPopover
         anchorElement={inputWrapperReference}
-        isPopoverOpen={isFocused}
-        closePopover={unsetFocused}
+        isPopoverOpen={isPopoverOpen}
+        closePopover={unsetIsPopoverOpen}
       >
-        <TimeOptionsContainer>
+        <TimeOptionsContainer ref={optionsContainerReference}>
           {options.map((option, index) => (
             <TimeOptionButton
               key={option}
               type="button"
-              onMouseDown={() => handleSaveDueTime(option)}
+              onMouseDown={() => setValue(DUE_TIME_FIELD_NAME, option)}
               onMouseEnter={() => setActiveElementIndex(index)}
-              isSelected={option === dueTimeValue}
+              isSelected={
+                option === selectedTaskDueDateMoment.format(TIME_12H_FORMAT)
+              }
               isActive={index === activeElementIndex}
               disabled={option === dueTimeValue}
             >
