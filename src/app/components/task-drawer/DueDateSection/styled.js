@@ -88,6 +88,8 @@ export const TimeOptionButton = styled.button`
   color: ${palette.coolGrey1};
   background-color: ${({ isActive }) =>
     isActive ? palette.coolGrey4 : 'transparent'};
+  font-weight: ${({ isActive }) =>
+    isActive ? fontWeights.bold : fontWeights.regular};
 
   ${({ isSelected }) => isSelected && `font-weight: ${fontWeights.bold};`}
 `;
