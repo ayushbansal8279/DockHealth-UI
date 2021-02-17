@@ -446,7 +446,7 @@ function* doRedirectToParentTask({
   try {
     yield call(
       history.push,
-      `tasks/${taskListIdentifier}/${taskStatus}/${taskIdentifer}`,
+      `/core/tasks/${taskListIdentifier}/${taskStatus}/${taskIdentifer}`,
     );
   } catch (error) {
     console.error(error);
