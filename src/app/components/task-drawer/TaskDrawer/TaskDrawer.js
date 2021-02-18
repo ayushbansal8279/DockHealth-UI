@@ -58,8 +58,8 @@ import {
   getCompletedByLabel,
 } from '../NewTaskDrawer.Utilities';
 import existingUserTaskDrawerTourHooks from '../NewTaskDrawer.ExistingUserTourHooks';
-import NewTaskDrawerSubtasks from '../NewTaskDrawerSubtasks/NewTaskDrawerSubtasks';
-import NewTaskDrawerSelect from '../NewTaskDrawerSelect/NewTaskDrawerSelect';
+import SubtasksSection from '../SubtasksSection/SubtasksSection';
+import SelectDropdown from '../SelectDropdown/SelectDropdown';
 
 const TaskDrawer = ({
   isInbox,
@@ -313,7 +313,7 @@ const TaskDrawer = ({
                 </Grid>
               )}
               <Grid item xs={6} style={styleLeftColumn}>
-                <NewTaskDrawerSelect
+                <SelectDropdown
                   ref={patientInputReference}
                   name="patientIdentifier"
                   label="Patient"
@@ -458,7 +458,7 @@ const TaskDrawer = ({
               </Grid>
               {selectedTask && !selectedTask.parentTaskIdentifier && (
                 <Grid item xs={12}>
-                  <NewTaskDrawerSubtasks
+                  <SubtasksSection
                     subtasks={selectedTask.subtasks}
                     subTasksCount={selectedTask.subTasksCount}
                     currentUser={currentUser}

@@ -1,10 +1,10 @@
 import React from 'react';
-import NewTaskDrawerSubtask from '../NewTaskDrawerSubtask/NewTaskDrawerSubtask';
-import NewTaskDrawerSubtasksLoader from '../NewTaskDrawerSubtasksLoader/NewTaskDrawerSubtasksLoader';
-import NewTaskDrawerQuickAddSubtask from './NewTaskDrawerQuickAddSubtask';
+import Subtask from '../Subtask/Subtask';
+import SubtasksLoader from '../SubtasksLoader/SubtasksLoader';
+import QuickAddSubtask from './QuickAddSubtask';
 import { Container, Title } from './styled';
 
-const NewTaskDrawerSubtasks = ({
+const SubtasksSection = ({
   subtasks,
   subTasksCount,
   currentUser,
@@ -15,11 +15,11 @@ const NewTaskDrawerSubtasks = ({
     <Container>
       <Title>Subtasks</Title>
       {subTasksCount > 0 && (!subtasks || subtasks.length === 0) ? (
-        <NewTaskDrawerSubtasksLoader rows={subTasksCount || 4} />
+        <SubtasksLoader rows={subTasksCount || 4} />
       ) : (
         <>
           {subtasks?.map(subtask => (
-            <NewTaskDrawerSubtask
+            <Subtask
               key={subtask.taskIdentifier}
               subtask={subtask}
               currentUser={currentUser}
@@ -27,7 +27,7 @@ const NewTaskDrawerSubtasks = ({
           ))}
         </>
       )}
-      <NewTaskDrawerQuickAddSubtask
+      <QuickAddSubtask
         taskListIdentifier={taskListIdentifier}
         onQuickAddTask={onQuickAddTask}
       />
@@ -35,4 +35,4 @@ const NewTaskDrawerSubtasks = ({
   );
 };
 
-export default NewTaskDrawerSubtasks;
+export default SubtasksSection;

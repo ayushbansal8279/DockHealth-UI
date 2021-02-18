@@ -24,7 +24,7 @@ import {
 import TextInput from '../NewTaskDrawer.TextInput';
 import { AdornmentClear } from '../NewTaskDrawer.Styled';
 
-const NewTaskDrawerSelect = React.forwardRef(
+const SelectDropdown = React.forwardRef(
   (
     {
       name,
@@ -266,7 +266,7 @@ const NewTaskDrawerSelect = React.forwardRef(
   },
 );
 
-NewTaskDrawerSelect.propTypes = {
+SelectDropdown.propTypes = {
   name: string.isRequired,
   label: string.isRequired,
   placeholder: string,
@@ -294,7 +294,7 @@ NewTaskDrawerSelect.propTypes = {
   onAddItemClick: func,
 };
 
-NewTaskDrawerSelect.defaultProps = {
+SelectDropdown.defaultProps = {
   placeholder: null,
   disabled: false,
   startAdornment: null,
@@ -304,4 +304,4 @@ NewTaskDrawerSelect.defaultProps = {
   addItemLabel: null,
   onAddItemClick: null,
 };
-export default NewTaskDrawerSelect;
+export default SelectDropdown;

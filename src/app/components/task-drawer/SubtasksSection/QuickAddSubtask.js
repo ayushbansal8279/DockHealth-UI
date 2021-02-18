@@ -11,7 +11,7 @@ import {
   QuickAddHint,
 } from './styled';
 
-const NewTaskDrawerQuickAddSubtask = ({
+const QuickAddSubtask = ({
   onQuickAddTask,
   onFocus,
   onBlur,
@@ -107,4 +107,4 @@ const NewTaskDrawerQuickAddSubtask = ({
   );
 };
 
-export default NewTaskDrawerQuickAddSubtask;
+export default QuickAddSubtask;

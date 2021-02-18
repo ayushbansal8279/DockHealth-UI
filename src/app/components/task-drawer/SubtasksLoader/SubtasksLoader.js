@@ -8,7 +8,7 @@ import {
   CircleLoaderElement,
 } from './styled';
 
-const NewTaskDrawerSubtasksLoader = ({ rows }) => {
+const SubtasksLoader = ({ rows }) => {
   return (
     <div>
       <Spacing vertical={2} />
@@ -25,4 +25,4 @@ const NewTaskDrawerSubtasksLoader = ({ rows }) => {
   );
 };
 
-export default NewTaskDrawerSubtasksLoader;
+export default SubtasksLoader;

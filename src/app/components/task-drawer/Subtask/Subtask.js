@@ -52,7 +52,7 @@ const DUE_DATE_PICKER_OPTIONS = [
   },
 ];
 
-const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
+const Subtask = ({ subtask, currentUser }) => {
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -250,4 +250,4 @@ const NewTaskDrawerSubtask = ({ subtask, currentUser }) => {
   );
 };
 
-export default NewTaskDrawerSubtask;
+export default Subtask;
