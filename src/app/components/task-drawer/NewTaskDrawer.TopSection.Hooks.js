@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useRef, useState } from 'react';
 import useBoolean from 'hooks/useBoolean';
+import { useDispatch } from 'react-redux';
 
 const initializeTaskDrawerTopSectionHooks = ({
   modalActions,
@@ -10,6 +11,8 @@ const initializeTaskDrawerTopSectionHooks = ({
   selectedTask,
 }) => {
   const filedInInputReference = useRef(null);
+  const dispatch = useDispatch();
+
   const [
     isFiledInPopoverOpen,
     openFiledInPopover,
@@ -108,6 +111,8 @@ const initializeTaskDrawerTopSectionHooks = ({
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
+
+    dispatch,
   };
 };
 

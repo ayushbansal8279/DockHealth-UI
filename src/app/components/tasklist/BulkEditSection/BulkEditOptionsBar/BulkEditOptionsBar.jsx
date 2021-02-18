@@ -376,7 +376,7 @@ const BulkEditOptionsBar = ({
         confirmAction: anyTaskIsIncomplete
           ? selectedDestination =>
               dispatch(
-                openModal('BulkMoveTasks', {
+                openModal('MoveTasksWithSubtasks', {
                   confirm: () => standardConfirmAction(selectedDestination),
                 }),
               )

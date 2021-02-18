@@ -21,7 +21,7 @@ const PrimaryText = styled.span`
   font-weight: 400;
 `;
 
-const BulkMoveTasksModal = ({ closeModal, confirm }) => {
+const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -71,4 +71,4 @@ const BulkMoveTasksModal = ({ closeModal, confirm }) => {
   );
 };
 
-export default BulkMoveTasksModal;
+export default MoveTasksWithSubtasksModal;

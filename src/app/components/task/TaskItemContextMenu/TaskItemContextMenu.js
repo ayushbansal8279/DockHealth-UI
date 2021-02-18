@@ -149,27 +149,47 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
   }, []);
 
   const handleMoveTask = useCallback(() => {
+    const hasSubtasks = task.subTasksCount !== 0;
+
+    const confirmAction = ({
+      taskListIdentifier,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    }) =>
+      dispatch(
+        moveTask(
+          task,
+          { taskListIdentifier },
+          taskGroupIdentifier || null,
+          parentTaskIdentifier || null,
+        ),
+      );
+
+    const openMoveTasksWithSubtasksModal = ({
+      taskListIdentifier,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    }) =>
+      dispatch(
+        openModal('MoveTasksWithSubtasks', {
+          confirm: () =>
+            confirmAction({
+              taskListIdentifier,
+              taskGroupIdentifier,
+              parentTaskIdentifier,
+            }),
+        }),
+      );
+
     dispatch(
       openModal('SelectTaskDestination', {
         tasksToMove: [task],
         confirmText: 'Move',
-        confirm: ({
-          taskListIdentifier,
-          taskGroupIdentifier,
-          parentTaskIdentifier,
-        }) => {
-          dispatch(
-            moveTask(
-              task,
-              { taskListIdentifier },
-              taskGroupIdentifier || null,
-              parentTaskIdentifier || null,
-            ),
-          );
-        },
+        confirm: hasSubtasks ? openMoveTasksWithSubtasksModal : confirmAction,
+        preventClosingModal: hasSubtasks,
       }),
     );
-  }, []);
+  }, [task]);
 
   useEffect(() => {
     checkMenuPosition();

@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef } from 'react';
+import { openModal } from 'modal/actions';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
 import Spacing from 'components/common/Spacing';
@@ -47,21 +48,36 @@ const renderTaskList = ({
   closeTaskDrawer,
   selectedTaskIdentifier,
   selectedTaskListName,
+  hasSubtasks,
+  dispatch,
 }) => taskList => {
   const { taskListIdentifier, listName } = taskList;
+
+  const changeFiledInList = () => {
+    setValue('newTaskListId', taskListIdentifier);
+    onFiledInInputChange(listName);
+
+    if (!hasSubtasks) closePopover();
+
+    if (selectedTaskIdentifier) {
+      reFileTask({ newTaskList: taskList });
+      closeTaskDrawer();
+    }
+  };
+
+  const openMoveModal = () => {
+    closePopover();
+    dispatch(
+      openModal('MoveTasksWithSubtasks', {
+        confirm: changeFiledInList,
+      }),
+    );
+  };
 
   return (
     <ListItem
       key={taskListIdentifier}
-      onClick={() => {
-        setValue('newTaskListId', taskListIdentifier);
-        onFiledInInputChange(listName);
-        closePopover();
-        if (selectedTaskIdentifier) {
-          reFileTask({ newTaskList: taskList });
-          closeTaskDrawer();
-        }
-      }}
+      onClick={hasSubtasks ? openMoveModal : changeFiledInList}
       button
     >
       <CondensedH4
@@ -94,6 +110,7 @@ const TopSection = ({
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskStatus = selectedTask?.status;
   const isCompleted = selectedTaskStatus === 'COMPLETE';
+  const hasSubtasks = selectedTask?.subTasksCount !== 0;
 
   const {
     filedInInputReference,
@@ -109,6 +126,7 @@ const TopSection = ({
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
+    dispatch,
   } = initializeTaskDrawerTopSectionHooks({
     modalActions,
     onDelete,
@@ -191,6 +209,8 @@ const TopSection = ({
                       closeTaskDrawer,
                       selectedTaskIdentifier,
                       selectedTaskListName: taskList?.listName,
+                      hasSubtasks,
+                      dispatch,
                     }),
                   )}
                 </StyledList>
