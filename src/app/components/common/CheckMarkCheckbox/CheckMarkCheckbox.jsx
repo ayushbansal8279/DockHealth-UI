@@ -19,7 +19,7 @@ const getCheckboxSizeVariables = size => ({
   lineOffset: size / 6,
 });
 
-const Checkbox = ({
+const CheckMarkCheckbox = ({
   checked,
   onChange,
   onClick = () => {},
@@ -80,4 +80,4 @@ const Checkbox = ({
   );
 };
 
-export default Checkbox;
+export default CheckMarkCheckbox;

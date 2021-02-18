@@ -34,7 +34,7 @@ import { FocusDrawerFieldEnum } from 'components/task-drawer/NewTaskDrawer.Utili
 import Spacing from 'components/common/Spacing';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import {
@@ -430,7 +430,7 @@ const TaskItem = ({
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
           {bulkEditTaskActions && (
             <BulkContainer>
-              <BulkCheckbox
+              <Checkbox
                 isChecked={isCheckedByBulkEdit}
                 onClick={() =>
                   bulkEditTaskActions?.onClickBulkEditTask(

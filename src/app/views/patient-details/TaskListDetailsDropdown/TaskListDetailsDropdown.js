@@ -7,7 +7,7 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 
 import listSectionSavedState, {
   FULL_VIEW,
@@ -157,7 +157,7 @@ const TaskListDetailsDropdown = ({
         <SortHeaderRow>
           {bunchBulkEditTaskActions && (
             <BulkContainer>
-              <BulkCheckbox
+              <Checkbox
                 isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
                   tasks,
                   subtasks,

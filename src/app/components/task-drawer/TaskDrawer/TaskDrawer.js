@@ -60,6 +60,7 @@ import {
 import existingUserTaskDrawerTourHooks from '../NewTaskDrawer.ExistingUserTourHooks';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
+import ReminderSection from '../ReminderSection/ReminderSection';
 
 const TaskDrawer = ({
   isInbox,
@@ -423,6 +424,14 @@ const TaskDrawer = ({
                     setAutoSaveVisible={setAutoSaveVisible}
                   />
                 </HiddenFieldContainer>
+              </Grid>
+              <Grid item xs={12} style={styleFullRow}>
+                <ReminderSection
+                  reminderType={selectedTask?.reminderType}
+                  reminderTime={selectedTask?.reminderTime}
+                  dueDate={selectedTask?.dueDate}
+                  isDisabled={!selectedTask?.dueDate}
+                />
               </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <PrioritySection

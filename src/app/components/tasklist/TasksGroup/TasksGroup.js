@@ -29,7 +29,7 @@ import {
 } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import BulkCheckbox from 'components/common/BulkCheckbox/BulkCheckbox';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
 import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
@@ -263,7 +263,7 @@ const TasksGroup = ({
           <SortHeaderRow>
             {bunchBulkEditTaskActions && (
               <BulkContainer>
-                <BulkCheckbox
+                <Checkbox
                   isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
                     tasks,
                     subtasks,

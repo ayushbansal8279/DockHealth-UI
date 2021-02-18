@@ -1,8 +1,9 @@
 import React from 'react';
-import { BulkCheckboxInput, Icon } from './styled';
+import { CheckboxInput, Icon } from './styled';
 
-const BulkCheckbox = ({ onClick, isChecked, isDisabled }) => (
-  <BulkCheckboxInput
+const Checkbox = ({ onClick, isChecked, isDisabled }) => (
+  <CheckboxInput
+    type="button"
     onClick={onClick}
     isChecked={isChecked}
     isDisabled={isDisabled}
@@ -10,7 +11,7 @@ const BulkCheckbox = ({ onClick, isChecked, isDisabled }) => (
     <Icon width="8" height="8" viewBox="0 0 8 8">
       <rect width="8" height="8" rx="2" fill="#00A2E5" />
     </Icon>
-  </BulkCheckboxInput>
+  </CheckboxInput>
 );
 
-export default BulkCheckbox;
+export default Checkbox;
