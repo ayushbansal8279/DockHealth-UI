@@ -1,4 +1,6 @@
+import React from 'react';
 import moment from 'moment';
+import { ReminderTypeSelectOption } from './styled';
 
 export const REMINDER_TYPE_FIELD_NAME = 'reminderType';
 export const REMINDER_TIME_FIELD_NAME = 'reminderTime';
@@ -39,4 +41,22 @@ export function getDefaultReminderTime(dueDate) {
   }
 
   return '09:00 AM';
+}
+
+export function generateReminderTypeSelectOptions() {
+  return Object.values(ReminderType)
+    .filter(value => value !== ReminderType.NONE)
+    .map(value => {
+      const label = getReminderTypeLabel(value);
+      return {
+        key: value,
+        label: isHovered => (
+          <ReminderTypeSelectOption isActive={isHovered}>
+            {label}
+          </ReminderTypeSelectOption>
+        ),
+        value,
+        displayLabel: label,
+      };
+    });
 }

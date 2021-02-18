@@ -54,7 +54,6 @@ const TextInput = React.forwardRef(
             className,
             hasError ? classes.error : '',
           ].join(' ')}
-          // style={{borderBottomColor: hasError?'#ff0000':'#c1ccda'}}
           label={
             <>
               <span>{label?.toUpperCase()}</span>
@@ -76,9 +75,6 @@ const TextInput = React.forwardRef(
             ...InputProps,
           }}
           fullWidth
-          // InputLabelProps={{
-          //   shrink: true,
-          // }}
           InputLabelProps={InputLabelProps}
           onFocus={event => {
             onFocus(event);

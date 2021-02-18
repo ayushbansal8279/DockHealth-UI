@@ -19,11 +19,6 @@ import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import InputPopover from './InputPopover/InputPopover';
 import TextInput from './NewTaskDrawer.TextInput';
-import { AdornmentContainer } from './NewTaskDrawer.Styled';
-
-const DropdownInputContainer = styled.div`
-  width: 100%;
-`;
 
 const StyledButton = styled.button`
   display: block;
@@ -46,7 +41,9 @@ const DropdownInput = React.forwardRef(
       InputLabelProps,
       InputProps,
       inputProps,
-      selectOption,
+      textFieldClasses,
+      onSelect,
+      disabled,
     },
     reference,
   ) => {
@@ -78,31 +75,24 @@ const DropdownInput = React.forwardRef(
 
     const handleSelectOption = ({ value }) => {
       if (currentValue !== value) {
-        selectOption(value);
+        onSelect(value);
       }
-
-      // setTimeout(() => {
-      //   reference.current.querySelector('input').focus();
-      // }, 100);
     };
 
     const handleInputKeyDown = event => {
-      switch (event.keyCode) {
-        // esc key
-        case 27:
+      switch (event.key) {
+        case 'Escape':
           // eslint-disable-next-line no-unused-expressions
           reference.current?.querySelector('input').blur();
           break;
 
-        // enter key
-        case 13:
+        case 'Enter':
           event.preventDefault();
           event.stopPropagation();
           handleSelectOption(children[hoveredItem]);
           break;
 
-        // down arrow key
-        case 40:
+        case 'ArrowDown':
           event.preventDefault();
           event.stopPropagation();
           setHoveredItem(selectedItem =>
@@ -110,8 +100,7 @@ const DropdownInput = React.forwardRef(
           );
           break;
 
-        // up arrow key
-        case 38:
+        case 'ArrowUp':
           event.preventDefault();
           event.stopPropagation();
           setHoveredItem(selectedItem =>
@@ -125,7 +114,7 @@ const DropdownInput = React.forwardRef(
     };
 
     return (
-      <DropdownInputContainer>
+      <>
         <TextInput
           name={name}
           label={label}
@@ -136,19 +125,19 @@ const DropdownInput = React.forwardRef(
           }}
           InputProps={{
             ...InputProps,
-            startAdornment: !isPopoverOpen ? (
-              <AdornmentContainer>+</AdornmentContainer>
-            ) : null,
+            startAdornment: !isPopoverOpen ? InputProps?.startAdornment : null,
           }}
           inputProps={{
             readOnly: true,
             value: displayLabel,
             onKeyDown: handleInputKeyDown,
+            disabled,
             ...inputProps,
           }}
           ref={reference}
           className={className}
           required={required}
+          classes={textFieldClasses}
           onFocus={event => {
             openPopover();
             onFocus(event);
@@ -180,7 +169,7 @@ const DropdownInput = React.forwardRef(
             </StyledButton>
           ))}
         </InputPopover>
-      </DropdownInputContainer>
+      </>
     );
   },
 );
@@ -205,7 +194,8 @@ DropdownInput.propTypes = {
   inputProps: objectOf(any),
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
-  selectOption: func.isRequired,
+  onSelect: func.isRequired,
+  disabled: bool,
 };
 
 DropdownInput.defaultProps = {
@@ -219,6 +209,7 @@ DropdownInput.defaultProps = {
   inputProps: {},
   InputProps: {},
   InputLabelProps: {},
+  disabled: false,
 };
 
 export default DropdownInput;

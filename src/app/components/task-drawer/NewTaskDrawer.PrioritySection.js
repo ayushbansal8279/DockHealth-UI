@@ -13,7 +13,11 @@ import {
   PriorityFieldContainer,
   PriorityFlagContainer,
 } from './NewTaskDrawer.PrioritySection.Styled';
-import { EndAdornmentContainer, CondensedH4 } from './NewTaskDrawer.Styled';
+import {
+  EndAdornmentContainer,
+  CondensedH4,
+  AdornmentContainer,
+} from './NewTaskDrawer.Styled';
 
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
@@ -63,8 +67,9 @@ const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
               <SmallSwitchChevron color={palette.orangeJulius} />
             </EndAdornmentContainer>
           ),
+          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
-        selectOption={selectOption}
+        onSelect={selectOption}
       >
         {priorityOptions}
       </DropdownInput>

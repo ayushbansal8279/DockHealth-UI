@@ -11,7 +11,7 @@ import { isDueDateOverdue } from 'helpers/task-helpers';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import palette from 'styles/palette';
 import DropdownInput from '../NewTaskDrawer.DropdownInput';
-import { AdornmentClear } from '../NewTaskDrawer.Styled';
+import { AdornmentClear, AdornmentContainer } from '../NewTaskDrawer.Styled';
 import { DueDateLabelContainer } from './styled';
 import initializeDueDateSectionHooks from './hooks';
 
@@ -188,6 +188,7 @@ const DueDateInput = ({
           ) : (
             ''
           ),
+        startAdornment: <AdornmentContainer>+</AdornmentContainer>,
       }}
       inputProps={{
         value: currentDueDate
@@ -197,7 +198,7 @@ const DueDateInput = ({
           color: isDueDateOverdue(selectedTask?.dueDate) && palette.oPlusRed,
         },
       }}
-      selectOption={selectOption}
+      onSelect={selectOption}
       popoverStateArray={popoverStateArray}
     >
       {options}

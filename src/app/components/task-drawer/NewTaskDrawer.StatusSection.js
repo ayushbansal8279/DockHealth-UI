@@ -12,7 +12,11 @@ import {
   StatusFieldContainer,
   StatusFlagContainer,
 } from './NewTaskDrawer.StatusSection.Styled';
-import { EndAdornmentContainer, CondensedH4 } from './NewTaskDrawer.Styled';
+import {
+  EndAdornmentContainer,
+  CondensedH4,
+  AdornmentContainer,
+} from './NewTaskDrawer.Styled';
 
 const statusOptions = STATUSES.map(({ value, label, color }) => ({
   key: value,
@@ -64,8 +68,9 @@ const StatusSection = ({ setAutoSaveVisible, onTaskUpdate }) => {
               <SmallSwitchChevron color={palette.orangeJulius} />
             </EndAdornmentContainer>
           ),
+          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
-        selectOption={selectOption}
+        onSelect={selectOption}
       >
         {statusOptions}
       </DropdownInput>

@@ -1,16 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
-import ReminderSelect from '../ReminderSelect/ReminderSelect';
-import { ReminderContainer, Description } from './styled';
+import ArrowIcon from 'img/arrow';
+import {
+  ReminderContainer,
+  Description,
+  SelectArrowImg,
+  useReminderTypeInputStyles,
+  useReminderTypeTextFieldStyles,
+} from './styled';
 import {
   ReminderType,
   REMINDER_TYPE_FIELD_NAME,
   REMINDER_TIME_FIELD_NAME,
   getDefaultReminderTime,
-  getReminderTypeLabel,
+  generateReminderTypeSelectOptions,
 } from './helpers';
+import DropdownInput from '../NewTaskDrawer.DropdownInput';
 
 const ReminderSection = ({
   reminderType,
@@ -18,21 +25,15 @@ const ReminderSection = ({
   dueDate,
   isDisabled,
 }) => {
+  const reminderTypeDropdownReference = useRef(null);
   const { register, unregister, setValue, watch } = useFormContext();
   const [reminderTypeOptions, setReminderTypeOptions] = useState([]);
 
-  console.log('reminderType', reminderType);
-  console.log('reminderTime', reminderTime);
+  const reminderTypeInputClasses = useReminderTypeInputStyles();
+  const reminderTypeTextFieldClasses = useReminderTypeTextFieldStyles();
 
   useEffect(() => {
-    setReminderTypeOptions(() =>
-      Object.values(ReminderType)
-        .filter(value => value !== ReminderType.NONE)
-        .map(value => ({
-          label: getReminderTypeLabel(value),
-          value,
-        })),
-    );
+    setReminderTypeOptions(generateReminderTypeSelectOptions);
     register(REMINDER_TYPE_FIELD_NAME);
     register(REMINDER_TIME_FIELD_NAME);
 
@@ -72,12 +73,12 @@ const ReminderSection = ({
     [setValue],
   );
 
-  const handleSelectRemindeTime = useCallback(
-    value => {
-      setValue(REMINDER_TIME_FIELD_NAME, value);
-    },
-    [setValue],
-  );
+  // const handleSelectRemindeTime = useCallback(
+  //   value => {
+  //     setValue(REMINDER_TIME_FIELD_NAME, value);
+  //   },
+  //   [setValue],
+  // );
 
   return (
     <ReminderContainer isDisabled={isDisabled || !reminderIsOn}>
@@ -85,22 +86,24 @@ const ReminderSection = ({
       <Spacing horizontal={4} />
       <Description>Reminder</Description>
       <Spacing horizontal={4} />
-      <ReminderSelect
-        width={140}
-        readOnly
+      <DropdownInput
+        ref={reminderTypeDropdownReference}
+        name={REMINDER_TYPE_FIELD_NAME}
+        placeholder="--"
+        InputProps={{
+          endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
+          classes: reminderTypeInputClasses,
+        }}
+        textFieldClasses={reminderTypeTextFieldClasses}
         onSelect={handleSelectReminderType}
-        value={reminderTypeValue}
-        options={reminderTypeOptions}
-      />
+        disabled={!reminderTypeValue || reminderTypeValue === ReminderType.NONE}
+      >
+        {reminderTypeOptions}
+      </DropdownInput>
       <Spacing horizontal={3} />
       <Description>at</Description>
       <Spacing horizontal={3} />
-      <ReminderSelect
-        width={100}
-        value={reminderTimeValue}
-        onSelect={handleSelectRemindeTime}
-        options={[{ label: '09:00 am', value: '09:00 AM' }]}
-      />
+      <div>{reminderTimeValue}</div>
     </ReminderContainer>
   );
 };
