@@ -47,9 +47,8 @@ const initializeDueDateSectionHooks = ({
           })
           .catch(() => {
             dispatch(
-              AlertActions.showGlobalAlert(
+              AlertActions.showGlobalErrorAlert(
                 'Error updating due date, please try again later',
-                'error',
               ),
             );
           });
@@ -70,9 +69,8 @@ const initializeDueDateSectionHooks = ({
         setAutoSaveVisible();
       } catch {
         dispatch(
-          AlertActions.showGlobalAlert(
+          AlertActions.showGlobalErrorAlert(
             'Error updating due date, please try again later',
-            'error',
           ),
         );
       }

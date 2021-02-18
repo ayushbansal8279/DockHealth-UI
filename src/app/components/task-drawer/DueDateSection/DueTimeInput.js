@@ -74,6 +74,11 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
     dueDate,
   ]);
 
+  const { saveDueDate } = initializeDueDateSectionHooks({
+    setAutoSaveVisible,
+    onTaskUpdate,
+  });
+
   useEffect(() => {
     register(DUE_TIME_FIELD_NAME);
     setOptions(generateTimeOptions);
@@ -102,12 +107,7 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
     resetDueTimeInput();
   }, [resetDueTimeInput, dueDate]);
 
-  const { saveDueDate } = initializeDueDateSectionHooks({
-    setAutoSaveVisible,
-    onTaskUpdate,
-  });
-
-  const handleSaveDueTime = useCallback(
+  const saveDueTime = useCallback(
     value => {
       if (
         !selectedTaskDueDateMoment.isValid() ||
@@ -138,7 +138,6 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
             );
           });
       }
-      unsetIsPopoverOpen();
     },
     [
       clearError,
@@ -156,33 +155,31 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
     if (isDueTimeInputEmpty(dueTimeValue) || !isDueTimeValid(dueTimeValue)) {
       resetDueTimeInput();
     } else {
-      handleSaveDueTime(dueTimeValue);
+      saveDueTime(dueTimeValue);
     }
     unsetIsPopoverOpen();
-  }, [dueTimeValue, handleSaveDueTime, resetDueTimeInput, unsetIsPopoverOpen]);
+  }, [dueTimeValue, saveDueTime, resetDueTimeInput, unsetIsPopoverOpen]);
 
   const handleInputKeyDown = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     event => {
       switch (event.key) {
         case 'Escape':
-          // eslint-disable-next-line no-unused-expressions
-          event.target?.blur();
+          resetDueTimeInput();
+          unsetIsPopoverOpen();
+          setActiveElementIndex(null);
           break;
 
         case 'Enter':
           event.preventDefault();
           event.stopPropagation();
-          handleSaveDueTime(
-            activeElementIndex !== null && activeElementIndex !== undefined
-              ? options[activeElementIndex]
-              : dueTimeValue,
-          );
+          unsetIsPopoverOpen();
           break;
 
         case 'ArrowDown':
           event.preventDefault();
           event.stopPropagation();
+          if (!isPopoverOpen) setIsPopoverOpen();
           setActiveElementIndex(selectedIndex => {
             const newIndex =
               selectedIndex === options.length - 1 || selectedIndex == null
@@ -196,10 +193,12 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
                 optionsContainerReference.current?.children?.[newIndex],
               )
             ) {
+              // eslint-disable-next-line no-unused-expressions
               optionsContainerReference.current.children[
                 newIndex
-              ].scrollIntoView(false);
+              ]?.scrollIntoView(false);
             }
+            setValue(DUE_TIME_FIELD_NAME, options[newIndex]);
             return newIndex;
           });
           break;
@@ -207,6 +206,7 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
         case 'ArrowUp':
           event.preventDefault();
           event.stopPropagation();
+          if (!isPopoverOpen) setIsPopoverOpen();
           setActiveElementIndex(selectedIndex => {
             const newIndex =
               selectedIndex === 0 || selectedIndex === null
@@ -220,10 +220,10 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
               )
             ) {
               optionsContainerReference.current.scrollTop =
-                optionsContainerReference.current?.children?.[
-                  newIndex
-                ].offsetTop;
+                optionsContainerReference.current?.children?.[newIndex]
+                  ?.offsetTop || 0;
             }
+            setValue(DUE_TIME_FIELD_NAME, options[newIndex]);
             return newIndex;
           });
           break;
@@ -232,7 +232,14 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
           break;
       }
     },
-    [activeElementIndex, dueTimeValue, handleSaveDueTime, options],
+    [
+      isPopoverOpen,
+      options,
+      resetDueTimeInput,
+      setIsPopoverOpen,
+      setValue,
+      unsetIsPopoverOpen,
+    ],
   );
 
   const handleInputChange = useCallback(
@@ -297,7 +304,9 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
           autocomplete="off"
         />
         <AdornmentClear
-          onClick={() => handleSaveDueTime('')}
+          onClick={() => {
+            saveDueTime('');
+          }}
           style={{
             marginLeft: '20px',
             marginBottom: '2px',
@@ -314,13 +323,13 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
             <TimeOptionButton
               key={option}
               type="button"
-              onMouseDown={() => setValue(DUE_TIME_FIELD_NAME, option)}
+              onMouseDown={event => {
+                event.preventDefault();
+                setValue(DUE_TIME_FIELD_NAME, option);
+                unsetIsPopoverOpen();
+              }}
               onMouseEnter={() => setActiveElementIndex(index)}
-              isSelected={
-                option === selectedTaskDueDateMoment.format(TIME_12H_FORMAT)
-              }
               isActive={index === activeElementIndex}
-              disabled={option === dueTimeValue}
             >
               {option}
             </TimeOptionButton>
