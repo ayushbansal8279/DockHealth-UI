@@ -101,7 +101,7 @@ const getHiddenMembers = ({ hiddenMembers, activeUsersList }) =>
     } else if (!isEmpty(onlineActiveUser) && onlineActiveUser.idle) {
       userStatusLabel = 'idle';
     } else if (hiddenMember?.userStatus === 'INVITED') {
-      userStatusLabel = 'invite pending';
+      userStatusLabel = 'pending';
     }
 
     return (

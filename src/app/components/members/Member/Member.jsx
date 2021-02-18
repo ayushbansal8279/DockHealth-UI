@@ -63,10 +63,13 @@ const Member = React.forwardRef(
         <Tooltip
           title={
             <TooltipContent>
-              {isOnline && 'Logged in and currently active on Dock'}
-              {isIdle && 'Message for idle goes here'}
-              {isOffline && 'Not logged into Dock at this time'}
-              {isInvited && 'User is not active on Dock, invite is pending'}
+              <b>{member?.userName}</b>
+              <div>
+                {isOnline && 'online'}
+                {isIdle && 'idle'}
+                {isOffline && 'offline'}
+                {isInvited && 'invite pending'}
+              </div>
             </TooltipContent>
           }
           placement="bottom"
@@ -78,7 +81,7 @@ const Member = React.forwardRef(
             color={color || member?.bubbleColor}
             className={className}
             onClick={onClick}
-            isInactive={isInactive}
+            isInactive={isInactive || isInvited}
             showOnlineIndicator={
               currentUserIdentifier !== member?.userIdentifier
             }
