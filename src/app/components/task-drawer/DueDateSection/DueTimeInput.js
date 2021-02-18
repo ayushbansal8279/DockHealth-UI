@@ -174,14 +174,21 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
           event.preventDefault();
           event.stopPropagation();
           if (
-            !isDueTimeValid(dueTimeValue) ||
-            isDueTimeInputEmpty(dueTimeValue)
+            (!isDueTimeValid(dueTimeValue) ||
+              isDueTimeInputEmpty(dueTimeValue)) &&
+            activeElementIndex === null
           ) {
             setError(
               DUE_TIME_FIELD_NAME,
               'manual',
               'Time must be between 12:00 am and 11:59 pm and include am/pm',
             );
+          } else if (activeElementIndex !== null) {
+            setValue(DUE_TIME_FIELD_NAME, options[activeElementIndex]);
+            setActiveElementIndex(null);
+          } else {
+            // eslint-disable-next-line no-unused-expressions
+            event.target?.blur();
           }
           unsetIsPopoverOpen();
           break;
@@ -243,6 +250,7 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
       }
     },
     [
+      activeElementIndex,
       dueTimeValue,
       isPopoverOpen,
       options,
