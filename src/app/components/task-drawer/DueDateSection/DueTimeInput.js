@@ -173,6 +173,16 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
         case 'Enter':
           event.preventDefault();
           event.stopPropagation();
+          if (
+            !isDueTimeValid(dueTimeValue) ||
+            isDueTimeInputEmpty(dueTimeValue)
+          ) {
+            setError(
+              DUE_TIME_FIELD_NAME,
+              'manual',
+              'Time must be between 12:00 am and 11:59 pm and include am/pm',
+            );
+          }
           unsetIsPopoverOpen();
           break;
 
@@ -233,9 +243,11 @@ const DueTimeInput = ({ dueDate, setAutoSaveVisible, onTaskUpdate }) => {
       }
     },
     [
+      dueTimeValue,
       isPopoverOpen,
       options,
       resetDueTimeInput,
+      setError,
       setIsPopoverOpen,
       setValue,
       unsetIsPopoverOpen,
