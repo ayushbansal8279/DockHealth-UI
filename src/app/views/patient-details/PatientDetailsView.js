@@ -145,24 +145,29 @@ const PatientDetailsView = ({
 
   useEffect(() => {
     if (
-      previousSearchValue?.current !== searchValue ||
-      Object.keys(previousSelectedFilters?.current).length !==
-        Object.keys(selectedFilters).length ||
-      (activeTab === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
+      (searchValue && searchValue !== '') ||
+      (selectedFilters && Object.keys(selectedFilters).length > 0)
     ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      setShouldResetBulkEditTasks(true);
-    }
+      if (
+        previousSearchValue?.current !== searchValue ||
+        Object.keys(previousSelectedFilters?.current).length !==
+          Object.keys(selectedFilters).length ||
+        (activeTab === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
+      ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        setShouldResetBulkEditTasks(true);
+      }
 
-    if (
-      (searchValue === previousSearchValue?.current ||
-        (Object.keys(previousSelectedFilters?.current).length === 0 &&
-          Object.keys(selectedFilters).length !== 0) ||
-        activeTab === TaskListTabName.OPEN) &&
-      shouldResetBulkEditTasks
-    ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      setShouldResetBulkEditTasks(false);
+      if (
+        (searchValue === previousSearchValue?.current ||
+          (Object.keys(previousSelectedFilters?.current).length === 0 &&
+            Object.keys(selectedFilters).length !== 0) ||
+          activeTab === TaskListTabName.OPEN) &&
+        shouldResetBulkEditTasks
+      ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        setShouldResetBulkEditTasks(false);
+      }
     }
   }, [
     searchValue,
