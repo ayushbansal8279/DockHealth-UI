@@ -297,10 +297,14 @@ const SubscriptionsViewMembersTable = ({
         headerName: 'SUBSCRIPTION',
         flex: 0.5,
         sortable: false,
-        renderCell: () => {
-          if (showSubscription) return <span>{trialPlanPricePerUser}</span>;
+        renderCell: ({ row }) => {
+          const { orgUserRole } = row;
 
-          return '';
+          if (orgUserRole !== 'GUEST' && showSubscription) {
+            return <span>{trialPlanPricePerUser}</span>;
+          }
+
+          return <span />;
         },
       },
     ],
