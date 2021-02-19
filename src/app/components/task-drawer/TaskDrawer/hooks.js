@@ -725,6 +725,18 @@ const initializeTaskDrawerHooks = ({
     [saveDueDateTime, selectedTask],
   );
 
+  const handleUpdateTask = useCallback(
+    updatedData => {
+      return dispatch(saveTask({ ...selectedTask, ...updatedData }))
+        .then(updatedTask => {
+          onTaskUpdate(updatedTask);
+          setAutoSaveVisible();
+        })
+        .catch(() => {});
+    },
+    [dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible],
+  );
+
   return {
     currentUser,
     currentOrganization,
@@ -783,6 +795,7 @@ const initializeTaskDrawerHooks = ({
     parentTask,
     taskDrawerReference,
     taskListIdentifier,
+    handleUpdateTask,
     handleDueDateSave,
     handleDueTimeSave,
     clearDueDate,

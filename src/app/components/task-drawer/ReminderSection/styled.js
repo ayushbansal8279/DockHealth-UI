@@ -27,10 +27,11 @@ export const ReminderTypeSelectOption = styled.div`
   padding: ${spacing.smallPlus};
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;
-  color: ${({ isActive }) => (isActive ? palette.darkGrey : palette.coolGrey1)};
+  color: ${palette.coolGrey1};
   background-color: ${({ isActive }) =>
     isActive ? palette.coolGrey4 : 'transparent'};
-  font-weight: ${fontWeights.light};
+  font-weight: ${({ isActive }) =>
+    isActive ? fontWeights.bold : fontWeights.light};
 `;
 
 export const SelectArrowImg = styled.img`

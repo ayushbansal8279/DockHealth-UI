@@ -116,6 +116,7 @@ const TaskDrawer = ({
     parentTask,
     taskDrawerReference,
     taskListIdentifier,
+    handleUpdateTask,
     handleDueTimeSave,
     handleDueDateSave,
     clearDueDate,
@@ -446,10 +447,9 @@ const TaskDrawer = ({
               </Grid>
               <Grid item xs={12} style={styleFullRow}>
                 <ReminderSection
-                  reminderType={selectedTask?.reminderType}
-                  reminderTime={selectedTask?.reminderTime}
-                  dueDate={selectedTask?.dueDate}
+                  selectedTask={selectedTask}
                   isDisabled={!selectedTask?.dueDate}
+                  onSave={handleUpdateTask}
                 />
               </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
