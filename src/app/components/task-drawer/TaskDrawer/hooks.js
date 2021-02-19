@@ -8,12 +8,10 @@ import React, {
   useState,
   useRef,
 } from 'react';
-import debounce from 'lodash.debounce';
 import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMount, useUnmount } from 'react-use';
-import { getPatientsByCriteria, addPatient } from 'api/patient-api';
+import { useMount } from 'react-use';
 import * as TaskListApi from 'api/tasklist-api';
 import * as TaskApi from 'api/task-api';
 import {
@@ -142,7 +140,6 @@ const initializeTaskDrawerHooks = ({
     taskDrawerFocusField,
     selectedTask,
     addingNewSubtask,
-    tasks,
     taskLists,
     labels,
     areLabelsRequested,
@@ -153,7 +150,6 @@ const initializeTaskDrawerHooks = ({
     taskDrawerFocusField: store.taskDrawerState.focusField,
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
-    tasks: store.listDetails.tasks,
     taskLists: store.taskListState.tasklist,
     labels: isInbox
       ? store.taskLabelState.data.inboxLabels
@@ -169,18 +165,13 @@ const initializeTaskDrawerHooks = ({
 
   const taskDrawerReference = useRef(null);
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
-  const [parentTask, setParentTask] = useState(null);
+  const [selectedParentTask, setSelectedParentTask] = useState(null);
   const [
     parentDescriptionState,
     setParentDescriptionState,
   ] = useMentionsEditorState();
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const descriptionReference = useRef(null);
-
-  const [patients, setPatients] = useState([]);
-  const [isLoadingPatients, setIsLoadingPatients] = useState(true);
-  const patientInputReference = useRef(null);
-  const [patientInputValue, setPatientInputValue] = useState('');
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
@@ -190,35 +181,6 @@ const initializeTaskDrawerHooks = ({
       ({ organizationIdentifier }) =>
         organizationIdentifier === currentOrganizationIdentifier,
     ) || {};
-
-  const fetchPatients = value =>
-    getPatientsByCriteria(value).then(fetchedPatients => {
-      setPatients(fetchedPatients);
-      return fetchedPatients;
-    });
-
-  const fetchPatientsWithDebounce = useCallback(
-    debounce(value => {
-      fetchPatients(value).then(() => {
-        setIsLoadingPatients(false);
-      });
-    }, 300),
-    [],
-  );
-
-  const onPatientInputChange = useCallback(
-    value => {
-      setPatientInputValue(value);
-      if (value !== '') {
-        setIsLoadingPatients(true);
-        fetchPatientsWithDebounce(value);
-      } else {
-        fetchPatientsWithDebounce.cancel();
-        setPatients([]);
-      }
-    },
-    [fetchPatientsWithDebounce],
-  );
 
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
@@ -241,16 +203,9 @@ const initializeTaskDrawerHooks = ({
   }, [dispatch]);
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
-  const selectedTaskParent = useMemo(
-    () =>
-      tasks?.find(
-        ({ taskIdentifier: id }) => id === selectedTask?.parentTaskIdentifier,
-      ) ?? null,
-    [selectedTask, tasks],
-  );
 
   const isAddingOrEditingSubtask =
-    Boolean(selectedTaskParent) || addingNewSubtask;
+    Boolean(selectedParentTask) || addingNewSubtask;
 
   const refreshMembers = () =>
     TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL').then(
@@ -274,7 +229,7 @@ const initializeTaskDrawerHooks = ({
       selectedTask?.parentTask &&
       taskIdentifier !== previousTaskIdentifierValue.current
     ) {
-      setParentTask(selectedTask.parentTask);
+      setSelectedParentTask(selectedTask.parentTask);
     }
 
     if (
@@ -283,7 +238,7 @@ const initializeTaskDrawerHooks = ({
       (subtasks?.length === 0 && subTasksCount > 0)
     ) {
       TaskApi.getTaskDetails(taskIdentifier).then(task => {
-        setParentTask(task.parentTask || null);
+        setSelectedParentTask(task.parentTask || null);
         dispatch({ type: UPDATE_TASK_SUCCESS, task });
       });
     }
@@ -292,12 +247,16 @@ const initializeTaskDrawerHooks = ({
   }, [taskIdentifier, subtasks]);
 
   useEffect(() => {
-    setParentTask(null);
+    setSelectedParentTask(null);
   }, [taskDrawerOpen]);
 
   useEffect(() => {
-    if (parentTask) {
-      const { tokenizedDescription, description, taskMentions } = parentTask;
+    if (selectedParentTask) {
+      const {
+        tokenizedDescription,
+        description,
+        taskMentions,
+      } = selectedParentTask;
       if (description) {
         const newContent = createMentionEntities(
           tokenizedDescription,
@@ -311,7 +270,7 @@ const initializeTaskDrawerHooks = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parentTask]);
+  }, [selectedParentTask]);
 
   useEffect(() => {
     if (taskListIdentifier) {
@@ -334,11 +293,6 @@ const initializeTaskDrawerHooks = ({
       taskList !== undefined &&
       taskList?.taskListIdentifier
     ) {
-      if (selectedTask?.patient?.patientIdentifier) {
-        setPatients([selectedTask?.patient]);
-        setValue('patientIdentifier', selectedTask.patient.patientIdentifier);
-      }
-
       getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
         dispatch,
       );
@@ -361,13 +315,6 @@ const initializeTaskDrawerHooks = ({
         setDescriptionState();
       }
     }
-
-    setValue(
-      'patientIdentifier',
-      selectedTask?.patient?.patientIdentifier ??
-        selectedTaskParent?.patient?.patientIdentifier ??
-        null,
-    );
     setValue(
       'assignedToIdentifier',
       selectedTask?.assignedTo?.userIdentifier ?? null,
@@ -392,10 +339,6 @@ const initializeTaskDrawerHooks = ({
 
   useMount(() => {
     setValue('newTaskListId', null);
-  });
-
-  useUnmount(() => {
-    setPatients([]);
   });
 
   const openTaskDrawer = useCallback(() => {
@@ -558,75 +501,25 @@ const initializeTaskDrawerHooks = ({
     }
   };
 
-  const handleUpdatePatient = async (patient = null) => {
-    try {
+  const handlePatientSave = useCallback(
+    async patient => {
       const updatedTask = await updatePatient(
-        !isAddingOrEditingSubtask ? selectedTask : selectedTaskParent,
+        !isAddingOrEditingSubtask ? selectedTask : selectedParentTask,
         patient,
       )(dispatch);
       setAutoSaveVisible();
       onTaskUpdate(updatedTask);
-    } catch {
-      dispatch(
-        AlertActions.showGlobalAlert(
-          'Error updating patient, please try again later',
-          'error',
-        ),
-      );
-    }
-  };
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handlePatientSelect = async selectedOption => {
-    const patient = {
-      patientIdentifier: selectedOption.value,
-      patientName: selectedOption.displayLabel,
-    };
-    setValue('patientIdentifier', patient?.patientIdentifier);
-    setValue('patientName', patient?.patientName);
-    // closePatientPopover();
-
-    if (selectedTask && selectedTask.taskIdentifier != null) {
-      await handleUpdatePatient(patient);
-    }
-  };
-
-  const clearSelectedPatient = async () => {
-    setValue('patientIdentifier', null);
-    setValue('patientName', null);
-    setPatients([]);
-    if (selectedTask && selectedTask.taskIdentifier != null) {
-      await handleUpdatePatient();
-    }
-  };
-
-  const handleAddPatient = patient => {
-    if (currentOrganization.emrIntegrationEnabled) {
-      return;
-    }
-
-    let data = {};
-    if (patient.includes(',')) {
-      const [lastName, ...firstNames] = patient.split(',');
-      data = { lastName, firstName: firstNames.join(' ').trim() };
-    } else {
-      const [firstName, ...lastNames] = patient.split(' ');
-      data = { firstName, lastName: lastNames.join(' ') };
-    }
-
-    addPatient(data)
-      .then(async ({ patientIdentifier, firstName: fName, lastName }) => {
-        await fetchPatients(patient);
-
-        await handlePatientSelect({
-          value: patientIdentifier,
-          displayLabel: `${lastName}, ${fName} `,
-        });
-
-        patientInputReference.current.querySelector('input').blur();
-      })
-      .catch(noop);
-  };
+      return updatedTask;
+    },
+    [
+      dispatch,
+      isAddingOrEditingSubtask,
+      onTaskUpdate,
+      selectedParentTask,
+      selectedTask,
+      setAutoSaveVisible,
+    ],
+  );
 
   const handleTaskDescriptionUpdate = async () => {
     const updatedTaskDescription = convertFromEditorStateToOutput(
@@ -726,13 +619,12 @@ const initializeTaskDrawerHooks = ({
   );
 
   const handleUpdateTask = useCallback(
-    updatedData => {
-      return dispatch(saveTask({ ...selectedTask, ...updatedData }))
-        .then(updatedTask => {
-          onTaskUpdate(updatedTask);
-          setAutoSaveVisible();
-        })
-        .catch(() => {});
+    async updatedData => {
+      const updatedTask = await dispatch(
+        saveTask({ ...selectedTask, ...updatedData }),
+      );
+      onTaskUpdate(updatedTask);
+      setAutoSaveVisible();
     },
     [dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible],
   );
@@ -741,6 +633,7 @@ const initializeTaskDrawerHooks = ({
     currentUser,
     currentOrganization,
     selectedTask,
+    selectedParentTask,
     labels,
     areLabelsRequested,
     taskDrawerOpen,
@@ -758,7 +651,6 @@ const initializeTaskDrawerHooks = ({
     }),
     formMethods,
     isAddingOrEditingSubtask,
-    patients,
     taskLists,
     currentAssignedToAdornment,
     getMemberAdornment,
@@ -771,18 +663,11 @@ const initializeTaskDrawerHooks = ({
     onAddSubTask,
     handleQuickAddTask,
     handleAssignedToSelect,
-    handlePatientSelect,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     members,
     isFetchingMembers,
-    clearSelectedPatient,
-    onPatientInputChange,
-    patientInputReference,
-    patientInputValue,
-    isLoadingPatients,
     refreshMembers,
-    handleAddPatient,
     descriptionState,
     setDescriptionState,
     descriptionReference,
@@ -792,13 +677,13 @@ const initializeTaskDrawerHooks = ({
     dispatch,
     parentDescriptionState,
     setParentDescriptionState,
-    parentTask,
     taskDrawerReference,
     taskListIdentifier,
     handleUpdateTask,
     handleDueDateSave,
     handleDueTimeSave,
     clearDueDate,
+    handlePatientSave,
   };
 };
 

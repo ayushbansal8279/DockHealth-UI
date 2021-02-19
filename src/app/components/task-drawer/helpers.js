@@ -6,7 +6,6 @@ import palette from 'styles/palette';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import moment from 'moment';
-import PatientSelectItem from 'components/patients/PatientSelectItem/PatientSelectItem';
 import {
   MemberLabelContainer,
   CondensedH4,
@@ -41,37 +40,6 @@ export const getCompletedByLabel = (completedBy, completedDt) => {
   `}</CompletedByLabel>
   );
 };
-
-export const getFormattedPatient = patient => {
-  if (!patient) {
-    return null;
-  }
-
-  const { patientIdentifier, firstName, middleName, lastName } = patient;
-  const patientName = middleName
-    ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`.trim()
-    : ` ${lastName}, ${firstName}`.trim();
-  const displayPatientName = middleName
-    ? `${lastName}, ${firstName} ${middleName}`.trim()
-    : `${lastName}, ${firstName}`.trim();
-
-  const patientToDisplay = {
-    ...patient,
-    name: patientName,
-  };
-
-  return {
-    key: patientIdentifier,
-    value: patientIdentifier,
-    label: ({ searchValue }) => (
-      <PatientSelectItem patient={patientToDisplay} searchValue={searchValue} />
-    ),
-    displayLabel: displayPatientName,
-  };
-};
-
-export const getFormattedPatients = ({ patients }) =>
-  (patients ?? []).map(getFormattedPatient);
 
 export const getFormattedMembers = ({ members, currentUser }) => {
   const filteredMembers = (members ?? []).filter(member => {

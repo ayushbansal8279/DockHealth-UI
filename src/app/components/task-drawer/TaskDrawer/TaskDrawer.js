@@ -48,22 +48,19 @@ import {
   ParentTaskDescription,
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
-  AdornmentContainer,
 } from '../NewTaskDrawer.Styled';
 import {
   getFormattedMembers,
-  getFormattedPatients,
   renderMemberoptionWithHighlighting,
   FocusDrawerFieldEnum,
   TaskDrawerFields,
-  getFormattedPatient,
   getCompletedByLabel,
   TIME_12H_FORMAT,
 } from '../helpers';
 import existingUserTaskDrawerTourHooks from '../NewTaskDrawer.ExistingUserTourHooks';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
-import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import ReminderSection from '../ReminderSection/ReminderSection';
+import PatientSection from '../PatientSection/PatientSection';
 
 const TaskDrawer = ({
   isInbox,
@@ -82,13 +79,12 @@ const TaskDrawer = ({
     onSubmit,
     formMethods,
     isAddingOrEditingSubtask,
-    patients,
-    isLoadingPatients,
     taskLists,
     currentAssignedToAdornment,
     closeTaskDrawer,
     isSaving,
     selectedTask,
+    selectedParentTask,
     currentUser,
     currentOrganization,
     reFileTask,
@@ -97,15 +93,10 @@ const TaskDrawer = ({
     onAddSubTask,
     handleQuickAddTask,
     handleAssignedToSelect,
-    handlePatientSelect,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     members,
-    clearSelectedPatient,
-    onPatientInputChange,
-    patientInputReference,
     refreshMembers,
-    handleAddPatient,
     descriptionState,
     setDescriptionState,
     descriptionReference,
@@ -114,9 +105,9 @@ const TaskDrawer = ({
     dispatch,
     parentDescriptionState,
     setParentDescriptionState,
-    parentTask,
     taskDrawerReference,
     taskListIdentifier,
+    handlePatientSave,
     handleUpdateTask,
     handleDueTimeSave,
     handleDueDateSave,
@@ -147,7 +138,6 @@ const TaskDrawer = ({
 
   const { handleSubmit, setValue } = formMethods;
 
-  const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({
     members,
     isFetchingMembers: true,
@@ -162,14 +152,6 @@ const TaskDrawer = ({
     assignedToInputValue,
     onAssignedToInputChange,
   } = initializeTaskDrawerPopoverHooks();
-
-  useEffect(() => {
-    if (
-      patientInputReference?.current &&
-      taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
-    )
-      patientInputReference.current.querySelector('input').focus();
-  }, [taskDrawerFocusField, patientInputReference]);
 
   useEffect(() => {
     if (selectedTask && selectedTask.description === '') {
@@ -230,15 +212,17 @@ const TaskDrawer = ({
               {selectedTask?.parentTaskIdentifier && (
                 <Grid item xs={12} style={styleFullRowThin}>
                   <Spacing vertical={4} />
-                  {parentTask ? (
+                  {selectedParentTask ? (
                     <ParentTaskButton
-                      onClick={() => storeAsCurrentTask(parentTask)(dispatch)}
+                      onClick={() =>
+                        storeAsCurrentTask(selectedParentTask)(dispatch)
+                      }
                     >
                       <ParentTaskDescription>
                         <MentionsEditor
                           readOnly
                           isDrawerEditor
-                          withEditedLabel={parentTask.edited}
+                          withEditedLabel={selectedParentTask.edited}
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
                           taskListIdentifier={taskListIdentifier}
@@ -329,34 +313,16 @@ const TaskDrawer = ({
                 </Grid>
               )}
               <Grid item xs={6} style={styleLeftColumn}>
-                <SelectDropdown
-                  ref={patientInputReference}
-                  name="patientIdentifier"
-                  label="Patient"
-                  placeholder="Who is the patient?"
-                  disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
-                  startAdornment={<AdornmentContainer>+</AdornmentContainer>}
-                  selectedOption={getFormattedPatient(selectedTask?.patient)}
-                  options={formattedPatients}
-                  isLoadingOptions={isLoadingPatients}
-                  onInputChange={onPatientInputChange}
-                  onOptionSelect={async option => {
-                    await handlePatientSelect(option);
-                    patientInputReference.current.querySelector('input').blur();
-                  }}
-                  onClear={async () => {
-                    await clearSelectedPatient();
-                    // eslint-disable-next-line no-unused-expressions
-                    patientInputReference.current
-                      ?.querySelector('input')
-                      .focus();
-                  }}
-                  addItemLabel="Add patient"
-                  onAddItemClick={
-                    currentOrganization?.emrIntegrationEnabled
-                      ? null
-                      : handleAddPatient
+                <PatientSection
+                  selectedPatient={
+                    selectedTask?.patient || selectedParentTask?.patient || null
                   }
+                  currentOrganization={currentOrganization}
+                  disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
+                  autofocus={
+                    taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
+                  }
+                  onPatientSave={handlePatientSave}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>

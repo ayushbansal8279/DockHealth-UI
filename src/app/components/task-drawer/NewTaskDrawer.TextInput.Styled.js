@@ -81,9 +81,13 @@ const styles = {
       border: 0,
       boxShadow: 'none',
     },
-    '&[readonly], &[disabled]': {
+    '&[readonly]': {
       backgroundColor: 'transparent',
       cursor: 'pointer',
+    },
+    '&[disabled]': {
+      backgroundColor: 'transparent',
+      cursor: 'initial',
     },
   },
 };
