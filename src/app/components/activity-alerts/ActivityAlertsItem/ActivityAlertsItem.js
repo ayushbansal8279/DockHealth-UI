@@ -84,7 +84,6 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
 
       if (organizationIdentifier === currentOrganizationIdentifier) {
         dispatch(storeAsCurrentTask(task));
-        onClearAlert();
         history.push(
           `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
         );
