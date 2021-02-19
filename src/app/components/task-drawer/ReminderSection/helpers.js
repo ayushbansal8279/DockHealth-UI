@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { ReminderTypeSelectOption } from './styled';
+import { TIME_12H_FORMAT } from '../helpers';
 
 export const REMINDER_TYPE_FIELD_NAME = 'reminderType';
 export const REMINDER_TIME_FIELD_NAME = 'reminderTime';
@@ -33,14 +34,14 @@ export function getReminderTypeLabel(reminderType) {
 export function getDefaultReminderTime(dueDate) {
   const momentDueDate = moment(dueDate);
   const dueTime = momentDueDate.isValid()
-    ? momentDueDate.format('hh:mm A')
+    ? momentDueDate.format(TIME_12H_FORMAT)
     : null;
 
   if (dueTime && dueTime !== '00:00 AM' && dueTime !== '12:00 AM') {
-    return dueTime;
+    return momentDueDate.add(-1, 'hours').format(TIME_12H_FORMAT);
   }
 
-  return '09:00 AM';
+  return '06:00 AM';
 }
 
 export function generateReminderTypeSelectOptions() {

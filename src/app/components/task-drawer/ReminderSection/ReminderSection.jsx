@@ -56,7 +56,7 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
 
   const handleToggleReminder = useCallback(() => {
     if (!reminderTypeValue || reminderTypeValue === ReminderType.NONE) {
-      const defaultType = ReminderType.DAY_BEFORE_1;
+      const defaultType = ReminderType.DAY_OF;
       const defaultTime = getDefaultReminderTime(dueDate);
 
       setValue(REMINDER_TYPE_FIELD_NAME, defaultType);
