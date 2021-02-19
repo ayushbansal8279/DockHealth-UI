@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import InputMask from 'react-input-mask';
 import { fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
@@ -16,6 +17,7 @@ export const TimeLabelContainer = styled.div`
 `;
 
 export const TimeInputMaskContainer = styled.div`
+  position: relative;
   align-items: center;
   display: flex;
   border: 0.0625rem solid transparent;
@@ -24,6 +26,17 @@ export const TimeInputMaskContainer = styled.div`
   border-radius: 0;
   height: 24px;
   padding-bottom: 12px;
+
+  ${({ type }) =>
+    type === 'secondary' &&
+    `
+    height: auto;
+      width: 100px;
+      padding-bottom: 0;
+      border: none;
+      border-radius: 4px;
+      background-color: ${palette.blueGrey};
+    `}
 `;
 
 export const TimeErrorMessage = styled.span`
@@ -33,20 +46,36 @@ export const TimeErrorMessage = styled.span`
 `;
 
 export const TimeInputMask = styled(
-  React.forwardRef(({ error, isEmpty, isFocus, ...otherProps }, reference) => (
-    <InputMask ref={reference} {...otherProps} />
-  )),
+  React.forwardRef(
+    ({ error, type, isEmpty, isFocus, ...otherProps }, reference) => (
+      <InputMask ref={reference} {...otherProps} />
+    ),
+  ),
 )`
   && {
+    width: 100%;
     border: none;
     color: ${({ error }) => (error ? palette.oPlusRed : palette.mediumGrey)};
     font-family: ${FONT_FAMILY};
     font-weight: bold;
-    width: 90%;
+    background-color: transparent;
+
+    ${({ type }) =>
+      type === 'secondary' &&
+      `
+      height: 27px;
+      font-weight: ${fontWeights.light};
+      padding: ${spacing.tiny} ${spacing.largePlus} ${spacing.tiny} ${spacing.small};
+    `}
 
     &:focus {
       box-shadow: none;
       outline: none;
+    }
+
+    &:disabled {
+      background-color: transparent;
+      cursor: initial;
     }
   }
 `;

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { bool, func, node, oneOf, string } from 'prop-types';
 import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
@@ -16,12 +17,15 @@ import {
 import { generateTimeOptions, isTimeInputEmpty, isTimeValid } from './helpers';
 
 const TimeDropdownInput = ({
+  type,
   name,
   label,
   disabled,
   error,
   savedValue,
   onSave,
+  endAdornment,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
     false,
@@ -70,7 +74,7 @@ const TimeDropdownInput = ({
     resetDueTimeInput();
   }, [resetDueTimeInput]);
 
-  const saveDueTime = useCallback(
+  const saveTime = useCallback(
     value => {
       if (value !== savedValue) {
         if (!isTimeValid(value) && !isTimeInputEmpty(value)) {
@@ -103,10 +107,10 @@ const TimeDropdownInput = ({
     if (isTimeInputEmpty(dueTimeValue) || !isTimeValid(dueTimeValue)) {
       resetDueTimeInput();
     } else {
-      saveDueTime(dueTimeValue);
+      saveTime(dueTimeValue);
     }
     unsetIsPopoverOpen();
-  }, [dueTimeValue, saveDueTime, resetDueTimeInput, unsetIsPopoverOpen]);
+  }, [dueTimeValue, saveTime, resetDueTimeInput, unsetIsPopoverOpen]);
 
   const selectInputText = useCallback(option => {
     setTimeout(() => {
@@ -259,11 +263,13 @@ const TimeDropdownInput = ({
     <div>
       {label && <TimeLabelContainer>{label}</TimeLabelContainer>}
       <TimeInputMaskContainer
+        type={type}
         ref={inputWrapperReference}
-        hasError={!!errors.dueTime}
+        hasError={!!errors[name]}
       >
         <TimeInputMask
-          name="dueTime"
+          type={type}
+          name={name}
           mask="19:59 am"
           maskChar="_"
           formatChars={{
@@ -274,7 +280,6 @@ const TimeDropdownInput = ({
             m: '[Mm]',
           }}
           value={(dueTimeValue || '').toLowerCase()}
-          placeholder="00:00 am"
           alwaysShowMask
           onBlur={handleInputBlur}
           onFocus={setIsPopoverOpen}
@@ -284,16 +289,18 @@ const TimeDropdownInput = ({
           autocomplete="off"
           disabled={disabled}
         />
-        <AdornmentClear
-          onClick={() => {
-            if (!disabled) saveDueTime('');
-          }}
-          disabled={disabled}
-          style={{
-            marginLeft: '20px',
-            marginBottom: '2px',
-          }}
-        />
+        {endAdornment || (
+          <AdornmentClear
+            onClick={() => {
+              if (!disabled) saveTime('');
+            }}
+            disabled={disabled}
+            style={{
+              marginLeft: '20px',
+              marginBottom: '2px',
+            }}
+          />
+        )}
       </TimeInputMaskContainer>
       <InputPopover
         anchorElement={inputWrapperReference}
@@ -324,6 +331,25 @@ const TimeDropdownInput = ({
       )}
     </div>
   );
+};
+
+TimeDropdownInput.propTypes = {
+  type: oneOf(['primary', 'secondary']),
+  name: string.isRequired,
+  label: string,
+  disabled: bool,
+  error: bool,
+  savedValue: string.isRequired,
+  onSave: func.isRequired,
+  endAdornment: node,
+};
+
+TimeDropdownInput.defaultProps = {
+  type: 'primary',
+  label: null,
+  disabled: false,
+  error: false,
+  endAdornment: null,
 };
 
 export default TimeDropdownInput;

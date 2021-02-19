@@ -45,8 +45,7 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
   useEffect(() => {
     setValue(REMINDER_TYPE_FIELD_NAME, reminderType);
     setValue(REMINDER_TIME_FIELD_NAME, reminderTime);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reminderTime, reminderType]);
+  }, [reminderTime, reminderType, setValue]);
 
   const reminderTypeValue = watch(REMINDER_TYPE_FIELD_NAME);
 
@@ -110,10 +109,12 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
       <Description>at</Description>
       <Spacing horizontal={3} />
       <TimeDropdownInput
+        type="secondary"
         name="reminderTime"
         savedValue={reminderTime}
         onSave={handleSelectReminderTime}
         disabled={sectionDisabled}
+        endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
       />
     </ReminderContainer>
   );

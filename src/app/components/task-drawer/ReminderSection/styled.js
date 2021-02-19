@@ -60,6 +60,9 @@ export const useReminderTypeInputStyles = makeStyles({
     '&:focus': {
       border: 'none',
     },
+    '&:disabled': {
+      cursor: 'initial',
+    },
   },
 });
 
