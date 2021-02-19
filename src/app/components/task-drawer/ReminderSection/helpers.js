@@ -37,7 +37,7 @@ export function getDefaultReminderTime(dueDate) {
     : null;
 
   if (dueTime && dueTime !== '00:00 AM' && dueTime !== '12:00 AM') {
-    return momentDueDate.add(-1, 'hours').format('hh:mm A');
+    return dueTime;
   }
 
   return '09:00 AM';
