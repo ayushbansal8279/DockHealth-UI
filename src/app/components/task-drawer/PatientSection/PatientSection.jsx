@@ -110,6 +110,20 @@ const PatientSection = ({
     patientInputReference.current?.querySelector('input')?.focus();
   }, [savePatient, setValue]);
 
+  const handlePatientSelect = useCallback(
+    async selectedOption => {
+      const patient = {
+        patientIdentifier: selectedOption.value,
+        patientName: selectedOption.displayLabel,
+      };
+      setValue(PATIENT_IDENTIFIER_FIELD_NAME, patient?.patientIdentifier);
+      savePatient(patient);
+      // eslint-disable-next-line no-unused-expressions
+      patientInputReference.current?.querySelector('input')?.blur();
+    },
+    [savePatient, setValue],
+  );
+
   const handleAddPatient = useCallback(
     patient => {
       if (currentOrganization.emrIntegrationEnabled) {
@@ -129,30 +143,18 @@ const PatientSection = ({
         .then(async ({ patientIdentifier, firstName, lastName }) => {
           await fetchPatients(patient);
 
-          await savePatient({
+          await handlePatientSelect({
             value: patientIdentifier,
             displayLabel: `${lastName}, ${firstName} `,
           });
-
-          patientInputReference.current.querySelector('input').blur();
         })
         .catch(noop);
     },
-    [currentOrganization.emrIntegrationEnabled, fetchPatients, savePatient],
-  );
-
-  const handlePatientSelect = useCallback(
-    async selectedOption => {
-      const patient = {
-        patientIdentifier: selectedOption.value,
-        patientName: selectedOption.displayLabel,
-      };
-      setValue(PATIENT_IDENTIFIER_FIELD_NAME, patient?.patientIdentifier);
-      savePatient(patient);
-      // eslint-disable-next-line no-unused-expressions
-      patientInputReference.current?.querySelector('input')?.blur();
-    },
-    [savePatient, setValue],
+    [
+      currentOrganization.emrIntegrationEnabled,
+      fetchPatients,
+      handlePatientSelect,
+    ],
   );
 
   return (
