@@ -9,7 +9,7 @@ import {
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './NewTaskDrawer.AddComment.Styled';
-import { FocusDrawerFieldEnum } from './NewTaskDrawer.Utilities';
+import { FocusDrawerFieldEnum } from './helpers';
 
 const AddComment = ({
   addComment,

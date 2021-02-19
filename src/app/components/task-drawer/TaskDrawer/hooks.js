@@ -27,6 +27,7 @@ import {
   updateTaskDescription,
   prepareSubtask,
   markTaskRead,
+  updateDueDate,
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
@@ -41,12 +42,12 @@ import { noop } from 'helpers/utility-functions';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
+import { MemberAdornmentContainer } from '../NewTaskDrawer.Styled';
 import {
   getFormattedLabels,
   TIME_12H_FORMAT,
   DATE_ISO_FORMAT,
-} from './NewTaskDrawer.Utilities';
+} from '../helpers';
 
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
@@ -234,9 +235,10 @@ const initializeTaskDrawerHooks = ({
   const { setValue, watch, clearError } = formMethods;
 
   const dispatch = useDispatch();
-  const setAutoSaveVisible = () => {
+
+  const setAutoSaveVisible = useCallback(() => {
     dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
-  };
+  }, [dispatch]);
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskParent = useMemo(
@@ -657,6 +659,72 @@ const initializeTaskDrawerHooks = ({
     }
   };
 
+  const saveDueDateTime = useCallback(
+    updatedDueDateTime => {
+      updateDueDate(
+        selectedTask,
+        updatedDueDateTime,
+        false,
+      )(dispatch)
+        .then(task => {
+          setAutoSaveVisible();
+          onTaskUpdate(task);
+          return task;
+        })
+        .catch(() => {
+          dispatch(
+            AlertActions.showGlobalErrorAlert(
+              'Error updating due date, please try again later',
+            ),
+          );
+        });
+    },
+    [dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible],
+  );
+
+  const clearDueDate = useCallback(
+    async event => {
+      event.stopPropagation();
+      setValue('dueDate', null);
+      setValue('dueTime', null);
+      if (selectedTask && selectedTask.taskIdentifier != null) {
+        saveDueDateTime(null);
+      }
+    },
+    [saveDueDateTime, selectedTask, setValue],
+  );
+
+  const handleDueTimeSave = useCallback(
+    value => {
+      const currentDueDate = moment(selectedTask?.dueDate).format(
+        DATE_ISO_FORMAT,
+      );
+
+      const updatedDueDateTime = moment(
+        `${currentDueDate} ${value}`,
+        `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}}`,
+      );
+
+      saveDueDateTime(updatedDueDateTime);
+    },
+    [saveDueDateTime, selectedTask],
+  );
+
+  const handleDueDateSave = useCallback(
+    value => {
+      const currentDueTime = moment(selectedTask?.dueDate).format(
+        TIME_12H_FORMAT,
+      );
+      const updatedDueDateTime = moment(
+        `${value} ${currentDueTime}`,
+        `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}}`,
+      );
+
+      saveDueDateTime(updatedDueDateTime);
+    },
+    [saveDueDateTime, selectedTask],
+  );
+
   return {
     currentUser,
     currentOrganization,
@@ -715,6 +783,9 @@ const initializeTaskDrawerHooks = ({
     parentTask,
     taskDrawerReference,
     taskListIdentifier,
+    handleDueDateSave,
+    handleDueTimeSave,
+    clearDueDate,
   };
 };
 

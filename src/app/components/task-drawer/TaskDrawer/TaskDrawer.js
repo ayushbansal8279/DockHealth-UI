@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid, Divider } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import moment from 'moment';
 import { FormContext } from 'react-hook-form';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
@@ -14,9 +15,9 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../NewTaskDrawer.AttachmentsSection';
 import CommentSection from '../NewTaskDrawer.CommentSection';
-import DueDateInput from '../DueDateSection/DueDateInput';
-import DueTimeInput from '../DueDateSection/DueTimeInput';
-import initializeTaskDrawerHooks from '../NewTaskDrawer.Hooks';
+import DueDateInput from '../DueDateInput/DueDateInput';
+import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
+import initializeTaskDrawerHooks from './hooks';
 import initializeTaskDrawerPopoverHooks from '../NewTaskDrawer.PopoverHooks';
 import InviteMemberPopover from '../NewTaskDrawer.InviteMemberPopover';
 import LabelsSection from '../NewTaskDrawer.LabelsSection';
@@ -56,7 +57,8 @@ import {
   TaskDrawerFields,
   getFormattedPatient,
   getCompletedByLabel,
-} from '../NewTaskDrawer.Utilities';
+  TIME_12H_FORMAT,
+} from '../helpers';
 import existingUserTaskDrawerTourHooks from '../NewTaskDrawer.ExistingUserTourHooks';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
@@ -114,6 +116,9 @@ const TaskDrawer = ({
     parentTask,
     taskDrawerReference,
     taskListIdentifier,
+    handleDueTimeSave,
+    handleDueDateSave,
+    clearDueDate,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -182,6 +187,14 @@ const TaskDrawer = ({
     selectedTask.parentTaskIdentifier !== null;
 
   const isSelectedTaskComplete = selectedTask?.status === 'COMPLETE';
+
+  const taskDueTime = useMemo(() => {
+    const momentDueTime = moment(selectedTask?.dueDate || null);
+    if (momentDueTime.isValid()) {
+      return momentDueTime.format(TIME_12H_FORMAT);
+    }
+    return null;
+  }, [selectedTask]);
 
   return (
     <>
@@ -410,7 +423,12 @@ const TaskDrawer = ({
               <Grid item xs={6} style={styleLeftColumn}>
                 <div ref={dueDateSectionReference}>
                   <DueDateInput
-                    selectedTask={selectedTask}
+                    name="dueDate"
+                    label="Due date"
+                    placeholder="Set a due date?"
+                    savedDate={selectedTask?.dueDate}
+                    onSave={handleDueDateSave}
+                    onClear={clearDueDate}
                     setAutoSaveVisible={setAutoSaveVisible}
                     onTaskUpdate={onTaskUpdate}
                   />
@@ -418,10 +436,11 @@ const TaskDrawer = ({
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <HiddenFieldContainer visible={selectedTask?.dueDate}>
-                  <DueTimeInput
-                    dueDate={selectedTask?.dueDate}
-                    onTaskUpdate={onTaskUpdate}
-                    setAutoSaveVisible={setAutoSaveVisible}
+                  <TimeDropdownInput
+                    name="dueTime"
+                    label="DUE TIME (00:00 am/pm)"
+                    savedValue={taskDueTime}
+                    onSave={handleDueTimeSave}
                   />
                 </HiddenFieldContainer>
               </Grid>

@@ -14,7 +14,7 @@ import {
 } from './NewTaskDrawer.Styled';
 
 export const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-export const TIME_12H_FORMAT = 'hh:mm a';
+export const TIME_12H_FORMAT = 'hh:mm A';
 
 export const FocusDrawerFieldEnum = {
   PATIENT: 'patient',

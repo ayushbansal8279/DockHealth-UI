@@ -13,20 +13,20 @@ import palette from 'styles/palette';
 import DropdownInput from '../NewTaskDrawer.DropdownInput';
 import { AdornmentClear, AdornmentContainer } from '../NewTaskDrawer.Styled';
 import { DueDateLabelContainer } from './styled';
-import initializeDueDateSectionHooks from './hooks';
+import { DATE_ISO_FORMAT } from '../helpers';
 
-const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YY';
 const SET_DATE_VALUE = 'set-date';
 
 const DueDateInput = ({
-  selectedTask,
-  setAutoSaveVisible,
-  onTaskUpdate,
+  name,
+  label,
+  placeholder,
+  savedDate,
+  onSave,
+  onClear,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const dateFieldName = 'dueDate';
-
   const reference = useRef(null);
 
   const inputReference = reference.current?.querySelector('input');
@@ -37,39 +37,18 @@ const DueDateInput = ({
 
   const { setValue, watch } = useFormContext();
 
-  const currentDueDate = watch(dateFieldName);
-  const currentDueTime = watch('dueTime');
-
-  const selectedTaskIdentifier = selectedTask?.taskIdentifier ?? null;
-
-  const { saveDueDate, clearDueDate } = initializeDueDateSectionHooks({
-    setAutoSaveVisible,
-    setValue,
-    onTaskUpdate,
-  });
+  const currentDueDate = watch(name);
 
   useEffect(() => {
     closeCalendar();
-  }, [closeCalendar, selectedTaskIdentifier]);
+  }, [closeCalendar]);
 
   const setDueDateValue = useCallback(
     async value => {
-      setValue(dateFieldName, value);
-      await saveDueDate({
-        updatedDueDate: value,
-        updatedDueTime: currentDueTime || '',
-      });
-      setAutoSaveVisible();
+      setValue(name, value);
+      onSave(value);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      closeCalendar,
-      currentDueTime,
-      saveDueDate,
-      setAutoSaveVisible,
-      setValue,
-      inputReference,
-    ],
+    [setValue, name, onSave],
   );
 
   const selectOption = useCallback(
@@ -88,16 +67,20 @@ const DueDateInput = ({
           inputReference.focus();
         }, 100);
       } else {
-        setValue(dateFieldName, value);
-        saveDueDate({
-          updatedDueDate: value,
-          updatedDueTime: currentDueTime || '',
-        });
+        setValue(name, value);
+        onSave(value);
         closeCalendar();
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [inputReference, currentDueTime, saveDueDate],
+    [
+      closeCalendar,
+      inputReference,
+      isCalendarOpen,
+      name,
+      onSave,
+      openCalendar,
+      setValue,
+    ],
   );
 
   const dueDateOptions = [
@@ -178,13 +161,13 @@ const DueDateInput = ({
   return (
     <DropdownInput
       ref={reference}
-      name={dateFieldName}
-      label="Due date"
-      placeholder="Set a due date?"
+      name={name}
+      label={label}
+      placeholder={placeholder}
       InputProps={{
         endAdornment:
-          selectedTask && currentDueDate ? (
-            <AdornmentClear onClick={clearDueDate} />
+          savedDate && currentDueDate ? (
+            <AdornmentClear onClick={onClear} />
           ) : (
             ''
           ),
@@ -195,7 +178,7 @@ const DueDateInput = ({
           ? moment(currentDueDate).format(DATE_US_FORMAT)
           : '',
         style: {
-          color: isDueDateOverdue(selectedTask?.dueDate) && palette.oPlusRed,
+          color: isDueDateOverdue(savedDate) && palette.oPlusRed,
         },
       }}
       onSelect={selectOption}

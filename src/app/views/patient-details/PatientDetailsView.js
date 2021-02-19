@@ -13,7 +13,7 @@ import * as PatientApi from 'api/patient-api';
 import Toolbar from 'components/task-view/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import { TaskDrawerFields } from 'components/task-drawer/NewTaskDrawer.Utilities';
+import { TaskDrawerFields } from 'components/task-drawer/helpers';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';

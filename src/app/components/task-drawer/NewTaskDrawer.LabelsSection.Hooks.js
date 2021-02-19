@@ -8,7 +8,7 @@ import {
   getTaskListLabels,
 } from 'actions/task-label-actions';
 import { refreshTask } from 'actions/task-actions';
-import { getFormattedLabels } from './NewTaskDrawer.Utilities';
+import { getFormattedLabels } from './helpers';
 
 const labelAddOrRemovePromise = ({
   dispatch,

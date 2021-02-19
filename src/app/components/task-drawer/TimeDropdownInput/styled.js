@@ -7,25 +7,7 @@ import { fontWeights } from 'styles/font';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
-export const DueDateLabelContainer = styled.div`
-  align-items: center;
-  color: ${palette.coolGrey1};
-  cursor: pointer;
-  display: flex;
-  padding: 0.5rem;
-
-  ${({ isHovered }) =>
-    isHovered &&
-    `
-      background-color: ${palette.coolGrey4};
-  
-      && > * {
-        font-weight: bold;
-      }
-    `}
-`;
-
-export const DueTimeLabelContainer = styled.div`
+export const TimeLabelContainer = styled.div`
   align-items: center;
   color: ${palette.coolGrey1};
   font-size: 12px;
@@ -33,7 +15,7 @@ export const DueTimeLabelContainer = styled.div`
   display: flex;
 `;
 
-export const DueTimeInputMaskContainer = styled.div`
+export const TimeInputMaskContainer = styled.div`
   align-items: center;
   display: flex;
   border: 0.0625rem solid transparent;
@@ -44,13 +26,13 @@ export const DueTimeInputMaskContainer = styled.div`
   padding-bottom: 12px;
 `;
 
-export const DueTimeErrorMessage = styled.span`
+export const TimeErrorMessage = styled.span`
   color: ${palette.error};
   font-family: ${FONT_FAMILY};
   font-size: 12px;
 `;
 
-export const DueTimeInputMask = styled(
+export const TimeInputMask = styled(
   React.forwardRef(
     ({ isOverDue, isEmpty, isFocus, ...otherProps }, reference) => (
       <InputMask ref={reference} {...otherProps} />

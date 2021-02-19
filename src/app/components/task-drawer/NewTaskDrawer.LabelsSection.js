@@ -9,7 +9,7 @@ import {
   getFormattedLabels,
   getFormattedLabel,
   FocusDrawerFieldEnum,
-} from './NewTaskDrawer.Utilities';
+} from './helpers';
 import initializeLabelsSectionHooks from './NewTaskDrawer.LabelsSection.Hooks';
 
 const LabelsSection = ({

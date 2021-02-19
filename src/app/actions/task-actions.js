@@ -416,7 +416,11 @@ export const updateDueDate = (
   TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
     .then(() => {
       const newTask = task;
-      newTask.dueDate = moment(dueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+      const momentDueDate = moment(dueDate);
+      newTask.dueDate = momentDueDate.isValid()
+        ? momentDueDate.toISOString()
+        : null;
+
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: newTask,

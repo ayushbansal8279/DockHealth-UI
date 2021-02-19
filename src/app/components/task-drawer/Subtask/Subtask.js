@@ -39,7 +39,7 @@ import {
   IconContainer,
   DescriptionLabel,
 } from './styled';
-import { FocusDrawerFieldEnum } from '../NewTaskDrawer.Utilities';
+import { FocusDrawerFieldEnum } from '../helpers';
 
 const DUE_DATE_PICKER_OPTIONS = [
   {
