@@ -18,6 +18,7 @@ import {
   generateReminderTypeSelectOptions,
 } from './helpers';
 import DropdownInput from '../NewTaskDrawer.DropdownInput';
+import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
 
 const ReminderSection = ({
   reminderType,
@@ -51,20 +52,27 @@ const ReminderSection = ({
   }, [reminderTime, reminderType]);
 
   const reminderTypeValue = watch(REMINDER_TYPE_FIELD_NAME);
-  const reminderTimeValue = watch(REMINDER_TIME_FIELD_NAME);
 
   const reminderIsOn =
     reminderTypeValue && reminderTypeValue !== ReminderType.NONE;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const saveReminders = useCallback((type, time) => {}, []);
+
   const handleToggleReminder = useCallback(() => {
     if (!reminderTypeValue || reminderTypeValue === ReminderType.NONE) {
-      setValue(REMINDER_TYPE_FIELD_NAME, ReminderType.DAY_BEFORE_1);
-      setValue(REMINDER_TIME_FIELD_NAME, getDefaultReminderTime(dueDate));
+      const defaultType = ReminderType.DAY_BEFORE_1;
+      const defaultTime = getDefaultReminderTime(dueDate);
+
+      setValue(REMINDER_TYPE_FIELD_NAME, defaultType);
+      setValue(REMINDER_TIME_FIELD_NAME, defaultTime);
+      saveReminders(defaultType, defaultTime);
     } else {
       setValue(REMINDER_TYPE_FIELD_NAME, ReminderType.NONE);
-      setValue(REMINDER_TIME_FIELD_NAME, reminderTimeValue || null);
+      setValue(REMINDER_TIME_FIELD_NAME, null);
+      saveReminders(ReminderType.NONE, null);
     }
-  }, [dueDate, reminderTimeValue, reminderTypeValue, setValue]);
+  }, [dueDate, reminderTypeValue, saveReminders, setValue]);
 
   const handleSelectReminderType = useCallback(
     value => {
@@ -79,6 +87,9 @@ const ReminderSection = ({
   //   },
   //   [setValue],
   // );
+
+  const sectionDisabled =
+    !reminderTypeValue || reminderTypeValue === ReminderType.NONE;
 
   return (
     <ReminderContainer isDisabled={isDisabled || !reminderIsOn}>
@@ -96,14 +107,19 @@ const ReminderSection = ({
         }}
         textFieldClasses={reminderTypeTextFieldClasses}
         onSelect={handleSelectReminderType}
-        disabled={!reminderTypeValue || reminderTypeValue === ReminderType.NONE}
+        disabled={sectionDisabled}
       >
         {reminderTypeOptions}
       </DropdownInput>
       <Spacing horizontal={3} />
       <Description>at</Description>
       <Spacing horizontal={3} />
-      <div>{reminderTimeValue}</div>
+      <TimeDropdownInput
+        name="reminderTime"
+        savedValue={reminderTime}
+        onSave={value => console.log('value', value)}
+        disabled={sectionDisabled}
+      />
     </ReminderContainer>
   );
 };

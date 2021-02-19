@@ -16,7 +16,7 @@ import {
 } from './styled';
 import { generateTimeOptions, isTimeInputEmpty, isTimeValid } from './helpers';
 
-const TimeDropdownInput = ({ name, label, savedValue, onSave }) => {
+const TimeDropdownInput = ({ name, label, disabled, savedValue, onSave }) => {
   const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
     false,
   );
@@ -267,7 +267,7 @@ const TimeDropdownInput = ({ name, label, savedValue, onSave }) => {
             a: '[APap]',
             m: '[Mm]',
           }}
-          value={dueTimeValue?.toLowerCase()}
+          value={(dueTimeValue || '').toLowerCase()}
           placeholder="00:00 am"
           alwaysShowMask
           onBlur={handleInputBlur}
@@ -276,11 +276,13 @@ const TimeDropdownInput = ({ name, label, savedValue, onSave }) => {
           onKeyDown={handleInputKeyDown}
           isOverDue={isDueDateOverdue(savedValue)}
           autocomplete="off"
+          disabled={disabled}
         />
         <AdornmentClear
           onClick={() => {
-            saveDueTime('');
+            if (!disabled) saveDueTime('');
           }}
+          disabled={disabled}
           style={{
             marginLeft: '20px',
             marginBottom: '2px',

@@ -227,7 +227,7 @@ export const AdornmentClear = styled(Close)`
     width: 20px;
     height: 20px;
     color: ${palette.coolGrey2};
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
   }
 `;
 
