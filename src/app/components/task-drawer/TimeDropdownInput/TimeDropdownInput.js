@@ -45,7 +45,7 @@ const TimeDropdownInput = ({
     clearError,
   } = useFormContext();
 
-  const dueTimeValue = watch(name);
+  const timeValue = watch(name);
 
   useEffect(() => {
     register(name);
@@ -56,6 +56,15 @@ const TimeDropdownInput = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const moveCursorToEnd = useCallback(() => {
+    setTimeout(() => {
+      // eslint-disable-next-line no-unused-expressions
+      inputWrapperReference.current
+        ?.querySelector('input')
+        .setSelectionRange(timeValue?.length, timeValue?.length);
+    }, 0);
+  }, [timeValue]);
 
   const resetDueTimeInput = useCallback(() => {
     if (savedValue) {
@@ -104,22 +113,13 @@ const TimeDropdownInput = ({
   );
 
   const handleInputBlur = useCallback(() => {
-    if (isTimeInputEmpty(dueTimeValue) || !isTimeValid(dueTimeValue)) {
+    if (isTimeInputEmpty(timeValue) || !isTimeValid(timeValue)) {
       resetDueTimeInput();
     } else {
-      saveTime(dueTimeValue);
+      saveTime(timeValue);
     }
     unsetIsPopoverOpen();
-  }, [dueTimeValue, saveTime, resetDueTimeInput, unsetIsPopoverOpen]);
-
-  const selectInputText = useCallback(option => {
-    setTimeout(() => {
-      // eslint-disable-next-line no-unused-expressions
-      inputWrapperReference.current
-        ?.querySelector('input')
-        .setSelectionRange(0, option?.length);
-    }, 0);
-  }, []);
+  }, [timeValue, saveTime, resetDueTimeInput, unsetIsPopoverOpen]);
 
   const handleInputKeyDown = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -129,13 +129,14 @@ const TimeDropdownInput = ({
           resetDueTimeInput();
           unsetIsPopoverOpen();
           setActiveElementIndex(null);
+          moveCursorToEnd();
           break;
 
         case 'Enter':
           event.preventDefault();
           event.stopPropagation();
           if (
-            (!isTimeValid(dueTimeValue) || isTimeInputEmpty(dueTimeValue)) &&
+            (!isTimeValid(timeValue) || isTimeInputEmpty(timeValue)) &&
             activeElementIndex === null
           ) {
             setError(
@@ -146,7 +147,7 @@ const TimeDropdownInput = ({
           } else if (activeElementIndex !== null && isPopoverOpen) {
             setValue(name, options[activeElementIndex]);
             setActiveElementIndex(null);
-            selectInputText(options[activeElementIndex]);
+            moveCursorToEnd();
           } else {
             // eslint-disable-next-line no-unused-expressions
             event.target?.blur();
@@ -212,12 +213,12 @@ const TimeDropdownInput = ({
     },
     [
       activeElementIndex,
-      dueTimeValue,
+      timeValue,
       isPopoverOpen,
+      moveCursorToEnd,
       name,
       options,
       resetDueTimeInput,
-      selectInputText,
       setError,
       setIsPopoverOpen,
       setValue,
@@ -279,7 +280,7 @@ const TimeDropdownInput = ({
             a: '[APap]',
             m: '[Mm]',
           }}
-          value={(dueTimeValue || '').toLowerCase()}
+          value={(timeValue || '').toLowerCase()}
           alwaysShowMask
           onBlur={handleInputBlur}
           onFocus={setIsPopoverOpen}
@@ -316,7 +317,7 @@ const TimeDropdownInput = ({
                 event.preventDefault();
                 setValue(name, option);
                 unsetIsPopoverOpen();
-                selectInputText(option);
+                moveCursorToEnd();
               }}
               onMouseEnter={() => setActiveElementIndex(index)}
               isActive={index === activeElementIndex}
