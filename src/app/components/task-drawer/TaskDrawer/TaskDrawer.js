@@ -12,6 +12,7 @@ import InboxIcon from 'img/navigation/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { isDueDateOverdue } from 'helpers/task-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../NewTaskDrawer.AttachmentsSection';
 import CommentSection from '../NewTaskDrawer.CommentSection';
@@ -442,6 +443,7 @@ const TaskDrawer = ({
                     label="DUE TIME (00:00 am/pm)"
                     savedValue={taskDueTime}
                     onSave={handleDueTimeSave}
+                    error={isDueDateOverdue(selectedTask?.dueDate)}
                   />
                 </HiddenFieldContainer>
               </Grid>

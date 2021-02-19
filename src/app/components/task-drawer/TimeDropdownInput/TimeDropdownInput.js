@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
-import { isDueDateOverdue } from 'helpers/task-helpers';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import { AdornmentClear } from '../NewTaskDrawer.Styled';
 import InputPopover from '../InputPopover/InputPopover';
@@ -16,7 +15,14 @@ import {
 } from './styled';
 import { generateTimeOptions, isTimeInputEmpty, isTimeValid } from './helpers';
 
-const TimeDropdownInput = ({ name, label, disabled, savedValue, onSave }) => {
+const TimeDropdownInput = ({
+  name,
+  label,
+  disabled,
+  error,
+  savedValue,
+  onSave,
+}) => {
   const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
     false,
   );
@@ -274,7 +280,7 @@ const TimeDropdownInput = ({ name, label, disabled, savedValue, onSave }) => {
           onFocus={setIsPopoverOpen}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
-          isOverDue={isDueDateOverdue(savedValue)}
+          error={error}
           autocomplete="off"
           disabled={disabled}
         />

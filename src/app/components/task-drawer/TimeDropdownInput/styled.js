@@ -33,16 +33,13 @@ export const TimeErrorMessage = styled.span`
 `;
 
 export const TimeInputMask = styled(
-  React.forwardRef(
-    ({ isOverDue, isEmpty, isFocus, ...otherProps }, reference) => (
-      <InputMask ref={reference} {...otherProps} />
-    ),
-  ),
+  React.forwardRef(({ error, isEmpty, isFocus, ...otherProps }, reference) => (
+    <InputMask ref={reference} {...otherProps} />
+  )),
 )`
   && {
     border: none;
-    color: ${({ isOverDue }) =>
-      isOverDue ? palette.oPlusRed : palette.mediumGrey};
+    color: ${({ error }) => (error ? palette.oPlusRed : palette.mediumGrey)};
     font-family: ${FONT_FAMILY};
     font-weight: bold;
     width: 90%;
