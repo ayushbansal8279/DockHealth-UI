@@ -13,7 +13,7 @@ export const CheckboxInput = styled.button`
   border: ${props =>
     props.isChecked
       ? `1px solid ${palette.brightBlue}`
-      : `1px solid ${palette.coolGrey3}`};
+      : `1px solid ${palette.mediumGrey}`};
   transition: all 150ms;
   cursor: pointer;
   display: flex;
@@ -21,7 +21,7 @@ export const CheckboxInput = styled.button`
   align-items: center;
 
   &:hover {
-    border: 1px solid ${palette.mediumGrey};
+    border: 1px solid ${palette.darkGrey};
   }
 
   ${Icon} {
