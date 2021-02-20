@@ -414,23 +414,22 @@ export const updateDueDate = (
   showGlobalConfirmation,
 ) => dispatch =>
   TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
-    .then(() => {
-      const newTask = task;
-      const momentDueDate = moment(dueDate);
-      newTask.dueDate = momentDueDate.isValid()
-        ? momentDueDate.toISOString()
-        : null;
-
+    .then(updatedTask => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: newTask,
+        task: updatedTask,
       });
       if (showGlobalConfirmation) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       }
-      return newTask;
+      return updatedTask;
     })
-    .catch(() => {});
+    .catch(() => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_SUCCESS,
+        task,
+      });
+    });
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
