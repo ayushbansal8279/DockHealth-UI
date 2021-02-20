@@ -209,6 +209,9 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
         },
       },
     )
+    .then(response => {
+      return response.data;
+    })
     .catch(error => {
       throw error;
     });
