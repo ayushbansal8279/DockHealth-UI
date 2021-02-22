@@ -621,7 +621,16 @@ const initializeTaskDrawerHooks = ({
   const handleUpdateTask = useCallback(
     async updatedData => {
       const updatedTask = await dispatch(
-        saveTask({ ...selectedTask, ...updatedData }),
+        saveTask({
+          ...selectedTask,
+          ...updatedData,
+          patientIdentifier:
+            updatedData?.patientIdentifier ||
+            selectedTask?.patient?.patientIdentifier,
+          assignedToIdentifier:
+            updatedData?.assignedToIdentifier ||
+            selectedTask?.assignedTo?.userIdentifier,
+        }),
       );
       onTaskUpdate(updatedTask);
       setAutoSaveVisible();
