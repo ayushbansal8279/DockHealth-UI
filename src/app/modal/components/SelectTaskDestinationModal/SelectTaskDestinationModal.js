@@ -10,7 +10,7 @@ import Button from 'components/common/Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getTaskListForUser } from 'actions/task-list-actions';
-import { addTaskList } from 'api/tasklist-api';
+import { addTaskList } from 'api/task-list-api';
 import { Container, StepsContainer } from './styled';
 import {
   ModalWrapperWithPadding,

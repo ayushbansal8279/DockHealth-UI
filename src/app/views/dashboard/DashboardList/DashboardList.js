@@ -30,7 +30,7 @@ import { Grid } from '@material-ui/core';
 import Switch from 'components/common/Switch/Switch';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
-import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
+import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { getTaskStatsForUser } from 'api/task-api';
 import {
   dashboardTasksSelector,

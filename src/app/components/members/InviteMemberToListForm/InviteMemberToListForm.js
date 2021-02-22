@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Grid, IconButton, ClickAwayListener } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import * as TaskListApi from 'api/tasklist-api';
+import * as TaskListApi from 'api/task-list-api';
 import * as PeopleApi from 'api/people-api';
 import { showAlert } from 'helpers/utility-functions';
 import { getMemberStatus, isMemberPending } from 'helpers/list-members-helper';

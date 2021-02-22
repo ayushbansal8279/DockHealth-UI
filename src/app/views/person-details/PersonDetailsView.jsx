@@ -31,7 +31,7 @@ import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
-import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
+import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';

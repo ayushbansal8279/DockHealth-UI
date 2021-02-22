@@ -3,7 +3,7 @@ import { Box, IconButton } from '@material-ui/core';
 import useBoolean from 'hooks/useBoolean';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { getSharedTaskListsWithCurrentUser } from 'api/tasklist-api';
+import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import {
   Title,

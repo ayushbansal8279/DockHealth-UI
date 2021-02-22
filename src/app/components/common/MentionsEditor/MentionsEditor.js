@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patient-api';
-import { getListMembersByName } from 'api/tasklist-api';
+import { getListMembersByName } from 'api/task-list-api';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';

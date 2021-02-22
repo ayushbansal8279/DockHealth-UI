@@ -19,7 +19,7 @@ import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
-import { getTaskListForUser } from 'api/tasklist-api';
+import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';

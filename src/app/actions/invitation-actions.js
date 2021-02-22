@@ -1,6 +1,6 @@
 import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import * as InvitationApi from 'api/invitation-api';
-import * as TaskListApi from 'api/tasklist-api';
+import * as TaskListApi from 'api/task-list-api';
 import * as ActionTypes from './action-types';
 
 export function findInvitationsByUserId() {

@@ -1,4 +1,4 @@
-import * as TaskListApi from 'api/tasklist-api';
+import * as TaskListApi from 'api/task-list-api';
 import * as UserApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';

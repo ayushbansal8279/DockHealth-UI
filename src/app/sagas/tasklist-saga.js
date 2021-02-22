@@ -1,5 +1,5 @@
 import { GET_TASKLIST_SUCCESS } from 'actions/action-types';
-import { getTaskListForUser } from 'api/tasklist-api';
+import { getTaskListForUser } from 'api/task-list-api';
 import { takeLatest, call, put } from 'redux-saga/effects';
 
 const DO_FETCH_TASKLIST_FOR_USER = 'DO_FETCH_TASKLIST_FOR_USER';
