@@ -3,11 +3,13 @@ import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
-import { taskListsSelector } from 'selectors/task-list-selectors';
+import {
+  taskListsSelector,
+  pendingTaskListsSelector,
+} from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskListActions from 'actions/task-list-actions';
-import * as InvitationActions from 'actions/invitation-actions';
-import * as TaskListSagaActions from 'sagas/tasklist-saga';
+import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
@@ -30,8 +32,8 @@ import newUserTourHooks from './new-user-tour-hooks';
 
 const DashboardView = ({
   isTaskDrawerOpen,
-  lists = [],
-  pendingLists = [],
+  taskLists = [],
+  pendingTaskLists = [],
   currentUser,
   openModal,
   fetchTasklistForUser,
@@ -51,9 +53,9 @@ const DashboardView = ({
 
   const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
 
-  const allLists = useMemo(() => [...lists, ...pendingLists], [
-    lists,
-    pendingLists,
+  const allLists = useMemo(() => [...taskLists, ...pendingTaskLists], [
+    taskLists,
+    pendingTaskLists,
   ]);
 
   const firstUserList = allLists?.find(list => list.listType !== 'INBOX');
@@ -129,7 +131,7 @@ const DashboardView = ({
   } = newUserTourHooks({
     firstCreatedUserListIdentifier,
     setFirstCreatedUserListIdentifier,
-    lists,
+    taskLists,
     isNewUser,
   });
 
@@ -194,7 +196,7 @@ const DashboardView = ({
 
 const mapStateToProps = state => ({
   lists: taskListsSelector(state),
-  pendingLists: state.invitationState.pendingTasklists,
+  pendingTaskLists: pendingTaskListsSelector(state),
   isTaskDrawerOpen: state.taskDrawerState.open,
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
   currentUser: userProfileSelector(state),
@@ -204,7 +206,7 @@ const mapDispatchToProps = {
   openModal: openModalAction,
   setTaskListAsCurrentList: TaskListActions.setTaskListAsCurrentList,
   fetchTasklistForUser: TaskListSagaActions.fetchTasklistForUser,
-  acceptInviteToTaskList: InvitationActions.acceptInviteToTaskList,
+  acceptInviteToTaskList: TaskListActions.acceptInviteToTaskList,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);

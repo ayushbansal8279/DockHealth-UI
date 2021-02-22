@@ -15,7 +15,6 @@ import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection
 
 import * as TemplateActions from 'actions/template-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
-import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
@@ -33,6 +32,7 @@ import { TaskStatus } from 'helpers/task-helpers';
 
 import {
   taskListsSelector,
+  pendingTaskListsSelector,
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -741,7 +741,7 @@ const mapStateToProps = state => ({
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
   taskCounters: state.listDetails.taskCounters,
-  pendingTaskLists: state.invitationState.pendingTasklists,
+  pendingTaskLists: pendingTaskListsSelector(state),
   isFetching: tasksIsFetchingSelector(state),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(state),
   groupedTasks: groupTasksSelector(state),
@@ -752,7 +752,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   listDetailsSagaActions: bindActionCreators(ListDetailsSagaActions, dispatch),
-  invitationActions: bindActionCreators(InvitationActions, dispatch),
   templateActions: bindActionCreators(TemplateActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),

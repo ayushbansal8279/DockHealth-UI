@@ -9,11 +9,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
-import { taskListsSelector } from 'selectors/task-list-selectors';
-import { pendingListsSelector } from 'selectors/invitation-selectors';
+import {
+  taskListsSelector,
+  pendingTaskListsSelector,
+} from 'selectors/task-list-selectors';
 import { openModal, closeModal } from 'modal/actions';
 import * as TaskListActions from 'actions/task-list-actions';
-import * as InvitationActions from 'actions/invitation-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import palette from 'styles/palette';
 import { locationParametersSelector } from 'location/selectors';
@@ -38,8 +39,8 @@ const ListsSubmenu = () => {
   const { taskListIdentifier: activeTaskListIdentifier } = useSelector(
     locationParametersSelector,
   );
-  const activeLists = useSelector(taskListsSelector);
-  const pendingLists = useSelector(pendingListsSelector);
+  const taskLists = useSelector(taskListsSelector);
+  const pendingTaskLists = useSelector(pendingTaskListsSelector);
 
   const dispatch = useDispatch();
 
@@ -59,15 +60,15 @@ const ListsSubmenu = () => {
     }
   }, [listMenuPopupOpen, currentList]);
 
-  const lists = useMemo(() => [...activeLists, ...pendingLists], [
-    activeLists,
-    pendingLists,
+  const lists = useMemo(() => [...taskLists, ...pendingTaskLists], [
+    taskLists,
+    pendingTaskLists,
   ]);
 
   useEffect(() => {
     if (lists?.length === 0) {
       dispatch(TaskListActions.getTaskListForUser());
-      dispatch(InvitationActions.findPendingTaskListsForUser());
+      dispatch(TaskListActions.getPendingTaskListsForUser());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -130,7 +131,7 @@ const ListsSubmenu = () => {
       const modalProps = {
         confirm: () => {
           if (status === 'PENDING') {
-            dispatch(InvitationActions.rejectInviteToTaskList(list));
+            dispatch(TaskListActions.rejectInviteToTaskList(list));
           } else {
             dispatch(TaskListActions.leaveList(taskListIdentifier));
           }
@@ -227,7 +228,7 @@ const ListsSubmenu = () => {
                   return;
 
                 if (list?.status === 'PENDING') {
-                  dispatch(InvitationActions.acceptInviteToTaskList(list));
+                  dispatch(TaskListActions.acceptInviteToTaskList(list));
                 }
                 history.push(`/tasks/${list.taskListIdentifier}`);
               }}

@@ -2,6 +2,7 @@ import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
 
 import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
+  REJECT_INVITE_TOTASKLIST_SUCCESS,
   ADD_TASKLIST_SUCCESS,
   CHANGEUSERROLE_TASKLIST_SUCCESS,
   DELETE_TASKLIST_SUCCESS,
@@ -26,10 +27,12 @@ import {
   TOGGLE_LIST_NOTIFICATIONS_SUCCESS,
   UPDATE_TASKLIST_SUCCESS,
   CANCEL_TASKLIST_INVITE_SUCCESS,
+  GET_PENDING_TASKLIST_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
   taskLists: [],
+  pendingTaskLists: [],
   tasklistmembers: [],
   allTaskListMembers: [],
   orgusersnotintasklist: [],
@@ -106,6 +109,19 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         taskLists: [action.taskList].concat(state.taskLists),
+        pendingTaskLists: state.pendingTaskLists.filter(
+          taskList =>
+            taskList.taskListIdentifier !== action.taskList.taskListIdentifier,
+        ),
+      };
+
+    case REJECT_INVITE_TOTASKLIST_SUCCESS:
+      return {
+        ...state,
+        pendingTaskLists: state.pendingTaskLists.filter(
+          taskList =>
+            taskList.taskListIdentifier !== action.taskList.taskListIdentifier,
+        ),
       };
 
     case GET_TASKLIST_SUCCESS:
@@ -286,6 +302,12 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         taskListStats: null,
         taskListStatsOk: null,
+      };
+
+    case GET_PENDING_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        pendingTaskLists: action.taskLists,
       };
 
     default:

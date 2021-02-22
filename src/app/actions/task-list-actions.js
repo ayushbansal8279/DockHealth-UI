@@ -1,6 +1,7 @@
 import * as TaskListApi from 'api/task-list-api';
 import * as UserApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
+import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import * as AlertActions from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from '../alert/AlertMessages';
@@ -15,13 +16,15 @@ export function getTaskListForUser() {
   };
 }
 
-export function getPendingTaskListForUser() {
+export function getPendingTaskListsForUser() {
   return dispatch => {
-    return TaskListApi.findPendingTaskListsForUser()
+    return TaskListApi.getPendingTaskListsForUser()
       .then(taskLists => {
         dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, taskLists });
       })
-      .catch(noop);
+      .catch(error => {
+        throw error;
+      });
   };
 }
 
@@ -450,3 +453,36 @@ export const getPersonTasklistAccumulatedStats = () => dispatch => {
     type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
   });
 };
+
+export function acceptInviteToTaskList(taskList) {
+  return dispatch => {
+    return TaskListApi.acceptInviteToTaskList(taskList.taskListIdentifier)
+      .then(response => {
+        onTaskListInvitationAccepted();
+        dispatch({
+          type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS,
+          res: response,
+          taskList,
+        });
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+export function rejectInviteToTaskList(taskList) {
+  return dispatch => {
+    return TaskListApi.rejectInviteToTaskList(taskList.taskListIdentifier)
+      .then(response => {
+        dispatch({
+          type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS,
+          res: response,
+          taskList,
+        });
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}

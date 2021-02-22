@@ -1,4 +1,7 @@
-import { onTaskListDeleted } from 'helpers/ga-event-helper';
+import {
+  onTaskListDeleted,
+  onTaskListInvitationRejected,
+} from 'helpers/ga-event-helper';
 import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
@@ -23,7 +26,7 @@ export function getSharedTaskListsWithCurrentUser(userIdentifier) {
     });
 }
 
-export function findPendingTaskListsForUser() {
+export function getPendingTaskListsForUser() {
   return axios
     .get('list/findPendingTaskListsForUser')
     .then(response => response?.data)
@@ -278,5 +281,28 @@ export function getListMembersByName(taskListIdentifier, name) {
     .then(({ data }) => data)
     .catch(error => {
       throw error;
+    });
+}
+
+export function acceptInviteToTaskList(taskListIdentifier) {
+  return axios
+    .put(`list/acceptInviteToTaskList/${taskListIdentifier}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function rejectInviteToTaskList(taskListIdentifier) {
+  return axios
+    .put(`list/rejectInviteToTaskList/${taskListIdentifier}`)
+    .then(({ data }) => {
+      onTaskListInvitationRejected();
+      return data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
     });
 }

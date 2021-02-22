@@ -48,7 +48,7 @@ import {
   setDueDate as setDueDateHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
-import { fetchTasklistForUser } from 'sagas/tasklist-saga';
+import { fetchTasklistForUser } from 'sagas/task-list-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { dashboardGroupTasksCountSelector } from 'selectors/dashboard-tasks-selectors';
 import { isEmpty } from 'ramda';

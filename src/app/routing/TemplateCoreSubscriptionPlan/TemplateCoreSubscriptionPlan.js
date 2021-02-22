@@ -1,9 +1,8 @@
-import { getTaskListForUser } from 'actions/task-list-actions';
-import { findPendingTaskListsForUser } from 'actions/invitation-actions';
+import * as TaskListActions from 'actions/task-list-actions';
 
 const onEnterTemplateCoreSubscriptionPlan = async ({ dispatch }) => {
-  await dispatch(getTaskListForUser());
-  await dispatch(findPendingTaskListsForUser());
+  await dispatch(TaskListActions.getTaskListForUser());
+  await dispatch(TaskListActions.getPendingTaskListsForUser());
 };
 
 export default onEnterTemplateCoreSubscriptionPlan;

@@ -6,6 +6,10 @@ export const taskListsSelector = createSelector(
   taskListStateSelector,
   ({ taskLists }) => taskLists,
 );
+export const pendingTaskListsSelector = createSelector(
+  taskListStateSelector,
+  ({ pendingTaskLists }) => pendingTaskLists,
+);
 
 export const taskListMembersSelector = createSelector(
   taskListStateSelector,
