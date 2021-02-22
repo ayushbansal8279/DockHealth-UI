@@ -15,15 +15,15 @@ export function findInvitationsByUserId() {
   };
 }
 
-export function acceptInviteToTaskList(tasklist) {
+export function acceptInviteToTaskList(taskList) {
   return dispatch => {
-    return InvitationApi.acceptInviteToTaskList(tasklist.taskListIdentifier)
+    return InvitationApi.acceptInviteToTaskList(taskList.taskListIdentifier)
       .then(response => {
         onTaskListInvitationAccepted();
         dispatch({
           type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS,
           res: response,
-          tasklist,
+          taskList,
         });
       })
       .catch(error => {
@@ -51,8 +51,8 @@ export function rejectInviteToTaskList(tasklist) {
 export function findPendingTaskListsForUser() {
   return dispatch => {
     return TaskListApi.findPendingTaskListsForUser()
-      .then(tasklist => {
-        dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, tasklist });
+      .then(taskLists => {
+        dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, taskLists });
       })
       .catch(error => {
         throw error;

@@ -8,8 +8,8 @@ import AlertMessages from '../alert/AlertMessages';
 export function getTaskListForUser() {
   return dispatch => {
     return TaskListApi.getTaskListForUser()
-      .then(tasklist => {
-        dispatch({ type: ActionTypes.GET_TASKLIST_SUCCESS, tasklist });
+      .then(taskLists => {
+        dispatch({ type: ActionTypes.GET_TASKLIST_SUCCESS, taskLists });
       })
       .catch(noop);
   };
@@ -18,8 +18,8 @@ export function getTaskListForUser() {
 export function getPendingTaskListForUser() {
   return dispatch => {
     return TaskListApi.findPendingTaskListsForUser()
-      .then(tasklist => {
-        dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, tasklist });
+      .then(taskLists => {
+        dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, taskLists });
       })
       .catch(noop);
   };
@@ -64,16 +64,16 @@ export function saveTaskList(formProps) {
 
   return dispatch =>
     TaskListApi.addTaskList(formProps)
-      .then(tasklist => {
+      .then(taskList => {
         dispatch({
           type: ActionTypes.ADD_TASKLIST_SUCCESS,
           // set the default role for now
-          tasklist: { ...tasklist, role: 'OWNER' },
+          taskList: { ...taskList, role: 'OWNER' },
         });
         dispatch(
           AlertActions.showGlobalAlert('Task List created successfully!'),
         );
-        return tasklist;
+        return taskList;
       })
       .catch(error => {
         dispatch(

@@ -29,7 +29,7 @@ import {
 } from 'actions/action-types';
 
 const initialState = {
-  tasklist: [],
+  taskLists: [],
   tasklistmembers: [],
   allTaskListMembers: [],
   orgusersnotintasklist: [],
@@ -95,8 +95,8 @@ const TaskListReducer = (state = initialState, action) => {
     case ADD_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: [action.tasklist].concat(state.tasklist),
-        currentList: action.tasklist,
+        taskLists: [action.taskList].concat(state.taskLists),
+        currentList: action.taskList,
       };
 
     case REQUEST_LISTS:
@@ -105,13 +105,13 @@ const TaskListReducer = (state = initialState, action) => {
     case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: [action.tasklist].concat(state.tasklist),
+        taskLists: [action.taskList].concat(state.taskLists),
       };
 
     case GET_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: action.tasklist,
+        taskLists: action.taskLists,
         isFetching: false,
       };
 
@@ -199,7 +199,7 @@ const TaskListReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasklist: updateTasklist(state.tasklist),
+        taskLists: updateTasklist(state.taskLists),
         currentList: { notifications: receiveNotifications },
       };
     }
@@ -207,7 +207,7 @@ const TaskListReducer = (state = initialState, action) => {
     case UPDATE_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: state.tasklist.map(taskList =>
+        taskLists: state.taskLists.map(taskList =>
           taskList.taskListIdentifier ===
           action.updatedTasklist.taskListIdentifier
             ? {
@@ -221,7 +221,7 @@ const TaskListReducer = (state = initialState, action) => {
     case DELETE_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: state.tasklist.filter(
+        taskLists: state.taskLists.filter(
           taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
         ),
       };
@@ -229,7 +229,7 @@ const TaskListReducer = (state = initialState, action) => {
     case SET_AS_CURRENT_LIST:
       return {
         ...state,
-        currentList: state.tasklist.find(
+        currentList: state.taskLists.find(
           taskList => taskList.taskListIdentifier === action.taskListIdentifier,
         ),
       };
