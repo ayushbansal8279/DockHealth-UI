@@ -24,15 +24,8 @@ const InvitationReducer = (state = initialState, action) => {
         pendingTasklists: action.tasklist,
       };
 
-    case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
-      return {
-        ...state,
-        pendingTasklists: state.pendingTasklists.filter(
-          tasklist => tasklist !== action.tasklist,
-        ),
-      };
-
     case REJECT_INVITE_TOTASKLIST_SUCCESS:
+    case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
       return {
         ...state,
         pendingTasklists: state.pendingTasklists.filter(
