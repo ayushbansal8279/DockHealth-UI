@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 
-export const taskListStateSelector = state => state.taskListState;
+export const taskListStateSelector = state => state.taskList;
 
-export const taskListSelector = createSelector(
+export const taskListsSelector = createSelector(
   taskListStateSelector,
   ({ tasklist }) => tasklist,
 );
@@ -10,19 +10,4 @@ export const taskListSelector = createSelector(
 export const taskListMembersSelector = createSelector(
   taskListStateSelector,
   ({ tasklistmembers }) => tasklistmembers,
-);
-
-export const membersNotInTaskListSelector = createSelector(
-  taskListStateSelector,
-  ({ orgusersnotintasklist }) => orgusersnotintasklist,
-);
-
-export const listsSelector = createSelector(
-  taskListStateSelector,
-  ({ tasklist }) => tasklist,
-);
-
-export const hasInboxList = createSelector(
-  taskListStateSelector,
-  ({ tasklist }) => tasklist?.some(({ listType }) => listType === 'INBOX'),
 );

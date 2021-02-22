@@ -3,7 +3,7 @@ import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
-import { listsSelector } from 'selectors/task-list-selectors';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as InvitationActions from 'actions/invitation-actions';
@@ -193,7 +193,7 @@ const DashboardView = ({
 };
 
 const mapStateToProps = state => ({
-  lists: listsSelector(state),
+  lists: taskListsSelector(state),
   pendingLists: state.invitationState.pendingTasklists,
   isTaskDrawerOpen: state.taskDrawerState.open,
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),

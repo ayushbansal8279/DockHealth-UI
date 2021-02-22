@@ -29,7 +29,7 @@ const appReducer = combineReducers({
   taskState: TaskReducer,
   userState: UserReducer,
   notification,
-  taskListState: TaskListReducer,
+  taskList: TaskListReducer,
   invitationState: InvitationReducer,
   peopleState: PeopleReducer,
   form: FormReducer,

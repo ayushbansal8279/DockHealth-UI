@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import * as TaskListApi from 'api/tasklist-api';
 import * as TaskApi from 'api/task-api';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 import {
   saveTask,
   storeAsCurrentTask,
@@ -150,7 +151,7 @@ const initializeTaskDrawerHooks = ({
     taskDrawerFocusField: store.taskDrawerState.focusField,
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
-    taskLists: store.taskListState.tasklist,
+    taskLists: taskListsSelector(store),
     labels: isInbox
       ? store.taskLabelState.data.inboxLabels
       : store.taskLabelState.data.listLabels,

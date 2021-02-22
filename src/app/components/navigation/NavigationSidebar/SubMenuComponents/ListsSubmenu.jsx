@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
-import { listsSelector } from 'selectors/task-list-selectors';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 import { pendingListsSelector } from 'selectors/invitation-selectors';
 import { openModal, closeModal } from 'modal/actions';
 import * as TaskListActions from 'actions/tasklist-actions';
@@ -38,7 +38,7 @@ const ListsSubmenu = () => {
   const { taskListIdentifier: activeTaskListIdentifier } = useSelector(
     locationParametersSelector,
   );
-  const activeLists = useSelector(listsSelector);
+  const activeLists = useSelector(taskListsSelector);
   const pendingLists = useSelector(pendingListsSelector);
 
   const dispatch = useDispatch();

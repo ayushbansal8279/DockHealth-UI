@@ -85,7 +85,7 @@ class TaskListActivityFeedContainer extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    activityFeedForAllUserList: state.taskListState.activityFeedForAllUserList,
+    activityFeedForAllUserList: state.taskList.activityFeedForAllUserList,
   };
 }
 

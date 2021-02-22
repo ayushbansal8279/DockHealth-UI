@@ -32,7 +32,7 @@ import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { TaskStatus } from 'helpers/task-helpers';
 
 import {
-  taskListSelector,
+  taskListsSelector,
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -736,7 +736,7 @@ class Home extends Component {
 
 const mapStateToProps = state => ({
   sort: taskDetailsSortSelector(state),
-  taskLists: taskListSelector(state),
+  taskLists: taskListsSelector(state),
   currentUser: userProfileSelector(state),
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   members: taskListMembersSelector(state),

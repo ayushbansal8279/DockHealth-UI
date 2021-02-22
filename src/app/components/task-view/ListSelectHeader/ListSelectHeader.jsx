@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import ListPopover from 'components/common/ListPopover';
@@ -31,7 +32,7 @@ const ListSelectHeader = ({ hasTitle, title, isFetching, taskList }) => {
     false,
   );
 
-  const taskLists = useSelector(store => store.taskListState.tasklist ?? []);
+  const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(
     store => store.invitationState.pendingTasklists ?? [],
   );
