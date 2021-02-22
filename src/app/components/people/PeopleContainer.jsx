@@ -10,7 +10,7 @@ import Spacing from 'components/common/Spacing';
 import * as PeopleActions from 'actions/people-actions';
 import { RobotoTypography } from 'styles/theme';
 import Member from '../members/Member/Member';
-import { ListContainer, ListEntryContainer } from './PeopleContainer.Styled';
+import { ListContainer, ListEntryContainer } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
 function capitalizeFirstLetter(string) {
