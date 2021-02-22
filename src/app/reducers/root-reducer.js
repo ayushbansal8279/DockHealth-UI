@@ -12,7 +12,7 @@ import OrganizationReducer from './organization-reducer';
 import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
 import TaskReducer from './task-reducer';
-import TaskListReducer from './tasklist-reducer';
+import TaskListReducer from './task-list-reducer';
 import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 import ListDetailsReducer from './list-details-reducer';
