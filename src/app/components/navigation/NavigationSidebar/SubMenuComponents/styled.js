@@ -245,7 +245,7 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-  padding-bottom: ${spacing.regular};
+  padding-bottom: 10px;
 `;
 
 export const DrawerListsItemNewLabel = styled.div`
