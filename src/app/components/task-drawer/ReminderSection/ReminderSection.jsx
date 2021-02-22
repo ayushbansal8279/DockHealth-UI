@@ -5,6 +5,7 @@ import Spacing from 'components/common/Spacing';
 import ArrowIcon from 'img/arrow';
 import {
   ReminderContainer,
+  ReminderRow,
   Description,
   SelectArrowImg,
   useReminderTypeInputStyles,
@@ -86,36 +87,40 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
   );
 
   return (
-    <ReminderContainer isDisabled={sectionDisabled}>
-      <Checkbox isChecked={reminderIsOn} onClick={handleToggleReminder} />
-      <Spacing horizontal={4} />
-      <Description>Reminder</Description>
-      <Spacing horizontal={4} />
-      <DropdownInput
-        ref={reminderTypeDropdownReference}
-        name={REMINDER_TYPE_FIELD_NAME}
-        placeholder="--"
-        InputProps={{
-          endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
-          classes: reminderTypeInputClasses,
-        }}
-        textFieldClasses={reminderTypeTextFieldClasses}
-        onSelect={handleSelectReminderType}
-        disabled={sectionDisabled}
-      >
-        {reminderTypeOptions}
-      </DropdownInput>
-      <Spacing horizontal={3} />
-      <Description>at</Description>
-      <Spacing horizontal={3} />
-      <TimeDropdownInput
-        type="secondary"
-        name="reminderTime"
-        savedValue={reminderTime}
-        onSave={handleSelectReminderTime}
-        disabled={sectionDisabled}
-        endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
-      />
+    <ReminderContainer>
+      {dueDate && (
+        <Checkbox isChecked={reminderIsOn} onClick={handleToggleReminder} />
+      )}
+      <ReminderRow isDisabled={sectionDisabled}>
+        <Spacing horizontal={4} />
+        <Description>Reminder</Description>
+        <Spacing horizontal={4} />
+        <DropdownInput
+          ref={reminderTypeDropdownReference}
+          name={REMINDER_TYPE_FIELD_NAME}
+          placeholder="--"
+          InputProps={{
+            endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
+            classes: reminderTypeInputClasses,
+          }}
+          textFieldClasses={reminderTypeTextFieldClasses}
+          onSelect={handleSelectReminderType}
+          disabled={sectionDisabled}
+        >
+          {reminderTypeOptions}
+        </DropdownInput>
+        <Spacing horizontal={3} />
+        <Description>at</Description>
+        <Spacing horizontal={3} />
+        <TimeDropdownInput
+          type="secondary"
+          name="reminderTime"
+          savedValue={reminderTime}
+          onSave={handleSelectReminderTime}
+          disabled={sectionDisabled}
+          endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
+        />
+      </ReminderRow>
     </ReminderContainer>
   );
 };
