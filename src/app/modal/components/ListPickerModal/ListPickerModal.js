@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { getTaskListForUser } from 'actions/tasklist-actions';
+import { getTaskListForUser } from 'actions/task-list-actions';
 import { addTaskList } from 'api/tasklist-api';
 import { ListPickerModalWrapper } from './styled';
 import { ModalWrapperWithPadding, CloseIconButton, CloseIcon } from '../styled';

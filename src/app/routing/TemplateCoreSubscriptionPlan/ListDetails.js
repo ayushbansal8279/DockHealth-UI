@@ -1,5 +1,5 @@
 import { onEnterListDetails } from 'sagas/list-details-saga';
-import { getMembersByTaskListId } from 'actions/tasklist-actions';
+import { getMembersByTaskListId } from 'actions/task-list-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as TaskActions from 'actions/task-actions';

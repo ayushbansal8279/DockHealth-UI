@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
 
 import { invitePersonToOrganization } from 'actions/people-actions';
-import { inviteUserToTaskList } from 'actions/tasklist-actions';
+import { inviteUserToTaskList } from 'actions/task-list-actions';
 import useBoolean from 'hooks/useBoolean';
 
 const REQUIRED_MESSAGE = 'This field is required';

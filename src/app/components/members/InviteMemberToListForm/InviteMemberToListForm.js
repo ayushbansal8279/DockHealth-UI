@@ -6,7 +6,7 @@ import * as TaskListApi from 'api/tasklist-api';
 import * as PeopleApi from 'api/people-api';
 import { showAlert } from 'helpers/utility-functions';
 import { getMemberStatus, isMemberPending } from 'helpers/list-members-helper';
-import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskListActions from 'actions/task-list-actions';
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
 import Loader from 'components/common/Loader/Loader';

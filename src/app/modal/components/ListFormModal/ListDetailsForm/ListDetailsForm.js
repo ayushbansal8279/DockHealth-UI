@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
-import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskListActions from 'actions/task-list-actions';
 import { Grid } from '@material-ui/core';
 import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';

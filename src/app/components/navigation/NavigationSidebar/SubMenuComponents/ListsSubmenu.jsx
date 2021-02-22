@@ -12,7 +12,7 @@ import { MoreVert } from '@material-ui/icons';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import { pendingListsSelector } from 'selectors/invitation-selectors';
 import { openModal, closeModal } from 'modal/actions';
-import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskListActions from 'actions/task-list-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import palette from 'styles/palette';

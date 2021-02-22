@@ -5,7 +5,7 @@ import { isEmpty } from 'ramda';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskListActions from 'actions/task-list-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as TaskListSagaActions from 'sagas/tasklist-saga';
 import * as UserApi from 'api/user-api';

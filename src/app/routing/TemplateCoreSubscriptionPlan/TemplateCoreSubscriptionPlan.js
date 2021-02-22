@@ -1,4 +1,4 @@
-import { getTaskListForUser } from 'actions/tasklist-actions';
+import { getTaskListForUser } from 'actions/task-list-actions';
 import { findPendingTaskListsForUser } from 'actions/invitation-actions';
 
 const onEnterTemplateCoreSubscriptionPlan = async ({ dispatch }) => {

@@ -5,7 +5,7 @@ import { splitAt, isEmpty, isNil } from 'ramda';
 import {
   toggleListNotifications,
   getMembersByTaskListId,
-} from 'actions/tasklist-actions';
+} from 'actions/task-list-actions';
 import { openModal } from 'modal/actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';

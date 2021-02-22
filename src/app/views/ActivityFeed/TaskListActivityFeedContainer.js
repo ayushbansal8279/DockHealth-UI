@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskListActions from 'actions/task-list-actions';
 
 class TaskListActivityFeedContainer extends PureComponent {
   constructor(props) {
