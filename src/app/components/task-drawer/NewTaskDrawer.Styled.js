@@ -75,7 +75,7 @@ export const MemberLabelContainer = styled.div`
 
 export const MemberAdornmentContainer = styled.div`
   align-self: flex-end;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   margin-right: 1rem;
 `;
 

@@ -33,15 +33,17 @@ export function getReminderTypeLabel(reminderType) {
 
 export function getDefaultReminderTime(dueDate) {
   const momentDueDate = moment(dueDate);
-  const dueTime = momentDueDate.isValid()
-    ? momentDueDate.format(TIME_12H_FORMAT)
-    : null;
 
-  if (dueTime && dueTime !== '00:00 AM' && dueTime !== '12:00 AM') {
-    return momentDueDate.add(-1, 'hours').format(TIME_12H_FORMAT);
+  if (!momentDueDate.isValid()) return '06:00 AM';
+
+  if (momentDueDate.isValid() && momentDueDate.hour() === 0) {
+    if (momentDueDate.minute() === 0) {
+      return '06:00 AM';
+    }
+    return '12:00 AM';
   }
 
-  return '06:00 AM';
+  return momentDueDate.add(-1, 'hours').format(TIME_12H_FORMAT);
 }
 
 export function generateReminderTypeSelectOptions() {

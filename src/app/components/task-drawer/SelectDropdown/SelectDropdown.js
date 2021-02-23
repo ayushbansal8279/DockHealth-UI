@@ -189,7 +189,9 @@ const SelectDropdown = React.forwardRef(
             }}
             InputProps={{
               startAdornment:
-                !isFocused && startAdornment ? startAdornment : null,
+                !isFocused && startAdornment && !inputValue
+                  ? startAdornment
+                  : null,
               endAdornment: !disabled ? (
                 <>
                   {typeof onAddItemClick === 'function' &&

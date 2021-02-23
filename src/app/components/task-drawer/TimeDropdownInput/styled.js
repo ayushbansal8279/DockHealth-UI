@@ -8,6 +8,10 @@ import spacing from 'styles/spacing';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
+export const TimeDropdownContainer = styled.div`
+  position: relative;
+`;
+
 export const TimeLabelContainer = styled.div`
   align-items: center;
   color: ${palette.coolGrey1};
@@ -30,7 +34,7 @@ export const TimeInputMaskContainer = styled.div`
   ${({ type }) =>
     type === 'secondary' &&
     `
-    height: auto;
+      height: auto;
       width: 100px;
       padding-bottom: 0;
       border: none;
@@ -43,6 +47,13 @@ export const TimeErrorMessage = styled.span`
   color: ${palette.error};
   font-family: ${FONT_FAMILY};
   font-size: 12px;
+
+  ${({ type }) =>
+    type === 'secondary' &&
+    `
+    position: absolute;
+    left: ${spacing.small};
+  `}
 `;
 
 export const TimeInputMask = styled(
@@ -55,7 +66,7 @@ export const TimeInputMask = styled(
   && {
     width: 100%;
     border: none;
-    color: ${({ error }) => (error ? palette.oPlusRed : palette.mediumGrey)};
+    color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
     font-family: ${FONT_FAMILY};
     font-weight: bold;
     background-color: transparent;

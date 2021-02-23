@@ -125,7 +125,7 @@ const DropdownInput = React.forwardRef(
           }}
           InputProps={{
             ...InputProps,
-            startAdornment: !isPopoverOpen ? InputProps?.startAdornment : null,
+            startAdornment: !displayLabel ? InputProps?.startAdornment : null,
           }}
           inputProps={{
             readOnly: true,
