@@ -21,7 +21,7 @@ import {
   ListItem,
   ListItemButton,
 } from './styled';
-import TextInput from '../NewTaskDrawer.TextInput';
+import TextInput from '../TextInput/TextInput';
 import { AdornmentClear } from '../NewTaskDrawer.Styled';
 
 const SelectDropdown = React.forwardRef(

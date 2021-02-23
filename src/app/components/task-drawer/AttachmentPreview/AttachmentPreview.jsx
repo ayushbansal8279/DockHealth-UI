@@ -18,7 +18,7 @@ import {
   StyledPdfDocument,
   StyledPdfPage,
   UnsupportedFileContainer,
-} from './NewTaskDrawer.AttachmentPreview.Styled';
+} from './styled';
 
 const PREVIEW_DISPLAY_TYPES = {
   AUDIO: 'AUDIO',

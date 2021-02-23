@@ -7,7 +7,7 @@ import { isEmpty } from 'ramda';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
 
-import { getMemoTaskAttachment } from './NewTaskDrawer.AttachmentsSection.Utilities';
+import { getMemoTaskAttachment } from './helpers';
 
 const initializeAttachmentsSectionHooks = () => {
   const attachmentFileInputReference = useRef(null);

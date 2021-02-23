@@ -3,13 +3,13 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member/Member';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 
-import initializeAddCommentHooks from './NewTaskDrawer.AddComment.Hooks';
+import initializeAddCommentHooks from './hooks';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
-} from './NewTaskDrawer.AddComment.Styled';
-import { FocusDrawerFieldEnum } from './helpers';
+} from './styled';
+import { FocusDrawerFieldEnum } from '../helpers';
 
 const AddComment = ({
   addComment,

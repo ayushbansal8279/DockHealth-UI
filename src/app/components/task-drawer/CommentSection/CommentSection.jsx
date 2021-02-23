@@ -1,12 +1,8 @@
 import React from 'react';
-
-import AddComment from './NewTaskDrawer.AddComment';
-import {
-  CommentSectionContainer,
-  CommentsListContainer,
-} from './NewTaskDrawer.CommentSection.Styled';
-import initializeCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
-import { renderComment } from './NewTaskDrawer.CommentSection.Utilities';
+import AddComment from '../AddComment/AddComment';
+import { CommentSectionContainer, CommentsListContainer } from './styled';
+import initializeCommentSectionHooks from './hooks';
+import { renderComment } from './helpers';
 
 const CommentSection = ({
   parentFormSubmit,

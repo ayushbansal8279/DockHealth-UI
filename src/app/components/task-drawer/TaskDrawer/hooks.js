@@ -42,11 +42,8 @@ import { noop } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { MemberAdornmentContainer } from '../NewTaskDrawer.Styled';
-import {
-  getFormattedLabels,
-  TIME_12H_FORMAT,
-  DATE_ISO_FORMAT,
-} from '../helpers';
+import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from '../helpers';
+import { getFormattedLabels } from '../LabelsSection/helpers';
 
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 

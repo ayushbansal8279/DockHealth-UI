@@ -10,7 +10,7 @@ import { isDueDateOverdue } from 'helpers/task-helpers';
 
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import palette from 'styles/palette';
-import DropdownInput from '../NewTaskDrawer.DropdownInput';
+import DropdownInput from '../DropdownInput/DropdownInput';
 import { AdornmentClear, AdornmentContainer } from '../NewTaskDrawer.Styled';
 import { DueDateLabelContainer } from './styled';
 import { DATE_ISO_FORMAT } from '../helpers';

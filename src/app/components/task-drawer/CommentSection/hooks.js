@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { deleteComment, updateComment, addComment } from 'actions/task-actions';
-// import { getGroupedComments } from './NewTaskDrawer.CommentSection.Utilities';
 
 const initializeCommentSectionHooks = ({ modalActions }) => {
   const { selectedTask, currentUser } = useSelector(store => ({

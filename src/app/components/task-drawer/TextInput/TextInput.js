@@ -5,8 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-
-import styles from './NewTaskDrawer.TextInput.Styled';
+import styles from './styled';
 
 const TextInput = React.forwardRef(
   (

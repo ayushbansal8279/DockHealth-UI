@@ -3,14 +3,11 @@ import { RobotoTypography } from 'styles/theme';
 import { Grid } from '@material-ui/core';
 
 import useBoolean from 'hooks/useBoolean';
-import EditableLabel from './NewTaskDrawer.EditableLabel';
-import SelectInput from './NewTaskDrawer.SelectInput';
-import {
-  getFormattedLabels,
-  getFormattedLabel,
-  FocusDrawerFieldEnum,
-} from './helpers';
-import initializeLabelsSectionHooks from './NewTaskDrawer.LabelsSection.Hooks';
+import EditableLabel from '../EditableLabel/EditableLabel';
+import SelectInput from '../SelectInput/SelectInput';
+import { getFormattedLabels, getFormattedLabel } from './helpers';
+import { FocusDrawerFieldEnum } from '../helpers';
+import initializeLabelsSectionHooks from './hooks';
 
 const LabelsSection = ({
   selectedTask,
@@ -78,9 +75,6 @@ const LabelsSection = ({
           refreshLabels={refreshLabels}
         />
       )}
-      // getOptionDisabled={option => {
-      //   return false;
-      // }}
       onItemSelected={(options, selectedOption) => {
         if (selectedTask && selectedTask?.taskIdentifier !== '') {
           saveAddLabel(selectedOption);

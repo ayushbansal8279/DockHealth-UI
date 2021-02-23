@@ -20,6 +20,8 @@ import { useMount, useUnmount } from 'react-use';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import useBoolean from 'hooks/useBoolean';
+import { CondensedH4, AdornmentContainer } from '../NewTaskDrawer.Styled';
+import TextInput from '../TextInput/TextInput';
 import {
   DrawerChip,
   DrawerAddChip,
@@ -27,9 +29,7 @@ import {
   Listbox,
   EndAdornmentActionButton,
   EndAdornmentContainer,
-} from './NewTaskDrawer.SelectInput.Styled';
-import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
-import TextInput from './NewTaskDrawer.TextInput';
+} from './styled';
 
 // const filter = createFilterOptions();
 

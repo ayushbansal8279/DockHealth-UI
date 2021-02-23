@@ -7,7 +7,7 @@ import moment from 'moment';
 import palette from 'styles/palette';
 import SmallSwitchChevronUp from 'img/small-switch-chevron-up';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
-import { HorizontalLabel } from './NewTaskDrawer.Styled';
+import { HorizontalLabel } from '../NewTaskDrawer.Styled';
 import {
   PersonNameLabelContainer,
   AuditDetailsLabelContainer,
@@ -15,9 +15,8 @@ import {
   DateTimeLabelContainer,
   SectionRow,
   HistoryLabel,
-} from './NewTaskDrawer.HistorySection.Styled';
-
-import initializeTaskDrawerHistorySectionHooks from './NewTaskDrawer.HistorySection.Hooks';
+} from './styled';
+import initializeTaskDrawerHistorySectionHooks from './hooks';
 
 const renderHistoryItem = ({
   auditId,

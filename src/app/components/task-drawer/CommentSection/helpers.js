@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import Comment from './NewTaskDrawer.Comment';
+import Comment from './Comment';
 
 const COMMENT_DATE_FORMAT = 'h:mma';
 

@@ -21,7 +21,7 @@ import {
   CommentMemberContainer,
   CommentActionsSection,
   EditCommentButton,
-} from './NewTaskDrawer.CommentSection.Styled';
+} from './styled';
 
 const ADMIN_USER_ROLE = 'ADMIN';
 

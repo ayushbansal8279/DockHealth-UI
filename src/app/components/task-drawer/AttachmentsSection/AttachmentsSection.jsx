@@ -7,7 +7,8 @@ import { RobotoTypography } from 'styles/theme';
 import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import initializeAttachmentsSectionHooks from './NewTaskDrawer.AttachmentsSection.Hooks';
+import AttachmentPreview from '../AttachmentPreview/AttachmentPreview';
+import initializeAttachmentsSectionHooks from './hooks';
 import {
   AttachmentButton,
   AttachmentsContainer,
@@ -17,9 +18,8 @@ import {
   UploadBarContainer,
   UploadBar,
   UploadBarOuterContainer,
-} from './NewTaskDrawer.AttachmentsSection.Styled';
-import AttachmentPreview from './NewTaskDrawer.AttachmentPreview';
-import { getIconFromContentType } from './NewTaskDrawer.AttachmentsSection.Utilities';
+} from './styled';
+import { getIconFromContentType } from './helpers';
 
 const renderAttachmentButton = ({
   openAttachmentPreview,

@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Grid, Divider } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
 import { FormContext } from 'react-hook-form';
@@ -9,25 +9,25 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import InboxIcon from 'img/navigation/InboxIcon';
-import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { isDueDateOverdue } from 'helpers/task-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
-import AttachmentsSection from '../NewTaskDrawer.AttachmentsSection';
-import CommentSection from '../NewTaskDrawer.CommentSection';
+import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
+import CommentSection from '../CommentSection/CommentSection';
 import DueDateInput from '../DueDateInput/DueDateInput';
 import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
 import initializeTaskDrawerHooks from './hooks';
-import initializeTaskDrawerPopoverHooks from '../NewTaskDrawer.PopoverHooks';
-import InviteMemberPopover from '../NewTaskDrawer.InviteMemberPopover';
-import LabelsSection from '../NewTaskDrawer.LabelsSection';
-import PrioritySection from '../NewTaskDrawer.PrioritySection';
-import TopSection from '../NewTaskDrawer.TopSection';
-import HistorySection from '../NewTaskDrawer.HistorySection';
-import SelectInput from '../NewTaskDrawer.SelectInput';
-import StatusSection from '../NewTaskDrawer.StatusSection';
-import TaskDrawerEmailBodyContainer from '../NewTaskDrawer.EmailBody';
+import initializeTaskDrawerPopoverHooks from './popover-hooks';
+import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
+import InviteMemberPopover from '../InviteMemberPopover/InviteMemberPopover';
+import LabelsSection from '../LabelsSection/LabelsSection';
+import PrioritySection from '../PrioritySection/PrioritySection';
+import TopSection from '../TopSection/TopSection';
+import HistorySection from '../HistorySection/HistorySection';
+import SelectInput from '../SelectInput/SelectInput';
+import StatusSection from '../StatusSection/StatusSection';
+import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import {
   DescriptionLabel,
   EnvelopeIconContainer,
@@ -38,6 +38,7 @@ import {
   styleFullRow,
   styleFullRowThin,
   styleEmailRow,
+  styleFirstRow,
   styleLeftColumn,
   styleRightColumn,
   styleLastRow,
@@ -48,6 +49,7 @@ import {
   ParentTaskDescription,
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
+  TaskDrawerDivider,
 } from '../NewTaskDrawer.Styled';
 import {
   getFormattedMembers,
@@ -57,7 +59,6 @@ import {
   getCompletedByLabel,
   TIME_12H_FORMAT,
 } from '../helpers';
-import existingUserTaskDrawerTourHooks from '../NewTaskDrawer.ExistingUserTourHooks';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -190,24 +191,34 @@ const TaskDrawer = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormContext {...formMethods}>
             <Grid container style={styleTaskDrawerContainer}>
-              <TopSection
-                formMethods={formMethods}
-                taskLists={taskLists}
-                selectedTask={selectedTask}
-                taskList={selectedTask?.taskList}
-                reFileTask={reFileTask}
-                onDelete={onDelete}
-                onDuplicate={onDuplicate}
-                onAddSubTask={onAddSubTask}
-                assignToSelf={assignToSelf}
-                isInbox={isInbox}
-                closeTaskDrawer={closeTaskDrawer}
-                setAutoSaveVisible={setAutoSaveVisible}
-                modalActions={modalActions}
-                setTourTaskMenuReference={element => {
-                  taskMenuReference.current = element;
-                }}
-              />
+              <Grid
+                container
+                item
+                xs={12}
+                alignItems="center"
+                justify="space-between"
+                style={styleFirstRow}
+              >
+                <TopSection
+                  formMethods={formMethods}
+                  taskLists={taskLists}
+                  selectedTask={selectedTask}
+                  taskList={selectedTask?.taskList}
+                  reFileTask={reFileTask}
+                  onDelete={onDelete}
+                  onDuplicate={onDuplicate}
+                  onAddSubTask={onAddSubTask}
+                  assignToSelf={assignToSelf}
+                  isInbox={isInbox}
+                  closeTaskDrawer={closeTaskDrawer}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                  modalActions={modalActions}
+                  setTourTaskMenuReference={element => {
+                    taskMenuReference.current = element;
+                  }}
+                />
+              </Grid>
+              {selectedTask && <TaskDrawerDivider />}
               <Spacing vertical={2} />
               {selectedTask?.parentTaskIdentifier && (
                 <Grid item xs={12} style={styleFullRowThin}>
@@ -516,13 +527,7 @@ const TaskDrawer = ({
             </Grid>
           </FormContext>
         </form>
-        <Divider
-          style={{
-            width: '100%',
-            backgroundColor: palette.blueOcean,
-            opacity: '0.3',
-          }}
-        />
+        <TaskDrawerDivider />
         <Grid container item xs={12} style={styleLastRow}>
           <Spacing vertical={2} />
           <div>

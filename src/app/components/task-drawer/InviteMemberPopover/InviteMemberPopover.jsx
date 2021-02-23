@@ -8,10 +8,10 @@ import Spacing from 'components/common/Spacing';
 import { noop } from 'helpers/utility-functions';
 import { RobotoTypography } from 'styles/theme';
 
-import InputPopover from './InputPopover/InputPopover';
-import initializeInviteMemberPopoverHooks from './NewTaskDrawer.InviteMemberPopover.Hooks';
-import { FormContainer } from './NewTaskDrawer.InviteMemberPopover.Styled';
-import TextInput from './NewTaskDrawer.TextInput';
+import InputPopover from '../InputPopover/InputPopover';
+import TextInput from '../TextInput/TextInput';
+import initializeInviteMemberPopoverHooks from './hooks';
+import { FormContainer } from './styled';
 
 const InviteMemberPopover = ({
   anchorElement,

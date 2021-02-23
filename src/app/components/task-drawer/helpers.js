@@ -101,19 +101,6 @@ export const getFormattedMembers = ({ members, currentUser }) => {
   return formattedMembers;
 };
 
-export const getFormattedLabel = label => {
-  const { labelIdentifier, labelName } = label;
-  return {
-    key: labelIdentifier,
-    value: labelIdentifier,
-    label: <CondensedH4>{labelName}</CondensedH4>,
-    displayLabel: labelName,
-  };
-};
-
-export const getFormattedLabels = ({ labels }) =>
-  (labels ?? []).map(label => getFormattedLabel(label));
-
 export const renderPartsWithHighlighting = (optionValue, inputValue) => {
   const matches = match(optionValue, inputValue);
   const parts = parse(optionValue, matches);

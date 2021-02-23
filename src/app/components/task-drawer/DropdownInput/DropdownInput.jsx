@@ -17,8 +17,8 @@ import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 
 import useBoolean from 'hooks/useBoolean';
-import InputPopover from './InputPopover/InputPopover';
-import TextInput from './NewTaskDrawer.TextInput';
+import InputPopover from '../InputPopover/InputPopover';
+import TextInput from '../TextInput/TextInput';
 
 const StyledButton = styled.button`
   display: block;

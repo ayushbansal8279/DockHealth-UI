@@ -9,8 +9,8 @@ import {
   EditableLabelContainer,
   LabelInputContainer,
   LabelInput,
-} from './NewTaskDrawer.EditableLabel.Styled';
-import initializeEditableLabelHooks from './NewTaskDrawer.EditableLabel.Hooks';
+} from './styled';
+import initializeEditableLabelHooks from './hooks';
 
 const EditableLabel = ({
   option,

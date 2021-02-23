@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
-import { List, Chip } from '@material-ui/core';
+import { Chip, Divider } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
@@ -105,20 +105,6 @@ export const HorizontalLabel = styled.span`
   }
 `;
 
-export const FiledInSelect = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  cursor: ${props => (props.enableDropDown ? 'pointer' : '')};
-
-  & > * {
-    font-size: 1rem;
-    margin-left: 6px;
-  }
-`;
-
 export const FormSectionDivider = styled.div`
   background-color: ${props =>
     props.active ? palette.vividPink : palette.unknownGrey2};
@@ -176,11 +162,6 @@ export const AutoSaveLabel = styled.div`
 
 export const rowHeight = 'fit-content';
 
-export const StyledList = styled(List)`
-  max-height: 12.5rem;
-  overflow-y: auto;
-`;
-
 export const styleTaskDrawerContainer = {
   padding: '1rem 0rem 0.5rem  0rem',
 };
@@ -229,29 +210,6 @@ export const AdornmentClear = styled(Close)`
     color: ${palette.coolGrey2};
     cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
   }
-`;
-
-export const ActionButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-`;
-
-export const ListNameContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
-export const ListNameSelectContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
 `;
 
 export const DescriptionContainer = styled.div`
@@ -315,4 +273,12 @@ export const CompletedByLabel = styled.p`
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
+`;
+
+export const TaskDrawerDivider = styled(Divider)`
+  && {
+    width: 100%;
+    background-color: ${palette.blueOcean};
+    opacity: 0.3;
+  }
 `;

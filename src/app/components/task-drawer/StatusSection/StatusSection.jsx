@@ -2,21 +2,19 @@ import React, { useRef } from 'react';
 import SmallSwitchChevron from 'img/list-switch-chevron';
 import palette from 'styles/palette';
 
-import DropdownInput from './NewTaskDrawer.DropdownInput';
-import initializeStatusSectionHooks, {
-  STATUSES,
-} from './NewTaskDrawer.StatusSection.Hooks';
+import DropdownInput from '../DropdownInput/DropdownInput';
+import initializeStatusSectionHooks, { STATUSES } from './hooks';
 import {
   StatusFlag,
   StatusLabelContainer,
   StatusFieldContainer,
   StatusFlagContainer,
-} from './NewTaskDrawer.StatusSection.Styled';
+} from './styled';
 import {
   EndAdornmentContainer,
   CondensedH4,
   AdornmentContainer,
-} from './NewTaskDrawer.Styled';
+} from '../NewTaskDrawer.Styled';
 
 const statusOptions = STATUSES.map(({ value, label, color }) => ({
   key: value,
