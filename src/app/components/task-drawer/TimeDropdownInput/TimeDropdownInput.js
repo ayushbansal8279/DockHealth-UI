@@ -7,6 +7,7 @@ import { isOutsideScrollView } from 'helpers/scroll-helper';
 import { AdornmentClear } from '../NewTaskDrawer.Styled';
 import InputPopover from '../InputPopover/InputPopover';
 import {
+  TimeDropdownContainer,
   TimeLabelContainer,
   TimeInputMaskContainer,
   TimeInputMask,
@@ -25,6 +26,7 @@ const TimeDropdownInput = ({
   savedValue,
   onSave,
   endAdornment,
+  validate,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
@@ -70,46 +72,55 @@ const TimeDropdownInput = ({
     if (savedValue) {
       if (savedValue === '00:00 AM' || savedValue === '12:00 AM') {
         setValue(name, '');
-        clearError(name);
       } else {
         setValue(name, savedValue);
       }
     } else {
       setValue(name, '');
     }
+    clearError(name);
   }, [clearError, name, savedValue, setValue]);
 
   useEffect(() => {
     resetDueTimeInput();
   }, [resetDueTimeInput]);
 
+  const validateInput = useCallback(
+    value => {
+      if (!isTimeValid(value) && !isTimeInputEmpty(value)) {
+        setError(
+          name,
+          'manual',
+          'Time must be between 12:00 am and 11:59 pm and include am/pm',
+        );
+        unsetIsPopoverOpen();
+        return false;
+      }
+
+      if (typeof validate === 'function') {
+        try {
+          validate(value);
+        } catch (error_) {
+          setError(name, 'manual', error_.message || '');
+          return false;
+        }
+      }
+
+      return true;
+    },
+    [name, setError, unsetIsPopoverOpen, validate],
+  );
+
   const saveTime = useCallback(
     value => {
-      if (value !== savedValue) {
-        if (!isTimeValid(value) && !isTimeInputEmpty(value)) {
-          setError(
-            name,
-            'manual',
-            'Time must be between 12:00 am and 11:59 pm and include am/pm',
-          );
-          unsetIsPopoverOpen();
-          return;
-        }
+      if (value !== savedValue && validateInput(value)) {
         clearError(name);
         setValue(name, value);
         setActiveElementIndex(null);
         onSave(value);
       }
     },
-    [
-      clearError,
-      name,
-      onSave,
-      savedValue,
-      setError,
-      setValue,
-      unsetIsPopoverOpen,
-    ],
+    [clearError, name, onSave, savedValue, setValue, validateInput],
   );
 
   const handleInputBlur = useCallback(() => {
@@ -135,20 +146,11 @@ const TimeDropdownInput = ({
         case 'Enter':
           event.preventDefault();
           event.stopPropagation();
-          if (
-            (!isTimeValid(timeValue) || isTimeInputEmpty(timeValue)) &&
-            activeElementIndex === null
-          ) {
-            setError(
-              name,
-              'manual',
-              'Time must be between 12:00 am and 11:59 pm and include am/pm',
-            );
-          } else if (activeElementIndex !== null && isPopoverOpen) {
+          if (activeElementIndex !== null && isPopoverOpen) {
             setValue(name, options[activeElementIndex]);
             setActiveElementIndex(null);
             moveCursorToEnd();
-          } else {
+          } else if (validateInput(timeValue)) {
             // eslint-disable-next-line no-unused-expressions
             event.target?.blur();
           }
@@ -212,23 +214,23 @@ const TimeDropdownInput = ({
       }
     },
     [
-      activeElementIndex,
-      timeValue,
-      isPopoverOpen,
-      moveCursorToEnd,
-      name,
-      options,
       resetDueTimeInput,
-      setError,
+      unsetIsPopoverOpen,
+      moveCursorToEnd,
+      activeElementIndex,
+      isPopoverOpen,
+      validateInput,
+      timeValue,
       setIsPopoverOpen,
       setValue,
-      unsetIsPopoverOpen,
+      name,
+      options,
     ],
   );
 
   const handleInputChange = useCallback(
     event => {
-      const newValue = event.target?.value;
+      const newValue = event.target?.value?.toUpperCase();
       if (errors[name]) clearError(name);
       if (!isPopoverOpen) setIsPopoverOpen();
       setValue(name, newValue);
@@ -261,7 +263,7 @@ const TimeDropdownInput = ({
   );
 
   return (
-    <div>
+    <TimeDropdownContainer>
       {label && <TimeLabelContainer>{label}</TimeLabelContainer>}
       <TimeInputMaskContainer
         type={type}
@@ -286,7 +288,7 @@ const TimeDropdownInput = ({
           onFocus={setIsPopoverOpen}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
-          error={error}
+          error={error || errors[name]}
           autocomplete="off"
           disabled={disabled}
         />
@@ -328,9 +330,9 @@ const TimeDropdownInput = ({
         </TimeOptionsContainer>
       </InputPopover>
       {errors?.[name]?.message && (
-        <TimeErrorMessage>{errors[name].message}</TimeErrorMessage>
+        <TimeErrorMessage type={type}>{errors[name].message}</TimeErrorMessage>
       )}
-    </div>
+    </TimeDropdownContainer>
   );
 };
 
@@ -343,6 +345,7 @@ TimeDropdownInput.propTypes = {
   savedValue: string.isRequired,
   onSave: func.isRequired,
   endAdornment: node,
+  validate: func,
 };
 
 TimeDropdownInput.defaultProps = {
@@ -351,6 +354,7 @@ TimeDropdownInput.defaultProps = {
   disabled: false,
   error: false,
   endAdornment: null,
+  validate: null,
 };
 
 export default TimeDropdownInput;

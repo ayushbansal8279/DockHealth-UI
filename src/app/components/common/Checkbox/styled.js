@@ -20,9 +20,13 @@ export const CheckboxInput = styled.button`
   justify-content: center;
   align-items: center;
 
-  &:hover {
-    border: 1px solid ${palette.mediumGrey};
-  }
+  ${({ disabled }) =>
+    !disabled &&
+    `
+      &:hover {
+        border: 1px solid ${palette.mediumGrey};
+      }
+  `}
 
   ${Icon} {
     visibility: ${props => (props.isChecked ? 'visible' : 'hidden')};

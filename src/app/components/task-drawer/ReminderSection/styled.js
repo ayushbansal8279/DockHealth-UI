@@ -14,14 +14,6 @@ export const ReminderContainer = styled.div`
   margin-bottom: ${spacing.regular};
   transition: opacity 0.4s ease-out;
   font-family: 'Roboto Condensed', sans-serif;
-`;
-
-export const ReminderRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
   opacity: ${({ isDisabled }) => (isDisabled ? 0.4 : 1)};
 `;
 

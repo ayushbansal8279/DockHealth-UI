@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import moment from 'moment';
 import { useFormContext } from 'react-hook-form';
+import { isDueDateOverdue } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import ArrowIcon from 'img/arrow';
 import {
   ReminderContainer,
-  ReminderRow,
   Description,
   SelectArrowImg,
   useReminderTypeInputStyles,
@@ -20,6 +21,7 @@ import {
 } from './helpers';
 import DropdownInput from '../NewTaskDrawer.DropdownInput';
 import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
+import { TIME_12H_FORMAT } from '../helpers';
 
 const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
   const { reminderType, reminderTime, dueDate } = selectedTask || {};
@@ -50,12 +52,19 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
 
   const reminderTypeValue = watch(REMINDER_TYPE_FIELD_NAME);
 
+  const isTaskDueDateOverdue = isDueDateOverdue(dueDate);
+
   const reminderIsOn =
     reminderTypeValue && reminderTypeValue !== ReminderType.NONE;
 
-  const sectionDisabled = isDisabled || !reminderIsOn;
+  const sectionDisabled =
+    isDisabled || !reminderIsOn || isDueDateOverdue(dueDate);
+
+  const isCheckboxDisabled = isDisabled || isTaskDueDateOverdue;
 
   const handleToggleReminder = useCallback(() => {
+    if (isDisabled) return;
+
     if (!reminderTypeValue || reminderTypeValue === ReminderType.NONE) {
       const defaultType = ReminderType.DAY_OF;
       const defaultTime = getDefaultReminderTime(dueDate);
@@ -68,14 +77,20 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
       setValue(REMINDER_TIME_FIELD_NAME, null);
       onSave({ reminderType: ReminderType.NONE, reminderTime: null });
     }
-  }, [dueDate, onSave, reminderTypeValue, setValue]);
+  }, [dueDate, onSave, reminderTypeValue, setValue, isDisabled]);
 
   const handleSelectReminderType = useCallback(
     value => {
       setValue(REMINDER_TYPE_FIELD_NAME, value);
-      onSave({ reminderType: value });
+      if (value === ReminderType.DAY_OF) {
+        const defaultTime = getDefaultReminderTime(dueDate);
+        setValue(REMINDER_TIME_FIELD_NAME, defaultTime);
+        onSave({ reminderType: value, reminderTime: defaultTime });
+      } else {
+        onSave({ reminderType: value });
+      }
     },
-    [onSave, setValue],
+    [dueDate, onSave, setValue],
   );
 
   const handleSelectReminderTime = useCallback(
@@ -86,41 +101,65 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
     [onSave, setValue],
   );
 
+  const validateReminderTime = useCallback(
+    newValue => {
+      const momentDueDate = moment(dueDate);
+
+      if (
+        reminderType === ReminderType.DAY_OF &&
+        !(momentDueDate.hour() === 0 && momentDueDate.minute() === 0)
+      ) {
+        const momentReminderTime = moment(newValue, TIME_12H_FORMAT);
+        const reminderMoment = momentDueDate
+          .clone()
+          .set('hour', momentReminderTime.hour())
+          .set('minute', momentReminderTime.minute());
+
+        if (reminderMoment.isAfter(momentDueDate)) {
+          throw new Error('Past task due time');
+        }
+      }
+      return true;
+    },
+    [dueDate, reminderType],
+  );
+
   return (
-    <ReminderContainer>
-      {dueDate && (
-        <Checkbox isChecked={reminderIsOn} onClick={handleToggleReminder} />
-      )}
-      <ReminderRow isDisabled={sectionDisabled}>
-        <Spacing horizontal={4} />
-        <Description>Reminder</Description>
-        <Spacing horizontal={4} />
-        <DropdownInput
-          ref={reminderTypeDropdownReference}
-          name={REMINDER_TYPE_FIELD_NAME}
-          placeholder="--"
-          InputProps={{
-            endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
-            classes: reminderTypeInputClasses,
-          }}
-          textFieldClasses={reminderTypeTextFieldClasses}
-          onSelect={handleSelectReminderType}
-          disabled={sectionDisabled}
-        >
-          {reminderTypeOptions}
-        </DropdownInput>
-        <Spacing horizontal={3} />
-        <Description>at</Description>
-        <Spacing horizontal={3} />
-        <TimeDropdownInput
-          type="secondary"
-          name="reminderTime"
-          savedValue={reminderTime}
-          onSave={handleSelectReminderTime}
-          disabled={sectionDisabled}
-          endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
-        />
-      </ReminderRow>
+    <ReminderContainer isDisabled={sectionDisabled}>
+      <Checkbox
+        isDisabled={isCheckboxDisabled}
+        isChecked={reminderIsOn}
+        onClick={handleToggleReminder}
+      />
+      <Spacing horizontal={4} />
+      <Description>Reminder</Description>
+      <Spacing horizontal={4} />
+      <DropdownInput
+        ref={reminderTypeDropdownReference}
+        name={REMINDER_TYPE_FIELD_NAME}
+        placeholder="--"
+        InputProps={{
+          endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
+          classes: reminderTypeInputClasses,
+        }}
+        textFieldClasses={reminderTypeTextFieldClasses}
+        onSelect={handleSelectReminderType}
+        disabled={sectionDisabled}
+      >
+        {reminderTypeOptions}
+      </DropdownInput>
+      <Spacing horizontal={3} />
+      <Description>at</Description>
+      <Spacing horizontal={3} />
+      <TimeDropdownInput
+        type="secondary"
+        name="reminderTime"
+        savedValue={reminderTime}
+        onSave={handleSelectReminderTime}
+        disabled={sectionDisabled}
+        endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
+        validate={validateReminderTime}
+      />
     </ReminderContainer>
   );
 };

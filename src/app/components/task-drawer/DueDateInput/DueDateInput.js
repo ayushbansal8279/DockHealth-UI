@@ -171,7 +171,9 @@ const DueDateInput = ({
           ) : (
             ''
           ),
-        startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+        startAdornment: !currentDueDate ? (
+          <AdornmentContainer>+</AdornmentContainer>
+        ) : null,
       }}
       inputProps={{
         value: currentDueDate
