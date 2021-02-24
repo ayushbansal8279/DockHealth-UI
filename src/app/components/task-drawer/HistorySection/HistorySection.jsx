@@ -7,7 +7,7 @@ import moment from 'moment';
 import palette from 'styles/palette';
 import SmallSwitchChevronUp from 'img/small-switch-chevron-up';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
-import { HorizontalLabel } from '../NewTaskDrawer.Styled';
+import { HorizontalLabel } from '../styled';
 import {
   PersonNameLabelContainer,
   AuditDetailsLabelContainer,

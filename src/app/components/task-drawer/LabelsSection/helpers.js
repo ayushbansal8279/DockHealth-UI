@@ -1,12 +1,16 @@
 import React from 'react';
-import { CondensedH4 } from '../NewTaskDrawer.Styled';
+import { RobotoTypography } from 'styles/theme';
 
 export const getFormattedLabel = label => {
   const { labelIdentifier, labelName } = label;
   return {
     key: labelIdentifier,
     value: labelIdentifier,
-    label: <CondensedH4>{labelName}</CondensedH4>,
+    label: (
+      <RobotoTypography condensed variant="h4">
+        {labelName}
+      </RobotoTypography>
+    ),
     displayLabel: labelName,
   };
 };

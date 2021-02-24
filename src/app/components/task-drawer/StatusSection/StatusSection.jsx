@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import SmallSwitchChevron from 'img/list-switch-chevron';
 import palette from 'styles/palette';
+import { RobotoTypography } from 'styles/theme';
 
 import DropdownInput from '../DropdownInput/DropdownInput';
 import initializeStatusSectionHooks, { STATUSES } from './hooks';
@@ -10,11 +11,7 @@ import {
   StatusFieldContainer,
   StatusFlagContainer,
 } from './styled';
-import {
-  EndAdornmentContainer,
-  CondensedH4,
-  AdornmentContainer,
-} from '../NewTaskDrawer.Styled';
+import { EndAdornmentContainer, AdornmentContainer } from '../styled';
 
 const statusOptions = STATUSES.map(({ value, label, color }) => ({
   key: value,
@@ -22,7 +19,9 @@ const statusOptions = STATUSES.map(({ value, label, color }) => ({
   label: isHovered => (
     <StatusLabelContainer isHovered={isHovered}>
       <StatusFlag color={color} />
-      <CondensedH4>{label}</CondensedH4>
+      <RobotoTypography condensed variant="h4">
+        {label}
+      </RobotoTypography>
     </StatusLabelContainer>
   ),
   displayLabel: label,

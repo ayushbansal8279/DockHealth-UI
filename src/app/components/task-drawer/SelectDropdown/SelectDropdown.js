@@ -22,7 +22,7 @@ import {
   ListItemButton,
 } from './styled';
 import TextInput from '../TextInput/TextInput';
-import { AdornmentClear } from '../NewTaskDrawer.Styled';
+import { AdornmentClear } from '../styled';
 
 const SelectDropdown = React.forwardRef(
   (

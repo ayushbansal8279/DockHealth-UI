@@ -4,7 +4,7 @@ import { bool, func, node, oneOf, string } from 'prop-types';
 import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
-import { AdornmentClear } from '../NewTaskDrawer.Styled';
+import { AdornmentClear } from '../styled';
 import InputPopover from '../InputPopover/InputPopover';
 import {
   TimeDropdownContainer,

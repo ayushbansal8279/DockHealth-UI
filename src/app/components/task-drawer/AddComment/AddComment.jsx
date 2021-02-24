@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member/Member';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import initializeAddCommentHooks from './hooks';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
-import { FocusDrawerFieldEnum } from '../helpers';
 
 const AddComment = ({
   addComment,
@@ -32,7 +31,7 @@ const AddComment = ({
 
   useEffect(() => {
     if (
-      taskDrawerFocusField === FocusDrawerFieldEnum.COMMENT &&
+      taskDrawerFocusField === DrawerFieldEnum.COMMENT &&
       addCommentReference?.current
     ) {
       addCommentReference.current.editor.focus();

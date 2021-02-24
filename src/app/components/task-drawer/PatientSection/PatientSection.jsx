@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria, addPatient } from 'api/patient-api';
 import { noop } from 'helpers/utility-functions';
-import { AdornmentContainer } from '../NewTaskDrawer.Styled';
+import { AdornmentContainer } from '../styled';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 

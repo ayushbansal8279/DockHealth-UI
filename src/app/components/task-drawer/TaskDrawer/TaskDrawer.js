@@ -12,6 +12,7 @@ import InboxIcon from 'img/navigation/InboxIcon';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { isDueDateOverdue } from 'helpers/task-helpers';
+import { DrawerFieldEnum, TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
@@ -28,6 +29,9 @@ import HistorySection from '../HistorySection/HistorySection';
 import SelectInput from '../SelectInput/SelectInput';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
+import SubtasksSection from '../SubtasksSection/SubtasksSection';
+import ReminderSection from '../ReminderSection/ReminderSection';
+import PatientSection from '../PatientSection/PatientSection';
 import {
   DescriptionLabel,
   EnvelopeIconContainer,
@@ -50,18 +54,12 @@ import {
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
   TaskDrawerDivider,
-} from '../NewTaskDrawer.Styled';
+} from './styled';
 import {
   getFormattedMembers,
   renderMemberoptionWithHighlighting,
-  FocusDrawerFieldEnum,
-  TaskDrawerFields,
   getCompletedByLabel,
-  TIME_12H_FORMAT,
-} from '../helpers';
-import SubtasksSection from '../SubtasksSection/SubtasksSection';
-import ReminderSection from '../ReminderSection/ReminderSection';
-import PatientSection from '../PatientSection/PatientSection';
+} from './helpers';
 
 const TaskDrawer = ({
   isInbox,
@@ -329,10 +327,8 @@ const TaskDrawer = ({
                     selectedTask?.patient || selectedParentTask?.patient || null
                   }
                   currentOrganization={currentOrganization}
-                  disabled={disabledFileds.includes(TaskDrawerFields.PATIENT)}
-                  autofocus={
-                    taskDrawerFocusField === FocusDrawerFieldEnum.PATIENT
-                  }
+                  disabled={disabledFileds.includes(DrawerFieldEnum.PATIENT)}
+                  autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
                   onPatientSave={handlePatientSave}
                 />
               </Grid>

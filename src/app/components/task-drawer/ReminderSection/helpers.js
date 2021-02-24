@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
+import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { ReminderTypeSelectOption } from './styled';
-import { TIME_12H_FORMAT } from '../helpers';
 
 export const REMINDER_TYPE_FIELD_NAME = 'reminderType';
 export const REMINDER_TIME_FIELD_NAME = 'reminderTime';

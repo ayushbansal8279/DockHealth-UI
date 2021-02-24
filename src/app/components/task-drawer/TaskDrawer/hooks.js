@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import * as TaskListApi from 'api/task-list-api';
 import * as TaskApi from 'api/task-api';
+import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import {
   saveTask,
@@ -41,8 +42,7 @@ import { noop } from 'helpers/utility-functions';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { MemberAdornmentContainer } from '../NewTaskDrawer.Styled';
-import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from '../helpers';
+import { MemberAdornmentContainer } from './styled';
 import { getFormattedLabels } from '../LabelsSection/helpers';
 
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';

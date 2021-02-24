@@ -1,14 +1,9 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
-import { RobotoTypography } from 'styles/theme';
 import { Chip, Divider } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
-
-const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
 export const TaskDrawerContainer = styled.div`
   background-color: ${palette.white};
@@ -39,26 +34,6 @@ export const TaskDrawerBackground = styled.div`
   z-index: 98;
 `;
 
-export const AdornmentContainer = styled.div`
-  align-items: center;
-  align-self: flex-end;
-  color: ${palette.orange};
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.3rem;
-  width: 2ch;
-`;
-
-export const EndAdornmentContainer = styled.div`
-  align-items: center;
-  align-self: flex-end;
-  color: ${palette.orange};
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.7rem;
-  width: 2ch;
-`;
-
 export const MemberLabelContainer = styled.div`
   align-items: center;
   display: grid;
@@ -85,24 +60,6 @@ export const HiddenFieldContainer = styled.div`
 
 export const EnvelopeIconContainer = styled.div`
   fill: ${palette.white};
-`;
-
-export const CondensedH4 = ({ ...props }) => (
-  <RobotoTypography condensed variant="h4" {...props} />
-);
-
-export const CondensedH5 = ({ ...props }) => (
-  <RobotoTypography condensed variant="h5" {...props} />
-);
-
-export const HorizontalLabel = styled.span`
-  color: ${palette.coolGrey1};
-  fontfamily: ${FONT_FAMILY};
-  margin-right: 5px;
-  & > * {
-    font-size: 1rem;
-    margin-right: 5px;
-  }
 `;
 
 export const FormSectionDivider = styled.div`
@@ -202,15 +159,6 @@ export const styleRightColumn = {
   padding: '1rem 2rem 1rem 1rem',
   height: rowHeight,
 };
-
-export const AdornmentClear = styled(Close)`
-  && {
-    width: 20px;
-    height: 20px;
-    color: ${palette.coolGrey2};
-    cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
-  }
-`;
 
 export const DescriptionContainer = styled.div`
   font-family: 'Roboto Condensed', sans-serif;

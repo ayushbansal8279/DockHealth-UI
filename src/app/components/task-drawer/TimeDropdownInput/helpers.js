@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { TIME_12H_FORMAT } from '../helpers';
+import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 
 const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 

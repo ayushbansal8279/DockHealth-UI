@@ -8,7 +8,7 @@ import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
 import InputPopover from '../InputPopover/InputPopover';
-import { HorizontalLabel, CondensedH4 } from '../NewTaskDrawer.Styled';
+import { HorizontalLabel } from '../styled';
 import {
   FiledInSelect,
   StyledList,
@@ -78,13 +78,15 @@ const renderTaskList = ({
       onClick={hasSubtasks ? openMoveModal : changeFiledInList}
       button
     >
-      <CondensedH4
+      <RobotoTypography
+        condensed
+        variant="h4"
         style={{
           color: selectedTaskListName === listName ? palette.blueOcean : '',
         }}
       >
         {listName}
-      </CondensedH4>
+      </RobotoTypography>
     </ListItem>
   );
 };
@@ -268,7 +270,9 @@ const TopSection = ({
                     borderBottom: `1px solid ${palette.coolGrey3}`,
                   }}
                 >
-                  <CondensedH4>Add Subtask</CondensedH4>
+                  <RobotoTypography condensed variant="h4">
+                    Add Subtask
+                  </RobotoTypography>
                 </ListItem>
               )}
             <ListItem
@@ -286,7 +290,9 @@ const TopSection = ({
                 borderBottom: `1px solid ${palette.coolGrey3}`,
               }}
             >
-              <CondensedH4>Duplicate</CondensedH4>
+              <RobotoTypography condensed variant="h4">
+                Duplicate
+              </RobotoTypography>
             </ListItem>
             {selectedTask &&
               selectedTask.taskIdentifier != null &&
@@ -302,7 +308,9 @@ const TopSection = ({
                     borderBottom: `none`,
                   }}
                 >
-                  <CondensedH4>Delete</CondensedH4>
+                  <RobotoTypography condensed variant="h4">
+                    Delete
+                  </RobotoTypography>
                 </ListItem>
               )}
           </StyledList>

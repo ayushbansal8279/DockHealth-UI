@@ -27,6 +27,7 @@ import {
   getLabelsIconTooltipTitle,
   isDueDateOverdue,
 } from 'helpers/task-helpers';
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import {
   Container,
   IconsSection,
@@ -39,7 +40,6 @@ import {
   IconContainer,
   DescriptionLabel,
 } from './styled';
-import { FocusDrawerFieldEnum } from '../helpers';
 
 const DUE_DATE_PICKER_OPTIONS = [
   {
@@ -91,15 +91,15 @@ const Subtask = ({ subtask, currentUser }) => {
   );
 
   const handleCommentIconClick = () => {
-    dispatch(openDrawer(FocusDrawerFieldEnum.COMMENT));
+    dispatch(openDrawer(DrawerFieldEnum.COMMENT));
   };
 
   const handleLabelIconClick = () => {
-    dispatch(openDrawer(FocusDrawerFieldEnum.LABEL));
+    dispatch(openDrawer(DrawerFieldEnum.LABEL));
   };
 
   const handleAttachementIconClick = () => {
-    dispatch(openDrawer(FocusDrawerFieldEnum.ATTACHEMENT));
+    dispatch(openDrawer(DrawerFieldEnum.ATTACHEMENT));
   };
 
   return (

@@ -5,6 +5,7 @@ import { isDueDateOverdue } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import ArrowIcon from 'img/arrow';
+import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import {
   ReminderContainer,
   Description,
@@ -21,7 +22,6 @@ import {
 } from './helpers';
 import DropdownInput from '../DropdownInput/DropdownInput';
 import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
-import { TIME_12H_FORMAT } from '../helpers';
 
 const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
   const { reminderType, reminderTime, dueDate } = selectedTask || {};

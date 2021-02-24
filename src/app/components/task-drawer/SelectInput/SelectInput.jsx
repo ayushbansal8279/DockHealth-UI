@@ -13,6 +13,7 @@ import {
   shape,
   string,
 } from 'prop-types';
+import { RobotoTypography } from 'styles/theme';
 import { prop, propOr } from 'ramda';
 import React, { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -20,7 +21,7 @@ import { useMount, useUnmount } from 'react-use';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import useBoolean from 'hooks/useBoolean';
-import { CondensedH4, AdornmentContainer } from '../NewTaskDrawer.Styled';
+import { AdornmentContainer } from '../styled';
 import TextInput from '../TextInput/TextInput';
 import {
   DrawerChip,
@@ -99,9 +100,9 @@ const renderTags = ({
           <DrawerChip
             key={`label_${option?.key}`}
             label={
-              <CondensedH4>
+              <RobotoTypography condensed variant="h4">
                 {typeof option === 'string' ? option : option?.displayLabel}
-              </CondensedH4>
+              </RobotoTypography>
             }
             {...getTagProps({ index })}
           />
@@ -110,9 +111,9 @@ const renderTags = ({
           <DrawerChip
             key={`label_${option?.key}`}
             label={
-              <CondensedH4>
+              <RobotoTypography condensed variant="h4">
                 {typeof option === 'string' ? option : option?.displayLabel}
-              </CondensedH4>
+              </RobotoTypography>
             }
             {...getTagProps({ index })}
             onDelete={undefined}
@@ -122,7 +123,11 @@ const renderTags = ({
           !popupOpen &&
           !focusState && (
             <DrawerAddChip
-              label={<CondensedH4>+</CondensedH4>}
+              label={
+                <RobotoTypography condensed variant="h4">
+                  +
+                </RobotoTypography>
+              }
               onClick={() => {
                 openAutocomplete();
               }}

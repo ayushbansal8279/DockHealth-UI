@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { RobotoTypography } from 'styles/theme';
 import { Grid } from '@material-ui/core';
-
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import useBoolean from 'hooks/useBoolean';
 import EditableLabel from '../EditableLabel/EditableLabel';
 import SelectInput from '../SelectInput/SelectInput';
 import { getFormattedLabels, getFormattedLabel } from './helpers';
-import { FocusDrawerFieldEnum } from '../helpers';
 import initializeLabelsSectionHooks from './hooks';
 
 const LabelsSection = ({
@@ -105,7 +104,7 @@ const LabelsSection = ({
         setCurrentlyEditedOption(null);
         saveTaskOnFocus();
       }}
-      autoFocusEnabled={taskDrawerFocusField === FocusDrawerFieldEnum.LABEL}
+      autoFocusEnabled={taskDrawerFocusField === DrawerFieldEnum.LABEL}
     >
       {formattedLabels}
     </SelectInput>

@@ -7,13 +7,13 @@ import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
 import { RobotoTypography } from 'styles/theme';
 import { isDueDateOverdue } from 'helpers/task-helpers';
+import { DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import palette from 'styles/palette';
 import DropdownInput from '../DropdownInput/DropdownInput';
-import { AdornmentClear, AdornmentContainer } from '../NewTaskDrawer.Styled';
+import { AdornmentClear, AdornmentContainer } from '../styled';
 import { DueDateLabelContainer } from './styled';
-import { DATE_ISO_FORMAT } from '../helpers';
 
 const DATE_US_FORMAT = 'MM/DD/YY';
 const SET_DATE_VALUE = 'set-date';

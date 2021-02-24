@@ -6,25 +6,8 @@ import palette from 'styles/palette';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import moment from 'moment';
-import {
-  MemberLabelContainer,
-  CondensedH4,
-  CompletedByLabel,
-} from './NewTaskDrawer.Styled';
-
-export const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-export const TIME_12H_FORMAT = 'hh:mm A';
-
-export const FocusDrawerFieldEnum = {
-  PATIENT: 'patient',
-  COMMENT: 'comment',
-  ATTACHEMENT: 'attachement',
-  LABEL: 'label',
-};
-
-export const TaskDrawerFields = {
-  PATIENT: 1,
-};
+import { RobotoTypography } from 'styles/theme';
+import { MemberLabelContainer, CompletedByLabel } from './styled';
 
 export const getCompletedByLabel = (completedBy, completedDt) => {
   const completedByName =
@@ -54,7 +37,9 @@ export const getFormattedMembers = ({ members, currentUser }) => {
       value: userIdentifier,
       label: (
         <MemberLabelContainer key={member?.userIdentifier}>
-          <CondensedH4>{userName}</CondensedH4>
+          <RobotoTypography condensed variant="h4">
+            {userName}
+          </RobotoTypography>
           <Member member={member} size={34} />
         </MemberLabelContainer>
       ),
@@ -68,7 +53,9 @@ export const getFormattedMembers = ({ members, currentUser }) => {
     value: 'UNASSIGNED',
     label: (
       <MemberLabelContainer>
-        <CondensedH4>Unassigned</CondensedH4>
+        <RobotoTypography condensed variant="h4">
+          Unassigned
+        </RobotoTypography>
         <RemoveCircleOutlineRounded
           color="action"
           style={{ height: '34px', width: '34px' }}
@@ -91,7 +78,9 @@ export const getFormattedMembers = ({ members, currentUser }) => {
           borderBottom: `1px solid ${palette.coolGrey3}`,
         }}
       >
-        <CondensedH4>Assign to me</CondensedH4>
+        <RobotoTypography condensed variant="h4">
+          Assign to me
+        </RobotoTypography>
         <Member member={currentUser} size={34} />
       </MemberLabelContainer>
     ),

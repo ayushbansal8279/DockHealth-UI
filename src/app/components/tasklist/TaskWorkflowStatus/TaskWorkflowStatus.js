@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { STATUSES } from 'components/task-drawer/StatusSection/hooks';
-import { CondensedH4 } from 'components/task-drawer/NewTaskDrawer.Styled';
+import { RobotoTypography } from 'styles/theme';
 import {
   StyledPopover,
   Box,
@@ -58,7 +58,9 @@ const TaskWorkflowStatus = ({
                   }}
                 >
                   <StatusFlag color={color} />
-                  <CondensedH4>{label}</CondensedH4>
+                  <RobotoTypography condensed variant="h4">
+                    {label}
+                  </RobotoTypography>
                 </StatusLabelContainer>
               ))}
             </StatusList>
