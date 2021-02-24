@@ -11,7 +11,6 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import { isEmpty } from 'ramda';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
-import { isTaskTreeMemberSelected } from 'helpers/task-helpers';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -43,8 +42,6 @@ const Task = ({
 }) => {
   const parentTaskReference = useRef(null);
   const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
-  const [allTasksHighlighted, setAllTaskHighlighted] = useState(false);
-  const allTasksHighlightedTimeoutReference = useRef(null);
   const {
     taskIdentifier,
     comments,
@@ -66,44 +63,6 @@ const Task = ({
       : subtasks;
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (
-      !subtasksDisabled &&
-      task.subtasks?.length > 0 &&
-      (selectedTaskIdentifier === task.taskIdentifier ||
-        task.subtasks?.some(
-          ({ taskIdentifier: subtaskIdentifier }) =>
-            subtaskIdentifier === selectedTaskIdentifier,
-        ))
-    ) {
-      setAllTaskHighlighted(true);
-
-      if (allTasksHighlightedTimeoutReference.current)
-        clearTimeout(allTasksHighlightedTimeoutReference.current);
-
-      allTasksHighlightedTimeoutReference.current = setTimeout(() => {
-        setAllTaskHighlighted(false);
-      }, 3000);
-    }
-  }, [selectedTaskIdentifier, subtasksDisabled, task]);
-
-  useEffect(() => {
-    if (
-      allTasksHighlighted &&
-      selectedTaskIdentifier !== task.taskIdentifier &&
-      task.subtasks?.length > 0 &&
-      !task.subtasks.some(
-        ({ taskIdentifier: subtaskIdentifier }) =>
-          subtaskIdentifier === selectedTaskIdentifier,
-      )
-    ) {
-      if (allTasksHighlightedTimeoutReference.current)
-        clearTimeout(allTasksHighlightedTimeoutReference.current);
-
-      setAllTaskHighlighted(false);
-    }
-  }, [selectedTaskIdentifier, allTasksHighlighted, task]);
 
   const handleSetSubtasksOpen = useCallback(
     areOpen => {
@@ -206,12 +165,7 @@ const Task = ({
           isDraggable={isDraggable}
           subtasksDisabled={subtasksDisabled}
           isFullView={isFullView}
-          isSelected={
-            subtasksDisabled
-              ? isTaskTreeMemberSelected(task, selectedTask)
-              : selectedTaskIdentifier === task.taskIdentifier ||
-                allTasksHighlighted
-          }
+          isSelected={selectedTaskIdentifier === task.taskIdentifier}
           {...restProps}
         />
       </div>
@@ -244,7 +198,6 @@ const Task = ({
             showClearSortFiltersModal={showClearSortFiltersModal}
             shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
             selectedTaskIdentifier={selectedTaskIdentifier}
-            allTasksHighlighted={allTasksHighlighted}
             {...restProps}
           />
           {subtaskQuickAddOpen &&
