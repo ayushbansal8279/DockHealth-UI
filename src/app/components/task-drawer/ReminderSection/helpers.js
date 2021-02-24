@@ -29,10 +29,6 @@ export function getReminderTypeLabel(reminderType) {
   }
 }
 
-export function getDefaultReminderTime() {
-  return undefined;
-}
-
 export function generateReminderTypeSelectOptions() {
   return Object.values(ReminderType)
     .filter(value => value !== ReminderType.NONE)
