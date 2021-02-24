@@ -28,7 +28,6 @@ const Subtasks = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   selectedTaskIdentifier,
-  allTasksHighlighted,
   ...restProps
 }) => {
   const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
@@ -121,7 +120,7 @@ const Subtasks = ({
                               subTasksCount={subTasksCount}
                               isSelected={
                                 selectedTaskIdentifier ===
-                                  subtask?.taskIdentifier || allTasksHighlighted
+                                subtask?.taskIdentifier
                               }
                               {...restProps}
                             />
