@@ -15,6 +15,8 @@ import {
   TrialBannerLink,
 } from './styled';
 
+const { INTERCOM_APP_CODE } = process.env;
+
 const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   <Grid item container key={key} {...otherProps}>
     {component}
@@ -54,7 +56,7 @@ const NavigationTemplate = ({ children }) => {
           currentOrganization={currentOrganization}
           selectCurrentOrganization={selectCurrentOrganization}
         />
-        <Intercom appID="q7dotpic" {...intercomUser} />
+        <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
       </MaterialDrawer>
       <MainContainer>
         {isHeaderVisible && (
