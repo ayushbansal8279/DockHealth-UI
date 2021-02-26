@@ -27,7 +27,7 @@ import {
 const getInterpolatedText = (tpl, args) =>
   tpl.replace(/\${(\w+)}/g, (_, v) => args[v]);
 
-const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
+const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -84,11 +84,13 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
 
       if (organizationIdentifier === currentOrganizationIdentifier) {
         dispatch(storeAsCurrentTask(task));
+        closeAlerts();
         history.push(
           `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
         );
       } else {
         sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
+        closeAlerts();
         selectCurrentOrganizationWithRedirection(
           organizationIdentifier,
           `#/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
@@ -178,11 +180,17 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon }) => {
   );
 };
 
-const ActivityAlertsItem = ({ itemAlert, onClearAlert, withCrossIcon }) => (
+const ActivityAlertsItem = ({
+  itemAlert,
+  onClearAlert,
+  withCrossIcon,
+  closeAlerts,
+}) => (
   <AlertItem
     itemAlert={itemAlert}
     onClearAlert={onClearAlert}
     withCrossIcon={withCrossIcon}
+    closeAlerts={closeAlerts}
   />
 );
 

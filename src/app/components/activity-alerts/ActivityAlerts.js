@@ -251,6 +251,9 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                       onClearAlert={() =>
                         onClearAlert(itemAlert?.activityAlertIdentifier)
                       }
+                      closeAlerts={() => {
+                        setIsOpen(false);
+                      }}
                     />
                   ))}
               </ViewLoader>
