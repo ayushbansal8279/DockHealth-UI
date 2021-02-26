@@ -413,7 +413,7 @@ const TaskDrawer = ({
                   />
                 </HiddenFieldContainer>
               </Grid>
-              <Grid item xs={12} style={styleFullRow}>
+              <Grid item xs={12} style={styleFullRowThin}>
                 <ReminderSection
                   selectedTask={selectedTask}
                   isDisabled={!selectedTask?.dueDate}
