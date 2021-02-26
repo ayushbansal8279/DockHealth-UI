@@ -7,6 +7,13 @@ import * as TaskDrawerActions from 'actions/task-drawer-actions';
 
 export const onEnterListDetailsView = ({ match, dispatch }) => {
   const { params } = match;
+  if (params?.taskIdentifier) {
+    dispatch(
+      TaskActions.refreshAndStoreAsCurrentTask({
+        taskIdentifier: params?.taskIdentifier,
+      }),
+    );
+  }
   if (params?.taskListIdentifier) {
     dispatch(onEnterListDetails());
     dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));

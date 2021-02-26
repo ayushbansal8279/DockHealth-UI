@@ -629,6 +629,21 @@ export const refreshTask = selectedTask => dispatch =>
       throw error;
     });
 
+export const refreshAndStoreAsCurrentTask = selectedTask => dispatch =>
+  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+    .then(task => {
+      // explicitly mark task as updated so we can show the flag
+      task.updated = true; // eslint-disable-line no-param-reassign
+      dispatch({
+        type: ActionTypes.SET_AS_CURRENT_TASK,
+        task,
+      });
+      return task;
+    })
+    .catch(error => {
+      throw error;
+    });
+
 export const reorderTasksInGroup = (orderedTaskIds, taskGroupIdentifier) => {
   return dispatch => {
     return TaskApi.reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier)
