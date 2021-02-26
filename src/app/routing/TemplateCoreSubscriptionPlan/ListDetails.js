@@ -9,7 +9,7 @@ export const onEnterListDetailsView = ({ match, dispatch }) => {
   const { params } = match;
   if (params?.taskIdentifier) {
     dispatch(
-      TaskActions.refreshAndStoreAsCurrentTask({
+      TaskActions.refreshAndOpenAsCurrentTask({
         taskIdentifier: params?.taskIdentifier,
       }),
     );

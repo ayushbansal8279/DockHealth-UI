@@ -629,7 +629,7 @@ export const refreshTask = selectedTask => dispatch =>
       throw error;
     });
 
-export const refreshAndStoreAsCurrentTask = selectedTask => dispatch =>
+export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
   TaskApi.getTaskDetails(selectedTask.taskIdentifier)
     .then(task => {
       // explicitly mark task as updated so we can show the flag
@@ -638,6 +638,7 @@ export const refreshAndStoreAsCurrentTask = selectedTask => dispatch =>
         type: ActionTypes.SET_AS_CURRENT_TASK,
         task,
       });
+      dispatch(openDrawer());
       return task;
     })
     .catch(error => {
