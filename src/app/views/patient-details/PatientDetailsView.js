@@ -15,6 +15,7 @@ import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
+import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
@@ -34,7 +35,6 @@ import { RouteWrapper } from 'routing/components';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
-import PatientListSkeletonLoader from './PatientListSkeletonLoader/PatientListSkeletonLoader';
 import PatientToolbarSkeletonLoader from './PatientToolbarSkeletonLoader/PatientToolbarSkeletonLoader';
 
 import PatientTasksListView from './PatientTasksListView';
@@ -175,7 +175,6 @@ const PatientDetailsView = ({
           Object.keys(selectedFilters).length ||
         (activeTab === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
       ) {
-        // eslint-disable-next-line react/no-did-update-set-state
         setShouldResetBulkEditTasks(true);
       }
 
@@ -186,7 +185,6 @@ const PatientDetailsView = ({
           activeTab === TaskListTabName.OPEN) &&
         shouldResetBulkEditTasks
       ) {
-        // eslint-disable-next-line react/no-did-update-set-state
         setShouldResetBulkEditTasks(false);
       }
     }
@@ -263,7 +261,7 @@ const PatientDetailsView = ({
                 key={route.path}
                 path={`${path}${route.path}`}
                 RouteComponent={
-                  isFetching ? PatientListSkeletonLoader : route.RouteComponent
+                  isFetching ? GroupedListSkeletonLoader : route.RouteComponent
                 }
                 onEnter={route.onEnter}
                 exact={route.exact}

@@ -4,7 +4,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
-import ListSkeletonLoader from 'components/tasklist/ListSkeletonLoader/ListSkeletonLoader';
+import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import { TaskGroupsContainer } from '../styled';
 
@@ -44,7 +44,7 @@ const ListDetailsCompletedTasks = ({
   return (
     <>
       {isFetchingData ? (
-        <ListSkeletonLoader />
+        <GroupedListSkeletonLoader numberOfGroups={1} />
       ) : (
         <>
           {tasks?.length > 0 ? (

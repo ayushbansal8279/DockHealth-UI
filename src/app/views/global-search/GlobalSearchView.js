@@ -18,7 +18,7 @@ import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
+import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   GlobalSearchWrapper,
@@ -91,32 +91,36 @@ const GlobalSearchView = ({
       <GlobalSearchStickyHeader>
         <GlobalSearchHeader />
       </GlobalSearchStickyHeader>
-      <ViewLoader isFetchingData={isLoadingView}>
-        <ViewSidePadding>
-          <Spacing vertical={5} />
-          {!isEmpty(lists)
-            ? lists?.map(list =>
-                list.tasks?.length > 0 ? (
-                  <GlobalSearchList
-                    list={list}
-                    currentUser={currentUser}
-                    selectedTask={selectedTask}
-                    openDrawer={openDrawer}
-                    storeAsCurrentTask={storeAsCurrentTask}
-                    toggleTaskStatus={toggleTaskStatus}
-                    reassignTask={assignTask}
-                    updateDueDate={setDueDate}
-                    updateWorkflowStatus={setWorkflowStatus}
-                    highlightedValue={searchValue}
-                    isCompletedList={isSearchingCompletedTasks}
-                    getMoreTasksForTaskList={getMoreTasksForTaskList}
-                    isLoadingMore={isLoadingMore}
-                  />
-                ) : null,
-              )
-            : renderEmptyState()}
-        </ViewSidePadding>
-      </ViewLoader>
+      <ViewSidePadding>
+        {isLoadingView ? (
+          <GroupedListSkeletonLoader />
+        ) : (
+          <>
+            <Spacing vertical={5} />
+            {!isEmpty(lists)
+              ? lists?.map(list =>
+                  list.tasks?.length > 0 ? (
+                    <GlobalSearchList
+                      list={list}
+                      currentUser={currentUser}
+                      selectedTask={selectedTask}
+                      openDrawer={openDrawer}
+                      storeAsCurrentTask={storeAsCurrentTask}
+                      toggleTaskStatus={toggleTaskStatus}
+                      reassignTask={assignTask}
+                      updateDueDate={setDueDate}
+                      updateWorkflowStatus={setWorkflowStatus}
+                      highlightedValue={searchValue}
+                      isCompletedList={isSearchingCompletedTasks}
+                      getMoreTasksForTaskList={getMoreTasksForTaskList}
+                      isLoadingMore={isLoadingMore}
+                    />
+                  ) : null,
+                )
+              : renderEmptyState()}
+          </>
+        )}
+      </ViewSidePadding>
       <TaskDrawer modalActions={modalActions} />
     </GlobalSearchWrapper>
   );

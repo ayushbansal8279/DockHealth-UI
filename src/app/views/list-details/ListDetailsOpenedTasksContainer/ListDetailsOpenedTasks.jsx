@@ -24,7 +24,7 @@ import messages from 'components/tasklist/AddGroupNameButton/messages';
 import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import { onDragEndTask } from 'components/tasklist/DragDrop.helpers';
-import ListSkeletonLoader from 'components/tasklist/ListSkeletonLoader/ListSkeletonLoader';
+import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { TaskGroupsContainer } from '../styled';
 
@@ -245,7 +245,7 @@ const ListDetailsOpenedTasks = ({
     ],
   );
 
-  if (isFetchingData) return <ListSkeletonLoader />;
+  if (isFetchingData) return <GroupedListSkeletonLoader />;
 
   return (
     <TaskGroupsContainer>

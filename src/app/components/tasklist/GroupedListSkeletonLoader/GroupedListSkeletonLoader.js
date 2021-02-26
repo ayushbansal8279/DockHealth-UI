@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import Spacing from 'components/common/Spacing';
 import React from 'react';
 import {
@@ -23,21 +24,22 @@ const renderLoaderRow = index => (
   </LoaderRow>
 );
 
-const ListSkeletonLoader = () => {
+const GroupedListSkeletonLoader = ({ numberOfGroups = 2 }) => {
   return (
     <Container>
-      <LoaderGroup>
-        <LoaderElement width={108} />
-        <Spacing vertical={4} />
-        {new Array(5).fill().map((_, index) => renderLoaderRow(index))}
-      </LoaderGroup>
-      <LoaderGroup>
-        <LoaderElement width={108} />
-        <Spacing vertical={4} />
-        {new Array(3).fill().map((_, index) => renderLoaderRow(index))}
-      </LoaderGroup>
+      {new Array(numberOfGroups).fill().map((_, index) => (
+        <LoaderGroup>
+          <LoaderElement width={108} />
+          <Spacing vertical={4} />
+          {new Array(
+            index === numberOfGroups - 1 && numberOfGroups !== 1 ? 3 : 5,
+          )
+            .fill()
+            .map((_, index) => renderLoaderRow(index))}
+        </LoaderGroup>
+      ))}
     </Container>
   );
 };
 
-export default ListSkeletonLoader;
+export default GroupedListSkeletonLoader;

@@ -8,7 +8,7 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
-import ListSkeletonLoader from 'components/tasklist/ListSkeletonLoader/ListSkeletonLoader';
+import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -62,7 +62,7 @@ const PersonDetailsCompletedTasks = ({
   return (
     <>
       {isFetchingTasks ? (
-        <ListSkeletonLoader />
+        <GroupedListSkeletonLoader numberOfGroups={1} />
       ) : (
         <>
           {filteredTasks?.length > 0 ? (

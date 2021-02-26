@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Switch, useRouteMatch, useHistory } from 'react-router-dom';
-import LoaderOverlay from 'components/common/Loader/LoaderOverlay';
 import NavigationTemplate from 'components/navigation/NavigationTemplate/NavigationTemplate';
 import checkUserAuthentication from 'routing/helpers/check-user-authentication';
 import checkUserAccountState from 'routing/helpers/check-user-account-state';
@@ -52,7 +51,6 @@ const TemplateCore = ({ childRoutes, onEnter, onLeave, setRedirection }) => {
 
   return (
     <NavigationTemplate locationPathname={history?.location?.pathname}>
-      {isLoading && <LoaderOverlay withBackground />}
       {!isLoading && (
         <Switch>
           {isLoaded &&

@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { Switch, useRouteMatch, useHistory } from 'react-router-dom';
 import { useSmallScreen } from 'helpers/utility-functions';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
-import LoaderOverlay from 'components/common/Loader/LoaderOverlay';
 import checkUserAuthentication from 'routing/helpers/check-user-authentication';
 import { RouteWrapper } from 'routing/components';
 import {
@@ -43,7 +42,6 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
 
   return (
     <>
-      {isLoading && <LoaderOverlay withBackground />}
       {!isLoading && (
         <OnboardingBackground>
           <OnboardingNavbar>
