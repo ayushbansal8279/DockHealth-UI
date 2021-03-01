@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
+import { bool, node, oneOf, string } from 'prop-types';
 
 const StyledMaterialTooltip = withStyles({
   popper: {
@@ -39,6 +40,33 @@ const Tooltip = ({
       <div>{children}</div>
     </StyledMaterialTooltip>
   );
+};
+
+Tooltip.propTypes = {
+  children: node.isRequired,
+  title: string.isRequired,
+  placement: oneOf([
+    'bottom-end',
+    'bottom-start',
+    'bottom',
+    'left-end',
+    'left-start',
+    'left',
+    'right-end',
+    'right-start',
+    'right',
+    'top-end',
+    'top-start',
+    'top',
+  ]),
+  arrow: bool,
+  hideTooltip: bool,
+};
+
+Tooltip.defaultProps = {
+  placement: 'bottom',
+  arrow: true,
+  hideTooltip: false,
 };
 
 export default Tooltip;

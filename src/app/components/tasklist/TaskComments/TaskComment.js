@@ -72,7 +72,7 @@ const TaskComment = ({
   return (
     <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
       <TaskCommentAvatarContainer>
-        <Member member={creator} size={30} />
+        <Member member={creator} />
       </TaskCommentAvatarContainer>
       <TaskCommentContent onClick={onClickComment}>
         <TaskCommentDetails>

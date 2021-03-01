@@ -6,13 +6,12 @@ import { DroppablePlaceholder } from './styled';
 
 const DragAndDropGroupList = ({
   groupId,
-  currentUser,
   isFullView,
   toggleCompleteTask,
   draggedId,
   tasks,
   reorderSubtasksForTask,
-  reassignTask,
+  onTaskUpdate,
   isCompletedGroup,
   updateDueDate,
   updateWorkflowStatus,
@@ -63,7 +62,6 @@ const DragAndDropGroupList = ({
                 {(draggableProvided, { isDragging }) => (
                   <StandardTaskItem
                     key={task.taskIdentifier}
-                    currentUser={currentUser}
                     isFullView={isFullView}
                     isDragging={isDragging}
                     isStartedDnD={draggedId === task.taskIdentifier}
@@ -73,7 +71,7 @@ const DragAndDropGroupList = ({
                     reorderSubtasksForTask={reorderSubtasksForTask}
                     isCompletedGroup={isCompletedGroup}
                     toggleCompleteTask={toggleCompleteTask}
-                    reassignTask={reassignTask}
+                    onTaskUpdate={onTaskUpdate}
                     updateDueDate={updateDueDate}
                     updateWorkflowStatus={updateWorkflowStatus}
                     dragAndDropDisabled={

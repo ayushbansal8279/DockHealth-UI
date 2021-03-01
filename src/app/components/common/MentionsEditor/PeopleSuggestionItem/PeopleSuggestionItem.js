@@ -61,7 +61,6 @@ const PeopleSuggestionItem = ({
       isFocused={isFocused}
     >
       <Member
-        size={30}
         member={mention}
         showTooltip={false}
         isInactive={['PENDING', 'INVITED', 'INACTIVE'].includes(

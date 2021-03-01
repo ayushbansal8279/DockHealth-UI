@@ -416,7 +416,7 @@ class Home extends Component {
     sortTasksGroups({ taskGroupIdentifiers: newGroupList, taskListIdentifier });
   };
 
-  handleTaskUpdate = updatedTask => {
+  refreshTabAfterTaskUpdate = updatedTask => {
     const { selectedFilters, sort } = this.props;
 
     if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters) || sort?.key) {
@@ -504,11 +504,11 @@ class Home extends Component {
     }
   };
 
-  handleReassignTask = (task, assignee) => {
+  handleTaskUpdate = updatedTask => {
     const { actions } = this.props;
     actions
-      .assignOrReassignTask(task, assignee?.userIdentifier)
-      .then(this.handleTaskUpdate)
+      .saveTask(updatedTask)
+      .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
@@ -517,7 +517,7 @@ class Home extends Component {
 
     actions
       .updateDueDate(task, dueDate, true)
-      .then(this.handleTaskUpdate)
+      .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
@@ -526,7 +526,7 @@ class Home extends Component {
 
     actions
       .updateWorkflowStatus(task, workflowStatus)
-      .then(this.handleTaskUpdate)
+      .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
@@ -602,7 +602,6 @@ class Home extends Component {
       isCompletedTasksFetching,
       completedGroupedTasks,
       groupedTasks,
-      currentUser,
       selectedTask,
       selectedFilters,
       sort,
@@ -672,9 +671,8 @@ class Home extends Component {
               />
               {selectedTab === TaskListTabName.COMPLETE ? (
                 <CompletedTasksView
-                  currentUser={currentUser}
                   toggleCompleteTask={this.toggleTaskCompletedStatus}
-                  reassignTask={this.handleReassignTask}
+                  onTaskUpdate={this.handleTaskUpdate}
                   updateDueDate={this.handleUpdateDueDate}
                   searchValue={searchValue}
                   selectedTask={selectedTask}
@@ -689,11 +687,10 @@ class Home extends Component {
                   quickAddTask={this.quickAddTask}
                   createTaskGroupList={this.handleCreateGroup}
                   editGroupName={this.editGroupName}
-                  currentUser={currentUser}
                   toggleCompleteTask={this.toggleTaskCompletedStatus}
                   deleteGroup={this.deleteGroup}
                   changeGroupsOrder={this.changeGroupsOrder}
-                  reassignTask={this.handleReassignTask}
+                  onTaskUpdate={this.handleTaskUpdate}
                   updateDueDate={this.handleUpdateDueDate}
                   updateWorkflowStatus={this.handleUpdateWorkflowStatus}
                   searchValue={searchValue}
@@ -711,9 +708,9 @@ class Home extends Component {
               modalActions={modalActions}
               fromFirstAddTask={taskCounters?.incomplete === 0}
               hideTour={isTourOpen}
-              onTaskUpdate={this.handleTaskUpdate}
+              onTaskUpdate={this.refreshTabAfterTaskUpdate}
               onTaskDelete={this.handleTaskDelete}
-              onTaskCreation={this.handleTaskUpdate}
+              onTaskCreation={this.refreshTabAfterTaskUpdate}
             />
           </div>
         </BulkEditSection>

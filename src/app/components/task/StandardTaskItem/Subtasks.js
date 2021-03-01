@@ -18,8 +18,6 @@ const Subtasks = ({
   groupId,
   parentTaskId,
   reorderSubtasksForTask,
-  reassignTask,
-  currentUser,
   parentHasPatient,
   taskList,
   isDraggable,
@@ -110,8 +108,6 @@ const Subtasks = ({
                               key={subtask.taskIdentifier}
                               task={{ ...subtask, taskList }}
                               isDragging={isDraggingSubtask}
-                              currentUser={currentUser}
-                              reassignTask={reassignTask}
                               parentHasPatient={parentHasPatient}
                               isDraggable={isDraggable && subtasks?.length > 1}
                               isLast={isLast}

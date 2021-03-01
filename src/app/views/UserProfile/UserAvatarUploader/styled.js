@@ -145,3 +145,23 @@ export const PictureInput = styled.input`
 export const AvatarContainer = styled.div`
   position: relative;
 `;
+
+export const AvatarButton = styled.button`
+  position: relative;
+  cursor: pointer;
+`;
+
+export const CameraContainer = styled.div`
+  position: absolute;
+  top: 15%;
+  left: 90%;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${palette.white};
+  border: 2px solid ${palette.cyanBlue};
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+`;

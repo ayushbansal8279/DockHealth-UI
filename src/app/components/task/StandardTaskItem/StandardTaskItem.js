@@ -24,8 +24,6 @@ const Task = ({
   isDragging,
   draggableProvided,
   groupId,
-  currentUser,
-  reassignTask,
   isDraggable,
   addingNewSubtask,
   addingNewSubtaskParentId,
@@ -158,8 +156,6 @@ const Task = ({
           switchOpen={handleSetSubtasksOpen}
           dragHandleProps={dragHandleProps}
           isDragging={isDragging}
-          currentUser={currentUser}
-          reassignTask={reassignTask}
           subtasks={renderedSubtasks}
           subTasksCount={subTasksCount}
           isDraggable={isDraggable}
@@ -188,8 +184,6 @@ const Task = ({
             isFullView={isFullView}
             groupId={groupId}
             parentTaskId={task.taskIdentifier}
-            currentUser={currentUser}
-            reassignTask={reassignTask}
             parentHasPatient={!!patient}
             taskList={taskList}
             isDraggable={isDraggable}

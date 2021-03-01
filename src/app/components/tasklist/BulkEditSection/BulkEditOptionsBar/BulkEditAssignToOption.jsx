@@ -1,94 +1,56 @@
-import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import MembersList from '../../TaskAssignMember/MembersList';
-import { StyledPopover } from '../../TaskAssignMember/styled';
-import { IconButton, IconBox, AssigneeIcon } from './styled';
+import React from 'react';
+import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
+import { WrapperContainer, IconBox, AssigneeIcon } from './styled';
 
 const BulkEditAssignToOption = ({
-  handleChangeAssigneTasks,
-  taskListIdentifier,
+  // handleChangeAssigneTasks,
   selectedTaskListIdentifiers,
   isDisabled,
 }) => {
-  const assignMemberButtonReference = useRef(null);
-  const [isOpen, openPopover] = useState(false);
-
-  const currentUser = useSelector(store => store.userState.userProfile);
-
-  const handleReasigningTask = (
-    _,
-    {
-      bubbleColor,
-      firstName,
-      initials,
-      lastName,
-      profileThumbnailPictureHash,
-      specialtyList,
-      titleList,
-      userId,
-      userIdentifier,
-      userName,
-    },
-  ) => {
-    handleChangeAssigneTasks({
-      bubbleColor,
-      firstName,
-      initials,
-      lastName,
-      profileThumbnailPictureHash,
-      specialtyList,
-      titleList,
-      userId,
-      userIdentifier,
-      userName,
-    });
-    openPopover(false);
-  };
+  // const handleReasigningTask = (
+  //   _,
+  //   {
+  //     bubbleColor,
+  //     firstName,
+  //     initials,
+  //     lastName,
+  //     profileThumbnailPictureHash,
+  //     specialtyList,
+  //     titleList,
+  //     userId,
+  //     userIdentifier,
+  //     userName,
+  //   },
+  // ) => {
+  //   handleChangeAssigneTasks({
+  //     bubbleColor,
+  //     firstName,
+  //     initials,
+  //     lastName,
+  //     profileThumbnailPictureHash,
+  //     specialtyList,
+  //     titleList,
+  //     userId,
+  //     userIdentifier,
+  //     userName,
+  //   });
+  // };
 
   return (
-    <>
-      <IconButton
-        type="button"
-        onClick={event => {
-          event.stopPropagation();
-          openPopover(true);
-        }}
-        ref={assignMemberButtonReference}
-        disabled={isDisabled}
-      >
+    <MultiAssignPopover
+      taskListIdentifiers={selectedTaskListIdentifiers}
+      onSelect={values => {
+        console.log('onSelect', values);
+      }}
+      isDisabled={isDisabled}
+    >
+      <WrapperContainer disabled={isDisabled}>
         <IconBox>
           <AssigneeIcon />
         </IconBox>
         <p>Assignee</p>
-      </IconButton>
-      <StyledPopover
-        anchorEl={assignMemberButtonReference?.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={isOpen}
-        onClose={event => {
-          event.stopPropagation();
-          openPopover(false);
-        }}
-      >
-        <>
-          {isOpen && (
-            <MembersList
-              reassignTask={handleReasigningTask}
-              currentUser={currentUser}
-              taskListIdentifier={taskListIdentifier}
-              selectedTaskListIdentifiers={selectedTaskListIdentifiers}
-            />
-          )}
-        </>
-      </StyledPopover>
-    </>
+      </WrapperContainer>
+    </MultiAssignPopover>
   );
 };
 export default BulkEditAssignToOption;

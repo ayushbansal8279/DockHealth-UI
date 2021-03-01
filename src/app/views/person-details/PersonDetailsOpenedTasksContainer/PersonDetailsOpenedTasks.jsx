@@ -19,10 +19,9 @@ import { TaskGroupsContainer } from '../styled';
 const PersonDetailsOpenedTasks = ({
   isFetchingTasks,
   tasks,
-  currentUser,
   toggleCompleteTask,
   quickAddTask,
-  reassignTask,
+  onTaskUpdate,
   updateDueDate,
   updateWorkflowStatus,
   searchValue,
@@ -76,12 +75,11 @@ const PersonDetailsOpenedTasks = ({
                 isFirstGroup
                 isLastGroup
                 groupId={TASKGROUP_DEFAULT_TYPE}
-                currentUser={currentUser}
                 groupName="All tasks"
                 changingGroupOrderDisabled
                 tasks={filteredTasks || []}
                 taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
-                reassignTask={reassignTask}
+                onTaskUpdate={onTaskUpdate}
                 toggleCompleteTask={toggleCompleteTask}
                 updateDueDate={updateDueDate}
                 updateWorkflowStatus={updateWorkflowStatus}

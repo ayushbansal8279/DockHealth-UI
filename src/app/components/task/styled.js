@@ -77,13 +77,6 @@ export const AddPlaceholder = styled.div`
   }
 `;
 
-export const AddCrossIcon = styled.img`
-  border: 0.0625rem dashed ${palette.coolGrey1};
-  border-radius: 50%;
-  color: ${palette.blueOcean};
-  width: ${props => props.size};
-`;
-
 export const CircleIcon = styled.img`
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};

@@ -51,7 +51,7 @@ const GlobalSearchView = ({
     toggleTaskStatus,
     setDueDate,
     setWorkflowStatus,
-    assignTask,
+    updateTask,
     getMoreTasksForTaskList,
   } = globalSearchSagaActions;
 
@@ -107,7 +107,7 @@ const GlobalSearchView = ({
                       openDrawer={openDrawer}
                       storeAsCurrentTask={storeAsCurrentTask}
                       toggleTaskStatus={toggleTaskStatus}
-                      reassignTask={assignTask}
+                      onTaskUpdate={updateTask}
                       updateDueDate={setDueDate}
                       updateWorkflowStatus={setWorkflowStatus}
                       highlightedValue={searchValue}

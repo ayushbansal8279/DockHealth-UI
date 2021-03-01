@@ -12,8 +12,9 @@ const PatientCardNotesLoader = () => (
   <>
     <Divider />
     <PatientNotesSection>
-      {new Array(2).fill().map(() => (
-        <>
+      {new Array(2).fill().map((_, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={index}>
           <SkeletonLoaderTextRow width={162}>
             <SkeletonLoaderText />
           </SkeletonLoaderTextRow>
@@ -32,7 +33,7 @@ const PatientCardNotesLoader = () => (
           <Spacing vertical={4} />
           <NoteDivider />
           <Spacing vertical={3} />
-        </>
+        </div>
       ))}
       <SkeletonLoaderTextRow width={162}>
         <SkeletonLoaderText />

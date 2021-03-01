@@ -30,7 +30,6 @@ import { TaskGroupsContainer } from '../styled';
 
 const ListDetailsOpenedTasks = ({
   createTaskGroupList,
-  currentUser,
   toggleCompleteTask,
   groupedTasks,
   groupList,
@@ -41,7 +40,7 @@ const ListDetailsOpenedTasks = ({
   reorderTasksInGroup,
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup,
-  reassignTask,
+  onTaskUpdate,
   isFetchingData,
   updateDueDate,
   updateWorkflowStatus,
@@ -161,7 +160,6 @@ const ListDetailsOpenedTasks = ({
             dragAndDropDisabled={dragAndDropDisabled}
             isDefaultGroup={groupName === 'DEFAULT'}
             groupId={taskGroupIdentifier}
-            currentUser={currentUser}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
             editGroupName={editGroupName}
@@ -181,7 +179,7 @@ const ListDetailsOpenedTasks = ({
             }
             taskGroupIdentifier={taskGroupIdentifier}
             reorderSubtasksForTask={reorderSubtasksForTask}
-            reassignTask={reassignTask}
+            onTaskUpdate={onTaskUpdate}
             draggedId={draggedId}
             toggleCompleteTask={toggleCompleteTask}
             updateDueDate={updateDueDate}
@@ -223,13 +221,12 @@ const ListDetailsOpenedTasks = ({
       areFiltersApplied,
       tasksGrouped,
       dragAndDropDisabled,
-      currentUser,
       editGroupName,
       quickAddTask,
       deleteGroup,
       changeGroupsOrder,
       reorderSubtasksForTask,
-      reassignTask,
+      onTaskUpdate,
       draggedId,
       toggleCompleteTask,
       updateDueDate,

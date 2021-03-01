@@ -62,6 +62,7 @@ const palette = {
   scrollbarGrey: '#939aa4',
   red: '#e94739',
   lightBlue: '#5ccced',
+  skeletonLoader: '#e5e9f2',
 };
 
 export const featurePalette = {

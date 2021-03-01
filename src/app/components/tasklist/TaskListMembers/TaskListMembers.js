@@ -4,30 +4,14 @@ import { splitAt } from 'ramda';
 import { openModal } from 'modal/actions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
-import { MoreMembersButtonContainer, MemberWrapper } from './styled';
-
-const getMembersNames = ({ members }) =>
-  members?.map(member => {
-    if (!member) {
-      return null;
-    }
-
-    const { firstName, lastName, userIdentifier } = member;
-
-    return (
-      <div key={userIdentifier}>
-        {`${firstName ?? ''} ${lastName ?? ''}`.trim()}
-      </div>
-    );
-  });
+import AdditionalMembersCounter from 'components/members/AdditionalMembersCounter/AdditionalMembersCounter';
+import { MemberWrapper } from './styled';
 
 const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
   const dispatch = useDispatch();
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
-  const hiddenMembersCount = hiddenMembers?.length;
 
   return (
     <>
@@ -40,17 +24,10 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
           <Member member={member} size={40} />
         </MemberWrapper>
       ))}
-      {hiddenMembersCount > 0 && (
+      {hiddenMembers?.length > 0 && (
         <>
           <Spacing horizontal={1} />
-          <Tooltip
-            placement="bottom"
-            title={getMembersNames({ members: hiddenMembers })}
-          >
-            <MoreMembersButtonContainer>
-              +{hiddenMembersCount}
-            </MoreMembersButtonContainer>
-          </Tooltip>
+          <AdditionalMembersCounter hiddenMembers={hiddenMembers} size={40} />
         </>
       )}
       <Spacing horizontal={2} />

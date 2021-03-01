@@ -194,7 +194,7 @@ const DashboardList = ({
     reloadDashboardTasks,
     updateDashboardTaskDueDate,
     updateDashboardSelectedFilters,
-    reassignDashboardTask,
+    updateDashboardTask,
     fetchDashboardFilters,
     fetchImplicitGroup,
     fetchSearchedTermImplicitGroups,
@@ -507,7 +507,7 @@ const DashboardList = ({
                     isAllTasksTab={selectedTab === 'ALL_TASKS'}
                     updateDueDate={updateDashboardTaskDueDate}
                     currentUser={currentUser}
-                    reassignDashboardTask={reassignDashboardTask}
+                    onTaskUpdate={updateDashboardTask}
                     updateWorkflowStatus={updateWorkflowStatus}
                     fetchImplicitGroup={fetchImplicitGroup}
                     fetchSearchedTermImplicitGroups={

@@ -40,7 +40,7 @@ const TaskListDetailsDropdown = ({
   storeAsCurrentTask,
   isCompleteTab,
   toggleTaskStatus,
-  reassignTask,
+  onTaskUpdate,
   updateDueDate,
   updateWorkflowStatus,
   quickAddTask,
@@ -203,7 +203,7 @@ const TaskListDetailsDropdown = ({
           <ColumnSortHeader
             id="ASSIGNED_TO"
             label="Assign"
-            width={80}
+            width={100}
             sort={sort}
             onSortChange={onSortChange}
           />
@@ -221,7 +221,7 @@ const TaskListDetailsDropdown = ({
               draggableProvided={{}}
               isCompletedGroup={isCompleteTab}
               toggleCompleteTask={toggleTaskStatus}
-              reassignTask={reassignTask}
+              onTaskUpdate={onTaskUpdate}
               updateDueDate={updateDueDate}
               updateWorkflowStatus={updateWorkflowStatus}
               dragAndDropDisabled

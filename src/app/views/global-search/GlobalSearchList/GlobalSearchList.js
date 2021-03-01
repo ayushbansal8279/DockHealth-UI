@@ -22,7 +22,7 @@ const GlobalSearchList = ({
   openDrawer,
   storeAsCurrentTask,
   toggleTaskStatus,
-  reassignTask,
+  onTaskUpdate,
   updateDueDate,
   updateWorkflowStatus,
   highlightedValue,
@@ -78,7 +78,7 @@ const GlobalSearchList = ({
             draggableProvided={{}}
             isCompletedGroup={isCompletedList}
             toggleCompleteTask={toggleTaskStatus}
-            reassignTask={reassignTask}
+            onTaskUpdate={onTaskUpdate}
             updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             dragAndDropDisabled

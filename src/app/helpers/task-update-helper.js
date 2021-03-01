@@ -60,11 +60,3 @@ export const setWorkflowStatus = (task, workflowStatus) => {
     workflowStatus,
   };
 };
-
-export const assignTask = (task, assignedTo, assignedBy) => {
-  return {
-    ...task,
-    assignedBy,
-    assignedTo,
-  };
-};

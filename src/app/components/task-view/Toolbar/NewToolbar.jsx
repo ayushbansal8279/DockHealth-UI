@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useDispatch, connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
 import {
@@ -16,7 +16,7 @@ import palette from 'styles/palette';
 import PageContentHeader from 'components/common/NewPageContentHeader';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+import AdditionalMembersCounter from 'components/members/AdditionalMembersCounter/AdditionalMembersCounter';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
@@ -26,13 +26,11 @@ import TipsButton from 'components/common/TipsButton';
 import { showGlobalAlert } from 'alert/actions';
 import MorePopover from './MorePopover';
 import {
-  MoreMembersButtonContainer,
   ToolbarLabel,
   ToolbarBottomGrid,
   HeaderActionButtonsGrid,
   SearchWrapper,
   MemberWrapper,
-  HiddenMembersTooltipContainer,
 } from './styled';
 import { TABS_CONFIG, TaskListTabName } from './config';
 
@@ -87,31 +85,6 @@ const useToggleNotifications = ({
     }
   }, [closeMorePopover, dispatch, notificationsEnabled, taskListIdentifier]);
 
-const getHiddenMembers = ({ hiddenMembers, activeUsersList }) =>
-  hiddenMembers?.map(hiddenMember => {
-    const onlineActiveUser =
-      activeUsersList?.find(({ userIdentifier }) => {
-        return userIdentifier === hiddenMember?.userIdentifier;
-      }) || {};
-
-    let userStatusLabel = 'offline';
-
-    if (!isEmpty(onlineActiveUser) && !onlineActiveUser.idle) {
-      userStatusLabel = 'online';
-    } else if (!isEmpty(onlineActiveUser) && onlineActiveUser.idle) {
-      userStatusLabel = 'idle';
-    } else if (hiddenMember?.userStatus === 'INVITED') {
-      userStatusLabel = 'pending';
-    }
-
-    return (
-      <HiddenMembersTooltipContainer key={hiddenMember?.userIdentifier}>
-        <span>{hiddenMember?.userName?.slice(0, 16)}</span>
-        {userStatusLabel}
-      </HiddenMembersTooltipContainer>
-    );
-  });
-
 const Toolbar = ({
   members,
   showMembers = true,
@@ -133,7 +106,6 @@ const Toolbar = ({
   patientColumnVisible = true,
   tipsContent,
   isFetching,
-  activeUsersList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const moreButtonReference = useRef(null);
@@ -158,7 +130,6 @@ const Toolbar = ({
   });
 
   const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
-  const hiddenMembersCount = hiddenMembers?.length;
 
   useEffect(() => {
     if (!tipsContent || taskList?.listType !== 'INBOX') {
@@ -223,20 +194,14 @@ const Toolbar = ({
             {showMembers && (
               <>
                 {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
-                {hiddenMembersCount > 0 && (
+                {hiddenMembers?.length > 0 && (
                   <>
                     <Spacing horizontal={1} />
-                    <Tooltip
-                      placement="bottom-end"
-                      title={getHiddenMembers({
-                        hiddenMembers,
-                        activeUsersList,
-                      })}
-                    >
-                      <MoreMembersButtonContainer>
-                        +{hiddenMembersCount}
-                      </MoreMembersButtonContainer>
-                    </Tooltip>
+                    <AdditionalMembersCounter
+                      hiddenMembers={hiddenMembers}
+                      size={45}
+                      color={palette.brightBlue}
+                    />
                   </>
                 )}
                 <Spacing horizontal={2} />
@@ -336,8 +301,5 @@ const Toolbar = ({
     </PageContentHeader>
   );
 };
-const mapStateToProps = state => ({
-  activeUsersList: state.activeUsers.activeUsersList,
-});
 
-export default connect(mapStateToProps)(Toolbar);
+export default Toolbar;

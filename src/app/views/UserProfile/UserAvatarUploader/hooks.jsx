@@ -59,7 +59,7 @@ export default () => {
   const userProfile = useSelector(state => state.userState.userProfile);
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
 
-  const avatarReference = useRef(null);
+  const avatarButtonReference = useRef(null);
   const fileInputReference = useRef(null);
   const [popoverOpen, setPopoverOpen, unsetPopoverOpen] = useBoolean(false);
   const [fileLoading, setFileLoading, unsetFileLoading] = useBoolean(false);
@@ -171,7 +171,7 @@ export default () => {
   return {
     userProfilePic,
     userProfile,
-    avatarReference,
+    avatarButtonReference,
     fileInputReference,
     popoverOpen,
     setPopoverOpen,

@@ -362,7 +362,7 @@ class PersonDetailsView extends PureComponent {
     });
   };
 
-  handleTaskUpdate = updatedTask => {
+  refreshTabAfterTaskUpdate = updatedTask => {
     const { selectedFilters } = this.props;
 
     if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
@@ -426,11 +426,11 @@ class PersonDetailsView extends PureComponent {
     }
   };
 
-  handleReassignTask = (task, assignee) => {
+  handleTaskUpdate = updatedTask => {
     const { taskActions } = this.props;
     taskActions
-      .assignOrReassignTask(task, assignee?.userIdentifier)
-      .then(this.handleTaskUpdate)
+      .saveTask(updatedTask)
+      .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
@@ -439,7 +439,7 @@ class PersonDetailsView extends PureComponent {
 
     taskActions
       .updateDueDate(task, dueDate, true)
-      .then(this.handleTaskUpdate)
+      .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
@@ -448,7 +448,7 @@ class PersonDetailsView extends PureComponent {
 
     taskActions
       .updateWorkflowStatus(task, workflowStatus)
-      .then(this.handleTaskUpdate)
+      .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };
 
@@ -465,7 +465,6 @@ class PersonDetailsView extends PureComponent {
       taskCounters,
       isFetching,
       isCompletedTasksFetching,
-      currentUser,
       selectedTask,
       tasks,
       completedTasks,
@@ -521,10 +520,9 @@ class PersonDetailsView extends PureComponent {
                   <CompletedTasksView
                     isFetchingTasks={isCompletedTasksFetching}
                     tasks={completedTasks}
-                    currentUser={currentUser}
                     toggleCompleteTask={this.toggleTaskCompletedStatus}
                     summaryTasksCount={taskCounters.complete}
-                    reassignTask={this.handleReassignTask}
+                    onTaskUpdate={this.handleTaskUpdate}
                     updateDueDate={this.handleUpdateDueDate}
                     searchValue={searchValue}
                     selectedTask={selectedTask}
@@ -537,10 +535,9 @@ class PersonDetailsView extends PureComponent {
                   <OpenedTasksView
                     isFetchingTasks={isFetching}
                     tasks={tasks}
-                    currentUser={currentUser}
                     toggleCompleteTask={this.toggleTaskCompletedStatus}
                     quickAddTask={this.handleQuickAddTask}
-                    reassignTask={this.handleReassignTask}
+                    onTaskUpdate={this.handleTaskUpdate}
                     updateDueDate={this.handleUpdateDueDate}
                     updateWorkflowStatus={this.handleUpdateWorkflowStatus}
                     searchValue={searchValue}
@@ -556,9 +553,9 @@ class PersonDetailsView extends PureComponent {
           </BulkEditSection>
           <TaskDrawer
             modalActions={modalActions}
-            onTaskUpdate={this.handleTaskUpdate}
+            onTaskUpdate={this.refreshTabAfterTaskUpdate}
             onTaskDelete={this.handleTaskDelete}
-            onTaskCreation={this.handleTaskUpdate}
+            onTaskCreation={this.refreshTabAfterTaskUpdate}
           />
         </>
       )

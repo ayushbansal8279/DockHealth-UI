@@ -2,6 +2,7 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import AvatarEdit from 'react-avatar-edit';
 import palette from 'styles/palette';
+import CameraIcon from 'img/camera.svg';
 import Avatar from 'components/common/Avatar/Avatar';
 import initializeUserAvatarHooks from './hooks';
 import {
@@ -16,12 +17,14 @@ import {
   EditButton,
   PictureInput,
   AvatarContainer,
+  CameraContainer,
+  AvatarButton,
 } from './styled';
 
 export default () => {
   const {
     userProfilePic,
-    avatarReference,
+    avatarButtonReference,
     fileInputReference,
     popoverOpen,
     unsetPopoverOpen,
@@ -52,15 +55,16 @@ export default () => {
   return (
     <>
       <OuterAvatarContainer>
-        <Avatar
-          ref={avatarReference}
+        <AvatarButton
+          type="button"
+          ref={avatarButtonReference}
           onClick={openPopover}
-          withCameraIcon
-          withCursor
-          withShadow
         >
-          {avatarContent}
-        </Avatar>
+          <Avatar>{avatarContent}</Avatar>
+          <CameraContainer>
+            <img src={CameraIcon} alt="Camera icon" />
+          </CameraContainer>
+        </AvatarButton>
         {!userProfilePic && (
           <UserAvatarSupplement onClick={openPopover}>
             <div>Add a picture to</div>
@@ -70,7 +74,7 @@ export default () => {
       </OuterAvatarContainer>
       <UploadImagePopover
         open={popoverOpen}
-        anchorEl={avatarReference?.current}
+        anchorEl={avatarButtonReference?.current}
         onClose={unsetPopoverOpen}
         anchorOrigin={{
           vertical: 'top',
@@ -118,7 +122,6 @@ export default () => {
             </SmallButton>
           </Grid>
           <PictureInput
-            style={{ display: 'none' }}
             accept="image/png, image/jpeg"
             type="file"
             ref={fileInputReference}

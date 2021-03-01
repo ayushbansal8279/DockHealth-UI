@@ -1,26 +1,27 @@
 import moment from 'moment';
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { pluck } from 'ramda';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
-import CrossIcon from 'img/cross';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import SimpleArrowRight from 'img/simple-arrow-right';
 import {
   storeAsCurrentTask,
   toggleCompleteTask,
-  assignOrReassignTask,
   updateDueDate,
+  saveTask,
 } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import Member from 'components/members/Member/Member';
-import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
+import MemberGroup from 'components/members/MemberGroup/MemberGroup';
+import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import { DueDateBasicLabel, AddCrossIcon } from 'components/task/styled';
+import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
+import { DueDateBasicLabel } from 'components/task/styled';
 import {
   getAttachmentsIconTooltipTitle,
   getCommentsIconTooltipTitle,
@@ -63,7 +64,7 @@ const Subtask = ({ subtask, currentUser }) => {
     duplicated,
     tokenizedDescription,
     taskMentions,
-    assignedTo,
+    assignedToUsers,
     dueDate,
     comments,
     updatedComment,
@@ -71,6 +72,7 @@ const Subtask = ({ subtask, currentUser }) => {
     updatedLabel,
     attachments,
     updatedAttachment,
+    taskList,
   } = subtask;
 
   const isCompleted = status === 'COMPLETE';
@@ -84,10 +86,18 @@ const Subtask = ({ subtask, currentUser }) => {
   );
 
   const handleReassignSubtask = useCallback(
-    (task, selectedMember) => {
-      assignOrReassignTask(task, selectedMember?.userIdentifier)(dispatch);
+    selectedMembers => {
+      console.log('members', selectedMembers);
+      dispatch(
+        saveTask({
+          ...subtask,
+          assignedToUsers: selectedMembers,
+          assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+        }),
+      );
+      // assignOrReassignTask(task, selectedMember?.userIdentifier)(dispatch);
     },
-    [dispatch],
+    [dispatch, subtask],
   );
 
   const handleCommentIconClick = () => {
@@ -224,24 +234,20 @@ const Subtask = ({ subtask, currentUser }) => {
         </PopoverDatepicker>
       </DueDateContainer>
       <AssigneeContainer>
-        <TaskAssignMember
-          currentUser={currentUser}
-          reassignTask={handleReassignSubtask}
-          task={subtask}
+        <MultiAssignPopover
+          placement="top"
+          taskListIdentifiers={taskList?.taskListIdentifier}
+          selectedMembers={assignedToUsers}
+          onSelect={handleReassignSubtask}
         >
-          {assignedTo ? (
-            <Tooltip
-              placement="top-end"
-              title={`Assigned to ${assignedTo.userName}`}
-            >
-              <Member member={assignedTo} size={30} showTooltip={false} />
-            </Tooltip>
+          {assignedToUsers?.length ? (
+            <MemberGroup members={assignedToUsers} />
           ) : (
             <Tooltip placement="top" title="Assign to">
-              <AddCrossIcon src={CrossIcon} size="28px" />
+              <AssignMemberIcon />
             </Tooltip>
           )}
-        </TaskAssignMember>
+        </MultiAssignPopover>
       </AssigneeContainer>
       <GoToParentIconContainer>
         <img src={SimpleArrowRight} alt="Go to parent task" />

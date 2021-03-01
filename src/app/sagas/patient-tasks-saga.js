@@ -37,7 +37,6 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import { isEmpty } from 'ramda';
 import {
   toggleTaskCompletedStatus,
-  assignTask as assignTaskHelper,
   setDueDate as setDueDateHelper,
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
@@ -101,19 +100,11 @@ export const togglePatientTaskStatus = task => ({
   },
 });
 
-export const updatePatientTask = (taskIdentifier, newTaskData) => ({
+export const updateTaskData = (taskIdentifier, newTaskData) => ({
   type: UPDATE_PATIENT_TASK,
   payload: {
     taskIdentifier,
     newTaskData,
-  },
-});
-
-export const reassignPatientTask = (task, assignee) => ({
-  type: DO_REASSIGN_TASK,
-  payload: {
-    task,
-    assignee,
   },
 });
 
@@ -204,8 +195,7 @@ export const PatientTasksSagaActions = {
   fetchPatientTasks,
   refreshPatientTasks,
   togglePatientTaskStatus,
-  updatePatientTask,
-  reassignPatientTask,
+  updateTaskData,
   updatePatientTaskDueDate,
   updatePatientTaskWorkflowStatus,
   quickAddPatientTask,
@@ -218,6 +208,7 @@ export const PatientTasksSagaActions = {
   changeMemberRole,
   fetchPatientFilters,
   sortPatientTasks,
+  updatePatientTaskInList,
 };
 
 function* getPatientLists() {
@@ -345,7 +336,7 @@ function* doToggleTaskCompleteStatus({ payload }) {
             apiEndpoint: 'markIncomplete',
             successMessage: AlertMessages.TASK_REACTIVATED,
           };
-    yield put(updatePatientTask(updatedTask.taskIdentifier, updatedTask));
+    yield put(updateTaskData(updatedTask.taskIdentifier, updatedTask));
 
     yield call(TaskApi[apiEndpoint], task);
     yield put(AlertActions.showGlobalAlert(successMessage));
@@ -363,37 +354,12 @@ function* doToggleTaskCompleteStatus({ payload }) {
   }
 }
 
-function* doReassignTask({ payload }) {
-  const { assignee, task } = payload;
-
-  try {
-    const currentUser = yield select(userProfileSelector);
-    const updatedTask = assignTaskHelper(task, assignee, currentUser);
-    yield put(updatePatientTask(updatedTask.taskIdentifier, updatedTask));
-    yield call(
-      TaskApi.assignOrReassignTask,
-      { taskIdentifier: task.taskIdentifier },
-      assignee?.userIdentifier,
-    );
-    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
-    ]);
-  } catch (error) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
-    ]);
-  }
-}
-
 function* doUpdateDueDate({ payload }) {
   const { task, dueDate } = payload;
 
   try {
     const updatedTask = setDueDateHelper(task, dueDate);
-    yield put(updatePatientTask(task?.taskIdentifier, updatedTask));
+    yield put(updateTaskData(task?.taskIdentifier, updatedTask));
 
     yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
@@ -413,7 +379,7 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
   const { workflowStatus, task } = payload;
   try {
     const updatedTask = setWorkflowStatusHelper(task, workflowStatus);
-    yield put(updatePatientTask(task?.taskIdentifier, updatedTask));
+    yield put(updateTaskData(task?.taskIdentifier, updatedTask));
 
     yield call(
       TaskApi.updateWorkflowStatus,
@@ -437,7 +403,8 @@ function* doUpdatePatientTaskInList({ payload }) {
   const { task } = payload;
 
   try {
-    yield put(updatePatientTask(task?.taskIdentifier, task));
+    yield put(updateTaskData(task?.taskIdentifier, task));
+    yield call(TaskApi.updateTask, task);
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
       put(fetchStatsForPatientTasks()),
@@ -592,7 +559,6 @@ export default function* watchPatientTasks() {
   yield takeLatest(DO_FETCH_PATIENT_TASKS, doFetchPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
   yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
-  yield takeLatest(DO_REASSIGN_TASK, doReassignTask);
   yield takeLatest(DO_UPDATE_DUE_DATE, doUpdateDueDate);
   yield takeLatest(
     DO_UPDATE_PATIENT_WORKFLOW_STATUS,

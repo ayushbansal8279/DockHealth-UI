@@ -7,7 +7,8 @@ import React, {
   useMemo,
   useContext,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { pluck } from 'ramda';
+import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
@@ -18,13 +19,13 @@ import debounce from 'lodash.debounce';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
-import CrossIcon from 'img/cross';
 import ThreeDotsIcon from 'img/three-dots';
-import Member from 'components/members/Member/Member';
+import { userProfileSelector } from 'selectors/user-selectors';
+import MemberGroup from 'components/members/MemberGroup/MemberGroup';
 import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
 import SubtasksIcon from 'img/SubtasksIcon';
 import palette from 'styles/palette';
-import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
+import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
@@ -43,10 +44,10 @@ import {
   getCommentsIconTooltipTitle,
   isDueDateOverdue,
 } from 'helpers/task-helpers';
+import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
 import {
-  AddCrossIcon,
   AddPlaceholder,
   CircleIcon,
   ClickablePatient,
@@ -87,8 +88,7 @@ const TaskItem = ({
   dragHandleProps,
   isDragging,
   isCompletedGroup,
-  currentUser,
-  reassignTask,
+  onTaskUpdate,
   updateDueDate,
   updateWorkflowStatus,
   subTasksCount,
@@ -108,7 +108,7 @@ const TaskItem = ({
     taskIdentifier,
     edited,
     duplicated,
-    assignedTo,
+    assignedToUsers,
     attachments,
     comments,
     description,
@@ -139,6 +139,7 @@ const TaskItem = ({
     matchWorkflowStatus,
   } = searchMetaData;
 
+  const currentUser = useSelector(userProfileSelector);
   const [isHovered, setIsHoverd] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -393,6 +394,20 @@ const TaskItem = ({
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
+
+  const handleReasignTask = useCallback(
+    selectedMembers => {
+      onTaskUpdate({
+        ...task,
+        assignedToUsers: selectedMembers,
+        assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+        assignedBy: selectedMembers?.length ? currentUser : null,
+        // TODO: remove after changing update to patch
+        patientIdentifier: task.patient?.patientIdentifier || null,
+      });
+    },
+    [currentUser, onTaskUpdate, task],
+  );
 
   const showDraggableDots =
     !dragAndDropDisabled && isDraggable && !bulkEditIsActive;
@@ -706,7 +721,7 @@ const TaskItem = ({
             </PopoverDatepicker>
           </StandardTaskItemCell>
           <StandardTaskItemCell
-            width="80px"
+            width="100px"
             justify="center"
             paddingLeft="tiny"
             paddingRight="tiny"
@@ -714,25 +729,22 @@ const TaskItem = ({
               event.stopPropagation();
             }}
           >
-            <TaskAssignMember
-              currentUser={currentUser}
-              reassignTask={reassignTask}
-              task={task}
+            <MultiAssignPopover
+              taskListIdentifiers={task?.taskList?.taskListIdentifier}
+              selectedMembers={assignedToUsers}
+              onSelect={handleReasignTask}
             >
-              {assignedTo ? (
-                <Tooltip
-                  placement="top-end"
-                  title={`Assigned to ${assignedTo.userName}`}
-                >
+              {assignedToUsers?.length ? (
+                <>
                   <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                  <Member member={assignedTo} size={30} showTooltip={false} />
-                </Tooltip>
+                  <MemberGroup members={assignedToUsers} />
+                </>
               ) : (
                 <Tooltip placement="top" title="Assign to">
-                  <AddCrossIcon src={CrossIcon} size="28px" />
+                  <AssignMemberIcon />
                 </Tooltip>
               )}
-            </TaskAssignMember>
+            </MultiAssignPopover>
           </StandardTaskItemCell>
           {listNameVisible && (
             <StandardTaskItemCell

@@ -65,15 +65,11 @@ export const DescriptionContainer = styled.div`
   overflow: hidden;
 `;
 
-export const AddCrossIcon = styled.img`
-  border: 0.0625rem dashed ${palette.coolGrey1};
-  border-radius: 50%;
-  color: ${palette.blueOcean};
-  width: ${props => props.size};
-`;
-
 export const AssigneeContainer = styled.div`
-  width: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 90px;
   margin: 0 ${spacing.smallPlus};
 `;
 
@@ -94,7 +90,7 @@ export const DueDate = styled.span`
 export const DueDateContainer = styled.div`
   position: relative;
   display: flex;
-  width: 60px;
+  flex-basis: 60px;
   justify-content: center;
   text-align: center;
 `;

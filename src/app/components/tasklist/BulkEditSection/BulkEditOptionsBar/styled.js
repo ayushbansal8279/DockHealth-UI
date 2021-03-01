@@ -38,7 +38,7 @@ export const ButtonsWrapper = styled.div`
   height: 100%;
 `;
 
-export const IconButton = styled.button`
+export const WrapperContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -118,4 +118,8 @@ export const AssigneeIcon = styled.div`
     width: 5px;
     height: 1px;
   }
+`;
+
+export const Button = styled.button`
+  height: 100%;
 `;

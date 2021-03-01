@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes, { bool, number } from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'ramda';
@@ -14,13 +14,12 @@ const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
 const Member = React.forwardRef(
   (
     {
-      onClick,
       member,
       children,
       className,
       color,
       size,
-      showTooltip = true,
+      showTooltip,
       isInactive,
       activeUsersList,
     },
@@ -77,10 +76,9 @@ const Member = React.forwardRef(
         >
           <Avatar
             ref={reference}
-            size={size ?? 55}
+            size={size}
             color={color || member?.bubbleColor}
             className={className}
-            onClick={onClick}
             isInactive={isInactive || isInvited}
             showOnlineIndicator={
               currentUserIdentifier !== member?.userIdentifier
@@ -98,7 +96,8 @@ const Member = React.forwardRef(
 );
 
 Member.propTypes = {
-  onClick: PropTypes.func,
+  showTooltip: bool,
+  size: number,
   member: PropTypes.shape({
     userIdentifier: PropTypes.string,
     firstName: PropTypes.string,
@@ -109,8 +108,9 @@ Member.propTypes = {
 };
 
 Member.defaultProps = {
+  showTooltip: true,
+  size: 30,
   member: null,
-  onClick: null,
 };
 
 const mapStateToProps = state => ({

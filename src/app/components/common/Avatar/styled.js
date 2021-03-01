@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from 'styles/palette';
+import palette from 'styles/palette';
 
 const INITIAL_AVATAR_SIZE = 110;
 const getScaledSize = ({ normalSize, propSize }) =>
@@ -7,15 +7,15 @@ const getScaledSize = ({ normalSize, propSize }) =>
     (normalSize * (propSize ?? INITIAL_AVATAR_SIZE)) / INITIAL_AVATAR_SIZE,
   );
 
+export const BackgroundContainer = styled.div`
+  background-color: ${palette.white};
+  border-radius: 50%;
+`;
+
 export const AvatarContainer = styled.div`
   align-items: center;
-  background-color: ${palette.white};
   border: 2px solid ${props => props.color ?? palette.coolGrey2};
   border-radius: 50%;
-  ${props =>
-    props.withShadow &&
-    `box-shadow: 0px 4px 4px ${opacify(palette.black, 0.25)}`};
-  cursor: ${props => (props.withCursor ? 'pointer' : 'inherit')};
   display: inline-flex;
   min-height: ${props => props.size ?? 110}px;
   min-width: ${props => props.size ?? 110}px;
@@ -62,21 +62,6 @@ export const AvatarImageContainer = styled.img`
     height: 100%;
     width: 100%;
   }
-`;
-
-export const CameraContainer = styled.div`
-  align-items: center;
-  background-color: ${palette.white};
-  border: 2px solid ${palette.cyanBlue};
-  border-radius: 50%;
-  display: flex;
-  height: ${({ size }) => getScaledSize({ normalSize: 40, propSize: size })}px;
-  justify-content: center;
-  left: 90%;
-  position: absolute;
-  top: 15%;
-  transform: translate(-50%, -50%);
-  width: ${({ size }) => getScaledSize({ normalSize: 40, propSize: size })}px;
 `;
 
 export const OnlineIndicator = styled.div`

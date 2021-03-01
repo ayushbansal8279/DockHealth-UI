@@ -1,22 +1,25 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { pluck } from 'ramda';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import { EditorState } from 'draft-js';
+import { useSelector } from 'react-redux';
 import Circle from 'img/circle';
-import CrossIcon from 'img/cross';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
+import { userProfileSelector } from 'selectors/user-selectors';
+import MemberGroup from 'components/members/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import Member from 'components/members/Member/Member';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
-import TaskAssignMember from 'components/tasklist/TaskAssignMember/TaskAssignMember';
+import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
 import { isDueDateOverdue } from 'helpers/task-helpers';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import TaskItemStatus from '../StandardTaskItem/TaskItemStatus';
@@ -32,7 +35,6 @@ import {
   AssignedBox,
   SlimTaskWorkflowStatusContainer,
   SlimTaskItemPatientLink,
-  AddCrossIcon,
   AddPlaceholder,
   SlimTaskListNameText,
   MainStandardTaskItemCell,
@@ -186,12 +188,11 @@ const SlimTaskItem = ({
   gridConfig,
   updateDueDate,
   dynamicColumnType = 'DUE_DATE',
-  currentUser,
-  reassignTask,
+  onTaskUpdate,
   updateWorkflowStatus,
 }) => {
   const {
-    assignedTo,
+    assignedToUsers,
     description,
     tokenizedDescription,
     taskMentions,
@@ -204,6 +205,7 @@ const SlimTaskItem = ({
     status,
   } = task;
 
+  const currentUser = useSelector(userProfileSelector);
   const history = useHistory();
   const [isHovered, setIsHoverd] = useState(false);
 
@@ -262,6 +264,20 @@ const SlimTaskItem = ({
 
   const onMouseEnter = () => setIsHoverd(true);
   const onMouseLeave = () => setIsHoverd(false);
+
+  const handleReasignTask = useCallback(
+    selectedMembers => {
+      onTaskUpdate({
+        ...task,
+        assignedToUsers: selectedMembers,
+        assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+        assignedBy: selectedMembers?.length ? currentUser : null,
+        // TODO: remove after changing update to patch
+        patientIdentifier: task.patient?.patientIdentifier || null,
+      });
+    },
+    [currentUser, onTaskUpdate, task],
+  );
 
   return (
     <SlimTaskItemContainer
@@ -362,17 +378,17 @@ const SlimTaskItem = ({
           {...gridConfig.assignedPerson}
         >
           <AssignedBox>
-            <TaskAssignMember
-              currentUser={currentUser}
-              reassignTask={reassignTask}
-              task={task}
+            <MultiAssignPopover
+              taskListIdentifiers={task?.taskList?.taskListIdentifier}
+              selectedMembers={assignedToUsers}
+              onSelect={handleReasignTask}
             >
-              {assignedTo ? (
-                <Member member={assignedTo} size={30} />
+              {assignedToUsers?.length ? (
+                <MemberGroup members={assignedToUsers} />
               ) : (
-                <AddCrossIcon src={CrossIcon} size="30px" />
+                <AssignMemberIcon />
               )}
-            </TaskAssignMember>
+            </MultiAssignPopover>
           </AssignedBox>
         </StandardTaskItemCell>
       )}

@@ -64,7 +64,7 @@ const DO_UPDATE_DASHBOARD_TASK_DUE_DATE = 'DO_UPDATE_DASHBOARD_TASK_DUE_DATE';
 const FETCH_DASHBOARD_FILTERS = 'FETCH_DASHBOARD_FILTERS';
 const DO_UPDATE_DASHBOARD_SELECTED_FILTERS =
   'DO_UPDATE_DASHBOARD_SELECTED_FILTERS';
-const DO_REASSIGN_DASHBOARD_TASK = 'DO_REASSIGN_DASHBOARD_TASK';
+const DO_UPDATE_DASHBOARD_TASK = 'DO_UPDATE_DASHBOARD_TASK';
 const DO_FETCH_IMPLICIT_GROUPS = 'DO_FETCH_IMPLICIT_GROUPS';
 const DO_FETCH_IMPLICIT_GROUP = 'DO_FETCH_IMPLICIT_GROUP';
 const DO_FETCH_SEARCHED_TERM_FOR_IMPLICIT_GROUPS =
@@ -132,10 +132,9 @@ export const updateDashboardSelectedFilters = selectedFilters => ({
   },
 });
 
-export const reassignDashboardTask = (taskIdentifier, userId) => ({
-  type: DO_REASSIGN_DASHBOARD_TASK,
-  taskIdentifier,
-  userId,
+export const updateDashboardTask = updatedTask => ({
+  type: DO_UPDATE_DASHBOARD_TASK,
+  updatedTask,
 });
 
 export const fetchImplicitGroup = (group, fetchMore) => ({
@@ -528,9 +527,10 @@ function* doUpdateDashboardSelectedFilters({ payload }) {
   yield put(reloadDashboardTasks());
 }
 
-function* doReassignDashboardTask({ taskIdentifier, userId }) {
+function* doUpdateDashboardTask({ updatedTask }) {
   try {
-    yield call(TaskApi.assignOrReassignTask, { taskIdentifier }, userId);
+    yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
+    yield call(TaskApi.updateTask, updatedTask);
     yield call(doReloadDashboardTasks);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
@@ -557,7 +557,7 @@ export default function* watchDashboard() {
     DO_UPDATE_DASHBOARD_SELECTED_FILTERS,
     doUpdateDashboardSelectedFilters,
   );
-  yield takeEvery(DO_REASSIGN_DASHBOARD_TASK, doReassignDashboardTask);
+  yield takeEvery(DO_UPDATE_DASHBOARD_TASK, doUpdateDashboardTask);
   yield takeLatest(DO_FETCH_IMPLICIT_GROUPS, doFetchImplicitGroups);
   yield takeLatest(DO_FETCH_IMPLICIT_GROUP, doFetchImplicitGroup);
   yield takeLatest(

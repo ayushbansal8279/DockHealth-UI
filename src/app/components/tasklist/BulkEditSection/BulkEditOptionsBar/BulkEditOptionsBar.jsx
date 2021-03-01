@@ -27,13 +27,14 @@ import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
 
 import {
-  IconButton,
+  WrapperContainer,
   IconBox,
   CloseButton,
   CloseIcon,
   ButtonsWrapper,
   Container,
   TasksText,
+  Button,
 } from './styled';
 
 const IconWithTooltip = ({ text, children }) => {
@@ -515,16 +516,18 @@ const BulkEditOptionsBar = ({
         } Selected`}
       </TasksText>
       <ButtonsWrapper>
-        <IconButton
+        <Button
           type="button"
           onClick={handleDuplicateTasks}
           disabled={isDisabled}
         >
-          <IconBox>
-            <DuplicateIcon />
-          </IconBox>
-          <p>Duplicate</p>
-        </IconButton>
+          <WrapperContainer disabled={isDisabled}>
+            <IconBox>
+              <DuplicateIcon />
+            </IconBox>
+            <p>Duplicate</p>
+          </WrapperContainer>
+        </Button>
         <IconWithTooltip
           text={
             disabledMoveAction
@@ -532,27 +535,31 @@ const BulkEditOptionsBar = ({
               : null
           }
         >
-          <IconButton
+          <Button
             type="button"
             disabled={disabledMoveAction || isDisabled}
             onClick={handleMoveTasks}
           >
-            <IconBox>
-              <MoveIcon />
-            </IconBox>
-            <p>Move</p>
-          </IconButton>
+            <WrapperContainer disabled={disabledMoveAction || isDisabled}>
+              <IconBox>
+                <MoveIcon />
+              </IconBox>
+              <p>Move</p>
+            </WrapperContainer>
+          </Button>
         </IconWithTooltip>
-        <IconButton
+        <Button
           type="button"
           onClick={handleCompleteTasks}
           disabled={isDisabled}
         >
-          <IconBox>
-            <CompleteIcon />
-          </IconBox>
-          <p>Complete</p>
-        </IconButton>
+          <WrapperContainer disabled={isDisabled}>
+            <IconBox>
+              <CompleteIcon />
+            </IconBox>
+            <p>Complete</p>
+          </WrapperContainer>
+        </Button>
         <BulkEditWorkflowStatusOption
           handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
           isDisabled={isDisabled}
@@ -567,17 +574,14 @@ const BulkEditOptionsBar = ({
           handleChangeAssigneTasks={handleChangeAssigneTasks}
           isDisabled={isDisabled}
         />
-        <IconButton
-          type="button"
-          color={palette.oPlusRed}
-          onClick={handleDeleteTasks}
-          disabled={isDisabled}
-        >
-          <IconBox>
-            <DeleteIcon />
-          </IconBox>
-          <p>Delete</p>
-        </IconButton>
+        <Button type="button" onClick={handleDeleteTasks} disabled={isDisabled}>
+          <WrapperContainer color={palette.oPlusRed} disabled={isDisabled}>
+            <IconBox>
+              <DeleteIcon />
+            </IconBox>
+            <p>Delete</p>
+          </WrapperContainer>
+        </Button>
         <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
           <CloseIcon />
         </CloseButton>

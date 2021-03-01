@@ -52,7 +52,6 @@ const TasksGroup = ({
   isFirstGroup,
   isLastGroup,
   groupId,
-  currentUser,
   groupName,
   groupTaskCounts,
   toggleCompleteTask,
@@ -62,7 +61,7 @@ const TasksGroup = ({
   moveGroupUp,
   moveGroupDown,
   reorderSubtasksForTask,
-  reassignTask,
+  onTaskUpdate,
   tasks,
   isLoadingGroup,
   isCompletedGroup,
@@ -316,7 +315,7 @@ const TasksGroup = ({
             <ColumnSortHeader
               id="ASSIGNED_TO"
               label="Assign"
-              width={80}
+              width={100}
               sort={sort}
               onSortChange={onSortChange}
             />
@@ -335,13 +334,12 @@ const TasksGroup = ({
           <DragAndDropGroupList
             groupId={groupId}
             tasks={tasks}
-            currentUser={currentUser}
             isFullView={isFullView}
             toggleCompleteTask={toggleCompleteTask}
             draggedId={draggedId}
             reorderSubtasksForTask={reorderSubtasksForTask}
             isCompletedGroup={isCompletedGroup}
-            reassignTask={reassignTask}
+            onTaskUpdate={onTaskUpdate}
             updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             dragAndDropDisabled={dragAndDropDisabled}

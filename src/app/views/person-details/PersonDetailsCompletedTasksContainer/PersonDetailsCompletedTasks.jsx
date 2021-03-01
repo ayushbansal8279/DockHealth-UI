@@ -15,7 +15,6 @@ const PersonDetailsCompletedTasks = ({
   isFetchingTasks,
   tasks,
   openDrawer,
-  currentUser,
   storeAsCurrentTask,
   toggleCompleteTask,
   summaryTasksCount,
@@ -23,7 +22,7 @@ const PersonDetailsCompletedTasks = ({
   dragAndDropDisabled,
   searchValue,
   areFiltersApplied,
-  reassignTask,
+  onTaskUpdate,
   selectedTask,
   listUniqueKey,
   sort,
@@ -70,7 +69,6 @@ const PersonDetailsCompletedTasks = ({
               <DragDropContext onDragEnd={() => {}}>
                 <TasksGroup
                   groupName="Completed"
-                  currentUser={currentUser}
                   openDrawer={openDrawer}
                   storeAsCurrentTask={storeAsCurrentTask}
                   toggleCompleteTask={toggleCompleteTask}
@@ -82,7 +80,7 @@ const PersonDetailsCompletedTasks = ({
                   quickAddTaskVisible={false}
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible
-                  reassignTask={reassignTask}
+                  onTaskUpdate={onTaskUpdate}
                   areFiltersApplied={areFiltersApplied}
                   isSearchApplied={searchValue}
                   selectedTask={selectedTask}

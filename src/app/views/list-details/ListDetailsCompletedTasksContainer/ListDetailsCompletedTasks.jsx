@@ -11,7 +11,6 @@ import { TaskGroupsContainer } from '../styled';
 const ListDetailsCompletedTasks = ({
   tasks,
   completedTasksGroup,
-  currentUser,
   toggleCompleteTask,
   hasMoreTasks,
   isFetchingMoreTasks,
@@ -20,7 +19,7 @@ const ListDetailsCompletedTasks = ({
   dragAndDropDisabled,
   isSearchApplied,
   areFiltersApplied,
-  reassignTask,
+  onTaskUpdate,
   selectedTask,
   listUniqueKey,
   loadMoreTasksForList,
@@ -52,7 +51,6 @@ const ListDetailsCompletedTasks = ({
               <DragDropContext onDragEnd={() => {}}>
                 <TasksGroup
                   groupName="Completed"
-                  currentUser={currentUser}
                   toggleCompleteTask={toggleCompleteTask}
                   tasks={tasks}
                   isCompletedGroup
@@ -62,7 +60,7 @@ const ListDetailsCompletedTasks = ({
                   updateDueDate={updateDueDate}
                   quickAddTaskVisible={false}
                   dragAndDropDisabled={dragAndDropDisabled}
-                  reassignTask={reassignTask}
+                  onTaskUpdate={onTaskUpdate}
                   areFiltersApplied={areFiltersApplied}
                   isSearchApplied={isSearchApplied}
                   selectedTask={selectedTask}

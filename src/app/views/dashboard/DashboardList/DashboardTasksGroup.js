@@ -83,7 +83,7 @@ const GRID_CONFIG = {
       },
     },
     assignedPerson: {
-      width: '80px',
+      width: '100px',
       justify: 'center',
     },
     listName: {
@@ -139,7 +139,7 @@ const DashboardTasksGroup = ({
   dynamicColumnType,
   updateDueDate,
   currentUser,
-  reassignDashboardTask,
+  onTaskUpdate,
   updateWorkflowStatus,
   fetchImplicitGroup,
   isSearching,
@@ -301,12 +301,7 @@ const DashboardTasksGroup = ({
                                 dynamicColumnType={dynamicColumnType}
                                 updateDueDate={updateDueDate}
                                 currentUser={currentUser}
-                                reassignTask={(
-                                  { taskIdentifier },
-                                  { userId },
-                                ) =>
-                                  reassignDashboardTask(taskIdentifier, userId)
-                                }
+                                onTaskUpdate={onTaskUpdate}
                                 updateWorkflowStatus={updateWorkflowStatus}
                               />
                             </div>

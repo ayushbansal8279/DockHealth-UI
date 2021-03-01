@@ -1,7 +1,7 @@
 import React from 'react';
 import StatusIcon from 'img/bulk-edit/StatusIcon';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
-import { IconButton, IconBox } from './styled';
+import { WrapperContainer, IconBox } from './styled';
 
 const BulkEditWorkflowStatusOption = ({
   handleChangeWorkflowStatusTasks,
@@ -14,12 +14,12 @@ const BulkEditWorkflowStatusOption = ({
     }
     isDisabled={isDisabled}
   >
-    <IconButton type="button" onClick={() => {}} disabled={isDisabled}>
+    <WrapperContainer disabled={isDisabled}>
       <IconBox>
         <StatusIcon />
       </IconBox>
       <p>Status</p>
-    </IconButton>
+    </WrapperContainer>
   </TaskWorkflowStatus>
 );
 

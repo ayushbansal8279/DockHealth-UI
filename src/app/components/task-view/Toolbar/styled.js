@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { fontWeights } from 'styles/font';
 
 // LEGACY STYLES - REFACTOR REQUIRED
 export const ToolbarLabel = withStyles({
@@ -22,23 +21,6 @@ export const ToolbarAvatarContainer = styled.div`
   justify-content: center;
   overflow: hidden;
   width: 100%;
-`;
-
-export const MoreMembersButtonContainer = styled.div`
-  height: 45px;
-  width: 45px;
-  align-items: center;
-  border: 0.125rem solid ${palette.brightBlue};
-  border-radius: 2.5rem;
-  color: ${palette.brightBlue};
-  display: flex;
-  font-size: 0.875rem;
-  font-weight: 300;
-  justify-content: center;
-  line-height: 1;
-  min-height: 2.5rem;
-  min-width: 2.5rem;
-  padding: 0;
 `;
 
 export const HeaderActionButtonsGrid = styled(Grid)`
@@ -62,15 +44,4 @@ export const MemberWrapper = styled.div`
   flex-direction: row;
 
   ${({ isPending }) => isPending && `opacity: 0.7;`}
-`;
-
-export const HiddenMembersTooltipContainer = styled.div`
-  min-width: 230px;
-  display: flex;
-  justify-content: space-between;
-
-  & > span {
-    font-weight: ${fontWeights.bold};
-    margin-right: ${spacing.tiny};
-  }
 `;
