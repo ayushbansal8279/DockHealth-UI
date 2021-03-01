@@ -67,6 +67,7 @@ const AssignedToSection = ({ assignedToUsers, taskListIdentifier, onSave }) => {
           ),
         }}
         inputProps={{
+          tabindex: -1,
           readOnly: true,
           value: displayValue,
         }}
