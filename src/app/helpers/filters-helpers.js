@@ -86,7 +86,7 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
     priority,
     workflowStatus,
     assignedBy,
-    assignedTo,
+    assignedToUsers,
     patient,
     labels,
     dueDate,
@@ -116,8 +116,11 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
       isEmpty(filters.assignedTo) ||
       filters.assignedTo.some(
         assignedToOption =>
-          assignedToOption === assignedTo?.userIdentifier ||
-          (assignedToOption === 'UNASSIGNED' && !assignedTo),
+          ((!assignedToUsers || isEmpty(assignedToUsers)) &&
+            assignedToOption === 'UNASSIGNED') ||
+          assignedToUsers.some(
+            ({ userIdentifier }) => userIdentifier === assignedToOption,
+          ),
       )) &&
     (!filters.assignedBy ||
       isEmpty(filters.assignedBy) ||

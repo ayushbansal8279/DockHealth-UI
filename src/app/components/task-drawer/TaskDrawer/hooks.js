@@ -272,10 +272,6 @@ const initializeTaskDrawerHooks = ({
         setDescriptionState();
       }
     }
-    // setValue(
-    //   'assignedToIdentifier',
-    //   selectedTask?.assignedTo?.userIdentifier ?? null,
-    // );
     const dueDateMoment = moment(selectedTask?.dueDate ?? null);
     if (dueDateMoment.isValid()) {
       setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
@@ -400,13 +396,13 @@ const initializeTaskDrawerHooks = ({
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
-        let assignedTo = null;
-        if (assignToSelf && selectedTask.assignedTo) {
-          assignedTo = selectedTask.assignedTo;
+        let assignedToUsers = null;
+        if (assignToSelf && selectedTask.assignedToUsers) {
+          assignedToUsers = selectedTask.assignedToUsers;
         }
         await prepareSubtask(
           selectedTask.taskIdentifier,
-          assignedTo,
+          assignedToUsers,
           selectedTask,
         )(dispatch);
         if (typeof afterAddSubTask === 'function') afterAddSubTask();
