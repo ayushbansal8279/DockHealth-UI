@@ -371,8 +371,8 @@ const SlimTaskItem = ({
       {showAssignedPerson && (
         <StandardTaskItemCell
           justify="center"
-          paddingLeft="tiny"
-          paddingRight="tiny"
+          paddingLeft="small"
+          paddingRight="small"
           {...gridConfig.assignedPerson}
         >
           <AssignedBox>

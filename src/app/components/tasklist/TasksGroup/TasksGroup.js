@@ -315,7 +315,7 @@ const TasksGroup = ({
             <ColumnSortHeader
               id="ASSIGNED_TO"
               label="Assign"
-              width={100}
+              width={90}
               sort={sort}
               onSortChange={onSortChange}
             />

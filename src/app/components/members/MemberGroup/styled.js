@@ -9,6 +9,7 @@ export const GroupContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  width: fit-content;
 
   & > ${GroupItem}, & > div {
     &:not(:first-child) {

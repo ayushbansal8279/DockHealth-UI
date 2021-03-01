@@ -83,7 +83,7 @@ const GRID_CONFIG = {
       },
     },
     assignedPerson: {
-      width: '100px',
+      width: '90px',
       justify: 'center',
     },
     listName: {

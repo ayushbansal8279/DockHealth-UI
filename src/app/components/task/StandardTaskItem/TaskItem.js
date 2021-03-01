@@ -721,10 +721,10 @@ const TaskItem = ({
             </PopoverDatepicker>
           </StandardTaskItemCell>
           <StandardTaskItemCell
-            width="100px"
+            width="90px"
             justify="center"
-            paddingLeft="tiny"
-            paddingRight="tiny"
+            paddingLeft="small"
+            paddingRight="small"
             onContextMenu={event => {
               event.stopPropagation();
             }}
