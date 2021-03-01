@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   arrayOf,
+  bool,
   func,
   node,
   oneOf,
@@ -8,31 +9,40 @@ import {
   shape,
   string,
 } from 'prop-types';
-import { StyledPopover } from './styled';
+import { StyledPopover, StyledButton } from './styled';
 import MultiAssignMembersList from './MultiAssignMembersList';
 
 const MultiAssignPopover = ({
+  blockPopover,
   placement,
   children,
   taskListIdentifiers,
   selectedMembers,
   onSelect,
+  onOpen,
+  onClose,
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) openPopover(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers]);
+
   return (
     <>
-      <button
+      <StyledButton
         type="button"
         ref={assignMemberButtonReference}
         onClick={event => {
           event.stopPropagation();
           openPopover(true);
+          if (typeof onOpen === 'function') onOpen();
         }}
       >
         {children}
-      </button>
+      </StyledButton>
       <StyledPopover
         anchorEl={assignMemberButtonReference?.current}
         anchorOrigin={{
@@ -43,10 +53,11 @@ const MultiAssignPopover = ({
           vertical: placement === 'top' ? 'bottom' : 'top',
           horizontal: 'right',
         }}
-        open={isOpen}
+        open={isOpen && !blockPopover}
         onClose={event => {
           event.stopPropagation();
           openPopover(false);
+          if (typeof onClose === 'function') onClose();
         }}
         width={assignMemberButtonReference.current?.offsetWidth}
       >
@@ -65,6 +76,7 @@ const MultiAssignPopover = ({
 };
 
 MultiAssignPopover.propTypes = {
+  blockPopover: bool,
   placement: oneOf(['top', 'bottom']),
   children: node.isRequired,
   taskListIdentifiers: oneOfType([string, arrayOf(string)]).isRequired,
@@ -78,10 +90,15 @@ MultiAssignPopover.propTypes = {
     }),
   ).isRequired,
   onSelect: func.isRequired,
+  onClose: func,
+  onOpen: func,
 };
 
 MultiAssignPopover.defaultProps = {
+  blockPopover: false,
   placement: 'bottom',
+  onClose: null,
+  onOpen: null,
 };
 
 export default MultiAssignPopover;

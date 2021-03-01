@@ -1,13 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable sonarjs/cognitive-complexity */
 import moment from 'moment';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { pluck } from 'ramda';
 import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +17,6 @@ import {
   moveTask,
   deleteTask,
   duplicateTask,
-  assignOrReassignTask,
   updatePatient,
   updateTaskDescription,
   prepareSubtask,
@@ -41,7 +35,7 @@ import { noop } from 'helpers/utility-functions';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { MemberAdornmentContainer } from './styled';
+// import { MemberAdornmentContainer } from './styled';
 import { getFormattedLabels } from '../LabelsSection/helpers';
 
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
@@ -154,7 +148,6 @@ const initializeTaskDrawerHooks = ({
     ) || {};
 
   const [members, setMembers] = useState(null);
-  const [isFetchingMembers, setIsFetchingMembers] = useState(false);
 
   const taskList = selectedTask?.taskList;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -165,7 +158,7 @@ const initializeTaskDrawerHooks = ({
     reValidateMode: 'onSubmit',
   });
 
-  const { setValue, watch, clearError } = formMethods;
+  const { setValue, clearError } = formMethods;
 
   const dispatch = useDispatch();
 
@@ -245,13 +238,9 @@ const initializeTaskDrawerHooks = ({
 
   useEffect(() => {
     if (taskListIdentifier) {
-      setIsFetchingMembers(true);
       refreshMembers()
-        .then(() => {
-          setIsFetchingMembers(false);
-        })
+        .then(() => {})
         .catch(error => {
-          setIsFetchingMembers(false);
           throw error;
         });
     }
@@ -283,10 +272,10 @@ const initializeTaskDrawerHooks = ({
         setDescriptionState();
       }
     }
-    setValue(
-      'assignedToIdentifier',
-      selectedTask?.assignedTo?.userIdentifier ?? null,
-    );
+    // setValue(
+    //   'assignedToIdentifier',
+    //   selectedTask?.assignedTo?.userIdentifier ?? null,
+    // );
     const dueDateMoment = moment(selectedTask?.dueDate ?? null);
     if (dueDateMoment.isValid()) {
       setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
@@ -317,19 +306,14 @@ const initializeTaskDrawerHooks = ({
     storeAsCurrentTask(null)(dispatch);
   }, [dispatch]);
 
-  const currentAssignedToValue = watch('assignedToIdentifier');
+  // const currentAssignedToValue = watch('assignedToIdentifier');
 
-  const currentAssignedToAdornment = useMemo(() => {
-    const currentMember = members?.find(
-      ({ userIdentifier }) => currentAssignedToValue === userIdentifier,
-    );
-
-    return currentMember ? (
-      <MemberAdornmentContainer>
-        <Member showTooltip={false} member={currentMember} size={34} />
-      </MemberAdornmentContainer>
-    ) : null;
-  }, [currentAssignedToValue, members]);
+  //   return currentMember ? (
+  //     <MemberAdornmentContainer>
+  //       <Member showTooltip={false} member={currentMember} size={34} />
+  //     </MemberAdornmentContainer>
+  //   ) : null;
+  // }, [currentAssignedToValue, members]);
 
   const getMemberAdornment = (memberIdentifier, listMembers) => {
     const currentMember = listMembers?.find(
@@ -439,33 +423,6 @@ const initializeTaskDrawerHooks = ({
       parentTaskIdentifier: selectedTask.taskIdentifier,
     };
     return saveTask(taskToCreate)(dispatch);
-  };
-
-  const handleAssignedToSelect = async selectedOption => {
-    const member = {
-      userIdentifier: selectedOption.value,
-      userName: selectedOption.displayLabel,
-    };
-    setValue('assignedToUserIdentifier', member?.userIdentifier);
-    setValue('assignedToUserName', member?.userName);
-
-    if (selectedTask && selectedTask.taskIdentifier != null) {
-      try {
-        const updatedTask = await assignOrReassignTask(
-          selectedTask,
-          member?.userIdentifier,
-        )(dispatch);
-        setAutoSaveVisible();
-        onTaskUpdate(updatedTask);
-      } catch {
-        dispatch(
-          AlertActions.showGlobalAlert(
-            'Error updating assignment, please try again later',
-            'error',
-          ),
-        );
-      }
-    }
   };
 
   const handlePatientSave = useCallback(
@@ -594,9 +551,10 @@ const initializeTaskDrawerHooks = ({
           patientIdentifier:
             updatedData?.patientIdentifier ||
             selectedTask?.patient?.patientIdentifier,
-          assignedToIdentifier:
-            updatedData?.assignedToIdentifier ||
-            selectedTask?.assignedTo?.userIdentifier,
+          assignedToIdentifiers: pluck(
+            'userIdentifier',
+            updatedData?.assignedToUsers || selectedTask?.assignedToUsers || [],
+          ),
         }),
       );
       onTaskUpdate(updatedTask);
@@ -626,7 +584,6 @@ const initializeTaskDrawerHooks = ({
     formMethods,
     isAddingOrEditingSubtask,
     taskLists,
-    currentAssignedToAdornment,
     getMemberAdornment,
     openTaskDrawer,
     closeTaskDrawer,
@@ -636,12 +593,9 @@ const initializeTaskDrawerHooks = ({
     onDuplicate,
     onAddSubTask,
     handleQuickAddTask,
-    handleAssignedToSelect,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     members,
-    isFetchingMembers,
-    refreshMembers,
     descriptionState,
     setDescriptionState,
     descriptionReference,

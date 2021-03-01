@@ -34,20 +34,6 @@ export const TaskDrawerBackground = styled.div`
   z-index: 98;
 `;
 
-export const MemberLabelContainer = styled.div`
-  align-items: center;
-  display: grid;
-  grid-gap: 0.5rem;
-  grid-template-columns: 1fr 34px;
-  width: 100%;
-
-  > * {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
-
 export const MemberAdornmentContainer = styled.div`
   align-self: flex-end;
   margin-bottom: 0;
@@ -56,10 +42,6 @@ export const MemberAdornmentContainer = styled.div`
 
 export const HiddenFieldContainer = styled.div`
   visibility: ${props => (props.visible ? 'visible' : 'hidden')};
-`;
-
-export const EnvelopeIconContainer = styled.div`
-  fill: ${palette.white};
 `;
 
 export const FormSectionDivider = styled.div`

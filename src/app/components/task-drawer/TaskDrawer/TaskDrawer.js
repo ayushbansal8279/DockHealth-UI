@@ -8,8 +8,6 @@ import { storeAsCurrentTask } from 'actions/task-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-import InboxIcon from 'img/navigation/InboxIcon';
-import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { isDueDateOverdue } from 'helpers/task-helpers';
 import { DrawerFieldEnum, TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
@@ -19,14 +17,11 @@ import CommentSection from '../CommentSection/CommentSection';
 import DueDateInput from '../DueDateInput/DueDateInput';
 import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
 import initializeTaskDrawerHooks from './hooks';
-import initializeTaskDrawerPopoverHooks from './popover-hooks';
 import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
-import InviteMemberPopover from '../InviteMemberPopover/InviteMemberPopover';
 import LabelsSection from '../LabelsSection/LabelsSection';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import TopSection from '../TopSection/TopSection';
 import HistorySection from '../HistorySection/HistorySection';
-import SelectInput from '../SelectInput/SelectInput';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
@@ -34,7 +29,6 @@ import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import {
   DescriptionLabel,
-  EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
   TaskDrawerBackground,
@@ -55,11 +49,8 @@ import {
   DescriptionTextContainer,
   TaskDrawerDivider,
 } from './styled';
-import {
-  getFormattedMembers,
-  renderMemberoptionWithHighlighting,
-  getCompletedByLabel,
-} from './helpers';
+import { getCompletedByLabel } from './helpers';
+import AssignedToSection from '../AssignedToSection/AssignedToSection';
 
 const TaskDrawer = ({
   isInbox,
@@ -79,7 +70,6 @@ const TaskDrawer = ({
     formMethods,
     isAddingOrEditingSubtask,
     taskLists,
-    currentAssignedToAdornment,
     closeTaskDrawer,
     isSaving,
     selectedTask,
@@ -91,11 +81,9 @@ const TaskDrawer = ({
     onDuplicate,
     onAddSubTask,
     handleQuickAddTask,
-    handleAssignedToSelect,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     members,
-    refreshMembers,
     descriptionState,
     setDescriptionState,
     descriptionReference,
@@ -136,21 +124,6 @@ const TaskDrawer = ({
   });
 
   const { handleSubmit, setValue } = formMethods;
-
-  const formattedMembers = getFormattedMembers({
-    members,
-    isFetchingMembers: true,
-    currentUser,
-  });
-
-  const {
-    assignedToInputReference,
-    isInvitePopoverOpen,
-    openInvitePopover,
-    closeInvitePopover,
-    assignedToInputValue,
-    onAssignedToInputChange,
-  } = initializeTaskDrawerPopoverHooks();
 
   useEffect(() => {
     if (selectedTask && selectedTask.description === '') {
@@ -333,67 +306,11 @@ const TaskDrawer = ({
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
-                <SelectInput
-                  name="assignedToIdentifier"
-                  label="Assigned To"
-                  placeholder="Who would you like to assign this task to?"
-                  onInputChange={onAssignedToInputChange}
-                  onItemSelected={async option => {
-                    await handleAssignedToSelect(option);
-                    assignedToInputReference.current
-                      .querySelector('input')
-                      .blur();
-                  }}
-                  ref={assignedToInputReference}
-                  noOptionsText={
-                    <Grid
-                      container
-                      direction="column"
-                      style={{ padding: '10px 10px' }}
-                    >
-                      <RobotoTypography condensed variant="h4" color="inherit">
-                        No record found
-                      </RobotoTypography>
-                      <Spacing vertical={3} />
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        size="small"
-                        onMouseDown={openInvitePopover}
-                      >
-                        <EnvelopeIconContainer>
-                          <InboxIcon />
-                        </EnvelopeIconContainer>
-                        <Spacing horizontal={3} />
-                        <RobotoTypography condensed variant="h4">
-                          Invite to the list
-                        </RobotoTypography>
-                      </Button>
-                    </Grid>
-                  }
-                  renderItem={(option, inputValue) =>
-                    renderMemberoptionWithHighlighting(option, inputValue)
-                  }
-                  InputProps={{
-                    endAdornment: currentAssignedToAdornment,
-                  }}
-                  endAdornmentEnabled={false}
-                  showAllOptions
-                >
-                  {formattedMembers}
-                </SelectInput>
-                {selectedTask && (
-                  <InviteMemberPopover
-                    anchorElement={assignedToInputReference}
-                    isPopoverOpen={isInvitePopoverOpen}
-                    closePopover={closeInvitePopover}
-                    initialValue={assignedToInputValue}
-                    assignUser={handleAssignedToSelect}
-                    taskList={selectedTask?.taskList}
-                    refreshMembers={refreshMembers}
-                    setParentFormValue={setValue}
-                  />
-                )}
+                <AssignedToSection
+                  assignedToUsers={selectedTask?.assignedToUsers}
+                  taskListIdentifier={taskListIdentifier}
+                  onSave={handleUpdateTask}
+                />
               </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <div ref={dueDateSectionReference}>

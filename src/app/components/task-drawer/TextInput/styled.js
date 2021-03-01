@@ -2,7 +2,6 @@ import palette from 'styles/palette';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 const BORDER = '0.0625rem solid transparent';
-// const MIN_INPUT_HEIGHT = '4rem';
 const ANIMATION = 'all 0.2s ease-out';
 
 const styles = {
@@ -36,7 +35,7 @@ const styles = {
     },
     '& .MuiInputBase-multiline': {
       paddingTop: props => (props.parentType === 'text' ? '12px' : '0px'),
-      paddingBottom: '0px',
+      paddingBottom: props => (props.parentType === 'text' ? '5px' : '0px'),
     },
     '& .MuiInputBase-root': {
       flexWrap: props => (props.parentType === 'selectTag' ? 'wrap' : ''),

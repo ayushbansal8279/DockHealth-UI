@@ -4,6 +4,7 @@ import palette from 'styles/palette';
 
 export const StyledAssignMemberIcon = styled.div`
   position: relative;
+  display: inline-block;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   border: 0.0625rem dashed ${palette.coolGrey1};

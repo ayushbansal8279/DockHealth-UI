@@ -1,13 +1,8 @@
 import React from 'react';
-import { RemoveCircleOutlineRounded } from '@material-ui/icons';
-import Member from 'components/members/Member/Member';
-
-import palette from 'styles/palette';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import moment from 'moment';
-import { RobotoTypography } from 'styles/theme';
-import { MemberLabelContainer, CompletedByLabel } from './styled';
+import { CompletedByLabel } from './styled';
 
 export const getCompletedByLabel = (completedBy, completedDt) => {
   const completedByName =
@@ -24,72 +19,6 @@ export const getCompletedByLabel = (completedBy, completedDt) => {
   );
 };
 
-export const getFormattedMembers = ({ members, currentUser }) => {
-  const filteredMembers = (members ?? []).filter(member => {
-    return currentUser.userIdentifier !== member.userIdentifier;
-  });
-  const formattedMembers = filteredMembers.map(member => {
-    const { userIdentifier, firstName, lastName } = member;
-    const userName = `${firstName} ${lastName}`.trim();
-
-    return {
-      key: userIdentifier,
-      value: userIdentifier,
-      label: (
-        <MemberLabelContainer key={member?.userIdentifier}>
-          <RobotoTypography condensed variant="h4">
-            {userName}
-          </RobotoTypography>
-          <Member member={member} size={34} />
-        </MemberLabelContainer>
-      ),
-      displayLabel: userName,
-      highlightSupport: true,
-    };
-  });
-
-  formattedMembers.unshift({
-    key: 'UNASSIGNED',
-    value: 'UNASSIGNED',
-    label: (
-      <MemberLabelContainer>
-        <RobotoTypography condensed variant="h4">
-          Unassigned
-        </RobotoTypography>
-        <RemoveCircleOutlineRounded
-          color="action"
-          style={{ height: '34px', width: '34px' }}
-        />
-      </MemberLabelContainer>
-    ),
-    displayLabel: null,
-    highlightSupport: false,
-  });
-
-  const currentUserName = `${currentUser.firstName} ${currentUser.lastName}`.trim();
-
-  formattedMembers.unshift({
-    key: currentUser.userIdentifier,
-    value: currentUser.userIdentifier,
-    label: (
-      <MemberLabelContainer
-        style={{
-          paddingBottom: '5px',
-          borderBottom: `1px solid ${palette.coolGrey3}`,
-        }}
-      >
-        <RobotoTypography condensed variant="h4">
-          Assign to me
-        </RobotoTypography>
-        <Member member={currentUser} size={34} />
-      </MemberLabelContainer>
-    ),
-    displayLabel: currentUserName,
-    highlightSupport: false,
-  });
-  return formattedMembers;
-};
-
 export const renderPartsWithHighlighting = (optionValue, inputValue) => {
   const matches = match(optionValue, inputValue);
   const parts = parse(optionValue, matches);
@@ -104,34 +33,5 @@ export const renderPartsWithHighlighting = (optionValue, inputValue) => {
         </span>
       ))}
     </>
-  );
-};
-
-export const renderMemberoptionWithHighlighting = (option, inputValue) => {
-  if (option?.highlightSupport === false) {
-    return option?.label;
-  }
-
-  const highlightedLabelvalue = renderPartsWithHighlighting(
-    option?.displayLabel,
-    inputValue,
-  );
-
-  const func = children => {
-    return React.Children.map(children, childNode => {
-      if (typeof childNode === 'string') return highlightedLabelvalue;
-      if (typeof childNode.props.children === 'string')
-        return React.cloneElement(childNode, [], highlightedLabelvalue);
-      return React.cloneElement(childNode, [], func(childNode.props.children));
-    });
-  };
-
-  return (
-    <MemberLabelContainer
-      style={option?.label.props.style}
-      key={option?.label.key}
-    >
-      {func(option?.label.props.children)}
-    </MemberLabelContainer>
   );
 };

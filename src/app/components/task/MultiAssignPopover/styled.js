@@ -14,6 +14,10 @@ export const StyledPopover = withStyles({
   },
 })(Popover);
 
+export const StyledButton = styled.button`
+  width: 100%;
+`;
+
 export const Input = styled.input`
   border: none;
   width: 100%;
