@@ -25,10 +25,15 @@ const AssignedToSection = ({ assignedToUsers, taskListIdentifier, onSave }) => {
     setValue(ASSIGNED_TO_USERS_FIELD_NAME, assignedToUsers);
   }, [assignedToUsers, setValue]);
 
-  const displayValue =
+  const wholeDisplayValue =
     pluck('userName', assignedToUsersValue || [])
       .map(trim)
       .join(', ') || '';
+
+  const displayValue =
+    wholeDisplayValue.length > 78
+      ? `${wholeDisplayValue.slice(0, 78)} ...`
+      : wholeDisplayValue;
 
   const handleClearAssignedToUsers = useCallback(() => {
     setValue(ASSIGNED_TO_USERS_FIELD_NAME, []);
