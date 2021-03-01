@@ -170,6 +170,11 @@ const TasksGroup = ({
     [tasks],
   );
 
+  const groupHasMultipleAssignees = useMemo(
+    () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+    [tasks],
+  );
+
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
@@ -314,8 +319,8 @@ const TasksGroup = ({
             />
             <ColumnSortHeader
               id="ASSIGNED_TO"
-              label="Assign"
-              width={90}
+              label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
+              width={groupHasMultipleAssignees ? 90 : 60}
               sort={sort}
               onSortChange={onSortChange}
             />
@@ -350,6 +355,7 @@ const TasksGroup = ({
             isSearchApplied={isSearchApplied}
             shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
             showClearSortFiltersModal={showClearSortFiltersModal}
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (

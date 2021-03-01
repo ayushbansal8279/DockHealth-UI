@@ -18,6 +18,7 @@ const MultiAssignPopover = ({
   children,
   taskListIdentifiers,
   selectedMembers,
+  fullWidth,
   onSelect,
   onOpen,
   onClose,
@@ -34,6 +35,7 @@ const MultiAssignPopover = ({
     <>
       <StyledButton
         type="button"
+        fullWidth={fullWidth}
         ref={assignMemberButtonReference}
         onClick={event => {
           event.stopPropagation();
@@ -89,6 +91,7 @@ MultiAssignPopover.propTypes = {
       profileThumbnailPictureHash: string,
     }),
   ).isRequired,
+  fullWidth: bool,
   onSelect: func.isRequired,
   onClose: func,
   onOpen: func,
@@ -97,6 +100,7 @@ MultiAssignPopover.propTypes = {
 MultiAssignPopover.defaultProps = {
   blockPopover: false,
   placement: 'bottom',
+  fullWidth: false,
   onClose: null,
   onOpen: null,
 };

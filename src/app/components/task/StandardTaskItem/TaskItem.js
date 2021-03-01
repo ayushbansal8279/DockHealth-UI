@@ -103,6 +103,7 @@ const TaskItem = ({
   showSubtaskStylingLink,
   isNestedTask = false,
   subtasksDisabled,
+  multipleAssigneesContext,
 }) => {
   const {
     taskIdentifier,
@@ -721,8 +722,8 @@ const TaskItem = ({
             </PopoverDatepicker>
           </StandardTaskItemCell>
           <StandardTaskItemCell
-            width="90px"
-            justify="center"
+            width={`${multipleAssigneesContext ? 90 : 60}px`}
+            justify={multipleAssigneesContext ? 'flex-start' : 'center'}
             paddingLeft="small"
             paddingRight="small"
             onContextMenu={event => {

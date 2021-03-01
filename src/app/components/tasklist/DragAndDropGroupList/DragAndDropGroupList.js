@@ -23,6 +23,7 @@ const DragAndDropGroupList = ({
   isSearchApplied,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
+  groupHasMultipleAssignees,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -88,6 +89,7 @@ const DragAndDropGroupList = ({
                     isSearchApplied={isSearchApplied}
                     shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
                     showClearSortFiltersModal={showClearSortFiltersModal}
+                    multipleAssigneesContext={groupHasMultipleAssignees}
                   />
                 )}
               </Draggable>

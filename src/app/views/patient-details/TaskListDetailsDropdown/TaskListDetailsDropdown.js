@@ -94,6 +94,11 @@ const TaskListDetailsDropdown = ({
     [tasks],
   );
 
+  const groupHasMultipleAssignees = useMemo(
+    () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+    [tasks],
+  );
+
   return (
     <ListDetailsContainer>
       <ListDetailsHeader>
@@ -202,8 +207,8 @@ const TaskListDetailsDropdown = ({
           />
           <ColumnSortHeader
             id="ASSIGNED_TO"
-            label="Assign"
-            width={100}
+            label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
+            width={groupHasMultipleAssignees ? 90 : 60}
             sort={sort}
             onSortChange={onSortChange}
           />
@@ -231,6 +236,7 @@ const TaskListDetailsDropdown = ({
               addingNewSubtaskParentId={addingNewSubtaskParentId}
               subtaskShape={subtaskShape}
               hideSubtasks={hideSubtasks}
+              multipleAssigneesContext={groupHasMultipleAssignees}
             />
           ))}
         </div>

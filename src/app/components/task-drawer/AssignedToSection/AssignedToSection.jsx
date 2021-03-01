@@ -54,6 +54,7 @@ const AssignedToSection = ({ assignedToUsers, taskListIdentifier, onSave }) => {
 
   return (
     <MultiAssignPopover
+      fullWidth
       taskListIdentifiers={taskListIdentifier}
       selectedMembers={assignedToUsersValue}
       onSelect={handleAssignToSelection}
