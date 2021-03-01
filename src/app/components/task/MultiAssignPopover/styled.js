@@ -115,3 +115,8 @@ export const MemberRowSkeletonLoader = styled(MemberRow)`
     margin-bottom: ${spacing.tiny};
   }
 `;
+
+export const highlightStyle = {
+  fontSize: fontSizes.bold,
+  background: 'none',
+};

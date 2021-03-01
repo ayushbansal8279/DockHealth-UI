@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
+import Highlighter from 'react-highlight-words';
 import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
 import debounce from 'lodash.debounce';
 import Member from 'components/members/Member/Member';
@@ -24,6 +25,7 @@ import {
   ListContentSection,
   UnassignedIcon,
   MemberRowSkeletonLoader,
+  highlightStyle,
 } from './styled';
 import { collectJoinedListMembers } from './helpers';
 
@@ -159,7 +161,14 @@ const MultiAssignMembersList = ({
                 <Spacing horizontal={3} />
                 <UnassignedIcon />
                 <Spacing horizontal={3} />
-                <MemberName>Unassigned</MemberName>
+                <MemberName>
+                  <Highlighter
+                    highlightStyle={highlightStyle}
+                    searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                    autoEscape
+                    textToHighlight="Unassigned"
+                  />
+                </MemberName>
               </MemberRow>
             )}
             {displayAssignAllOption && (
@@ -183,7 +192,13 @@ const MultiAssignMembersList = ({
                     <AssignMemberIcon />
                     <Spacing horizontal={3} />
                     <MemberName>
-                      Assign All ({membersOptions.length})
+                      <Highlighter
+                        highlightStyle={highlightStyle}
+                        searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                        autoEscape
+                        textToHighlight="Assign All"
+                      />{' '}
+                      ({membersOptions.length})
                     </MemberName>
                   </MemberRow>
                 ) : (
@@ -212,7 +227,14 @@ const MultiAssignMembersList = ({
                   <Spacing horizontal={3} />
                   <Member member={currentUser} />
                   <Spacing horizontal={3} />
-                  <MemberName>{currentUser?.userName}</MemberName>
+                  <MemberName>
+                    <Highlighter
+                      highlightStyle={highlightStyle}
+                      searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                      autoEscape
+                      textToHighlight={currentUser?.userName}
+                    />
+                  </MemberName>
                 </MemberRow>
               </ListContentSection>
             );
@@ -234,7 +256,14 @@ const MultiAssignMembersList = ({
                   <Spacing horizontal={3} />
                   <Member member={member} />
                   <Spacing horizontal={3} />
-                  <MemberName>{member.userName}</MemberName>
+                  <MemberName>
+                    <Highlighter
+                      highlightStyle={highlightStyle}
+                      searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                      autoEscape
+                      textToHighlight={member?.userName}
+                    />
+                  </MemberName>
                 </MemberRow>
               );
             })
