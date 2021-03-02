@@ -1,5 +1,5 @@
 import React from 'react';
-import { bool, node, oneOf, string } from 'prop-types';
+import { bool, node, oneOf, oneOfType, string } from 'prop-types';
 import { StyledMaterialTooltip, Container } from './styled';
 
 const Tooltip = ({
@@ -23,7 +23,7 @@ const Tooltip = ({
 
 Tooltip.propTypes = {
   children: node.isRequired,
-  title: string.isRequired,
+  title: oneOfType([string, node]).isRequired,
   placement: oneOf([
     'bottom-end',
     'bottom-start',

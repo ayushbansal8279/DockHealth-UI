@@ -29,12 +29,24 @@ const BulkEditSection = ({
   }));
 
   const onSelectBulkEditParentTask = useCallback(
-    ({ taskIdentifier, subTasksCount, hasAttachments, taskList }) =>
+    ({
+      taskIdentifier,
+      subTasksCount,
+      hasAttachments,
+      taskList,
+      assignedToUsers,
+    }) =>
       setBulkEditTasks({
         ...bulkEditTasks,
         parentTasks: [
           ...bulkEditTasks.parentTasks,
-          { taskIdentifier, subTasksCount, hasAttachments, taskList },
+          {
+            taskIdentifier,
+            subTasksCount,
+            hasAttachments,
+            taskList,
+            assignedToUsers,
+          },
         ],
       }),
     [bulkEditTasks],
@@ -60,7 +72,13 @@ const BulkEditSection = ({
   );
 
   const onClickBulkEditParentTask = useCallback(
-    ({ taskIdentifier, subTasksCount, hasAttachments, taskList }) =>
+    ({
+      taskIdentifier,
+      subTasksCount,
+      hasAttachments,
+      taskList,
+      assignedToUsers,
+    }) =>
       getParentTaskIsSelectedInBulkEdit({ taskIdentifier })
         ? onUnselectBulkEditParentTask({ taskIdentifier })
         : onSelectBulkEditParentTask({
@@ -68,6 +86,7 @@ const BulkEditSection = ({
             subTasksCount,
             hasAttachments,
             taskList,
+            assignedToUsers,
           }),
     [
       getParentTaskIsSelectedInBulkEdit,
@@ -91,12 +110,24 @@ const BulkEditSection = ({
   );
 
   const onSelectBulkEditSubtask = useCallback(
-    ({ taskIdentifier, parentTaskIdentifier, hasAttachments, taskList }) =>
+    ({
+      taskIdentifier,
+      parentTaskIdentifier,
+      hasAttachments,
+      taskList,
+      assignedToUsers,
+    }) =>
       setBulkEditTasks({
         ...bulkEditTasks,
         subtasks: [
           ...bulkEditTasks?.subtasks,
-          { taskIdentifier, parentTaskIdentifier, hasAttachments, taskList },
+          {
+            taskIdentifier,
+            parentTaskIdentifier,
+            hasAttachments,
+            taskList,
+            assignedToUsers,
+          },
         ],
       }),
     [bulkEditTasks],
@@ -123,7 +154,13 @@ const BulkEditSection = ({
   );
 
   const onClickBulkEditSubtask = useCallback(
-    ({ taskIdentifier, parentTaskIdentifier, hasAttachments, taskList }) =>
+    ({
+      taskIdentifier,
+      parentTaskIdentifier,
+      hasAttachments,
+      taskList,
+      assignedToUsers,
+    }) =>
       getSubtaskIsSelectedInBulkEdit({ taskIdentifier })
         ? onUnselectBulkEditSubtask({ taskIdentifier })
         : onSelectBulkEditSubtask({
@@ -131,6 +168,7 @@ const BulkEditSection = ({
             parentTaskIdentifier,
             hasAttachments,
             taskList,
+            assignedToUsers,
           }),
     [
       getSubtaskIsSelectedInBulkEdit,
@@ -188,7 +226,13 @@ const BulkEditSection = ({
 
         if (parentTasks) {
           parentTasks.forEach(
-            ({ taskIdentifier, subTasksCount, attachments, taskList }) => {
+            ({
+              taskIdentifier,
+              subTasksCount,
+              attachments,
+              taskList,
+              assignedToUsers,
+            }) => {
               const parentTaskIsSelected = getParentTaskIsSelectedInBulkEdit({
                 taskIdentifier,
               });
@@ -200,6 +244,7 @@ const BulkEditSection = ({
                     subTasksCount,
                     hasAttachments: attachments?.length > 0,
                     taskList,
+                    assignedToUsers,
                   },
                 ];
               }
@@ -214,6 +259,7 @@ const BulkEditSection = ({
               parentTaskIdentifier,
               attachments,
               taskList,
+              assignedToUsers,
             }) => {
               const subTaskIsSelected = getSubtaskIsSelectedInBulkEdit({
                 taskIdentifier,
@@ -227,6 +273,7 @@ const BulkEditSection = ({
                     parentTaskIdentifier,
                     hasAttachments: attachments?.length > 0,
                     taskList,
+                    assignedToUsers,
                   },
                 ];
               }

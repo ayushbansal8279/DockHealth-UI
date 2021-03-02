@@ -17,7 +17,10 @@ const MemberGroup = ({ members, max, size }) => {
   return (
     <GroupContainer>
       {shownMembers?.map((member, index) => (
-        <GroupItem zIndex={shownMembers.length - index}>
+        <GroupItem
+          key={member?.userIdentifier}
+          zIndex={shownMembers.length - index}
+        >
           <Member member={member} size={size} />
         </GroupItem>
       ))}

@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { pluck } from 'ramda';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
@@ -222,10 +223,10 @@ const BulkEditOptionsBar = ({
   );
 
   const handleChangeAssigneTasks = useCallback(
-    assignedUser => {
+    selectedUsers => {
       bulkEditAssignUser(
         allSelectedTasksIdentifiers,
-        assignedUser,
+        selectedUsers,
         filters,
         searchValue,
       )(dispatch);
@@ -233,7 +234,7 @@ const BulkEditOptionsBar = ({
       bulkEditTasksApi({
         bulkEditType: 'ASSIGN',
         taskIdentifiers: allSelectedTasksIdentifiers,
-        assignedToIdentifier: assignedUser?.userIdentifier,
+        assignedToIdentifiers: pluck('userIdentifier', selectedUsers),
       })
         .then(() => {
           dispatch(
@@ -510,82 +511,90 @@ const BulkEditOptionsBar = ({
 
   return (
     <Container open={allSelectedTasksLength > 0} isDisabled={isDisabled}>
-      <TasksText>
-        {`${allSelectedTasksLength} Task${
-          allSelectedTasksLength > 1 ? 's' : ''
-        } Selected`}
-      </TasksText>
-      <ButtonsWrapper>
-        <Button
-          type="button"
-          onClick={handleDuplicateTasks}
-          disabled={isDisabled}
-        >
-          <WrapperContainer disabled={isDisabled}>
-            <IconBox>
-              <DuplicateIcon />
-            </IconBox>
-            <p>Duplicate</p>
-          </WrapperContainer>
-        </Button>
-        <IconWithTooltip
-          text={
-            disabledMoveAction
-              ? 'Cannot move subtasks without main tasks'
-              : null
-          }
-        >
-          <Button
-            type="button"
-            disabled={disabledMoveAction || isDisabled}
-            onClick={handleMoveTasks}
-          >
-            <WrapperContainer disabled={disabledMoveAction || isDisabled}>
-              <IconBox>
-                <MoveIcon />
-              </IconBox>
-              <p>Move</p>
-            </WrapperContainer>
-          </Button>
-        </IconWithTooltip>
-        <Button
-          type="button"
-          onClick={handleCompleteTasks}
-          disabled={isDisabled}
-        >
-          <WrapperContainer disabled={isDisabled}>
-            <IconBox>
-              <CompleteIcon />
-            </IconBox>
-            <p>Complete</p>
-          </WrapperContainer>
-        </Button>
-        <BulkEditWorkflowStatusOption
-          handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
-          isDisabled={isDisabled}
-        />
-        <BulkEditDueDateOption
-          handleChangeDateTasks={handleChangeDateTasks}
-          isDisabled={isDisabled}
-        />
-        <BulkEditAssignToOption
-          taskListIdentifier={taskListIdentifier}
-          selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
-          handleChangeAssigneTasks={handleChangeAssigneTasks}
-          isDisabled={isDisabled}
-        />
-        <Button type="button" onClick={handleDeleteTasks} disabled={isDisabled}>
-          <WrapperContainer color={palette.oPlusRed} disabled={isDisabled}>
-            <IconBox>
-              <DeleteIcon />
-            </IconBox>
-            <p>Delete</p>
-          </WrapperContainer>
-        </Button>
-        <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
-          <CloseIcon />
-        </CloseButton>
-      </ButtonsWrapper>
+      {allSelectedTasksLength > 0 && (
+        <>
+          <TasksText>
+            {`${allSelectedTasksLength} Task${
+              allSelectedTasksLength > 1 ? 's' : ''
+            } Selected`}
+          </TasksText>
+          <ButtonsWrapper>
+            <Button
+              type="button"
+              onClick={handleDuplicateTasks}
+              disabled={isDisabled}
+            >
+              <WrapperContainer disabled={isDisabled}>
+                <IconBox>
+                  <DuplicateIcon />
+                </IconBox>
+                <p>Duplicate</p>
+              </WrapperContainer>
+            </Button>
+            <IconWithTooltip
+              text={
+                disabledMoveAction
+                  ? 'Cannot move subtasks without main tasks'
+                  : null
+              }
+            >
+              <Button
+                type="button"
+                disabled={disabledMoveAction || isDisabled}
+                onClick={handleMoveTasks}
+              >
+                <WrapperContainer disabled={disabledMoveAction || isDisabled}>
+                  <IconBox>
+                    <MoveIcon />
+                  </IconBox>
+                  <p>Move</p>
+                </WrapperContainer>
+              </Button>
+            </IconWithTooltip>
+            <Button
+              type="button"
+              onClick={handleCompleteTasks}
+              disabled={isDisabled}
+            >
+              <WrapperContainer disabled={isDisabled}>
+                <IconBox>
+                  <CompleteIcon />
+                </IconBox>
+                <p>Complete</p>
+              </WrapperContainer>
+            </Button>
+            <BulkEditWorkflowStatusOption
+              handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
+              isDisabled={isDisabled}
+            />
+            <BulkEditDueDateOption
+              handleChangeDateTasks={handleChangeDateTasks}
+              isDisabled={isDisabled}
+            />
+            <BulkEditAssignToOption
+              selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
+              handleChangeAssigneTasks={handleChangeAssigneTasks}
+              isDisabled={isDisabled}
+              selectedTasks={selectedTasks}
+            />
+            <Button
+              type="button"
+              onClick={handleDeleteTasks}
+              disabled={isDisabled}
+            >
+              <WrapperContainer color={palette.oPlusRed} disabled={isDisabled}>
+                <IconBox>
+                  <DeleteIcon />
+                </IconBox>
+                <p>Delete</p>
+              </WrapperContainer>
+            </Button>
+            <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
+              <CloseIcon />
+            </CloseButton>
+          </ButtonsWrapper>
+        </>
+      )}
     </Container>
   );
 };

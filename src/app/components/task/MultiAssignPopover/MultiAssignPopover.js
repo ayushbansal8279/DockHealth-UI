@@ -60,15 +60,13 @@ const MultiAssignPopover = ({
         }}
         width={assignMemberButtonReference.current?.offsetWidth}
       >
-        <>
-          {isOpen && (
-            <MultiAssignMembersList
-              taskListIdentifiers={taskListIdentifiers}
-              selectedMembers={selectedMembers}
-              onSelect={onSelect}
-            />
-          )}
-        </>
+        {isOpen && (
+          <MultiAssignMembersList
+            taskListIdentifiers={taskListIdentifiers}
+            selectedMembers={selectedMembers}
+            onSelect={onSelect}
+          />
+        )}
       </StyledPopover>
     </>
   );

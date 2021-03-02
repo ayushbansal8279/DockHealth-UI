@@ -179,15 +179,28 @@ const TaskItem = ({
   const bulkEditActionPayload = useMemo(
     () =>
       isSubtask
-        ? { parentTaskIdentifier, taskIdentifier, hasAttachments, taskList }
-        : { taskIdentifier, subTasksCount, hasAttachments, taskList },
+        ? {
+            parentTaskIdentifier,
+            taskIdentifier,
+            hasAttachments,
+            taskList,
+            assignedToUsers,
+          }
+        : {
+            taskIdentifier,
+            subTasksCount,
+            hasAttachments,
+            taskList,
+            assignedToUsers,
+          },
     [
       isSubtask,
       parentTaskIdentifier,
       taskIdentifier,
-      subTasksCount,
       hasAttachments,
       taskList,
+      assignedToUsers,
+      subTasksCount,
     ],
   );
 

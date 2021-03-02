@@ -1,47 +1,36 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { innerJoin } from 'ramda';
 import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import { WrapperContainer, IconBox, AssigneeIcon } from './styled';
 
 const BulkEditAssignToOption = ({
-  // handleChangeAssigneTasks,
+  selectedTasks,
+  handleChangeAssigneTasks,
   selectedTaskListIdentifiers,
   isDisabled,
 }) => {
-  // const handleReasigningTask = (
-  //   _,
-  //   {
-  //     bubbleColor,
-  //     firstName,
-  //     initials,
-  //     lastName,
-  //     profileThumbnailPictureHash,
-  //     specialtyList,
-  //     titleList,
-  //     userId,
-  //     userIdentifier,
-  //     userName,
-  //   },
-  // ) => {
-  //   handleChangeAssigneTasks({
-  //     bubbleColor,
-  //     firstName,
-  //     initials,
-  //     lastName,
-  //     profileThumbnailPictureHash,
-  //     specialtyList,
-  //     titleList,
-  //     userId,
-  //     userIdentifier,
-  //     userName,
-  //   });
-  // };
+  const joinedSelectedMembers = useMemo(() => {
+    const { parentTasks = [], subtasks = [] } = selectedTasks || {};
+
+    const allSelectedTasks = [...parentTasks, ...subtasks];
+
+    return allSelectedTasks.reduce((accumulator, { assignedToUsers }) => {
+      if (accumulator.length === 0) return accumulator.concat(assignedToUsers);
+
+      return innerJoin(
+        (existingRecord, newRecord) =>
+          existingRecord.userIdentifier === newRecord.userIdentifier,
+        accumulator,
+        assignedToUsers,
+      );
+    }, []);
+  }, [selectedTasks]);
 
   return (
     <MultiAssignPopover
       taskListIdentifiers={selectedTaskListIdentifiers}
-      onSelect={values => {
-        console.log('onSelect', values);
-      }}
+      selectedMembers={joinedSelectedMembers}
+      onSelect={handleChangeAssigneTasks}
       isDisabled={isDisabled}
     >
       <WrapperContainer disabled={isDisabled}>

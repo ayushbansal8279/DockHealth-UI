@@ -1,4 +1,5 @@
 /* eslint-disable no-shadow */
+/* eslint-disable react/no-array-index-key */
 import Spacing from 'components/common/Spacing';
 import React from 'react';
 import {
@@ -28,7 +29,7 @@ const GroupedListSkeletonLoader = ({ numberOfGroups = 2 }) => {
   return (
     <Container>
       {new Array(numberOfGroups).fill().map((_, index) => (
-        <LoaderGroup>
+        <LoaderGroup key={index}>
           <LoaderElement width={108} />
           <Spacing vertical={4} />
           {new Array(

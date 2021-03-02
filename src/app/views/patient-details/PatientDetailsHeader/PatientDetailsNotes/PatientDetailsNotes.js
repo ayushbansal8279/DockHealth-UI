@@ -43,6 +43,7 @@ const PatientDetailsNotes = ({
             <PatientDetailsNotesListContainer ref={listReference}>
               {allNotes?.map(note => (
                 <PatientNote
+                  key={note.patientNoteIdentifier}
                   {...note}
                   setEditableNote={setEditableNote}
                   isEditable={note.patientNoteIdentifier === editableNote}

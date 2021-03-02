@@ -778,7 +778,7 @@ export const closeQuickAddSubtask = taskIdentifier => ({
 
 export const bulkEditAssignUser = (
   tasksToUpdate,
-  assignedTo,
+  assignedToUsers,
   filters,
   searchValue,
 ) => dispatch => {
@@ -786,7 +786,7 @@ export const bulkEditAssignUser = (
     type: ActionTypes.UPDATE_TASKS_SUCCESS,
     tasksToUpdate,
     fields: {
-      assignedTo,
+      assignedToUsers,
     },
     filters,
     searchValue,

@@ -8,7 +8,11 @@ import TextInput from '../TextInput/TextInput';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
 
-const AssignedToSection = ({ assignedToUsers, taskListIdentifier, onSave }) => {
+const AssignedToSection = ({
+  assignedToUsers,
+  taskListIdentifier = null,
+  onSave,
+}) => {
   const { register, unregister, setValue, watch } = useFormContext();
 
   const assignedToUsersValue = watch(ASSIGNED_TO_USERS_FIELD_NAME);
@@ -22,7 +26,7 @@ const AssignedToSection = ({ assignedToUsers, taskListIdentifier, onSave }) => {
   }, []);
 
   useEffect(() => {
-    setValue(ASSIGNED_TO_USERS_FIELD_NAME, assignedToUsers);
+    setValue(ASSIGNED_TO_USERS_FIELD_NAME, assignedToUsers || []);
   }, [assignedToUsers, setValue]);
 
   const wholeDisplayValue =
@@ -73,7 +77,7 @@ const AssignedToSection = ({ assignedToUsers, taskListIdentifier, onSave }) => {
           ),
         }}
         inputProps={{
-          tabindex: -1,
+          tabIndex: -1,
           readOnly: true,
           value: displayValue,
         }}
