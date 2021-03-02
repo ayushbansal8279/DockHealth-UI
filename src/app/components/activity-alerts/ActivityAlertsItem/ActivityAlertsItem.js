@@ -3,9 +3,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/notifications/cross';
@@ -28,7 +26,6 @@ const getInterpolatedText = (tpl, args) =>
   tpl.replace(/\${(\w+)}/g, (_, v) => args[v]);
 
 const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const {
     activityAlertTitle,
@@ -83,7 +80,6 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
       );
 
       if (organizationIdentifier === currentOrganizationIdentifier) {
-        dispatch(storeAsCurrentTask(task));
         closeAlerts();
         history.push(
           `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
