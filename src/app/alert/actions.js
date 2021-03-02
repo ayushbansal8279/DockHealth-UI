@@ -12,6 +12,11 @@ export const showGlobalAlert = (text, type = AlertTypes.SUCCESS) => ({
   payload: { text, type },
 });
 
+export const showGlobalAlertWithUndo = (text, transactionId, undoCallback) => ({
+  type: SHOW_GLOBAL_ALERT,
+  payload: { text, transactionId, undoCallback, type: AlertTypes.SUCCESS },
+});
+
 export const showGlobalErrorAlert = (text = DEFAULT_ERROR_TEXT) => ({
   type: SHOW_GLOBAL_ALERT,
   payload: { text, type: AlertTypes.ERROR },

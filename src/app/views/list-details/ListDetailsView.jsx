@@ -286,9 +286,7 @@ class Home extends Component {
 
     megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
     listDetailsActions.getListDetailsTaskCounters(params.taskListIdentifier);
-    listDetailsActions.refreshListDetailsGroupedTasks({
-      withLoader,
-    });
+    listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
   };
 
   refreshFilters = () => {
@@ -621,7 +619,7 @@ class Home extends Component {
       <>
         <BulkEditSection
           shouldResetBulkEditTasks={shouldResetBulkEditTasks}
-          refreshTasksOnBulkAction={this.refreshTab}
+          refreshTasks={this.refreshTab}
           inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
           searchValue={searchValue}
         >

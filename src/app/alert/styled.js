@@ -35,27 +35,66 @@ export const ChipBackground = styled.div`
     props.type === 'error' ? palette.oPlusRed : palette.accentYellow};
   border-radius: 1rem;
   z-index: -1;
-  transition: width 0.2s ease-out;
+  transition: width 0.2s linear;
 `;
 
-export const ChipLabel = styled.p`
+export const ChipText = styled.p`
   margin-bottom: 0;
-  padding-left: ${spacing.huge};
-  padding-right: ${spacing.smallPlus};
+  transition: opacity 0.2s ease-out;
   font-size: 1rem;
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.white};
-  text-transform: uppercase;
-  transition: opacity 0.2s ease-out;
 `;
 
-export const ChipContainer = styled.button`
+export const UndoButtonContent = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-left: ${spacing.smallPlus};
+  padding-right: ${spacing.huge};
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  background-color: ${palette.orange};
+`;
+
+export const UndoButton = styled.button`
+  overflow: hidden;
+  transition: width 0.1s linear;
+  width: ${({ isVisible }) => (isVisible ? '88px' : '0')};
+
+  & ${ChipText} {
+    transition: opacity 0.1s linear;
+    transition-delay: ${({ isVisible }) => (isVisible ? '0.1s' : '0s')};
+  }
+`;
+
+export const MainChipButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: ${spacing.smallPlus};
+  padding-left: ${spacing.huge};
+`;
+
+export const CounterContainer = styled.div`
+  position: absolute;
+  right: ${spacing.smallPlus};
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+export const ChipContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   width: auto;
   height: ${props => (props.isOpen ? '2rem' : '0')};
   overflow: hidden;
   transition-delay: 1s;
   transition-property: height;
+  text-transform: uppercase;
 
   ${props => props.isOpen && 'transition-property: none;'}
 
@@ -63,7 +102,7 @@ export const ChipContainer = styled.button`
     width: ${props => (props.isOpen ? '100%' : '0')};
   }
 
-  & ${ChipLabel} {
+  & ${ChipText} {
     opacity: ${props => (props.isOpen ? '1' : '0')};
   }
 `;

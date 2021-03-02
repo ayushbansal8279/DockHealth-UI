@@ -2,7 +2,12 @@ export const SHOW_GLOBAL_ALERT = 'SHOW_GLOBAL_ALERT';
 export const CLOSE_GLOBAL_ALERT = 'CLOSE_GLOBAL_ALERT';
 export const SHOW_SIDEBAR_ALERT = 'SHOW_SIDEBAR_ALERT';
 
-const initialState = { isGlobalOpen: false, text: '' };
+const initialState = {
+  isGlobalOpen: false,
+  text: '',
+  transactionId: null,
+  undoCallback: null,
+};
 
 export default function(state = initialState, action = {}) {
   const { type, payload } = action;
@@ -15,6 +20,8 @@ export default function(state = initialState, action = {}) {
         isGlobalOpen: true,
         isSideBarAlert: false,
         type: payload.type,
+        transactionId: payload.transactionId,
+        undoCallback: payload.undoCallback,
       };
 
     case SHOW_SIDEBAR_ALERT:
@@ -31,6 +38,8 @@ export default function(state = initialState, action = {}) {
         ...state,
         isGlobalOpen: false,
         type: '',
+        transactionId: null,
+        undoCallback: null,
       };
 
     default:

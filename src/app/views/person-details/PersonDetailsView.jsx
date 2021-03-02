@@ -483,7 +483,7 @@ class PersonDetailsView extends PureComponent {
         <>
           <BulkEditSection
             shouldResetBulkEditTasks={shouldResetBulkEditTasks}
-            refreshTasksOnBulkAction={this.refreshTab}
+            refreshTasks={this.refreshTab}
             inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
             searchValue={searchValue}
           >

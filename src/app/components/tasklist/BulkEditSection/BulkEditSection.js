@@ -13,7 +13,7 @@ export const BulkEditContext = createContext({});
 const BulkEditSection = ({
   children,
   shouldResetBulkEditTasks,
-  refreshTasksOnBulkAction,
+  refreshTasks,
   inactiveBulkEdit,
   searchValue,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -358,7 +358,7 @@ const BulkEditSection = ({
         selectedTasks={bulkEditTasks}
         onClose={onClearBulkEditTasks}
         isDisabled={isTaskDrawerOpen}
-        refreshTasksOnBulkAction={refreshTasksOnBulkAction}
+        refreshTasks={refreshTasks}
         currentUser={currentUser}
         searchValue={searchValue}
       />

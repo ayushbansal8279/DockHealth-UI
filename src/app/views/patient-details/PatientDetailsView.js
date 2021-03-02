@@ -207,7 +207,7 @@ const PatientDetailsView = ({
   return (
     <BulkEditSection
       shouldResetBulkEditTasks={shouldResetBulkEditTasks}
-      refreshTasksOnBulkAction={refreshTab}
+      refreshTasks={refreshTab}
       inactiveBulkEdit={activeTab === TaskListTabName.COMPLETE}
       searchValue={searchValue}
     >

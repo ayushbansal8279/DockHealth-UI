@@ -53,7 +53,7 @@ const BulkEditOptionsBar = ({
   selectedTasks = [],
   onClose,
   isDisabled,
-  refreshTasksOnBulkAction,
+  refreshTasks,
   currentUser,
   searchValue,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -152,8 +152,10 @@ const BulkEditOptionsBar = ({
       })
         .then(() => {
           dispatch(
-            AlertActions.showGlobalAlert(
+            AlertActions.showGlobalAlertWithUndo(
               `${allSelectedTasksLength} STATUS CHANGED`,
+              5,
+              refreshTasks,
             ),
           );
 
@@ -162,11 +164,8 @@ const BulkEditOptionsBar = ({
           }
         })
         .catch(() => {
-          if (
-            refreshTasksOnBulkAction &&
-            typeof refreshTasksOnBulkAction === 'function'
-          ) {
-            refreshTasksOnBulkAction();
+          if (refreshTasks && typeof refreshTasks === 'function') {
+            refreshTasks();
           }
         });
     },
@@ -177,7 +176,7 @@ const BulkEditOptionsBar = ({
       dispatch,
       allSelectedTasksLength,
       onClose,
-      refreshTasksOnBulkAction,
+      refreshTasks,
     ],
   );
 
@@ -192,10 +191,12 @@ const BulkEditOptionsBar = ({
       })
         .then(() => {
           dispatch(
-            AlertActions.showGlobalAlert(
+            AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
                 ? `${allSelectedTasksLength} DUE DATES CHANGED`
                 : `${allSelectedTasksLength} DUE DATE CHANGED`,
+              6,
+              refreshTasks,
             ),
           );
 
@@ -204,11 +205,8 @@ const BulkEditOptionsBar = ({
           }
         })
         .catch(() => {
-          if (
-            refreshTasksOnBulkAction &&
-            typeof refreshTasksOnBulkAction === 'function'
-          ) {
-            refreshTasksOnBulkAction();
+          if (refreshTasks && typeof refreshTasks === 'function') {
+            refreshTasks();
           }
         });
     },
@@ -218,7 +216,7 @@ const BulkEditOptionsBar = ({
       dispatch,
       allSelectedTasksLength,
       onClose,
-      refreshTasksOnBulkAction,
+      refreshTasks,
     ],
   );
 
@@ -238,19 +236,18 @@ const BulkEditOptionsBar = ({
       })
         .then(() => {
           dispatch(
-            AlertActions.showGlobalAlert(
+            AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
                 ? `${allSelectedTasksLength} TASKS ASSIGNED`
                 : `${allSelectedTasksLength} TASK ASSIGNED`,
+              6,
+              refreshTasks,
             ),
           );
         })
         .catch(() => {
-          if (
-            refreshTasksOnBulkAction &&
-            typeof refreshTasksOnBulkAction === 'function'
-          ) {
-            refreshTasksOnBulkAction();
+          if (refreshTasks && typeof refreshTasks === 'function') {
+            refreshTasks();
           }
         });
     },
@@ -260,7 +257,7 @@ const BulkEditOptionsBar = ({
       searchValue,
       dispatch,
       allSelectedTasksLength,
-      refreshTasksOnBulkAction,
+      refreshTasks,
     ],
   );
 
@@ -276,18 +273,17 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         includeAttachmentsForDuplication,
       }).then(() => {
-        if (
-          refreshTasksOnBulkAction &&
-          typeof refreshTasksOnBulkAction === 'function'
-        ) {
-          refreshTasksOnBulkAction();
+        if (refreshTasks && typeof refreshTasks === 'function') {
+          refreshTasks();
         }
 
         dispatch(
-          AlertActions.showGlobalAlert(
+          AlertActions.showGlobalAlertWithUndo(
             allSelectedTasksLength > 1
               ? `${allSelectedTasksLength} TASKS DUPLICATED`
               : `${allSelectedTasksLength} TASK DUPLICATED`,
+            2,
+            refreshTasks,
           ),
         );
 
@@ -309,7 +305,7 @@ const BulkEditOptionsBar = ({
   }, [
     allSelectedTasks,
     allSelectedTasksIdentifiers,
-    refreshTasksOnBulkAction,
+    refreshTasks,
     dispatch,
     allSelectedTasksLength,
     onClose,
@@ -323,18 +319,17 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         ...selectedDestination,
       }).then(() => {
-        if (
-          refreshTasksOnBulkAction &&
-          typeof refreshTasksOnBulkAction === 'function'
-        ) {
-          refreshTasksOnBulkAction();
+        if (refreshTasks && typeof refreshTasks === 'function') {
+          refreshTasks();
         }
 
         dispatch(
-          AlertActions.showGlobalAlert(
+          AlertActions.showGlobalAlertWithUndo(
             allSelectedTasksLength > 1
               ? `${allSelectedTasksLength} TASKS MOVED`
               : `${allSelectedTasksLength} TASK MOVED`,
+            1,
+            refreshTasks,
           ),
         );
 
@@ -398,7 +393,7 @@ const BulkEditOptionsBar = ({
     dispatch,
     onClose,
     parentTasks,
-    refreshTasksOnBulkAction,
+    refreshTasks,
     subtasks,
   ]);
 
@@ -416,10 +411,12 @@ const BulkEditOptionsBar = ({
           dispatch(getListDetailsTaskCounters(taskListIdentifier));
 
           dispatch(
-            AlertActions.showGlobalAlert(
+            AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
                 ? `${allSelectedTasksLength} TASKS COMPLETED`
                 : `${allSelectedTasksLength} TASK COMPLETED`,
+              3,
+              refreshTasks,
             ),
           );
 
@@ -428,11 +425,8 @@ const BulkEditOptionsBar = ({
           }
         })
         .catch(() => {
-          if (
-            refreshTasksOnBulkAction &&
-            typeof refreshTasksOnBulkAction === 'function'
-          ) {
-            refreshTasksOnBulkAction();
+          if (refreshTasks && typeof refreshTasks === 'function') {
+            refreshTasks();
           }
         });
     };
@@ -454,7 +448,7 @@ const BulkEditOptionsBar = ({
     taskListIdentifier,
     allSelectedTasksLength,
     onClose,
-    refreshTasksOnBulkAction,
+    refreshTasks,
   ]);
 
   const handleDeleteTasks = useCallback(() => {
@@ -472,10 +466,12 @@ const BulkEditOptionsBar = ({
               dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
               dispatch(
-                AlertActions.showGlobalAlert(
+                AlertActions.showGlobalAlertWithUndo(
                   allSelectedTasksLength > 1
                     ? `${allSelectedTasksLength} TASKS DELETED`
                     : `${allSelectedTasksLength} TASK DELETED`,
+                  4,
+                  refreshTasks,
                 ),
               );
 
@@ -484,11 +480,8 @@ const BulkEditOptionsBar = ({
               }
             })
             .catch(() => {
-              if (
-                refreshTasksOnBulkAction &&
-                typeof refreshTasksOnBulkAction === 'function'
-              ) {
-                refreshTasksOnBulkAction();
+              if (refreshTasks && typeof refreshTasks === 'function') {
+                refreshTasks();
               }
             });
         },
@@ -501,7 +494,7 @@ const BulkEditOptionsBar = ({
     allSelectedTasksLength,
     taskListIdentifier,
     onClose,
-    refreshTasksOnBulkAction,
+    refreshTasks,
   ]);
 
   return (
