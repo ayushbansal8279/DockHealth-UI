@@ -121,6 +121,7 @@ export const DescriptionBox = styled.div`
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 export const DueDateAddLabel = styled.p`

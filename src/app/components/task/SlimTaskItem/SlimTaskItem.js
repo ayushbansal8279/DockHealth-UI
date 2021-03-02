@@ -306,21 +306,19 @@ const SlimTaskItem = ({
           onClick={toggleTaskComplete}
           isClickable
         />
-        <DescriptionBox>
+        <DescriptionBox
+          onClick={() => {
+            openDrawer();
+            storeAsCurrentTask(task, 'home');
+          }}
+        >
           <DescriptionWrapper>
             <SlimTaskItemDescription>
-              <div
-                onClick={() => {
-                  openDrawer();
-                  storeAsCurrentTask(task, 'home');
-                }}
-              >
-                <MentionsEditor
-                  readOnly
-                  state={descriptionState}
-                  onChange={setDescriptionState}
-                />
-              </div>
+              <MentionsEditor
+                readOnly
+                state={descriptionState}
+                onChange={setDescriptionState}
+              />
               <CompletedBy isCompleted={isCompleted}>
                 <span>{`Completed by ${completedByName} ${completedDt &&
                   ` on ${
