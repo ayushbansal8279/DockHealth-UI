@@ -50,7 +50,7 @@
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "path": "^0.12.7",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.7.2",
     "pusher-js": "^5.0.2",
     "query-string": "^6.5.0",
     "ramda": "^0.26.1",

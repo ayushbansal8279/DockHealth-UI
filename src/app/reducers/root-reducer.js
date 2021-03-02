@@ -12,7 +12,6 @@ import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
 import TaskReducer from './task-reducer';
 import TaskListReducer from './task-list-reducer';
-import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 import ListDetailsReducer from './list-details-reducer';
 import PatientTasksReducer from './patient-tasks-reducer';
@@ -34,7 +33,6 @@ const appReducer = combineReducers({
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,
   authBase: AuthBaseReducer,
-  taskLabelState: TaskLabelReducer,
   modal: ModalReducer,
   alertChip: AlertChipReducer,
   megaFilter: MegaFilterReducer,

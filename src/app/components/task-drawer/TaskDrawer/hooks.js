@@ -31,7 +31,6 @@ import {
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
-import { getTaskListLabels } from 'actions/task-label-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import Member from 'components/members/Member/Member';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
@@ -58,22 +57,6 @@ const onSubmit = ({
   descriptionState,
   setDescriptionErrorState,
 }) => (data, event) => {
-  // const currentLabels = selectedTask?.labels ?? [];
-  // const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
-
-  // const formattedLabels = (data.labels ?? []).map(
-  //   ({ value, displayLabel }) => ({
-  //     labelIdentifier: value,
-  //     labelName: displayLabel,
-  //   }),
-  // );
-
-  // const allLabels = [...currentLabels, ...formattedLabels];
-
-  // const formattedLabelsIdentifiers = formattedLabels.map(
-  //   prop('labelIdentifier'),
-  // );
-
   const { tokenizedText } = convertFromEditorStateToOutput(descriptionState);
 
   if (!tokenizedText) {
@@ -84,7 +67,6 @@ const onSubmit = ({
   const requestData = {
     ...(selectedTask ?? {}),
     ...data,
-    // labels: [],
     taskListIdentifier: taskList?.taskListIdentifier,
     description: tokenizedText,
   };
@@ -128,7 +110,6 @@ const onSubmit = ({
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const initializeTaskDrawerHooks = ({
-  isInbox,
   onTaskUpdate,
   onTaskCreation,
   onTaskDelete,
@@ -139,8 +120,6 @@ const initializeTaskDrawerHooks = ({
     selectedTask,
     addingNewSubtask,
     taskLists,
-    labels,
-    areLabelsRequested,
     currentUser,
     selectedFilters,
   } = useSelector(store => ({
@@ -149,12 +128,6 @@ const initializeTaskDrawerHooks = ({
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
     taskLists: taskListsSelector(store),
-    labels: isInbox
-      ? store.taskLabelState.data.inboxLabels
-      : store.taskLabelState.data.listLabels,
-    areLabelsRequested: isInbox
-      ? store.taskLabelState.requesting.inboxLabels
-      : store.taskLabelState.requesting.listLabels,
     currentUser: store.userState.userProfile,
     selectedFilters: selectedFiltersInMegaFilterSelector(store),
   }));
@@ -291,9 +264,6 @@ const initializeTaskDrawerHooks = ({
       taskList !== undefined &&
       taskList?.taskListIdentifier
     ) {
-      getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
-        dispatch,
-      );
       markTaskRead(selectedTask)(dispatch);
     }
 
@@ -330,7 +300,6 @@ const initializeTaskDrawerHooks = ({
       'labels',
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
     );
-
     // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
@@ -641,8 +610,6 @@ const initializeTaskDrawerHooks = ({
     currentOrganization,
     selectedTask,
     selectedParentTask,
-    labels,
-    areLabelsRequested,
     taskDrawerOpen,
     taskDrawerFocusField,
     onSubmit: onSubmit({

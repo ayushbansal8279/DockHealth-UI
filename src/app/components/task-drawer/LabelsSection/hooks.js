@@ -1,17 +1,19 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { prop } from 'ramda';
 import {
   addLabel,
   editLabel,
   removeLabelForTask,
   getTaskListLabels,
-} from 'actions/task-label-actions';
+  removeLabelFromDatabase,
+} from 'api/task-label-api';
+
 import { refreshTask } from 'actions/task-actions';
 import { getFormattedLabels } from './helpers';
 
 const labelAddOrRemovePromise = ({
-  dispatch,
   taskIdentifier,
   currentLabelsIdentifiers,
   formattedLabelsIdentifiers,
@@ -21,7 +23,7 @@ const labelAddOrRemovePromise = ({
   }
 
   if (labelIdentifier === null) {
-    return addLabel({ labelName, taskIdentifier })(dispatch);
+    return addLabel({ labelName, taskIdentifier });
   }
 
   if (
@@ -32,7 +34,7 @@ const labelAddOrRemovePromise = ({
       labelName,
       labelIdentifier,
       taskIdentifier,
-    })(dispatch);
+    });
   }
 
   if (
@@ -43,36 +45,35 @@ const labelAddOrRemovePromise = ({
       labelName,
       labelIdentifier,
       taskIdentifier,
-    })(dispatch);
+    });
   }
 
   return Promise.resolve();
 };
 
 const initializeLabelsSectionHooks = ({
-  isInbox,
-  parentFormSubmit,
   setAutoSaveVisible,
   setSelectedLabelsValue,
   onTaskUpdate,
+  parentFormSubmit,
 }) => {
-  const { selectedTask, labels, areLabelsRequested } = useSelector(store => ({
+  const dispatch = useDispatch();
+  const { selectedTask } = useSelector(store => ({
     selectedTask: store.taskState.selectedTask,
-    labels: isInbox
-      ? store.taskLabelState.data.inboxLabels
-      : store.taskLabelState.data.listLabels,
-    areLabelsRequested: isInbox
-      ? store.taskLabelState.requesting.inboxLabels
-      : store.taskLabelState.requesting.listLabels,
   }));
 
-  const dispatch = useDispatch();
+  const [availableLabels, setAvailableLabels] = useState([]);
+  const [isLoadingLabels, setIsLoadingLabels] = useState(false);
 
   const refreshLabels = async () => {
     if (selectedTask?.taskList?.taskListIdentifier) {
-      getTaskListLabels({
+      setIsLoadingLabels(true);
+      const freshLabels = await getTaskListLabels({
         taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
-      })(dispatch);
+      });
+
+      setAvailableLabels(freshLabels);
+      setIsLoadingLabels(false);
     }
 
     const refreshedTask = await refreshTask(selectedTask)(dispatch);
@@ -104,7 +105,6 @@ const initializeLabelsSectionHooks = ({
     await Promise.all(
       allLabels.map(
         labelAddOrRemovePromise({
-          dispatch,
           taskIdentifier,
           currentLabelsIdentifiers,
           formattedLabelsIdentifiers,
@@ -113,13 +113,12 @@ const initializeLabelsSectionHooks = ({
     );
 
     setAutoSaveVisible();
-
     refreshLabels();
   };
 
   const saveAddLabel = async selectedLabel => {
-    const labelIdentifier = selectedLabel?.value;
-    const labelName = selectedLabel?.displayLabel;
+    const labelIdentifier = selectedLabel?.labelIdentifier;
+    const labelName = selectedLabel?.labelName;
     const taskIdentifier = selectedTask?.taskIdentifier;
 
     if (!labelName || labelName === null || labelName === '') {
@@ -130,7 +129,7 @@ const initializeLabelsSectionHooks = ({
       labelName,
       labelIdentifier,
       taskIdentifier,
-    })(dispatch);
+    });
 
     setAutoSaveVisible();
     refreshLabels();
@@ -149,14 +148,13 @@ const initializeLabelsSectionHooks = ({
       labelName,
       labelIdentifier,
       taskIdentifier,
-    })(dispatch);
+    });
 
     setAutoSaveVisible();
     refreshLabels();
   };
 
-  const saveEditLabel = async (selectedLabel, newValue) => {
-    const labelIdentifier = selectedLabel.value;
+  const saveEditLabel = async (labelIdentifier, newValue) => {
     const labelName = newValue;
     const taskIdentifier = selectedTask?.taskIdentifier;
 
@@ -168,24 +166,34 @@ const initializeLabelsSectionHooks = ({
       labelName,
       labelIdentifier,
       taskIdentifier,
-    })(dispatch);
+    });
 
     setAutoSaveVisible();
     refreshLabels();
   };
 
   const removeLabelFromTask = async selectedLabel => {
-    const labelIdentifier = selectedLabel?.value;
-    const labelName = selectedLabel?.displayLabel;
+    const labelIdentifier = selectedLabel?.labelIdentifier;
+    const labelName = selectedLabel?.labelName;
     const taskIdentifier = selectedTask?.taskIdentifier;
 
     await removeLabelForTask({
       labelName,
       labelIdentifier,
       taskIdentifier,
-    })(dispatch);
+    });
 
     setAutoSaveVisible();
+    refreshLabels();
+  };
+
+  const deleteLabel = async selectedLabel => {
+    const labelIdentifier = selectedLabel?.labelIdentifier;
+
+    await removeLabelFromDatabase({
+      labelIdentifier,
+    });
+
     refreshLabels();
   };
 
@@ -196,15 +204,16 @@ const initializeLabelsSectionHooks = ({
   };
 
   return {
-    labels,
-    areLabelsRequested,
+    labels: availableLabels,
+    isLoadingLabels,
     saveAddOrRemoveLabel,
     saveAddLabel,
     saveAddLabelWithNewValue,
     saveEditLabel,
     removeLabelFromTask,
-    saveTaskOnFocus,
     refreshLabels,
+    deleteLabel,
+    saveTaskOnFocus,
   };
 };
 

@@ -9,6 +9,8 @@ export const addLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
       labelName,
       taskIdentifier,
     },
+  }).then(({ data }) => {
+    return data;
   });
 
 export const editLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
@@ -20,6 +22,8 @@ export const editLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
       labelName,
       taskIdentifier,
     },
+  }).then(({ data }) => {
+    return data;
   });
 
 export const removeLabelForTask = ({
@@ -35,22 +39,22 @@ export const removeLabelForTask = ({
       labelName,
       taskIdentifier,
     },
-  });
-
-export const getInboxLabels = () =>
-  axios({
-    method: 'get',
-    url: '/task/label/getLabelsForInboxTaskList',
+  }).then(({ data }) => {
+    return data;
   });
 
 export const getTaskListLabels = ({ taskListIdentifier }) =>
   axios({
     method: 'get',
     url: `/task/label/getLabelsForTaskList/${taskListIdentifier}`,
+  }).then(({ data }) => {
+    return data;
   });
 
 export const removeLabelFromDatabase = ({ labelIdentifier }) =>
   axios({
     method: 'delete',
     url: `/task/label/${labelIdentifier}`,
+  }).then(({ data }) => {
+    return data;
   });
