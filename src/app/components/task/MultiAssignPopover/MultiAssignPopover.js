@@ -13,15 +13,13 @@ import { StyledPopover, StyledButton } from './styled';
 import MultiAssignMembersList from './MultiAssignMembersList';
 
 const MultiAssignPopover = ({
-  blockPopover,
+  isDisabled,
   placement,
   children,
   taskListIdentifiers,
   selectedMembers,
   fullWidth,
   onSelect,
-  onOpen,
-  onClose,
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
@@ -37,10 +35,10 @@ const MultiAssignPopover = ({
         type="button"
         fullWidth={fullWidth}
         ref={assignMemberButtonReference}
+        disabled={isDisabled}
         onClick={event => {
           event.stopPropagation();
           openPopover(true);
-          if (typeof onOpen === 'function') onOpen();
         }}
       >
         {children}
@@ -55,11 +53,10 @@ const MultiAssignPopover = ({
           vertical: placement === 'top' ? 'bottom' : 'top',
           horizontal: 'right',
         }}
-        open={isOpen && !blockPopover}
+        open={isOpen}
         onClose={event => {
           event.stopPropagation();
           openPopover(false);
-          if (typeof onClose === 'function') onClose();
         }}
         width={assignMemberButtonReference.current?.offsetWidth}
       >
@@ -78,7 +75,7 @@ const MultiAssignPopover = ({
 };
 
 MultiAssignPopover.propTypes = {
-  blockPopover: bool,
+  isDisabled: bool,
   placement: oneOf(['top', 'bottom']),
   children: node.isRequired,
   taskListIdentifiers: oneOfType([string, arrayOf(string)]).isRequired,
@@ -93,16 +90,12 @@ MultiAssignPopover.propTypes = {
   ).isRequired,
   fullWidth: bool,
   onSelect: func.isRequired,
-  onClose: func,
-  onOpen: func,
 };
 
 MultiAssignPopover.defaultProps = {
-  blockPopover: false,
+  isDisabled: false,
   placement: 'bottom',
   fullWidth: false,
-  onClose: null,
-  onOpen: null,
 };
 
 export default MultiAssignPopover;
