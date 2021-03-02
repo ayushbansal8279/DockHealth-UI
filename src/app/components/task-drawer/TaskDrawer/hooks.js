@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable sonarjs/cognitive-complexity */
 import moment from 'moment';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { pluck } from 'ramda';
 import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
@@ -26,7 +27,6 @@ import {
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-import Member from 'components/members/Member/Member';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
@@ -35,7 +35,6 @@ import { noop } from 'helpers/utility-functions';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-// import { MemberAdornmentContainer } from './styled';
 import { getFormattedLabels } from '../LabelsSection/helpers';
 
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
@@ -147,7 +146,7 @@ const initializeTaskDrawerHooks = ({
         organizationIdentifier === currentOrganizationIdentifier,
     ) || {};
 
-  const [members, setMembers] = useState(null);
+  const [emailBodyMembers, setEmailBodyMembers] = useState(null);
 
   const taskList = selectedTask?.taskList;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -170,14 +169,6 @@ const initializeTaskDrawerHooks = ({
 
   const isAddingOrEditingSubtask =
     Boolean(selectedParentTask) || addingNewSubtask;
-
-  const refreshMembers = () =>
-    TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL').then(
-      data => {
-        setMembers(data);
-        return data;
-      },
-    );
 
   const previousTaskIdentifierValue = useRef();
 
@@ -237,15 +228,16 @@ const initializeTaskDrawerHooks = ({
   }, [selectedParentTask]);
 
   useEffect(() => {
-    if (taskListIdentifier) {
-      refreshMembers()
-        .then(() => {})
-        .catch(error => {
-          throw error;
-        });
+    if (taskListIdentifier && selectedTask?.sourceMessage) {
+      TaskListApi.getMembersByTaskListId(
+        taskList.taskListIdentifier,
+        'ALL',
+      ).then(data => {
+        setEmailBodyMembers(data);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskListIdentifier]);
+  }, [taskListIdentifier, taskIdentifier]);
 
   useEffect(() => {
     if (
@@ -301,24 +293,6 @@ const initializeTaskDrawerHooks = ({
     closeDrawer()(dispatch);
     storeAsCurrentTask(null)(dispatch);
   }, [dispatch]);
-
-  // const currentAssignedToValue = watch('assignedToIdentifier');
-
-  //   return currentMember ? (
-  //     <MemberAdornmentContainer>
-  //       <Member showTooltip={false} member={currentMember} size={34} />
-  //     </MemberAdornmentContainer>
-  //   ) : null;
-  // }, [currentAssignedToValue, members]);
-
-  const getMemberAdornment = (memberIdentifier, listMembers) => {
-    const currentMember = listMembers?.find(
-      ({ userIdentifier }) => memberIdentifier === userIdentifier,
-    );
-    return currentMember ? (
-      <Member showTooltip={false} member={currentMember} size={34} />
-    ) : null;
-  };
 
   const reFileTask = useCallback(
     ({ newTaskList }) => {
@@ -580,7 +554,6 @@ const initializeTaskDrawerHooks = ({
     formMethods,
     isAddingOrEditingSubtask,
     taskLists,
-    getMemberAdornment,
     openTaskDrawer,
     closeTaskDrawer,
     isSaving,
@@ -591,7 +564,7 @@ const initializeTaskDrawerHooks = ({
     handleQuickAddTask,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
-    members,
+    emailBodyMembers,
     descriptionState,
     setDescriptionState,
     descriptionReference,

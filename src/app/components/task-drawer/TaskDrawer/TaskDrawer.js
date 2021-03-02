@@ -83,7 +83,7 @@ const TaskDrawer = ({
     handleQuickAddTask,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
-    members,
+    emailBodyMembers,
     descriptionState,
     setDescriptionState,
     descriptionReference,
@@ -290,7 +290,7 @@ const TaskDrawer = ({
                   <TaskDrawerEmailBodyContainer
                     emailBody={selectedTask.sourceMessage}
                     task={selectedTask}
-                    members={members}
+                    members={emailBodyMembers}
                   />
                 </Grid>
               )}
