@@ -172,8 +172,9 @@ const TaskItem = ({
     [bunchBulkEditTaskActions, isSubtask],
   );
 
-  const preventSubtasksCount = useRef(subTasksCount);
-  const preventAttachmentsLength = useRef(attachments?.length);
+  const previousSubtasksCount = useRef(subTasksCount);
+  const previousAttachmentsLength = useRef(attachments?.length);
+  const previousAssignedToUsers = useRef(assignedToUsers);
   const hasAttachments = useMemo(() => attachments?.length > 0, [attachments]);
 
   const bulkEditActionPayload = useMemo(
@@ -211,8 +212,8 @@ const TaskItem = ({
   );
 
   useEffect(() => {
-    if (subTasksCount !== preventSubtasksCount?.current) {
-      preventSubtasksCount.current = subTasksCount;
+    if (subTasksCount !== previousSubtasksCount?.current) {
+      previousSubtasksCount.current = subTasksCount;
 
       if (
         !isSubtask &&
@@ -227,15 +228,20 @@ const TaskItem = ({
     }
 
     if (
-      attachments?.length !== preventAttachmentsLength?.current &&
-      isCheckedByBulkEdit
+      attachments?.length !== previousAttachmentsLength?.current ||
+      assignedToUsers !== previousAssignedToUsers?.current
     ) {
-      preventAttachmentsLength.current = attachments?.length;
+      previousAttachmentsLength.current = attachments?.length;
+      previousAssignedToUsers.current = assignedToUsers;
 
-      if (bulkEditTaskActions?.onUpdateSelectedBulkEditTask)
+      if (
+        isCheckedByBulkEdit &&
+        bulkEditTaskActions?.onUpdateSelectedBulkEditTask
+      )
         bulkEditTaskActions.onUpdateSelectedBulkEditTask({
           taskIdentifier,
           hasAttachments: attachments?.length > 0,
+          assignedToUsers,
         });
     }
   }, [
@@ -245,6 +251,7 @@ const TaskItem = ({
     subTasksCount,
     taskIdentifier,
     isCheckedByBulkEdit,
+    assignedToUsers,
   ]);
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
