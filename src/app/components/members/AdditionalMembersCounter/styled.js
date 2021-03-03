@@ -20,6 +20,7 @@ export const Text = styled.p`
   font-family: 'Montserrat', sans-serif;
   font-size: ${({ size }) => size / 2.5}px;
   font-weight: ${fontWeights.bold};
+  line-height: ${({ size }) => size / 2.5}px;
 `;
 
 export const HiddenMembersTooltipContainer = styled.div`
