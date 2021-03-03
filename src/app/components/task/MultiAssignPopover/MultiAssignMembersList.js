@@ -225,7 +225,7 @@ const MultiAssignMembersList = ({
                 >
                   <Checkbox isChecked={isSelected} />
                   <Spacing horizontal={3} />
-                  <Member member={currentUser} />
+                  <Member member={currentUser} showTooltip={false} />
                   <Spacing horizontal={3} />
                   <MemberName>
                     <Highlighter
@@ -254,7 +254,7 @@ const MultiAssignMembersList = ({
                 >
                   <Checkbox isChecked={isSelected} />
                   <Spacing horizontal={3} />
-                  <Member member={member} />
+                  <Member member={member} showTooltip={false} />
                   <Spacing horizontal={3} />
                   <MemberName>
                     <Highlighter
