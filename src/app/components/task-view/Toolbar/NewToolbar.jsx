@@ -196,11 +196,10 @@ const Toolbar = ({
                 {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
                 {hiddenMembers?.length > 0 && (
                   <>
-                    <Spacing horizontal={1} />
+                    <Spacing horizontal={2} />
                     <AdditionalMembersCounter
                       hiddenMembers={hiddenMembers}
                       size={45}
-                      color={palette.brightBlue}
                     />
                   </>
                 )}

@@ -762,6 +762,7 @@ const TaskItem = ({
             }}
           >
             <MultiAssignPopover
+              fullWidth={multipleAssigneesContext}
               taskListIdentifiers={task?.taskList?.taskListIdentifier}
               selectedMembers={assignedToUsers}
               onSelect={handleReasignTask}

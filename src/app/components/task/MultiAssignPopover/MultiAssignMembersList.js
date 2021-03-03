@@ -77,6 +77,11 @@ const MultiAssignMembersList = ({
     (async () => {
       setIsFetchingMembers(true);
       setMembersOptions([]);
+      setSelectedMembersIdentifiers(
+        savedSelectedMembers?.length > 0
+          ? pluck('userIdentifier', savedSelectedMembers)
+          : [],
+      );
       const includeTaskListIdentifers = Array.isArray(taskListIdentifiers)
         ? taskListIdentifiers
         : [taskListIdentifiers];
@@ -90,15 +95,6 @@ const MultiAssignMembersList = ({
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    setSelectedMembersIdentifiers(
-      savedSelectedMembers?.length > 0
-        ? pluck('userIdentifier', savedSelectedMembers)
-        : [],
-    );
-  }, [savedSelectedMembers]);
-
   const handleOptionClick = (event, selectedOption) => {
     event.stopPropagation();
 
