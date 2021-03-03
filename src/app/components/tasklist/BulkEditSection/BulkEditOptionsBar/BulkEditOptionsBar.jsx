@@ -244,10 +244,6 @@ const BulkEditOptionsBar = ({
                 : `${allSelectedTasksLength} TASK ASSIGNED`,
             ),
           );
-
-          if (onClose && typeof onClose === 'function') {
-            onClose();
-          }
         })
         .catch(() => {
           if (
@@ -264,7 +260,6 @@ const BulkEditOptionsBar = ({
       searchValue,
       dispatch,
       allSelectedTasksLength,
-      onClose,
       refreshTasksOnBulkAction,
     ],
   );
