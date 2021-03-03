@@ -5,6 +5,7 @@ import { Switch, Redirect, useRouteMatch } from 'react-router-dom';
 import { RouteWrapper } from 'routing/components';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
+import TemplateAuthBaseApproveDisapproveContent from './TemplateAuthBase.ApproveDisapproveContent';
 import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
 import TemplateAuthBaseRegainControlContent from './TemplateAuthBase.RegainControlContent';
 import {
@@ -24,6 +25,8 @@ const getLeftSideContent = ({ currentAuthBaseState }) => {
       return <TemplateAuthBaseDailyHubContent />;
     case AUTH_BASE_STATES.REGAIN_CONTROL:
       return <TemplateAuthBaseRegainControlContent />;
+    case AUTH_BASE_STATES.APPROVE_DISAPPROVE:
+      return <TemplateAuthBaseApproveDisapproveContent />;
     default:
       return null;
   }

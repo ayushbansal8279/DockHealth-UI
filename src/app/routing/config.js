@@ -74,8 +74,6 @@ import {
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
 
-import { onEnterApproveDisapproveUser } from './TemplateAuthBase/ApproveDisapproveUser';
-
 export const SETTINGS_ROUTES = [
   {
     path: '/userprofile',
@@ -273,9 +271,8 @@ export const AUTH_ROUTES = [
     RouteComponent: ResetPasswordSuccess,
   },
   {
-    path: '/inviteRequest/:requestIdentifier?/:decisionType?/:userIdentifier?',
+    path: '/inviteRequest/:requestIdentifier/:decisionType/:userIdentifier',
     RouteComponent: ApproveDisapproveUser,
-    onEnter: onEnterApproveDisapproveUser,
   },
 ];
 

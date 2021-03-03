@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { getUserById } from 'api/people-api';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { approveOrDenyInvitation } from 'actions/user-actions';
 
 const getPageContent = decisionType => {
   switch (decisionType) {
@@ -8,11 +10,9 @@ const getPageContent = decisionType => {
       return {
         title: 'Invitation successfully sent.',
         description: userName =>
-          ` ${userName}  has successfully been invited to your organization and will now be part of your organization and subscription. If you denied this person by error you can still`,
+          ` ${userName} has successfully been invited to your organization and will now be part of your organization and subscription. If you denied this person by error you can still`,
         RevertOption: () => (
-          <span onClick={() => {}} style={{ cursor: 'pointer', color: 'blue' }}>
-            deny the invite.
-          </span>
+          <Link to="/settings/subscriptions">deny the invite.</Link>
         ),
       };
     }
@@ -23,9 +23,7 @@ const getPageContent = decisionType => {
         description: userName =>
           `You have denied access to inviting ${userName} to your organization. If you denied this person by error you can still accept the invite.`,
         RevertOption: () => (
-          <span onClick={() => {}} style={{ cursor: 'pointer', color: 'blue' }}>
-            accept the invite.
-          </span>
+          <Link to="/settings/subscriptions">accept the invite.</Link>
         ),
       };
     }
@@ -37,19 +35,19 @@ const getPageContent = decisionType => {
 };
 
 const ApproveDisapproveUser = ({ match }) => {
+  const dispatch = useDispatch();
   const { params } = match;
-  const { userIdentifier, decisionType } = params;
-
-  const [user, setUser] = useState({});
+  const { requestIdentifier, decisionType, userIdentifier } = params;
 
   useEffect(() => {
-    if (userIdentifier) {
-      getUserById(userIdentifier).then(setUser);
-    }
+    approveOrDenyInvitation({
+      requestIdentifier,
+      decisionType,
+      userIdentifier,
+      dispatch,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const { userName } = user;
 
   const { title, description, RevertOption } = getPageContent(decisionType);
 
@@ -57,7 +55,7 @@ const ApproveDisapproveUser = ({ match }) => {
     <div>
       <h2>{title}</h2>
       <div>
-        {description(userName)} <RevertOption />
+        {description('')} <RevertOption />
       </div>
     </div>
   );

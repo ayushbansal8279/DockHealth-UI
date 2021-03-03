@@ -28,11 +28,9 @@ export const approveOrDenyInvitation = ({
   //     setAuthBaseState({
   //       authBaseState: AUTH_BASE_STATES.DAILY_HUB,
   //     })(dispatch);
-
-  //     return getUserById(userIdentifier)
   //   });
 
   setAuthBaseState({
-    authBaseState: AUTH_BASE_STATES.DAILY_HUB,
+    authBaseState: AUTH_BASE_STATES.APPROVE_DISAPPROVE,
   })(dispatch);
 };
