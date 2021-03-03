@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Box } from '@material-ui/core';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
@@ -18,8 +18,6 @@ const DashboardColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   sort,
   onSortChange,
 }) => {
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-
   const switchSort = useCallback(() => {
     if (typeof onSortChange !== 'function') return;
 
@@ -46,21 +44,16 @@ const DashboardColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   }, [id, sort, onSortChange]);
 
   return (
-    <SortHeaderButton
-      disabled={!label}
-      type="button"
-      onClick={switchSort}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <SortHeaderButton disabled={!label} type="button" onClick={switchSort}>
+      {label}
+      <Box m={1} />
       {id && label && typeof onSortChange === 'function' && (
         <SortArrow
-          isParentHovered={isHovered}
+          isParentHovered
           orderType={id === sort?.key && sort?.order}
+          version="secondary"
         />
       )}
-      <Box m={0.5} />
-      {label}
     </SortHeaderButton>
   );
 };

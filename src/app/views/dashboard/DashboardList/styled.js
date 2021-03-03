@@ -69,7 +69,7 @@ export const DashboardTasksGroupLabel = styled.div`
 export const DashboardTasksGroupLabelName = styled.div`
   position: relative;
   flex: ${({ width }) => (width ? `${width} 0 0` : '1')};
-  padding: 8px 16px;
+  padding: ${spacing.small} ${spacing.regular} ${spacing.small} 0;
   height: 35px;
   overflow: visible;
 
