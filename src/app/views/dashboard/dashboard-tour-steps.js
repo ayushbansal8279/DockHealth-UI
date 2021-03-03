@@ -40,7 +40,7 @@ export const FIRST_TOUR_STEPS = [
     icon: CreateANewListImage,
     title: 'Create a new list',
     description:
-      'Simply clicking on a task on your Home screen will show you its details. The drawer will slide out from the right side of the screen to reveal all the nitty gritty. Or you can click on the list name to see all the tasks in the list.',
+      'Click on My Lists which will take you to the list page. Then you can create a new list.',
   },
   {
     key: 6,
