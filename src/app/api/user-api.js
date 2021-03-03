@@ -754,3 +754,16 @@ export const updateNotificationSettings = settings =>
       notificationSettings: settings,
     })
     .then(({ data }) => data);
+
+export const approveOrDenyInvitation = ({
+  requestIdentifier,
+  decisionType,
+  userIdentifier,
+}) =>
+  axios.put('/invite/request/review', null, {
+    params: {
+      requestIdentifier,
+      decisionType,
+      userIdentifier,
+    },
+  });

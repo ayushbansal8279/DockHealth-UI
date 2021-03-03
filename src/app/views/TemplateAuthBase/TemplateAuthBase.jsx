@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom';
+import { Switch, Redirect, useRouteMatch } from 'react-router-dom';
 
+import { RouteWrapper } from 'routing/components';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
 import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
@@ -46,10 +47,11 @@ const TemplateAuthBase = ({ childRoutes }) => {
           <RightSideMaxWidthContainer>
             <Switch>
               {childRoutes?.map(route => (
-                <Route
+                <RouteWrapper
                   key={route.path}
                   path={`${path}${route.path}`}
-                  component={route.RouteComponent}
+                  RouteComponent={route.RouteComponent}
+                  onEnter={route.onEnter}
                 />
               ))}
               <Redirect

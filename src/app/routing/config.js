@@ -18,6 +18,7 @@ import ResetPassword from '../views/auth/ResetPassword';
 import ResetPasswordSuccess from '../views/auth/ResetPasswordSuccess';
 import SelfEnrolledUser from '../views/auth/SelfEnrolledUser';
 import UnEnrolledUser from '../views/auth/UnEnrolledUser';
+import ApproveDisapproveUser from '../views/auth/ApproveDisapproveUser';
 import ErrorPage from '../views/ErrorPage';
 import ListDetailsView from '../views/list-details/ListDetailsView';
 import OnboardingBaaCheckView from '../views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
@@ -72,6 +73,8 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
+import { onEnterApproveDisapproveUser } from './TemplateAuthBase/ApproveDisapproveUser';
 
 export const SETTINGS_ROUTES = [
   {
@@ -268,6 +271,11 @@ export const AUTH_ROUTES = [
   {
     path: '/resetPasswordSuccess',
     RouteComponent: ResetPasswordSuccess,
+  },
+  {
+    path: '/inviteRequest/:requestIdentifier?/:decisionType?/:userIdentifier?',
+    RouteComponent: ApproveDisapproveUser,
+    onEnter: onEnterApproveDisapproveUser,
   },
 ];
 
