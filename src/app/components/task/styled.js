@@ -469,10 +469,15 @@ export const SubtasksCellContentButton = styled.button`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  color: ${({ isOpen }) => (isOpen ? palette.brightBlue : palette.coolGrey1)};
+  color: ${({ isOpen, isGreyedOut }) => {
+    if (isGreyedOut) return palette.coolGrey2;
+
+    return isOpen ? palette.brightBlue : palette.coolGrey1;
+  }};
 
   &:disabled {
     color: ${palette.coolGrey2};
+    cursor: initial;
   }
 `;
 

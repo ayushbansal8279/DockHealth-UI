@@ -24,6 +24,8 @@ const DragAndDropGroupList = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   groupHasMultipleAssignees,
+  highlightedTasksParentIdenditifer,
+  highlightTasksOfTheSameParent,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -90,6 +92,12 @@ const DragAndDropGroupList = ({
                     shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
                     showClearSortFiltersModal={showClearSortFiltersModal}
                     multipleAssigneesContext={groupHasMultipleAssignees}
+                    highlightedTasksParentIdenditifer={
+                      highlightedTasksParentIdenditifer
+                    }
+                    highlightTasksOfTheSameParent={
+                      highlightTasksOfTheSameParent
+                    }
                   />
                 )}
               </Draggable>

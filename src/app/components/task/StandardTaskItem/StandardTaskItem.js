@@ -36,6 +36,7 @@ const Task = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   selectedTask,
+  highlightedTasksParentIdenditifer,
   ...restProps
 }) => {
   const parentTaskReference = useRef(null);
@@ -52,7 +53,7 @@ const Task = ({
   } = task || {};
   const { taskIdentifier: selectedTaskIdentifier } = selectedTask || {};
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
-  const { highlightedValue } = restProps;
+  const { highlightedValue, multipleAssigneesContext } = restProps;
   const { matchingCommentIdentifiers = [] } = searchMetaData;
 
   const renderedSubtasks =
@@ -161,7 +162,13 @@ const Task = ({
           isDraggable={isDraggable}
           subtasksDisabled={subtasksDisabled}
           isFullView={isFullView}
-          isSelected={selectedTaskIdentifier === task.taskIdentifier}
+          isSelected={
+            selectedTaskIdentifier === task.taskIdentifier ||
+            (highlightedTasksParentIdenditifer &&
+              (highlightedTasksParentIdenditifer === task.taskIdentifier ||
+                highlightedTasksParentIdenditifer ===
+                  task.parentTaskIdentifier))
+          }
           {...restProps}
         />
       </div>
@@ -201,6 +208,7 @@ const Task = ({
                 listNameVisible={listNameVisible}
                 taskListIdentifier={taskList?.taskListIdentifier}
                 parentTaskIdentifier={taskIdentifier}
+                multipleAssigneesContext={multipleAssigneesContext}
                 onFocus={handleQuickAddOnFocus}
               />
             )}

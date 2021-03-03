@@ -18,7 +18,9 @@ const QuickAddSubatask = ({
   listNameVisible,
   parentTaskIdentifier,
   taskListIdentifier = null,
+  multipleAssigneesContext,
   onFocus,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const editorReference = useRef(null);
   const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
@@ -121,7 +123,7 @@ const QuickAddSubatask = ({
       <StandardTaskItemCell width="120px" />
       <StandardTaskItemCell width="150px" />
       <StandardTaskItemCell width="60px" />
-      <StandardTaskItemCell width="80px" />
+      <StandardTaskItemCell width={`${multipleAssigneesContext ? 90 : 60}px`} />
       {listNameVisible && <StandardTaskItemCell width="168px" />}
     </StandardTaskItemContainer>
   );

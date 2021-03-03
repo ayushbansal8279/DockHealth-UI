@@ -22,8 +22,8 @@ import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
 import { userProfileSelector } from 'selectors/user-selectors';
 import MemberGroup from 'components/members/MemberGroup/MemberGroup';
-import SingleSubtaskIcon from 'img/SingleSubtaskIcon';
-import SubtasksIcon from 'img/SubtasksIcon';
+import SubtaskIcon from 'img/SubtaskIcon';
+import ParentTaskIcon from 'img/ParentTaskIcon';
 import palette from 'styles/palette';
 import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
@@ -104,6 +104,7 @@ const TaskItem = ({
   isNestedTask = false,
   subtasksDisabled,
   multipleAssigneesContext,
+  highlightTasksOfTheSameParent,
 }) => {
   const {
     taskIdentifier,
@@ -385,9 +386,20 @@ const TaskItem = ({
         } else {
           switchOpen(!isOpen);
         }
+      } else {
+        highlightTasksOfTheSameParent(
+          task.parentTaskIdentifier || task.taskIdentifier,
+        );
       }
     },
-    [isOpen, switchOpen, subtasksDisabled],
+    [
+      subtasksDisabled,
+      isOpen,
+      switchOpen,
+      highlightTasksOfTheSameParent,
+      task.parentTaskIdentifier,
+      task.taskIdentifier,
+    ],
   );
 
   const onPatientClick = useCallback(() => {
@@ -546,37 +558,36 @@ const TaskItem = ({
             paddingLeft="tiny"
             paddingRight="tiny"
           >
-            {!isSubtask ? (
+            {!isSubtask &&
+            !subtaskQuickAddOpen &&
+            !subtasksDisabled &&
+            !subTasksCount ? (
+              <AddSubtaskButton
+                type="button"
+                onClick={() => dispatch(openQuickAddSubtask(taskIdentifier))}
+              >
+                {isHovered && <AddPlaceholder>+ Add</AddPlaceholder>}
+              </AddSubtaskButton>
+            ) : (
               <>
-                {subTasksCount > 0 ? (
+                {(subTasksCount || isSubtask) && (
                   <SubtasksCellContentButton
                     isOpen={isOpen}
-                    disabled={subtasksDisabled}
+                    disabled={isNestedTask}
+                    isGreyedOut={subtasksDisabled}
                     onClick={onSubtaskLabelClick}
                   >
-                    <SubtasksCellText>{subTasksCount}</SubtasksCellText>
-                    <SubtasksIcon />
+                    {!isSubtask ? (
+                      <>
+                        <SubtasksCellText>{subTasksCount}</SubtasksCellText>
+                        <ParentTaskIcon />
+                      </>
+                    ) : (
+                      <SubtaskIcon />
+                    )}
                   </SubtasksCellContentButton>
-                ) : (
-                  <>
-                    {isHovered &&
-                      !isSubtask &&
-                      !subtaskQuickAddOpen &&
-                      !subtasksDisabled && (
-                        <AddSubtaskButton
-                          type="button"
-                          onClick={() =>
-                            dispatch(openQuickAddSubtask(taskIdentifier))
-                          }
-                        >
-                          <AddPlaceholder>+ Add</AddPlaceholder>
-                        </AddSubtaskButton>
-                      )}
-                  </>
                 )}
               </>
-            ) : (
-              <SingleSubtaskIcon />
             )}
           </StandardTaskItemCell>
           {patientVisible && (

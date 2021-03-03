@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
   useContext,
+  useState,
 } from 'react';
 import { isNil } from 'ramda';
 import ArrowIcon from 'img/arrow';
@@ -87,12 +88,17 @@ const TasksGroup = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
 }) => {
+  const [
+    highlightedTasksParentIdenditifer,
+    setHighlightedTasksParentIdenditifer,
+  ] = useState(null);
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
 
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
     sessionStorageKey: groupSessionStorageKey,
   });
+  const highlightTimeoutReference = useRef(null);
   const quickAddTaskInputReference = useRef(null);
 
   const areViewOptionsVisible = useMemo(() => {
@@ -152,6 +158,16 @@ const TasksGroup = ({
     }
     onSwitchOpen();
   }, [isOpen, groupTaskCounts, tasks, onSwitchOpen, showMoreTasks]);
+
+  const highlightTasksOfTheSameParent = useCallback(parentTaskIdentifier => {
+    if (highlightTimeoutReference.current)
+      clearTimeout(highlightTimeoutReference.current);
+
+    setHighlightedTasksParentIdenditifer(parentTaskIdentifier);
+    highlightTimeoutReference.current = setTimeout(() => {
+      setHighlightedTasksParentIdenditifer(null);
+    }, 3000);
+  }, []);
 
   const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
   const { groupActions } = bunchBulkEditTaskActions;
@@ -356,6 +372,10 @@ const TasksGroup = ({
             shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
             showClearSortFiltersModal={showClearSortFiltersModal}
             groupHasMultipleAssignees={groupHasMultipleAssignees}
+            highlightedTasksParentIdenditifer={
+              highlightedTasksParentIdenditifer
+            }
+            highlightTasksOfTheSameParent={highlightTasksOfTheSameParent}
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (

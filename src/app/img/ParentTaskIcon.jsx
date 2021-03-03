@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SubtasksIcon = () => (
+const ParentTaskIcon = () => (
   <svg
     width="22"
     height="15"
@@ -15,4 +15,4 @@ const SubtasksIcon = () => (
   </svg>
 );
 
-export default SubtasksIcon;
+export default ParentTaskIcon;
