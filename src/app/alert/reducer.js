@@ -5,7 +5,7 @@ export const SHOW_SIDEBAR_ALERT = 'SHOW_SIDEBAR_ALERT';
 const initialState = {
   isGlobalOpen: false,
   text: '',
-  transactionId: null,
+  transactionIdentifier: null,
   undoCallback: null,
 };
 
@@ -20,7 +20,7 @@ export default function(state = initialState, action = {}) {
         isGlobalOpen: true,
         isSideBarAlert: false,
         type: payload.type,
-        transactionId: payload.transactionId,
+        transactionIdentifier: payload.transactionIdentifier,
         undoCallback: payload.undoCallback,
       };
 
@@ -38,7 +38,7 @@ export default function(state = initialState, action = {}) {
         ...state,
         isGlobalOpen: false,
         type: '',
-        transactionId: null,
+        transactionIdentifier: null,
         undoCallback: null,
       };
 

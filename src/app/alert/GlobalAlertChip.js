@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import * as TaskApi from 'api/task-api';
 
 import CheckmarkYellow from 'img/checkmark-yellow';
 
@@ -29,21 +30,21 @@ class GlobalAlertChip extends Component {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   UNSAFE_componentWillUpdate(nextProps) {
     const {
-      alertState: { isGlobalOpen, transactionId },
+      alertState: { isGlobalOpen, transactionIdentifier },
     } = this.props;
 
     if (!isGlobalOpen && nextProps.alertState.isGlobalOpen) {
-      if (nextProps.alertState.transactionId) {
+      if (nextProps.alertState.transactionIdentifier) {
         this.setCouterInterval();
       } else {
-        this.setCloseTimeout(nextProps.alertState.transactionId);
+        this.setCloseTimeout(nextProps.alertState.transactionIdentifier);
       }
     }
 
     if (
       isGlobalOpen &&
       nextProps.alertState.isGlobalOpen &&
-      !nextProps.alertState.transactionId
+      !nextProps.alertState.transactionIdentifier
     ) {
       this.setCloseTimeout();
     }
@@ -51,8 +52,9 @@ class GlobalAlertChip extends Component {
     if (
       isGlobalOpen &&
       nextProps.alertState.isGlobalOpen &&
-      nextProps.alertState.transactionId &&
-      (nextProps.alertState.transactionId !== transactionId || !transactionId)
+      nextProps.alertState.transactionIdentifier &&
+      (nextProps.alertState.transactionIdentifier !== transactionIdentifier ||
+        !transactionIdentifier)
     ) {
       this.setCouterInterval();
     }
@@ -60,7 +62,7 @@ class GlobalAlertChip extends Component {
 
   handleCloseAlert = () => {
     if (this.timeoutHandle) clearTimeout(this.timeoutHandle);
-    if (this.intervalHandle) clearInterval(this.clearInterval);
+    if (this.intervalHandle) clearInterval(this.intervalHandle);
 
     const { closeAlert } = this.props;
     closeAlert();
@@ -92,17 +94,24 @@ class GlobalAlertChip extends Component {
     }, 1000);
   };
 
-  handleUndoClick = () => {
+  handleUndoClick = async () => {
     const {
-      alertState: { undoCallback },
+      alertState: { undoCallback, transactionIdentifier },
     } = this.props;
+    await TaskApi.rollbackTransaction(transactionIdentifier);
     undoCallback();
     this.handleCloseAlert();
   };
 
   render = () => {
     const {
-      alertState: { isGlobalOpen, isSideBarAlert, text, type, transactionId },
+      alertState: {
+        isGlobalOpen,
+        isSideBarAlert,
+        text,
+        type,
+        transactionIdentifier,
+      },
     } = this.props;
 
     const { counter } = this.state;
@@ -117,7 +126,7 @@ class GlobalAlertChip extends Component {
             <ChipText>{text}</ChipText>
           </MainChipButton>
           <UndoButton
-            isVisible={transactionId}
+            isVisible={transactionIdentifier}
             type="button"
             onClick={this.handleUndoClick}
           >

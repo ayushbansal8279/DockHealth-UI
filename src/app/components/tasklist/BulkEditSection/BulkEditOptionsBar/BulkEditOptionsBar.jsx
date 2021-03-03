@@ -150,11 +150,11 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         workflowStatus,
       })
-        .then(() => {
+        .then(({ transactionIdentifier }) => {
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               `${allSelectedTasksLength} STATUS CHANGED`,
-              5,
+              transactionIdentifier,
               refreshTasks,
             ),
           );
@@ -189,13 +189,13 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         dueDate,
       })
-        .then(() => {
+        .then(({ transactionIdentifier }) => {
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
                 ? `${allSelectedTasksLength} DUE DATES CHANGED`
                 : `${allSelectedTasksLength} DUE DATE CHANGED`,
-              6,
+              transactionIdentifier,
               refreshTasks,
             ),
           );
@@ -234,13 +234,13 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         assignedToIdentifiers: pluck('userIdentifier', selectedUsers),
       })
-        .then(() => {
+        .then(({ transactionIdentifier }) => {
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
                 ? `${allSelectedTasksLength} TASKS ASSIGNED`
                 : `${allSelectedTasksLength} TASK ASSIGNED`,
-              6,
+              transactionIdentifier,
               refreshTasks,
             ),
           );
@@ -272,7 +272,7 @@ const BulkEditOptionsBar = ({
         bulkEditType: 'DUPLICATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         includeAttachmentsForDuplication,
-      }).then(() => {
+      }).then(({ transactionIdentifier }) => {
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
         }
@@ -282,7 +282,7 @@ const BulkEditOptionsBar = ({
             allSelectedTasksLength > 1
               ? `${allSelectedTasksLength} TASKS DUPLICATED`
               : `${allSelectedTasksLength} TASK DUPLICATED`,
-            2,
+            transactionIdentifier,
             refreshTasks,
           ),
         );
@@ -318,7 +318,7 @@ const BulkEditOptionsBar = ({
         bulkEditType: 'MOVE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         ...selectedDestination,
-      }).then(() => {
+      }).then(({ transactionIdentifier }) => {
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
         }
@@ -328,7 +328,7 @@ const BulkEditOptionsBar = ({
             allSelectedTasksLength > 1
               ? `${allSelectedTasksLength} TASKS MOVED`
               : `${allSelectedTasksLength} TASK MOVED`,
-            1,
+            transactionIdentifier,
             refreshTasks,
           ),
         );
@@ -406,7 +406,7 @@ const BulkEditOptionsBar = ({
         bulkEditType: 'COMPLETE',
         taskIdentifiers: allSelectedTasksIdentifiers,
       })
-        .then(() => {
+        .then(({ transactionIdentifier }) => {
           dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
           dispatch(getListDetailsTaskCounters(taskListIdentifier));
 
@@ -415,7 +415,7 @@ const BulkEditOptionsBar = ({
               allSelectedTasksLength > 1
                 ? `${allSelectedTasksLength} TASKS COMPLETED`
                 : `${allSelectedTasksLength} TASK COMPLETED`,
-              3,
+              transactionIdentifier,
               refreshTasks,
             ),
           );
@@ -462,7 +462,7 @@ const BulkEditOptionsBar = ({
             bulkEditType: 'DELETE',
             taskIdentifiers: allSelectedTasksIdentifiers,
           })
-            .then(() => {
+            .then(({ transactionIdentifier }) => {
               dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
               dispatch(
@@ -470,7 +470,7 @@ const BulkEditOptionsBar = ({
                   allSelectedTasksLength > 1
                     ? `${allSelectedTasksLength} TASKS DELETED`
                     : `${allSelectedTasksLength} TASK DELETED`,
-                  4,
+                  transactionIdentifier,
                   refreshTasks,
                 ),
               );

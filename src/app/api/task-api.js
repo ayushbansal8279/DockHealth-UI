@@ -543,4 +543,10 @@ export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
 }
 
 export const bulkEditTasks = bulkEditOption =>
-  axios.put('/task/bulkEdit', bulkEditOption);
+  axios.put('/task/bulkEdit', bulkEditOption).then(({ data }) => data);
+
+export function rollbackTransaction(transactionIdentifier) {
+  return axios
+    .put(`/task/rollbackTransaction/${transactionIdentifier}`)
+    .then(({ data }) => data);
+}
