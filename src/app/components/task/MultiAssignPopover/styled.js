@@ -16,6 +16,7 @@ export const StyledPopover = withStyles({
 
 export const StyledButton = styled.button`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+  text-align: left;
 `;
 
 export const Input = styled.input`
