@@ -760,10 +760,6 @@ export const approveOrDenyInvitation = ({
   decisionType,
   userIdentifier,
 }) =>
-  axios.put('/invite/request/review', null, {
-    params: {
-      requestIdentifier,
-      decisionType,
-      userIdentifier,
-    },
-  });
+  axios.put(
+    `/invite/request/review/${requestIdentifier}/${decisionType}/${userIdentifier}`,
+  );

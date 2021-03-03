@@ -1,7 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import { approveOrDenyInvitation } from 'actions/user-actions';
+import Spacing from 'components/common/Spacing';
+
+const TitleContent = styled(MontserratTypography)`
+  font-size: 36px !important;
+`;
+
+const Container = styled.div`
+  min-width: 500px;
+`;
 
 const getPageContent = decisionType => {
   switch (decisionType) {
@@ -52,12 +63,13 @@ const ApproveDisapproveUser = ({ match }) => {
   const { title, description, RevertOption } = getPageContent(decisionType);
 
   return (
-    <div>
-      <h2>{title}</h2>
-      <div>
+    <Container>
+      <TitleContent>{title}</TitleContent>
+      <Spacing vertical={4} />
+      <MontserratTypography>
         {description('')} <RevertOption />
-      </div>
-    </div>
+      </MontserratTypography>
+    </Container>
   );
 };
 

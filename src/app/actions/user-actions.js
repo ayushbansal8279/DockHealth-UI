@@ -17,20 +17,13 @@ export const approveOrDenyInvitation = ({
   userIdentifier,
   dispatch,
 }) => {
-  // console.log('here');
-  // userApi
-  //   .approveOrDenyInvitation({
-  //     requestIdentifier,
-  //     decisionType,
-  //     userIdentifier,
-  //   })
-  //   .then(() => {
-  //     setAuthBaseState({
-  //       authBaseState: AUTH_BASE_STATES.DAILY_HUB,
-  //     })(dispatch);
-  //   });
-
   setAuthBaseState({
     authBaseState: AUTH_BASE_STATES.APPROVE_DISAPPROVE,
   })(dispatch);
+
+  return userApi.approveOrDenyInvitation({
+    requestIdentifier,
+    decisionType,
+    userIdentifier,
+  });
 };
