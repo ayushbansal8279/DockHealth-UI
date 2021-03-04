@@ -4,6 +4,7 @@ export const AUTH_BASE_STATES = {
   DEFAULT: Symbol('DEFAULT'),
   DAILY_HUB: Symbol('DAILY_HUB'),
   REGAIN_CONTROL: Symbol('REGAIN_CONTROL'),
+  APPROVE_DISAPPROVE: Symbol('APPROVE_DISAPPROVE'),
 };
 
 const initialState = {
