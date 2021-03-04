@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable unicorn/catch-error-name */
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -11,31 +12,32 @@ const TitleContent = styled(MontserratTypography)`
 `;
 
 const Container = styled.div`
-  min-width: 500px;
+  min-width: 550px;
 `;
 
-const getPageContent = decisionType => {
+const getPageContent = (decisionType, userName) => {
   switch (decisionType) {
     case 'APPROVE_MEMBER':
     case 'APPROVE_GUEST': {
       return {
         title: 'Invitation successfully sent.',
-        description: userName =>
-          ` ${userName} has successfully been invited to your organization and will now be part of your organization and subscription. If you denied this person by error you can still`,
-        RevertOption: () => (
-          <Link to="/settings/subscriptions">deny the invite.</Link>
-        ),
+        description: `${userName} has successfully been invited to your organization and will now be part of your organization and subscription. If you denied this person by error you can still`,
+        actionText: 'deny the invite.',
       };
     }
 
     case 'DENY': {
       return {
         title: 'Invitation denied',
-        description: userName =>
-          `You have denied access to inviting ${userName} to your organization. If you denied this person by error you can still accept the invite.`,
-        RevertOption: () => (
-          <Link to="/settings/subscriptions">accept the invite.</Link>
-        ),
+        description: `You have denied access to inviting ${userName} to your organization. If you denied this person by error you can still accept the invite.`,
+        actionText: 'accept the invite.',
+      };
+    }
+
+    case 'ERROR': {
+      return {
+        description: 'If you want to see this invitation, you have to',
+        actionText: 'go to the your organizations subscriptions',
       };
     }
 
@@ -49,6 +51,7 @@ const ApproveDisapproveUser = ({ match }) => {
   const dispatch = useDispatch();
   const { params } = match;
   const { requestIdentifier, decisionType, userIdentifier } = params;
+  const [pageContent, setPageContent] = useState({});
 
   useEffect(() => {
     approveOrDenyInvitation({
@@ -56,18 +59,31 @@ const ApproveDisapproveUser = ({ match }) => {
       decisionType,
       userIdentifier,
       dispatch,
-    });
+    })
+      .then(({ userName }) => {
+        const successPageContent = getPageContent(decisionType, userName);
+
+        setPageContent(successPageContent);
+      })
+      .catch(({ response }) => {
+        const errorPageContent = getPageContent('ERROR');
+
+        setPageContent({
+          ...errorPageContent,
+          title: response?.data?.errorMessage,
+        });
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { title, description, RevertOption } = getPageContent(decisionType);
+  const { title, description, actionText } = pageContent;
 
   return (
     <Container>
       <TitleContent>{title}</TitleContent>
       <Spacing vertical={4} />
       <MontserratTypography>
-        {description('')} <RevertOption />
+        {description} <Link to="/settings/subscriptions">{actionText}</Link>
       </MontserratTypography>
     </Container>
   );
