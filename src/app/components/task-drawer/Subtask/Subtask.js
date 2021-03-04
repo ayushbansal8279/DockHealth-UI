@@ -10,7 +10,7 @@ import {
   storeAsCurrentTask,
   toggleCompleteTask,
   updateDueDate,
-  saveTask,
+  partialUpdateTask,
 } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
@@ -87,17 +87,16 @@ const Subtask = ({ subtask, currentUser }) => {
 
   const handleReassignSubtask = useCallback(
     selectedMembers => {
-      console.log('members', selectedMembers);
       dispatch(
-        saveTask({
-          ...subtask,
+        partialUpdateTask(subtask.taskIdentifier, {
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+          assignedBy: selectedMembers?.length ? currentUser : null,
         }),
       );
       // assignOrReassignTask(task, selectedMember?.userIdentifier)(dispatch);
     },
-    [dispatch, subtask],
+    [currentUser, dispatch, subtask.taskIdentifier],
   );
 
   const handleCommentIconClick = () => {

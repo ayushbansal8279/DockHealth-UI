@@ -3,7 +3,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import moment from 'moment';
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { pluck } from 'ramda';
 import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,11 +13,11 @@ import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import {
   saveTask,
+  partialUpdateTask,
   storeAsCurrentTask,
   moveTask,
   deleteTask,
   duplicateTask,
-  updatePatient,
   updateTaskDescription,
   prepareSubtask,
   markTaskRead,
@@ -395,26 +394,6 @@ const initializeTaskDrawerHooks = ({
     return saveTask(taskToCreate)(dispatch);
   };
 
-  const handlePatientSave = useCallback(
-    async patient => {
-      const updatedTask = await updatePatient(
-        !isAddingOrEditingSubtask ? selectedTask : selectedParentTask,
-        patient,
-      )(dispatch);
-      setAutoSaveVisible();
-      onTaskUpdate(updatedTask);
-      return updatedTask;
-    },
-    [
-      dispatch,
-      isAddingOrEditingSubtask,
-      onTaskUpdate,
-      selectedParentTask,
-      selectedTask,
-      setAutoSaveVisible,
-    ],
-  );
-
   const handleTaskDescriptionUpdate = async () => {
     const updatedTaskDescription = convertFromEditorStateToOutput(
       descriptionState,
@@ -513,24 +492,14 @@ const initializeTaskDrawerHooks = ({
   );
 
   const handleUpdateTask = useCallback(
-    async updatedData => {
+    async updatedTaskData => {
       const updatedTask = await dispatch(
-        saveTask({
-          ...selectedTask,
-          ...updatedData,
-          patientIdentifier:
-            updatedData?.patientIdentifier ||
-            selectedTask?.patient?.patientIdentifier,
-          assignedToIdentifiers: pluck(
-            'userIdentifier',
-            updatedData?.assignedToUsers || selectedTask?.assignedToUsers || [],
-          ),
-        }),
+        partialUpdateTask(selectedTaskIdentifier, updatedTaskData),
       );
       onTaskUpdate(updatedTask);
       setAutoSaveVisible();
     },
-    [dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible],
+    [dispatch, onTaskUpdate, selectedTaskIdentifier, setAutoSaveVisible],
   );
 
   return {
@@ -580,7 +549,6 @@ const initializeTaskDrawerHooks = ({
     handleDueDateSave,
     handleDueTimeSave,
     clearDueDate,
-    handlePatientSave,
   };
 };
 

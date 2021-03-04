@@ -132,9 +132,10 @@ export const updateDashboardSelectedFilters = selectedFilters => ({
   },
 });
 
-export const updateDashboardTask = updatedTask => ({
+export const updateDashboardTask = (taskIdentifier, dataToUpdate) => ({
   type: DO_UPDATE_DASHBOARD_TASK,
-  updatedTask,
+  taskIdentifier,
+  dataToUpdate,
 });
 
 export const fetchImplicitGroup = (group, fetchMore) => ({
@@ -527,10 +528,13 @@ function* doUpdateDashboardSelectedFilters({ payload }) {
   yield put(reloadDashboardTasks());
 }
 
-function* doUpdateDashboardTask({ updatedTask }) {
+function* doUpdateDashboardTask({ taskIdentifier, dataToUpdate }) {
   try {
-    yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
-    yield call(TaskApi.updateTask, updatedTask);
+    yield put({
+      type: UPDATE_TASK_SUCCESS,
+      task: { ...dataToUpdate, taskIdentifier },
+    });
+    yield call(TaskApi.partialUpdateTask, taskIdentifier, dataToUpdate);
     yield call(doReloadDashboardTasks);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {

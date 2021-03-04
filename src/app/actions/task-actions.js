@@ -188,6 +188,32 @@ export function saveTask(newTask, shouldReloadGroups = false) {
   };
 }
 
+export function partialUpdateTask(taskIdentifier, dataToUpdate) {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: {
+        ...dataToUpdate,
+        taskIdentifier,
+      },
+    });
+    return (
+      TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .then(task => {
+          dispatch({
+            type: ActionTypes.UPDATE_TASK_SUCCESS,
+            task,
+          });
+          return task;
+        })
+        .catch(error => {
+          throw error;
+        })
+    );
+  };
+}
+
 export const moveTask = (
   task,
   taskList,
