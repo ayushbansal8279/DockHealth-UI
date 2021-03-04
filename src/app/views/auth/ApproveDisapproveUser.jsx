@@ -37,12 +37,12 @@ const getPageContent = (decisionType, userName) => {
     case 'ERROR': {
       return {
         description: 'If you want to see this invitation, you have to',
-        actionText: 'go to the your organizations subscriptions',
+        actionText: 'go to the your organization subscriptions',
       };
     }
 
     default: {
-      return { title: '', description: () => {}, revertOption: () => {} };
+      return { title: '', description: '', actionText: '' };
     }
   }
 };
@@ -60,8 +60,8 @@ const ApproveDisapproveUser = ({ match }) => {
       userIdentifier,
       dispatch,
     })
-      .then(({ userName }) => {
-        const successPageContent = getPageContent(decisionType, userName);
+      .then(({ data }) => {
+        const successPageContent = getPageContent(decisionType, data?.userName);
 
         setPageContent(successPageContent);
       })
