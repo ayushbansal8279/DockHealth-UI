@@ -94,7 +94,6 @@ const TaskDrawer = ({
     setParentDescriptionState,
     taskDrawerReference,
     taskListIdentifier,
-    handlePatientSave,
     handleUpdateTask,
     handleDueTimeSave,
     handleDueDateSave,
@@ -302,11 +301,12 @@ const TaskDrawer = ({
                   currentOrganization={currentOrganization}
                   disabled={disabledFileds.includes(DrawerFieldEnum.PATIENT)}
                   autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
-                  onPatientSave={handlePatientSave}
+                  onSave={handleUpdateTask}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <AssignedToSection
+                  currentUser={currentUser}
                   assignedToUsers={selectedTask?.assignedToUsers}
                   taskListIdentifier={taskListIdentifier}
                   onSave={handleUpdateTask}

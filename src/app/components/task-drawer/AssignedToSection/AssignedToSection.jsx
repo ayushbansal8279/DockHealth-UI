@@ -9,6 +9,7 @@ import TextInput from '../TextInput/TextInput';
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
 
 const AssignedToSection = ({
+  currentUser,
   assignedToUsers,
   taskListIdentifier = null,
   onSave,
@@ -42,7 +43,9 @@ const AssignedToSection = ({
   const handleClearAssignedToUsers = useCallback(() => {
     setValue(ASSIGNED_TO_USERS_FIELD_NAME, []);
     onSave({
+      assignedBy: null,
       assignedToUsers: [],
+      assignedToIdentifiers: [],
     });
   }, [setValue, onSave]);
 
@@ -50,10 +53,12 @@ const AssignedToSection = ({
     selectedMembers => {
       setValue(ASSIGNED_TO_USERS_FIELD_NAME, selectedMembers);
       onSave({
+        assignedBy: selectedMembers?.length ? currentUser : null,
         assignedToUsers: selectedMembers,
+        assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
       });
     },
-    [onSave, setValue],
+    [currentUser, onSave, setValue],
   );
 
   return (

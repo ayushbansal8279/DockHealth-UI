@@ -109,9 +109,14 @@ export function updateTask(task) {
     })
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
+    });
+}
+
+export function partialUpdateTask(taskIdentifier, dataToUpdate) {
+  return axios
+    .patch(`task/${taskIdentifier}`, dataToUpdate)
+    .then(({ data }) => {
+      return data;
     });
 }
 

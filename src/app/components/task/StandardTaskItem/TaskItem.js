@@ -430,16 +430,13 @@ const TaskItem = ({
 
   const handleReasignTask = useCallback(
     selectedMembers => {
-      onTaskUpdate({
-        ...task,
+      onTaskUpdate(taskIdentifier, {
         assignedToUsers: selectedMembers,
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
         assignedBy: selectedMembers?.length ? currentUser : null,
-        // TODO: remove after changing update to patch
-        patientIdentifier: task.patient?.patientIdentifier || null,
       });
     },
-    [currentUser, onTaskUpdate, task],
+    [currentUser, onTaskUpdate, taskIdentifier],
   );
 
   const showDraggableDots =
@@ -681,7 +678,7 @@ const TaskItem = ({
                     type="labels"
                     isHovered={isHovered}
                     isActive={labels?.length > 0}
-                    isNew={task.updatedlabel}
+                    isNew={task.updatedLabel}
                     onClick={onLabelClick}
                   />
                 </Tooltip>

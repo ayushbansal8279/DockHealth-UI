@@ -502,10 +502,10 @@ class Home extends Component {
     }
   };
 
-  handleTaskUpdate = updatedTask => {
+  handleTaskUpdate = (taskIdentifier, dataToUpdate) => {
     const { actions } = this.props;
     actions
-      .saveTask(updatedTask)
+      .partialUpdateTask(taskIdentifier, dataToUpdate)
       .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };

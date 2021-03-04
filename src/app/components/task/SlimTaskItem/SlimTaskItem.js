@@ -192,6 +192,7 @@ const SlimTaskItem = ({
   updateWorkflowStatus,
 }) => {
   const {
+    taskIdentifier,
     assignedToUsers,
     description,
     tokenizedDescription,
@@ -267,16 +268,13 @@ const SlimTaskItem = ({
 
   const handleReasignTask = useCallback(
     selectedMembers => {
-      onTaskUpdate({
-        ...task,
+      onTaskUpdate(taskIdentifier, {
         assignedToUsers: selectedMembers,
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
         assignedBy: selectedMembers?.length ? currentUser : null,
-        // TODO: remove after changing update to patch
-        patientIdentifier: task.patient?.patientIdentifier || null,
       });
     },
-    [currentUser, onTaskUpdate, task],
+    [currentUser, onTaskUpdate, taskIdentifier],
   );
 
   return (

@@ -124,10 +124,11 @@ export const updatePatientTaskWorkflowStatus = (task, workflowStatus) => ({
   },
 });
 
-export const updatePatientTaskInList = task => ({
+export const updatePatientTaskInList = (taskIdentifier, dataToUpdate) => ({
   type: DO_UPDATE_PATIENT_TASK,
   payload: {
-    task,
+    taskIdentifier,
+    dataToUpdate,
   },
 });
 
@@ -400,11 +401,11 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
 }
 
 function* doUpdatePatientTaskInList({ payload }) {
-  const { task } = payload;
+  const { taskIdentifier, dataToUpdate } = payload;
 
   try {
-    yield put(updateTaskData(task?.taskIdentifier, task));
-    yield call(TaskApi.updateTask, task);
+    yield put(updateTaskData(taskIdentifier, dataToUpdate));
+    yield call(TaskApi.partialUpdateTask, taskIdentifier, dataToUpdate);
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
       put(fetchStatsForPatientTasks()),

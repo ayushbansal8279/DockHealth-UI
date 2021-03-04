@@ -426,10 +426,10 @@ class PersonDetailsView extends PureComponent {
     }
   };
 
-  handleTaskUpdate = updatedTask => {
+  handleTaskUpdate = (taskIdentifier, dataToUpdate) => {
     const { taskActions } = this.props;
     taskActions
-      .saveTask(updatedTask)
+      .partialUpdateTask(taskIdentifier, dataToUpdate)
       .then(this.refreshTabAfterTaskUpdate)
       .catch(() => this.refreshTab());
   };

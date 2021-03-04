@@ -16,7 +16,7 @@ const PatientSection = ({
   currentOrganization,
   autofocus,
   disabled,
-  onPatientSave,
+  onSave,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -55,9 +55,9 @@ const PatientSection = ({
   const savePatient = useCallback(
     async patientToSave => {
       try {
-        await onPatientSave({
+        await onSave({
           patient: patientToSave,
-          patientIdentifier: patientToSave?.patientIdentifier || null,
+          patientIdentifier: patientToSave?.patientIdentifier || 'UNASSIGNED',
         });
       } catch {
         dispatch(
@@ -68,7 +68,7 @@ const PatientSection = ({
         );
       }
     },
-    [dispatch, onPatientSave],
+    [dispatch, onSave],
   );
 
   const fetchPatients = useCallback(
@@ -112,9 +112,14 @@ const PatientSection = ({
 
   const handlePatientSelect = useCallback(
     async selectedOption => {
+      const [lastName, names] = selectedOption.displayLabel.split(', ');
+      const [firstName, middleName] = names.split(' ');
       const patient = {
         patientIdentifier: selectedOption.value,
         patientName: selectedOption.displayLabel,
+        lastName,
+        firstName,
+        middleName: middleName || '',
       };
       setValue(PATIENT_IDENTIFIER_FIELD_NAME, patient?.patientIdentifier);
       savePatient(patient);

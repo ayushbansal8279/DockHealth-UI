@@ -44,6 +44,7 @@ export const ChipText = styled.p`
   font-size: 1rem;
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.white};
+  text-transform: uppercase;
 `;
 
 export const UndoButtonContent = styled.div`
