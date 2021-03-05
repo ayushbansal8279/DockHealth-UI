@@ -477,7 +477,11 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
               const subtasks = task?.subtasks?.filter(
                 subtask => !tasksToDelete?.includes(subtask?.taskIdentifier),
               );
-              return { ...task, subtasks };
+              return {
+                ...task,
+                subtasks,
+                subTasksCount: subtasks?.length || 0,
+              };
             }
 
             return task;
