@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 export const DashboardColumnKey = {
+  DESCRIPTION: 'DESCRIPTION',
   DUE_DATE: 'DUE_DATE',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
   PATIENT: 'PATIENT',
@@ -8,6 +9,7 @@ export const DashboardColumnKey = {
 };
 
 export const DashboardKeyPropertyName = {
+  DESCRIPTION: 'description',
   DUE_DATE: 'dueDate',
   WORKFLOW_STATUS: 'workflowStatus',
   PATIENT: 'patient',

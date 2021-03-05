@@ -80,6 +80,9 @@ import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeleto
 import { DashboardColumnKey } from '../config';
 
 const SORT_METHODS = {
+  [DashboardColumnKey.DESCRIPTION]: sortWith([
+    ascend(pipe(prop('description'), defaultTo('~'), toLower)),
+  ]),
   [DashboardColumnKey.DUE_DATE]: sortWith([
     ascend(pipe(prop('dueDate'), defaultTo('~'))),
   ]),
@@ -108,6 +111,9 @@ const SORT_METHODS = {
 };
 
 const SORT_DESC_METHODS = {
+  [DashboardColumnKey.DESCRIPTION]: sortWith([
+    descend(pipe(prop('description'), defaultTo(' '), toLower)),
+  ]),
   [DashboardColumnKey.DUE_DATE]: sortWith([
     descend(pipe(prop('dueDate'), defaultTo(' '))),
   ]),
