@@ -206,7 +206,12 @@ const DashboardTasksGroup = ({
           <DashboardTasksGroupList>
             <DashboardSortBar>
               <DashboardSortBarLabelName>
-                <div>Tasks</div>
+                <DashboardColumnSortHeader
+                  id="DESCRIPTION"
+                  label="Task"
+                  sort={currentSort}
+                  onSortChange={onSortChange}
+                />
               </DashboardSortBarLabelName>
               <DashboardSortBarLabelName
                 {...gridConfig.dynamicColumn[dynamicColumnType]}
