@@ -234,6 +234,7 @@ const Subtask = ({ subtask, currentUser }) => {
       </DueDateContainer>
       <AssigneeContainer>
         <MultiAssignPopover
+          fullWidth
           placement="top"
           taskListIdentifiers={taskList?.taskListIdentifier}
           selectedMembers={assignedToUsers}

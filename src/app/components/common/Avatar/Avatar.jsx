@@ -15,13 +15,13 @@ const Avatar = React.forwardRef(
     {
       children,
       size,
-      showOnlineIndicator,
       isOnline,
       isOffline,
       isIdle,
-      color = palette.midnightBlue,
-      padded = true,
       isInactive,
+      padded = true,
+      color = palette.midnightBlue,
+      showOnlineIndicator = true,
       ...props
     },
     reference,
