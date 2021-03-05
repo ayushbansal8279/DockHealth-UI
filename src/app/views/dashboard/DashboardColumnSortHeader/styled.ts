@@ -9,4 +9,5 @@ export const SortHeaderButton = styled.button`
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
+  line-height: inherit;
 `;
