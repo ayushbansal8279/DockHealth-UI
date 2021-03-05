@@ -49,7 +49,6 @@ const Member = React.forwardRef(
         return userIdentifier === member?.userIdentifier;
       }) || {};
 
-    const currentUserIdentifier = sessionStorage.getItem('userIdentifier');
     const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
     const isIdle = !isEmpty(onlineActiveUser) && onlineActiveUser.idle;
     const isOffline =
@@ -80,9 +79,6 @@ const Member = React.forwardRef(
             color={color || member?.bubbleColor}
             className={className}
             isInactive={isInactive || isInvited}
-            showOnlineIndicator={
-              currentUserIdentifier !== member?.userIdentifier
-            }
             isOnline={isOnline}
             isIdle={isIdle}
             isOffline={isOffline}

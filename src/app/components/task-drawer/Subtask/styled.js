@@ -67,7 +67,7 @@ export const DescriptionContainer = styled.div`
 
 export const AssigneeContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-basis: 90px;
   margin: 0 ${spacing.smallPlus};
