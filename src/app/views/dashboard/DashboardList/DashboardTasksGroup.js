@@ -15,6 +15,8 @@ import {
   DashboardTasksGroupLabelName,
   DashboardTasksGroupList,
   DroppableBox,
+  DashboardSortBar,
+  DashboardSortBarLabelName,
 } from './styled';
 import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
 import { DashboardColumnKey } from '../config';
@@ -197,45 +199,50 @@ const DashboardTasksGroup = ({
             </span>
           </Arrow>
         </DashboardTasksGroupLabelName>
-        <DashboardTasksGroupLabelName
-          {...gridConfig.dynamicColumn[dynamicColumnType]}
-        >
-          {groupIsOpen && (
-            <DashboardColumnSortHeader
-              id={dynamicColumn.id}
-              label={dynamicColumn.label}
-              sort={currentSort}
-              onSortChange={onSortChange}
-            />
-          )}
-        </DashboardTasksGroupLabelName>
-        {isAllTasksTab && (
-          <DashboardTasksGroupLabelName {...gridConfig.assignedPerson}>
-            {groupIsOpen && (
-              <DashboardColumnSortHeader
-                id="ASSIGNED"
-                label="Assign"
-                sort={currentSort}
-                onSortChange={onSortChange}
-              />
-            )}
-          </DashboardTasksGroupLabelName>
-        )}
-        <DashboardTasksGroupLabelName {...gridConfig.listName}>
-          {groupIsOpen && (
-            <DashboardColumnSortHeader
-              id="LIST_NAME"
-              label="List"
-              sort={currentSort}
-              onSortChange={onSortChange}
-            />
-          )}
-        </DashboardTasksGroupLabelName>
       </DashboardTasksGroupLabel>
       {isLoadingGroup && <DashboardSingleSkeletonLoader rows={4} />}
       {!isLoadingGroup && (
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
+            <DashboardSortBar>
+              <DashboardSortBarLabelName>
+                <div>Tasks</div>
+              </DashboardSortBarLabelName>
+              <DashboardSortBarLabelName
+                {...gridConfig.dynamicColumn[dynamicColumnType]}
+              >
+                {groupIsOpen && (
+                  <DashboardColumnSortHeader
+                    id={dynamicColumn.id}
+                    label={dynamicColumn.label}
+                    sort={currentSort}
+                    onSortChange={onSortChange}
+                  />
+                )}
+              </DashboardSortBarLabelName>
+              {isAllTasksTab && (
+                <DashboardSortBarLabelName {...gridConfig.assignedPerson}>
+                  {groupIsOpen && (
+                    <DashboardColumnSortHeader
+                      id="ASSIGNED"
+                      label="Assign"
+                      sort={currentSort}
+                      onSortChange={onSortChange}
+                    />
+                  )}
+                </DashboardSortBarLabelName>
+              )}
+              <DashboardSortBarLabelName {...gridConfig.listName}>
+                {groupIsOpen && (
+                  <DashboardColumnSortHeader
+                    id="LIST_NAME"
+                    label="List"
+                    sort={currentSort}
+                    onSortChange={onSortChange}
+                  />
+                )}
+              </DashboardSortBarLabelName>
+            </DashboardSortBar>
             <DragDropContext
               onBeforeDragStart={showClearSortFiltersModal}
               onDragEnd={({ destination, source }) => {

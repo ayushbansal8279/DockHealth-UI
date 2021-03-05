@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
-import { withStyles } from '@material-ui/core/styles';
-import { Grid, Switch } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 export const ToolbarContainer = styled(Grid)`
   position: relative;
@@ -81,16 +80,46 @@ export const DashboardTasksGroupLabelName = styled.div`
   color: ${palette.mediumGrey};
 `;
 
+export const DashboardSortBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  font-size: ${fontWeights.regular};
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.regularPlus};
+  padding: ${spacing.small} {spacing.tiny};
+  border: 1px solid ${palette.coolGrey3};
+  margin-bottom: 3px;
+`;
+
+export const DashboardSortBarLabelName = styled.div`
+  position: relative;
+  flex: ${({ width }) => (width ? `${width} 0 0` : '1')};
+  padding: ${spacing.tiny} ${spacing.regular};
+  height: 35px;
+  overflow: visible;
+  text-align: left;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.mediumGrey};
+  display: flex;
+  align-items: center;
+
+  &:nth-of-type(1) {
+    padding-left: 48px;
+  }
+`;
+
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: ${spacing.large};
+  margin-top: ${spacing.small};
   margin-left: 55px;
   margin-right: 55px;
 `;
 
 export const DroppableBox = styled.div`
-  // background-color: ${palette.coolGrey3};
   border-radius: 4px;
 `;
 

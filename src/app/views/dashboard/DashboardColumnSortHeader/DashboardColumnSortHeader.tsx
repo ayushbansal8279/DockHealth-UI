@@ -60,7 +60,7 @@ const DashboardColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
         />
       )}
       <Box m={0.5} />
-      {label}
+      <div>{label}</div>
     </SortHeaderButton>
   );
 };
