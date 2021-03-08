@@ -18,7 +18,6 @@ export const ListSwitchContainer = styled.div<
   width: 10px;
 
   & svg {
-    height: 100%;
     object-fit: contain;
     width: 100%;
   }
@@ -28,7 +27,6 @@ export const RotatableChevronContainer = styled.div`
   align-self: center;
   align-items: center;
   display: flex;
-  height: 100%;
   justify-content: center;
   min-width: 2rem;
   width: 2rem;
@@ -42,7 +40,6 @@ export const HeaderChevronContainer = styled(RotatableChevronContainer)`
   width: 3rem;
 
   & ${ListSwitchContainer} {
-    height: 100%;
     width: 100%;
   }
 `;
