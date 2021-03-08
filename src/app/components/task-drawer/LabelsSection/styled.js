@@ -34,7 +34,7 @@ export const OptionButtonsInput = styled.input`
   border: 0;
   padding: 0;
   outline: none;
-  width: fit-content;
+  width: 550px;
   background-color: transparent;
   cursor: pointer;
   color: ${palette.mediumGrey};
