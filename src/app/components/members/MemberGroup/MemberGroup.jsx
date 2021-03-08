@@ -1,17 +1,33 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Member from 'components/members/Member/Member';
 import { arrayOf, number, shape, string } from 'prop-types';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { GroupContainer, GroupItem } from './styled';
 import AdditionalMembersCounter from '../AdditionalMembersCounter/AdditionalMembersCounter';
 
 const MemberGroup = ({ members, max, size }) => {
+  const currentUser = useSelector(userProfileSelector);
+
+  const sortedMembers = useMemo(
+    () =>
+      members.slice().sort((a, b) => {
+        if (a?.userIdentifier === currentUser?.userIdentifier) return -1;
+
+        if (b?.userIdentifier === currentUser?.userIdentifier) return 1;
+
+        return a?.lastName?.localeCompare(b?.lastName);
+      }),
+    [members, currentUser],
+  );
+
   const [shownMembers, hiddenMembers] = useMemo(
     () =>
-      members?.length > max
-        ? [members.slice(0, max - 1), members.slice(max - 1)]
-        : [members, null],
+      sortedMembers?.length > max
+        ? [sortedMembers.slice(0, max - 1), sortedMembers.slice(max - 1)]
+        : [sortedMembers, null],
 
-    [max, members],
+    [max, sortedMembers],
   );
 
   return (
