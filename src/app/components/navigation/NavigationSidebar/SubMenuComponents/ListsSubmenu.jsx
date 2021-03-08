@@ -29,6 +29,7 @@ import {
   DrawerListsItemNewLabel,
   DrawerListsNewLabel,
   ListNameText,
+  UpdatesForMemberIndicator,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -217,6 +218,7 @@ const ListsSubmenu = () => {
                 : `drawer-menu-list-item`
             }
           >
+            {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
             <ListNameText
               isActive={activeTaskListIdentifier === list?.taskListIdentifier}
               onMouseEnter={event => handleMouseEnter(event, list?.listName)}

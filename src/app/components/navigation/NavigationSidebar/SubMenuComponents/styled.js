@@ -245,7 +245,7 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-  padding-bottom: 10px;
+  margin-bottom: 10px;
 `;
 
 export const DrawerListsItemNewLabel = styled.div`
@@ -284,4 +284,15 @@ export const ListNameText = styled.div`
             cursor: pointer;
           }
         `}
+`;
+
+export const UpdatesForMemberIndicator = styled.div`
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: ${palette.brightBlue};
 `;
