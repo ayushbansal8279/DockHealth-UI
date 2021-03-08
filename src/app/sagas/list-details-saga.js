@@ -223,9 +223,6 @@ function* doGetGroupedTasks({ payload }) {
         sort,
         0,
       );
-      yield put(
-        MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
-      );
     } else {
       groupedTasks = yield call(
         getFilteredTasksForList,
@@ -537,6 +534,9 @@ function* doOnEnterListDetails() {
         status === TaskStatus.INCOMPLETE &&
           call(doGetTasksGroupsList, { taskListIdentifier }),
         put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
+        yield put(
+          MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
+        ),
         put(
           ListDetailsActions.getListDetailsGroupedTasks({
             taskListIdentifier,
@@ -674,6 +674,11 @@ function* doFilterListDetailsTasks({ payload }) {
     tabName?.toLowerCase() === 'complete'
       ? TaskStatus.COMPLETE
       : TaskStatus.INCOMPLETE;
+
+  if (!filters || isEmpty(filters))
+    yield put(
+      MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
+    );
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
