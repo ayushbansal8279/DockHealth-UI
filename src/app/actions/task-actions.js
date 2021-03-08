@@ -708,50 +708,6 @@ export function reassignTask(taskIdentifier, userId) {
       });
 }
 
-export function getFilteredTasksForList(
-  taskListIdentifier,
-  status,
-  sortBy,
-  selectedFilters,
-  withLoader = true,
-) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
-
-  return dispatch => {
-    if (withLoader) {
-      dispatch({
-        type:
-          status === 'INCOMPLETE'
-            ? ActionTypes.REQUEST_TASKS
-            : ActionTypes.REQUEST_COMPLETED_TASKS,
-      });
-    }
-
-    return TaskApi.getFilteredTasksForList(
-      taskListIdentifier,
-      status,
-      sortBy,
-      selectedFilters,
-    )
-      .then(groupedTasks => {
-        dispatch({ type: action, groupedTasks });
-        if (groupedTasks.taskFilterOptions) {
-          dispatch({
-            type: ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS,
-            filters: groupedTasks.taskFilterOptions,
-          });
-        }
-        return groupedTasks;
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-}
-
 export function markTaskRead(task) {
   return dispatch =>
     TaskApi.flagUnread(task?.taskIdentifier, false)
