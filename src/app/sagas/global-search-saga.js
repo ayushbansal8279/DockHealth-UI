@@ -131,8 +131,12 @@ function* doRefreshTasks() {
 }
 
 function* doSearchTasks() {
-  yield put(GlobalSearchActions.requestGlobalSearch());
-  yield call(doRefreshTasks);
+  try {
+    yield put(GlobalSearchActions.requestGlobalSearch());
+    yield call(doRefreshTasks);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doGetMoreTasksForTaskList({ payload }) {
@@ -168,25 +172,37 @@ function* doGetMoreTasksForTaskList({ payload }) {
 function* doSetSearchValue({ payload }) {
   const { value } = payload;
 
-  yield put(GlobalSearchActions.setSearchValue(value));
-  yield put(searchTasks());
+  try {
+    yield put(GlobalSearchActions.setSearchValue(value));
+    yield put(searchTasks());
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doClearSearchValue() {
-  yield put(GlobalSearchActions.setSearchValue(''));
-  yield put(searchTasks());
+  try {
+    yield put(GlobalSearchActions.setSearchValue(''));
+    yield put(searchTasks());
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doSetSearchCompletedTasks({ payload }) {
-  const { isSearchingCompletedTasks } = payload;
+  try {
+    const { isSearchingCompletedTasks } = payload;
 
-  if (isSearchingCompletedTasks) {
-    yield put(GlobalSearchActions.searchCompletedTasks());
-  } else {
-    yield put(GlobalSearchActions.searchIncompletedTasks());
+    if (isSearchingCompletedTasks) {
+      yield put(GlobalSearchActions.searchCompletedTasks());
+    } else {
+      yield put(GlobalSearchActions.searchIncompletedTasks());
+    }
+
+    yield put(searchTasks());
+  } catch (error) {
+    console.log(error);
   }
-
-  yield put(searchTasks());
 }
 
 function* doToggleTaskCompleteStatus({ payload }) {

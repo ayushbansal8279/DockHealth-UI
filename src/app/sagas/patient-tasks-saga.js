@@ -449,34 +449,49 @@ function* doQuickAddPatientTask({ payload }) {
 }
 
 function* doUpdatePatientTasksFilters({ payload }) {
-  const { selectedFilters } = payload;
-  const { patientIdentifier } = yield select(locationParametersSelector);
-  const activeTab = yield select(patientTaskListsActiveTabSelector);
-  const status =
-    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+  try {
+    const { selectedFilters } = payload;
+    const { patientIdentifier } = yield select(locationParametersSelector);
+    const activeTab = yield select(patientTaskListsActiveTabSelector);
+    const status =
+      activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
-  yield put(
-    MegaFilterActions.selectFiltersForMegaFilter(
-      selectedFilters,
-      patientIdentifier,
-      status,
-    ),
-  );
-  yield put(refreshPatientTasks({ withLoader: true }));
+    yield put(
+      MegaFilterActions.selectFiltersForMegaFilter(
+        selectedFilters,
+        patientIdentifier,
+        status,
+      ),
+    );
+    yield put(refreshPatientTasks({ withLoader: true }));
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doInitializeSavedFiltersForPatient() {
-  const { patientIdentifier } = yield select(locationParametersSelector);
-  const activeTab = yield select(patientTaskListsActiveTabSelector);
-  const status =
-    activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-  yield put(
-    MegaFilterActions.selectFiltersFromLocalStorage(patientIdentifier, status),
-  );
+  try {
+    const { patientIdentifier } = yield select(locationParametersSelector);
+    const activeTab = yield select(patientTaskListsActiveTabSelector);
+    const status =
+      activeTab === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+    yield put(
+      MegaFilterActions.selectFiltersFromLocalStorage(
+        patientIdentifier,
+        status,
+      ),
+    );
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doSetPatientTaskSearch({ payload }) {
-  yield put({ type: SET_PATIENT_TASK_SEARCH_VALUE, payload });
+  try {
+    yield put({ type: SET_PATIENT_TASK_SEARCH_VALUE, payload });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doInviteUserToTaskList({ payload }) {
@@ -540,16 +555,20 @@ function* doChangeMemberRole({ payload }) {
 }
 
 function* doSortPatientTasks({ payload }) {
-  const { key, order } = payload;
+  try {
+    const { key, order } = payload;
 
-  yield put({
-    type: SORT_PATIENT_TASKS,
-    payload: {
-      key: order ? key : null,
-      order,
-    },
-  });
-  yield put(refreshPatientTasks({ withLoader: true }));
+    yield put({
+      type: SORT_PATIENT_TASKS,
+      payload: {
+        key: order ? key : null,
+        order,
+      },
+    });
+    yield put(refreshPatientTasks({ withLoader: true }));
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default function* watchPatientTasks() {
