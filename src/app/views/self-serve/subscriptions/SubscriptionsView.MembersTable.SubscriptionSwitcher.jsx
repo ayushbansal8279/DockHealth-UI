@@ -6,7 +6,6 @@ import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   MediumGreyLabelContainer,
-  SwitcherChevronContainer,
   SwitcherContainer,
 } from './SubscriptionsView.MembersTable.Styled';
 
@@ -39,12 +38,12 @@ const SubscriptionStatusSwitcher = ({
               ''}
           </MediumGreyLabelContainer>
         </MontserratTypography>
-        <SwitcherChevronContainer ref={switcherContainerReference}>
+        <div ref={switcherContainerReference}>
           <RotatableChevronWithSpacing
             rotated={isDropdownOpen}
             color={palette.brightBlue}
           />
-        </SwitcherChevronContainer>
+        </div>
       </SwitcherContainer>
       <ListPopover
         anchorEl={switcherContainerReference.current}

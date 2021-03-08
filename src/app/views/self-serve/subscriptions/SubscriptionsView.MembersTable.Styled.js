@@ -45,10 +45,6 @@ export const SwitcherContainer = styled.div`
   width: 100%;
 `;
 
-export const SwitcherChevronContainer = styled.div`
-  height: 100%;
-`;
-
 export const MediumGreyLabelContainer = styled.span`
   color: ${palette.coolGrey1};
 `;
