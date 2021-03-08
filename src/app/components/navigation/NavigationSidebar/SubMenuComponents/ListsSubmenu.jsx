@@ -66,10 +66,8 @@ const ListsSubmenu = () => {
   ]);
 
   useEffect(() => {
-    if (lists?.length === 0) {
-      dispatch(TaskListActions.getTaskListForUser());
-      dispatch(TaskListActions.getPendingTaskListsForUser());
-    }
+    dispatch(TaskListActions.getTaskListForUser());
+    dispatch(TaskListActions.getPendingTaskListsForUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
