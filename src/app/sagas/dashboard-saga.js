@@ -73,6 +73,7 @@ const DO_FETCH_SEARCHED_TERM_FOR_IMPLICIT_GROUPS =
 export const initializeDashboardView = () => ({
   type: INITIALIZE_DASHBOARD_VIEW,
 });
+
 export const reloadDashboardTasks = () => ({ type: RELOAD_DASHBOARD_TASKS });
 export const redirectToParentTask = (
   taskListIdentifier,
@@ -470,11 +471,15 @@ function* doSortDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
 }
 
 function* doInitializeDashboardView() {
-  yield put(MegaFilterActions.clearFiltersForMegaFilter());
-  yield put({ type: REQUEST_DASHBOARD_TASKS });
-  yield put({ type: REQUEST_DASHBOARD_STATISTICS });
-  yield doFetchDashboardFilters();
-  yield put(reloadDashboardTasks());
+  try {
+    yield put(MegaFilterActions.clearFiltersForMegaFilter());
+    yield put({ type: REQUEST_DASHBOARD_TASKS });
+    yield put({ type: REQUEST_DASHBOARD_STATISTICS });
+    yield doFetchDashboardFilters();
+    yield put(reloadDashboardTasks());
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doQuickAddDahboardTask({ payload }) {

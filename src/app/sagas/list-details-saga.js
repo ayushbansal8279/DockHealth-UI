@@ -106,9 +106,8 @@ export const createTask = payload => ({
   ...payload,
 });
 
-export const onEnterListDetails = payload => ({
+export const onEnterListDetails = () => ({
   type: DO_ON_ENTER_LIST_DETAILS,
-  ...payload,
 });
 
 export const getTasksForTaskGroups = payload => ({
@@ -149,17 +148,21 @@ function processTaskCountersSuccess(countersData) {
 }
 
 function* doGetListDetailsCounters({ payload }) {
-  const { taskListIdentifier } = payload;
+  try {
+    const { taskListIdentifier } = payload;
 
-  const responseData = yield call(
-    ListDetailsApi.getTaskStatsForList,
-    taskListIdentifier,
-  );
+    const responseData = yield call(
+      ListDetailsApi.getTaskStatsForList,
+      taskListIdentifier,
+    );
 
-  yield put({
-    type: ActionTypes.LIST_DETAILS_TASK_COUNTERS_SUCCESS,
-    payload: processTaskCountersSuccess(responseData),
-  });
+    yield put({
+      type: ActionTypes.LIST_DETAILS_TASK_COUNTERS_SUCCESS,
+      payload: processTaskCountersSuccess(responseData),
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doGetTasksGroupsList(payload) {
@@ -244,23 +247,27 @@ function* doGetGroupedTasks({ payload }) {
 }
 
 function* doRefreshGroupedTasks({ payload }) {
-  const { withLoader = true } = payload || {};
-  const { taskListIdentifier, tabName } = yield select(
-    locationParametersSelector,
-  );
+  try {
+    const { withLoader = true } = payload || {};
+    const { taskListIdentifier, tabName } = yield select(
+      locationParametersSelector,
+    );
 
-  const status =
-    tabName?.toLowerCase() === 'complete'
-      ? TaskStatus.COMPLETE
-      : TaskStatus.INCOMPLETE;
+    const status =
+      tabName?.toLowerCase() === 'complete'
+        ? TaskStatus.COMPLETE
+        : TaskStatus.INCOMPLETE;
 
-  yield put(
-    ListDetailsActions.getListDetailsGroupedTasks({
-      taskListIdentifier,
-      status,
-      withLoader,
-    }),
-  );
+    yield put(
+      ListDetailsActions.getListDetailsGroupedTasks({
+        taskListIdentifier,
+        status,
+        withLoader,
+      }),
+    );
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doGetTaskDetails(payload) {

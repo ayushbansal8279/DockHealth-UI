@@ -13,17 +13,25 @@ export const removeHiddenNavbarTemplate = () => ({
 });
 
 function* doInitializeHiddenNavbarTemplate() {
-  yield all([
-    put(TemplateActions.hideHeader()),
-    put(TemplateActions.hideNavbar()),
-  ]);
+  try {
+    yield all([
+      put(TemplateActions.hideHeader()),
+      put(TemplateActions.hideNavbar()),
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* doRemoveHiddenNavbarTemplate() {
-  yield all([
-    put(TemplateActions.showHeader()),
-    put(TemplateActions.showNavbar()),
-  ]);
+  try {
+    yield all([
+      put(TemplateActions.showHeader()),
+      put(TemplateActions.showNavbar()),
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default function* watchTemplate() {
