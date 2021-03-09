@@ -660,7 +660,9 @@ export function updateUserDashboardPrefs(prefs) {
         ...currentUser,
         userPreference: {
           ...currentUser?.userPreference,
-          ...prefs,
+          appFeaturesReviewed: currentUser?.userPreference?.appFeaturesReviewed.concat(
+            prefs.appFeaturesReviewed,
+          ),
         },
       };
       store.dispatch({ type: 'user/userProfile', userProfile: newCurrentUser });
