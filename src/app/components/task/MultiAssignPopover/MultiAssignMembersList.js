@@ -26,6 +26,7 @@ import {
   UnassignedIcon,
   MemberRowSkeletonLoader,
   highlightStyle,
+  CheckboxSpacing,
 } from './styled';
 import { collectJoinedListMembers } from './helpers';
 
@@ -151,9 +152,7 @@ const MultiAssignMembersList = ({
                 isSelected={selectedMembersIdentifiers?.length === 0}
                 onClick={event => handleOptionClick(event, UNASSIGNED_KEY)}
               >
-                <Checkbox
-                  isChecked={selectedMembersIdentifiers?.length === 0}
-                />
+                <CheckboxSpacing />
                 <Spacing horizontal={3} />
                 <UnassignedIcon />
                 <Spacing horizontal={3} />
@@ -178,12 +177,7 @@ const MultiAssignMembersList = ({
                     }
                     onClick={event => handleOptionClick(event, ASSIGN_ALL_KEY)}
                   >
-                    <Checkbox
-                      isChecked={
-                        selectedMembersIdentifiers?.length ===
-                        membersOptions?.length
-                      }
-                    />
+                    <CheckboxSpacing />
                     <Spacing horizontal={3} />
                     <AssignMemberIcon />
                     <Spacing horizontal={3} />

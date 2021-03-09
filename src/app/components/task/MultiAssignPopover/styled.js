@@ -120,3 +120,8 @@ export const highlightStyle = {
   fontSize: fontSizes.bold,
   background: 'none',
 };
+
+export const CheckboxSpacing = styled.div`
+  width: 12px;
+  height: 12px;
+`;

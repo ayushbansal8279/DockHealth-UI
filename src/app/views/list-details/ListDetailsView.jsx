@@ -576,11 +576,11 @@ class Home extends Component {
     if (currentUser && !isEmpty(currentUser) && !isNewUser) {
       const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('RIGHT_CLICK')) {
-        modalActions.openModal('RightClickTour', {
+      if (!appFeaturesReviewed?.includes('MULTI_ASSIGN')) {
+        modalActions.openModal('MultiAssignTour', {
           onClose: () => {
             userApi.updateUserDashboardPrefs({
-              appFeaturesReviewed: ['RIGHT_CLICK'],
+              appFeaturesReviewed: ['MULTI_ASSIGN'],
             });
           },
         });

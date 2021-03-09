@@ -109,8 +109,9 @@ export function changePassword(oldPassword, newPassword) {
 }
 
 export function logout(history) {
+  onLogout();
   window.sessionStorage.removeItem('confirmStatus');
-  history.replace('login');
+  history.replace('/auth/login');
 
   return new Promise((resolve, reject) => {
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
@@ -136,7 +137,6 @@ export function logout(history) {
           sessionStorage.removeItem('redirectToHome');
           sessionStorage.removeItem('redirectToLink');
           sessionStorage.removeItem('selectedTaskIdentifier');
-          onLogout();
           resolve();
         })
         .catch(error => {
