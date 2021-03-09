@@ -6,7 +6,7 @@ import { Image, Title, Description } from '../../styled';
 
 const BulkSelectionStep = () => {
   useEffect(() => {
-    onTourModalStepEnter('Right click modal', 'Right click');
+    onTourModalStepEnter('Right click modal', 'Bulk Selection');
   }, []);
 
   return (
