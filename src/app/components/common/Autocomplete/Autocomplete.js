@@ -4,7 +4,17 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import propTypes from 'prop-types';
 import { Autocomplete as AutocompleteMUI } from '@material-ui/lab';
+import { withStyles } from '@material-ui/core/styles';
 import { StyledLabel, StyledTextField } from './styled';
+
+const StandardAutocompleteMUI = withStyles({
+  option: {
+    padding: 0,
+  },
+  listbox: {
+    padding: 0,
+  },
+})(AutocompleteMUI);
 
 const StandardInput = ({
   label,
@@ -126,7 +136,7 @@ const Autocomplete = ({
   );
 
   return (
-    <AutocompleteMUI
+    <StandardAutocompleteMUI
       disableCloseOnSelect={disableCloseOnSelect}
       disablePortal={disablePortal}
       disabled={isDisabled}

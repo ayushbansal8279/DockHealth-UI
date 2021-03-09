@@ -4,12 +4,6 @@ import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-export const OptionContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-`;
-
 export const OptionButtonsContainer = styled.div`
   display: flex;
 `;
@@ -21,12 +15,25 @@ export const OptionButton = styled.button`
   border: none;
   background-color: transparent;
   cursor: pointer;
-  margin-right: ${spacing.tiny};
+  margin-right: ${spacing.small};
   color: ${palette.coolGrey1};
-  font-size: ${fontSizes.smallPlus};
-
+  font-size: ${fontSizes.small};
+  opacity: 0;
   &:hover {
     color: ${palette.darkGrey};
+  }
+`;
+
+export const OptionContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: ${spacing.small};
+
+  &:hover {
+    ${OptionButton} {
+      opacity: 1;
+    }
   }
 `;
 
