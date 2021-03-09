@@ -563,6 +563,7 @@ function* doOnEnterListDetails() {
   }
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function* doCreateTask(payload) {
   try {
     const {
@@ -595,7 +596,9 @@ function* doCreateTask(payload) {
       } else {
         const fetchedTasksGroups = yield select(groupTasksSelector);
 
-        if (!fetchedTasksGroups[taskGroupIdentifier]) {
+        if (!taskGroupIdentifier) {
+          yield put(ListDetailsActions.refreshListDetailsGroupedTasks(true));
+        } else if (!fetchedTasksGroups[taskGroupIdentifier]) {
           yield call(doGetTasksForTaskGroup, {
             taskGroupIdentifier,
             status: 'INCOMPLETE',

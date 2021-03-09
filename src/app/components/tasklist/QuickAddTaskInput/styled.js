@@ -17,6 +17,7 @@ export const AddTaskInputWrapper = styled.div`
   background-color: ${palette.white};
   box-shadow: inset 0 1px 2px rgba(46, 58, 67, 0.1);
   text-align: left;
+  color: ${palette.mediumGrey};
 
   &:before {
     position: absolute;
