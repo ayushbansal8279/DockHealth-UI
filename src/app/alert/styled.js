@@ -3,15 +3,7 @@ import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
-export const GlobalChipWrapper = styled.div`
-  position: fixed;
-  top: 20px;
-  right: 180px;
-  z-index: 5000;
-  width: auto;
-  height: auto;
-  transform: translateX(-50%);
-`;
+const FULL_ANIMATION_TIME = 0.2;
 
 export const CheckCircleIcon = styled.img`
   display: block;
@@ -21,9 +13,6 @@ export const CheckCircleIcon = styled.img`
   height: 20px;
   width: 20px;
   color: ${palette.white};
-  opacity: ${props => (props.isOpen ? '1' : '0')};
-  transition: opacity 0.1s ease-out;
-  transition-delay: ${props => (props.isOpen ? '0.1.1s' : '0.1s')};
 `;
 
 export const ChipBackground = styled.div`
@@ -31,16 +20,12 @@ export const ChipBackground = styled.div`
   top: 0;
   right: 0;
   height: 100%;
-  background-color: ${props =>
-    props.type === 'error' ? palette.oPlusRed : palette.accentYellow};
-  border-radius: 1rem;
+  background-color: ${palette.accentYellow};
   z-index: -1;
-  transition: width 0.2s linear;
 `;
 
 export const ChipText = styled.p`
   margin-bottom: 0;
-  transition: opacity 0.2s ease-out;
   font-size: 1rem;
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.white};
@@ -61,13 +46,6 @@ export const UndoButtonContent = styled.div`
 
 export const UndoButton = styled.button`
   overflow: hidden;
-  transition: width 0.1s linear;
-  width: ${({ isVisible }) => (isVisible ? '88px' : '0')};
-
-  & ${ChipText} {
-    transition: opacity 0.1s linear;
-    transition-delay: ${({ isVisible }) => (isVisible ? '0.1s' : '0s')};
-  }
 `;
 
 export const MainChipButton = styled.button`
@@ -86,24 +64,54 @@ export const CounterContainer = styled.div`
 `;
 
 export const ChipContainer = styled.div`
-  position: relative;
+  position: fixed;
+  top: 20px;
+  right: 180px;
+  z-index: 5000;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: row;
   align-items: stretch;
   width: auto;
-  height: ${props => (props.isOpen ? '2rem' : '0')};
+  border-radius: 1rem;
   overflow: hidden;
-  transition-delay: 1s;
+  height: ${({ isOpen }) => (isOpen ? '32px' : '0')};
   transition-property: height;
+  transition-delay: ${({ isOpen }) => (isOpen ? 0 : FULL_ANIMATION_TIME)}s;
   text-transform: uppercase;
 
-  ${props => props.isOpen && 'transition-property: none;'}
-
   & ${ChipBackground} {
-    width: ${props => (props.isOpen ? '100%' : '0')};
+    width: ${({ isOpen }) => (isOpen ? '100%' : '0')};
+    background-color: ${({ type }) =>
+      type === 'error' ? palette.oPlusRed : palette.accentYellow};
+    transition: width ${FULL_ANIMATION_TIME}s linear,
+      background-color 0s linear
+        ${({ isOpen }) => (isOpen ? 0 : FULL_ANIMATION_TIME)}s;
   }
 
-  & ${ChipText} {
-    opacity: ${props => (props.isOpen ? '1' : '0')};
+  & ${MainChipButton} {
+    & ${CheckCircleIcon} {
+      opacity: ${({ isOpen, type }) =>
+        isOpen && type === 'success' ? '1' : '0'};
+      transition: opacity
+        ${({ isOpen }) =>
+          isOpen ? FULL_ANIMATION_TIME / 2 : FULL_ANIMATION_TIME / 6}s
+        linear;
+      transition-delay: ${({ isOpen }) => (isOpen ? FULL_ANIMATION_TIME : 0)}s;
+    }
+
+    & ${ChipText} {
+      opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
+      transition: opacity ${FULL_ANIMATION_TIME / 4}s linear;
+      transition-delay: ${({ isOpen }) => (isOpen ? FULL_ANIMATION_TIME : 0)}s;
+    }
+  }
+
+  & ${UndoButton} {
+    width: ${({ withUndo }) => (withUndo ? '88px' : 0)};
+    opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+    transition: opacity ${FULL_ANIMATION_TIME / 2}s linear
+        ${({ isOpen }) => (isOpen ? FULL_ANIMATION_TIME / 2 : 0)}s,
+      width 0s linear ${({ isOpen }) => (isOpen ? 0 : FULL_ANIMATION_TIME)}s;
   }
 `;

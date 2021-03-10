@@ -7,7 +7,6 @@ import CheckmarkYellow from 'img/checkmark-yellow';
 import { closeGlobalAlert as closeAlertAction } from './actions';
 
 import {
-  GlobalChipWrapper,
   ChipContainer,
   ChipText,
   ChipBackground,
@@ -98,48 +97,42 @@ class GlobalAlertChip extends Component {
     const {
       alertState: { undoCallback, transactionIdentifier },
     } = this.props;
-    await TaskApi.rollbackTransaction(transactionIdentifier);
-    undoCallback();
-    this.handleCloseAlert();
+    try {
+      await TaskApi.rollbackTransaction(transactionIdentifier);
+      undoCallback();
+      this.handleCloseAlert();
+    } catch {
+      this.handleCloseAlert();
+    }
   };
 
   render = () => {
     const {
-      alertState: {
-        isGlobalOpen,
-        isSideBarAlert,
-        text,
-        type,
-        transactionIdentifier,
-      },
+      alertState: { isGlobalOpen, text, type, transactionIdentifier },
     } = this.props;
 
     const { counter } = this.state;
 
     return (
-      <GlobalChipWrapper isSideBarAlert={isSideBarAlert}>
-        <ChipContainer isOpen={isGlobalOpen}>
-          <MainChipButton type="button" onClick={this.handleCloseAlert}>
-            {type === 'success' && (
-              <CheckCircleIcon src={CheckmarkYellow} isOpen={isGlobalOpen} />
-            )}
-            <ChipText>{text}</ChipText>
-          </MainChipButton>
-          <UndoButton
-            isVisible={transactionIdentifier}
-            type="button"
-            onClick={this.handleUndoClick}
-          >
-            <UndoButtonContent>
-              <ChipText>UNDO</ChipText>
-              <CounterContainer>
-                <ChipText>{counter}</ChipText>
-              </CounterContainer>
-            </UndoButtonContent>
-          </UndoButton>
-          <ChipBackground type={type} />
-        </ChipContainer>
-      </GlobalChipWrapper>
+      <ChipContainer
+        isOpen={isGlobalOpen}
+        type={type}
+        withUndo={transactionIdentifier}
+      >
+        <MainChipButton type="button" onClick={this.handleCloseAlert}>
+          <CheckCircleIcon src={CheckmarkYellow} />
+          <ChipText>{text}</ChipText>
+        </MainChipButton>
+        <UndoButton type="button" onClick={this.handleUndoClick}>
+          <UndoButtonContent>
+            <ChipText>UNDO</ChipText>
+            <CounterContainer>
+              <ChipText>{counter}</ChipText>
+            </CounterContainer>
+          </UndoButtonContent>
+        </UndoButton>
+        <ChipBackground />
+      </ChipContainer>
     );
   };
 }
