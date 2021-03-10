@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
 import * as TaskApi from 'api/task-api';
-
-import CheckmarkYellow from 'img/checkmark-yellow';
 
 import { closeGlobalAlert as closeAlertAction } from './actions';
 
@@ -10,7 +10,7 @@ import {
   ChipContainer,
   ChipText,
   ChipBackground,
-  CheckCircleIcon,
+  IconContainer,
   UndoButton,
   MainChipButton,
   CounterContainer,
@@ -83,7 +83,7 @@ class GlobalAlertChip extends Component {
 
     this.intervalHandle = setInterval(() => {
       // eslint-disable-next-line react/destructuring-assignment
-      if (this.state.counter === 1) {
+      if (this.state.counter === 0) {
         this.handleCloseAlert();
       } else {
         this.setState(({ counter: previousCounter }) => ({
@@ -97,13 +97,9 @@ class GlobalAlertChip extends Component {
     const {
       alertState: { undoCallback, transactionIdentifier },
     } = this.props;
-    try {
-      await TaskApi.rollbackTransaction(transactionIdentifier);
-      undoCallback();
-      this.handleCloseAlert();
-    } catch {
-      this.handleCloseAlert();
-    }
+    this.handleCloseAlert();
+    await TaskApi.rollbackTransaction(transactionIdentifier);
+    undoCallback();
   };
 
   render = () => {
@@ -120,7 +116,13 @@ class GlobalAlertChip extends Component {
         withUndo={transactionIdentifier}
       >
         <MainChipButton type="button" onClick={this.handleCloseAlert}>
-          <CheckCircleIcon src={CheckmarkYellow} />
+          <IconContainer>
+            {type === 'error' ? (
+              <CloseIcon color="inherit" />
+            ) : (
+              <CheckCircleOutlineIcon color="inherit" />
+            )}
+          </IconContainer>
           <ChipText>{text}</ChipText>
         </MainChipButton>
         <UndoButton type="button" onClick={this.handleUndoClick}>

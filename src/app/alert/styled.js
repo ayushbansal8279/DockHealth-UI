@@ -5,14 +5,19 @@ import spacing from 'styles/spacing';
 
 const FULL_ANIMATION_TIME = 0.2;
 
-export const CheckCircleIcon = styled.img`
-  display: block;
+export const IconContainer = styled.div`
   position: absolute;
   top: 6px;
   left: 7px;
   height: 20px;
   width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-size: 20px;
   color: ${palette.white};
+  }
 `;
 
 export const ChipBackground = styled.div`
@@ -90,13 +95,10 @@ export const ChipContainer = styled.div`
   }
 
   & ${MainChipButton} {
-    & ${CheckCircleIcon} {
-      opacity: ${({ isOpen, type }) =>
-        isOpen && type === 'success' ? '1' : '0'};
+    & ${IconContainer} {
+      opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
       transition: opacity
-        ${({ isOpen }) =>
-          isOpen ? FULL_ANIMATION_TIME / 2 : FULL_ANIMATION_TIME / 6}s
-        linear;
+        ${({ isOpen }) => (isOpen ? FULL_ANIMATION_TIME / 2 : 0)}s linear;
       transition-delay: ${({ isOpen }) => (isOpen ? FULL_ANIMATION_TIME : 0)}s;
     }
 
