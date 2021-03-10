@@ -9,7 +9,7 @@ import {
 } from 'selectors/task-list-selectors';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import ListPopover from 'components/common/ListPopover';
+import ListPopover from 'components/common/ListPopover/ListPopover';
 import Spacing from 'components/common/Spacing';
 import { HeaderTitleContainer, StyledTitle, TitleContainer } from './styled';
 

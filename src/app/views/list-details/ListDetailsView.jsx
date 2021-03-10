@@ -10,7 +10,7 @@ import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHe
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 // import Tour from 'components/tour-wizard/Tour/Tour';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
+import Toolbar from 'components/task-view/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import * as TemplateActions from 'actions/template-actions';

@@ -4,6 +4,13 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
+export const ToolbarContainer = styled.div`
+  display: block;
+  width: 100%;
+  background-color: ${palette.white};
+  color: ${palette.coolGrey1};
+`;
+
 // LEGACY STYLES - REFACTOR REQUIRED
 export const ToolbarLabel = withStyles({
   root: {

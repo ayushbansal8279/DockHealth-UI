@@ -13,7 +13,6 @@ import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
@@ -140,7 +139,7 @@ const DashboardView = ({
 
   return (
     <DashboardViewWrapper>
-      <ViewLoader isFetchingData={!currentUserLoaded}>
+      {currentUserLoaded && (
         <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
           {openConfetti && <StyledConfetti recycle={false} />}
           <DashboardScrollableList>
@@ -188,7 +187,7 @@ const DashboardView = ({
             )}
           </DashboardScrollableList>
         </DashboardContentWrapper>
-      </ViewLoader>
+      )}
       {renderNewUserTour()}
     </DashboardViewWrapper>
   );

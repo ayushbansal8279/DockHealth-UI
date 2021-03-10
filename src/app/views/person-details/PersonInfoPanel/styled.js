@@ -3,12 +3,6 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
-export const PersonImage = styled.img`
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-`;
-
 export const InfoPanelContainer = styled.div`
   display: flex;
   justify-content: flex-start;

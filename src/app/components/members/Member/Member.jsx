@@ -1,14 +1,25 @@
-import PropTypes, { bool, number } from 'prop-types';
-import React from 'react';
-import { connect } from 'react-redux';
-import { isEmpty } from 'ramda';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import PropTypes, { bool, number, string } from 'prop-types';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { isEmpty, omit } from 'ramda';
+import palette from 'styles/palette';
 import { getMemberStatus } from 'helpers/list-members-helper';
-import Avatar from 'components/common/Avatar/Avatar';
+import { activeUsersListSelector } from 'selectors/active-users-selector';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { TooltipName, TooltipStatus, TooltipContent } from './styled';
+import {
+  TooltipName,
+  TooltipStatus,
+  TooltipContent,
+  MemberImage,
+  BackgroundContainer,
+  AvatarContainer,
+  InnerAvatarContainer,
+  OnlineIndicator,
+  OfflineIndicator,
+  IdleIndicator,
+} from './styled';
 
-const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
+const getThumbnailUrl = (userIdentifier, profileThumbnailPictureHash) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
 
 const Member = React.forwardRef(
@@ -16,37 +27,61 @@ const Member = React.forwardRef(
     {
       member,
       children,
-      className,
       color,
       size,
       showTooltip,
       isInactive,
-      activeUsersList,
+      showOnlineIndicator,
+      ...props
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
-    const status = getMemberStatus(member);
-    const alt = member ? (
-      <div>
-        <TooltipName>
-          {`${member.firstName} ${member.lastName}`?.slice(0, 18)}
-        </TooltipName>
-        {status && <TooltipStatus>{status}</TooltipStatus>}
-      </div>
-    ) : null;
+    const {
+      userIdentifier,
+      firstName,
+      lastName,
+      initials,
+      profileThumbnailPictureHash,
+      userStatus,
+      taskListUserRole,
+      bubbleColor,
+    } = member || {};
 
-    const avatarContent = member?.profileThumbnailPictureHash ? (
-      <img src={getThumbnailUrl(member)} alt={alt} />
-    ) : (
-      <MontserratTypography variant="h4" weight="bold">
-        {member?.initials?.toLowerCase()}
-      </MontserratTypography>
-    );
+    const activeUsersList = useSelector(activeUsersListSelector);
+
+    const avatarContent = useMemo(() => {
+      if (profileThumbnailPictureHash) {
+        const status = getMemberStatus({ userStatus, taskListUserRole });
+        const alt = userIdentifier ? (
+          <div>
+            <TooltipName>
+              {`${firstName} ${lastName}`?.slice(0, 18)}
+            </TooltipName>
+            {status && <TooltipStatus>{status}</TooltipStatus>}
+          </div>
+        ) : null;
+        return (
+          <MemberImage
+            src={getThumbnailUrl(userIdentifier, profileThumbnailPictureHash)}
+            alt={alt}
+          />
+        );
+      }
+      return initials?.toLowerCase();
+    }, [
+      profileThumbnailPictureHash,
+      initials,
+      userStatus,
+      taskListUserRole,
+      userIdentifier,
+      firstName,
+      lastName,
+    ]);
 
     const onlineActiveUser =
-      activeUsersList?.find(({ userIdentifier }) => {
-        return userIdentifier === member?.userIdentifier;
+      activeUsersList?.find(({ userIdentifier: id }) => {
+        return id === member?.userIdentifier;
       }) || {};
 
     const isOnline = !isEmpty(onlineActiveUser) && !onlineActiveUser.idle;
@@ -55,6 +90,8 @@ const Member = React.forwardRef(
       member?.userStatus !== 'INVITED' && isEmpty(onlineActiveUser);
     const isInvited =
       member?.userStatus === 'INVITED' && isEmpty(onlineActiveUser);
+
+    const backgroundColor = bubbleColor || color;
 
     return (
       <>
@@ -73,18 +110,26 @@ const Member = React.forwardRef(
           placement="bottom"
           hideTooltip={!showTooltip}
         >
-          <Avatar
-            ref={reference}
-            size={size}
-            color={color || member?.bubbleColor}
-            className={className}
-            isInactive={isInactive || isInvited}
-            isOnline={isOnline}
-            isIdle={isIdle}
-            isOffline={isOffline}
-          >
-            {children || avatarContent}
-          </Avatar>
+          <BackgroundContainer>
+            <AvatarContainer
+              ref={reference}
+              size={size}
+              color={backgroundColor}
+              isInactive={isInactive || isInvited}
+              {...omit(['ref'], props)}
+            >
+              <InnerAvatarContainer color={backgroundColor} size={size}>
+                {children || avatarContent}
+              </InnerAvatarContainer>
+              {showOnlineIndicator && (
+                <>
+                  {isOnline && <OnlineIndicator />}
+                  {isOffline && <OfflineIndicator />}
+                  {isIdle && <IdleIndicator />}
+                </>
+              )}
+            </AvatarContainer>
+          </BackgroundContainer>
         </Tooltip>
       </>
     );
@@ -93,6 +138,7 @@ const Member = React.forwardRef(
 
 Member.propTypes = {
   showTooltip: bool,
+  showOnlineIndicator: bool,
   size: number,
   member: PropTypes.shape({
     userIdentifier: PropTypes.string,
@@ -101,16 +147,15 @@ Member.propTypes = {
     initials: PropTypes.string,
     profileThumbnailPictureHash: PropTypes.string,
   }),
+  color: string,
 };
 
 Member.defaultProps = {
   showTooltip: true,
+  showOnlineIndicator: true,
   size: 30,
   member: null,
+  color: palette.coolGrey2,
 };
 
-const mapStateToProps = state => ({
-  activeUsersList: state.activeUsers.activeUsersList,
-});
-
-export default connect(mapStateToProps)(Member);
+export default Member;

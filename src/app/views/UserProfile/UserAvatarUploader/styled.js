@@ -5,14 +5,6 @@ import palette, { opacify } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
-export const AvatarImageContainer = styled.img`
-  && {
-    cursor: inherit;
-    height: 100%;
-    width: 100%;
-  }
-`;
-
 export const OuterAvatarContainer = styled.div`
   align-items: center;
   display: flex;

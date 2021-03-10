@@ -4,11 +4,11 @@ import { useHistory } from 'react-router-dom';
 import { Grid, IconButton } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { lookupEMRPatient } from 'api/patient-api';
+import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
-import PatientListLoader from '../PatientsListLoader/PatientListLoader';
 import EmptyPatientsList from '../EmptyPatientsList/EmptyPatientsList';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
-import { NonEmptyListTable } from './styled';
+import { NonEmptyListTable, ListLoaderContainer } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
 const renderColumnHeader = props => {
@@ -280,7 +280,9 @@ const PatientsList = ({
   return (
     <>
       {isFetching ? (
-        <PatientListLoader />
+        <ListLoaderContainer>
+          <ListSkeletonLoader header />
+        </ListLoaderContainer>
       ) : (
         <>
           {patients?.length > 0 ? (

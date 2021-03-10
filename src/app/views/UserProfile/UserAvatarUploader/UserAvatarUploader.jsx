@@ -3,7 +3,7 @@ import React from 'react';
 import AvatarEdit from 'react-avatar-edit';
 import palette from 'styles/palette';
 import CameraIcon from 'img/camera.svg';
-import Avatar from 'components/common/Avatar/Avatar';
+import Member from 'components/members/Member/Member';
 import initializeUserAvatarHooks from './hooks';
 import {
   OuterAvatarContainer,
@@ -23,7 +23,8 @@ import {
 
 export default () => {
   const {
-    userProfilePic,
+    currentUser,
+    hasProfilePicture,
     avatarButtonReference,
     fileInputReference,
     popoverOpen,
@@ -32,7 +33,6 @@ export default () => {
     fileLoaded,
     setFileLoaded,
     openPopover,
-    avatarContent,
     activateFileInput,
     handleFileChanged,
     removeProfilePicture,
@@ -41,7 +41,7 @@ export default () => {
     handleFileCropped,
   } = initializeUserAvatarHooks();
 
-  const popoverLabelContent = userProfilePic ? (
+  const popoverLabelContent = hasProfilePicture ? (
     <UploadImagePopoverLabel>Try another picture</UploadImagePopoverLabel>
   ) : (
     <>
@@ -60,12 +60,18 @@ export default () => {
           ref={avatarButtonReference}
           onClick={openPopover}
         >
-          <Avatar>{avatarContent}</Avatar>
+          <Member
+            member={currentUser}
+            color={palette.midnightBlue}
+            size={110}
+            showTooltip={false}
+            showOnlineIndicator={false}
+          />
           <CameraContainer>
             <img src={CameraIcon} alt="Camera icon" />
           </CameraContainer>
         </AvatarButton>
-        {!userProfilePic && (
+        {!hasProfilePicture && (
           <UserAvatarSupplement onClick={openPopover}>
             <div>Add a picture to</div>
             <div>personalize your avatar</div>
@@ -104,8 +110,14 @@ export default () => {
               />
             ) : (
               <AvatarContainer>
-                <Avatar>{avatarContent}</Avatar>
-                {userProfilePic && (
+                <Member
+                  member={currentUser}
+                  color={palette.midnightBlue}
+                  size={110}
+                  showTooltip={false}
+                  showOnlineIndicator={false}
+                />
+                {hasProfilePicture && (
                   <EditButton type="button" onClick={activateFileInput}>
                     Edit
                   </EditButton>
@@ -127,7 +139,7 @@ export default () => {
             ref={fileInputReference}
             onChange={handleFileChanged}
           />
-          {userProfilePic && !fileLoaded && (
+          {hasProfilePicture && !fileLoaded && (
             <Grid container item xs={12} spacing={1}>
               <Grid container item xs={12} justify="center">
                 <PlainLink

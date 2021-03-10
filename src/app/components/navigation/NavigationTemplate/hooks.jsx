@@ -7,7 +7,7 @@ import { templateStateSelector } from 'selectors/template-selectors';
 import {
   getSubscriptionIsTrial,
   getSubscriptionPlanLabel,
-} from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
+} from 'views/self-serve/subscriptions/helpers';
 import { selectCurrentOrganization } from 'api/user-api';
 import { TrialBannerLink, useDrawerClasses } from './styled';
 

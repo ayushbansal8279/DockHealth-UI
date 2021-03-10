@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
-import Toolbar from 'components/task-view/Toolbar/NewToolbar';
+import Toolbar from 'components/task-view/Toolbar/Toolbar';
 import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';

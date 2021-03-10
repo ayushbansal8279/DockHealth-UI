@@ -2,7 +2,7 @@ import { Button, Fade, Grid } from '@material-ui/core';
 import React from 'react';
 import NotificationsCheck from 'img/toolbar-notifications-check';
 import palette from 'styles/palette';
-import ListPopover from 'components/common/ListPopover';
+import ListPopover from 'components/common/ListPopover/ListPopover';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';

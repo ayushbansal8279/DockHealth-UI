@@ -32,7 +32,7 @@ import { TaskListTabName } from 'components/task-view/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
+import Toolbar from 'components/task-view/Toolbar/ToolbarContainer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 

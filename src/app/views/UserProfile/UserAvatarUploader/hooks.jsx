@@ -1,15 +1,15 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import * as userApi from 'api/user-api';
+import * as UserApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import ArrowUpIcon from 'img/arrow-up.svg';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import { PaddedButtonLabel, AvatarImageContainer } from './styled';
+import { PaddedButtonLabel } from './styled';
 
 const getSmallButtonContent = ({
   fileLoaded,
-  userProfilePic,
+  hasProfilePicture,
   fileLoading,
 }) => () => {
   if (fileLoading) {
@@ -20,7 +20,7 @@ const getSmallButtonContent = ({
     return <span>Save</span>;
   }
 
-  if (userProfilePic) {
+  if (hasProfilePicture) {
     return <span>I love it</span>;
   }
 
@@ -34,7 +34,7 @@ const getSmallButtonContent = ({
 
 const getSmallButtonOnClick = ({
   fileLoaded,
-  userProfilePic,
+  hasProfilePicture,
   fileLoading,
   handleFinishEditing,
   unsetPopoverOpen,
@@ -48,7 +48,7 @@ const getSmallButtonOnClick = ({
     return handleFinishEditing;
   }
 
-  if (userProfilePic) {
+  if (hasProfilePicture) {
     return unsetPopoverOpen;
   }
 
@@ -56,8 +56,8 @@ const getSmallButtonOnClick = ({
 };
 
 export default () => {
-  const userProfile = useSelector(state => state.userState.userProfile);
-  const userProfilePic = useSelector(state => state.userState.userProfilePic);
+  const currentUser = useSelector(state => state.userState.userProfile);
+  const hasProfilePicture = currentUser?.profileThumbnailPictureHash;
 
   const avatarButtonReference = useRef(null);
   const fileInputReference = useRef(null);
@@ -65,22 +65,6 @@ export default () => {
   const [fileLoading, setFileLoading, unsetFileLoading] = useBoolean(false);
   const [fileLoaded, setFileLoaded] = useState(null);
   const [fileCropped, setFileCropped] = useState(null);
-
-  const avatarInitials = userProfile
-    ? `${userProfile.firstName.charAt(0)}${userProfile.lastName.charAt(0)}`
-        .trim()
-        .toLowerCase()
-    : '';
-
-  const avatarContent = userProfilePic ? (
-    <AvatarImageContainer src={userProfilePic} alt="User profile picture" />
-  ) : (
-    avatarInitials
-  );
-
-  useEffect(() => {
-    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
-  }, []);
 
   const openPopover = useCallback(() => {
     setPopoverOpen();
@@ -103,11 +87,8 @@ export default () => {
     fetch(fileCropped)
       .then(response => response.arrayBuffer())
       .then(async arrayBuffer => {
-        await userApi.saveUserProfilePic(arrayBuffer);
-        await userApi.getUserProfilePic(
-          sessionStorage.userIdentifier,
-          'PROFILE',
-        );
+        await UserApi.saveUserProfilePic(arrayBuffer);
+        await UserApi.getUserById();
         setFileLoaded(null);
       });
   }, [fileCropped]);
@@ -142,12 +123,9 @@ export default () => {
       if (!fileLoading) {
         setFileLoading();
         openPopover();
-        userApi.deleteUserProfilePic().then(async () => {
+        UserApi.deleteUserProfilePic().then(async () => {
           try {
-            await userApi.getUserProfilePic(
-              sessionStorage.userIdentifier,
-              'PROFILE',
-            );
+            await UserApi.getUserById();
             unsetPopoverOpen();
             setFileLoaded(null);
           } catch {
@@ -169,38 +147,32 @@ export default () => {
   );
 
   return {
-    userProfilePic,
-    userProfile,
+    currentUser,
+    hasProfilePicture,
     avatarButtonReference,
     fileInputReference,
     popoverOpen,
-    setPopoverOpen,
     unsetPopoverOpen,
     fileLoading,
-    setFileLoading,
-    unsetFileLoading,
     fileLoaded,
     setFileLoaded,
-    avatarInitials,
     openPopover,
-    avatarContent,
     activateFileInput,
     handleFileChanged,
     removeProfilePicture,
     getSmallButtonContent: getSmallButtonContent({
       fileLoaded,
-      userProfilePic,
+      hasProfilePicture,
       fileLoading,
     }),
     getSmallButtonOnClick: getSmallButtonOnClick({
       fileLoaded,
-      userProfilePic,
+      hasProfilePicture,
       fileLoading,
       activateFileInput,
       handleFinishEditing,
       unsetPopoverOpen,
     }),
     handleFileCropped,
-    handleFinishEditing,
   };
 };

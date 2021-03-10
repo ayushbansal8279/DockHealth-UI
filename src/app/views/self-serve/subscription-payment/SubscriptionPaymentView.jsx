@@ -15,11 +15,11 @@ import Spacing from 'components/common/Spacing';
 import { noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import BillingsViewBillingData from '../billings/BillingsView.BillingData';
+import BillingsViewBillingData from '../billings/BillingData/BillingData';
 import {
   BILLING_FREQUENCY,
   getSubscriptionPlanData,
-} from '../subscriptions/SubscriptionsView.Utilities';
+} from '../subscriptions/helpers';
 import {
   DarkBlueTextContainer,
   PricingGridContainer,
