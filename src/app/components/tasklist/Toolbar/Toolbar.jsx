@@ -22,7 +22,7 @@ import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
-import TipsPopover from 'components/common/TipsPopover/TipsPopover';
+import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover';
 import { showGlobalAlert } from 'alert/actions';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover';
