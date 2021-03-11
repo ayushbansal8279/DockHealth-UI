@@ -11,6 +11,7 @@ import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -21,8 +22,9 @@ import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
-import TipsButton from 'components/common/TipsButton';
+import TipsPopover from 'components/common/TipsPopover/TipsPopover';
 import { showGlobalAlert } from 'alert/actions';
+import TipsButton from './TipsButton';
 import MorePopover from './MorePopover';
 import {
   ToolbarLabel,
@@ -32,7 +34,7 @@ import {
   MemberWrapper,
   ToolbarContainer,
 } from './styled';
-import { TABS_CONFIG, TaskListTabName } from './config';
+import { TABS_CONFIG } from './config';
 
 const INBOX_FIRST_TIME_KEY = 'INBOX_FIRST_TIME_KEY';
 
@@ -284,7 +286,7 @@ const Toolbar = ({
             <>
               {haveTasks && <Spacing horizontal={5} />}
               <TipsButton
-                tipsButtonReference={tipsButtonReference}
+                ref={tipsButtonReference}
                 active={tipsOpened}
                 toggleTips={() => setTipsOpened(!tipsOpened)}
               />
@@ -293,9 +295,11 @@ const Toolbar = ({
         </ToolbarBottomGrid>
       )}
       {tipsContent && tipsOpened && (
-        <ClickAwayListener onClickAway={() => setTipsOpened(false)}>
-          <div>{tipsContent({ arrowAnchorElement: tipsButtonReference })}</div>
-        </ClickAwayListener>
+        <TipsPopover arrowAnchorElement={tipsButtonReference.current}>
+          <ClickAwayListener onClickAway={() => setTipsOpened(false)}>
+            {tipsContent()}
+          </ClickAwayListener>
+        </TipsPopover>
       )}
     </ToolbarContainer>
   );

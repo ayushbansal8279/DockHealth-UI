@@ -5,20 +5,20 @@ import LightbulbBlue from 'img/lightbulb-blue.svg';
 import Lightbulb from 'img/lightbulb-grey.svg';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
-import Spacing from './Spacing';
+import Spacing from 'components/common/Spacing';
 
 const TipsButtonContainer = styled.div`
   color: ${props => (props.active ? palette.brightBlue : palette.coolGrey1)};
 `;
 
-const TipsButton = ({ active, toggleTips, tipsButtonReference }) => (
+const TipsButton = React.forwardRef(({ active, toggleTips }, reference) => (
   <TipsButtonContainer active={active}>
     <Button
       variant="text"
       color="inherit"
       size="small"
       onClick={toggleTips}
-      innerRef={tipsButtonReference}
+      innerRef={reference}
     >
       <img alt="lightbulb" src={active ? LightbulbBlue : Lightbulb} />
       <Spacing horizontal={2} />
@@ -27,6 +27,6 @@ const TipsButton = ({ active, toggleTips, tipsButtonReference }) => (
       </RobotoTypography>
     </Button>
   </TipsButtonContainer>
-);
+));
 
 export default TipsButton;

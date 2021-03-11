@@ -1,5 +1,5 @@
 import React from 'react';
-import { TaskListTabName } from 'components/task-view/Toolbar/config';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { TabsContainer, TabButton } from './styled';
 
 const Tab = ({ label, isSelected, onSelectTab }) => (

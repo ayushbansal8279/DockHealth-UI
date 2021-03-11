@@ -2,8 +2,8 @@
 import { connect } from 'react-redux';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 import Toolbar from './Toolbar';
-import { TaskListTabName } from './config';
 
 const determineTaskCounts = ({
   selectedFilters,

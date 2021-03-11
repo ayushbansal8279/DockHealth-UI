@@ -25,7 +25,7 @@ import {
   SET_PATIENT_TASK_SEARCH_VALUE,
   SORT_PATIENT_TASKS,
 } from 'actions/action-types';
-import { TaskListTabName } from 'components/task-view/Toolbar/config';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 
 import { userProfileSelector } from 'selectors/user-selectors';
 import {

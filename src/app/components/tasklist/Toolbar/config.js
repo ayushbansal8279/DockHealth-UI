@@ -1,9 +1,5 @@
 import { isNil } from 'ramda';
-
-export const TaskListTabName = {
-  OPEN: 'INCOMPLETE',
-  COMPLETE: 'COMPLETE',
-};
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 
 // eslint-disable-next-line import/prefer-default-export
 export const TABS_CONFIG = ({

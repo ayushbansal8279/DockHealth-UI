@@ -45,7 +45,7 @@ const HeaderArrow = styled.div<{ left: number }>`
   width: 0;
 `;
 
-interface TipsContentHeaderProps {
+interface TipsPopoverProps {
   arrowAnchorElement?: HTMLElement;
   children?: React.ReactNode;
   closeHeader?: () => void;
@@ -60,11 +60,11 @@ const createMutationObserver = (callback: () => void) =>
 
 const LIGHTBULB_CENTER_POSITION = 11;
 
-const TipsContentHeader = ({
+const TipsPopover = ({
   arrowAnchorElement,
   children,
   footerContent,
-}: TipsContentHeaderProps) => {
+}: TipsPopoverProps) => {
   const [isArrowShown, showArrow, hideArrow] = useBoolean(false);
   const [arrowPosition, setArrowPosition] = useState(0);
 
@@ -122,4 +122,4 @@ const TipsContentHeader = ({
   );
 };
 
-export default TipsContentHeader;
+export default TipsPopover;
