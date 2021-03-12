@@ -124,7 +124,6 @@ export function deleteTask(taskIdentifier) {
   return axios
     .delete(`task/deleteTaskById/${taskIdentifier}`)
     .then(response => {
-      console.log('response', response);
       return response;
     })
     .catch(error => {
