@@ -261,7 +261,7 @@ export const moveTask = (
       dispatch(
         AlertActions.showGlobalAlertWithUndo(
           AlertMessages.TASK_MOVED,
-          response?.headers?.['X-Transaction-Id'],
+          response?.headers?.['x-transaction-id'],
           () => {
             dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
             dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
@@ -336,7 +336,7 @@ export function deleteTask(task) {
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
             AlertMessages.DELETED,
-            response?.headers?.['X-Transaction-Id'],
+            response?.headers?.['x-transaction-id'],
             () => {
               dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
             },
