@@ -139,9 +139,7 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
   const handleDeleteTask = useCallback(() => {
     const modalProps = {
       confirm: async () => {
-        const response = await dispatch(deleteTask(task));
-        console.log('response', response);
-
+        await dispatch(deleteTask(task));
         dispatch(closeModal());
       },
     };
