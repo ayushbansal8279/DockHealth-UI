@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { pluck } from 'ramda';
+import { isEmpty, pluck } from 'ramda';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ import {
   bulkEditDelete,
   bulkEditComplete,
 } from 'actions/task-actions';
+import * as ActionTypes from 'actions/action-types';
 import { getListDetailsTaskCounters } from 'actions/list-details-actions';
 import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -136,6 +137,42 @@ const BulkEditOptionsBar = ({
     [parentTasks, subtasks],
   );
 
+  const updateTasks = useCallback(
+    tasks => {
+      tasks.forEach(task =>
+        dispatch({
+          type: ActionTypes.UPDATE_TASK_SUCCESS,
+          task,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const addTasks = useCallback(
+    tasks => {
+      tasks.reverse().forEach(task =>
+        dispatch({
+          type: ActionTypes.ADD_TASK_SUCCESS,
+          task,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const deleteTasks = useCallback(
+    tasks => {
+      tasks.forEach(task =>
+        dispatch({
+          type: ActionTypes.DELETE_TASK_SUCCESS,
+          task,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const handleChangeWorkflowStatusTasks = useCallback(
     workflowStatus => {
       bulkEditWorkflowStatus(
@@ -155,7 +192,7 @@ const BulkEditOptionsBar = ({
             AlertActions.showGlobalAlertWithUndo(
               `${allSelectedTasksLength} STATUS CHANGED`,
               transactionIdentifier,
-              refreshTasks,
+              ({ tasks }) => updateTasks(tasks),
             ),
           );
 
@@ -176,6 +213,7 @@ const BulkEditOptionsBar = ({
       dispatch,
       allSelectedTasksLength,
       onClose,
+      updateTasks,
       refreshTasks,
     ],
   );
@@ -196,7 +234,7 @@ const BulkEditOptionsBar = ({
                 ? `${allSelectedTasksLength} DUE DATES CHANGED`
                 : `${allSelectedTasksLength} DUE DATE CHANGED`,
               transactionIdentifier,
-              refreshTasks,
+              ({ tasks }) => updateTasks(tasks),
             ),
           );
 
@@ -216,6 +254,7 @@ const BulkEditOptionsBar = ({
       dispatch,
       allSelectedTasksLength,
       onClose,
+      updateTasks,
       refreshTasks,
     ],
   );
@@ -241,7 +280,7 @@ const BulkEditOptionsBar = ({
                 ? `${allSelectedTasksLength} TASKS ASSIGNED`
                 : `${allSelectedTasksLength} TASK ASSIGNED`,
               transactionIdentifier,
-              refreshTasks,
+              ({ tasks }) => updateTasks(tasks),
             ),
           );
         })
@@ -257,6 +296,7 @@ const BulkEditOptionsBar = ({
       searchValue,
       dispatch,
       allSelectedTasksLength,
+      updateTasks,
       refreshTasks,
     ],
   );
@@ -283,7 +323,7 @@ const BulkEditOptionsBar = ({
               ? `${allSelectedTasksLength} TASKS DUPLICATED`
               : `${allSelectedTasksLength} TASK DUPLICATED`,
             transactionIdentifier,
-            refreshTasks,
+            ({ tasks }) => deleteTasks(tasks),
           ),
         );
 
@@ -309,6 +349,7 @@ const BulkEditOptionsBar = ({
     dispatch,
     allSelectedTasksLength,
     onClose,
+    deleteTasks,
   ]);
 
   const handleMoveTasks = useCallback(async () => {
@@ -416,7 +457,15 @@ const BulkEditOptionsBar = ({
                 ? `${allSelectedTasksLength} TASKS COMPLETED`
                 : `${allSelectedTasksLength} TASK COMPLETED`,
               transactionIdentifier,
-              refreshTasks,
+              ({ tasks }) => {
+                tasks.forEach(task =>
+                  task.parentTaskIdentifier &&
+                  (isEmpty(filters) || !filters) &&
+                  !searchValue
+                    ? updateTasks([task])
+                    : addTasks([task]),
+                );
+              },
             ),
           );
 
@@ -448,6 +497,10 @@ const BulkEditOptionsBar = ({
     taskListIdentifier,
     allSelectedTasksLength,
     onClose,
+    filters,
+    searchValue,
+    updateTasks,
+    addTasks,
     refreshTasks,
   ]);
 
@@ -471,7 +524,7 @@ const BulkEditOptionsBar = ({
                     ? `${allSelectedTasksLength} TASKS DELETED`
                     : `${allSelectedTasksLength} TASK DELETED`,
                   transactionIdentifier,
-                  refreshTasks,
+                  ({ tasks }) => addTasks(tasks),
                 ),
               );
 
@@ -491,8 +544,9 @@ const BulkEditOptionsBar = ({
     dispatch,
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
-    allSelectedTasksLength,
     taskListIdentifier,
+    allSelectedTasksLength,
+    addTasks,
     onClose,
     refreshTasks,
   ]);
