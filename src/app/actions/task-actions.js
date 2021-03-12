@@ -129,7 +129,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
       TaskApi.updateTask(newTask)
-        .then(task => {
+        .then(({ task }) => {
           dispatch({
             type: ActionTypes.UPDATE_TASK_SUCCESS,
             task,
@@ -232,7 +232,7 @@ export const moveTask = (
   }
 
   return TaskApi.updateTask(updatedTask)
-    .then(() => {
+    .then(response => {
       dispatch({
         type: ActionTypes.MOVE_TASK_SUCCESS,
         task,
@@ -256,6 +256,17 @@ export const moveTask = (
         getTasksGroupsList({
           taskListIdentifier: taskList.taskListIdentifier,
         }),
+      );
+
+      dispatch(
+        AlertActions.showGlobalAlertWithUndo(
+          AlertMessages.TASK_MOVED,
+          response?.headers?.['X-Transaction-Id'],
+          () => {
+            dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+            dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+          },
+        ),
       );
     })
     .catch(error => {
@@ -320,9 +331,17 @@ export function updateComment(task, comment) {
 export function deleteTask(task) {
   return dispatch =>
     TaskApi.deleteTask(task.taskIdentifier)
-      .then(() => {
+      .then(response => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
+        dispatch(
+          AlertActions.showGlobalAlertWithUndo(
+            AlertMessages.DELETED,
+            response?.headers?.['X-Transaction-Id'],
+            () => {
+              dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+            },
+          ),
+        );
         dispatch(
           getTasksGroupsList({
             taskListIdentifier: task?.taskList?.taskListIdentifier,
@@ -455,12 +474,12 @@ export const updateDueDate = (
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
-    .then(response => {
+    .then(({ task: updatedTask }) => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: response,
+        task: updatedTask,
       });
-      return response;
+      return updatedTask;
     })
     .catch(error => {
       throw error;
