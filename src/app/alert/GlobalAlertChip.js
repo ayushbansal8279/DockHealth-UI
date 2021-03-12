@@ -4,7 +4,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
 import * as TaskApi from 'api/task-api';
 
-import { closeGlobalAlert as closeAlertAction } from './actions';
+import {
+  closeGlobalAlert as closeAlertAction,
+  showGlobalErrorAlert as showGlobalErrorAlertAction,
+} from './actions';
 
 import {
   ChipContainer,
@@ -95,11 +98,18 @@ class GlobalAlertChip extends Component {
 
   handleUndoClick = async () => {
     const {
+      showErrorAlert,
       alertState: { undoCallback, transactionIdentifier },
     } = this.props;
     this.handleCloseAlert();
-    await TaskApi.rollbackTransaction(transactionIdentifier);
-    undoCallback();
+    try {
+      const rollbackResponse = await TaskApi.rollbackTransaction(
+        transactionIdentifier,
+      );
+      undoCallback(rollbackResponse);
+    } catch {
+      showErrorAlert();
+    }
   };
 
   render = () => {
@@ -145,6 +155,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = {
   closeAlert: closeAlertAction,
+  showErrorAlert: showGlobalErrorAlertAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalAlertChip);
