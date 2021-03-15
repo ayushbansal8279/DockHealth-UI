@@ -19,3 +19,9 @@ export const CheckboxDescription = styled.label`
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
 `;
+
+export const CheckboxContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
