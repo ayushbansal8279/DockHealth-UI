@@ -155,6 +155,7 @@ const BulkEditOptionsBar = ({
         dispatch({
           type: ActionTypes.ADD_TASK_SUCCESS,
           task,
+          taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
         }),
       );
     },

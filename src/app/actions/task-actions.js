@@ -264,7 +264,11 @@ export const moveTask = (
           response?.headers?.['x-transaction-id'],
           () => {
             dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
-            dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+            dispatch({
+              type: ActionTypes.ADD_TASK_SUCCESS,
+              task,
+              taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+            });
           },
         ),
       );
@@ -338,7 +342,11 @@ export function deleteTask(task) {
             AlertMessages.DELETED,
             response?.headers?.['x-transaction-id'],
             () => {
-              dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+              dispatch({
+                type: ActionTypes.ADD_TASK_SUCCESS,
+                task,
+                taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+              });
             },
           ),
         );
