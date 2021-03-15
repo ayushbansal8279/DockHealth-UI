@@ -238,15 +238,7 @@ class Home extends Component {
         : {};
 
     if (loadedTasklist?.listName) {
-      const headerComponent = (
-        <ListSelectHeader
-          isFetching={false}
-          title={loadedTasklist.listName}
-          taskList={loadedTasklist}
-          resetHeader={this.setViewHeader}
-          hasTitle={loadedTasklist.listName}
-        />
-      );
+      const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
 
       templateActions.setHeader({
         layout: [
