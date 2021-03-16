@@ -52,7 +52,7 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
     setReminderTypeValue(reminderType);
   }, [reminderTime, reminderType, setValue, setReminderTypeValue]);
 
-  const isTaskDueDateOverdue = isDueDateOverdue(dueDate);
+  const isTaskDueDateOverdue = isDueDateOverdue(selectedTask);
 
   const reminderIsOn = reminderTypeValue
     ? reminderTypeValue !== ReminderType.NONE

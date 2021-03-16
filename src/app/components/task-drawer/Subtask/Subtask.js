@@ -219,7 +219,7 @@ const Subtask = ({ subtask, currentUser }) => {
             >
               {dueDate ? (
                 <Tooltip placement="top" title="Edit due date">
-                  <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                  <DueDateBasicLabel isOverdue={isDueDateOverdue(subtask)}>
                     {moment(dueDate).format('MM/DD')}
                   </DueDateBasicLabel>
                 </Tooltip>
