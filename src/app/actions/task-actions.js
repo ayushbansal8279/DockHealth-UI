@@ -461,13 +461,13 @@ export const updateDueDate = (
   task,
   dueDate,
   showGlobalConfirmation,
-) => dispatch =>
-  TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
+) => dispatch => {
+  dispatch({
+    type: ActionTypes.UPDATE_TASK_SUCCESS,
+    task: { ...task, dueDate: dueDate?.toISOString() },
+  });
+  return TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
     .then(updatedTask => {
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: updatedTask,
-      });
       if (showGlobalConfirmation) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       }
@@ -479,6 +479,7 @@ export const updateDueDate = (
         task,
       });
     });
+};
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
