@@ -15,7 +15,7 @@ import {
   InvitePeoplePopoverSection,
   InvitePopoverCloseButton,
   InvitePopoverDivider,
-} from './PeopleView.Styled';
+} from './styled';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   email,

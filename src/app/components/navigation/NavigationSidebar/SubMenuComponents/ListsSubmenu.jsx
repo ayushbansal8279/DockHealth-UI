@@ -29,6 +29,7 @@ import {
   DrawerListsItemNewLabel,
   DrawerListsNewLabel,
   ListNameText,
+  UpdatesForMemberIndicator,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -60,16 +61,14 @@ const ListsSubmenu = () => {
     }
   }, [listMenuPopupOpen, currentList]);
 
-  const lists = useMemo(() => [...taskLists, ...pendingTaskLists], [
-    taskLists,
-    pendingTaskLists,
-  ]);
+  const lists = useMemo(
+    () => [...(taskLists || []), ...(pendingTaskLists || [])],
+    [taskLists, pendingTaskLists],
+  );
 
   useEffect(() => {
-    if (lists?.length === 0) {
-      dispatch(TaskListActions.getTaskListForUser());
-      dispatch(TaskListActions.getPendingTaskListsForUser());
-    }
+    dispatch(TaskListActions.getTaskListForUser());
+    dispatch(TaskListActions.getPendingTaskListsForUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,12 +115,15 @@ const ListsSubmenu = () => {
           dispatch(
             TaskListActions.deleteTaskListById(list?.taskListIdentifier),
           );
+          if (list?.taskListIdentifier === activeTaskListIdentifier) {
+            history.push(`/`);
+          }
           dispatch(closeModal());
         },
       };
       dispatch(openModal('DeleteList', modalProps));
     },
-    [dispatch],
+    [activeTaskListIdentifier, dispatch, history],
   );
 
   const openLeaveListModal = useCallback(
@@ -219,6 +221,7 @@ const ListsSubmenu = () => {
                 : `drawer-menu-list-item`
             }
           >
+            {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
             <ListNameText
               isActive={activeTaskListIdentifier === list?.taskListIdentifier}
               onMouseEnter={event => handleMouseEnter(event, list?.listName)}

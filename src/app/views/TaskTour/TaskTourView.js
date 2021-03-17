@@ -45,15 +45,7 @@ const TaskTourView = () => {
           ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
           : {};
 
-      const headerComponent = (
-        <ListSelectHeader
-          isFetching={false}
-          title={loadedTasklist.listName}
-          taskList={loadedTasklist}
-          resetHeader={setViewHeader}
-          hasTitle={loadedTasklist.listName}
-        />
-      );
+      const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
 
       if (loadedTasklist.listName) {
         dispatch(

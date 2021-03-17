@@ -4,7 +4,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import moment from 'moment';
 import { func } from 'prop-types';
 import { filter, includes, isEmpty, reject } from 'ramda';
-import Loader from 'components/common/Loader/Loader';
+import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
@@ -14,14 +14,15 @@ import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import {
   MembersTableContainer,
   MemberTable,
+  ListLoaderContainer,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
   USER_SUBSCRIPTION_STATUS,
 } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 import MemberTypeOptions from './SubscriptionsView.MemberTypeOptions';
-import EmptyOrganizationMemberRow from './SubscriptionsView.EmptyOrganizationMemberRow';
+import EmptyOrganizationMemberRow from './EmptyOrganizationMemberRow/EmptyOrganizationMemberRow';
 import { getUserTypeLabel } from './SubscriptionsView.MembersTable.helpers';
-import { StyledDataGrid } from './DataGridStyles';
+import { StyledDataGrid } from './data-grid-styles';
 
 const MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT = 10;
 
@@ -350,7 +351,9 @@ const SubscriptionsViewMembersTable = ({
   return (
     <MembersTableContainer>
       {isFetching ? (
-        <Loader />
+        <ListLoaderContainer>
+          <ListSkeletonLoader header />
+        </ListLoaderContainer>
       ) : (
         <>
           {showTableHeader && (

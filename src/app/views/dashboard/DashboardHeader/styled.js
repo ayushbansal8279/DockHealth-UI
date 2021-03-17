@@ -2,12 +2,6 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
-export const PersonImage = styled.img`
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-`;
-
 export const HeaderTextContainer = styled.div`
   flex: 1;
   margin-top: ${spacing.small};

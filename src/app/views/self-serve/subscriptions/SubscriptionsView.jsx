@@ -5,10 +5,10 @@ import { useHistory } from 'react-router-dom';
 import { setPaymentNewPlan } from 'actions/organization-actions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
-import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
-import CurrentPlan from './SubscriptionsView.CurrentPlan';
-import initializeSubscriptionsViewHooks from './SubscriptionsView.Hooks';
-import InvitationPanel from './SubscriptionsView.InvitationPanel';
+import SubscriptionsPlansView from './SubscriptionsPlansView/SubscriptionsPlansView';
+import CurrentPlan from './CurrentPlan/CurrentPlan';
+import initializeSubscriptionsViewHooks from './hooks';
+import InvitationPanel from './InvitationPanel/InvitationPanel';
 import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 import {
@@ -16,11 +16,8 @@ import {
   BottomButtonContainer,
   SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
-} from './SubscriptionsView.Styled';
-import {
-  BILLING_FREQUENCY,
-  getSubscriptionPlanData,
-} from './SubscriptionsView.Utilities';
+} from './styled';
+import { BILLING_FREQUENCY, getSubscriptionPlanData } from './helpers';
 
 const goToSubscriptionPayment = history => {
   history.push('/subscription-payment');

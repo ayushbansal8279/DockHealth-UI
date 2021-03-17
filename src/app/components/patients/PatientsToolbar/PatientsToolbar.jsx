@@ -6,7 +6,7 @@ import { downloadPatientImportTemplate } from 'api/patient-api';
 import Button from 'components/common/Button/Button';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
-import PageContentHeader from 'components/common/PageContentHeader';
+import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import useBoolean from 'hooks/useBoolean';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { SearchInputWrapper } from './styled';

@@ -1,13 +1,7 @@
 import { getUserProfilePic, getUserNotificationPrefs } from 'api/user-api';
 import { HOME_PATH, DEFAULT_REDIRECT_PATH } from './paths';
 
-const handleHomeRedirection = async ({
-  data,
-  orgData,
-  isEulaPath,
-  isBaaPath,
-  isHomePath,
-}) => {
+const handleHomeRedirection = async ({ data, isEulaPath, isHomePath }) => {
   try {
     if (data?.profileThumbnailPictureHash) {
       await getUserProfilePic(data?.userIdentifier, 'PROFILE');
@@ -15,11 +9,7 @@ const handleHomeRedirection = async ({
 
     await getUserNotificationPrefs();
 
-    if (
-      ((data?.eulaAcknowledged && isEulaPath) ||
-        (orgData?.baaSigned && isBaaPath)) &&
-      !isHomePath
-    ) {
+    if (data?.eulaAcknowledged && isEulaPath && !isHomePath) {
       return HOME_PATH;
     }
 

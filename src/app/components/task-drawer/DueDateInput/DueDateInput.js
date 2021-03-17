@@ -6,7 +6,6 @@ import { useFormContext } from 'react-hook-form';
 
 import useBoolean from 'hooks/useBoolean';
 import { RobotoTypography } from 'styles/theme';
-import { isDueDateOverdue } from 'helpers/task-helpers';
 import { DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 
 import Datepicker from 'components/common/Datepicker/Datepicker';
@@ -25,6 +24,7 @@ const DueDateInput = ({
   savedDate,
   onSave,
   onClear,
+  error,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const reference = useRef(null);
@@ -180,7 +180,7 @@ const DueDateInput = ({
           ? moment(currentDueDate).format(DATE_US_FORMAT)
           : '',
         style: {
-          color: isDueDateOverdue(savedDate) && palette.oPlusRed,
+          color: error && palette.oPlusRed,
         },
       }}
       onSelect={selectOption}

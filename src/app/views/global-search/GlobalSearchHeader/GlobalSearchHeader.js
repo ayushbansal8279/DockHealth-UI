@@ -4,10 +4,15 @@ import { isSearchingCompletedTasksSelector } from 'selectors/global-search-selec
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import * as TemplateActions from 'actions/template-actions';
 import Spacing from 'components/common/Spacing';
-import CheckMarkCheckbox from 'components/common/CheckMarkCheckbox/CheckMarkCheckbox';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 
-import { TopSectionGrid, InputWrapper, CheckboxDescription } from './styled';
+import {
+  TopSectionGrid,
+  InputWrapper,
+  CheckboxDescription,
+  CheckboxContainer,
+} from './styled';
 
 const GlobalSearchHeader = ({
   isSearchingCompletedTasks,
@@ -38,15 +43,15 @@ const GlobalSearchHeader = ({
         />
       </InputWrapper>
       <Spacing horizontal={5} />
-      <div>
-        <CheckMarkCheckbox
-          size={22}
-          onChange={event => setSearchCompletedTasks(event.target.checked)}
-          checked={isSearchingCompletedTasks}
+      <CheckboxContainer>
+        <Checkbox
+          size={16}
+          onClick={() => setSearchCompletedTasks(!isSearchingCompletedTasks)}
+          isChecked={isSearchingCompletedTasks}
         />
         <Spacing horizontal={3} />
         <CheckboxDescription>Search completed tasks</CheckboxDescription>
-      </div>
+      </CheckboxContainer>
     </TopSectionGrid>
   );
 };

@@ -13,7 +13,6 @@ import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
@@ -98,10 +97,12 @@ const DashboardView = ({
         firstListIdentifier = taskListIdentifier;
       },
       onClose: () => {
-        fetchTasklistForUser();
-        UserApi.getUserByEmail(currentUser.email, currentUser);
-        setFirstCreatedUserListIdentifier(firstListIdentifier);
-        setOpenConfetti(true);
+        if (firstListIdentifier) {
+          fetchTasklistForUser();
+          UserApi.getUserByEmail(currentUser.email, currentUser);
+          setFirstCreatedUserListIdentifier(firstListIdentifier);
+          setOpenConfetti(true);
+        }
       },
     });
   };
@@ -140,7 +141,7 @@ const DashboardView = ({
 
   return (
     <DashboardViewWrapper>
-      <ViewLoader isFetchingData={!currentUserLoaded}>
+      {currentUserLoaded && (
         <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
           {openConfetti && <StyledConfetti recycle={false} />}
           <DashboardScrollableList>
@@ -188,14 +189,14 @@ const DashboardView = ({
             )}
           </DashboardScrollableList>
         </DashboardContentWrapper>
-      </ViewLoader>
+      )}
       {renderNewUserTour()}
     </DashboardViewWrapper>
   );
 };
 
 const mapStateToProps = state => ({
-  lists: taskListsSelector(state),
+  taskLists: taskListsSelector(state),
   pendingTaskLists: pendingTaskListsSelector(state),
   isTaskDrawerOpen: state.taskDrawerState.open,
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),

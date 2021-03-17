@@ -15,7 +15,7 @@ import { initializePusherForPresence } from 'helpers/pusher-instance';
 import { openModal } from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
-import Notification from 'components/common/Notification';
+import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import { featurePalette } from 'styles/palette';
 import Modal from '../modal/Modal';

@@ -8,19 +8,14 @@ import WhiteBellIcon from 'img/notifications/white-bell';
 import NewWhiteBellIcon from 'img/notifications/new-white-bell';
 import CrossedBellIcon from 'img/notifications/crossed-bell';
 import SettingsIcon from 'img/settings-icon';
-import {
-  getActivityAlerts,
-  clearActivityAlert,
-  clearAllActivityAlerts,
-  getActivityAlertsPreferences,
-} from 'api/activity-alerts-api';
+import * as ActivityAlertsApi from 'api/activity-alerts-api';
 import { getNotificationSettings } from 'api/user-api';
 import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
 import { clearNotifications } from 'actions/template-actions';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { initializePusher } from 'helpers/pusher-instance';
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
 import ActivityAlertsSettings from './ActivityAlertsSettings/ActivityAlertsSettings';
+import ActivityAlertsLoader from './ActivityAlertsLoader/ActivityAlertsLoader';
 import {
   ActivityAlertsImg,
   ActivityAlertsPopover,
@@ -62,7 +57,7 @@ const listenRealTimeAlerts = (
   setHasUnreadAlertsState,
   enabledAlerts,
   isOpen,
-  getActivityAlertsWithLoader,
+  getActivityAlerts,
 ) => {
   if (!currentUser || !currentUser.userIdentifier || !enabledAlerts) {
     return;
@@ -80,7 +75,7 @@ const listenRealTimeAlerts = (
     channel.bind('activity-alert', ({ alert }) => {
       if (alert) {
         if (isOpen) {
-          getActivityAlertsWithLoader();
+          getActivityAlerts();
         } else {
           sessionStorage.setItem('hasUnreadAlerts', true);
           setHasUnreadAlertsState(true);
@@ -115,10 +110,9 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
   const iconReference = useRef(null);
   const dispatch = useDispatch();
 
-  const getActivityAlertsWithLoader = async () => {
-    setActivityAlertsListIsFetching(true);
-    await getActivityAlerts(setActivityAlertsList);
-    setActivityAlertsListIsFetching(false);
+  const getActivityAlerts = async () => {
+    const alerts = await ActivityAlertsApi.getActivityAlerts();
+    setActivityAlertsList(alerts);
   };
 
   useEffect(() => {
@@ -132,12 +126,12 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
   }, [notificationsOpen, notificationsPage]);
 
   useEffect(() => {
-    getActivityAlertsPreferences();
+    ActivityAlertsApi.getActivityAlertsPreferences();
     listenRealTimeAlerts(
       currentUser,
       setHasUnreadAlertsState,
       isOpen,
-      getActivityAlertsWithLoader,
+      getActivityAlerts,
     );
   }, [currentUser, isOpen]);
 
@@ -145,8 +139,12 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     swithAlertsToastsHide(isOpen)(dispatch);
 
     if (isOpen) {
-      getActivityAlertsWithLoader();
-      setHasUnreadAlertsState(false);
+      (async () => {
+        setActivityAlertsListIsFetching(true);
+        await getActivityAlerts();
+        setActivityAlertsListIsFetching(false);
+        setHasUnreadAlertsState(false);
+      })();
     }
 
     if (!isOpen) {
@@ -168,15 +166,22 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
   }, [refreshNotificationSettings]);
 
   const onClearAlert = async activityAlertId => {
-    await clearActivityAlert(activityAlertId).then(() => {
-      getActivityAlertsWithLoader();
-    });
+    setActivityAlertsList(previousList =>
+      previousList?.filter(
+        ({ activityAlertIdentifier }) =>
+          activityAlertIdentifier !== activityAlertId,
+      ),
+    );
+    try {
+      await ActivityAlertsApi.clearActivityAlert(activityAlertId);
+    } catch {
+      getActivityAlerts();
+    }
   };
 
   const onClearAllAlerts = async () => {
-    await clearAllActivityAlerts().then(() => {
-      getActivityAlertsWithLoader();
-    });
+    await ActivityAlertsApi.clearAllActivityAlerts();
+    getActivityAlerts();
   };
 
   const hasAnyOptionTurnedOn = notificationSettings.some(
@@ -238,25 +243,30 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
               </ActivityAlertsOptions>
             </ActivityAlertsHeader>
             <ActivityAlertsList>
-              <ViewLoader isFetchingData={activityAlertsListIsFetching}>
-                {activityAlertsList?.length === 0 && (
-                  <EmptyActivityAlerts>
-                    There are no new notifications at this time
-                  </EmptyActivityAlerts>
-                )}
-                {activityAlertsList?.length > 0 &&
-                  activityAlertsList?.map(itemAlert => (
-                    <ActivityAlertsItem
-                      itemAlert={itemAlert}
-                      onClearAlert={() =>
-                        onClearAlert(itemAlert?.activityAlertIdentifier)
-                      }
-                      closeAlerts={() => {
-                        setIsOpen(false);
-                      }}
-                    />
-                  ))}
-              </ViewLoader>
+              {!activityAlertsListIsFetching ? (
+                <>
+                  {activityAlertsList?.length === 0 && (
+                    <EmptyActivityAlerts>
+                      There are no new notifications at this time
+                    </EmptyActivityAlerts>
+                  )}
+                  {activityAlertsList?.length > 0 &&
+                    activityAlertsList?.map(itemAlert => (
+                      <ActivityAlertsItem
+                        key={itemAlert.activityAlertIdentifier}
+                        itemAlert={itemAlert}
+                        onClearAlert={() =>
+                          onClearAlert(itemAlert?.activityAlertIdentifier)
+                        }
+                        closeAlerts={() => {
+                          setIsOpen(false);
+                        }}
+                      />
+                    ))}
+                </>
+              ) : (
+                <ActivityAlertsLoader />
+              )}
             </ActivityAlertsList>
           </>
         )}

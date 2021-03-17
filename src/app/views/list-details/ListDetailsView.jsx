@@ -7,10 +7,10 @@ import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
-import { TaskListTabName } from 'components/task-view/Toolbar/config';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 // import Tour from 'components/tour-wizard/Tour/Tour';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import Toolbar from 'components/task-view/Toolbar/NewToolbarContainer';
+import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 
 import * as TemplateActions from 'actions/template-actions';
@@ -238,15 +238,7 @@ class Home extends Component {
         : {};
 
     if (loadedTasklist?.listName) {
-      const headerComponent = (
-        <ListSelectHeader
-          isFetching={false}
-          title={loadedTasklist.listName}
-          taskList={loadedTasklist}
-          resetHeader={this.setViewHeader}
-          hasTitle={loadedTasklist.listName}
-        />
-      );
+      const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
 
       templateActions.setHeader({
         layout: [

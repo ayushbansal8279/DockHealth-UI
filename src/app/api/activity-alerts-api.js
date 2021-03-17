@@ -21,14 +21,14 @@ export const getActivityAlertsPreferences = () =>
       throw error;
     });
 
-export const getActivityAlerts = setActivityAlertsList =>
+export const getActivityAlerts = () =>
   axios({
     method: 'get',
     url: '/activity/findActivityAlertsForUser',
   })
     .then(({ data }) => {
-      setActivityAlertsList(data);
       sessionStorage.setItem('hasUnreadAlerts', false);
+      return data;
     })
     .catch(error => {
       throw error;

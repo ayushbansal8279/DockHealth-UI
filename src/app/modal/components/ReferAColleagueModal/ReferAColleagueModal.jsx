@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Close } from '@material-ui/icons';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -39,7 +39,7 @@ const validationSchema = object().shape({
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ handleReferralClose }) => async ({
+const onSubmit = ({ handleReferralSuccess }) => async ({
   firstName,
   lastName,
   email,
@@ -50,12 +50,7 @@ const onSubmit = ({ handleReferralClose }) => async ({
       lastName,
       email,
     });
-    handleReferralClose();
-    showAlert({
-      status: 'success',
-      title: 'Email Sent',
-      text: `Thanks. We have sent an email to ${email}`,
-    });
+    handleReferralSuccess(email);
   } catch (error) {
     showAlert({
       status: 'error',
@@ -65,11 +60,19 @@ const onSubmit = ({ handleReferralClose }) => async ({
   }
 };
 
-export default function ReferAColleagueModal({ closeModal }) {
+export default function ReferAColleagueModal({ closeModal, openModal }) {
   const formMethods = useForm({
     validationSchema,
     reValidateMode: 'onSubmit',
   });
+
+  const openSuccessModal = useCallback(
+    email =>
+      openModal('SendingInvite', {
+        email,
+      }),
+    [openModal],
+  );
 
   return (
     <MainContainer>
@@ -81,7 +84,7 @@ export default function ReferAColleagueModal({ closeModal }) {
           <StyledForm
             onSubmit={formMethods.handleSubmit(
               onSubmit({
-                handleReferralClose: closeModal,
+                handleReferralSuccess: openSuccessModal,
               }),
             )}
           >

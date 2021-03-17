@@ -6,7 +6,6 @@ import {
   getGroupsForTaskList,
   createGroupAssignedToList,
 } from 'api/task-group-list-api';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import {
   TitleWithButtonWrapper,
   Title,
@@ -92,9 +91,9 @@ const GroupSelectStep = ({
             <Title>{selectedList.listName}</Title>
           </TitleWithButtonWrapper>
           <Box m={1} />
-          <ViewLoader isFetchingData={isFetchingGroups}>
-            <>
-              <ListsWrapper>
+          <ListsWrapper>
+            {!isFetchingGroups && (
+              <>
                 {groups?.length > 0 ? (
                   groups.map(group => (
                     <ListItem
@@ -131,23 +130,22 @@ const GroupSelectStep = ({
                 ) : (
                   <EmptyMessage>List is empty</EmptyMessage>
                 )}
-              </ListsWrapper>
-              <QuickAddInputWrapper isFocused={groupInputFocused}>
-                <QuickAddInput
-                  ref={addGroupReference}
-                  type="text"
-                  placeholder="Add group"
-                  onFocus={setGroupInputFocused}
-                  onBlur={unsetGroupInputFocused}
-                  disabled={savingGroup}
-                  onKeyDown={event =>
-                    event.key === 'Enter' &&
-                    handleAddNewGroup(event.target.value)
-                  }
-                />
-              </QuickAddInputWrapper>
-            </>
-          </ViewLoader>
+              </>
+            )}
+          </ListsWrapper>
+          <QuickAddInputWrapper isFocused={groupInputFocused}>
+            <QuickAddInput
+              ref={addGroupReference}
+              type="text"
+              placeholder="Add group"
+              onFocus={setGroupInputFocused}
+              onBlur={unsetGroupInputFocused}
+              disabled={savingGroup || isFetchingGroups}
+              onKeyDown={event =>
+                event.key === 'Enter' && handleAddNewGroup(event.target.value)
+              }
+            />
+          </QuickAddInputWrapper>
         </>
       )}
     </Step>

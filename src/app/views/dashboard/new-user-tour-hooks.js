@@ -61,7 +61,7 @@ const newUserTourHooks = ({
           setInboxListElement(inboxElement);
           setInboxPopoverOpen(true);
           onInboxTourEnter('Inbox introduction');
-        });
+        }, 500);
       }
     }
   };
@@ -97,7 +97,7 @@ const newUserTourHooks = ({
         setFirstListIdentifier(targetListIdentifier);
         setFirstListElement(listElement);
         onNewUserTourEnter('Create list congrats');
-      });
+      }, 500);
     } else if (hasAnyTask) {
       startUserModalFlow();
     }

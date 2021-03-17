@@ -5,7 +5,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import useBoolean from 'hooks/useBoolean';
 import * as ActionTypes from 'actions/action-types';
 import { getTasksForTaskListByTaskGroup, addTask } from 'api/task-api';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import {
   TitleWithButtonWrapper,
   Title,
@@ -112,9 +111,9 @@ const ParentTaskSelectStep = ({
             </Title>
           </TitleWithButtonWrapper>
           <Box m={1} />
-          <ViewLoader isFetchingData={isFetchingParentTasks}>
-            <>
-              <ListsWrapper>
+          <ListsWrapper>
+            {!isFetchingParentTasks && (
+              <>
                 {parentTasks?.length > 0 ? (
                   parentTasks.map(parentTask => (
                     <ListItem
@@ -141,23 +140,25 @@ const ParentTaskSelectStep = ({
                     {fetchingError || 'List is empty'}
                   </EmptyMessage>
                 )}
-              </ListsWrapper>
-              <QuickAddInputWrapper isFocused={groupInputFocused}>
-                <QuickAddInput
-                  ref={addParentTaskReference}
-                  type="text"
-                  placeholder="Add task"
-                  onFocus={setGroupInputFocused}
-                  onBlur={unsetGroupInputFocused}
-                  disabled={savingParentTask || fetchingError}
-                  onKeyDown={event =>
-                    event.key === 'Enter' &&
-                    handleAddNewParentTask(event.target.value)
-                  }
-                />
-              </QuickAddInputWrapper>
-            </>
-          </ViewLoader>
+              </>
+            )}
+          </ListsWrapper>
+          <QuickAddInputWrapper isFocused={groupInputFocused}>
+            <QuickAddInput
+              ref={addParentTaskReference}
+              type="text"
+              placeholder="Add task"
+              onFocus={setGroupInputFocused}
+              onBlur={unsetGroupInputFocused}
+              disabled={
+                savingParentTask || fetchingError || isFetchingParentTasks
+              }
+              onKeyDown={event =>
+                event.key === 'Enter' &&
+                handleAddNewParentTask(event.target.value)
+              }
+            />
+          </QuickAddInputWrapper>
         </>
       )}
     </Step>

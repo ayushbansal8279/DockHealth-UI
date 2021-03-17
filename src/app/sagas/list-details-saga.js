@@ -234,6 +234,10 @@ function* doGetGroupedTasks({ payload }) {
         sort,
         selectedFilters,
       );
+      yield put({
+        type: ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS,
+        filters: groupedTasks.taskFilterOptions,
+      });
     }
 
     yield put({ type: tasksActionType, groupedTasks, loadingMore });
@@ -536,10 +540,10 @@ function* doOnEnterListDetails() {
       yield all([
         status === TaskStatus.INCOMPLETE &&
           call(doGetTasksGroupsList, { taskListIdentifier }),
-        put(
+        put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
+        yield put(
           MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
         ),
-        put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
         put(
           ListDetailsActions.getListDetailsGroupedTasks({
             taskListIdentifier,
@@ -680,6 +684,11 @@ function* doFilterListDetailsTasks({ payload }) {
     tabName?.toLowerCase() === 'complete'
       ? TaskStatus.COMPLETE
       : TaskStatus.INCOMPLETE;
+
+  if (!filters || isEmpty(filters))
+    yield put(
+      MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
+    );
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(

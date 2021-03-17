@@ -11,7 +11,6 @@ import {
   SETTINGS_ROUTES,
   SIMPLE_ROUTES,
 } from './config';
-import LoginUser from '../views/auth/LoginUser';
 import TemplateAuthBase from '../views/TemplateAuthBase/TemplateAuthBase';
 import TemplateCore from '../views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from '../views/TemplateCore/TemplateCoreSubscriptionPlan';
@@ -136,22 +135,6 @@ const Routes = () => {
           <TemplateCore
             childRoutes={SETTINGS_ROUTES}
             setRedirection={setRedirection}
-          />
-        )}
-      />
-      <Route
-        path="/"
-        render={() => (
-          <TemplateAuthBase
-            childRoutes={[
-              {
-                path: '/',
-                RouteComponent: LoginUser,
-                onEnter: () => {
-                  sessionStorage.removeItem('currentOrganizationIdentifier');
-                },
-              },
-            ]}
           />
         )}
       />

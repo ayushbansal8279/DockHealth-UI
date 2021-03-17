@@ -8,7 +8,7 @@ import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
-import { TaskListTabName } from 'components/task-view/Toolbar/config';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 import {
   patientTaskListsSelector,
   patientTaskListsActiveTabSelector,

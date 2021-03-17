@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
 import * as TaskApi from 'api/task-api';
 
-import CheckmarkYellow from 'img/checkmark-yellow';
-
-import { closeGlobalAlert as closeAlertAction } from './actions';
+import {
+  closeGlobalAlert as closeAlertAction,
+  showGlobalErrorAlert as showGlobalErrorAlertAction,
+} from './actions';
 
 import {
-  GlobalChipWrapper,
   ChipContainer,
   ChipText,
   ChipBackground,
-  CheckCircleIcon,
+  IconContainer,
   UndoButton,
   MainChipButton,
   CounterContainer,
@@ -84,7 +86,7 @@ class GlobalAlertChip extends Component {
 
     this.intervalHandle = setInterval(() => {
       // eslint-disable-next-line react/destructuring-assignment
-      if (this.state.counter === 1) {
+      if (this.state.counter === 0) {
         this.handleCloseAlert();
       } else {
         this.setState(({ counter: previousCounter }) => ({
@@ -96,50 +98,53 @@ class GlobalAlertChip extends Component {
 
   handleUndoClick = async () => {
     const {
+      showErrorAlert,
       alertState: { undoCallback, transactionIdentifier },
     } = this.props;
-    await TaskApi.rollbackTransaction(transactionIdentifier);
-    undoCallback();
     this.handleCloseAlert();
+    try {
+      const rollbackResponse = await TaskApi.rollbackTransaction(
+        transactionIdentifier,
+      );
+      undoCallback(rollbackResponse);
+    } catch {
+      showErrorAlert();
+    }
   };
 
   render = () => {
     const {
-      alertState: {
-        isGlobalOpen,
-        isSideBarAlert,
-        text,
-        type,
-        transactionIdentifier,
-      },
+      alertState: { isGlobalOpen, text, type, transactionIdentifier },
     } = this.props;
 
     const { counter } = this.state;
 
     return (
-      <GlobalChipWrapper isSideBarAlert={isSideBarAlert}>
-        <ChipContainer isOpen={isGlobalOpen}>
-          <MainChipButton type="button" onClick={this.handleCloseAlert}>
-            {type === 'success' && (
-              <CheckCircleIcon src={CheckmarkYellow} isOpen={isGlobalOpen} />
+      <ChipContainer
+        isOpen={isGlobalOpen}
+        type={type}
+        withUndo={transactionIdentifier}
+      >
+        <MainChipButton type="button" onClick={this.handleCloseAlert}>
+          <IconContainer>
+            {type === 'error' ? (
+              <CloseIcon color="inherit" />
+            ) : (
+              <CheckCircleOutlineIcon color="inherit" />
             )}
-            <ChipText>{text}</ChipText>
-          </MainChipButton>
-          <UndoButton
-            isVisible={transactionIdentifier}
-            type="button"
-            onClick={this.handleUndoClick}
-          >
-            <UndoButtonContent>
-              <ChipText>UNDO</ChipText>
-              <CounterContainer>
-                <ChipText>{counter}</ChipText>
-              </CounterContainer>
-            </UndoButtonContent>
-          </UndoButton>
-          <ChipBackground type={type} />
-        </ChipContainer>
-      </GlobalChipWrapper>
+          </IconContainer>
+          <ChipText>{text}</ChipText>
+        </MainChipButton>
+        <UndoButton type="button" onClick={this.handleUndoClick}>
+          <UndoButtonContent>
+            <ChipText>UNDO</ChipText>
+            <CounterContainer>
+              <ChipText>{counter}</ChipText>
+            </CounterContainer>
+          </UndoButtonContent>
+        </UndoButton>
+        <ChipBackground />
+      </ChipContainer>
     );
   };
 }
@@ -150,6 +155,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = {
   closeAlert: closeAlertAction,
+  showErrorAlert: showGlobalErrorAlertAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalAlertChip);

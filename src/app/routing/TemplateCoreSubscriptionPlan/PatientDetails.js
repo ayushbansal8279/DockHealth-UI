@@ -12,7 +12,7 @@ import {
 } from 'sagas/patient-tasks-saga';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import { TaskListTabName } from 'components/task-view/Toolbar/config';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 
 export const onEnterPatientDetailsView = async ({ match, dispatch }) => {
   const { params } = match;

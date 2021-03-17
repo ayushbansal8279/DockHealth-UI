@@ -142,7 +142,7 @@ const OnboardingTeamSetupView = () => {
     (async () => {
       const { baaSigned } = await checkBAASignedStatus()(dispatch);
       if (!baaSigned) {
-        history.push('/onboarding/baa-overview');
+        history.push('/onboarding/eula');
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

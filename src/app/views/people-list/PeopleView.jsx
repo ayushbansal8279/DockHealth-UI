@@ -4,13 +4,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import * as TemplateActions from 'actions/template-actions';
 import * as PeopleActions from 'actions/people-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import Loader from 'components/common/Loader/Loader';
+import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import PageContentHeader from 'components/common/PageContentHeader';
+import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import Spacing from 'components/common/Spacing';
 import PeopleContainer from 'components/people/PeopleContainer';
 import Search from 'components/task-view/Search/Search';
@@ -18,17 +17,12 @@ import Button from 'components/common/Button/Button';
 import LightbulbBig from 'img/lightbulb-big';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
 import {
+  ListLoaderContainer,
   ManageUsersContainer,
   HeaderMessage,
   HeaderMessageTitle,
   HeaderMessageDescription,
-} from './PeopleView.Styled';
-
-const LoaderContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
+} from './styled';
 
 class PeopleView extends PureComponent {
   state = {
@@ -115,9 +109,9 @@ class PeopleView extends PureComponent {
             </ManageUsersContainer>
             <Spacing vertical={4} />
             {isFetching ? (
-              <LoaderContainer>
-                <Loader />
-              </LoaderContainer>
+              <ListLoaderContainer>
+                <ListSkeletonLoader header />
+              </ListLoaderContainer>
             ) : (
               <PeopleContainer
                 peopleList={peopleList}

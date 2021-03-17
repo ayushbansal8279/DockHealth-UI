@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import {
@@ -44,25 +43,27 @@ const ListSelectSection = ({
       <Description>Choose a list for your task</Description>
       <Spacing vertical={4} />
       <ListsWrapper>
-        <ViewLoader isFetchingData={isFetchingLists}>
-          {lists?.length > 0 ? (
-            lists.map(list => (
-              <ListItem
-                key={list.taskListIdentifier}
-                isSelected={
-                  selectedList &&
-                  selectedList.taskListIdentifier === list.taskListIdentifier
-                }
-                onClick={() => onListSelection(list)}
-                type="button"
-              >
-                {list.listName}
-              </ListItem>
-            ))
-          ) : (
-            <EmptyMessage>List is empty</EmptyMessage>
-          )}
-        </ViewLoader>
+        {!isFetchingLists && (
+          <>
+            {lists?.length > 0 ? (
+              lists.map(list => (
+                <ListItem
+                  key={list.taskListIdentifier}
+                  isSelected={
+                    selectedList &&
+                    selectedList.taskListIdentifier === list.taskListIdentifier
+                  }
+                  onClick={() => onListSelection(list)}
+                  type="button"
+                >
+                  {list.listName}
+                </ListItem>
+              ))
+            ) : (
+              <EmptyMessage>List is empty</EmptyMessage>
+            )}
+          </>
+        )}
       </ListsWrapper>
       <AddListInputWrapper isFocused={isInputFoucused}>
         <AddListInput

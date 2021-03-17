@@ -9,7 +9,7 @@ import {
 } from 'selectors/task-list-selectors';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import ListPopover from 'components/common/ListPopover';
+import ListPopover from 'components/common/ListPopover/ListPopover';
 import Spacing from 'components/common/Spacing';
 import { HeaderTitleContainer, StyledTitle, TitleContainer } from './styled';
 
@@ -26,8 +26,8 @@ const transformTaskList = ({ closeListPopover, taskList, history }) => ({
   },
 });
 
-const ListSelectHeader = ({ hasTitle, title, isFetching, taskList }) => {
-  const taskListIdentifier = taskList?.taskListIdentifier;
+const ListSelectHeader = ({ taskList }) => {
+  const { taskListIdentifier, listName } = taskList || {};
 
   const listPopoverReference = useRef(null);
   const history = useHistory();
@@ -56,10 +56,10 @@ const ListSelectHeader = ({ hasTitle, title, isFetching, taskList }) => {
   ];
 
   return (
-    <GenericHeader isFetching={isFetching || !hasTitle} useTypography={false}>
+    <GenericHeader isFetching={!taskList || !listName} useTypography={false}>
       <HeaderTitleContainer>
         <StyledTitle onClick={openListPopover} variant="h6" component="div">
-          <TitleContainer>{title}</TitleContainer>
+          <TitleContainer>{listName}</TitleContainer>
           <Spacing horizontal={3} />
           <RotatableHeaderChevron
             rotated={isListPopoverOpen}

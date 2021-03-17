@@ -738,7 +738,7 @@ const TaskItem = ({
                     title={dueDate ? 'Edit due date' : 'Add due date'}
                   >
                     {dueDate ? (
-                      <DueDateBasicLabel isOverdue={isDueDateOverdue(dueDate)}>
+                      <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
                         {moment(dueDate).format('MM/DD')}
                       </DueDateBasicLabel>
                     ) : (

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
-import { H3 } from './SubscriptionsView.Styled';
+import { H3 } from './styled';
 
 export const MembersTableContainer = styled.div`
   margin-top: 1rem;
@@ -90,4 +90,8 @@ export const ColumnContainer = styled.div`
   color: #4a4a4a; // custom color
   padding: ${spacing.tiny} 0;
   font-family: 'Montserrat', sans-serif;
+`;
+
+export const ListLoaderContainer = styled.div`
+  margin: ${spacing.giga} auto ${spacing.regular} auto;
 `;

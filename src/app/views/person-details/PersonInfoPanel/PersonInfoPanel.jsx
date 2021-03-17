@@ -1,28 +1,20 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { useMount } from 'react-use';
-import {
-  getUserAvatar,
-  removeUserFromOrganization,
-} from 'actions/people-actions';
-import Avatar from 'components/common/Avatar/Avatar';
-import { formatPhoneNumber, noop, showAlert } from 'helpers/utility-functions';
-import palette from 'styles/palette';
+import { removeUserFromOrganization } from 'actions/people-actions';
+import Member from 'components/members/Member/Member';
+import { formatPhoneNumber, showAlert } from 'helpers/utility-functions';
 import ArrowLeftIcon from 'img/arrow-left';
 import Spacing from 'components/common/Spacing';
 import {
   ArchivePersonButton,
   InfoPanelContainer,
-  PersonImage,
   PersonTitle,
   ContactInfoContainer,
   ContactInfoItem,
 } from './styled';
 import PersonInfoLoader from './PersonInfoLoader';
-
-const NOT_AVAILABLE = 'N/A';
 
 const PersonInfoPanel = ({ personData, archivePerson }) => {
   const {
@@ -34,12 +26,6 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
     workPhoneNumber,
   } = personData || {};
   const history = useHistory();
-  const [avatarContent, setAvatarContent] = useState(
-    `${firstName.charAt(0)}${lastName.charAt(0)}`
-      .trim()
-      .toUpperCase()
-      .replace(/^$/, NOT_AVAILABLE),
-  );
 
   const orgUserRole = useSelector(
     store => store.userState.userProfile.orgUserRole,
@@ -48,18 +34,6 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
   const dispatch = useDispatch();
 
   const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
-
-  useMount(() => {
-    if (userIdentifier && personData.profileThumbnailPictureHash) {
-      getUserAvatar(personData)(dispatch)
-        .then(image => {
-          if (image?.byteLength !== 0) {
-            setAvatarContent(<PersonImage alt="avatar" src={image} />);
-          }
-        })
-        .catch(noop);
-    }
-  });
 
   const onConfirmArchive = () =>
     removeUserFromOrganization(userIdentifier)(dispatch)
@@ -88,9 +62,12 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
       <Spacing horizontal={3} />
       {personData ? (
         <>
-          <Avatar color={palette.unknownGrey5} size={50}>
-            {avatarContent}
-          </Avatar>
+          <Member
+            member={personData}
+            size={50}
+            showTooltip={false}
+            showOnlineIndicator={false}
+          />
           <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
           <ContactInfoContainer>
             {email && <ContactInfoItem>{email}</ContactInfoItem>}

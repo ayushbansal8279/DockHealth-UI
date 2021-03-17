@@ -129,7 +129,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
       TaskApi.updateTask(newTask)
-        .then(task => {
+        .then(({ task }) => {
           dispatch({
             type: ActionTypes.UPDATE_TASK_SUCCESS,
             task,
@@ -232,7 +232,7 @@ export const moveTask = (
   }
 
   return TaskApi.updateTask(updatedTask)
-    .then(() => {
+    .then(response => {
       dispatch({
         type: ActionTypes.MOVE_TASK_SUCCESS,
         task,
@@ -256,6 +256,21 @@ export const moveTask = (
         getTasksGroupsList({
           taskListIdentifier: taskList.taskListIdentifier,
         }),
+      );
+
+      dispatch(
+        AlertActions.showGlobalAlertWithUndo(
+          AlertMessages.TASK_MOVED,
+          response?.headers?.['x-transaction-id'],
+          () => {
+            dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+            dispatch({
+              type: ActionTypes.ADD_TASK_SUCCESS,
+              task,
+              taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+            });
+          },
+        ),
       );
     })
     .catch(error => {
@@ -320,9 +335,21 @@ export function updateComment(task, comment) {
 export function deleteTask(task) {
   return dispatch =>
     TaskApi.deleteTask(task.taskIdentifier)
-      .then(() => {
+      .then(response => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
+        dispatch(
+          AlertActions.showGlobalAlertWithUndo(
+            AlertMessages.DELETED,
+            response?.headers?.['x-transaction-id'],
+            () => {
+              dispatch({
+                type: ActionTypes.ADD_TASK_SUCCESS,
+                task,
+                taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+              });
+            },
+          ),
+        );
         dispatch(
           getTasksGroupsList({
             taskListIdentifier: task?.taskList?.taskListIdentifier,
@@ -434,13 +461,13 @@ export const updateDueDate = (
   task,
   dueDate,
   showGlobalConfirmation,
-) => dispatch =>
-  TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
+) => dispatch => {
+  dispatch({
+    type: ActionTypes.UPDATE_TASK_SUCCESS,
+    task: { ...task, dueDate: dueDate?.toISOString() },
+  });
+  return TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
     .then(updatedTask => {
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: updatedTask,
-      });
       if (showGlobalConfirmation) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       }
@@ -452,15 +479,16 @@ export const updateDueDate = (
         task,
       });
     });
+};
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
-    .then(response => {
+    .then(({ task: updatedTask }) => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: response,
+        task: updatedTask,
       });
-      return response;
+      return updatedTask;
     })
     .catch(error => {
       throw error;
@@ -706,50 +734,6 @@ export function reassignTask(taskIdentifier, userId) {
       .catch(error => {
         throw error;
       });
-}
-
-export function getFilteredTasksForList(
-  taskListIdentifier,
-  status,
-  sortBy,
-  selectedFilters,
-  withLoader = true,
-) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
-
-  return dispatch => {
-    if (withLoader) {
-      dispatch({
-        type:
-          status === 'INCOMPLETE'
-            ? ActionTypes.REQUEST_TASKS
-            : ActionTypes.REQUEST_COMPLETED_TASKS,
-      });
-    }
-
-    return TaskApi.getFilteredTasksForList(
-      taskListIdentifier,
-      status,
-      sortBy,
-      selectedFilters,
-    )
-      .then(groupedTasks => {
-        dispatch({ type: action, groupedTasks });
-        if (groupedTasks.taskFilterOptions) {
-          dispatch({
-            type: ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS,
-            filters: groupedTasks.taskFilterOptions,
-          });
-        }
-        return groupedTasks;
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
 }
 
 export function markTaskRead(task) {

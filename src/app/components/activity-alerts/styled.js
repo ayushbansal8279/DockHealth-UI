@@ -79,6 +79,7 @@ export const ActivityAlertsList = styled.div`
   padding: ${spacing.small} ${spacing.large} ${spacing.large};
   max-height: 600px;
   overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 export const ActivityAlertsClearAllLabel = styled.div`

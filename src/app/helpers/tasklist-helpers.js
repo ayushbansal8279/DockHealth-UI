@@ -1,3 +1,8 @@
+export const TaskListTabName = {
+  OPEN: 'INCOMPLETE',
+  COMPLETE: 'COMPLETE',
+};
+
 export const checkIfTasksHaveSubtasksOrCommnets = tasks => {
   if (tasks?.length === 0) return false;
 
@@ -11,5 +16,3 @@ export const checkIfTasksHaveSubtasksOrCommnets = tasks => {
     );
   });
 };
-
-export default checkIfTasksHaveSubtasksOrCommnets;

@@ -14,14 +14,14 @@ import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
-import BillingData from './BillingsView.BillingData';
-import InvoicesList from './BillingsView.InvoicesList';
+import BillingData from './BillingData/BillingData';
+import InvoicesList from './InvoicesList/InvoicesList';
 import {
   BillingsViewContainer,
   BillingsViewInnerContainer,
   ErrorContainer,
   StyledCollapse,
-} from './BillingsView.Styled';
+} from './styled';
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
 const onSubmit = ({ setError, dispatch, organizationIdentifier }) => ({

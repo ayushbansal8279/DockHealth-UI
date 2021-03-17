@@ -108,7 +108,7 @@ export function updateTask(task) {
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
-      return response.data;
+      return response;
     });
 }
 

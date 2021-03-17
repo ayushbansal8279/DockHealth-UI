@@ -323,6 +323,7 @@ const TaskDrawer = ({
                     onClear={clearDueDate}
                     setAutoSaveVisible={setAutoSaveVisible}
                     onTaskUpdate={onTaskUpdate}
+                    error={isDueDateOverdue(selectedTask)}
                   />
                 </div>
               </Grid>
@@ -333,7 +334,7 @@ const TaskDrawer = ({
                     label="DUE TIME (00:00 am/pm)"
                     savedValue={taskDueTime}
                     onSave={handleDueTimeSave}
-                    error={isDueDateOverdue(selectedTask?.dueDate)}
+                    error={isDueDateOverdue(selectedTask)}
                   />
                 </HiddenFieldContainer>
               </Grid>
