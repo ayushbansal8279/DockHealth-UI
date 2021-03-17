@@ -8,6 +8,7 @@ import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { RobotoTypography } from 'styles/theme';
 import {
   OnboardingAnchor,
   OnboardingButton,
@@ -23,8 +24,9 @@ const OnboardingEulaView = () => {
       userProfile: store.userState.userProfile,
     };
   });
+  const [isBaaAccepted, toggleBaaAccepted] = useToggle(userProfile?.baaSigned);
 
-  const continueButtonDisabled = !isEulaAccepted;
+  const continueButtonDisabled = !isEulaAccepted || !isBaaAccepted;
 
   const onAgreeClick = useCallback(() => {
     acknowledgeEula()(dispatch).then(() => {
@@ -33,7 +35,7 @@ const OnboardingEulaView = () => {
         userProfile.orgUserRole === 'ADMIN' ||
         userProfile.orgUserRole === 'OWNER'
       ) {
-        history.push('/onboarding/baa-overview');
+        history.push('/onboarding/organization-setup');
       } else {
         history.push('/core/home/my-tasks');
       }
@@ -44,7 +46,7 @@ const OnboardingEulaView = () => {
 
   return (
     <div>
-      <Spacing vertical={6} />
+      <Spacing vertical={3} />
       <MontserratTypography weight="600" variant="h2">
         LET&apos;S GET STARTED
       </MontserratTypography>
@@ -55,10 +57,10 @@ const OnboardingEulaView = () => {
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h4">
-        Let’s start by getting you and your team HIPAA compliant on Dock. This
-        requires a few clicks and a signature.
+        To get you and your team set up to be HIPAA complaint, please agree to
+        the terms below..
       </MontserratTypography>
-      <Spacing vertical={6} />
+      <Spacing vertical={5} />
       <Grid container>
         <Grid item sm={12} container wrap="nowrap" alignItems="center">
           <Checkbox
@@ -67,7 +69,7 @@ const OnboardingEulaView = () => {
             size={20}
           />
           <Spacing horizontal={3} />
-          <MontserratTypography variant="h4">
+          <RobotoTypography variant="h4">
             <span>I have read and agree to the </span>
             <OnboardingAnchor
               href="https://www.dock.health/end-user-license-agreement"
@@ -82,8 +84,28 @@ const OnboardingEulaView = () => {
             >
               Privacy Statement
             </OnboardingAnchor>
-          </MontserratTypography>
+          </RobotoTypography>
         </Grid>
+        <Spacing vertical={4} />
+        {!userProfile?.baaSigned && (
+          <Grid item sm={12} container wrap="nowrap" alignItems="center">
+            <Checkbox
+              isChecked={isBaaAccepted}
+              onClick={toggleBaaAccepted}
+              size={20}
+            />
+            <Spacing horizontal={3} />
+            <RobotoTypography variant="h4">
+              <span>I have read and agree to the </span>
+              <OnboardingAnchor
+                href="https://www.dock.health/end-user-license-agreement"
+                target="_blank"
+              >
+                Business Associate Agreement (BAA)
+              </OnboardingAnchor>
+            </RobotoTypography>
+          </Grid>
+        )}
         <Spacing vertical={isSmallScreen ? 4 : 6} />
         <Grid item sm={12} container justify="flex-end">
           <Grid item xs={12} sm={12} md={4}>
