@@ -61,10 +61,10 @@ const ListsSubmenu = () => {
     }
   }, [listMenuPopupOpen, currentList]);
 
-  const lists = useMemo(() => [...taskLists, ...pendingTaskLists], [
-    taskLists,
-    pendingTaskLists,
-  ]);
+  const lists = useMemo(
+    () => [...(taskLists || []), ...(pendingTaskLists || [])],
+    [taskLists, pendingTaskLists],
+  );
 
   useEffect(() => {
     dispatch(TaskListActions.getTaskListForUser());
@@ -115,12 +115,15 @@ const ListsSubmenu = () => {
           dispatch(
             TaskListActions.deleteTaskListById(list?.taskListIdentifier),
           );
+          if (list?.taskListIdentifier === activeTaskListIdentifier) {
+            history.push(`/`);
+          }
           dispatch(closeModal());
         },
       };
       dispatch(openModal('DeleteList', modalProps));
     },
-    [dispatch],
+    [activeTaskListIdentifier, dispatch, history],
   );
 
   const openLeaveListModal = useCallback(

@@ -97,10 +97,12 @@ const DashboardView = ({
         firstListIdentifier = taskListIdentifier;
       },
       onClose: () => {
-        fetchTasklistForUser();
-        UserApi.getUserByEmail(currentUser.email, currentUser);
-        setFirstCreatedUserListIdentifier(firstListIdentifier);
-        setOpenConfetti(true);
+        if (firstListIdentifier) {
+          fetchTasklistForUser();
+          UserApi.getUserByEmail(currentUser.email, currentUser);
+          setFirstCreatedUserListIdentifier(firstListIdentifier);
+          setOpenConfetti(true);
+        }
       },
     });
   };
