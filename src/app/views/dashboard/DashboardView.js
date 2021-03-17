@@ -194,7 +194,7 @@ const DashboardView = ({
 };
 
 const mapStateToProps = state => ({
-  lists: taskListsSelector(state),
+  taskLists: taskListsSelector(state),
   pendingTaskLists: pendingTaskListsSelector(state),
   isTaskDrawerOpen: state.taskDrawerState.open,
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
