@@ -1,4 +1,5 @@
 import memoize from 'lodash.memoize';
+import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 
 export const get = ({ organizationIdentifier }) => {
@@ -188,3 +189,24 @@ export const referAColleague = referDetails => {
     data: referDetails,
   }).then(response => response.data);
 };
+
+export function downloadBAADocument() {
+  return axios({
+    url: `/organization/downloadBAADocument`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download', 'Dock_Health_Standard_BAA.pdf');
+      document.body.append(link);
+      link.click();
+    })
+    .catch(noop);
+}
