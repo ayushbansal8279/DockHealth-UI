@@ -9,6 +9,7 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
+import { downloadBAADocument } from 'api/organization-api';
 import {
   OnboardingAnchor,
   OnboardingButton,
@@ -98,8 +99,9 @@ const OnboardingEulaView = () => {
             <RobotoTypography variant="h4">
               <span>I have read and agree to the </span>
               <OnboardingAnchor
-                href="https://www.dock.health/end-user-license-agreement"
-                target="_blank"
+                onClick={() => {
+                  downloadBAADocument();
+                }}
               >
                 Business Associate Agreement (BAA)
               </OnboardingAnchor>
