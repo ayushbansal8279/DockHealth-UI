@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useRef, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
@@ -95,7 +96,18 @@ const TaskListDetailsDropdown = ({
   );
 
   const groupHasMultipleAssignees = useMemo(
-    () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+    () =>
+      tasks.some(
+        // eslint-disable-next-line no-shadow
+        ({ assignedToUsers, subtasks }) =>
+          (assignedToUsers && assignedToUsers.length > 1) ||
+          (subtasks &&
+            subtasks.length > 0 &&
+            subtasks.some(
+              ({ assignedToUsers: subtaskAssignedToUsers }) =>
+                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+            )),
+      ),
     [tasks],
   );
 

@@ -56,6 +56,15 @@ const MultiAssignMembersList = ({
       ),
     [searchValue, currentUser, membersOptions],
   );
+
+  const currentUserMember = useMemo(
+    () =>
+      membersOptions?.find(
+        ({ userIdentifier }) => userIdentifier === currentUser?.userIdentifier,
+      ) || currentUser,
+    [membersOptions, currentUser],
+  );
+
   const inputReference = useRef(null);
 
   const selectMembersWithDebounce = useCallback(
@@ -198,31 +207,31 @@ const MultiAssignMembersList = ({
             )}
           </ListContentSection>
         )}
-        {currentUser?.userName
+        {currentUserMember?.userName
           ?.toLowerCase()
           .includes(searchValue.toLowerCase()) &&
           (function renderCurrentUserOption() {
             const isSelected = selectedMembersIdentifiers.includes(
-              currentUser?.userIdentifier,
+              currentUserMember?.userIdentifier,
             );
 
             return (
               <ListContentSection>
                 <MemberRow
-                  key={currentUser?.userIdentifier}
+                  key={currentUserMember?.userIdentifier}
                   isSelected={isSelected}
-                  onClick={event => handleOptionClick(event, currentUser)}
+                  onClick={event => handleOptionClick(event, currentUserMember)}
                 >
                   <Checkbox isChecked={isSelected} />
                   <Spacing horizontal={3} />
-                  <Member member={currentUser} showTooltip={false} />
+                  <Member member={currentUserMember} showTooltip={false} />
                   <Spacing horizontal={3} />
                   <MemberName>
                     <Highlighter
                       highlightStyle={highlightStyle}
                       searchWords={searchValue?.toLowerCase().split(/\s+/)}
                       autoEscape
-                      textToHighlight={currentUser?.userName}
+                      textToHighlight={currentUserMember?.userName}
                     />
                   </MemberName>
                 </MemberRow>

@@ -187,7 +187,18 @@ const TasksGroup = ({
   );
 
   const groupHasMultipleAssignees = useMemo(
-    () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+    () =>
+      tasks.some(
+        // eslint-disable-next-line no-shadow
+        ({ assignedToUsers, subtasks }) =>
+          (assignedToUsers && assignedToUsers.length > 1) ||
+          (subtasks &&
+            subtasks.length > 0 &&
+            subtasks.some(
+              ({ assignedToUsers: subtaskAssignedToUsers }) =>
+                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+            )),
+      ),
     [tasks],
   );
 
