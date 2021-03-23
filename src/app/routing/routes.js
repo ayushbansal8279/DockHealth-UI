@@ -43,14 +43,16 @@ const Routes = () => {
   useEffectOnce(() => {
     const firstPathname = transformPathname(history.location?.pathname);
 
-    ReactGA.pageview(firstPathname);
+    ReactGA.pageview(firstPathname, ['webapp']);
+    ReactGA.pageview(firstPathname, ['rollup']);
 
     const removeHistoryListener = history.listen(location => {
       sendPageviewEvent({
         pathname: transformPathname(location.pathname),
         history,
       });
-      ReactGA.pageview(transformPathname(location.pathname));
+      ReactGA.pageview(transformPathname(location.pathname), ['webapp']);
+      ReactGA.pageview(transformPathname(location.pathname), ['rollup']);
     });
 
     return () => {
