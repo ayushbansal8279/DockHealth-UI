@@ -46,11 +46,31 @@ moment.updateLocale('en', {
 
 const store = configureStore();
 
-const { GA_TRACKING_CODE, SUBSCRIPTION_TOKEN_API_KEY } = process.env;
+const {
+  GA_TRACKING_CODE,
+  GA_TRACKING_CODE_ROLLUP,
+  SUBSCRIPTION_TOKEN_API_KEY,
+} = process.env;
 
-ReactGA.initialize(GA_TRACKING_CODE, {
-  debug: false,
-});
+ReactGA.initialize(
+  [
+    {
+      trackingId: GA_TRACKING_CODE,
+      gaOptions: {
+        name: 'webapp',
+      },
+    },
+    {
+      trackingId: GA_TRACKING_CODE_ROLLUP,
+      gaOptions: {
+        name: 'rollup',
+      },
+    },
+  ],
+  {
+    debug: false,
+  },
+);
 
 const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
   ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
