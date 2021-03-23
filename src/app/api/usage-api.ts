@@ -43,11 +43,23 @@ const sendEvent = async (data: SendEventProps) => {
     });
   }
 
-  await ReactGA.event({
-    category: data.eventCategory,
-    action: data.eventAction,
-    label: data.eventLabel,
-  });
+  ReactGA.event(
+    {
+      category: data.eventCategory,
+      action: data.eventAction,
+      label: data.eventLabel,
+    },
+    ['webapp'],
+  );
+
+  ReactGA.event(
+    {
+      category: data.eventCategory,
+      action: data.eventAction,
+      label: data.eventLabel,
+    },
+    ['rollup'],
+  );
 };
 
 export default sendEvent;

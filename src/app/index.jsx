@@ -69,6 +69,7 @@ ReactGA.initialize(
   ],
   {
     debug: false,
+    alwaysSendToDefaultTracker: false,
   },
 );
 
