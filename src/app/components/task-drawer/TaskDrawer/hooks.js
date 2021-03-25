@@ -29,7 +29,11 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
-import { onButtonClicked } from 'helpers/ga-event-helper';
+import {
+  onTaskDrawerSubtaskAdd,
+  onTaskDrawerTaskDeleted,
+  onTaskDrawerTaskDuplicated,
+} from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
 
 import * as AlertActions from 'alert/actions';
@@ -98,6 +102,10 @@ const onSubmit = ({
     .catch(() => {
       setSaving(false);
     });
+
+  if (requestData.parentTaskIdentifier) {
+    onTaskDrawerSubtaskAdd('Form');
+  }
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -325,11 +333,11 @@ const initializeTaskDrawerHooks = ({
   const onDelete = async ({ afterDelete }) => {
     if (selectedTask) {
       try {
+        onTaskDrawerTaskDeleted();
         await deleteTask(selectedTask)(dispatch);
         onTaskDelete(selectedTask);
         storeAsCurrentTask(null)(dispatch);
         afterDelete();
-        onButtonClicked('Delete task');
       } catch {
         noop();
       }
@@ -354,7 +362,7 @@ const initializeTaskDrawerHooks = ({
         onTaskCreation(newTask);
         storeAsCurrentTask(newTask)(dispatch);
         afterDuplicate({ newTask });
-        onButtonClicked('Duplicate task');
+        onTaskDrawerTaskDuplicated();
       } catch {
         noop();
       }
@@ -379,7 +387,6 @@ const initializeTaskDrawerHooks = ({
           selectedTask,
         )(dispatch);
         if (typeof afterAddSubTask === 'function') afterAddSubTask();
-        onButtonClicked('Add subtask');
       } catch {
         noop();
       }
@@ -391,6 +398,7 @@ const initializeTaskDrawerHooks = ({
       ...newTask,
       parentTaskIdentifier: selectedTask.taskIdentifier,
     };
+    onTaskDrawerSubtaskAdd('Quick add input');
     return saveTask(taskToCreate)(dispatch);
   };
 

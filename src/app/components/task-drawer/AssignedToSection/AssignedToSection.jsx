@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
+import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
 import { pluck, trim } from 'ramda';
 import React, { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -42,6 +43,7 @@ const AssignedToSection = ({
 
   const handleClearAssignedToUsers = useCallback(() => {
     setValue(ASSIGNED_TO_USERS_FIELD_NAME, []);
+    onTaskDrawerTaskAssigned();
     onSave({
       assignedBy: null,
       assignedToUsers: [],
@@ -52,6 +54,7 @@ const AssignedToSection = ({
   const handleAssignToSelection = useCallback(
     selectedMembers => {
       setValue(ASSIGNED_TO_USERS_FIELD_NAME, selectedMembers);
+      onTaskDrawerTaskAssigned();
       onSave({
         assignedBy: selectedMembers?.length ? currentUser : null,
         assignedToUsers: selectedMembers,

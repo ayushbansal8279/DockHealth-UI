@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
+import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 // import Tour from 'components/tour-wizard/Tour/Tour';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
@@ -75,6 +76,7 @@ class Home extends Component {
     const taskStatus =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
+    onSearchChanged();
     return fetchTasksBySearchedTerm({
       status: taskStatus,
       searchedTerm: searchValue,

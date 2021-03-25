@@ -8,8 +8,7 @@ const BulkEditWorkflowStatusOption = ({
   isDisabled,
 }) => (
   <TaskWorkflowStatus
-    task={{}}
-    updateWorkflowStatus={(_, workflowStatus) =>
+    updateWorkflowStatus={workflowStatus =>
       handleChangeWorkflowStatusTasks(workflowStatus)
     }
     isDisabled={isDisabled}

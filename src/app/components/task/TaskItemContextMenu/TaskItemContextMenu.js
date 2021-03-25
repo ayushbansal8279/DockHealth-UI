@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import * as TaskApi from 'api/task-api';
+import { onRightClickAction } from 'helpers/ga-event-helper';
 import * as ActionTypes from 'actions/action-types';
 import {
   deleteTask,
@@ -104,6 +105,7 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
   const handleDuplicateTask = useCallback(async () => {
     let taskToDuplicate = { ...task };
     let subtaskHasAttachment = false;
+    const EVENT_NAME = 'Duplicate task';
 
     if (task.subTasksCount > task.subtasks?.length) {
       try {
@@ -127,12 +129,19 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
 
     if (taskToDuplicate.attachments?.length > 0 || subtaskHasAttachment) {
       const modalProps = {
-        confirm: () => dispatch(duplicateTask(task, true)),
-        skip: () => dispatch(duplicateTask(task)),
+        confirm: () => {
+          dispatch(duplicateTask(task, true));
+          onRightClickAction(EVENT_NAME);
+        },
+        skip: () => {
+          dispatch(duplicateTask(task));
+          onRightClickAction(EVENT_NAME);
+        },
       };
       dispatch(openModal('DuplicateTask', modalProps));
     } else {
       dispatch(duplicateTask(task));
+      onRightClickAction(EVENT_NAME);
     }
   }, []);
 
@@ -141,6 +150,7 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
       confirm: async () => {
         await dispatch(deleteTask(task));
         dispatch(closeModal());
+        onRightClickAction('Delete task');
       },
     };
     const modalName =
@@ -155,7 +165,7 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
       taskListIdentifier,
       taskGroupIdentifier,
       parentTaskIdentifier,
-    }) =>
+    }) => {
       dispatch(
         moveTask(
           task,
@@ -164,6 +174,8 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
           parentTaskIdentifier || null,
         ),
       );
+      onRightClickAction('Move task');
+    };
 
     const openMoveTasksWithSubtasksModal = ({
       taskListIdentifier,
@@ -232,7 +244,10 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
           <li>
             <MenuItemButtom
               type="button"
-              onClick={() => dispatch(openQuickAddSubtask(task.taskIdentifier))}
+              onClick={() => {
+                dispatch(openQuickAddSubtask(task.taskIdentifier));
+                onRightClickAction('Create subtask');
+              }}
             >
               Create Subtask
             </MenuItemButtom>

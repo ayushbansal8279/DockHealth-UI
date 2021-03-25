@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { isEmpty, isNil, partition } from 'ramda';
+import { onFilterChanged } from 'helpers/ga-event-helper';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import palette from 'styles/palette';
 import {
@@ -118,6 +119,7 @@ const FilterColumn = ({
       updatedFilters = { ...selectedFilters, [key]: [value] };
     }
 
+    onFilterChanged(key);
     onSelectFilters(updatedFilters);
   };
 

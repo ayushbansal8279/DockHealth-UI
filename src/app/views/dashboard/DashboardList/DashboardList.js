@@ -61,9 +61,9 @@ import {
   megaFilterSelector,
   hasFiltersAppliedSelector,
 } from 'selectors/mega-filter-selectors';
+import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import DashboardSettings from '../DashboardSettings/DashboardSettings';
-
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -289,6 +289,7 @@ const DashboardList = ({
     () =>
       debouncer(() => {
         if (searchValue !== previousSearchState?.searchValue && searchFocused) {
+          onSearchChanged();
           fetchSearchedTermImplicitGroups(searchValue);
         }
 
@@ -326,6 +327,7 @@ const DashboardList = ({
 
   const handleSortChange = useCallback(
     (key, order) => {
+      onSortChanged(order ? key : null, order);
       setCurrentSort({
         key: order ? key : null,
         order,

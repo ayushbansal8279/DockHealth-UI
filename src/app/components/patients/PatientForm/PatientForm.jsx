@@ -5,7 +5,10 @@ import { Button, Divider, Grid, MenuItem, Select } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDeepCompareEffect, useEffectOnce } from 'react-use';
 import { mixed, object, string } from 'yup';
-import { onPatientEdited as onPatientEditedEvent } from 'helpers/ga-event-helper';
+import {
+  onPatientAdded as onPatientAddedEvent,
+  onPatientEdited as onPatientEditedEvent,
+} from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import * as PatientApi from 'api/patient-api';
 import useBoolean from 'hooks/useBoolean';
@@ -87,11 +90,16 @@ const onSubmit = ({
 
   patientApiMethod
     .then(response => {
-      if (patient && typeof onPatientEdited === 'function') {
-        onPatientEdited(response);
+      if (patient) {
         onPatientEditedEvent();
-      } else if (typeof onPatientCreated === 'function') {
-        onPatientCreated(response);
+        if (typeof onPatientEdited === 'function') {
+          onPatientEdited(response);
+        }
+      } else {
+        onPatientAddedEvent();
+        if (typeof onPatientCreated === 'function') {
+          onPatientCreated(response);
+        }
       }
       onCancel();
     })

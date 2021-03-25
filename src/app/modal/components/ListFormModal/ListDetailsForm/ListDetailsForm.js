@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
+import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
 import { Grid } from '@material-ui/core';
 import Input from 'components/common/Input/Input';
@@ -31,8 +32,14 @@ const onSubmit = ({
         setList(updatedList);
         nextStep();
 
-        if (typeof onListCreationSuccess === 'function')
-          onListCreationSuccess(updatedList.taskListIdentifier);
+        if (!taskListIdentifier) {
+          if (typeof onListCreationSuccess === 'function') {
+            onListCreationSuccess(updatedList.taskListIdentifier);
+          }
+          onTaskListAdded();
+        } else {
+          onTaskListEdited();
+        }
       }
     })
     .catch(error => {

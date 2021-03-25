@@ -8,6 +8,7 @@ import { isEmpty } from 'ramda';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';
+import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -91,6 +92,7 @@ const ListDetailsOpenedTasks = ({
   const onDragEnd = useCallback(
     ({ destination, source }) => {
       setDraggableId(null);
+      onTaskOrderChanged();
 
       if (source.droppableId === destination.droppableId) {
         reorderTasksInGroup({ destination, source });

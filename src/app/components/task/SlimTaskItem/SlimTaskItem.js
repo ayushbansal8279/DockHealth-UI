@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
+import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
 import MemberGroup from 'components/members/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -70,6 +71,7 @@ const DueDateComponent = ({ dueDate, updateDueDate, task, isHovered }) => {
           moment(`${date} ${existingTime}`, 'YYYY-MM-DD HH:mm'),
           true,
         );
+        onTaskDueDateChanged();
       }}
       quickSelectOptions={dueDateQuickSelectOptions}
     >
@@ -143,7 +145,9 @@ const WorkflowStatusComponent = ({
   <SlimTaskWorkflowStatusContainer
     withPadding={status !== 'COMPLETE' && workflowStatus}
   >
-    <TaskWorkflowStatus task={task} updateWorkflowStatus={updateWorkflowStatus}>
+    <TaskWorkflowStatus
+      updateWorkflowStatus={value => updateWorkflowStatus(task, value)}
+    >
       {status !== 'COMPLETE' && workflowStatus && (
         <TaskItemStatus workflowStatus={workflowStatus} />
       )}

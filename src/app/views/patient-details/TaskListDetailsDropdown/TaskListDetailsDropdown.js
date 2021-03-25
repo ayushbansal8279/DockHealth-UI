@@ -9,13 +9,16 @@ import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-
+import {
+  onSlimViewChanged,
+  onTaskGroupCollapsed,
+  onTaskGroupExpanded,
+} from 'helpers/ga-event-helper';
 import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
 } from 'helpers/list-secition-saved-state';
 import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
-
 import {
   Arrow,
   Tasks,
@@ -118,7 +121,14 @@ const TaskListDetailsDropdown = ({
           <Arrow
             alt="arrow"
             isOpen={isOpen}
-            onClick={() => switchOpen(!isOpen)}
+            onClick={() => {
+              if (isOpen) {
+                onTaskGroupCollapsed();
+              } else {
+                onTaskGroupExpanded();
+              }
+              switchOpen(!isOpen);
+            }}
             src={ArrowIcon}
           />
           <ListNameSection>{listName}</ListNameSection>
@@ -136,7 +146,10 @@ const TaskListDetailsDropdown = ({
               <ViewTypeButton
                 type="button"
                 active={!isFullView}
-                onClick={() => setViewType(SLIM_VIEW)}
+                onClick={() => {
+                  setViewType(SLIM_VIEW);
+                  onSlimViewChanged(true);
+                }}
               >
                 <SlimViewIcon />
               </ViewTypeButton>
@@ -150,7 +163,10 @@ const TaskListDetailsDropdown = ({
               <ViewTypeButton
                 type="button"
                 active={isFullView}
-                onClick={() => setViewType(FULL_VIEW)}
+                onClick={() => {
+                  setViewType(FULL_VIEW);
+                  onSlimViewChanged(false);
+                }}
               >
                 <FullViewIcon />
               </ViewTypeButton>

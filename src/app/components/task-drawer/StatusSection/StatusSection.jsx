@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import SmallSwitchChevron from 'img/list-switch-chevron';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
-
+import { onTaskDrawerTaskStatusChanged } from 'helpers/ga-event-helper';
 import DropdownInput from '../DropdownInput/DropdownInput';
 import initializeStatusSectionHooks, { STATUSES } from './hooks';
 import {
@@ -46,6 +46,7 @@ const StatusSection = ({ setAutoSaveVisible, onTaskUpdate }) => {
     } else {
       setValue(STATUS_FIELD_NAME, value);
     }
+    onTaskDrawerTaskStatusChanged(value);
     saveTaskStatus({ newTaskStatus: value });
   };
 

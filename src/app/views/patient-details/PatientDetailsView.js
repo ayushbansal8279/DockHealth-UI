@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import Toolbar from 'components/tasklist/Toolbar/Toolbar';
+import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
@@ -145,6 +146,7 @@ const PatientDetailsView = ({
   } = patientTasksSagaActions;
 
   const handleSearchValueChange = value => {
+    onSearchChanged();
     setSearchValue(value);
     setPatientTaskSearch(value);
   };

@@ -10,6 +10,10 @@ import * as TaskListActions from 'actions/task-list-actions';
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
 import Loader from 'components/common/Loader/Loader';
+import {
+  onListMemberAdded,
+  onListMemberRemoved,
+} from 'helpers/ga-event-helper';
 import messages from './messages';
 import ListMembersSelect from './ListMembersSelect/ListMembersSelect';
 import ExternalInviteForm from './ExternalInviteForm/ExternalInviteForm';
@@ -130,6 +134,7 @@ const InviteMemberToListForm = ({
       requestTaskList.memberIdentifiers,
     )(dispatch)
       .then(() => {
+        onListMemberAdded();
         refreshListMembers();
         setIsSavingList(false);
       })
@@ -164,6 +169,7 @@ const InviteMemberToListForm = ({
 
     TaskListApi.removeUserFromTaskList(list.taskListIdentifier, userIdentifier)
       .then(() => {
+        onListMemberRemoved();
         refreshListMembers();
       })
       .catch(() => {

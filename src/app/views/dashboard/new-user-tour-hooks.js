@@ -8,7 +8,11 @@ import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { isNil } from 'ramda';
-import { onNewUserTourEnter, onInboxTourEnter } from 'helpers/ga-event-helper';
+import {
+  onNewUserTourEnter,
+  onInboxTourEnter,
+  onHomeTipsOpened,
+} from 'helpers/ga-event-helper';
 import Tour from 'components/tour-wizard/Tour/Tour';
 import { DashboardTourWrapper, DashboardTourBackground } from './styled';
 import { FIRST_TOUR_STEPS } from './dashboard-tour-steps';
@@ -75,6 +79,7 @@ const newUserTourHooks = ({
   const forceOpenTourModal = () => {
     if (!openedModalTour) {
       isModalAutoTriggered.current = false;
+      onHomeTipsOpened();
       setOpenendModalTour(1);
     }
   };

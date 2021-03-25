@@ -44,6 +44,15 @@ import {
   getCommentsIconTooltipTitle,
   isDueDateOverdue,
 } from 'helpers/task-helpers';
+import {
+  onTaskAssigned,
+  onTaskCompleted,
+  onSubtaskCompleted,
+  onTaskDueDateChanged,
+  onTaskReActivated,
+  onSubtaskReActivated,
+  onTaskStatusChanged,
+} from 'helpers/ga-event-helper';
 import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
 import TaskItemStatus from './TaskItemStatus';
 import { getSubtaskStylingLink } from './helpers';
@@ -348,6 +357,12 @@ const TaskItem = ({
         toggleCompleteTask(task);
       }
 
+      if (!isSubtask) {
+        (isCompleted ? onTaskReActivated : onTaskCompleted)();
+      } else {
+        (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
+      }
+
       if (isCheckedByBulkEdit && bulkEditTaskActions?.onUnselectBulkEditTask) {
         bulkEditTaskActions.onUnselectBulkEditTask(bulkEditActionPayload);
       }
@@ -428,6 +443,14 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
+  const handleUpdateWorkflowStatus = useCallback(
+    value => {
+      updateWorkflowStatus(task, value);
+      onTaskStatusChanged(value);
+    },
+    [updateWorkflowStatus, task],
+  );
+
   const handleReasignTask = useCallback(
     selectedMembers => {
       onTaskUpdate(taskIdentifier, {
@@ -435,6 +458,7 @@ const TaskItem = ({
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
         assignedBy: selectedMembers?.length ? currentUser : null,
       });
+      onTaskAssigned();
     },
     [currentUser, onTaskUpdate, taskIdentifier],
   );
@@ -627,9 +651,8 @@ const TaskItem = ({
             }}
           >
             <TaskWorkflowStatus
-              task={task}
               isCompletedGroup={isCompletedGroup}
-              updateWorkflowStatus={updateWorkflowStatus}
+              updateWorkflowStatus={handleUpdateWorkflowStatus}
             >
               {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
               {task.status !== 'COMPLETE' && workflowStatus && (
@@ -724,6 +747,7 @@ const TaskItem = ({
                   moment(`${date} ${existingTime}`, 'YYYY-MM-DD HH:mm'),
                   true,
                 );
+                onTaskDueDateChanged();
               }}
               quickSelectOptions={dueDateQuickSelectOptions}
             >

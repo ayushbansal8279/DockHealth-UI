@@ -10,6 +10,12 @@ import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import {
+  onTaskListDeleted,
+  onTaskListInvitationAccepted,
+  onTaskListInvitationRejected,
+  onTaskListLeave,
+} from 'helpers/ga-event-helper';
+import {
   taskListsSelector,
   pendingTaskListsSelector,
 } from 'selectors/task-list-selectors';
@@ -112,6 +118,7 @@ const ListsSubmenu = () => {
     list => {
       const modalProps = {
         confirm: () => {
+          onTaskListDeleted();
           dispatch(
             TaskListActions.deleteTaskListById(list?.taskListIdentifier),
           );
@@ -133,8 +140,10 @@ const ListsSubmenu = () => {
       const modalProps = {
         confirm: () => {
           if (status === 'PENDING') {
+            onTaskListInvitationRejected();
             dispatch(TaskListActions.rejectInviteToTaskList(list));
           } else {
+            onTaskListLeave();
             dispatch(TaskListActions.leaveList(taskListIdentifier));
           }
           dispatch(closeModal());
@@ -231,6 +240,7 @@ const ListsSubmenu = () => {
                   return;
 
                 if (list?.status === 'PENDING') {
+                  onTaskListInvitationAccepted();
                   dispatch(TaskListActions.acceptInviteToTaskList(list));
                 }
                 history.push(`/tasks/${list.taskListIdentifier}`);

@@ -10,6 +10,7 @@ import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
+import { onMultiSelectAction } from 'helpers/ga-event-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
 import {
@@ -206,6 +207,7 @@ const BulkEditOptionsBar = ({
             refreshTasks();
           }
         });
+      onMultiSelectAction('Workflow status changed');
     },
     [
       allSelectedTasksIdentifiers,
@@ -248,6 +250,7 @@ const BulkEditOptionsBar = ({
             refreshTasks();
           }
         });
+      onMultiSelectAction('Due date changed');
     },
     [
       allSelectedTasksIdentifiers,
@@ -290,6 +293,7 @@ const BulkEditOptionsBar = ({
             refreshTasks();
           }
         });
+      onMultiSelectAction('Assigned');
     },
     [
       allSelectedTasksIdentifiers,
@@ -308,8 +312,10 @@ const BulkEditOptionsBar = ({
     );
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const confirmAction = (includeAttachmentsForDuplication = false) =>
-      bulkEditTasksApi({
+    const confirmAction = (includeAttachmentsForDuplication = false) => {
+      onMultiSelectAction('Duplicated');
+
+      return bulkEditTasksApi({
         bulkEditType: 'DUPLICATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         includeAttachmentsForDuplication,
@@ -332,6 +338,7 @@ const BulkEditOptionsBar = ({
           onClose();
         }
       });
+    };
 
     if (anyTaskHasAttachment) {
       dispatch(
@@ -355,8 +362,10 @@ const BulkEditOptionsBar = ({
 
   const handleMoveTasks = useCallback(async () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const standardConfirmAction = selectedDestination =>
-      bulkEditTasksApi({
+    const standardConfirmAction = selectedDestination => {
+      onMultiSelectAction('Moved');
+
+      return bulkEditTasksApi({
         bulkEditType: 'MOVE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         ...selectedDestination,
@@ -379,6 +388,7 @@ const BulkEditOptionsBar = ({
           onClose();
         }
       });
+    };
 
     // eslint-disable-next-line func-names
     const moveTaskConfig = await (function() {
@@ -479,6 +489,8 @@ const BulkEditOptionsBar = ({
             refreshTasks();
           }
         });
+
+      onMultiSelectAction('Status changed');
     };
 
     if (allParentTasksHaveRelatedSubtasks) {
@@ -538,6 +550,7 @@ const BulkEditOptionsBar = ({
                 refreshTasks();
               }
             });
+          onMultiSelectAction('Deleted');
         },
       }),
     );

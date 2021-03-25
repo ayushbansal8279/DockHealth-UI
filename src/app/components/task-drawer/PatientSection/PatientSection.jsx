@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import {
+  onTaskDrawerPatientAdded,
+  onTaskDrawerTaskPatientChanged,
+} from 'helpers/ga-event-helper';
 import * as AlertActions from 'alert/actions';
 import { useFormContext } from 'react-hook-form';
 import debounce from 'lodash.debounce';
@@ -55,6 +59,7 @@ const PatientSection = ({
   const savePatient = useCallback(
     async patientToSave => {
       try {
+        onTaskDrawerTaskPatientChanged();
         await onSave({
           patient: patientToSave,
           patientIdentifier: patientToSave?.patientIdentifier || 'UNASSIGNED',
@@ -143,6 +148,8 @@ const PatientSection = ({
         const [firstName, ...lastNames] = patient.split(' ');
         data = { firstName, lastName: lastNames.join(' ') };
       }
+
+      onTaskDrawerPatientAdded();
 
       addPatient(data)
         .then(async ({ patientIdentifier, firstName, lastName }) => {

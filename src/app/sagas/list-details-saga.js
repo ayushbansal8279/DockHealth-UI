@@ -44,6 +44,7 @@ import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
+import { onSortChanged } from 'helpers/ga-event-helper';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -711,6 +712,7 @@ function* doFetchTasksBySearchedTerm(payload) {
 
 function* doSortListDetailsTasks({ payload }) {
   const { key, order } = payload;
+  onSortChanged(order ? key : null, order);
   yield all([
     put(ListDetailsActions.requestAllListDetailsGroups()),
     put(ListDetailsActions.setListDetailsTasksSort(order ? key : null, order)),

@@ -6,7 +6,10 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as PatientApi from 'api/patient-api';
-
+import {
+  onPatientNoteAdded,
+  onPatientNoteEdited,
+} from 'helpers/ga-event-helper';
 import PatientDetailsInformation from './PatientDetailsInformation';
 import PatientDetailsNotes from './PatientDetailsNotes/PatientDetailsNotes';
 import PatientDetails from './PatientDetails/PatientDetails';
@@ -68,6 +71,7 @@ const PatientDetailsHeader = ({
     description => {
       PatientApi.createPatientNote(patientIdentifier, { description })
         .then(addedNote => {
+          onPatientNoteAdded();
           dispatch(showGlobalAlert(AlertMessages.CREATED));
           setPatient(previousPatient => ({
             ...previousPatient,
@@ -95,6 +99,7 @@ const PatientDetailsHeader = ({
 
       PatientApi.updatePatientNote(editedNote)
         .then(updatedNote => {
+          onPatientNoteEdited();
           dispatch(showGlobalAlert(AlertMessages.UPDATED));
           setPatient(previousPatient => ({
             ...previousPatient,

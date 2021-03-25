@@ -13,7 +13,6 @@ import {
 
 const TaskWorkflowStatus = ({
   children,
-  task,
   isCompletedGroup,
   updateWorkflowStatus,
   isDisabled,
@@ -53,7 +52,7 @@ const TaskWorkflowStatus = ({
                 <StatusLabelContainer
                   key={value}
                   onClick={() => {
-                    updateWorkflowStatus(task, value);
+                    updateWorkflowStatus(value);
                     openPopover(false);
                   }}
                 >

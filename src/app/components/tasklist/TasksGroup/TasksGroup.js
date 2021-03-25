@@ -12,6 +12,11 @@ import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 
+import {
+  onSlimViewChanged,
+  onTaskGroupCollapsed,
+  onTaskGroupExpanded,
+} from 'helpers/ga-event-helper';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
@@ -108,10 +113,14 @@ const TasksGroup = ({
   const isFullView =
     viewType === FULL_VIEW || areFiltersApplied || isSearchApplied;
 
-  const onSwitchOpen = useCallback(() => switchOpen(!isOpen), [
-    switchOpen,
-    isOpen,
-  ]);
+  const onSwitchOpen = useCallback(() => {
+    if (isOpen) {
+      onTaskGroupCollapsed();
+    } else {
+      onTaskGroupExpanded();
+    }
+    switchOpen(!isOpen);
+  }, [switchOpen, isOpen]);
 
   const isListFlattened =
     isSearchApplied ||
@@ -249,6 +258,7 @@ const TasksGroup = ({
                   onClick={() => {
                     setViewType(SLIM_VIEW);
                     onTaskGroupViewModeChange(SLIM_VIEW);
+                    onSlimViewChanged(true);
                   }}
                 >
                   <SlimViewIcon />
@@ -266,6 +276,7 @@ const TasksGroup = ({
                   onClick={() => {
                     setViewType(FULL_VIEW);
                     onTaskGroupViewModeChange(FULL_VIEW);
+                    onSlimViewChanged(false);
                   }}
                 >
                   <FullViewIcon />

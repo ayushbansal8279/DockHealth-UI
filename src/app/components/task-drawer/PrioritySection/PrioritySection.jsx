@@ -4,7 +4,7 @@ import PriorityFlag from 'img/priority-flag';
 import SmallSwitchChevron from 'img/list-switch-chevron';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
-
+import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
 import DropdownInput from '../DropdownInput/DropdownInput';
 import initializePrioritySectionHooks, { PRIORITIES } from './hooks';
 import {
@@ -45,6 +45,7 @@ const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
       setValue(PRIORITY_FIELD_NAME, value);
     }
 
+    onTaskDrawerTaskPriorityChanged(value);
     saveTaskPriority({ newTaskPriority: value });
   };
 

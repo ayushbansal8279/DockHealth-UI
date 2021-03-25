@@ -8,6 +8,7 @@ import WhiteBellIcon from 'img/notifications/white-bell';
 import NewWhiteBellIcon from 'img/notifications/new-white-bell';
 import CrossedBellIcon from 'img/notifications/crossed-bell';
 import SettingsIcon from 'img/settings-icon';
+import { onActivityAlertOpened } from 'helpers/ga-event-helper';
 import * as ActivityAlertsApi from 'api/activity-alerts-api';
 import { getNotificationSettings } from 'api/user-api';
 import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
@@ -206,7 +207,10 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
       <ActivityAlertsImg
         ref={iconReference}
         src={CurrentBellIcon}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          onActivityAlertOpened();
+          setIsOpen(!isOpen);
+        }}
         withAnimaton={hasUnreadAlertsState}
       />
       <ActivityAlertsPopover

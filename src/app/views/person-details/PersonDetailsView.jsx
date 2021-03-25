@@ -28,6 +28,7 @@ import {
 import { mobileAnalyticsClient } from 'api/analytics-api';
 
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
@@ -382,6 +383,7 @@ class PersonDetailsView extends PureComponent {
   };
 
   setSearchValue = searchValue => {
+    onSearchChanged();
     this.setState({
       searchValue,
     });
@@ -454,6 +456,7 @@ class PersonDetailsView extends PureComponent {
 
   sortPersonTasks = (key, order) => {
     const { personDetailsActions } = this.props;
+    onSortChanged(order ? key : null, order);
     personDetailsActions.sortPersonTasks(order ? key : null, order);
   };
 

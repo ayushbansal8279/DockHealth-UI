@@ -2,6 +2,7 @@ import { Button, Fade, Grid } from '@material-ui/core';
 import React from 'react';
 import NotificationsCheck from 'img/toolbar-notifications-check';
 import palette from 'styles/palette';
+import { onPrint } from 'helpers/ga-event-helper';
 import ListPopover from 'components/common/ListPopover/ListPopover';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
@@ -38,6 +39,7 @@ const onPrintClick = ({
 }: OnPrintClickProps) => () => {
   closeMorePopover();
 
+  onPrint();
   return printTaskPdf({
     title: pdfTitle,
     tasks: [...tasks, ...completedTasks],
@@ -71,7 +73,7 @@ const MorePopover = ({
       <Button variant="text" onClick={closeMorePopover} size="small">
         <ToolbarLabel variant="body1">ACTIONS</ToolbarLabel>
         <Spacing horizontal={3} />
-        <RotatableChevron rotated={isMorePopoverOpen} />
+        <RotatableChevron rotated={isMorePopoverOpen} onClick={() => {}} />
       </Button>
     ),
     disableHover: true,

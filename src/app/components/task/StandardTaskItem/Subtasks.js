@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 
 import { isEmpty } from 'ramda';
+import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
@@ -36,7 +37,9 @@ const Subtasks = ({
 
   const onDragEnd = useCallback(
     ({ destination, source }) => {
+      onSubtaskOrderChanged();
       setDraggableId(null);
+
       reorderSubtasksForTask({
         source,
         destination,

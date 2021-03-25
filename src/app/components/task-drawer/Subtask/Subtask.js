@@ -4,8 +4,13 @@ import { useDispatch } from 'react-redux';
 import { pluck } from 'ramda';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import SimpleArrowRight from 'img/simple-arrow-right';
+import {
+  onTaskDrawerSubtaskCompleted,
+  onTaskDrawerSubtaskReActivated,
+  onTaskDrawerSubtaskAssigned,
+} from 'helpers/ga-event-helper';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   storeAsCurrentTask,
   toggleCompleteTask,
@@ -87,6 +92,7 @@ const Subtask = ({ subtask, currentUser }) => {
 
   const handleReassignSubtask = useCallback(
     selectedMembers => {
+      onTaskDrawerSubtaskAssigned();
       dispatch(
         partialUpdateTask(subtask.taskIdentifier, {
           assignedToUsers: selectedMembers,
@@ -94,7 +100,6 @@ const Subtask = ({ subtask, currentUser }) => {
           assignedBy: selectedMembers?.length ? currentUser : null,
         }),
       );
-      // assignOrReassignTask(task, selectedMember?.userIdentifier)(dispatch);
     },
     [currentUser, dispatch, subtask.taskIdentifier],
   );
@@ -125,6 +130,9 @@ const Subtask = ({ subtask, currentUser }) => {
         isClickable
         onClick={event => {
           event.stopPropagation();
+          (isCompleted
+            ? onTaskDrawerSubtaskReActivated
+            : onTaskDrawerSubtaskCompleted)();
           dispatch(toggleCompleteTask(subtask, currentUser));
         }}
       />

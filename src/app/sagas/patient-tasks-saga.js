@@ -42,6 +42,7 @@ import {
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
 import { locationParametersSelector } from 'location/selectors';
+import { onSortChanged } from 'helpers/ga-event-helper';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
   'DO_FETCH_STATS_FOR_PATIENT_TASKS';
@@ -557,6 +558,7 @@ function* doChangeMemberRole({ payload }) {
 function* doSortPatientTasks({ payload }) {
   try {
     const { key, order } = payload;
+    onSortChanged(order ? key : null, order);
 
     yield put({
       type: SORT_PATIENT_TASKS,

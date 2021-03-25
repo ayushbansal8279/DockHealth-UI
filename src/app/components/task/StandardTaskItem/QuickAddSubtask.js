@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Circle from 'img/circle';
 import { validateNewSubtask } from 'helpers/validation-helper';
+import { onSubtaskAdded } from 'helpers/ga-event-helper';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
@@ -62,6 +63,7 @@ const QuickAddSubatask = ({
       })(dispatch)
         .then(resetInputState)
         .catch(resetInputState);
+      onSubtaskAdded('Quick add input');
     }
   };
 
