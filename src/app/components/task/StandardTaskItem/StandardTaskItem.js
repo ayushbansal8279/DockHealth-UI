@@ -23,7 +23,7 @@ const Task = ({
   isStartedDnD,
   isDragging,
   draggableProvided,
-  groupId,
+  taskGroupIdentifier,
   isDraggable,
   addingNewSubtask,
   addingNewSubtaskParentId,
@@ -189,8 +189,8 @@ const Task = ({
             subTasksCount={subTasksCount}
             isOpen={areSubtasksOpen}
             isFullView={isFullView}
-            groupId={groupId}
-            parentTaskId={task.taskIdentifier}
+            taskGroupIdentifier={taskGroupIdentifier}
+            parentTaskIdentifier={task.taskIdentifier}
             parentHasPatient={!!patient}
             taskList={taskList}
             isDraggable={isDraggable}

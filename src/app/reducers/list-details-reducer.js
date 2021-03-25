@@ -17,7 +17,6 @@ import {
   TASK_GROUP_LIST_REQUEST,
   TASK_GROUP_LIST_SUCCESS,
   TASK_GROUP_LIST_FAILURE,
-  REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
   SET_LIST_DETAILS_TASKS_SORT,
   REQUEST_ALL_LIST_DETAILS_GROUPS,
 } from 'actions/action-types';
@@ -241,56 +240,16 @@ const ListDetailsReducer = (state = initialState, action) => {
 
     case REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
       const { groupOfTasks, refresh } = action;
-      const group = groupOfTasks.taskGroups[0];
 
-      const groupToUpdate = state.groupedTasks?.taskGroups?.find(
-        ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
-      );
-      const groupToUpdateIndex = state.groupedTasks?.taskGroups?.indexOf(
-        groupToUpdate,
-      );
-      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(taskGroup =>
-        taskGroup.groupIdentifier === group?.groupIdentifier
-          ? {
-              ...taskGroup,
-              tasks: refresh
-                ? group.tasks
-                : taskGroup.tasks.concat(group.tasks),
-              hasMore: group.hasMore,
-              isLoadingGroup: false,
-              isFetchingMoreTasks: false,
-            }
-          : taskGroup,
-      );
-      if (groupToUpdateIndex === -1) {
-        // new group
-        group.isLoadingGroup = false;
-        updatedTaskGroups.push(group);
-      }
+      const groupsToUpdate = groupOfTasks.taskGroups;
 
-      return {
-        ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: updatedTaskGroups,
-        },
-      };
-    }
+      let updatedTaskGroups = state.groupedTasks?.taskGroups;
 
-    case REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS: {
-      const { groupsOfTasks, refresh } = action;
-
-      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(
-        taskGroup => {
-          const taskGroupToUpdate = groupsOfTasks?.find(
-            group =>
-              taskGroup.groupIdentifier ===
-              group?.taskGroups[0]?.groupIdentifier,
-          );
-
-          if (taskGroupToUpdate) {
-            const group = taskGroupToUpdate.taskGroups[0];
-
+      groupsToUpdate.forEach(group => {
+        let groupExists = false;
+        updatedTaskGroups = updatedTaskGroups?.map(taskGroup => {
+          if (taskGroup.groupIdentifier === group?.groupIdentifier) {
+            groupExists = true;
             return {
               ...taskGroup,
               tasks: refresh
@@ -298,12 +257,19 @@ const ListDetailsReducer = (state = initialState, action) => {
                 : taskGroup.tasks.concat(group.tasks),
               hasMore: group.hasMore,
               isLoadingGroup: false,
+              isFetchingMoreTasks: false,
             };
           }
 
           return taskGroup;
-        },
-      );
+        });
+
+        if (!groupExists) {
+          const groupToAdd = { ...group };
+          groupToAdd.isLoadingGroup = false;
+          updatedTaskGroups.push(groupToAdd);
+        }
+      });
 
       return {
         ...state,

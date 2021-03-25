@@ -1,6 +1,6 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable sonarjs/cognitive-complexity */
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, move } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -23,7 +23,6 @@ import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as userApi from 'api/user-api';
 
 import { noop } from 'helpers/utility-functions';
-import { arrayMove } from 'helpers/sorting-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { initializePusher } from 'helpers/pusher-instance';
@@ -402,7 +401,7 @@ class Home extends Component {
       return;
     }
     const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
-    const newGroupList = arrayMove(groupIdsList, oldTaskIndex, newTaskIndex);
+    const newGroupList = move(oldTaskIndex, newTaskIndex, groupIdsList);
     sortTasksGroups({ taskGroupIdentifiers: newGroupList, taskListIdentifier });
   };
 

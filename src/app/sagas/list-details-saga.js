@@ -1,4 +1,4 @@
-import { isEmpty } from 'ramda';
+import { isEmpty, pluck, move, remove, insert } from 'ramda';
 import {
   put,
   call,
@@ -23,7 +23,6 @@ import {
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
   getTasksForTaskListByTaskGroup,
   searchTasksByTaskList,
-  getTaskDetails,
 } from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
 import * as ListDetailsActions from 'actions/list-details-actions';
@@ -38,7 +37,7 @@ import {
   groupTasksSelector,
   taskDetailsSortSelector,
 } from 'selectors/list-details-selectors';
-import { showGlobalAlert } from 'alert/actions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
@@ -270,21 +269,6 @@ function* doRefreshGroupedTasks({ payload }) {
   }
 }
 
-function* doGetTaskDetails(payload) {
-  const { taskIdentifier } = payload;
-  try {
-    const selectedTask = yield call(getTaskDetails, taskIdentifier);
-
-    yield put({
-      type: ActionTypes.SET_AS_CURRENT_TASK,
-      task: selectedTask,
-      taskContext: 'list',
-    });
-  } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
-  }
-}
-
 function* doCreateTasksGroupList(payload) {
   const { groupName } = payload;
 
@@ -401,111 +385,172 @@ function* doGetTasksForTaskGroup(payload) {
 }
 
 function* doSortTasksInGroup(payload) {
-  const { orderedTaskIds, taskGroupIdentifier, endPosition } = payload;
+  const {
+    destination: { droppableId: taskGroupIdentifier, index: destinationIndex },
+    source: { index: sourceIndex },
+  } = payload;
+
+  if (destinationIndex === sourceIndex) return;
+
+  const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
+  const reorderedTasks = move(sourceIndex, destinationIndex, group.tasks);
 
   try {
-    yield call(reorderTasksInGroup, {
-      orderedTaskIds,
-      taskGroupIdentifier,
+    yield put({
+      type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+      groupOfTasks: {
+        taskGroups: [
+          {
+            ...group,
+            groupIdentifier: taskGroupIdentifier,
+            tasks: reorderedTasks,
+          },
+        ],
+      },
+      refresh: true,
     });
 
-    yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
-  } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
-    yield call(doGetTasksForTaskGroup, {
+    yield call(reorderTasksInGroup, {
+      orderedTaskIds: pluck('taskIdentifier', reorderedTasks),
       taskGroupIdentifier,
-      status: 'INCOMPLETE',
+    });
+    yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
+  } catch {
+    yield all([put(showGlobalErrorAlert())]);
+    yield put({
+      type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+      groupOfTasks: {
+        taskGroups: [
+          {
+            ...group,
+            groupIdentifier: taskGroupIdentifier,
+            tasks: group.tasks,
+          },
+        ],
+      },
       refresh: true,
-      endPosition,
     });
   }
 }
 
 function* doSortSubtasksInGroup(payload) {
   const {
-    orderedSubtaskIds,
+    source: { index: sourceIndex },
+    destination: { index: destinationIndex, droppableId: parentTaskIdentifier },
     taskGroupIdentifier,
-    parentTaskIdentifier,
   } = payload;
 
+  if (destinationIndex === sourceIndex) return;
+
+  const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
+
+  const parentTask = group.tasks.find(
+    ({ taskIdentifier }) => taskIdentifier === parentTaskIdentifier,
+  );
+
+  if (!parentTask) return;
+  const reorderedSubtasks = move(
+    sourceIndex,
+    destinationIndex,
+    parentTask.subtasks,
+  );
+
   try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+    yield put({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: {
+        ...parentTask,
+        subtasks: reorderedSubtasks,
+      },
+    });
 
     yield call(
       reorderSubtasksForTask,
-      orderedSubtaskIds,
+      pluck('taskIdentifier', reorderedSubtasks),
       taskGroupIdentifier,
       parentTaskIdentifier,
     );
-
-    yield all([
-      call(doGetTasksGroupsList, {
-        taskListIdentifier,
-        shouldSetRequestState: false,
-      }),
-      call(doGetTaskDetails, { taskIdentifier: parentTaskIdentifier }),
-      yield put(showGlobalAlert(AlertMessages.UPDATED)),
-    ]);
-  } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: parentTask,
+    });
   }
 }
 
 function* doReassignTasksToAnotherGroup(payload) {
   const {
-    taskIdentifiers,
-    taskGroupIdentifier,
-    sourceTaskGroupIdentifier,
-    endPosition,
-    sourceEndPosition,
-    orderedTaskIds,
+    destination: {
+      index: destinationIndex,
+      droppableId: destinationGroupIdentifier,
+    },
+    source: { index: sourceIndex, droppableId: sourceGroupIdentifier },
   } = payload;
 
-  try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
+  const {
+    [sourceGroupIdentifier]: sourceGroup,
+    [destinationGroupIdentifier]: destinationGroup,
+  } = yield select(groupTasksSelector);
 
-    yield call(
-      reassignTasksToAnotherGroupApi,
-      taskGroupIdentifier,
-      taskIdentifiers,
+  const sourceTask = sourceGroup.tasks[sourceIndex];
+
+  try {
+    const destinationTasks = insert(
+      destinationIndex,
+      sourceTask,
+      destinationGroup.tasks || [],
     );
 
-    yield call(reorderTasksInGroup, {
-      orderedTaskIds,
-      taskGroupIdentifier,
-    });
-
-    const sourceGroup = yield call(doGetTasksForTaskGroup, {
-      taskGroupIdentifier: sourceTaskGroupIdentifier,
-      status: 'INCOMPLETE',
-      refresh: true,
-      endPosition: sourceEndPosition,
-      shouldSaveInStore: false,
-    });
-
-    const destinationGroup = yield call(doGetTasksForTaskGroup, {
-      taskGroupIdentifier,
-      status: 'INCOMPLETE',
-      refresh: true,
-      endPosition,
-      shouldSaveInStore: false,
-    });
-
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
-
     yield put({
-      type: ActionTypes.REQUEST_MULTIPLE_TASKLIST_GROUP_TASKS_SUCCESS,
-      groupsOfTasks: [sourceGroup, destinationGroup],
+      type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+      groupOfTasks: {
+        taskGroups: [
+          {
+            ...sourceGroup,
+            groupIdentifier: sourceGroupIdentifier,
+            tasks: remove(sourceIndex, 1, sourceGroup.tasks || []),
+          },
+          {
+            ...destinationGroup,
+            groupIdentifier: destinationGroupIdentifier,
+            tasks: destinationTasks,
+          },
+        ],
+      },
       refresh: true,
+    });
+
+    yield call(reassignTasksToAnotherGroupApi, destinationGroupIdentifier, [
+      sourceTask.taskIdentifier,
+    ]);
+    yield call(reorderTasksInGroup, {
+      orderedTaskIds: pluck('taskIdentifier', destinationTasks),
+      taskGroupIdentifier: destinationGroupIdentifier,
     });
 
     yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
-  } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
+      groupOfTasks: {
+        taskGroups: [
+          {
+            ...sourceGroup,
+            groupIdentifier: sourceGroupIdentifier,
+            tasks: sourceGroup.tasks || [],
+          },
+          {
+            ...destinationGroup,
+            groupIdentifier: destinationGroupIdentifier,
+            tasks: destinationGroup.tasks || [],
+          },
+        ],
+      },
+      refresh: true,
+    });
   }
 }
 

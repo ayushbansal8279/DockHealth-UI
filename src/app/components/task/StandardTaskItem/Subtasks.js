@@ -1,10 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { isEmpty } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
-import { onDragEndSubtask } from 'components/tasklist/DragDrop.helpers';
 import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
 import TaskItem from './TaskItem';
 import { getMatchedComments } from './helpers';
@@ -15,8 +14,8 @@ const Subtasks = ({
   subtasks,
   isOpen,
   isFullView,
-  groupId,
-  parentTaskId,
+  taskGroupIdentifier,
+  parentTaskIdentifier,
   reorderSubtasksForTask,
   parentHasPatient,
   taskList,
@@ -30,33 +29,24 @@ const Subtasks = ({
 }) => {
   const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
   const [draggedId, setDraggableId] = useState(false);
-  const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
-
-  useEffect(() => {
-    reorderSubtasksInState(subtasks);
-  }, [subtasks]);
 
   const onBeforeCapture = useCallback(({ draggableId }) => {
     setDraggableId(draggableId);
   }, []);
 
   const onDragEnd = useCallback(
-    eventBundle =>
-      onDragEndSubtask({
-        eventBundle,
-        reorderSubtasksForTask,
-        groupId,
-        parentTaskId,
-        orderedSubtasks,
-        reorderSubtasksInState,
-        setDraggableId,
-      }),
-    [groupId, orderedSubtasks, parentTaskId, reorderSubtasksForTask],
+    ({ destination, source }) => {
+      setDraggableId(null);
+      reorderSubtasksForTask({
+        source,
+        destination,
+        taskGroupIdentifier,
+      });
+    },
+    [reorderSubtasksForTask, taskGroupIdentifier],
   );
 
-  const shouldRenderSubtasks = useMemo(() => !isEmpty(orderedSubtasks), [
-    orderedSubtasks,
-  ]);
+  const shouldRenderSubtasks = useMemo(() => !isEmpty(subtasks), [subtasks]);
 
   return (
     <SubtasksContainer in={isOpen}>
@@ -66,11 +56,11 @@ const Subtasks = ({
           onBeforeDragStart={showClearSortFiltersModal}
           onDragEnd={!shouldShowBlockModalOnDrag ? onDragEnd : () => {}}
         >
-          <Droppable droppableId="droppable">
+          <Droppable droppableId={parentTaskIdentifier}>
             {provided => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {shouldRenderSubtasks &&
-                  orderedSubtasks?.map((subtask, index) => {
+                  subtasks?.map((subtask, index) => {
                     const {
                       comments = [],
                       searchMetaData = {},
@@ -86,7 +76,7 @@ const Subtasks = ({
                       draggedId !== String(taskIdentifier) &&
                       !isEmpty(matchedComments) &&
                       description !== '';
-                    const isLast = index + 1 === orderedSubtasks.length;
+                    const isLast = index + 1 === subtasks.length;
 
                     return (
                       <Draggable

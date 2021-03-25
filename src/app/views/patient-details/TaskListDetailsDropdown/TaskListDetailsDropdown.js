@@ -234,7 +234,6 @@ const TaskListDetailsDropdown = ({
               openDrawer={openDrawer}
               storeAsCurrentTask={storeAsCurrentTask}
               task={task}
-              groupId={tasks.taskIdentifier}
               draggableProvided={{}}
               isCompletedGroup={isCompleteTab}
               toggleCompleteTask={toggleTaskStatus}

@@ -52,7 +52,6 @@ const TasksGroup = ({
   isDefaultGroup,
   isFirstGroup,
   isLastGroup,
-  groupId,
   groupName,
   groupTaskCounts,
   toggleCompleteTask,
@@ -120,13 +119,13 @@ const TasksGroup = ({
     (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
 
   const onGroupNameSectionClick = useCallback(
-    newGroupName => editGroupName(newGroupName, groupId),
-    [editGroupName, groupId],
+    newGroupName => editGroupName(newGroupName, taskGroupIdentifier),
+    [editGroupName, taskGroupIdentifier],
   );
 
-  const onDeleteGroup = useCallback(() => deleteGroup(groupId), [
+  const onDeleteGroup = useCallback(() => deleteGroup(taskGroupIdentifier), [
     deleteGroup,
-    groupId,
+    taskGroupIdentifier,
   ]);
 
   useEffect(() => {
@@ -143,13 +142,13 @@ const TasksGroup = ({
     task => {
       quickAddTask({
         ...task,
-        taskGroupIdentifier: groupId,
+        taskGroupIdentifier,
       });
       setTimeout(() => {
         quickAddTaskInputReference.current.focus();
       }, 0);
     },
-    [groupId, quickAddTask],
+    [taskGroupIdentifier, quickAddTask],
   );
 
   const onToggleGroupOpen = useCallback(() => {
@@ -364,7 +363,7 @@ const TasksGroup = ({
         )}
         {(!isLoadingGroup || isFetchingMoreTasks) && (
           <DragAndDropGroupList
-            groupId={groupId}
+            taskGroupIdentifier={taskGroupIdentifier}
             tasks={tasks}
             isFullView={isFullView}
             toggleCompleteTask={toggleCompleteTask}

@@ -695,36 +695,6 @@ export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
       throw error;
     });
 
-export const reorderTasksInGroup = (orderedTaskIds, taskGroupIdentifier) => {
-  return dispatch => {
-    return TaskApi.reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier)
-      .then(() => {
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-};
-
-export function reassignTasksToAnotherGroup(
-  taskIdentifiers,
-  taskGroupIdentifier,
-) {
-  return dispatch => {
-    return TaskApi.reassignTasksToAnotherGroup(
-      taskGroupIdentifier,
-      taskIdentifiers,
-    )
-      .then(() => {
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-}
-
 export function reassignTask(taskIdentifier, userId) {
   return dispatch =>
     TaskApi.assignOrReassignTask({ taskIdentifier }, userId)

@@ -1,12 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useContext,
-} from 'react';
+import React, { useState, useCallback, useMemo, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -23,7 +17,6 @@ import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSect
 import messages from 'components/tasklist/AddGroupNameButton/messages';
 import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
-import { onDragEndTask } from 'components/tasklist/DragDrop.helpers';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { TaskGroupsContainer } from '../styled';
@@ -55,13 +48,8 @@ const ListDetailsOpenedTasks = ({
   onSortChange,
   resetSort,
 }) => {
-  const [tasksGrouped, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    updateTaskGroups(groupedTasks);
-  }, [groupedTasks]);
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -101,17 +89,16 @@ const ListDetailsOpenedTasks = ({
   };
 
   const onDragEnd = useCallback(
-    eventBundle =>
-      onDragEndTask({
-        eventBundle,
-        groupList,
-        tasks: tasksGrouped,
-        reorderTasksInGroup,
-        reassignTasksToAnotherGroup,
-        updateTaskGroups,
-        setDraggableId,
-      }),
-    [groupList, reassignTasksToAnotherGroup, reorderTasksInGroup, tasksGrouped],
+    ({ destination, source }) => {
+      setDraggableId(null);
+
+      if (source.droppableId === destination.droppableId) {
+        reorderTasksInGroup({ destination, source });
+      } else {
+        reassignTasksToAnotherGroup({ destination, source });
+      }
+    },
+    [reassignTasksToAnotherGroup, reorderTasksInGroup],
   );
 
   const onBeforeCapture = useCallback(({ draggableId }) => {
@@ -124,8 +111,8 @@ const ListDetailsOpenedTasks = ({
   );
 
   const hasAnyTask = useMemo(() => {
-    return Object.values(tasksGrouped).some(({ tasks }) => tasks?.length > 0);
-  }, [tasksGrouped]);
+    return Object.values(groupedTasks).some(({ tasks }) => tasks?.length > 0);
+  }, [groupedTasks]);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
 
@@ -152,14 +139,13 @@ const ListDetailsOpenedTasks = ({
         ?.filter(
           ({ taskGroupIdentifier }) =>
             (!isSearchApplied && !areFiltersApplied) ||
-            tasksGrouped[taskGroupIdentifier]?.tasks?.length > 0,
+            groupedTasks[taskGroupIdentifier]?.tasks?.length > 0,
         )
         .map(({ groupName, taskGroupIdentifier, metricValue }, i) => (
           <TasksGroup
             key={i}
             dragAndDropDisabled={dragAndDropDisabled}
             isDefaultGroup={groupName === 'DEFAULT'}
-            groupId={taskGroupIdentifier}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
             editGroupName={editGroupName}
@@ -170,12 +156,12 @@ const ListDetailsOpenedTasks = ({
             changingGroupOrderDisabled={!changeGroupsOrder}
             isFirstGroup={i === 0}
             isLastGroup={i === groupList?.length - 1}
-            tasks={tasksGrouped[taskGroupIdentifier]?.tasks || []}
+            tasks={groupedTasks[taskGroupIdentifier]?.tasks || []}
             isLoadingGroup={
-              tasksGrouped[taskGroupIdentifier]?.isLoadingGroup || false
+              groupedTasks[taskGroupIdentifier]?.isLoadingGroup || false
             }
             isFetchingMoreTasks={
-              tasksGrouped[taskGroupIdentifier]?.isFetchingMoreTasks || false
+              groupedTasks[taskGroupIdentifier]?.isFetchingMoreTasks || false
             }
             taskGroupIdentifier={taskGroupIdentifier}
             reorderSubtasksForTask={reorderSubtasksForTask}
@@ -189,12 +175,12 @@ const ListDetailsOpenedTasks = ({
             listUniqueKey={listUniqueKey}
             areFiltersApplied={areFiltersApplied}
             groupPagination
-            hasMoreTasks={tasksGrouped[taskGroupIdentifier]?.hasMore || false}
+            hasMoreTasks={groupedTasks[taskGroupIdentifier]?.hasMore || false}
             showMoreTasks={() => {
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
                 startPosition:
-                  tasksGrouped[taskGroupIdentifier]?.tasks?.length || 0,
+                  groupedTasks[taskGroupIdentifier]?.tasks?.length || 0,
                 sort,
                 refresh: false,
               });
@@ -219,7 +205,7 @@ const ListDetailsOpenedTasks = ({
       groupList,
       isSearchApplied,
       areFiltersApplied,
-      tasksGrouped,
+      groupedTasks,
       dragAndDropDisabled,
       editGroupName,
       quickAddTask,

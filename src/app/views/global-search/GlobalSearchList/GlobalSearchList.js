@@ -74,7 +74,6 @@ const GlobalSearchList = ({
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             task={task}
-            groupId={tasks.taskIdentifier}
             draggableProvided={{}}
             isCompletedGroup={isCompletedList}
             toggleCompleteTask={toggleTaskStatus}

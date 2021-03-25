@@ -5,7 +5,7 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import { DroppablePlaceholder } from './styled';
 
 const DragAndDropGroupList = ({
-  groupId,
+  taskGroupIdentifier,
   isFullView,
   toggleCompleteTask,
   draggedId,
@@ -42,7 +42,7 @@ const DragAndDropGroupList = ({
 
   return (
     <Droppable
-      droppableId={groupId}
+      droppableId={taskGroupIdentifier}
       isDropDisabled={isCompletedGroup || shouldShowBlockModalOnDrag}
     >
       {(providedDroppable, snapshot) => {
@@ -69,7 +69,7 @@ const DragAndDropGroupList = ({
                     isDragging={isDragging}
                     isStartedDnD={draggedId === task.taskIdentifier}
                     task={task}
-                    groupId={groupId}
+                    taskGroupIdentifier={taskGroupIdentifier}
                     draggableProvided={draggableProvided}
                     reorderSubtasksForTask={reorderSubtasksForTask}
                     isCompletedGroup={isCompletedGroup}

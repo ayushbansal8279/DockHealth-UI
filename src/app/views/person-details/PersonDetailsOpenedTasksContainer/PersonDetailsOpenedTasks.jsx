@@ -74,7 +74,6 @@ const PersonDetailsOpenedTasks = ({
                 isDefaultGroup
                 isFirstGroup
                 isLastGroup
-                groupId={TASKGROUP_DEFAULT_TYPE}
                 groupName="All tasks"
                 changingGroupOrderDisabled
                 tasks={filteredTasks || []}
