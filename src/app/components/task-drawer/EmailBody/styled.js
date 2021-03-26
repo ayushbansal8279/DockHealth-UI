@@ -17,4 +17,5 @@ export const EmailMessageContainer = styled.pre`
   line-height: 20px;
 
   letter-spacing: 0.230769px;
+  white-space: break-spaces;
 `;
