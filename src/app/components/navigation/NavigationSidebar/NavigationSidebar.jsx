@@ -11,6 +11,7 @@ import ListsIcon from 'img/navigation/ListsIcon';
 import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
+import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import Member from 'components/members/Member/Member';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
@@ -153,6 +154,12 @@ const NavigationSidebar = ({
               name="Patients"
               icon={PatientsIcon}
               path="/core/patients"
+              onItemClick={handleNavigationItemClick}
+            />
+            <IconNavigationItem
+              name="Templates"
+              icon={TemplatesIcon}
+              path="/core/templates"
               onItemClick={handleNavigationItemClick}
             />
           </Grid>
