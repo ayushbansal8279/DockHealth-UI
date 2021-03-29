@@ -71,7 +71,7 @@ class Home extends Component {
       listDetailsSagaActions: { fetchTasksBySearchedTerm },
     } = this.props;
 
-    const tabName = this.props?.params?.tabName;
+    const tabName = this.props?.match?.params?.tabName;
 
     const taskStatus =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
