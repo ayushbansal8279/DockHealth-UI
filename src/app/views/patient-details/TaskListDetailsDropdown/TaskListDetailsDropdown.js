@@ -14,6 +14,12 @@ import {
   onTaskGroupCollapsed,
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
+import {
+  TASK_ITEM_ICONS_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+} from 'components/task/StandardTaskItem/helpers';
+
 import listSectionSavedState, {
   FULL_VIEW,
   SLIM_VIEW,
@@ -264,6 +270,11 @@ const TaskListDetailsDropdown = ({
               subtaskShape={subtaskShape}
               hideSubtasks={hideSubtasks}
               multipleAssigneesContext={groupHasMultipleAssignees}
+              taskItemConfig={[
+                TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+                TASK_ITEM_MEMBERS_COLUMN,
+                TASK_ITEM_ICONS_COLUMN,
+              ]}
             />
           ))}
         </div>

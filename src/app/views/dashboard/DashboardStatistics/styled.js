@@ -19,6 +19,7 @@ export const DashboardStatisticsTileContainer = styled.div`
   padding: 10px 10px ${spacing.regular} ${spacing.regular};
   display: flex;
   justify-content: space-between;
+  max-width: ${({ maxWidth }) => maxWidth};
 `;
 
 export const DashboardStatisticsTileText = styled.div`
@@ -77,4 +78,6 @@ export const DashboardStatisticsLabel = styled.span`
 export const DashboardStatisticsLabelBox = styled(Grid)`
   display: flex;
   align-items: center;
+  max-width: 317px !important;
+  margin-right: 8px !important;
 `;

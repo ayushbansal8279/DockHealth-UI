@@ -6,6 +6,7 @@ export const DashboardColumnKey = {
   PATIENT: 'PATIENT',
   ASSIGNED: 'ASSIGNED',
   LIST_NAME: 'LIST_NAME',
+  ACTIVITY: 'ACTIVITY',
 };
 
 export const DashboardKeyPropertyName = {

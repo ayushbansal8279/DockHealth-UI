@@ -17,18 +17,20 @@ export const DashboardSettingsHeader = styled.div`
   margin-bottom: ${spacing.large};
 `;
 
-export const DashboardSettingsInputBox = styled.div`
+export const DashboardSettingsOption = styled.div`
+  display: flex;
   margin-left: ${spacing.small};
+  padding-bottom: ${spacing.regular};
+
+  & > button {
+    margin-top: 6px;
+  }
 `;
 
 export const DashboardSettingsLabel = styled.label`
   color: ${palette.darkGrey};
   font-weight: ${fontWeights.bold};
-  margin-bottom: ${spacing.large};
-`;
-
-export const DashboardSettingsInput = styled.input`
-  cursor: pointer;
+  margin-left: ${spacing.small};
 `;
 
 export const DashboardSettingsIcon = styled.img`

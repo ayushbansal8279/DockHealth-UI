@@ -59,7 +59,7 @@ const DashboardColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           orderType={id === sort?.key && sort?.order}
         />
       )}
-      <Box m={0.5} />
+      <Box m={0.25} />
       <div>{label}</div>
     </SortHeaderButton>
   );

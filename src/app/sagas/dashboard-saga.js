@@ -104,6 +104,7 @@ export const quickAddDashboardTask = ({
   taskListIdentifier,
   assignedToIdentifier,
   patientIdentifier,
+  dueDate,
 }) => ({
   type: QUICK_ADD_DASHBOARD_TASK,
   payload: {
@@ -111,6 +112,7 @@ export const quickAddDashboardTask = ({
     taskListIdentifier,
     assignedToIdentifier,
     patientIdentifier,
+    dueDate,
   },
 });
 
@@ -488,6 +490,7 @@ function* doQuickAddDahboardTask({ payload }) {
     taskListIdentifier,
     assignedToIdentifier,
     patientIdentifier,
+    dueDate,
   } = payload;
 
   try {
@@ -496,6 +499,7 @@ function* doQuickAddDahboardTask({ payload }) {
       taskListIdentifier,
       assignedToIdentifier,
       patientIdentifier,
+      dueDate,
     });
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
     yield put(fetchTasklistForUser());

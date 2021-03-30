@@ -1,20 +1,47 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { Popover } from '@material-ui/core';
 import { updateUserDashboardPrefs } from 'api/user-api';
 import DashboardSettingsIcon from 'img/settings-icon';
+import Checkbox from 'components/common/Checkbox/Checkbox';
+
 import {
   DashboardSettingsContainer,
   DashboardSettingsHeader,
-  DashboardSettingsInputBox,
-  DashboardSettingsInput,
+  DashboardSettingsOption,
   DashboardSettingsLabel,
   DashboardSettingsIcon as StyledDashboardSettingsIcon,
 } from './styled';
 import { DashboardColumnKey } from '../config';
 
-const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
+const DashboardSettings = ({ setDynamicColumns, dynamicColumns }) => {
   const iconReference = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const isCheckedCheckbox = useCallback(
+    checkboxValue => dynamicColumns?.includes(checkboxValue),
+    [dynamicColumns],
+  );
+
+  const onClickChecbkox = useCallback(
+    checkboxValue => {
+      if (isCheckedCheckbox(checkboxValue)) {
+        const newDynamicColumns = dynamicColumns.filter(
+          value => value !== checkboxValue,
+        );
+        setDynamicColumns(newDynamicColumns);
+        updateUserDashboardPrefs({
+          displayColumns: newDynamicColumns,
+        });
+      } else {
+        const newDynamicColumns = [...dynamicColumns, checkboxValue];
+        setDynamicColumns([...dynamicColumns, checkboxValue]);
+        updateUserDashboardPrefs({
+          displayColumns: newDynamicColumns,
+        });
+      }
+    },
+    [dynamicColumns, isCheckedCheckbox, setDynamicColumns],
+  );
 
   return (
     <>
@@ -36,57 +63,36 @@ const DashboardSettings = ({ setDynamicColumnType, dynamicColumnType }) => {
           <DashboardSettingsHeader>
             Which column would you like to see?
           </DashboardSettingsHeader>
-          <DashboardSettingsInputBox>
-            <DashboardSettingsInput
-              id="patient-radio"
-              type="radio"
-              checked={dynamicColumnType === DashboardColumnKey.PATIENT}
+          <DashboardSettingsOption>
+            <Checkbox
+              isChecked={isCheckedCheckbox(DashboardColumnKey.WORKFLOW_STATUS)}
               onClick={() => {
-                setDynamicColumnType(DashboardColumnKey.PATIENT);
-                updateUserDashboardPrefs({
-                  displayColumns: [DashboardColumnKey.PATIENT],
-                });
-                setIsOpen(false);
+                onClickChecbkox(DashboardColumnKey.WORKFLOW_STATUS);
               }}
             />
-            <DashboardSettingsLabel htmlFor="patient-radio">
-              Patient
-            </DashboardSettingsLabel>
-          </DashboardSettingsInputBox>
-          <DashboardSettingsInputBox>
-            <DashboardSettingsInput
-              id="due-date-radio"
-              type="radio"
-              checked={dynamicColumnType === DashboardColumnKey.DUE_DATE}
+            <DashboardSettingsLabel>Status</DashboardSettingsLabel>
+          </DashboardSettingsOption>
+          <DashboardSettingsOption>
+            <Checkbox
+              id="dassigned-checkbox"
+              isChecked={isCheckedCheckbox(DashboardColumnKey.ASSIGNED)}
               onClick={() => {
-                setDynamicColumnType(DashboardColumnKey.DUE_DATE);
-                updateUserDashboardPrefs({
-                  displayColumns: [DashboardColumnKey.DUE_DATE],
-                });
-                setIsOpen(false);
+                onClickChecbkox(DashboardColumnKey.ASSIGNED);
               }}
             />
-            <DashboardSettingsLabel htmlFor="due-date-radio">
-              Due Date
-            </DashboardSettingsLabel>
-          </DashboardSettingsInputBox>
-          <DashboardSettingsInputBox>
-            <DashboardSettingsInput
-              id="status-radio"
-              type="radio"
-              checked={dynamicColumnType === DashboardColumnKey.WORKFLOW_STATUS}
+            <DashboardSettingsLabel>Assigned</DashboardSettingsLabel>
+          </DashboardSettingsOption>
+          <DashboardSettingsOption>
+            <Checkbox
+              isChecked={isCheckedCheckbox(DashboardColumnKey.ACTIVITY)}
               onClick={() => {
-                setDynamicColumnType(DashboardColumnKey.WORKFLOW_STATUS);
-                updateUserDashboardPrefs({
-                  displayColumns: [DashboardColumnKey.WORKFLOW_STATUS],
-                });
-                setIsOpen(false);
+                onClickChecbkox(DashboardColumnKey.ACTIVITY);
               }}
             />
-            <DashboardSettingsLabel htmlFor="status-radio">
-              Status
+            <DashboardSettingsLabel>
+              Comments, labels and attachments
             </DashboardSettingsLabel>
-          </DashboardSettingsInputBox>
+          </DashboardSettingsOption>
         </DashboardSettingsContainer>
       </Popover>
       <StyledDashboardSettingsIcon

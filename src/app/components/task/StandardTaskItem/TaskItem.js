@@ -10,81 +10,55 @@ import React, {
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
-import moment from 'moment';
-import Highlighter from 'react-highlight-words';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { openQuickAddSubtask, storeAsCurrentTask } from 'actions/task-actions';
-import { Grid } from '@material-ui/core';
 import debounce from 'lodash.debounce';
-import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
 import { userProfileSelector } from 'selectors/user-selectors';
-import MemberGroup from 'components/members/MemberGroup/MemberGroup';
-import SubtaskIcon from 'img/SubtaskIcon';
-import ParentTaskIcon from 'img/ParentTaskIcon';
-import palette from 'styles/palette';
-import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
-import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import Spacing from 'components/common/Spacing';
-import PatientCard from 'components/patients/PatientCard/PatientCard';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import {
-  getLabelsIconTooltipTitle,
-  getAttachmentsIconTooltipTitle,
-  getCommentsIconTooltipTitle,
-  isDueDateOverdue,
-} from 'helpers/task-helpers';
+
 import {
   onTaskAssigned,
   onTaskCompleted,
   onSubtaskCompleted,
-  onTaskDueDateChanged,
   onTaskReActivated,
   onSubtaskReActivated,
   onTaskStatusChanged,
 } from 'helpers/ga-event-helper';
-import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
-import TaskItemStatus from './TaskItemStatus';
-import { getSubtaskStylingLink } from './helpers';
 import {
-  AddPlaceholder,
+  getSubtaskStylingLink,
+  checkColumnIsInConfig,
+  TASK_ITEM_ICONS_COLUMN,
+  TASK_ITEM_LIST_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_PATIENT_COLUMN,
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+} from './helpers';
+import {
   CircleIcon,
-  ClickablePatient,
-  Description,
-  DescriptionBox,
-  DueDateBasicLabel,
-  GridImg,
-  StandardTaskItemCell,
   MainStandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
   StandardTaskThreeDots,
-  CompletedBy,
-  InfoText,
-  ListLink,
-  ListItemLink,
-  AssigneeMatchingWrapper,
-  TaskItemParentTaskLabel,
-  DescriptionTooltip,
-  SubtasksCellContentButton,
-  SubtasksCellText,
-  DescriptionLabel,
-  DescriptionWrapper,
-  AddSubtaskButton,
   PriorityIndicator,
-  BulkContainer,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
+
+import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
+import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
+import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
+import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
+import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
+import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
+import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
+import TaskItemList from './TaskItemComponents/TaskItemList';
+import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
 
 const STANDARD_TASK_HEIGHT = 35;
 const EXTENDED_TASK_HEIGHT = 50;
@@ -102,8 +76,6 @@ const TaskItem = ({
   updateWorkflowStatus,
   subTasksCount,
   dragAndDropDisabled,
-  listNameVisible,
-  patientVisible,
   isSelected,
   parentHasPatient,
   highlightedValue,
@@ -114,6 +86,7 @@ const TaskItem = ({
   subtasksDisabled,
   multipleAssigneesContext,
   highlightTasksOfTheSameParent,
+  taskItemConfig = [],
 }) => {
   const {
     taskIdentifier,
@@ -137,6 +110,7 @@ const TaskItem = ({
     parentTask,
     subtaskQuickAddOpen,
   } = task;
+
   const { listName, taskListIdentifier } = taskList;
 
   const {
@@ -326,17 +300,6 @@ const TaskItem = ({
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
 
-  const dueDateQuickSelectOptions = [
-    {
-      label: 'Today',
-      date: moment(),
-    },
-    {
-      label: 'Tomorrow',
-      date: moment().add(1, 'days'),
-    },
-  ];
-
   const onMouseEnter = () => setIsHoverd(true);
   const onMouseLeave = () => setIsHoverd(false);
 
@@ -381,17 +344,6 @@ const TaskItem = ({
     ],
   );
 
-  const onParentLabelClick = useCallback(
-    event => {
-      event.preventDefault();
-      event.stopPropagation();
-      dispatch(openDrawer());
-      dispatch(storeAsCurrentTask(parentTask));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [parentTask],
-  );
-
   const onSubtaskLabelClick = useCallback(
     event => {
       event.stopPropagation();
@@ -417,40 +369,6 @@ const TaskItem = ({
     ],
   );
 
-  const onPatientClick = useCallback(() => {
-    if (!patient) {
-      dispatch(openDrawer(DrawerFieldEnum.PATIENT));
-      dispatch(storeAsCurrentTask(task));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patient, task]);
-
-  const onCommentClick = useCallback(() => {
-    dispatch(openDrawer(DrawerFieldEnum.COMMENT));
-    dispatch(storeAsCurrentTask(task));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task]);
-
-  const onLabelClick = useCallback(() => {
-    dispatch(openDrawer(DrawerFieldEnum.LABEL));
-    dispatch(storeAsCurrentTask(task));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task]);
-
-  const onAttachmentsClick = useCallback(() => {
-    dispatch(openDrawer(DrawerFieldEnum.ATTACHEMENT));
-    dispatch(storeAsCurrentTask(task));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task]);
-
-  const handleUpdateWorkflowStatus = useCallback(
-    value => {
-      updateWorkflowStatus(task, value);
-      onTaskStatusChanged(value);
-    },
-    [updateWorkflowStatus, task],
-  );
-
   const handleReasignTask = useCallback(
     selectedMembers => {
       onTaskUpdate(taskIdentifier, {
@@ -463,16 +381,17 @@ const TaskItem = ({
     [currentUser, onTaskUpdate, taskIdentifier],
   );
 
+  const handleUpdateWorkflowStatus = useCallback(
+    value => {
+      updateWorkflowStatus(task, value);
+      onTaskStatusChanged(value);
+    },
+    [updateWorkflowStatus, task],
+  );
+
   const showDraggableDots =
     !dragAndDropDisabled && isDraggable && !bulkEditIsActive;
   const showPriority = task.priority === 'HIGH';
-
-  const patientName = patient?.middleName
-    ? `${patient?.lastName}, ${patient?.firstName} ${patient?.middleName?.slice(
-        0,
-        1,
-      )}`
-    : `${patient?.lastName}, ${patient?.firstName}`;
 
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
@@ -498,16 +417,11 @@ const TaskItem = ({
           {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
           {bulkEditTaskActions && (
-            <BulkContainer>
-              <Checkbox
-                isChecked={isCheckedByBulkEdit}
-                onClick={() =>
-                  bulkEditTaskActions?.onClickBulkEditTask(
-                    bulkEditActionPayload,
-                  )
-                }
-              />
-            </BulkContainer>
+            <TaskItemBulkEdit
+              isCheckedByBulkEdit={isCheckedByBulkEdit}
+              bulkEditTaskActions={bulkEditTaskActions}
+              bulkEditActionPayload={bulkEditActionPayload}
+            />
           )}
           <MainStandardTaskItemCell
             bolded
@@ -522,301 +436,97 @@ const TaskItem = ({
               isCompleted={isCompleted}
               onClick={onCircleClick}
             />
-            <DescriptionBox>
-              <DescriptionWrapper>
-                <Description
-                  ref={descriptionReference}
-                  isCrossedOut={!isCompletedGroup && isCompleted}
-                >
-                  <MentionsEditor
-                    readOnly
-                    oneline
-                    state={descriptionState}
-                    onChange={setDescriptionState}
-                    highlightedValues={
-                      matchDescription &&
-                      highlightedValue?.toLowerCase().split(/\s+/)
-                    }
-                  />
-                  {isDescriptionTooltipVisible && (
-                    <DescriptionTooltip>{description}</DescriptionTooltip>
-                  )}
-                </Description>
-                {edited && !duplicated && (
-                  <DescriptionLabel>(edited)</DescriptionLabel>
-                )}
-                {duplicated && (
-                  <DescriptionLabel>(duplicated)</DescriptionLabel>
-                )}
-              </DescriptionWrapper>
-              {hasParentTaskLabel && (
-                <>
-                  <TaskItemParentTaskLabel>
-                    Subtask of
-                    <span
-                      onClick={onParentLabelClick}
-                    >{` ${parentTask.description}`}</span>
-                  </TaskItemParentTaskLabel>
-                  {isCompleted && <Spacing vertical={2} />}
-                </>
-              )}
-              {isCompletedGroup && (
-                <CompletedBy isCompleted={isCompleted}>
-                  <span>{`Completed by ${completedByName} ${completedDt &&
-                    ` on ${
-                      completedDt
-                        ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                        : ''
-                    }`}
-                `}</span>
-                </CompletedBy>
-              )}
-            </DescriptionBox>
+            <TaskItemDescription
+              descriptionReference={descriptionReference}
+              isCompletedGroup={isCompletedGroup}
+              isCompleted={isCompleted}
+              descriptionState={descriptionState}
+              setDescriptionState={setDescriptionState}
+              matchDescription={matchDescription}
+              highlightedValue={highlightedValue}
+              isDescriptionTooltipVisible={isDescriptionTooltipVisible}
+              description={description}
+              edited={edited}
+              duplicated={duplicated}
+              hasParentTaskLabel={hasParentTaskLabel}
+              parentTask={parentTask}
+              completedByName={completedByName}
+              completedDt={completedDt}
+              dispatch={dispatch}
+            />
           </MainStandardTaskItemCell>
-          <StandardTaskItemCell
-            width="60px"
-            justify="center"
-            paddingLeft="tiny"
-            paddingRight="tiny"
-          >
-            {!isSubtask &&
-            !subtaskQuickAddOpen &&
-            !subtasksDisabled &&
-            !subTasksCount ? (
-              <AddSubtaskButton
-                type="button"
-                onClick={() => dispatch(openQuickAddSubtask(taskIdentifier))}
-              >
-                {isHovered && <AddPlaceholder>+ Add</AddPlaceholder>}
-              </AddSubtaskButton>
-            ) : (
-              <>
-                {(subTasksCount || isSubtask) && (
-                  <SubtasksCellContentButton
-                    isOpen={isOpen}
-                    disabled={isNestedTask}
-                    isGreyedOut={subtasksDisabled}
-                    onClick={onSubtaskLabelClick}
-                  >
-                    {!isSubtask ? (
-                      <>
-                        <SubtasksCellText>{subTasksCount}</SubtasksCellText>
-                        <ParentTaskIcon />
-                      </>
-                    ) : (
-                      <SubtaskIcon />
-                    )}
-                  </SubtasksCellContentButton>
-                )}
-              </>
-            )}
-          </StandardTaskItemCell>
-          {patientVisible && (
-            <StandardTaskItemCell width="164px">
-              <ClickablePatient onClick={onPatientClick}>
-                {task.status !== 'COMPLETE' && !isSubtask && !patient && (
-                  <AddPlaceholder>+ Add Patient</AddPlaceholder>
-                )}
-                {patient && !parentHasPatient && (
-                  <PatientCard patientIdentifier={patient.patientIdentifier}>
-                    <ListItemLink
-                      to={`/core/patient/${patient.patientIdentifier}`}
-                    >
-                      {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                        <Highlighter
-                          highlightClassName="list-highlight"
-                          searchWords={
-                            matchPatient
-                              ? highlightedValue?.toLowerCase().split(/\s+/)
-                              : `${patientName}`.toLowerCase().split(/\s+/)
-                          }
-                          autoEscape
-                          textToHighlight={`${patient.patientName}`}
-                        />
-                      ) : (
-                        `${patientName}`
-                      )}
-                    </ListItemLink>
-                  </PatientCard>
-                )}
-              </ClickablePatient>
-            </StandardTaskItemCell>
+          <TaskItemSubtasks
+            isSubtask={isSubtask}
+            subtaskQuickAddOpen={subtaskQuickAddOpen}
+            subtasksDisabled={subtasksDisabled}
+            subTasksCount={subTasksCount}
+            isHovered={isHovered}
+            isOpen={isOpen}
+            isNestedTask={isNestedTask}
+            onSubtaskLabelClick={onSubtaskLabelClick}
+            taskIdentifier={taskIdentifier}
+            openQuickAddSubtask={openQuickAddSubtask}
+            dispatch={dispatch}
+          />
+          {checkColumnIsInConfig(TASK_ITEM_PATIENT_COLUMN, taskItemConfig) && (
+            <TaskItemPatient
+              highlightedValue={highlightedValue}
+              taskStatus={task?.status}
+              isSubtask={isSubtask}
+              parentHasPatient={parentHasPatient}
+              matchPatientMRN={matchPatientMRN}
+              patient={patient}
+              matchPatient={matchPatient}
+            />
           )}
-          <StandardTaskItemCell
-            width="120px"
-            paddingLeft="smallPlus"
-            paddingRight="tiny"
-            onContextMenu={event => {
-              event.stopPropagation();
-            }}
-          >
-            <TaskWorkflowStatus
+          {checkColumnIsInConfig(
+            TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+            taskItemConfig,
+          ) && (
+            <TaskItemWorkflowStatus
+              task={task}
               isCompletedGroup={isCompletedGroup}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
-            >
-              {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
-              {task.status !== 'COMPLETE' && workflowStatus && (
-                <TaskItemStatus
-                  workflowStatus={workflowStatus}
-                  isMatching={matchWorkflowStatus}
-                  highlightedValue={highlightedValue}
-                  labelWidth="100px"
-                />
-              )}
-              {task.status !== 'COMPLETE' && !workflowStatus && (
-                <AddPlaceholder>+ Add Status</AddPlaceholder>
-              )}
-            </TaskWorkflowStatus>
-          </StandardTaskItemCell>
-          <StandardTaskItemCell width="150px">
-            <Grid container>
-              <GridImg item xs={4} matched={matchComments}>
-                <Tooltip
-                  placement="top"
-                  title={
-                    comments?.length > 0
-                      ? getCommentsIconTooltipTitle(comments)
-                      : 'Add a new comment'
-                  }
-                >
-                  <TaskIcon
-                    type="comments"
-                    isHovered={isHovered}
-                    isActive={comments?.length > 0}
-                    isNew={task.updatedComment}
-                    onClick={onCommentClick}
-                  />
-                </Tooltip>
-              </GridImg>
-              <GridImg item xs={4} matched={matchLabels}>
-                <Tooltip
-                  placement="top"
-                  title={
-                    labels?.length > 0
-                      ? getLabelsIconTooltipTitle(labels)
-                      : 'Add label'
-                  }
-                >
-                  <TaskIcon
-                    type="labels"
-                    isHovered={isHovered}
-                    isActive={labels?.length > 0}
-                    isNew={task.updatedLabel}
-                    onClick={onLabelClick}
-                  />
-                </Tooltip>
-              </GridImg>
-              <GridImg item xs={4} matched={matchAttachments}>
-                <Tooltip
-                  placement="top"
-                  title={
-                    attachments?.length > 0
-                      ? getAttachmentsIconTooltipTitle(attachments)
-                      : 'Add file'
-                  }
-                >
-                  <TaskIcon
-                    type="attachments"
-                    onClick={onAttachmentsClick}
-                    isHovered={isHovered}
-                    isActive={attachments?.length > 0}
-                    isNew={task.updatedAttachment}
-                  />
-                </Tooltip>
-              </GridImg>
-            </Grid>
-          </StandardTaskItemCell>
-          <StandardTaskItemCell
-            paddingLeft="tiny"
-            paddingRight="tiny"
-            width="60px"
-            justify="center"
-            onContextMenu={event => {
-              event.stopPropagation();
-            }}
-          >
-            <PopoverDatepicker
-              selectedDate={dueDate}
-              onDateChange={date => {
-                const existingTime = dueDate
-                  ? moment(dueDate).format('HH:mm')
-                  : '';
+              workflowStatus={workflowStatus}
+              matchWorkflowStatus={matchWorkflowStatus}
+              highlightedValue={highlightedValue}
+            />
+          )}
+          {checkColumnIsInConfig(TASK_ITEM_ICONS_COLUMN, taskItemConfig) && (
+            <TaskItemIcons
+              matchComments={matchComments}
+              comments={comments}
+              isHovered={isHovered}
+              task={task}
+              matchLabels={matchLabels}
+              labels={labels}
+              matchAttachments={matchAttachments}
+              attachments={attachments}
+              dispatch={dispatch}
+            />
+          )}
+          <TaskItemDueDate
+            dueDate={dueDate}
+            task={task}
+            isHovered={isHovered}
+            updateDueDate={updateDueDate}
+          />
+          {checkColumnIsInConfig(TASK_ITEM_MEMBERS_COLUMN, taskItemConfig) && (
+            <TaskItemMembers
+              multipleAssigneesContext={multipleAssigneesContext}
+              task={task}
+              assignedToUsers={assignedToUsers}
+              handleReasignTask={handleReasignTask}
+              matchAssignedTo={matchAssignedTo}
+            />
+          )}
 
-                updateDueDate(
-                  task,
-                  moment(`${date} ${existingTime}`, 'YYYY-MM-DD HH:mm'),
-                  true,
-                );
-                onTaskDueDateChanged();
-              }}
-              quickSelectOptions={dueDateQuickSelectOptions}
-            >
-              {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-                <button
-                  type="button"
-                  onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                  ref={elementReference}
-                >
-                  <Tooltip
-                    placement="top"
-                    title={dueDate ? 'Edit due date' : 'Add due date'}
-                  >
-                    {dueDate ? (
-                      <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
-                        {moment(dueDate).format('MM/DD')}
-                      </DueDateBasicLabel>
-                    ) : (
-                      <TaskIcon type="calendar" isHovered={isHovered} />
-                    )}
-                  </Tooltip>
-                </button>
-              )}
-            </PopoverDatepicker>
-          </StandardTaskItemCell>
-          <StandardTaskItemCell
-            width={`${multipleAssigneesContext ? 90 : 60}px`}
-            justify={multipleAssigneesContext ? 'flex-start' : 'center'}
-            paddingLeft="small"
-            paddingRight="small"
-            onContextMenu={event => {
-              event.stopPropagation();
-            }}
-          >
-            <MultiAssignPopover
-              fullWidth={multipleAssigneesContext}
-              taskListIdentifiers={task?.taskList?.taskListIdentifier}
-              selectedMembers={assignedToUsers}
-              onSelect={handleReasignTask}
-            >
-              {assignedToUsers?.length ? (
-                <>
-                  <AssigneeMatchingWrapper matched={matchAssignedTo} />
-                  <MemberGroup members={assignedToUsers} />
-                </>
-              ) : (
-                <Tooltip placement="top" title="Assign to">
-                  <AssignMemberIcon />
-                </Tooltip>
-              )}
-            </MultiAssignPopover>
-          </StandardTaskItemCell>
-          {listNameVisible && (
-            <StandardTaskItemCell
-              color={listName ? palette.brightBlue : palette.coolGrey2}
-              width="168px"
-            >
-              {listName && taskListIdentifier ? (
-                <ListLink
-                  to={`/core/tasks/${taskListIdentifier}${
-                    task.status === 'COMPLETE' ? '/complete' : ''
-                  }`}
-                >
-                  {listName}
-                </ListLink>
-              ) : (
-                'Unfiled'
-              )}
-            </StandardTaskItemCell>
+          {checkColumnIsInConfig(TASK_ITEM_LIST_COLUMN, taskItemConfig) && (
+            <TaskItemList
+              listName={listName}
+              taskListIdentifier={taskListIdentifier}
+              taskStatus={task.status}
+            />
           )}
         </StandardTaskItemContainer>
       </StandardTaskItemPanel>

@@ -10,4 +10,5 @@ export const SortHeaderButton = styled.button`
   font-weight: inherit;
   color: inherit;
   line-height: inherit;
+  text-transform: uppercase;
 `;

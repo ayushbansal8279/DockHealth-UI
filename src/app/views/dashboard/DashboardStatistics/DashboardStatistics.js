@@ -71,6 +71,7 @@ const DashboardStatistics = ({
                   ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
                 )?.metricValue
               }
+              maxWidth="317px"
             />
 
             <DashboardStatisticsTile
@@ -82,6 +83,7 @@ const DashboardStatistics = ({
                   ({ metricName }) => metricName === 'COMPLETED_TASKS_COUNT',
                 )?.metricValue
               }
+              maxWidth="317px"
             />
 
             <DashboardStatisticsTile
@@ -93,6 +95,7 @@ const DashboardStatistics = ({
                   ({ metricName }) => metricName === 'ASSIGNED_TASKS_COUNT',
                 )?.metricValue
               }
+              maxWidth="317px"
             />
 
             <DashboardStatisticsTile
@@ -106,6 +109,7 @@ const DashboardStatistics = ({
               alignText="center"
               amount={patientStatsAmount}
               showAmount={showPatientAmount}
+              maxWidth="317px"
             />
           </DashboardStatisticsTilesContainer>
         </>

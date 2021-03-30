@@ -26,6 +26,7 @@ const DragAndDropGroupList = ({
   groupHasMultipleAssignees,
   highlightedTasksParentIdenditifer,
   highlightTasksOfTheSameParent,
+  taskItemConfig,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
@@ -98,6 +99,7 @@ const DragAndDropGroupList = ({
                     highlightTasksOfTheSameParent={
                       highlightTasksOfTheSameParent
                     }
+                    taskItemConfig={taskItemConfig}
                   />
                 )}
               </Draggable>

@@ -312,60 +312,6 @@ export const InfoText = styled.p`
   margin-bottom: 0;
 `;
 
-// SlimTaskItem
-export const SlimTaskItemContainer = styled.div`
-  display: flex;
-  align-ttems: center;
-  width: 100%;
-  height: ${({ height }) => height || 35}px;
-  position: relative;
-  background-color: ${props =>
-    props.isSelected ? palette.brightBlueWithAlpha : 'white'};
-  border: 1px solid ${palette.coolGrey3};
-  box-shadow: ${props =>
-    props.isDragging ? '0px 0px 20px rgba(204, 204, 204, 0.8)' : '0px'};
-  transition: background-color linear 0.2s;
-  margin-bottom: 2px;
-
-  &:hover {
-    & ${ThreeDots}, ${AddPlaceholder} {
-      opacity: 1;
-    }
-  }
-`;
-
-export const SlimTaskItemDescription = styled.div`
-  cursor: pointer;
-  color: ${palette.mediumGrey};
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.bold};
-
-  & > div {
-    overflow-wrap: break-word;
-  }
-`;
-
-export const SlimTaskItemParentTaskLabel = styled.div`
-  font-weight: ${fontWeights.light};
-  color: ${palette.coolGrey2};
-
-  & > span {
-    color: ${palette.brightBlue};
-    cursor: pointer;
-  }
-`;
-
-export const SlimTaskItemListLink = styled(({ withMargin, ...otherProps }) => (
-  <Link {...otherProps} />
-))`
-  display: flex;
-  align-itmes: center;
-  align-self: center;
-  color: ${palette.brightBlue};
-  font-size: ${fontSizes.smallPlus};
-  margin-right: ${props => props.withMargin && spacing.large};
-`;
-
 export const MatchingWrapper = styled.div`
   height: 100%;
   width: 100%;
@@ -380,39 +326,6 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
   transform: translate(-50%, -50%);
   width: 75%;
   height: 75%;
-`;
-
-export const SlimTaskGridContainer = styled.div`
-  display: flex;
-  align-items: center;
-  padding-left: ${spacing.regular};
-`;
-
-export const AssignedBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-`;
-
-export const SlimTaskWorkflowStatusContainer = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  padidng-top: ${spacing.regular});
-  padidng-bottom: ${spacing.regular});
-  padding-left: ${props => props.withPadding && spacing.smallPlus};
-  font-size: ${fontSizes.smallPlus};
-  height: 100%
-`;
-
-export const SlimTaskItemPatientLink = styled(Link)`
-  color: ${palette.darkGrey};
-  font-size: ${fontSizes.smallPlus};
-
-  &:hover {
-    color: ${palette.brightBlue};
-  }
 `;
 
 export const SubtaskStylingLinkContainer = styled.div`
@@ -453,14 +366,6 @@ export const SubtaskStylingLastLink = styled.div`
   left: -19px;
   top: -1px;
   z-index: 1;
-`;
-
-export const SlimTaskListNameText = styled.p`
-  margin-bottom: 0;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 export const SubtasksCellContentButton = styled.button`

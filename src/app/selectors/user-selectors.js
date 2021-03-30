@@ -24,5 +24,5 @@ export const userOrganizationsSelector = createSelector(
 
 export const userProfileDashbaordPrefsSelector = createSelector(
   userProfileSelector,
-  ({ userPreference }) => userPreference?.displayColumns?.[0],
+  ({ userPreference }) => userPreference?.displayColumns,
 );

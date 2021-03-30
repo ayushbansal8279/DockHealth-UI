@@ -3,6 +3,12 @@ import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
+  TASK_ITEM_ICONS_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_PATIENT_COLUMN,
+} from 'components/task/StandardTaskItem/helpers';
+import {
   Arrow,
   Tasks,
   ListDetailsContainer,
@@ -88,6 +94,12 @@ const GlobalSearchList = ({
             addingNewSubtaskParentId={addingNewSubtaskParentId}
             subtaskShape={subtaskShape}
             subtasksDisabled
+            taskItemConfig={[
+              TASK_ITEM_ICONS_COLUMN,
+              TASK_ITEM_MEMBERS_COLUMN,
+              TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+              TASK_ITEM_PATIENT_COLUMN,
+            ]}
           />
         ))}
         {isLoadingMore && <SingleSkeletonLoader rows={4} />}
