@@ -1,7 +1,7 @@
+import React from 'react';
 import PatientsView from 'components/patients/PatientsView';
 import TaskTourView from 'views/TaskTour/TaskTourView';
 import GlobalSearchView from 'views/global-search/GlobalSearchView';
-import TemplatesView from 'views/templates/TemplatesView';
 import ChangePhoneNumber from 'views/auth/ChangePhoneNumber';
 import ConfirmMFACode from 'views/auth/ConfirmMfaCode';
 import ConfirmRegistration from 'views/auth/ConfirmRegistration';
@@ -162,7 +162,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   },
   {
     path: '/templates',
-    RouteComponent: TemplatesView,
+    RouteComponent: React.lazy(() => import('views/templates/TemplatesView')),
     onEnter: onEnterTemplatesView,
     onLeave: onLeaveTemplatesView,
   },
