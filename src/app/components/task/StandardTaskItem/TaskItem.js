@@ -87,6 +87,7 @@ const TaskItem = ({
   multipleAssigneesContext,
   highlightTasksOfTheSameParent,
   taskItemConfig = [],
+  isDashboardTask,
 }) => {
   const {
     taskIdentifier,
@@ -477,6 +478,7 @@ const TaskItem = ({
               matchPatientMRN={matchPatientMRN}
               patient={patient}
               matchPatient={matchPatient}
+              dispatch={dispatch}
             />
           )}
           {checkColumnIsInConfig(
@@ -536,6 +538,7 @@ const TaskItem = ({
           task={task}
           onClose={() => setContextMenu(null)}
           subtasksDisabled={subtasksDisabled}
+          isDashboardTask={isDashboardTask}
         />
       )}
     </>

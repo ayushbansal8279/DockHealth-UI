@@ -31,7 +31,6 @@ import {
   TASK_ITEM_SUBTASKS_COLUMN,
   TASK_ITEM_WORFKLOW_STATUS_COLUMN,
 } from 'components/task/StandardTaskItem/helpers';
-import { DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
 import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
 import { DashboardColumnKey } from '../config';
@@ -206,13 +205,13 @@ const DashboardTasksGroup = ({
     if (groupType === TODAY_GROUP)
       return moment()
         .startOf('day')
-        .format(DATE_ISO_FORMAT);
+        .toISOString();
 
     if (groupType === NEXT_7_DAYS_GROUP)
       return moment()
         .add(7, 'days')
         .startOf('day')
-        .format(DATE_ISO_FORMAT);
+        .toISOString();
 
     return null;
   }, [groupType]);
@@ -415,11 +414,14 @@ const DashboardTasksGroup = ({
                                 updateWorkflowStatus={updateWorkflowStatus}
                                 taskItemConfig={[
                                   ...taskItemConfigKeys,
+                                  TASK_ITEM_PATIENT_COLUMN,
                                   TASK_ITEM_LIST_COLUMN,
                                 ]}
                                 multipleAssigneesContext={
                                   groupHasMultipleAssignees
                                 }
+                                subtasksDisabled
+                                isDashboardTask
                               />
                             </div>
                           )}

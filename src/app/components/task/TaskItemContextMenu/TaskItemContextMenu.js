@@ -16,7 +16,13 @@ import {
 import { openModal, closeModal } from 'modal/actions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
 
-const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
+const TaskItemContextMenu = ({
+  position,
+  task,
+  onClose,
+  subtasksDisabled,
+  isDashboardTask,
+}) => {
   const menuReference = useRef(null);
   const dispatch = useDispatch();
 
@@ -130,17 +136,17 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
     if (taskToDuplicate.attachments?.length > 0 || subtaskHasAttachment) {
       const modalProps = {
         confirm: () => {
-          dispatch(duplicateTask(task, true));
+          dispatch(duplicateTask(task, true, isDashboardTask));
           onRightClickAction(EVENT_NAME);
         },
         skip: () => {
-          dispatch(duplicateTask(task));
+          dispatch(duplicateTask(task, false, isDashboardTask));
           onRightClickAction(EVENT_NAME);
         },
       };
       dispatch(openModal('DuplicateTask', modalProps));
     } else {
-      dispatch(duplicateTask(task));
+      dispatch(duplicateTask(task, false, isDashboardTask));
       onRightClickAction(EVENT_NAME);
     }
   }, []);
@@ -172,6 +178,7 @@ const TaskItemContextMenu = ({ position, task, onClose, subtasksDisabled }) => {
           { taskListIdentifier },
           taskGroupIdentifier || null,
           parentTaskIdentifier || null,
+          isDashboardTask,
         ),
       );
       onRightClickAction('Move task');
