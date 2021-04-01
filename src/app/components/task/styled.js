@@ -9,6 +9,9 @@ import palette, { featurePalette } from 'styles/palette';
 
 export const ListItemLink = styled(Link)`
   color: ${palette.mediumGrey};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 
   &:hover {
     color: ${palette.brightBlue};

@@ -522,7 +522,6 @@ const TaskItem = ({
               matchAssignedTo={matchAssignedTo}
             />
           )}
-
           {checkColumnIsInConfig(TASK_ITEM_LIST_COLUMN, taskItemConfig) && (
             <TaskItemList
               listName={listName}
