@@ -489,6 +489,7 @@ const DashboardList = ({
       setShouldResetBulkEditTasks={setShouldResetBulkEditTasks}
       refreshTasks={handleTaskUpdate}
       searchValue={searchValue}
+      shouldRefreshTasksEveryTime
     >
       <DashboardListContainer
         shouldResetBulkEditTasks={shouldResetBulkEditTasks}
