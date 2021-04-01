@@ -299,9 +299,15 @@ const SubscriptionsViewMembersTable = ({
         flex: 0.5,
         sortable: false,
         renderCell: ({ row }) => {
-          const { orgUserRole } = row;
+          const { orgUserRole, userStatus } = row;
 
-          if (orgUserRole !== 'GUEST' && showSubscription) {
+          if (
+            orgUserRole !== 'GUEST' &&
+            userStatus !== 'PENDING' &&
+            userStatus !== 'CANCELLED' &&
+            userStatus !== 'INACTIVE' &&
+            showSubscription
+          ) {
             return <span>{trialPlanPricePerUser}</span>;
           }
 
