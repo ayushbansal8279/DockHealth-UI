@@ -479,6 +479,7 @@ const TaskItem = ({
               patient={patient}
               matchPatient={matchPatient}
               dispatch={dispatch}
+              task={task}
             />
           )}
           {checkColumnIsInConfig(
