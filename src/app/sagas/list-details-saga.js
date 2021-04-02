@@ -501,7 +501,7 @@ function* doReassignTasksToAnotherGroup(payload) {
     const destinationTasks = insert(
       destinationIndex,
       sourceTask,
-      destinationGroup.tasks || [],
+      destinationGroup?.tasks || [],
     );
 
     yield put({

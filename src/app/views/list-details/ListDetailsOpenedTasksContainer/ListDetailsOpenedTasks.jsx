@@ -99,7 +99,7 @@ const ListDetailsOpenedTasks = ({
       setDraggableId(null);
       onTaskOrderChanged();
 
-      if (source.droppableId === destination.droppableId) {
+      if (source?.droppableId === destination?.droppableId) {
         reorderTasksInGroup({ destination, source });
       } else {
         reassignTasksToAnotherGroup({ destination, source });
