@@ -22,7 +22,7 @@ const Task = ({
   isFullView,
   isStartedDnD,
   isDragging,
-  draggableProvided,
+  draggableProvided = {},
   taskGroupIdentifier,
   isDraggable,
   addingNewSubtask,

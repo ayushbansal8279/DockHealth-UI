@@ -68,7 +68,7 @@ const Routes = () => {
   }, [history, redirection]);
 
   return (
-    <Suspense fallback={() => <div />}>
+    <Suspense fallback={<div />}>
       <Switch>
         {AUTH_ROUTES.map(route => (
           <Redirect

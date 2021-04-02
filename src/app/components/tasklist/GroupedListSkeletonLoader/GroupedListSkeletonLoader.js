@@ -2,28 +2,8 @@
 /* eslint-disable react/no-array-index-key */
 import Spacing from 'components/common/Spacing';
 import React from 'react';
-import {
-  CircleLoaderElement,
-  Container,
-  LoaderElement,
-  LoaderFillElement,
-  LoaderGroup,
-  LoaderRow,
-} from './styled';
-
-const renderLoaderRow = index => (
-  <LoaderRow key={index}>
-    <LoaderFillElement />
-    <Spacing horizontal={4} />
-    <LoaderElement width={134} />
-    <Spacing horizontal={4} />
-    <LoaderElement width={87} />
-    <Spacing horizontal={4} />
-    <LoaderElement width={191} />
-    <Spacing horizontal={4} />
-    <CircleLoaderElement />
-  </LoaderRow>
-);
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+import { Container, LoaderElement, LoaderGroup } from './styled';
 
 const GroupedListSkeletonLoader = ({ numberOfGroups = 2 }) => {
   return (
@@ -32,11 +12,9 @@ const GroupedListSkeletonLoader = ({ numberOfGroups = 2 }) => {
         <LoaderGroup key={index}>
           <LoaderElement width={108} />
           <Spacing vertical={4} />
-          {new Array(
-            index === numberOfGroups - 1 && numberOfGroups !== 1 ? 3 : 5,
-          )
-            .fill()
-            .map((_, index) => renderLoaderRow(index))}
+          <TasksSkeletonLoader
+            rows={index === numberOfGroups - 1 && numberOfGroups !== 1 ? 3 : 5}
+          />
         </LoaderGroup>
       ))}
     </Container>

@@ -77,7 +77,7 @@ import {
 import {
   onEnterTemplatesView,
   onLeaveTemplatesView,
-} from './TemplateCoreSubscriptionPlan/TemplatesView';
+} from './TemplateCoreSubscriptionPlan/TaskTemplateView';
 
 export const SETTINGS_ROUTES = [
   {
@@ -162,7 +162,9 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   },
   {
     path: '/templates',
-    RouteComponent: React.lazy(() => import('views/templates/TemplatesView')),
+    RouteComponent: React.lazy(() =>
+      import('views/task-template/TaskTemplateView'),
+    ),
     onEnter: onEnterTemplatesView,
     onLeave: onLeaveTemplatesView,
   },

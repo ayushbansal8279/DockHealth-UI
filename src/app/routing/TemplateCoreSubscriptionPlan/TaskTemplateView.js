@@ -1,5 +1,6 @@
 import React from 'react';
 import { setHeader } from 'actions/template-actions';
+import * as TaskTemplateActions from 'actions/task-template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 
 export const onEnterTemplatesView = ({ dispatch }) => {
@@ -13,6 +14,7 @@ export const onEnterTemplatesView = ({ dispatch }) => {
       ],
     }),
   );
+  dispatch(TaskTemplateActions.getTemplates());
 };
 
 export const onLeaveTemplatesView = () => {};

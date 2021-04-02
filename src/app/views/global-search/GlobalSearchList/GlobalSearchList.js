@@ -19,7 +19,7 @@ import {
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 
 const GlobalSearchList = ({
   list,
@@ -80,7 +80,6 @@ const GlobalSearchList = ({
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             task={task}
-            draggableProvided={{}}
             isCompletedGroup={isCompletedList}
             toggleCompleteTask={toggleTaskStatus}
             onTaskUpdate={onTaskUpdate}
@@ -102,7 +101,7 @@ const GlobalSearchList = ({
             ]}
           />
         ))}
-        {isLoadingMore && <SingleSkeletonLoader rows={4} />}
+        {isLoadingMore && <TasksSkeletonLoader rows={4} />}
         {hasMoreTasks && (
           <LoadMoreSection>
             {!isLoadingMore && <LoadMoreButton onClick={showMoreTasks} />}

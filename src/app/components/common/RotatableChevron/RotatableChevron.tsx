@@ -10,7 +10,7 @@ import {
 interface RotatableChevronProps {
   color?: string;
   rotated: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const RotatableChevron = ({

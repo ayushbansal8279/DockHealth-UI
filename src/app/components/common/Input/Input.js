@@ -30,6 +30,7 @@ const components = {
 const Input = React.forwardRef(
   (
     {
+      autoFocus,
       disabled,
       error,
       fullWidth,
@@ -81,6 +82,7 @@ const Input = React.forwardRef(
             {label && required && <RequiredLabel>(required)</RequiredLabel>}
           </Label>
           <Field
+            autoFocus={autoFocus}
             id={name}
             name={name}
             type={type}

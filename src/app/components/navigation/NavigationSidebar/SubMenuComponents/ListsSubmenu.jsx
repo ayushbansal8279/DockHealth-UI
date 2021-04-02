@@ -19,6 +19,7 @@ import {
   taskListsSelector,
   pendingTaskListsSelector,
 } from 'selectors/task-list-selectors';
+import AddButton from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
@@ -30,7 +31,6 @@ import {
   DrawerListsItem,
   RolloverPopover,
   RolloverPopoverLabel,
-  DrawerAddButton,
   DrawerItemOptions,
   DrawerListsItemNewLabel,
   DrawerListsNewLabel,
@@ -212,9 +212,7 @@ const ListsSubmenu = () => {
     <>
       <DrawerMyListsLabel>
         <div>My Lists </div>
-        <DrawerAddButton onClick={openListAddModal}>
-          <span>+</span> Add
-        </DrawerAddButton>
+        <AddButton onClick={openListAddModal}>Add</AddButton>
       </DrawerMyListsLabel>
       {hasAnyPendingList && (
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>

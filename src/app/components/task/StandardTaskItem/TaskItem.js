@@ -112,7 +112,7 @@ const TaskItem = ({
     subtaskQuickAddOpen,
   } = task;
 
-  const { listName, taskListIdentifier } = taskList;
+  const { listName, taskListIdentifier } = taskList || {};
 
   const {
     matchAssignedTo,

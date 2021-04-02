@@ -38,7 +38,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
-import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
@@ -403,7 +403,7 @@ const TasksGroup = ({
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (
-          <SingleSkeletonLoader rows={4} />
+          <TasksSkeletonLoader rows={4} />
         )}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (
           <LoadMoreSection>
