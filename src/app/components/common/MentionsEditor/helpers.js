@@ -37,7 +37,7 @@ const substituteNameForIdInText = (rawText, mentions) => {
         new RegExp(`#${name}`, 'g'),
         `#{${identifier}}`,
       );
-    } else if (type === 'mention') {
+    } else if (type === 'mention' && name && name !== '') {
       textWithIds = textWithIds.replace(
         new RegExp(`@${name}`, 'g'),
         `@{${identifier}}`,

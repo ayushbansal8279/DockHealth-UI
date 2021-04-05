@@ -289,7 +289,7 @@ const TimeDropdownInput = ({
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
           error={error || errors[name]}
-          autocomplete="off"
+          autoComplete="off"
           disabled={disabled}
         />
         {endAdornment || (

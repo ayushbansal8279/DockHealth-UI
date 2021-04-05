@@ -21,7 +21,7 @@ const TaskComments = ({
   const limitedComments = !showMore ? comments : comments?.slice(0, 3);
 
   return (
-    <TaskCommentsContainer timeout={150} in={isOpen} isLast={isLast}>
+    <TaskCommentsContainer timeout={150} in={isOpen} islast={isLast}>
       <TaskCommentsPadding>
         {!isLast && showSubtaskStylingLink && <CommentStylingLink />}
         {limitedComments?.map((comment, index) => (
