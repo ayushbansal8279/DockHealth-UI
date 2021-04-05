@@ -15,7 +15,7 @@ const TaskItemBulkEdit = ({
   return (
     <BulkContainer>
       <Checkbox
-        isChecked={isCheckedByBulkEdit}
+        isChecked={isCheckedByBulkEdit ?? false}
         onClick={onClickBulkEditCheckbox}
       />
     </BulkContainer>

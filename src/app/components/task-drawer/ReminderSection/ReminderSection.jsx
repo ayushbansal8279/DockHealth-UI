@@ -133,7 +133,7 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
     <ReminderContainer>
       <Checkbox
         isDisabled={isCheckboxDisabled}
-        isChecked={reminderChecked}
+        isChecked={reminderChecked ?? false}
         onClick={handleToggleReminder}
       />
       <Spacing horizontal={4} />
