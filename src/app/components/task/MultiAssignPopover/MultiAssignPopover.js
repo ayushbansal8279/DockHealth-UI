@@ -76,7 +76,7 @@ MultiAssignPopover.propTypes = {
   isDisabled: bool,
   placement: oneOf(['top', 'bottom']),
   children: node.isRequired,
-  taskListIdentifiers: oneOfType([string, arrayOf(string)]).isRequired,
+  taskListIdentifiers: oneOfType([string, arrayOf(string)]),
   selectedMembers: arrayOf(
     shape({
       userIdentifier: string,
@@ -85,7 +85,7 @@ MultiAssignPopover.propTypes = {
       initials: string,
       profileThumbnailPictureHash: string,
     }),
-  ).isRequired,
+  ),
   fullWidth: bool,
   onSelect: func.isRequired,
 };
@@ -94,6 +94,8 @@ MultiAssignPopover.defaultProps = {
   isDisabled: false,
   placement: 'bottom',
   fullWidth: false,
+  taskListIdentifiers: '',
+  selectedMembers: [],
 };
 
 export default MultiAssignPopover;

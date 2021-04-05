@@ -190,7 +190,10 @@ Autocomplete.propTypes = {
   placeholder: propTypes.string,
   renderOption: propTypes.func,
   renderTags: propTypes.func,
-  value: propTypes.string,
+  value: propTypes.oneOfType([
+    propTypes.string,
+    propTypes.arrayOf(propTypes.string),
+  ]),
 };
 
 export default Autocomplete;
