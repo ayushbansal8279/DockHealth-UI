@@ -91,6 +91,8 @@ const TasksGroup = ({
   onTaskGroupViewModeChange,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
+  taskItemConfig,
+  disableBulkEdit = false,
 }) => {
   const [
     highlightedTasksParentIdenditifer,
@@ -302,7 +304,7 @@ const TasksGroup = ({
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <SortHeaderRow>
-            {bunchBulkEditTaskActions && (
+            {bunchBulkEditTaskActions && !disableBulkEdit && (
               <BulkContainer>
                 <Checkbox
                   isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
@@ -397,6 +399,7 @@ const TasksGroup = ({
               highlightedTasksParentIdenditifer
             }
             highlightTasksOfTheSameParent={highlightTasksOfTheSameParent}
+            taskItemConfig={taskItemConfig}
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (

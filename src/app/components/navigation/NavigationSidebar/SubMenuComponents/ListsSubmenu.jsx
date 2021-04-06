@@ -222,7 +222,7 @@ const ListsSubmenu = () => {
       <DrawerListsList>
         {lists?.map((list, index) => (
           <DrawerListsItem
-            key={list.taskListIdentifier}
+            key={`listsubmenu_${list.taskListIdentifier}_${index}`}
             data-list-id={list.taskListIdentifier}
             className={
               list.listType === 'INBOX'
@@ -259,7 +259,6 @@ const ListsSubmenu = () => {
                     itemsMoreButtonReferences.current[index] = element;
                 }}
                 size="small"
-                color={palette.coolGrey1}
                 onClick={() => {
                   openListMenuPopover(list, index);
                 }}

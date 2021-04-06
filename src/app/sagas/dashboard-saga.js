@@ -104,6 +104,7 @@ export const quickAddDashboardTask = ({
   taskListIdentifier,
   assignedToIdentifier,
   patientIdentifier,
+  dueDate,
 }) => ({
   type: QUICK_ADD_DASHBOARD_TASK,
   payload: {
@@ -111,6 +112,7 @@ export const quickAddDashboardTask = ({
     taskListIdentifier,
     assignedToIdentifier,
     patientIdentifier,
+    dueDate,
   },
 });
 
@@ -393,15 +395,20 @@ function* doReloadDashboardTasks(props = {}) {
 
       yield put({
         type: REQUEST_DASHBOARD_TASKS_SUCCESS,
-        tasksList: tasksList.map(group => ({
+        tasksList: tasksList?.taskGroups?.map(group => ({
           ...group,
           metricValue: group?.tasks?.length || 0,
           defaultOpen: true,
         })),
       });
+      yield put({
+        type: FETCH_MEGA_FILTERS_SUCCESS,
+        filters: tasksList?.taskFilterOptions,
+      });
     } else {
       yield all([
         call(doFetchImplicitGroups, { customGroupsSettings }),
+        call(doFetchDashboardFilters),
         call(statisticsRequest),
       ]);
     }
@@ -488,6 +495,7 @@ function* doQuickAddDahboardTask({ payload }) {
     taskListIdentifier,
     assignedToIdentifier,
     patientIdentifier,
+    dueDate,
   } = payload;
 
   try {
@@ -496,6 +504,7 @@ function* doQuickAddDahboardTask({ payload }) {
       taskListIdentifier,
       assignedToIdentifier,
       patientIdentifier,
+      dueDate,
     });
     yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
     yield put(fetchTasklistForUser());

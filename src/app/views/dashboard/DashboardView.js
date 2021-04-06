@@ -111,12 +111,12 @@ const DashboardView = ({
     if (currentUser && !isEmpty(currentUser) && !isNewUser) {
       const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('TASK_DENSITY')) {
+      if (!appFeaturesReviewed?.includes('HOME_IMPROVEMENTS')) {
         dispatch(
-          openModal('TaskDensityTour', {
+          openModal('HomeImprovementsTour', {
             onClose: () => {
               UserApi.updateUserDashboardPrefs({
-                appFeaturesReviewed: ['TASK_DENSITY'],
+                appFeaturesReviewed: ['HOME_IMPROVEMENTS'],
               });
             },
           }),

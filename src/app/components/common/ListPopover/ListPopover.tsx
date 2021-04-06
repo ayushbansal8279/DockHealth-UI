@@ -88,7 +88,7 @@ const renderItem = ({
       button={button as true}
       className={clsx(listItemClasses.root, active && listItemClasses.active)}
       onClick={onClick}
-      key={key}
+      key={`list_${key}`}
       {...otherProps}
     >
       <div className={clsx(listItemClasses.labelContainer)}>{label}</div>

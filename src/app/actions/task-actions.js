@@ -5,6 +5,7 @@ import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
+import { reloadDashboardTasks } from 'sagas/dashboard-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
@@ -215,6 +216,7 @@ export const moveTask = (
   taskList,
   taskGroupIdentifier = null,
   parentTaskIdentifier = null,
+  isDashboardTask,
 ) => dispatch => {
   const updatedTask = {
     refiled: true,
@@ -238,25 +240,30 @@ export const moveTask = (
         task,
         taskList,
       });
-      if (parentTaskIdentifier) {
+
+      if (isDashboardTask) {
+        dispatch(reloadDashboardTasks());
+      } else {
+        if (parentTaskIdentifier) {
+          dispatch(
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            refreshAnotherTask({
+              taskIdentifier: task.parentTaskIdentifier,
+            }),
+          );
+          dispatch(
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            refreshAnotherTask({
+              taskIdentifier: parentTaskIdentifier,
+            }),
+          );
+        }
         dispatch(
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          refreshAnotherTask({
-            taskIdentifier: task.parentTaskIdentifier,
-          }),
-        );
-        dispatch(
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          refreshAnotherTask({
-            taskIdentifier: parentTaskIdentifier,
+          getTasksGroupsList({
+            taskListIdentifier: taskList.taskListIdentifier,
           }),
         );
       }
-      dispatch(
-        getTasksGroupsList({
-          taskListIdentifier: taskList.taskListIdentifier,
-        }),
-      );
 
       dispatch(
         AlertActions.showGlobalAlertWithUndo(
@@ -362,7 +369,11 @@ export function deleteTask(task) {
       });
 }
 
-export function duplicateTask(task, includeAttachments = false) {
+export function duplicateTask(
+  task,
+  includeAttachments = false,
+  isDashboardTask,
+) {
   const taskGroupIdentifier =
     task.taskGroups?.length > 0
       ? task.taskGroups[0].taskGroupIdentifier
@@ -370,17 +381,22 @@ export function duplicateTask(task, includeAttachments = false) {
   return dispatch =>
     TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
       .then(duplicatedTask => {
-        dispatch({
-          type: ActionTypes.DUPLICATE_TASK_SUCCESS,
-          duplicatedTask,
-          taskGroupIdentifier,
-        });
+        if (isDashboardTask) {
+          dispatch(reloadDashboardTasks());
+        } else {
+          dispatch({
+            type: ActionTypes.DUPLICATE_TASK_SUCCESS,
+            duplicatedTask,
+            taskGroupIdentifier,
+          });
+          dispatch(
+            getTasksGroupsList({
+              taskListIdentifier: task?.taskList?.taskListIdentifier,
+            }),
+          );
+        }
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: task?.taskList?.taskListIdentifier,
-          }),
-        );
+
         return duplicatedTask;
       })
       .catch(error => {

@@ -16,6 +16,8 @@ const BulkEditSection = ({
   refreshTasks,
   inactiveBulkEdit,
   searchValue,
+  setShouldResetBulkEditTasks,
+  shouldRefreshTasksEveryTime,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [bulkEditTasks, setBulkEditTasks] = useState({
@@ -191,10 +193,12 @@ const BulkEditSection = ({
     [bulkEditTasks],
   );
 
-  const onClearBulkEditTasks = useCallback(
-    () => setBulkEditTasks({ parentTasks: [], subtasks: [] }),
-    [],
-  );
+  const onClearBulkEditTasks = useCallback(() => {
+    setBulkEditTasks({ parentTasks: [], subtasks: [] });
+    if (setShouldResetBulkEditTasks && shouldResetBulkEditTasks) {
+      setShouldResetBulkEditTasks(false);
+    }
+  }, [setShouldResetBulkEditTasks, shouldResetBulkEditTasks]);
 
   const getGroupIsSelectedInBulkEdit = useCallback(
     (parentTasks, subtasks) =>
@@ -295,6 +299,13 @@ const BulkEditSection = ({
     ],
   );
 
+  const bulkEditIsActive = useMemo(
+    () =>
+      bulkEditTasks?.parentTasks?.length !== 0 ||
+      bulkEditTasks?.subtasks?.length !== 0,
+    [bulkEditTasks],
+  );
+
   const bunchBulkEditTaskActions = useMemo(
     () => ({
       parentActions: {
@@ -313,6 +324,7 @@ const BulkEditSection = ({
         getGroupIsSelectedInBulkEdit,
         onClickBulkEditGroup,
       },
+      bulkEditIsActive,
     }),
     [
       getParentTaskIsSelectedInBulkEdit,
@@ -325,14 +337,8 @@ const BulkEditSection = ({
       onUpdateSelectedBulkEditSubtasks,
       getGroupIsSelectedInBulkEdit,
       onClickBulkEditGroup,
+      bulkEditIsActive,
     ],
-  );
-
-  const bulkEditIsActive = useMemo(
-    () =>
-      bulkEditTasks?.parentTasks?.length !== 0 ||
-      bulkEditTasks?.subtasks?.length !== 0,
-    [bulkEditTasks],
   );
 
   useEffect(() => {
@@ -361,6 +367,7 @@ const BulkEditSection = ({
         refreshTasks={refreshTasks}
         currentUser={currentUser}
         searchValue={searchValue}
+        shouldRefreshTasksEveryTime={shouldRefreshTasksEveryTime}
       />
     </BulkEditContext.Provider>
   );

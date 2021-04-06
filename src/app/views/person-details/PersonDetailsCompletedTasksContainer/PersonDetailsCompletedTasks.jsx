@@ -9,6 +9,13 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import {
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_PATIENT_COLUMN,
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_ICONS_COLUMN,
+  TASK_ITEM_LIST_COLUMN,
+} from 'components/task/StandardTaskItem/helpers';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -87,6 +94,14 @@ const PersonDetailsCompletedTasks = ({
                   listUniqueKey={listUniqueKey}
                   sort={sort}
                   onSortChange={onSortChange}
+                  taskItemConfig={[
+                    TASK_ITEM_PATIENT_COLUMN,
+                    TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+                    TASK_ITEM_MEMBERS_COLUMN,
+                    TASK_ITEM_ICONS_COLUMN,
+                    TASK_ITEM_LIST_COLUMN,
+                  ]}
+                  disableBulkEdit
                 />
               </DragDropContext>
             </TaskGroupsContainer>

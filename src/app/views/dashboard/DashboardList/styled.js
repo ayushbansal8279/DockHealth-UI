@@ -52,34 +52,6 @@ export const DashboardTasksGroupContainer = styled.div`
   }
 `;
 
-export const DashboardTasksGroupLabel = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  font-size: ${fontWeights.regular};
-  color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.regularPlus};
-  padding: ${spacing.tiny};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  margin: 0 55px;
-  background-color: ${palette.coolGrey4};
-`;
-
-export const DashboardTasksGroupLabelName = styled.div`
-  position: relative;
-  flex: ${({ width }) => (width ? `${width} 0 0` : '1')};
-  padding: 8px 16px;
-  height: 35px;
-  overflow: visible;
-
-  text-align: left;
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
-  color: ${palette.mediumGrey};
-`;
-
 export const DashboardSortBar = styled.div`
   display: flex;
   flex-direction: row;
@@ -94,21 +66,20 @@ export const DashboardSortBar = styled.div`
 
 export const DashboardSortBarLabelName = styled.div`
   position: relative;
-  flex: ${({ width }) => (width ? `${width} 0 0` : '1')};
-  padding: ${spacing.tiny} ${spacing.regular};
+  flex: ${({ width, extendedWidth, groupHasMultipleAssignees }) =>
+    width ? `${groupHasMultipleAssignees ? extendedWidth : width} 0 0` : '1'};
+  padding: ${({ paddingLeft = spacing.tiny, paddingRight = spacing.tiny }) =>
+    `${spacing.tiny} ${paddingRight} 0 ${paddingLeft}`};
   height: 35px;
   overflow: visible;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};
   display: flex;
   align-items: center;
-
-  &:nth-of-type(1) {
-    padding-left: 48px;
-  }
+  text-transform: uppercase;
 `;
 
 export const DashboardTasksGroupList = styled.div`
@@ -173,4 +144,40 @@ export const ShowMoreButton = styled.button`
   margin-top: ${spacing.regular};
   margin-left: 72px;
   width: fit-content;
+`;
+
+export const DashboardTasksGroupHeader = styled.div`
+  align-items: center;
+  display: flex;
+  margin-left: 55px;
+`;
+
+export const GroupNameSectionWrapper = styled.div`
+  flex: 1;
+  overflow: hidden;
+`;
+
+export const DashboardTasksGroupLabelName = styled.span`
+  display: inline-block;
+  max-width: calc(100% - 40px);
+  padding-right: ${spacing.tiny};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  font-family: 'Montserrat', sans-serif;
+`;
+
+export const DashboardTasksGroupLabel = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regularPlus};
+  text-transform: uppercase;
+`;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${spacing.smallPlus};
 `;

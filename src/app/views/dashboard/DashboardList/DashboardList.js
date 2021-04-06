@@ -5,6 +5,7 @@ import React, {
   useRef,
   useEffect,
   useCallback,
+  useContext,
 } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -42,9 +43,12 @@ import { dashboardStatisticsIsLoadingSelector } from 'selectors/dashboard-statis
 import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
-import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import Search from 'components/task-view/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import BulkEditSection, {
+  BulkEditContext,
+} from 'components/tasklist/BulkEditSection/BulkEditSection';
+
 import {
   storeAsCurrentTask as storeAsCurrentTaskAction,
   updateWorkflowStatus as updateWorkflowStatusAction,
@@ -180,6 +184,55 @@ function usePrevious(value) {
   return reference.current;
 }
 
+const DashboardListContainer = ({
+  children,
+  shouldResetBulkEditTasks,
+  setShouldResetBulkEditTasks,
+  selectedTab,
+  previousSelectedTab,
+  previousSelectedFilters,
+  selectedFilters,
+  previousSearchValue,
+  searchValue,
+}) => {
+  const { bulkEditIsActive } = useContext(BulkEditContext);
+
+  useEffect(() => {
+    if (
+      !shouldResetBulkEditTasks &&
+      bulkEditIsActive &&
+      (selectedTab !== previousSelectedTab?.current ||
+        Object.keys(previousSelectedFilters?.current).length !==
+          Object.keys(selectedFilters).length ||
+        (previousSearchValue?.current === '' &&
+          searchValue !== '' &&
+          previousSearchValue?.current !== searchValue) ||
+        (previousSearchValue?.current !== '' &&
+          previousSearchValue?.current !== null &&
+          searchValue === '' &&
+          previousSearchValue?.current !== searchValue) ||
+        (previousSearchValue?.current !== '' &&
+          previousSearchValue?.current !== null &&
+          searchValue !== '' &&
+          previousSearchValue?.current !== searchValue))
+    ) {
+      setShouldResetBulkEditTasks(true);
+    }
+  }, [
+    previousSelectedFilters,
+    selectedFilters,
+    shouldResetBulkEditTasks,
+    selectedTab,
+    previousSelectedTab,
+    bulkEditIsActive,
+    setShouldResetBulkEditTasks,
+    previousSearchValue,
+    searchValue,
+  ]);
+
+  return children;
+};
+
 const DashboardList = ({
   dashboardTasks,
   dashboardTasksIsLoading,
@@ -190,7 +243,7 @@ const DashboardList = ({
   isTaskDrawerOpen,
   selectedTaskIdentifier,
   closeDrawer,
-  userPreferColumn,
+  userPreferColumns,
   dashboardTab,
   dashboardActions: {
     redirectToParentTask,
@@ -227,16 +280,33 @@ const DashboardList = ({
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-  const [dynamicColumnType, setDynamicColumnType] = useState(
-    userPreferColumn || DashboardColumnKey.DUE_DATE,
+  const [dynamicColumns, setDynamicColumns] = useState(userPreferColumns || []);
+
+  const [shouldResetBulkEditTasks, setShouldResetBulkEditTasks] = useState(
+    false,
   );
-  const quickAddTaskInputReference = useRef(null);
+  const { filters, selectedFilters } = megaFilter;
+
+  const previousSelectedFilters = useRef(selectedFilters);
+  const previousSearchValue = useRef(null);
+  const previousSelectedTab = useRef(null);
+
+  useEffect(() => {
+    previousSelectedFilters.current = selectedFilters;
+  }, [selectedFilters]);
+
+  useEffect(() => {
+    previousSearchValue.current = searchValue;
+  }, [searchValue]);
+
+  useEffect(() => {
+    previousSelectedTab.current = selectedTab;
+  }, [selectedTab]);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
     taskGroupInfo => taskGroupInfo?.metricValue !== 0,
   );
   const { userIdentifier, usageState } = currentUser;
-  const { filters, selectedFilters } = megaFilter;
 
   const isSortApplied = !!currentSort?.key;
 
@@ -303,6 +373,7 @@ const DashboardList = ({
       fetchSearchedTermImplicitGroups,
       initializeDashboardView,
       previousSearchState,
+      shouldResetBulkEditTasks,
     ],
   );
 
@@ -323,7 +394,7 @@ const DashboardList = ({
 
   useEffect(() => {
     resetSort();
-  }, [dynamicColumnType]);
+  }, [dynamicColumns]);
 
   const handleSortChange = useCallback(
     (key, order) => {
@@ -347,7 +418,11 @@ const DashboardList = ({
     }
   };
 
-  const handleQuickAddTask = ({ description, patientIdentifier }) => {
+  const handleQuickAddTask = (
+    quickAddTaskInputReference,
+    { description, patientIdentifier },
+    dueDate,
+  ) => {
     modalActions.openModal('ListPicker', {
       fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
       listCreationPayload: {
@@ -360,6 +435,7 @@ const DashboardList = ({
           taskListIdentifier,
           assignedToIdentifier: userIdentifier,
           patientIdentifier,
+          dueDate,
         });
         quickAddTaskInputReference.current.focus();
       },
@@ -408,129 +484,131 @@ const DashboardList = ({
   }, [reloadDashboardTasks, fetchDashboardFilters]);
 
   return (
-    <>
-      <StickyHeader>
-        <ToolbarContainer container direction="row" justify="space-between">
-          <Grid item md={4}>
-            <DasboardTabsContainer>
-              <DashboardTab
-                label="My Tasks"
-                setHighlightPosition={setHighlightPosition}
-                onClick={() => {
-                  setSelectedTab('MY_TASKS');
-                  history.push('/core/home/my-tasks');
+    <BulkEditSection
+      shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+      setShouldResetBulkEditTasks={setShouldResetBulkEditTasks}
+      refreshTasks={handleTaskUpdate}
+      searchValue={searchValue}
+      shouldRefreshTasksEveryTime
+    >
+      <DashboardListContainer
+        shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+        setShouldResetBulkEditTasks={setShouldResetBulkEditTasks}
+        previousSelectedFilters={previousSelectedFilters}
+        selectedFilters={selectedFilters}
+        selectedTab={selectedTab}
+        previousSelectedTab={previousSelectedTab}
+        previousSearchValue={previousSearchValue}
+        searchValue={searchValue}
+      >
+        <StickyHeader>
+          <ToolbarContainer container direction="row" justify="space-between">
+            <Grid item md={4}>
+              <DasboardTabsContainer>
+                <DashboardTab
+                  label="My Tasks"
+                  setHighlightPosition={setHighlightPosition}
+                  onClick={() => {
+                    setSelectedTab('MY_TASKS');
+                    history.push('/core/home/my-tasks');
+                  }}
+                  isSelected={selectedTab === 'MY_TASKS'}
+                />
+                <DashboardTab
+                  label="All Tasks"
+                  setHighlightPosition={setHighlightPosition}
+                  onClick={() => {
+                    setSelectedTab('ALL_TASKS');
+                    history.push('/core/home/all-tasks');
+                  }}
+                  isSelected={selectedTab === 'ALL_TASKS'}
+                />
+                <DashboardTabHighlight {...highlightPosition} />
+              </DasboardTabsContainer>
+            </Grid>
+            <ActionsContainer item md={8}>
+              <MegaFilter
+                popoverStyles={{
+                  width: 'calc(100% - 420px)',
+                  right: '100px',
                 }}
-                isSelected={selectedTab === 'MY_TASKS'}
+                filters={filters}
+                selectedFilters={selectedFilters}
+                onSelectFilters={updateDashboardSelectedFilters}
+                taskStatus="INCOMPLETE"
+                activeItemsAmount={activeTasksCount}
               />
-              <DashboardTab
-                label="All Tasks"
-                setHighlightPosition={setHighlightPosition}
-                onClick={() => {
-                  setSelectedTab('ALL_TASKS');
-                  history.push('/core/home/all-tasks');
-                }}
-                isSelected={selectedTab === 'ALL_TASKS'}
+              <Spacing horizontal={4} />
+              <SearchGrid isFocused={searchFocused || searchValue}>
+                <Search
+                  fullWidth
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  value={searchValue}
+                  onChange={event => setSearchValue(event?.target?.value)}
+                  placeholder="Search Tasks"
+                />
+              </SearchGrid>
+              <Spacing horizontal={4} />
+              <div>
+                <TipsSwitchLabel>Tips</TipsSwitchLabel>
+                <Switch checked={tourModalIsOpen} onChange={openTourModal} />
+              </div>
+              <Spacing horizontal={4} />
+              <DashboardSettings
+                setDynamicColumns={setDynamicColumns}
+                dynamicColumns={dynamicColumns}
               />
-              <DashboardTabHighlight {...highlightPosition} />
-            </DasboardTabsContainer>
-          </Grid>
-          <ActionsContainer item md={8}>
-            <MegaFilter
-              popoverStyles={{
-                width: 'calc(100% - 420px)',
-                right: '100px',
-              }}
-              filters={filters}
-              selectedFilters={selectedFilters}
-              onSelectFilters={updateDashboardSelectedFilters}
-              taskStatus="INCOMPLETE"
-              activeItemsAmount={activeTasksCount}
-            />
-            <Spacing horizontal={4} />
-            <SearchGrid isFocused={searchFocused || searchValue}>
-              <Search
-                fullWidth
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                value={searchValue}
-                onChange={event => setSearchValue(event?.target?.value)}
-                placeholder="Search Tasks"
-              />
-            </SearchGrid>
-            <Spacing horizontal={4} />
-            <div>
-              <TipsSwitchLabel>Tips</TipsSwitchLabel>
-              <Switch checked={tourModalIsOpen} onChange={openTourModal} />
-            </div>
-            <Spacing horizontal={4} />
-            <DashboardSettings
-              setDynamicColumnType={setDynamicColumnType}
-              dynamicColumnType={dynamicColumnType}
-            />
-          </ActionsContainer>
-        </ToolbarContainer>
-        <QuickAddTaskInput
-          ref={quickAddTaskInputReference}
-          quickAddTask={handleQuickAddTask}
-          onFocus={() => {
-            if (isTaskDrawerOpen) {
-              closeDrawer();
-              storeAsCurrentTask(null);
-            }
-          }}
-          validator={value => {
-            if ([...value]?.filter(char => char !== ' ').length < 2)
-              return 'The task description is too short (min. 2 characters)';
-
-            return null;
-          }}
-        />
-      </StickyHeader>
-      <Spacing vertical={1} />
-      {dashboardTasksIsLoading || completeTaskCount === undefined ? (
-        <DashboardSkeletonLoader />
-      ) : (
-        <>
-          {!isEmpty(filteredDashboardTasks) ? (
-            filteredDashboardTasks?.map(
-              item =>
-                item && (
-                  <DashboardTasksGroup
-                    key={item?.groupType}
-                    dashboardTasksGroup={item}
-                    toggleDashboardTaskComplete={toggleDashboardTaskComplete}
-                    redirectToParentTask={redirectToParentTask}
-                    storeAsCurrentTask={storeAsCurrentTask}
-                    sortDashboardTasks={sortDashboardTasks}
-                    openDrawer={openDrawer}
-                    isTaskDrawerOpen={isTaskDrawerOpen}
-                    selectedTaskIdentifier={selectedTaskIdentifier}
-                    currentSortMethod={currentSortMethodWithOrder}
-                    currentSort={currentSort}
-                    onSortChange={handleSortChange}
-                    dynamicColumnType={dynamicColumnType}
-                    showClearSortFiltersModal={showClearSortFiltersModal}
-                    isSortApplied={isSortApplied}
-                    areFiltersApplied={areFiltersApplied}
-                    isAllTasksTab={selectedTab === 'ALL_TASKS'}
-                    updateDueDate={updateDashboardTaskDueDate}
-                    currentUser={currentUser}
-                    onTaskUpdate={updateDashboardTask}
-                    updateWorkflowStatus={updateWorkflowStatus}
-                    fetchImplicitGroup={fetchImplicitGroup}
-                    fetchSearchedTermImplicitGroups={
-                      fetchSearchedTermImplicitGroups
-                    }
-                    isSearching={!!searchValue}
-                  />
-                ),
-            )
-          ) : (
-            <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
-          )}
-        </>
-      )}
-
+            </ActionsContainer>
+          </ToolbarContainer>
+        </StickyHeader>
+        <Spacing vertical={1} />
+        {dashboardTasksIsLoading || completeTaskCount === undefined ? (
+          <DashboardSkeletonLoader />
+        ) : (
+          <>
+            {!isEmpty(filteredDashboardTasks) ? (
+              filteredDashboardTasks?.map(
+                item =>
+                  item && (
+                    <DashboardTasksGroup
+                      key={item?.groupType}
+                      dashboardTasksGroup={item}
+                      toggleDashboardTaskComplete={toggleDashboardTaskComplete}
+                      redirectToParentTask={redirectToParentTask}
+                      storeAsCurrentTask={storeAsCurrentTask}
+                      sortDashboardTasks={sortDashboardTasks}
+                      openDrawer={openDrawer}
+                      isTaskDrawerOpen={isTaskDrawerOpen}
+                      selectedTaskIdentifier={selectedTaskIdentifier}
+                      currentSortMethod={currentSortMethodWithOrder}
+                      currentSort={currentSort}
+                      onSortChange={handleSortChange}
+                      dynamicColumns={dynamicColumns}
+                      showClearSortFiltersModal={showClearSortFiltersModal}
+                      isSortApplied={isSortApplied}
+                      areFiltersApplied={areFiltersApplied}
+                      isAllTasksTab={selectedTab === 'ALL_TASKS'}
+                      updateDueDate={updateDashboardTaskDueDate}
+                      currentUser={currentUser}
+                      onTaskUpdate={updateDashboardTask}
+                      updateWorkflowStatus={updateWorkflowStatus}
+                      fetchImplicitGroup={fetchImplicitGroup}
+                      fetchSearchedTermImplicitGroups={
+                        fetchSearchedTermImplicitGroups
+                      }
+                      isSearching={!!searchValue}
+                      closeDrawer={closeDrawer}
+                      handleQuickAddTask={handleQuickAddTask}
+                    />
+                  ),
+              )
+            ) : (
+              <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
+            )}
+          </>
+        )}
+      </DashboardListContainer>
       <TaskDrawer
         modalActions={modalActions}
         onTaskUpdate={handleTaskUpdate}
@@ -538,7 +616,7 @@ const DashboardList = ({
         onTaskDelete={fetchDashboardFilters}
         assignToSelf
       />
-    </>
+    </BulkEditSection>
   );
 };
 
@@ -547,7 +625,7 @@ const mapStateToProps = state => ({
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   dashboardStatisticsIsLoading: dashboardStatisticsIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
-  userPreferColumn: userProfileDashbaordPrefsSelector(state),
+  userPreferColumns: userProfileDashbaordPrefsSelector(state),
   megaFilter: megaFilterSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
 });

@@ -58,6 +58,7 @@ const BulkEditOptionsBar = ({
   refreshTasks,
   currentUser,
   searchValue,
+  shouldRefreshTasksEveryTime,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -194,9 +195,27 @@ const BulkEditOptionsBar = ({
             AlertActions.showGlobalAlertWithUndo(
               `${allSelectedTasksLength} STATUS CHANGED`,
               transactionIdentifier,
-              ({ tasks }) => updateTasks(tasks),
+              ({ tasks }) => {
+                if (
+                  shouldRefreshTasksEveryTime &&
+                  refreshTasks &&
+                  typeof refreshTasks === 'function'
+                ) {
+                  refreshTasks();
+                } else {
+                  updateTasks(tasks);
+                }
+              },
             ),
           );
+
+          if (
+            shouldRefreshTasksEveryTime &&
+            refreshTasks &&
+            typeof refreshTasks === 'function'
+          ) {
+            refreshTasks();
+          }
 
           if (onClose && typeof onClose === 'function') {
             onClose();
@@ -215,9 +234,10 @@ const BulkEditOptionsBar = ({
       searchValue,
       dispatch,
       allSelectedTasksLength,
+      shouldRefreshTasksEveryTime,
+      refreshTasks,
       onClose,
       updateTasks,
-      refreshTasks,
     ],
   );
 
@@ -237,9 +257,27 @@ const BulkEditOptionsBar = ({
                 ? `${allSelectedTasksLength} DUE DATES CHANGED`
                 : `${allSelectedTasksLength} DUE DATE CHANGED`,
               transactionIdentifier,
-              ({ tasks }) => updateTasks(tasks),
+              ({ tasks }) => {
+                if (
+                  shouldRefreshTasksEveryTime &&
+                  refreshTasks &&
+                  typeof refreshTasks === 'function'
+                ) {
+                  refreshTasks();
+                } else {
+                  updateTasks(tasks);
+                }
+              },
             ),
           );
+
+          if (
+            shouldRefreshTasksEveryTime &&
+            refreshTasks &&
+            typeof refreshTasks === 'function'
+          ) {
+            refreshTasks();
+          }
 
           if (onClose && typeof onClose === 'function') {
             onClose();
@@ -257,9 +295,10 @@ const BulkEditOptionsBar = ({
       filters,
       dispatch,
       allSelectedTasksLength,
+      shouldRefreshTasksEveryTime,
+      refreshTasks,
       onClose,
       updateTasks,
-      refreshTasks,
     ],
   );
 
@@ -284,9 +323,27 @@ const BulkEditOptionsBar = ({
                 ? `${allSelectedTasksLength} TASKS ASSIGNED`
                 : `${allSelectedTasksLength} TASK ASSIGNED`,
               transactionIdentifier,
-              ({ tasks }) => updateTasks(tasks),
+              ({ tasks }) => {
+                if (
+                  shouldRefreshTasksEveryTime &&
+                  refreshTasks &&
+                  typeof refreshTasks === 'function'
+                ) {
+                  refreshTasks();
+                } else {
+                  updateTasks(tasks);
+                }
+              },
             ),
           );
+
+          if (
+            shouldRefreshTasksEveryTime &&
+            refreshTasks &&
+            typeof refreshTasks === 'function'
+          ) {
+            refreshTasks();
+          }
         })
         .catch(() => {
           if (refreshTasks && typeof refreshTasks === 'function') {
@@ -301,8 +358,9 @@ const BulkEditOptionsBar = ({
       searchValue,
       dispatch,
       allSelectedTasksLength,
-      updateTasks,
+      shouldRefreshTasksEveryTime,
       refreshTasks,
+      updateTasks,
     ],
   );
 
@@ -330,7 +388,17 @@ const BulkEditOptionsBar = ({
               ? `${allSelectedTasksLength} TASKS DUPLICATED`
               : `${allSelectedTasksLength} TASK DUPLICATED`,
             transactionIdentifier,
-            ({ tasks }) => deleteTasks(tasks),
+            ({ tasks }) => {
+              if (
+                shouldRefreshTasksEveryTime &&
+                refreshTasks &&
+                typeof refreshTasks === 'function'
+              ) {
+                refreshTasks();
+              } else {
+                deleteTasks(tasks);
+              }
+            },
           ),
         );
 
@@ -357,6 +425,7 @@ const BulkEditOptionsBar = ({
     dispatch,
     allSelectedTasksLength,
     onClose,
+    shouldRefreshTasksEveryTime,
     deleteTasks,
   ]);
 
@@ -469,16 +538,32 @@ const BulkEditOptionsBar = ({
                 : `${allSelectedTasksLength} TASK COMPLETED`,
               transactionIdentifier,
               ({ tasks }) => {
-                tasks.forEach(task =>
-                  task.parentTaskIdentifier &&
-                  (isEmpty(filters) || !filters) &&
-                  !searchValue
-                    ? updateTasks([task])
-                    : addTasks([task]),
-                );
+                if (
+                  shouldRefreshTasksEveryTime &&
+                  refreshTasks &&
+                  typeof refreshTasks === 'function'
+                ) {
+                  refreshTasks();
+                } else {
+                  tasks.forEach(task =>
+                    task.parentTaskIdentifier &&
+                    (isEmpty(filters) || !filters) &&
+                    !searchValue
+                      ? updateTasks([task])
+                      : addTasks([task]),
+                  );
+                }
               },
             ),
           );
+
+          if (
+            shouldRefreshTasksEveryTime &&
+            refreshTasks &&
+            typeof refreshTasks === 'function'
+          ) {
+            refreshTasks();
+          }
 
           if (onClose && typeof onClose === 'function') {
             onClose();
@@ -509,12 +594,13 @@ const BulkEditOptionsBar = ({
     dispatch,
     taskListIdentifier,
     allSelectedTasksLength,
+    shouldRefreshTasksEveryTime,
+    refreshTasks,
     onClose,
     filters,
     searchValue,
     updateTasks,
     addTasks,
-    refreshTasks,
   ]);
 
   const handleDeleteTasks = useCallback(() => {
@@ -537,9 +623,27 @@ const BulkEditOptionsBar = ({
                     ? `${allSelectedTasksLength} TASKS DELETED`
                     : `${allSelectedTasksLength} TASK DELETED`,
                   transactionIdentifier,
-                  ({ tasks }) => addTasks(tasks),
+                  ({ tasks }) => {
+                    if (
+                      shouldRefreshTasksEveryTime &&
+                      refreshTasks &&
+                      typeof refreshTasks === 'function'
+                    ) {
+                      refreshTasks();
+                    } else {
+                      addTasks(tasks);
+                    }
+                  },
                 ),
               );
+
+              if (
+                shouldRefreshTasksEveryTime &&
+                refreshTasks &&
+                typeof refreshTasks === 'function'
+              ) {
+                refreshTasks();
+              }
 
               if (onClose && typeof onClose === 'function') {
                 onClose();
@@ -560,9 +664,10 @@ const BulkEditOptionsBar = ({
     allSelectedTasksIdentifiers,
     taskListIdentifier,
     allSelectedTasksLength,
-    addTasks,
-    onClose,
+    shouldRefreshTasksEveryTime,
     refreshTasks,
+    onClose,
+    addTasks,
   ]);
 
   return (

@@ -47,6 +47,7 @@ const DashboardStatisticsTile = ({
   label,
   alignText,
   showAmount = true,
+  maxWidth,
 }) => {
   const tileReference = useRef(null);
   const backgroundGradient = BACKGROUND_GRADIENTS[background];
@@ -56,6 +57,7 @@ const DashboardStatisticsTile = ({
     <DashboardStatisticsTileContainer
       ref={tileReference}
       background={backgroundGradient}
+      maxWidth={maxWidth}
     >
       <DashboardStatisticsTileText>
         {showAmount && (

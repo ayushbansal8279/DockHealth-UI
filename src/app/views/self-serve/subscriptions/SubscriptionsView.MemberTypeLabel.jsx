@@ -79,11 +79,19 @@ const MemberTypeLabel = ({
           <DropdownIndicator
             setOpen={() => {}}
             isOpen={isPopoverOpen}
-            label={label}
+            label={
+              label === 'Invited'
+                ? `${label} (${orgUserRole.toLowerCase()})`
+                : label
+            }
           />
         )}
         {isDisabledRemovingSubscription && (
-          <CurrentUserLabel>{label}</CurrentUserLabel>
+          <CurrentUserLabel>
+            {label === 'Invited'
+              ? `${label} (${orgUserRole.toLowerCase()})`
+              : label}
+          </CurrentUserLabel>
         )}
       </MemberTypeButton>
       {PopoverComponent && (
