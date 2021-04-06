@@ -70,6 +70,16 @@ const GROUPS_WITH_QUICK_ADD_TASK_INPUT = [
   NEXT_7_DAYS_GROUP,
   NO_DUE_DATE_GROUP,
 ];
+const COMPLETED_TODAY = 'COMPLETED_TODAY';
+const COMPLETED_7_DAYS = 'COMPLETED_7_DAYS';
+const ORG_COMPLETED_TODAY = 'ORG_COMPLETED_TODAY';
+const ORG_COMPLETED_7_DAYS = 'ORG_COMPLETED_7_DAYS';
+const GROUPS_WITH_COMPLETED_TASKS = [
+  COMPLETED_TODAY,
+  COMPLETED_7_DAYS,
+  ORG_COMPLETED_TODAY,
+  ORG_COMPLETED_7_DAYS,
+];
 
 const DYNAMIC_GRID_CONFIG = {
   [DashboardColumnKey.DESCRIPTION]: {
@@ -215,6 +225,8 @@ const DashboardTasksGroup = ({
 
     return null;
   }, [groupType]);
+
+  const isCompletedGroup = !!GROUPS_WITH_COMPLETED_TASKS.includes(groupType);
 
   return (
     <DashboardTasksGroupContainer>
@@ -390,9 +402,10 @@ const DashboardTasksGroup = ({
                             >
                               <StandardTaskItem
                                 task={task}
-                                toggleTaskComplete={() =>
+                                toggleCompleteTask={() =>
                                   toggleDashboardTaskComplete(task)
                                 }
+                                isCompletedGroup={isCompletedGroup}
                                 redirectToParentTask={redirectToParentTask}
                                 storeAsCurrentTask={storeAsCurrentTask}
                                 isDragging={isDragging}
