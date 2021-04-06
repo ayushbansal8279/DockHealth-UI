@@ -390,7 +390,7 @@ const DashboardTasksGroup = ({
                             >
                               <StandardTaskItem
                                 task={task}
-                                toggleTaskComplete={() =>
+                                toggleCompleteTask={() =>
                                   toggleDashboardTaskComplete(task)
                                 }
                                 redirectToParentTask={redirectToParentTask}
