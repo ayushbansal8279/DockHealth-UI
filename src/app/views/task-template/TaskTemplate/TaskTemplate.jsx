@@ -6,14 +6,17 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Box, Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
+import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -26,6 +29,7 @@ import {
 const TaskTemplate = ({ template }) => {
   const { taskTemplateIdentifier, name, description } = template;
 
+  const [draggableId, setDraggableId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const nameInputReference = useRef(null);
@@ -83,6 +87,38 @@ const TaskTemplate = ({ template }) => {
     [dispatch, taskTemplateIdentifier],
   );
 
+  const handleAddTaskToTemplate = useCallback(
+    task => {
+      dispatch(
+        TaskTemplateActions.addTaskToTemplate({
+          ...task,
+          taskTemplateIdentifier,
+        }),
+      );
+    },
+    [dispatch, taskTemplateIdentifier],
+  );
+
+  const onBeforeCapture = useCallback(({ draggableId: id }) => {
+    setDraggableId(id);
+  }, []);
+
+  const onDragEnd = useCallback(
+    ({ destination, source }) => {
+      setDraggableId(null);
+      onTaskOrderChanged();
+
+      dispatch(
+        TaskTemplateActions.reorderTasksForTemplate({
+          taskTemplateIdentifier,
+          source,
+          destination,
+        }),
+      );
+    },
+    [dispatch, taskTemplateIdentifier],
+  );
+
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
@@ -118,9 +154,43 @@ const TaskTemplate = ({ template }) => {
           {!isFetching ? (
             <>
               <Box m={0.4} />
-              {tasks?.map(task => (
-                <StandardTaskItem key={task.taskIdentifier} task={task} />
-              ))}
+              <DragDropContext
+                onBeforeCapture={onBeforeCapture}
+                onDragEnd={onDragEnd}
+              >
+                <Droppable droppableId="droppable">
+                  {droppableProvided => (
+                    <div
+                      {...droppableProvided.droppableProps}
+                      ref={droppableProvided.innerRef}
+                    >
+                      {tasks?.map((task, index) => {
+                        return (
+                          <Draggable
+                            key={task.taskIdentifier}
+                            draggableId={task.taskIdentifier}
+                            index={index}
+                          >
+                            {(draggableProvided, draggableSnapshot) => (
+                              <StandardTaskItem
+                                isStartedDnD={
+                                  draggableId === task.taskIdentifier
+                                }
+                                isDragging={draggableSnapshot.isDragging}
+                                draggableProvided={draggableProvided}
+                                isDraggable
+                                task={task}
+                              />
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                      {droppableProvided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+              <QuickAddTaskInput quickAddTask={handleAddTaskToTemplate} />
             </>
           ) : (
             <TasksSkeletonLoader rows={4} />

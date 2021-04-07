@@ -65,7 +65,6 @@ const TasksGroup = ({
   deleteGroup,
   moveGroupUp,
   moveGroupDown,
-  reorderSubtasksForTask,
   onTaskUpdate,
   tasks,
   isLoadingGroup,
@@ -381,7 +380,6 @@ const TasksGroup = ({
             isFullView={isFullView}
             toggleCompleteTask={toggleCompleteTask}
             draggedId={draggedId}
-            reorderSubtasksForTask={reorderSubtasksForTask}
             isCompletedGroup={isCompletedGroup}
             onTaskUpdate={onTaskUpdate}
             updateDueDate={updateDueDate}

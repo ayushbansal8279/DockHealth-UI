@@ -42,3 +42,23 @@ export function toggleTemplateOpen(taskTemplateIdentifier) {
     taskTemplateIdentifier,
   };
 }
+
+export function reorderTasksForTemplate({
+  taskTemplateIdentifier,
+  source,
+  destination,
+}) {
+  return {
+    type: ActionTypesSaga.REORDER_TASKS_FOR_TEMPLATE,
+    taskTemplateIdentifier,
+    source,
+    destination,
+  };
+}
+
+export function addTaskToTemplate(task) {
+  return {
+    type: ActionTypesSaga.ADD_TASK_TO_TEMPLATE,
+    task,
+  };
+}

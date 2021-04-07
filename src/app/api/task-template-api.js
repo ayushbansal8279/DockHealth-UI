@@ -66,3 +66,19 @@ export function duplicateTemplate(templateIdentifier) {
       throw error;
     });
 }
+
+export function reorderTasksForTemplate(
+  taskTemplateIdentifier,
+  orderedTaskIdentifiers,
+) {
+  // TODO: check api url when created
+  return axios
+    .put(`task/template/reorder`, {
+      taskTemplateIdentifier,
+      taskIdentifiers: orderedTaskIdentifiers,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

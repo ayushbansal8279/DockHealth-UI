@@ -10,7 +10,6 @@ const DragAndDropGroupList = ({
   toggleCompleteTask,
   draggedId,
   tasks,
-  reorderSubtasksForTask,
   onTaskUpdate,
   isCompletedGroup,
   updateDueDate,
@@ -72,7 +71,6 @@ const DragAndDropGroupList = ({
                     task={task}
                     taskGroupIdentifier={taskGroupIdentifier}
                     draggableProvided={draggableProvided}
-                    reorderSubtasksForTask={reorderSubtasksForTask}
                     isCompletedGroup={isCompletedGroup}
                     toggleCompleteTask={toggleCompleteTask}
                     onTaskUpdate={onTaskUpdate}

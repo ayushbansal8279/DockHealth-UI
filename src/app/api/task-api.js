@@ -429,23 +429,6 @@ export function reorderTasksInGroup({ orderedTaskIds, taskGroupIdentifier }) {
     });
 }
 
-export function reorderSubtasksForTask(
-  orderedTaskIds,
-  taskGroupIdentifier,
-  parentTaskIdentifier,
-) {
-  return axios
-    .put('task/sortSubTasksForTask', {
-      taskIdentifiers: orderedTaskIds,
-      taskGroupIdentifier,
-      parentTaskIdentifier,
-    })
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
 export const reassignTasksToAnotherGroup = (
   taskGroupIdentifier,
   taskIdentifiers,
@@ -554,4 +537,19 @@ export function rollbackTransaction(transactionIdentifier) {
   return axios
     .put(`/task/rollbackTransaction/${transactionIdentifier}`)
     .then(({ data }) => data);
+}
+
+export function reorderSubtasks(
+  parentTaskIdentifier,
+  orderedSubtaskIdentifiers,
+) {
+  return axios
+    .put(`task/sortSubTasksForTask`, {
+      taskIdentifiers: orderedSubtaskIdentifiers,
+      parentTaskIdentifier,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
 }

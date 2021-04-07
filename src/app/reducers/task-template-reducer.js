@@ -1,5 +1,6 @@
 import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
+import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   taskTemplates: [],
@@ -7,6 +8,22 @@ const initialState = {
   isError: false,
   taskTemplateDetails: {},
 };
+
+function updateTasksStateCallback(state, updateTaskFromAction) {
+  return {
+    ...state,
+    taskTemplateDetails: Object.entries(state.taskTemplateDetails).reduce(
+      (accumulator, [key, value]) => ({
+        ...accumulator,
+        [key]: {
+          ...value,
+          tasks: updateTaskFromAction(value?.tasks || []),
+        },
+      }),
+      {},
+    ),
+  };
+}
 
 function updateTaskTemplateDetailsState(
   taskTemplateIdentifier,
@@ -149,8 +166,27 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_TASK_TO_TEMPLATE: {
+      const { taskTemplateIdentifier } = action.task;
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          taskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            tasks: [
+              ...(state.taskTemplateDetails[taskTemplateIdentifier]?.tasks ||
+                []),
+              action.task,
+            ],
+          },
+        ),
+      };
+    }
+
     default:
-      return { ...state };
+      return TaskBaseReducer(state, action, updateTasksStateCallback);
   }
 };
 

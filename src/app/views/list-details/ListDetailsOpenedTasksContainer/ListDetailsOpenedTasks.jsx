@@ -37,7 +37,6 @@ const ListDetailsOpenedTasks = ({
   deleteGroup,
   changeGroupsOrder,
   reorderTasksInGroup,
-  reorderSubtasksForTask,
   reassignTasksToAnotherGroup,
   onTaskUpdate,
   isFetchingData,
@@ -171,7 +170,6 @@ const ListDetailsOpenedTasks = ({
               groupedTasks[taskGroupIdentifier]?.isFetchingMoreTasks || false
             }
             taskGroupIdentifier={taskGroupIdentifier}
-            reorderSubtasksForTask={reorderSubtasksForTask}
             onTaskUpdate={onTaskUpdate}
             draggedId={draggedId}
             toggleCompleteTask={toggleCompleteTask}
@@ -225,7 +223,6 @@ const ListDetailsOpenedTasks = ({
       quickAddTask,
       deleteGroup,
       changeGroupsOrder,
-      reorderSubtasksForTask,
       onTaskUpdate,
       draggedId,
       toggleCompleteTask,

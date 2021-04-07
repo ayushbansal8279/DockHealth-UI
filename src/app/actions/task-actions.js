@@ -9,6 +9,7 @@ import { reloadDashboardTasks } from 'sagas/dashboard-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
+import * as ActionTypesSaga from './action-types-saga';
 import AlertMessages from '../alert/AlertMessages';
 
 export const clearPreparedSubtask = curry(dispatch =>
@@ -842,5 +843,14 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
         }),
       1500,
     );
+  };
+}
+
+export function reorderSubtasks({ parentTask, source, destination }) {
+  return {
+    type: ActionTypesSaga.REORDER_SUBTASKS,
+    parentTask,
+    source,
+    destination,
   };
 }

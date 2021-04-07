@@ -190,7 +190,6 @@ const Task = ({
             isOpen={areSubtasksOpen}
             isFullView={isFullView}
             taskGroupIdentifier={taskGroupIdentifier}
-            parentTaskIdentifier={task.taskIdentifier}
             parentHasPatient={!!patient}
             taskList={taskList}
             isDraggable={isDraggable}

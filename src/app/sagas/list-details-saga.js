@@ -19,7 +19,6 @@ import {
   reorderTasksInGroup,
   getListTasksGroupedByTaskGroup,
   getFilteredTasksForList,
-  reorderSubtasksForTask,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
   getTasksForTaskListByTaskGroup,
   searchTasksByTaskList,
@@ -52,7 +51,6 @@ export const DO_EDIT_TASKS_GROUP_NAME = 'DO_EDIT_TASKS_GROUP_NAME';
 export const DO_DELETE_TASKS_GROUP = 'DO_DELETE_TASKS_GROUP';
 export const DO_SORT_TASKS_GROUPS = 'DO_SORT_TASKS_GROUPS';
 export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
-export const DO_SORT_SUBTASKS_IN_GROUPS = 'DO_SORT_SUBTASKS_IN_GROUPS';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
@@ -88,11 +86,6 @@ export const sortTasksGroups = payload => ({
 
 export const sortTasksInGroup = payload => ({
   type: DO_SORT_TASKS_IN_GROUPS,
-  ...payload,
-});
-
-export const sortSubtasksInGroup = payload => ({
-  type: DO_SORT_SUBTASKS_IN_GROUPS,
   ...payload,
 });
 
@@ -434,53 +427,6 @@ function* doSortTasksInGroup(payload) {
   }
 }
 
-function* doSortSubtasksInGroup(payload) {
-  const {
-    source: { index: sourceIndex },
-    destination: { index: destinationIndex, droppableId: parentTaskIdentifier },
-    taskGroupIdentifier,
-  } = payload;
-
-  if (destinationIndex === sourceIndex) return;
-
-  const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
-
-  const parentTask = group.tasks.find(
-    ({ taskIdentifier }) => taskIdentifier === parentTaskIdentifier,
-  );
-
-  if (!parentTask) return;
-  const reorderedSubtasks = move(
-    sourceIndex,
-    destinationIndex,
-    parentTask.subtasks,
-  );
-
-  try {
-    yield put({
-      type: ActionTypes.UPDATE_TASK_SUCCESS,
-      task: {
-        ...parentTask,
-        subtasks: reorderedSubtasks,
-      },
-    });
-
-    yield call(
-      reorderSubtasksForTask,
-      pluck('taskIdentifier', reorderedSubtasks),
-      taskGroupIdentifier,
-      parentTaskIdentifier,
-    );
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({
-      type: ActionTypes.UPDATE_TASK_SUCCESS,
-      task: parentTask,
-    });
-  }
-}
-
 function* doReassignTasksToAnotherGroup(payload) {
   const {
     destination: {
@@ -775,7 +721,6 @@ export default function* watchTasksGroupsList() {
   yield takeEvery(DO_DELETE_TASKS_GROUP, doDeleteTasksGroup);
   yield takeEvery(DO_SORT_TASKS_GROUPS, doSortTasksGroups);
   yield takeEvery(DO_SORT_TASKS_IN_GROUPS, doSortTasksInGroup);
-  yield takeEvery(DO_SORT_SUBTASKS_IN_GROUPS, doSortSubtasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
   yield takeEvery(
     DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
