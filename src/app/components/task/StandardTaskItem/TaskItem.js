@@ -39,6 +39,7 @@ import {
   TASK_ITEM_MEMBERS_COLUMN,
   TASK_ITEM_PATIENT_COLUMN,
   TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_DUE_DATE_COLUMN,
 } from './helpers';
 import {
   CircleIcon,
@@ -507,12 +508,14 @@ const TaskItem = ({
               dispatch={dispatch}
             />
           )}
-          <TaskItemDueDate
-            dueDate={dueDate}
-            task={task}
-            isHovered={isHovered}
-            updateDueDate={updateDueDate}
-          />
+          {checkColumnIsInConfig(TASK_ITEM_DUE_DATE_COLUMN, taskItemConfig) && (
+            <TaskItemDueDate
+              dueDate={dueDate}
+              task={task}
+              isHovered={isHovered}
+              updateDueDate={updateDueDate}
+            />
+          )}
           {checkColumnIsInConfig(TASK_ITEM_MEMBERS_COLUMN, taskItemConfig) && (
             <TaskItemMembers
               multipleAssigneesContext={multipleAssigneesContext}

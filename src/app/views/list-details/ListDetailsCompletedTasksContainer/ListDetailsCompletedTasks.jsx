@@ -14,6 +14,14 @@ import {
 } from 'components/task/StandardTaskItem/helpers';
 import { TaskGroupsContainer } from '../styled';
 
+const LIST_DETAILS_COLUMNS_CONFIG = [
+  TASK_ITEM_PATIENT_COLUMN,
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_ICONS_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+];
+
 const ListDetailsCompletedTasks = ({
   tasks,
   completedTasksGroup,
@@ -88,13 +96,7 @@ const ListDetailsCompletedTasks = ({
                   }}
                   sort={sort}
                   onSortChange={onSortChange}
-                  taskItemConfig={[
-                    TASK_ITEM_PATIENT_COLUMN,
-                    TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-                    TASK_ITEM_MEMBERS_COLUMN,
-                    TASK_ITEM_ICONS_COLUMN,
-                    TASK_ITEM_MEMBERS_COLUMN,
-                  ]}
+                  taskItemConfig={LIST_DETAILS_COLUMNS_CONFIG}
                   disableBulkEdit
                 />
               </DragDropContext>

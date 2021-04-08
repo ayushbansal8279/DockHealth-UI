@@ -15,6 +15,7 @@ import {
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
 import {
+  TASK_ITEM_DUE_DATE_COLUMN,
   TASK_ITEM_ICONS_COLUMN,
   TASK_ITEM_MEMBERS_COLUMN,
   TASK_ITEM_WORFKLOW_STATUS_COLUMN,
@@ -40,6 +41,13 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { BulkContainer } from '../styled';
+
+const COLUMNS_CONFIG = [
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_ICONS_COLUMN,
+  TASK_ITEM_DUE_DATE_COLUMN,
+];
 
 const TaskListDetailsDropdown = ({
   list,
@@ -269,11 +277,7 @@ const TaskListDetailsDropdown = ({
               subtaskShape={subtaskShape}
               hideSubtasks={hideSubtasks}
               multipleAssigneesContext={groupHasMultipleAssignees}
-              taskItemConfig={[
-                TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-                TASK_ITEM_MEMBERS_COLUMN,
-                TASK_ITEM_ICONS_COLUMN,
-              ]}
+              taskItemConfig={COLUMNS_CONFIG}
             />
           ))}
         </div>

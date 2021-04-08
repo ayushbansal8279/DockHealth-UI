@@ -18,6 +18,11 @@ import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkelet
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import {
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_ICONS_COLUMN,
+} from 'components/task/StandardTaskItem/helpers';
+import {
   TaskTemplateContainer,
   TaskTemplateHeader,
   NameInput,
@@ -25,6 +30,12 @@ import {
   ArrowButton,
   MenuContainer,
 } from './styled';
+
+const TEMPLATES_VIEW_COLUMNS_CONFIG = [
+  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
+  TASK_ITEM_MEMBERS_COLUMN,
+  TASK_ITEM_ICONS_COLUMN,
+];
 
 const TaskTemplate = ({ template }) => {
   const { taskTemplateIdentifier, name, description } = template;
@@ -180,6 +191,7 @@ const TaskTemplate = ({ template }) => {
                                 draggableProvided={draggableProvided}
                                 isDraggable
                                 task={task}
+                                taskItemConfig={TEMPLATES_VIEW_COLUMNS_CONFIG}
                               />
                             )}
                           </Draggable>

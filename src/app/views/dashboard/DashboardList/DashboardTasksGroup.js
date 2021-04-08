@@ -104,6 +104,12 @@ const DYNAMIC_GRID_CONFIG = {
 
 const getTaskItemConfig = dynamicColumns => DYNAMIC_GRID_CONFIG[dynamicColumns];
 
+const DASHBOARD_BASE_COLUMNS_CONFIG = [
+  TASK_ITEM_PATIENT_COLUMN,
+  TASK_ITEM_LIST_COLUMN,
+  TASK_ITEM_DUE_DATE_COLUMN,
+];
+
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
   toggleDashboardTaskComplete,
@@ -215,6 +221,11 @@ const DashboardTasksGroup = ({
 
     return null;
   }, [groupType]);
+
+  const columnsConfig = useMemo(
+    () => [...DASHBOARD_BASE_COLUMNS_CONFIG, ...taskItemConfigKeys],
+    [taskItemConfigKeys],
+  );
 
   return (
     <DashboardTasksGroupContainer>
@@ -412,11 +423,7 @@ const DashboardTasksGroup = ({
                                 currentUser={currentUser}
                                 onTaskUpdate={onTaskUpdate}
                                 updateWorkflowStatus={updateWorkflowStatus}
-                                taskItemConfig={[
-                                  ...taskItemConfigKeys,
-                                  TASK_ITEM_PATIENT_COLUMN,
-                                  TASK_ITEM_LIST_COLUMN,
-                                ]}
+                                taskItemConfig={columnsConfig}
                                 multipleAssigneesContext={
                                   groupHasMultipleAssignees
                                 }
