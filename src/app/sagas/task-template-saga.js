@@ -35,7 +35,7 @@ function* getTemplates() {
     const templates = yield call(TaskTemplateApi.getTemplates);
     yield put({
       type: ActionTypes.LOAD_TASK_TEMPLATES,
-      templates: templates.reverse(),
+      templates,
     });
   } catch {
     yield put({
@@ -176,10 +176,9 @@ function* reorderTasksForTemplate(payload) {
     });
 
     yield call(
-      TaskTemplateApi.reorderTasksForTemplate(
-        taskTemplateIdentifier,
-        pluck('taskIdentifier', reorderedTasks),
-      ),
+      TaskTemplateApi.reorderTasksForTemplate,
+      taskTemplateIdentifier,
+      pluck('taskIdentifier', reorderedTasks),
     );
 
     yield put(showGlobalAlert(AlertMessages.UPDATED));

@@ -55,10 +55,20 @@ export function deleteTemplate(templateIdentifier) {
     });
 }
 
-export function duplicateTemplate(templateIdentifier) {
-  // TODO: check api url when created
+export function duplicateTemplate(
+  templateIdentifier,
+  includeAttachments = false,
+) {
   return axios
-    .put(`task/template/duplicateTemplate/${templateIdentifier}`)
+    .put(
+      `task/template/duplicate/${templateIdentifier}`,
+      {},
+      {
+        params: {
+          includeAttachments,
+        },
+      },
+    )
     .then(response => {
       return response.data;
     })
@@ -71,9 +81,8 @@ export function reorderTasksForTemplate(
   taskTemplateIdentifier,
   orderedTaskIdentifiers,
 ) {
-  // TODO: check api url when created
   return axios
-    .put(`task/template/reorder`, {
+    .put(`task/template/sortTasksInTemplate`, {
       taskTemplateIdentifier,
       taskIdentifiers: orderedTaskIdentifiers,
     })
