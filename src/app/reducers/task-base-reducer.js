@@ -338,7 +338,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         tasks.map(t => {
           if (
             t.taskIdentifier !== task.parentTaskIdentifier &&
-            t.taskIdentifier !== task.taskIdentifier
+            t.taskIdentifier !== task.taskIdentifier &&
+            task.parentTaskIdentifier !== undefined
           ) {
             return t;
           }
