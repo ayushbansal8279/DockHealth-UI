@@ -21,19 +21,9 @@ import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
-import {
-  TASK_ITEM_DESCRIPTION_COLUMN,
-  TASK_ITEM_DUE_DATE_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_LIST_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_PATIENT_COLUMN,
-  TASK_ITEM_SUBTASKS_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-} from 'components/task/StandardTaskItem/helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
 import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
-import { DashboardColumnKey } from '../config';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -48,14 +38,14 @@ import {
 } from './styled';
 
 const TASK_ITEM_COLUMNS_CONFIG = {
-  [TASK_ITEM_DESCRIPTION_COLUMN]: { paddingLeft: '36px', paddingRight: '8px' },
-  [TASK_ITEM_DUE_DATE_COLUMN]: { width: '60px' },
-  [TASK_ITEM_WORFKLOW_STATUS_COLUMN]: { width: '120px' },
-  [TASK_ITEM_LIST_COLUMN]: { width: '168px' },
-  [TASK_ITEM_ICONS_COLUMN]: { width: '150px' },
-  [TASK_ITEM_MEMBERS_COLUMN]: { width: '60px', extendedWidth: '90px' },
-  [TASK_ITEM_PATIENT_COLUMN]: { width: '164px' },
-  [TASK_ITEM_SUBTASKS_COLUMN]: {
+  [TaskItemColumn.DESCRIPTION]: { paddingLeft: '36px', paddingRight: '8px' },
+  [TaskItemColumn.DUE_DATE]: { width: '60px' },
+  [TaskItemColumn.WORKFLOW_STATUS]: { width: '120px' },
+  [TaskItemColumn.LIST_NAME]: { width: '168px' },
+  [TaskItemColumn.ACTIVITY]: { width: '150px' },
+  [TaskItemColumn.ASSIGNED]: { width: '60px', extendedWidth: '90px' },
+  [TaskItemColumn.PATIENT]: { width: '164px' },
+  [TaskItemColumn.SUBTASKS_COUNT]: {
     width: '60px',
     paddingLeft: '18px',
     paddingRight: '18px',
@@ -69,45 +59,6 @@ const GROUPS_WITH_QUICK_ADD_TASK_INPUT = [
   TODAY_GROUP,
   NEXT_7_DAYS_GROUP,
   NO_DUE_DATE_GROUP,
-];
-
-const DYNAMIC_GRID_CONFIG = {
-  [DashboardColumnKey.DESCRIPTION]: {
-    key: TASK_ITEM_DESCRIPTION_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_COLUMNS_CONFIG],
-  },
-  [DashboardColumnKey.DUE_DATE]: {
-    key: TASK_ITEM_DUE_DATE_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_DUE_DATE_COLUMN],
-  },
-  [DashboardColumnKey.WORKFLOW_STATUS]: {
-    key: TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_WORFKLOW_STATUS_COLUMN],
-  },
-  [DashboardColumnKey.LIST_NAME]: {
-    key: TASK_ITEM_LIST_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_LIST_COLUMN],
-  },
-  [DashboardColumnKey.ACTIVITY]: {
-    key: TASK_ITEM_ICONS_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_ICONS_COLUMN],
-  },
-  [DashboardColumnKey.ASSIGNED]: {
-    key: TASK_ITEM_MEMBERS_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_MEMBERS_COLUMN],
-  },
-  [DashboardColumnKey.PATIENT]: {
-    key: TASK_ITEM_PATIENT_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_PATIENT_COLUMN],
-  },
-};
-
-const getTaskItemConfig = dynamicColumns => DYNAMIC_GRID_CONFIG[dynamicColumns];
-
-const DASHBOARD_BASE_COLUMNS_CONFIG = [
-  TASK_ITEM_PATIENT_COLUMN,
-  TASK_ITEM_LIST_COLUMN,
-  TASK_ITEM_DUE_DATE_COLUMN,
 ];
 
 const DashboardTasksGroup = ({
@@ -125,7 +76,7 @@ const DashboardTasksGroup = ({
   showClearSortFiltersModal,
   isSortApplied,
   isAllTasksTab,
-  dynamicColumns,
+  columnsConfig,
   updateDueDate,
   currentUser,
   onTaskUpdate,
@@ -187,21 +138,6 @@ const DashboardTasksGroup = ({
     }
   }, [dashboardTasks]);
 
-  const taskItemConfig = useMemo(
-    () => dynamicColumns?.map(column => getTaskItemConfig(column)),
-    [dynamicColumns],
-  );
-
-  const taskItemConfigKeys = useMemo(
-    () => taskItemConfig?.map(column => column?.key),
-    [taskItemConfig],
-  );
-
-  const dynamicColumnIsSelected = useCallback(
-    column => taskItemConfigKeys?.includes(column),
-    [taskItemConfigKeys],
-  );
-
   const groupHasMultipleAssignees = useMemo(
     () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
     [tasks],
@@ -221,11 +157,6 @@ const DashboardTasksGroup = ({
 
     return null;
   }, [groupType]);
-
-  const columnsConfig = useMemo(
-    () => [...DASHBOARD_BASE_COLUMNS_CONFIG, ...taskItemConfigKeys],
-    [taskItemConfigKeys],
-  );
 
   return (
     <DashboardTasksGroupContainer>
@@ -283,7 +214,7 @@ const DashboardTasksGroup = ({
                 </BulkContainer>
               )}
               <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_DESCRIPTION_COLUMN}
+                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.DESCRIPTION]}
               >
                 <DashboardColumnSortHeader
                   id="DESCRIPTION"
@@ -293,12 +224,12 @@ const DashboardTasksGroup = ({
                 />
               </DashboardSortBarLabelName>
               <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_SUBTASKS_COLUMN}
+                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.SUBTASKS_COUNT]}
               >
                 Sub
               </DashboardSortBarLabelName>
               <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_PATIENT_COLUMN}
+                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.PATIENT]}
               >
                 <DashboardColumnSortHeader
                   id="PATIENT"
@@ -307,9 +238,9 @@ const DashboardTasksGroup = ({
                   onSortChange={onSortChange}
                 />
               </DashboardSortBarLabelName>
-              {dynamicColumnIsSelected(TASK_ITEM_WORFKLOW_STATUS_COLUMN) && (
+              {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
                 <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_WORFKLOW_STATUS_COLUMN}
+                  {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.WORKFLOW_STATUS]}
                 >
                   <DashboardColumnSortHeader
                     id="WORKFLOW_STATUS"
@@ -319,13 +250,13 @@ const DashboardTasksGroup = ({
                   />
                 </DashboardSortBarLabelName>
               )}
-              {dynamicColumnIsSelected(TASK_ITEM_ICONS_COLUMN) && (
+              {columnsConfig[TaskItemColumn.ACTIVITY] && (
                 <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_ICONS_COLUMN}
+                  {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.ACTIVITY]}
                 />
               )}
               <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_DUE_DATE_COLUMN}
+                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.DUE_DATE]}
               >
                 <DashboardColumnSortHeader
                   id="DUE_DATE"
@@ -334,9 +265,9 @@ const DashboardTasksGroup = ({
                   onSortChange={onSortChange}
                 />
               </DashboardSortBarLabelName>
-              {dynamicColumnIsSelected(TASK_ITEM_MEMBERS_COLUMN) && (
+              {columnsConfig[TaskItemColumn.ASSIGNED] && (
                 <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_MEMBERS_COLUMN}
+                  {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.ASSIGNED]}
                   groupHasMultipleAssignees={groupHasMultipleAssignees}
                 >
                   <DashboardColumnSortHeader
@@ -348,7 +279,7 @@ const DashboardTasksGroup = ({
                 </DashboardSortBarLabelName>
               )}
               <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_LIST_COLUMN}
+                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.LIST_NAME]}
               >
                 <DashboardColumnSortHeader
                   id="LIST_NAME"

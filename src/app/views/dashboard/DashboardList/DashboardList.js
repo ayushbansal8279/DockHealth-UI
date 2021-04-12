@@ -9,20 +9,7 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  identity,
-  isEmpty,
-  pipe,
-  prop,
-  path,
-  sortWith,
-  ascend,
-  descend,
-  defaultTo,
-  toLower,
-  trim,
-  ifElse,
-} from 'ramda';
+import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 import EmptyTaskListBird from 'img/animals/bird';
@@ -48,6 +35,12 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import BulkEditSection, {
   BulkEditContext,
 } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import {
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+  TaskItemColumn,
+  TASK_ITEM_SORT_METHODS,
+  TASK_ITEM_SORT_DESC_METHODS,
+} from 'helpers/task-helpers';
 
 import {
   storeAsCurrentTask as storeAsCurrentTaskAction,
@@ -81,70 +74,16 @@ import {
   TipsSwitchLabel,
 } from './styled';
 import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
-import { DashboardColumnKey } from '../config';
 
-const SORT_METHODS = {
-  [DashboardColumnKey.DESCRIPTION]: sortWith([
-    ascend(pipe(prop('description'), defaultTo('~'), toLower)),
-  ]),
-  [DashboardColumnKey.DUE_DATE]: sortWith([
-    ascend(pipe(prop('dueDate'), defaultTo('~'))),
-  ]),
-  [DashboardColumnKey.WORKFLOW_STATUS]: sortWith([
-    ascend(pipe(prop('workflowStatus'), defaultTo('~'), toLower)),
-  ]),
-  [DashboardColumnKey.PATIENT]: sortWith([
-    ascend(
-      ifElse(
-        path(['patient', 'patientName']),
-        pipe(path(['patient', 'patientName']), defaultTo('~'), toLower),
-        pipe(
-          path(['parentTask', 'patient', 'patientName']),
-          defaultTo('~'),
-          toLower,
-        ),
-      ),
-    ),
-  ]),
-  [DashboardColumnKey.ASSIGNED]: sortWith([
-    ascend(pipe(path(['assignedTo', 'userName']), defaultTo('~'), toLower)),
-  ]),
-  [DashboardColumnKey.LIST_NAME]: sortWith([
-    ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
-  ]),
+const DASHBOARD_BASE_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
+  [TaskItemColumn.LIST_NAME]: true,
 };
 
-const SORT_DESC_METHODS = {
-  [DashboardColumnKey.DESCRIPTION]: sortWith([
-    descend(pipe(prop('description'), defaultTo(' '), toLower)),
-  ]),
-  [DashboardColumnKey.DUE_DATE]: sortWith([
-    descend(pipe(prop('dueDate'), defaultTo(' '))),
-  ]),
-  [DashboardColumnKey.WORKFLOW_STATUS]: sortWith([
-    descend(pipe(prop('workflowStatus'), defaultTo(' '), toLower)),
-  ]),
-  [DashboardColumnKey.PATIENT]: sortWith([
-    descend(
-      ifElse(
-        path(['patient', 'patientName']),
-        pipe(path(['patient', 'patientName']), defaultTo(' '), toLower),
-        pipe(
-          path(['parentTask', 'patient', 'patientName']),
-          defaultTo(' '),
-          toLower,
-        ),
-      ),
-    ),
-  ]),
-  [DashboardColumnKey.ASSIGNED]: sortWith([
-    descend(pipe(path(['assignedTo', 'userName']), defaultTo(' '), toLower)),
-  ]),
-  [DashboardColumnKey.LIST_NAME]: sortWith([
-    descend(
-      pipe(path(['taskList', 'listName']), defaultTo(' '), toLower, trim),
-    ),
-  ]),
+const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
+  [TaskItemColumn.WORKFLOW_STATUS]: false,
+  [TaskItemColumn.ASSIGNED]: false,
+  [TaskItemColumn.ACTIVITY]: false,
 };
 
 export const DashboardTab = ({
@@ -280,7 +219,13 @@ const DashboardList = ({
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-  const [dynamicColumns, setDynamicColumns] = useState(userPreferColumns || []);
+  const [columnsConfig, setColumnsConfig] = useState(
+    () =>
+      userPreferColumns?.reduce(
+        (accumulator, value) => ({ ...accumulator, [value]: true }),
+        DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
+      ) || {},
+  );
 
   const [shouldResetBulkEditTasks, setShouldResetBulkEditTasks] = useState(
     false,
@@ -314,12 +259,12 @@ const DashboardList = ({
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
-    return SORT_METHODS[sortKey];
+    return TASK_ITEM_SORT_METHODS[sortKey];
   }, [sortKey]);
 
   const currentSortDescMethod = useMemo(() => {
     if (!sortKey) return identity;
-    return SORT_DESC_METHODS[sortKey];
+    return TASK_ITEM_SORT_DESC_METHODS[sortKey];
   }, [sortKey]);
 
   const currentSortMethodWithOrder = useMemo(() => {
@@ -394,7 +339,7 @@ const DashboardList = ({
 
   useEffect(() => {
     resetSort();
-  }, [dynamicColumns]);
+  }, [columnsConfig]);
 
   const handleSortChange = useCallback(
     (key, order) => {
@@ -483,6 +428,11 @@ const DashboardList = ({
     reloadDashboardTasks();
   }, [reloadDashboardTasks, fetchDashboardFilters]);
 
+  const mergedColumnsConfig = useMemo(
+    () => ({ ...DASHBOARD_BASE_COLUMNS_CONFIG, ...columnsConfig }),
+    [columnsConfig],
+  );
+
   return (
     <BulkEditSection
       shouldResetBulkEditTasks={shouldResetBulkEditTasks}
@@ -556,8 +506,8 @@ const DashboardList = ({
               </div>
               <Spacing horizontal={4} />
               <DashboardSettings
-                setDynamicColumns={setDynamicColumns}
-                dynamicColumns={dynamicColumns}
+                columnsConfig={columnsConfig}
+                setColumnsConfig={setColumnsConfig}
               />
             </ActionsContainer>
           </ToolbarContainer>
@@ -584,7 +534,7 @@ const DashboardList = ({
                       currentSortMethod={currentSortMethodWithOrder}
                       currentSort={currentSort}
                       onSortChange={handleSortChange}
-                      dynamicColumns={dynamicColumns}
+                      columnsConfig={mergedColumnsConfig}
                       showClearSortFiltersModal={showClearSortFiltersModal}
                       isSortApplied={isSortApplied}
                       areFiltersApplied={areFiltersApplied}

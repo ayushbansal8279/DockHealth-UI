@@ -15,12 +15,6 @@ import {
   onTaskGroupCollapsed,
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
-import {
-  TASK_ITEM_DUE_DATE_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-} from 'components/task/StandardTaskItem/helpers';
 
 import listSectionSavedState from 'helpers/list-secition-saved-state';
 import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
@@ -35,13 +29,6 @@ import {
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { BulkContainer } from '../styled';
-
-const COLUMNS_CONFIG = [
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_DUE_DATE_COLUMN,
-];
 
 const TaskListDetailsDropdown = ({
   list,
@@ -60,6 +47,7 @@ const TaskListDetailsDropdown = ({
   hideSubtasks,
   sort,
   onSortChange,
+  taskItemConfig,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
@@ -246,7 +234,7 @@ const TaskListDetailsDropdown = ({
               subtaskShape={subtaskShape}
               hideSubtasks={hideSubtasks}
               multipleAssigneesContext={groupHasMultipleAssignees}
-              taskItemConfig={COLUMNS_CONFIG}
+              taskItemConfig={taskItemConfig}
             />
           ))}
         </div>

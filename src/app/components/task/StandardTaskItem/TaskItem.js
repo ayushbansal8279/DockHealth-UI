@@ -31,17 +31,13 @@ import {
   onSubtaskReActivated,
   onTaskStatusChanged,
 } from 'helpers/ga-event-helper';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
 import {
-  getSubtaskStylingLink,
+  checkIfTemplateTask,
   checkColumnIsInConfig,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_LIST_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_PATIENT_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-  TASK_ITEM_DUE_DATE_COLUMN,
-} from './helpers';
+  TaskItemColumn,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
+import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
   MainStandardTaskItemCell,
@@ -88,7 +84,7 @@ const TaskItem = ({
   subtasksDisabled,
   multipleAssigneesContext,
   highlightTasksOfTheSameParent,
-  taskItemConfig = [],
+  taskItemConfig = {},
   isDashboardTask,
 }) => {
   const {
@@ -399,6 +395,14 @@ const TaskItem = ({
 
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
+  const mergedTaskItemConfig = useMemo(
+    () => ({
+      ...TASK_ITEM_BASE_COLUMN_CONFIG,
+      ...taskItemConfig,
+    }),
+    [taskItemConfig],
+  );
+
   return (
     <>
       <StandardTaskItemPanel
@@ -440,39 +444,53 @@ const TaskItem = ({
               isCompleted={isCompleted}
               onClick={onCircleClick}
             />
-            <TaskItemDescription
-              descriptionReference={descriptionReference}
-              isCompletedGroup={isCompletedGroup}
-              isCompleted={isCompleted}
-              descriptionState={descriptionState}
-              setDescriptionState={setDescriptionState}
-              matchDescription={matchDescription}
-              highlightedValue={highlightedValue}
-              isDescriptionTooltipVisible={isDescriptionTooltipVisible}
-              description={description}
-              edited={edited}
-              duplicated={duplicated}
-              hasParentTaskLabel={hasParentTaskLabel}
-              parentTask={parentTask}
-              completedByName={completedByName}
-              completedDt={completedDt}
+
+            {checkColumnIsInConfig(
+              TaskItemColumn.DESCRIPTION,
+              mergedTaskItemConfig,
+            ) && (
+              <TaskItemDescription
+                descriptionReference={descriptionReference}
+                isCompletedGroup={isCompletedGroup}
+                isCompleted={isCompleted}
+                descriptionState={descriptionState}
+                setDescriptionState={setDescriptionState}
+                matchDescription={matchDescription}
+                highlightedValue={highlightedValue}
+                isDescriptionTooltipVisible={isDescriptionTooltipVisible}
+                description={description}
+                edited={edited}
+                duplicated={duplicated}
+                hasParentTaskLabel={hasParentTaskLabel}
+                parentTask={parentTask}
+                completedByName={completedByName}
+                completedDt={completedDt}
+                dispatch={dispatch}
+              />
+            )}
+          </MainStandardTaskItemCell>
+          {checkColumnIsInConfig(
+            TaskItemColumn.SUBTASKS_COUNT,
+            mergedTaskItemConfig,
+          ) && (
+            <TaskItemSubtasks
+              isSubtask={isSubtask}
+              subtaskQuickAddOpen={subtaskQuickAddOpen}
+              subtasksDisabled={subtasksDisabled}
+              subTasksCount={subTasksCount}
+              isHovered={isHovered}
+              isOpen={isOpen}
+              isNestedTask={isNestedTask}
+              onSubtaskLabelClick={onSubtaskLabelClick}
+              taskIdentifier={taskIdentifier}
+              openQuickAddSubtask={openQuickAddSubtask}
               dispatch={dispatch}
             />
-          </MainStandardTaskItemCell>
-          <TaskItemSubtasks
-            isSubtask={isSubtask}
-            subtaskQuickAddOpen={subtaskQuickAddOpen}
-            subtasksDisabled={subtasksDisabled}
-            subTasksCount={subTasksCount}
-            isHovered={isHovered}
-            isOpen={isOpen}
-            isNestedTask={isNestedTask}
-            onSubtaskLabelClick={onSubtaskLabelClick}
-            taskIdentifier={taskIdentifier}
-            openQuickAddSubtask={openQuickAddSubtask}
-            dispatch={dispatch}
-          />
-          {checkColumnIsInConfig(TASK_ITEM_PATIENT_COLUMN, taskItemConfig) && (
+          )}
+          {checkColumnIsInConfig(
+            TaskItemColumn.PATIENT,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemPatient
               highlightedValue={highlightedValue}
               taskStatus={task?.status}
@@ -485,8 +503,8 @@ const TaskItem = ({
             />
           )}
           {checkColumnIsInConfig(
-            TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-            taskItemConfig,
+            TaskItemColumn.WORKFLOW_STATUS,
+            mergedTaskItemConfig,
           ) && (
             <TaskItemWorkflowStatus
               task={task}
@@ -497,7 +515,10 @@ const TaskItem = ({
               highlightedValue={highlightedValue}
             />
           )}
-          {checkColumnIsInConfig(TASK_ITEM_ICONS_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.ACTIVITY,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemIcons
               matchComments={matchComments}
               comments={comments}
@@ -510,7 +531,10 @@ const TaskItem = ({
               dispatch={dispatch}
             />
           )}
-          {checkColumnIsInConfig(TASK_ITEM_DUE_DATE_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.DUE_DATE,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemDueDate
               dueDate={dueDate}
               task={task}
@@ -518,7 +542,10 @@ const TaskItem = ({
               updateDueDate={updateDueDate}
             />
           )}
-          {checkColumnIsInConfig(TASK_ITEM_MEMBERS_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.ASSIGNED,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemMembers
               multipleAssigneesContext={multipleAssigneesContext}
               task={task}
@@ -527,7 +554,10 @@ const TaskItem = ({
               matchAssignedTo={matchAssignedTo}
             />
           )}
-          {checkColumnIsInConfig(TASK_ITEM_LIST_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.LIST_NAME,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemList
               listName={listName}
               taskListIdentifier={taskListIdentifier}

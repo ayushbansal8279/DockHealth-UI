@@ -32,6 +32,7 @@ import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
@@ -44,6 +45,10 @@ import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOp
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import { TaskViewContainer } from './styled';
+
+const PERSON_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.LIST_NAME]: true,
+};
 
 class PersonDetailsView extends PureComponent {
   state = {
@@ -533,6 +538,7 @@ class PersonDetailsView extends PureComponent {
                     areFiltersApplied={areFiltersApplied}
                     sort={sort}
                     onSortChange={this.sortPersonTasks}
+                    taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
                   />
                 ) : (
                   <OpenedTasksView
@@ -549,6 +555,7 @@ class PersonDetailsView extends PureComponent {
                     areFiltersApplied={areFiltersApplied}
                     sort={sort}
                     onSortChange={this.sortPersonTasks}
+                    taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
                   />
                 )}
               </TaskViewContainer>

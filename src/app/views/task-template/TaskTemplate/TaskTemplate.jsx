@@ -18,11 +18,7 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import {
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-} from 'components/task/StandardTaskItem/helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -32,11 +28,10 @@ import {
   MenuContainer,
 } from './styled';
 
-const TEMPLATES_VIEW_COLUMNS_CONFIG = [
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-];
+const TEMPLATES_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.PATIENT]: false,
+  [TaskItemColumn.DUE_DATE]: false,
+};
 
 const TaskTemplate = ({ template, isFullView }) => {
   const { taskTemplateIdentifier, name, description } = template;

@@ -23,6 +23,11 @@ import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+import { TaskItemColumn } from 'helpers/task-helpers';
+
+const PATIENT_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.PATIENT]: false,
+};
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
@@ -131,6 +136,7 @@ const PatientTasksListView = ({
           hideSubtasks={isListFlattened}
           sort={sort}
           onSortChange={sortPatientTasks}
+          taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
         />
       ))
     : renderEmptyListView();
