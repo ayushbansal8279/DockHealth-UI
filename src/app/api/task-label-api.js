@@ -51,6 +51,15 @@ export const getTaskListLabels = ({ taskListIdentifier }) =>
     return data;
   });
 
+export function getTemplateLabels() {
+  return axios
+    .get(`task/label/getLabelsForTemplateTaskList`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
 export const removeLabelFromDatabase = ({ labelIdentifier }) =>
   axios({
     method: 'delete',

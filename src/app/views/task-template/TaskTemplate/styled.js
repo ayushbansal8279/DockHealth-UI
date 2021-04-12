@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 
 export const TaskTemplateContainer = styled.div`
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: ${spacing.smallPlus};
   text-align: left;
 `;
 
@@ -16,7 +16,7 @@ export const TaskTemplateHeader = styled.div`
   grid-column-gap: ${spacing.regularPlus};
   align-items: center;
   width: 100%;
-  padding: ${spacing.smallPlus} ${spacing.large};
+  padding: ${spacing.small} ${spacing.large};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
   font-family: 'Roboto Condensed', sans-serif;
@@ -42,6 +42,10 @@ export const NameInput = styled.input`
   &[readonly] {
     background-color: transparent;
     cursor: initial;
+    outline: none;
+  }
+
+  &:focus {
     outline: none;
   }
 `;

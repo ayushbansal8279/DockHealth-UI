@@ -14,7 +14,7 @@ export const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  width: 800px;
+  width: auto;
   transform: translate(-50%, ${({ open }) => (open ? 0 : 100)}%);
   border: 1px solid ${palette.coolGrey2};
   border-bottom: none;
@@ -28,8 +28,10 @@ export const Container = styled.div`
 export const TasksText = styled.p`
   margin-bottom: 0;
   margin-left: ${spacing.regular};
+  margin-right: 80px;
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.light};
+  white-space: no-wrap;
 `;
 
 export const ButtonsWrapper = styled.div`

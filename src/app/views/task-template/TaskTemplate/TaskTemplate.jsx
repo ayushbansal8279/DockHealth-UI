@@ -12,8 +12,9 @@ import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
+import * as ModalActions from 'modal/actions';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
-import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
+import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -37,7 +38,7 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = [
   TASK_ITEM_ICONS_COLUMN,
 ];
 
-const TaskTemplate = ({ template }) => {
+const TaskTemplate = ({ template, isFullView }) => {
   const { taskTemplateIdentifier, name, description } = template;
 
   const [draggableId, setDraggableId] = useState(null);
@@ -69,13 +70,35 @@ const TaskTemplate = ({ template }) => {
         name: 'Duplicate',
         onClick: () =>
           dispatch(
-            TaskTemplateActions.duplicateTemplate(taskTemplateIdentifier),
+            ModalActions.openModal('AttachmentsDuplicate', {
+              confirm: () =>
+                dispatch(
+                  TaskTemplateActions.duplicateTemplate(
+                    taskTemplateIdentifier,
+                    true,
+                  ),
+                ),
+              skip: () =>
+                dispatch(
+                  TaskTemplateActions.duplicateTemplate(
+                    taskTemplateIdentifier,
+                    false,
+                  ),
+                ),
+            }),
           ),
       },
       {
         name: 'Delete this template',
         onClick: () =>
-          dispatch(TaskTemplateActions.deleteTemplate(taskTemplateIdentifier)),
+          dispatch(
+            ModalActions.openModal('DeleteTemplate', {
+              confirm: () =>
+                dispatch(
+                  TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),
+                ),
+            }),
+          ),
       },
     ],
     [taskTemplateIdentifier, dispatch, nameInputReference],
@@ -128,6 +151,22 @@ const TaskTemplate = ({ template }) => {
       );
     },
     [dispatch, taskTemplateIdentifier],
+  );
+
+  const containsMultipleAssignees = useMemo(
+    () =>
+      tasks?.some(
+        // eslint-disable-next-line no-shadow
+        ({ assignedToUsers, subtasks }) =>
+          (assignedToUsers && assignedToUsers.length > 1) ||
+          (subtasks &&
+            subtasks.length > 0 &&
+            subtasks.some(
+              ({ assignedToUsers: subtaskAssignedToUsers }) =>
+                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+            )),
+      ),
+    [tasks],
   );
 
   return (
@@ -183,7 +222,7 @@ const TaskTemplate = ({ template }) => {
                             index={index}
                           >
                             {(draggableProvided, draggableSnapshot) => (
-                              <StandardTaskItem
+                              <StandardTaskItemContainer
                                 isStartedDnD={
                                   draggableId === task.taskIdentifier
                                 }
@@ -192,6 +231,10 @@ const TaskTemplate = ({ template }) => {
                                 isDraggable
                                 task={task}
                                 taskItemConfig={TEMPLATES_VIEW_COLUMNS_CONFIG}
+                                isFullView={isFullView}
+                                multipleAssigneesContext={
+                                  containsMultipleAssignees
+                                }
                               />
                             )}
                           </Draggable>

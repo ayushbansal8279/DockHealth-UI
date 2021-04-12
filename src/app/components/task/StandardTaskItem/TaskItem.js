@@ -31,6 +31,7 @@ import {
   onSubtaskReActivated,
   onTaskStatusChanged,
 } from 'helpers/ga-event-helper';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import {
   getSubtaskStylingLink,
   checkColumnIsInConfig,
@@ -114,6 +115,11 @@ const TaskItem = ({
   } = task;
 
   const { listName, taskListIdentifier } = taskList || {};
+  const isCompleted = task.status === 'COMPLETE';
+  const isTemplateTask = checkIfTemplateTask(task);
+  const isSubtask = !!parentTaskIdentifier;
+  const isTaskStatusTogglingEnabled =
+    !(isCompletedGroup && isSubtask) && !isTemplateTask;
 
   const {
     matchAssignedTo,
@@ -144,8 +150,6 @@ const TaskItem = ({
   const previousDescription = useRef(null);
   const descriptionReference = useRef(null);
 
-  const isSubtask = !!parentTaskIdentifier;
-
   const { bulkEditIsActive, bunchBulkEditTaskActions } = useContext(
     BulkEditContext,
   );
@@ -170,14 +174,14 @@ const TaskItem = ({
             parentTaskIdentifier,
             taskIdentifier,
             hasAttachments,
-            taskList,
+            taskList: isTemplateTask ? null : taskList,
             assignedToUsers,
           }
         : {
             taskIdentifier,
             subTasksCount,
             hasAttachments,
-            taskList,
+            taskList: isTemplateTask ? null : taskList,
             assignedToUsers,
           },
     [
@@ -185,6 +189,7 @@ const TaskItem = ({
       parentTaskIdentifier,
       taskIdentifier,
       hasAttachments,
+      isTemplateTask,
       taskList,
       assignedToUsers,
       subTasksCount,
@@ -293,9 +298,6 @@ const TaskItem = ({
     previousDescription.current = description;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
-
-  const isCompleted = task.status === 'COMPLETE';
-  const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
 
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`

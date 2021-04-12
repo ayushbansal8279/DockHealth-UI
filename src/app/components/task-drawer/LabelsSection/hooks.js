@@ -2,11 +2,13 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { prop } from 'ramda';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import {
   addLabel,
   editLabel,
   removeLabelForTask,
   getTaskListLabels,
+  getTemplateLabels,
   removeLabelFromDatabase,
 } from 'api/task-label-api';
 
@@ -62,19 +64,21 @@ const initializeLabelsSectionHooks = ({
     selectedTask: store.taskState.selectedTask,
   }));
 
+  const isTemplateTask = checkIfTemplateTask(selectedTask);
+
   const [availableLabels, setAvailableLabels] = useState([]);
   const [isLoadingLabels, setIsLoadingLabels] = useState(false);
 
   const refreshLabels = async () => {
-    if (selectedTask?.taskList?.taskListIdentifier) {
-      setIsLoadingLabels(true);
-      const freshLabels = await getTaskListLabels({
-        taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
-      });
+    setIsLoadingLabels(true);
+    const freshLabels = isTemplateTask
+      ? await getTemplateLabels()
+      : await getTaskListLabels({
+          taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
+        });
 
-      setAvailableLabels(freshLabels);
-      setIsLoadingLabels(false);
-    }
+    setAvailableLabels(freshLabels);
+    setIsLoadingLabels(false);
 
     const refreshedTask = await refreshTask(selectedTask)(dispatch);
 

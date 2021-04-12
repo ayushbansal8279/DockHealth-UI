@@ -9,7 +9,7 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { isDueDateOverdue } from 'helpers/task-helpers';
+import { isDueDateOverdue, checkIfTemplateTask } from 'helpers/task-helpers';
 import { DrawerFieldEnum, TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
@@ -151,6 +151,8 @@ const TaskDrawer = ({
     return null;
   }, [selectedTask]);
 
+  const isTemplateTask = checkIfTemplateTask(selectedTask);
+
   return (
     <>
       <TaskDrawerContainer
@@ -173,7 +175,6 @@ const TaskDrawer = ({
                   formMethods={formMethods}
                   taskLists={taskLists}
                   selectedTask={selectedTask}
-                  taskList={selectedTask?.taskList}
                   reFileTask={reFileTask}
                   onDelete={onDelete}
                   onDuplicate={onDuplicate}
@@ -299,7 +300,13 @@ const TaskDrawer = ({
                     selectedTask?.patient || selectedParentTask?.patient || null
                   }
                   currentOrganization={currentOrganization}
-                  disabled={disabledFileds.includes(DrawerFieldEnum.PATIENT)}
+                  disabled={
+                    disabledFileds.includes(DrawerFieldEnum.PATIENT) ||
+                    isTemplateTask
+                  }
+                  placeholder={
+                    isTemplateTask && 'Not available when creating a template'
+                  }
                   autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
                   onSave={handleUpdateTask}
                 />
@@ -308,7 +315,9 @@ const TaskDrawer = ({
                 <AssignedToSection
                   currentUser={currentUser}
                   assignedToUsers={selectedTask?.assignedToUsers}
-                  taskListIdentifier={taskListIdentifier}
+                  taskListIdentifier={
+                    isTemplateTask ? null : taskListIdentifier
+                  }
                   onSave={handleUpdateTask}
                 />
               </Grid>
@@ -317,7 +326,12 @@ const TaskDrawer = ({
                   <DueDateInput
                     name="dueDate"
                     label="Due date"
-                    placeholder="Set a due date?"
+                    placeholder={
+                      !isTemplateTask
+                        ? 'Set a due date?'
+                        : 'Not available when creating a template'
+                    }
+                    disabled={isTemplateTask}
                     savedDate={selectedTask?.dueDate}
                     onSave={handleDueDateSave}
                     onClear={clearDueDate}
@@ -338,13 +352,15 @@ const TaskDrawer = ({
                   />
                 </HiddenFieldContainer>
               </Grid>
-              <Grid item xs={12} style={styleFullRowThin}>
-                <ReminderSection
-                  selectedTask={selectedTask}
-                  isDisabled={!selectedTask?.dueDate}
-                  onSave={handleUpdateTask}
-                />
-              </Grid>
+              {!isTemplateTask && (
+                <Grid item xs={12} style={styleFullRowThin}>
+                  <ReminderSection
+                    selectedTask={selectedTask}
+                    isDisabled={!selectedTask?.dueDate}
+                    onSave={handleUpdateTask}
+                  />
+                </Grid>
+              )}
               <Grid item xs={6} style={styleLeftColumn}>
                 <PrioritySection
                   selectedTask={selectedTask}

@@ -2,13 +2,14 @@
 import React, { useMemo, useRef, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
-import FullViewIcon from 'img/list/FullViewIcon';
-import SlimViewIcon from 'img/list/SlimViewIcon';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import ViewTypeSwitch, {
+  ViewType,
+} from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
@@ -21,10 +22,7 @@ import {
   TASK_ITEM_WORFKLOW_STATUS_COLUMN,
 } from 'components/task/StandardTaskItem/helpers';
 
-import listSectionSavedState, {
-  FULL_VIEW,
-  SLIM_VIEW,
-} from 'helpers/list-secition-saved-state';
+import listSectionSavedState from 'helpers/list-secition-saved-state';
 import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
 import {
   Arrow,
@@ -32,12 +30,8 @@ import {
   ListDetailsContainer,
   ListDetailsHeader,
   ListNameSection,
-  ViewTypeButton,
-  ViewIconBox,
-  IconsBox,
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { BulkContainer } from '../styled';
@@ -89,7 +83,7 @@ const TaskListDetailsDropdown = ({
     return checkIfTasksHaveSubtasksOrCommnets(tasks);
   }, [isOpen, tasks]);
 
-  const isFullView = viewType === FULL_VIEW;
+  const isFullView = viewType === ViewType.FULL_VIEW;
 
   const { listName, taskListIdentifier, listUsers } = list;
 
@@ -154,39 +148,14 @@ const TaskListDetailsDropdown = ({
             refreshMembers={refreshView}
           />
         )}
-        <IconsBox>
-          <ViewIconBox isHidden={!areViewOptionsVisible}>
-            <Tooltip placement="top-end" title="Slim view. Just the task shows">
-              <ViewTypeButton
-                type="button"
-                active={!isFullView}
-                onClick={() => {
-                  setViewType(SLIM_VIEW);
-                  onSlimViewChanged(true);
-                }}
-              >
-                <SlimViewIcon />
-              </ViewTypeButton>
-            </Tooltip>
-          </ViewIconBox>
-          <ViewIconBox isHidden={!areViewOptionsVisible}>
-            <Tooltip
-              placement="top-end"
-              title="Full view. Task and comments show"
-            >
-              <ViewTypeButton
-                type="button"
-                active={isFullView}
-                onClick={() => {
-                  setViewType(FULL_VIEW);
-                  onSlimViewChanged(false);
-                }}
-              >
-                <FullViewIcon />
-              </ViewTypeButton>
-            </Tooltip>
-          </ViewIconBox>
-        </IconsBox>
+        <ViewTypeSwitch
+          isHidden={!areViewOptionsVisible}
+          value={viewType}
+          onChange={value => {
+            setViewType(value);
+            onSlimViewChanged(value === ViewType.SLIM_VIEW);
+          }}
+        />
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
         {!isCompleteTab && (

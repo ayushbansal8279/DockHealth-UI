@@ -20,6 +20,7 @@ const PatientSection = ({
   currentOrganization,
   autofocus,
   disabled,
+  placeholder,
   onSave,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -174,9 +175,9 @@ const PatientSection = ({
       ref={patientInputReference}
       name={PATIENT_IDENTIFIER_FIELD_NAME}
       label="Patient"
-      placeholder="Who is the patient?"
+      placeholder={placeholder || 'Who is the patient?'}
       disabled={disabled}
-      startAdornment={<AdornmentContainer>+</AdornmentContainer>}
+      startAdornment={!disabled && <AdornmentContainer>+</AdornmentContainer>}
       selectedOption={getFormattedPatient(selectedPatient)}
       options={formattedPatients}
       isLoadingOptions={isLoadingPatients}

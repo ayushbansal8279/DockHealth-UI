@@ -24,3 +24,8 @@ export const taskTemplateSelector = taskTemplateIdentifier =>
       template => template.taskTemplateIdentifier === taskTemplateIdentifier,
     ),
   );
+
+export const allTaskTemplateDetailsSelector = createSelector(
+  taskTemplateStateSelector,
+  ({ taskTemplateDetails }) => taskTemplateDetails,
+);

@@ -49,3 +49,7 @@ export function isDueDateOverdue(task) {
       : dueDate && moment(dueDate).isBefore(moment().startOf('day')))
   );
 }
+
+export function checkIfTemplateTask(task) {
+  return task?.type === 'TEMPLATE';
+}

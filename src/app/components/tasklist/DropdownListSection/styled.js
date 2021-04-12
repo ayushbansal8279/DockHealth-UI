@@ -2,7 +2,6 @@ import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
 
 export const ListDetailsContainer = styled.div`
   display: flex;
@@ -36,22 +35,6 @@ export const ListNameSection = styled.p`
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-`;
-
-export const ViewIconBox = styled.div`
-  visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
-`;
-
-export const IconsBox = styled.div`
-  display: flex;
-`;
-
-export const ViewTypeButton = styled.button`
-  margin-left: ${spacing.regularPlus};
-  margin-bottom: ${spacing.tiny};
-  color: ${({ active }) => (active ? palette.brightBlue : palette.coolGrey2)};
-  cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
-  transition: color 0.3s ease-out;
 `;
 
 export const Arrow = styled.img`

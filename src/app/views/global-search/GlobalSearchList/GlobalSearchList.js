@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
@@ -61,6 +61,22 @@ const GlobalSearchList = ({
     getMoreTasksForTaskList(list.taskListIdentifier, list.tasks?.length);
   };
 
+  const containsMultipleAssignees = useMemo(
+    () =>
+      tasks?.some(
+        // eslint-disable-next-line no-shadow
+        ({ assignedToUsers, subtasks }) =>
+          (assignedToUsers && assignedToUsers.length > 1) ||
+          (subtasks &&
+            subtasks.length > 0 &&
+            subtasks.some(
+              ({ assignedToUsers: subtaskAssignedToUsers }) =>
+                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+            )),
+      ),
+    [tasks],
+  );
+
   return (
     <ListDetailsContainer>
       <ListDetailsHeader>
@@ -103,6 +119,7 @@ const GlobalSearchList = ({
             subtaskShape={subtaskShape}
             subtasksDisabled
             taskItemConfig={GLOBAL_SEARCH_COLUMNS_CONFIG}
+            multipleAssigneesContext={containsMultipleAssignees}
           />
         ))}
         {isLoadingMore && <TasksSkeletonLoader rows={4} />}

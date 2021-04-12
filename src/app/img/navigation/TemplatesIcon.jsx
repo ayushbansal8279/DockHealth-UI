@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default () => (
+export default ({ size = 25 }) => (
   <svg
-    width="25"
-    height="19"
+    width={size}
+    height={size * 0.75}
     viewBox="0 0 25 19"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

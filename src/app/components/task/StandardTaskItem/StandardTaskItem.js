@@ -86,11 +86,13 @@ const Task = ({
   );
 
   useEffect(() => {
-    if (
-      !areSubtasksOpen &&
-      (subtaskQuickAddOpen || isFullView) &&
-      !subtasksDisabled
-    ) {
+    if (isFullView) handleSetSubtasksOpen(true);
+    else setAreSubtasksOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFullView]);
+
+  useEffect(() => {
+    if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
       handleSetSubtasksOpen(true);
     }
   }, [

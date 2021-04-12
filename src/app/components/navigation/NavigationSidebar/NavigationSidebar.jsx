@@ -51,6 +51,7 @@ const NavigationSidebar = ({
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
+  const isGuest = orgUserRole === 'GUEST';
 
   const {
     orgMenuReference,
@@ -156,12 +157,14 @@ const NavigationSidebar = ({
               path="/core/patients"
               onItemClick={handleNavigationItemClick}
             />
-            <IconNavigationItem
-              name="Templates"
-              icon={TemplatesIcon}
-              path="/core/templates"
-              onItemClick={handleNavigationItemClick}
-            />
+            {!isGuest && (
+              <IconNavigationItem
+                name="Templates"
+                icon={TemplatesIcon}
+                path="/core/templates"
+                onItemClick={handleNavigationItemClick}
+              />
+            )}
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (

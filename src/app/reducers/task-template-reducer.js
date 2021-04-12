@@ -78,8 +78,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           taskTemplateIdentifier,
           state.taskTemplateDetails,
           {
-            isFetching: !state.taskTemplateDetails[taskTemplateIdentifier]
-              ?.tasks?.length,
+            isFetching: true,
             isError: false,
           },
         ),
@@ -181,6 +180,19 @@ const TaskTemplateReducer = (state = initialState, action) => {
               action.task,
             ],
           },
+        ),
+      };
+    }
+
+    case ActionTypes.CLOSE_ALL_TASK_TEMPLATES: {
+      return {
+        ...state,
+        taskTemplateDetails: Object.entries(state.taskTemplateDetails).reduce(
+          (accumulator, [key, value]) => ({
+            ...accumulator,
+            [key]: { ...value, isOpen: false },
+          }),
+          {},
         ),
       };
     }

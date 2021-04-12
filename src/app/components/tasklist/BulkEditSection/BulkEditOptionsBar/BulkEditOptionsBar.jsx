@@ -28,6 +28,15 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
+import {
+  BULK_EDIT_DUPLICATE_OPTION,
+  BULK_EDIT_MOVE_OPTION,
+  BULK_EDIT_COMPLETE_OPTION,
+  BULK_EDIT_STATUS_OPTION,
+  BULK_EDIT_DUE_DATE_OPTION,
+  BULK_EDIT_ASSIGN_OPTION,
+  BULK_EDIT_DELETE_OPTION,
+} from '../helpers';
 
 import {
   WrapperContainer,
@@ -39,6 +48,16 @@ import {
   TasksText,
   Button,
 } from './styled';
+
+const BULK_EDIT_BASE_CONFIG = {
+  [BULK_EDIT_DUPLICATE_OPTION]: true,
+  [BULK_EDIT_MOVE_OPTION]: true,
+  [BULK_EDIT_COMPLETE_OPTION]: true,
+  [BULK_EDIT_STATUS_OPTION]: true,
+  [BULK_EDIT_DUE_DATE_OPTION]: true,
+  [BULK_EDIT_ASSIGN_OPTION]: true,
+  [BULK_EDIT_DELETE_OPTION]: true,
+};
 
 const IconWithTooltip = ({ text, children }) => {
   if (text)
@@ -59,6 +78,7 @@ const BulkEditOptionsBar = ({
   currentUser,
   searchValue,
   shouldRefreshTasksEveryTime,
+  optionsConfig,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -132,10 +152,14 @@ const BulkEditOptionsBar = ({
   ]);
 
   const allSelectedTaskListIdentifiers = useMemo(
-    () => [
-      ...parentTasks?.map(task => task.taskList?.taskListIdentifier),
-      ...subtasks?.map(task => task.taskList?.taskListIdentifier),
-    ],
+    () =>
+      [...(parentTasks || []), ...(subtasks || [])].reduce(
+        (accumulator, task) =>
+          task.taskList
+            ? [...accumulator, task.taskList.taskListIdentifier]
+            : accumulator,
+        [],
+      ),
     [parentTasks, subtasks],
   );
 
@@ -410,7 +434,7 @@ const BulkEditOptionsBar = ({
 
     if (anyTaskHasAttachment) {
       dispatch(
-        openModal('DuplicateTask', {
+        openModal('AttachmentsDuplicate', {
           confirm: () => confirmAction(true),
           skip: () => confirmAction(false),
         }),
@@ -670,6 +694,14 @@ const BulkEditOptionsBar = ({
     addTasks,
   ]);
 
+  const mergedConfig = useMemo(
+    () => ({
+      ...BULK_EDIT_BASE_CONFIG,
+      ...optionsConfig,
+    }),
+    [optionsConfig],
+  );
+
   return (
     <Container open={allSelectedTasksLength > 0} isDisabled={isDisabled}>
       {allSelectedTasksLength > 0 && (
@@ -680,76 +712,95 @@ const BulkEditOptionsBar = ({
             } Selected`}
           </TasksText>
           <ButtonsWrapper>
-            <Button
-              type="button"
-              onClick={handleDuplicateTasks}
-              disabled={isDisabled}
-            >
-              <WrapperContainer disabled={isDisabled}>
-                <IconBox>
-                  <DuplicateIcon />
-                </IconBox>
-                <p>Duplicate</p>
-              </WrapperContainer>
-            </Button>
-            <IconWithTooltip
-              text={
-                disabledMoveAction
-                  ? 'Cannot move subtasks without main tasks'
-                  : null
-              }
-            >
+            {mergedConfig[BULK_EDIT_DUPLICATE_OPTION] && (
               <Button
                 type="button"
-                disabled={disabledMoveAction || isDisabled}
-                onClick={handleMoveTasks}
+                onClick={handleDuplicateTasks}
+                disabled={isDisabled}
               >
-                <WrapperContainer disabled={disabledMoveAction || isDisabled}>
+                <WrapperContainer disabled={isDisabled}>
                   <IconBox>
-                    <MoveIcon />
+                    <DuplicateIcon />
                   </IconBox>
-                  <p>Move</p>
+                  <p>Duplicate</p>
                 </WrapperContainer>
               </Button>
-            </IconWithTooltip>
-            <Button
-              type="button"
-              onClick={handleCompleteTasks}
-              disabled={isDisabled}
-            >
-              <WrapperContainer disabled={isDisabled}>
-                <IconBox>
-                  <CompleteIcon />
-                </IconBox>
-                <p>Complete</p>
-              </WrapperContainer>
-            </Button>
-            <BulkEditWorkflowStatusOption
-              handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
-              isDisabled={isDisabled}
-            />
-            <BulkEditDueDateOption
-              handleChangeDateTasks={handleChangeDateTasks}
-              isDisabled={isDisabled}
-            />
-            <BulkEditAssignToOption
-              selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
-              handleChangeAssigneTasks={handleChangeAssigneTasks}
-              isDisabled={isDisabled}
-              selectedTasks={selectedTasks}
-            />
-            <Button
-              type="button"
-              onClick={handleDeleteTasks}
-              disabled={isDisabled}
-            >
-              <WrapperContainer color={palette.oPlusRed} disabled={isDisabled}>
-                <IconBox>
-                  <DeleteIcon />
-                </IconBox>
-                <p>Delete</p>
-              </WrapperContainer>
-            </Button>
+            )}
+            {mergedConfig[BULK_EDIT_MOVE_OPTION] && (
+              <IconWithTooltip
+                text={
+                  disabledMoveAction
+                    ? 'Cannot move subtasks without main tasks'
+                    : null
+                }
+              >
+                <Button
+                  type="button"
+                  disabled={disabledMoveAction || isDisabled}
+                  onClick={handleMoveTasks}
+                >
+                  <WrapperContainer disabled={disabledMoveAction || isDisabled}>
+                    <IconBox>
+                      <MoveIcon />
+                    </IconBox>
+                    <p>Move</p>
+                  </WrapperContainer>
+                </Button>
+              </IconWithTooltip>
+            )}
+            {mergedConfig[BULK_EDIT_COMPLETE_OPTION] && (
+              <Button
+                type="button"
+                onClick={handleCompleteTasks}
+                disabled={isDisabled}
+              >
+                <WrapperContainer disabled={isDisabled}>
+                  <IconBox>
+                    <CompleteIcon />
+                  </IconBox>
+                  <p>Complete</p>
+                </WrapperContainer>
+              </Button>
+            )}
+            {mergedConfig[BULK_EDIT_STATUS_OPTION] && (
+              <BulkEditWorkflowStatusOption
+                handleChangeWorkflowStatusTasks={
+                  handleChangeWorkflowStatusTasks
+                }
+                isDisabled={isDisabled}
+              />
+            )}
+            {mergedConfig[BULK_EDIT_DUE_DATE_OPTION] && (
+              <BulkEditDueDateOption
+                handleChangeDateTasks={handleChangeDateTasks}
+                isDisabled={isDisabled}
+              />
+            )}
+            {mergedConfig[BULK_EDIT_ASSIGN_OPTION] && (
+              <BulkEditAssignToOption
+                selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
+                handleChangeAssigneTasks={handleChangeAssigneTasks}
+                isDisabled={isDisabled}
+                selectedTasks={selectedTasks}
+              />
+            )}
+            {mergedConfig[BULK_EDIT_DELETE_OPTION] && (
+              <Button
+                type="button"
+                onClick={handleDeleteTasks}
+                disabled={isDisabled}
+              >
+                <WrapperContainer
+                  color={palette.oPlusRed}
+                  disabled={isDisabled}
+                >
+                  <IconBox>
+                    <DeleteIcon />
+                  </IconBox>
+                  <p>Delete</p>
+                </WrapperContainer>
+              </Button>
+            )}
             <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
               <CloseIcon />
             </CloseButton>

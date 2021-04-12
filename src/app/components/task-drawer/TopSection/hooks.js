@@ -82,7 +82,7 @@ const initializeTaskDrawerTopSectionHooks = ({
       confirm: () => duplicateTaskWithAttachments(),
       skip: () => duplicateTask(),
     };
-    modalActions.openModal('DuplicateTask', modalProps);
+    modalActions.openModal('AttachmentsDuplicate', modalProps);
   };
 
   const duplicateTaskWithoutConfirmation = event => {

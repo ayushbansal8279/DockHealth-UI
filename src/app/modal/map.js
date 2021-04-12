@@ -2,7 +2,7 @@ import DeleteGroupModal from './components/DeleteGroupModal/DeleteGroupModal';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import DeleteTaskModal from './components/DeleteTaskModal/DeleteTaskModal';
 import DeleteSubtaskModal from './components/DeleteSubtaskModal/DeleteSubtaskModal';
-import DuplicateTaskModal from './components/DuplicateTaskModal/DuplicateTaskModal';
+import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
 import DeleteListModal from './components/DeleteListModal/DeleteListModal';
 import DeleteNoteModal from './components/DeleteNoteModal/DeleteNoteModal';
 import ListPickerModal from './components/ListPickerModal/ListPickerModal';
@@ -37,13 +37,14 @@ import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkComp
 import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/MoveTasksWithSubtasksModal';
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
 import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
+import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
   CompleteAllTasks: CompleteAllTasksModal,
   DeleteTask: DeleteTaskModal,
   DeleteSubtask: DeleteSubtaskModal,
-  DuplicateTask: DuplicateTaskModal,
+  AttachmentsDuplicate: AttachmentsDuplicateModal,
   DeleteList: DeleteListModal,
   DeleteNote: DeleteNoteModal,
   ListPicker: ListPickerModal,
@@ -78,6 +79,7 @@ const MODAL_MAP = {
   MoveTasksWithSubtasks: MoveTasksWithSubtasksModal,
   SendingInvite: SendingInviteModal,
   CreateTemplate: CreateTemplateModal,
+  DeleteTemplate: DeleteTemplateModal,
 };
 
 export default MODAL_MAP;

@@ -15,10 +15,11 @@ export function deleteTemplate(taskTemplateIdentifier) {
   };
 }
 
-export function duplicateTemplate(taskTemplateIdentifier) {
+export function duplicateTemplate(taskTemplateIdentifier, includeAttachments) {
   return {
     type: ActionTypesSaga.DUPLICATE_TASK_TEMPLATE,
     taskTemplateIdentifier,
+    includeAttachments,
   };
 }
 
@@ -61,4 +62,8 @@ export function addTaskToTemplate(task) {
     type: ActionTypesSaga.ADD_TASK_TO_TEMPLATE,
     task,
   };
+}
+
+export function reloadOpenedTemplateTasks() {
+  return { type: ActionTypesSaga.RELOAD_OPENED_TEMPLATE_TASKS };
 }

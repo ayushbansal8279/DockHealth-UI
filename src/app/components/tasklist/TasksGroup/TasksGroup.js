@@ -9,8 +9,6 @@ import React, {
 } from 'react';
 import { isNil } from 'ramda';
 import ArrowIcon from 'img/arrow';
-import FullViewIcon from 'img/list/FullViewIcon';
-import SlimViewIcon from 'img/list/SlimViewIcon';
 
 import {
   onSlimViewChanged,
@@ -21,18 +19,9 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import listSectionSavedState, {
-  FULL_VIEW,
-  SLIM_VIEW,
-} from 'helpers/list-secition-saved-state';
+import listSectionSavedState from 'helpers/list-secition-saved-state';
 import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
-import {
-  ViewTypeButton,
-  ViewIconBox,
-  IconsBox,
-  Arrow,
-} from 'components/tasklist/DropdownListSection/styled';
+import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -41,6 +30,9 @@ import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragA
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
+import ViewTypeSwitch, {
+  ViewType,
+} from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -112,7 +104,7 @@ const TasksGroup = ({
   }, [isOpen, tasks]);
 
   const isFullView =
-    viewType === FULL_VIEW || areFiltersApplied || isSearchApplied;
+    viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
 
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
@@ -250,41 +242,20 @@ const TasksGroup = ({
           />
         )}
         {!changingGroupOrderDisabled && (
-          <IconsBox>
-            <ViewIconBox isHidden={!areViewOptionsVisible}>
-              <Tooltip placement="top" title="Slim view. Just the task shows">
-                <ViewTypeButton
-                  type="button"
-                  active={!isFullView}
-                  onClick={() => {
-                    setViewType(SLIM_VIEW);
-                    onTaskGroupViewModeChange(SLIM_VIEW);
-                    onSlimViewChanged(true);
-                  }}
-                >
-                  <SlimViewIcon />
-                </ViewTypeButton>
-              </Tooltip>
-            </ViewIconBox>
-            <ViewIconBox isHidden={!areViewOptionsVisible}>
-              <Tooltip
-                placement="top"
-                title="Full view. Task and comments show"
-              >
-                <ViewTypeButton
-                  type="button"
-                  active={isFullView}
-                  onClick={() => {
-                    setViewType(FULL_VIEW);
-                    onTaskGroupViewModeChange(FULL_VIEW);
-                    onSlimViewChanged(false);
-                  }}
-                >
-                  <FullViewIcon />
-                </ViewTypeButton>
-              </Tooltip>
-            </ViewIconBox>
-          </IconsBox>
+          <ViewTypeSwitch
+            isHidden={!areViewOptionsVisible}
+            value={viewType}
+            onChange={value => {
+              setViewType(value);
+              if (value === ViewType.SLIM_VIEW) {
+                onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
+                onSlimViewChanged(true);
+              } else {
+                onTaskGroupViewModeChange(ViewType.FULL_VIEW);
+                onSlimViewChanged(false);
+              }
+            }}
+          />
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>

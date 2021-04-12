@@ -18,6 +18,7 @@ const BulkEditSection = ({
   searchValue,
   setShouldResetBulkEditTasks,
   shouldRefreshTasksEveryTime,
+  optionsConfig,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [bulkEditTasks, setBulkEditTasks] = useState({
@@ -368,6 +369,7 @@ const BulkEditSection = ({
         currentUser={currentUser}
         searchValue={searchValue}
         shouldRefreshTasksEveryTime={shouldRefreshTasksEveryTime}
+        optionsConfig={optionsConfig}
       />
     </BulkEditContext.Provider>
   );

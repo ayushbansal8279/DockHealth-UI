@@ -7,6 +7,7 @@ import {
   UPDATE_TASK_TEMPLATE,
   REORDER_TASKS_FOR_TEMPLATE,
   ADD_TASK_TO_TEMPLATE,
+  RELOAD_OPENED_TEMPLATE_TASKS,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -25,6 +26,7 @@ import * as TaskApi from 'api/task-api';
 import {
   taskTemplateDetailsSelector,
   taskTemplateSelector,
+  allTaskTemplateDetailsSelector,
 } from 'selectors/task-template-selectors';
 
 function* getTemplates() {
@@ -71,11 +73,12 @@ function* deleteTemplate({ taskTemplateIdentifier }) {
   }
 }
 
-function* duplicateTemplate({ taskTemplateIdentifier }) {
+function* duplicateTemplate({ taskTemplateIdentifier, includeAttachments }) {
   try {
     const template = yield call(
       TaskTemplateApi.duplicateTemplate,
       taskTemplateIdentifier,
+      includeAttachments,
     );
     yield put({ type: ActionTypes.ADD_TASK_TEMPLATE, template });
     yield put(showGlobalAlert(AlertMessages.CREATED));
@@ -109,12 +112,15 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
   }
 }
 
-function* getTasksForTemplate({ taskTemplateIdentifier }) {
+function* getTasksForTemplate({ taskTemplateIdentifier, withLoader = true }) {
   try {
-    yield put({
-      type: ActionTypes.TASK_TEMPLATE_FETCHING,
-      taskTemplateIdentifier,
-    });
+    if (withLoader) {
+      yield put({
+        type: ActionTypes.TASK_TEMPLATE_FETCHING,
+        taskTemplateIdentifier,
+      });
+    }
+
     const tasks = yield call(
       TaskTemplateApi.getTasksForTemplate,
       taskTemplateIdentifier,
@@ -137,9 +143,13 @@ function* toggleTemplateOpen({ taskTemplateIdentifier }) {
     const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
+
     yield all([
       !templateDetails?.isOpen
-        ? call(getTasksForTemplate, { taskTemplateIdentifier })
+        ? call(getTasksForTemplate, {
+            taskTemplateIdentifier,
+            withLoader: !templateDetails?.tasks?.length,
+          })
         : null,
       put({
         type: ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN,
@@ -208,6 +218,29 @@ function* addTaskToTemplate({ task }) {
   }
 }
 
+function* reloadOpenedTemplateTasks() {
+  const allTemplateDetails =
+    (yield select(allTaskTemplateDetailsSelector)) || {};
+
+  yield all([
+    ...Object.entries(allTemplateDetails).reduce(
+      (accumulator, [key, value]) => {
+        if (value.isOpen) {
+          return [
+            ...accumulator,
+            call(getTasksForTemplate, {
+              taskTemplateIdentifier: key,
+              withLoader: false,
+            }),
+          ];
+        }
+        return accumulator;
+      },
+      [],
+    ),
+  ]);
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
@@ -217,4 +250,5 @@ export default function* watchTaskTemplate() {
   yield takeEvery(DUPLICATE_TASK_TEMPLATE, duplicateTemplate);
   yield takeEvery(REORDER_TASKS_FOR_TEMPLATE, reorderTasksForTemplate);
   yield takeEvery(ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
+  yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
 }

@@ -21,6 +21,7 @@ const DueDateInput = ({
   name,
   label,
   placeholder,
+  disabled,
   savedDate,
   onSave,
   onClear,
@@ -164,6 +165,7 @@ const DueDateInput = ({
       name={name}
       label={label}
       placeholder={placeholder}
+      disabled={disabled}
       InputProps={{
         endAdornment:
           savedDate && currentDueDate ? (
@@ -171,9 +173,10 @@ const DueDateInput = ({
           ) : (
             ''
           ),
-        startAdornment: !currentDueDate ? (
-          <AdornmentContainer>+</AdornmentContainer>
-        ) : null,
+        startAdornment:
+          !currentDueDate && !disabled ? (
+            <AdornmentContainer>+</AdornmentContainer>
+          ) : null,
       }}
       inputProps={{
         value: currentDueDate
