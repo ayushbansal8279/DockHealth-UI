@@ -9,6 +9,13 @@ const initialState = {
   taskTemplateDetails: {},
 };
 
+const templateDetailsInitialState = {
+  isFetching: false,
+  isError: false,
+  tasks: [],
+  isOpen: false,
+};
+
 function updateTasksStateCallback(state, updateTaskFromAction) {
   return {
     ...state,
@@ -193,6 +200,19 @@ const TaskTemplateReducer = (state = initialState, action) => {
             [key]: { ...value, isOpen: false },
           }),
           {},
+        ),
+      };
+    }
+
+    case ActionTypes.INITIALIZE_TASK_TEMPLATE_DETAILS: {
+      const { taskTemplateIdentifier } = action;
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          taskTemplateIdentifier,
+          state.taskTemplateDetails,
+          templateDetailsInitialState,
         ),
       };
     }

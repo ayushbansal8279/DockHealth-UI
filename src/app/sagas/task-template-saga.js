@@ -21,6 +21,7 @@ import {
 import { move, omit, pluck } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import * as TaskTemplateActions from 'actions/task-template-actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as TaskTemplateApi from 'api/task-template-api';
 import * as TaskApi from 'api/task-api';
@@ -41,6 +42,13 @@ function* getTemplates() {
       type: ActionTypes.LOAD_TASK_TEMPLATES,
       templates,
     });
+
+    if (templates?.length > 0)
+      yield put(
+        TaskTemplateActions.toggleTemplateOpen(
+          templates[0]?.taskTemplateIdentifier,
+        ),
+      );
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
@@ -51,10 +59,23 @@ function* getTemplates() {
 function* addTemplate({ template }) {
   try {
     const createdTemplate = yield call(TaskTemplateApi.addTemplate, template);
+
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE,
       template: createdTemplate,
     });
+
+    yield put({
+      type: ActionTypes.INITIALIZE_TASK_TEMPLATE_DETAILS,
+      taskTemplateIdentifier: createdTemplate.taskTemplateIdentifier,
+    });
+
+    yield put(
+      TaskTemplateActions.toggleTemplateOpen(
+        createdTemplate.taskTemplateIdentifier,
+      ),
+    );
+
     yield put(showGlobalAlert(AlertMessages.CREATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -83,6 +104,9 @@ function* duplicateTemplate({ taskTemplateIdentifier, includeAttachments }) {
       includeAttachments,
     );
     yield put({ type: ActionTypes.ADD_TASK_TEMPLATE, template });
+    yield put(
+      TaskTemplateActions.toggleTemplateOpen(template.taskTemplateIdentifier),
+    );
     yield put(showGlobalAlert(AlertMessages.CREATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -150,7 +174,7 @@ function* toggleTemplateOpen({ taskTemplateIdentifier }) {
       !templateDetails?.isOpen
         ? call(getTasksForTemplate, {
             taskTemplateIdentifier,
-            withLoader: !templateDetails?.tasks?.length,
+            withLoader: !templateDetails?.tasks,
           })
         : null,
       put({
