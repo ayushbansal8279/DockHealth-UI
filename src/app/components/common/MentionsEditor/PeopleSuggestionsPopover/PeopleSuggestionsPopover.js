@@ -1,9 +1,14 @@
 import React from 'react';
 import DefaultSuggestionItem from '../DefaultSuggestionItem/DefaultSuggestionItem';
-import { PopoverContainer, SuggestionsContainer, Spacer } from './styled';
+import {
+  PopoverContainer,
+  SuggestionsContainer,
+  Spacer,
+  EmptySuggestions,
+} from './styled';
 
 const PeopleSuggestionsPopover = React.forwardRef(
-  ({ children, searchValue, ...props }, reference) => {
+  ({ children, searchValue, isFetching, ...props }, reference) => {
     const suggestionsToDisplay = React.Children.toArray(children).filter(
       suggestionChild => suggestionChild.props.mention.type !== 'DEFAULT',
     );
@@ -19,6 +24,9 @@ const PeopleSuggestionsPopover = React.forwardRef(
                 </div>
               ))}
             </SuggestionsContainer>
+          )}
+          {searchValue && suggestionsToDisplay.length === 0 && !isFetching && (
+            <EmptySuggestions>{`@${searchValue} is not invited to this list`}</EmptySuggestions>
           )}
           {suggestionsToDisplay.length > 0 && <Spacer />}
           <DefaultSuggestionItem

@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useState, useRef, useCallback } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patient-api';
@@ -28,22 +29,6 @@ const fetchPatientsWithDebounce = debounce(
         setPatientSuggestions(
           formattedPatients.length > 0
             ? formattedPatients
-            : [SUGGESTIONS_PLACEHOLDER],
-        );
-      }
-    });
-  },
-  300,
-);
-
-const fetchPeopleWithDebounce = debounce(
-  (taskListIdentifier, value, setPeopleSuggestions, areSuggestionsOpened) => {
-    getListMembersByName(taskListIdentifier, value).then(fetchedPeople => {
-      if (areSuggestionsOpened.current) {
-        const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-        setPeopleSuggestions(
-          formattedPeople.length > 0
-            ? formattedPeople
             : [SUGGESTIONS_PLACEHOLDER],
         );
       }
@@ -86,6 +71,10 @@ const MentionsEditor = React.forwardRef(
     const [peopleSuggestions, setPeopleSuggestions] = useState([
       [SUGGESTIONS_PLACEHOLDER],
     ]);
+    const [
+      isFetchingPeopleSuggestions,
+      setIsFetchingPeopleSuggestions,
+    ] = useState(false);
     const [patientSuggestions, setPatientSuggestions] = useState([
       SUGGESTIONS_PLACEHOLDER,
     ]);
@@ -109,16 +98,30 @@ const MentionsEditor = React.forwardRef(
       setPeopleSuggestions([SUGGESTIONS_PLACEHOLDER]);
     };
 
+    const fetchPeopleWithDebounce = useCallback(
+      debounce(value => {
+        getListMembersByName(taskListIdentifier, value).then(fetchedPeople => {
+          if (arePeopleSuggestionsOpened.current) {
+            const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
+            setPeopleSuggestions(
+              formattedPeople.length > 0
+                ? formattedPeople
+                : [SUGGESTIONS_PLACEHOLDER],
+            );
+          }
+          setIsFetchingPeopleSuggestions(false);
+        });
+      }, 300),
+      [arePeopleSuggestionsOpened, taskListIdentifier],
+    );
+
     const onPeopleSearchChange = ({ value }) => {
       if (value) {
+        setIsFetchingPeopleSuggestions(true);
         setPeopleSearchValue(value);
-        fetchPeopleWithDebounce(
-          taskListIdentifier,
-          value,
-          setPeopleSuggestions,
-          arePeopleSuggestionsOpened,
-        );
+        fetchPeopleWithDebounce(value);
       } else {
+        setIsFetchingPeopleSuggestions(false);
         setPeopleSearchValue('');
         clearPeopleSuggestions();
       }
@@ -191,7 +194,10 @@ const MentionsEditor = React.forwardRef(
             onAddMention={onAddMention}
             entryComponent={PeopleSuggestionItem}
             popoverComponent={
-              <PeopleSuggestionsPopover searchValue={peopleSearchValue} />
+              <PeopleSuggestionsPopover
+                searchValue={peopleSearchValue}
+                isFetching={isFetchingPeopleSuggestions}
+              />
             }
             onOpen={() => {
               arePeopleSuggestionsOpened.current = true;
