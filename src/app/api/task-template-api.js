@@ -91,3 +91,15 @@ export function reorderTasksForTemplate(
       throw error;
     });
 }
+
+export function useTemplate(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskListIdentifier,
+) {
+  return axios.post(`task/useTemplate`, {
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+    taskListIdentifier,
+  });
+}

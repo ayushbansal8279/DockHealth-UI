@@ -8,6 +8,7 @@ import {
   REORDER_TASKS_FOR_TEMPLATE,
   ADD_TASK_TO_TEMPLATE,
   RELOAD_OPENED_TEMPLATE_TASKS,
+  APPLY_TASK_TEMPLATE,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -23,6 +24,7 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as TaskTemplateApi from 'api/task-template-api';
 import * as TaskApi from 'api/task-api';
+import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import {
   taskTemplateDetailsSelector,
   taskTemplateSelector,
@@ -241,6 +243,33 @@ function* reloadOpenedTemplateTasks() {
   ]);
 }
 
+function* applyTaskTemplate({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskListIdentifier,
+}) {
+  try {
+    yield call(
+      TaskTemplateApi.useTemplate,
+      taskTemplateIdentifier,
+      taskGroupIdentifier,
+      taskListIdentifier,
+    );
+    yield put(
+      ListDetailsSagaActions.getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATE_ERROR,
+      taskTemplateIdentifier,
+    });
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
@@ -251,4 +280,5 @@ export default function* watchTaskTemplate() {
   yield takeEvery(REORDER_TASKS_FOR_TEMPLATE, reorderTasksForTemplate);
   yield takeEvery(ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
   yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
+  yield takeEvery(APPLY_TASK_TEMPLATE, applyTaskTemplate);
 }

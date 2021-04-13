@@ -33,6 +33,7 @@ import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -43,6 +44,7 @@ import {
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   BulkContainer,
+  TaskGroupOptionsHeader,
 } from './styled';
 
 const TasksGroup = ({
@@ -260,17 +262,23 @@ const TasksGroup = ({
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <QuickAddTaskInput
-            ref={quickAddTaskInputReference}
-            taskListIdentifier={taskListIdentifier}
-            quickAddTask={onQuickAddTask}
-            validator={value => {
-              if ([...value]?.filter(char => char !== ' ').length < 2)
-                return 'The task description is too short (min. 2 characters)';
+          <TaskGroupOptionsHeader>
+            <QuickAddTaskInput
+              ref={quickAddTaskInputReference}
+              taskListIdentifier={taskListIdentifier}
+              quickAddTask={onQuickAddTask}
+              validator={value => {
+                if ([...value]?.filter(char => char !== ' ').length < 2)
+                  return 'The task description is too short (min. 2 characters)';
 
-              return null;
-            }}
-          />
+                return null;
+              }}
+            />
+            <TaskTemplateApplicator
+              taskGroupIdentifier={taskGroupIdentifier}
+              taskListIdentifier={taskListIdentifier}
+            />
+          </TaskGroupOptionsHeader>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <SortHeaderRow>

@@ -67,3 +67,16 @@ export function addTaskToTemplate(task) {
 export function reloadOpenedTemplateTasks() {
   return { type: ActionTypesSaga.RELOAD_OPENED_TEMPLATE_TASKS };
 }
+
+export function applyTaskTemplate(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskListIdentifier,
+) {
+  return {
+    type: ActionTypesSaga.APPLY_TASK_TEMPLATE,
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+    taskListIdentifier,
+  };
+}
