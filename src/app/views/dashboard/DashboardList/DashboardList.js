@@ -600,6 +600,7 @@ const DashboardList = ({
                       isSearching={!!searchValue}
                       closeDrawer={closeDrawer}
                       handleQuickAddTask={handleQuickAddTask}
+                      openModal={openModal}
                     />
                   ),
               )

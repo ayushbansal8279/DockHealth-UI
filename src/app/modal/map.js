@@ -38,6 +38,7 @@ import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTa
 import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkCompleteTasksModal';
 import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/MoveTasksWithSubtasksModal';
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
+import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeScreenDragDropModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -80,6 +81,7 @@ const MODAL_MAP = {
   BulkCompleteTasks: BulkCompleteTasksModal,
   MoveTasksWithSubtasks: MoveTasksWithSubtasksModal,
   SendingInvite: SendingInviteModal,
+  HomeScreenDragDrop: HomeScreenDragDropModal,
 };
 
 export default MODAL_MAP;

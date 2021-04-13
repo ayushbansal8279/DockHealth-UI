@@ -138,6 +138,7 @@ const DashboardTasksGroup = ({
   isSearching,
   closeDrawer,
   handleQuickAddTask,
+  openModal,
 }) => {
   const {
     groupName,
@@ -363,21 +364,25 @@ const DashboardTasksGroup = ({
               onBeforeDragStart={showClearSortFiltersModal}
               onDragEnd={({ destination, source }) => {
                 if (!isSortApplied) {
-                  const { index: destinationIndex } = destination;
-                  const { index: sourceIndex } = source;
-                  const newTasks = [...tasks];
-                  newTasks.splice(
-                    destinationIndex,
-                    0,
-                    newTasks.splice(sourceIndex, 1)[0],
-                  );
+                  if (!destination) {
+                    openModal('HomeScreenDragDrop');
+                  } else {
+                    const { index: destinationIndex } = destination;
+                    const { index: sourceIndex } = source;
+                    const newTasks = [...tasks];
+                    newTasks.splice(
+                      destinationIndex,
+                      0,
+                      newTasks.splice(sourceIndex, 1)[0],
+                    );
 
-                  setNewTasks(newTasks);
+                    setNewTasks(newTasks);
 
-                  const newTasksOrder = newTasks.map(
-                    ({ taskIdentifier }) => taskIdentifier,
-                  );
-                  sortDashboardTasks(groupType, newTasksOrder);
+                    const newTasksOrder = newTasks.map(
+                      ({ taskIdentifier }) => taskIdentifier,
+                    );
+                    sortDashboardTasks(groupType, newTasksOrder);
+                  }
                 }
               }}
             >
