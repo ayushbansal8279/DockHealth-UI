@@ -31,6 +31,7 @@ const Comment = ({
   updateComment,
   currentUser,
   taskListIdentifier,
+  isTemplateTask,
 }) => {
   const {
     comment: commentContent,
@@ -106,6 +107,7 @@ const Comment = ({
               <MentionsEditor
                 ref={commentEditorReference}
                 taskListIdentifier={taskListIdentifier}
+                disableMentions={isTemplateTask}
                 isDrawerEditor
                 readOnly={!isEditing}
                 withEditedLabel={dateCreated !== dateUpdated}

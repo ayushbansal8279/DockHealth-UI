@@ -12,7 +12,13 @@ import {
 
 const QuickAddTaskInput = React.forwardRef(
   (
-    { quickAddTask, onFocus, validator, taskListIdentifier = null },
+    {
+      quickAddTask,
+      onFocus,
+      validator,
+      taskListIdentifier = null,
+      disableMentions = false,
+    },
     reference,
   ) => {
     const [
@@ -67,6 +73,7 @@ const QuickAddTaskInput = React.forwardRef(
             <MentionsEditor
               ref={reference}
               taskListIdentifier={taskListIdentifier}
+              disableMentions={disableMentions}
               placeholder="Add a task and press enter on your keyboard"
               onFocus={() => {
                 setIsFocused(true);

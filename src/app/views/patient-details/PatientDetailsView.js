@@ -276,7 +276,7 @@ const PatientDetailsView = ({
           onTaskUpdate={handleTaskUpdate}
           onTaskCreation={handleTaskUpdate}
           onTaskDelete={fetchPatientFilters}
-          disabledFileds={[DrawerFieldEnum.PATIENT]}
+          disabledFields={[DrawerFieldEnum.PATIENT]}
         />
       </div>
     </BulkEditSection>

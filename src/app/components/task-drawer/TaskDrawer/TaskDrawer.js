@@ -58,7 +58,7 @@ const TaskDrawer = ({
   onTaskUpdate = () => {},
   onTaskCreation = () => {},
   onTaskDelete = () => {},
-  disabledFileds = [],
+  disabledFields = [],
   fromFirstAddTask = false,
   assignToSelf = false,
   hideTour = false,
@@ -208,6 +208,7 @@ const TaskDrawer = ({
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
                           taskListIdentifier={taskListIdentifier}
+                          disableMentions={isTemplateTask}
                         />
                       </ParentTaskDescription>
                     </ParentTaskButton>
@@ -237,6 +238,7 @@ const TaskDrawer = ({
                     <MentionsEditor
                       ref={descriptionReference}
                       taskListIdentifier={taskListIdentifier}
+                      disableMentions={isTemplateTask}
                       placeholder={
                         isAddingOrEditingSubtask
                           ? 'What is the subtask?'
@@ -301,7 +303,7 @@ const TaskDrawer = ({
                   }
                   currentOrganization={currentOrganization}
                   disabled={
-                    disabledFileds.includes(DrawerFieldEnum.PATIENT) ||
+                    disabledFields.includes(DrawerFieldEnum.PATIENT) ||
                     isTemplateTask
                   }
                   placeholder={
@@ -411,6 +413,7 @@ const TaskDrawer = ({
                     taskDrawerFocusField={taskDrawerFocusField}
                     modalActions={modalActions}
                     taskListIdentifier={taskListIdentifier}
+                    isTemplateTask={isTemplateTask}
                   />
                 </div>
               </Grid>

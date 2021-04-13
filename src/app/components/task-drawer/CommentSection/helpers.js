@@ -12,6 +12,7 @@ export const renderComment = ({
   removeComment,
   updateComment,
   taskListIdentifier,
+  isTemplateTask,
 }) => comment => {
   return (
     <Comment
@@ -22,6 +23,7 @@ export const renderComment = ({
       updateComment={updateComment}
       getFormattedCommentDate={getFormattedCommentDate}
       taskListIdentifier={taskListIdentifier}
+      isTemplateTask={isTemplateTask}
     />
   );
 };

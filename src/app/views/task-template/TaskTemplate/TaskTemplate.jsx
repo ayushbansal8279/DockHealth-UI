@@ -240,7 +240,10 @@ const TaskTemplate = ({ template, isFullView }) => {
                   )}
                 </Droppable>
               </DragDropContext>
-              <QuickAddTaskInput quickAddTask={handleAddTaskToTemplate} />
+              <QuickAddTaskInput
+                disableMentions
+                quickAddTask={handleAddTaskToTemplate}
+              />
             </>
           ) : (
             <TasksSkeletonLoader rows={4} />
