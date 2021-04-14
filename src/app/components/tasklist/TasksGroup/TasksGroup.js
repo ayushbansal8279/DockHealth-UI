@@ -189,20 +189,26 @@ const TasksGroup = ({
     [tasks],
   );
 
+  const checkHasMultipleAssignees = useCallback(
+    ({ assignedToUsers, subtasks: taskSubtasks }) =>
+      (assignedToUsers && assignedToUsers.length > 1) ||
+      (taskSubtasks &&
+        taskSubtasks.length > 0 &&
+        taskSubtasks.some(
+          ({ assignedToUsers: subtaskAssignedToUsers }) =>
+            subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+        )),
+    [],
+  );
+
   const groupHasMultipleAssignees = useMemo(
     () =>
-      tasks.some(
-        // eslint-disable-next-line no-shadow
-        ({ assignedToUsers, subtasks }) =>
-          (assignedToUsers && assignedToUsers.length > 1) ||
-          (subtasks &&
-            subtasks.length > 0 &&
-            subtasks.some(
-              ({ assignedToUsers: subtaskAssignedToUsers }) =>
-                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
-            )),
+      tasks.some(task =>
+        task?.itemType === 'BUNDLE'
+          ? task.tasks.some(checkHasMultipleAssignees)
+          : checkHasMultipleAssignees(task),
       ),
-    [tasks],
+    [checkHasMultipleAssignees, tasks],
   );
 
   return (

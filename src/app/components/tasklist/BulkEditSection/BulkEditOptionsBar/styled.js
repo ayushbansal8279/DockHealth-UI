@@ -31,7 +31,7 @@ export const TasksText = styled.p`
   margin-right: 80px;
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.light};
-  white-space: no-wrap;
+  white-space: nowrap;
 `;
 
 export const ButtonsWrapper = styled.div`

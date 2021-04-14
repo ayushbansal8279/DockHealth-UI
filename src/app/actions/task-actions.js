@@ -854,3 +854,16 @@ export function reorderSubtasks({ parentTask, source, destination }) {
     destination,
   };
 }
+
+export function reorderSubtasksInTemplateBundle({
+  source,
+  destination,
+  templateBundle,
+}) {
+  return {
+    type: ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
+    source,
+    destination,
+    templateBundle,
+  };
+}

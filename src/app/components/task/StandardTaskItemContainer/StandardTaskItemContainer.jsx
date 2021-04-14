@@ -88,6 +88,7 @@ const StandardTaskItemContainer = ({
       if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
         const modalProps = {
           confirm: () => {
+            modalActions.closeModal();
             toggleCompleteTaskStatus(task);
           },
         };

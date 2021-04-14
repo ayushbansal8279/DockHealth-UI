@@ -18,6 +18,7 @@ import {
   UPDATE_TASKS_SUCCESS,
   DELETE_TASKS_SUCCESS,
   COMPLETE_TASKS_SUCCESS,
+  LOAD_TASKS_FOR_BUNDLE,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -79,15 +80,32 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         }
 
         return isSubtask(addedTask)
-          ? tasks.map(task =>
-              isParentOfAddedTask(addedTask)(task)
-                ? {
-                    ...task,
-                    subtasks: task.subtasks.concat([addedTask]),
-                    subTasksCount: task.subTasksCount + 1,
-                  }
-                : task,
-            )
+          ? tasks.map(task => {
+              if (task.itemType === 'BUNDLE') {
+                return {
+                  ...task,
+                  tasks: task.tasks.map(t => {
+                    if (isParentOfAddedTask(addedTask)(t))
+                      return {
+                        ...t,
+                        subtasks: t.subtasks.concat([addedTask]),
+                        subTasksCount: t.subTasksCount + 1,
+                      };
+
+                    return t;
+                  }),
+                };
+              }
+
+              if (isParentOfAddedTask(addedTask)(task))
+                return {
+                  ...task,
+                  subtasks: task.subtasks.concat([addedTask]),
+                  subTasksCount: task.subTasksCount + 1,
+                };
+
+              return task;
+            })
           : [addedTask].concat(tasks);
       };
 
@@ -184,14 +202,32 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
       if (taskIdentifier) {
         const updateTaskFromAction = tasks => {
-          return tasks.map(task =>
-            task.taskIdentifier === taskIdentifier
-              ? {
-                  ...task,
-                  subtaskQuickAddOpen: true,
-                }
-              : task,
-          );
+          return tasks.map(task => {
+            if (task.itemType === 'BUNDLE') {
+              return {
+                ...task,
+                tasks: task.tasks.map(t => {
+                  if (t.taskIdentifier === taskIdentifier) {
+                    return {
+                      ...t,
+                      subtaskQuickAddOpen: true,
+                    };
+                  }
+
+                  return t;
+                }),
+              };
+            }
+
+            if (task.taskIdentifier === taskIdentifier) {
+              return {
+                ...task,
+                subtaskQuickAddOpen: true,
+              };
+            }
+
+            return task;
+          });
         };
 
         return updateStateCallback(state, updateTaskFromAction);
@@ -205,14 +241,31 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
       if (taskIdentifier) {
         const updateTaskFromAction = tasks => {
-          return tasks.map(task =>
-            task.taskIdentifier === taskIdentifier
-              ? {
-                  ...task,
-                  subtaskQuickAddOpen: false,
-                }
-              : task,
-          );
+          return tasks.map(task => {
+            if (task.itemType === 'BUNDLE') {
+              return {
+                ...task,
+                tasks: task.tasks.map(t => {
+                  if (t.taskIdentifier === taskIdentifier) {
+                    return {
+                      ...t,
+                      subtaskQuickAddOpen: false,
+                    };
+                  }
+
+                  return t;
+                }),
+              };
+            }
+
+            if (task.taskIdentifier === taskIdentifier)
+              return {
+                ...task,
+                subtaskQuickAddOpen: false,
+              };
+
+            return task;
+          });
         };
 
         return updateStateCallback(state, updateTaskFromAction);
@@ -502,6 +555,19 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
           return true;
         });
+
+      return updateStateCallback(state, updateTasksFromAction);
+    }
+
+    case LOAD_TASKS_FOR_BUNDLE: {
+      const { bundleIdentifier, tasks } = action;
+
+      const updateTasksFromAction = currentTasks =>
+        currentTasks?.map(t =>
+          t.itemType === 'BUNDLE' && t.identifier === bundleIdentifier
+            ? { ...t, tasks }
+            : t,
+        );
 
       return updateStateCallback(state, updateTasksFromAction);
     }

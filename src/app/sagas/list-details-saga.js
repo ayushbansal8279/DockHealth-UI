@@ -1,4 +1,4 @@
-import { isEmpty, pluck, move, remove, insert } from 'ramda';
+import { isEmpty, move, remove, insert, pluck } from 'ramda';
 import {
   put,
   call,
@@ -405,7 +405,7 @@ function* doSortTasksInGroup(payload) {
     });
 
     yield call(reorderTasksInGroup, {
-      orderedTaskIds: pluck('taskIdentifier', reorderedTasks),
+      orderedTaskIds: pluck('identifier', reorderedTasks),
       taskGroupIdentifier,
     });
     yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
@@ -470,10 +470,10 @@ function* doReassignTasksToAnotherGroup(payload) {
     });
 
     yield call(reassignTasksToAnotherGroupApi, destinationGroupIdentifier, [
-      sourceTask.taskIdentifier,
+      sourceTask.identifier,
     ]);
     yield call(reorderTasksInGroup, {
-      orderedTaskIds: pluck('taskIdentifier', destinationTasks),
+      orderedTaskIds: pluck('identifier', destinationTasks),
       taskGroupIdentifier: destinationGroupIdentifier,
     });
 

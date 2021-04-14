@@ -15,7 +15,7 @@ import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper } from '../styled';
-import QuickAddSubatask from './QuickAddSubtask';
+import QuickAddSubtask from './QuickAddSubtask';
 
 const Task = ({
   task,
@@ -204,7 +204,7 @@ const Task = ({
           />
           {subtaskQuickAddOpen &&
             (renderedSubtasks?.length > 0 || subTasksCount === 0) && (
-              <QuickAddSubatask
+              <QuickAddSubtask
                 patientVisible={patientVisible}
                 listNameVisible={listNameVisible}
                 taskListIdentifier={taskList?.taskListIdentifier}

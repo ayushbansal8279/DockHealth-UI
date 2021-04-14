@@ -42,31 +42,44 @@ const initialState = {
   },
 };
 
-const updateTaskInGroupedTasks = (groupedTasks, task) =>
+const updateTask = (taskToCompare, task, fieldsToOverride = {}) => {
+  if (
+    taskToCompare.taskIdentifier !== task.parentTaskIdentifier &&
+    taskToCompare.taskIdentifier !== task.taskIdentifier
+  ) {
+    return taskToCompare;
+  }
+
+  if (task.taskIdentifier === taskToCompare.taskIdentifier) {
+    return { ...taskToCompare, ...task, ...fieldsToOverride };
+  }
+
+  return {
+    ...taskToCompare,
+    subtasks: taskToCompare.subtasks.map(subtask =>
+      subtask.taskIdentifier === task.taskIdentifier
+        ? { ...subtask, ...task, ...fieldsToOverride }
+        : subtask,
+    ),
+  };
+};
+
+const updateTaskInArray = (tasks, task, fieldsToOverride) =>
+  tasks.map(t => updateTask(t, task, fieldsToOverride));
+
+const updateTaskInGroupedTasks = (groupedTasks, task, fieldsToOverride) =>
   groupedTasks?.taskGroups?.map(taskGroup => {
     return {
       ...taskGroup,
       tasks: taskGroup?.tasks?.map(t => {
-        if (
-          t.taskIdentifier !== task.parentTaskIdentifier &&
-          t.taskIdentifier !== task.taskIdentifier
-        ) {
-          return t;
+        if (t.itemType === 'BUNDLE') {
+          return {
+            ...t,
+            tasks: updateTaskInArray(t.tasks, task, fieldsToOverride),
+          };
         }
 
-        if (task.taskIdentifier === t.taskIdentifier) {
-          return { ...t, ...task };
-        }
-
-        return {
-          ...t,
-          subtasks: t.subtasks.map(subtask =>
-            subtask.taskIdentifier === task.taskIdentifier
-              ? { ...subtask, ...task }
-              : subtask,
-          ),
-          isFetchingSubTasks: false,
-        };
+        return updateTask(t, task, fieldsToOverride);
       }),
     };
   });
@@ -343,27 +356,10 @@ const ListDetailsReducer = (state = initialState, action) => {
           ? state.completedGroupedTasks
           : state.groupedTasks;
 
-      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
-        return {
-          ...taskGroup,
-          tasks: taskGroup?.tasks?.map(t => {
-            if (
-              t.taskIdentifier !== task.parentTaskIdentifier &&
-              t.taskIdentifier !== task.taskIdentifier
-            ) {
-              return t;
-            }
-
-            if (task.taskIdentifier === t.taskIdentifier) {
-              return { ...t, ...task, isFetchingSubTasks: true };
-            }
-
-            return {
-              ...t,
-            };
-          }),
-        };
+      const updatedTaskGroups = updateTaskInGroupedTasks(groupedTasks, task, {
+        isFetchingSubTasks: true,
       });
+
       const updatedGroupedTasks = {
         ...groupedTasks,
         taskGroups: updatedTaskGroups,
@@ -391,10 +387,11 @@ const ListDetailsReducer = (state = initialState, action) => {
         task = { ...task, isFetchingSubTasks: false };
       }
 
-      const updatedTaskGroups = updateTaskInGroupedTasks(state.groupedTasks, {
-        ...task,
-        isFetchingSubTasks: false,
-      });
+      const updatedTaskGroups = updateTaskInGroupedTasks(
+        state.groupedTasks,
+        task,
+        { isFetchingSubTasks: false },
+      );
 
       const updatedCompletedTaskGroups = updateTaskInGroupedTasks(
         state.completedGroupedTasks,
