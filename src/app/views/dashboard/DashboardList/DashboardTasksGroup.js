@@ -104,20 +104,12 @@ const DashboardTasksGroup = ({
   const { groupActions } = bunchBulkEditTaskActions;
 
   const onClickGroupBulkEdit = useCallback(
-    () =>
-      groupActions?.onClickBulkEditGroup({
-        parentTasks: tasks.filter(t => !t.parentTaskIdentifier),
-        subtasks: tasks.filter(t => t.parentTaskIdentifier),
-      }),
+    () => groupActions?.onClickBulkEditGroup(tasks),
     [groupActions, tasks],
   );
 
   const groupIsCheckedByBulkEdit = useMemo(
-    () =>
-      groupActions?.getGroupIsSelectedInBulkEdit(
-        tasks.filter(t => !t.parentTaskIdentifier),
-        tasks.filter(t => t.parentTaskIdentifier),
-      ),
+    () => groupActions?.getGroupIsSelectedInBulkEdit(tasks),
     [groupActions, tasks],
   );
 

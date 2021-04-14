@@ -80,20 +80,6 @@ const TaskListDetailsDropdown = ({
   const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
   const { groupActions } = bunchBulkEditTaskActions;
 
-  const subtasks = useMemo(
-    () =>
-      tasks && tasks?.length > 0
-        ? tasks?.reduce(
-            (previousSubtasks, currentTask) =>
-              currentTask?.subtasks?.length > 0
-                ? [...previousSubtasks, ...currentTask?.subtasks]
-                : previousSubtasks,
-            [],
-          )
-        : [],
-    [tasks],
-  );
-
   const groupHasMultipleAssignees = useMemo(
     () =>
       tasks.some(
@@ -162,16 +148,8 @@ const TaskListDetailsDropdown = ({
           {bunchBulkEditTaskActions && (
             <BulkContainer>
               <Checkbox
-                isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
-                  tasks,
-                  subtasks,
-                )}
-                onClick={() =>
-                  groupActions?.onClickBulkEditGroup({
-                    parentTasks: tasks,
-                    subtasks,
-                  })
-                }
+                isChecked={groupActions?.getGroupIsSelectedInBulkEdit(tasks)}
+                onClick={() => groupActions?.onClickBulkEditGroup(tasks)}
               />
             </BulkContainer>
           )}

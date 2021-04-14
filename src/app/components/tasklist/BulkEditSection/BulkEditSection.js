@@ -1,3 +1,4 @@
+import { extractTasksAndSubtasks } from 'helpers/task-helpers';
 import React, {
   useEffect,
   useCallback,
@@ -32,23 +33,13 @@ const BulkEditSection = ({
   }));
 
   const onSelectBulkEditParentTask = useCallback(
-    ({
-      taskIdentifier,
-      subTasksCount,
-      hasAttachments,
-      taskList,
-      assignedToUsers,
-    }) =>
+    payload =>
       setBulkEditTasks({
         ...bulkEditTasks,
         parentTasks: [
           ...bulkEditTasks.parentTasks,
           {
-            taskIdentifier,
-            subTasksCount,
-            hasAttachments,
-            taskList,
-            assignedToUsers,
+            ...payload,
           },
         ],
       }),
@@ -75,21 +66,15 @@ const BulkEditSection = ({
   );
 
   const onClickBulkEditParentTask = useCallback(
-    ({
-      taskIdentifier,
-      subTasksCount,
-      hasAttachments,
-      taskList,
-      assignedToUsers,
-    }) =>
-      getParentTaskIsSelectedInBulkEdit({ taskIdentifier })
-        ? onUnselectBulkEditParentTask({ taskIdentifier })
+    payload =>
+      getParentTaskIsSelectedInBulkEdit({
+        taskIdentifier: payload.taskIdentifier,
+      })
+        ? onUnselectBulkEditParentTask({
+            taskIdentifier: payload.taskIdentifier,
+          })
         : onSelectBulkEditParentTask({
-            taskIdentifier,
-            subTasksCount,
-            hasAttachments,
-            taskList,
-            assignedToUsers,
+            ...payload,
           }),
     [
       getParentTaskIsSelectedInBulkEdit,
@@ -113,23 +98,13 @@ const BulkEditSection = ({
   );
 
   const onSelectBulkEditSubtask = useCallback(
-    ({
-      taskIdentifier,
-      parentTaskIdentifier,
-      hasAttachments,
-      taskList,
-      assignedToUsers,
-    }) =>
+    payload =>
       setBulkEditTasks({
         ...bulkEditTasks,
         subtasks: [
           ...bulkEditTasks?.subtasks,
           {
-            taskIdentifier,
-            parentTaskIdentifier,
-            hasAttachments,
-            taskList,
-            assignedToUsers,
+            ...payload,
           },
         ],
       }),
@@ -157,21 +132,11 @@ const BulkEditSection = ({
   );
 
   const onClickBulkEditSubtask = useCallback(
-    ({
-      taskIdentifier,
-      parentTaskIdentifier,
-      hasAttachments,
-      taskList,
-      assignedToUsers,
-    }) =>
-      getSubtaskIsSelectedInBulkEdit({ taskIdentifier })
-        ? onUnselectBulkEditSubtask({ taskIdentifier })
+    payload =>
+      getSubtaskIsSelectedInBulkEdit({ taskIdentifier: payload.taskIdentifier })
+        ? onUnselectBulkEditSubtask({ taskIdentifier: payload.taskIdentifier })
         : onSelectBulkEditSubtask({
-            taskIdentifier,
-            parentTaskIdentifier,
-            hasAttachments,
-            taskList,
-            assignedToUsers,
+            ...payload,
           }),
     [
       getSubtaskIsSelectedInBulkEdit,
@@ -201,19 +166,26 @@ const BulkEditSection = ({
     }
   }, [setShouldResetBulkEditTasks, shouldResetBulkEditTasks]);
 
-  const getGroupIsSelectedInBulkEdit = useCallback(
+  const checkIfAllAreSelected = useCallback(
     (parentTasks, subtasks) =>
       parentTasks?.every(t => getParentTaskIsSelectedInBulkEdit(t)) &&
       subtasks?.every(t => getSubtaskIsSelectedInBulkEdit(t)),
     [getParentTaskIsSelectedInBulkEdit, getSubtaskIsSelectedInBulkEdit],
   );
 
+  const getGroupIsSelectedInBulkEdit = useCallback(
+    tasks => {
+      const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+      return checkIfAllAreSelected(parentTasks, subtasks);
+    },
+    [checkIfAllAreSelected],
+  );
+
   const onClickBulkEditGroup = useCallback(
-    ({ parentTasks = [], subtasks = [] }) => {
-      const groupIsSelected = getGroupIsSelectedInBulkEdit(
-        parentTasks,
-        subtasks,
-      );
+    (tasks = []) => {
+      const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+
+      const groupIsSelected = checkIfAllAreSelected(parentTasks, subtasks);
 
       if (groupIsSelected) {
         setBulkEditTasks({
@@ -294,7 +266,7 @@ const BulkEditSection = ({
     },
     [
       bulkEditTasks,
-      getGroupIsSelectedInBulkEdit,
+      checkIfAllAreSelected,
       getParentTaskIsSelectedInBulkEdit,
       getSubtaskIsSelectedInBulkEdit,
     ],

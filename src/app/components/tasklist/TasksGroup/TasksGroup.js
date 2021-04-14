@@ -175,19 +175,19 @@ const TasksGroup = ({
   const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
   const { groupActions } = bunchBulkEditTaskActions;
 
-  const subtasks = useMemo(
-    () =>
-      tasks && tasks?.length > 0
-        ? tasks?.reduce(
-            (previousSubtasks, currentTask) =>
-              currentTask?.subtasks?.length > 0
-                ? [...previousSubtasks, ...currentTask?.subtasks]
-                : previousSubtasks,
-            [],
-          )
-        : [],
-    [tasks],
-  );
+  // const subtasks = useMemo(
+  //   () =>
+  //     tasks && tasks?.length > 0
+  //       ? tasks?.reduce(
+  //           (previousSubtasks, currentTask) =>
+  //             currentTask?.subtasks?.length > 0
+  //               ? [...previousSubtasks, ...currentTask?.subtasks]
+  //               : previousSubtasks,
+  //           [],
+  //         )
+  //       : [],
+  //   [tasks],
+  // );
 
   const checkHasMultipleAssignees = useCallback(
     ({ assignedToUsers, subtasks: taskSubtasks }) =>
@@ -291,16 +291,8 @@ const TasksGroup = ({
             {bunchBulkEditTaskActions && !disableBulkEdit && (
               <BulkContainer>
                 <Checkbox
-                  isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
-                    tasks,
-                    subtasks,
-                  )}
-                  onClick={() =>
-                    groupActions?.onClickBulkEditGroup({
-                      parentTasks: tasks,
-                      subtasks,
-                    })
-                  }
+                  isChecked={groupActions?.getGroupIsSelectedInBulkEdit(tasks)}
+                  onClick={() => groupActions?.onClickBulkEditGroup(tasks)}
                 />
               </BulkContainer>
             )}
