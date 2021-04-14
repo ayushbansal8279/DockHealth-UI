@@ -24,9 +24,7 @@ const TaskTemplateApplicator = ({
   const taskTemplatesIsLoading = useSelector(isFetchingTaskTemplatesSelector);
   const dispatch = useDispatch();
   const popoverReference = useRef(null);
-  const [isListPopoverOpen, openListPopover, closeListPopover] = useBoolean(
-    false,
-  );
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
   const taskTemplatesList = useMemo(
     () =>
@@ -48,7 +46,7 @@ const TaskTemplateApplicator = ({
   return (
     <>
       <TaskTemplateApplicatorContainer
-        onClick={openListPopover}
+        onClick={openPopover}
         ref={popoverReference}
       >
         <TaskTemplateApplicatorLabel>
@@ -56,14 +54,14 @@ const TaskTemplateApplicator = ({
         </TaskTemplateApplicatorLabel>
         <Spacing horizontal={3} />
         <RotatableHeaderChevron
-          rotated={isListPopoverOpen}
+          rotated={isPopoverOpen}
           color={palette.oPlusRed}
         />
       </TaskTemplateApplicatorContainer>
       <TaskTemplatePopover
         anchorEl={popoverReference.current}
-        open={isListPopoverOpen}
-        onClose={closeListPopover}
+        open={isPopoverOpen}
+        onClose={closePopover}
         taskTemplatesList={taskTemplatesList}
         taskTemplatesIsLoading={taskTemplatesIsLoading}
       />

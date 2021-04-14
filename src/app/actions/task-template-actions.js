@@ -80,3 +80,27 @@ export function applyTaskTemplate(
     taskListIdentifier,
   };
 }
+
+export function duplicateTemplateBundle(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  includeAttachments,
+) {
+  return {
+    type: ActionTypesSaga.DUPLICATE_TEMPLATE_BUNDLE,
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+    includeAttachments,
+  };
+}
+
+export function deleteTemplateBundle(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+) {
+  return {
+    type: ActionTypesSaga.DELETE_TEMPLATE_BUNDLE,
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+  };
+}

@@ -9,6 +9,8 @@ import {
   ADD_TASK_TO_TEMPLATE,
   RELOAD_OPENED_TEMPLATE_TASKS,
   APPLY_TASK_TEMPLATE,
+  DELETE_TEMPLATE_BUNDLE,
+  DUPLICATE_TEMPLATE_BUNDLE,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -294,6 +296,53 @@ function* applyTaskTemplate({
   }
 }
 
+function* duplicateTemplateBundle({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  includeAttachments,
+}) {
+  try {
+    yield call(
+      TaskTemplateApi.duplicateTemplateBundle,
+      taskTemplateIdentifier,
+      includeAttachments,
+    );
+    yield put(
+      ListDetailsSagaActions.getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATE_ERROR,
+      taskTemplateIdentifier,
+    });
+  }
+}
+
+function* deleteTemplateBundle({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+}) {
+  try {
+    yield call(TaskTemplateApi.deleteTemplateBundle, taskTemplateIdentifier);
+    yield put(
+      ListDetailsSagaActions.getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATE_ERROR,
+      taskTemplateIdentifier,
+    });
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
@@ -305,4 +354,6 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
   yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
   yield takeEvery(APPLY_TASK_TEMPLATE, applyTaskTemplate);
+  yield takeEvery(DUPLICATE_TEMPLATE_BUNDLE, duplicateTemplateBundle);
+  yield takeEvery(DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
 }

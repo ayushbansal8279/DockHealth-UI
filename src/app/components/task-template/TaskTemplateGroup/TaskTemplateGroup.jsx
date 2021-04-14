@@ -8,8 +8,8 @@ import 'react-circular-progressbar/dist/styles.css';
 import * as TaskActions from 'actions/task-actions';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
+import TaskTemplateOptions from '../TaskTemplateOptions/TaskTemplateOptions';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -18,6 +18,7 @@ import {
   TaskTemplateGroupName,
   TaskTemplateProgressCircle,
   TemplateHandle,
+  TaskTemplateOptionsContainer,
 } from './styled';
 
 const TaskTemplateGroup = ({
@@ -28,8 +29,9 @@ const TaskTemplateGroup = ({
   isStartedDnD,
   draggableProvided = {},
   dragAndDropDisabled,
+  taskGroupIdentifier,
 }) => {
-  const { name, tasks } = templateGroup;
+  const { name, tasks, identifier } = templateGroup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -54,16 +56,22 @@ const TaskTemplateGroup = ({
           <RotatableChevron rotated={isOpen} />
           <TaskTemplateGroupName>{name}</TaskTemplateGroupName>
         </TaskTemplateGroupHeader>
-        <TaskTemplateProgressCircle>
-          <CircularProgressbar
-            value={(completedTasksAmount / tasks?.length) * 100}
-            text={`${completedTasksAmount}/${tasks?.length}`}
-            styles={buildStyles({
-              textSize: '32px',
-              textColor: '#000000',
-            })}
+        <TaskTemplateOptionsContainer>
+          <TaskTemplateProgressCircle>
+            <CircularProgressbar
+              value={(completedTasksAmount / tasks?.length) * 100}
+              text={`${completedTasksAmount}/${tasks?.length}`}
+              styles={buildStyles({
+                textSize: '32px',
+                textColor: '#000000',
+              })}
+            />
+          </TaskTemplateProgressCircle>
+          <TaskTemplateOptions
+            taskGroupIdentifier={taskGroupIdentifier}
+            templateBundleIdentifier={identifier}
           />
-        </TaskTemplateProgressCircle>
+        </TaskTemplateOptionsContainer>
       </TaskTemplateGroupHeaderContainer>
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

@@ -123,6 +123,7 @@ const DragAndDropGroupList = ({
                       dragAndDropDisabled={
                         isCompletedGroup || dragAndDropDisabled
                       }
+                      taskGroupIdentifier={taskGroupIdentifier}
                     />
                   )}
                 </Draggable>

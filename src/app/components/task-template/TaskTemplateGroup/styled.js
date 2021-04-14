@@ -41,14 +41,15 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   }
 `;
 
-export const TaskTemplateGroupHeader = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const TaskTemplateProgressCircle = styled.div`
   width: 48;
   height: 48;
+  margin-right: ${spacing.small};
+`;
+
+export const TaskTemplateGroupHeader = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export const TaskTemplateGroupList = styled(Collapse)``;
@@ -56,4 +57,9 @@ export const TaskTemplateGroupList = styled(Collapse)``;
 export const TaskTemplateGroupName = styled.div`
   margin-left: ${spacing.small};
   font-size: 18px;
+`;
+
+export const TaskTemplateOptionsContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;

@@ -103,3 +103,36 @@ export function useTemplate(
     taskListIdentifier,
   });
 }
+
+export function deleteTemplateBundle(templateIdentifier) {
+  return axios
+    .delete(`task/deleteTaskBundle/${templateIdentifier}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function duplicateTemplateBundle(
+  templateIdentifier,
+  includeAttachments = false,
+) {
+  return axios
+    .put(
+      `task/duplicateTaskBundle/${templateIdentifier}`,
+      {},
+      {
+        params: {
+          includeAttachments,
+        },
+      },
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
