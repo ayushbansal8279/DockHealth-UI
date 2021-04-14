@@ -4,20 +4,20 @@ import { Close } from '@material-ui/icons';
 import Button from 'components/common/Button/Button';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import {
-  TemplateBanerContainer,
-  BanerCircleBackground,
+  TemplateBannerContainer,
+  BannerCircleBackground,
   CloseButton,
   TextContainer,
   Title,
   Description,
 } from './styled';
 
-const TaskTemplateBaner = ({ onClose, onCreateTemplate, firstTemplate }) => {
+const TaskTemplateBanner = ({ onClose, onCreateTemplate, firstTemplate }) => {
   return (
-    <TemplateBanerContainer>
-      <BanerCircleBackground>
+    <TemplateBannerContainer>
+      <BannerCircleBackground>
         <TemplatesIcon size={32} />
-      </BanerCircleBackground>
+      </BannerCircleBackground>
       <TextContainer>
         {firstTemplate && <Title>Create your first template</Title>}
         <Description>
@@ -35,18 +35,18 @@ const TaskTemplateBaner = ({ onClose, onCreateTemplate, firstTemplate }) => {
       <CloseButton type="button" onClick={onClose}>
         <Close color="inherit" />
       </CloseButton>
-    </TemplateBanerContainer>
+    </TemplateBannerContainer>
   );
 };
 
-TaskTemplateBaner.propTypes = {
+TaskTemplateBanner.propTypes = {
   onClose: func.isRequired,
   onCreateTemplate: func.isRequired,
   firstTemplate: bool,
 };
 
-TaskTemplateBaner.defaultProps = {
+TaskTemplateBanner.defaultProps = {
   firstTemplate: false,
 };
 
-export default TaskTemplateBaner;
+export default TaskTemplateBanner;

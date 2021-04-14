@@ -3,7 +3,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-export const TemplateBanerContainer = styled.div`
+export const TemplateBannerContainer = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: auto 1fr 246px;
@@ -16,7 +16,7 @@ export const TemplateBanerContainer = styled.div`
   background-color: ${palette.white};
 `;
 
-export const BanerCircleBackground = styled.div`
+export const BannerCircleBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

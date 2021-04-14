@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Grid } from '@material-ui/core';
 import * as ModalActions from 'modal/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import {
@@ -25,7 +26,7 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import { TaskTemplateViewContainer } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
-import TaskTemplateBaner from './TaskTemplateBaner/TaskTemplateBaner';
+import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
 
 const BULK_EDIT_OPTIONS_CONFIG = {
   [BULK_EDIT_MOVE_OPTION]: false,
@@ -33,8 +34,8 @@ const BULK_EDIT_OPTIONS_CONFIG = {
   [BULK_EDIT_DUE_DATE_OPTION]: false,
 };
 
-const TASK_TEMPLATES_BANER_CLOSED_STORAGE_KEY =
-  'TASK_TEMPLATES_BANER_CLOSED_STORAGE_KEY';
+const TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY =
+  'TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY';
 
 const TaskTemplateView = ({
   isFetchingTaskTemplates,
@@ -45,8 +46,8 @@ const TaskTemplateView = ({
 }) => {
   const history = useHistory();
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
-  const [isBanerOpen, setIsBanerOpen] = useState(
-    !localStorageHelper.getItem(TASK_TEMPLATES_BANER_CLOSED_STORAGE_KEY),
+  const [isBannerOpen, setIsBannerOpen] = useState(
+    !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
 
   useEffect(() => {
@@ -66,15 +67,15 @@ const TaskTemplateView = ({
       refreshTasks={taskTemplateActions.reloadOpenedTemplateTasks}
     >
       <TaskTemplateViewContainer>
-        {isBanerOpen && (
+        {isBannerOpen && (
           <>
-            <TaskTemplateBaner
+            <TaskTemplateBanner
               firstTemplate={taskTemplates?.length <= 1}
               onCreateTemplate={handleCreateTemplate}
               onClose={() => {
-                setIsBanerOpen(false);
+                setIsBannerOpen(false);
                 localStorageHelper.setItem(
-                  TASK_TEMPLATES_BANER_CLOSED_STORAGE_KEY,
+                  TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
                   true,
                 );
               }}
@@ -82,14 +83,11 @@ const TaskTemplateView = ({
             <Spacing vertical={4} />
           </>
         )}
-        <AddButton onClick={handleCreateTemplate}>Add Template</AddButton>
+        <Grid container justify="flex-end" alignItems="center">
+          <AddButton onClick={handleCreateTemplate}>Add Template</AddButton>
+          <ViewTypeSwitch value={viewType} onChange={setViewType} />
+        </Grid>
         <Spacing vertical={4} />
-        {!!taskTemplates?.length && (
-          <>
-            <ViewTypeSwitch value={viewType} onChange={setViewType} />
-            <Spacing vertical={4} />
-          </>
-        )}
         {!isFetchingTaskTemplates ? (
           taskTemplates.map(template => (
             <TaskTemplate

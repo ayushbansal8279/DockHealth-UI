@@ -28,21 +28,26 @@ export const ArrowButton = styled.button`
 `;
 
 export const NameInput = styled.input`
+  max-width: 400px;
   grid-row: 1;
   grid-column: 2;
   margin-bottom: 0;
+  padding: ${spacing.small};
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regularPlus};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   background-color: transparent;
-  border: none;
+  border: 1px solid ${palette.coolGrey2};
+  border-radius: 5px;
+  background: ${palette.coolGrey4};
 
   &[readonly] {
     background-color: transparent;
     cursor: initial;
     outline: none;
+    border: none;
   }
 
   &:focus {
