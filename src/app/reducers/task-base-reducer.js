@@ -22,7 +22,7 @@ import {
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
-import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
+import { TaskItemType, TaskStatus, TaskGroupType } from 'helpers/task-helpers';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
@@ -68,7 +68,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ADD_TASK_SUCCESS: {
-      const { task: addedTask, bundleIdentifier } = action;
+      const { task: addedTask } = action;
 
       const updateTaskFromAction = tasks => {
         const parentTask = tasks.find(({ taskIdentifier }) =>
@@ -108,13 +108,26 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           });
         }
 
+        const bundleIdentifier = addedTask?.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        )?.taskGroupIdentifier;
+
         if (bundleIdentifier) {
-          return tasks.map(t =>
-            t.itemType === TaskItemType.BUNDLE &&
-            t.identifier === bundleIdentifier
-              ? { ...t, tasks: [addedTask, ...t.tasks] }
-              : t,
-          );
+          let bundleFound = false;
+
+          const tasksToReturn = tasks.map(t => {
+            if (
+              t.itemType === TaskItemType.BUNDLE &&
+              t.identifier === bundleIdentifier
+            ) {
+              bundleFound = true;
+              return { ...t, tasks: [addedTask, ...t.tasks] };
+            }
+
+            return t;
+          });
+
+          if (bundleFound) return tasksToReturn;
         }
 
         return [addedTask].concat(tasks);
@@ -161,26 +174,61 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case DELETE_TASK_SUCCESS: {
-      const mainTaskId = action.task.parentTaskIdentifier;
+      const { parentTaskIdentifier } = action.task;
 
       const updateTaskFromAction = tasks => {
-        if (mainTaskId) {
-          return tasks.map(task =>
-            task.taskIdentifier === mainTaskId
-              ? {
-                  ...task,
-                  subTasksCount: task.subTasksCount - 1,
-                  subtasks: task.subtasks.filter(
-                    ({ taskIdentifier }) =>
-                      taskIdentifier !== action.task.taskIdentifier,
-                  ),
-                }
-              : task,
-          );
+        if (parentTaskIdentifier) {
+          return tasks.map(task => {
+            if (task.itemType === TaskItemType.BUNDLE) {
+              return {
+                ...task,
+                tasks: task.tasks?.map(t =>
+                  t.identifier === parentTaskIdentifier
+                    ? {
+                        ...t,
+                        subTasksCount: t.subTasksCount - 1,
+                        subtasks: t.subtasks.filter(
+                          ({ taskIdentifier }) =>
+                            taskIdentifier !== action.task.taskIdentifier,
+                        ),
+                      }
+                    : t,
+                ),
+              };
+            }
+
+            if (task.taskIdentifier === parentTaskIdentifier) {
+              return {
+                ...task,
+                subTasksCount: task.subTasksCount - 1,
+                subtasks: task.subtasks.filter(
+                  ({ taskIdentifier }) =>
+                    taskIdentifier !== action.task.taskIdentifier,
+                ),
+              };
+            }
+            return task;
+          });
         }
-        return tasks.filter(
-          ({ taskIdentifier }) => taskIdentifier !== action.task.taskIdentifier,
-        );
+
+        return tasks.reduce((accumulator, currentTask) => {
+          if (currentTask.itemType === TaskItemType.BUNDLE) {
+            return [
+              ...accumulator,
+              {
+                ...currentTask,
+                tasks: currentTask.tasks?.filter(
+                  ({ taskIdentifier }) =>
+                    taskIdentifier !== action.task.taskIdentifier,
+                ),
+              },
+            ];
+          }
+
+          return currentTask.taskIdentifier === action.task.taskIdentifier
+            ? accumulator
+            : [...accumulator, currentTask];
+        }, []);
       };
 
       return updateStateCallback(state, updateTaskFromAction);

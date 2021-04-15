@@ -185,9 +185,6 @@ const BulkEditOptionsBar = ({
           taskGroupIdentifier: task?.taskGroups?.find(
             ({ groupType }) => groupType === TaskGroupType.TASKLIST,
           )?.taskGroupIdentifier,
-          bundleIdentifier: task?.taskGroups?.find(
-            ({ groupType }) => groupType === TaskGroupType.BUNDLE,
-          )?.taskGroupIdentifier,
         }),
       );
     },

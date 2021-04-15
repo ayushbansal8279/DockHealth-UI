@@ -3,6 +3,7 @@ import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
+import { TaskGroupType } from 'helpers/task-helpers';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { reloadDashboardTasks } from 'sagas/dashboard-saga';
@@ -275,7 +276,9 @@ export const moveTask = (
             dispatch({
               type: ActionTypes.ADD_TASK_SUCCESS,
               task,
-              taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+              taskGroupIdentifier: task?.taskGroups?.find(
+                ({ groupType }) => groupType === TaskGroupType.TASKLIST,
+              )?.taskGroupIdentifier,
             });
           },
         ),
@@ -353,7 +356,9 @@ export function deleteTask(task) {
               dispatch({
                 type: ActionTypes.ADD_TASK_SUCCESS,
                 task,
-                taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+                taskGroupIdentifier: task?.taskGroups?.find(
+                  ({ groupType }) => groupType === TaskGroupType.TASKLIST,
+                )?.taskGroupIdentifier,
               });
             },
           ),
