@@ -23,6 +23,11 @@ export const TaskItemType = {
   TASK: 'TASK',
 };
 
+export const TaskGroupType = {
+  TASKLIST: 'TASKLIST',
+  BUNDLE: 'TASK_BUNDLE',
+};
+
 export function getLabelsIconTooltipTitle(labels) {
   let toolTipMultiLabelDetails = '';
   if (labels.length === 1) {

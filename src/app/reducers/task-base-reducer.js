@@ -22,7 +22,7 @@ import {
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
@@ -68,7 +68,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ADD_TASK_SUCCESS: {
-      const { task: addedTask } = action;
+      const { task: addedTask, bundleIdentifier } = action;
 
       const updateTaskFromAction = tasks => {
         const parentTask = tasks.find(({ taskIdentifier }) =>
@@ -79,34 +79,45 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           addedTask.patient = parentTask?.patient;
         }
 
-        return isSubtask(addedTask)
-          ? tasks.map(task => {
-              if (task.itemType === 'BUNDLE') {
-                return {
-                  ...task,
-                  tasks: task.tasks.map(t => {
-                    if (isParentOfAddedTask(addedTask)(t))
-                      return {
-                        ...t,
-                        subtasks: t.subtasks.concat([addedTask]),
-                        subTasksCount: t.subTasksCount + 1,
-                      };
+        if (isSubtask(addedTask)) {
+          return tasks.map(task => {
+            if (task.itemType === TaskItemType.BUNDLE) {
+              return {
+                ...task,
+                tasks: task.tasks.map(t => {
+                  if (isParentOfAddedTask(addedTask)(t))
+                    return {
+                      ...t,
+                      subtasks: t.subtasks.concat([addedTask]),
+                      subTasksCount: t.subTasksCount + 1,
+                    };
 
-                    return t;
-                  }),
-                };
-              }
+                  return t;
+                }),
+              };
+            }
 
-              if (isParentOfAddedTask(addedTask)(task))
-                return {
-                  ...task,
-                  subtasks: task.subtasks.concat([addedTask]),
-                  subTasksCount: task.subTasksCount + 1,
-                };
+            if (isParentOfAddedTask(addedTask)(task))
+              return {
+                ...task,
+                subtasks: task.subtasks.concat([addedTask]),
+                subTasksCount: task.subTasksCount + 1,
+              };
 
-              return task;
-            })
-          : [addedTask].concat(tasks);
+            return task;
+          });
+        }
+
+        if (bundleIdentifier) {
+          return tasks.map(t =>
+            t.itemType === TaskItemType.BUNDLE &&
+            t.identifier === bundleIdentifier
+              ? { ...t, tasks: [addedTask, ...t.tasks] }
+              : t,
+          );
+        }
+
+        return [addedTask].concat(tasks);
       };
 
       return updateStateCallback(state, updateTaskFromAction);

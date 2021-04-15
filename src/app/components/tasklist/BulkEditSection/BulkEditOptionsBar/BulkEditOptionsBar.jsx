@@ -3,6 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, pluck } from 'ramda';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
+import { TaskGroupType } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -181,7 +182,12 @@ const BulkEditOptionsBar = ({
         dispatch({
           type: ActionTypes.ADD_TASK_SUCCESS,
           task,
-          taskGroupIdentifier: task?.taskGroups?.[0]?.taskGroupIdentifier,
+          taskGroupIdentifier: task?.taskGroups?.find(
+            ({ groupType }) => groupType === TaskGroupType.TASKLIST,
+          )?.taskGroupIdentifier,
+          bundleIdentifier: task?.taskGroups?.find(
+            ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+          )?.taskGroupIdentifier,
         }),
       );
     },
