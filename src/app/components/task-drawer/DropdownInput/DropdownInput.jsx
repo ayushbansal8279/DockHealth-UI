@@ -119,6 +119,7 @@ const DropdownInput = React.forwardRef(
           name={name}
           label={label}
           placeholder={placeholder}
+          disabled={disabled}
           InputLabelProps={{
             shrink: true,
             ...InputLabelProps,
