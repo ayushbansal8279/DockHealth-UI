@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Box, Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
@@ -54,7 +55,7 @@ const TaskTemplate = ({ template, isFullView }) => {
   const menuOptions = useMemo(
     () => [
       {
-        name: 'Edit',
+        name: 'Edit Template Name',
         onClick: () => {
           setIsEditing(true);
           // eslint-disable-next-line no-unused-expressions
@@ -62,7 +63,7 @@ const TaskTemplate = ({ template, isFullView }) => {
         },
       },
       {
-        name: 'Duplicate',
+        name: 'Duplicate Template',
         onClick: () =>
           dispatch(
             ModalActions.openModal('AttachmentsDuplicate', {
@@ -84,7 +85,8 @@ const TaskTemplate = ({ template, isFullView }) => {
           ),
       },
       {
-        name: 'Delete this template',
+        name: 'Delete Template',
+        color: palette.oPlusRed,
         onClick: () =>
           dispatch(
             ModalActions.openModal('DeleteTemplate', {

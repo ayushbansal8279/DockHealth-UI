@@ -16,8 +16,8 @@ import {
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
 
-import listSectionSavedState from 'helpers/list-secition-saved-state';
-import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
+import listSectionSavedState from 'helpers/list-section-saved-state';
+import { checkIfTasksHaveSubtasksOrComments } from 'helpers/tasklist-helpers';
 import {
   Arrow,
   Tasks,
@@ -68,7 +68,7 @@ const TaskListDetailsDropdown = ({
   const areViewOptionsVisible = useMemo(() => {
     if (!isOpen) return false;
 
-    return checkIfTasksHaveSubtasksOrCommnets(tasks);
+    return checkIfTasksHaveSubtasksOrComments(tasks);
   }, [isOpen, tasks]);
 
   const isFullView = viewType === ViewType.FULL_VIEW;

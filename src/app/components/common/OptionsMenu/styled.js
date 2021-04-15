@@ -13,7 +13,7 @@ export const MenuContainer = styled.ul`
   font-weight: ${fontWeights.light};
 `;
 
-export const MenuOptionButtom = styled.button`
+export const MenuOptionButton = styled.button`
   width: 100%;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
   text-align: left;

@@ -2,7 +2,7 @@ import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import Spacing from 'components/common/Spacing';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   AddTaskInputWrapper,
   MentionsEditorContainer,
@@ -28,6 +28,7 @@ const QuickAddTaskInput = React.forwardRef(
     const [hasInputValue, setHasInputValue] = useState(false);
     const [error, setError] = useState(null);
     const [isFocused, setIsFocused] = useState(false);
+    const quickAddTaskInputReference = useRef(null);
 
     const handleInputEnterDown = () => {
       let validatorError = null;
@@ -55,6 +56,12 @@ const QuickAddTaskInput = React.forwardRef(
         if (validator) {
           setError(null);
         }
+
+        // to reset cursor position inside input
+        setTimeout(() => {
+          // eslint-disable-next-line no-unused-expressions
+          (reference || quickAddTaskInputReference)?.current?.focus();
+        }, 0);
       }
     };
 
@@ -71,7 +78,7 @@ const QuickAddTaskInput = React.forwardRef(
         <AddTaskInputWrapper hasError={!!error}>
           <MentionsEditorContainer>
             <MentionsEditor
-              ref={reference}
+              ref={reference || quickAddTaskInputReference}
               taskListIdentifier={taskListIdentifier}
               disableMentions={disableMentions}
               placeholder="Add a task and press enter on your keyboard"

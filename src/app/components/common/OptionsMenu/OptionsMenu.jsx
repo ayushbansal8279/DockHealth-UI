@@ -11,7 +11,7 @@ import {
 } from 'prop-types';
 import { ClickAwayListener, Popper } from '@material-ui/core';
 import zIndex from 'styles/z-index';
-import { StyledButton, MenuContainer, MenuOptionButtom } from './styled';
+import { StyledButton, MenuContainer, MenuOptionButton } from './styled';
 
 const OptionsMenu = ({
   isDisabled,
@@ -53,9 +53,10 @@ const OptionsMenu = ({
         {isOpen && (
           <ClickAwayListener onClickAway={() => openPopover(false)}>
             <MenuContainer width={width}>
-              {options?.map(({ name, onClick }) => (
-                <MenuOptionButtom
+              {options?.map(({ name, color, onClick }) => (
+                <MenuOptionButton
                   key={name}
+                  color={color}
                   onClick={event => {
                     openPopover(false);
                     onClick(event);
@@ -63,7 +64,7 @@ const OptionsMenu = ({
                   type="button"
                 >
                   {name}
-                </MenuOptionButtom>
+                </MenuOptionButton>
               ))}
             </MenuContainer>
           </ClickAwayListener>
@@ -79,6 +80,7 @@ OptionsMenu.propTypes = {
     shape({
       name: string.isRequired,
       onClick: func,
+      color: string,
     }),
   ).isRequired,
   isDisabled: bool,

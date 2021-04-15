@@ -19,8 +19,8 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import listSectionSavedState from 'helpers/list-secition-saved-state';
-import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
+import listSectionSavedState from 'helpers/list-section-saved-state';
+import { checkIfTasksHaveSubtasksOrComments } from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -88,8 +88,8 @@ const TasksGroup = ({
   disableBulkEdit = false,
 }) => {
   const [
-    highlightedTasksParentIdenditifer,
-    setHighlightedTasksParentIdenditifer,
+    highlightedTasksParentIdentifier,
+    setHighlightedTasksParentIdentifier,
   ] = useState(null);
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
@@ -98,11 +98,10 @@ const TasksGroup = ({
     sessionStorageKey: groupSessionStorageKey,
   });
   const highlightTimeoutReference = useRef(null);
-  const quickAddTaskInputReference = useRef(null);
 
   const areViewOptionsVisible = useMemo(() => {
     if (!isOpen) return false;
-    return checkIfTasksHaveSubtasksOrCommnets(tasks);
+    return checkIfTasksHaveSubtasksOrComments(tasks);
   }, [isOpen, tasks]);
 
   const isFullView =
@@ -148,9 +147,6 @@ const TasksGroup = ({
         ...task,
         taskGroupIdentifier,
       });
-      setTimeout(() => {
-        quickAddTaskInputReference.current.focus();
-      }, 0);
     },
     [taskGroupIdentifier, quickAddTask],
   );
@@ -166,28 +162,14 @@ const TasksGroup = ({
     if (highlightTimeoutReference.current)
       clearTimeout(highlightTimeoutReference.current);
 
-    setHighlightedTasksParentIdenditifer(parentTaskIdentifier);
+    setHighlightedTasksParentIdentifier(parentTaskIdentifier);
     highlightTimeoutReference.current = setTimeout(() => {
-      setHighlightedTasksParentIdenditifer(null);
+      setHighlightedTasksParentIdentifier(null);
     }, 3000);
   }, []);
 
   const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
   const { groupActions } = bunchBulkEditTaskActions;
-
-  // const subtasks = useMemo(
-  //   () =>
-  //     tasks && tasks?.length > 0
-  //       ? tasks?.reduce(
-  //           (previousSubtasks, currentTask) =>
-  //             currentTask?.subtasks?.length > 0
-  //               ? [...previousSubtasks, ...currentTask?.subtasks]
-  //               : previousSubtasks,
-  //           [],
-  //         )
-  //       : [],
-  //   [tasks],
-  // );
 
   const checkHasMultipleAssignees = useCallback(
     ({ assignedToUsers, subtasks: taskSubtasks }) =>
@@ -270,7 +252,6 @@ const TasksGroup = ({
         {!!quickAddTask && !isSearchApplied && (
           <TaskGroupOptionsHeader>
             <QuickAddTaskInput
-              ref={quickAddTaskInputReference}
               taskListIdentifier={taskListIdentifier}
               quickAddTask={onQuickAddTask}
               validator={value => {
@@ -370,9 +351,7 @@ const TasksGroup = ({
             shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
             showClearSortFiltersModal={showClearSortFiltersModal}
             groupHasMultipleAssignees={groupHasMultipleAssignees}
-            highlightedTasksParentIdenditifer={
-              highlightedTasksParentIdenditifer
-            }
+            highlightedTasksParentIdenditifer={highlightedTasksParentIdentifier}
             highlightTasksOfTheSameParent={highlightTasksOfTheSameParent}
             taskItemConfig={taskItemConfig}
           />

@@ -3,7 +3,7 @@ export const TaskListTabName = {
   COMPLETE: 'COMPLETE',
 };
 
-export const checkIfTasksHaveSubtasksOrCommnets = tasks => {
+export const checkIfTasksHaveSubtasksOrComments = tasks => {
   if (tasks?.length === 0) return false;
 
   return tasks.find(({ subtasks, subTasksCount, comments }) => {
