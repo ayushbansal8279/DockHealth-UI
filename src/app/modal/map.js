@@ -30,7 +30,7 @@ import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
 import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
 import RightClickTourModal from './components/NewFeaturesModals/RightClickTourModal/RightClickTourModal';
 import MultiAssignTourModal from './components/NewFeaturesModals/MultiAssignTourModal/MultiAssignTourModal';
-import SelectTaskDestinationModal from './components/SelectTaskDestinationModal/SelectTaskDestinationModal';
+import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
 import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkCompleteTasksModal';
@@ -38,6 +38,7 @@ import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
 import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
 import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
+import SelectTemplateBundleDestinationModal from './components/SelectDestinationModal/SelectTemplateBundleDestinationModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -80,6 +81,7 @@ const MODAL_MAP = {
   SendingInvite: SendingInviteModal,
   CreateTemplate: CreateTemplateModal,
   DeleteTemplate: DeleteTemplateModal,
+  SelectTemplateBundleDestination: SelectTemplateBundleDestinationModal,
 };
 
 export default MODAL_MAP;

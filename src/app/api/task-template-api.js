@@ -136,3 +136,16 @@ export function duplicateTemplateBundle(
       throw error;
     });
 }
+
+export function moveTemplateBundle(templateIdentifier, selectedDestination) {
+  return axios
+    .put(`task/updateTaskBundle/${templateIdentifier}`, {
+      ...selectedDestination,
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}

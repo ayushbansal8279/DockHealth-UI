@@ -10,6 +10,7 @@ import {
   RELOAD_OPENED_TEMPLATE_TASKS,
   APPLY_TASK_TEMPLATE,
   DELETE_TEMPLATE_BUNDLE,
+  MOVE_TEMPLATE_BUNDLE,
   DUPLICATE_TEMPLATE_BUNDLE,
 } from 'actions/action-types-saga';
 import {
@@ -33,6 +34,7 @@ import {
   taskTemplateSelector,
   allTaskTemplateDetailsSelector,
 } from 'selectors/task-template-selectors';
+import { listDetailsGroupsSelector } from 'selectors/list-details-selectors';
 
 function* getTemplates() {
   try {
@@ -322,6 +324,50 @@ function* duplicateTemplateBundle({
   }
 }
 
+function* moveTemplateBundle({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  selectedDestination,
+}) {
+  try {
+    const listGroups = yield select(listDetailsGroupsSelector);
+    const isDestinationGroupInCurrentList = listGroups?.some(
+      lg =>
+        lg.taskGroupIdentifier ===
+        selectedDestination.parentTaskGroupIdentifier,
+    );
+
+    yield call(
+      TaskTemplateApi.moveTemplateBundle,
+      taskTemplateIdentifier,
+      selectedDestination,
+    );
+
+    yield put(
+      ListDetailsSagaActions.getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+
+    if (isDestinationGroupInCurrentList) {
+      yield put(
+        ListDetailsSagaActions.getTasksForTaskGroups({
+          taskGroupIdentifier: selectedDestination.parentTaskGroupIdentifier,
+          status: 'INCOMPLETE',
+          refresh: true,
+        }),
+      );
+    }
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATE_ERROR,
+      taskTemplateIdentifier,
+    });
+  }
+}
+
 function* deleteTemplateBundle({
   taskTemplateIdentifier,
   taskGroupIdentifier,
@@ -355,5 +401,6 @@ export default function* watchTaskTemplate() {
   yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
   yield takeEvery(APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeEvery(DUPLICATE_TEMPLATE_BUNDLE, duplicateTemplateBundle);
+  yield takeEvery(MOVE_TEMPLATE_BUNDLE, moveTemplateBundle);
   yield takeEvery(DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
 }

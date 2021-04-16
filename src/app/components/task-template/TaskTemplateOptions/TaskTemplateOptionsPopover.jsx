@@ -5,6 +5,7 @@ import * as ModalActions from 'modal/actions';
 
 import {
   duplicateTemplateBundle,
+  moveTemplateBundle,
   deleteTemplateBundle,
 } from 'actions/task-template-actions';
 
@@ -68,6 +69,26 @@ const TaskTemplateGroupPopover = ({
         }
       >
         Duplicate
+      </Item>
+      <Item
+        onClick={() =>
+          dispatch(
+            ModalActions.openModal('SelectTemplateBundleDestination', {
+              tasksToMove: [],
+              confirmText: 'Move',
+              confirm: selectedDestination =>
+                dispatch(
+                  moveTemplateBundle(
+                    templateBundleIdentifier,
+                    taskGroupIdentifier,
+                    selectedDestination,
+                  ),
+                ),
+            }),
+          )
+        }
+      >
+        Move
       </Item>
       <Item
         onClick={() =>

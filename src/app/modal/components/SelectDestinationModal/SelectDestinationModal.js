@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,12 +16,13 @@ import ListSelectStep from './Steps/ListSelectStep';
 import GroupSelectStep from './Steps/GroupSelectStep';
 import ParentTaskSelectStep from './Steps/ParentTaskSelectStep';
 
-const SelectTaskDestinationModal = ({
+const SelectDestinationModal = ({
   closeModal,
   confirm,
   confirmText,
-  tasksToMove = [],
   preventClosingModal = false,
+  subtasksPresent,
+  movingContentType = 'TASK',
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -40,35 +35,6 @@ const SelectTaskDestinationModal = ({
   const [lists, setLists] = useState(null);
   const [savingList, setSavingList] = useState(false);
   const currentUser = useSelector(userProfileSelector);
-
-  const [subtasksPresent, allTasksSameType] = useMemo(() => {
-    let allSameType = true;
-    let hasSubtasks = false;
-
-    for (let i = 0; i < tasksToMove.length; i += 1) {
-      if (!hasSubtasks) {
-        hasSubtasks = !!tasksToMove[i].parentTaskIdentifier;
-      }
-
-      if (i !== 0) {
-        allSameType =
-          !!tasksToMove[i].parentTaskIdentifier ===
-          !!tasksToMove[i - 1].parentTaskIdentifier;
-
-        if (!allSameType) {
-          break;
-        }
-      }
-    }
-
-    return [hasSubtasks, allSameType];
-  }, [tasksToMove]);
-
-  useEffect(() => {
-    if (!allTasksSameType) {
-      closeModal();
-    }
-  }, [allTasksSameType, closeModal]);
 
   const handleAddNewList = useCallback(
     async (listName, callback) => {
@@ -105,14 +71,20 @@ const SelectTaskDestinationModal = ({
         taskListIdentifier: taskList?.taskListIdentifier,
       };
 
-      if (selectedGroup) {
-        responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+      if (movingContentType === 'TASK') {
+        if (selectedGroup) {
+          responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+        }
+
+        if (selectedParentTask) {
+          responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
+        }
       }
 
-      if (selectedParentTask) {
-        responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
+      if (movingContentType === 'BUNDLE' && selectedGroup) {
+        responseData.parentTaskGroupIdentifier =
+          selectedGroup.taskGroupIdentifier;
       }
-
       if (typeof confirm === 'function') {
         confirm(responseData);
         if (!preventClosingModal) closeModal();
@@ -121,12 +93,13 @@ const SelectTaskDestinationModal = ({
       }
     },
     [
+      selectedList,
+      movingContentType,
+      selectedGroup,
       confirm,
       selectedParentTask,
-      selectedGroup,
-      selectedList,
-      closeModal,
       preventClosingModal,
+      closeModal,
     ],
   );
 
@@ -173,7 +146,7 @@ const SelectTaskDestinationModal = ({
             subtasksPresent={subtasksPresent}
             setNextStep={handleNextStep}
           />
-          {subtasksPresent && (
+          {subtasksPresent && movingContentType === 'TASK' && (
             <ParentTaskSelectStep
               selectedList={selectedList}
               selectedGroup={selectedGroup}
@@ -203,7 +176,7 @@ const SelectTaskDestinationModal = ({
             fullWidth
             size="small"
             disabled={
-              subtasksPresent
+              subtasksPresent && movingContentType === 'TASK'
                 ? !selectedList || !selectedGroup || !selectedParentTask
                 : !selectedList
             }
@@ -217,4 +190,4 @@ const SelectTaskDestinationModal = ({
   );
 };
 
-export default SelectTaskDestinationModal;
+export default SelectDestinationModal;

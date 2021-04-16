@@ -94,6 +94,19 @@ export function duplicateTemplateBundle(
   };
 }
 
+export function moveTemplateBundle(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  selectedDestination,
+) {
+  return {
+    type: ActionTypesSaga.MOVE_TEMPLATE_BUNDLE,
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+    selectedDestination,
+  };
+}
+
 export function deleteTemplateBundle(
   taskTemplateIdentifier,
   taskGroupIdentifier,

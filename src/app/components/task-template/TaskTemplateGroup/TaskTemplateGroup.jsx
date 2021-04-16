@@ -42,6 +42,7 @@ const TaskTemplateGroup = ({
     () => tasks?.filter(task => !!task.completedBy).length,
     [tasks],
   );
+
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeaderContainer>
