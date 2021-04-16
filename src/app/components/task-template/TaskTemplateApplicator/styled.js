@@ -41,9 +41,17 @@ export const CreateTaskLinkContainer = styled.div`
 `;
 
 export const Item = styled.div`
+  width: 100%;
+  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+  text-align: left;
   cursor: pointer;
-  padding: ${spacing.regular} ${spacing.large};
-  color: ${palette.mediumGrey};
+  color: ${({ color }) => color || palette.mediumGrey};
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: ${palette.brightBlueWithAlpha};
+  }
 `;
 
 export const EmptyLabel = styled.div`

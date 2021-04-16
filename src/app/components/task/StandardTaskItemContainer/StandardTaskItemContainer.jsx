@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import * as AlertActions from 'alert/actions';
@@ -17,6 +17,8 @@ const StandardTaskItemContainer = ({
   onTaskCompletedStatusChanged,
   ...restProps
 }) => {
+  const selectedTask = useSelector(store => store.taskState.selectedTask);
+
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
       taskActions
@@ -106,6 +108,7 @@ const StandardTaskItemContainer = ({
       updateDueDate={handleUpdateDueDate}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
+      selectedTask={selectedTask}
       {...restProps}
     />
   );

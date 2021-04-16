@@ -4,12 +4,20 @@ import { useDispatch } from 'react-redux';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { MoreHoriz } from '@material-ui/icons';
 import 'react-circular-progressbar/dist/styles.css';
 import * as TaskActions from 'actions/task-actions';
+import * as ModalActions from 'modal/actions';
+import palette from 'styles/palette';
+import {
+  duplicateTemplateBundle,
+  moveTemplateBundle,
+  deleteTemplateBundle,
+} from 'actions/task-template-actions';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
-import TaskTemplateOptions from '../TaskTemplateOptions/TaskTemplateOptions';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -39,8 +47,78 @@ const TaskTemplateGroup = ({
   const dispatch = useDispatch();
 
   const completedTasksAmount = useMemo(
-    () => tasks?.filter(task => !!task.completedBy).length,
+    () =>
+      tasks.reduce((previousAmount, currentTask) => {
+        if (currentTask.completedBy) {
+          return previousAmount + 1 + currentTask?.subTasksCompletedCount;
+        }
+
+        return previousAmount + currentTask?.subTasksCompletedCount;
+      }, 0),
     [tasks],
+  );
+
+  const allTasksAmount = useMemo(
+    () =>
+      tasks.reduce((previousAmount, currentTask) => {
+        return previousAmount + 1 + currentTask?.subTasksCount;
+      }, 0),
+    [tasks],
+  );
+
+  const menuOptions = useMemo(
+    () => [
+      {
+        name: 'Duplicate',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('AttachmentsDuplicate', {
+              confirm: () => {
+                dispatch(
+                  duplicateTemplateBundle(
+                    identifier,
+                    taskGroupIdentifier,
+                    true,
+                  ),
+                );
+              },
+              skip: () => {
+                dispatch(
+                  duplicateTemplateBundle(
+                    identifier,
+                    taskGroupIdentifier,
+                    false,
+                  ),
+                );
+              },
+            }),
+          ),
+      },
+      {
+        name: 'Move',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('SelectTemplateBundleDestination', {
+              tasksToMove: [],
+              confirmText: 'Move',
+              confirm: selectedDestination =>
+                dispatch(
+                  moveTemplateBundle(
+                    identifier,
+                    taskGroupIdentifier,
+                    selectedDestination,
+                  ),
+                ),
+            }),
+          ),
+      },
+      {
+        name: 'Delete',
+        onClick: () =>
+          dispatch(deleteTemplateBundle(identifier, taskGroupIdentifier)),
+      },
+    ],
+    [dispatch, identifier, taskGroupIdentifier],
   );
 
   return (
@@ -60,18 +138,21 @@ const TaskTemplateGroup = ({
         <TaskTemplateOptionsContainer>
           <TaskTemplateProgressCircle>
             <CircularProgressbar
-              value={(completedTasksAmount / tasks?.length) * 100}
-              text={`${completedTasksAmount}/${tasks?.length}`}
+              value={(completedTasksAmount / allTasksAmount) * 100}
+              text={`${completedTasksAmount}/${allTasksAmount}`}
               styles={buildStyles({
                 textSize: '32px',
                 textColor: '#000000',
               })}
             />
           </TaskTemplateProgressCircle>
-          <TaskTemplateOptions
-            taskGroupIdentifier={taskGroupIdentifier}
-            templateBundleIdentifier={identifier}
-          />
+          <OptionsMenu options={menuOptions}>
+            <MoreHoriz
+              fontSize="large"
+              color="inherit"
+              style={{ color: palette.coolGrey1 }}
+            />
+          </OptionsMenu>
         </TaskTemplateOptionsContainer>
       </TaskTemplateGroupHeaderContainer>
       {!isStartedDnD && (

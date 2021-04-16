@@ -29,7 +29,8 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: ${spacing.small} ${spacing.large};
+  padding: ${spacing.small} ${spacing.smallPlus} ${spacing.small}
+    ${spacing.large};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
   font-family: 'Roboto Condensed', sans-serif;
