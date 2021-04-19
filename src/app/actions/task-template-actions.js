@@ -117,3 +117,16 @@ export function deleteTemplateBundle(
     taskGroupIdentifier,
   };
 }
+
+export function updateTemplateBundle(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskTemplateBundle,
+) {
+  return {
+    type: ActionTypesSaga.UPDATE_TEMPLATE_BUNDLE,
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+    taskTemplateBundle,
+  };
+}

@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useMemo, useContext } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import ThreeDotsIcon from 'img/three-dots';
@@ -13,6 +19,7 @@ import {
   duplicateTemplateBundle,
   moveTemplateBundle,
   deleteTemplateBundle,
+  updateTemplateBundle,
 } from 'actions/task-template-actions';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -23,10 +30,10 @@ import {
   TaskTemplateGroupHeader,
   TaskTemplateGroupHeaderContainer,
   TaskTemplateGroupList,
-  TaskTemplateGroupName,
   TaskTemplateProgressCircle,
   TemplateHandle,
   TaskTemplateOptionsContainer,
+  TaskTemplateNameInput,
 } from './styled';
 
 const TaskTemplateGroup = ({
@@ -44,6 +51,9 @@ const TaskTemplateGroup = ({
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [nameInputValue, setNameInputValue] = useState(name);
+  const nameInputReference = useRef(null);
   const dispatch = useDispatch();
 
   const completedTasksAmount = useMemo(
@@ -68,6 +78,14 @@ const TaskTemplateGroup = ({
 
   const menuOptions = useMemo(
     () => [
+      {
+        name: 'Edit Name',
+        onClick: () => {
+          setIsEditing(true);
+          // eslint-disable-next-line no-unused-expressions
+          nameInputReference.current?.focus();
+        },
+      },
       {
         name: 'Duplicate',
         onClick: () =>
@@ -121,6 +139,23 @@ const TaskTemplateGroup = ({
     [dispatch, identifier, taskGroupIdentifier],
   );
 
+  const handleNameInputKeyDown = useCallback(
+    event => {
+      const { key } = event;
+      if (key === 'Enter') {
+        dispatch(
+          updateTemplateBundle(identifier, taskGroupIdentifier, {
+            name: event.target?.value,
+          }),
+        );
+      } else if (key === 'Escape') {
+        // eslint-disable-next-line no-unused-expressions
+        nameInputReference.current?.blur();
+      }
+    },
+    [dispatch, identifier, taskGroupIdentifier],
+  );
+
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeaderContainer>
@@ -133,7 +168,17 @@ const TaskTemplateGroup = ({
         )}
         <TaskTemplateGroupHeader onClick={() => setOpen(!isOpen)}>
           <RotatableChevron rotated={isOpen} />
-          <TaskTemplateGroupName>{name}</TaskTemplateGroupName>
+          <TaskTemplateNameInput
+            ref={nameInputReference}
+            readOnly={!isEditing}
+            onChange={event => setNameInputValue(event.target?.value)}
+            onBlur={() => {
+              setIsEditing(false);
+              setNameInputValue(name);
+            }}
+            onKeyDown={handleNameInputKeyDown}
+            value={nameInputValue}
+          />
         </TaskTemplateGroupHeader>
         <TaskTemplateOptionsContainer>
           <TaskTemplateProgressCircle>

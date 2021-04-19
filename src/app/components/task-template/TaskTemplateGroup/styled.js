@@ -55,12 +55,36 @@ export const TaskTemplateGroupHeader = styled.div`
 
 export const TaskTemplateGroupList = styled(Collapse)``;
 
-export const TaskTemplateGroupName = styled.div`
-  margin-left: ${spacing.small};
-  font-size: 18px;
-`;
-
 export const TaskTemplateOptionsContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const TaskTemplateNameInput = styled.input`
+  max-width: 400px;
+  grid-row: 1;
+  grid-column: 2;
+  margin-bottom: 0;
+  padding: ${spacing.small};
+  color: ${palette.mediumGrey};
+  font-size: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: transparent;
+  border: 1px solid ${palette.coolGrey2};
+  border-radius: 5px;
+  background: ${palette.coolGrey4};
+  margin-left: ${spacing.small};
+
+  &[readonly] {
+    background-color: transparent;
+    cursor: initial;
+    outline: none;
+    border: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;

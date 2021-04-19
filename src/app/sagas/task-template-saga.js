@@ -12,6 +12,7 @@ import {
   DELETE_TEMPLATE_BUNDLE,
   MOVE_TEMPLATE_BUNDLE,
   DUPLICATE_TEMPLATE_BUNDLE,
+  UPDATE_TEMPLATE_BUNDLE,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -389,6 +390,33 @@ function* deleteTemplateBundle({
   }
 }
 
+function* updateTemplateBundle({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskTemplateBundle,
+}) {
+  try {
+    yield call(
+      TaskTemplateApi.updateTemplateBundle,
+      taskTemplateIdentifier,
+      taskTemplateBundle,
+    );
+
+    yield put(
+      ListDetailsSagaActions.getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATE_ERROR,
+      taskTemplateIdentifier,
+    });
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
@@ -403,4 +431,5 @@ export default function* watchTaskTemplate() {
   yield takeEvery(DUPLICATE_TEMPLATE_BUNDLE, duplicateTemplateBundle);
   yield takeEvery(MOVE_TEMPLATE_BUNDLE, moveTemplateBundle);
   yield takeEvery(DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
+  yield takeEvery(UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
 }

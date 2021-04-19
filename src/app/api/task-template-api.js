@@ -137,6 +137,19 @@ export function duplicateTemplateBundle(
     });
 }
 
+export function updateTemplateBundle(templateIdentifier, templateBundle) {
+  return axios
+    .put(`task/updateTaskBundle/${templateIdentifier}`, {
+      ...templateBundle,
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function moveTemplateBundle(templateIdentifier, selectedDestination) {
   return axios
     .put(`task/updateTaskBundle/${templateIdentifier}`, {
