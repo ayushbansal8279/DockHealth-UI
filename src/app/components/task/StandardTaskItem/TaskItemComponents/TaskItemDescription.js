@@ -12,6 +12,7 @@ import {
   DescriptionTooltip,
   DescriptionLabel,
   DescriptionWrapper,
+  TaskItemDescriptionIndicators,
 } from '../../styled';
 
 const TaskItemDescription = ({
@@ -66,28 +67,30 @@ const TaskItemDescription = ({
         {edited && !duplicated && <DescriptionLabel>(edited)</DescriptionLabel>}
         {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
       </DescriptionWrapper>
-      {hasParentTaskLabel && (
-        <>
-          <TaskItemParentTaskLabel>
-            Subtask of
-            <span
-              onClick={onParentLabelClick}
-            >{` ${parentTask.description}`}</span>
-          </TaskItemParentTaskLabel>
-          {isCompleted && <Spacing vertical={2} />}
-        </>
-      )}
-      {isCompletedGroup && (
-        <CompletedBy isCompleted={isCompleted}>
-          <span>{`Completed by ${completedByName} ${completedDt &&
-            ` on ${
-              completedDt
-                ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                : ''
-            }`}
+      <TaskItemDescriptionIndicators>
+        {isCompletedGroup && (
+          <CompletedBy isCompleted={isCompleted}>
+            <span>{`Completed by ${completedByName} ${completedDt &&
+              ` on ${
+                completedDt
+                  ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                  : ''
+              }`}
   `}</span>
-        </CompletedBy>
-      )}
+          </CompletedBy>
+        )}
+        {hasParentTaskLabel && (
+          <>
+            {isCompleted && <Spacing horizontal={2} />}
+            <TaskItemParentTaskLabel>
+              Subtask of
+              <span
+                onClick={onParentLabelClick}
+              >{` ${parentTask.description}`}</span>
+            </TaskItemParentTaskLabel>
+          </>
+        )}
+      </TaskItemDescriptionIndicators>
     </DescriptionBox>
   );
 };
