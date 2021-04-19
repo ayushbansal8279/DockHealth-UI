@@ -262,10 +262,14 @@ const TaskItem = ({
     [],
   );
 
-  const handleTaskItemRightClick = useCallback(event => {
-    event.preventDefault();
-    setContextMenu({ x: event.pageX, y: event.pageY });
-  }, []);
+  const handleTaskItemRightClick = useCallback(
+    event => {
+      event.preventDefault();
+      setContextMenu({ x: event.pageX, y: event.pageY });
+      dispatch(storeAsCurrentTask(task));
+    },
+    [dispatch, task],
+  );
 
   useEffect(() => {
     if (descriptionReference.current) {
@@ -571,7 +575,10 @@ const TaskItem = ({
         <TaskItemContextMenu
           position={contextMenu}
           task={task}
-          onClose={() => setContextMenu(null)}
+          onClose={() => {
+            setContextMenu(null);
+            dispatch(storeAsCurrentTask(null));
+          }}
           subtasksDisabled={subtasksDisabled}
           isDashboardTask={isDashboardTask}
         />
