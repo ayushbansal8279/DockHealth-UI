@@ -410,7 +410,11 @@ export function duplicateTask(
       });
 }
 
-export function toggleCompleteTask(task, currentUser = null) {
+export function toggleCompleteTask(
+  task,
+  currentUser = null,
+  isBundleTask = false,
+) {
   return dispatch => {
     const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
@@ -441,7 +445,7 @@ export function toggleCompleteTask(task, currentUser = null) {
 
     return TaskApi[apiEndpoint](task)
       .then(() => {
-        if (!task.parentTaskIdentifier) {
+        if (!task.parentTaskIdentifier && !isBundleTask) {
           setTimeout(
             () => dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task }),
             TASK_DISAPPEAR_DELAY,

@@ -54,6 +54,7 @@ const TaskTemplateGroup = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const nameInputReference = useRef(null);
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const dispatch = useDispatch();
 
   const completedTasksAmount = useMemo(
@@ -76,8 +77,9 @@ const TaskTemplateGroup = ({
     [tasks],
   );
 
-  const menuOptions = useMemo(
-    () => [
+  const menuOptions = useMemo(() => {
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    let opts = [
       {
         name: 'Edit Name',
         onClick: () => {
@@ -130,14 +132,37 @@ const TaskTemplateGroup = ({
             }),
           ),
       },
+    ];
+
+    if (!showCompletedTasks) {
+      opts = [
+        ...opts,
+        {
+          name: 'Show completed tasks',
+          onClick: () => setShowCompletedTasks(true),
+        },
+      ];
+    }
+
+    if (showCompletedTasks) {
+      opts = [
+        ...opts,
+        {
+          name: 'Hide completed tasks',
+          onClick: () => setShowCompletedTasks(false),
+        },
+      ];
+    }
+
+    return [
+      ...opts,
       {
         name: 'Delete',
         onClick: () =>
           dispatch(deleteTemplateBundle(identifier, taskGroupIdentifier)),
       },
-    ],
-    [dispatch, identifier, taskGroupIdentifier],
-  );
+    ];
+  }, [dispatch, identifier, showCompletedTasks, taskGroupIdentifier]);
 
   const handleNameInputKeyDown = useCallback(
     event => {
@@ -154,6 +179,11 @@ const TaskTemplateGroup = ({
       }
     },
     [dispatch, identifier, taskGroupIdentifier],
+  );
+
+  const filteredTasks = useMemo(
+    () => tasks.filter(task => showCompletedTasks || !task.completedBy),
+    [showCompletedTasks, tasks],
   );
 
   return (
@@ -222,7 +252,7 @@ const TaskTemplateGroup = ({
                   ref={templateDroppableProvided.innerRef}
                   {...templateDroppableProvided.droppableProps}
                 >
-                  {tasks.map((task, index) => (
+                  {filteredTasks.map((task, index) => (
                     <Draggable
                       key={task.taskIdentifier}
                       draggableId={task.taskIdentifier}
@@ -241,6 +271,7 @@ const TaskTemplateGroup = ({
                           multipleAssigneesContext={groupHasMultipleAssignees}
                           dragAndDropDisabled={dragAndDropDisabled}
                           isDraggable
+                          isBundleTask
                         />
                       )}
                     </Draggable>

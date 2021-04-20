@@ -15,6 +15,7 @@ const StandardTaskItemContainer = ({
   alertActions,
   onTaskChanged,
   onTaskCompletedStatusChanged,
+  isBundleTask,
   ...restProps
 }) => {
   const selectedTask = useSelector(store => store.taskState.selectedTask);
@@ -67,7 +68,7 @@ const StandardTaskItemContainer = ({
   const toggleCompleteTaskStatus = useCallback(
     task => {
       taskActions
-        .toggleCompleteTask(task, currentUser)
+        .toggleCompleteTask(task, currentUser, isBundleTask)
         .then(() => {
           if (typeof onTaskCompletedStatusChanged === 'function')
             onTaskCompletedStatusChanged();
@@ -77,7 +78,13 @@ const StandardTaskItemContainer = ({
           alertActions.showGlobalErrorAlert();
         });
     },
-    [alertActions, currentUser, onTaskCompletedStatusChanged, taskActions],
+    [
+      alertActions,
+      currentUser,
+      isBundleTask,
+      onTaskCompletedStatusChanged,
+      taskActions,
+    ],
   );
 
   const handleToggleTaskCompletedStatus = useCallback(
