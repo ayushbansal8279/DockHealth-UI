@@ -7,11 +7,9 @@ import React, {
   useCallback,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
-import 'react-circular-progressbar/dist/styles.css';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import palette from 'styles/palette';
@@ -21,6 +19,7 @@ import {
   deleteTemplateBundle,
   updateTemplateBundle,
 } from 'actions/task-template-actions';
+import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
@@ -212,13 +211,9 @@ const TaskTemplateGroup = ({
         </TaskTemplateGroupHeader>
         <TaskTemplateOptionsContainer>
           <TaskTemplateProgressCircle>
-            <CircularProgressbar
-              value={(completedTasksAmount / allTasksAmount) * 100}
-              text={`${completedTasksAmount}/${allTasksAmount}`}
-              styles={buildStyles({
-                textSize: '32px',
-                textColor: '#000000',
-              })}
+            <ProgressBar
+              progress={(completedTasksAmount / allTasksAmount) * 100}
+              label={`${completedTasksAmount}/${allTasksAmount}`}
             />
           </TaskTemplateProgressCircle>
           <OptionsMenu options={menuOptions}>
