@@ -50,7 +50,7 @@ const TaskTemplateApplicator = ({
         ref={popoverReference}
       >
         <TaskTemplateApplicatorLabel>
-          Use a Template
+          Use a workflow
         </TaskTemplateApplicatorLabel>
         <Spacing horizontal={3} />
         <RotatableHeaderChevron

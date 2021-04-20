@@ -63,11 +63,11 @@ const TaskTemplatePopover = ({
         taskTemplatesList?.length > 0 &&
         taskTemplatesList.map(renderTemplateItem)}
       {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
-        <EmptyLabel>There are no templates to select from</EmptyLabel>
+        <EmptyLabel>There are no workflows to select from</EmptyLabel>
       )}
       <CreateTaskLinkContainer>
         <Link to="/core/templates">
-          <CreateTaskLinkText>Create New Template</CreateTaskLinkText>
+          <CreateTaskLinkText>Create New Workflow</CreateTaskLinkText>
         </Link>
       </CreateTaskLinkContainer>
     </Popover>
