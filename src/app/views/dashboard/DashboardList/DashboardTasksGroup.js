@@ -45,6 +45,7 @@ import {
   DashboardTasksGroupHeader,
   GroupNameSectionWrapper,
   BulkContainer,
+  DashboardTaskItemContainer,
 } from './styled';
 
 const TASK_ITEM_COLUMNS_CONFIG = {
@@ -405,42 +406,44 @@ const DashboardTasksGroup = ({
                               ref={draggableProvided.innerRef}
                               {...draggableProvided.draggableProps}
                             >
-                              <StandardTaskItem
-                                task={task}
-                                toggleCompleteTask={() =>
-                                  toggleDashboardTaskComplete(task)
-                                }
-                                isCompletedGroup={isCompletedGroup}
-                                redirectToParentTask={redirectToParentTask}
-                                storeAsCurrentTask={storeAsCurrentTask}
-                                isDragging={isDragging}
-                                dragHandleProps={
-                                  draggableProvided.dragHandleProps
-                                }
-                                isDraggable={
-                                  !isTaskDrawerOpen && tasks?.length > 1
-                                }
-                                openDrawer={openDrawer}
-                                isSelected={
-                                  selectedTaskIdentifier ===
-                                  task?.taskIdentifier
-                                }
-                                showAssignedPerson={isAllTasksTab}
-                                updateDueDate={updateDueDate}
-                                currentUser={currentUser}
-                                onTaskUpdate={onTaskUpdate}
-                                updateWorkflowStatus={updateWorkflowStatus}
-                                taskItemConfig={[
-                                  ...taskItemConfigKeys,
-                                  TASK_ITEM_PATIENT_COLUMN,
-                                  TASK_ITEM_LIST_COLUMN,
-                                ]}
-                                multipleAssigneesContext={
-                                  groupHasMultipleAssignees
-                                }
-                                subtasksDisabled
-                                isDashboardTask
-                              />
+                              <DashboardTaskItemContainer>
+                                <StandardTaskItem
+                                  task={task}
+                                  toggleCompleteTask={() =>
+                                    toggleDashboardTaskComplete(task)
+                                  }
+                                  isCompletedGroup={isCompletedGroup}
+                                  redirectToParentTask={redirectToParentTask}
+                                  storeAsCurrentTask={storeAsCurrentTask}
+                                  isDragging={isDragging}
+                                  dragHandleProps={
+                                    draggableProvided.dragHandleProps
+                                  }
+                                  isDraggable={
+                                    !isTaskDrawerOpen && tasks?.length > 1
+                                  }
+                                  openDrawer={openDrawer}
+                                  isSelected={
+                                    selectedTaskIdentifier ===
+                                    task?.taskIdentifier
+                                  }
+                                  showAssignedPerson={isAllTasksTab}
+                                  updateDueDate={updateDueDate}
+                                  currentUser={currentUser}
+                                  onTaskUpdate={onTaskUpdate}
+                                  updateWorkflowStatus={updateWorkflowStatus}
+                                  taskItemConfig={[
+                                    ...taskItemConfigKeys,
+                                    TASK_ITEM_PATIENT_COLUMN,
+                                    TASK_ITEM_LIST_COLUMN,
+                                  ]}
+                                  multipleAssigneesContext={
+                                    groupHasMultipleAssignees
+                                  }
+                                  subtasksDisabled
+                                  isDashboardTask
+                                />
+                              </DashboardTaskItemContainer>
                             </div>
                           )}
                         </Draggable>

@@ -25,8 +25,6 @@ export const DashboardContentWrapper = styled.div`
   flex-direction: column;
   flex: 1;
   height: 100%;
-  padding-right: ${({ hasRightPadding }) => (hasRightPadding ? 380 : 0)}px;
-  transition: padding-right 0.3s ease-out;
 `;
 
 export const DashboardTourBackground = styled.div`

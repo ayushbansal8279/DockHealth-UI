@@ -181,3 +181,7 @@ export const BulkContainer = styled.div`
   justify-content: center;
   margin-left: ${spacing.smallPlus};
 `;
+
+export const DashboardTaskItemContainer = styled.div`
+  margin-bottom: 3px;
+`;

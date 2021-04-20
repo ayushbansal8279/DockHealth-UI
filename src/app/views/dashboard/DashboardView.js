@@ -61,8 +61,6 @@ const DashboardView = ({
 
   const sampleList = allLists?.find(list => list.listType === 'SHARED_SAMPLE');
 
-  const shouldHideSidebar = isTaskDrawerOpen && window.innerWidth < 1920;
-
   const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
   const refreshAccessToken = user => {
@@ -142,7 +140,7 @@ const DashboardView = ({
   return (
     <DashboardViewWrapper>
       {currentUserLoaded && (
-        <DashboardContentWrapper hasRightPadding={shouldHideSidebar}>
+        <DashboardContentWrapper>
           {openConfetti && <StyledConfetti recycle={false} />}
           <DashboardScrollableList>
             <div>
