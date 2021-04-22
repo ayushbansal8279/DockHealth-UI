@@ -5,16 +5,17 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
-  useContext,
   useRef,
 } from 'react';
+import { pluck } from 'ramda';
 import moment from 'moment';
-
+import { useDispatch } from 'react-redux';
+import * as TaskActions from 'actions/task-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
-import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import LoadMoreButton, {
@@ -22,6 +23,7 @@ import LoadMoreButton, {
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
 import { TaskItemColumn } from 'helpers/task-helpers';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
 import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
 import {
@@ -99,19 +101,22 @@ const DashboardTasksGroup = ({
   const [tasks, setNewTasks] = useState(dashboardTasks);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
   const quickAddTaskInputReference = useRef(null);
+  const dispatch = useDispatch();
 
-  const { bunchBulkEditTaskActions } = useContext(BulkEditContext);
-  const { groupActions } = bunchBulkEditTaskActions;
+  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+    tasks,
+  ]);
 
-  const onClickGroupBulkEdit = useCallback(
-    () => groupActions?.onClickBulkEditGroup(tasks),
-    [groupActions, tasks],
-  );
-
-  const groupIsCheckedByBulkEdit = useMemo(
-    () => groupActions?.getGroupIsSelectedInBulkEdit(tasks),
-    [groupActions, tasks],
-  );
+  const handleGroupSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isGroupSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isGroupSelected, tasks]);
 
   const onSwitchGroup = useCallback(() => {
     if (!groupIsOpen && dashboardTasks?.length === 0 && !isSearching) {
@@ -197,14 +202,12 @@ const DashboardTasksGroup = ({
               />
             )}
             <DashboardSortBar>
-              {bunchBulkEditTaskActions && (
-                <BulkContainer>
-                  <Checkbox
-                    isChecked={groupIsCheckedByBulkEdit}
-                    onClick={onClickGroupBulkEdit}
-                  />
-                </BulkContainer>
-              )}
+              <BulkContainer>
+                <Checkbox
+                  isChecked={isGroupSelected}
+                  onClick={handleGroupSelect}
+                />
+              </BulkContainer>
               <DashboardSortBarLabelName
                 {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.DESCRIPTION]}
               >

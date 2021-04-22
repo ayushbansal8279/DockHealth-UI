@@ -876,3 +876,17 @@ export function reorderSubtasksInTemplateBundle({
     templateBundle,
   };
 }
+
+export function unselectAllTasks() {
+  return {
+    type: ActionTypes.UNSELECT_ALL_TASKS,
+  };
+}
+
+export function changeTasksSelectedState(newSelectedState, taskIdentifiers) {
+  return {
+    type: ActionTypes.CHANGE_TASKS_SELECTED_STATE,
+    newSelectedState,
+    taskIdentifiers,
+  };
+}

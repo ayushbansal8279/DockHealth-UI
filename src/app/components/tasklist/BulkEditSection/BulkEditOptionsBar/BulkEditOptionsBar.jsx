@@ -3,7 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, pluck } from 'ramda';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
-import { TaskGroupType } from 'helpers/task-helpers';
+import { checkIfTemplateTask, TaskGroupType } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -72,7 +72,7 @@ const IconWithTooltip = ({ text, children }) => {
 };
 
 const BulkEditOptionsBar = ({
-  selectedTasks = [],
+  selectedTasks = {},
   onClose,
   isDisabled,
   refreshTasks,
@@ -148,15 +148,13 @@ const BulkEditOptionsBar = ({
     [parentTasks, subtasks],
   );
 
-  const allSelectedTasksLength = useMemo(() => allSelectedTasks.length, [
-    allSelectedTasks,
-  ]);
+  const allSelectedTasksLength = allSelectedTasks.length;
 
   const allSelectedTaskListIdentifiers = useMemo(
     () =>
       [...(parentTasks || []), ...(subtasks || [])].reduce(
         (accumulator, task) =>
-          task.taskList
+          !checkIfTemplateTask(task) && task.taskList
             ? [...accumulator, task.taskList.taskListIdentifier]
             : accumulator,
         [],
@@ -329,7 +327,7 @@ const BulkEditOptionsBar = ({
     ],
   );
 
-  const handleChangeAssigneTasks = useCallback(
+  const handleChangeAssigneeTasks = useCallback(
     selectedUsers => {
       bulkEditAssignUser(
         allSelectedTasksIdentifiers,
@@ -393,7 +391,7 @@ const BulkEditOptionsBar = ({
 
   const handleDuplicateTasks = useCallback(() => {
     const anyTaskHasAttachment = allSelectedTasks?.some(
-      task => task?.hasAttachments,
+      task => task?.attachments?.length > 0,
     );
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -706,110 +704,101 @@ const BulkEditOptionsBar = ({
   );
 
   return (
-    <Container open={allSelectedTasksLength > 0} isDisabled={isDisabled}>
-      {allSelectedTasksLength > 0 && (
-        <>
-          <TasksText>
-            {`${allSelectedTasksLength} Task${
-              allSelectedTasksLength > 1 ? 's' : ''
-            } Selected`}
-          </TasksText>
-          <ButtonsWrapper>
-            {mergedConfig[BULK_EDIT_DUPLICATE_OPTION] && (
-              <Button
-                type="button"
-                onClick={handleDuplicateTasks}
-                disabled={isDisabled}
-              >
-                <WrapperContainer disabled={isDisabled}>
-                  <IconBox>
-                    <DuplicateIcon />
-                  </IconBox>
-                  <p>Duplicate</p>
-                </WrapperContainer>
-              </Button>
-            )}
-            {mergedConfig[BULK_EDIT_MOVE_OPTION] && (
-              <IconWithTooltip
-                text={
-                  disabledMoveAction
-                    ? 'Cannot move subtasks without main tasks'
-                    : null
-                }
-              >
-                <Button
-                  type="button"
-                  disabled={disabledMoveAction || isDisabled}
-                  onClick={handleMoveTasks}
-                >
-                  <WrapperContainer disabled={disabledMoveAction || isDisabled}>
-                    <IconBox>
-                      <MoveIcon />
-                    </IconBox>
-                    <p>Move</p>
-                  </WrapperContainer>
-                </Button>
-              </IconWithTooltip>
-            )}
-            {mergedConfig[BULK_EDIT_COMPLETE_OPTION] && (
-              <Button
-                type="button"
-                onClick={handleCompleteTasks}
-                disabled={isDisabled}
-              >
-                <WrapperContainer disabled={isDisabled}>
-                  <IconBox>
-                    <CompleteIcon />
-                  </IconBox>
-                  <p>Complete</p>
-                </WrapperContainer>
-              </Button>
-            )}
-            {mergedConfig[BULK_EDIT_STATUS_OPTION] && (
-              <BulkEditWorkflowStatusOption
-                handleChangeWorkflowStatusTasks={
-                  handleChangeWorkflowStatusTasks
-                }
-                isDisabled={isDisabled}
-              />
-            )}
-            {mergedConfig[BULK_EDIT_DUE_DATE_OPTION] && (
-              <BulkEditDueDateOption
-                handleChangeDateTasks={handleChangeDateTasks}
-                isDisabled={isDisabled}
-              />
-            )}
-            {mergedConfig[BULK_EDIT_ASSIGN_OPTION] && (
-              <BulkEditAssignToOption
-                selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
-                handleChangeAssigneTasks={handleChangeAssigneTasks}
-                isDisabled={isDisabled}
-                selectedTasks={selectedTasks}
-              />
-            )}
-            {mergedConfig[BULK_EDIT_DELETE_OPTION] && (
-              <Button
-                type="button"
-                onClick={handleDeleteTasks}
-                disabled={isDisabled}
-              >
-                <WrapperContainer
-                  color={palette.oPlusRed}
-                  disabled={isDisabled}
-                >
-                  <IconBox>
-                    <DeleteIcon />
-                  </IconBox>
-                  <p>Delete</p>
-                </WrapperContainer>
-              </Button>
-            )}
-            <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
-              <CloseIcon />
-            </CloseButton>
-          </ButtonsWrapper>
-        </>
-      )}
+    <Container isDisabled={isDisabled}>
+      <TasksText>
+        {`${allSelectedTasksLength} Task${
+          allSelectedTasksLength > 1 ? 's' : ''
+        } Selected`}
+      </TasksText>
+      <ButtonsWrapper>
+        {mergedConfig[BULK_EDIT_DUPLICATE_OPTION] && (
+          <Button
+            type="button"
+            onClick={handleDuplicateTasks}
+            disabled={isDisabled}
+          >
+            <WrapperContainer disabled={isDisabled}>
+              <IconBox>
+                <DuplicateIcon />
+              </IconBox>
+              <p>Duplicate</p>
+            </WrapperContainer>
+          </Button>
+        )}
+        {mergedConfig[BULK_EDIT_MOVE_OPTION] && (
+          <IconWithTooltip
+            text={
+              disabledMoveAction
+                ? 'Cannot move subtasks without main tasks'
+                : null
+            }
+          >
+            <Button
+              type="button"
+              disabled={disabledMoveAction || isDisabled}
+              onClick={handleMoveTasks}
+            >
+              <WrapperContainer disabled={disabledMoveAction || isDisabled}>
+                <IconBox>
+                  <MoveIcon />
+                </IconBox>
+                <p>Move</p>
+              </WrapperContainer>
+            </Button>
+          </IconWithTooltip>
+        )}
+        {mergedConfig[BULK_EDIT_COMPLETE_OPTION] && (
+          <Button
+            type="button"
+            onClick={handleCompleteTasks}
+            disabled={isDisabled}
+          >
+            <WrapperContainer disabled={isDisabled}>
+              <IconBox>
+                <CompleteIcon />
+              </IconBox>
+              <p>Complete</p>
+            </WrapperContainer>
+          </Button>
+        )}
+        {mergedConfig[BULK_EDIT_STATUS_OPTION] && (
+          <BulkEditWorkflowStatusOption
+            handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
+            isDisabled={isDisabled}
+          />
+        )}
+        {mergedConfig[BULK_EDIT_DUE_DATE_OPTION] && (
+          <BulkEditDueDateOption
+            handleChangeDateTasks={handleChangeDateTasks}
+            isDisabled={isDisabled}
+          />
+        )}
+        {mergedConfig[BULK_EDIT_ASSIGN_OPTION] && (
+          <BulkEditAssignToOption
+            selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
+            handleChangeAssigneTasks={handleChangeAssigneeTasks}
+            isDisabled={isDisabled}
+            selectedTasks={selectedTasks}
+          />
+        )}
+        {mergedConfig[BULK_EDIT_DELETE_OPTION] && (
+          <Button
+            type="button"
+            onClick={handleDeleteTasks}
+            disabled={isDisabled}
+          >
+            <WrapperContainer color={palette.oPlusRed} disabled={isDisabled}>
+              <IconBox>
+                <DeleteIcon />
+              </IconBox>
+              <p>Delete</p>
+            </WrapperContainer>
+          </Button>
+        )}
+        <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
+          <CloseIcon />
+        </CloseButton>
+      </ButtonsWrapper>
     </Container>
   );
 };

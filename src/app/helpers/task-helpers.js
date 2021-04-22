@@ -163,31 +163,3 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     ),
   ]),
 };
-
-export function extractTasksAndSubtasks(listOfTasks) {
-  return listOfTasks.reduce(
-    (accumulator, task) => {
-      if (task.itemType === TaskItemType.BUNDLE) {
-        // eslint-disable-next-line no-unused-expressions
-        task.tasks?.forEach(t => {
-          if (t.parentTaskIdentifier) {
-            accumulator.subtasks.push(t);
-          } else {
-            accumulator.parentTasks.push(t);
-            // eslint-disable-next-line no-unused-expressions
-            t.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
-          }
-        });
-      } else if (task.parentTaskIdentifier) {
-        accumulator.subtasks.push(task);
-      } else {
-        accumulator.parentTasks.push(task);
-        // eslint-disable-next-line no-unused-expressions
-        task.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
-      }
-
-      return accumulator;
-    },
-    { parentTasks: [], subtasks: [] },
-  );
-}

@@ -1,7 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useRef, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo, useRef, useContext, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
+import { pluck } from 'ramda';
+import * as TaskActions from 'actions/task-actions';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -15,9 +17,12 @@ import {
   onTaskGroupCollapsed,
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
-
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import listSectionSavedState from 'helpers/list-section-saved-state';
-import { checkIfTasksHaveSubtasksOrComments } from 'helpers/tasklist-helpers';
+import {
+  checkIfTasksHaveSubtasksOrComments,
+  extractTasksAndSubtasks,
+} from 'helpers/tasklist-helpers';
 import {
   Arrow,
   Tasks,
@@ -65,6 +70,8 @@ const TaskListDetailsDropdown = ({
     subtaskShape: state.taskState.subtaskShape,
   }));
 
+  const dispatch = useDispatch();
+
   const areViewOptionsVisible = useMemo(() => {
     if (!isOpen) return false;
 
@@ -77,8 +84,7 @@ const TaskListDetailsDropdown = ({
 
   const listMembers = listUsers;
 
-  const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
-  const { groupActions } = bunchBulkEditTaskActions;
+  const { bulkEditEnabled } = useContext(BulkEditContext);
 
   const groupHasMultipleAssignees = useMemo(
     () =>
@@ -95,6 +101,21 @@ const TaskListDetailsDropdown = ({
       ),
     [tasks],
   );
+
+  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+    tasks,
+  ]);
+
+  const handleGroupSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isGroupSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isGroupSelected, tasks]);
 
   return (
     <ListDetailsContainer>
@@ -145,15 +166,15 @@ const TaskListDetailsDropdown = ({
           />
         )}
         <SortHeaderRow>
-          {bunchBulkEditTaskActions && (
+          {bulkEditEnabled && (
             <BulkContainer>
               <Checkbox
-                isChecked={groupActions?.getGroupIsSelectedInBulkEdit(tasks)}
-                onClick={() => groupActions?.onClickBulkEditGroup(tasks)}
+                isChecked={isGroupSelected}
+                onClick={handleGroupSelect}
               />
             </BulkContainer>
           )}
-          <ColumnSortHeader width={bunchBulkEditTaskActions ? 36 : 60} />
+          <ColumnSortHeader width={36} />
           <ColumnSortHeader
             id="TASK_DESCRIPTION"
             label="Tasks"

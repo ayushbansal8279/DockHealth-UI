@@ -19,10 +19,16 @@ import {
   DELETE_TASKS_SUCCESS,
   COMPLETE_TASKS_SUCCESS,
   LOAD_TASKS_FOR_BUNDLE,
+  UNSELECT_ALL_TASKS,
+  CHANGE_TASKS_SELECTED_STATE,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import { TaskItemType, TaskStatus, TaskGroupType } from 'helpers/task-helpers';
+import {
+  updateAllTaskItems,
+  updateMultipleTasks,
+} from 'helpers/tasklist-helpers';
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
   parentTaskIdentifier || taskIdentifier;
@@ -629,6 +635,27 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         );
 
       return updateStateCallback(state, updateTasksFromAction);
+    }
+
+    case UNSELECT_ALL_TASKS: {
+      const updateStateFromAction = tasks => {
+        return updateAllTaskItems({ selected: false }, tasks);
+      };
+
+      return updateStateCallback(state, updateStateFromAction);
+    }
+
+    case CHANGE_TASKS_SELECTED_STATE: {
+      const { taskIdentifiers, newSelectedState } = action;
+
+      const updateStateFromAction = tasks =>
+        updateMultipleTasks(
+          { selected: newSelectedState },
+          taskIdentifiers,
+          tasks,
+        );
+
+      return updateStateCallback(state, updateStateFromAction);
     }
 
     default:

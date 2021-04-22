@@ -7,9 +7,10 @@ import React, {
   useContext,
   useState,
 } from 'react';
-import { isNil } from 'ramda';
+import { isNil, pluck } from 'ramda';
 import ArrowIcon from 'img/arrow';
-
+import * as TaskActions from 'actions/task-actions';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
@@ -19,8 +20,12 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
+import { useDispatch } from 'react-redux';
 import listSectionSavedState from 'helpers/list-section-saved-state';
-import { checkIfTasksHaveSubtasksOrComments } from 'helpers/tasklist-helpers';
+import {
+  checkIfTasksHaveSubtasksOrComments,
+  extractTasksAndSubtasks,
+} from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -85,7 +90,6 @@ const TasksGroup = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   taskItemConfig,
-  disableBulkEdit = false,
 }) => {
   const [
     highlightedTasksParentIdentifier,
@@ -93,6 +97,7 @@ const TasksGroup = ({
   ] = useState(null);
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
+  const dispatch = useDispatch();
 
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
     sessionStorageKey: groupSessionStorageKey,
@@ -168,8 +173,7 @@ const TasksGroup = ({
     }, 3000);
   }, []);
 
-  const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
-  const { groupActions } = bunchBulkEditTaskActions;
+  const { bulkEditEnabled } = useContext(BulkEditContext);
 
   const checkHasMultipleAssignees = useCallback(
     ({ assignedToUsers, subtasks: taskSubtasks }) =>
@@ -192,6 +196,21 @@ const TasksGroup = ({
       ),
     [checkHasMultipleAssignees, tasks],
   );
+
+  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+    tasks,
+  ]);
+
+  const handleGroupSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isGroupSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isGroupSelected, tasks]);
 
   return (
     <TasksGroupContainer>
@@ -269,15 +288,15 @@ const TasksGroup = ({
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <SortHeaderRow>
-            {bunchBulkEditTaskActions && !disableBulkEdit && (
+            {bulkEditEnabled && (
               <BulkContainer>
                 <Checkbox
-                  isChecked={groupActions?.getGroupIsSelectedInBulkEdit(tasks)}
-                  onClick={() => groupActions?.onClickBulkEditGroup(tasks)}
+                  isChecked={isGroupSelected}
+                  onClick={handleGroupSelect}
                 />
               </BulkContainer>
             )}
-            <ColumnSortHeader width={bunchBulkEditTaskActions ? 36 : 60} />
+            <ColumnSortHeader width={35} />
             <ColumnSortHeader
               id="TASK_DESCRIPTION"
               label="Tasks"

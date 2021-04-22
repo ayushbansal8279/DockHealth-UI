@@ -16,7 +16,6 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
-import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
   BULK_EDIT_COMPLETE_OPTION,
   BULK_EDIT_DUE_DATE_OPTION,
@@ -27,6 +26,7 @@ import { TaskTemplateViewContainer } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
 import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
+import TaskTemplateBulkEditContainer from './TaskTemplateBulkEditContainer/TaskTemplateBulkEditContainer';
 
 const BULK_EDIT_OPTIONS_CONFIG = {
   [BULK_EDIT_MOVE_OPTION]: false,
@@ -62,7 +62,7 @@ const TaskTemplateView = ({
   }, [modalActions]);
 
   return (
-    <BulkEditSection
+    <TaskTemplateBulkEditContainer
       optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
       refreshTasks={taskTemplateActions.reloadOpenedTemplateTasks}
     >
@@ -101,7 +101,7 @@ const TaskTemplateView = ({
         )}
         <TaskDrawer modalActions={modalActions} />
       </TaskTemplateViewContainer>
-    </BulkEditSection>
+    </TaskTemplateBulkEditContainer>
   );
 };
 

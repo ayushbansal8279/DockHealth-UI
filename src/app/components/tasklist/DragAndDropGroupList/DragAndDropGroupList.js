@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
@@ -28,7 +28,6 @@ const DragAndDropGroupList = ({
   highlightTasksOfTheSameParent,
   taskItemConfig,
 }) => {
-  const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
   const {
     isTaskDrawerOpen,
     addingNewSubtask,
@@ -47,10 +46,9 @@ const DragAndDropGroupList = ({
       isDropDisabled={isCompletedGroup || shouldShowBlockModalOnDrag}
     >
       {(providedDroppable, snapshot) => {
-        setIsDraggingOverGroup(snapshot?.isDraggingOver);
         return (
           <DroppablePlaceholder
-            isDraggingOverGroup={isDraggingOverGroup}
+            isDraggingOverGroup={snapshot?.isDraggingOver}
             ref={providedDroppable.innerRef}
             {...providedDroppable.droppableProps}
           >

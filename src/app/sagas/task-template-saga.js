@@ -33,7 +33,7 @@ import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import {
   taskTemplateDetailsSelector,
   taskTemplateSelector,
-  allTaskTemplateDetailsSelector,
+  allTemplateDetailsSelector,
 } from 'selectors/task-template-selectors';
 import { listDetailsGroupsSelector } from 'selectors/list-details-selectors';
 
@@ -250,8 +250,7 @@ function* addTaskToTemplate({ task }) {
 }
 
 function* reloadOpenedTemplateTasks() {
-  const allTemplateDetails =
-    (yield select(allTaskTemplateDetailsSelector)) || {};
+  const allTemplateDetails = (yield select(allTemplateDetailsSelector)) || {};
 
   yield all([
     ...Object.entries(allTemplateDetails).reduce(

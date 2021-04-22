@@ -25,7 +25,15 @@ export const taskTemplateSelector = taskTemplateIdentifier =>
     ),
   );
 
-export const allTaskTemplateDetailsSelector = createSelector(
+export const allTemplateDetailsSelector = createSelector(
   taskTemplateStateSelector,
   ({ taskTemplateDetails }) => taskTemplateDetails,
+);
+
+export const allTasksSelector = createSelector(
+  taskTemplateStateSelector,
+  ({ taskTemplateDetails }) =>
+    taskTemplateDetails
+      ? Object.values(taskTemplateDetails)?.flatMap(({ tasks }) => tasks || [])
+      : [],
 );

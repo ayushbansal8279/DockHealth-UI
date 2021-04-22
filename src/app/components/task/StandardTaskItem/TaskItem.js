@@ -22,7 +22,7 @@ import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-
+import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import {
   onTaskAssigned,
   onTaskCompleted,
@@ -108,6 +108,7 @@ const TaskItem = ({
     searchMetaData = {},
     parentTask,
     subtaskQuickAddOpen,
+    selected,
   } = task;
 
   const { listName, taskListIdentifier } = taskList || {};
@@ -129,7 +130,7 @@ const TaskItem = ({
   } = searchMetaData;
 
   const currentUser = useSelector(userProfileSelector);
-  const [isHovered, setIsHoverd] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
       rawText: description,
@@ -146,100 +147,7 @@ const TaskItem = ({
   const previousDescription = useRef(null);
   const descriptionReference = useRef(null);
 
-  const { bulkEditIsActive, bunchBulkEditTaskActions } = useContext(
-    BulkEditContext,
-  );
-
-  const bulkEditTaskActions = useMemo(
-    () =>
-      isSubtask
-        ? bunchBulkEditTaskActions?.subtaskActions
-        : bunchBulkEditTaskActions?.parentActions,
-    [bunchBulkEditTaskActions, isSubtask],
-  );
-
-  const previousSubtasksCount = useRef(subTasksCount);
-  const previousAttachmentsLength = useRef(attachments?.length);
-  const previousAssignedToUsers = useRef(assignedToUsers);
-  const hasAttachments = useMemo(() => attachments?.length > 0, [attachments]);
-
-  const bulkEditActionPayload = useMemo(
-    () =>
-      isSubtask
-        ? {
-            parentTaskIdentifier,
-            taskIdentifier,
-            hasAttachments,
-            taskList: isTemplateTask ? null : taskList,
-            assignedToUsers,
-          }
-        : {
-            taskIdentifier,
-            subTasksCount,
-            hasAttachments,
-            taskList: isTemplateTask ? null : taskList,
-            assignedToUsers,
-          },
-    [
-      isSubtask,
-      parentTaskIdentifier,
-      taskIdentifier,
-      hasAttachments,
-      isTemplateTask,
-      taskList,
-      assignedToUsers,
-      subTasksCount,
-    ],
-  );
-
-  const isCheckedByBulkEdit = useMemo(
-    () =>
-      bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(bulkEditActionPayload),
-    [bulkEditTaskActions, bulkEditActionPayload],
-  );
-
-  useEffect(() => {
-    if (subTasksCount !== previousSubtasksCount?.current) {
-      previousSubtasksCount.current = subTasksCount;
-
-      if (
-        !isSubtask &&
-        bulkEditTaskActions?.onUpdateSelectedBulkEditTask &&
-        isCheckedByBulkEdit
-      ) {
-        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
-          taskIdentifier,
-          subTasksCount,
-        });
-      }
-    }
-
-    if (
-      attachments?.length !== previousAttachmentsLength?.current ||
-      assignedToUsers !== previousAssignedToUsers?.current
-    ) {
-      previousAttachmentsLength.current = attachments?.length;
-      previousAssignedToUsers.current = assignedToUsers;
-
-      if (
-        isCheckedByBulkEdit &&
-        bulkEditTaskActions?.onUpdateSelectedBulkEditTask
-      )
-        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
-          taskIdentifier,
-          hasAttachments: attachments?.length > 0,
-          assignedToUsers,
-        });
-    }
-  }, [
-    attachments,
-    bulkEditTaskActions,
-    isSubtask,
-    subTasksCount,
-    taskIdentifier,
-    isCheckedByBulkEdit,
-    assignedToUsers,
-  ]);
+  const { bulkEditEnabled } = useContext(BulkEditContext);
 
   const checkIfShouldDisplayTooltip = useCallback(() => {
     const descriptionTextElement = descriptionReference.current?.querySelector(
@@ -304,8 +212,8 @@ const TaskItem = ({
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
 
-  const onMouseEnter = () => setIsHoverd(true);
-  const onMouseLeave = () => setIsHoverd(false);
+  const onMouseEnter = () => setIsHovered(true);
+  const onMouseLeave = () => setIsHovered(false);
 
   const onClickTaskItem = useCallback(() => {
     dispatch(openDrawer());
@@ -330,9 +238,6 @@ const TaskItem = ({
         (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
       }
 
-      if (isCheckedByBulkEdit && bulkEditTaskActions?.onUnselectBulkEditTask) {
-        bulkEditTaskActions.onUnselectBulkEditTask(bulkEditActionPayload);
-      }
       event.stopPropagation();
     },
     [
@@ -340,11 +245,8 @@ const TaskItem = ({
       isSubtask,
       isCompletedGroup,
       isCompleted,
-      isCheckedByBulkEdit,
-      bulkEditTaskActions,
       toggleCompleteTask,
       task,
-      bulkEditActionPayload,
     ],
   );
 
@@ -393,8 +295,7 @@ const TaskItem = ({
     [updateWorkflowStatus, task],
   );
 
-  const showDraggableDots =
-    !dragAndDropDisabled && isDraggable && !bulkEditIsActive;
+  const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
 
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
@@ -419,7 +320,7 @@ const TaskItem = ({
           <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <StandardTaskItemContainer
-          isSelected={isSelected || isCheckedByBulkEdit}
+          isSelected={isSelected || selected}
           height={
             hasParentTaskLabel || isCompletedGroup
               ? EXTENDED_TASK_HEIGHT
@@ -428,11 +329,19 @@ const TaskItem = ({
         >
           {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-          {bulkEditTaskActions && (
+          {bulkEditEnabled && (
             <TaskItemBulkEdit
-              isCheckedByBulkEdit={isCheckedByBulkEdit}
-              bulkEditTaskActions={bulkEditTaskActions}
-              bulkEditActionPayload={bulkEditActionPayload}
+              isChecked={selected}
+              onClick={() =>
+                dispatch({
+                  type: UPDATE_TASK_SUCCESS,
+                  task: {
+                    taskIdentifier,
+                    parentTaskIdentifier: parentTaskIdentifier || undefined,
+                    selected: !selected,
+                  },
+                })
+              }
             />
           )}
           <MainStandardTaskItemCell

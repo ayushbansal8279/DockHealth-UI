@@ -82,7 +82,6 @@ const ListDetailsCompletedTasks = ({
                   }}
                   sort={sort}
                   onSortChange={onSortChange}
-                  disableBulkEdit
                 />
               </DragDropContext>
             </TaskGroupsContainer>
