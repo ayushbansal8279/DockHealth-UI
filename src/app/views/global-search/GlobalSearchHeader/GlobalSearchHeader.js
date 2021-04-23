@@ -36,8 +36,14 @@ const GlobalSearchHeader = ({
         setSearchValue(queryValues.criteria);
         searchInputReference.current.value = queryValues.criteria;
       }
+      if (
+        queryValues.completed !== undefined &&
+        queryValues.completed === 'true'
+      ) {
+        setSearchCompletedTasks(true);
+      }
     }
-  }, [searchInputReference, history, setSearchValue]);
+  }, [searchInputReference, history, setSearchValue, setSearchCompletedTasks]);
 
   return (
     <TopSectionGrid
