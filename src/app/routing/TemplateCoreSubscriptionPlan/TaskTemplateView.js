@@ -9,7 +9,7 @@ export const onEnterTemplatesView = ({ dispatch }) => {
       layout: [
         {
           key: 'templates-view-header',
-          component: <GenericHeader>Templates</GenericHeader>,
+          component: <GenericHeader>Workflows</GenericHeader>,
         },
       ],
     }),

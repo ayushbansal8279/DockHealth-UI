@@ -84,7 +84,7 @@ const TaskTemplateView = ({
           </>
         )}
         <Grid container justify="flex-end" alignItems="center">
-          <AddButton onClick={handleCreateTemplate}>Add Template</AddButton>
+          <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
           <ViewTypeSwitch value={viewType} onChange={setViewType} />
         </Grid>
         <Spacing vertical={4} />

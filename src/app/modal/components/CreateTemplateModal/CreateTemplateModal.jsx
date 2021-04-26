@@ -54,7 +54,7 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
         <CloseIcon />
       </CloseIconButton>
       <Header>
-        <Title>Create a template</Title>
+        <Title>Create a workflow</Title>
       </Header>
       <StyledForm
         onSubmit={event =>
@@ -69,11 +69,10 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
           fullWidth
           required
           showError
-          label="Template name"
+          label="Workflow name"
           value={watch(TEMPLATE_NAME_FIELD_NAME)}
           name={TEMPLATE_NAME_FIELD_NAME}
-          centerizedLabelOnStart
-          placeholder="What would you like to name this template?"
+          placeholder="What would you like to name this workflow?"
           error={errors?.[TEMPLATE_NAME_FIELD_NAME]?.message}
         />
         <Grid container direction="row" justify="center">

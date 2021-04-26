@@ -161,7 +161,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onLeave: onLeaveListDetailsView,
   },
   {
-    path: '/templates',
+    path: '/workflows',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),

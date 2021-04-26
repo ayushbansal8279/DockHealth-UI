@@ -21,10 +21,12 @@ const TaskTemplateBanner = ({ onClose, onCreateTemplate, firstTemplate }) => {
       <TextContainer>
         {firstTemplate && <Title>Create your first template</Title>}
         <Description>
-          Templates will help you save even more time by eliminating repetitive
-          work. Create a template for the workflows that you find your
-          organizations doing over and over again so you don’t have to type each
-          task everytime.
+          Workflows will help you save time and create a highly reliable and
+          accountable process for your organization. Simply design a reusable
+          Workflow by giving it a name and adding tasks, subtasks, assignments
+          and attachments to your template. Once saved, you can easily add any
+          Workflow to a list from the “Add Task” bar, add patient context and
+          customize it as needed.
         </Description>
       </TextContainer>
       {firstTemplate && (
