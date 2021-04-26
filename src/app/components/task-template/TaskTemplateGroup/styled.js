@@ -23,19 +23,44 @@ export const TemplateHandle = styled.img`
   }
 `;
 
+export const Placeholder = styled.div`
+  color: ${palette.mediumGrey};
+  padding: 0 ${spacing.regular};
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 400;
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
+`;
+
+export const AddPlaceholder = styled(Placeholder)`
+  color: ${palette.lightGrey};
+  opacity: 0;
+
+  &::first-letter {
+    color: ${palette.orange};
+    font-size: 16px;
+  }
+`;
+
 export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 ${spacing.smallPlus} 0 ${spacing.large};
+  padding: 0 0 0 ${spacing.large};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
   font-family: 'Roboto Condensed', sans-serif;
+  flex: 1;
 
   &:hover {
-    & ${TemplateHandle} {
+    & ${TemplateHandle}, ${AddPlaceholder} {
       opacity: 1;
     }
   }
@@ -48,6 +73,7 @@ export const TaskTemplateProgressCircle = styled.div`
 export const TaskTemplateGroupHeader = styled.div`
   display: flex;
   align-items: center;
+  flex: 1;
 `;
 
 export const TaskTemplateGroupList = styled(Collapse)``;
@@ -55,6 +81,10 @@ export const TaskTemplateGroupList = styled(Collapse)``;
 export const TaskTemplateOptionsContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  padding-right: ${spacing.smallPlus};
+  width: ${({ groupHasMultipleAssignees }) =>
+    groupHasMultipleAssignees ? '420px' : '390px'};
 `;
 
 export const TaskTemplateNameInput = styled.input`
@@ -84,4 +114,13 @@ export const TaskTemplateNameInput = styled.input`
   &:focus {
     outline: none;
   }
+`;
+
+export const TaskTemplatePatientHeader = styled.div`
+  width: 164px;
+`;
+
+export const TaskTemplateRight = styled.div`
+  display: flex;
+  align-items: center;
 `;

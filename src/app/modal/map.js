@@ -42,6 +42,8 @@ import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeSc
 import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
 import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
 import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
+import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
+import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -88,6 +90,8 @@ const MODAL_MAP = {
   DeleteTemplate: DeleteTemplateModal,
   SelectTaskDestination: SelectTaskDestinationModal,
   SelectDestination: SelectDestinationModal,
+  AssignPatient: AssignPatientModal,
+  UnassignPatient: UnassignPatientModal,
 };
 
 export default MODAL_MAP;

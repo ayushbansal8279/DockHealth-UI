@@ -89,6 +89,9 @@ const TaskItem = ({
   highlightTasksOfTheSameParent,
   taskItemConfig = {},
   isDashboardTask,
+  customPatientClick,
+  templateBundleIdentifier,
+  parentTaskGroupIdentifier,
 }) => {
   const {
     taskIdentifier,
@@ -220,7 +223,17 @@ const TaskItem = ({
 
   const onClickTaskItem = useCallback(() => {
     dispatch(openDrawer());
-    dispatch(storeAsCurrentTask(task));
+    if (templateBundleIdentifier) {
+      dispatch(
+        storeAsCurrentTask({
+          ...task,
+          taskGroupIdentifier: parentTaskGroupIdentifier,
+          templateBundleIdentifier,
+        }),
+      );
+    } else {
+      dispatch(storeAsCurrentTask(task));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
@@ -408,6 +421,7 @@ const TaskItem = ({
               matchPatient={matchPatient}
               dispatch={dispatch}
               task={task}
+              customPatientClick={customPatientClick}
             />
           )}
           {checkColumnIsInConfig(

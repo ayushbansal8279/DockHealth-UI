@@ -94,10 +94,12 @@ const TaskDrawer = ({
     setParentDescriptionState,
     taskDrawerReference,
     taskListIdentifier,
+    taskGroupIdentifier,
     handleUpdateTask,
     handleDueTimeSave,
     handleDueDateSave,
     clearDueDate,
+    templateBundleIdentifier,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -311,6 +313,8 @@ const TaskDrawer = ({
                   }
                   autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
                   onSave={handleUpdateTask}
+                  taskGroupIdentifier={taskGroupIdentifier}
+                  templateBundleIdentifier={templateBundleIdentifier}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>

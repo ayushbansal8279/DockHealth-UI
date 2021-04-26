@@ -432,3 +432,10 @@ export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
 `;
+
+export const PatientLabel = styled.div`
+  &:hover {
+    color: ${palette.brightBlue};
+    text-decoration: underline;
+  }
+`;

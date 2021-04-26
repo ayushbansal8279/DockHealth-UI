@@ -51,3 +51,16 @@ export function moveTemplateBundle({
     taskGroupIdentifier,
   };
 }
+
+export function changePatientForTemplateBundle(
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  patientIdentifier,
+) {
+  return {
+    type: ActionTypesSaga.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
+    taskTemplateIdentifier,
+    taskGroupIdentifier,
+    patientIdentifier,
+  };
+}

@@ -5,6 +5,7 @@ import AlertMessages from 'alert/AlertMessages';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import { TaskStatus } from 'helpers/task-helpers';
 
 function* reorderTasksInTemplateBundle(payload) {
@@ -129,6 +130,31 @@ function* moveTemplateBundle({
   }
 }
 
+function* changePatientForTemplateBundle({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  patientIdentifier,
+}) {
+  try {
+    yield call(TemplateBundleApi.updateTemplateBundle, taskTemplateIdentifier, {
+      patientIdentifier,
+    });
+
+    yield put(
+      ListDetailsSagaActions.getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATE_ERROR,
+      taskTemplateIdentifier,
+    });
+  }
+}
+
 export default function* watchTemplateBundle() {
   yield takeEvery(ActionTypesSaga.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
   yield takeEvery(
@@ -141,4 +167,8 @@ export default function* watchTemplateBundle() {
   );
   yield takeEvery(ActionTypesSaga.DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
   yield takeEvery(ActionTypesSaga.MOVE_TEMPLATE_BUNDLE, moveTemplateBundle);
+  yield takeEvery(
+    ActionTypesSaga.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
+    changePatientForTemplateBundle,
+  );
 }

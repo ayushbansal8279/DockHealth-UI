@@ -20,6 +20,8 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { TaskStatus } from 'helpers/task-helpers';
+import PatientCard from 'components/patients/PatientCard/PatientCard';
+import TaskTemplatePatientDropdown from '../TaskTemplatePatientDropdown/TaskTemplatePatientDropdown';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -29,6 +31,10 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
   TaskTemplateNameInput,
+  TaskTemplatePatientHeader,
+  AddPlaceholder,
+  Placeholder,
+  TaskTemplateRight,
 } from './styled';
 
 const TaskTemplateGroup = ({
@@ -40,8 +46,17 @@ const TaskTemplateGroup = ({
   draggableProvided = {},
   groupDragAndDropDisabled,
   tasksDragAndDropDisabled,
+  disablePatientAssignment,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { name, tasks, identifier } = templateGroup;
+  const {
+    name,
+    tasks,
+    identifier,
+    patient,
+    taskListIdentifier: parentTaskListIdentifier,
+    parentTaskGroupIdentifier,
+  } = templateGroup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -50,6 +65,8 @@ const TaskTemplateGroup = ({
   const [nameInputValue, setNameInputValue] = useState(name);
   const nameInputReference = useRef(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [isPopoverOpen, setPopoverOpen] = useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -214,21 +231,52 @@ const TaskTemplateGroup = ({
             value={nameInputValue}
           />
         </TaskTemplateGroupHeader>
-        <TaskTemplateOptionsContainer>
-          <TaskTemplateProgressCircle>
-            <ProgressBar
-              progress={(completedTasksAmount / allTasksAmount) * 100}
-              label={`${completedTasksAmount}/${allTasksAmount}`}
-            />
-          </TaskTemplateProgressCircle>
-          <OptionsMenu options={menuOptions}>
-            <MoreHoriz
-              fontSize="large"
-              color="inherit"
-              style={{ color: palette.coolGrey1 }}
-            />
-          </OptionsMenu>
-        </TaskTemplateOptionsContainer>
+        <TaskTemplateRight>
+          {!disablePatientAssignment && (
+            <TaskTemplatePatientHeader>
+              <TaskTemplatePatientDropdown
+                taskListIdentifier={parentTaskListIdentifier}
+                taskGroupIdentifier={parentTaskGroupIdentifier}
+                templateBundleIdentifier={identifier}
+                selectedPatientIdentifier={
+                  patient ? patient.patientIdentifier : null
+                }
+                isPopoverOpen={isPopoverOpen}
+                openPopover={() => setPopoverOpen(true)}
+                closePopover={() => setPopoverOpen(false)}
+              >
+                {patient ? (
+                  <PatientCard patientIdentifier={patient.patientIdentifier}>
+                    <Placeholder>
+                      {patient?.lastName
+                        ? `${patient?.lastName}, ${patient?.firstName}`
+                        : patient?.firstName}
+                    </Placeholder>
+                  </PatientCard>
+                ) : (
+                  <AddPlaceholder>+ Add Patient</AddPlaceholder>
+                )}
+              </TaskTemplatePatientDropdown>
+            </TaskTemplatePatientHeader>
+          )}
+          <TaskTemplateOptionsContainer
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
+          >
+            <TaskTemplateProgressCircle>
+              <ProgressBar
+                progress={(completedTasksAmount / allTasksAmount) * 100}
+                label={`${completedTasksAmount}/${allTasksAmount}`}
+              />
+            </TaskTemplateProgressCircle>
+            <OptionsMenu options={menuOptions}>
+              <MoreHoriz
+                fontSize="large"
+                color="inherit"
+                style={{ color: palette.coolGrey1 }}
+              />
+            </OptionsMenu>
+          </TaskTemplateOptionsContainer>
+        </TaskTemplateRight>
       </TaskTemplateGroupHeaderContainer>
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
@@ -273,6 +321,13 @@ const TaskTemplateGroup = ({
                           dragAndDropDisabled={tasksDragAndDropDisabled}
                           isDraggable
                           isBundleTask
+                          templateBundleIdentifier={identifier}
+                          parentTaskGroupIdentifier={parentTaskGroupIdentifier}
+                          customPatientClick={
+                            disablePatientAssignment
+                              ? () => {}
+                              : () => setPopoverOpen(true)
+                          }
                         />
                       )}
                     </Draggable>

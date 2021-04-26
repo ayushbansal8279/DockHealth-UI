@@ -116,6 +116,7 @@ const StandardTaskItemContainer = ({
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
       selectedTask={selectedTask}
+      isBundleTask={isBundleTask}
       {...restProps}
     />
   );

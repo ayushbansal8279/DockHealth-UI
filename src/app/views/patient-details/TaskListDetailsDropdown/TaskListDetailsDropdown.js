@@ -254,6 +254,7 @@ const TaskListDetailsDropdown = ({
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isFullView={isFullView}
                 groupDragAndDropDisabled
+                disablePatientAssignment
               />
             ),
           )}

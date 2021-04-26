@@ -7,7 +7,9 @@ import {
 import * as AlertActions from 'alert/actions';
 import { useFormContext } from 'react-hook-form';
 import debounce from 'lodash.debounce';
+import { openModal } from 'modal/actions';
 import { getPatientsByCriteria, addPatient } from 'api/patient-api';
+import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
 import { AdornmentContainer } from '../styled';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
@@ -22,6 +24,8 @@ const PatientSection = ({
   disabled,
   placeholder,
   onSave,
+  taskGroupIdentifier,
+  templateBundleIdentifier,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -60,11 +64,63 @@ const PatientSection = ({
   const savePatient = useCallback(
     async patientToSave => {
       try {
-        onTaskDrawerTaskPatientChanged();
-        await onSave({
-          patient: patientToSave,
-          patientIdentifier: patientToSave?.patientIdentifier || 'UNASSIGNED',
-        });
+        const onSavePatient = async () => {
+          onTaskDrawerTaskPatientChanged();
+          await onSave({
+            patient: patientToSave,
+            patientIdentifier: patientToSave?.patientIdentifier || 'UNASSIGNED',
+          });
+        };
+
+        if (templateBundleIdentifier) {
+          if (selectedPatient) {
+            if (patientToSave) {
+              dispatch(
+                openModal('AssignPatient', {
+                  confirm: () => {
+                    dispatch(
+                      changePatientForTemplateBundle(
+                        templateBundleIdentifier,
+                        taskGroupIdentifier,
+                        patientToSave?.patientIdentifier,
+                      ),
+                    );
+                    onSavePatient();
+                  },
+                  patientName: patientToSave?.lastName
+                    ? `${patientToSave?.lastName}, ${patientToSave?.firstName}`
+                    : patientToSave?.firstName,
+                }),
+              );
+            } else {
+              dispatch(
+                openModal('UnassignPatient', {
+                  confirm: () => {
+                    dispatch(
+                      changePatientForTemplateBundle(
+                        templateBundleIdentifier,
+                        taskGroupIdentifier,
+                        'UNASSIGNED',
+                      ),
+                    );
+                    onSavePatient();
+                  },
+                }),
+              );
+            }
+          } else {
+            dispatch(
+              changePatientForTemplateBundle(
+                templateBundleIdentifier,
+                taskGroupIdentifier,
+                patientToSave?.patientIdentifier,
+              ),
+            );
+            onSavePatient();
+          }
+        } else {
+          onSavePatient();
+        }
       } catch {
         dispatch(
           AlertActions.showGlobalAlert(
@@ -74,7 +130,13 @@ const PatientSection = ({
         );
       }
     },
-    [dispatch, onSave],
+    [
+      dispatch,
+      onSave,
+      selectedPatient,
+      taskGroupIdentifier,
+      templateBundleIdentifier,
+    ],
   );
 
   const fetchPatients = useCallback(
@@ -109,12 +171,38 @@ const PatientSection = ({
   );
 
   const handleClearSelectedPatient = useCallback(async () => {
-    setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
-    setPatients([]);
-    await savePatient(null);
+    if (templateBundleIdentifier && selectedPatient) {
+      dispatch(
+        openModal('UnassignPatient', {
+          confirm: async () => {
+            dispatch(
+              changePatientForTemplateBundle(
+                templateBundleIdentifier,
+                taskGroupIdentifier,
+                'UNASSIGNED',
+              ),
+            );
+            setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+            setPatients([]);
+            await savePatient(null);
+          },
+        }),
+      );
+    } else {
+      setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+      setPatients([]);
+      await savePatient(null);
+    }
     // eslint-disable-next-line no-unused-expressions
     patientInputReference.current?.querySelector('input')?.focus();
-  }, [savePatient, setValue]);
+  }, [
+    dispatch,
+    savePatient,
+    selectedPatient,
+    setValue,
+    taskGroupIdentifier,
+    templateBundleIdentifier,
+  ]);
 
   const handlePatientSelect = useCallback(
     async selectedOption => {

@@ -9,6 +9,7 @@ import {
   ClickablePatient,
   StandardTaskItemCell,
   ListItemLink,
+  PatientLabel,
 } from '../../styled';
 
 const TaskItemPatient = ({
@@ -21,9 +22,13 @@ const TaskItemPatient = ({
   matchPatient,
   task,
   dispatch,
+  customPatientClick,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const onPatientClick = useCallback(() => {
-    if (!patient) {
+    if (customPatientClick && typeof customPatientClick === 'function') {
+      customPatientClick();
+    } else if (!patient) {
       dispatch(openDrawer(DrawerFieldEnum.PATIENT));
       dispatch(storeAsCurrentTask(task));
     }
@@ -43,26 +48,47 @@ const TaskItemPatient = ({
         {taskStatus !== 'COMPLETE' && !isSubtask && !patient && (
           <AddPlaceholder>+ Add Patient</AddPlaceholder>
         )}
-        {patient && !parentHasPatient && (
-          <PatientCard patientIdentifier={patient.patientIdentifier}>
-            <ListItemLink to={`/core/patient/${patient.patientIdentifier}`}>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
-                />
-              ) : (
-                `${patientName}`
-              )}
-            </ListItemLink>
-          </PatientCard>
-        )}
+        {patient &&
+          !parentHasPatient &&
+          (customPatientClick ? (
+            <PatientCard patientIdentifier={patient.patientIdentifier}>
+              <PatientLabel>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
+                )}
+              </PatientLabel>
+            </PatientCard>
+          ) : (
+            <PatientCard patientIdentifier={patient.patientIdentifier}>
+              <ListItemLink to={`/core/patient/${patient.patientIdentifier}`}>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
+                )}
+              </ListItemLink>
+            </PatientCard>
+          ))}
       </ClickablePatient>
     </StandardTaskItemCell>
   );
