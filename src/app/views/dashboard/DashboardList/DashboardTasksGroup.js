@@ -37,6 +37,7 @@ import {
   DashboardTasksGroupHeader,
   GroupNameSectionWrapper,
   BulkContainer,
+  DashboardTaskItemContainer,
 } from './styled';
 
 const TASK_ITEM_COLUMNS_CONFIG = {
@@ -61,6 +62,16 @@ const GROUPS_WITH_QUICK_ADD_TASK_INPUT = [
   TODAY_GROUP,
   NEXT_7_DAYS_GROUP,
   NO_DUE_DATE_GROUP,
+];
+const COMPLETED_TODAY = 'COMPLETED_TODAY';
+const COMPLETED_7_DAYS = 'COMPLETED_7_DAYS';
+const ORG_COMPLETED_TODAY = 'ORG_COMPLETED_TODAY';
+const ORG_COMPLETED_7_DAYS = 'ORG_COMPLETED_7_DAYS';
+const GROUPS_WITH_COMPLETED_TASKS = [
+  COMPLETED_TODAY,
+  COMPLETED_7_DAYS,
+  ORG_COMPLETED_TODAY,
+  ORG_COMPLETED_7_DAYS,
 ];
 
 const DashboardTasksGroup = ({
@@ -87,6 +98,7 @@ const DashboardTasksGroup = ({
   isSearching,
   closeDrawer,
   handleQuickAddTask,
+  openModal,
 }) => {
   const {
     groupName,
@@ -154,6 +166,8 @@ const DashboardTasksGroup = ({
 
     return null;
   }, [groupType]);
+
+  const isCompletedGroup = !!GROUPS_WITH_COMPLETED_TASKS.includes(groupType);
 
   return (
     <DashboardTasksGroupContainer>
@@ -288,21 +302,25 @@ const DashboardTasksGroup = ({
               onBeforeDragStart={showClearSortFiltersModal}
               onDragEnd={({ destination, source }) => {
                 if (!isSortApplied) {
-                  const { index: destinationIndex } = destination;
-                  const { index: sourceIndex } = source;
-                  const newTasks = [...tasks];
-                  newTasks.splice(
-                    destinationIndex,
-                    0,
-                    newTasks.splice(sourceIndex, 1)[0],
-                  );
+                  if (!destination) {
+                    openModal('HomeScreenDragDrop');
+                  } else {
+                    const { index: destinationIndex } = destination;
+                    const { index: sourceIndex } = source;
+                    const newTasks = [...tasks];
+                    newTasks.splice(
+                      destinationIndex,
+                      0,
+                      newTasks.splice(sourceIndex, 1)[0],
+                    );
 
-                  setNewTasks(newTasks);
+                    setNewTasks(newTasks);
 
-                  const newTasksOrder = newTasks.map(
-                    ({ taskIdentifier }) => taskIdentifier,
-                  );
-                  sortDashboardTasks(groupType, newTasksOrder);
+                    const newTasksOrder = newTasks.map(
+                      ({ taskIdentifier }) => taskIdentifier,
+                    );
+                    sortDashboardTasks(groupType, newTasksOrder);
+                  }
                 }
               }}
             >
@@ -325,37 +343,40 @@ const DashboardTasksGroup = ({
                               ref={draggableProvided.innerRef}
                               {...draggableProvided.draggableProps}
                             >
-                              <StandardTaskItem
-                                task={task}
-                                toggleTaskComplete={() =>
-                                  toggleDashboardTaskComplete(task)
-                                }
-                                redirectToParentTask={redirectToParentTask}
-                                storeAsCurrentTask={storeAsCurrentTask}
-                                isDragging={isDragging}
-                                dragHandleProps={
-                                  draggableProvided.dragHandleProps
-                                }
-                                isDraggable={
-                                  !isTaskDrawerOpen && tasks?.length > 1
-                                }
-                                openDrawer={openDrawer}
-                                isSelected={
-                                  selectedTaskIdentifier ===
-                                  task?.taskIdentifier
-                                }
-                                showAssignedPerson={isAllTasksTab}
-                                updateDueDate={updateDueDate}
-                                currentUser={currentUser}
-                                onTaskUpdate={onTaskUpdate}
-                                updateWorkflowStatus={updateWorkflowStatus}
-                                taskItemConfig={columnsConfig}
-                                multipleAssigneesContext={
-                                  groupHasMultipleAssignees
-                                }
-                                subtasksDisabled
-                                isDashboardTask
-                              />
+                              <DashboardTaskItemContainer>
+                                <StandardTaskItem
+                                  task={task}
+                                  toggleCompleteTask={() =>
+                                    toggleDashboardTaskComplete(task)
+                                  }
+                                  isCompletedGroup={isCompletedGroup}
+                                  redirectToParentTask={redirectToParentTask}
+                                  storeAsCurrentTask={storeAsCurrentTask}
+                                  isDragging={isDragging}
+                                  dragHandleProps={
+                                    draggableProvided.dragHandleProps
+                                  }
+                                  isDraggable={
+                                    !isTaskDrawerOpen && tasks?.length > 1
+                                  }
+                                  openDrawer={openDrawer}
+                                  isSelected={
+                                    selectedTaskIdentifier ===
+                                    task?.taskIdentifier
+                                  }
+                                  showAssignedPerson={isAllTasksTab}
+                                  updateDueDate={updateDueDate}
+                                  currentUser={currentUser}
+                                  onTaskUpdate={onTaskUpdate}
+                                  updateWorkflowStatus={updateWorkflowStatus}
+                                  taskItemConfig={columnsConfig}
+                                  multipleAssigneesContext={
+                                    groupHasMultipleAssignees
+                                  }
+                                  subtasksDisabled
+                                  isDashboardTask
+                                />
+                              </DashboardTaskItemContainer>
                             </div>
                           )}
                         </Draggable>

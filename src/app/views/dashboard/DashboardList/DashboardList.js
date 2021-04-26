@@ -477,6 +477,7 @@ const DashboardList = ({
                     isSearching={!!searchValue}
                     closeDrawer={taskDrawerActions.closeDrawer}
                     handleQuickAddTask={handleQuickAddTask}
+                    openModal={openModal}
                   />
                 ),
             )

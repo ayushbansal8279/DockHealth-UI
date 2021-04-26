@@ -291,11 +291,14 @@ const MegaFilter = ({
                   <MegaFilterBoldedLabel>
                     FILTER ACTIVE TASKS{' '}
                   </MegaFilterBoldedLabel>
-                  {isFilterApplied && (
+                  {isFilterApplied && tasksAndSubTasksCount && (
                     <>
                       SHOWING {tasksAndSubTasksCount} OF {activeItemsAmount}{' '}
                       ITEMS
                     </>
+                  )}
+                  {isFilterApplied && !tasksAndSubTasksCount && (
+                    <>SHOWING {activeItemsAmount} ITEMS</>
                   )}
                 </MegaFilterLabel>
                 {isFilterApplied && (

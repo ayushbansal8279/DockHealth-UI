@@ -395,15 +395,20 @@ function* doReloadDashboardTasks(props = {}) {
 
       yield put({
         type: REQUEST_DASHBOARD_TASKS_SUCCESS,
-        tasksList: tasksList.map(group => ({
+        tasksList: tasksList?.taskGroups?.map(group => ({
           ...group,
           metricValue: group?.tasks?.length || 0,
           defaultOpen: true,
         })),
       });
+      yield put({
+        type: FETCH_MEGA_FILTERS_SUCCESS,
+        filters: tasksList?.taskFilterOptions,
+      });
     } else {
       yield all([
         call(doFetchImplicitGroups, { customGroupsSettings }),
+        call(doFetchDashboardFilters),
         call(statisticsRequest),
       ]);
     }

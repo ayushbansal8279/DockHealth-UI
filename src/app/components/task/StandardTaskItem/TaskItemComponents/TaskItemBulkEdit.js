@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { BulkContainer } from '../../styled';
 

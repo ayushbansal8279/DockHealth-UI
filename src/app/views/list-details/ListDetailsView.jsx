@@ -535,11 +535,11 @@ class Home extends Component {
     if (currentUser && !isEmpty(currentUser) && !isNewUser) {
       const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('MULTI_ASSIGN')) {
-        modalActions.openModal('MultiAssignTour', {
+      if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
+        modalActions.openModal('MultiMentionAssignTour', {
           onClose: () => {
             userApi.updateUserDashboardPrefs({
-              appFeaturesReviewed: ['MULTI_ASSIGN'],
+              appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
             });
           },
         });
