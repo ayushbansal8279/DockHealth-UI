@@ -1,11 +1,9 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { isEmpty } from 'ramda';
 import {
   ADD_TASK_COMMENT_SUCCESS,
-  ADD_TASK_SUCCESS,
   DELETE_TASK_COMMENT_SUCCESS,
-  DELETE_TASK_SUCCESS,
-  DUPLICATE_TASK_SUCCESS,
-  MOVE_TASK_SUCCESS,
+  DELETE_TASK,
   TASK_ATTACHMENT_ADDED,
   TASK_ATTACHMENT_REMOVED,
   UPDATE_TASK_SUCCESS,
@@ -18,245 +16,96 @@ import {
   UPDATE_TASKS_SUCCESS,
   DELETE_TASKS_SUCCESS,
   COMPLETE_TASKS_SUCCESS,
-  LOAD_TASKS_FOR_BUNDLE,
   UNSELECT_ALL_TASKS,
   CHANGE_TASKS_SELECTED_STATE,
+  ADD_SUBTASK,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
-import { TaskItemType, TaskStatus, TaskGroupType } from 'helpers/task-helpers';
 import {
-  updateAllTaskItems,
-  updateMultipleTasks,
-} from 'helpers/tasklist-helpers';
+  TaskStatus,
+  updateSubtasksInTask,
+  updateSubtasksInTaskWithCallback,
+} from 'helpers/task-helpers';
 
-const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
-  parentTaskIdentifier || taskIdentifier;
-
-const isSubtask = ({ parentTaskIdentifier }) => parentTaskIdentifier !== null;
-const isParentOfAddedTask = addedTask => ({ taskIdentifier }) =>
-  taskIdentifier === addedTask.parentTaskIdentifier;
-
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskBaseReducer = (state, action, updateStateCallback) => {
-  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
     case ADD_TASK_COMMENT_SUCCESS: {
-      const mainTaskId = getMainTaskId(action.task);
+      const {
+        task: { taskIdentifier },
+        comment: { data: comment },
+      } = action;
 
-      const comment = action.comment.data;
+      const updateTaskFromAction = task => {
+        if (task.taskIdentifier === taskIdentifier) {
+          return {
+            ...task,
+            comments: [comment].concat(task.comments),
+          };
+        }
 
-      const updateTaskFromAction = tasks =>
-        tasks.map(task => {
-          if (task.taskIdentifier !== mainTaskId) {
-            return task;
-          }
-
-          return action.task.parentTaskIdentifier
-            ? {
-                ...task,
-                subtasks: task.subtasks.map(subtask =>
-                  subtask.taskIdentifier === action.task.taskIdentifier
-                    ? {
-                        ...subtask,
-                        comments: [comment].concat(subtask.comments),
-                      }
-                    : subtask,
-                ),
-              }
-            : {
-                ...task,
-                comments: [comment].concat(task.comments),
-              };
-        });
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case ADD_TASK_SUCCESS: {
-      const { task: addedTask } = action;
-
-      const updateTaskFromAction = tasks => {
-        const parentTask = tasks.find(({ taskIdentifier }) =>
-          isParentOfAddedTask(addedTask)({ taskIdentifier }),
+        return updateSubtasksInTaskWithCallback(
+          subtask => ({
+            ...subtask,
+            comments: [comment].concat(subtask.comments),
+          }),
+          taskIdentifier,
+          task,
         );
-
-        if (isSubtask(addedTask)) {
-          addedTask.patient = parentTask?.patient;
-        }
-
-        if (isSubtask(addedTask)) {
-          return tasks.map(task => {
-            if (task.itemType === TaskItemType.BUNDLE) {
-              return {
-                ...task,
-                tasks: task.tasks.map(t => {
-                  if (isParentOfAddedTask(addedTask)(t))
-                    return {
-                      ...t,
-                      subtasks: t.subtasks.concat([addedTask]),
-                      subTasksCount: t.subTasksCount + 1,
-                    };
-
-                  return t;
-                }),
-              };
-            }
-
-            if (isParentOfAddedTask(addedTask)(task))
-              return {
-                ...task,
-                subtasks: task.subtasks.concat([addedTask]),
-                subTasksCount: task.subTasksCount + 1,
-              };
-
-            return task;
-          });
-        }
-
-        const bundleIdentifier = addedTask?.taskGroups?.find(
-          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
-        )?.taskGroupIdentifier;
-
-        if (bundleIdentifier) {
-          let bundleFound = false;
-
-          const tasksToReturn = tasks.map(t => {
-            if (
-              t.itemType === TaskItemType.BUNDLE &&
-              t.identifier === bundleIdentifier
-            ) {
-              bundleFound = true;
-              return { ...t, tasks: [addedTask, ...t.tasks] };
-            }
-
-            return t;
-          });
-
-          if (bundleFound) return tasksToReturn;
-        }
-
-        return [addedTask].concat(tasks);
       };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
     case DELETE_TASK_COMMENT_SUCCESS: {
-      const mainTaskId = getMainTaskId(action.task);
+      const { taskIdentifier, commentIdentifier } = action;
 
-      const updateTaskFromAction = tasks =>
-        tasks.map(task => {
-          if (task.taskIdentifier === mainTaskId) {
-            return action.task.parentTaskIdentifier
-              ? {
-                  ...task,
-                  subtasks: task.subtasks.map(subtask =>
-                    subtask.taskIdentifier === action.task.taskIdentifier
-                      ? {
-                          ...subtask,
-                          comments: subtask.comments.filter(
-                            comment =>
-                              comment.commentIdentifier !==
-                              action.comment.commentIdentifier,
-                          ),
-                        }
-                      : subtask,
-                  ),
-                }
-              : {
-                  ...task,
-                  comments: task.comments.filter(
-                    comment =>
-                      comment.commentIdentifier !==
-                      action.comment.commentIdentifier,
-                  ),
-                };
-          }
-          return task;
-        });
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case DELETE_TASK_SUCCESS: {
-      const { parentTaskIdentifier } = action.task;
-
-      const updateTaskFromAction = tasks => {
-        if (parentTaskIdentifier) {
-          return tasks.map(task => {
-            if (task.itemType === TaskItemType.BUNDLE) {
-              return {
-                ...task,
-                tasks: task.tasks?.map(t =>
-                  t.identifier === parentTaskIdentifier
-                    ? {
-                        ...t,
-                        subTasksCount: t.subTasksCount - 1,
-                        subtasks: t.subtasks.filter(
-                          ({ taskIdentifier }) =>
-                            taskIdentifier !== action.task.taskIdentifier,
-                        ),
-                      }
-                    : t,
-                ),
-              };
-            }
-
-            if (task.taskIdentifier === parentTaskIdentifier) {
-              return {
-                ...task,
-                subTasksCount: task.subTasksCount - 1,
-                subtasks: task.subtasks.filter(
-                  ({ taskIdentifier }) =>
-                    taskIdentifier !== action.task.taskIdentifier,
-                ),
-              };
-            }
-            return task;
-          });
+      const updateTaskFromAction = task => {
+        if (task.taskIdentifier === taskIdentifier) {
+          return {
+            ...task,
+            comments: task.comments?.filter(
+              comment => comment.commentIdentifier !== commentIdentifier,
+            ),
+          };
         }
 
-        return tasks.reduce((accumulator, currentTask) => {
-          if (currentTask.itemType === TaskItemType.BUNDLE) {
-            return [
-              ...accumulator,
-              {
-                ...currentTask,
-                tasks: currentTask.tasks?.filter(
-                  ({ taskIdentifier }) =>
-                    taskIdentifier !== action.task.taskIdentifier,
-                ),
-              },
-            ];
-          }
-
-          return currentTask.taskIdentifier === action.task.taskIdentifier
-            ? accumulator
-            : [...accumulator, currentTask];
-        }, []);
+        return updateSubtasksInTaskWithCallback(
+          subtask => ({
+            ...subtask,
+            comments: subtask.comments?.filter(
+              comment => comment.commentIdentifier !== commentIdentifier,
+            ),
+          }),
+          taskIdentifier,
+          task,
+        );
       };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case DUPLICATE_TASK_SUCCESS: {
-      const mainTaskId = getMainTaskId(action.duplicatedTask);
-      const { duplicatedTask } = action;
+    case DELETE_TASK: {
+      const { taskIdentifier } = action;
 
-      const updateTaskFromAction = tasks => {
-        if (duplicatedTask.parentTaskIdentifier) {
-          return tasks.map(task =>
-            task.taskIdentifier === mainTaskId
-              ? {
-                  ...task,
-                  subTasksCount: task.subTasksCount + 1,
-                  subtasks: [action.duplicatedTask, ...task.subtasks],
-                }
-              : task,
-          );
+      const updateTaskFromAction = task => {
+        if (task.taskIdentifier === taskIdentifier) {
+          return null;
         }
-        return [action.duplicatedTask].concat(tasks);
+
+        if (task.subtasks?.length > 0) {
+          const updatedSubtasks = task.subtasks?.filter(
+            s => s.taskIdentifier !== taskIdentifier,
+          );
+
+          return {
+            ...task,
+            subtasks: updatedSubtasks,
+            subTasksCount: updatedSubtasks?.length || task.subTasksCount,
+          };
+        }
+
+        return task;
       };
 
       return updateStateCallback(state, updateTaskFromAction);
@@ -265,381 +114,320 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case OPEN_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
-      if (taskIdentifier) {
-        const updateTaskFromAction = tasks => {
-          return tasks.map(task => {
-            if (task.itemType === 'BUNDLE') {
-              return {
-                ...task,
-                tasks: task.tasks.map(t => {
-                  if (t.taskIdentifier === taskIdentifier) {
-                    return {
-                      ...t,
-                      subtaskQuickAddOpen: true,
-                    };
-                  }
+      const updateTaskFromAction = task =>
+        task.taskIdentifier === taskIdentifier
+          ? { ...task, subtaskQuickAddOpen: true }
+          : task;
 
-                  return t;
-                }),
-              };
-            }
-
-            if (task.taskIdentifier === taskIdentifier) {
-              return {
-                ...task,
-                subtaskQuickAddOpen: true,
-              };
-            }
-
-            return task;
-          });
-        };
-
-        return updateStateCallback(state, updateTaskFromAction);
-      }
-
-      return state;
+      return updateStateCallback(state, updateTaskFromAction);
     }
 
     case CLOSE_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
-      if (taskIdentifier) {
-        const updateTaskFromAction = tasks => {
-          return tasks.map(task => {
-            if (task.itemType === 'BUNDLE') {
-              return {
-                ...task,
-                tasks: task.tasks.map(t => {
-                  if (t.taskIdentifier === taskIdentifier) {
-                    return {
-                      ...t,
-                      subtaskQuickAddOpen: false,
-                    };
-                  }
-
-                  return t;
-                }),
-              };
-            }
-
-            if (task.taskIdentifier === taskIdentifier)
-              return {
-                ...task,
-                subtaskQuickAddOpen: false,
-              };
-
-            return task;
-          });
-        };
-
-        return updateStateCallback(state, updateTaskFromAction);
-      }
-
-      return state;
-    }
-
-    case MOVE_TASK_SUCCESS: {
-      const { task } = action;
-
-      const updateTaskFromAction = tasks => {
-        if (!isSubtask(task)) {
-          return tasks.filter(t => t.taskIdentifier !== task.taskIdentifier);
-        }
-        return tasks.map(t =>
-          t.taskIdentifier !== task.parentTaskIdentifier
-            ? t
-            : {
-                ...t,
-                subtasks: t.subtasks.filter(
-                  subtask => subtask.taskIdentifier !== task.taskIdentifier,
-                ),
-              },
-        );
-      };
+      const updateTaskFromAction = task =>
+        task.taskIdentifier === taskIdentifier
+          ? { ...task, subtaskQuickAddOpen: false }
+          : task;
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
     case TASK_ATTACHMENT_ADDED: {
-      const mainTaskId = action.taskIdentifier;
-      const { taskAttachment } = action;
+      const { taskAttachment, taskIdentifier } = action;
 
-      const updateTaskFromAction = tasks =>
-        tasks.map(t =>
-          t.taskIdentifier === mainTaskId
-            ? {
-                ...t,
-                attachments: [taskAttachment].concat(t.attachments),
-              }
-            : {
-                ...t,
-                subtasks: t.subtasks.map(st =>
-                  st.taskIdentifier === mainTaskId
-                    ? {
-                        ...st,
-                        attachments: [taskAttachment].concat(st.attachments),
-                      }
-                    : st,
-                ),
-              },
+      const updateTaskFromAction = task => {
+        if (task.taskIdentifier === taskIdentifier) {
+          return {
+            ...task,
+            attachments: [taskAttachment].concat(task.attachments),
+          };
+        }
+
+        return updateSubtasksInTaskWithCallback(
+          subtask => ({
+            ...subtask,
+            attachments: [taskAttachment].concat(subtask.attachments),
+          }),
+          taskIdentifier,
+          task,
         );
+      };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
     case TASK_ATTACHMENT_REMOVED: {
-      const mainTaskId = action.taskIdentifier;
-      const { taskAttachmentId } = action;
+      const { taskAttachmentId, taskIdentifier } = action;
 
-      const updateTaskFromAction = tasks =>
-        tasks.map(t =>
-          t.taskIdentifier === mainTaskId
-            ? {
-                ...t,
-                attachments: t.attachments.filter(
-                  att => att.attachmentIdentifier !== taskAttachmentId,
-                ),
-              }
-            : {
-                ...t,
-                subtasks: t.subtasks.map(st =>
-                  st.taskIdentifier === mainTaskId
-                    ? {
-                        ...st,
-                        attachments: st.attachments.filter(
-                          att => att.attachmentIdentifier !== taskAttachmentId,
-                        ),
-                      }
-                    : st,
-                ),
-              },
+      const updateTaskFromAction = task => {
+        if (task.taskIdentifier === taskIdentifier) {
+          return {
+            ...task,
+            attachments: task.attachments?.filter(
+              a => a.attachmentIdentifier !== taskAttachmentId,
+            ),
+          };
+        }
+
+        return updateSubtasksInTaskWithCallback(
+          subtask => ({
+            ...subtask,
+            attachments: subtask.attachments?.filter(
+              a => a.attachmentIdentifier !== taskAttachmentId,
+            ),
+          }),
+          taskIdentifier,
+          task,
         );
+      };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
     case REQUEST_LOAD_SUBTASKS: {
-      const { task } = action;
+      const {
+        task: { taskIdentifier },
+      } = action;
 
-      const updateTaskFromAction = tasks =>
-        tasks.map(t => {
-          if (
-            t.taskIdentifier !== task.parentTaskIdentifier &&
-            t.taskIdentifier !== task.taskIdentifier
-          ) {
-            return t;
-          }
-
-          if (task.taskIdentifier === t.taskIdentifier) {
-            return { ...t, ...task, isFetchingSubTasks: true };
-          }
-
-          return {
-            ...t,
-          };
-        });
+      const updateTaskFromAction = t =>
+        t.taskIdentifier === taskIdentifier
+          ? {
+              ...t,
+              isFetchingSubTasks: true,
+            }
+          : t;
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_SUCCESS:
-    case LOAD_SUBTASKS_SUCCESS:
+    case LOAD_SUBTASKS_SUCCESS: {
+      const { task } = action;
+
+      const updateTaskFromAction = t =>
+        t.taskIdentifier === task.taskIdentifier
+          ? {
+              ...t,
+              ...task,
+              isFetchingSubTasks: false,
+            }
+          : t;
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
     case REFRESH_ANOTHER_TASK_SUCCESS: {
-      let { task } = action;
+      const { task } = action;
 
-      if (action.type === LOAD_SUBTASKS_SUCCESS) {
-        task = { ...task, isFetchingSubTasks: false };
-      }
-
-      const updateTaskFromAction = tasks =>
-        tasks.map(t => {
-          if (
-            t.taskIdentifier !== task.parentTaskIdentifier &&
-            t.taskIdentifier !== task.taskIdentifier &&
-            task.parentTaskIdentifier !== undefined
-          ) {
-            return t;
-          }
-
-          if (task.taskIdentifier === t.taskIdentifier) {
-            return { ...t, ...task };
-          }
-
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === task.taskIdentifier) {
           return {
             ...t,
-            subtasks: t.subtasks.map(subtask =>
-              subtask.taskIdentifier === task.taskIdentifier
-                ? { ...subtask, ...task }
-                : subtask,
-            ),
+            ...task,
           };
-        });
+        }
+
+        return updateSubtasksInTask(task, task.taskIdentifier, t);
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case UPDATE_TASK_SUCCESS: {
+      const { task } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === task.taskIdentifier) {
+          let updatedTask = { ...t, ...task };
+
+          if (
+            t.status !== task.status &&
+            updatedTask.status === TaskStatus.COMPLETE
+          ) {
+            updatedTask = {
+              ...updatedTask,
+              subtasks: updatedTask.subtasks?.map(s => ({
+                ...s,
+                status: TaskStatus.COMPLETE,
+              })),
+              subTasksCompletedCount: updatedTask.subTasksCount,
+            };
+          }
+
+          return updatedTask;
+        }
+
+        let updatedTask = updateSubtasksInTask(task, task.taskIdentifier, t);
+
+        if (task.status && updatedTask.subtasks?.length > 0) {
+          updatedTask = {
+            ...updatedTask,
+            subTasksCompletedCount: updatedTask.subtasks?.filter(
+              s => s.status === TaskStatus.COMPLETE,
+            ).length,
+          };
+        }
+
+        return updatedTask;
+      };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
     case UPDATE_TASK_COMMENT_SUCCESS: {
-      const mainTaskId = getMainTaskId(action.task);
+      const {
+        task: { taskIdentifier },
+        comment,
+      } = action;
 
-      const updateTaskFromAction = tasks =>
-        tasks.map(task => {
-          if (task.taskIdentifier === mainTaskId) {
-            if (action.task.parentTaskIdentifier) {
-              return {
-                ...task,
-                subtasks: task.subtasks.map(subtask => ({
-                  ...subtask,
-                  comments: subtask.comments.map(comment => {
-                    if (
-                      comment.commentIdentifier ===
-                      action.comment.commentIdentifier
-                    ) {
-                      return {
-                        ...comment,
-                        ...action.comment,
-                        creator: comment.creator,
-                      };
-                    }
+      const updateTaskFromAction = t => {
+        function updateCommentIfMatches(commentIdentifier, comments) {
+          return comments?.map(c =>
+            c.commentIdentifier === commentIdentifier
+              ? { ...c, ...comment }
+              : c,
+          );
+        }
 
-                    return comment;
-                  }),
-                })),
-              };
-            }
+        if (t.taskIdentifier === taskIdentifier) {
+          return {
+            ...t,
+            comments: updateCommentIfMatches(
+              comment.commentIdentifier,
+              t.comments,
+            ),
+          };
+        }
 
-            return {
-              ...task,
-              comments: task.comments.map(comment =>
-                comment.commentIdentifier === action.comment.commentIdentifier
-                  ? {
-                      ...comment,
-                      ...action.comment,
-                      creator: comment.creator,
-                    }
-                  : comment,
-              ),
-            };
-          }
-
-          return task;
-        });
+        return updateSubtasksInTaskWithCallback(
+          subtask => ({
+            ...subtask,
+            comments: updateCommentIfMatches(
+              comment.commentIdentifier,
+              subtask.comments,
+            ),
+          }),
+          taskIdentifier,
+          t,
+        );
+      };
 
       return updateStateCallback(state, updateTaskFromAction);
     }
 
     case UPDATE_TASKS_SUCCESS: {
-      const { tasksToUpdate, fields, filters, searchValue } = action;
-      const updateTasksFromAction = currentTasks => {
-        let newTasks = currentTasks?.map(task => {
-          let newTask = task;
-          if (tasksToUpdate?.includes(newTask?.taskIdentifier)) {
-            newTask = { ...newTask, ...fields };
+      const {
+        tasksToUpdate,
+        fields: dataToUpdate,
+        filters,
+        searchValue,
+      } = action;
+      const updateTasksFromAction = task => {
+        let updatedTask = task;
+
+        if (tasksToUpdate.includes(task.taskIdentifier)) {
+          updatedTask = {
+            ...updatedTask,
+            ...dataToUpdate,
+          };
+
+          if (dataToUpdate.patient) {
+            updatedTask = {
+              ...updatedTask,
+              subtasks: updatedTask.subtasks?.map(s => ({
+                ...s,
+                patient: dataToUpdate.patient,
+              })),
+            };
           }
 
-          if (newTask?.subtasks?.length > 0) {
-            newTask.subtasks = newTask?.subtasks?.map(subtask => {
-              if (tasksToUpdate?.includes(subtask?.taskIdentifier)) {
-                if (
-                  fields.status === TaskStatus.COMPLETE &&
-                  subtask.status === TaskStatus.INCOMPLETE
-                ) {
-                  newTask.subTasksCompletedCount += 1;
-                }
-
-                if (
-                  fields.status === TaskStatus.INCOMPLETE &&
-                  subtask.status === TaskStatus.COMPLETE
-                ) {
-                  newTask.subTasksCompletedCount -= 1;
-                }
-
-                return { ...subtask, ...fields };
-              }
-
-              return subtask;
-            });
+          if (dataToUpdate.status === TaskStatus.COMPLETE) {
+            updatedTask = {
+              ...updatedTask,
+              subtasks: updatedTask.subtasks?.map(s => ({
+                ...s,
+                patient: dataToUpdate.status,
+              })),
+            };
           }
-
-          return newTask;
-        });
-
-        if (!isEmpty(filters)) {
-          newTasks = newTasks.filter(task =>
-            checkIfTaskMatchesFilters(task, filters),
-          );
         }
 
-        if (searchValue && searchValue !== '') {
-          newTasks = newTasks.filter(task =>
-            checkIfTaskMatchesSearch(task, searchValue),
-          );
+        updatedTask = {
+          ...updatedTask,
+          subtasks: updatedTask.subtasks?.map(s =>
+            tasksToUpdate.includes(s.taskIdentifier)
+              ? { ...s, ...dataToUpdate }
+              : s,
+          ),
+        };
+
+        if (dataToUpdate.status && updatedTask.subtasks?.length > 0) {
+          updatedTask = {
+            ...updatedTask,
+            subTasksCompletedCount: updatedTask.subtasks?.filter(
+              ({ status }) => status === TaskStatus.COMPLETE,
+            ).length,
+          };
         }
 
-        return newTasks;
+        if (
+          (!isEmpty(filters) &&
+            !checkIfTaskMatchesFilters(updatedTask, filters)) ||
+          (searchValue && !checkIfTaskMatchesSearch(updatedTask, searchValue))
+        ) {
+          return null;
+        }
+
+        return updatedTask;
       };
       return updateStateCallback(state, updateTasksFromAction);
     }
+
     case DELETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
-      const updateTasksFromAction = currentTasks =>
-        currentTasks
-          ?.filter(task => {
-            if (tasksToDelete?.includes(task?.taskIdentifier)) {
-              return false;
-            }
+      const updateTasksFromAction = task => {
+        if (tasksToDelete.includes(task.taskIdentifier)) {
+          return null;
+        }
 
-            return true;
-          })
-          .map(task => {
-            if (task?.subtasks?.length > 0) {
-              const subtasks = task?.subtasks?.filter(
-                subtask => !tasksToDelete?.includes(subtask?.taskIdentifier),
-              );
-              return {
-                ...task,
-                subtasks,
-                subTasksCount: subtasks?.length || 0,
-              };
-            }
+        if (task.subtasks?.length > 0) {
+          const updatedSubtasks = task.subtasks?.filter(
+            s => !tasksToDelete.includes(s.taskIdentifier),
+          );
 
-            return task;
-          });
+          return {
+            ...task,
+            subtasks: updatedSubtasks,
+            subTasksCount: updatedSubtasks?.length,
+          };
+        }
+
+        return task;
+      };
 
       return updateStateCallback(state, updateTasksFromAction);
     }
 
     case COMPLETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
-      const updateTasksFromAction = currentTasks =>
-        // eslint-disable-next-line sonarjs/no-identical-functions
-        currentTasks?.filter(task => {
-          if (tasksToDelete?.includes(task?.taskIdentifier)) {
-            return false;
-          }
+      const updateTasksFromAction = task => {
+        if (tasksToDelete.includes(task.taskIdentifier)) {
+          return null;
+        }
 
-          return true;
-        });
-
-      return updateStateCallback(state, updateTasksFromAction);
-    }
-
-    case LOAD_TASKS_FOR_BUNDLE: {
-      const { bundleIdentifier, tasks } = action;
-
-      const updateTasksFromAction = currentTasks =>
-        currentTasks?.map(t =>
-          t.itemType === 'BUNDLE' && t.identifier === bundleIdentifier
-            ? { ...t, tasks }
-            : t,
-        );
+        return task;
+      };
 
       return updateStateCallback(state, updateTasksFromAction);
     }
 
     case UNSELECT_ALL_TASKS: {
-      const updateStateFromAction = tasks => {
-        return updateAllTaskItems({ selected: false }, tasks);
+      const updateStateFromAction = task => {
+        return {
+          ...task,
+          selected: false,
+          subtasks: task.subtasks?.map(s => ({ ...s, selected: false })),
+        };
       };
 
       return updateStateCallback(state, updateStateFromAction);
@@ -648,12 +436,42 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case CHANGE_TASKS_SELECTED_STATE: {
       const { taskIdentifiers, newSelectedState } = action;
 
-      const updateStateFromAction = tasks =>
-        updateMultipleTasks(
-          { selected: newSelectedState },
-          taskIdentifiers,
-          tasks,
-        );
+      const updateStateFromAction = task => {
+        return {
+          ...task,
+          selected: taskIdentifiers.includes(task.taskIdentifier)
+            ? newSelectedState
+            : task.selected,
+
+          subtasks: task.subtasks?.map(s =>
+            taskIdentifiers.includes(s.taskIdentifier)
+              ? { ...s, selected: newSelectedState }
+              : s,
+          ),
+        };
+      };
+
+      return updateStateCallback(state, updateStateFromAction);
+    }
+
+    case ADD_SUBTASK: {
+      const { subtask } = action;
+      const { parentTaskIdentifier } = subtask;
+
+      const updateStateFromAction = task => {
+        if (parentTaskIdentifier === task.taskIdentifier) {
+          let updatedSubtasks = task.subtasks || [];
+          updatedSubtasks = [...updatedSubtasks, subtask];
+
+          return {
+            ...task,
+            subtasks: updatedSubtasks,
+            subTasksCount: updatedSubtasks.length,
+          };
+        }
+
+        return task;
+      };
 
       return updateStateCallback(state, updateStateFromAction);
     }

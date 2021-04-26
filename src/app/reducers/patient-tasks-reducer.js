@@ -9,10 +9,16 @@ import {
   UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
-  MOVE_TASK_SUCCESS,
   SORT_PATIENT_TASKS,
+  UPDATE_TEMPLATE_BUNDLE,
+  ADD_TASK,
+  ADD_TEMPLATE_BUNDLE,
+  DELETE_TEMPLATE_BUNDLE,
 } from 'actions/action-types';
+import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
+import { mapWithRemove } from 'helpers/utility-functions';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
+import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
@@ -31,10 +37,19 @@ const INITIAL_STATE = {
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map(list => {
-    const updatedTasks = updateTaskCallback(list.tasks);
-    return { ...list, tasks: updatedTasks };
-  });
+  lists.map(list => ({
+    ...list,
+    tasks: mapWithRemove(t => {
+      if (t.itemType === TaskItemType.BUNDLE) {
+        return {
+          ...t,
+          tasks: mapWithRemove(updateTaskCallback, t.tasks),
+        };
+      }
+
+      return updateTaskCallback(t);
+    }, list.tasks),
+  }));
 
 const updateTasksStateCallback = (state, updateTaskFromAction) => {
   return {
@@ -43,6 +58,7 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
   };
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
 
@@ -102,23 +118,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         ),
       };
     }
-    case MOVE_TASK_SUCCESS: {
-      const { task, taskList } = action;
-      // remove task from existing tasklist
-      const updatedState = TaskBaseReducer(
-        state,
-        action,
-        updateTasksStateCallback,
-      );
-      // add task to new list
-      updatedState.lists = updatedState.lists.map(list => {
-        if (list.taskListIdentifier !== taskList.taskListIdentifier) {
-          return list;
-        }
-        return { ...list, tasks: list.tasks.concat([task]) };
-      });
-      return updatedState;
-    }
+
     case SET_PATIENT_TASK_SEARCH_VALUE:
       return {
         ...state,
@@ -134,6 +134,86 @@ export default function(state = INITIAL_STATE, action = {}) {
           key,
           order,
         },
+      };
+    }
+
+    case UPDATE_TEMPLATE_BUNDLE: {
+      const { bundleIdentifier, dataToUpdate } = action;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => ({
+          ...l,
+          tasks: updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks),
+        })),
+      };
+    }
+
+    case ADD_TASK: {
+      const { task: addedTask } = action;
+
+      const bundleIdentifier = addedTask.taskGroups?.find(
+        ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+      )?.taskGroupIdentifier;
+
+      if (bundleIdentifier) {
+        return {
+          ...state,
+          lists: state.lists?.map(l => ({
+            ...l,
+            tasks: l.tasks?.map(t =>
+              t.identifier === bundleIdentifier
+                ? { ...t, tasks: [addedTask, ...(t.tasks || [])] }
+                : t,
+            ),
+          })),
+        };
+      }
+
+      const { taskListIdentifier } = addedTask.taskList || {};
+
+      return {
+        ...state,
+        lists: state.lists?.map(l =>
+          l.taskListIdentifier === taskListIdentifier
+            ? {
+                ...l,
+                tasks: [addedTask, ...(l.tasks || [])],
+              }
+            : l,
+        ),
+      };
+    }
+
+    case ADD_TEMPLATE_BUNDLE: {
+      const { bundle: addedBundle } = action;
+
+      const { taskListIdentifier } = addedBundle;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l =>
+          l.taskListIdentifier === taskListIdentifier
+            ? {
+                ...l,
+                tasks: [addedBundle, ...(l.tasks || [])],
+              }
+            : l,
+        ),
+      };
+    }
+
+    case DELETE_TEMPLATE_BUNDLE: {
+      const { bundleIdentifier } = action;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => ({
+          ...l,
+          tasks: l.tasks?.filter(
+            ({ identifier }) => identifier !== bundleIdentifier,
+          ),
+        })),
       };
     }
 

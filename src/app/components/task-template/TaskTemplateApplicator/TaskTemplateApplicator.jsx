@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import {
   taskTemplatesSelector,
   isFetchingTaskTemplatesSelector,
 } from 'selectors/task-template-selectors';
-import { applyTaskTemplate } from 'actions/task-template-actions';
 import Spacing from 'components/common/Spacing';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import TaskTemplatePopover from './TaskTemplatePopover';
@@ -16,13 +15,9 @@ import {
   TaskTemplateApplicatorLabel,
 } from './styled';
 
-const TaskTemplateApplicator = ({
-  taskGroupIdentifier,
-  taskListIdentifier,
-}) => {
+const TaskTemplateApplicator = ({ onTemplateSelect }) => {
   const taskTemplates = useSelector(taskTemplatesSelector);
   const taskTemplatesIsLoading = useSelector(isFetchingTaskTemplatesSelector);
-  const dispatch = useDispatch();
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
@@ -31,16 +26,12 @@ const TaskTemplateApplicator = ({
       taskTemplates?.map(template => ({
         key: template?.taskTemplateIdentifier,
         label: template?.name,
-        onClick: () =>
-          dispatch(
-            applyTaskTemplate(
-              template?.taskTemplateIdentifier,
-              taskGroupIdentifier,
-              taskListIdentifier,
-            ),
-          ),
+        onClick: () => {
+          onTemplateSelect(template);
+          closePopover();
+        },
       })),
-    [taskTemplates, dispatch, taskGroupIdentifier, taskListIdentifier],
+    [closePopover, onTemplateSelect, taskTemplates],
   );
 
   return (

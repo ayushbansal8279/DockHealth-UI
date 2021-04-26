@@ -6,6 +6,7 @@ import { LoaderFillElement } from 'components/task/TasksSkeletonLoader/styled';
 
 export const TaskTemplateApplicatorContainer = styled.div`
   display: flex;
+  width: 170px;
   padding: ${spacing.small} 0 ${spacing.small} ${spacing.regular};
   background-color: white;
   border: 1px solid ${palette.coolGrey3};

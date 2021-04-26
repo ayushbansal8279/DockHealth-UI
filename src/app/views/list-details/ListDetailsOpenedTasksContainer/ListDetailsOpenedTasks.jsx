@@ -8,6 +8,7 @@ import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
+import { applyTaskTemplate } from 'actions/list-details-actions';
 
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -133,6 +134,18 @@ const ListDetailsOpenedTasks = ({
     }
   }, [isSortApplied, dispatch, resetSort]);
 
+  const applyTemplate = useCallback(
+    ({ taskTemplateIdentifier, taskGroupIdentifier }) =>
+      dispatch(
+        applyTaskTemplate({
+          taskTemplateIdentifier,
+          taskListIdentifier,
+          taskGroupIdentifier,
+        }),
+      ),
+    [dispatch, taskListIdentifier],
+  );
+
   const renderTasks = useCallback(
     () =>
       groupList
@@ -198,6 +211,7 @@ const ListDetailsOpenedTasks = ({
             onSortChange={onSortChange}
             shouldShowBlockModalOnDrag={isSortApplied}
             showClearSortFiltersModal={showClearSortFiltersModal}
+            applyTemplate={applyTemplate}
           />
         )),
     [
@@ -222,6 +236,7 @@ const ListDetailsOpenedTasks = ({
       onSortChange,
       isSortApplied,
       showClearSortFiltersModal,
+      applyTemplate,
       loadTasksForTaskGroup,
     ],
   );

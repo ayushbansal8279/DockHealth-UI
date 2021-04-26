@@ -6,7 +6,7 @@ import { onSubtaskAdded } from 'helpers/ga-event-helper';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { closeQuickAddSubtask, saveTask } from 'actions/task-actions';
+import { addSubtask, closeQuickAddSubtask } from 'actions/task-actions';
 import {
   StandardTaskItemContainer,
   MainStandardTaskItemCell,
@@ -56,11 +56,12 @@ const QuickAddSubatask = ({
     setError(validatorError);
 
     if (rawText && !validatorError) {
-      saveTask({
-        description: tokenizedText,
-        taskListIdentifier,
-        parentTaskIdentifier,
-      })(dispatch)
+      dispatch(
+        addSubtask(parentTaskIdentifier, {
+          description: tokenizedText,
+          taskListIdentifier,
+        }),
+      )
         .then(resetInputState)
         .catch(resetInputState);
       onSubtaskAdded('Quick add input');

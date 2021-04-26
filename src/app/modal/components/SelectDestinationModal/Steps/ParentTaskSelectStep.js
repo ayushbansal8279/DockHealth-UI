@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
@@ -5,6 +6,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import useBoolean from 'hooks/useBoolean';
 import * as ActionTypes from 'actions/action-types';
 import { getTasksForTaskListByTaskGroup, addTask } from 'api/task-api';
+import { TaskItemType } from 'helpers/task-helpers';
 import {
   TitleWithButtonWrapper,
   Title,
@@ -54,7 +56,7 @@ const ParentTaskSelectStep = ({
         );
         addParentTaskReference.current.value = '';
         dispatch({
-          type: ActionTypes.ADD_TASK_SUCCESS,
+          type: ActionTypes.ADD_TASK,
           task: createdParentTask,
         });
       })
@@ -115,26 +117,28 @@ const ParentTaskSelectStep = ({
             {!isFetchingParentTasks && (
               <>
                 {parentTasks?.length > 0 ? (
-                  parentTasks.map(parentTask => (
-                    <ListItem
-                      key={parentTask.taskIdentifier}
-                      isSelected={
-                        selectedParentTask?.taskIdentifier ===
-                        parentTask.taskIdentifier
-                      }
-                    >
-                      <ListItemTextButton
-                        onClick={() => setSelectedParentTask(parentTask)}
-                        type="button"
+                  parentTasks.map(parentTask =>
+                    parentTask.itemType === TaskItemType.TASK ? (
+                      <ListItem
+                        key={parentTask.taskIdentifier}
                         isSelected={
                           selectedParentTask?.taskIdentifier ===
                           parentTask.taskIdentifier
                         }
                       >
-                        {parentTask.description}
-                      </ListItemTextButton>
-                    </ListItem>
-                  ))
+                        <ListItemTextButton
+                          onClick={() => setSelectedParentTask(parentTask)}
+                          type="button"
+                          isSelected={
+                            selectedParentTask?.taskIdentifier ===
+                            parentTask.taskIdentifier
+                          }
+                        >
+                          {parentTask.description}
+                        </ListItemTextButton>
+                      </ListItem>
+                    ) : null,
+                  )
                 ) : (
                   <EmptyMessage>
                     {fetchingError || 'List is empty'}

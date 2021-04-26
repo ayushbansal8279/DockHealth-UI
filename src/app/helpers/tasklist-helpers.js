@@ -19,72 +19,6 @@ export function checkIfTasksHaveSubtasksOrComments(tasks) {
   });
 }
 
-export function updateAllTaskItems(dataToUpdate, taskItems) {
-  return taskItems?.map(taskItem => {
-    if (taskItem.itemType === TaskItemType.BUNDLE) {
-      return {
-        ...taskItem,
-        tasks: taskItem.tasks.map(task => ({
-          ...task,
-          ...dataToUpdate,
-          subtasks: task.subtasks?.map(subtask => ({
-            ...subtask,
-            ...dataToUpdate,
-          })),
-        })),
-      };
-    }
-
-    return {
-      ...taskItem,
-      ...dataToUpdate,
-      subtasks: taskItem.subtasks?.map(subtask => ({
-        ...subtask,
-        ...dataToUpdate,
-      })),
-    };
-  });
-}
-
-export function updateMultipleTasks(
-  dataToUpdate,
-  identifiersToUpdate,
-  taskItems,
-) {
-  return taskItems?.map(taskItem => {
-    if (taskItem.itemType === TaskItemType.BUNDLE) {
-      return {
-        ...taskItem,
-        tasks: taskItem.tasks.map(task =>
-          identifiersToUpdate.includes(task.identifier)
-            ? {
-                ...task,
-                ...dataToUpdate,
-                subtasks: task.subtasks?.map(subtask => ({
-                  ...subtask,
-                  ...dataToUpdate,
-                })),
-              }
-            : task,
-        ),
-      };
-    }
-
-    if (identifiersToUpdate.includes(taskItem.identifier)) {
-      return {
-        ...taskItem,
-        ...dataToUpdate,
-        subtasks: taskItem.subtasks?.map(subtask => ({
-          ...subtask,
-          ...dataToUpdate,
-        })),
-      };
-    }
-
-    return taskItem;
-  });
-}
-
 export function extractTasksAndSubtasks(listOfTasks) {
   if (!listOfTasks) {
     return { parentTasks: [], subtasks: [] };
@@ -114,5 +48,17 @@ export function extractTasksAndSubtasks(listOfTasks) {
       return accumulator;
     },
     { parentTasks: [], subtasks: [] },
+  );
+}
+
+export function updateBundleInList(
+  dataToUpdate,
+  bundleIdentifier,
+  listOfTasks,
+) {
+  return listOfTasks?.map(t =>
+    t.itemType === TaskItemType.BUNDLE && t.identifier === bundleIdentifier
+      ? { ...t, ...dataToUpdate }
+      : t,
   );
 }

@@ -78,10 +78,10 @@ export function checkIfTemplateTask(task) {
 
 export const TaskItemColumn = {
   DESCRIPTION: 'DESCRIPTION',
-  DUE_DATE: 'DUE_DATE',
+  DUE_DATE: 'DUE_DT',
   ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
-  ASSIGNED: 'ASSIGNED',
+  ASSIGNED: 'ASSIGNED_TO',
   PATIENT: 'PATIENT',
   SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
@@ -163,3 +163,29 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     ),
   ]),
 };
+
+export function updateSubtasksInTask(dataToUpdate, subtaskIdentifier, task) {
+  return {
+    ...task,
+    subtasks: task?.subtasks?.map(subtask =>
+      subtaskIdentifier === subtask.taskIdentifier
+        ? { ...subtask, ...dataToUpdate }
+        : subtask,
+    ),
+  };
+}
+
+export function updateSubtasksInTaskWithCallback(
+  updateCallback,
+  subtaskIdentifier,
+  task,
+) {
+  return {
+    ...task,
+    subtasks: task?.subtasks?.map(subtask =>
+      subtaskIdentifier === subtask.taskIdentifier
+        ? updateCallback(subtask)
+        : subtask,
+    ),
+  };
+}

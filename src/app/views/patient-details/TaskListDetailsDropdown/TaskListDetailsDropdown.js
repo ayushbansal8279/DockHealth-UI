@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useRef, useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
 import { pluck } from 'ramda';
 import * as TaskActions from 'actions/task-actions';
@@ -19,10 +20,7 @@ import {
 } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import listSectionSavedState from 'helpers/list-section-saved-state';
-import {
-  checkIfTasksHaveSubtasksOrComments,
-  extractTasksAndSubtasks,
-} from 'helpers/tasklist-helpers';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import {
   Arrow,
   Tasks,
@@ -33,6 +31,9 @@ import {
 } from 'components/tasklist/DropdownListSection/styled';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
+import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
+import { TaskItemType } from 'helpers/task-helpers';
 import { BulkContainer } from '../styled';
 
 const TaskListDetailsDropdown = ({
@@ -53,6 +54,7 @@ const TaskListDetailsDropdown = ({
   sort,
   onSortChange,
   taskItemConfig,
+  applyTemplate,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
@@ -71,12 +73,6 @@ const TaskListDetailsDropdown = ({
   }));
 
   const dispatch = useDispatch();
-
-  const areViewOptionsVisible = useMemo(() => {
-    if (!isOpen) return false;
-
-    return checkIfTasksHaveSubtasksOrComments(tasks);
-  }, [isOpen, tasks]);
 
   const isFullView = viewType === ViewType.FULL_VIEW;
 
@@ -116,6 +112,15 @@ const TaskListDetailsDropdown = ({
       ),
     );
   }, [dispatch, isGroupSelected, tasks]);
+  const handleTemplateSelect = useCallback(
+    template => {
+      applyTemplate({
+        taskTemplateIdentifier: template.taskTemplateIdentifier,
+        taskListIdentifier: list?.taskListIdentifier,
+      });
+    },
+    [applyTemplate, list],
+  );
 
   return (
     <ListDetailsContainer>
@@ -144,7 +149,6 @@ const TaskListDetailsDropdown = ({
           />
         )}
         <ViewTypeSwitch
-          isHidden={!areViewOptionsVisible}
           value={viewType}
           onChange={value => {
             setViewType(value);
@@ -154,16 +158,23 @@ const TaskListDetailsDropdown = ({
       </ListDetailsHeader>
       <Tasks timeout={150} in={isOpen}>
         {!isCompleteTab && (
-          <QuickAddTaskInput
-            ref={quickAddTaskInputReference}
-            taskListIdentifier={list?.taskListIdentifier}
-            quickAddTask={task => {
-              quickAddTask({ ...task, taskListIdentifier });
-              setTimeout(() => {
-                quickAddTaskInputReference.current.focus();
-              }, 0);
-            }}
-          />
+          <Grid container direction="row">
+            <Grid item xs>
+              <QuickAddTaskInput
+                ref={quickAddTaskInputReference}
+                taskListIdentifier={list?.taskListIdentifier}
+                quickAddTask={task => {
+                  quickAddTask({ ...task, taskListIdentifier });
+                  setTimeout(() => {
+                    quickAddTaskInputReference.current.focus();
+                  }, 0);
+                }}
+              />
+            </Grid>
+            {applyTemplate && (
+              <TaskTemplateApplicator onTemplateSelect={handleTemplateSelect} />
+            )}
+          </Grid>
         )}
         <SortHeaderRow>
           {bulkEditEnabled && (
@@ -212,30 +223,40 @@ const TaskListDetailsDropdown = ({
           />
         </SortHeaderRow>
         <div>
-          {tasks?.map(task => (
-            <StandardTaskItem
-              key={task.taskIdentifier}
-              currentUser={currentUser}
-              isFullView={isFullView}
-              openDrawer={openDrawer}
-              storeAsCurrentTask={storeAsCurrentTask}
-              task={task}
-              isCompletedGroup={isCompleteTab}
-              toggleCompleteTask={toggleTaskStatus}
-              onTaskUpdate={onTaskUpdate}
-              updateDueDate={updateDueDate}
-              updateWorkflowStatus={updateWorkflowStatus}
-              dragAndDropDisabled
-              selectedTask={selectedTask}
-              patientVisible={false}
-              addingNewSubtask={addingNewSubtask}
-              addingNewSubtaskParentId={addingNewSubtaskParentId}
-              subtaskShape={subtaskShape}
-              hideSubtasks={hideSubtasks}
-              multipleAssigneesContext={groupHasMultipleAssignees}
-              taskItemConfig={taskItemConfig}
-            />
-          ))}
+          {tasks?.map(task =>
+            task.itemType === TaskItemType.TASK ? (
+              <StandardTaskItem
+                key={task.taskIdentifier}
+                currentUser={currentUser}
+                isFullView={isFullView}
+                openDrawer={openDrawer}
+                storeAsCurrentTask={storeAsCurrentTask}
+                task={task}
+                isCompletedGroup={isCompleteTab}
+                toggleCompleteTask={toggleTaskStatus}
+                onTaskUpdate={onTaskUpdate}
+                updateDueDate={updateDueDate}
+                updateWorkflowStatus={updateWorkflowStatus}
+                dragAndDropDisabled
+                selectedTask={selectedTask}
+                patientVisible={false}
+                addingNewSubtask={addingNewSubtask}
+                addingNewSubtaskParentId={addingNewSubtaskParentId}
+                subtaskShape={subtaskShape}
+                hideSubtasks={hideSubtasks}
+                multipleAssigneesContext={groupHasMultipleAssignees}
+                taskItemConfig={taskItemConfig}
+              />
+            ) : (
+              <TaskTemplateGroup
+                templateGroup={task}
+                taskItemConfig={taskItemConfig}
+                groupHasMultipleAssignees={groupHasMultipleAssignees}
+                isFullView={isFullView}
+                groupDragAndDropDisabled
+              />
+            ),
+          )}
         </div>
       </Tasks>
     </ListDetailsContainer>

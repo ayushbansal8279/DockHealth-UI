@@ -3,7 +3,6 @@ import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
-import { TaskGroupType } from 'helpers/task-helpers';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
 import { reloadDashboardTasks } from 'sagas/dashboard-saga';
@@ -155,7 +154,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
       .then(task => {
         if (!task.taskList) {
           dispatch({
-            type: ActionTypes.ADD_TASK_SUCCESS,
+            type: ActionTypes.ADD_TASK,
             task: {
               ...task,
               taskList: { listName: 'Inbox', taskListIdentifier: '' },
@@ -166,7 +165,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             addingNewTask: false,
           });
         } else {
-          dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+          dispatch({ type: ActionTypes.ADD_TASK, task });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
@@ -220,7 +219,7 @@ export const moveTask = (
   parentTaskIdentifier = null,
   isDashboardTask,
 ) => dispatch => {
-  const updatedTask = {
+  const taskToUpdate = {
     refiled: true,
     ...shapeTask(task),
     taskList,
@@ -228,43 +227,35 @@ export const moveTask = (
   };
 
   if (taskGroupIdentifier) {
-    updatedTask.taskGroupIdentifier = taskGroupIdentifier;
+    taskToUpdate.taskGroupIdentifier = taskGroupIdentifier;
   }
   if (parentTaskIdentifier) {
-    updatedTask.parentTaskId = null;
-    updatedTask.parentTaskIdentifier = parentTaskIdentifier;
+    taskToUpdate.parentTaskId = null;
+    taskToUpdate.parentTaskIdentifier = parentTaskIdentifier;
   }
 
-  return TaskApi.updateTask(updatedTask)
+  return TaskApi.updateTask(taskToUpdate)
     .then(response => {
+      const updatedTask = response.data;
+
       dispatch({
-        type: ActionTypes.MOVE_TASK_SUCCESS,
-        task,
-        taskList,
+        type: ActionTypes.DELETE_TASK,
+        taskIdentifier: updatedTask.taskIdentifier,
       });
+      if (updatedTask.parentTaskIdentifier) {
+        dispatch({
+          type: ActionTypes.ADD_SUBTASK,
+          subtask: updatedTask,
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.ADD_TASK,
+          task: updatedTask,
+        });
+      }
 
       if (isDashboardTask) {
         dispatch(reloadDashboardTasks());
-      } else {
-        if (parentTaskIdentifier) {
-          dispatch(
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            refreshAnotherTask({
-              taskIdentifier: task.parentTaskIdentifier,
-            }),
-          );
-          dispatch(
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            refreshAnotherTask({
-              taskIdentifier: parentTaskIdentifier,
-            }),
-          );
-        }
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: taskList.taskListIdentifier,
-          }),
-        );
       }
 
       dispatch(
@@ -272,14 +263,21 @@ export const moveTask = (
           AlertMessages.TASK_MOVED,
           response?.headers?.['x-transaction-id'],
           () => {
-            dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
             dispatch({
-              type: ActionTypes.ADD_TASK_SUCCESS,
-              task,
-              taskGroupIdentifier: task?.taskGroups?.find(
-                ({ groupType }) => groupType === TaskGroupType.TASKLIST,
-              )?.taskGroupIdentifier,
+              type: ActionTypes.DELETE_TASK,
+              taskIdentifier: task.taskIdentifier,
             });
+            if (task.parentTaskIdentifier) {
+              dispatch({
+                type: ActionTypes.ADD_SUBTASK,
+                subtask: task,
+              });
+            } else {
+              dispatch({
+                type: ActionTypes.ADD_TASK,
+                task,
+              });
+            }
           },
         ),
       );
@@ -306,13 +304,16 @@ export function addComment(task, taskComment) {
 }
 
 export function deleteComment(task, comment) {
+  const { commentIdentifier } = comment;
+  const { taskIdentifier } = task;
+
   return dispatch =>
-    TaskApi.deleteComment(comment.commentIdentifier)
+    TaskApi.deleteComment(commentIdentifier)
       .then(() => {
         dispatch({
           type: ActionTypes.DELETE_TASK_COMMENT_SUCCESS,
-          task,
-          comment,
+          taskIdentifier,
+          commentIdentifier,
         });
         return {
           task,
@@ -347,18 +348,18 @@ export function deleteTask(task) {
   return dispatch =>
     TaskApi.deleteTask(task.taskIdentifier)
       .then(response => {
-        dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+        dispatch({
+          type: ActionTypes.DELETE_TASK,
+          taskIdentifier: task.taskIdentifier,
+        });
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
             AlertMessages.DELETED,
             response?.headers?.['x-transaction-id'],
             () => {
               dispatch({
-                type: ActionTypes.ADD_TASK_SUCCESS,
+                type: ActionTypes.ADD_TASK,
                 task,
-                taskGroupIdentifier: task?.taskGroups?.find(
-                  ({ groupType }) => groupType === TaskGroupType.TASKLIST,
-                )?.taskGroupIdentifier,
               });
             },
           ),
@@ -380,21 +381,23 @@ export function duplicateTask(
   includeAttachments = false,
   isDashboardTask,
 ) {
-  const taskGroupIdentifier =
-    task.taskGroups?.length > 0
-      ? task.taskGroups[0].taskGroupIdentifier
-      : undefined;
   return dispatch =>
     TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
       .then(duplicatedTask => {
         if (isDashboardTask) {
           dispatch(reloadDashboardTasks());
         } else {
-          dispatch({
-            type: ActionTypes.DUPLICATE_TASK_SUCCESS,
-            duplicatedTask,
-            taskGroupIdentifier,
-          });
+          if (duplicatedTask.parentTaskIdentifier) {
+            dispatch({
+              type: ActionTypes.ADD_SUBTASK,
+              subtask: duplicatedTask,
+            });
+          } else {
+            dispatch({
+              type: ActionTypes.ADD_TASK,
+              task: duplicatedTask,
+            });
+          }
           dispatch(
             getTasksGroupsList({
               taskListIdentifier: task?.taskList?.taskListIdentifier,
@@ -447,7 +450,11 @@ export function toggleCompleteTask(
       .then(() => {
         if (!task.parentTaskIdentifier && !isBundleTask) {
           setTimeout(
-            () => dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task }),
+            () =>
+              dispatch({
+                type: ActionTypes.DELETE_TASK,
+                taskIdentifier: task.taskIdentifier,
+              }),
             TASK_DISAPPEAR_DELAY,
           );
         }
@@ -864,16 +871,13 @@ export function reorderSubtasks({ parentTask, source, destination }) {
   };
 }
 
-export function reorderSubtasksInTemplateBundle({
-  source,
-  destination,
-  templateBundle,
-}) {
+export function selectTask(taskIdentifier, newSelectState) {
   return {
-    type: ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
-    source,
-    destination,
-    templateBundle,
+    type: ActionTypes.UPDATE_TASK_SUCCESS,
+    task: {
+      taskIdentifier,
+      selected: newSelectState,
+    },
   };
 }
 
@@ -888,5 +892,25 @@ export function changeTasksSelectedState(newSelectedState, taskIdentifiers) {
     type: ActionTypes.CHANGE_TASKS_SELECTED_STATE,
     newSelectedState,
     taskIdentifiers,
+  };
+}
+
+export function addSubtask(parentTaskIdentifier, subtask) {
+  return function addSubtaskDispatch(dispatch) {
+    return TaskApi.addTask({ ...subtask, parentTaskIdentifier })
+      .then(newSubtask => {
+        dispatch({
+          type: ActionTypes.ADD_SUBTASK,
+          subtask: newSubtask,
+        });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
+        clearPreparedSubtask(dispatch);
+        return newSubtask;
+      })
+      .catch(error => {
+        clearPreparedSubtask(dispatch);
+        dispatch(AlertActions.showGlobalErrorAlert());
+        throw error;
+      });
   };
 }

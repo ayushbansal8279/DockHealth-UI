@@ -613,6 +613,7 @@ class Home extends Component {
                 printData={{
                   completedTasks,
                   openedTasks,
+                  taskListMembers: members,
                 }}
                 tasks={openedTasks}
                 completedTasks={completedTasks}

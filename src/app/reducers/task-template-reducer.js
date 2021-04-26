@@ -1,5 +1,6 @@
 import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
+import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -24,7 +25,7 @@ function updateTasksStateCallback(state, updateTaskFromAction) {
         ...accumulator,
         [key]: {
           ...value,
-          tasks: updateTaskFromAction(value?.tasks || []),
+          tasks: mapWithRemove(updateTaskFromAction, value.tasks),
         },
       }),
       {},

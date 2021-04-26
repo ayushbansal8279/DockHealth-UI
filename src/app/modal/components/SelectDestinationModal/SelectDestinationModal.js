@@ -21,8 +21,7 @@ const SelectDestinationModal = ({
   confirm,
   confirmText,
   preventClosingModal = false,
-  subtasksPresent,
-  movingContentType = 'TASK',
+  selectParentTask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -71,20 +70,14 @@ const SelectDestinationModal = ({
         taskListIdentifier: taskList?.taskListIdentifier,
       };
 
-      if (movingContentType === 'TASK') {
-        if (selectedGroup) {
-          responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
-        }
-
-        if (selectedParentTask) {
-          responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
-        }
+      if (selectedGroup) {
+        responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
       }
 
-      if (movingContentType === 'BUNDLE' && selectedGroup) {
-        responseData.parentTaskGroupIdentifier =
-          selectedGroup.taskGroupIdentifier;
+      if (selectedParentTask) {
+        responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
       }
+
       if (typeof confirm === 'function') {
         confirm(responseData);
         if (!preventClosingModal) closeModal();
@@ -94,7 +87,6 @@ const SelectDestinationModal = ({
     },
     [
       selectedList,
-      movingContentType,
       selectedGroup,
       confirm,
       selectedParentTask,
@@ -143,10 +135,10 @@ const SelectDestinationModal = ({
             selectedGroup={selectedGroup}
             setSelectedGroup={setSelectedGroup}
             setPreviousStep={handlePreviousStep}
-            subtasksPresent={subtasksPresent}
+            selectParentTask={selectParentTask}
             setNextStep={handleNextStep}
           />
-          {subtasksPresent && movingContentType === 'TASK' && (
+          {selectParentTask && (
             <ParentTaskSelectStep
               selectedList={selectedList}
               selectedGroup={selectedGroup}
@@ -176,7 +168,7 @@ const SelectDestinationModal = ({
             fullWidth
             size="small"
             disabled={
-              subtasksPresent && movingContentType === 'TASK'
+              selectParentTask
                 ? !selectedList || !selectedGroup || !selectedParentTask
                 : !selectedList
             }

@@ -30,7 +30,6 @@ import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
 import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
 import RightClickTourModal from './components/NewFeaturesModals/RightClickTourModal/RightClickTourModal';
 import MultiAssignTourModal from './components/NewFeaturesModals/MultiAssignTourModal/MultiAssignTourModal';
-import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
 import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkCompleteTasksModal';
@@ -38,7 +37,8 @@ import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
 import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
 import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
-import SelectTemplateBundleDestinationModal from './components/SelectDestinationModal/SelectTemplateBundleDestinationModal';
+import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
+import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -73,7 +73,6 @@ const MODAL_MAP = {
   MultiAssignTour: MultiAssignTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
-  SelectTaskDestination: SelectTaskDestinationModal,
   ReferAColleague: ReferAColleagueModal,
   BulkDeleteTasks: BulkDeleteTasksModal,
   BulkCompleteTasks: BulkCompleteTasksModal,
@@ -81,7 +80,8 @@ const MODAL_MAP = {
   SendingInvite: SendingInviteModal,
   CreateTemplate: CreateTemplateModal,
   DeleteTemplate: DeleteTemplateModal,
-  SelectTemplateBundleDestination: SelectTemplateBundleDestinationModal,
+  SelectTaskDestination: SelectTaskDestinationModal,
+  SelectDestination: SelectDestinationModal,
 };
 
 export default MODAL_MAP;

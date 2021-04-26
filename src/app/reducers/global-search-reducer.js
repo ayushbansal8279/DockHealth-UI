@@ -1,5 +1,6 @@
 import * as types from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
+import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -13,8 +14,10 @@ const initialState = {
 
 const updateTaskInList = (lists, updateTaskCallback) =>
   lists.map(list => {
-    const updatedTasks = updateTaskCallback(list.tasks);
-    return { ...list, tasks: updatedTasks };
+    return {
+      ...list,
+      tasks: mapWithRemove(updateTaskCallback, list.tasks),
+    };
   });
 
 const updateTasksStateCallback = (state, updateTaskFromAction) => {

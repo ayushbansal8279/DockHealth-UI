@@ -8,6 +8,7 @@ import watchGlobalSearch from './sagas/global-search-saga';
 import watchTasklist from './sagas/task-list-saga';
 import watchTaskTemplate from './sagas/task-template-saga';
 import watchTask from './sagas/task-saga';
+import watchTemplateBundle from './sagas/template-bundle-saga';
 
 function* rootSaga() {
   yield all([
@@ -19,6 +20,7 @@ function* rootSaga() {
     watchTasklist(),
     watchTaskTemplate(),
     watchTask(),
+    watchTemplateBundle(),
   ]);
 }
 

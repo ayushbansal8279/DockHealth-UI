@@ -38,23 +38,6 @@ import { TABS_CONFIG } from './config';
 
 const INBOX_FIRST_TIME_KEY = 'INBOX_FIRST_TIME_KEY';
 
-const renderMemberAvatar = ({ taskListMembers }) => member => {
-  const taskListMember =
-    taskListMembers?.find(
-      ({ userIdentifier }) => member?.userIdentifier === userIdentifier,
-    ) || {};
-
-  return (
-    <MemberWrapper
-      key={member?.userIdentifier}
-      isPending={isMemberPending(member)}
-    >
-      <Spacing horizontal={2} />
-      <Member member={taskListMember} size={45} />
-    </MemberWrapper>
-  );
-};
-
 const useToggleNotifications = ({
   notificationsEnabled,
   closeMorePopover,
@@ -195,7 +178,15 @@ const Toolbar = ({
             <Spacing horizontal={4} />
             {showMembers && (
               <>
-                {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
+                {shownMembers?.map(member => (
+                  <MemberWrapper
+                    key={member?.userIdentifier}
+                    isPending={isMemberPending(member)}
+                  >
+                    <Spacing horizontal={2} />
+                    <Member member={member} size={45} />
+                  </MemberWrapper>
+                ))}
                 {hiddenMembers?.length > 0 && (
                   <>
                     <Spacing horizontal={2} />

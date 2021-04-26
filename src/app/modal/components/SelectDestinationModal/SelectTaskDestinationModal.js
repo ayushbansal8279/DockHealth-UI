@@ -39,11 +39,7 @@ const SelectTaskDestinationModal = props => {
   }, [allTasksSameType, closeModal]);
 
   return (
-    <SelectDestinationModal
-      {...props}
-      subtasksPresent={subtasksPresent}
-      movingContentType="TASK"
-    />
+    <SelectDestinationModal {...props} selectParentTask={subtasksPresent} />
   );
 };
 

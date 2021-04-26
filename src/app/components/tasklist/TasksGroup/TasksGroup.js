@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { isNil, pluck } from 'ramda';
+import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
@@ -22,10 +23,7 @@ import LoadMoreButton, {
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import { useDispatch } from 'react-redux';
 import listSectionSavedState from 'helpers/list-section-saved-state';
-import {
-  checkIfTasksHaveSubtasksOrComments,
-  extractTasksAndSubtasks,
-} from 'helpers/tasklist-helpers';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -49,7 +47,6 @@ import {
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   BulkContainer,
-  TaskGroupOptionsHeader,
 } from './styled';
 
 const TasksGroup = ({
@@ -90,6 +87,7 @@ const TasksGroup = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   taskItemConfig,
+  applyTemplate,
 }) => {
   const [
     highlightedTasksParentIdentifier,
@@ -103,11 +101,6 @@ const TasksGroup = ({
     sessionStorageKey: groupSessionStorageKey,
   });
   const highlightTimeoutReference = useRef(null);
-
-  const areViewOptionsVisible = useMemo(() => {
-    if (!isOpen) return false;
-    return checkIfTasksHaveSubtasksOrComments(tasks);
-  }, [isOpen, tasks]);
 
   const isFullView =
     viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
@@ -211,6 +204,15 @@ const TasksGroup = ({
       ),
     );
   }, [dispatch, isGroupSelected, tasks]);
+  const handleTemplateSelect = useCallback(
+    template => {
+      applyTemplate({
+        taskTemplateIdentifier: template?.taskTemplateIdentifier,
+        taskGroupIdentifier,
+      });
+    },
+    [applyTemplate, taskGroupIdentifier],
+  );
 
   return (
     <TasksGroupContainer>
@@ -252,7 +254,6 @@ const TasksGroup = ({
         )}
         {!changingGroupOrderDisabled && (
           <ViewTypeSwitch
-            isHidden={!areViewOptionsVisible}
             value={viewType}
             onChange={value => {
               setViewType(value);
@@ -269,22 +270,23 @@ const TasksGroup = ({
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <TaskGroupOptionsHeader>
-            <QuickAddTaskInput
-              taskListIdentifier={taskListIdentifier}
-              quickAddTask={onQuickAddTask}
-              validator={value => {
-                if ([...value]?.filter(char => char !== ' ').length < 2)
-                  return 'The task description is too short (min. 2 characters)';
+          <Grid container>
+            <Grid item xs>
+              <QuickAddTaskInput
+                taskListIdentifier={taskListIdentifier}
+                quickAddTask={onQuickAddTask}
+                validator={value => {
+                  if ([...value]?.filter(char => char !== ' ').length < 2)
+                    return 'The task description is too short (min. 2 characters)';
 
-                return null;
-              }}
-            />
-            <TaskTemplateApplicator
-              taskGroupIdentifier={taskGroupIdentifier}
-              taskListIdentifier={taskListIdentifier}
-            />
-          </TaskGroupOptionsHeader>
+                  return null;
+                }}
+              />
+            </Grid>
+            {applyTemplate && (
+              <TaskTemplateApplicator onTemplateSelect={handleTemplateSelect} />
+            )}
+          </Grid>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <SortHeaderRow>

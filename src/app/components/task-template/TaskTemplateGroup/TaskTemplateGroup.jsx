@@ -5,25 +5,21 @@ import React, {
   useContext,
   useRef,
   useCallback,
+  useEffect,
 } from 'react';
 import { useDispatch } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
-import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import palette from 'styles/palette';
-import {
-  duplicateTemplateBundle,
-  moveTemplateBundle,
-  deleteTemplateBundle,
-  updateTemplateBundle,
-} from 'actions/task-template-actions';
+import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { TaskStatus } from 'helpers/task-helpers';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -42,8 +38,8 @@ const TaskTemplateGroup = ({
   isFullView,
   isStartedDnD,
   draggableProvided = {},
-  dragAndDropDisabled,
-  taskGroupIdentifier,
+  groupDragAndDropDisabled,
+  tasksDragAndDropDisabled,
 }) => {
   const { name, tasks, identifier } = templateGroup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
@@ -56,23 +52,26 @@ const TaskTemplateGroup = ({
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const dispatch = useDispatch();
 
-  const completedTasksAmount = useMemo(
-    () =>
-      tasks.reduce((previousAmount, currentTask) => {
-        if (currentTask.completedBy) {
-          return previousAmount + 1 + currentTask?.subTasksCompletedCount;
-        }
+  useEffect(() => {
+    setNameInputValue(name);
+  }, [name]);
 
-        return previousAmount + currentTask?.subTasksCompletedCount;
-      }, 0),
-    [tasks],
-  );
-
-  const allTasksAmount = useMemo(
+  const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
-      tasks.reduce((previousAmount, currentTask) => {
-        return previousAmount + 1 + currentTask?.subTasksCount;
-      }, 0),
+      tasks.reduce(
+        (accumulator, currentTask) => {
+          if (currentTask.status === TaskStatus.COMPLETE) {
+            accumulator[0] += 1;
+          }
+
+          accumulator[0] += currentTask?.subTasksCompletedCount;
+          accumulator[1] =
+            accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
+
+          return accumulator;
+        },
+        [0, 0],
+      ),
     [tasks],
   );
 
@@ -94,18 +93,16 @@ const TaskTemplateGroup = ({
             ModalActions.openModal('AttachmentsDuplicate', {
               confirm: () => {
                 dispatch(
-                  duplicateTemplateBundle(
+                  TemplateBundleActions.duplicateTemplateBundle(
                     identifier,
-                    taskGroupIdentifier,
                     true,
                   ),
                 );
               },
               skip: () => {
                 dispatch(
-                  duplicateTemplateBundle(
+                  TemplateBundleActions.duplicateTemplateBundle(
                     identifier,
-                    taskGroupIdentifier,
                     false,
                   ),
                 );
@@ -117,17 +114,17 @@ const TaskTemplateGroup = ({
         name: 'Move',
         onClick: () =>
           dispatch(
-            ModalActions.openModal('SelectTemplateBundleDestination', {
-              tasksToMove: [],
+            ModalActions.openModal('SelectDestination', {
               confirmText: 'Move',
-              confirm: selectedDestination =>
+              confirm: ({ taskListIdentifier, taskGroupIdentifier }) => {
                 dispatch(
-                  moveTemplateBundle(
-                    identifier,
+                  TemplateBundleActions.moveTemplateBundle({
+                    bundleIdentifier: identifier,
+                    taskListIdentifier,
                     taskGroupIdentifier,
-                    selectedDestination,
-                  ),
-                ),
+                  }),
+                );
+              },
             }),
           ),
       },
@@ -158,37 +155,45 @@ const TaskTemplateGroup = ({
       {
         name: 'Delete',
         onClick: () =>
-          dispatch(deleteTemplateBundle(identifier, taskGroupIdentifier)),
+          dispatch(TemplateBundleActions.deleteTemplateBundle(identifier)),
       },
     ];
-  }, [dispatch, identifier, showCompletedTasks, taskGroupIdentifier]);
+  }, [dispatch, identifier, showCompletedTasks]);
 
   const handleNameInputKeyDown = useCallback(
     event => {
       const { key } = event;
       if (key === 'Enter') {
         dispatch(
-          updateTemplateBundle(identifier, taskGroupIdentifier, {
-            name: event.target?.value,
+          TemplateBundleActions.updateTemplateBundle({
+            bundle: templateGroup,
+            dataToUpdate: {
+              name: event.target?.value,
+            },
           }),
         );
+        // eslint-disable-next-line no-unused-expressions
+        nameInputReference.current?.blur();
       } else if (key === 'Escape') {
         // eslint-disable-next-line no-unused-expressions
         nameInputReference.current?.blur();
       }
     },
-    [dispatch, identifier, taskGroupIdentifier],
+    [dispatch, templateGroup],
   );
 
   const filteredTasks = useMemo(
-    () => tasks.filter(task => showCompletedTasks || !task.completedBy),
+    () =>
+      tasks.filter(
+        task => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+      ),
     [showCompletedTasks, tasks],
   );
 
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeaderContainer>
-        {!dragAndDropDisabled && !bulkEditIsActive && (
+        {!groupDragAndDropDisabled && !bulkEditIsActive && (
           <TemplateHandle
             src={ThreeDotsIcon}
             alt="Handle"
@@ -234,9 +239,10 @@ const TaskTemplateGroup = ({
             onDragEnd={dragEndData => {
               setDraggedTaskIdentifier(null);
               dispatch(
-                TaskActions.reorderSubtasksInTemplateBundle({
+                TemplateBundleActions.reorderSubtasksInTemplateBundle({
                   ...dragEndData,
-                  templateBundle: templateGroup,
+                  bundle: templateGroup,
+                  completedTasksShown: showCompletedTasks,
                 }),
               );
             }}
@@ -264,7 +270,7 @@ const TaskTemplateGroup = ({
                           taskItemConfig={taskItemConfig}
                           isFullView={isFullView}
                           multipleAssigneesContext={groupHasMultipleAssignees}
-                          dragAndDropDisabled={dragAndDropDisabled}
+                          dragAndDropDisabled={tasksDragAndDropDisabled}
                           isDraggable
                           isBundleTask
                         />

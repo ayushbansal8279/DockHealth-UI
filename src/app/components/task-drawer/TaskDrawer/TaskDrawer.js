@@ -80,7 +80,7 @@ const TaskDrawer = ({
     onDelete,
     onDuplicate,
     onAddSubTask,
-    handleQuickAddTask,
+    handleQuickAddSubtask,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     emailBodyMembers,
@@ -402,7 +402,7 @@ const TaskDrawer = ({
                     subTasksCount={selectedTask.subTasksCount}
                     currentUser={currentUser}
                     taskListIdentifier={taskListIdentifier}
-                    onQuickAddTask={handleQuickAddTask}
+                    onQuickAddSubtask={handleQuickAddSubtask}
                   />
                 </Grid>
               )}

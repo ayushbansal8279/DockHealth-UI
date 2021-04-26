@@ -25,7 +25,7 @@ const GroupSelectStep = ({
   selectedGroup,
   setSelectedGroup,
   setPreviousStep,
-  subtasksPresent,
+  selectParentTask,
   setNextStep,
 }) => {
   const addGroupReference = useRef(null);
@@ -115,7 +115,7 @@ const GroupSelectStep = ({
                           ? 'New tasks'
                           : group.groupName}
                       </ListItemTextButton>
-                      {subtasksPresent && (
+                      {selectParentTask && (
                         <IconButton
                           onClick={() => {
                             setSelectedGroup(group);

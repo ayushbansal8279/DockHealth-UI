@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TaskListDetailsDropdown from 'views/patient-details/TaskListDetailsDropdown/TaskListDetailsDropdown';
@@ -64,6 +64,7 @@ const PatientTasksListView = ({
     quickAddPatientTask,
     refreshPatientTasks,
     sortPatientTasks,
+    applyTemplateForPatient,
   } = patientTasksSagaActions;
 
   const isListFlattened =
@@ -112,6 +113,16 @@ const PatientTasksListView = ({
     }
   };
 
+  const applyTemplate = useCallback(
+    ({ taskListIdentifier, taskTemplateIdentifier }) => {
+      applyTemplateForPatient({
+        taskTemplateIdentifier,
+        taskListIdentifier,
+      });
+    },
+    [applyTemplateForPatient],
+  );
+
   const filteredLists = taskSearch
     ? searchTaskInPatientLists(patientLists, taskSearch)
     : patientLists;
@@ -137,6 +148,7 @@ const PatientTasksListView = ({
           sort={sort}
           onSortChange={sortPatientTasks}
           taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
+          applyTemplate={applyTemplate}
         />
       ))
     : renderEmptyListView();

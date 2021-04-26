@@ -7,6 +7,22 @@ import Swal from 'sweetalert2';
 
 export const noop = () => {};
 
+export function mapWithRemove(mapFunction, array) {
+  if (!array) {
+    return null;
+  }
+
+  return array?.reduce((accumulator, item) => {
+    const mappedItem = mapFunction(item);
+
+    if (mappedItem) {
+      accumulator.push(mappedItem);
+    }
+
+    return accumulator;
+  }, []);
+}
+
 export const getPatientName = patientData => {
   const { withMrn = true, ...patient } = patientData || {};
   const { mrn, firstName, middleName, lastName } = patient || {};

@@ -3,7 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, pluck } from 'ramda';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
-import { checkIfTemplateTask, TaskGroupType } from 'helpers/task-helpers';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -178,11 +178,8 @@ const BulkEditOptionsBar = ({
     tasks => {
       tasks.reverse().forEach(task =>
         dispatch({
-          type: ActionTypes.ADD_TASK_SUCCESS,
+          type: ActionTypes.ADD_TASK,
           task,
-          taskGroupIdentifier: task?.taskGroups?.find(
-            ({ groupType }) => groupType === TaskGroupType.TASKLIST,
-          )?.taskGroupIdentifier,
         }),
       );
     },
@@ -193,8 +190,8 @@ const BulkEditOptionsBar = ({
     tasks => {
       tasks.forEach(task =>
         dispatch({
-          type: ActionTypes.DELETE_TASK_SUCCESS,
-          task,
+          type: ActionTypes.DELETE_TASK,
+          taskIdentifier: task.taskIdentifier,
         }),
       );
     },

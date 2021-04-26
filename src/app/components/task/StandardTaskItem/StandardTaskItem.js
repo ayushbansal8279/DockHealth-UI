@@ -51,6 +51,7 @@ const Task = ({
     taskList,
     subtaskQuickAddOpen,
   } = task || {};
+
   const { taskIdentifier: selectedTaskIdentifier } = selectedTask || {};
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { highlightedValue, multipleAssigneesContext } = restProps;

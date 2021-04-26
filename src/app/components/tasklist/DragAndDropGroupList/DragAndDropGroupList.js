@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { TaskItemType } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import { DroppablePlaceholder } from './styled';
@@ -53,7 +54,7 @@ const DragAndDropGroupList = ({
             {...providedDroppable.droppableProps}
           >
             {tasks?.map((task, index) =>
-              task?.itemType === 'TASK' ? (
+              task?.itemType === TaskItemType.TASK ? (
                 <Draggable
                   key={task.taskIdentifier}
                   draggableId={String(task.taskIdentifier)}
@@ -121,7 +122,6 @@ const DragAndDropGroupList = ({
                       dragAndDropDisabled={
                         isCompletedGroup || dragAndDropDisabled
                       }
-                      taskGroupIdentifier={taskGroupIdentifier}
                     />
                   )}
                 </Draggable>

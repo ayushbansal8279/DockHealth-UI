@@ -11,7 +11,11 @@ import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { openDrawer } from 'actions/task-drawer-actions';
-import { openQuickAddSubtask, storeAsCurrentTask } from 'actions/task-actions';
+import {
+  openQuickAddSubtask,
+  selectTask,
+  storeAsCurrentTask,
+} from 'actions/task-actions';
 import debounce from 'lodash.debounce';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
@@ -22,7 +26,6 @@ import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import {
   onTaskAssigned,
   onTaskCompleted,
@@ -332,16 +335,7 @@ const TaskItem = ({
           {bulkEditEnabled && (
             <TaskItemBulkEdit
               isChecked={selected}
-              onClick={() =>
-                dispatch({
-                  type: UPDATE_TASK_SUCCESS,
-                  task: {
-                    taskIdentifier,
-                    parentTaskIdentifier: parentTaskIdentifier || undefined,
-                    selected: !selected,
-                  },
-                })
-              }
+              onClick={() => dispatch(selectTask(taskIdentifier, !selected))}
             />
           )}
           <MainStandardTaskItemCell

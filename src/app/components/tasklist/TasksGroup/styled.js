@@ -120,11 +120,3 @@ export const BulkContainer = styled.div`
   justify-content: center;
   margin-left: ${spacing.smallPlus};
 `;
-
-export const TaskGroupOptionsHeader = styled.div`
-  display: flex;
-
-  & > :nth-child(1) {
-    width: 100%;
-  }
-`;

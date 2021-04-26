@@ -12,6 +12,7 @@ import * as TaskListApi from 'api/task-list-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
+import * as TemplateBundleApi from 'api/template-bundle-api';
 import AlertMessages from 'alert/AlertMessages';
 import {
   REQUEST_PATIENT_STATS_SUCCESS,
@@ -24,6 +25,7 @@ import {
   FETCH_MEGA_FILTERS_FAILURE,
   SET_PATIENT_TASK_SEARCH_VALUE,
   SORT_PATIENT_TASKS,
+  ADD_TASK,
 } from 'actions/action-types';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 
@@ -68,6 +70,7 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
   'DO_CANCEL_USER_INVITE_TO_TASKLIST';
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
+export const DO_APPLY_TEMPLATE_FOR_PATIENT = 'DO_APPLY_TEMPLATE_FOR_PATIENT';
 
 export const quickAddPatientTask = ({ description, taskListIdentifier }) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -192,6 +195,15 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
+export const applyTemplateForPatient = ({
+  taskListIdentifier,
+  taskTemplateIdentifier,
+}) => ({
+  type: DO_APPLY_TEMPLATE_FOR_PATIENT,
+  taskListIdentifier,
+  taskTemplateIdentifier,
+});
+
 export const PatientTasksSagaActions = {
   fetchStatsForPatientTasks,
   fetchPatientTasks,
@@ -211,6 +223,7 @@ export const PatientTasksSagaActions = {
   fetchPatientFilters,
   sortPatientTasks,
   updatePatientTaskInList,
+  applyTemplateForPatient,
 };
 
 function* getPatientLists() {
@@ -344,10 +357,10 @@ function* doToggleTaskCompleteStatus({ payload }) {
     yield put(AlertActions.showGlobalAlert(successMessage));
 
     yield delay(TASK_DISAPPEAR_DELAY);
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
-    ]);
+    if (!task.parentTaskIdentifier) {
+      yield put(refreshPatientTasks({ withLoader: false }));
+    }
+    yield put(fetchStatsForPatientTasks());
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
@@ -431,16 +444,14 @@ function* doQuickAddPatientTask({ payload }) {
       yield put({ type: REQUEST_PATIENT_TASKS });
     }
 
-    yield call(TaskApi.addTask, {
+    const addedTask = yield call(TaskApi.addTask, {
       description,
       taskListIdentifier,
       patientIdentifier,
     });
+    yield put({ type: ADD_TASK, task: addedTask });
     yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
-    ]);
+    yield put(fetchStatsForPatientTasks());
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
@@ -573,6 +584,26 @@ function* doSortPatientTasks({ payload }) {
   }
 }
 
+function* doApplyTemplateForPatient({
+  taskTemplateIdentifier,
+  taskListIdentifier,
+}) {
+  try {
+    const { patientIdentifier } = yield select(locationParametersSelector);
+    yield call(TemplateBundleApi.applyTemplate, {
+      taskTemplateIdentifier,
+      taskListIdentifier,
+      patientIdentifier,
+    });
+    yield all([
+      put(refreshPatientTasks({ withLoader: true })),
+      put(fetchStatsForPatientTasks()),
+    ]);
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
 export default function* watchPatientTasks() {
   yield takeLatest(
     DO_FETCH_STATS_FOR_PATIENT_TASKS,
@@ -606,4 +637,5 @@ export default function* watchPatientTasks() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
+  yield takeEvery(DO_APPLY_TEMPLATE_FOR_PATIENT, doApplyTemplateForPatient);
 }

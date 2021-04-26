@@ -22,6 +22,7 @@ import {
   prepareSubtask,
   markTaskRead,
   updateDueDate,
+  addSubtask,
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
@@ -84,7 +85,19 @@ const onSubmit = ({
 
   setSaving(true);
 
-  saveTask(requestData)(dispatch)
+  let createTaskAction;
+
+  if (requestData.parentTaskIdentifier) {
+    onTaskDrawerSubtaskAdd('Form');
+    createTaskAction = addSubtask(
+      requestData.parentTaskIdentifier,
+      requestData,
+    );
+  } else {
+    createTaskAction = saveTask(requestData);
+  }
+
+  dispatch(createTaskAction)
     .then(async response => {
       const taskIdentifier = response?.taskIdentifier;
 
@@ -102,10 +115,6 @@ const onSubmit = ({
     .catch(() => {
       setSaving(false);
     });
-
-  if (requestData.parentTaskIdentifier) {
-    onTaskDrawerSubtaskAdd('Form');
-  }
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -393,13 +402,9 @@ const initializeTaskDrawerHooks = ({
     }
   };
 
-  const handleQuickAddTask = async newTask => {
-    const taskToCreate = {
-      ...newTask,
-      parentTaskIdentifier: selectedTask.taskIdentifier,
-    };
+  const handleQuickAddSubtask = async newSubtask => {
     onTaskDrawerSubtaskAdd('Quick add input');
-    return saveTask(taskToCreate)(dispatch);
+    return dispatch(addSubtask(selectedTask.taskIdentifier, newSubtask));
   };
 
   const handleTaskDescriptionUpdate = async () => {
@@ -538,7 +543,7 @@ const initializeTaskDrawerHooks = ({
     onDelete,
     onDuplicate,
     onAddSubTask,
-    handleQuickAddTask,
+    handleQuickAddSubtask,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     emailBodyMembers,

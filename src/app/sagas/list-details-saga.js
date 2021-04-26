@@ -24,6 +24,7 @@ import {
   searchTasksByTaskList,
 } from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
+import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ActionTypes from 'actions/action-types';
@@ -233,7 +234,12 @@ function* doGetGroupedTasks({ payload }) {
       });
     }
 
-    yield put({ type: tasksActionType, groupedTasks, loadingMore });
+    yield put({
+      type: tasksActionType,
+      groupedTasks,
+      loadingMore,
+      taskListIdentifier,
+    });
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
   }
@@ -584,9 +590,8 @@ function* doCreateTask(payload) {
       if (filters && !isEmpty(filters)) {
         if (checkIfTaskMatchesFilters(createdTask, filters)) {
           yield put({
-            type: ActionTypes.ADD_TASK_SUCCESS,
+            type: ActionTypes.ADD_TASK,
             task: createdTask,
-            taskGroupIdentifier,
           });
         }
       } else {
@@ -601,9 +606,8 @@ function* doCreateTask(payload) {
           });
         } else {
           yield put({
-            type: ActionTypes.ADD_TASK_SUCCESS,
+            type: ActionTypes.ADD_TASK,
             task: createdTask,
-            taskGroupIdentifier,
           });
         }
       }
@@ -693,7 +697,31 @@ function* doFilterListDetailsTasks({ payload }) {
   yield put(ListDetailsActions.refreshListDetailsGroupedTasks());
 }
 
+function* applyTaskTemplate({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskListIdentifier,
+}) {
+  try {
+    yield call(TemplateBundleApi.applyTemplate, {
+      taskTemplateIdentifier,
+      taskGroupIdentifier,
+      taskListIdentifier,
+    });
+    yield put(
+      getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTasksGroupsList() {
+  yield takeEvery(ActionTypesSaga.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
     ActionTypesSaga.GET_LIST_DETAILS_TASK_COUNTERS,
     doGetListDetailsCounters,
