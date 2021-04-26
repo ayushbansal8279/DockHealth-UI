@@ -17,14 +17,12 @@ import ArrowIcon from 'img/arrow';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
-import { TaskItemColumn } from 'helpers/task-helpers';
+import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
 import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
 import {
   DashboardTasksGroupContainer,
@@ -32,28 +30,10 @@ import {
   DashboardTasksGroupLabelName,
   DashboardTasksGroupList,
   DroppableBox,
-  DashboardSortBar,
-  DashboardSortBarLabelName,
   DashboardTasksGroupHeader,
   GroupNameSectionWrapper,
-  BulkContainer,
   DashboardTaskItemContainer,
 } from './styled';
-
-const TASK_ITEM_COLUMNS_CONFIG = {
-  [TaskItemColumn.DESCRIPTION]: { paddingLeft: '36px', paddingRight: '8px' },
-  [TaskItemColumn.DUE_DATE]: { width: '60px' },
-  [TaskItemColumn.WORKFLOW_STATUS]: { width: '120px' },
-  [TaskItemColumn.LIST_NAME]: { width: '168px' },
-  [TaskItemColumn.ACTIVITY]: { width: '150px' },
-  [TaskItemColumn.ASSIGNED]: { width: '60px', extendedWidth: '90px' },
-  [TaskItemColumn.PATIENT]: { width: '164px' },
-  [TaskItemColumn.SUBTASKS_COUNT]: {
-    width: '60px',
-    paddingLeft: '18px',
-    paddingRight: '18px',
-  },
-};
 
 const TODAY_GROUP = 'TODAY';
 const NEXT_7_DAYS_GROUP = 'NEXT_7_DAYS';
@@ -215,89 +195,15 @@ const DashboardTasksGroup = ({
                 }}
               />
             )}
-            <DashboardSortBar>
-              <BulkContainer>
-                <Checkbox
-                  isChecked={isGroupSelected}
-                  onClick={handleGroupSelect}
-                />
-              </BulkContainer>
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.DESCRIPTION]}
-              >
-                <DashboardColumnSortHeader
-                  id="DESCRIPTION"
-                  label="Task"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.SUBTASKS_COUNT]}
-              >
-                Sub
-              </DashboardSortBarLabelName>
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.PATIENT]}
-              >
-                <DashboardColumnSortHeader
-                  id="PATIENT"
-                  label="Patient"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-              {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
-                <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.WORKFLOW_STATUS]}
-                >
-                  <DashboardColumnSortHeader
-                    id="WORKFLOW_STATUS"
-                    label="Status"
-                    sort={currentSort}
-                    onSortChange={onSortChange}
-                  />
-                </DashboardSortBarLabelName>
-              )}
-              {columnsConfig[TaskItemColumn.ACTIVITY] && (
-                <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.ACTIVITY]}
-                />
-              )}
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.DUE_DATE]}
-              >
-                <DashboardColumnSortHeader
-                  id="DUE_DATE"
-                  label="Due"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-              {columnsConfig[TaskItemColumn.ASSIGNED] && (
-                <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.ASSIGNED]}
-                  groupHasMultipleAssignees={groupHasMultipleAssignees}
-                >
-                  <DashboardColumnSortHeader
-                    id="ASSIGNED"
-                    sort={currentSort}
-                    onSortChange={onSortChange}
-                    label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-                  />
-                </DashboardSortBarLabelName>
-              )}
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG[TaskItemColumn.LIST_NAME]}
-              >
-                <DashboardColumnSortHeader
-                  id="LIST_NAME"
-                  label="List"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-            </DashboardSortBar>
+            <TasksHeader
+              bulkEditEnabled
+              taskItemConfig={columnsConfig}
+              isGroupSelected={isGroupSelected}
+              onGroupSelect={handleGroupSelect}
+              sort={currentSort}
+              onSortChange={onSortChange}
+              groupHasMultipleAssignees={groupHasMultipleAssignees}
+            />
             <DragDropContext
               onBeforeDragStart={showClearSortFiltersModal}
               onDragEnd={({ destination, source }) => {

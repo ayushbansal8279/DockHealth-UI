@@ -52,36 +52,6 @@ export const DashboardTasksGroupContainer = styled.div`
   }
 `;
 
-export const DashboardSortBar = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  font-size: ${fontWeights.regular};
-  color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.regularPlus};
-  padding: ${spacing.small} {spacing.tiny};
-  border: 1px solid ${palette.coolGrey3};
-  margin-bottom: 3px;
-`;
-
-export const DashboardSortBarLabelName = styled.div`
-  position: relative;
-  flex: ${({ width, extendedWidth, groupHasMultipleAssignees }) =>
-    width ? `${groupHasMultipleAssignees ? extendedWidth : width} 0 0` : '1'};
-  padding: ${({ paddingLeft = spacing.tiny, paddingRight = spacing.tiny }) =>
-    `${spacing.tiny} ${paddingRight} 0 ${paddingLeft}`};
-  height: 35px;
-  overflow: visible;
-  text-align: left;
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.regularPlus};
-  color: ${palette.mediumGrey};
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-`;
-
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
@@ -173,13 +143,6 @@ export const DashboardTasksGroupLabel = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
-`;
-
-export const BulkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: ${spacing.smallPlus};
 `;
 
 export const DashboardTaskItemContainer = styled.div`

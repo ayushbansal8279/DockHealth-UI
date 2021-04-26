@@ -27,12 +27,9 @@ import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
-import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
-import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
@@ -46,8 +43,8 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
-  BulkContainer,
 } from './styled';
+import TasksHeader from '../TasksHeader/TasksHeader';
 
 const TasksGroup = ({
   isDefaultGroup,
@@ -289,68 +286,15 @@ const TasksGroup = ({
           </Grid>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
-          <SortHeaderRow>
-            {bulkEditEnabled && (
-              <BulkContainer>
-                <Checkbox
-                  isChecked={isGroupSelected}
-                  onClick={handleGroupSelect}
-                />
-              </BulkContainer>
-            )}
-            <ColumnSortHeader width={35} />
-            <ColumnSortHeader
-              id="TASK_DESCRIPTION"
-              label="Tasks"
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="SUBTASK_COUNT"
-              label="Sub"
-              width={60}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="PATIENT"
-              label="Patient"
-              width={164}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="WORKFLOW_STATUS"
-              label="Status"
-              width={120}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader width={150} />
-            <ColumnSortHeader
-              id="DUE_DT"
-              label="Date"
-              width={60}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="ASSIGNED_TO"
-              label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-              width={groupHasMultipleAssignees ? 90 : 60}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            {listNameVisible && (
-              <ColumnSortHeader
-                id="LISTNAME"
-                label="List"
-                width={168}
-                sort={sort}
-                onSortChange={onSortChange}
-              />
-            )}
-          </SortHeaderRow>
+          <TasksHeader
+            bulkEditEnabled={bulkEditEnabled}
+            sort={sort}
+            onSortChange={onSortChange}
+            taskItemConfig={taskItemConfig}
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
+            isGroupSelected={isGroupSelected}
+            onGroupSelect={handleGroupSelect}
+          />
         )}
         {(!isLoadingGroup || isFetchingMoreTasks) && (
           <DragAndDropGroupList

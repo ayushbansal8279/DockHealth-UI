@@ -9,7 +9,6 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
@@ -21,6 +20,7 @@ import {
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import {
   Arrow,
   Tasks,
@@ -29,12 +29,9 @@ import {
   ListNameSection,
   ListNameContainer,
 } from 'components/tasklist/DropdownListSection/styled';
-import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
-import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import { TaskItemType } from 'helpers/task-helpers';
-import { BulkContainer } from '../styled';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -176,52 +173,15 @@ const TaskListDetailsDropdown = ({
             )}
           </Grid>
         )}
-        <SortHeaderRow>
-          {bulkEditEnabled && (
-            <BulkContainer>
-              <Checkbox
-                isChecked={isGroupSelected}
-                onClick={handleGroupSelect}
-              />
-            </BulkContainer>
-          )}
-          <ColumnSortHeader width={36} />
-          <ColumnSortHeader
-            id="TASK_DESCRIPTION"
-            label="Tasks"
-            sort={sort}
-            onSortChange={onSortChange}
-          />
-          <ColumnSortHeader
-            id="SUBTASK_COUNT"
-            label="Sub"
-            width={60}
-            sort={sort}
-            onSortChange={onSortChange}
-          />
-          <ColumnSortHeader
-            id="WORKFLOW_STATUS"
-            label="Status"
-            width={120}
-            sort={sort}
-            onSortChange={onSortChange}
-          />
-          <ColumnSortHeader width={150} />
-          <ColumnSortHeader
-            id="DUE_DT"
-            label="Date"
-            width={60}
-            sort={sort}
-            onSortChange={onSortChange}
-          />
-          <ColumnSortHeader
-            id="ASSIGNED_TO"
-            label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-            width={groupHasMultipleAssignees ? 90 : 60}
-            sort={sort}
-            onSortChange={onSortChange}
-          />
-        </SortHeaderRow>
+        <TasksHeader
+          bulkEditEnabled={bulkEditEnabled}
+          sort={sort}
+          onSortChange={onSortChange}
+          taskItemConfig={taskItemConfig}
+          groupHasMultipleAssignees={groupHasMultipleAssignees}
+          isGroupSelected={isGroupSelected}
+          onGroupSelect={handleGroupSelect}
+        />
         <div>
           {tasks?.map(task =>
             task.itemType === TaskItemType.TASK ? (

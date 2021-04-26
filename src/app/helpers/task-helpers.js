@@ -77,7 +77,7 @@ export function checkIfTemplateTask(task) {
 }
 
 export const TaskItemColumn = {
-  DESCRIPTION: 'DESCRIPTION',
+  DESCRIPTION: 'TASK_DESCRIPTION',
   DUE_DATE: 'DUE_DT',
   ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
@@ -129,6 +129,9 @@ export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.LIST_NAME]: sortWith([
     ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
   ]),
+  [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
+    ascend(pipe(prop('subTasksCount'), defaultTo(-1))),
+  ]),
 };
 
 export const TASK_ITEM_SORT_DESC_METHODS = {
@@ -161,6 +164,9 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     descend(
       pipe(path(['taskList', 'listName']), defaultTo(' '), toLower, trim),
     ),
+  ]),
+  [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
+    descend(pipe(prop('subTasksCount'), defaultTo(-1))),
   ]),
 };
 
