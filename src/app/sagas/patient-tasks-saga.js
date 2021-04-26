@@ -596,7 +596,7 @@ function* doApplyTemplateForPatient({
       patientIdentifier,
     });
     yield all([
-      put(refreshPatientTasks({ withLoader: true })),
+      put(refreshPatientTasks({ withLoader: false })),
       put(fetchStatsForPatientTasks()),
     ]);
   } catch {
