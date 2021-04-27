@@ -28,6 +28,7 @@ import {
   ListDetailsHeader,
   ListNameSection,
   ListNameContainer,
+  ListDescription,
 } from 'components/tasklist/DropdownListSection/styled';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
@@ -153,6 +154,7 @@ const TaskListDetailsDropdown = ({
           }}
         />
       </ListDetailsHeader>
+      <ListDescription>{list?.listDescription}</ListDescription>
       <Tasks timeout={150} in={isOpen}>
         {!isCompleteTab && (
           <Grid container direction="row">

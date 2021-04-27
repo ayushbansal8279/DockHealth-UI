@@ -33,6 +33,7 @@ import {
   SearchWrapper,
   MemberWrapper,
   ToolbarContainer,
+  ListDescription,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -197,25 +198,26 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                {taskList?.listType !== 'INBOX' && (
-                  <InviteMemberButton
-                    size={45}
-                    onClick={() =>
-                      dispatch(
-                        openModal('InviteToList', {
-                          list: taskList,
-                          onMembersRefresh: () =>
-                            dispatch(
-                              getMembersByTaskListId(
-                                taskList.taskListIdentifier,
-                                'ALL',
+                {taskList?.listType !== 'INBOX' &&
+                  taskList?.listType !== 'PUBLIC' && (
+                    <InviteMemberButton
+                      size={45}
+                      onClick={() =>
+                        dispatch(
+                          openModal('InviteToList', {
+                            list: taskList,
+                            onMembersRefresh: () =>
+                              dispatch(
+                                getMembersByTaskListId(
+                                  taskList.taskListIdentifier,
+                                  'ALL',
+                                ),
                               ),
-                            ),
-                        }),
-                      )
-                    }
-                  />
-                )}
+                          }),
+                        )
+                      }
+                    />
+                  )}
               </>
             )}
           </HeaderActionButtonsGrid>
@@ -235,6 +237,7 @@ const Toolbar = ({
           pdfTitle={pdfTitle}
         />
       </Grid>
+      <ListDescription>{taskList?.listDescription}</ListDescription>
       {(haveTasks ||
         searchValue ||
         !isEmpty(selectedFilters) ||

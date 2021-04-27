@@ -57,7 +57,9 @@ const DashboardView = ({
     pendingTaskLists,
   ]);
 
-  const firstUserList = allLists?.find(list => list.listType !== 'INBOX');
+  const firstUserList = allLists?.find(
+    list => list.listType !== 'INBOX' && list.listType !== 'PUBLIC',
+  );
 
   const sampleList = allLists?.find(list => list.listType === 'SHARED_SAMPLE');
 

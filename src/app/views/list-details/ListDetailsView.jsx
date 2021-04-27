@@ -597,6 +597,7 @@ class Home extends Component {
             <TaskViewContainer>
               <Toolbar
                 members={members}
+                showMembers={loadedTasklist?.listType !== 'PUBLIC'}
                 onSelectTab={this.navigateToTab}
                 selectedTab={selectedTab}
                 taskList={loadedTasklist || undefined}

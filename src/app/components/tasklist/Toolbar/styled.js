@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const ToolbarContainer = styled.div`
   display: block;
@@ -51,4 +52,15 @@ export const MemberWrapper = styled.div`
   flex-direction: row;
 
   ${({ isPending }) => isPending && `opacity: 0.7;`}
+`;
+
+export const ListDescription = styled.div`
+  padding-left: ${spacing.giga};
+  display: block;
+  margin-bottom: 0;
+  color: ${palette.mediumGrey}
+  background-color: ${palette.coolGrey4};
+  font-size: ${fontSizes.smallPLus};
+  font-weight: ${fontWeights.regular};
+  font-family: 'Montserrat', sans-serif;
 `;

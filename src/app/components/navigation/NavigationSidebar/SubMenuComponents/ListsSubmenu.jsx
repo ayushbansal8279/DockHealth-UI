@@ -157,15 +157,19 @@ const ListsSubmenu = () => {
 
   const getMenuItems = useCallback(
     list => {
-      let baseList = [
-        {
-          key: 'leave',
-          label: 'Leave list',
-          onClick: () => openLeaveListModal(list),
-        },
-      ];
+      let baseList = [];
+      if (list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC') {
+        baseList = [
+          ...baseList,
+          {
+            key: 'leave',
+            label: 'Leave list',
+            onClick: () => openLeaveListModal(list),
+          },
+        ];
+      }
 
-      if (PRIVILEGE_ROLES.includes(list?.role)) {
+      if (PRIVILEGE_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
         baseList = [
           ...baseList,
           {
@@ -176,7 +180,7 @@ const ListsSubmenu = () => {
           },
         ];
 
-        if (MASTER_ROLES.includes(list?.role)) {
+        if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
           baseList = [
             ...baseList,
             {
