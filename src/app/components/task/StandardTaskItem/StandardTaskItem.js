@@ -37,6 +37,7 @@ const Task = ({
   showClearSortFiltersModal,
   selectedTask,
   highlightedTasksParentIdenditifer,
+  noMargin,
   ...restProps
 }) => {
   const parentTaskReference = useRef(null);
@@ -150,7 +151,11 @@ const Task = ({
   }, []);
 
   return (
-    <ParentTaskContainer ref={parentTaskReference} {...draggableProps}>
+    <ParentTaskContainer
+      ref={parentTaskReference}
+      noMargin={noMargin}
+      {...draggableProps}
+    >
       <div ref={innerRef}>
         <TaskItem
           task={task}

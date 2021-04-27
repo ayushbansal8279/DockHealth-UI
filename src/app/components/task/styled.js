@@ -412,7 +412,9 @@ export const DescriptionLabel = styled.div`
 `;
 
 export const ParentTaskContainer = styled.div`
-  margin-bottom: 3px;
+  &:not(:last-child) {
+    margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;
+  }
 `;
 
 export const SubtasksWrapper = styled.div`

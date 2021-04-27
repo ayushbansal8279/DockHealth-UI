@@ -222,6 +222,7 @@ const TaskTemplateGroup = ({
           <TaskTemplateNameInput
             ref={nameInputReference}
             readOnly={!isEditing}
+            disabled={!isEditing}
             onChange={event => setNameInputValue(event.target?.value)}
             onBlur={() => {
               setIsEditing(false);
@@ -328,6 +329,7 @@ const TaskTemplateGroup = ({
                               ? () => {}
                               : () => setPopoverOpen(true)
                           }
+                          noMargin
                         />
                       )}
                     </Draggable>

@@ -69,3 +69,7 @@ export const MenuContainer = styled.div`
   overflow: hidden;
   color: ${palette.coolGrey2};
 `;
+
+export const QuickAddInputWrapper = styled.div`
+  margin-top: -1px;
+`;

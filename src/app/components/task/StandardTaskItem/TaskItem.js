@@ -121,8 +121,8 @@ const TaskItem = ({
   const isCompleted = task.status === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
   const isSubtask = !!parentTaskIdentifier;
-  const isTaskStatusTogglingEnabled =
-    !(isCompletedGroup && isSubtask) && !isTemplateTask;
+  const isTaskStatusTogglingDisabled =
+    isTemplateTask || (isSubtask && isCompletedGroup);
 
   const {
     matchAssignedTo,
@@ -239,12 +239,7 @@ const TaskItem = ({
 
   const onCircleClick = useCallback(
     event => {
-      if (
-        isTaskStatusTogglingEnabled &&
-        (isSubtask ||
-          (isCompletedGroup && isCompleted) ||
-          (!isCompletedGroup && !isCompleted))
-      ) {
+      if (!isTaskStatusTogglingDisabled) {
         toggleCompleteTask(task);
       }
 
@@ -257,9 +252,8 @@ const TaskItem = ({
       event.stopPropagation();
     },
     [
-      isTaskStatusTogglingEnabled,
+      isTaskStatusTogglingDisabled,
       isSubtask,
-      isCompletedGroup,
       isCompleted,
       toggleCompleteTask,
       task,
@@ -360,7 +354,7 @@ const TaskItem = ({
           >
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
-              isClickable={isTaskStatusTogglingEnabled}
+              isClickable={!isTaskStatusTogglingDisabled}
               isCompleted={isCompleted}
               onClick={onCircleClick}
             />

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Collapse } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
+import { fontSizes } from 'styles/font';
 
 export const TaskTemplateGroupContainer = styled.div`
   display: flex;
@@ -74,6 +75,7 @@ export const TaskTemplateGroupHeader = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
+  padding-right: 60px;
 `;
 
 export const TaskTemplateGroupList = styled(Collapse)``;
@@ -88,13 +90,11 @@ export const TaskTemplateOptionsContainer = styled.div`
 `;
 
 export const TaskTemplateNameInput = styled.input`
-  max-width: 400px;
-  grid-row: 1;
-  grid-column: 2;
+  width: 100%;
   margin-bottom: 0;
   padding: ${spacing.small};
   color: ${palette.mediumGrey};
-  font-size: 18px;
+  font-size: ${fontSizes.regular};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

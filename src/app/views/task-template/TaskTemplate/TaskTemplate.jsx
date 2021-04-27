@@ -8,7 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Box, Collapse } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
@@ -27,6 +27,7 @@ import {
   Description,
   ArrowButton,
   MenuContainer,
+  QuickAddInputWrapper,
 } from './styled';
 
 const TEMPLATES_VIEW_COLUMNS_CONFIG = {
@@ -200,7 +201,6 @@ const TaskTemplate = ({ template, isFullView }) => {
         <>
           {!isFetching ? (
             <>
-              <Box m={0.4} />
               <DragDropContext
                 onBeforeCapture={onBeforeCapture}
                 onDragEnd={onDragEnd}
@@ -232,6 +232,7 @@ const TaskTemplate = ({ template, isFullView }) => {
                                 multipleAssigneesContext={
                                   containsMultipleAssignees
                                 }
+                                noMargin
                               />
                             )}
                           </Draggable>
@@ -242,10 +243,12 @@ const TaskTemplate = ({ template, isFullView }) => {
                   )}
                 </Droppable>
               </DragDropContext>
-              <QuickAddTaskInput
-                disableMentions
-                quickAddTask={handleAddTaskToTemplate}
-              />
+              <QuickAddInputWrapper>
+                <QuickAddTaskInput
+                  disableMentions
+                  quickAddTask={handleAddTaskToTemplate}
+                />
+              </QuickAddInputWrapper>
             </>
           ) : (
             <TasksSkeletonLoader rows={4} />

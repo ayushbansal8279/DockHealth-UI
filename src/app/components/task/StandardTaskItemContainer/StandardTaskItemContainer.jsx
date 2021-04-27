@@ -5,6 +5,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { TaskStatus } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
 
@@ -72,7 +73,11 @@ const StandardTaskItemContainer = ({
         .then(() => {
           if (typeof onTaskCompletedStatusChanged === 'function')
             onTaskCompletedStatusChanged();
-          alertActions.showGlobalAlert(AlertMessages.UPDATED);
+          if (task.status === TaskStatus.INCOMPLETE) {
+            alertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED);
+          } else {
+            alertActions.showGlobalAlert(AlertMessages.TASK_REACTIVATED);
+          }
         })
         .catch(() => {
           alertActions.showGlobalErrorAlert();
