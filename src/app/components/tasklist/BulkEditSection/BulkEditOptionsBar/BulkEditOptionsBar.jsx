@@ -98,11 +98,12 @@ const BulkEditOptionsBar = ({
     () =>
       parentTasks.every(
         parentTask =>
+          parentTask?.subTasksCount === parentTask?.subTasksCompletedCount ||
           parentTask?.subTasksCount ===
-          subtasks?.filter(
-            subtask =>
-              subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
-          )?.length,
+            subtasks?.filter(
+              subtask =>
+                subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
+            )?.length,
       ),
     [parentTasks, subtasks],
   );
