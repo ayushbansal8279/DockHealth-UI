@@ -7,13 +7,19 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import { Box } from '@material-ui/core';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
+import { pluck } from 'ramda';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
-import palette from 'styles/palette';
+import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import palette from 'styles/palette';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -21,6 +27,7 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { TaskStatus } from 'helpers/task-helpers';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
+import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
 import TaskTemplatePatientDropdown from '../TaskTemplatePatientDropdown/TaskTemplatePatientDropdown';
 import {
   TaskTemplateGroupContainer,
@@ -35,6 +42,8 @@ import {
   AddPlaceholder,
   Placeholder,
   TaskTemplateRight,
+  NameContainer,
+  NameTooltip,
 } from './styled';
 
 const TaskTemplateGroup = ({
@@ -69,6 +78,8 @@ const TaskTemplateGroup = ({
 
   const dispatch = useDispatch();
 
+  // const { allowTooltip } = useNameTooltip(nameInputReference);
+
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
@@ -99,8 +110,10 @@ const TaskTemplateGroup = ({
         name: 'Edit Name',
         onClick: () => {
           setIsEditing(true);
-          // eslint-disable-next-line no-unused-expressions
-          nameInputReference.current?.focus();
+          setTimeout(() => {
+            // eslint-disable-next-line no-unused-expressions
+            nameInputReference.current?.focus();
+          }, 0);
         },
       },
       {
@@ -207,6 +220,23 @@ const TaskTemplateGroup = ({
     [showCompletedTasks, tasks],
   );
 
+  const isBundleSelected = useMemo(
+    () => checkIfAllTasksSelected(filteredTasks),
+    [filteredTasks],
+  );
+
+  const handleBundleSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isBundleSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isBundleSelected, filteredTasks]);
+
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeaderContainer>
@@ -217,20 +247,27 @@ const TaskTemplateGroup = ({
             {...dragHandleProps}
           />
         )}
-        <TaskTemplateGroupHeader onClick={() => setOpen(!isOpen)}>
-          <RotatableChevron rotated={isOpen} />
-          <TaskTemplateNameInput
-            ref={nameInputReference}
-            readOnly={!isEditing}
-            disabled={!isEditing}
-            onChange={event => setNameInputValue(event.target?.value)}
-            onBlur={() => {
-              setIsEditing(false);
-              setNameInputValue(name);
-            }}
-            onKeyDown={handleNameInputKeyDown}
-            value={nameInputValue}
-          />
+        <TaskTemplateGroupHeader>
+          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+          <Box m={1} />
+          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
+          <NameContainer>
+            <TaskTemplateNameInput
+              ref={nameInputReference}
+              readOnly={!isEditing}
+              disabled={!isEditing}
+              onChange={event => setNameInputValue(event.target?.value)}
+              onBlur={() => {
+                setIsEditing(false);
+                setNameInputValue(name);
+              }}
+              onKeyDown={handleNameInputKeyDown}
+              value={nameInputValue}
+            />
+            <OverflowTooltip textReference={nameInputReference.current}>
+              <NameTooltip>{name}</NameTooltip>
+            </OverflowTooltip>
+          </NameContainer>
         </TaskTemplateGroupHeader>
         <TaskTemplateRight>
           {!disablePatientAssignment && (

@@ -7,7 +7,7 @@ export const Icon = styled.svg`
 `;
 
 export const CheckboxInput = styled.button`
-  width: ${({ size }) => size}px;
+  width ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   border-radius: 2px;
   border: ${props =>
@@ -19,6 +19,7 @@ export const CheckboxInput = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 
   ${({ disabled }) =>
     !disabled &&

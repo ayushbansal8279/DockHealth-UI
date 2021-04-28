@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Collapse } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskTemplateGroupContainer = styled.div`
   display: flex;
@@ -54,10 +54,11 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 0 0 ${spacing.large};
+  padding: 0 0 0 ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-size: ${fontSizes.smallPlus};
   flex: 1;
 
   &:hover {
@@ -94,7 +95,7 @@ export const TaskTemplateNameInput = styled.input`
   margin-bottom: 0;
   padding: ${spacing.small};
   color: ${palette.mediumGrey};
-  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -123,4 +124,30 @@ export const TaskTemplatePatientHeader = styled.div`
 export const TaskTemplateRight = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const NameTooltip = styled.div`
+  display: none;
+  position: absolute;
+  top: 30px;
+  left: 60px;
+  max-width: 650px;
+  padding: ${spacing.small};
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  z-index: 10;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regular};
+  cursor: initial;
+`;
+
+export const NameContainer = styled.div`
+  display: flex;
+  flex: 1;
+
+  &:hover {
+    ${NameTooltip} {
+      display: block;
+    }
+  }
 `;

@@ -6,14 +6,19 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { pluck } from 'ramda';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
+import * as TaskActions from 'actions/task-actions';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
@@ -28,6 +33,7 @@ import {
   ArrowButton,
   MenuContainer,
   QuickAddInputWrapper,
+  ArrowButtonContainer,
 } from './styled';
 
 const TEMPLATES_VIEW_COLUMNS_CONFIG = {
@@ -167,18 +173,39 @@ const TaskTemplate = ({ template, isFullView }) => {
     [tasks],
   );
 
+  const isTempateSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+    tasks,
+  ]);
+
+  const handleTemplateSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isTempateSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isTempateSelected, tasks]);
+
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
-        <ArrowButton
-          onClick={() =>
-            dispatch(
-              TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier),
-            )
-          }
-        >
-          <RotatableChevron rotated={isOpen} />
-        </ArrowButton>
+        <Checkbox
+          isChecked={isTempateSelected}
+          onClick={handleTemplateSelect}
+        />
+        <ArrowButtonContainer>
+          <ArrowButton
+            onClick={() =>
+              dispatch(
+                TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier),
+              )
+            }
+          >
+            <RotatableChevron rotated={isOpen} />
+          </ArrowButton>
+        </ArrowButtonContainer>
         <NameInput
           ref={nameInputReference}
           readOnly={!isEditing}

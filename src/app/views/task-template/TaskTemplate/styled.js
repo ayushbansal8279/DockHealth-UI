@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
@@ -11,30 +11,29 @@ export const TaskTemplateContainer = styled.div`
 
 export const TaskTemplateHeader = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto 1fr auto;
   grid-template-rows: 30px auto;
-  grid-column-gap: ${spacing.regularPlus};
+  grid-column-gap: ${spacing.tiny};
   align-items: center;
   width: 100%;
-  padding: ${spacing.small} ${spacing.large};
+  padding: 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export const ArrowButton = styled.button`
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 1;
 `;
 
 export const NameInput = styled.input`
-  max-width: 400px;
   grid-row: 1;
-  grid-column: 2;
+  grid-column: 3;
   margin-bottom: 0;
   padding: ${spacing.small};
   color: ${palette.mediumGrey};
-  font-size: ${fontSizes.regularPlus};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -42,6 +41,7 @@ export const NameInput = styled.input`
   border: 1px solid ${palette.coolGrey2};
   border-radius: 5px;
   background: ${palette.coolGrey4};
+  font-weight: ${fontWeights.regular};
 
   &[readonly] {
     background-color: transparent;
@@ -56,7 +56,7 @@ export const NameInput = styled.input`
 `;
 
 export const Description = styled.p`
-  grid-column: 2;
+  grid-column: 3;
   grid-row: 2;
   margin-bottom: 0;
   color: ${palette.coolGrey1};
@@ -64,7 +64,7 @@ export const Description = styled.p`
 `;
 
 export const MenuContainer = styled.div`
-  grid-column: 3;
+  grid-column: 4;
   grid-row: 1;
   overflow: hidden;
   color: ${palette.coolGrey2};
@@ -72,4 +72,11 @@ export const MenuContainer = styled.div`
 
 export const QuickAddInputWrapper = styled.div`
   margin-top: -1px;
+`;
+
+export const ArrowButtonContainer = styled.div`
+  display: flex;
+  width: 26px;
+  justify-content: center;
+  margin-left: ${spacing.small};
 `;
