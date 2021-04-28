@@ -66,7 +66,7 @@ const DragAndDropGroupList = ({
                   <>
                     {task?.itemType === TaskItemType.TASK ? (
                       <StandardTaskItem
-                        key={task.taskIdentifier}
+                        key={task.identifier}
                         isFullView={isFullView}
                         isDragging={isDragging}
                         isStartedDnD={draggedId === task.taskIdentifier}
@@ -103,6 +103,7 @@ const DragAndDropGroupList = ({
                       />
                     ) : (
                       <TaskTemplateGroup
+                        key={task.identifier}
                         isStartedDnD={draggedId === task.identifier}
                         draggableProvided={draggableProvided}
                         templateGroup={task}
