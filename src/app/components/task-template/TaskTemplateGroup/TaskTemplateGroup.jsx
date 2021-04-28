@@ -28,7 +28,7 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { TaskStatus } from 'helpers/task-helpers';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
-import TaskTemplatePatientDropdown from '../TaskTemplatePatientDropdown/TaskTemplatePatientDropdown';
+import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -63,7 +63,6 @@ const TaskTemplateGroup = ({
     tasks,
     identifier,
     patient,
-    taskListIdentifier: parentTaskListIdentifier,
     parentTaskGroupIdentifier,
   } = templateGroup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
@@ -272,16 +271,23 @@ const TaskTemplateGroup = ({
         <TaskTemplateRight>
           {!disablePatientAssignment && (
             <TaskTemplatePatientHeader>
-              <TaskTemplatePatientDropdown
-                taskListIdentifier={parentTaskListIdentifier}
-                taskGroupIdentifier={parentTaskGroupIdentifier}
-                templateBundleIdentifier={identifier}
+              <PatientDropdown
                 selectedPatientIdentifier={
                   patient ? patient.patientIdentifier : null
                 }
                 isPopoverOpen={isPopoverOpen}
+                onChangePatient={patientIdentifier =>
+                  dispatch(
+                    TemplateBundleActions.changePatientForTemplateBundle(
+                      identifier,
+                      parentTaskGroupIdentifier,
+                      patientIdentifier,
+                    ),
+                  )
+                }
                 openPopover={() => setPopoverOpen(true)}
                 closePopover={() => setPopoverOpen(false)}
+                isMultipleChange
               >
                 {patient ? (
                   <PatientCard patientIdentifier={patient.patientIdentifier}>
@@ -294,7 +300,7 @@ const TaskTemplateGroup = ({
                 ) : (
                   <AddPlaceholder>+ Add Patient</AddPlaceholder>
                 )}
-              </TaskTemplatePatientDropdown>
+              </PatientDropdown>
             </TaskTemplatePatientHeader>
           )}
           <TaskTemplateOptionsContainer
@@ -361,7 +367,7 @@ const TaskTemplateGroup = ({
                           isBundleTask
                           templateBundleIdentifier={identifier}
                           parentTaskGroupIdentifier={parentTaskGroupIdentifier}
-                          customPatientClick={
+                          openPatientPopover={
                             disablePatientAssignment
                               ? () => {}
                               : () => setPopoverOpen(true)

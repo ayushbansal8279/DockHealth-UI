@@ -1,15 +1,17 @@
 import React, { useRef } from 'react';
-import TaskTemplatePatientList from './TaskTemplatePatientList';
+import PatientList from './PatientList';
 import { StyledPopover } from './styled';
 
-const TaskTemplatePatientDropdown = ({
+const PatientDropdown = ({
   children,
-  taskGroupIdentifier,
-  templateBundleIdentifier,
+  onChangePatient,
   selectedPatientIdentifier,
   openPopover,
   closePopover,
   isPopoverOpen,
+  isMultipleChange,
+  isSubtask,
+  hasSubtasks,
 }) => {
   const popoverReference = useRef(null);
 
@@ -24,14 +26,17 @@ const TaskTemplatePatientDropdown = ({
         onClose={() => closePopover(false)}
         width="440"
       >
-        <TaskTemplatePatientList
-          taskGroupIdentifier={taskGroupIdentifier}
-          templateBundleIdentifier={templateBundleIdentifier}
+        <PatientList
+          onChangePatient={onChangePatient}
           selectedPatientIdentifier={selectedPatientIdentifier}
+          isMultipleChange={isMultipleChange}
+          closePopover={closePopover}
+          isSubtask={isSubtask}
+          hasSubtasks={hasSubtasks}
         />
       </StyledPopover>
     </>
   );
 };
 
-export default TaskTemplatePatientDropdown;
+export default PatientDropdown;

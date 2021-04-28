@@ -26,6 +26,7 @@ const PatientSection = ({
   onSave,
   taskGroupIdentifier,
   templateBundleIdentifier,
+  isSubtask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -64,12 +65,43 @@ const PatientSection = ({
   const savePatient = useCallback(
     async patientToSave => {
       try {
-        const onSavePatient = async () => {
-          onTaskDrawerTaskPatientChanged();
-          await onSave({
-            patient: patientToSave,
-            patientIdentifier: patientToSave?.patientIdentifier || 'UNASSIGNED',
-          });
+        const onSavePatient = async skipModals => {
+          if (skipModals) {
+            onTaskDrawerTaskPatientChanged();
+            await onSave({
+              patient: patientToSave,
+              patientIdentifier:
+                patientToSave?.patientIdentifier || 'UNASSIGNED',
+            });
+          } else {
+            // eslint-disable-next-line no-lonely-if
+            if (isSubtask) {
+              if (selectedPatient && !patientToSave?.patientIdentifier) {
+                dispatch(
+                  openModal('UnassignPatient', {
+                    confirm: async () => {
+                      onTaskDrawerTaskPatientChanged();
+                      await onSave({
+                        patientIdentifier: 'UNASSIGNED',
+                      });
+                    },
+                  }),
+                );
+              } else if (!selectedPatient && patientToSave?.patientIdentifier) {
+                dispatch(
+                  openModal('AssignPatient', {
+                    confirm: async () => {
+                      onTaskDrawerTaskPatientChanged();
+                      await onSave({
+                        patient: patientToSave,
+                        patientIdentifier: patientToSave?.patientIdentifier,
+                      });
+                    },
+                  }),
+                );
+              }
+            }
+          }
         };
 
         if (templateBundleIdentifier) {
@@ -77,6 +109,7 @@ const PatientSection = ({
             if (patientToSave) {
               dispatch(
                 openModal('AssignPatient', {
+                  isWorkflowModal: true,
                   confirm: () => {
                     dispatch(
                       changePatientForTemplateBundle(
@@ -85,7 +118,7 @@ const PatientSection = ({
                         patientToSave?.patientIdentifier,
                       ),
                     );
-                    onSavePatient();
+                    onSavePatient(true);
                   },
                   patientName: patientToSave?.lastName
                     ? `${patientToSave?.lastName}, ${patientToSave?.firstName}`
@@ -95,6 +128,7 @@ const PatientSection = ({
             } else {
               dispatch(
                 openModal('UnassignPatient', {
+                  isWorkflowModal: true,
                   confirm: () => {
                     dispatch(
                       changePatientForTemplateBundle(
@@ -103,7 +137,7 @@ const PatientSection = ({
                         'UNASSIGNED',
                       ),
                     );
-                    onSavePatient();
+                    onSavePatient(true);
                   },
                 }),
               );
@@ -116,7 +150,7 @@ const PatientSection = ({
                 patientToSave?.patientIdentifier,
               ),
             );
-            onSavePatient();
+            onSavePatient(true);
           }
         } else {
           onSavePatient();
@@ -132,6 +166,7 @@ const PatientSection = ({
     },
     [
       dispatch,
+      isSubtask,
       onSave,
       selectedPatient,
       taskGroupIdentifier,
@@ -174,6 +209,7 @@ const PatientSection = ({
     if (templateBundleIdentifier && selectedPatient) {
       dispatch(
         openModal('UnassignPatient', {
+          isWorkflowModal: true,
           confirm: async () => {
             dispatch(
               changePatientForTemplateBundle(
@@ -189,9 +225,15 @@ const PatientSection = ({
         }),
       );
     } else {
-      setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
-      setPatients([]);
-      await savePatient(null);
+      dispatch(
+        openModal('UnassignPatient', {
+          confirm: async () => {
+            setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+            setPatients([]);
+            await savePatient(null);
+          },
+        }),
+      );
     }
     // eslint-disable-next-line no-unused-expressions
     patientInputReference.current?.querySelector('input')?.focus();

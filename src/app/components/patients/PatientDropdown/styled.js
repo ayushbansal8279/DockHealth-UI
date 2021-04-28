@@ -45,7 +45,8 @@ export const ListContainer = styled.div`
   overflow-y: auto;
   padding: 2px;
   padding-right: 6px;
-  border-top: 1px solid ${palette.coolGrey2};
+  border-top: ${({ withBorder }) =>
+    withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
 `;
 
 export const Row = styled.button`

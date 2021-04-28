@@ -88,7 +88,7 @@ const TaskItem = ({
   highlightTasksOfTheSameParent,
   taskItemConfig = {},
   isDashboardTask,
-  customPatientClick,
+  openPatientPopover,
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
 }) => {
@@ -369,9 +369,9 @@ const TaskItem = ({
               matchPatientMRN={matchPatientMRN}
               patient={patient}
               matchPatient={matchPatient}
-              dispatch={dispatch}
               task={task}
-              customPatientClick={customPatientClick}
+              openPatientPopover={openPatientPopover}
+              onTaskUpdate={onTaskUpdate}
             />
           )}
           {checkColumnIsInConfig(

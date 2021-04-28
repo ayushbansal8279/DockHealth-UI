@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import debounce from 'lodash.debounce';
-import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { openModal } from 'modal/actions';
 import MagnifierIcon from 'img/magnifier';
 import { getPatientsByCriteria } from 'api/patient-api';
@@ -21,10 +20,14 @@ import {
 
 const UNASSIGNED_KEY = 'UNASSIGNED';
 
-const TaskTemplatePatientList = ({
-  taskGroupIdentifier,
-  templateBundleIdentifier,
+const PatientList = ({
+  onChangePatient,
   selectedPatientIdentifier,
+  isMultipleChange,
+  closePopover,
+  isSubtask,
+  hasSubtasks,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [patients, setPatients] = useState([]);
@@ -79,6 +82,23 @@ const TaskTemplatePatientList = ({
     [fetchPatientsWithDebounce],
   );
 
+  const unassignAction = () => {
+    if (isMultipleChange || isSubtask || hasSubtasks) {
+      dispatch(
+        openModal('UnassignPatient', {
+          isWorkflowModal: isMultipleChange,
+          confirm: () => {
+            onChangePatient(UNASSIGNED_KEY);
+            closePopover();
+          },
+        }),
+      );
+    } else {
+      onChangePatient(UNASSIGNED_KEY);
+      closePopover();
+    }
+  };
+
   return (
     <>
       <InputBox>
@@ -100,26 +120,15 @@ const TaskTemplatePatientList = ({
         <NoPatientFound>No patient found</NoPatientFound>
       )}
       {!isLoadingPatients && (
-        <ListContainer>
+        <ListContainer
+          withBorder={patients.length !== 0 || displayUnassignedOption}
+        >
           {displayUnassignedOption && (
             <UnassignRow withBorder={patients.length !== 0}>
               <Row
                 type="button"
                 isSelected={!selectedPatientIdentifier}
-                onClick={() =>
-                  dispatch(
-                    openModal('UnassignPatient', {
-                      confirm: () =>
-                        dispatch(
-                          changePatientForTemplateBundle(
-                            templateBundleIdentifier,
-                            taskGroupIdentifier,
-                            UNASSIGNED_KEY,
-                          ),
-                        ),
-                    }),
-                  )
-                }
+                onClick={unassignAction}
               >
                 Unassign
               </Row>
@@ -133,30 +142,30 @@ const TaskTemplatePatientList = ({
                 isSelected={
                   selectedPatientIdentifier === patient?.patientIdentifier
                 }
-                onClick={() =>
-                  selectedPatientIdentifier
-                    ? dispatch(
-                        openModal('AssignPatient', {
-                          confirm: () =>
-                            dispatch(
-                              changePatientForTemplateBundle(
-                                templateBundleIdentifier,
-                                taskGroupIdentifier,
+                onClick={
+                  (selectedPatientIdentifier && isMultipleChange) ||
+                  isSubtask ||
+                  hasSubtasks
+                    ? () =>
+                        dispatch(
+                          openModal('AssignPatient', {
+                            isWorkflowModal: isMultipleChange,
+                            confirm: () => {
+                              onChangePatient(
                                 patient?.patientIdentifier,
-                              ),
-                            ),
-                          patientName: patient?.lastName
-                            ? `${patient?.lastName}, ${patient?.firstName}`
-                            : patient?.firstName,
-                        }),
-                      )
-                    : dispatch(
-                        changePatientForTemplateBundle(
-                          templateBundleIdentifier,
-                          taskGroupIdentifier,
-                          patient?.patientIdentifier,
-                        ),
-                      )
+                                patient,
+                              );
+                              closePopover();
+                            },
+                            patientName: patient?.lastName
+                              ? `${patient?.lastName}, ${patient?.firstName}`
+                              : patient?.firstName,
+                          }),
+                        )
+                    : () => {
+                        onChangePatient(patient?.patientIdentifier, patient);
+                        closePopover();
+                      }
                 }
               >
                 <Grid container>
@@ -180,4 +189,4 @@ const TaskTemplatePatientList = ({
   );
 };
 
-export default TaskTemplatePatientList;
+export default PatientList;

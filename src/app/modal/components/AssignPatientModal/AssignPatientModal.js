@@ -20,7 +20,12 @@ const PrimaryText = styled.span`
   color: #3d4858;
 `;
 
-const AssignPatientModal = ({ closeModal, confirm, patientName }) => {
+const AssignPatientModal = ({
+  closeModal,
+  confirm,
+  patientName,
+  isWorkflowModal,
+}) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -32,8 +37,10 @@ const AssignPatientModal = ({ closeModal, confirm, patientName }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Only one patient may be assigned per workflow. Assign all tasks in
-            this workflow to:
+            {isWorkflowModal
+              ? `Only one patient may be assigned per workflow. Assign all tasks in
+            this workflow to:`
+              : `Assigning a patient from this task will update assignee to the primary task and related subtasks to`}
           </Typography>
           <Typography variant="body1">
             <b>{patientName}</b>
