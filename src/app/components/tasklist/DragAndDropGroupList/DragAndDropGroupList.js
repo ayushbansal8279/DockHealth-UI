@@ -56,7 +56,7 @@ const DragAndDropGroupList = ({
             {tasks?.map((task, index) => (
               <Draggable
                 key={task.taskIdentifier}
-                draggableId={String(task.taskIdentifier)}
+                draggableId={String(task.identifier)}
                 index={index}
                 isDragDisabled={
                   isCompletedGroup || dragAndDropDisabled || isTaskDrawerOpen
