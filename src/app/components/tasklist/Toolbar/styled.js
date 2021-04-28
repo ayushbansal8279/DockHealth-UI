@@ -58,7 +58,7 @@ export const ListDescription = styled.div`
   padding-left: ${spacing.giga};
   display: block;
   margin-bottom: 0;
-  color: ${palette.mediumGrey}
+  color: ${palette.mediumGrey};
   background-color: ${palette.coolGrey4};
   font-size: ${fontSizes.smallPLus};
   font-weight: ${fontWeights.regular};
