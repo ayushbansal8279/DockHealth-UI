@@ -1,4 +1,4 @@
-import { TaskItemType } from './task-helpers';
+import { TaskItemType, TaskStatus } from './task-helpers';
 
 export const TaskListTabName = {
   OPEN: 'INCOMPLETE',
@@ -61,4 +61,8 @@ export function updateBundleInList(
       ? { ...t, ...dataToUpdate }
       : t,
   );
+}
+
+export function checkIfHasIncompleteTasks(tasks) {
+  return !!tasks?.some(({ status }) => status === TaskStatus.INCOMPLETE);
 }

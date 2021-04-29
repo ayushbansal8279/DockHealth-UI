@@ -14,6 +14,7 @@ import {
   ADD_TASK,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
+  COMPLETE_TEMPLATE_BUNDLE,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -203,7 +204,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case DELETE_TEMPLATE_BUNDLE: {
+    case DELETE_TEMPLATE_BUNDLE:
+    case COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
       return {

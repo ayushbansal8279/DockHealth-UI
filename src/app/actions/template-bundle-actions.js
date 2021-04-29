@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import * as ActionTypesSaga from 'actions/action-types-saga';
+import * as ActionTypes from 'actions/action-types';
 
 export function updateTemplateBundle({ bundle, dataToUpdate }) {
   return {
@@ -62,5 +63,12 @@ export function changePatientForTemplateBundle(
     taskTemplateIdentifier,
     taskGroupIdentifier,
     patientIdentifier,
+  };
+}
+
+export function completeTemplateBundle(bundleIdentifier) {
+  return {
+    type: ActionTypes.COMPLETE_TEMPLATE_BUNDLE,
+    bundleIdentifier,
   };
 }
