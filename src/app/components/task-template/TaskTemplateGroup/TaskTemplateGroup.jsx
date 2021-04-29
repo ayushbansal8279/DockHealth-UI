@@ -7,21 +7,33 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import { Box } from '@material-ui/core';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
+import { pluck } from 'ramda';
+import {
+  checkIfHasIncompleteTasks,
+  extractTasksAndSubtasks,
+} from 'helpers/tasklist-helpers';
 import { useDispatch } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
-import palette from 'styles/palette';
+import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import palette from 'styles/palette';
+import { TaskStatus } from 'helpers/task-helpers';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { TaskStatus } from 'helpers/task-helpers';
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
-import TaskTemplatePatientDropdown from '../TaskTemplatePatientDropdown/TaskTemplatePatientDropdown';
+import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
+import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -35,6 +47,9 @@ import {
   AddPlaceholder,
   Placeholder,
   TaskTemplateRight,
+  NameContainer,
+  NameTooltip,
+  QuickAddInputWrapper,
 } from './styled';
 
 const TaskTemplateGroup = ({
@@ -54,8 +69,8 @@ const TaskTemplateGroup = ({
     tasks,
     identifier,
     patient,
-    taskListIdentifier: parentTaskListIdentifier,
     parentTaskGroupIdentifier,
+    taskListIdentifier,
   } = templateGroup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
@@ -64,14 +79,23 @@ const TaskTemplateGroup = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const nameInputReference = useRef(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const [isAddingTask, setIsAddingTask] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
+
+  useEffect(() => {
+    if (tasks && !checkIfHasIncompleteTasks(tasks)) {
+      setTimeout(() => {
+        dispatch(TemplateBundleActions.completeTemplateBundle(identifier));
+      }, TASK_DISAPPEAR_DELAY);
+    }
+  }, [dispatch, identifier, tasks]);
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
@@ -96,11 +120,19 @@ const TaskTemplateGroup = ({
     // eslint-disable-next-line unicorn/prevent-abbreviations
     let opts = [
       {
+        name: 'Add Task',
+        onClick: () => {
+          setIsAddingTask(true);
+        },
+      },
+      {
         name: 'Edit Name',
         onClick: () => {
           setIsEditing(true);
-          // eslint-disable-next-line no-unused-expressions
-          nameInputReference.current?.focus();
+          setTimeout(() => {
+            // eslint-disable-next-line no-unused-expressions
+            nameInputReference.current?.focus();
+          }, 0);
         },
       },
       {
@@ -133,11 +165,14 @@ const TaskTemplateGroup = ({
           dispatch(
             ModalActions.openModal('SelectDestination', {
               confirmText: 'Move',
-              confirm: ({ taskListIdentifier, taskGroupIdentifier }) => {
+              confirm: ({
+                taskListIdentifier: listIdentifier,
+                taskGroupIdentifier,
+              }) => {
                 dispatch(
                   TemplateBundleActions.moveTemplateBundle({
                     bundleIdentifier: identifier,
-                    taskListIdentifier,
+                    taskListIdentifier: listIdentifier,
                     taskGroupIdentifier,
                   }),
                 );
@@ -172,10 +207,34 @@ const TaskTemplateGroup = ({
       {
         name: 'Delete',
         onClick: () =>
-          dispatch(TemplateBundleActions.deleteTemplateBundle(identifier)),
+          dispatch(
+            ModalActions.openModal('DeleteTemplate', {
+              confirm: () =>
+                dispatch(
+                  TemplateBundleActions.deleteTemplateBundle(identifier),
+                ),
+            }),
+          ),
       },
     ];
   }, [dispatch, identifier, showCompletedTasks]);
+
+  const handleAddBundleTask = useCallback(
+    task => {
+      const taskData = {
+        ...task,
+        taskGroupIdentifier: identifier,
+        taskListIdentifier,
+      };
+
+      if (patient) {
+        taskData.patientIdentifier = patient.patientIdentifier;
+      }
+
+      dispatch(TaskActions.saveTask(taskData));
+    },
+    [dispatch, identifier, taskListIdentifier, patient],
+  );
 
   const handleNameInputKeyDown = useCallback(
     event => {
@@ -207,6 +266,23 @@ const TaskTemplateGroup = ({
     [showCompletedTasks, tasks],
   );
 
+  const isBundleSelected = useMemo(
+    () => checkIfAllTasksSelected(filteredTasks),
+    [filteredTasks],
+  );
+
+  const handleBundleSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isBundleSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isBundleSelected, filteredTasks]);
+
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeaderContainer>
@@ -217,34 +293,48 @@ const TaskTemplateGroup = ({
             {...dragHandleProps}
           />
         )}
-        <TaskTemplateGroupHeader onClick={() => setOpen(!isOpen)}>
-          <RotatableChevron rotated={isOpen} />
-          <TaskTemplateNameInput
-            ref={nameInputReference}
-            readOnly={!isEditing}
-            disabled={!isEditing}
-            onChange={event => setNameInputValue(event.target?.value)}
-            onBlur={() => {
-              setIsEditing(false);
-              setNameInputValue(name);
-            }}
-            onKeyDown={handleNameInputKeyDown}
-            value={nameInputValue}
-          />
+        <TaskTemplateGroupHeader>
+          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+          <Box m={1} />
+          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
+          <NameContainer>
+            <TaskTemplateNameInput
+              ref={nameInputReference}
+              readOnly={!isEditing}
+              disabled={!isEditing}
+              onChange={event => setNameInputValue(event.target?.value)}
+              onBlur={() => {
+                setIsEditing(false);
+                setNameInputValue(name);
+              }}
+              onKeyDown={handleNameInputKeyDown}
+              value={nameInputValue}
+            />
+            <OverflowTooltip textReference={nameInputReference.current}>
+              <NameTooltip>{name}</NameTooltip>
+            </OverflowTooltip>
+          </NameContainer>
         </TaskTemplateGroupHeader>
         <TaskTemplateRight>
           {!disablePatientAssignment && (
             <TaskTemplatePatientHeader>
-              <TaskTemplatePatientDropdown
-                taskListIdentifier={parentTaskListIdentifier}
-                taskGroupIdentifier={parentTaskGroupIdentifier}
-                templateBundleIdentifier={identifier}
+              <PatientDropdown
                 selectedPatientIdentifier={
                   patient ? patient.patientIdentifier : null
                 }
                 isPopoverOpen={isPopoverOpen}
+                onChangePatient={patientIdentifier =>
+                  dispatch(
+                    TemplateBundleActions.changePatientForTemplateBundle(
+                      identifier,
+                      parentTaskGroupIdentifier,
+                      patientIdentifier,
+                    ),
+                  )
+                }
                 openPopover={() => setPopoverOpen(true)}
                 closePopover={() => setPopoverOpen(false)}
+                isMultipleChange
               >
                 {patient ? (
                   <PatientCard patientIdentifier={patient.patientIdentifier}>
@@ -257,7 +347,7 @@ const TaskTemplateGroup = ({
                 ) : (
                   <AddPlaceholder>+ Add Patient</AddPlaceholder>
                 )}
-              </TaskTemplatePatientDropdown>
+              </PatientDropdown>
             </TaskTemplatePatientHeader>
           )}
           <TaskTemplateOptionsContainer
@@ -324,7 +414,7 @@ const TaskTemplateGroup = ({
                           isBundleTask
                           templateBundleIdentifier={identifier}
                           parentTaskGroupIdentifier={parentTaskGroupIdentifier}
-                          customPatientClick={
+                          openPatientPopover={
                             disablePatientAssignment
                               ? () => {}
                               : () => setPopoverOpen(true)
@@ -339,6 +429,16 @@ const TaskTemplateGroup = ({
               )}
             </Droppable>
           </DragDropContext>
+          {isAddingTask && (
+            <QuickAddInputWrapper>
+              <QuickAddTaskInput
+                autofocus
+                disableMentions
+                quickAddTask={handleAddBundleTask}
+                onBlur={() => setIsAddingTask(false)}
+              />
+            </QuickAddInputWrapper>
+          )}
         </TaskTemplateGroupList>
       )}
     </TaskTemplateGroupContainer>

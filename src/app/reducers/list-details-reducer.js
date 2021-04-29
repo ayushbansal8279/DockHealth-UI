@@ -19,6 +19,7 @@ import {
   UPDATE_TEMPLATE_BUNDLE,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
+  COMPLETE_TEMPLATE_BUNDLE,
 } from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
@@ -392,7 +393,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         return updateBundleInState(
           bundle => ({
             ...bundle,
-            tasks: [addedTask, ...(bundle.tasks || [])],
+            tasks: [...(bundle.tasks || []), addedTask],
           }),
           bundleIdentifier,
           state,
@@ -449,6 +450,21 @@ const ListDetailsReducer = (state = initialState, action) => {
         },
         completedGroupedTasks: {
           ...state.completedGroupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),
+          })),
+        },
+      };
+    }
+
+    case COMPLETE_TEMPLATE_BUNDLE: {
+      const { bundleIdentifier } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
           taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
             ...g,
             tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),

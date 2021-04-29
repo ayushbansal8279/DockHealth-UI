@@ -155,15 +155,15 @@ const TaskItemContextMenu = ({
 
   const handleDeleteTask = useCallback(() => {
     const modalProps = {
+      isSubtask: !!task.parentTaskIdentifier,
       confirm: async () => {
         await dispatch(deleteTask(task));
         dispatch(closeModal());
         onRightClickAction('Delete task');
       },
     };
-    const modalName =
-      task.parentTaskIdentifier !== null ? 'DeleteSubtask' : 'DeleteTask';
-    dispatch(openModal(modalName, modalProps));
+
+    dispatch(openModal('DeleteTask', modalProps));
   }, []);
 
   const handleMoveTask = useCallback(() => {

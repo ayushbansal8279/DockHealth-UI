@@ -7,6 +7,7 @@ import {
   TASK_ATTACHMENT_ADDED,
   TASK_ATTACHMENT_REMOVED,
   UPDATE_TASK_SUCCESS,
+  SET_COMPLETE_STATUS,
   UPDATE_TASK_COMMENT_SUCCESS,
   REFRESH_ANOTHER_TASK_SUCCESS,
   OPEN_QUICK_ADD_SUBTASK_INPUT,
@@ -238,37 +239,55 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
       const updateTaskFromAction = t => {
         if (t.taskIdentifier === task.taskIdentifier) {
-          let updatedTask = { ...t, ...task };
+          return { ...t, ...task };
+        }
 
-          if (
-            t.status !== task.status &&
-            updatedTask.status === TaskStatus.COMPLETE
-          ) {
-            updatedTask = {
-              ...updatedTask,
-              subtasks: updatedTask.subtasks?.map(s => ({
+        return updateSubtasksInTask(task, task.taskIdentifier, t);
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case SET_COMPLETE_STATUS: {
+      const { taskIdentifier, dataToUpdate } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === taskIdentifier) {
+          if (dataToUpdate.status === TaskStatus.COMPLETE) {
+            return {
+              ...t,
+              ...dataToUpdate,
+              subtasks: t.subtasks?.map(s => ({
                 ...s,
-                status: TaskStatus.COMPLETE,
+                ...dataToUpdate,
               })),
-              subTasksCompletedCount: updatedTask.subTasksCount,
+              subTasksCompletedCount: t.subTasksCount,
             };
           }
 
-          return updatedTask;
+          return {
+            ...t,
+            ...dataToUpdate,
+          };
         }
 
-        let updatedTask = updateSubtasksInTask(task, task.taskIdentifier, t);
+        if (t.subtasks?.length > 0) {
+          let updatedTask = updateSubtasksInTask(
+            dataToUpdate,
+            taskIdentifier,
+            t,
+          );
 
-        if (task.status && updatedTask.subtasks?.length > 0) {
           updatedTask = {
             ...updatedTask,
             subTasksCompletedCount: updatedTask.subtasks?.filter(
               s => s.status === TaskStatus.COMPLETE,
             ).length,
           };
+          return updatedTask;
         }
 
-        return updatedTask;
+        return t;
       };
 
       return updateStateCallback(state, updateTaskFromAction);

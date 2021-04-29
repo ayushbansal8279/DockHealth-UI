@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Popper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
+import useCardWithTimeout from 'hooks/use-card-with-timeout';
 import Spacing from 'components/common/Spacing';
 import {
   PatientCardContainer,
@@ -56,11 +57,12 @@ const renderPatientNotes = (notes, { firstName, middleName, lastName }) => {
 
 const PatientCard = ({ children, patientIdentifier }) => {
   const reference = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
   const [patientData, setPatientData] = useState(null);
 
+  const { cardOpen, openTrigger, closeTrigger } = useCardWithTimeout();
+
   useEffect(() => {
-    if (isHovered && !patientData) {
+    if (cardOpen && !patientData) {
       PatientApi.getPatientById(patientIdentifier)
         .then(fetchedPatient => {
           setPatientData(fetchedPatient);
@@ -68,7 +70,7 @@ const PatientCard = ({ children, patientIdentifier }) => {
         .catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHovered, patientData]);
+  }, [cardOpen, patientData]);
 
   const {
     firstName,
@@ -86,13 +88,13 @@ const PatientCard = ({ children, patientIdentifier }) => {
   return (
     <span
       ref={reference}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={openTrigger}
+      onMouseLeave={closeTrigger}
     >
       {children}
       <Popper
         anchorEl={reference.current}
-        open={isHovered && !!patientIdentifier}
+        open={cardOpen && !!patientIdentifier}
         placement="bottom-start"
         style={{ zIndex: 2000 }}
       >

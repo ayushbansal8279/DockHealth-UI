@@ -435,7 +435,7 @@ export const TaskItemDescriptionIndicators = styled.div`
   align-items: baseline;
 `;
 
-export const PatientLabel = styled.div`
+export const PatientLabel = styled.span`
   &:hover {
     color: ${palette.brightBlue};
     text-decoration: underline;

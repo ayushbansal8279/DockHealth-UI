@@ -16,6 +16,7 @@ export const ListSwitchContainer = styled.div<
   transform: scaleY(${props => (props.rotated ? -1 : 1)});
   height: 7px;
   width: 10px;
+  cursor: pointer;
 
   & svg {
     object-fit: contain;

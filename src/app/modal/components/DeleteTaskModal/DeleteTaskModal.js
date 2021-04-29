@@ -16,20 +16,20 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
-const DeleteTaskModal = ({ closeModal, confirm }) => {
+const DeleteTaskModal = ({ closeModal, isSubtask, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={TrashCan} alt="Task" />
           <Typography color="textPrimary" variant="h2">
-            DELETE TASK
+            DELETE {isSubtask ? 'SUB' : ''}TASK
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to delete this task? This action cannot be
-            undone.
+            Are you sure you want to delete this {isSubtask ? 'sub' : ''}task?
+            This action cannot be undone.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>

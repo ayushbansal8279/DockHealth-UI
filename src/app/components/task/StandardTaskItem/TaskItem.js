@@ -16,7 +16,6 @@ import {
   selectTask,
   storeAsCurrentTask,
 } from 'actions/task-actions';
-import debounce from 'lodash.debounce';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
@@ -89,9 +88,10 @@ const TaskItem = ({
   highlightTasksOfTheSameParent,
   taskItemConfig = {},
   isDashboardTask,
-  customPatientClick,
+  openPatientPopover,
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
+  isBundleTask,
 }) => {
   const {
     taskIdentifier,
@@ -122,7 +122,9 @@ const TaskItem = ({
   const isTemplateTask = checkIfTemplateTask(task);
   const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingDisabled =
-    isTemplateTask || (isSubtask && isCompletedGroup);
+    isTemplateTask ||
+    (isSubtask && isCompletedGroup) ||
+    (!!isCompleted !== !!isCompletedGroup && !isSubtask && !isBundleTask);
 
   const {
     matchAssignedTo,
@@ -145,36 +147,10 @@ const TaskItem = ({
     }),
   );
   const [contextMenu, setContextMenu] = useState(null);
-  const [
-    isDescriptionTooltipVisible,
-    setIsDescriptionTooltipVisible,
-  ] = useState(false);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
-  const descriptionReference = useRef(null);
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
-
-  const checkIfShouldDisplayTooltip = useCallback(() => {
-    const descriptionTextElement = descriptionReference.current?.querySelector(
-      '.public-DraftStyleDefault-block',
-    );
-    if (
-      descriptionTextElement &&
-      descriptionTextElement.scrollWidth > descriptionTextElement.offsetWidth
-    ) {
-      setIsDescriptionTooltipVisible(true);
-    } else {
-      setIsDescriptionTooltipVisible(false);
-    }
-  }, []);
-
-  const handleResize = useCallback(
-    debounce(() => {
-      checkIfShouldDisplayTooltip();
-    }, 1000),
-    [],
-  );
 
   const handleTaskItemRightClick = useCallback(
     event => {
@@ -184,21 +160,6 @@ const TaskItem = ({
     },
     [dispatch, task],
   );
-
-  useEffect(() => {
-    if (descriptionReference.current) {
-      checkIfShouldDisplayTooltip();
-    }
-  }, [checkIfShouldDisplayTooltip]);
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (previousDescription.current !== null) {
@@ -364,14 +325,12 @@ const TaskItem = ({
               mergedTaskItemConfig,
             ) && (
               <TaskItemDescription
-                descriptionReference={descriptionReference}
                 isCompletedGroup={isCompletedGroup}
                 isCompleted={isCompleted}
                 descriptionState={descriptionState}
                 setDescriptionState={setDescriptionState}
                 matchDescription={matchDescription}
                 highlightedValue={highlightedValue}
-                isDescriptionTooltipVisible={isDescriptionTooltipVisible}
                 description={description}
                 edited={edited}
                 duplicated={duplicated}
@@ -413,9 +372,9 @@ const TaskItem = ({
               matchPatientMRN={matchPatientMRN}
               patient={patient}
               matchPatient={matchPatient}
-              dispatch={dispatch}
               task={task}
-              customPatientClick={customPatientClick}
+              openPatientPopover={openPatientPopover}
+              onTaskUpdate={onTaskUpdate}
             />
           )}
           {checkColumnIsInConfig(

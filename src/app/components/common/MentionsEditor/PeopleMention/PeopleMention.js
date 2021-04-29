@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Popper } from '@material-ui/core';
+import useCardWithTimeout from 'hooks/use-card-with-timeout';
 import * as PeopleApi from 'api/people-api';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
@@ -35,8 +36,9 @@ import {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PeopleMention = ({ mention, className, children }) => {
   const reference = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
   const [personData, setPersonData] = useState(null);
+
+  const { cardOpen, openTrigger, closeTrigger } = useCardWithTimeout();
 
   const { activeUsersList } = useSelector(store => ({
     activeUsersList: store.activeUsers.activeUsersList,
@@ -55,7 +57,7 @@ const PeopleMention = ({ mention, className, children }) => {
   );
 
   useEffect(() => {
-    if (isHovered && !personData) {
+    if (cardOpen && !personData) {
       PeopleApi.getUserById(mention.identifier)
         .then(fetchedPerson => {
           setPersonData(fetchedPerson);
@@ -63,7 +65,7 @@ const PeopleMention = ({ mention, className, children }) => {
         .catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHovered, personData]);
+  }, [cardOpen, personData]);
 
   const localTime = moment()
     .utc()
@@ -73,14 +75,14 @@ const PeopleMention = ({ mention, className, children }) => {
   return (
     <MentionItem
       ref={reference}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={openTrigger}
+      onMouseLeave={closeTrigger}
       className={className}
     >
       {children}
       <Popper
         anchorEl={reference.current}
-        open={isHovered && !!mention.identifier}
+        open={cardOpen && !!mention.identifier}
         placement="bottom-start"
         style={{ zIndex: 2000 }}
       >

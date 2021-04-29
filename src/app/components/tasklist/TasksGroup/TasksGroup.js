@@ -201,6 +201,7 @@ const TasksGroup = ({
       ),
     );
   }, [dispatch, isGroupSelected, tasks]);
+
   const handleTemplateSelect = useCallback(
     template => {
       applyTemplate({

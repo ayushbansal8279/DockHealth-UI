@@ -21,5 +21,7 @@ export const ProgressBarLine = styled.div`
 `;
 
 export const ProgressBarLabel = styled.div`
+  min-width: 40px;
+  text-align: right;
   font-size: 14px;
 `;

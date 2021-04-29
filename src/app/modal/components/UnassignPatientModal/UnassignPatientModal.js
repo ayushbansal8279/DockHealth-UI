@@ -20,20 +20,22 @@ const PrimaryText = styled.span`
   color: #3d4858;
 `;
 
-const UnassignPatientModal = ({ closeModal, confirm }) => {
+const UnassignPatientModal = ({ closeModal, confirm, isWorkflowModal }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={patient} alt="patient" />
           <Typography variant="h2" align="center">
-            <PrimaryText>Assign All</PrimaryText>
+            <PrimaryText>Un-Assign All</PrimaryText>
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Un-assigning the patient from here will update all tasks and
-            subtasks in this workflow to:
+            {isWorkflowModal
+              ? `Un-assigning the patient from here will update all tasks and
+            subtasks in this workflow to:`
+              : `Un-assigning a patient from this task will update the primary task and related subtasks to:`}
           </Typography>
           <Typography variant="body1">
             <b>Un-assigned</b>
