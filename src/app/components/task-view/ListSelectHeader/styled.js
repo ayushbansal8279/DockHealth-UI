@@ -9,7 +9,7 @@ export const StyledTitle = styled(Typography)`
     filter: brightness(1);
     flex-flow: row nowrap;
     transition: filter 0.25s ease-out;
-
+    width: 50%;
     &:hover {
       filter: brightness(1.25);
     }
