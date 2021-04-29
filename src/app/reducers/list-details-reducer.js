@@ -392,7 +392,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         return updateBundleInState(
           bundle => ({
             ...bundle,
-            tasks: [addedTask, ...(bundle.tasks || [])],
+            tasks: [...(bundle.tasks || []), addedTask],
           }),
           bundleIdentifier,
           state,

@@ -173,7 +173,7 @@ const TaskTemplate = ({ template, isFullView }) => {
     [tasks],
   );
 
-  const isTempateSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+  const isTemplateSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
     tasks,
   ]);
 
@@ -182,17 +182,17 @@ const TaskTemplate = ({ template, isFullView }) => {
     const allTasks = [...parentTasks, ...subtasks];
     dispatch(
       TaskActions.changeTasksSelectedState(
-        !isTempateSelected,
+        !isTemplateSelected,
         pluck('identifier', allTasks),
       ),
     );
-  }, [dispatch, isTempateSelected, tasks]);
+  }, [dispatch, isTemplateSelected, tasks]);
 
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
         <Checkbox
-          isChecked={isTempateSelected}
+          isChecked={isTemplateSelected}
           onClick={handleTemplateSelect}
         />
         <ArrowButtonContainer>

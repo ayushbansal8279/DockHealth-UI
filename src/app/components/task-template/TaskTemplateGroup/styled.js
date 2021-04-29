@@ -151,3 +151,7 @@ export const NameContainer = styled.div`
     }
   }
 `;
+
+export const QuickAddInputWrapper = styled.div`
+  margin-top: -1px;
+`;

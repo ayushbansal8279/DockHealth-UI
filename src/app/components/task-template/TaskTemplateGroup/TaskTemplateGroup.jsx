@@ -19,13 +19,14 @@ import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import palette from 'styles/palette';
+import { TaskStatus } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { TaskStatus } from 'helpers/task-helpers';
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
@@ -44,6 +45,7 @@ import {
   TaskTemplateRight,
   NameContainer,
   NameTooltip,
+  QuickAddInputWrapper,
 } from './styled';
 
 const TaskTemplateGroup = ({
@@ -64,6 +66,7 @@ const TaskTemplateGroup = ({
     identifier,
     patient,
     parentTaskGroupIdentifier,
+    taskListIdentifier,
   } = templateGroup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
@@ -74,10 +77,9 @@ const TaskTemplateGroup = ({
   const nameInputReference = useRef(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const [isAddingTask, setIsAddingTask] = useState(false);
 
   const dispatch = useDispatch();
-
-  // const { allowTooltip } = useNameTooltip(nameInputReference);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -105,6 +107,12 @@ const TaskTemplateGroup = ({
   const menuOptions = useMemo(() => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     let opts = [
+      {
+        name: 'Add Task',
+        onClick: () => {
+          setIsAddingTask(true);
+        },
+      },
       {
         name: 'Edit Name',
         onClick: () => {
@@ -145,11 +153,14 @@ const TaskTemplateGroup = ({
           dispatch(
             ModalActions.openModal('SelectDestination', {
               confirmText: 'Move',
-              confirm: ({ taskListIdentifier, taskGroupIdentifier }) => {
+              confirm: ({
+                taskListIdentifier: listIdentifier,
+                taskGroupIdentifier,
+              }) => {
                 dispatch(
                   TemplateBundleActions.moveTemplateBundle({
                     bundleIdentifier: identifier,
-                    taskListIdentifier,
+                    taskListIdentifier: listIdentifier,
                     taskGroupIdentifier,
                   }),
                 );
@@ -195,6 +206,19 @@ const TaskTemplateGroup = ({
       },
     ];
   }, [dispatch, identifier, showCompletedTasks]);
+
+  const handleAddBundleTask = useCallback(
+    task => {
+      dispatch(
+        TaskActions.saveTask({
+          ...task,
+          taskGroupIdentifier: identifier,
+          taskListIdentifier,
+        }),
+      );
+    },
+    [dispatch, identifier, taskListIdentifier],
+  );
 
   const handleNameInputKeyDown = useCallback(
     event => {
@@ -389,6 +413,16 @@ const TaskTemplateGroup = ({
               )}
             </Droppable>
           </DragDropContext>
+          {isAddingTask && (
+            <QuickAddInputWrapper>
+              <QuickAddTaskInput
+                autofocus
+                disableMentions
+                quickAddTask={handleAddBundleTask}
+                onBlur={() => setIsAddingTask(false)}
+              />
+            </QuickAddInputWrapper>
+          )}
         </TaskTemplateGroupList>
       )}
     </TaskTemplateGroupContainer>

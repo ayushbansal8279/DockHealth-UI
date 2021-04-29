@@ -163,7 +163,7 @@ export default function(state = INITIAL_STATE, action = {}) {
             ...l,
             tasks: l.tasks?.map(t =>
               t.identifier === bundleIdentifier
-                ? { ...t, tasks: [addedTask, ...(t.tasks || [])] }
+                ? { ...t, tasks: [...(t.tasks || []), addedTask] }
                 : t,
             ),
           })),

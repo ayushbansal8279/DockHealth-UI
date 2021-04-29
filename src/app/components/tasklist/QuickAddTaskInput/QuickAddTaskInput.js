@@ -2,7 +2,7 @@ import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import Spacing from 'components/common/Spacing';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   AddTaskInputWrapper,
   MentionsEditorContainer,
@@ -13,8 +13,10 @@ import {
 const QuickAddTaskInput = React.forwardRef(
   (
     {
+      autofocus,
       quickAddTask,
       onFocus,
+      onBlur,
       validator,
       taskListIdentifier = null,
       disableMentions = false,
@@ -29,6 +31,20 @@ const QuickAddTaskInput = React.forwardRef(
     const [error, setError] = useState(null);
     const [isFocused, setIsFocused] = useState(false);
     const quickAddTaskInputReference = useRef(null);
+
+    useEffect(() => {
+      if (autofocus) {
+        // eslint-disable-next-line no-unused-expressions
+        (quickAddTaskInputReference || reference)?.current?.focus();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    function resetInput() {
+      setNewTaskDescription();
+      setHasInputValue(false);
+      setError(null);
+    }
 
     const handleInputEnterDown = () => {
       let validatorError = null;
@@ -50,12 +66,7 @@ const QuickAddTaskInput = React.forwardRef(
 
       if (rawText && !validatorError) {
         quickAddTask({ description: tokenizedText, patientIdentifier });
-        setNewTaskDescription();
-        setHasInputValue(false);
-
-        if (validator) {
-          setError(null);
-        }
+        resetInput();
 
         // to reset cursor position inside input
         setTimeout(() => {
@@ -86,18 +97,32 @@ const QuickAddTaskInput = React.forwardRef(
                 setIsFocused(true);
                 if (typeof onFocus === 'function') onFocus();
               }}
-              onBlur={() => setIsFocused(false)}
+              onBlur={() => {
+                setIsFocused(false);
+                if (typeof onBlur === 'function') onBlur();
+              }}
               state={newTaskDescription}
               onChange={handleOnChange}
               keyBindingFn={event => {
                 if (event.keyCode === 13) {
                   return 'enter-command';
                 }
+                if (event.keyCode === 27) {
+                  return 'escape-command';
+                }
+
                 return undefined;
               }}
               handleKeyCommand={command => {
                 if (command === 'enter-command') {
                   handleInputEnterDown();
+                  return 'handled';
+                }
+
+                if (command === 'escape-command') {
+                  resetInput();
+                  // eslint-disable-next-line no-unused-expressions
+                  (reference || quickAddTaskInputReference)?.current?.blur();
                   return 'handled';
                 }
 
