@@ -221,15 +221,19 @@ const TaskTemplateGroup = ({
 
   const handleAddBundleTask = useCallback(
     task => {
-      dispatch(
-        TaskActions.saveTask({
-          ...task,
-          taskGroupIdentifier: identifier,
-          taskListIdentifier,
-        }),
-      );
+      const taskData = {
+        ...task,
+        taskGroupIdentifier: identifier,
+        taskListIdentifier,
+      };
+
+      if (patient) {
+        taskData.patientIdentifier = patient.patientIdentifier;
+      }
+
+      dispatch(TaskActions.saveTask(taskData));
     },
-    [dispatch, identifier, taskListIdentifier],
+    [dispatch, identifier, taskListIdentifier, patient],
   );
 
   const handleNameInputKeyDown = useCallback(
