@@ -24,7 +24,7 @@ export const TemplateHandle = styled.img`
   }
 `;
 
-export const Placeholder = styled.div`
+export const Placeholder = styled.span`
   color: ${palette.mediumGrey};
   padding: 0 ${spacing.regular};
   cursor: pointer;
