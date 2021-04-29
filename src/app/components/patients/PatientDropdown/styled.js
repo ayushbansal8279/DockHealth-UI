@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Popover, Grid } from '@material-ui/core';
+import { Popover } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -41,10 +41,9 @@ export const InputBox = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  max-height: 264px;
+  max-height: 208;
   overflow-y: auto;
-  padding: 2px;
-  padding-right: 6px;
+  overflow-x: hidden;
   border-top: ${({ withBorder }) =>
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
 `;
@@ -54,15 +53,10 @@ export const Row = styled.button`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: ${spacing.small} ${spacing.small};
-  font-family: 'Roboto Condensed', sans-serif;
   cursor: pointer;
-  margin: 2px;
-  border-radius: 4px;
-  color: ${({ isSelected }) =>
-    isSelected ? palette.mediumGrey : palette.coolGrey1};
-  background-color: ${({ isSelected }) =>
-    isSelected ? `${palette.brightBlue}12` : 'transparent'};
+  color: ${palette.coolGrey1};
+  font-family: 'Roboto Condensed', sans-serif;
+  ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
 
   &:not(:last-of-type) {
     margin-bottom: ${spacing.tiny};
@@ -73,21 +67,13 @@ export const Row = styled.button`
   }
 `;
 
-export const UnassignRow = styled.div`
-  padding-bottom: 2px;
+export const UnassignRow = styled(Row)`
+  padding: ${spacing.small};
+`;
+
+export const UnassignRowContainer = styled.div`
   border-bottom: ${({ withBorder }) =>
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
-`;
-
-export const StyledGrid = styled(Grid)`
-  white-space: nowrap;
-  overflow: hidden !important;
-  text-overflow: ellipsis;
-  padding-right: ${spacing.tiny};
-`;
-
-export const PatientName = styled(StyledGrid)`
-  text-align: initial;
 `;
 
 export const LoaderItem = styled(LoaderFillElement)`

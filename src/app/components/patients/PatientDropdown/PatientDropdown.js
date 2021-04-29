@@ -24,7 +24,7 @@ const PatientDropdown = ({
         anchorEl={popoverReference?.current}
         open={isPopoverOpen}
         onClose={() => closePopover(false)}
-        width="440"
+        width="330"
       >
         <PatientList
           onChangePatient={onChangePatient}

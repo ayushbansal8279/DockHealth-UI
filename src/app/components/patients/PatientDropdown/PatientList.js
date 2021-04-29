@@ -1,20 +1,26 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Grid } from '@material-ui/core';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { openModal } from 'modal/actions';
+import { isOutsideScrollView } from 'helpers/scroll-helper';
 import MagnifierIcon from 'img/magnifier';
 import { getPatientsByCriteria } from 'api/patient-api';
+import { getFormattedPatients } from 'components/task-drawer/PatientSection/helpers';
 import {
   Input,
   InputBox,
   ListContainer,
   Row,
-  PatientName,
-  StyledGrid,
   LoaderItem,
   LoaderContainer,
   NoPatientFound,
+  UnassignRowContainer,
   UnassignRow,
 } from './styled';
 
@@ -32,8 +38,22 @@ const PatientList = ({
   const [searchValue, setSearchValue] = useState('');
   const [patients, setPatients] = useState([]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(false);
-
+  const listReference = useRef(null);
   const inputReference = useRef(null);
+  const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
+
+  const displayUnassignedOption = useMemo(
+    () =>
+      'unassigned'.includes(searchValue.toLowerCase()) &&
+      selectedPatientIdentifier,
+    [searchValue, selectedPatientIdentifier],
+  );
+
+  useEffect(() => {
+    if (patients.length === 0 && displayUnassignedOption) {
+      setPatients([{ unassignOption: true, patientIdentifier: 'UNASSIGNED' }]);
+    }
+  }, [displayUnassignedOption, patients.length]);
 
   useEffect(() => {
     if (inputReference) {
@@ -44,17 +64,22 @@ const PatientList = ({
 
   const dispatch = useDispatch();
 
-  const displayUnassignedOption =
-    'unassigned'.includes(searchValue.toLowerCase()) &&
-    selectedPatientIdentifier;
-
   const fetchPatients = useCallback(
     value =>
       getPatientsByCriteria(value).then(fetchedPatients => {
-        setPatients(fetchedPatients);
-        return fetchedPatients;
+        if (
+          'unassigned'.includes(value.toLowerCase()) &&
+          selectedPatientIdentifier
+        ) {
+          setPatients([
+            { unassignOption: true, patientIdentifier: 'UNASSIGNED' },
+            ...getFormattedPatients({ patients: fetchedPatients }),
+          ]);
+        } else {
+          setPatients(getFormattedPatients({ patients: fetchedPatients }));
+        }
       }),
-    [],
+    [selectedPatientIdentifier],
   );
 
   const fetchPatientsWithDebounce = useCallback(
@@ -71,8 +96,8 @@ const PatientList = ({
       const value = event?.target?.value;
       if (value !== '') {
         setIsLoadingPatients(true);
-        fetchPatientsWithDebounce(value);
         setSearchValue(value);
+        fetchPatientsWithDebounce(value);
       } else {
         fetchPatientsWithDebounce.cancel();
         setIsLoadingPatients(false);
@@ -99,6 +124,114 @@ const PatientList = ({
     }
   };
 
+  const onPatientSelect = ({ patient }) => {
+    if (
+      (selectedPatientIdentifier && isMultipleChange) ||
+      isSubtask ||
+      hasSubtasks
+    ) {
+      dispatch(
+        openModal('AssignPatient', {
+          isWorkflowModal: isMultipleChange,
+          confirm: () => {
+            onChangePatient(patient?.patientIdentifier, patient);
+            closePopover();
+          },
+          patientName: patient?.lastName
+            ? `${patient?.lastName}, ${patient?.firstName}`
+            : patient?.firstName,
+        }),
+      );
+    } else {
+      onChangePatient(patient?.patientIdentifier, patient);
+      closePopover();
+    }
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const handleInputKeyDown = event => {
+    switch (event.keyCode) {
+      // esc key
+      case 27:
+        event.preventDefault();
+        event.stopPropagation();
+        inputReference.current.blur();
+        closePopover();
+        break;
+
+      // enter key
+      case 13:
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (
+          (searchValue && patients?.length > 0 && patients[hoveredItemIndex]) ||
+          displayUnassignedOption
+        ) {
+          onPatientSelect(patients[hoveredItemIndex]);
+        }
+        break;
+
+      // down arrow key
+      case 40:
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (patients?.length > 0) {
+          setHoveredItemIndex(previousIndex => {
+            let newIndex;
+            if (previousIndex === patients.length - 1) {
+              newIndex = 0;
+            } else {
+              newIndex = previousIndex + 1;
+            }
+
+            if (listReference.current?.children?.[newIndex])
+              listReference.current.children[newIndex].scrollIntoView(false);
+
+            return newIndex;
+          });
+        }
+        break;
+
+      // up arrow key
+      case 38:
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (patients?.length > 0) {
+          setHoveredItemIndex(previousIndex => {
+            let newIndex;
+
+            if (previousIndex === 0) {
+              newIndex = patients.length - 1;
+            } else {
+              newIndex = previousIndex - 1;
+            }
+
+            if (
+              listReference.current?.children?.[newIndex] &&
+              isOutsideScrollView(
+                listReference.current,
+                listReference.current?.children?.[newIndex],
+              )
+            ) {
+              listReference.current.scrollTop =
+                listReference.current?.children?.[newIndex].offsetTop;
+            }
+
+            return newIndex;
+          });
+        }
+        break;
+
+      default:
+        // do nothing
+        break;
+    }
+  };
+
   return (
     <>
       <InputBox>
@@ -107,6 +240,7 @@ const PatientList = ({
           ref={inputReference}
           placeholder="Search patient"
           onChange={onPatientInputChange}
+          onKeyDown={handleInputKeyDown}
         />
       </InputBox>
       {isLoadingPatients && (
@@ -120,69 +254,34 @@ const PatientList = ({
         <NoPatientFound>No patient found</NoPatientFound>
       )}
       {!isLoadingPatients && (
-        <ListContainer
-          withBorder={patients.length !== 0 || displayUnassignedOption}
-        >
-          {displayUnassignedOption && (
-            <UnassignRow withBorder={patients.length !== 0}>
-              <Row
-                type="button"
-                isSelected={!selectedPatientIdentifier}
-                onClick={unassignAction}
-              >
-                Unassign
-              </Row>
-            </UnassignRow>
-          )}
+        <ListContainer withBorder={patients.length !== 0} ref={listReference}>
           {!isLoadingPatients &&
             patients.length !== 0 &&
-            patients?.map(patient => (
-              <Row
-                type="button"
-                isSelected={
-                  selectedPatientIdentifier === patient?.patientIdentifier
-                }
-                onClick={
-                  (selectedPatientIdentifier && isMultipleChange) ||
-                  isSubtask ||
-                  hasSubtasks
-                    ? () =>
-                        dispatch(
-                          openModal('AssignPatient', {
-                            isWorkflowModal: isMultipleChange,
-                            confirm: () => {
-                              onChangePatient(
-                                patient?.patientIdentifier,
-                                patient,
-                              );
-                              closePopover();
-                            },
-                            patientName: patient?.lastName
-                              ? `${patient?.lastName}, ${patient?.firstName}`
-                              : patient?.firstName,
-                          }),
-                        )
-                    : () => {
-                        onChangePatient(patient?.patientIdentifier, patient);
-                        closePopover();
-                      }
-                }
-              >
-                <Grid container>
-                  <PatientName item xs={6}>
-                    {patient?.lastName
-                      ? `${patient?.lastName}, ${patient?.firstName}`
-                      : patient?.firstName}
-                  </PatientName>
-                  <StyledGrid item xs={3}>
-                    {patient?.mrn}
-                  </StyledGrid>
-                  <Grid item xs={3}>
-                    {patient?.age}
-                  </Grid>
-                </Grid>
-              </Row>
-            ))}
+            patients?.map((patient, index) =>
+              patient.unassignOption ? (
+                <UnassignRowContainer withBorder={displayUnassignedOption}>
+                  <UnassignRow
+                    type="button"
+                    isSelected={!selectedPatientIdentifier}
+                    onClick={unassignAction}
+                    isHovered={hoveredItemIndex === index}
+                  >
+                    Unassign
+                  </UnassignRow>
+                </UnassignRowContainer>
+              ) : (
+                <Row
+                  type="button"
+                  isHovered={hoveredItemIndex === index}
+                  isSelected={
+                    selectedPatientIdentifier === patient?.patientIdentifier
+                  }
+                  onClick={() => onPatientSelect(patient)}
+                >
+                  {patient.label({ searchValue })}
+                </Row>
+              ),
+            )}
         </ListContainer>
       )}
     </>
