@@ -5,6 +5,7 @@ import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
+// eslint-disable-next-line import/no-cycle
 import { reloadDashboardTasks } from 'sagas/dashboard-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
@@ -438,12 +439,13 @@ export function toggleCompleteTask(
 
     if (newStatus === 'COMPLETE') {
       newTaskData.completedBy = currentUser;
-      newTaskData.completedDt = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+      newTaskData.completedDt = moment().toISOString();
     }
 
     dispatch({
-      type: ActionTypes.UPDATE_TASK_SUCCESS,
-      task: { ...task, ...newTaskData },
+      type: ActionTypes.SET_COMPLETE_STATUS,
+      taskIdentifier: task.taskIdentifier,
+      dataToUpdate: newTaskData,
     });
 
     return TaskApi[apiEndpoint](task)

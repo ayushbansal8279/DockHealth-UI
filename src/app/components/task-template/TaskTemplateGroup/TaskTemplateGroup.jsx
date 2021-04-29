@@ -72,7 +72,7 @@ const TaskTemplateGroup = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const nameInputReference = useRef(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -184,7 +184,14 @@ const TaskTemplateGroup = ({
       {
         name: 'Delete',
         onClick: () =>
-          dispatch(TemplateBundleActions.deleteTemplateBundle(identifier)),
+          dispatch(
+            ModalActions.openModal('DeleteTemplate', {
+              confirm: () =>
+                dispatch(
+                  TemplateBundleActions.deleteTemplateBundle(identifier),
+                ),
+            }),
+          ),
       },
     ];
   }, [dispatch, identifier, showCompletedTasks]);

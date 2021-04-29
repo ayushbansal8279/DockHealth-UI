@@ -91,6 +91,7 @@ const TaskItem = ({
   openPatientPopover,
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
+  isBundleTask,
 }) => {
   const {
     taskIdentifier,
@@ -121,7 +122,9 @@ const TaskItem = ({
   const isTemplateTask = checkIfTemplateTask(task);
   const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingDisabled =
-    isTemplateTask || (isSubtask && isCompletedGroup);
+    isTemplateTask ||
+    (isSubtask && isCompletedGroup) ||
+    (!!isCompleted !== !!isCompletedGroup && !isSubtask && !isBundleTask);
 
   const {
     matchAssignedTo,

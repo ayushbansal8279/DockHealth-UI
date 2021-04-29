@@ -1,7 +1,6 @@
 import DeleteGroupModal from './components/DeleteGroupModal/DeleteGroupModal';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import DeleteTaskModal from './components/DeleteTaskModal/DeleteTaskModal';
-import DeleteSubtaskModal from './components/DeleteSubtaskModal/DeleteSubtaskModal';
 import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
 import DeleteListModal from './components/DeleteListModal/DeleteListModal';
 import DeleteNoteModal from './components/DeleteNoteModal/DeleteNoteModal';
@@ -49,7 +48,6 @@ const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
   CompleteAllTasks: CompleteAllTasksModal,
   DeleteTask: DeleteTaskModal,
-  DeleteSubtask: DeleteSubtaskModal,
   AttachmentsDuplicate: AttachmentsDuplicateModal,
   DeleteList: DeleteListModal,
   DeleteNote: DeleteNoteModal,

@@ -33,6 +33,7 @@ import {
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import { TaskItemType } from 'helpers/task-helpers';
+import { checkIfHasIncompleteTasks } from 'helpers/task-bundle-helpers';
 
 const TaskListDetailsDropdown = ({
   list,
@@ -210,14 +211,18 @@ const TaskListDetailsDropdown = ({
                 taskItemConfig={taskItemConfig}
               />
             ) : (
-              <TaskTemplateGroup
-                templateGroup={task}
-                taskItemConfig={taskItemConfig}
-                groupHasMultipleAssignees={groupHasMultipleAssignees}
-                isFullView={isFullView}
-                groupDragAndDropDisabled
-                disablePatientAssignment
-              />
+              <>
+                {checkIfHasIncompleteTasks(task) && (
+                  <TaskTemplateGroup
+                    templateGroup={task}
+                    taskItemConfig={taskItemConfig}
+                    groupHasMultipleAssignees={groupHasMultipleAssignees}
+                    isFullView={isFullView}
+                    groupDragAndDropDisabled
+                    disablePatientAssignment
+                  />
+                )}
+              </>
             ),
           )}
         </div>

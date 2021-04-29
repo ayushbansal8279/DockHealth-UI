@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
+import { checkIfHasIncompleteTasks } from 'helpers/task-bundle-helpers';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
@@ -102,18 +103,24 @@ const DragAndDropGroupList = ({
                         taskItemConfig={taskItemConfig}
                       />
                     ) : (
-                      <TaskTemplateGroup
-                        key={task.identifier}
-                        isStartedDnD={draggedId === task.identifier}
-                        draggableProvided={draggableProvided}
-                        templateGroup={task}
-                        taskItemConfig={taskItemConfig}
-                        groupHasMultipleAssignees={groupHasMultipleAssignees}
-                        isFullView={isFullView}
-                        dragAndDropDisabled={
-                          isCompletedGroup || dragAndDropDisabled
-                        }
-                      />
+                      <>
+                        {checkIfHasIncompleteTasks(task) && (
+                          <TaskTemplateGroup
+                            key={task.identifier}
+                            isStartedDnD={draggedId === task.identifier}
+                            draggableProvided={draggableProvided}
+                            templateGroup={task}
+                            taskItemConfig={taskItemConfig}
+                            groupHasMultipleAssignees={
+                              groupHasMultipleAssignees
+                            }
+                            isFullView={isFullView}
+                            dragAndDropDisabled={
+                              isCompletedGroup || dragAndDropDisabled
+                            }
+                          />
+                        )}
+                      </>
                     )}
                   </>
                 )}

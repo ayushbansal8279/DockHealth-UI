@@ -23,12 +23,12 @@ const DeleteTemplateModal = ({ closeModal, confirm }) => {
         <ModalIconContainer>
           <ModalMainIcon src={TrashCan} alt="Task" />
           <Typography color="textPrimary" variant="h2">
-            DELETE TEMPLATE
+            DELETE WORKFLOW
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to delete this template? This action cannot be
+            Are you sure you want to delete this workflow? This action cannot be
             undone.
           </Typography>
         </ModalDescriptionContainer>
