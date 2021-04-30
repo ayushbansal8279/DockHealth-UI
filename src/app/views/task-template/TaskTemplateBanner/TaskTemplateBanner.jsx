@@ -19,7 +19,8 @@ const TaskTemplateBanner = ({ onClose, onCreateTemplate, firstTemplate }) => {
         <TemplatesIcon size={32} />
       </BannerCircleBackground>
       <TextContainer>
-        {firstTemplate && <Title>Create your first template</Title>}
+        {firstTemplate && <Title>Create your first workflow</Title>}
+        {!firstTemplate && <Title>Create workflows</Title>}
         <Description>
           Workflows will help you save time and create a highly reliable and
           accountable process for your organization. Simply design a reusable
@@ -31,7 +32,7 @@ const TaskTemplateBanner = ({ onClose, onCreateTemplate, firstTemplate }) => {
       </TextContainer>
       {firstTemplate && (
         <Button uppercase={false} onClick={onCreateTemplate}>
-          Create your first template
+          Create your first workflow
         </Button>
       )}
       <CloseButton type="button" onClick={onClose}>

@@ -62,7 +62,7 @@ const TaskTemplate = ({ template, isFullView }) => {
   const menuOptions = useMemo(
     () => [
       {
-        name: 'Edit Template Name',
+        name: 'Edit Workflow Name',
         onClick: () => {
           setIsEditing(true);
           // eslint-disable-next-line no-unused-expressions
@@ -70,7 +70,7 @@ const TaskTemplate = ({ template, isFullView }) => {
         },
       },
       {
-        name: 'Duplicate Template',
+        name: 'Duplicate Workflow',
         onClick: () =>
           dispatch(
             ModalActions.openModal('AttachmentsDuplicate', {
@@ -92,7 +92,7 @@ const TaskTemplate = ({ template, isFullView }) => {
           ),
       },
       {
-        name: 'Delete Template',
+        name: 'Delete Workflow',
         color: palette.oPlusRed,
         onClick: () =>
           dispatch(
