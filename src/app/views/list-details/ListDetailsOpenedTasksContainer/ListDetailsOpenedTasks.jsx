@@ -123,6 +123,7 @@ const ListDetailsOpenedTasks = ({
 
   const showClearSortFiltersModal = useCallback(() => {
     if (isSortApplied) {
+      setDraggableId(null);
       dispatch(
         openModalAction('ClearSortFilters', {
           confirm: () => {
