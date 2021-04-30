@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useCallback,
   useEffect,
@@ -200,17 +201,22 @@ const TaskTemplate = ({ template, isFullView }) => {
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
-        <Checkbox
-          isChecked={isTemplateSelected}
-          onClick={handleTemplateSelect}
-        />
+        {isOpen && (
+          <Checkbox
+            isChecked={isTemplateSelected}
+            onClick={handleTemplateSelect}
+          />
+        )}
         <ArrowButtonContainer>
           <ArrowButton
-            onClick={() =>
+            onClick={() => {
+              if (isOpen) {
+                dispatch(TaskActions.unselectAllTasks());
+              }
               dispatch(
                 TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier),
-              )
-            }
+              );
+            }}
           >
             <RotatableChevron rotated={isOpen} />
           </ArrowButton>
