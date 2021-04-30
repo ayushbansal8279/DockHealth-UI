@@ -393,9 +393,10 @@ function* doSortTasksInGroup(payload) {
   if (destinationIndex === sourceIndex) return;
 
   const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
-  const reorderedTasks = move(sourceIndex, destinationIndex, group.tasks);
 
   try {
+    const reorderedTasks = move(sourceIndex, destinationIndex, group.tasks);
+
     yield put({
       type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
       groupOfTasks: {

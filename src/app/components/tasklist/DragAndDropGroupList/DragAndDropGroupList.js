@@ -55,7 +55,7 @@ const DragAndDropGroupList = ({
           >
             {tasks?.map((task, index) => (
               <Draggable
-                key={task.taskIdentifier}
+                key={task.identifier}
                 draggableId={String(task.identifier)}
                 index={index}
                 isDragDisabled={
@@ -66,7 +66,6 @@ const DragAndDropGroupList = ({
                   <>
                     {task?.itemType === TaskItemType.TASK ? (
                       <StandardTaskItem
-                        key={task.identifier}
                         isFullView={isFullView}
                         isDragging={isDragging}
                         isStartedDnD={draggedId === task.taskIdentifier}
@@ -103,7 +102,6 @@ const DragAndDropGroupList = ({
                       />
                     ) : (
                       <TaskTemplateGroup
-                        key={task.identifier}
                         isStartedDnD={draggedId === task.identifier}
                         draggableProvided={draggableProvided}
                         templateGroup={task}
