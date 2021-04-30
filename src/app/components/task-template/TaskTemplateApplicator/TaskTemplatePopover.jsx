@@ -66,7 +66,7 @@ const TaskTemplatePopover = ({
         <EmptyLabel>There are no workflows to select from</EmptyLabel>
       )}
       <CreateTaskLinkContainer>
-        <Link to="/core/templates">
+        <Link to="/core/workflows">
           <CreateTaskLinkText>Create New Workflow</CreateTaskLinkText>
         </Link>
       </CreateTaskLinkContainer>
