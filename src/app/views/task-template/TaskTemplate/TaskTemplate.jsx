@@ -47,6 +47,7 @@ const TaskTemplate = ({ template, isFullView }) => {
   const [draggableId, setDraggableId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
+  const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
 
   const dispatch = useDispatch();
@@ -110,13 +111,21 @@ const TaskTemplate = ({ template, isFullView }) => {
 
   const handleNameInputKeyDown = useCallback(
     event => {
-      const { key } = event;
+      const {
+        key,
+        target: { value },
+      } = event;
       if (key === 'Enter') {
-        dispatch(
-          TaskTemplateActions.updateTemplate(taskTemplateIdentifier, {
-            name: event.target?.value,
-          }),
-        );
+        if (value?.length > 1) {
+          setNameInputError(false);
+          dispatch(
+            TaskTemplateActions.updateTemplate(taskTemplateIdentifier, {
+              name: value,
+            }),
+          );
+        } else {
+          setNameInputError(true);
+        }
       } else if (key === 'Escape') {
         // eslint-disable-next-line no-unused-expressions
         nameInputReference.current?.blur();
@@ -209,7 +218,11 @@ const TaskTemplate = ({ template, isFullView }) => {
         <NameInput
           ref={nameInputReference}
           readOnly={!isEditing}
-          onChange={event => setNameInputValue(event.target?.value)}
+          error={nameInputError}
+          onChange={event => {
+            setNameInputValue(event.target?.value);
+            setNameInputError(false);
+          }}
           onBlur={() => {
             setIsEditing(false);
             setNameInputValue(name);

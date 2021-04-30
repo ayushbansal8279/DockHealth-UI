@@ -33,12 +33,13 @@ export const NameInput = styled.input`
   grid-column: 3;
   margin-bottom: 0;
   padding: ${spacing.small};
-  color: ${palette.mediumGrey};
+  color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   background-color: transparent;
-  border: 1px solid ${palette.coolGrey2};
+  border: 1px solid
+    ${({ error }) => (error ? palette.error : palette.coolGrey2)};
   border-radius: 5px;
   background: ${palette.coolGrey4};
   font-weight: ${fontWeights.regular};

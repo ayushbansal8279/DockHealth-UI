@@ -78,6 +78,7 @@ const TaskTemplateGroup = ({
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
+  const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
@@ -240,17 +241,24 @@ const TaskTemplateGroup = ({
     event => {
       const { key } = event;
       if (key === 'Enter') {
-        dispatch(
-          TemplateBundleActions.updateTemplateBundle({
-            bundle: templateGroup,
-            dataToUpdate: {
-              name: event.target?.value,
-            },
-          }),
-        );
-        // eslint-disable-next-line no-unused-expressions
-        nameInputReference.current?.blur();
+        const { value } = event.target;
+        if (value?.length > 1) {
+          setNameInputError(false);
+          dispatch(
+            TemplateBundleActions.updateTemplateBundle({
+              bundle: templateGroup,
+              dataToUpdate: {
+                name: event.target?.value,
+              },
+            }),
+          );
+          // eslint-disable-next-line no-unused-expressions
+          nameInputReference.current?.blur();
+        } else {
+          setNameInputError(true);
+        }
       } else if (key === 'Escape') {
+        setNameInputError(false);
         // eslint-disable-next-line no-unused-expressions
         nameInputReference.current?.blur();
       }
@@ -302,7 +310,11 @@ const TaskTemplateGroup = ({
               ref={nameInputReference}
               readOnly={!isEditing}
               disabled={!isEditing}
-              onChange={event => setNameInputValue(event.target?.value)}
+              error={nameInputError}
+              onChange={event => {
+                setNameInputValue(event.target?.value);
+                setNameInputError(false);
+              }}
               onBlur={() => {
                 setIsEditing(false);
                 setNameInputValue(name);
@@ -436,6 +448,12 @@ const TaskTemplateGroup = ({
                 disableMentions
                 quickAddTask={handleAddBundleTask}
                 onBlur={() => setIsAddingTask(false)}
+                validator={value => {
+                  if ([...value]?.filter(char => char !== ' ').length < 2)
+                    return 'The task description is too short (min. 2 characters)';
+
+                  return null;
+                }}
               />
             </QuickAddInputWrapper>
           )}
