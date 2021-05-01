@@ -163,6 +163,7 @@ const NavigationSidebar = ({
                 icon={TemplatesIcon}
                 path="/core/workflows"
                 onItemClick={handleNavigationItemClick}
+                isNew
               />
             )}
           </Grid>

@@ -65,3 +65,16 @@ export const NavigationIconContainer = styled.div`
     `}
   }
 `;
+
+export const NavigationIconNewLabel = styled.div`
+  && {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 14px;
+    font-size: 12px;
+    font-wwight: 700;
+    color: ${palette.brightBlue};
+    margin-bottom: -10px;
+  }
+`;
