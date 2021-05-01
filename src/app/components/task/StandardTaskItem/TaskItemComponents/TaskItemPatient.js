@@ -13,6 +13,7 @@ const TaskItemPatient = ({
   highlightedValue,
   taskStatus,
   isSubtask,
+  hasParentTaskLabel,
   matchPatientMRN,
   patient,
   matchPatient,
@@ -50,25 +51,29 @@ const TaskItemPatient = ({
   return (
     <StandardTaskItemCell width="164px">
       <ClickablePatient onClick={onPatientClick}>
-        {taskStatus !== 'COMPLETE' && !patient && !openPatientPopover && (
-          <PatientDropdown
-            selectedPatientIdentifier={
-              patient ? patient.patientIdentifier : null
-            }
-            isPopoverOpen={isPopoverOpen}
-            onChangePatient={handleUpdateRegularTaskPatient}
-            openPopover={() => setPopoverOpen(true)}
-            closePopover={() => setPopoverOpen(false)}
-            isSubtask={isSubtask}
-            hasSubtasks={hasSubtasks}
-          >
-            <AddPlaceholder>+ Add Patient</AddPlaceholder>
-          </PatientDropdown>
-        )}
-        {taskStatus !== 'COMPLETE' && !patient && openPatientPopover && (
-          <AddPlaceholder>+ Add Patient</AddPlaceholder>
-        )}
-        {patient && openPatientPopover && (
+        {taskStatus !== 'COMPLETE' &&
+          !patient &&
+          !isSubtask &&
+          !openPatientPopover && (
+            <PatientDropdown
+              selectedPatientIdentifier={
+                patient ? patient.patientIdentifier : null
+              }
+              isPopoverOpen={isPopoverOpen}
+              onChangePatient={handleUpdateRegularTaskPatient}
+              openPopover={() => setPopoverOpen(true)}
+              closePopover={() => setPopoverOpen(false)}
+              isSubtask={isSubtask}
+              hasSubtasks={hasSubtasks}
+            >
+              <AddPlaceholder>+ Add Patient</AddPlaceholder>
+            </PatientDropdown>
+          )}
+        {taskStatus !== 'COMPLETE' &&
+          !patient &&
+          !isSubtask &&
+          openPatientPopover && <AddPlaceholder>+ Add Patient</AddPlaceholder>}
+        {patient && (openPatientPopover || hasParentTaskLabel) && (
           <PatientCard patientIdentifier={patient.patientIdentifier}>
             <PatientLabel>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
@@ -88,7 +93,7 @@ const TaskItemPatient = ({
             </PatientLabel>
           </PatientCard>
         )}
-        {patient && !openPatientPopover && (
+        {patient && !isSubtask && !openPatientPopover && (
           <PatientDropdown
             selectedPatientIdentifier={
               patient ? patient.patientIdentifier : null
