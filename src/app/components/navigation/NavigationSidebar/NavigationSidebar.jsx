@@ -159,7 +159,7 @@ const NavigationSidebar = ({
             />
             {!isGuest && (
               <IconNavigationItem
-                name="Workflows Library"
+                name="Workflow Library"
                 icon={TemplatesIcon}
                 path="/core/workflows"
                 onItemClick={handleNavigationItemClick}
