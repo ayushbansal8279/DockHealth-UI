@@ -201,12 +201,11 @@ const TaskTemplate = ({ template, isFullView }) => {
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
-        {isOpen && (
-          <Checkbox
-            isChecked={isTemplateSelected}
-            onClick={handleTemplateSelect}
-          />
-        )}
+        <Checkbox
+          isDisabled={!isOpen}
+          isChecked={isTemplateSelected}
+          onClick={handleTemplateSelect}
+        />
         <ArrowButtonContainer>
           <ArrowButton
             onClick={() => {
