@@ -45,15 +45,10 @@ const initializeTaskDrawerTopSectionHooks = ({
   };
 
   const openDeleteConfirmationModal = () => {
-    const modalProps = {
+    modalActions.openModal('DeleteTask', {
+      isSubtask: !!selectedTask.parentTaskIdentifier,
       confirm: () => deleteTask(),
-    };
-    const modalName =
-      selectedTask.parentTaskIdentifier !== null
-        ? 'DeleteSubtask'
-        : 'DeleteTask';
-
-    modalActions.openModal(modalName, modalProps);
+    });
   };
 
   const duplicateTaskWithAttachments = async () => {
@@ -82,7 +77,7 @@ const initializeTaskDrawerTopSectionHooks = ({
       confirm: () => duplicateTaskWithAttachments(),
       skip: () => duplicateTask(),
     };
-    modalActions.openModal('DuplicateTask', modalProps);
+    modalActions.openModal('AttachmentsDuplicate', modalProps);
   };
 
   const duplicateTaskWithoutConfirmation = event => {

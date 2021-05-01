@@ -33,27 +33,11 @@ import {
   SearchWrapper,
   MemberWrapper,
   ToolbarContainer,
+  ListDescription,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
 const INBOX_FIRST_TIME_KEY = 'INBOX_FIRST_TIME_KEY';
-
-const renderMemberAvatar = ({ taskListMembers }) => member => {
-  const taskListMember =
-    taskListMembers?.find(
-      ({ userIdentifier }) => member?.userIdentifier === userIdentifier,
-    ) || {};
-
-  return (
-    <MemberWrapper
-      key={member?.userIdentifier}
-      isPending={isMemberPending(member)}
-    >
-      <Spacing horizontal={2} />
-      <Member member={taskListMember} size={45} />
-    </MemberWrapper>
-  );
-};
 
 const useToggleNotifications = ({
   notificationsEnabled,
@@ -195,7 +179,15 @@ const Toolbar = ({
             <Spacing horizontal={4} />
             {showMembers && (
               <>
-                {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
+                {shownMembers?.map(member => (
+                  <MemberWrapper
+                    key={member?.userIdentifier}
+                    isPending={isMemberPending(member)}
+                  >
+                    <Spacing horizontal={2} />
+                    <Member member={member} size={45} />
+                  </MemberWrapper>
+                ))}
                 {hiddenMembers?.length > 0 && (
                   <>
                     <Spacing horizontal={2} />
@@ -206,25 +198,26 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                {taskList?.listType !== 'INBOX' && (
-                  <InviteMemberButton
-                    size={45}
-                    onClick={() =>
-                      dispatch(
-                        openModal('InviteToList', {
-                          list: taskList,
-                          onMembersRefresh: () =>
-                            dispatch(
-                              getMembersByTaskListId(
-                                taskList.taskListIdentifier,
-                                'ALL',
+                {taskList?.listType !== 'INBOX' &&
+                  taskList?.listType !== 'PUBLIC' && (
+                    <InviteMemberButton
+                      size={45}
+                      onClick={() =>
+                        dispatch(
+                          openModal('InviteToList', {
+                            list: taskList,
+                            onMembersRefresh: () =>
+                              dispatch(
+                                getMembersByTaskListId(
+                                  taskList.taskListIdentifier,
+                                  'ALL',
+                                ),
                               ),
-                            ),
-                        }),
-                      )
-                    }
-                  />
-                )}
+                          }),
+                        )
+                      }
+                    />
+                  )}
               </>
             )}
           </HeaderActionButtonsGrid>
@@ -244,6 +237,7 @@ const Toolbar = ({
           pdfTitle={pdfTitle}
         />
       </Grid>
+      <ListDescription>{taskList?.listDescription}</ListDescription>
       {(haveTasks ||
         searchValue ||
         !isEmpty(selectedFilters) ||

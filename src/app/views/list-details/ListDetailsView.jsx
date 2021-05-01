@@ -63,7 +63,6 @@ class Home extends Component {
     isTourOpen: false,
     tourConditionChecked: false,
     searchValue: '',
-    shouldResetBulkEditTasks: false,
   };
 
   searchWithDebounce = debounce(searchValue => {
@@ -148,37 +147,6 @@ class Home extends Component {
         nextProps.match.params.taskListIdentifier,
         nextProps.currentUser,
       );
-    }
-  }
-
-  componentDidUpdate(previousProps, previousState) {
-    const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters } = this.props;
-
-    if (!shouldResetBulkEditTasks) {
-      if (previousState?.searchValue !== searchValue) {
-        this.setState({ shouldResetBulkEditTasks: true });
-      }
-
-      if (
-        Object.keys(previousProps?.selectedFilters || []).length !==
-        Object.keys(selectedFilters || []).length
-      ) {
-        this.setState({ shouldResetBulkEditTasks: true });
-      }
-    }
-
-    if (shouldResetBulkEditTasks) {
-      if (searchValue === previousState?.searchValue) {
-        this.setState({ shouldResetBulkEditTasks: false });
-      }
-
-      if (
-        Object.keys(previousProps?.selectedFilters || []).length === 0 &&
-        Object.keys(selectedFilters || []).length !== 0
-      ) {
-        this.setState({ shouldResetBulkEditTasks: false });
-      }
     }
   }
 
@@ -337,8 +305,6 @@ class Home extends Component {
     const { match, history } = this.props;
     const { params } = match;
     const { taskListIdentifier } = params;
-
-    this.setState({ shouldResetBulkEditTasks: true });
 
     history.push(
       `/core/tasks/${taskListIdentifier}${
@@ -598,7 +564,7 @@ class Home extends Component {
       sort,
     } = this.props;
 
-    const { isTourOpen, searchValue, shouldResetBulkEditTasks } = this.state;
+    const { isTourOpen, searchValue } = this.state;
     const { params } = match;
     const { taskListIdentifier, tabName } = params;
 
@@ -608,18 +574,30 @@ class Home extends Component {
 
     const selectedTab = tabName || TaskListTabName.OPEN;
 
+    const openedTasks =
+      selectedTab === TaskListTabName.OPEN
+        ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks) || []
+        : [];
+    const completedTasks =
+      selectedTab === TaskListTabName.COMPLETE
+        ? completedGroupedTasks?.tasks || []
+        : [];
+
     return (
       <>
         <BulkEditSection
-          shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+          allTasks={
+            selectedTab === TaskListTabName.OPEN ? openedTasks : completedTasks
+          }
           refreshTasks={this.refreshTab}
-          inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
+          disabled={selectedTab === TaskListTabName.COMPLETE}
           searchValue={searchValue}
         >
           <div>
             <TaskViewContainer>
               <Toolbar
                 members={members}
+                showMembers={loadedTasklist?.listType !== 'PUBLIC'}
                 onSelectTab={this.navigateToTab}
                 selectedTab={selectedTab}
                 taskList={loadedTasklist || undefined}
@@ -634,30 +612,12 @@ class Home extends Component {
                 }
                 isFetching={isFetching || isCompletedTasksFetching}
                 printData={{
-                  completedTasks:
-                    selectedTab === TaskListTabName.COMPLETE &&
-                    completedGroupedTasks
-                      ? completedGroupedTasks.tasks
-                      : [],
-                  openedTasks:
-                    selectedTab === TaskListTabName.OPEN && groupedTasks
-                      ? Object.values(groupedTasks)?.flatMap(
-                          ({ tasks }) => tasks,
-                        )
-                      : [],
+                  completedTasks,
+                  openedTasks,
                   taskListMembers: members,
                 }}
-                tasks={
-                  selectedTab === TaskListTabName.OPEN && groupedTasks
-                    ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks)
-                    : []
-                }
-                completedTasks={
-                  selectedTab === TaskListTabName.COMPLETE &&
-                  completedGroupedTasks
-                    ? completedGroupedTasks.tasks
-                    : []
-                }
+                tasks={openedTasks}
+                completedTasks={completedTasks}
                 selectedFilters={selectedFilters}
               />
               {selectedTab === TaskListTabName.COMPLETE ? (

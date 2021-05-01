@@ -1,9 +1,11 @@
+import { TaskItemType, TaskStatus } from './task-helpers';
+
 export const TaskListTabName = {
   OPEN: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',
 };
 
-export const checkIfTasksHaveSubtasksOrCommnets = tasks => {
+export function checkIfTasksHaveSubtasksOrComments(tasks) {
   if (tasks?.length === 0) return false;
 
   return tasks.find(({ subtasks, subTasksCount, comments }) => {
@@ -15,4 +17,52 @@ export const checkIfTasksHaveSubtasksOrCommnets = tasks => {
       ({ comments: subtaskComments }) => subtaskComments?.length > 0,
     );
   });
-};
+}
+
+export function extractTasksAndSubtasks(listOfTasks) {
+  if (!listOfTasks) {
+    return { parentTasks: [], subtasks: [] };
+  }
+
+  return listOfTasks.reduce(
+    (accumulator, task) => {
+      if (task.itemType === TaskItemType.BUNDLE) {
+        // eslint-disable-next-line no-unused-expressions
+        task.tasks?.forEach(t => {
+          if (t.parentTaskIdentifier) {
+            accumulator.subtasks.push(t);
+          } else {
+            accumulator.parentTasks.push(t);
+            // eslint-disable-next-line no-unused-expressions
+            t.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
+          }
+        });
+      } else if (task.parentTaskIdentifier) {
+        accumulator.subtasks.push(task);
+      } else {
+        accumulator.parentTasks.push(task);
+        // eslint-disable-next-line no-unused-expressions
+        task.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
+      }
+
+      return accumulator;
+    },
+    { parentTasks: [], subtasks: [] },
+  );
+}
+
+export function updateBundleInList(
+  dataToUpdate,
+  bundleIdentifier,
+  listOfTasks,
+) {
+  return listOfTasks?.map(t =>
+    t.itemType === TaskItemType.BUNDLE && t.identifier === bundleIdentifier
+      ? { ...t, ...dataToUpdate }
+      : t,
+  );
+}
+
+export function checkIfHasIncompleteTasks(tasks) {
+  return !!tasks?.some(({ status }) => status === TaskStatus.INCOMPLETE);
+}

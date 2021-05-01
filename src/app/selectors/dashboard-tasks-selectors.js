@@ -20,3 +20,8 @@ export const dashboardGroupTasksCountSelector = createSelector(
     return group?.tasks?.length || 0;
   },
 );
+
+export const dashboardAllTaskItemsSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ tasksList }) => tasksList?.flatMap(({ tasks }) => tasks) || [],
+);

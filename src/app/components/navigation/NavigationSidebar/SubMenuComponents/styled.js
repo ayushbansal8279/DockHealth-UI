@@ -64,24 +64,6 @@ export const DrawerAddLink = styled(Link)`
   }
 `;
 
-export const DrawerAddButton = styled.div`
-  color: ${palette.coolGrey1};
-  outline: none;
-  border: none;
-  background-color: #f9fafc;
-  border-radius: 9px;
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.tiny} 10px;
-
-  & > span {
-    color: ${palette.orange};
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
 export const RolloverPopover = styled(Popover)`
   && {
     pointer-events: none;

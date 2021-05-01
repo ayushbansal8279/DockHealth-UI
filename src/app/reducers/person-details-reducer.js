@@ -8,7 +8,9 @@ import {
   GET_PERSON_DETAILS_SUCCESS,
   GET_PERSON_DETAILS_FAILURE,
   SORT_PERSON_TASKS,
+  ADD_TASK,
 } from 'actions/action-types';
+import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -33,12 +35,10 @@ const mapTasksSuccess = task => ({
 });
 
 const updateTasksStateCallback = (state, updateTaskFromAction) => {
-  const tasks = updateTaskFromAction(state.tasks || []);
-
   return {
     ...state,
-    tasks,
-    completedTasks: updateTaskFromAction(state.completedTasks || []),
+    tasks: mapWithRemove(updateTaskFromAction, state.tasks),
+    completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
   };
 };
 
@@ -111,6 +111,15 @@ const PersonDetailsReducer = (state = initialState, action) => {
           key,
           order,
         },
+      };
+    }
+
+    case ADD_TASK: {
+      const { task: addedTask } = action;
+
+      return {
+        ...state,
+        tasks: [addedTask, ...(state.tasks || [])],
       };
     }
 

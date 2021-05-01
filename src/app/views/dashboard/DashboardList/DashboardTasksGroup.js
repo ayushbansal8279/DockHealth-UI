@@ -5,63 +5,35 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
-  useContext,
   useRef,
 } from 'react';
+import { pluck } from 'ramda';
 import moment from 'moment';
-
+import { useDispatch } from 'react-redux';
+import * as TaskActions from 'actions/task-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
-import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
-import {
-  TASK_ITEM_DESCRIPTION_COLUMN,
-  TASK_ITEM_DUE_DATE_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_LIST_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_PATIENT_COLUMN,
-  TASK_ITEM_SUBTASKS_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-} from 'components/task/StandardTaskItem/helpers';
-import DashboardColumnSortHeader from '../DashboardColumnSortHeader/DashboardColumnSortHeader';
+import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
-import { DashboardColumnKey } from '../config';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
   DashboardTasksGroupLabelName,
   DashboardTasksGroupList,
   DroppableBox,
-  DashboardSortBar,
-  DashboardSortBarLabelName,
   DashboardTasksGroupHeader,
   GroupNameSectionWrapper,
-  BulkContainer,
   DashboardTaskItemContainer,
 } from './styled';
-
-const TASK_ITEM_COLUMNS_CONFIG = {
-  [TASK_ITEM_DESCRIPTION_COLUMN]: { paddingLeft: '36px', paddingRight: '8px' },
-  [TASK_ITEM_DUE_DATE_COLUMN]: { width: '60px' },
-  [TASK_ITEM_WORFKLOW_STATUS_COLUMN]: { width: '120px' },
-  [TASK_ITEM_LIST_COLUMN]: { width: '168px' },
-  [TASK_ITEM_ICONS_COLUMN]: { width: '150px' },
-  [TASK_ITEM_MEMBERS_COLUMN]: { width: '60px', extendedWidth: '90px' },
-  [TASK_ITEM_PATIENT_COLUMN]: { width: '164px' },
-  [TASK_ITEM_SUBTASKS_COLUMN]: {
-    width: '60px',
-    paddingLeft: '18px',
-    paddingRight: '18px',
-  },
-};
 
 const TODAY_GROUP = 'TODAY';
 const NEXT_7_DAYS_GROUP = 'NEXT_7_DAYS';
@@ -82,39 +54,6 @@ const GROUPS_WITH_COMPLETED_TASKS = [
   ORG_COMPLETED_7_DAYS,
 ];
 
-const DYNAMIC_GRID_CONFIG = {
-  [DashboardColumnKey.DESCRIPTION]: {
-    key: TASK_ITEM_DESCRIPTION_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_COLUMNS_CONFIG],
-  },
-  [DashboardColumnKey.DUE_DATE]: {
-    key: TASK_ITEM_DUE_DATE_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_DUE_DATE_COLUMN],
-  },
-  [DashboardColumnKey.WORKFLOW_STATUS]: {
-    key: TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_WORFKLOW_STATUS_COLUMN],
-  },
-  [DashboardColumnKey.LIST_NAME]: {
-    key: TASK_ITEM_LIST_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_LIST_COLUMN],
-  },
-  [DashboardColumnKey.ACTIVITY]: {
-    key: TASK_ITEM_ICONS_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_ICONS_COLUMN],
-  },
-  [DashboardColumnKey.ASSIGNED]: {
-    key: TASK_ITEM_MEMBERS_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_MEMBERS_COLUMN],
-  },
-  [DashboardColumnKey.PATIENT]: {
-    key: TASK_ITEM_PATIENT_COLUMN,
-    ...TASK_ITEM_COLUMNS_CONFIG[TASK_ITEM_PATIENT_COLUMN],
-  },
-};
-
-const getTaskItemConfig = dynamicColumns => DYNAMIC_GRID_CONFIG[dynamicColumns];
-
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
   toggleDashboardTaskComplete,
@@ -130,7 +69,7 @@ const DashboardTasksGroup = ({
   showClearSortFiltersModal,
   isSortApplied,
   isAllTasksTab,
-  dynamicColumns,
+  columnsConfig,
   updateDueDate,
   currentUser,
   onTaskUpdate,
@@ -154,27 +93,22 @@ const DashboardTasksGroup = ({
   const [tasks, setNewTasks] = useState(dashboardTasks);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
   const quickAddTaskInputReference = useRef(null);
+  const dispatch = useDispatch();
 
-  const { bunchBulkEditTaskActions } = useContext(BulkEditContext);
-  const { groupActions } = bunchBulkEditTaskActions;
+  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+    tasks,
+  ]);
 
-  const onClickGroupBulkEdit = useCallback(
-    () =>
-      groupActions?.onClickBulkEditGroup({
-        parentTasks: tasks.filter(t => !t.parentTaskIdentifier),
-        subtasks: tasks.filter(t => t.parentTaskIdentifier),
-      }),
-    [groupActions, tasks],
-  );
-
-  const groupIsCheckedByBulkEdit = useMemo(
-    () =>
-      groupActions?.getGroupIsSelectedInBulkEdit(
-        tasks.filter(t => !t.parentTaskIdentifier),
-        tasks.filter(t => t.parentTaskIdentifier),
+  const handleGroupSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isGroupSelected,
+        pluck('identifier', allTasks),
       ),
-    [groupActions, tasks],
-  );
+    );
+  }, [dispatch, isGroupSelected, tasks]);
 
   const onSwitchGroup = useCallback(() => {
     if (!groupIsOpen && dashboardTasks?.length === 0 && !isSearching) {
@@ -192,21 +126,6 @@ const DashboardTasksGroup = ({
       setGroupIsOpen(false);
     }
   }, [dashboardTasks]);
-
-  const taskItemConfig = useMemo(
-    () => dynamicColumns?.map(column => getTaskItemConfig(column)),
-    [dynamicColumns],
-  );
-
-  const taskItemConfigKeys = useMemo(
-    () => taskItemConfig?.map(column => column?.key),
-    [taskItemConfig],
-  );
-
-  const dynamicColumnIsSelected = useCallback(
-    column => taskItemConfigKeys?.includes(column),
-    [taskItemConfigKeys],
-  );
 
   const groupHasMultipleAssignees = useMemo(
     () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
@@ -276,91 +195,15 @@ const DashboardTasksGroup = ({
                 }}
               />
             )}
-            <DashboardSortBar>
-              {bunchBulkEditTaskActions && (
-                <BulkContainer>
-                  <Checkbox
-                    isChecked={groupIsCheckedByBulkEdit}
-                    onClick={onClickGroupBulkEdit}
-                  />
-                </BulkContainer>
-              )}
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_DESCRIPTION_COLUMN}
-              >
-                <DashboardColumnSortHeader
-                  id="DESCRIPTION"
-                  label="Task"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_SUBTASKS_COLUMN}
-              >
-                Sub
-              </DashboardSortBarLabelName>
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_PATIENT_COLUMN}
-              >
-                <DashboardColumnSortHeader
-                  id="PATIENT"
-                  label="Patient"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-              {dynamicColumnIsSelected(TASK_ITEM_WORFKLOW_STATUS_COLUMN) && (
-                <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_WORFKLOW_STATUS_COLUMN}
-                >
-                  <DashboardColumnSortHeader
-                    id="WORKFLOW_STATUS"
-                    label="Status"
-                    sort={currentSort}
-                    onSortChange={onSortChange}
-                  />
-                </DashboardSortBarLabelName>
-              )}
-              {dynamicColumnIsSelected(TASK_ITEM_ICONS_COLUMN) && (
-                <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_ICONS_COLUMN}
-                />
-              )}
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_DUE_DATE_COLUMN}
-              >
-                <DashboardColumnSortHeader
-                  id="DUE_DATE"
-                  label="Due"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-              {dynamicColumnIsSelected(TASK_ITEM_MEMBERS_COLUMN) && (
-                <DashboardSortBarLabelName
-                  {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_MEMBERS_COLUMN}
-                  groupHasMultipleAssignees={groupHasMultipleAssignees}
-                >
-                  <DashboardColumnSortHeader
-                    id="ASSIGNED"
-                    sort={currentSort}
-                    onSortChange={onSortChange}
-                    label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-                  />
-                </DashboardSortBarLabelName>
-              )}
-              <DashboardSortBarLabelName
-                {...TASK_ITEM_COLUMNS_CONFIG.TASK_ITEM_LIST_COLUMN}
-              >
-                <DashboardColumnSortHeader
-                  id="LIST_NAME"
-                  label="List"
-                  sort={currentSort}
-                  onSortChange={onSortChange}
-                />
-              </DashboardSortBarLabelName>
-            </DashboardSortBar>
+            <TasksHeader
+              bulkEditEnabled
+              taskItemConfig={columnsConfig}
+              isGroupSelected={isGroupSelected}
+              onGroupSelect={handleGroupSelect}
+              sort={currentSort}
+              onSortChange={onSortChange}
+              groupHasMultipleAssignees={groupHasMultipleAssignees}
+            />
             <DragDropContext
               onBeforeDragStart={showClearSortFiltersModal}
               onDragEnd={({ destination, source }) => {
@@ -432,11 +275,7 @@ const DashboardTasksGroup = ({
                                   currentUser={currentUser}
                                   onTaskUpdate={onTaskUpdate}
                                   updateWorkflowStatus={updateWorkflowStatus}
-                                  taskItemConfig={[
-                                    ...taskItemConfigKeys,
-                                    TASK_ITEM_PATIENT_COLUMN,
-                                    TASK_ITEM_LIST_COLUMN,
-                                  ]}
+                                  taskItemConfig={columnsConfig}
                                   multipleAssigneesContext={
                                     groupHasMultipleAssignees
                                   }

@@ -9,7 +9,7 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { isDueDateOverdue } from 'helpers/task-helpers';
+import { isDueDateOverdue, checkIfTemplateTask } from 'helpers/task-helpers';
 import { DrawerFieldEnum, TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
@@ -58,7 +58,7 @@ const TaskDrawer = ({
   onTaskUpdate = () => {},
   onTaskCreation = () => {},
   onTaskDelete = () => {},
-  disabledFileds = [],
+  disabledFields = [],
   fromFirstAddTask = false,
   assignToSelf = false,
   hideTour = false,
@@ -80,7 +80,7 @@ const TaskDrawer = ({
     onDelete,
     onDuplicate,
     onAddSubTask,
-    handleQuickAddTask,
+    handleQuickAddSubtask,
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     emailBodyMembers,
@@ -94,10 +94,12 @@ const TaskDrawer = ({
     setParentDescriptionState,
     taskDrawerReference,
     taskListIdentifier,
+    taskGroupIdentifier,
     handleUpdateTask,
     handleDueTimeSave,
     handleDueDateSave,
     clearDueDate,
+    templateBundleIdentifier,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -151,6 +153,8 @@ const TaskDrawer = ({
     return null;
   }, [selectedTask]);
 
+  const isTemplateTask = checkIfTemplateTask(selectedTask);
+
   return (
     <>
       <TaskDrawerContainer
@@ -173,7 +177,6 @@ const TaskDrawer = ({
                   formMethods={formMethods}
                   taskLists={taskLists}
                   selectedTask={selectedTask}
-                  taskList={selectedTask?.taskList}
                   reFileTask={reFileTask}
                   onDelete={onDelete}
                   onDuplicate={onDuplicate}
@@ -207,6 +210,7 @@ const TaskDrawer = ({
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
                           taskListIdentifier={taskListIdentifier}
+                          disableMentions={isTemplateTask}
                         />
                       </ParentTaskDescription>
                     </ParentTaskButton>
@@ -236,6 +240,7 @@ const TaskDrawer = ({
                     <MentionsEditor
                       ref={descriptionReference}
                       taskListIdentifier={taskListIdentifier}
+                      disableMentions={isTemplateTask}
                       placeholder={
                         isAddingOrEditingSubtask
                           ? 'What is the subtask?'
@@ -299,16 +304,26 @@ const TaskDrawer = ({
                     selectedTask?.patient || selectedParentTask?.patient || null
                   }
                   currentOrganization={currentOrganization}
-                  disabled={disabledFileds.includes(DrawerFieldEnum.PATIENT)}
+                  disabled={
+                    disabledFields.includes(DrawerFieldEnum.PATIENT) ||
+                    isTemplateTask
+                  }
+                  placeholder={
+                    isTemplateTask && 'Not available when creating a template'
+                  }
                   autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
                   onSave={handleUpdateTask}
+                  taskGroupIdentifier={taskGroupIdentifier}
+                  templateBundleIdentifier={templateBundleIdentifier}
                 />
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <AssignedToSection
                   currentUser={currentUser}
                   assignedToUsers={selectedTask?.assignedToUsers}
-                  taskListIdentifier={taskListIdentifier}
+                  taskListIdentifier={
+                    isTemplateTask ? null : taskListIdentifier
+                  }
                   onSave={handleUpdateTask}
                 />
               </Grid>
@@ -317,7 +332,12 @@ const TaskDrawer = ({
                   <DueDateInput
                     name="dueDate"
                     label="Due date"
-                    placeholder="Set a due date?"
+                    placeholder={
+                      !isTemplateTask
+                        ? 'Set a due date?'
+                        : 'Not available when creating a template'
+                    }
+                    disabled={isTemplateTask}
                     savedDate={selectedTask?.dueDate}
                     onSave={handleDueDateSave}
                     onClear={clearDueDate}
@@ -338,13 +358,15 @@ const TaskDrawer = ({
                   />
                 </HiddenFieldContainer>
               </Grid>
-              <Grid item xs={12} style={styleFullRowThin}>
-                <ReminderSection
-                  selectedTask={selectedTask}
-                  isDisabled={!selectedTask?.dueDate}
-                  onSave={handleUpdateTask}
-                />
-              </Grid>
+              {!isTemplateTask && (
+                <Grid item xs={12} style={styleFullRowThin}>
+                  <ReminderSection
+                    selectedTask={selectedTask}
+                    isDisabled={!selectedTask?.dueDate}
+                    onSave={handleUpdateTask}
+                  />
+                </Grid>
+              )}
               <Grid item xs={6} style={styleLeftColumn}>
                 <PrioritySection
                   selectedTask={selectedTask}
@@ -384,7 +406,7 @@ const TaskDrawer = ({
                     subTasksCount={selectedTask.subTasksCount}
                     currentUser={currentUser}
                     taskListIdentifier={taskListIdentifier}
-                    onQuickAddTask={handleQuickAddTask}
+                    onQuickAddSubtask={handleQuickAddSubtask}
                   />
                 </Grid>
               )}
@@ -395,6 +417,7 @@ const TaskDrawer = ({
                     taskDrawerFocusField={taskDrawerFocusField}
                     modalActions={modalActions}
                     taskListIdentifier={taskListIdentifier}
+                    isTemplateTask={isTemplateTask}
                   />
                 </div>
               </Grid>

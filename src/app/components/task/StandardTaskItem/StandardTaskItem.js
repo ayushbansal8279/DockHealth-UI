@@ -15,14 +15,14 @@ import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper } from '../styled';
-import QuickAddSubatask from './QuickAddSubtask';
+import QuickAddSubtask from './QuickAddSubtask';
 
 const Task = ({
   task,
   isFullView,
   isStartedDnD,
   isDragging,
-  draggableProvided,
+  draggableProvided = {},
   taskGroupIdentifier,
   isDraggable,
   addingNewSubtask,
@@ -37,6 +37,7 @@ const Task = ({
   showClearSortFiltersModal,
   selectedTask,
   highlightedTasksParentIdenditifer,
+  noMargin,
   ...restProps
 }) => {
   const parentTaskReference = useRef(null);
@@ -51,6 +52,7 @@ const Task = ({
     taskList,
     subtaskQuickAddOpen,
   } = task || {};
+
   const { taskIdentifier: selectedTaskIdentifier } = selectedTask || {};
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { highlightedValue, multipleAssigneesContext } = restProps;
@@ -86,11 +88,13 @@ const Task = ({
   );
 
   useEffect(() => {
-    if (
-      !areSubtasksOpen &&
-      (subtaskQuickAddOpen || isFullView) &&
-      !subtasksDisabled
-    ) {
+    if (isFullView) handleSetSubtasksOpen(true);
+    else setAreSubtasksOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFullView]);
+
+  useEffect(() => {
+    if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
       handleSetSubtasksOpen(true);
     }
   }, [
@@ -147,7 +151,11 @@ const Task = ({
   }, []);
 
   return (
-    <ParentTaskContainer ref={parentTaskReference} {...draggableProps}>
+    <ParentTaskContainer
+      ref={parentTaskReference}
+      noMargin={noMargin}
+      {...draggableProps}
+    >
       <div ref={innerRef}>
         <TaskItem
           task={task}
@@ -190,7 +198,6 @@ const Task = ({
             isOpen={areSubtasksOpen}
             isFullView={isFullView}
             taskGroupIdentifier={taskGroupIdentifier}
-            parentTaskIdentifier={task.taskIdentifier}
             parentHasPatient={!!patient}
             taskList={taskList}
             isDraggable={isDraggable}
@@ -203,7 +210,7 @@ const Task = ({
           />
           {subtaskQuickAddOpen &&
             (renderedSubtasks?.length > 0 || subTasksCount === 0) && (
-              <QuickAddSubatask
+              <QuickAddSubtask
                 patientVisible={patientVisible}
                 listNameVisible={listNameVisible}
                 taskListIdentifier={taskList?.taskListIdentifier}

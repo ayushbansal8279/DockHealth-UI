@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from 'react';
 import Highlighter from 'react-highlight-words';
+import * as PeopleApi from 'api/people-api';
 import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
 import debounce from 'lodash.debounce';
 import Member from 'components/members/Member/Member';
@@ -37,6 +38,7 @@ const MultiAssignMembersList = ({
   taskListIdentifiers,
   selectedMembers: savedSelectedMembers,
   onSelect,
+  onError,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -95,12 +97,20 @@ const MultiAssignMembersList = ({
       const includeTaskListIdentifers = Array.isArray(taskListIdentifiers)
         ? taskListIdentifiers
         : [taskListIdentifiers];
-      if (taskListIdentifiers?.length > 0) {
-        const joinedMembers = await collectJoinedListMembers(
-          includeTaskListIdentifers,
-        );
-        setMembersOptions(joinedMembers);
+      try {
+        if (taskListIdentifiers?.length > 0) {
+          const joinedMembers = await collectJoinedListMembers(
+            includeTaskListIdentifers,
+          );
+          setMembersOptions(joinedMembers);
+        } else {
+          const organizationMembers = await PeopleApi.findAllUsersByOrganizationId();
+          setMembersOptions(organizationMembers);
+        }
+      } catch (error) {
+        if (typeof onError === 'function') onError(error);
       }
+
       setIsFetchingMembers(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -292,6 +302,11 @@ MultiAssignMembersList.propTypes = {
     }),
   ).isRequired,
   onSelect: func.isRequired,
+  onError: func,
+};
+
+MultiAssignMembersList.defaultProps = {
+  onError: null,
 };
 
 export default MultiAssignMembersList;

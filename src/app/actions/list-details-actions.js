@@ -60,3 +60,16 @@ export function requestAllListDetailsGroups() {
     type: ActionTypes.REQUEST_ALL_LIST_DETAILS_GROUPS,
   };
 }
+
+export function applyTaskTemplate({
+  taskTemplateIdentifier,
+  taskListIdentifier,
+  taskGroupIdentifier,
+}) {
+  return {
+    type: ActionTypesSaga.APPLY_TASK_TEMPLATE,
+    taskTemplateIdentifier,
+    taskListIdentifier,
+    taskGroupIdentifier,
+  };
+}

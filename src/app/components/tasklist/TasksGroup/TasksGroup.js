@@ -7,11 +7,11 @@ import React, {
   useContext,
   useState,
 } from 'react';
-import { isNil } from 'ramda';
+import { isNil, pluck } from 'ramda';
+import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
-import FullViewIcon from 'img/list/FullViewIcon';
-import SlimViewIcon from 'img/list/SlimViewIcon';
-
+import * as TaskActions from 'actions/task-actions';
+import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
@@ -21,26 +21,19 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import listSectionSavedState, {
-  FULL_VIEW,
-  SLIM_VIEW,
-} from 'helpers/list-secition-saved-state';
-import { checkIfTasksHaveSubtasksOrCommnets } from 'helpers/tasklist-helpers';
-import {
-  ViewTypeButton,
-  ViewIconBox,
-  IconsBox,
-  Arrow,
-} from 'components/tasklist/DropdownListSection/styled';
+import { useDispatch } from 'react-redux';
+import listSectionSavedState from 'helpers/list-section-saved-state';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
-import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
-import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
-import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+import ViewTypeSwitch, {
+  ViewType,
+} from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -50,8 +43,8 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
-  BulkContainer,
 } from './styled';
+import TasksHeader from '../TasksHeader/TasksHeader';
 
 const TasksGroup = ({
   isDefaultGroup,
@@ -65,7 +58,6 @@ const TasksGroup = ({
   deleteGroup,
   moveGroupUp,
   moveGroupDown,
-  reorderSubtasksForTask,
   onTaskUpdate,
   tasks,
   isLoadingGroup,
@@ -92,28 +84,23 @@ const TasksGroup = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   taskItemConfig,
-  disableBulkEdit = false,
+  applyTemplate,
 }) => {
   const [
-    highlightedTasksParentIdenditifer,
-    setHighlightedTasksParentIdenditifer,
+    highlightedTasksParentIdentifier,
+    setHighlightedTasksParentIdentifier,
   ] = useState(null);
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
+  const dispatch = useDispatch();
 
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
     sessionStorageKey: groupSessionStorageKey,
   });
   const highlightTimeoutReference = useRef(null);
-  const quickAddTaskInputReference = useRef(null);
-
-  const areViewOptionsVisible = useMemo(() => {
-    if (!isOpen) return false;
-    return checkIfTasksHaveSubtasksOrCommnets(tasks);
-  }, [isOpen, tasks]);
 
   const isFullView =
-    viewType === FULL_VIEW || areFiltersApplied || isSearchApplied;
+    viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
 
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
@@ -155,9 +142,6 @@ const TasksGroup = ({
         ...task,
         taskGroupIdentifier,
       });
-      setTimeout(() => {
-        quickAddTaskInputReference.current.focus();
-      }, 0);
     },
     [taskGroupIdentifier, quickAddTask],
   );
@@ -173,43 +157,59 @@ const TasksGroup = ({
     if (highlightTimeoutReference.current)
       clearTimeout(highlightTimeoutReference.current);
 
-    setHighlightedTasksParentIdenditifer(parentTaskIdentifier);
+    setHighlightedTasksParentIdentifier(parentTaskIdentifier);
     highlightTimeoutReference.current = setTimeout(() => {
-      setHighlightedTasksParentIdenditifer(null);
+      setHighlightedTasksParentIdentifier(null);
     }, 3000);
   }, []);
 
-  const { bunchBulkEditTaskActions = {} } = useContext(BulkEditContext);
-  const { groupActions } = bunchBulkEditTaskActions;
+  const { bulkEditEnabled } = useContext(BulkEditContext);
 
-  const subtasks = useMemo(
-    () =>
-      tasks && tasks?.length > 0
-        ? tasks?.reduce(
-            (previousSubtasks, currentTask) =>
-              currentTask?.subtasks?.length > 0
-                ? [...previousSubtasks, ...currentTask?.subtasks]
-                : previousSubtasks,
-            [],
-          )
-        : [],
-    [tasks],
+  const checkHasMultipleAssignees = useCallback(
+    ({ assignedToUsers, subtasks: taskSubtasks }) =>
+      (assignedToUsers && assignedToUsers.length > 1) ||
+      (taskSubtasks &&
+        taskSubtasks.length > 0 &&
+        taskSubtasks.some(
+          ({ assignedToUsers: subtaskAssignedToUsers }) =>
+            subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+        )),
+    [],
   );
 
   const groupHasMultipleAssignees = useMemo(
     () =>
-      tasks.some(
-        // eslint-disable-next-line no-shadow
-        ({ assignedToUsers, subtasks }) =>
-          (assignedToUsers && assignedToUsers.length > 1) ||
-          (subtasks &&
-            subtasks.length > 0 &&
-            subtasks.some(
-              ({ assignedToUsers: subtaskAssignedToUsers }) =>
-                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
-            )),
+      tasks.some(task =>
+        task?.itemType === 'BUNDLE'
+          ? task.tasks.some(checkHasMultipleAssignees)
+          : checkHasMultipleAssignees(task),
       ),
-    [tasks],
+    [checkHasMultipleAssignees, tasks],
+  );
+
+  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
+    tasks,
+  ]);
+
+  const handleGroupSelect = useCallback(() => {
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const allTasks = [...parentTasks, ...subtasks];
+    dispatch(
+      TaskActions.changeTasksSelectedState(
+        !isGroupSelected,
+        pluck('identifier', allTasks),
+      ),
+    );
+  }, [dispatch, isGroupSelected, tasks]);
+
+  const handleTemplateSelect = useCallback(
+    template => {
+      applyTemplate({
+        taskTemplateIdentifier: template?.taskTemplateIdentifier,
+        taskGroupIdentifier,
+      });
+    },
+    [applyTemplate, taskGroupIdentifier],
   );
 
   return (
@@ -251,128 +251,51 @@ const TasksGroup = ({
           />
         )}
         {!changingGroupOrderDisabled && (
-          <IconsBox>
-            <ViewIconBox isHidden={!areViewOptionsVisible}>
-              <Tooltip placement="top" title="Slim view. Just the task shows">
-                <ViewTypeButton
-                  type="button"
-                  active={!isFullView}
-                  onClick={() => {
-                    setViewType(SLIM_VIEW);
-                    onTaskGroupViewModeChange(SLIM_VIEW);
-                    onSlimViewChanged(true);
-                  }}
-                >
-                  <SlimViewIcon />
-                </ViewTypeButton>
-              </Tooltip>
-            </ViewIconBox>
-            <ViewIconBox isHidden={!areViewOptionsVisible}>
-              <Tooltip
-                placement="top"
-                title="Full view. Task and comments show"
-              >
-                <ViewTypeButton
-                  type="button"
-                  active={isFullView}
-                  onClick={() => {
-                    setViewType(FULL_VIEW);
-                    onTaskGroupViewModeChange(FULL_VIEW);
-                    onSlimViewChanged(false);
-                  }}
-                >
-                  <FullViewIcon />
-                </ViewTypeButton>
-              </Tooltip>
-            </ViewIconBox>
-          </IconsBox>
+          <ViewTypeSwitch
+            value={viewType}
+            onChange={value => {
+              setViewType(value);
+              if (value === ViewType.SLIM_VIEW) {
+                onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
+                onSlimViewChanged(true);
+              } else {
+                onTaskGroupViewModeChange(ViewType.FULL_VIEW);
+                onSlimViewChanged(false);
+              }
+            }}
+          />
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <QuickAddTaskInput
-            ref={quickAddTaskInputReference}
-            taskListIdentifier={taskListIdentifier}
-            quickAddTask={onQuickAddTask}
-            validator={value => {
-              if ([...value]?.filter(char => char !== ' ').length < 2)
-                return 'The task description is too short (min. 2 characters)';
+          <Grid container>
+            <Grid item xs>
+              <QuickAddTaskInput
+                taskListIdentifier={taskListIdentifier}
+                quickAddTask={onQuickAddTask}
+                validator={value => {
+                  if ([...value]?.filter(char => char !== ' ').length < 2)
+                    return 'The task description is too short (min. 2 characters)';
 
-              return null;
-            }}
-          />
+                  return null;
+                }}
+              />
+            </Grid>
+            {applyTemplate && (
+              <TaskTemplateApplicator onTemplateSelect={handleTemplateSelect} />
+            )}
+          </Grid>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
-          <SortHeaderRow>
-            {bunchBulkEditTaskActions && !disableBulkEdit && (
-              <BulkContainer>
-                <Checkbox
-                  isChecked={groupActions?.getGroupIsSelectedInBulkEdit(
-                    tasks,
-                    subtasks,
-                  )}
-                  onClick={() =>
-                    groupActions?.onClickBulkEditGroup({
-                      parentTasks: tasks,
-                      subtasks,
-                    })
-                  }
-                />
-              </BulkContainer>
-            )}
-            <ColumnSortHeader width={bunchBulkEditTaskActions ? 36 : 60} />
-            <ColumnSortHeader
-              id="TASK_DESCRIPTION"
-              label="Tasks"
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="SUBTASK_COUNT"
-              label="Sub"
-              width={60}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="PATIENT"
-              label="Patient"
-              width={164}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="WORKFLOW_STATUS"
-              label="Status"
-              width={120}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader width={150} />
-            <ColumnSortHeader
-              id="DUE_DT"
-              label="Date"
-              width={60}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            <ColumnSortHeader
-              id="ASSIGNED_TO"
-              label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-              width={groupHasMultipleAssignees ? 90 : 60}
-              sort={sort}
-              onSortChange={onSortChange}
-            />
-            {listNameVisible && (
-              <ColumnSortHeader
-                id="LISTNAME"
-                label="List"
-                width={168}
-                sort={sort}
-                onSortChange={onSortChange}
-              />
-            )}
-          </SortHeaderRow>
+          <TasksHeader
+            bulkEditEnabled={bulkEditEnabled}
+            sort={sort}
+            onSortChange={onSortChange}
+            taskItemConfig={taskItemConfig}
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
+            isGroupSelected={isGroupSelected}
+            onGroupSelect={handleGroupSelect}
+          />
         )}
         {(!isLoadingGroup || isFetchingMoreTasks) && (
           <DragAndDropGroupList
@@ -381,7 +304,6 @@ const TasksGroup = ({
             isFullView={isFullView}
             toggleCompleteTask={toggleCompleteTask}
             draggedId={draggedId}
-            reorderSubtasksForTask={reorderSubtasksForTask}
             isCompletedGroup={isCompletedGroup}
             onTaskUpdate={onTaskUpdate}
             updateDueDate={updateDueDate}
@@ -395,15 +317,13 @@ const TasksGroup = ({
             shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
             showClearSortFiltersModal={showClearSortFiltersModal}
             groupHasMultipleAssignees={groupHasMultipleAssignees}
-            highlightedTasksParentIdenditifer={
-              highlightedTasksParentIdenditifer
-            }
+            highlightedTasksParentIdenditifer={highlightedTasksParentIdentifier}
             highlightTasksOfTheSameParent={highlightTasksOfTheSameParent}
             taskItemConfig={taskItemConfig}
           />
         )}
         {(isLoadingGroup || isFetchingMoreTasks) && (
-          <SingleSkeletonLoader rows={4} />
+          <TasksSkeletonLoader rows={4} />
         )}
         {groupPagination && hasMoreTasks && !areFiltersApplied && (
           <LoadMoreSection>

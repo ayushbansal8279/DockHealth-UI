@@ -228,7 +228,10 @@ function* doToggleTaskCompleteStatus({ payload }) {
 
     if (!task.parentTaskIdentifier) {
       yield delay(TASK_DISAPPEAR_DELAY);
-      yield put({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+      yield put({
+        type: ActionTypes.DELETE_TASK,
+        taskIdentifier: task.taskIdentifier,
+      });
     }
 
     yield put(AlertActions.showGlobalAlert(successMessage));

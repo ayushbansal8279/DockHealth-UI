@@ -55,6 +55,7 @@ const MentionsEditor = React.forwardRef(
       taskListIdentifier,
       isDrawerEditor = false,
       oneline = false,
+      disableMentions = false,
     },
     reference,
   ) => {
@@ -187,7 +188,7 @@ const MentionsEditor = React.forwardRef(
               : null
           }
         />
-        {taskListIdentifier && (
+        {!disableMentions && taskListIdentifier && (
           <PeopleMentionSuggestions
             onSearchChange={onPeopleSearchChange}
             suggestions={peopleSuggestions}
@@ -209,23 +210,25 @@ const MentionsEditor = React.forwardRef(
             }}
           />
         )}
-        <PatientsMentionSuggestions
-          onSearchChange={onPatientSearchChange}
-          suggestions={patientSuggestions}
-          onAddMention={onAddMention}
-          entryComponent={PatientSuggestionItem}
-          popoverComponent={
-            <PatientsSuggestionsPopover searchValue={patientSearchValue} />
-          }
-          onOpen={() => {
-            arePatientSuggestionsOpened.current = true;
-            setPatientSearchValue('');
-          }}
-          onClose={() => {
-            arePatientSuggestionsOpened.current = false;
-            setPatientSearchValue(null);
-          }}
-        />
+        {!disableMentions && (
+          <PatientsMentionSuggestions
+            onSearchChange={onPatientSearchChange}
+            suggestions={patientSuggestions}
+            onAddMention={onAddMention}
+            entryComponent={PatientSuggestionItem}
+            popoverComponent={
+              <PatientsSuggestionsPopover searchValue={patientSearchValue} />
+            }
+            onOpen={() => {
+              arePatientSuggestionsOpened.current = true;
+              setPatientSearchValue('');
+            }}
+            onClose={() => {
+              arePatientSuggestionsOpened.current = false;
+              setPatientSearchValue(null);
+            }}
+          />
+        )}
       </StyledEditorContainer>
     );
   },

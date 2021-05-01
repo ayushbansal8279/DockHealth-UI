@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { openModal } from 'modal/actions';
 import { IconButton, ListItem } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
@@ -95,7 +96,6 @@ const TopSection = ({
   formMethods,
   taskLists,
   selectedTask,
-  taskList,
   reFileTask,
   onDelete,
   onDuplicate,
@@ -109,6 +109,7 @@ const TopSection = ({
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskStatus = selectedTask?.status;
+  const taskList = selectedTask?.taskList;
   const isCompleted = selectedTaskStatus === 'COMPLETE';
   const hasSubtasks = selectedTask?.subTasksCount !== 0;
 
@@ -152,61 +153,65 @@ const TopSection = ({
   return (
     <>
       <ListNameContainer>
-        {selectedTask && !selectedTask.parentTaskIdentifier && (
-          <>
-            <input type="hidden" name="newTaskListId" ref={register} />
-            <HorizontalLabel>FILED IN: </HorizontalLabel>
-            <Spacing horizontal={3} />
-            <ListNameSelectContainer
-              ref={filedInInputReference}
-              onClick={moreTaskListsAvailable ? openFiledInPopover : undefined}
-            >
-              <FiledInSelect enableDropDown={moreTaskListsAvailable}>
-                {selectedTask ? (
-                  <RobotoTypography condensed color="inherit">
-                    {isInbox
-                      ? 'Inbox'
-                      : filedInInputValue || taskList?.listName}
-                  </RobotoTypography>
-                ) : (
-                  <RobotoTypography condensed color="inherit">
-                    {isInbox ? 'Inbox' : taskList?.listName}
-                  </RobotoTypography>
+        {selectedTask &&
+          !selectedTask.parentTaskIdentifier &&
+          !checkIfTemplateTask(selectedTask) && (
+            <>
+              <input type="hidden" name="newTaskListId" ref={register} />
+              <HorizontalLabel>FILED IN: </HorizontalLabel>
+              <Spacing horizontal={3} />
+              <ListNameSelectContainer
+                ref={filedInInputReference}
+                onClick={
+                  moreTaskListsAvailable ? openFiledInPopover : undefined
+                }
+              >
+                <FiledInSelect enableDropDown={moreTaskListsAvailable}>
+                  {selectedTask ? (
+                    <RobotoTypography condensed color="inherit">
+                      {isInbox
+                        ? 'Inbox'
+                        : filedInInputValue || taskList?.listName}
+                    </RobotoTypography>
+                  ) : (
+                    <RobotoTypography condensed color="inherit">
+                      {isInbox ? 'Inbox' : taskList?.listName}
+                    </RobotoTypography>
+                  )}
+                </FiledInSelect>
+                {moreTaskListsAvailable && (
+                  <>
+                    <Spacing horizontal={3} />
+                    <SmallSwitchChevronDown color={palette.orangeJulius} />
+                  </>
                 )}
-              </FiledInSelect>
-              {moreTaskListsAvailable && (
-                <>
-                  <Spacing horizontal={3} />
-                  <SmallSwitchChevronDown color={palette.orangeJulius} />
-                </>
-              )}
-            </ListNameSelectContainer>
-            <InputPopover
-              anchorElement={filedInInputReference}
-              isPopoverOpen={isFiledInPopoverOpen}
-              closePopover={closeFiledInPopover}
-              popupStyle={{
-                width: '550px',
-              }}
-            >
-              <StyledList ref={taskListsContainerReference}>
-                {(taskLists ?? []).map(
-                  renderTaskList({
-                    closePopover: closeFiledInPopover,
-                    onFiledInInputChange,
-                    setValue,
-                    reFileTask,
-                    closeTaskDrawer,
-                    selectedTaskIdentifier,
-                    selectedTaskListName: taskList?.listName,
-                    hasSubtasks,
-                    dispatch,
-                  }),
-                )}
-              </StyledList>
-            </InputPopover>
-          </>
-        )}
+              </ListNameSelectContainer>
+              <InputPopover
+                anchorElement={filedInInputReference}
+                isPopoverOpen={isFiledInPopoverOpen}
+                closePopover={closeFiledInPopover}
+                popupStyle={{
+                  width: '550px',
+                }}
+              >
+                <StyledList ref={taskListsContainerReference}>
+                  {(taskLists ?? []).map(
+                    renderTaskList({
+                      closePopover: closeFiledInPopover,
+                      onFiledInInputChange,
+                      setValue,
+                      reFileTask,
+                      closeTaskDrawer,
+                      selectedTaskIdentifier,
+                      selectedTaskListName: taskList?.listName,
+                      hasSubtasks,
+                      dispatch,
+                    }),
+                  )}
+                </StyledList>
+              </InputPopover>
+            </>
+          )}
       </ListNameContainer>
       <Spacing horizontal={5} />
       <ActionButtonsContainer>

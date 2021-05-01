@@ -1,9 +1,31 @@
 import moment from 'moment';
+import {
+  pipe,
+  prop,
+  path,
+  sortWith,
+  ascend,
+  descend,
+  defaultTo,
+  toLower,
+  trim,
+  ifElse,
+} from 'ramda';
 
 /* eslint-disable import/prefer-default-export */
 export const TaskStatus = {
   INCOMPLETE: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',
+};
+
+export const TaskItemType = {
+  BUNDLE: 'BUNDLE',
+  TASK: 'TASK',
+};
+
+export const TaskGroupType = {
+  TASKLIST: 'TASKLIST',
+  BUNDLE: 'TASK_BUNDLE',
 };
 
 export function getLabelsIconTooltipTitle(labels) {
@@ -48,4 +70,128 @@ export function isDueDateOverdue(task) {
       ? moment(dueDate).isBefore(moment())
       : dueDate && moment(dueDate).isBefore(moment().startOf('day')))
   );
+}
+
+export function checkIfTemplateTask(task) {
+  return task?.type === 'TEMPLATE';
+}
+
+export const TaskItemColumn = {
+  DESCRIPTION: 'TASK_DESCRIPTION',
+  DUE_DATE: 'DUE_DT',
+  ACTIVITY: 'ACTIVITY',
+  LIST_NAME: 'LIST_NAME',
+  ASSIGNED: 'ASSIGNED_TO',
+  PATIENT: 'PATIENT',
+  SUBTASKS_COUNT: 'SUBTASKS_COUNT',
+  WORKFLOW_STATUS: 'WORKFLOW_STATUS',
+};
+
+export const TASK_ITEM_BASE_COLUMN_CONFIG = {
+  [TaskItemColumn.DESCRIPTION]: true,
+  [TaskItemColumn.SUBTASKS_COUNT]: true,
+  [TaskItemColumn.PATIENT]: true,
+  [TaskItemColumn.WORKFLOW_STATUS]: true,
+  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.ASSIGNED]: true,
+  [TaskItemColumn.LIST_NAME]: false,
+};
+
+export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
+
+export const TASK_ITEM_SORT_METHODS = {
+  [TaskItemColumn.DESCRIPTION]: sortWith([
+    ascend(pipe(prop('description'), defaultTo('~'), toLower)),
+  ]),
+  [TaskItemColumn.DUE_DATE]: sortWith([
+    ascend(pipe(prop('dueDate'), defaultTo('~'))),
+  ]),
+  [TaskItemColumn.WORKFLOW_STATUS]: sortWith([
+    ascend(pipe(prop('workflowStatus'), defaultTo('~'), toLower)),
+  ]),
+  [TaskItemColumn.PATIENT]: sortWith([
+    ascend(
+      ifElse(
+        path(['patient', 'patientName']),
+        pipe(path(['patient', 'patientName']), defaultTo('~'), toLower),
+        pipe(
+          path(['parentTask', 'patient', 'patientName']),
+          defaultTo('~'),
+          toLower,
+        ),
+      ),
+    ),
+  ]),
+  [TaskItemColumn.ASSIGNED]: sortWith([
+    ascend(pipe(path(['assignedTo', 'userName']), defaultTo('~'), toLower)),
+  ]),
+  [TaskItemColumn.LIST_NAME]: sortWith([
+    ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
+  ]),
+  [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
+    ascend(pipe(prop('subTasksCount'), defaultTo(-1))),
+  ]),
+};
+
+export const TASK_ITEM_SORT_DESC_METHODS = {
+  [TaskItemColumn.DESCRIPTION]: sortWith([
+    descend(pipe(prop('description'), defaultTo(' '), toLower)),
+  ]),
+  [TaskItemColumn.DUE_DATE]: sortWith([
+    descend(pipe(prop('dueDate'), defaultTo(' '))),
+  ]),
+  [TaskItemColumn.WORKFLOW_STATUS]: sortWith([
+    descend(pipe(prop('workflowStatus'), defaultTo(' '), toLower)),
+  ]),
+  [TaskItemColumn.PATIENT]: sortWith([
+    descend(
+      ifElse(
+        path(['patient', 'patientName']),
+        pipe(path(['patient', 'patientName']), defaultTo(' '), toLower),
+        pipe(
+          path(['parentTask', 'patient', 'patientName']),
+          defaultTo(' '),
+          toLower,
+        ),
+      ),
+    ),
+  ]),
+  [TaskItemColumn.ASSIGNED]: sortWith([
+    descend(pipe(path(['assignedTo', 'userName']), defaultTo(' '), toLower)),
+  ]),
+  [TaskItemColumn.LIST_NAME]: sortWith([
+    descend(
+      pipe(path(['taskList', 'listName']), defaultTo(' '), toLower, trim),
+    ),
+  ]),
+  [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
+    descend(pipe(prop('subTasksCount'), defaultTo(-1))),
+  ]),
+};
+
+export function updateSubtasksInTask(dataToUpdate, subtaskIdentifier, task) {
+  return {
+    ...task,
+    subtasks: task?.subtasks?.map(subtask =>
+      subtaskIdentifier === subtask.taskIdentifier
+        ? { ...subtask, ...dataToUpdate }
+        : subtask,
+    ),
+  };
+}
+
+export function updateSubtasksInTaskWithCallback(
+  updateCallback,
+  subtaskIdentifier,
+  task,
+) {
+  return {
+    ...task,
+    subtasks: task?.subtasks?.map(subtask =>
+      subtaskIdentifier === subtask.taskIdentifier
+        ? updateCallback(subtask)
+        : subtask,
+    ),
+  };
 }

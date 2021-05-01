@@ -65,6 +65,7 @@ const MultiAssignPopover = ({
             taskListIdentifiers={taskListIdentifiers}
             selectedMembers={selectedMembers}
             onSelect={onSelect}
+            onError={() => openPopover(false)}
           />
         )}
       </StyledPopover>

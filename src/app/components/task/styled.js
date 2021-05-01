@@ -25,7 +25,6 @@ export const ListLink = styled(ListItemLink)`
 `;
 
 export const CompletedBy = styled.div`
-  width: 100%;
   align-items: flex-end;
   display: flex;
   height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
@@ -303,6 +302,7 @@ export const StandardTaskItemPanel = styled.div`
 export const TaskItemParentTaskLabel = styled.div`
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey2};
+  font-size: ${fontSizes.small};
 
   & > span {
     color: ${palette.brightBlue};
@@ -412,7 +412,9 @@ export const DescriptionLabel = styled.div`
 `;
 
 export const ParentTaskContainer = styled.div`
-  margin-bottom: 3px;
+  &:not(:last-child) {
+    margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;
+  }
 `;
 
 export const SubtasksWrapper = styled.div`
@@ -426,4 +428,16 @@ export const SubtaskItemWrapper = styled.div`
 
 export const AddSubtaskButton = styled.button`
   cursor: pointer;
+`;
+
+export const TaskItemDescriptionIndicators = styled.div`
+  display: flex;
+  align-items: baseline;
+`;
+
+export const PatientLabel = styled.span`
+  &:hover {
+    color: ${palette.brightBlue};
+    text-decoration: underline;
+  }
 `;

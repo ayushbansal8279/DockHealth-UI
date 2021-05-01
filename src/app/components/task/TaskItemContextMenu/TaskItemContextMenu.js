@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import * as TaskApi from 'api/task-api';
 import { onRightClickAction } from 'helpers/ga-event-helper';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import * as ActionTypes from 'actions/action-types';
 import {
   deleteTask,
@@ -27,6 +28,7 @@ const TaskItemContextMenu = ({
   const dispatch = useDispatch();
 
   const isSubtask = !!task.parentTaskIdentifier;
+  const isTemplateTask = checkIfTemplateTask(task);
 
   const handleKeyDown = useCallback(event => {
     function handleBackward() {
@@ -144,7 +146,7 @@ const TaskItemContextMenu = ({
           onRightClickAction(EVENT_NAME);
         },
       };
-      dispatch(openModal('DuplicateTask', modalProps));
+      dispatch(openModal('AttachmentsDuplicate', modalProps));
     } else {
       dispatch(duplicateTask(task, false, isDashboardTask));
       onRightClickAction(EVENT_NAME);
@@ -153,15 +155,15 @@ const TaskItemContextMenu = ({
 
   const handleDeleteTask = useCallback(() => {
     const modalProps = {
+      isSubtask: !!task.parentTaskIdentifier,
       confirm: async () => {
         await dispatch(deleteTask(task));
         dispatch(closeModal());
         onRightClickAction('Delete task');
       },
     };
-    const modalName =
-      task.parentTaskIdentifier !== null ? 'DeleteSubtask' : 'DeleteTask';
-    dispatch(openModal(modalName, modalProps));
+
+    dispatch(openModal('DeleteTask', modalProps));
   }, []);
 
   const handleMoveTask = useCallback(() => {
@@ -237,11 +239,13 @@ const TaskItemContextMenu = ({
         positionTop={position.y}
         positionLeft={position.x}
       >
-        <li>
-          <MenuItemButtom tabindex="0" type="button" onClick={handleMoveTask}>
-            Move to list
-          </MenuItemButtom>
-        </li>
+        {!isTemplateTask && (
+          <li>
+            <MenuItemButtom tabindex="0" type="button" onClick={handleMoveTask}>
+              Move to list
+            </MenuItemButtom>
+          </li>
+        )}
         <li>
           <MenuItemButtom type="button" onClick={handleDuplicateTask}>
             Duplicate {isSubtask ? 'Subtask' : 'Task'}

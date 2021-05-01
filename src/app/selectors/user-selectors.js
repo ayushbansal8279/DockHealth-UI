@@ -22,7 +22,7 @@ export const userOrganizationsSelector = createSelector(
   ({ userOrganizations }) => userOrganizations,
 );
 
-export const userProfileDashbaordPrefsSelector = createSelector(
+export const userProfileDashboardPrefsSelector = createSelector(
   userProfileSelector,
   ({ userPreference }) => userPreference?.displayColumns,
 );

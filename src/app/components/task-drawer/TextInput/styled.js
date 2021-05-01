@@ -13,9 +13,13 @@ const styles = {
     transition: ANIMATION,
     zIndex: 1,
     boxShadow: 'none',
-    borderBottomColor: props => !props.borderOnFocus && palette.coolGrey1,
+    borderBottomColor: props =>
+      props.disabled ? palette.coolGrey2 : palette.coolGrey1,
     '& label': {
       color: palette.coolGrey1,
+    },
+    '& label.Mui-disabled': {
+      color: palette.coolGrey2,
     },
     '& label.Mui-focused': {
       color: palette.coolGrey1,
@@ -42,6 +46,9 @@ const styles = {
       paddingRight: props =>
         props.parentType === 'selectTag' ? '30px' : '0px',
     },
+  },
+  label: {
+    color: palette.oPlusRed,
   },
   error: {
     border: BORDER,
@@ -72,7 +79,8 @@ const styles = {
         : '0.75rem 0',
     paddingBottom: props => (props.multiple ? '0px' : '5px'),
     '&::placeholder': {
-      color: palette.mediumGrey,
+      opacity: 1,
+      color: palette.coolGrey1,
       fontWeight: 'normal',
     },
     '&:focus': {
@@ -87,6 +95,10 @@ const styles = {
     '&[disabled]': {
       backgroundColor: 'transparent',
       cursor: 'initial',
+
+      '&::placeholder': {
+        color: palette.coolGrey2,
+      },
     },
   },
 };

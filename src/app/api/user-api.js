@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { isNil } from 'ramda';
 import Amplify from '@aws-amplify/core';
-import { onLogin, onLogout, onTaskListLeft } from 'helpers/ga-event-helper';
+import { onLogin, onLogout } from 'helpers/ga-event-helper';
 import { RESET_APP } from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
@@ -506,7 +506,6 @@ export function leaveList(taskListIdentifier) {
       `${process.env.HEYDOC_SERVICES_BASE_URL}user/userLeavesList/${taskListIdentifier}`,
     )
     .then(response => {
-      onTaskListLeft();
       return response;
     })
     .catch(error => {

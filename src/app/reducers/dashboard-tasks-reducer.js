@@ -1,5 +1,5 @@
 import * as types from 'actions/action-types';
-
+import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -10,7 +10,9 @@ const initialState = {
 
 const updateTaskInList = (lists, updateTaskCallback) =>
   lists.map(group => {
-    const updatedTasks = group.tasks ? updateTaskCallback(group.tasks) : [];
+    const updatedTasks = group.tasks
+      ? mapWithRemove(updateTaskCallback, group.tasks)
+      : [];
     return { ...group, tasks: updatedTasks };
   });
 
@@ -23,6 +25,7 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 
 const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, fetchedGroup, error } = action;
+
   switch (type) {
     case types.REQUEST_DASHBOARD_TASKS:
       return {

@@ -1,8 +1,8 @@
 import { Collapse } from '@material-ui/core';
+import palette from 'styles/palette';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
 
 export const ListDetailsContainer = styled.div`
   display: flex;
@@ -38,22 +38,6 @@ export const ListNameSection = styled.p`
   vertical-align: middle;
 `;
 
-export const ViewIconBox = styled.div`
-  visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
-`;
-
-export const IconsBox = styled.div`
-  display: flex;
-`;
-
-export const ViewTypeButton = styled.button`
-  margin-left: ${spacing.regularPlus};
-  margin-bottom: ${spacing.tiny};
-  color: ${({ active }) => (active ? palette.brightBlue : palette.coolGrey2)};
-  cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
-  transition: color 0.3s ease-out;
-`;
-
 export const Arrow = styled.img`
   transform: ${props => props.isOpen && 'rotateX(180deg)'};
   -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
@@ -66,4 +50,15 @@ export const Arrow = styled.img`
 export const Tasks = styled(Collapse)`
   height: 300px;
   padding-left: ${props => props.issubtasks && spacing.giga};
+`;
+
+export const ListDescription = styled.div`
+  display: block;
+  margin-bottom: 0;
+  color: ${palette.mediumGrey}
+  background-color: ${palette.coolGrey4};
+  font-size: ${fontSizes.smallPLus};
+  font-weight: ${fontWeights.regular};
+  font-family: 'Montserrat', sans-serif;
+  padding-bottom: ${spacing.regular};
 `;

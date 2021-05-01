@@ -9,6 +9,7 @@ const CommentSection = ({
   taskDrawerFocusField,
   modalActions,
   taskListIdentifier,
+  isTemplateTask,
 }) => {
   const {
     comments,
@@ -25,6 +26,7 @@ const CommentSection = ({
         parentFormSubmit={parentFormSubmit}
         taskDrawerFocusField={taskDrawerFocusField}
         taskListIdentifier={taskListIdentifier}
+        isTemplateTask={isTemplateTask}
       />
       <CommentsListContainer>
         {comments?.map(
@@ -33,6 +35,7 @@ const CommentSection = ({
             removeComment,
             updateComment,
             taskListIdentifier,
+            isTemplateTask,
           }),
         )}
       </CommentsListContainer>

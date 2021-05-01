@@ -6,7 +6,6 @@ import {
   call,
   takeEvery,
   select,
-  delay,
   takeLatest,
   all,
 } from 'redux-saga/effects';
@@ -26,6 +25,8 @@ import {
   FETCH_MEGA_FILTERS_FAILURE,
 } from 'actions/action-types';
 import { userProfileSelector } from 'selectors/user-selectors';
+// eslint-disable-next-line import/no-cycle
+import { toggleCompleteTask } from 'actions/task-actions';
 import {
   reorderTasksInGroup,
   getDashboardMyTasksFilters,
@@ -43,11 +44,7 @@ import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import AlertMessages from 'alert/AlertMessages';
-import {
-  toggleTaskCompletedStatus,
-  setDueDate as setDueDateHelper,
-  TASK_DISAPPEAR_DELAY,
-} from 'helpers/task-update-helper';
+import { setDueDate as setDueDateHelper } from 'helpers/task-update-helper';
 import { fetchTasklistForUser } from 'sagas/task-list-saga';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { dashboardGroupTasksCountSelector } from 'selectors/dashboard-tasks-selectors';
@@ -423,23 +420,9 @@ function* doToggleDashboardTaskComplete({ task }) {
   try {
     const currentUser = yield select(userProfileSelector);
 
-    const updatedTask = toggleTaskCompletedStatus(task, currentUser);
+    yield put(toggleCompleteTask(task, currentUser));
 
-    yield put({ type: UPDATE_TASK_SUCCESS, task: updatedTask });
-
-    if (task.status === 'COMPLETE') {
-      yield call(TaskApi.markIncomplete, task);
-    } else {
-      yield call(TaskApi.markComplete, task);
-    }
-    yield delay(TASK_DISAPPEAR_DELAY);
-    yield all([call(doReloadDashboardTasks), call(doFetchDashboardFilters)]);
-
-    if (task.status === 'COMPLETE') {
-      yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_REACTIVATED));
-    } else {
-      yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_COMPLETED));
-    }
+    yield call(doFetchDashboardFilters);
   } catch (error) {
     yield call(doReloadDashboardTasks);
   }

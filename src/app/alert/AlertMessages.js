@@ -4,6 +4,8 @@ export default {
   UPDATED: 'Updated',
   DELETED: 'Deleted',
   INVITED: 'Invited',
+  DUPLICATED: 'Duplicated',
+  MOVED: 'Moved',
   TASK_CREATED: 'Task created',
   TASK_COMPLETED: 'Task complete. great job!',
   TASK_REACTIVATED: 'Re-activated task',

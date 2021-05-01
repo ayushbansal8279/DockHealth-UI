@@ -32,6 +32,7 @@ import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { noop } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
@@ -45,11 +46,14 @@ import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDet
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import { TaskViewContainer } from './styled';
 
+const PERSON_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.LIST_NAME]: true,
+};
+
 class PersonDetailsView extends PureComponent {
   state = {
     isLoadingView: true,
     searchValue: '',
-    shouldResetBulkEditTasks: false,
   };
 
   async componentDidMount() {
@@ -122,35 +126,8 @@ class PersonDetailsView extends PureComponent {
   }
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  componentDidUpdate(previousProps, previousState) {
-    const { searchValue, shouldResetBulkEditTasks } = this.state;
-    const { selectedFilters, sort } = this.props;
-
-    if (!shouldResetBulkEditTasks) {
-      if (previousState?.searchValue !== searchValue) {
-        this.setState({ shouldResetBulkEditTasks: true });
-      }
-
-      if (
-        Object.keys(previousProps?.selectedFilters || []).length !==
-        Object.keys(selectedFilters || []).length
-      ) {
-        this.setState({ shouldResetBulkEditTasks: true });
-      }
-    }
-
-    if (shouldResetBulkEditTasks) {
-      if (searchValue === previousState?.searchValue) {
-        this.setState({ shouldResetBulkEditTasks: false });
-      }
-
-      if (
-        Object.keys(previousProps?.selectedFilters || []).length === 0 &&
-        Object.keys(selectedFilters || []).length !== 0
-      ) {
-        this.setState({ shouldResetBulkEditTasks: false });
-      }
-    }
+  componentDidUpdate(previousProps) {
+    const { sort } = this.props;
 
     if (
       previousProps.sort?.key !== sort?.key ||
@@ -305,8 +282,6 @@ class PersonDetailsView extends PureComponent {
     const { match, history } = this.props;
     const { params } = match;
     const { userIdentifier } = params;
-
-    this.setState({ shouldResetBulkEditTasks: true });
 
     history.push(
       `/core/assignedToPerson/${userIdentifier}${
@@ -474,7 +449,7 @@ class PersonDetailsView extends PureComponent {
       areFiltersApplied,
       sort,
     } = this.props;
-    const { isLoadingView, searchValue, shouldResetBulkEditTasks } = this.state;
+    const { isLoadingView, searchValue } = this.state;
     const { openModal } = modalActions;
     const { params } = match;
     const { tabName, userIdentifier } = params;
@@ -485,9 +460,9 @@ class PersonDetailsView extends PureComponent {
       !isLoadingView && (
         <>
           <BulkEditSection
-            shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+            allTasks={tasks}
             refreshTasks={this.refreshTab}
-            inactiveBulkEdit={selectedTab === TaskListTabName.COMPLETE}
+            disabled={selectedTab === TaskListTabName.COMPLETE}
             searchValue={searchValue}
           >
             <div>
@@ -533,6 +508,7 @@ class PersonDetailsView extends PureComponent {
                     areFiltersApplied={areFiltersApplied}
                     sort={sort}
                     onSortChange={this.sortPersonTasks}
+                    taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
                   />
                 ) : (
                   <OpenedTasksView
@@ -549,6 +525,7 @@ class PersonDetailsView extends PureComponent {
                     areFiltersApplied={areFiltersApplied}
                     sort={sort}
                     onSortChange={this.sortPersonTasks}
+                    taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
                   />
                 )}
               </TaskViewContainer>

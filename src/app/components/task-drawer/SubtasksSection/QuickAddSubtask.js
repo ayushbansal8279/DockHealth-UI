@@ -12,7 +12,7 @@ import {
 } from './styled';
 
 const QuickAddSubtask = ({
-  onQuickAddTask,
+  onQuickAddSubtask,
   onFocus,
   onBlur,
   taskListIdentifier = null,
@@ -46,7 +46,7 @@ const QuickAddSubtask = ({
     setError(validatorError);
 
     if (rawText && !validatorError) {
-      onQuickAddTask({
+      onQuickAddSubtask({
         description: tokenizedText,
       })
         .then(resetInputState)

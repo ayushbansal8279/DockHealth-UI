@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TaskListDetailsDropdown from 'views/patient-details/TaskListDetailsDropdown/TaskListDetailsDropdown';
@@ -23,6 +23,11 @@ import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+import { TaskItemColumn } from 'helpers/task-helpers';
+
+const PATIENT_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.PATIENT]: false,
+};
 
 const searchTaskInPatientLists = (patientLists, searchValue) =>
   patientLists.reduce((accumulator, currentValue) => {
@@ -59,6 +64,7 @@ const PatientTasksListView = ({
     quickAddPatientTask,
     refreshPatientTasks,
     sortPatientTasks,
+    applyTemplateForPatient,
   } = patientTasksSagaActions;
 
   const isListFlattened =
@@ -107,6 +113,16 @@ const PatientTasksListView = ({
     }
   };
 
+  const applyTemplate = useCallback(
+    ({ taskListIdentifier, taskTemplateIdentifier }) => {
+      applyTemplateForPatient({
+        taskTemplateIdentifier,
+        taskListIdentifier,
+      });
+    },
+    [applyTemplateForPatient],
+  );
+
   const filteredLists = taskSearch
     ? searchTaskInPatientLists(patientLists, taskSearch)
     : patientLists;
@@ -131,6 +147,8 @@ const PatientTasksListView = ({
           hideSubtasks={isListFlattened}
           sort={sort}
           onSortChange={sortPatientTasks}
+          taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
+          applyTemplate={applyTemplate}
         />
       ))
     : renderEmptyListView();

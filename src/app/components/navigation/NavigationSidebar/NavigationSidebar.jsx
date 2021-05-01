@@ -11,6 +11,7 @@ import ListsIcon from 'img/navigation/ListsIcon';
 import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
+import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import Member from 'components/members/Member/Member';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
@@ -50,6 +51,7 @@ const NavigationSidebar = ({
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
+  const isGuest = orgUserRole === 'GUEST';
 
   const {
     orgMenuReference,
@@ -155,6 +157,15 @@ const NavigationSidebar = ({
               path="/core/patients"
               onItemClick={handleNavigationItemClick}
             />
+            {!isGuest && (
+              <IconNavigationItem
+                name="Workflow Library"
+                icon={TemplatesIcon}
+                path="/core/workflows"
+                onItemClick={handleNavigationItemClick}
+                isNew
+              />
+            )}
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (

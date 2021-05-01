@@ -9,7 +9,7 @@ const SubtasksSection = ({
   subTasksCount,
   currentUser,
   taskListIdentifier,
-  onQuickAddTask,
+  onQuickAddSubtask,
 }) => {
   return (
     <Container>
@@ -29,7 +29,7 @@ const SubtasksSection = ({
       )}
       <QuickAddSubtask
         taskListIdentifier={taskListIdentifier}
-        onQuickAddTask={onQuickAddTask}
+        onQuickAddSubtask={onQuickAddSubtask}
       />
     </Container>
   );

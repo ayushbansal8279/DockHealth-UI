@@ -72,9 +72,6 @@ const PatientDetailsView = ({
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
-  const [shouldResetBulkEditTasks, setShouldResetBulkEditTasks] = useState(
-    false,
-  );
   const [patient, setPatient] = useState({});
   const [isLoadingPatient, setIsLoadingPatient] = useState(false);
   const previousSelectedFilters = useRef(selectedFilters);
@@ -167,38 +164,6 @@ const PatientDetailsView = ({
   }, [refreshPatientTasks, fetchPatientFilters]);
 
   useEffect(() => {
-    if (
-      (searchValue && searchValue !== '') ||
-      (selectedFilters && Object.keys(selectedFilters).length > 0)
-    ) {
-      if (
-        previousSearchValue?.current !== searchValue ||
-        Object.keys(previousSelectedFilters?.current).length !==
-          Object.keys(selectedFilters).length ||
-        (activeTab === TaskListTabName.COMPLETE && !shouldResetBulkEditTasks)
-      ) {
-        setShouldResetBulkEditTasks(true);
-      }
-
-      if (
-        (searchValue === previousSearchValue?.current ||
-          (Object.keys(previousSelectedFilters?.current).length === 0 &&
-            Object.keys(selectedFilters).length !== 0) ||
-          activeTab === TaskListTabName.OPEN) &&
-        shouldResetBulkEditTasks
-      ) {
-        setShouldResetBulkEditTasks(false);
-      }
-    }
-  }, [
-    searchValue,
-    activeTab,
-    previousSelectedFilters,
-    selectedFilters,
-    shouldResetBulkEditTasks,
-  ]);
-
-  useEffect(() => {
     previousSelectedFilters.current = selectedFilters;
   }, [selectedFilters]);
 
@@ -206,11 +171,21 @@ const PatientDetailsView = ({
     previousSearchValue.current = searchValue;
   }, [searchValue]);
 
+  const openedTasks =
+    activeTab === TaskListTabName.OPEN
+      ? lists.flatMap(({ tasks }) => tasks)
+      : [];
+
+  const completedTasks =
+    activeTab === TaskListTabName.COMPLETE
+      ? lists.flatMap(({ tasks }) => tasks)
+      : [];
+
   return (
     <BulkEditSection
-      shouldResetBulkEditTasks={shouldResetBulkEditTasks}
+      allTasks={openedTasks}
       refreshTasks={refreshTab}
-      inactiveBulkEdit={activeTab === TaskListTabName.COMPLETE}
+      disabled={activeTab === TaskListTabName.COMPLETE}
       searchValue={searchValue}
     >
       <div>
@@ -226,14 +201,8 @@ const PatientDetailsView = ({
             onSelectTab={navigateToTab}
             selectedTab={activeTab}
             printData={{
-              completedTasks:
-                activeTab === TaskListTabName.COMPLETE
-                  ? lists.flatMap(({ tasks }) => tasks)
-                  : [],
-              openedTasks:
-                activeTab === TaskListTabName.OPEN
-                  ? lists.flatMap(({ tasks }) => tasks)
-                  : [],
+              completedTasks,
+              openedTasks,
               taskListMembers: allMembers,
             }}
             openTasksAmount={incompleteTasksCount}
@@ -276,7 +245,7 @@ const PatientDetailsView = ({
           onTaskUpdate={handleTaskUpdate}
           onTaskCreation={handleTaskUpdate}
           onTaskDelete={fetchPatientFilters}
-          disabledFileds={[DrawerFieldEnum.PATIENT]}
+          disabledFields={[DrawerFieldEnum.PATIENT]}
         />
       </div>
     </BulkEditSection>

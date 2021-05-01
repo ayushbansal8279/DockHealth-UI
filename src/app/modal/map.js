@@ -1,8 +1,7 @@
 import DeleteGroupModal from './components/DeleteGroupModal/DeleteGroupModal';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import DeleteTaskModal from './components/DeleteTaskModal/DeleteTaskModal';
-import DeleteSubtaskModal from './components/DeleteSubtaskModal/DeleteSubtaskModal';
-import DuplicateTaskModal from './components/DuplicateTaskModal/DuplicateTaskModal';
+import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
 import DeleteListModal from './components/DeleteListModal/DeleteListModal';
 import DeleteNoteModal from './components/DeleteNoteModal/DeleteNoteModal';
 import ListPickerModal from './components/ListPickerModal/ListPickerModal';
@@ -31,21 +30,26 @@ import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTour
 import RightClickTourModal from './components/NewFeaturesModals/RightClickTourModal/RightClickTourModal';
 import MultiAssignTourModal from './components/NewFeaturesModals/MultiAssignTourModal/MultiAssignTourModal';
 import HomeImprovementsTourModal from './components/NewFeaturesModals/HomeImprovementsTourModal/HomeImprovementsTourModal';
+import TaskWorkflowTourModal from './components/NewFeaturesModals/TaskWorkflowTourModal/TaskWorkflowTourModal';
 import MultiMentionAssignTourModal from './components/NewFeaturesModals/MultiMentionAssignTourModal/MultiMentionAssignTourModal';
-import SelectTaskDestinationModal from './components/SelectTaskDestinationModal/SelectTaskDestinationModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
 import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkCompleteTasksModal';
 import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/MoveTasksWithSubtasksModal';
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
+import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
 import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeScreenDragDropModal';
+import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
+import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
+import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
+import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
+import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
   CompleteAllTasks: CompleteAllTasksModal,
   DeleteTask: DeleteTaskModal,
-  DeleteSubtask: DeleteSubtaskModal,
-  DuplicateTask: DuplicateTaskModal,
+  AttachmentsDuplicate: AttachmentsDuplicateModal,
   DeleteList: DeleteListModal,
   DeleteNote: DeleteNoteModal,
   ListPicker: ListPickerModal,
@@ -72,16 +76,22 @@ const MODAL_MAP = {
   RightClickTour: RightClickTourModal,
   MultiAssignTour: MultiAssignTourModal,
   HomeImprovementsTour: HomeImprovementsTourModal,
+  TaskWorkflowTour: TaskWorkflowTourModal,
   MultiMentionAssignTour: MultiMentionAssignTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
-  SelectTaskDestination: SelectTaskDestinationModal,
   ReferAColleague: ReferAColleagueModal,
   BulkDeleteTasks: BulkDeleteTasksModal,
   BulkCompleteTasks: BulkCompleteTasksModal,
   MoveTasksWithSubtasks: MoveTasksWithSubtasksModal,
   SendingInvite: SendingInviteModal,
+  CreateTemplate: CreateTemplateModal,
   HomeScreenDragDrop: HomeScreenDragDropModal,
+  DeleteTemplate: DeleteTemplateModal,
+  SelectTaskDestination: SelectTaskDestinationModal,
+  SelectDestination: SelectDestinationModal,
+  AssignPatient: AssignPatientModal,
+  UnassignPatient: UnassignPatientModal,
 };
 
 export default MODAL_MAP;

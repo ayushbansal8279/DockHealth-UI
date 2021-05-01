@@ -11,8 +11,11 @@ import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { openDrawer } from 'actions/task-drawer-actions';
-import { openQuickAddSubtask, storeAsCurrentTask } from 'actions/task-actions';
-import debounce from 'lodash.debounce';
+import {
+  openQuickAddSubtask,
+  selectTask,
+  storeAsCurrentTask,
+} from 'actions/task-actions';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
@@ -22,7 +25,6 @@ import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
-
 import {
   onTaskAssigned,
   onTaskCompleted,
@@ -32,14 +34,12 @@ import {
   onTaskStatusChanged,
 } from 'helpers/ga-event-helper';
 import {
-  getSubtaskStylingLink,
+  checkIfTemplateTask,
   checkColumnIsInConfig,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_LIST_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_PATIENT_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-} from './helpers';
+  TaskItemColumn,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
+import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
   MainStandardTaskItemCell,
@@ -86,8 +86,12 @@ const TaskItem = ({
   subtasksDisabled,
   multipleAssigneesContext,
   highlightTasksOfTheSameParent,
-  taskItemConfig = [],
+  taskItemConfig = {},
   isDashboardTask,
+  openPatientPopover,
+  templateBundleIdentifier,
+  parentTaskGroupIdentifier,
+  isBundleTask,
 }) => {
   const {
     taskIdentifier,
@@ -110,9 +114,17 @@ const TaskItem = ({
     searchMetaData = {},
     parentTask,
     subtaskQuickAddOpen,
+    selected,
   } = task;
 
-  const { listName, taskListIdentifier } = taskList;
+  const { listName, taskListIdentifier } = taskList || {};
+  const isCompleted = task.status === 'COMPLETE';
+  const isTemplateTask = checkIfTemplateTask(task);
+  const isSubtask = !!parentTaskIdentifier;
+  const isTaskStatusTogglingDisabled =
+    isTemplateTask ||
+    (isSubtask && isCompletedGroup) ||
+    (!!isCompleted !== !!isCompletedGroup && !isSubtask && !isBundleTask);
 
   const {
     matchAssignedTo,
@@ -126,7 +138,7 @@ const TaskItem = ({
   } = searchMetaData;
 
   const currentUser = useSelector(userProfileSelector);
-  const [isHovered, setIsHoverd] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
       rawText: description,
@@ -135,150 +147,19 @@ const TaskItem = ({
     }),
   );
   const [contextMenu, setContextMenu] = useState(null);
-  const [
-    isDescriptionTooltipVisible,
-    setIsDescriptionTooltipVisible,
-  ] = useState(false);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
-  const descriptionReference = useRef(null);
 
-  const isSubtask = !!parentTaskIdentifier;
+  const { bulkEditEnabled } = useContext(BulkEditContext);
 
-  const { bulkEditIsActive, bunchBulkEditTaskActions } = useContext(
-    BulkEditContext,
+  const handleTaskItemRightClick = useCallback(
+    event => {
+      event.preventDefault();
+      setContextMenu({ x: event.pageX, y: event.pageY });
+      dispatch(storeAsCurrentTask(task));
+    },
+    [dispatch, task],
   );
-
-  const bulkEditTaskActions = useMemo(
-    () =>
-      isSubtask
-        ? bunchBulkEditTaskActions?.subtaskActions
-        : bunchBulkEditTaskActions?.parentActions,
-    [bunchBulkEditTaskActions, isSubtask],
-  );
-
-  const previousSubtasksCount = useRef(subTasksCount);
-  const previousAttachmentsLength = useRef(attachments?.length);
-  const previousAssignedToUsers = useRef(assignedToUsers);
-  const hasAttachments = useMemo(() => attachments?.length > 0, [attachments]);
-
-  const bulkEditActionPayload = useMemo(
-    () =>
-      isSubtask
-        ? {
-            parentTaskIdentifier,
-            taskIdentifier,
-            hasAttachments,
-            taskList,
-            assignedToUsers,
-          }
-        : {
-            taskIdentifier,
-            subTasksCount,
-            hasAttachments,
-            taskList,
-            assignedToUsers,
-          },
-    [
-      isSubtask,
-      parentTaskIdentifier,
-      taskIdentifier,
-      hasAttachments,
-      taskList,
-      assignedToUsers,
-      subTasksCount,
-    ],
-  );
-
-  const isCheckedByBulkEdit = useMemo(
-    () =>
-      bulkEditTaskActions?.getTaskIsSelectedInBulkEdit(bulkEditActionPayload),
-    [bulkEditTaskActions, bulkEditActionPayload],
-  );
-
-  useEffect(() => {
-    if (subTasksCount !== previousSubtasksCount?.current) {
-      previousSubtasksCount.current = subTasksCount;
-
-      if (
-        !isSubtask &&
-        bulkEditTaskActions?.onUpdateSelectedBulkEditTask &&
-        isCheckedByBulkEdit
-      ) {
-        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
-          taskIdentifier,
-          subTasksCount,
-        });
-      }
-    }
-
-    if (
-      attachments?.length !== previousAttachmentsLength?.current ||
-      assignedToUsers !== previousAssignedToUsers?.current
-    ) {
-      previousAttachmentsLength.current = attachments?.length;
-      previousAssignedToUsers.current = assignedToUsers;
-
-      if (
-        isCheckedByBulkEdit &&
-        bulkEditTaskActions?.onUpdateSelectedBulkEditTask
-      )
-        bulkEditTaskActions.onUpdateSelectedBulkEditTask({
-          taskIdentifier,
-          hasAttachments: attachments?.length > 0,
-          assignedToUsers,
-        });
-    }
-  }, [
-    attachments,
-    bulkEditTaskActions,
-    isSubtask,
-    subTasksCount,
-    taskIdentifier,
-    isCheckedByBulkEdit,
-    assignedToUsers,
-  ]);
-
-  const checkIfShouldDisplayTooltip = useCallback(() => {
-    const descriptionTextElement = descriptionReference.current?.querySelector(
-      '.public-DraftStyleDefault-block',
-    );
-    if (
-      descriptionTextElement &&
-      descriptionTextElement.scrollWidth > descriptionTextElement.offsetWidth
-    ) {
-      setIsDescriptionTooltipVisible(true);
-    } else {
-      setIsDescriptionTooltipVisible(false);
-    }
-  }, []);
-
-  const handleResize = useCallback(
-    debounce(() => {
-      checkIfShouldDisplayTooltip();
-    }, 1000),
-    [],
-  );
-
-  const handleTaskItemRightClick = useCallback(event => {
-    event.preventDefault();
-    setContextMenu({ x: event.pageX, y: event.pageY });
-  }, []);
-
-  useEffect(() => {
-    if (descriptionReference.current) {
-      checkIfShouldDisplayTooltip();
-    }
-  }, [checkIfShouldDisplayTooltip]);
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (previousDescription.current !== null) {
@@ -293,31 +174,33 @@ const TaskItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
 
-  const isCompleted = task.status === 'COMPLETE';
-  const isTaskStatusTogglingEnabled = !(isCompletedGroup && isSubtask);
-
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
 
-  const onMouseEnter = () => setIsHoverd(true);
-  const onMouseLeave = () => setIsHoverd(false);
+  const onMouseEnter = () => setIsHovered(true);
+  const onMouseLeave = () => setIsHovered(false);
 
   const onClickTaskItem = useCallback(() => {
     dispatch(openDrawer());
-    dispatch(storeAsCurrentTask(task));
+    if (templateBundleIdentifier) {
+      dispatch(
+        storeAsCurrentTask({
+          ...task,
+          taskGroupIdentifier: parentTaskGroupIdentifier,
+          templateBundleIdentifier,
+        }),
+      );
+    } else {
+      dispatch(storeAsCurrentTask(task));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
   const onCircleClick = useCallback(
     event => {
-      if (
-        isTaskStatusTogglingEnabled &&
-        (isSubtask ||
-          (isCompletedGroup && isCompleted) ||
-          (!isCompletedGroup && !isCompleted))
-      ) {
+      if (!isTaskStatusTogglingDisabled) {
         toggleCompleteTask(task);
       }
 
@@ -327,21 +210,14 @@ const TaskItem = ({
         (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
       }
 
-      if (isCheckedByBulkEdit && bulkEditTaskActions?.onUnselectBulkEditTask) {
-        bulkEditTaskActions.onUnselectBulkEditTask(bulkEditActionPayload);
-      }
       event.stopPropagation();
     },
     [
-      isTaskStatusTogglingEnabled,
+      isTaskStatusTogglingDisabled,
       isSubtask,
-      isCompletedGroup,
       isCompleted,
-      isCheckedByBulkEdit,
-      bulkEditTaskActions,
       toggleCompleteTask,
       task,
-      bulkEditActionPayload,
     ],
   );
 
@@ -390,11 +266,18 @@ const TaskItem = ({
     [updateWorkflowStatus, task],
   );
 
-  const showDraggableDots =
-    !dragAndDropDisabled && isDraggable && !bulkEditIsActive;
+  const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
 
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
+
+  const mergedTaskItemConfig = useMemo(
+    () => ({
+      ...TASK_ITEM_BASE_COLUMN_CONFIG,
+      ...taskItemConfig,
+    }),
+    [taskItemConfig],
+  );
 
   return (
     <>
@@ -408,7 +291,7 @@ const TaskItem = ({
           <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <StandardTaskItemContainer
-          isSelected={isSelected || isCheckedByBulkEdit}
+          isSelected={isSelected || selected}
           height={
             hasParentTaskLabel || isCompletedGroup
               ? EXTENDED_TASK_HEIGHT
@@ -417,11 +300,10 @@ const TaskItem = ({
         >
           {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-          {bulkEditTaskActions && (
+          {bulkEditEnabled && (
             <TaskItemBulkEdit
-              isCheckedByBulkEdit={isCheckedByBulkEdit}
-              bulkEditTaskActions={bulkEditTaskActions}
-              bulkEditActionPayload={bulkEditActionPayload}
+              isChecked={selected}
+              onClick={() => dispatch(selectTask(taskIdentifier, !selected))}
             />
           )}
           <MainStandardTaskItemCell
@@ -433,58 +315,72 @@ const TaskItem = ({
           >
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
-              isClickable={isTaskStatusTogglingEnabled}
+              isClickable={!isTaskStatusTogglingDisabled}
               isCompleted={isCompleted}
               onClick={onCircleClick}
             />
-            <TaskItemDescription
-              descriptionReference={descriptionReference}
-              isCompletedGroup={isCompletedGroup}
-              isCompleted={isCompleted}
-              descriptionState={descriptionState}
-              setDescriptionState={setDescriptionState}
-              matchDescription={matchDescription}
-              highlightedValue={highlightedValue}
-              isDescriptionTooltipVisible={isDescriptionTooltipVisible}
-              description={description}
-              edited={edited}
-              duplicated={duplicated}
-              hasParentTaskLabel={hasParentTaskLabel}
-              parentTask={parentTask}
-              completedByName={completedByName}
-              completedDt={completedDt}
+
+            {checkColumnIsInConfig(
+              TaskItemColumn.DESCRIPTION,
+              mergedTaskItemConfig,
+            ) && (
+              <TaskItemDescription
+                isCompletedGroup={isCompletedGroup}
+                isCompleted={isCompleted}
+                descriptionState={descriptionState}
+                setDescriptionState={setDescriptionState}
+                matchDescription={matchDescription}
+                highlightedValue={highlightedValue}
+                description={description}
+                edited={edited}
+                duplicated={duplicated}
+                hasParentTaskLabel={hasParentTaskLabel}
+                parentTask={parentTask}
+                completedByName={completedByName}
+                completedDt={completedDt}
+                dispatch={dispatch}
+              />
+            )}
+          </MainStandardTaskItemCell>
+          {checkColumnIsInConfig(
+            TaskItemColumn.SUBTASKS_COUNT,
+            mergedTaskItemConfig,
+          ) && (
+            <TaskItemSubtasks
+              isSubtask={isSubtask}
+              subtaskQuickAddOpen={subtaskQuickAddOpen}
+              subtasksDisabled={subtasksDisabled}
+              subTasksCount={subTasksCount}
+              isHovered={isHovered}
+              isOpen={isOpen}
+              isNestedTask={isNestedTask}
+              onSubtaskLabelClick={onSubtaskLabelClick}
+              taskIdentifier={taskIdentifier}
+              openQuickAddSubtask={openQuickAddSubtask}
               dispatch={dispatch}
             />
-          </MainStandardTaskItemCell>
-          <TaskItemSubtasks
-            isSubtask={isSubtask}
-            subtaskQuickAddOpen={subtaskQuickAddOpen}
-            subtasksDisabled={subtasksDisabled}
-            subTasksCount={subTasksCount}
-            isHovered={isHovered}
-            isOpen={isOpen}
-            isNestedTask={isNestedTask}
-            onSubtaskLabelClick={onSubtaskLabelClick}
-            taskIdentifier={taskIdentifier}
-            openQuickAddSubtask={openQuickAddSubtask}
-            dispatch={dispatch}
-          />
-          {checkColumnIsInConfig(TASK_ITEM_PATIENT_COLUMN, taskItemConfig) && (
+          )}
+          {checkColumnIsInConfig(
+            TaskItemColumn.PATIENT,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemPatient
               highlightedValue={highlightedValue}
               taskStatus={task?.status}
               isSubtask={isSubtask}
               parentHasPatient={parentHasPatient}
+              hasParentTaskLabel={hasParentTaskLabel}
               matchPatientMRN={matchPatientMRN}
-              patient={patient}
+              patient={patient || parentTask?.patient}
               matchPatient={matchPatient}
-              dispatch={dispatch}
               task={task}
+              openPatientPopover={openPatientPopover}
+              onTaskUpdate={onTaskUpdate}
             />
           )}
           {checkColumnIsInConfig(
-            TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-            taskItemConfig,
+            TaskItemColumn.WORKFLOW_STATUS,
+            mergedTaskItemConfig,
           ) && (
             <TaskItemWorkflowStatus
               task={task}
@@ -495,7 +391,10 @@ const TaskItem = ({
               highlightedValue={highlightedValue}
             />
           )}
-          {checkColumnIsInConfig(TASK_ITEM_ICONS_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.ACTIVITY,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemIcons
               matchComments={matchComments}
               comments={comments}
@@ -508,13 +407,21 @@ const TaskItem = ({
               dispatch={dispatch}
             />
           )}
-          <TaskItemDueDate
-            dueDate={dueDate}
-            task={task}
-            isHovered={isHovered}
-            updateDueDate={updateDueDate}
-          />
-          {checkColumnIsInConfig(TASK_ITEM_MEMBERS_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.DUE_DATE,
+            mergedTaskItemConfig,
+          ) && (
+            <TaskItemDueDate
+              dueDate={dueDate}
+              task={task}
+              isHovered={isHovered}
+              updateDueDate={updateDueDate}
+            />
+          )}
+          {checkColumnIsInConfig(
+            TaskItemColumn.ASSIGNED,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemMembers
               multipleAssigneesContext={multipleAssigneesContext}
               task={task}
@@ -523,7 +430,10 @@ const TaskItem = ({
               matchAssignedTo={matchAssignedTo}
             />
           )}
-          {checkColumnIsInConfig(TASK_ITEM_LIST_COLUMN, taskItemConfig) && (
+          {checkColumnIsInConfig(
+            TaskItemColumn.LIST_NAME,
+            mergedTaskItemConfig,
+          ) && (
             <TaskItemList
               listName={listName}
               taskListIdentifier={taskListIdentifier}
@@ -536,7 +446,10 @@ const TaskItem = ({
         <TaskItemContextMenu
           position={contextMenu}
           task={task}
-          onClose={() => setContextMenu(null)}
+          onClose={() => {
+            setContextMenu(null);
+            dispatch(storeAsCurrentTask(null));
+          }}
           subtasksDisabled={subtasksDisabled}
           isDashboardTask={isDashboardTask}
         />

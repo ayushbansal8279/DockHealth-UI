@@ -1,14 +1,25 @@
 import React from 'react';
 import NavigationItem from './NavigationItem';
-import { NavigationIconContainer } from './styled';
+import { NavigationIconContainer, NavigationIconNewLabel } from './styled';
 
-const IconNavigationItem = ({ icon: Icon, subMenuOpen, ...restProps }) => {
+const IconNavigationItem = ({
+  icon: Icon,
+  subMenuOpen,
+  isNew,
+  ...restProps
+}) => {
   return (
     <NavigationItem subMenuOpen={subMenuOpen} {...restProps}>
       {({ isActive }) => (
-        <NavigationIconContainer isActive={isActive} subMenuOpen={subMenuOpen}>
-          <Icon />
-        </NavigationIconContainer>
+        <>
+          {isNew && <NavigationIconNewLabel>New!</NavigationIconNewLabel>}
+          <NavigationIconContainer
+            isActive={isActive}
+            subMenuOpen={subMenuOpen}
+          >
+            <Icon />
+          </NavigationIconContainer>
+        </>
       )}
     </NavigationItem>
   );

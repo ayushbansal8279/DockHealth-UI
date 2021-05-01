@@ -10,14 +10,15 @@ import {
 interface RotatableChevronProps {
   color?: string;
   rotated: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const RotatableChevron = ({
   color = palette.dirtyBanana,
   rotated,
+  onClick,
 }: RotatableChevronProps) => (
-  <ListSwitchContainer rotated={rotated}>
+  <ListSwitchContainer rotated={rotated} onClick={onClick}>
     <ListSwitchChevron color={color} />
   </ListSwitchContainer>
 );

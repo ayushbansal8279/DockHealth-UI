@@ -1,4 +1,4 @@
-import { isEmpty, pluck, move, remove, insert } from 'ramda';
+import { isEmpty, move, remove, insert, pluck } from 'ramda';
 import {
   put,
   call,
@@ -19,12 +19,12 @@ import {
   reorderTasksInGroup,
   getListTasksGroupedByTaskGroup,
   getFilteredTasksForList,
-  reorderSubtasksForTask,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
   getTasksForTaskListByTaskGroup,
   searchTasksByTaskList,
 } from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
+import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ActionTypes from 'actions/action-types';
@@ -52,7 +52,6 @@ export const DO_EDIT_TASKS_GROUP_NAME = 'DO_EDIT_TASKS_GROUP_NAME';
 export const DO_DELETE_TASKS_GROUP = 'DO_DELETE_TASKS_GROUP';
 export const DO_SORT_TASKS_GROUPS = 'DO_SORT_TASKS_GROUPS';
 export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
-export const DO_SORT_SUBTASKS_IN_GROUPS = 'DO_SORT_SUBTASKS_IN_GROUPS';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
@@ -88,11 +87,6 @@ export const sortTasksGroups = payload => ({
 
 export const sortTasksInGroup = payload => ({
   type: DO_SORT_TASKS_IN_GROUPS,
-  ...payload,
-});
-
-export const sortSubtasksInGroup = payload => ({
-  type: DO_SORT_SUBTASKS_IN_GROUPS,
   ...payload,
 });
 
@@ -240,7 +234,12 @@ function* doGetGroupedTasks({ payload }) {
       });
     }
 
-    yield put({ type: tasksActionType, groupedTasks, loadingMore });
+    yield put({
+      type: tasksActionType,
+      groupedTasks,
+      loadingMore,
+      taskListIdentifier,
+    });
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
   }
@@ -394,9 +393,10 @@ function* doSortTasksInGroup(payload) {
   if (destinationIndex === sourceIndex) return;
 
   const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
-  const reorderedTasks = move(sourceIndex, destinationIndex, group.tasks);
 
   try {
+    const reorderedTasks = move(sourceIndex, destinationIndex, group.tasks);
+
     yield put({
       type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
       groupOfTasks: {
@@ -412,7 +412,7 @@ function* doSortTasksInGroup(payload) {
     });
 
     yield call(reorderTasksInGroup, {
-      orderedTaskIds: pluck('taskIdentifier', reorderedTasks),
+      orderedTaskIds: pluck('identifier', reorderedTasks),
       taskGroupIdentifier,
     });
     yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
@@ -430,53 +430,6 @@ function* doSortTasksInGroup(payload) {
         ],
       },
       refresh: true,
-    });
-  }
-}
-
-function* doSortSubtasksInGroup(payload) {
-  const {
-    source: { index: sourceIndex },
-    destination: { index: destinationIndex, droppableId: parentTaskIdentifier },
-    taskGroupIdentifier,
-  } = payload;
-
-  if (destinationIndex === sourceIndex) return;
-
-  const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
-
-  const parentTask = group.tasks.find(
-    ({ taskIdentifier }) => taskIdentifier === parentTaskIdentifier,
-  );
-
-  if (!parentTask) return;
-  const reorderedSubtasks = move(
-    sourceIndex,
-    destinationIndex,
-    parentTask.subtasks,
-  );
-
-  try {
-    yield put({
-      type: ActionTypes.UPDATE_TASK_SUCCESS,
-      task: {
-        ...parentTask,
-        subtasks: reorderedSubtasks,
-      },
-    });
-
-    yield call(
-      reorderSubtasksForTask,
-      pluck('taskIdentifier', reorderedSubtasks),
-      taskGroupIdentifier,
-      parentTaskIdentifier,
-    );
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({
-      type: ActionTypes.UPDATE_TASK_SUCCESS,
-      task: parentTask,
     });
   }
 }
@@ -524,10 +477,10 @@ function* doReassignTasksToAnotherGroup(payload) {
     });
 
     yield call(reassignTasksToAnotherGroupApi, destinationGroupIdentifier, [
-      sourceTask.taskIdentifier,
+      sourceTask.identifier,
     ]);
     yield call(reorderTasksInGroup, {
-      orderedTaskIds: pluck('taskIdentifier', destinationTasks),
+      orderedTaskIds: pluck('identifier', destinationTasks),
       taskGroupIdentifier: destinationGroupIdentifier,
     });
 
@@ -638,9 +591,8 @@ function* doCreateTask(payload) {
       if (filters && !isEmpty(filters)) {
         if (checkIfTaskMatchesFilters(createdTask, filters)) {
           yield put({
-            type: ActionTypes.ADD_TASK_SUCCESS,
+            type: ActionTypes.ADD_TASK,
             task: createdTask,
-            taskGroupIdentifier,
           });
         }
       } else {
@@ -655,9 +607,8 @@ function* doCreateTask(payload) {
           });
         } else {
           yield put({
-            type: ActionTypes.ADD_TASK_SUCCESS,
+            type: ActionTypes.ADD_TASK,
             task: createdTask,
-            taskGroupIdentifier,
           });
         }
       }
@@ -747,7 +698,31 @@ function* doFilterListDetailsTasks({ payload }) {
   yield put(ListDetailsActions.refreshListDetailsGroupedTasks());
 }
 
+function* applyTaskTemplate({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskListIdentifier,
+}) {
+  try {
+    yield call(TemplateBundleApi.applyTemplate, {
+      taskTemplateIdentifier,
+      taskGroupIdentifier,
+      taskListIdentifier,
+    });
+    yield put(
+      getTasksForTaskGroups({
+        taskGroupIdentifier,
+        status: 'INCOMPLETE',
+        refresh: true,
+      }),
+    );
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTasksGroupsList() {
+  yield takeEvery(ActionTypesSaga.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
     ActionTypesSaga.GET_LIST_DETAILS_TASK_COUNTERS,
     doGetListDetailsCounters,
@@ -775,7 +750,6 @@ export default function* watchTasksGroupsList() {
   yield takeEvery(DO_DELETE_TASKS_GROUP, doDeleteTasksGroup);
   yield takeEvery(DO_SORT_TASKS_GROUPS, doSortTasksGroups);
   yield takeEvery(DO_SORT_TASKS_IN_GROUPS, doSortTasksInGroup);
-  yield takeEvery(DO_SORT_SUBTASKS_IN_GROUPS, doSortSubtasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
   yield takeEvery(
     DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,

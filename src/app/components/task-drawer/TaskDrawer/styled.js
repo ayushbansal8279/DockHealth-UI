@@ -22,6 +22,7 @@ export const TaskDrawerContainer = styled.div`
   transition: transform 100ms ease;
   will-change: transform;
   width: 756px;
+  text-align: left;
   z-index: 1101;
 `;
 

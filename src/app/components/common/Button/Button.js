@@ -13,7 +13,7 @@ const StyledButton = styled.button`
 
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
-  text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : 'lowercase')};
+  ${({ uppercase }) => uppercase && 'text-transform: uppercase'};
   outline: none;
 
   ${({ disabled }) => !disabled && `cursor: pointer;`}

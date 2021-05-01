@@ -6,30 +6,26 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
-  position: fixed;
-  left: 50%;
-  bottom: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  width: 800px;
-  transform: translate(-50%, ${({ open }) => (open ? 0 : 100)}%);
+  width: fit-content;
   border: 1px solid ${palette.coolGrey2};
   border-bottom: none;
   background-color: ${palette.white};
-  z-index: 1000;
   font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
-  transition: transform 0.3s ease-out;
 `;
 
 export const TasksText = styled.p`
   margin-bottom: 0;
   margin-left: ${spacing.regular};
+  margin-right: 80px;
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.light};
+  white-space: nowrap;
 `;
 
 export const ButtonsWrapper = styled.div`

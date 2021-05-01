@@ -15,6 +15,7 @@ const AddComment = ({
   parentFormSubmit,
   taskDrawerFocusField,
   taskListIdentifier,
+  isTemplateTask,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const {
@@ -50,6 +51,7 @@ const AddComment = ({
         <MentionsEditor
           ref={addCommentReference}
           taskListIdentifier={taskListIdentifier}
+          disableMentions={isTemplateTask}
           placeholder="Leave a comment and press enter on your keyboard to save"
           isDrawerEditor
           onFocus={() => {

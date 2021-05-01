@@ -26,6 +26,7 @@ export const getFormattedPatient = patient => {
       <PatientSelectItem patient={patientToDisplay} searchValue={searchValue} />
     ),
     displayLabel: displayPatientName,
+    patient,
   };
 };
 

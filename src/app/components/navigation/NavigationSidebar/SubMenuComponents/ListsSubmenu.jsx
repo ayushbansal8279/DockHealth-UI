@@ -19,6 +19,7 @@ import {
   taskListsSelector,
   pendingTaskListsSelector,
 } from 'selectors/task-list-selectors';
+import AddButton from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
@@ -30,7 +31,6 @@ import {
   DrawerListsItem,
   RolloverPopover,
   RolloverPopoverLabel,
-  DrawerAddButton,
   DrawerItemOptions,
   DrawerListsItemNewLabel,
   DrawerListsNewLabel,
@@ -157,15 +157,19 @@ const ListsSubmenu = () => {
 
   const getMenuItems = useCallback(
     list => {
-      let baseList = [
-        {
-          key: 'leave',
-          label: 'Leave list',
-          onClick: () => openLeaveListModal(list),
-        },
-      ];
+      let baseList = [];
+      if (list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC') {
+        baseList = [
+          ...baseList,
+          {
+            key: 'leave',
+            label: 'Leave list',
+            onClick: () => openLeaveListModal(list),
+          },
+        ];
+      }
 
-      if (PRIVILEGE_ROLES.includes(list?.role)) {
+      if (PRIVILEGE_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
         baseList = [
           ...baseList,
           {
@@ -176,7 +180,7 @@ const ListsSubmenu = () => {
           },
         ];
 
-        if (MASTER_ROLES.includes(list?.role)) {
+        if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
           baseList = [
             ...baseList,
             {
@@ -212,9 +216,7 @@ const ListsSubmenu = () => {
     <>
       <DrawerMyListsLabel>
         <div>My Lists </div>
-        <DrawerAddButton onClick={openListAddModal}>
-          <span>+</span> Add
-        </DrawerAddButton>
+        <AddButton onClick={openListAddModal}>Add</AddButton>
       </DrawerMyListsLabel>
       {hasAnyPendingList && (
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>

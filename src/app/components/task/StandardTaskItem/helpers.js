@@ -25,16 +25,3 @@ export const getSubtaskStylingLink = isLast => {
     </SubtaskStylingLinkContainer>
   );
 };
-
-export const TASK_ITEM_DESCRIPTION_COLUMN = 'TASK_ITEM_DESCRIPTION_COLUMN';
-export const TASK_ITEM_DUE_DATE_COLUMN = 'TASK_ITEM_DUE_DATE_COLUMN';
-export const TASK_ITEM_ICONS_COLUMN = 'TASK_ITEM_ICONS_COLUMN';
-export const TASK_ITEM_LIST_COLUMN = 'TASK_ITEM_LIST_COLUMN';
-export const TASK_ITEM_MEMBERS_COLUMN = 'TASK_ITEM_MEMBERS_COLUMN';
-export const TASK_ITEM_PATIENT_COLUMN = 'TASK_ITEM_PATIENT_COLUMN';
-export const TASK_ITEM_SUBTASKS_COLUMN = 'TASK_ITEM_SUBTASKS_COLUMN';
-export const TASK_ITEM_WORFKLOW_STATUS_COLUMN =
-  'TASK_ITEM_WORFKLOW_STATUS_COLUMN';
-
-export const checkColumnIsInConfig = (column, taskConfig) =>
-  taskConfig?.includes(column);

@@ -15,6 +15,8 @@ const BulkEditAssignToOption = ({
     const allSelectedTasks = [...parentTasks, ...subtasks];
 
     return allSelectedTasks.reduce((accumulator, { assignedToUsers }) => {
+      if (!assignedToUsers) return accumulator;
+
       if (accumulator.length === 0) return accumulator.concat(assignedToUsers);
 
       return innerJoin(

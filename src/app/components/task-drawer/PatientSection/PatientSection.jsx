@@ -7,7 +7,9 @@ import {
 import * as AlertActions from 'alert/actions';
 import { useFormContext } from 'react-hook-form';
 import debounce from 'lodash.debounce';
+import { openModal } from 'modal/actions';
 import { getPatientsByCriteria, addPatient } from 'api/patient-api';
+import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
 import { AdornmentContainer } from '../styled';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
@@ -20,7 +22,11 @@ const PatientSection = ({
   currentOrganization,
   autofocus,
   disabled,
+  placeholder,
   onSave,
+  taskGroupIdentifier,
+  templateBundleIdentifier,
+  isSubtask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -59,11 +65,96 @@ const PatientSection = ({
   const savePatient = useCallback(
     async patientToSave => {
       try {
-        onTaskDrawerTaskPatientChanged();
-        await onSave({
-          patient: patientToSave,
-          patientIdentifier: patientToSave?.patientIdentifier || 'UNASSIGNED',
-        });
+        const onSavePatient = async skipModals => {
+          if (skipModals) {
+            onTaskDrawerTaskPatientChanged();
+            await onSave({
+              patient: patientToSave,
+              patientIdentifier:
+                patientToSave?.patientIdentifier || 'UNASSIGNED',
+            });
+          } else {
+            // eslint-disable-next-line no-lonely-if
+            if (isSubtask) {
+              if (selectedPatient && !patientToSave?.patientIdentifier) {
+                dispatch(
+                  openModal('UnassignPatient', {
+                    confirm: async () => {
+                      onTaskDrawerTaskPatientChanged();
+                      await onSave({
+                        patientIdentifier: 'UNASSIGNED',
+                      });
+                    },
+                  }),
+                );
+              } else if (!selectedPatient && patientToSave?.patientIdentifier) {
+                dispatch(
+                  openModal('AssignPatient', {
+                    confirm: async () => {
+                      onTaskDrawerTaskPatientChanged();
+                      await onSave({
+                        patient: patientToSave,
+                        patientIdentifier: patientToSave?.patientIdentifier,
+                      });
+                    },
+                  }),
+                );
+              }
+            }
+          }
+        };
+
+        if (templateBundleIdentifier) {
+          if (selectedPatient) {
+            if (patientToSave) {
+              dispatch(
+                openModal('AssignPatient', {
+                  isWorkflowModal: true,
+                  confirm: () => {
+                    dispatch(
+                      changePatientForTemplateBundle(
+                        templateBundleIdentifier,
+                        taskGroupIdentifier,
+                        patientToSave?.patientIdentifier,
+                      ),
+                    );
+                    onSavePatient(true);
+                  },
+                  patientName: patientToSave?.lastName
+                    ? `${patientToSave?.lastName}, ${patientToSave?.firstName}`
+                    : patientToSave?.firstName,
+                }),
+              );
+            } else {
+              dispatch(
+                openModal('UnassignPatient', {
+                  isWorkflowModal: true,
+                  confirm: () => {
+                    dispatch(
+                      changePatientForTemplateBundle(
+                        templateBundleIdentifier,
+                        taskGroupIdentifier,
+                        'UNASSIGNED',
+                      ),
+                    );
+                    onSavePatient(true);
+                  },
+                }),
+              );
+            }
+          } else {
+            dispatch(
+              changePatientForTemplateBundle(
+                templateBundleIdentifier,
+                taskGroupIdentifier,
+                patientToSave?.patientIdentifier,
+              ),
+            );
+            onSavePatient(true);
+          }
+        } else {
+          onSavePatient();
+        }
       } catch {
         dispatch(
           AlertActions.showGlobalAlert(
@@ -73,7 +164,14 @@ const PatientSection = ({
         );
       }
     },
-    [dispatch, onSave],
+    [
+      dispatch,
+      isSubtask,
+      onSave,
+      selectedPatient,
+      taskGroupIdentifier,
+      templateBundleIdentifier,
+    ],
   );
 
   const fetchPatients = useCallback(
@@ -108,12 +206,45 @@ const PatientSection = ({
   );
 
   const handleClearSelectedPatient = useCallback(async () => {
-    setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
-    setPatients([]);
-    await savePatient(null);
+    if (templateBundleIdentifier && selectedPatient) {
+      dispatch(
+        openModal('UnassignPatient', {
+          isWorkflowModal: true,
+          confirm: async () => {
+            dispatch(
+              changePatientForTemplateBundle(
+                templateBundleIdentifier,
+                taskGroupIdentifier,
+                'UNASSIGNED',
+              ),
+            );
+            setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+            setPatients([]);
+            await savePatient(null);
+          },
+        }),
+      );
+    } else {
+      dispatch(
+        openModal('UnassignPatient', {
+          confirm: async () => {
+            setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+            setPatients([]);
+            await savePatient(null);
+          },
+        }),
+      );
+    }
     // eslint-disable-next-line no-unused-expressions
     patientInputReference.current?.querySelector('input')?.focus();
-  }, [savePatient, setValue]);
+  }, [
+    dispatch,
+    savePatient,
+    selectedPatient,
+    setValue,
+    taskGroupIdentifier,
+    templateBundleIdentifier,
+  ]);
 
   const handlePatientSelect = useCallback(
     async selectedOption => {
@@ -174,9 +305,9 @@ const PatientSection = ({
       ref={patientInputReference}
       name={PATIENT_IDENTIFIER_FIELD_NAME}
       label="Patient"
-      placeholder="Who is the patient?"
+      placeholder={placeholder || 'Who is the patient?'}
       disabled={disabled}
-      startAdornment={<AdornmentContainer>+</AdornmentContainer>}
+      startAdornment={!disabled && <AdornmentContainer>+</AdornmentContainer>}
       selectedOption={getFormattedPatient(selectedPatient)}
       options={formattedPatients}
       isLoadingOptions={isLoadingPatients}

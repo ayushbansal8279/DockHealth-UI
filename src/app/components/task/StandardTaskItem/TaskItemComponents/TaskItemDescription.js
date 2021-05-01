@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import Spacing from 'components/common/Spacing';
+import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
   Description,
   DescriptionBox,
@@ -12,17 +13,16 @@ import {
   DescriptionTooltip,
   DescriptionLabel,
   DescriptionWrapper,
+  TaskItemDescriptionIndicators,
 } from '../../styled';
 
 const TaskItemDescription = ({
-  descriptionReference,
   isCompletedGroup,
   isCompleted,
   descriptionState,
   setDescriptionState,
   matchDescription,
   highlightedValue,
-  isDescriptionTooltipVisible,
   description,
   edited,
   duplicated,
@@ -32,6 +32,8 @@ const TaskItemDescription = ({
   completedDt,
   dispatch,
 }) => {
+  const descriptionTextReference = useRef(null);
+
   const onParentLabelClick = useCallback(
     event => {
       event.preventDefault();
@@ -47,7 +49,13 @@ const TaskItemDescription = ({
     <DescriptionBox>
       <DescriptionWrapper>
         <Description
-          ref={descriptionReference}
+          ref={reference => {
+            if (reference) {
+              descriptionTextReference.current = reference.querySelector(
+                '.public-DraftStyleDefault-block',
+              );
+            }
+          }}
           isCrossedOut={!isCompletedGroup && isCompleted}
         >
           <MentionsEditor
@@ -59,35 +67,37 @@ const TaskItemDescription = ({
               matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
             }
           />
-          {isDescriptionTooltipVisible && (
+          <OverflowTooltip textReference={descriptionTextReference.current}>
             <DescriptionTooltip>{description}</DescriptionTooltip>
-          )}
+          </OverflowTooltip>
         </Description>
         {edited && !duplicated && <DescriptionLabel>(edited)</DescriptionLabel>}
         {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
       </DescriptionWrapper>
-      {hasParentTaskLabel && (
-        <>
-          <TaskItemParentTaskLabel>
-            Subtask of
-            <span
-              onClick={onParentLabelClick}
-            >{` ${parentTask.description}`}</span>
-          </TaskItemParentTaskLabel>
-          {isCompleted && <Spacing vertical={2} />}
-        </>
-      )}
-      {isCompletedGroup && (
-        <CompletedBy isCompleted={isCompleted}>
-          <span>{`Completed by ${completedByName} ${completedDt &&
-            ` on ${
-              completedDt
-                ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                : ''
-            }`}
+      <TaskItemDescriptionIndicators>
+        {isCompletedGroup && (
+          <CompletedBy isCompleted={isCompleted}>
+            <span>{`Completed by ${completedByName} ${completedDt &&
+              ` on ${
+                completedDt
+                  ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                  : ''
+              }`}
   `}</span>
-        </CompletedBy>
-      )}
+          </CompletedBy>
+        )}
+        {hasParentTaskLabel && (
+          <>
+            {isCompleted && <Spacing horizontal={2} />}
+            <TaskItemParentTaskLabel>
+              Subtask of
+              <span
+                onClick={onParentLabelClick}
+              >{` ${parentTask.description}`}</span>
+            </TaskItemParentTaskLabel>
+          </>
+        )}
+      </TaskItemDescriptionIndicators>
     </DescriptionBox>
   );
 };

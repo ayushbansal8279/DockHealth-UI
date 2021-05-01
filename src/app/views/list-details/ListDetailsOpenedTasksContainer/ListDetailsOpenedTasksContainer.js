@@ -8,7 +8,6 @@ import {
 } from 'selectors/list-details-selectors';
 import {
   sortTasksInGroup,
-  sortSubtasksInGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
 } from 'sagas/list-details-saga';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
@@ -34,7 +33,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   reorderTasksInGroup: sortTasksInGroup,
-  reorderSubtasksForTask: sortSubtasksInGroup,
   reassignTasksToAnotherGroup: reassignTasksToAnotherGroupAction,
 };
 

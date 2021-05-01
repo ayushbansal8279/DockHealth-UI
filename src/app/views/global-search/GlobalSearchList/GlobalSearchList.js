@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ArrowIcon from 'img/arrow';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import {
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-  TASK_ITEM_PATIENT_COLUMN,
-} from 'components/task/StandardTaskItem/helpers';
 import {
   Arrow,
   Tasks,
@@ -19,7 +13,7 @@ import {
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import SingleSkeletonLoader from 'components/tasklist/SingleSkeletonLoader/SingleSkeletonLoader';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 
 const GlobalSearchList = ({
   list,
@@ -52,6 +46,22 @@ const GlobalSearchList = ({
     getMoreTasksForTaskList(list.taskListIdentifier, list.tasks?.length);
   };
 
+  const containsMultipleAssignees = useMemo(
+    () =>
+      tasks?.some(
+        // eslint-disable-next-line no-shadow
+        ({ assignedToUsers, subtasks }) =>
+          (assignedToUsers && assignedToUsers.length > 1) ||
+          (subtasks &&
+            subtasks.length > 0 &&
+            subtasks.some(
+              ({ assignedToUsers: subtaskAssignedToUsers }) =>
+                subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+            )),
+      ),
+    [tasks],
+  );
+
   return (
     <ListDetailsContainer>
       <ListDetailsHeader>
@@ -80,7 +90,6 @@ const GlobalSearchList = ({
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             task={task}
-            draggableProvided={{}}
             isCompletedGroup={isCompletedList}
             toggleCompleteTask={toggleTaskStatus}
             onTaskUpdate={onTaskUpdate}
@@ -94,15 +103,10 @@ const GlobalSearchList = ({
             addingNewSubtaskParentId={addingNewSubtaskParentId}
             subtaskShape={subtaskShape}
             subtasksDisabled
-            taskItemConfig={[
-              TASK_ITEM_ICONS_COLUMN,
-              TASK_ITEM_MEMBERS_COLUMN,
-              TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-              TASK_ITEM_PATIENT_COLUMN,
-            ]}
+            multipleAssigneesContext={containsMultipleAssignees}
           />
         ))}
-        {isLoadingMore && <SingleSkeletonLoader rows={4} />}
+        {isLoadingMore && <TasksSkeletonLoader rows={4} />}
         {hasMoreTasks && (
           <LoadMoreSection>
             {!isLoadingMore && <LoadMoreButton onClick={showMoreTasks} />}

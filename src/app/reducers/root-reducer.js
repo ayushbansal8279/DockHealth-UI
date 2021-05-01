@@ -21,6 +21,7 @@ import DashboardStatisticsReducer from './dashboard-statistics-reducer';
 import GlobalSearchReducer from './global-search-reducer';
 import ActiveUsersReducer from './active-users-reducer';
 import PersonDetailsReducer from './person-details-reducer';
+import TaskTemplateReducer from './task-template-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -44,6 +45,7 @@ const appReducer = combineReducers({
   globalSearch: GlobalSearchReducer,
   activeUsers: ActiveUsersReducer,
   personDetails: PersonDetailsReducer,
+  taskTemplate: TaskTemplateReducer,
 });
 
 export default function rootReducer(state, action) {

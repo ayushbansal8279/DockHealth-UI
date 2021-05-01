@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo } from 'react';
-
+import { useDispatch } from 'react-redux';
 import { isEmpty } from 'ramda';
+import * as TaskActions from 'actions/task-actions';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
@@ -15,9 +16,7 @@ const Subtasks = ({
   subtasks,
   isOpen,
   isFullView,
-  taskGroupIdentifier,
-  parentTaskIdentifier,
-  reorderSubtasksForTask,
+  parentTask,
   parentHasPatient,
   taskList,
   isDraggable,
@@ -28,6 +27,7 @@ const Subtasks = ({
   selectedTaskIdentifier,
   ...restProps
 }) => {
+  const dispatch = useDispatch();
   const { openDrawer, storeAsCurrentTask, highlightedValue } = restProps;
   const [draggedId, setDraggableId] = useState(false);
 
@@ -40,13 +40,15 @@ const Subtasks = ({
       onSubtaskOrderChanged();
       setDraggableId(null);
 
-      reorderSubtasksForTask({
-        source,
-        destination,
-        taskGroupIdentifier,
-      });
+      dispatch(
+        TaskActions.reorderSubtasks({
+          source,
+          destination,
+          parentTask,
+        }),
+      );
     },
-    [reorderSubtasksForTask, taskGroupIdentifier],
+    [dispatch, parentTask],
   );
 
   const shouldRenderSubtasks = useMemo(() => !isEmpty(subtasks), [subtasks]);
@@ -59,7 +61,7 @@ const Subtasks = ({
           onBeforeDragStart={showClearSortFiltersModal}
           onDragEnd={!shouldShowBlockModalOnDrag ? onDragEnd : () => {}}
         >
-          <Droppable droppableId={parentTaskIdentifier}>
+          <Droppable droppableId={parentTask.taskIdentifier}>
             {provided => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {shouldRenderSubtasks &&

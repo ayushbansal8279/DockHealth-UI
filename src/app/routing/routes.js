@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Redirect, Switch, useHistory } from 'react-router-dom';
 import { useEffectOnce } from 'react-use';
 import { parse } from 'query-string';
@@ -68,80 +68,82 @@ const Routes = () => {
   }, [history, redirection]);
 
   return (
-    <Switch>
-      {AUTH_ROUTES.map(route => (
-        <Redirect
-          exact
-          key={route.path}
-          from={route.path}
-          to={`/auth${route.path}`}
-        />
-      ))}
-      {ONBOARDING_ROUTES.map(route => (
-        <Redirect
-          exact
-          key={route.path}
-          from={route.path}
-          to={`/onboarding${route.path}`}
-        />
-      ))}
-      {TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES.map(route => (
-        <Redirect
-          exact
-          key={route.path}
-          from={route.path}
-          to={`/core${route.path}`}
-        />
-      ))}
-      {SETTINGS_ROUTES.map(route => (
-        <Redirect
-          exact
-          key={route.path}
-          from={route.path}
-          to={`/settings${route.path}`}
-        />
-      ))}
-      {SIMPLE_ROUTES?.map(route => (
+    <Suspense fallback={<div />}>
+      <Switch>
+        {AUTH_ROUTES.map(route => (
+          <Redirect
+            exact
+            key={route.path}
+            from={route.path}
+            to={`/auth${route.path}`}
+          />
+        ))}
+        {ONBOARDING_ROUTES.map(route => (
+          <Redirect
+            exact
+            key={route.path}
+            from={route.path}
+            to={`/onboarding${route.path}`}
+          />
+        ))}
+        {TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES.map(route => (
+          <Redirect
+            exact
+            key={route.path}
+            from={route.path}
+            to={`/core${route.path}`}
+          />
+        ))}
+        {SETTINGS_ROUTES.map(route => (
+          <Redirect
+            exact
+            key={route.path}
+            from={route.path}
+            to={`/settings${route.path}`}
+          />
+        ))}
+        {SIMPLE_ROUTES?.map(route => (
+          <Route
+            key={route.path}
+            path={route.path}
+            component={route.RouteComponent}
+          />
+        ))}
         <Route
-          key={route.path}
-          path={route.path}
-          component={route.RouteComponent}
+          path="/auth"
+          render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
         />
-      ))}
-      <Route
-        path="/auth"
-        render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
-      />
-      <Route
-        path="/core"
-        render={() => (
-          <TemplateCoreSubscriptionPlan
-            childRoutes={TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES}
-            onEnter={onEnterTemplateCoreSubscriptionPlan}
-            setRedirection={setRedirection}
-          />
-        )}
-      />
-      <Route
-        path="/onboarding"
-        render={() => (
-          <OnboardingTemplate
-            childRoutes={ONBOARDING_ROUTES}
-            setRedirection={setRedirection}
-          />
-        )}
-      />
-      <Route
-        path="/settings"
-        render={() => (
-          <TemplateCore
-            childRoutes={SETTINGS_ROUTES}
-            setRedirection={setRedirection}
-          />
-        )}
-      />
-      <Redirect to="/core/home/my-tasks" />
-    </Switch>
+        <Route
+          path="/core"
+          render={() => (
+            <TemplateCoreSubscriptionPlan
+              childRoutes={TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES}
+              onEnter={onEnterTemplateCoreSubscriptionPlan}
+              setRedirection={setRedirection}
+            />
+          )}
+        />
+        <Route
+          path="/onboarding"
+          render={() => (
+            <OnboardingTemplate
+              childRoutes={ONBOARDING_ROUTES}
+              setRedirection={setRedirection}
+            />
+          )}
+        />
+        <Route
+          path="/settings"
+          render={() => (
+            <TemplateCore
+              childRoutes={SETTINGS_ROUTES}
+              setRedirection={setRedirection}
+            />
+          )}
+        />
+        <Redirect to="/core/home/my-tasks" />
+      </Switch>
+    </Suspense>
   );
 };
 

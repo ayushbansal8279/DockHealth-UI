@@ -3,7 +3,7 @@ import { Popover } from '@material-ui/core';
 import { updateUserDashboardPrefs } from 'api/user-api';
 import DashboardSettingsIcon from 'img/settings-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-
+import { TaskItemColumn } from 'helpers/task-helpers';
 import {
   DashboardSettingsContainer,
   DashboardSettingsHeader,
@@ -11,36 +11,37 @@ import {
   DashboardSettingsLabel,
   DashboardSettingsIcon as StyledDashboardSettingsIcon,
 } from './styled';
-import { DashboardColumnKey } from '../config';
 
-const DashboardSettings = ({ setDynamicColumns, dynamicColumns }) => {
+const ColumnOptionNames = {
+  [TaskItemColumn.ACTIVITY]: 'Comments, labels and attachments',
+  [TaskItemColumn.ASSIGNED]: 'Assigned',
+  [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
+};
+
+const DashboardSettings = ({ columnsConfig, setColumnsConfig }) => {
   const iconReference = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const isCheckedCheckbox = useCallback(
-    checkboxValue => dynamicColumns?.includes(checkboxValue),
-    [dynamicColumns],
-  );
-
   const onClickChecbkox = useCallback(
-    checkboxValue => {
-      if (isCheckedCheckbox(checkboxValue)) {
-        const newDynamicColumns = dynamicColumns.filter(
-          value => value !== checkboxValue,
-        );
-        setDynamicColumns(newDynamicColumns);
+    columnKey => {
+      setColumnsConfig(previousConfig => {
+        const newConfig = {
+          ...previousConfig,
+          [columnKey]: !previousConfig[columnKey],
+        };
+
         updateUserDashboardPrefs({
-          displayColumns: newDynamicColumns,
+          displayColumns: Object.entries(newConfig).reduce(
+            (accumulator, [key, value]) =>
+              value ? [...accumulator, key] : accumulator,
+            [],
+          ),
         });
-      } else {
-        const newDynamicColumns = [...dynamicColumns, checkboxValue];
-        setDynamicColumns([...dynamicColumns, checkboxValue]);
-        updateUserDashboardPrefs({
-          displayColumns: newDynamicColumns,
-        });
-      }
+
+        return newConfig;
+      });
     },
-    [dynamicColumns, isCheckedCheckbox, setDynamicColumns],
+    [setColumnsConfig],
   );
 
   return (
@@ -63,36 +64,19 @@ const DashboardSettings = ({ setDynamicColumns, dynamicColumns }) => {
           <DashboardSettingsHeader>
             Which column would you like to see?
           </DashboardSettingsHeader>
-          <DashboardSettingsOption>
-            <Checkbox
-              isChecked={isCheckedCheckbox(DashboardColumnKey.WORKFLOW_STATUS)}
-              onClick={() => {
-                onClickChecbkox(DashboardColumnKey.WORKFLOW_STATUS);
-              }}
-            />
-            <DashboardSettingsLabel>Status</DashboardSettingsLabel>
-          </DashboardSettingsOption>
-          <DashboardSettingsOption>
-            <Checkbox
-              id="dassigned-checkbox"
-              isChecked={isCheckedCheckbox(DashboardColumnKey.ASSIGNED)}
-              onClick={() => {
-                onClickChecbkox(DashboardColumnKey.ASSIGNED);
-              }}
-            />
-            <DashboardSettingsLabel>Assigned</DashboardSettingsLabel>
-          </DashboardSettingsOption>
-          <DashboardSettingsOption>
-            <Checkbox
-              isChecked={isCheckedCheckbox(DashboardColumnKey.ACTIVITY)}
-              onClick={() => {
-                onClickChecbkox(DashboardColumnKey.ACTIVITY);
-              }}
-            />
-            <DashboardSettingsLabel>
-              Comments, labels and attachments
-            </DashboardSettingsLabel>
-          </DashboardSettingsOption>
+          {Object.keys(columnsConfig).map(columnKey => (
+            <DashboardSettingsOption>
+              <Checkbox
+                isChecked={columnsConfig[columnKey]}
+                onClick={() => {
+                  onClickChecbkox(columnKey);
+                }}
+              />
+              <DashboardSettingsLabel>
+                {ColumnOptionNames[columnKey]}
+              </DashboardSettingsLabel>
+            </DashboardSettingsOption>
+          ))}
         </DashboardSettingsContainer>
       </Popover>
       <StyledDashboardSettingsIcon

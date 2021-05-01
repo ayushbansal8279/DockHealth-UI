@@ -6,13 +6,6 @@ import { isEmpty } from 'ramda';
 import EmptyTaskListFox from 'img/animals/fox';
 import EmptyTaskListBear from 'img/animals/bear';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import {
-  TASK_ITEM_MEMBERS_COLUMN,
-  TASK_ITEM_PATIENT_COLUMN,
-  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-  TASK_ITEM_ICONS_COLUMN,
-  TASK_ITEM_LIST_COLUMN,
-} from 'components/task/StandardTaskItem/helpers';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
@@ -36,6 +29,7 @@ const PersonDetailsOpenedTasks = ({
   listUniqueKey,
   sort,
   onSortChange,
+  taskItemConfig,
 }) => {
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
@@ -96,13 +90,7 @@ const PersonDetailsOpenedTasks = ({
                 quickAddTask={quickAddTask}
                 sort={sort}
                 onSortChange={onSortChange}
-                taskItemConfig={[
-                  TASK_ITEM_PATIENT_COLUMN,
-                  TASK_ITEM_WORFKLOW_STATUS_COLUMN,
-                  TASK_ITEM_MEMBERS_COLUMN,
-                  TASK_ITEM_ICONS_COLUMN,
-                  TASK_ITEM_LIST_COLUMN,
-                ]}
+                taskItemConfig={taskItemConfig}
                 listNameVisible
               />
             </DragDropContext>

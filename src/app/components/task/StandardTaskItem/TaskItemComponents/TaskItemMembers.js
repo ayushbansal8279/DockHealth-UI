@@ -4,6 +4,7 @@ import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPo
 import MemberGroup from 'components/members/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { StandardTaskItemCell, AssigneeMatchingWrapper } from '../../styled';
 
 const TaskItemMembers = ({
@@ -25,7 +26,9 @@ const TaskItemMembers = ({
     >
       <MultiAssignPopover
         fullWidth={multipleAssigneesContext}
-        taskListIdentifiers={task?.taskList?.taskListIdentifier}
+        taskListIdentifiers={
+          !checkIfTemplateTask(task) ? task?.taskList?.taskListIdentifier : null
+        }
         selectedMembers={assignedToUsers}
         onSelect={handleReasignTask}
       >
