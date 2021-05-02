@@ -4,10 +4,11 @@ import { useMount } from 'react-use';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import useBoolean from 'hooks/useBoolean';
+// import useBoolean from 'hooks/useBoolean';
 import PdfPage from 'img/pdf-page.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import BaaPreview from './DocumentsView.BaaPreview';
+import { downloadBAADocument } from 'api/organization-api';
+// import BaaPreview from './DocumentsView.BaaPreview';
 import {
   DocumentImage,
   DocumentLink,
@@ -23,8 +24,8 @@ const DocumentsView = () => {
     };
   });
 
-  const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
-  const [isPreviewReady, setPreviewReady] = useBoolean(false);
+  // const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
+  // const [isPreviewReady, setPreviewReady] = useBoolean(false);
 
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
@@ -43,9 +44,10 @@ const DocumentsView = () => {
   });
 
   const onBaaLabelClick = useCallback(() => {
-    setPreviewReady();
-    openPreview();
-  }, [openPreview, setPreviewReady]);
+    // setPreviewReady();
+    // openPreview();
+    downloadBAADocument();
+  }, []);
 
   return (
     <DocumentsViewContainer container direction="column">
@@ -90,9 +92,9 @@ const DocumentsView = () => {
           Terms and Conditions
         </DocumentLink>
       </MontserratTypography>
-      {isPreviewReady && (
+      {/* {isPreviewReady && (
         <BaaPreview isPreviewOpen={isPreviewOpen} hidePreview={hidePreview} />
-      )}
+      )} */}
     </DocumentsViewContainer>
   );
 };
