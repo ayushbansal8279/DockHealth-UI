@@ -70,7 +70,7 @@ const TaskTemplateView = ({
         {isBannerOpen && (
           <>
             <TaskTemplateBanner
-              firstTemplate={taskTemplates?.length <= 1}
+              firstTemplate={taskTemplates?.length <= 2}
               onCreateTemplate={handleCreateTemplate}
               onClose={() => {
                 setIsBannerOpen(false);
