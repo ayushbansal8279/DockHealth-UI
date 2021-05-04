@@ -234,6 +234,16 @@ const TaskTemplate = ({ template, isFullView }) => {
           }}
           onKeyDown={handleNameInputKeyDown}
           value={nameInputValue}
+          onClick={() => {
+            if (!isEditing) {
+              if (isOpen) {
+                dispatch(TaskActions.unselectAllTasks());
+              }
+              dispatch(
+                TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier),
+              );
+            }
+          }}
         />
         <OptionsMenu options={menuOptions}>
           <MenuContainer size="small">

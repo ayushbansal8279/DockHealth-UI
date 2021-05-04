@@ -305,7 +305,13 @@ const TaskTemplateGroup = ({
           <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
           <Box m={1} />
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-          <NameContainer>
+          <NameContainer
+            onClick={() => {
+              if (!isEditing) {
+                setOpen(!isOpen);
+              }
+            }}
+          >
             <TaskTemplateNameInput
               ref={nameInputReference}
               readOnly={!isEditing}
