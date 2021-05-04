@@ -100,6 +100,8 @@ const PatientSection = ({
                   }),
                 );
               }
+            } else {
+              onSavePatient(true);
             }
           }
         };
