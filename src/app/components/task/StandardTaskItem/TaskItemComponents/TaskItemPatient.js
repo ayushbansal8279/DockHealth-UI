@@ -47,7 +47,7 @@ const TaskItemPatient = ({
       )}`
     : `${patient?.lastName}, ${patient?.firstName}`;
 
-  const hasSubtasks = task?.subtaskCount !== 0;
+  const hasSubtasks = task?.subTasksCount > 0;
   return (
     <StandardTaskItemCell width="164px">
       <ClickablePatient onClick={onPatientClick}>
