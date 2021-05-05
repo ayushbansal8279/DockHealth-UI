@@ -94,7 +94,6 @@ const TaskDrawer = ({
     setParentDescriptionState,
     taskDrawerReference,
     taskListIdentifier,
-    taskGroupIdentifier,
     handleUpdateTask,
     handleDueTimeSave,
     handleDueDateSave,
@@ -313,7 +312,6 @@ const TaskDrawer = ({
                   }
                   autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
                   onSave={handleUpdateTask}
-                  taskGroupIdentifier={taskGroupIdentifier}
                   templateBundleIdentifier={templateBundleIdentifier}
                 />
               </Grid>

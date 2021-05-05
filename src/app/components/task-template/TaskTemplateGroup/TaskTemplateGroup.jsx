@@ -345,7 +345,6 @@ const TaskTemplateGroup = ({
                   dispatch(
                     TemplateBundleActions.changePatientForTemplateBundle(
                       identifier,
-                      parentTaskGroupIdentifier,
                       patientIdentifier,
                     ),
                   )
@@ -395,13 +394,16 @@ const TaskTemplateGroup = ({
             }
             onDragEnd={dragEndData => {
               setDraggedTaskIdentifier(null);
-              dispatch(
-                TemplateBundleActions.reorderSubtasksInTemplateBundle({
-                  ...dragEndData,
-                  bundle: templateGroup,
-                  completedTasksShown: showCompletedTasks,
-                }),
-              );
+
+              if (dragEndData.destination) {
+                dispatch(
+                  TemplateBundleActions.reorderSubtasksInTemplateBundle({
+                    ...dragEndData,
+                    bundle: templateGroup,
+                    completedTasksShown: showCompletedTasks,
+                  }),
+                );
+              }
             }}
           >
             <Droppable droppableId={templateGroup.identifier}>

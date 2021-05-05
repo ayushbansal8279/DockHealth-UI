@@ -40,13 +40,15 @@ const Subtasks = ({
       onSubtaskOrderChanged();
       setDraggableId(null);
 
-      dispatch(
-        TaskActions.reorderSubtasks({
-          source,
-          destination,
-          parentTask,
-        }),
-      );
+      if (destination) {
+        dispatch(
+          TaskActions.reorderSubtasks({
+            source,
+            destination,
+            parentTask,
+          }),
+        );
+      }
     },
     [dispatch, parentTask],
   );

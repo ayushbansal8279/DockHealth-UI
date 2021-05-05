@@ -40,6 +40,7 @@ const SelectDropdown = React.forwardRef(
       onClear,
       addItemLabel,
       onAddItemClick,
+      clearOnSuccess,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -209,8 +210,12 @@ const SelectDropdown = React.forwardRef(
                   {currentSelectedOption?.displayLabel === inputValue && (
                     <AdornmentClear
                       onClick={() => {
-                        onClear();
-                        setCurrentSelectedOption(null);
+                        if (clearOnSuccess) {
+                          onClear(() => setCurrentSelectedOption(null));
+                        } else {
+                          onClear();
+                          setCurrentSelectedOption(null);
+                        }
                       }}
                     />
                   )}

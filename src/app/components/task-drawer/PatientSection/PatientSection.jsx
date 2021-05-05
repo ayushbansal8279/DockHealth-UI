@@ -24,7 +24,6 @@ const PatientSection = ({
   disabled,
   placeholder,
   onSave,
-  taskGroupIdentifier,
   templateBundleIdentifier,
   isSubtask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -116,7 +115,6 @@ const PatientSection = ({
                     dispatch(
                       changePatientForTemplateBundle(
                         templateBundleIdentifier,
-                        taskGroupIdentifier,
                         patientToSave?.patientIdentifier,
                       ),
                     );
@@ -135,7 +133,6 @@ const PatientSection = ({
                     dispatch(
                       changePatientForTemplateBundle(
                         templateBundleIdentifier,
-                        taskGroupIdentifier,
                         'UNASSIGNED',
                       ),
                     );
@@ -148,7 +145,6 @@ const PatientSection = ({
             dispatch(
               changePatientForTemplateBundle(
                 templateBundleIdentifier,
-                taskGroupIdentifier,
                 patientToSave?.patientIdentifier,
               ),
             );
@@ -166,14 +162,7 @@ const PatientSection = ({
         );
       }
     },
-    [
-      dispatch,
-      isSubtask,
-      onSave,
-      selectedPatient,
-      taskGroupIdentifier,
-      templateBundleIdentifier,
-    ],
+    [dispatch, isSubtask, onSave, selectedPatient, templateBundleIdentifier],
   );
 
   const fetchPatients = useCallback(
@@ -207,46 +196,42 @@ const PatientSection = ({
     [fetchPatientsWithDebounce],
   );
 
-  const handleClearSelectedPatient = useCallback(async () => {
-    if (templateBundleIdentifier && selectedPatient) {
-      dispatch(
-        openModal('UnassignPatient', {
-          isWorkflowModal: true,
-          confirm: async () => {
-            dispatch(
-              changePatientForTemplateBundle(
-                templateBundleIdentifier,
-                taskGroupIdentifier,
-                'UNASSIGNED',
-              ),
-            );
-            setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
-            setPatients([]);
-            await savePatient(null);
-          },
-        }),
-      );
-    } else {
-      dispatch(
-        openModal('UnassignPatient', {
-          confirm: async () => {
-            setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
-            setPatients([]);
-            await savePatient(null);
-          },
-        }),
-      );
-    }
-    // eslint-disable-next-line no-unused-expressions
-    patientInputReference.current?.querySelector('input')?.focus();
-  }, [
-    dispatch,
-    savePatient,
-    selectedPatient,
-    setValue,
-    taskGroupIdentifier,
-    templateBundleIdentifier,
-  ]);
+  const handleClearSelectedPatient = useCallback(
+    async clearInput => {
+      if (templateBundleIdentifier && selectedPatient) {
+        dispatch(
+          openModal('UnassignPatient', {
+            isWorkflowModal: true,
+            confirm: async () => {
+              dispatch(
+                changePatientForTemplateBundle(
+                  templateBundleIdentifier,
+                  'UNASSIGNED',
+                ),
+              );
+              setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+              setPatients([]);
+              await savePatient(null);
+              clearInput();
+            },
+          }),
+        );
+      } else {
+        setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+        setPatients([]);
+        await savePatient(null);
+      }
+      // eslint-disable-next-line no-unused-expressions
+      patientInputReference.current?.querySelector('input')?.focus();
+    },
+    [
+      dispatch,
+      savePatient,
+      selectedPatient,
+      setValue,
+      templateBundleIdentifier,
+    ],
+  );
 
   const handlePatientSelect = useCallback(
     async selectedOption => {
@@ -320,6 +305,7 @@ const PatientSection = ({
       onAddItemClick={
         currentOrganization?.emrIntegrationEnabled ? null : handleAddPatient
       }
+      clearOnSuccess
     />
   );
 };
