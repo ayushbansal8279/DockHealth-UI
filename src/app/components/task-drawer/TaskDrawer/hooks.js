@@ -166,7 +166,6 @@ const initializeTaskDrawerHooks = ({
 
   const taskList = selectedTask?.taskList;
   const taskListIdentifier = taskList?.taskListIdentifier;
-  const taskGroupIdentifier = selectedTask?.taskGroupIdentifier;
   const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
 
   const [isSaving, setSaving] = useState(false);
@@ -560,7 +559,6 @@ const initializeTaskDrawerHooks = ({
     setParentDescriptionState,
     taskDrawerReference,
     taskListIdentifier,
-    taskGroupIdentifier,
     templateBundleIdentifier,
     handleUpdateTask,
     handleDueDateSave,

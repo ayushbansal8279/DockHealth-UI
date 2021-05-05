@@ -5,7 +5,6 @@ import AlertMessages from 'alert/AlertMessages';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import { TaskStatus } from 'helpers/task-helpers';
 
 function* reorderTasksInTemplateBundle(payload) {
@@ -69,6 +68,7 @@ function* updateTemplateBundle({ bundle, dataToUpdate }) {
       bundle.identifier,
       dataToUpdate,
     );
+
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({
@@ -132,21 +132,25 @@ function* moveTemplateBundle({
 
 function* changePatientForTemplateBundle({
   taskTemplateIdentifier,
-  taskGroupIdentifier,
   patientIdentifier,
 }) {
   try {
-    yield call(TemplateBundleApi.updateTemplateBundle, taskTemplateIdentifier, {
-      patientIdentifier,
-    });
-
-    yield put(
-      ListDetailsSagaActions.getTasksForTaskGroups({
-        taskGroupIdentifier,
-        status: 'INCOMPLETE',
-        refresh: true,
-      }),
+    const bundle = yield call(
+      TemplateBundleApi.updateTemplateBundle,
+      taskTemplateIdentifier,
+      {
+        patientIdentifier,
+      },
     );
+
+    yield put({
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      bundleIdentifier: bundle.identifier,
+      dataToUpdate:
+        patientIdentifier === 'UNASSIGNED'
+          ? { ...bundle, patient: {} }
+          : bundle,
+    });
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATE_ERROR,

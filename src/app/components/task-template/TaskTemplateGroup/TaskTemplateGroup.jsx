@@ -345,7 +345,6 @@ const TaskTemplateGroup = ({
                   dispatch(
                     TemplateBundleActions.changePatientForTemplateBundle(
                       identifier,
-                      parentTaskGroupIdentifier,
                       patientIdentifier,
                     ),
                   )
