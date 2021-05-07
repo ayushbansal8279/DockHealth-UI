@@ -87,7 +87,7 @@ const onSubmit = ({
 
   let createTaskAction;
 
-  if (requestData.parentTaskIdentifier) {
+  if (requestData.parentTaskIdentifier && !requestData.taskIdentifier) {
     onTaskDrawerSubtaskAdd('Form');
     createTaskAction = addSubtask(
       requestData.parentTaskIdentifier,
