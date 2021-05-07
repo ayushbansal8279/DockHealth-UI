@@ -50,15 +50,14 @@ axiosInstance.interceptors.response.use(identity, error => {
   console.log('Connection error');
   console.log(error);
   if (String(error).includes('Network Error')) {
-    window.location.href = '/#/auth/login';
+    // window.location.href = '/#/auth/login';
   }
   // window.location.href = '/#/auth/login';
   // window.location.href = '/#/core/home/my-tasks';
   showToast({
     status: 'error',
     title: 'Error',
-    text:
-      'A connection error has occured, please refresh the page. If that does not helpful, please logout and log back in.',
+    text: `A connection error has occured, please refresh the page. If that does not helpful, please logout and log back in. Details: ${error}`,
     confirmButtonText: 'Refresh page',
     showConfirmButton: true,
     showCloseButton: true,
