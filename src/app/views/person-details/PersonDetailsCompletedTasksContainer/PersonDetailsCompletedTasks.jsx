@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import EmptyTaskListBear from 'img/animals/bear';
-import { DragDropContext } from 'react-beautiful-dnd';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import { TaskItemType } from 'helpers/task-helpers';
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -19,7 +21,6 @@ const PersonDetailsCompletedTasks = ({
   toggleCompleteTask,
   summaryTasksCount,
   updateDueDate,
-  dragAndDropDisabled,
   searchValue,
   areFiltersApplied,
   onTaskUpdate,
@@ -67,31 +68,79 @@ const PersonDetailsCompletedTasks = ({
         <>
           {filteredTasks?.length > 0 ? (
             <TaskGroupsContainer>
-              <DragDropContext onDragEnd={() => {}}>
-                <TasksGroup
-                  groupName="Completed"
-                  openDrawer={openDrawer}
-                  storeAsCurrentTask={storeAsCurrentTask}
-                  toggleCompleteTask={toggleCompleteTask}
-                  tasks={filteredTasks}
-                  isCompletedGroup
-                  hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
-                  isFetchingMoreTasks={isFetchingMoreTasks}
-                  updateDueDate={updateDueDate}
-                  quickAddTaskVisible={false}
-                  dragAndDropDisabled={dragAndDropDisabled}
-                  listNameVisible
-                  onTaskUpdate={onTaskUpdate}
-                  areFiltersApplied={areFiltersApplied}
-                  isSearchApplied={searchValue}
-                  selectedTask={selectedTask}
-                  listUniqueKey={listUniqueKey}
-                  sort={sort}
-                  onSortChange={onSortChange}
-                  taskItemConfig={taskItemConfig}
-                  disableBulkEdit
-                />
-              </DragDropContext>
+              <TasksGroup
+                groupName="Completed"
+                openDrawer={openDrawer}
+                storeAsCurrentTask={storeAsCurrentTask}
+                toggleCompleteTask={toggleCompleteTask}
+                tasks={filteredTasks}
+                isCompletedGroup
+                hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
+                isFetchingMoreTasks={isFetchingMoreTasks}
+                updateDueDate={updateDueDate}
+                quickAddTaskVisible={false}
+                listNameVisible
+                onTaskUpdate={onTaskUpdate}
+                areFiltersApplied={areFiltersApplied}
+                isSearchApplied={searchValue}
+                selectedTask={selectedTask}
+                listUniqueKey={listUniqueKey}
+                sort={sort}
+                onSortChange={onSortChange}
+                taskItemConfig={taskItemConfig}
+                disableBulkEdit
+              >
+                {({
+                  isCompletedGroup,
+                  isFullView,
+                  isTaskDrawerOpen,
+                  addingNewSubtask,
+                  addingNewSubtaskParentId,
+                  subtaskShape,
+                  groupHasMultipleAssignees,
+                  isListFlattened,
+                  highlightedTasksParentIdentifier,
+                  highlightTasksOfTheSameParent,
+                }) => (
+                  <>
+                    {tasks.map(task =>
+                      task?.itemType === TaskItemType.TASK ? (
+                        <StandardTaskItem
+                          isFullView={isFullView}
+                          task={task}
+                          isCompletedGroup={isCompletedGroup}
+                          toggleCompleteTask={toggleCompleteTask}
+                          onTaskUpdate={onTaskUpdate}
+                          updateDueDate={updateDueDate}
+                          selectedTask={selectedTask}
+                          isDraggable={!isTaskDrawerOpen}
+                          addingNewSubtask={addingNewSubtask}
+                          addingNewSubtaskParentId={addingNewSubtaskParentId}
+                          subtaskShape={subtaskShape}
+                          subtasksDisabled={isListFlattened}
+                          areFiltersApplied={areFiltersApplied}
+                          isSearchApplied={searchValue}
+                          multipleAssigneesContext={groupHasMultipleAssignees}
+                          highlightedTasksParentIdentifier={
+                            highlightedTasksParentIdentifier
+                          }
+                          highlightTasksOfTheSameParent={
+                            highlightTasksOfTheSameParent
+                          }
+                          dragAndDropDisabled
+                        />
+                      ) : (
+                        <TaskTemplateGroup
+                          templateGroup={task}
+                          groupHasMultipleAssignees={groupHasMultipleAssignees}
+                          isFullView={isFullView}
+                          dragAndDropDisabled
+                        />
+                      ),
+                    )}
+                  </>
+                )}
+              </TasksGroup>
             </TaskGroupsContainer>
           ) : (
             renderEmptyState()

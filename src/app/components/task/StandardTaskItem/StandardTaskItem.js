@@ -36,7 +36,7 @@ const Task = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   selectedTask,
-  highlightedTasksParentIdenditifer,
+  highlightedTasksParentIdentifier,
   noMargin,
   ...restProps
 }) => {
@@ -172,10 +172,9 @@ const Task = ({
           isFullView={isFullView}
           isSelected={
             selectedTaskIdentifier === task.taskIdentifier ||
-            (highlightedTasksParentIdenditifer &&
-              (highlightedTasksParentIdenditifer === task.taskIdentifier ||
-                highlightedTasksParentIdenditifer ===
-                  task.parentTaskIdentifier))
+            (highlightedTasksParentIdentifier &&
+              (highlightedTasksParentIdentifier === task.taskIdentifier ||
+                highlightedTasksParentIdentifier === task.parentTaskIdentifier))
           }
           {...restProps}
         />

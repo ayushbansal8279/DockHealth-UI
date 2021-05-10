@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import EmptyTaskListFox from 'img/animals/fox';
 import EmptyTaskListBear from 'img/animals/bear';
@@ -13,6 +12,9 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import { TaskItemType } from 'helpers/task-helpers';
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsOpenedTasks = ({
@@ -69,31 +71,81 @@ const PersonDetailsOpenedTasks = ({
       ) : (
         <TaskGroupsContainer>
           {!isEmpty(tasks) ? (
-            <DragDropContext onDragEnd={() => {}}>
-              <TasksGroup
-                isDefaultGroup
-                isFirstGroup
-                isLastGroup
-                groupName="All tasks"
-                changingGroupOrderDisabled
-                tasks={filteredTasks || []}
-                taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
-                onTaskUpdate={onTaskUpdate}
-                toggleCompleteTask={toggleCompleteTask}
-                updateDueDate={updateDueDate}
-                updateWorkflowStatus={updateWorkflowStatus}
-                dragAndDropDisabled
-                isSearchApplied={searchValue}
-                selectedTask={selectedTask}
-                areFiltersApplied={areFiltersApplied}
-                listUniqueKey={listUniqueKey}
-                quickAddTask={quickAddTask}
-                sort={sort}
-                onSortChange={onSortChange}
-                taskItemConfig={taskItemConfig}
-                listNameVisible
-              />
-            </DragDropContext>
+            <TasksGroup
+              isDefaultGroup
+              isFirstGroup
+              isLastGroup
+              groupName="All tasks"
+              changingGroupOrderDisabled
+              tasks={filteredTasks || []}
+              taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
+              onTaskUpdate={onTaskUpdate}
+              toggleCompleteTask={toggleCompleteTask}
+              updateDueDate={updateDueDate}
+              updateWorkflowStatus={updateWorkflowStatus}
+              isSearchApplied={searchValue}
+              selectedTask={selectedTask}
+              areFiltersApplied={areFiltersApplied}
+              listUniqueKey={listUniqueKey}
+              quickAddTask={quickAddTask}
+              sort={sort}
+              onSortChange={onSortChange}
+              taskItemConfig={taskItemConfig}
+              listNameVisible
+            >
+              {({
+                isCompletedGroup,
+                isFullView,
+                isTaskDrawerOpen,
+                addingNewSubtask,
+                addingNewSubtaskParentId,
+                subtaskShape,
+                groupHasMultipleAssignees,
+                isListFlattened,
+                highlightedTasksParentIdentifier,
+                highlightTasksOfTheSameParent,
+              }) => (
+                <>
+                  {tasks.map(task =>
+                    task?.itemType === TaskItemType.TASK ? (
+                      <StandardTaskItem
+                        isFullView={isFullView}
+                        task={task}
+                        taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
+                        isCompletedGroup={isCompletedGroup}
+                        toggleCompleteTask={toggleCompleteTask}
+                        onTaskUpdate={onTaskUpdate}
+                        updateDueDate={updateDueDate}
+                        updateWorkflowStatus={updateWorkflowStatus}
+                        selectedTask={selectedTask}
+                        isDraggable={!isTaskDrawerOpen}
+                        addingNewSubtask={addingNewSubtask}
+                        addingNewSubtaskParentId={addingNewSubtaskParentId}
+                        subtaskShape={subtaskShape}
+                        subtasksDisabled={isListFlattened}
+                        areFiltersApplied={areFiltersApplied}
+                        isSearchApplied={searchValue}
+                        multipleAssigneesContext={groupHasMultipleAssignees}
+                        highlightedTasksParentIdentifier={
+                          highlightedTasksParentIdentifier
+                        }
+                        highlightTasksOfTheSameParent={
+                          highlightTasksOfTheSameParent
+                        }
+                        dragAndDropDisabled
+                      />
+                    ) : (
+                      <TaskTemplateGroup
+                        templateGroup={task}
+                        groupHasMultipleAssignees={groupHasMultipleAssignees}
+                        isFullView={isFullView}
+                        dragAndDropDisabled
+                      />
+                    ),
+                  )}
+                </>
+              )}
+            </TasksGroup>
           ) : (
             renderEmptyState()
           )}

@@ -7,6 +7,7 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { isNil, pluck } from 'ramda';
 import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
@@ -18,18 +19,12 @@ import {
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import LoadMoreButton, {
-  LoadMoreSection,
-} from 'components/common/LoadMoreButton/LoadMoreButton';
-import { useDispatch } from 'react-redux';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
-import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
@@ -52,40 +47,43 @@ const TasksGroup = ({
   isLastGroup,
   groupName,
   groupTaskCounts,
-  toggleCompleteTask,
   editGroupName,
   quickAddTask,
   deleteGroup,
   moveGroupUp,
   moveGroupDown,
-  onTaskUpdate,
   tasks,
   isLoadingGroup,
   isCompletedGroup,
-  draggedId,
-  groupPagination,
   showMoreTasks,
-  hasMoreTasks,
-  isFetchingMoreTasks,
-  updateDueDate,
-  updateWorkflowStatus,
-  dragAndDropDisabled,
-  listNameVisible,
   changingGroupOrderDisabled,
   areFiltersApplied,
   isSearchApplied,
-  selectedTask,
   taskGroupIdentifier,
   listUniqueKey,
   taskListIdentifier,
   sort,
   onSortChange,
   onTaskGroupViewModeChange,
-  shouldShowBlockModalOnDrag,
-  showClearSortFiltersModal,
   taskItemConfig,
   applyTemplate,
+  groupPagination,
+  isFetchingMoreTasks,
+  hasMoreTasks,
+  children,
 }) => {
+  const {
+    isTaskDrawerOpen,
+    addingNewSubtask,
+    addingNewSubtaskParentId,
+    subtaskShape,
+  } = useSelector(state => ({
+    isTaskDrawerOpen: state.taskDrawerState.open,
+    addingNewSubtask: state.taskState.addingNewSubtask,
+    addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
+    subtaskShape: state.taskState.subtaskShape,
+  }));
+
   const [
     highlightedTasksParentIdentifier,
     setHighlightedTasksParentIdentifier,
@@ -297,39 +295,24 @@ const TasksGroup = ({
             onGroupSelect={handleGroupSelect}
           />
         )}
-        {(!isLoadingGroup || isFetchingMoreTasks) && (
-          <DragAndDropGroupList
-            taskGroupIdentifier={taskGroupIdentifier}
-            tasks={tasks}
-            isFullView={isFullView}
-            toggleCompleteTask={toggleCompleteTask}
-            draggedId={draggedId}
-            isCompletedGroup={isCompletedGroup}
-            onTaskUpdate={onTaskUpdate}
-            updateDueDate={updateDueDate}
-            updateWorkflowStatus={updateWorkflowStatus}
-            dragAndDropDisabled={dragAndDropDisabled}
-            listNameVisible={listNameVisible}
-            selectedTask={selectedTask}
-            subtasksDisabled={isListFlattened}
-            areFiltersApplied={areFiltersApplied}
-            isSearchApplied={isSearchApplied}
-            shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
-            showClearSortFiltersModal={showClearSortFiltersModal}
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-            highlightedTasksParentIdenditifer={highlightedTasksParentIdentifier}
-            highlightTasksOfTheSameParent={highlightTasksOfTheSameParent}
-            taskItemConfig={taskItemConfig}
-          />
-        )}
-        {(isLoadingGroup || isFetchingMoreTasks) && (
-          <TasksSkeletonLoader rows={4} />
-        )}
-        {groupPagination && hasMoreTasks && !areFiltersApplied && (
-          <LoadMoreSection>
-            {!isLoadingGroup && <LoadMoreButton onClick={showMoreTasks} />}
-          </LoadMoreSection>
-        )}
+        {children({
+          isLoadingGroup,
+          isFetchingMoreTasks,
+          isCompletedGroup,
+          isFullView,
+          isTaskDrawerOpen,
+          tasks,
+          addingNewSubtask,
+          addingNewSubtaskParentId,
+          subtaskShape,
+          groupHasMultipleAssignees,
+          isListFlattened,
+          highlightedTasksParentIdentifier,
+          highlightTasksOfTheSameParent,
+          groupPagination,
+          hasMoreTasks,
+          showMoreTasks,
+        })}
       </Tasks>
     </TasksGroupContainer>
   );

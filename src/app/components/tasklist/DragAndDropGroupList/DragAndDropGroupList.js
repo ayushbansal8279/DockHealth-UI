@@ -25,7 +25,7 @@ const DragAndDropGroupList = ({
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
   groupHasMultipleAssignees,
-  highlightedTasksParentIdenditifer,
+  highlightedTasksParentIdentifier,
   highlightTasksOfTheSameParent,
   taskItemConfig,
 }) => {
@@ -92,8 +92,8 @@ const DragAndDropGroupList = ({
                         shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
                         showClearSortFiltersModal={showClearSortFiltersModal}
                         multipleAssigneesContext={groupHasMultipleAssignees}
-                        highlightedTasksParentIdenditifer={
-                          highlightedTasksParentIdenditifer
+                        highlightedTasksParentIdentifier={
+                          highlightedTasksParentIdentifier
                         }
                         highlightTasksOfTheSameParent={
                           highlightTasksOfTheSameParent
