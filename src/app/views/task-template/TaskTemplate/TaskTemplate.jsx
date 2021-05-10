@@ -35,6 +35,7 @@ import {
   MenuContainer,
   QuickAddInputWrapper,
   ArrowButtonContainer,
+  Spacer,
 } from './styled';
 
 const TEMPLATES_VIEW_COLUMNS_CONFIG = {
@@ -245,6 +246,7 @@ const TaskTemplate = ({ template, isFullView }) => {
             }
           }}
         />
+        <Spacer />
         <OptionsMenu options={menuOptions}>
           <MenuContainer size="small">
             <MoreHoriz fontSize="large" color="inherit" />

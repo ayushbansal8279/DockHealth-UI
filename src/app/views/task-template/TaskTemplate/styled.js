@@ -11,7 +11,7 @@ export const TaskTemplateContainer = styled.div`
 
 export const TaskTemplateHeader = styled.div`
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto auto 1fr 372px auto;
   grid-template-rows: 30px auto;
   grid-column-gap: ${spacing.tiny};
   align-items: center;
@@ -65,7 +65,7 @@ export const Description = styled.p`
 `;
 
 export const MenuContainer = styled.div`
-  grid-column: 4;
+  grid-column: 5;
   grid-row: 1;
   overflow: hidden;
   color: ${palette.coolGrey2};
@@ -80,4 +80,9 @@ export const ArrowButtonContainer = styled.div`
   width: 26px;
   justify-content: center;
   margin-left: ${spacing.small};
+`;
+
+export const Spacer = styled.div`
+  grid-column: 4;
+  grid-row: 1;
 `;
