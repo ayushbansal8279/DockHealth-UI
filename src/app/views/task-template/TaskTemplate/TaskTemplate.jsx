@@ -35,6 +35,7 @@ import {
   MenuContainer,
   QuickAddInputWrapper,
   ArrowButtonContainer,
+  Spacer,
 } from './styled';
 
 const TEMPLATES_VIEW_COLUMNS_CONFIG = {
@@ -198,6 +199,32 @@ const TaskTemplate = ({ template, isFullView }) => {
     );
   }, [dispatch, isTemplateSelected, tasks]);
 
+  const onArrowClick = () => {
+    if (isOpen) {
+      dispatch(TaskActions.unselectAllTasks());
+    }
+    dispatch(TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier));
+  };
+
+  const onChangeName = event => {
+    setNameInputValue(event.target?.value);
+    setNameInputError(false);
+  };
+
+  const onBlurName = () => {
+    setIsEditing(false);
+    setNameInputValue(name);
+  };
+
+  const onClickName = () => {
+    if (!isEditing) {
+      if (isOpen) {
+        dispatch(TaskActions.unselectAllTasks());
+      }
+      dispatch(TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier));
+    }
+  };
+
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
@@ -207,16 +234,7 @@ const TaskTemplate = ({ template, isFullView }) => {
           onClick={handleTemplateSelect}
         />
         <ArrowButtonContainer>
-          <ArrowButton
-            onClick={() => {
-              if (isOpen) {
-                dispatch(TaskActions.unselectAllTasks());
-              }
-              dispatch(
-                TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier),
-              );
-            }}
-          >
+          <ArrowButton onClick={onArrowClick}>
             <RotatableChevron rotated={isOpen} />
           </ArrowButton>
         </ArrowButtonContainer>
@@ -224,27 +242,13 @@ const TaskTemplate = ({ template, isFullView }) => {
           ref={nameInputReference}
           readOnly={!isEditing}
           error={nameInputError}
-          onChange={event => {
-            setNameInputValue(event.target?.value);
-            setNameInputError(false);
-          }}
-          onBlur={() => {
-            setIsEditing(false);
-            setNameInputValue(name);
-          }}
+          onChange={onChangeName}
+          onBlur={onBlurName}
           onKeyDown={handleNameInputKeyDown}
           value={nameInputValue}
-          onClick={() => {
-            if (!isEditing) {
-              if (isOpen) {
-                dispatch(TaskActions.unselectAllTasks());
-              }
-              dispatch(
-                TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier),
-              );
-            }
-          }}
+          onClick={onClickName}
         />
+        <Spacer />
         <OptionsMenu options={menuOptions}>
           <MenuContainer size="small">
             <MoreHoriz fontSize="large" color="inherit" />

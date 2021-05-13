@@ -69,13 +69,12 @@ const TaskDrawer = ({
     onSubmit,
     formMethods,
     isAddingOrEditingSubtask,
-    taskLists,
     closeTaskDrawer,
     isSaving,
     selectedTask,
     selectedParentTask,
-    currentUser,
-    currentOrganization,
+    // currentUser,
+    // currentOrganization,
     reFileTask,
     onDelete,
     onDuplicate,
@@ -153,12 +152,29 @@ const TaskDrawer = ({
   }, [selectedTask]);
 
   const isTemplateTask = checkIfTemplateTask(selectedTask);
+  const closeDrawer = () => closeTaskDrawer();
+  const onClickParentTask = () =>
+    storeAsCurrentTask(selectedParentTask)(dispatch);
+  const onFocusMentionsEditor = () => setIsDescriptionFocused(true);
+  const onBlurMentionsEditor = () => {
+    handleTaskDescriptionUpdate();
+    setIsDescriptionFocused(false);
+  };
+  const onChangeMentionsEditor = state => {
+    if (descriptionErrorState) {
+      const { tokenizedText } = convertFromEditorStateToOutput(state);
+      if (tokenizedText) {
+        setDescriptionErrorState(false);
+      }
+    }
+    setDescriptionState(state);
+  };
 
   return (
     <>
       <TaskDrawerContainer
         open={taskDrawerOpen}
-        onClose={() => closeTaskDrawer()}
+        onClose={closeDrawer}
         ref={taskDrawerReference}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -174,7 +190,6 @@ const TaskDrawer = ({
               >
                 <TopSection
                   formMethods={formMethods}
-                  taskLists={taskLists}
                   selectedTask={selectedTask}
                   reFileTask={reFileTask}
                   onDelete={onDelete}
@@ -196,11 +211,7 @@ const TaskDrawer = ({
                 <Grid item xs={12} style={styleFullRowThin}>
                   <Spacing vertical={4} />
                   {selectedParentTask ? (
-                    <ParentTaskButton
-                      onClick={() =>
-                        storeAsCurrentTask(selectedParentTask)(dispatch)
-                      }
-                    >
+                    <ParentTaskButton onClick={onClickParentTask}>
                       <ParentTaskDescription>
                         <MentionsEditor
                           readOnly
@@ -246,25 +257,10 @@ const TaskDrawer = ({
                           : 'What is the task?'
                       }
                       isDrawerEditor
-                      onFocus={() => {
-                        setIsDescriptionFocused(true);
-                      }}
-                      onBlur={() => {
-                        handleTaskDescriptionUpdate();
-                        setIsDescriptionFocused(false);
-                      }}
+                      onFocus={onFocusMentionsEditor}
+                      onBlur={onBlurMentionsEditor}
                       state={descriptionState}
-                      onChange={state => {
-                        if (descriptionErrorState) {
-                          const {
-                            tokenizedText,
-                          } = convertFromEditorStateToOutput(state);
-                          if (tokenizedText) {
-                            setDescriptionErrorState(false);
-                          }
-                        }
-                        setDescriptionState(state);
-                      }}
+                      onChange={onChangeMentionsEditor}
                       keyBindingFn={event => {
                         if (event.keyCode === 13) {
                           return 'enter-command';
@@ -302,7 +298,6 @@ const TaskDrawer = ({
                   selectedPatient={
                     selectedTask?.patient || selectedParentTask?.patient || null
                   }
-                  currentOrganization={currentOrganization}
                   disabled={
                     disabledFields.includes(DrawerFieldEnum.PATIENT) ||
                     isTemplateTask
@@ -317,7 +312,6 @@ const TaskDrawer = ({
               </Grid>
               <Grid item xs={6} style={styleRightColumn}>
                 <AssignedToSection
-                  currentUser={currentUser}
                   assignedToUsers={selectedTask?.assignedToUsers}
                   taskListIdentifier={
                     isTemplateTask ? null : taskListIdentifier
@@ -402,7 +396,6 @@ const TaskDrawer = ({
                   <SubtasksSection
                     subtasks={selectedTask.subtasks}
                     subTasksCount={selectedTask.subTasksCount}
-                    currentUser={currentUser}
                     taskListIdentifier={taskListIdentifier}
                     onQuickAddSubtask={handleQuickAddSubtask}
                   />
@@ -471,9 +464,7 @@ const TaskDrawer = ({
           </div>
           <HistorySection
             formMethods={formMethods}
-            taskLists={taskLists}
             selectedTask={selectedTask}
-            taskList={selectedTask?.taskList}
             isInbox={isInbox}
             closeTaskDrawer={closeTaskDrawer}
           />

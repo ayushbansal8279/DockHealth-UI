@@ -113,4 +113,3 @@ export const ShowMoreButton = styled.button`
   margin-left: 56px; // per design
   width: fit-content;
 `;
-

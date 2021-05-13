@@ -15,6 +15,7 @@ import {
   patientTaskSearchSelector,
   patientTasksSortSelector,
 } from 'selectors/patient-tasks-selectors';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
@@ -169,7 +170,7 @@ const mapStateToProps = state => ({
   patientLists: patientTaskListsSelector(state),
   activeTab: patientTaskListsActiveTabSelector(state),
   currentUser: userProfileSelector(state),
-  selectedTask: state.taskState.selectedTask,
+  selectedTask: selectedTaskSelector(state),
   taskSearch: patientTaskSearchSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
 });

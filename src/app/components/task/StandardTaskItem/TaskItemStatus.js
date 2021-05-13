@@ -27,6 +27,7 @@ const TaskItemStatus = ({
   highlightedValue,
 }) => {
   const { label, color } = getWorkflowStatusConfig(workflowStatus);
+  const searchWords = highlightedValue?.toLowerCase().split(/\s+/);
   return (
     <>
       <StatusBar color={color} />
@@ -34,7 +35,7 @@ const TaskItemStatus = ({
         {isMatching ? (
           <Highlighter
             highlightClassName="list-highlight"
-            searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+            searchWords={searchWords}
             autoEscape
             textToHighlight={label}
           />

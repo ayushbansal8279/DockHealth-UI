@@ -10,7 +10,6 @@ import notification from './notification-reducer';
 import OrganizationReducer from './organization-reducer';
 import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
-import TaskReducer from './task-reducer';
 import TaskListReducer from './task-list-reducer';
 import UserReducer from './user-reducer';
 import ListDetailsReducer from './list-details-reducer';
@@ -25,7 +24,6 @@ import TaskTemplateReducer from './task-template-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
-  taskState: TaskReducer,
   userState: UserReducer,
   notification,
   taskList: TaskListReducer,

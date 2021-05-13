@@ -7,6 +7,7 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { isNil, pluck } from 'ramda';
 import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
@@ -18,22 +19,21 @@ import {
   onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import LoadMoreButton, {
-  LoadMoreSection,
-} from 'components/common/LoadMoreButton/LoadMoreButton';
-import { useDispatch } from 'react-redux';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
-
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-import DragAndDropGroupList from 'components/tasklist/DragAndDropGroupList/DragAndDropGroupList';
-import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import {
+  taskDrawerOpenSelector,
+  addingNewSubtaskSelector,
+  addingNewSubtaskParentIdSelector,
+  subtaskShapeSelector,
+} from 'selectors/task-drawer-selectors';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -52,40 +52,38 @@ const TasksGroup = ({
   isLastGroup,
   groupName,
   groupTaskCounts,
-  toggleCompleteTask,
   editGroupName,
   quickAddTask,
   deleteGroup,
   moveGroupUp,
   moveGroupDown,
-  onTaskUpdate,
   tasks,
   isLoadingGroup,
   isCompletedGroup,
-  draggedId,
-  groupPagination,
   showMoreTasks,
-  hasMoreTasks,
-  isFetchingMoreTasks,
-  updateDueDate,
-  updateWorkflowStatus,
-  dragAndDropDisabled,
-  listNameVisible,
   changingGroupOrderDisabled,
   areFiltersApplied,
   isSearchApplied,
-  selectedTask,
   taskGroupIdentifier,
   listUniqueKey,
   taskListIdentifier,
   sort,
   onSortChange,
   onTaskGroupViewModeChange,
-  shouldShowBlockModalOnDrag,
-  showClearSortFiltersModal,
   taskItemConfig,
   applyTemplate,
+  groupPagination,
+  isFetchingMoreTasks,
+  hasMoreTasks,
+  children,
 }) => {
+  const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
+  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
+  const addingNewSubtaskParentId = useSelector(
+    addingNewSubtaskParentIdSelector,
+  );
+  const subtaskShape = useSelector(subtaskShapeSelector);
+
   const [
     highlightedTasksParentIdentifier,
     setHighlightedTasksParentIdentifier,
@@ -212,6 +210,25 @@ const TasksGroup = ({
     [applyTemplate, taskGroupIdentifier],
   );
 
+  const changeViewType = value => {
+    setViewType(value);
+    if (value === ViewType.SLIM_VIEW) {
+      onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
+      onSlimViewChanged(true);
+    } else {
+      onTaskGroupViewModeChange(ViewType.FULL_VIEW);
+      onSlimViewChanged(false);
+    }
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const quickTaskInputValidator = value => {
+    if ([...value]?.filter(char => char !== ' ').length < 2)
+      return 'The task description is too short (min. 2 characters)';
+
+    return null;
+  };
+
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
@@ -251,19 +268,7 @@ const TasksGroup = ({
           />
         )}
         {!changingGroupOrderDisabled && (
-          <ViewTypeSwitch
-            value={viewType}
-            onChange={value => {
-              setViewType(value);
-              if (value === ViewType.SLIM_VIEW) {
-                onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
-                onSlimViewChanged(true);
-              } else {
-                onTaskGroupViewModeChange(ViewType.FULL_VIEW);
-                onSlimViewChanged(false);
-              }
-            }}
-          />
+          <ViewTypeSwitch value={viewType} onChange={changeViewType} />
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
@@ -273,12 +278,7 @@ const TasksGroup = ({
               <QuickAddTaskInput
                 taskListIdentifier={taskListIdentifier}
                 quickAddTask={onQuickAddTask}
-                validator={value => {
-                  if ([...value]?.filter(char => char !== ' ').length < 2)
-                    return 'The task description is too short (min. 2 characters)';
-
-                  return null;
-                }}
+                validator={quickTaskInputValidator}
               />
             </Grid>
             {applyTemplate && (
@@ -297,39 +297,24 @@ const TasksGroup = ({
             onGroupSelect={handleGroupSelect}
           />
         )}
-        {(!isLoadingGroup || isFetchingMoreTasks) && (
-          <DragAndDropGroupList
-            taskGroupIdentifier={taskGroupIdentifier}
-            tasks={tasks}
-            isFullView={isFullView}
-            toggleCompleteTask={toggleCompleteTask}
-            draggedId={draggedId}
-            isCompletedGroup={isCompletedGroup}
-            onTaskUpdate={onTaskUpdate}
-            updateDueDate={updateDueDate}
-            updateWorkflowStatus={updateWorkflowStatus}
-            dragAndDropDisabled={dragAndDropDisabled}
-            listNameVisible={listNameVisible}
-            selectedTask={selectedTask}
-            subtasksDisabled={isListFlattened}
-            areFiltersApplied={areFiltersApplied}
-            isSearchApplied={isSearchApplied}
-            shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
-            showClearSortFiltersModal={showClearSortFiltersModal}
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-            highlightedTasksParentIdenditifer={highlightedTasksParentIdentifier}
-            highlightTasksOfTheSameParent={highlightTasksOfTheSameParent}
-            taskItemConfig={taskItemConfig}
-          />
-        )}
-        {(isLoadingGroup || isFetchingMoreTasks) && (
-          <TasksSkeletonLoader rows={4} />
-        )}
-        {groupPagination && hasMoreTasks && !areFiltersApplied && (
-          <LoadMoreSection>
-            {!isLoadingGroup && <LoadMoreButton onClick={showMoreTasks} />}
-          </LoadMoreSection>
-        )}
+        {children({
+          isLoadingGroup,
+          isFetchingMoreTasks,
+          isCompletedGroup,
+          isFullView,
+          isTaskDrawerOpen,
+          tasks,
+          addingNewSubtask,
+          addingNewSubtaskParentId,
+          subtaskShape,
+          groupHasMultipleAssignees,
+          isListFlattened,
+          highlightedTasksParentIdentifier,
+          highlightTasksOfTheSameParent,
+          groupPagination,
+          hasMoreTasks,
+          showMoreTasks,
+        })}
       </Tasks>
     </TasksGroupContainer>
   );

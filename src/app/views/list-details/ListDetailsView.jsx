@@ -559,7 +559,6 @@ class Home extends Component {
       isCompletedTasksFetching,
       completedGroupedTasks,
       groupedTasks,
-      selectedTask,
       selectedFilters,
       sort,
     } = this.props;
@@ -584,100 +583,84 @@ class Home extends Component {
         : [];
 
     return (
-      <>
-        <BulkEditSection
-          allTasks={
-            selectedTab === TaskListTabName.OPEN ? openedTasks : completedTasks
-          }
-          refreshTasks={this.refreshTab}
-          disabled={selectedTab === TaskListTabName.COMPLETE}
-          searchValue={searchValue}
-        >
-          <div>
-            <TaskViewContainer>
-              <Toolbar
-                members={members}
-                showMembers={loadedTasklist?.listType !== 'PUBLIC'}
-                onSelectTab={this.navigateToTab}
-                selectedTab={selectedTab}
-                taskList={loadedTasklist || undefined}
-                openTasksAmount={taskCounters.incomplete}
-                completedTasksAmount={taskCounters.complete}
-                onSearchChange={this.setSearchValue}
-                searchValue={searchValue}
-                onSelectFilters={listDetailsActions.filterListDetailsTasks}
-                pdfTitle={loadedTasklist?.listName}
-                tipsContent={
-                  loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
-                }
-                isFetching={isFetching || isCompletedTasksFetching}
-                printData={{
-                  completedTasks,
-                  openedTasks,
-                  taskListMembers: members,
-                }}
-                tasks={openedTasks}
-                completedTasks={completedTasks}
-                selectedFilters={selectedFilters}
-              />
-              {selectedTab === TaskListTabName.COMPLETE ? (
-                <CompletedTasksView
-                  toggleCompleteTask={this.toggleTaskCompletedStatus}
-                  onTaskUpdate={this.handleTaskUpdate}
-                  updateDueDate={this.handleUpdateDueDate}
-                  searchValue={searchValue}
-                  selectedTask={selectedTask}
-                  listUniqueKey={taskListIdentifier}
-                  loadMoreTasksForList={this.loadMoreTasksForList}
-                  sort={sort}
-                  onSortChange={listDetailsActions.sortListDetailsTasks}
-                />
-              ) : (
-                <OpenedTasksView
-                  taskListIdentifier={taskListIdentifier}
-                  quickAddTask={this.quickAddTask}
-                  createTaskGroupList={this.handleCreateGroup}
-                  editGroupName={this.editGroupName}
-                  toggleCompleteTask={this.toggleTaskCompletedStatus}
-                  deleteGroup={this.deleteGroup}
-                  changeGroupsOrder={this.changeGroupsOrder}
-                  onTaskUpdate={this.handleTaskUpdate}
-                  updateDueDate={this.handleUpdateDueDate}
-                  updateWorkflowStatus={this.handleUpdateWorkflowStatus}
-                  searchValue={searchValue}
-                  sort={sort}
-                  onSortChange={listDetailsActions.sortListDetailsTasks}
-                  selectedTask={selectedTask}
-                  listUniqueKey={taskListIdentifier}
-                  taskCounters={taskCounters}
-                  loadTasksForTaskGroup={this.loadTasksForTaskGroup}
-                  resetSort={this.resetSort}
-                />
-              )}
-            </TaskViewContainer>
-            <TaskDrawer
-              modalActions={modalActions}
-              fromFirstAddTask={taskCounters?.incomplete === 0}
-              hideTour={isTourOpen}
-              onTaskUpdate={this.refreshTabAfterTaskUpdate}
-              onTaskDelete={this.handleTaskDelete}
-              onTaskCreation={this.refreshTabAfterTaskUpdate}
+      <BulkEditSection
+        allTasks={
+          selectedTab === TaskListTabName.OPEN ? openedTasks : completedTasks
+        }
+        refreshTasks={this.refreshTab}
+        disabled={selectedTab === TaskListTabName.COMPLETE}
+        searchValue={searchValue}
+      >
+        <div>
+          <TaskViewContainer>
+            <Toolbar
+              members={members}
+              showMembers={loadedTasklist?.listType !== 'PUBLIC'}
+              onSelectTab={this.navigateToTab}
+              selectedTab={selectedTab}
+              taskList={loadedTasklist || undefined}
+              openTasksAmount={taskCounters.incomplete}
+              completedTasksAmount={taskCounters.complete}
+              onSearchChange={this.setSearchValue}
+              searchValue={searchValue}
+              onSelectFilters={listDetailsActions.filterListDetailsTasks}
+              pdfTitle={loadedTasklist?.listName}
+              tipsContent={
+                loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
+              }
+              isFetching={isFetching || isCompletedTasksFetching}
+              printData={{
+                completedTasks,
+                openedTasks,
+                taskListMembers: members,
+              }}
+              tasks={openedTasks}
+              completedTasks={completedTasks}
+              selectedFilters={selectedFilters}
             />
-          </div>
-        </BulkEditSection>
-        {/* {isTourOpen && (
-          <>
-            <ListTourWrapper>
-              <Tour
-                modalName="List tour modal"
-                steps={LIST_TOUR_STEPS}
-                onClose={this.closeTourModal}
+            {selectedTab === TaskListTabName.COMPLETE ? (
+              <CompletedTasksView
+                toggleCompleteTask={this.toggleTaskCompletedStatus}
+                onTaskUpdate={this.handleTaskUpdate}
+                updateDueDate={this.handleUpdateDueDate}
+                searchValue={searchValue}
+                listUniqueKey={taskListIdentifier}
+                loadMoreTasksForList={this.loadMoreTasksForList}
+                sort={sort}
+                onSortChange={listDetailsActions.sortListDetailsTasks}
               />
-            </ListTourWrapper>
-            <ListTourBackground onClick={this.closeTourModal} />
-          </>
-        )} */}
-      </>
+            ) : (
+              <OpenedTasksView
+                taskListIdentifier={taskListIdentifier}
+                quickAddTask={this.quickAddTask}
+                createTaskGroupList={this.handleCreateGroup}
+                editGroupName={this.editGroupName}
+                toggleCompleteTask={this.toggleTaskCompletedStatus}
+                deleteGroup={this.deleteGroup}
+                changeGroupsOrder={this.changeGroupsOrder}
+                onTaskUpdate={this.handleTaskUpdate}
+                updateDueDate={this.handleUpdateDueDate}
+                updateWorkflowStatus={this.handleUpdateWorkflowStatus}
+                searchValue={searchValue}
+                sort={sort}
+                onSortChange={listDetailsActions.sortListDetailsTasks}
+                listUniqueKey={taskListIdentifier}
+                taskCounters={taskCounters}
+                loadTasksForTaskGroup={this.loadTasksForTaskGroup}
+                resetSort={this.resetSort}
+              />
+            )}
+          </TaskViewContainer>
+          <TaskDrawer
+            modalActions={modalActions}
+            fromFirstAddTask={taskCounters?.incomplete === 0}
+            hideTour={isTourOpen}
+            onTaskUpdate={this.refreshTabAfterTaskUpdate}
+            onTaskDelete={this.handleTaskDelete}
+            onTaskCreation={this.refreshTabAfterTaskUpdate}
+          />
+        </div>
+      </BulkEditSection>
     );
   }
 }
@@ -694,7 +677,6 @@ const mapStateToProps = state => ({
   isCompletedTasksFetching: completedTasksIsFetchingSelector(state),
   groupedTasks: groupTasksSelector(state),
   completedGroupedTasks: groupCompletedTasksSelector(state),
-  selectedTask: state.taskState.selectedTask,
 });
 
 const mapDispatchToProps = dispatch => ({

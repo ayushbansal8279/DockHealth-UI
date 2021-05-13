@@ -4,10 +4,8 @@ import { SET_TASK_DRAWER_STATE } from './action-types';
 export const setDrawerState = ({ open, focusField }) => dispatch => {
   dispatch({
     type: SET_TASK_DRAWER_STATE,
-    payload: {
-      open,
-      focusField,
-    },
+    open,
+    focusField,
   });
 };
 

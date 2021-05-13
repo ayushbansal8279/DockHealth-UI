@@ -279,6 +279,58 @@ const TaskItem = ({
     [taskItemConfig],
   );
 
+  const onClickBulkEdit = () => dispatch(selectTask(taskIdentifier, !selected));
+  const onCloseContextMenu = () => {
+    setContextMenu(null);
+    dispatch(storeAsCurrentTask(null));
+  };
+
+  const {
+    descriptionIsInCofnig,
+    subtasksIsInConfig,
+    patientIsInConfig,
+    workflowStatusIsInConfig,
+    activityIsInConfig,
+    dueDateIsInConfig,
+    assignedIsInConfig,
+    listNameIsInConfig,
+  } = useMemo(() => {
+    return {
+      descriptionIsInCofnig: checkColumnIsInConfig(
+        TaskItemColumn.DESCRIPTION,
+        mergedTaskItemConfig,
+      ),
+      subtasksIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.SUBTASKS_COUNT,
+        mergedTaskItemConfig,
+      ),
+      patientIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.PATIENT,
+        mergedTaskItemConfig,
+      ),
+      workflowStatusIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.WORKFLOW_STATUS,
+        mergedTaskItemConfig,
+      ),
+      activityIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.ACTIVITY,
+        mergedTaskItemConfig,
+      ),
+      dueDateIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.DUE_DATE,
+        mergedTaskItemConfig,
+      ),
+      assignedIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.ASSIGNED,
+        mergedTaskItemConfig,
+      ),
+      listNameIsInConfig: checkColumnIsInConfig(
+        TaskItemColumn.LIST_NAME,
+        mergedTaskItemConfig,
+      ),
+    };
+  }, [mergedTaskItemConfig]);
+
   return (
     <>
       <StandardTaskItemPanel
@@ -301,10 +353,7 @@ const TaskItem = ({
           {showPriority && <PriorityIndicator />}
           {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
           {bulkEditEnabled && (
-            <TaskItemBulkEdit
-              isChecked={selected}
-              onClick={() => dispatch(selectTask(taskIdentifier, !selected))}
-            />
+            <TaskItemBulkEdit isChecked={selected} onClick={onClickBulkEdit} />
           )}
           <MainStandardTaskItemCell
             bolded
@@ -320,10 +369,7 @@ const TaskItem = ({
               onClick={onCircleClick}
             />
 
-            {checkColumnIsInConfig(
-              TaskItemColumn.DESCRIPTION,
-              mergedTaskItemConfig,
-            ) && (
+            {descriptionIsInCofnig && (
               <TaskItemDescription
                 isCompletedGroup={isCompletedGroup}
                 isCompleted={isCompleted}
@@ -342,10 +388,7 @@ const TaskItem = ({
               />
             )}
           </MainStandardTaskItemCell>
-          {checkColumnIsInConfig(
-            TaskItemColumn.SUBTASKS_COUNT,
-            mergedTaskItemConfig,
-          ) && (
+          {subtasksIsInConfig && (
             <TaskItemSubtasks
               isSubtask={isSubtask}
               subtaskQuickAddOpen={subtaskQuickAddOpen}
@@ -360,10 +403,7 @@ const TaskItem = ({
               dispatch={dispatch}
             />
           )}
-          {checkColumnIsInConfig(
-            TaskItemColumn.PATIENT,
-            mergedTaskItemConfig,
-          ) && (
+          {patientIsInConfig && (
             <TaskItemPatient
               highlightedValue={highlightedValue}
               taskStatus={task?.status}
@@ -378,10 +418,7 @@ const TaskItem = ({
               onTaskUpdate={onTaskUpdate}
             />
           )}
-          {checkColumnIsInConfig(
-            TaskItemColumn.WORKFLOW_STATUS,
-            mergedTaskItemConfig,
-          ) && (
+          {workflowStatusIsInConfig && (
             <TaskItemWorkflowStatus
               task={task}
               isCompletedGroup={isCompletedGroup}
@@ -391,10 +428,7 @@ const TaskItem = ({
               highlightedValue={highlightedValue}
             />
           )}
-          {checkColumnIsInConfig(
-            TaskItemColumn.ACTIVITY,
-            mergedTaskItemConfig,
-          ) && (
+          {activityIsInConfig && (
             <TaskItemIcons
               matchComments={matchComments}
               comments={comments}
@@ -407,10 +441,7 @@ const TaskItem = ({
               dispatch={dispatch}
             />
           )}
-          {checkColumnIsInConfig(
-            TaskItemColumn.DUE_DATE,
-            mergedTaskItemConfig,
-          ) && (
+          {dueDateIsInConfig && (
             <TaskItemDueDate
               dueDate={dueDate}
               task={task}
@@ -418,10 +449,7 @@ const TaskItem = ({
               updateDueDate={updateDueDate}
             />
           )}
-          {checkColumnIsInConfig(
-            TaskItemColumn.ASSIGNED,
-            mergedTaskItemConfig,
-          ) && (
+          {assignedIsInConfig && (
             <TaskItemMembers
               multipleAssigneesContext={multipleAssigneesContext}
               task={task}
@@ -430,10 +458,7 @@ const TaskItem = ({
               matchAssignedTo={matchAssignedTo}
             />
           )}
-          {checkColumnIsInConfig(
-            TaskItemColumn.LIST_NAME,
-            mergedTaskItemConfig,
-          ) && (
+          {listNameIsInConfig && (
             <TaskItemList
               listName={listName}
               taskListIdentifier={taskListIdentifier}
@@ -446,10 +471,7 @@ const TaskItem = ({
         <TaskItemContextMenu
           position={contextMenu}
           task={task}
-          onClose={() => {
-            setContextMenu(null);
-            dispatch(storeAsCurrentTask(null));
-          }}
+          onClose={onCloseContextMenu}
           subtasksDisabled={subtasksDisabled}
           isDashboardTask={isDashboardTask}
         />

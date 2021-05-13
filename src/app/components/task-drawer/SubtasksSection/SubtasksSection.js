@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
 import Subtask from '../Subtask/Subtask';
 import SubtasksLoader from '../SubtasksLoader/SubtasksLoader';
 import QuickAddSubtask from './QuickAddSubtask';
@@ -7,10 +9,11 @@ import { Container, Title } from './styled';
 const SubtasksSection = ({
   subtasks,
   subTasksCount,
-  currentUser,
   taskListIdentifier,
   onQuickAddSubtask,
 }) => {
+  const currentUser = useSelector(userProfileSelector);
+
   return (
     <Container>
       <Title>Subtasks</Title>

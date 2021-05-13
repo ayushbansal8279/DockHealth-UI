@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   onTaskDrawerPatientAdded,
   onTaskDrawerTaskPatientChanged,
@@ -19,7 +20,6 @@ const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 
 const PatientSection = ({
   selectedPatient,
-  currentOrganization,
   autofocus,
   disabled,
   placeholder,
@@ -32,6 +32,16 @@ const PatientSection = ({
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
+  const currentUser = useSelector(userProfileSelector);
+
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const currentOrganization =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
 
   const formattedPatients = getFormattedPatients({ patients });
 

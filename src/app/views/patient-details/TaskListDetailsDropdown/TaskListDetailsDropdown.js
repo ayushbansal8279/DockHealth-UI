@@ -13,6 +13,11 @@ import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import {
+  addingNewSubtaskSelector,
+  subtaskShapeSelector,
+  addingNewSubtaskParentIdSelector,
+} from 'selectors/task-drawer-selectors';
+import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
   onTaskGroupExpanded,
@@ -59,19 +64,12 @@ const TaskListDetailsDropdown = ({
     sessionStorageKey,
   );
   const quickAddTaskInputReference = useRef(null);
-
-  const {
-    addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
-  } = useSelector(state => ({
-    addingNewSubtask: state.taskState.addingNewSubtask,
-    addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
-    subtaskShape: state.taskState.subtaskShape,
-  }));
-
   const dispatch = useDispatch();
-
+  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
+  const addingNewSubtaskParentId = useSelector(
+    addingNewSubtaskParentIdSelector,
+  );
+  const subtaskShape = useSelector(subtaskShapeSelector);
   const isFullView = viewType === ViewType.FULL_VIEW;
 
   const { listName, taskListIdentifier, listUsers } = list;

@@ -19,7 +19,6 @@ const initializeTaskDrawerTopSectionHooks = ({ selectedTask }) => {
   const [history, setHistory] = useState([]);
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
-
   const currentUser = useSelector(store => store.userState.userProfile);
 
   const dispatch = useDispatch();

@@ -8,6 +8,7 @@ import {
   pendingTaskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import * as TaskListActions from 'actions/task-list-actions';
 import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserApi from 'api/user-api';
@@ -198,7 +199,7 @@ const DashboardView = ({
 const mapStateToProps = state => ({
   taskLists: taskListsSelector(state),
   pendingTaskLists: pendingTaskListsSelector(state),
-  isTaskDrawerOpen: state.taskDrawerState.open,
+  isTaskDrawerOpen: taskDrawerOpenSelector(state),
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
   currentUser: userProfileSelector(state),
 });

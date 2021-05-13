@@ -2,7 +2,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
-
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import palette from 'styles/palette';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
@@ -40,7 +40,7 @@ const initializeStatusSectionHooks = ({ setAutoSaveVisible, onTaskUpdate }) => {
   const currentValue = watch('workflowStatus');
   const dispatch = useDispatch();
 
-  const selectedTask = useSelector(store => store.taskState.selectedTask);
+  const selectedTask = useSelector(selectedTaskSelector);
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
   const saveTaskStatus = useCallback(

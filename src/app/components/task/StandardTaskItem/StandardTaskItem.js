@@ -6,11 +6,12 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { isEmpty } from 'ramda';
+import { useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
-import { isEmpty } from 'ramda';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
+import { selectedTaskIdentifierSelector } from 'selectors/task-drawer-selectors';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -35,13 +36,13 @@ const Task = ({
   patientVisible = true,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
-  selectedTask,
-  highlightedTasksParentIdenditifer,
+  highlightedTasksParentIdentifier,
   noMargin,
   ...restProps
 }) => {
   const parentTaskReference = useRef(null);
   const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
+
   const {
     taskIdentifier,
     comments,
@@ -53,7 +54,12 @@ const Task = ({
     subtaskQuickAddOpen,
   } = task || {};
 
-  const { taskIdentifier: selectedTaskIdentifier } = selectedTask || {};
+  const selectedTaskIdentifier = useSelector(selectedTaskIdentifierSelector);
+  const isSelected = useMemo(() => selectedTaskIdentifier === taskIdentifier, [
+    selectedTaskIdentifier,
+    taskIdentifier,
+  ]);
+
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const { highlightedValue, multipleAssigneesContext } = restProps;
   const { matchingCommentIdentifiers = [] } = searchMetaData;
@@ -171,11 +177,10 @@ const Task = ({
           subtasksDisabled={subtasksDisabled}
           isFullView={isFullView}
           isSelected={
-            selectedTaskIdentifier === task.taskIdentifier ||
-            (highlightedTasksParentIdenditifer &&
-              (highlightedTasksParentIdenditifer === task.taskIdentifier ||
-                highlightedTasksParentIdenditifer ===
-                  task.parentTaskIdentifier))
+            isSelected ||
+            (highlightedTasksParentIdentifier &&
+              (highlightedTasksParentIdentifier === task.taskIdentifier ||
+                highlightedTasksParentIdentifier === task.parentTaskIdentifier))
           }
           {...restProps}
         />
