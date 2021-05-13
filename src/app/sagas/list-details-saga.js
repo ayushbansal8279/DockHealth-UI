@@ -32,7 +32,7 @@ import * as ActionTypesSaga from 'actions/action-types-saga';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-import { taskIsSelectedSelector } from 'selectors/task-selectors';
+import { taskIsSelectedSelector } from 'selectors/task-drawer-selectors';
 import {
   groupTasksSelector,
   taskDetailsSortSelector,

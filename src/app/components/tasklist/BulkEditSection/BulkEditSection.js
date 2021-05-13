@@ -2,6 +2,8 @@ import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import React, { useCallback, useMemo, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
+import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import BulkEditOptionsBar from './BulkEditOptionsBar/BulkEditOptionsBar';
 import { BulkEditOptionsBarContainer } from './styled';
 
@@ -30,11 +32,8 @@ const BulkEditSection = ({
     };
   }, [allTasks, disabled]);
 
-  const { isTaskDrawerOpen, currentUser } = useSelector(store => ({
-    isTaskDrawerOpen: store.taskDrawerState.open,
-    currentUser: store.userState.userProfile,
-  }));
-
+  const currentUser = useSelector(userProfileSelector);
+  const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const dispatch = useDispatch();
 
   const onClearBulkEditTasks = useCallback(() => {

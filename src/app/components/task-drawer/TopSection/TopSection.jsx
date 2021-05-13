@@ -94,7 +94,6 @@ const renderTaskList = ({
 
 const TopSection = ({
   formMethods,
-  taskLists,
   selectedTask,
   reFileTask,
   onDelete,
@@ -128,6 +127,7 @@ const TopSection = ({
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
     dispatch,
+    taskLists,
   } = initializeTaskDrawerTopSectionHooks({
     modalActions,
     onDelete,

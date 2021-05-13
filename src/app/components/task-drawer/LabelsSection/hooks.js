@@ -11,7 +11,7 @@ import {
   getTemplateLabels,
   removeLabelFromDatabase,
 } from 'api/task-label-api';
-
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { refreshTask } from 'actions/task-actions';
 import { getFormattedLabels } from './helpers';
 
@@ -60,9 +60,7 @@ const initializeLabelsSectionHooks = ({
   parentFormSubmit,
 }) => {
   const dispatch = useDispatch();
-  const { selectedTask } = useSelector(store => ({
-    selectedTask: store.taskState.selectedTask,
-  }));
+  const selectedTask = useSelector(selectedTaskSelector);
 
   const isTemplateTask = checkIfTemplateTask(selectedTask);
 

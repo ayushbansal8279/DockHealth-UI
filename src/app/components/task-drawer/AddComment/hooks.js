@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-
-import useBoolean from 'hooks/useBoolean';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
+import useBoolean from 'hooks/useBoolean';
 
 const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
-  const { currentUser, selectedTask } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-    selectedTask: store.taskState.selectedTask,
-  }));
+  const currentUser = useSelector(userProfileSelector);
+  const selectedTask = useSelector(selectedTaskSelector);
 
   const [commentState, setCommentState] = useMentionsEditorState();
   const [isAddingComment, setAddingComment, unsetAddingComment] = useBoolean(

@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback, useRef, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { isEmpty } from 'ramda';
-
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
 
@@ -11,9 +11,7 @@ import { getMemoTaskAttachment } from './helpers';
 
 const initializeAttachmentsSectionHooks = () => {
   const attachmentFileInputReference = useRef(null);
-
-  const selectedTask = useSelector(store => store.taskState.selectedTask);
-
+  const selectedTask = useSelector(selectedTaskSelector);
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
 
