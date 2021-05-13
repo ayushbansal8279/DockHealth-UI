@@ -439,7 +439,7 @@ const initializeTaskDrawerHooks = ({
     }
   };
 
-  const saveDueDateTime = useCallback(
+  const handleDueDateSave = useCallback(
     updatedDueDateTime => {
       updateDueDate(
         selectedTask,
@@ -460,49 +460,6 @@ const initializeTaskDrawerHooks = ({
         });
     },
     [dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible],
-  );
-
-  const clearDueDate = useCallback(
-    async event => {
-      event.stopPropagation();
-      setValue('dueDate', null);
-      setValue('dueTime', null);
-      if (selectedTask && selectedTask.taskIdentifier != null) {
-        saveDueDateTime(null);
-      }
-    },
-    [saveDueDateTime, selectedTask, setValue],
-  );
-
-  const handleDueTimeSave = useCallback(
-    value => {
-      const currentDueDate = moment(selectedTask?.dueDate).format(
-        DATE_ISO_FORMAT,
-      );
-
-      const updatedDueDateTime = moment(
-        `${currentDueDate} ${value}`,
-        `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}}`,
-      );
-
-      saveDueDateTime(updatedDueDateTime);
-    },
-    [saveDueDateTime, selectedTask],
-  );
-
-  const handleDueDateSave = useCallback(
-    value => {
-      const currentDueTime = moment(selectedTask?.dueDate).format(
-        TIME_12H_FORMAT,
-      );
-      const updatedDueDateTime = moment(
-        `${value} ${currentDueTime}`,
-        `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}}`,
-      );
-
-      saveDueDateTime(updatedDueDateTime);
-    },
-    [saveDueDateTime, selectedTask],
   );
 
   const handleUpdateTask = useCallback(
@@ -562,8 +519,6 @@ const initializeTaskDrawerHooks = ({
     templateBundleIdentifier,
     handleUpdateTask,
     handleDueDateSave,
-    handleDueTimeSave,
-    clearDueDate,
   };
 };
 

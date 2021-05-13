@@ -1,21 +1,18 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import { Button, Grid } from '@material-ui/core';
-import React, { useEffect, useMemo, useState } from 'react';
-import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { FormContext } from 'react-hook-form';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { isDueDateOverdue, checkIfTemplateTask } from 'helpers/task-helpers';
-import { DrawerFieldEnum, TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
+import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
-import DueDateInput from '../DueDateInput/DueDateInput';
-import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
 import initializeTaskDrawerHooks from './hooks';
 import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -29,7 +26,6 @@ import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import {
   DescriptionLabel,
-  HiddenFieldContainer,
   TaskDrawerContainer,
   TaskDrawerBackground,
   styleTaskDrawerContainer,
@@ -51,6 +47,7 @@ import {
 } from './styled';
 import { getCompletedByLabel } from './helpers';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
+import DueDateSection from '../DueDateSection/DueDateSection';
 
 const TaskDrawer = ({
   isInbox,
@@ -95,9 +92,7 @@ const TaskDrawer = ({
     taskDrawerReference,
     taskListIdentifier,
     handleUpdateTask,
-    handleDueTimeSave,
     handleDueDateSave,
-    clearDueDate,
     templateBundleIdentifier,
   } = initializeTaskDrawerHooks({
     isInbox,
@@ -143,14 +138,6 @@ const TaskDrawer = ({
     selectedTask.parentTaskIdentifier !== null;
 
   const isSelectedTaskComplete = selectedTask?.status === 'COMPLETE';
-
-  const taskDueTime = useMemo(() => {
-    const momentDueTime = moment(selectedTask?.dueDate || null);
-    if (momentDueTime.isValid()) {
-      return momentDueTime.format(TIME_12H_FORMAT);
-    }
-    return null;
-  }, [selectedTask]);
 
   const isTemplateTask = checkIfTemplateTask(selectedTask);
 
@@ -327,37 +314,16 @@ const TaskDrawer = ({
               </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <div ref={dueDateSectionReference}>
-                  <DueDateInput
-                    name="dueDate"
-                    label="Due date"
-                    placeholder={
-                      !isTemplateTask
-                        ? 'Set a due date?'
-                        : 'Not available when creating a template'
-                    }
-                    disabled={isTemplateTask}
-                    savedDate={selectedTask?.dueDate}
-                    onSave={handleDueDateSave}
-                    onClear={clearDueDate}
-                    setAutoSaveVisible={setAutoSaveVisible}
-                    onTaskUpdate={onTaskUpdate}
-                    error={isDueDateOverdue(selectedTask)}
+                  <DueDateSection
+                    dueDate={selectedTask?.dueDate}
+                    onDueDateChange={handleDueDateSave}
+                    isOverdue={isDueDateOverdue(selectedTask)}
+                    isTemplateTask={isTemplateTask}
                   />
                 </div>
               </Grid>
-              <Grid item xs={6} style={styleRightColumn}>
-                <HiddenFieldContainer visible={selectedTask?.dueDate}>
-                  <TimeDropdownInput
-                    name="dueTime"
-                    label="DUE TIME (00:00 am/pm)"
-                    savedValue={taskDueTime}
-                    onSave={handleDueTimeSave}
-                    error={isDueDateOverdue(selectedTask)}
-                  />
-                </HiddenFieldContainer>
-              </Grid>
               {!isTemplateTask && (
-                <Grid item xs={12} style={styleFullRowThin}>
+                <Grid item xs={6} style={styleRightColumn}>
                   <ReminderSection
                     selectedTask={selectedTask}
                     isDisabled={!selectedTask?.dueDate}

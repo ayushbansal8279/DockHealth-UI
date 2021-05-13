@@ -10,7 +10,7 @@ export const ReminderContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin-top: 0px;
+  margin-top: ${spacing.large};
   margin-bottom: ${spacing.tiny};
   transition: opacity 0.4s ease-out;
   font-family: 'Roboto Condensed', sans-serif;
@@ -35,10 +35,6 @@ export const ReminderTypeSelectOption = styled.div`
 `;
 
 export const SelectArrowImg = styled.img`
-  position: absolute;
-  top: 50%;
-  right: ${spacing.small};
-  transform: translateY(-45%);
   cursor: pointer;
   pointer-events: none;
 `;
@@ -46,10 +42,11 @@ export const SelectArrowImg = styled.img`
 export const useReminderTypeInputStyles = makeStyles({
   root: {
     marginTop: '0 !important',
+    backgroundColor: palette.blueGrey,
+    paddingRight: `${spacing.small} !important`,
   },
   input: {
-    padding: `${spacing.tiny} ${spacing.largePlus} ${spacing.tiny} ${spacing.small}`,
-    backgroundColor: palette.blueGrey,
+    padding: `${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small}`,
     borderRadius: 4,
     fontFamily: "'Roboto Condensed', sans-serif",
     color: palette.mediumGrey,
@@ -69,6 +66,6 @@ export const useReminderTypeInputStyles = makeStyles({
 export const useReminderTypeTextFieldStyles = makeStyles({
   root: {
     border: 'none',
-    width: 140,
+    width: 130,
   },
 });

@@ -35,7 +35,7 @@ export const TimeInputMaskContainer = styled.div`
     type === 'secondary' &&
     `
       height: auto;
-      width: 100px;
+      width: 92px;
       padding-bottom: 0;
       border: none;
       border-radius: 4px;
@@ -53,6 +53,7 @@ export const TimeErrorMessage = styled.span`
     `
     position: absolute;
     left: ${spacing.small};
+    width: auto;
   `}
 `;
 
@@ -66,7 +67,13 @@ export const TimeInputMask = styled(
   && {
     width: 100%;
     border: none;
-    color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
+    color: ${({ error, value }) => {
+      if (error) return palette.error;
+
+      if (!value) return palette.coolGrey2;
+
+      return palette.mediumGrey;
+    }};
     font-family: ${FONT_FAMILY};
     font-weight: bold;
     background-color: transparent;
@@ -76,7 +83,7 @@ export const TimeInputMask = styled(
       `
       height: 27px;
       font-weight: ${fontWeights.light};
-      padding: ${spacing.tiny} ${spacing.largePlus} ${spacing.tiny} ${spacing.small};
+      padding: ${spacing.tiny} ${spacing.large} ${spacing.tiny} ${spacing.small};
     `}
 
     &:focus {
@@ -109,4 +116,11 @@ export const TimeOptionButton = styled.button`
     isActive ? palette.coolGrey4 : 'transparent'};
   font-weight: ${({ isActive }) =>
     isActive ? fontWeights.bold : fontWeights.regular};
+`;
+
+export const EndAdornmentContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translate(50%, -50%);
 `;

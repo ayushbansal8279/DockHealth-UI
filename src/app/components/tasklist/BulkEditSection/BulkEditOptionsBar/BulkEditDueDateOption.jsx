@@ -1,49 +1,23 @@
 import React from 'react';
-import moment from 'moment';
 import CalendarIcon from 'img/bulk-edit/CalendarIcon';
-import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
-import { WrapperContainer, IconBox, Button } from './styled';
+import DueDatePicker from 'components/common/DueDatePicker/DueDatePicker';
+import { WrapperContainer, IconBox } from './styled';
 
 const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
-  const dueDateQuickSelectOptions = [
-    {
-      label: 'Today',
-      date: moment(),
-    },
-    {
-      label: 'Tomorrow',
-      date: moment().add(1, 'days'),
-    },
-  ];
-
   return (
-    <PopoverDatepicker
-      onDateChange={date => {
-        const startTime = moment()
-          .startOf('day')
-          .format('HH:mm:ss.SSSZ');
-        handleChangeDateTasks(`${date}T${startTime}`);
+    <DueDatePicker
+      onDateChange={newDueDate => {
+        handleChangeDateTasks(newDueDate.toISOString());
       }}
-      quickSelectOptions={dueDateQuickSelectOptions}
-      openCalendarWithOptions
-      usePortal
+      calendarInitiallyOpen
     >
-      {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-        <Button
-          type="button"
-          ref={elementReference}
-          onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-          disabled={isDisabled}
-        >
-          <WrapperContainer disabled={isDisabled}>
-            <IconBox>
-              <CalendarIcon />
-            </IconBox>
-            <p>Date</p>
-          </WrapperContainer>
-        </Button>
-      )}
-    </PopoverDatepicker>
+      <WrapperContainer disabled={isDisabled}>
+        <IconBox>
+          <CalendarIcon />
+        </IconBox>
+        <p>Date</p>
+      </WrapperContainer>
+    </DueDatePicker>
   );
 };
 

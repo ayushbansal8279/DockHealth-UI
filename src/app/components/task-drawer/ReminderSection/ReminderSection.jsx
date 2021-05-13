@@ -24,10 +24,10 @@ import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
-  const { reminderType, reminderTime, dueDate } = selectedTask || {};
+  const { reminderType, reminderTime = null, dueDate } = selectedTask || {};
 
   const reminderTypeDropdownReference = useRef(null);
-  const { register, unregister, setValue } = useFormContext();
+  const { register, unregister, setValue, watch } = useFormContext();
   const [reminderTypeOptions, setReminderTypeOptions] = useState([]);
   const [reminderTypeValue, setReminderTypeValue] = useState(reminderType);
 
@@ -69,7 +69,7 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
 
     if (!reminderTypeValue || reminderTypeValue === ReminderType.NONE) {
       const defaultType = ReminderType.DAY_OF;
-      const defaultTime = undefined;
+      const defaultTime = null;
 
       setReminderTypeValue(defaultType);
       setValue(REMINDER_TYPE_FIELD_NAME, defaultType);
@@ -136,9 +136,9 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
         isChecked={reminderChecked ?? false}
         onClick={handleToggleReminder}
       />
-      <Spacing horizontal={4} />
+      <Spacing horizontal={3} />
       <Description isDisabled={sectionDisabled}>Reminder</Description>
-      <Spacing horizontal={4} />
+      <Spacing horizontal={3} />
       {!sectionDisabled && (
         <>
           <DropdownInput
@@ -155,16 +155,18 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
           >
             {reminderTypeOptions}
           </DropdownInput>
-          <Spacing horizontal={3} />
+          <Spacing horizontal={2} />
           <Description>at</Description>
-          <Spacing horizontal={3} />
+          <Spacing horizontal={2} />
           <TimeDropdownInput
             type="secondary"
-            name="reminderTime"
             savedValue={reminderTime}
+            value={watch(REMINDER_TIME_FIELD_NAME)}
+            onValueChange={newValue =>
+              setValue(REMINDER_TIME_FIELD_NAME, newValue)
+            }
             onSave={handleSelectReminderTime}
             disabled={sectionDisabled}
-            // isHidden={sectionDisabled}
             endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
             validate={validateReminderTime}
           />
