@@ -10,7 +10,6 @@ import { useMount } from 'react-use';
 import * as TaskListApi from 'api/task-list-api';
 import * as TaskApi from 'api/task-api';
 import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
-import { taskListsSelector } from 'selectors/task-list-selectors';
 import {
   saveTask,
   partialUpdateTask,
@@ -26,7 +25,12 @@ import {
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
-import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import {
+  selectedTaskSelector,
+  taskDrawerOpenSelector,
+  taskDrawerFocusFieldSelector,
+  addingNewSubtaskSelector,
+} from 'selectors/task-drawer-selectors';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
@@ -123,23 +127,10 @@ const initializeTaskDrawerHooks = ({
   onTaskCreation,
   onTaskDelete,
 }) => {
-  const {
-    taskDrawerOpen,
-    taskDrawerFocusField,
-    selectedTask,
-    addingNewSubtask,
-    taskLists,
-    currentUser,
-    selectedFilters,
-  } = useSelector(store => ({
-    taskDrawerOpen: store.taskDrawerState.open,
-    taskDrawerFocusField: store.taskDrawerState.focusField,
-    selectedTask: store.taskState.selectedTask,
-    addingNewSubtask: store.taskState.addingNewSubtask,
-    taskLists: taskListsSelector(store),
-    currentUser: store.userState.userProfile,
-    selectedFilters: selectedFiltersInMegaFilterSelector(store),
-  }));
+  const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
+  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
+  const selectedTask = useSelector(selectedTaskSelector);
+  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
 
   const { taskIdentifier, subTasksCount, subtasks } = selectedTask || {};
 
@@ -152,15 +143,6 @@ const initializeTaskDrawerHooks = ({
   ] = useMentionsEditorState();
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const descriptionReference = useRef(null);
-
-  const currentOrganizationIdentifier = sessionStorage.getItem(
-    'currentOrganizationIdentifier',
-  );
-  const currentOrganization =
-    currentUser?.userOrganizations?.find(
-      ({ organizationIdentifier }) =>
-        organizationIdentifier === currentOrganizationIdentifier,
-    ) || {};
 
   const [emailBodyMembers, setEmailBodyMembers] = useState(null);
 
@@ -474,8 +456,6 @@ const initializeTaskDrawerHooks = ({
   );
 
   return {
-    currentUser,
-    currentOrganization,
     selectedTask,
     selectedParentTask,
     taskDrawerOpen,
@@ -493,7 +473,6 @@ const initializeTaskDrawerHooks = ({
     }),
     formMethods,
     isAddingOrEditingSubtask,
-    taskLists,
     openTaskDrawer,
     closeTaskDrawer,
     isSaving,
@@ -510,7 +489,6 @@ const initializeTaskDrawerHooks = ({
     descriptionReference,
     descriptionErrorState,
     setDescriptionErrorState,
-    selectedFilters,
     dispatch,
     parentDescriptionState,
     setParentDescriptionState,

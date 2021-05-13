@@ -233,6 +233,12 @@ class App extends PureComponent {
         orientationType,
       );
 
+    const mountIdleTimer = userProfile && !isEmpty(userProfile);
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const idleTimerReference = reference => {
+      this.idleTimerForPresence = reference;
+    };
+
     return (
       <AppContainer id="appHome">
         {!showRotateScreenPage && (
@@ -241,7 +247,7 @@ class App extends PureComponent {
             <Modal />
             <ActivityAlertsToasts />
             <div className="new-task" />
-            {userProfile && !isEmpty(userProfile) && (
+            {mountIdleTimer && (
               <IdleTimer
                 ref={reference => {
                   this.idleTimer = reference;
@@ -255,9 +261,7 @@ class App extends PureComponent {
               />
             )}
             <IdleTimer
-              ref={reference => {
-                this.idleTimerForPresence = reference;
-              }}
+              ref={idleTimerReference}
               element={document}
               onActive={this.onActiveForPresence}
               onIdle={this.onIdleForPresence}

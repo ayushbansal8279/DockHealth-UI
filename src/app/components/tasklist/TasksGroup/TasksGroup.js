@@ -22,13 +22,18 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
-
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import {
+  taskDrawerOpenSelector,
+  addingNewSubtaskSelector,
+  addingNewSubtaskParentIdSelector,
+  subtaskShapeSelector,
+} from 'selectors/task-drawer-selectors';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -72,17 +77,12 @@ const TasksGroup = ({
   hasMoreTasks,
   children,
 }) => {
-  const {
-    isTaskDrawerOpen,
-    addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
-  } = useSelector(state => ({
-    isTaskDrawerOpen: state.taskDrawerState.open,
-    addingNewSubtask: state.taskState.addingNewSubtask,
-    addingNewSubtaskParentId: state.taskState.addingNewSubtaskParentId,
-    subtaskShape: state.taskState.subtaskShape,
-  }));
+  const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
+  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
+  const addingNewSubtaskParentId = useSelector(
+    addingNewSubtaskParentIdSelector,
+  );
+  const subtaskShape = useSelector(subtaskShapeSelector);
 
   const [
     highlightedTasksParentIdentifier,
@@ -210,6 +210,25 @@ const TasksGroup = ({
     [applyTemplate, taskGroupIdentifier],
   );
 
+  const changeViewType = value => {
+    setViewType(value);
+    if (value === ViewType.SLIM_VIEW) {
+      onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
+      onSlimViewChanged(true);
+    } else {
+      onTaskGroupViewModeChange(ViewType.FULL_VIEW);
+      onSlimViewChanged(false);
+    }
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const quickTaskInputValidator = value => {
+    if ([...value]?.filter(char => char !== ' ').length < 2)
+      return 'The task description is too short (min. 2 characters)';
+
+    return null;
+  };
+
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
@@ -249,19 +268,7 @@ const TasksGroup = ({
           />
         )}
         {!changingGroupOrderDisabled && (
-          <ViewTypeSwitch
-            value={viewType}
-            onChange={value => {
-              setViewType(value);
-              if (value === ViewType.SLIM_VIEW) {
-                onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
-                onSlimViewChanged(true);
-              } else {
-                onTaskGroupViewModeChange(ViewType.FULL_VIEW);
-                onSlimViewChanged(false);
-              }
-            }}
-          />
+          <ViewTypeSwitch value={viewType} onChange={changeViewType} />
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
@@ -271,12 +278,7 @@ const TasksGroup = ({
               <QuickAddTaskInput
                 taskListIdentifier={taskListIdentifier}
                 quickAddTask={onQuickAddTask}
-                validator={value => {
-                  if ([...value]?.filter(char => char !== ' ').length < 2)
-                    return 'The task description is too short (min. 2 characters)';
-
-                  return null;
-                }}
+                validator={quickTaskInputValidator}
               />
             </Grid>
             {applyTemplate && (

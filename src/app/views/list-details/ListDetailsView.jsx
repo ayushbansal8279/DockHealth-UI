@@ -559,7 +559,6 @@ class Home extends Component {
       isCompletedTasksFetching,
       completedGroupedTasks,
       groupedTasks,
-      selectedTask,
       selectedFilters,
       sort,
     } = this.props;
@@ -625,7 +624,6 @@ class Home extends Component {
                 onTaskUpdate={this.handleTaskUpdate}
                 updateDueDate={this.handleUpdateDueDate}
                 searchValue={searchValue}
-                selectedTask={selectedTask}
                 listUniqueKey={taskListIdentifier}
                 loadMoreTasksForList={this.loadMoreTasksForList}
                 sort={sort}
@@ -646,7 +644,6 @@ class Home extends Component {
                 searchValue={searchValue}
                 sort={sort}
                 onSortChange={listDetailsActions.sortListDetailsTasks}
-                selectedTask={selectedTask}
                 listUniqueKey={taskListIdentifier}
                 taskCounters={taskCounters}
                 loadTasksForTaskGroup={this.loadTasksForTaskGroup}
@@ -680,7 +677,6 @@ const mapStateToProps = state => ({
   isCompletedTasksFetching: completedTasksIsFetchingSelector(state),
   groupedTasks: groupTasksSelector(state),
   completedGroupedTasks: groupCompletedTasksSelector(state),
-  selectedTask: state.taskState.selectedTask,
 });
 
 const mapDispatchToProps = dispatch => ({

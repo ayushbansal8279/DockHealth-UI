@@ -25,7 +25,7 @@ import {
   dashboardAllTaskItemsSelector,
 } from 'selectors/dashboard-tasks-selectors';
 import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
-import { selectedTaskIdentifierSelector } from 'selectors/task-selectors';
+import { selectedTaskIdentifierSelector } from 'selectors/task-drawer-selectors';
 import { dashboardStatisticsIsLoadingSelector } from 'selectors/dashboard-statistics-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';

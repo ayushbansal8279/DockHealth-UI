@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
-import { useDispatch } from 'react-redux';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const initializeTaskDrawerTopSectionHooks = ({
   modalActions,
@@ -12,6 +13,7 @@ const initializeTaskDrawerTopSectionHooks = ({
 }) => {
   const filedInInputReference = useRef(null);
   const dispatch = useDispatch();
+  const taskLists = useSelector(taskListsSelector);
 
   const [
     isFiledInPopoverOpen,
@@ -97,16 +99,14 @@ const initializeTaskDrawerTopSectionHooks = ({
     closeFiledInPopover,
     filedInInputValue,
     onFiledInInputChange,
-
     taskMenuReference,
     isTaskMenuPopoverOpen,
     openTaskMenuPopover,
     closeTaskMenuPopover,
-
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
-
+    taskLists,
     dispatch,
   };
 };

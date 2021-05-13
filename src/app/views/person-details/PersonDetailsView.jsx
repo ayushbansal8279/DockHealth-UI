@@ -9,7 +9,6 @@ import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import * as ModalActions from 'modal/actions';
-
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   tasksIsFetchingSelector,
@@ -24,9 +23,8 @@ import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
-
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
@@ -554,7 +552,7 @@ function mapStateToProps(state) {
     megaFilter: state.megaFilter,
     currentUser: userProfileSelector(state),
     taskCounters: personTaskCountersSelector(state),
-    selectedTask: state.taskState.selectedTask,
+    selectedTask: selectedTaskSelector(state),
     areFiltersApplied: hasFiltersAppliedSelector(state),
     selectedFilters: selectedFiltersInMegaFilterSelector(state),
   };

@@ -72,9 +72,9 @@ const NavigationSidebar = ({
     currentOrganization || {};
 
   useEffect(() => {
-    const unlisten = history.listen(() => {
-      dispatch(TemplateActions.hideSubMenu());
-    });
+    const unlisten = history.listen(() =>
+      dispatch(TemplateActions.hideSubMenu()),
+    );
 
     return () => {
       unlisten();
@@ -82,10 +82,9 @@ const NavigationSidebar = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const closeSubMenu = useCallback(
-    () => dispatch(TemplateActions.hideSubMenu()),
-    [dispatch],
-  );
+  const closeSubMenu = useCallback(() => {
+    if (openedSubMenuKey) dispatch(TemplateActions.hideSubMenu());
+  }, [dispatch, openedSubMenuKey]);
 
   const handleNavigationItemClick = useCallback(
     (subMenuKey, path) => {

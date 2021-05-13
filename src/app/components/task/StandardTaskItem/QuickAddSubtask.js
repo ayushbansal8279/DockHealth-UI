@@ -76,6 +76,35 @@ const QuickAddSubatask = ({
     setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
   };
 
+  const onBlurMentionsEditor = () => {
+    if (!hasInputValue) dispatch(closeQuickAddSubtask(parentTaskIdentifier));
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const keyBindingMentionsEditor = event => {
+    if (event.key === 'Enter') {
+      return 'enter-command';
+    }
+    if (event.key === 'Escape') {
+      return 'escape-command';
+    }
+    return undefined;
+  };
+
+  const handleKeyMentionsEditor = command => {
+    if (command === 'enter-command') {
+      handleInputEnterDown();
+      return 'handled';
+    }
+
+    if (command === 'escape-command') {
+      editorReference.current.blur();
+      return 'handled';
+    }
+
+    return 'not-handled';
+  };
+
   return (
     <StandardTaskItemContainer>
       <MainStandardTaskItemCell
@@ -90,35 +119,12 @@ const QuickAddSubatask = ({
           ref={editorReference}
           taskListIdentifier={taskListIdentifier}
           disabled={isDisabled}
-          onBlur={() => {
-            if (!hasInputValue)
-              dispatch(closeQuickAddSubtask(parentTaskIdentifier));
-          }}
+          onBlur={onBlurMentionsEditor}
           onFocus={onFocus}
           state={newTaskDescription}
           onChange={handleOnChange}
-          keyBindingFn={event => {
-            if (event.key === 'Enter') {
-              return 'enter-command';
-            }
-            if (event.key === 'Escape') {
-              return 'escape-command';
-            }
-            return undefined;
-          }}
-          handleKeyCommand={command => {
-            if (command === 'enter-command') {
-              handleInputEnterDown();
-              return 'handled';
-            }
-
-            if (command === 'escape-command') {
-              editorReference.current.blur();
-              return 'handled';
-            }
-
-            return 'not-handled';
-          }}
+          keyBindingFn={keyBindingMentionsEditor}
+          handleKeyCommand={handleKeyMentionsEditor}
         />
       </MainStandardTaskItemCell>
       <StandardTaskItemCell width="60px" />

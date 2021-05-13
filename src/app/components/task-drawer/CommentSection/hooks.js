@@ -2,14 +2,14 @@
 import { isEmpty } from 'ramda';
 import { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 import { deleteComment, updateComment, addComment } from 'actions/task-actions';
 
 const initializeCommentSectionHooks = ({ modalActions }) => {
-  const { selectedTask, currentUser } = useSelector(store => ({
-    selectedTask: store.taskState.selectedTask,
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
+  const selectedTask = useSelector(selectedTaskSelector);
 
   const [commentsList, setCommentsList] = useState([]);
 

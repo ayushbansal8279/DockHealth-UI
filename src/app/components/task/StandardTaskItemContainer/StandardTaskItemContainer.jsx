@@ -6,6 +6,8 @@ import * as ModalActions from 'modal/actions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+
 import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
 
 const StandardTaskItemContainer = ({
@@ -18,7 +20,7 @@ const StandardTaskItemContainer = ({
   isBundleTask,
   ...restProps
 }) => {
-  const selectedTask = useSelector(store => store.taskState.selectedTask);
+  const selectedTask = useSelector(selectedTaskSelector);
 
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {

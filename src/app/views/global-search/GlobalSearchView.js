@@ -11,6 +11,7 @@ import {
   searchValueSelector,
   isSearchingCompletedTasksSelector,
 } from 'selectors/global-search-selectors';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import EmptyGlobalSearch from 'img/empty-global-search.png';
 import EmptyGlobalSearchResults from 'img/empty-global-search-results';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -143,7 +144,7 @@ const mapStateToProps = store => ({
   lists: globalSearchListsSelector(store),
   searchValue: searchValueSelector(store),
   currentUser: userProfileSelector(store),
-  selectedTask: store.taskState.selectedTask,
+  selectedTask: selectedTaskSelector(store),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalSearchView);

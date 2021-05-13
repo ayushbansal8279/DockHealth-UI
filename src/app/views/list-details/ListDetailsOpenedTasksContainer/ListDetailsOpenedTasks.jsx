@@ -46,7 +46,6 @@ const ListDetailsOpenedTasks = ({
   updateWorkflowStatus,
   isSearchApplied,
   areFiltersApplied,
-  selectedTask,
   listUniqueKey,
   taskCounters,
   loadTasksForTaskGroup,
@@ -192,7 +191,6 @@ const ListDetailsOpenedTasks = ({
             updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             isSearchApplied={isSearchApplied}
-            selectedTask={selectedTask}
             listUniqueKey={listUniqueKey}
             areFiltersApplied={areFiltersApplied}
             groupPagination
@@ -284,7 +282,7 @@ const ListDetailsOpenedTasks = ({
                                       dragAndDropDisabled={
                                         isCompletedGroup || dragAndDropDisabled
                                       }
-                                      selectedTask={selectedTask}
+                                      // selectedTask={selectedTask}
                                       isDraggable={!isTaskDrawerOpen}
                                       addingNewSubtask={addingNewSubtask}
                                       addingNewSubtaskParentId={
@@ -363,7 +361,6 @@ const ListDetailsOpenedTasks = ({
       toggleCompleteTask,
       updateDueDate,
       updateWorkflowStatus,
-      selectedTask,
       listUniqueKey,
       taskListIdentifier,
       sort,

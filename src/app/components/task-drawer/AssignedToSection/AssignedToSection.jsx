@@ -1,21 +1,23 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
-import TextInput from 'components/common/TextInput/TextInput';
-import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
-import { pluck, trim } from 'ramda';
 import React, { useCallback, useEffect } from 'react';
+import TextInput from 'components/common/TextInput/TextInput';
+import { pluck, trim } from 'ramda';
+import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
+import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import { AdornmentClear } from '../styled';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
 
 const AssignedToSection = ({
-  currentUser,
   assignedToUsers,
   taskListIdentifier = null,
   onSave,
 }) => {
   const { register, unregister, setValue, watch } = useFormContext();
+  const currentUser = useSelector(userProfileSelector);
 
   const assignedToUsersValue = watch(ASSIGNED_TO_USERS_FIELD_NAME);
 
