@@ -1,26 +1,19 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { useFormContext } from 'react-hook-form';
-import { isDueDateOverdue } from 'helpers/task-helpers';
+import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
+import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
+import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import ArrowIcon from 'img/arrow';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
+import { ReminderContainer, Description, SelectArrowImg } from './styled';
 import {
-  ReminderContainer,
-  Description,
-  SelectArrowImg,
-  useReminderTypeInputStyles,
-  useReminderTypeTextFieldStyles,
-} from './styled';
-import {
-  ReminderType,
   REMINDER_TYPE_FIELD_NAME,
   REMINDER_TIME_FIELD_NAME,
-  generateReminderTypeSelectOptions,
+  REMINDER_TYPE_OPTIONS,
 } from './helpers';
-import DropdownInput from '../DropdownInput/DropdownInput';
-import TimeDropdownInput from '../TimeDropdownInput/TimeDropdownInput';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
@@ -28,14 +21,9 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
 
   const reminderTypeDropdownReference = useRef(null);
   const { register, unregister, setValue, watch } = useFormContext();
-  const [reminderTypeOptions, setReminderTypeOptions] = useState([]);
   const [reminderTypeValue, setReminderTypeValue] = useState(reminderType);
 
-  const reminderTypeInputClasses = useReminderTypeInputStyles();
-  const reminderTypeTextFieldClasses = useReminderTypeTextFieldStyles();
-
   useEffect(() => {
-    setReminderTypeOptions(generateReminderTypeSelectOptions);
     register(REMINDER_TYPE_FIELD_NAME);
     register(REMINDER_TIME_FIELD_NAME);
 
@@ -141,20 +129,15 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
       <Spacing horizontal={3} />
       {!sectionDisabled && (
         <>
-          <DropdownInput
+          <SecondaryDropdownInput
             ref={reminderTypeDropdownReference}
             name={REMINDER_TYPE_FIELD_NAME}
             placeholder="--"
-            InputProps={{
-              endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
-              classes: reminderTypeInputClasses,
-            }}
-            textFieldClasses={reminderTypeTextFieldClasses}
             onSelect={handleSelectReminderType}
             disabled={sectionDisabled}
-          >
-            {reminderTypeOptions}
-          </DropdownInput>
+            width={130}
+            options={REMINDER_TYPE_OPTIONS}
+          />
           <Spacing horizontal={2} />
           <Description>at</Description>
           <Spacing horizontal={2} />

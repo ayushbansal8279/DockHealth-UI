@@ -8,7 +8,7 @@ import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
-import InputPopover from '../InputPopover/InputPopover';
+import InputPopover from 'components/common/InputPopover/InputPopover';
 import { HorizontalLabel } from '../styled';
 import {
   FiledInSelect,

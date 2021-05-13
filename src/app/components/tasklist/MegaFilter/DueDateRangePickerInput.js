@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
-// import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import { ClickAwayListener, Popper } from '@material-ui/core';
 import useBoolean from 'hooks/useBoolean';

@@ -1,7 +1,11 @@
 import React from 'react';
 import moment from 'moment';
+import RecurringIcon from 'img/recurring-arrows';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
-import DueDatePicker from 'components/common/DueDatePicker/DueDatePicker';
+import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
+import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
+import Spacing from 'components/common/Spacing';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   DueDateContentWrapper,
   DueDateContent,
@@ -27,26 +31,38 @@ function formatDueTime(dueDate) {
   return dueTime;
 }
 
-const DueDateSection = ({
-  dueDate,
-  onDueDateChange,
-  isOverdue,
-  isTemplateTask,
-}) => {
+const DueDateSection = ({ selectedTask, onDueDateChange }) => {
+  const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask || {};
   const momentDueDate = dueDate ? moment(dueDate) : null;
+  const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   return (
     <DueDateSectionWrapper disabled={isTemplateTask}>
       <DueDateLabel>Due date</DueDateLabel>
-      <DueDatePicker
+      <DueDatePickerPopover
+        taskIdentifier={taskIdentifier}
         disabled={isTemplateTask}
         selectedDate={dueDate}
         onDateChange={onDueDateChange}
+        recurring={hasRecurringSchedule}
       >
         <DueDateContentWrapper>
           {momentDueDate ? (
-            <DueDateContent error={isOverdue}>
-              <DueDateText>{momentDueDate.format('YYYY/MM/DD')}</DueDateText>
+            <DueDateContent error={isDueDateOverdue(selectedTask)}>
+              <DueDateText>
+                {momentDueDate.format('MM/DD/YY')}
+                {hasRecurringSchedule && (
+                  <>
+                    <Spacing horizontal={3} />
+                    <Tooltip title="Recurring Task" placement="right">
+                      <>
+                        <RecurringIcon />
+                        <Spacing horizontal={3} />
+                      </>
+                    </Tooltip>
+                  </>
+                )}
+              </DueDateText>
               <DueDateText>{formatDueTime(dueDate)}</DueDateText>
               <AdornmentClear onClick={() => onDueDateChange(null)} />
             </DueDateContent>
@@ -58,7 +74,7 @@ const DueDateSection = ({
             </Placeholder>
           )}
         </DueDateContentWrapper>
-      </DueDatePicker>
+      </DueDatePickerPopover>
     </DueDateSectionWrapper>
   );
 };

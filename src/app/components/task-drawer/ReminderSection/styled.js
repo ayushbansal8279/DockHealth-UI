@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { makeStyles } from '@material-ui/core/styles';
 import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -38,34 +37,3 @@ export const SelectArrowImg = styled.img`
   cursor: pointer;
   pointer-events: none;
 `;
-
-export const useReminderTypeInputStyles = makeStyles({
-  root: {
-    marginTop: '0 !important',
-    backgroundColor: palette.blueGrey,
-    paddingRight: `${spacing.small} !important`,
-  },
-  input: {
-    padding: `${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small}`,
-    borderRadius: 4,
-    fontFamily: "'Roboto Condensed', sans-serif",
-    color: palette.mediumGrey,
-    '&[readonly]': {
-      cursor: 'pointer',
-      backgroundColor: palette.blueGrey,
-    },
-    '&:focus': {
-      border: 'none',
-    },
-    '&:disabled': {
-      cursor: 'initial',
-    },
-  },
-});
-
-export const useReminderTypeTextFieldStyles = makeStyles({
-  root: {
-    border: 'none',
-    width: 130,
-  },
-});

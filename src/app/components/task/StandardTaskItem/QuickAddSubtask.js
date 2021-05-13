@@ -125,7 +125,7 @@ const QuickAddSubatask = ({
       {patientVisible && <StandardTaskItemCell width="164px" />}
       <StandardTaskItemCell width="120px" />
       <StandardTaskItemCell width="150px" />
-      <StandardTaskItemCell width="60px" />
+      <StandardTaskItemCell width="78px" />
       <StandardTaskItemCell width={`${multipleAssigneesContext ? 90 : 60}px`} />
       {listNameVisible && <StandardTaskItemCell width="168px" />}
     </StandardTaskItemContainer>

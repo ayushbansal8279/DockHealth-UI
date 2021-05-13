@@ -1,30 +1,47 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import moment from 'moment';
-import DueDatePicker from 'components/common/DueDatePicker/DueDatePicker';
+import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { isDueDateOverdue } from 'helpers/task-helpers';
+import Spacing from 'components/common/Spacing';
+import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
-import { DueDateBasicLabel, StandardTaskItemCell } from '../../styled';
+import RecurringIcon from 'img/recurring-arrows';
+import ReminderIcon from 'img/reminder';
+import {
+  DueDateBasicLabel,
+  StandardTaskItemCell,
+  DateText,
+} from '../../styled';
 
-const TaskItemDueDate = ({ dueDate, task, isHovered, updateDueDate }) => {
+const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
+  const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
+    task || {};
+
+  const handleDueDateChange = useCallback(
+    newDueDate => {
+      updateDueDate(task, newDueDate, true);
+
+      onTaskDueDateChanged();
+    },
+    [task, updateDueDate],
+  );
+
   return (
     <StandardTaskItemCell
       paddingLeft="tiny"
       paddingRight="tiny"
-      width="60px"
+      width="78px"
       justify="center"
       onContextMenu={event => {
         event.stopPropagation();
       }}
     >
-      <DueDatePicker
+      <DueDatePickerPopover
+        taskIdentifier={taskIdentifier}
         selectedDate={dueDate}
-        onDateChange={newDueDate => {
-          updateDueDate(task, newDueDate, true);
-
-          onTaskDueDateChanged();
-        }}
+        onDateChange={handleDueDateChange}
+        recurring={hasRecurringSchedule}
       >
         <Tooltip
           placement="top"
@@ -32,13 +49,25 @@ const TaskItemDueDate = ({ dueDate, task, isHovered, updateDueDate }) => {
         >
           {dueDate ? (
             <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
-              {moment(dueDate).format('MM/DD')}
+              <DateText>{moment(dueDate).format('MM/DD')}</DateText>
+              {reminderType && reminderType !== ReminderType.NONE && (
+                <>
+                  <Spacing horizontal={2} />
+                  <ReminderIcon />
+                </>
+              )}
+              {hasRecurringSchedule && (
+                <>
+                  <Spacing horizontal={2} />
+                  <RecurringIcon />
+                </>
+              )}
             </DueDateBasicLabel>
           ) : (
             <TaskIcon type="calendar" isHovered={isHovered} />
           )}
         </Tooltip>
-      </DueDatePicker>
+      </DueDatePickerPopover>
     </StandardTaskItemCell>
   );
 };

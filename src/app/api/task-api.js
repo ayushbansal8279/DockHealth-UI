@@ -553,3 +553,15 @@ export function reorderSubtasks(
       throw error;
     });
 }
+
+export function getTaskRecurringSchedule(taskIdentifier) {
+  return axios
+    .get(`task/getTaskRecurringSchedule/${taskIdentifier}`)
+    .then(({ data }) => data);
+}
+
+export function saveTaskRecurringSchedule(taskIdentifier, recurringData) {
+  return axios
+    .patch(`task/setTaskRecurringSchedule/${taskIdentifier}`, recurringData)
+    .then(({ data }) => data);
+}

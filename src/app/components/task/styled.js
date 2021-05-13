@@ -147,8 +147,11 @@ export const DueDate = styled.span`
 `;
 
 export const DueDateBasicLabel = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   padding: 2px ${spacing.tiny};
-  border-radius: 4px;
+  border-radius: 6px;
   background: ${({ isOverdue }) => (isOverdue ? '#e84739' : '#949aa4')};
   color: ${palette.white};
   font-size: ${fontSizes.small};
@@ -440,4 +443,8 @@ export const PatientLabel = styled.span`
     color: ${palette.brightBlue};
     text-decoration: underline;
   }
+`;
+
+export const DateText = styled.p`
+  margin-bottom: 0;
 `;

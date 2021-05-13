@@ -8,7 +8,7 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
@@ -315,10 +315,8 @@ const TaskDrawer = ({
               <Grid item xs={6} style={styleLeftColumn}>
                 <div ref={dueDateSectionReference}>
                   <DueDateSection
-                    dueDate={selectedTask?.dueDate}
+                    selectedTask={selectedTask}
                     onDueDateChange={handleDueDateSave}
-                    isOverdue={isDueDateOverdue(selectedTask)}
-                    isTemplateTask={isTemplateTask}
                   />
                 </div>
               </Grid>

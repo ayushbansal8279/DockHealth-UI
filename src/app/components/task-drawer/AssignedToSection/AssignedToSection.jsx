@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
+import TextInput from 'components/common/TextInput/TextInput';
 import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
 import { pluck, trim } from 'ramda';
 import React, { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { AdornmentClear } from '../styled';
-import TextInput from '../TextInput/TextInput';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
 

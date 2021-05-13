@@ -90,7 +90,11 @@ export const DueDate = styled.span`
 export const DueDateContainer = styled.div`
   position: relative;
   display: flex;
-  flex-basis: 60px;
+  flex-basis: 78px;
   justify-content: center;
   text-align: center;
+`;
+
+export const DueDateText = styled.p`
+  margin-bottom: 0;
 `;

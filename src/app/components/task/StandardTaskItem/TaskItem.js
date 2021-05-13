@@ -103,7 +103,6 @@ const TaskItem = ({
     description,
     tokenizedDescription,
     taskMentions,
-    dueDate,
     labels,
     patient,
     workflowStatus,
@@ -412,7 +411,6 @@ const TaskItem = ({
             mergedTaskItemConfig,
           ) && (
             <TaskItemDueDate
-              dueDate={dueDate}
               task={task}
               isHovered={isHovered}
               updateDueDate={updateDueDate}

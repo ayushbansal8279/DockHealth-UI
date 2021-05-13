@@ -5,7 +5,7 @@ import SmallSwitchChevron from 'img/list-switch-chevron';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
-import DropdownInput from '../DropdownInput/DropdownInput';
+import DropdownInput from 'components/common/DropdownInput/DropdownInput';
 import initializePrioritySectionHooks, { PRIORITIES } from './hooks';
 import {
   PriorityLabelContainer,

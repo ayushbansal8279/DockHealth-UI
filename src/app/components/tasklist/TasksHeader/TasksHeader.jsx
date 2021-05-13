@@ -75,7 +75,7 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.DUE_DATE}
           label="Date"
-          width={60}
+          width={78}
           sort={sort}
           onSortChange={onSortChange}
         />

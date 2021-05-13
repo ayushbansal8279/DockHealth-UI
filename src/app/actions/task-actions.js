@@ -883,6 +883,16 @@ export function selectTask(taskIdentifier, newSelectState) {
   };
 }
 
+export function setRecurringScheduleFlag(taskIdentifier, hasRecurringSchedule) {
+  return {
+    type: ActionTypes.UPDATE_TASK_SUCCESS,
+    task: {
+      taskIdentifier,
+      hasRecurringSchedule,
+    },
+  };
+}
+
 export function unselectAllTasks() {
   return {
     type: ActionTypes.UNSELECT_ALL_TASKS,

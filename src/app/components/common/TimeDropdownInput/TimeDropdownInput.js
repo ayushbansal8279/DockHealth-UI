@@ -9,8 +9,7 @@ import React, {
 import { bool, func, node, oneOf, string } from 'prop-types';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
-import { AdornmentClear } from '../styled';
-import InputPopover from '../InputPopover/InputPopover';
+import InputPopover from 'components/common/InputPopover/InputPopover';
 import {
   TimeDropdownContainer,
   TimeLabelContainer,
@@ -280,19 +279,8 @@ const TimeDropdownInput = ({
           autoComplete="off"
           disabled={disabled}
         />
-        {endAdornment ? (
+        {endAdornment && (
           <EndAdornmentContainer>{endAdornment}</EndAdornmentContainer>
-        ) : (
-          <AdornmentClear
-            onClick={() => {
-              if (!disabled) saveTime('');
-            }}
-            disabled={disabled}
-            style={{
-              marginLeft: '20px',
-              marginBottom: '2px',
-            }}
-          />
         )}
       </TimeInputMaskContainer>
       <InputPopover
