@@ -155,7 +155,6 @@ const RecurringSection = ({
   const recurringFormSubmit = useCallback(
     data => {
       const requestData = clone(data);
-      delete requestData[FormField.endsOption];
 
       if (requestData[FormField.END_DATE]) {
         const date = requestData[FormField.END_DATE];
