@@ -79,7 +79,7 @@ const DueDatePicker = ({
           type="secondary"
           savedValue={selectedTime}
           onSave={handleTimePick}
-          disabled={false}
+          disabled={!selectedDate}
           endAdornment={<img src={TimeIcon} alt="Arrow" />}
           hideError
         />
