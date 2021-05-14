@@ -121,6 +121,11 @@ const RecurringSection = ({
       case RecurringOption.EVERYDAY_SUN_SAT:
         setValue(FormField.RECURRING_ON_DAYS, [
           DayOfWeek.SATURDAY,
+          DayOfWeek.MONDAY,
+          DayOfWeek.TUESDAY,
+          DayOfWeek.WEDNESDAY,
+          DayOfWeek.THURSDAY,
+          DayOfWeek.FRIDAY,
           DayOfWeek.SUNDAY,
         ]);
         break;
