@@ -29,11 +29,7 @@ const DueDatePicker = ({
   disableRecurring,
   onCloseClick,
 }) => {
-  const [
-    recurringSectionVisible,
-    showRecurringSection,
-    hideRecurringSection,
-  ] = useBoolean(recurring);
+  const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
 
   const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
   const selectedTime = momentSelectedDate?.format(TIME_12H_FORMAT) || null;
@@ -103,7 +99,7 @@ const DueDatePicker = ({
               taskIdentifier={taskIdentifier}
               selectedDueDate={selectedDate}
               recurring={recurring}
-              onClose={hideRecurringSection}
+              onClose={onCloseClick}
             />
           ) : (
             <>

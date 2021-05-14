@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import moment from 'moment';
 import { Box } from '@material-ui/core';
@@ -44,7 +44,6 @@ const RecurringSection = ({
   onClose,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const savedFormValues = useRef(null);
   const [endDateError, setEndDateError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const formContext = useForm({
@@ -97,7 +96,6 @@ const RecurringSection = ({
       getTaskRecurringSchedule(taskIdentifier)
         .then(data => {
           fillFormWithData(data);
-          savedFormValues.current = data;
         })
         .catch(() => {
           dispatch(showGlobalErrorAlert());
@@ -153,15 +151,6 @@ const RecurringSection = ({
     }
   }, [recurringOptionValue, setValue]);
 
-  const handleCancel = () => {
-    if (savedFormValues.current) {
-      if (endDateError) setEndDateError(false);
-      fillFormWithData(savedFormValues.current);
-    } else {
-      onClose();
-    }
-  };
-
   const recurringFormSubmit = useCallback(
     data => {
       const requestData = clone(data);
@@ -183,25 +172,28 @@ const RecurringSection = ({
       saveTaskRecurringSchedule(taskIdentifier, requestData)
         .then(() => {
           setIsSaving(false);
-          if (
-            requestData[FormField.RECURRING_OPTION] ===
-            RecurringOption.DO_NOT_REPEAT
-          ) {
-            dispatch(setRecurringScheduleFlag(taskIdentifier, false));
-            onClose();
-          } else {
-            savedFormValues.current = requestData;
-            dispatch(setRecurringScheduleFlag(taskIdentifier, true));
-          }
 
+          const hasRecurringScheduleAfterSave =
+            requestData[FormField.RECURRING_OPTION] !==
+            RecurringOption.DO_NOT_REPEAT;
+
+          if (recurring !== hasRecurringScheduleAfterSave) {
+            dispatch(
+              setRecurringScheduleFlag(
+                taskIdentifier,
+                hasRecurringScheduleAfterSave,
+              ),
+            );
+          }
           dispatch(showGlobalAlert(AlertMessages.UPDATED));
+          onClose();
         })
         .catch(() => {
           setIsSaving(false);
           dispatch(showGlobalErrorAlert());
         });
     },
-    [dispatch, onClose, taskIdentifier],
+    [dispatch, onClose, recurring, taskIdentifier],
   );
 
   const handleRecurringOptionSelect = newValue => {
@@ -317,7 +309,7 @@ const RecurringSection = ({
           <ActionButton
             type="button"
             textColor={palette.coolGrey1}
-            onClick={handleCancel}
+            onClick={onClose}
             disabled={isSaving}
           >
             Cancel
