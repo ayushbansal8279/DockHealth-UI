@@ -7,14 +7,14 @@ import {
   NumberInput,
 } from './styled';
 
-const SecondaryNumberInput = ({ name, value, onChange }) => {
+const SecondaryNumberInput = ({ name, value, onChange, onBlur }) => {
   const increment = () => {
-    const newValue = !value ? 1 : value + 1;
+    const newValue = !value ? 1 : Number(value) + 1;
     onChange(newValue);
   };
 
   const decrement = () => {
-    const newValue = !value ? -1 : value - 1;
+    const newValue = !value ? -1 : Number(value) - 1;
     onChange(newValue);
   };
 
@@ -24,7 +24,12 @@ const SecondaryNumberInput = ({ name, value, onChange }) => {
         name={name}
         type="number"
         value={value}
-        onChange={event => onChange(event.target?.value || 0)}
+        onChange={event => {
+          if (typeof onChange === 'function') onChange(event.target?.value);
+        }}
+        onBlur={event => {
+          if (typeof onBlur === 'function') onBlur(event);
+        }}
       />
       <ArrowsWrapper>
         <UpArrow type="button" onClick={increment} />

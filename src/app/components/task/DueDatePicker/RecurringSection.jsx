@@ -57,6 +57,7 @@ const RecurringSection = ({
   const recurringOptionValue = watch(FormField.RECURRING_OPTION);
   const endsValue = watch(FormField.ENDS);
   const recurringOnDaysValue = watch(FormField.RECURRING_ON_DAYS);
+  const numberOfOccurrencesValue = watch(FormField.NUMBER_OF_OCCURRENCES);
 
   const fillFormWithData = newData => {
     setValue(FormField.RECURRING_OPTION, newData[FormField.RECURRING_OPTION]);
@@ -227,7 +228,7 @@ const RecurringSection = ({
         break;
       case EndsOption.AFTER_OCCURRENCES:
         if (endDateError) setEndDateError(false);
-        setValue(FormField.NUMBER_OF_OCCURRENCES, 0);
+        setValue(FormField.NUMBER_OF_OCCURRENCES, 1);
         setValue(FormField.END_DATE, null);
         break;
       default:
@@ -294,10 +295,18 @@ const RecurringSection = ({
                   <Spacing horizontal={3} />
                   <SecondaryNumberInput
                     name={FormField.NUMBER_OF_OCCURRENCES}
-                    value={watch(FormField.NUMBER_OF_OCCURRENCES)}
+                    value={numberOfOccurrencesValue}
                     onChange={newValue => {
-                      if (newValue >= 0)
-                        setValue(FormField.NUMBER_OF_OCCURRENCES, newValue);
+                      if (newValue === '' || Number(newValue) > 0) {
+                        setValue(
+                          FormField.NUMBER_OF_OCCURRENCES,
+                          newValue === '' ? '' : Number(newValue),
+                        );
+                      }
+                    }}
+                    onBlur={() => {
+                      if (numberOfOccurrencesValue === '')
+                        setValue(FormField.NUMBER_OF_OCCURRENCES, 1);
                     }}
                   />
                 </>
