@@ -56,7 +56,4 @@ export const FORM_DEFAULT_VALUES = {
   [FormField.END_DATE]: null,
 };
 
-export const OPTIONS_ALLOWED_TO_DAY_SELECTION = [
-  RecurringOption.BIWEEKLY,
-  RecurringOption.WEEKLY,
-];
+export const OPTIONS_ALLOWED_TO_DAY_SELECTION = [RecurringOption.WEEKLY];
