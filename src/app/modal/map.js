@@ -31,6 +31,7 @@ import RightClickTourModal from './components/NewFeaturesModals/RightClickTourMo
 import MultiAssignTourModal from './components/NewFeaturesModals/MultiAssignTourModal/MultiAssignTourModal';
 import HomeImprovementsTourModal from './components/NewFeaturesModals/HomeImprovementsTourModal/HomeImprovementsTourModal';
 import TaskWorkflowTourModal from './components/NewFeaturesModals/TaskWorkflowTourModal/TaskWorkflowTourModal';
+import RecurringTaskTourModal from './components/NewFeaturesModals/RecurringTaskTourModal/RecurringTaskTourModal';
 import MultiMentionAssignTourModal from './components/NewFeaturesModals/MultiMentionAssignTourModal/MultiMentionAssignTourModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
@@ -77,6 +78,7 @@ const MODAL_MAP = {
   MultiAssignTour: MultiAssignTourModal,
   HomeImprovementsTour: HomeImprovementsTourModal,
   TaskWorkflowTour: TaskWorkflowTourModal,
+  RecurringTaskTour: RecurringTaskTourModal,
   MultiMentionAssignTour: MultiMentionAssignTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
