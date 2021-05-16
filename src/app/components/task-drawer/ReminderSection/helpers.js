@@ -1,48 +1,19 @@
-import React from 'react';
-import { ReminderTypeSelectOption } from './styled';
+import { ReminderType } from 'helpers/task-helpers';
 
 export const REMINDER_TYPE_FIELD_NAME = 'reminderType';
 export const REMINDER_TIME_FIELD_NAME = 'reminderTime';
 
-export const ReminderType = {
-  NONE: 'NONE',
-  DAY_OF: 'DAY_OF',
-  DAY_BEFORE_1: 'DAY_BEFORE_1',
-  DAY_BEFORE_2: 'DAY_BEFORE_2',
-  WEEK_BEFORE_1: 'WEEK_BEFORE_1',
+export const ReminderLabel = {
+  [ReminderType.NONE]: '--',
+  [ReminderType.DAY_OF]: 'On due date',
+  [ReminderType.DAY_BEFORE_1]: '1 day before',
+  [ReminderType.DAY_BEFORE_2]: '2 days before',
+  [ReminderType.WEEK_BEFORE_1]: '1 week before',
 };
 
-export function getReminderTypeLabel(reminderType) {
-  switch (reminderType) {
-    case ReminderType.NONE:
-      return '--';
-    case ReminderType.DAY_OF:
-      return 'On due date';
-    case ReminderType.DAY_BEFORE_1:
-      return '1 day before';
-    case ReminderType.DAY_BEFORE_2:
-      return '2 days before';
-    case ReminderType.WEEK_BEFORE_1:
-      return '1 week before';
-    default:
-      return null;
-  }
-}
-
-export function generateReminderTypeSelectOptions() {
-  return Object.values(ReminderType)
-    .filter(value => value !== ReminderType.NONE)
-    .map(value => {
-      const label = getReminderTypeLabel(value);
-      return {
-        key: value,
-        label: isHovered => (
-          <ReminderTypeSelectOption isActive={isHovered}>
-            {label}
-          </ReminderTypeSelectOption>
-        ),
-        value,
-        displayLabel: label,
-      };
-    });
-}
+export const REMINDER_TYPE_OPTIONS = Object.values(ReminderType)
+  .filter(value => value !== ReminderType.NONE)
+  .map(value => ({
+    value,
+    label: ReminderLabel[value],
+  }));

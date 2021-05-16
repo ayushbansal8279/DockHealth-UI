@@ -119,7 +119,7 @@ export const TaskTemplateNameInput = styled.input`
 `;
 
 export const TaskTemplatePatientHeader = styled.div`
-  width: 164px;
+  width: 182px;
 `;
 
 export const TaskTemplateRight = styled.div`

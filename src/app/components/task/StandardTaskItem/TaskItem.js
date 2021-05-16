@@ -103,7 +103,6 @@ const TaskItem = ({
     description,
     tokenizedDescription,
     taskMentions,
-    dueDate,
     labels,
     patient,
     workflowStatus,
@@ -443,7 +442,6 @@ const TaskItem = ({
           )}
           {dueDateIsInConfig && (
             <TaskItemDueDate
-              dueDate={dueDate}
               task={task}
               isHovered={isHovered}
               updateDueDate={updateDueDate}

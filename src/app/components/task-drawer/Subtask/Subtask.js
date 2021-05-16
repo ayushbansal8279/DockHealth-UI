@@ -5,12 +5,15 @@ import { pluck } from 'ramda';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import SimpleArrowRight from 'img/simple-arrow-right';
+import RecurringIcon from 'img/recurring-arrows';
+import ReminderIcon from 'img/reminder';
 import {
   onTaskDrawerSubtaskCompleted,
   onTaskDrawerSubtaskReActivated,
   onTaskDrawerSubtaskAssigned,
 } from 'helpers/ga-event-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import Spacing from 'components/common/Spacing';
 import {
   storeAsCurrentTask,
   toggleCompleteTask,
@@ -18,7 +21,7 @@ import {
   partialUpdateTask,
 } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
-import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
+import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
@@ -32,6 +35,7 @@ import {
   getCommentsIconTooltipTitle,
   getLabelsIconTooltipTitle,
   isDueDateOverdue,
+  ReminderType,
 } from 'helpers/task-helpers';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import {
@@ -45,24 +49,15 @@ import {
   DueDateContainer,
   IconContainer,
   DescriptionLabel,
+  DueDateText,
 } from './styled';
-
-const DUE_DATE_PICKER_OPTIONS = [
-  {
-    label: 'Today',
-    date: moment(),
-  },
-  {
-    label: 'Tomorrow',
-    date: moment().add(1, 'days'),
-  },
-];
 
 const Subtask = ({ subtask, currentUser }) => {
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
   const {
+    taskIdentifier,
     status,
     description,
     edited,
@@ -78,6 +73,8 @@ const Subtask = ({ subtask, currentUser }) => {
     attachments,
     updatedAttachment,
     taskList,
+    hasRecurringSchedule,
+    reminderType,
   } = subtask;
 
   const isCompleted = status === 'COMPLETE';
@@ -116,13 +113,17 @@ const Subtask = ({ subtask, currentUser }) => {
     dispatch(openDrawer(DrawerFieldEnum.ATTACHEMENT));
   };
 
+  const handleDueDateChange = useCallback(
+    newDueDate => {
+      updateDueDate(subtask, newDueDate, true)(dispatch);
+    },
+    [dispatch, subtask],
+  );
+
   return (
     <Container
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => {
-        storeAsCurrentTask(subtask)(dispatch);
-      }}
     >
       <CircleIcon
         src={isCompleted ? CircleCompleted : Circle}
@@ -136,7 +137,11 @@ const Subtask = ({ subtask, currentUser }) => {
           dispatch(toggleCompleteTask(subtask, currentUser));
         }}
       />
-      <DescriptionContainer>
+      <DescriptionContainer
+        onClick={() => {
+          storeAsCurrentTask(subtask)(dispatch);
+        }}
+      >
         <Description isCrossedOut={isCompleted}>
           <MentionsEditor
             readOnly
@@ -204,41 +209,36 @@ const Subtask = ({ subtask, currentUser }) => {
         </IconContainer>
       </IconsSection>
       <DueDateContainer>
-        <PopoverDatepicker
+        <DueDatePickerPopover
+          taskIdentifier={taskIdentifier}
           selectedDate={dueDate}
-          onDateChange={date => {
-            const existingTime = dueDate ? moment(dueDate).format('HH:mm') : '';
-            updateDueDate(
-              subtask,
-              moment(`${date} ${existingTime}`),
-              true,
-            )(dispatch);
-          }}
-          quickSelectOptions={DUE_DATE_PICKER_OPTIONS}
+          onDateChange={handleDueDateChange}
+          recurring={hasRecurringSchedule}
         >
-          {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
-            <button
-              type="button"
-              onClick={event => {
-                event.stopPropagation();
-                setIsPopoverOpen(!isPopoverOpen);
-              }}
-              ref={elementReference}
-            >
-              {dueDate ? (
-                <Tooltip placement="top" title="Edit due date">
-                  <DueDateBasicLabel isOverdue={isDueDateOverdue(subtask)}>
-                    {moment(dueDate).format('MM/DD')}
-                  </DueDateBasicLabel>
-                </Tooltip>
-              ) : (
-                <Tooltip placement="top" title="Add due date">
-                  <TaskIcon type="calendar" isHovered={isHovered} />
-                </Tooltip>
-              )}
-            </button>
+          {dueDate ? (
+            <Tooltip placement="top" title="Edit due date">
+              <DueDateBasicLabel isOverdue={isDueDateOverdue(subtask)}>
+                <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
+                {reminderType && reminderType !== ReminderType.NONE && (
+                  <>
+                    <Spacing horizontal={2} />
+                    <ReminderIcon />
+                  </>
+                )}
+                {hasRecurringSchedule && (
+                  <>
+                    <Spacing horizontal={2} />
+                    <RecurringIcon />
+                  </>
+                )}
+              </DueDateBasicLabel>
+            </Tooltip>
+          ) : (
+            <Tooltip placement="top" title="Add due date">
+              <TaskIcon type="calendar" isHovered={isHovered} />
+            </Tooltip>
           )}
-        </PopoverDatepicker>
+        </DueDatePickerPopover>
       </DueDateContainer>
       <AssigneeContainer>
         <MultiAssignPopover
@@ -257,7 +257,11 @@ const Subtask = ({ subtask, currentUser }) => {
           )}
         </MultiAssignPopover>
       </AssigneeContainer>
-      <GoToParentIconContainer>
+      <GoToParentIconContainer
+        onClick={() => {
+          storeAsCurrentTask(subtask)(dispatch);
+        }}
+      >
         <img src={SimpleArrowRight} alt="Go to parent task" />
       </GoToParentIconContainer>
     </Container>

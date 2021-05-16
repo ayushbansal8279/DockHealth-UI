@@ -11,14 +11,14 @@ import {
   shape,
   string,
 } from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 
 import useBoolean from 'hooks/useBoolean';
-import InputPopover from '../InputPopover/InputPopover';
-import TextInput from '../TextInput/TextInput';
+import InputPopover from 'components/common/InputPopover/InputPopover';
+import TextInput from 'components/common/TextInput/TextInput';
 
 const StyledButton = styled.button`
   display: block;
@@ -47,6 +47,9 @@ const DropdownInput = React.forwardRef(
     },
     reference,
   ) => {
+    const innerInputReference = useRef(null);
+    const inputReference = reference || innerInputReference;
+
     const [isPopoverOpen, openPopover, closePopover] =
       popoverStateArray ?? useBoolean(false);
 
@@ -135,7 +138,7 @@ const DropdownInput = React.forwardRef(
             disabled,
             ...inputProps,
           }}
-          ref={reference}
+          ref={inputReference}
           className={className}
           required={required}
           classes={textFieldClasses}
@@ -151,7 +154,7 @@ const DropdownInput = React.forwardRef(
           autoFocusEnabled={false}
         />
         <InputPopover
-          anchorElement={reference}
+          anchorElement={inputReference}
           isPopoverOpen={isPopoverOpen}
           closePopover={closePopover}
         >

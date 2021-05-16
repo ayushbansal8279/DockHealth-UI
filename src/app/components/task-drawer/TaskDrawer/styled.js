@@ -41,10 +41,6 @@ export const MemberAdornmentContainer = styled.div`
   margin-right: 1rem;
 `;
 
-export const HiddenFieldContainer = styled.div`
-  visibility: ${props => (props.visible ? 'visible' : 'hidden')};
-`;
-
 export const FormSectionDivider = styled.div`
   background-color: ${props =>
     props.active ? palette.vividPink : palette.unknownGrey2};

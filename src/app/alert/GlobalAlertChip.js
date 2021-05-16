@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
+import ReactDOM from 'react-dom';
 import * as TaskApi from 'api/task-api';
 
 import {
@@ -119,7 +120,7 @@ class GlobalAlertChip extends Component {
 
     const { counter } = this.state;
 
-    return (
+    return ReactDOM.createPortal(
       <ChipContainer
         isOpen={isGlobalOpen}
         type={type}
@@ -144,7 +145,8 @@ class GlobalAlertChip extends Component {
           </UndoButtonContent>
         </UndoButton>
         <ChipBackground />
-      </ChipContainer>
+      </ChipContainer>,
+      document.querySelector('body'),
     );
   };
 }

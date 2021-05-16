@@ -13,7 +13,9 @@ export function isTimeValid(value) {
 
 export function generateTimeOptions() {
   return new Array(24).fill().reduce((accumulator, currentValue, index) => {
-    accumulator.push(moment({ hour: index }).format(TIME_12H_FORMAT));
+    if (index !== 0)
+      accumulator.push(moment({ hour: index }).format(TIME_12H_FORMAT));
+
     accumulator.push(
       moment({ hour: index, minutes: 30 }).format(TIME_12H_FORMAT),
     );

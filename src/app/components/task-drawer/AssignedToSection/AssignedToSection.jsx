@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useCallback, useEffect } from 'react';
+import TextInput from 'components/common/TextInput/TextInput';
 import { pluck, trim } from 'ramda';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
@@ -7,7 +8,6 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
 import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import { AdornmentClear } from '../styled';
-import TextInput from '../TextInput/TextInput';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
 

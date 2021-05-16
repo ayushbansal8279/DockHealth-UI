@@ -37,6 +37,7 @@ const TaskTemplatePopover = ({
         square: true,
         style: {
           width: 325,
+          maxHeight: 400,
         },
       }}
       anchorOrigin={{

@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { useMount, useUpdate } from 'react-use';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useMount } from 'react-use';
 import moment from 'moment';
 import { Grid, IconButton } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
@@ -28,8 +28,6 @@ const Datepicker = ({
 }) => {
   const [currentMonthMoment, setCurrentMonthMoment] = useState(null);
 
-  const forceUpdate = useUpdate();
-
   const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
 
   useMount(() => {
@@ -39,6 +37,21 @@ const Datepicker = ({
       ),
     );
   });
+
+  const setMonthByDate = value => {
+    if (currentMonthMoment?.isSame(value, 'month')) return;
+
+    const nextMonthMomentValue = value?.startOf('month');
+    setCurrentMonthMoment(nextMonthMomentValue);
+    onMonthChange(nextMonthMomentValue);
+  };
+
+  useEffect(() => {
+    if (momentSelectedDate) {
+      setMonthByDate(momentSelectedDate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
 
   const formattedCurrentMonth = getCalendarFormattedMonth(currentMonthMoment);
 
@@ -56,21 +69,12 @@ const Datepicker = ({
     [formattedCurrentMonth, selectedDate],
   );
 
-  const changeMonth = useCallback(
-    value => {
-      const nextMonthMomentValue = currentMonthMoment
-        ?.add(value, 'month')
-        ?.startOf('month');
-      setCurrentMonthMoment(nextMonthMomentValue);
+  const setNextMonth = () =>
+    setMonthByDate(moment(currentMonthMoment)?.add(1, 'M'));
 
-      onMonthChange(nextMonthMomentValue);
+  const setPreviousMonth = () =>
+    setMonthByDate(moment(currentMonthMoment)?.add(-1, 'M'));
 
-      // this update is used to due current month label not rerendering on month change
-      forceUpdate();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentMonthMoment, forceUpdate],
-  );
   return (
     <>
       <CalendarContainer>
@@ -78,7 +82,7 @@ const Datepicker = ({
           <IconButton
             size="small"
             color="inherit"
-            onMouseDown={() => changeMonth(-1)}
+            onMouseDown={setPreviousMonth}
           >
             <KeyboardArrowLeft />
           </IconButton>
@@ -92,11 +96,7 @@ const Datepicker = ({
               {formattedCurrentMonth}
             </MontserratTypography>
           </CurrentMonthLabel>
-          <IconButton
-            size="small"
-            color="inherit"
-            onMouseDown={() => changeMonth(1)}
-          >
+          <IconButton size="small" color="inherit" onMouseDown={setNextMonth}>
             <KeyboardArrowRight />
           </IconButton>
         </Grid>
