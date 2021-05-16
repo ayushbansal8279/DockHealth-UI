@@ -191,6 +191,13 @@ class Home extends Component {
             data.task?.creator.userIdentifier !== currentUserIdentifier
           ) {
             this.refreshTab();
+          } else if (
+            (data.eventType?.startsWith('CREATE_TASK_FROM_EMAIL') ||
+              data.eventType?.startsWith('CREATE_RECURRING_TASK')) &&
+            data.task?.taskList
+            // eslint-disable-next-line sonarjs/no-duplicated-branches
+          ) {
+            this.refreshTab();
           }
           actions.refreshAnotherTask(data.task);
         }
@@ -535,11 +542,11 @@ class Home extends Component {
     if (currentUser && !isEmpty(currentUser) && !isNewUser) {
       const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
-        modalActions.openModal('MultiMentionAssignTour', {
+      if (!appFeaturesReviewed?.includes('TASK_RECURRING')) {
+        modalActions.openModal('RecurringTaskTour', {
           onClose: () => {
             userApi.updateUserDashboardPrefs({
-              appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
+              appFeaturesReviewed: ['TASK_RECURRING'],
             });
           },
         });
