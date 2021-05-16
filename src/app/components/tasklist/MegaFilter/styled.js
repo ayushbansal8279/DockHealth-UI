@@ -327,3 +327,10 @@ export const DueDateErrorMessage = styled.p`
   margin-bottom: 0;
   color: red;
 `;
+
+export const PopperContent = styled.div`
+  min-width: 293px;
+  border: none;
+  box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.17);
+  background: ${palette.white};
+`;

@@ -28,6 +28,14 @@ export const TaskGroupType = {
   BUNDLE: 'TASK_BUNDLE',
 };
 
+export const ReminderType = {
+  NONE: 'NONE',
+  DAY_OF: 'DAY_OF',
+  DAY_BEFORE_1: 'DAY_BEFORE_1',
+  DAY_BEFORE_2: 'DAY_BEFORE_2',
+  WEEK_BEFORE_1: 'WEEK_BEFORE_1',
+};
+
 export function getLabelsIconTooltipTitle(labels) {
   let toolTipMultiLabelDetails = '';
   if (labels.length === 1) {

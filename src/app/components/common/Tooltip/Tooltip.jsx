@@ -15,6 +15,7 @@ const Tooltip = ({
       placement={placement}
       arrow={arrow}
       hideTooltip={hideTooltip || !title}
+      disablePortal
     >
       <Container>{children}</Container>
     </StyledMaterialTooltip>

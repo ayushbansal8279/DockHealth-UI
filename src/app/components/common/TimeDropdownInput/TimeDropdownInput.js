@@ -1,11 +1,15 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { bool, func, node, oneOf, string } from 'prop-types';
-import { useFormContext } from 'react-hook-form';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
-import { AdornmentClear } from '../styled';
-import InputPopover from '../InputPopover/InputPopover';
+import InputPopover from 'components/common/InputPopover/InputPopover';
 import {
   TimeDropdownContainer,
   TimeLabelContainer,
@@ -14,19 +18,22 @@ import {
   TimeErrorMessage,
   TimeOptionsContainer,
   TimeOptionButton,
+  EndAdornmentContainer,
 } from './styled';
 import { generateTimeOptions, isTimeInputEmpty, isTimeValid } from './helpers';
 
 const TimeDropdownInput = ({
   type,
-  name,
   label,
   disabled,
   error,
   savedValue,
+  value,
+  onValueChange,
   onSave,
   endAdornment,
   validate,
+  hideError,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
@@ -37,26 +44,18 @@ const TimeDropdownInput = ({
   const [options, setOptions] = useState([]);
   const [activeElementIndex, setActiveElementIndex] = useState(null);
 
-  const {
-    register,
-    unregister,
-    watch,
-    setValue,
-    errors,
-    setError,
-    clearError,
-  } = useFormContext();
+  const [timeInternalValue, setTimeInternalValue] = useState(savedValue);
+  const [timeError, setTimeError] = useState(null);
 
-  const timeValue = watch(name);
+  const timeValue = value !== undefined ? value : timeInternalValue;
+  const setTimeValue = useMemo(
+    () => (onValueChange !== undefined ? onValueChange : setTimeInternalValue),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   useEffect(() => {
-    register(name);
     setOptions(generateTimeOptions);
-
-    return () => {
-      unregister(name);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const moveCursorToEnd = useCallback(() => {
@@ -71,26 +70,24 @@ const TimeDropdownInput = ({
   const resetDueTimeInput = useCallback(() => {
     if (savedValue) {
       if (savedValue === '00:00 AM' || savedValue === '12:00 AM') {
-        setValue(name, '');
+        setTimeValue('');
       } else {
-        setValue(name, savedValue);
+        setTimeValue(savedValue);
       }
     } else {
-      setValue(name, '');
+      setTimeValue('');
     }
-    clearError(name);
-  }, [clearError, name, savedValue, setValue]);
+    setTimeError(null);
+  }, [savedValue, setTimeValue]);
 
   useEffect(() => {
     resetDueTimeInput();
   }, [resetDueTimeInput]);
 
   const validateInput = useCallback(
-    value => {
-      if (!isTimeValid(value) && !isTimeInputEmpty(value)) {
-        setError(
-          name,
-          'manual',
+    inputValue => {
+      if (!isTimeValid(inputValue) && !isTimeInputEmpty(inputValue)) {
+        setTimeError(
           'Time must be between 12:00 am and 11:59 pm and include am/pm',
         );
         unsetIsPopoverOpen();
@@ -99,28 +96,28 @@ const TimeDropdownInput = ({
 
       if (typeof validate === 'function') {
         try {
-          validate(value);
+          validate(inputValue);
         } catch (error_) {
-          setError(name, 'manual', error_.message || '');
+          setTimeError(error_.message || '');
           return false;
         }
       }
 
       return true;
     },
-    [name, setError, unsetIsPopoverOpen, validate],
+    [unsetIsPopoverOpen, validate],
   );
 
   const saveTime = useCallback(
-    value => {
-      if (value !== savedValue && validateInput(value)) {
-        clearError(name);
-        setValue(name, value);
+    inputValue => {
+      if (inputValue !== savedValue && validateInput(inputValue)) {
+        setTimeError(null);
+        setTimeValue(inputValue);
         setActiveElementIndex(null);
-        onSave(value);
+        onSave(inputValue);
       }
     },
-    [clearError, name, onSave, savedValue, setValue, validateInput],
+    [onSave, savedValue, setTimeValue, validateInput],
   );
 
   const handleInputBlur = useCallback(() => {
@@ -147,7 +144,7 @@ const TimeDropdownInput = ({
           event.preventDefault();
           event.stopPropagation();
           if (activeElementIndex !== null && isPopoverOpen) {
-            setValue(name, options[activeElementIndex]);
+            setTimeValue(options[activeElementIndex]);
             setActiveElementIndex(null);
             moveCursorToEnd();
           } else if (validateInput(timeValue)) {
@@ -179,7 +176,7 @@ const TimeDropdownInput = ({
                 newIndex
               ]?.scrollIntoView(false);
             }
-            setValue(name, options[newIndex]);
+            setTimeValue(options[newIndex]);
             return newIndex;
           });
           break;
@@ -204,7 +201,7 @@ const TimeDropdownInput = ({
                 optionsContainerReference.current?.children?.[newIndex]
                   ?.offsetTop || 0;
             }
-            setValue(name, options[newIndex]);
+            setTimeValue(options[newIndex]);
             return newIndex;
           });
           break;
@@ -222,8 +219,7 @@ const TimeDropdownInput = ({
       validateInput,
       timeValue,
       setIsPopoverOpen,
-      setValue,
-      name,
+      setTimeValue,
       options,
     ],
   );
@@ -231,9 +227,9 @@ const TimeDropdownInput = ({
   const handleInputChange = useCallback(
     event => {
       const newValue = event.target?.value?.toUpperCase();
-      if (errors[name]) clearError(name);
+      if (timeError) setTimeError(null);
       if (!isPopoverOpen) setIsPopoverOpen();
-      setValue(name, newValue);
+      setTimeValue(newValue);
       const foundOptionIndex = !isTimeInputEmpty(newValue)
         ? options.findIndex(option => option.startsWith(newValue.split('_')[0]))
         : -1;
@@ -251,15 +247,7 @@ const TimeDropdownInput = ({
           ].offsetTop;
       }
     },
-    [
-      clearError,
-      errors,
-      isPopoverOpen,
-      name,
-      options,
-      setIsPopoverOpen,
-      setValue,
-    ],
+    [isPopoverOpen, options, setIsPopoverOpen, setTimeValue, timeError],
   );
 
   return (
@@ -268,11 +256,10 @@ const TimeDropdownInput = ({
       <TimeInputMaskContainer
         type={type}
         ref={inputWrapperReference}
-        hasError={!!errors[name]}
+        hasError={!!timeError}
       >
         <TimeInputMask
           type={type}
-          name={name}
           mask="19:59 am"
           maskChar="_"
           formatChars={{
@@ -288,21 +275,12 @@ const TimeDropdownInput = ({
           onFocus={setIsPopoverOpen}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
-          error={error || errors[name]}
+          error={error || timeError}
           autoComplete="off"
           disabled={disabled}
         />
-        {endAdornment || (
-          <AdornmentClear
-            onClick={() => {
-              if (!disabled) saveTime('');
-            }}
-            disabled={disabled}
-            style={{
-              marginLeft: '20px',
-              marginBottom: '2px',
-            }}
-          />
+        {endAdornment && (
+          <EndAdornmentContainer>{endAdornment}</EndAdornmentContainer>
         )}
       </TimeInputMaskContainer>
       <InputPopover
@@ -317,7 +295,7 @@ const TimeDropdownInput = ({
               type="button"
               onMouseDown={event => {
                 event.preventDefault();
-                setValue(name, option);
+                setTimeValue(option);
                 unsetIsPopoverOpen();
                 moveCursorToEnd();
               }}
@@ -329,8 +307,8 @@ const TimeDropdownInput = ({
           ))}
         </TimeOptionsContainer>
       </InputPopover>
-      {errors?.[name]?.message && (
-        <TimeErrorMessage type={type}>{errors[name].message}</TimeErrorMessage>
+      {!hideError && timeError && (
+        <TimeErrorMessage type={type}>{timeError}</TimeErrorMessage>
       )}
     </TimeDropdownContainer>
   );
@@ -338,7 +316,6 @@ const TimeDropdownInput = ({
 
 TimeDropdownInput.propTypes = {
   type: oneOf(['primary', 'secondary']),
-  name: string.isRequired,
   label: string,
   disabled: bool,
   error: bool,

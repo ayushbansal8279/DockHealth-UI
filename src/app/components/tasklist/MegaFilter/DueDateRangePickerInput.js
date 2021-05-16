@@ -1,8 +1,10 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
-import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
-import { DueDateInput, DueDateInputWrapper } from './styled';
+import Datepicker from 'components/common/Datepicker/Datepicker';
+import { ClickAwayListener, Popper } from '@material-ui/core';
+import useBoolean from 'hooks/useBoolean';
+import { DueDateInput, DueDateInputWrapper, PopperContent } from './styled';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YYYY';
@@ -15,6 +17,9 @@ const DueDateRangePickerInput = ({
   maxDate,
   dueDateChange,
 }) => {
+  const inputReference = useRef(null);
+  const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
+
   const formatedDueDate = selectedDueDate
     ? moment(selectedDueDate, DATE_ISO_FORMAT).format(DATE_US_FORMAT)
     : '';
@@ -26,6 +31,8 @@ const DueDateRangePickerInput = ({
   }, [formatedDueDate, setInputDueDate]);
 
   const validateDueDate = () => {
+    if (!inputDueDate || inputDueDate === '__/__/____') return;
+
     const newDate = moment(inputDueDate, DATE_US_FORMAT);
 
     if (!newDate.isValid()) {
@@ -58,24 +65,16 @@ const DueDateRangePickerInput = ({
   };
 
   return (
-    <PopoverDatepicker
-      selectedDate={selectedDueDate}
-      onBackdrop={validateDueDate}
-      onDateChange={date => {
-        setErrorMessage(null);
-        dueDateChange(date);
-      }}
-      maxDate={maxDate}
-      minDate={minDate}
-    >
-      {({ elementReference, setIsPopoverOpen }) => (
-        <DueDateInputWrapper ref={elementReference}>
+    <ClickAwayListener onClickAway={closeCalendar}>
+      <div>
+        <DueDateInputWrapper ref={inputReference}>
           <DueDateInput
-            onFocus={() => setIsPopoverOpen(true)}
+            onFocus={openCalendar}
             onChange={event => {
               if (hasError) setErrorMessage(null);
               setInputDueDate(event.target.value);
             }}
+            onBlur={validateDueDate}
             mask="99/99/9999"
             value={inputDueDate}
             placeholder="00/00/0000"
@@ -83,8 +82,36 @@ const DueDateRangePickerInput = ({
             hasError={hasError}
           />
         </DueDateInputWrapper>
-      )}
-    </PopoverDatepicker>
+        <Popper
+          style={{ zIndex: 2001 }}
+          anchorEl={inputReference?.current}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={isCalendarOpen}
+          onClose={closeCalendar}
+        >
+          <PopperContent>
+            {isCalendarOpen && (
+              <Datepicker
+                selectedDate={selectedDueDate}
+                onDateChange={date => {
+                  setErrorMessage(null);
+                  dueDateChange(date);
+                }}
+                minDate={minDate}
+                maxDate={maxDate}
+              />
+            )}
+          </PopperContent>
+        </Popper>
+      </div>
+    </ClickAwayListener>
   );
 };
 

@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
+import TextInput from 'components/common/TextInput/TextInput';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
@@ -21,7 +22,6 @@ import {
   ListItem,
   ListItemButton,
 } from './styled';
-import TextInput from '../TextInput/TextInput';
 import { AdornmentClear } from '../styled';
 
 const SelectDropdown = React.forwardRef(
