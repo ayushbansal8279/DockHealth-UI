@@ -52,6 +52,13 @@ const DueDatePicker = ({
     );
   };
 
+  const handleShowRecurringSection = () => {
+    if (!selectedDate) {
+      handleDatePick(moment().format(DATE_ISO_FORMAT));
+    }
+    showRecurringSection();
+  };
+
   return (
     <ContentWrapper>
       <QuickAddSectionWrapper>
@@ -91,7 +98,7 @@ const DueDatePicker = ({
         minDate={minDate}
         maxDate={maxDate}
       />
-      {!disableRecurring && selectedDate && (
+      {!disableRecurring && (
         <>
           <Divider />
           {recurringSectionVisible ? (
@@ -104,7 +111,7 @@ const DueDatePicker = ({
           ) : (
             <>
               <SectionWrapper>
-                <PlusButton type="button" onClick={showRecurringSection}>
+                <PlusButton type="button" onClick={handleShowRecurringSection}>
                   Repeat
                 </PlusButton>
               </SectionWrapper>

@@ -49,7 +49,7 @@ export const ENDS_OPTIONS = Object.values(EndsOption).map(value => ({
 }));
 
 export const FORM_DEFAULT_VALUES = {
-  [FormField.RECURRING_OPTION]: RecurringOption.WEEKDAYS_MON_FRI,
+  [FormField.RECURRING_OPTION]: RecurringOption.DO_NOT_REPEAT,
   [FormField.RECURRING_ON_DAYS]: [],
   [FormField.ENDS]: EndsOption.NEVER,
   [FormField.NUMBER_OF_OCCURRENCES]: null,

@@ -6,6 +6,7 @@ import { WrapperContainer, IconBox } from './styled';
 const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
   return (
     <DueDatePickerPopover
+      placement="bottom"
       onDateChange={newDueDate => {
         handleChangeDateTasks(newDueDate.toISOString());
       }}
