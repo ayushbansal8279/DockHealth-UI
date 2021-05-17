@@ -118,7 +118,12 @@ function* doRefreshTasks() {
 
     const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
     if (searchValue) {
-      const response = yield call(TaskApi.searchTasks, searchValue, status);
+      let taskStatus = '';
+      // search for both completed and incompleted tasks
+      if (status === 'INCOMPLETE') {
+        taskStatus = status;
+      }
+      const response = yield call(TaskApi.searchTasks, searchValue, taskStatus);
       yield put(
         GlobalSearchActions.requestGlobalSearchSuccess(response.taskLists),
       );
@@ -151,10 +156,15 @@ function* doGetMoreTasksForTaskList({ payload }) {
 
     const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
     if (searchValue && taskListIdentifier) {
+      let taskStatus;
+      // search for both completed and incompleted tasks
+      if (status === 'INCOMPLETE') {
+        taskStatus = status;
+      }
       const response = yield call(
         TaskApi.searchTasks,
         searchValue,
-        status,
+        taskStatus,
         taskListIdentifier,
         null,
         null,
