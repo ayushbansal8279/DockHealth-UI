@@ -10,8 +10,6 @@ export const ContentWrapper = styled.div`
   width: 100%;
   min-width: 320px;
   border: none;
-  box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.17);
-  background: ${palette.white};
   font-family: 'Roboto Condensed', sans-serif;
 `;
 

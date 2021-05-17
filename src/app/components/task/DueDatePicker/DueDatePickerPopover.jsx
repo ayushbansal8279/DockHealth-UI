@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import useBoolean from 'hooks/useBoolean';
+import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { ClickAwayListener, Popper } from '@material-ui/core';
 import DueDatePicker from './DueDatePicker';
 
@@ -40,16 +41,18 @@ const DueDatePickerPopover = ({
             open={isPopoverOpen}
             onClose={closePopover}
           >
-            <DueDatePicker
-              taskIdentifier={taskIdentifier}
-              selectedDate={selectedDate}
-              onDateChange={onDateChange}
-              minDate={minDate}
-              maxDate={maxDate}
-              recurring={recurring}
-              disableRecurring={disableRecurring}
-              onCloseClick={closePopover}
-            />
+            <PopoverCard>
+              <DueDatePicker
+                taskIdentifier={taskIdentifier}
+                selectedDate={selectedDate}
+                onDateChange={onDateChange}
+                minDate={minDate}
+                maxDate={maxDate}
+                recurring={recurring}
+                disableRecurring={disableRecurring}
+                onCloseClick={closePopover}
+              />
+            </PopoverCard>
           </Popper>
         </ClickAwayListener>
       )}

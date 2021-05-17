@@ -282,8 +282,8 @@ const RecurringSection = ({
                   <SecondaryDateInput
                     value={watch(FormField.END_DATE)}
                     error={endDateError}
-                    onChange={event => {
-                      setValue(FormField.END_DATE, event.target?.value);
+                    onChange={value => {
+                      setValue(FormField.END_DATE, value);
                       if (endDateError) setEndDateError(false);
                     }}
                   />
