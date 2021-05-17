@@ -12,12 +12,24 @@ export function isTimeValid(value) {
 }
 
 export function generateTimeOptions() {
+  const currentHour = moment();
+  if (currentHour.get('minutes') >= 30) {
+    currentHour.startOf('hour').add(30, 'minutes');
+  } else {
+    currentHour.startOf('hour');
+  }
+
   return new Array(24).fill().reduce((accumulator, currentValue, index) => {
-    if (index !== 0)
-      accumulator.push(moment({ hour: index }).format(TIME_12H_FORMAT));
+    accumulator.push(
+      moment(currentHour)
+        .add({ hours: index })
+        .format(TIME_12H_FORMAT),
+    );
 
     accumulator.push(
-      moment({ hour: index, minutes: 30 }).format(TIME_12H_FORMAT),
+      moment(currentHour)
+        .add({ hours: index, minutes: 30 })
+        .format(TIME_12H_FORMAT),
     );
     return accumulator;
   }, []);
