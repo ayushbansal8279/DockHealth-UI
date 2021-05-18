@@ -9,7 +9,6 @@ import debounce from 'lodash.debounce';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-// import Tour from 'components/tour-wizard/Tour/Tour';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -43,18 +42,14 @@ import {
   groupCompletedTasksSelector,
   groupTasksSelector,
   taskDetailsSortSelector,
+  taskCountersSelector,
 } from 'selectors/list-details-selectors';
 
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
-import {
-  // ListTourWrapper,
-  // ListTourBackground,
-  TaskViewContainer,
-} from './styled';
+import { TaskViewContainer } from './styled';
 
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
-// import { LIST_TOUR_STEPS } from './list-tour-steps';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
@@ -678,7 +673,7 @@ const mapStateToProps = state => ({
   currentUser: userProfileSelector(state),
   selectedFilters: selectedFiltersInMegaFilterSelector(state),
   members: taskListMembersSelector(state),
-  taskCounters: state.listDetails.taskCounters,
+  taskCounters: taskCountersSelector(state),
   pendingTaskLists: pendingTaskListsSelector(state),
   isFetching: tasksIsFetchingSelector(state),
   isCompletedTasksFetching: completedTasksIsFetchingSelector(state),

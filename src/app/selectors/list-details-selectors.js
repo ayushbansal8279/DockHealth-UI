@@ -67,3 +67,8 @@ export const taskDetailsSortSelector = createSelector(
   listTasksSelector,
   ({ sort }) => sort,
 );
+
+export const taskCountersSelector = createSelector(
+  listTasksSelector,
+  ({ taskCounters }) => taskCounters,
+);
