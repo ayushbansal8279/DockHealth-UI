@@ -1,8 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
+import { Button, Grid } from '@material-ui/core';
+
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
@@ -10,8 +11,6 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
-import initializeTaskDrawerHooks from './hooks';
-import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import LabelsSection from '../LabelsSection/LabelsSection';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import TopSection from '../TopSection/TopSection';
@@ -21,6 +20,8 @@ import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
+import initializeTaskDrawerHooks from './hooks';
+import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import {
   DescriptionLabel,
   TaskDrawerContainer,

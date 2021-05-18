@@ -153,8 +153,7 @@ const Task = ({
   const onClickComment = useCallback(() => {
     dispatch(openDrawer());
     dispatch(storeAsCurrentTask(task));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, task]);
 
   return (
     <ParentTaskContainer

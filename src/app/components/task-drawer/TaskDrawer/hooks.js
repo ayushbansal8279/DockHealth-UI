@@ -1,7 +1,6 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable sonarjs/cognitive-complexity */
-import moment from 'moment';
 import {
   useCallback,
   useState,
@@ -10,12 +9,14 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { EditorState } from 'draft-js';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector, batch } from 'react-redux';
+import moment from 'moment';
+import { EditorState } from 'draft-js';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import * as TaskApi from 'api/task-api';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
-import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 import {
   saveTask,
   partialUpdateTask,
@@ -37,15 +38,14 @@ import {
   taskDrawerFocusFieldSelector,
   addingNewSubtaskSelector,
 } from 'selectors/task-drawer-selectors';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import {
   onTaskDrawerSubtaskAdd,
   onTaskDrawerTaskDeleted,
   onTaskDrawerTaskDuplicated,
 } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -137,6 +137,7 @@ const initializeTaskDrawerHooks = ({
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const selectedTask = useSelector(selectedTaskSelector);
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
+  // console.log(taskDrawerOpen, selectedTask);
 
   const [selectedParentTask, setSelectedParentTask] = useState(null);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
@@ -162,6 +163,9 @@ const initializeTaskDrawerHooks = ({
   const isAddingOrEditingSubtask =
     Boolean(selectedParentTask) || addingNewSubtask;
   const hasParentTaskIdentifier = !!selectedTask?.parentTaskIdentifier;
+  const parentTask = selectedTask?.parentTask;
+  const selectedTaskDueDate = selectedTask?.dueDate;
+  const selectedTaskStatus = selectedTask?.status;
 
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
@@ -175,11 +179,8 @@ const initializeTaskDrawerHooks = ({
   }, []);
 
   useEffect(() => {
-    if (
-      selectedTask?.parentTask &&
-      taskIdentifier !== previousTaskIdentifierValue.current
-    ) {
-      setSelectedParentTask(selectedTask.parentTask);
+    if (parentTask && taskIdentifier !== previousTaskIdentifierValue.current) {
+      setSelectedParentTask(parentTask);
     }
 
     if (
@@ -234,11 +235,7 @@ const initializeTaskDrawerHooks = ({
   }, [selectedParentTask]);
 
   useLayoutEffect(() => {
-    if (
-      taskDrawerOpen &&
-      taskList !== undefined &&
-      taskList?.taskListIdentifier
-    ) {
+    if (taskDrawerOpen && taskList !== undefined && taskListIdentifier) {
       markTaskRead(selectedTask)(dispatch);
     }
 
@@ -483,17 +480,17 @@ const initializeTaskDrawerHooks = ({
   );
 
   const isSelectedTaskComplete = useMemo(
-    () => selectedTask?.status === 'COMPLETE',
-    [selectedTask],
+    () => selectedTaskStatus === 'COMPLETE',
+    [selectedTaskStatus],
   );
 
   const taskDueTime = useMemo(() => {
-    const momentDueTime = moment(selectedTask?.dueDate || null);
+    const momentDueTime = moment(selectedTaskDueDate || null);
     if (momentDueTime.isValid()) {
       return momentDueTime.format(TIME_12H_FORMAT);
     }
     return null;
-  }, [selectedTask]);
+  }, [selectedTaskDueDate]);
 
   const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
     selectedTask,
