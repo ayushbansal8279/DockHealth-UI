@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Popper } from '@material-ui/core';
-import useCardWithTimeout from 'hooks/use-card-with-timeout';
+import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import * as PeopleApi from 'api/people-api';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/people-helper';
@@ -38,7 +38,7 @@ const PeopleMention = ({ mention, className, children }) => {
   const reference = useRef(null);
   const [personData, setPersonData] = useState(null);
 
-  const { cardOpen, openTrigger, closeTrigger } = useCardWithTimeout();
+  const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
 
   const { activeUsersList } = useSelector(store => ({
     activeUsersList: store.activeUsers.activeUsersList,
@@ -75,8 +75,8 @@ const PeopleMention = ({ mention, className, children }) => {
   return (
     <MentionItem
       ref={reference}
-      onMouseEnter={openTrigger}
-      onMouseLeave={closeTrigger}
+      onMouseEnter={openCard}
+      onMouseLeave={closeCard}
       className={className}
     >
       {children}
