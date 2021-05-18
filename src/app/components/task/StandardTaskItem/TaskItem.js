@@ -10,7 +10,7 @@ import React, {
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
-import { openDrawer } from 'actions/task-drawer-actions';
+import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
   openQuickAddSubtask,
   selectTask,
@@ -20,7 +20,6 @@ import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
 import { userProfileSelector } from 'selectors/user-selectors';
-
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
@@ -63,6 +62,12 @@ import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus'
 const STANDARD_TASK_HEIGHT = 35;
 const EXTENDED_TASK_HEIGHT = 50;
 
+const DotsContainer = ({ showDraggableDots, dragHandleProps }) => {
+  if (showDraggableDots)
+    return <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />;
+
+  return null;
+};
 const TaskItem = ({
   isOpen,
   switchOpen,
@@ -181,21 +186,21 @@ const TaskItem = ({
   const onMouseEnter = () => setIsHovered(true);
   const onMouseLeave = () => setIsHovered(false);
 
-  const onClickTaskItem = useCallback(() => {
-    dispatch(openDrawer());
-    if (templateBundleIdentifier) {
+  const onClickTaskItem = useCallback(
+    () =>
       dispatch(
-        storeAsCurrentTask({
-          ...task,
-          taskGroupIdentifier: parentTaskGroupIdentifier,
-          templateBundleIdentifier,
-        }),
-      );
-    } else {
-      dispatch(storeAsCurrentTask(task));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task]);
+        openTaskDrawerWithContent(
+          templateBundleIdentifier
+            ? {
+                ...task,
+                taskGroupIdentifier: parentTaskGroupIdentifier,
+                templateBundleIdentifier,
+              }
+            : task,
+        ),
+      ),
+    [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+  );
 
   const onCircleClick = useCallback(
     event => {
@@ -338,9 +343,10 @@ const TaskItem = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        {showDraggableDots && (
-          <StandardTaskThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
-        )}
+        <DotsContainer
+          showDraggableDots={showDraggableDots}
+          dragHandleProps={dragHandleProps}
+        />
         <StandardTaskItemContainer
           isSelected={isSelected || selected}
           height={
