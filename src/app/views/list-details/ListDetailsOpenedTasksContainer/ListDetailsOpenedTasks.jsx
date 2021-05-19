@@ -56,7 +56,6 @@ const ListDetailsOpenedTasks = ({
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
-  console.log('here ');
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -201,7 +200,6 @@ const ListDetailsOpenedTasks = ({
                 taskGroupIdentifier,
                 startPosition:
                   groupedTasks[taskGroupIdentifier]?.tasks?.length || 0,
-                sort,
                 refresh: false,
               });
             }}
@@ -209,7 +207,6 @@ const ListDetailsOpenedTasks = ({
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
                 startPosition: 0,
-                sort,
                 viewMode,
                 refresh: true,
               });

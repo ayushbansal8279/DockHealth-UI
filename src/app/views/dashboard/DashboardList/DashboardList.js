@@ -38,6 +38,7 @@ import {
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
+import usePrevious from 'helpers/use-previous';
 
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
@@ -106,14 +107,6 @@ export const DashboardTab = ({
 };
 
 const debouncer = debounce(f => f(), 1100, { leading: true });
-
-function usePrevious(value) {
-  const reference = useRef();
-  useEffect(() => {
-    reference.current = value;
-  });
-  return reference.current;
-}
 
 const DashboardList = ({
   allDashboardTasks,
