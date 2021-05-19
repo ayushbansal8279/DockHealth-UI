@@ -29,7 +29,6 @@ import ViewTypeSwitch, {
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import {
-  taskDrawerOpenSelector,
   addingNewSubtaskSelector,
   addingNewSubtaskParentIdSelector,
   subtaskShapeSelector,
@@ -77,7 +76,6 @@ const TasksGroup = ({
   hasMoreTasks,
   children,
 }) => {
-  const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -302,7 +300,6 @@ const TasksGroup = ({
           isFetchingMoreTasks,
           isCompletedGroup,
           isFullView,
-          isTaskDrawerOpen,
           tasks,
           addingNewSubtask,
           addingNewSubtaskParentId,

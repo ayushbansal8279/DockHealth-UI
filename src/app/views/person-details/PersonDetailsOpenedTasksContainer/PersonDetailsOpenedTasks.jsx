@@ -96,7 +96,6 @@ const PersonDetailsOpenedTasks = ({
               {({
                 isCompletedGroup,
                 isFullView,
-                isTaskDrawerOpen,
                 addingNewSubtask,
                 addingNewSubtaskParentId,
                 subtaskShape,
@@ -118,7 +117,6 @@ const PersonDetailsOpenedTasks = ({
                         updateDueDate={updateDueDate}
                         updateWorkflowStatus={updateWorkflowStatus}
                         selectedTask={selectedTask}
-                        isDraggable={!isTaskDrawerOpen}
                         addingNewSubtask={addingNewSubtask}
                         addingNewSubtaskParentId={addingNewSubtaskParentId}
                         subtaskShape={subtaskShape}

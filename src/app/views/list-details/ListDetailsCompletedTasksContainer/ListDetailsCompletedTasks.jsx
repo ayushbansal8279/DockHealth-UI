@@ -92,7 +92,6 @@ const ListDetailsCompletedTasks = ({
                   isLoadingGroup,
                   isCompletedGroup,
                   isFullView,
-                  isTaskDrawerOpen,
                   addingNewSubtask,
                   addingNewSubtaskParentId,
                   subtaskShape,
@@ -117,7 +116,6 @@ const ListDetailsCompletedTasks = ({
                             isCompletedGroup || dragAndDropDisabled
                           }
                           selectedTask={selectedTask}
-                          isDraggable={!isTaskDrawerOpen}
                           addingNewSubtask={addingNewSubtask}
                           addingNewSubtaskParentId={addingNewSubtaskParentId}
                           subtaskShape={subtaskShape}

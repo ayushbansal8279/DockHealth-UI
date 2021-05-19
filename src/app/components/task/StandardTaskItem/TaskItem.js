@@ -10,6 +10,7 @@ import React, {
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
+import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
   openQuickAddSubtask,
@@ -81,7 +82,6 @@ const TaskItem = ({
   updateWorkflowStatus,
   subTasksCount,
   dragAndDropDisabled,
-  isSelected,
   parentHasPatient,
   highlightedValue,
   isDraggable,
@@ -97,6 +97,7 @@ const TaskItem = ({
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
   isBundleTask,
+  isSelectedByHighlighted,
 }) => {
   const {
     taskIdentifier,
@@ -142,6 +143,10 @@ const TaskItem = ({
   } = searchMetaData;
 
   const currentUser = useSelector(userProfileSelector);
+  const isSelected = useSelector(
+    isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
+  );
+
   const [isHovered, setIsHovered] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({

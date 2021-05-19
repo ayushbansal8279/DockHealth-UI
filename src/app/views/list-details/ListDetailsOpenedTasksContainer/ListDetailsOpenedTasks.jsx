@@ -56,6 +56,7 @@ const ListDetailsOpenedTasks = ({
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
+  console.log('here ');
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -223,7 +224,6 @@ const ListDetailsOpenedTasks = ({
               isFetchingMoreTasks,
               isCompletedGroup,
               isFullView,
-              isTaskDrawerOpen,
               tasks,
               addingNewSubtask,
               addingNewSubtaskParentId,
@@ -255,9 +255,7 @@ const ListDetailsOpenedTasks = ({
                               draggableId={String(task.identifier)}
                               index={index}
                               isDragDisabled={
-                                isCompletedGroup ||
-                                dragAndDropDisabled ||
-                                isTaskDrawerOpen
+                                isCompletedGroup || dragAndDropDisabled
                               }
                             >
                               {(draggableProvided, { isDragging }) => (
@@ -283,7 +281,7 @@ const ListDetailsOpenedTasks = ({
                                         isCompletedGroup || dragAndDropDisabled
                                       }
                                       // selectedTask={selectedTask}
-                                      isDraggable={!isTaskDrawerOpen}
+                                      isDraggable
                                       addingNewSubtask={addingNewSubtask}
                                       addingNewSubtaskParentId={
                                         addingNewSubtaskParentId

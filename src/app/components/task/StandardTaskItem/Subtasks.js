@@ -1,10 +1,10 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import * as TaskActions from 'actions/task-actions';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
 import TaskItem from './TaskItem';
@@ -24,7 +24,6 @@ const Subtasks = ({
   isFetchingSubTasks,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
-  selectedTaskIdentifier,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -111,10 +110,6 @@ const Subtasks = ({
                               showSubtaskStylingLink={!draggedId}
                               isNestedTask
                               subTasksCount={subTasksCount}
-                              isSelected={
-                                selectedTaskIdentifier ===
-                                subtask?.taskIdentifier
-                              }
                               {...restProps}
                             />
                             {shouldRenderComments &&
