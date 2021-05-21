@@ -6,8 +6,8 @@ import debounce from 'lodash.debounce';
 import { isEmpty, isNil, move } from 'ramda';
 
 import { initializePusher } from 'helpers/pusher-instance';
-import useActions from 'helpers/use-actions';
-import usePrevious from 'helpers/use-previous';
+import useActions from 'hooks/use-actions';
+import usePrevious from 'hooks/use-previous';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';

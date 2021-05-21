@@ -162,7 +162,7 @@ const initializeTaskDrawerHooks = ({
   const selectedTaskSourceMessage = selectedTask?.sourceMessage;
   const isAddingOrEditingSubtask =
     Boolean(selectedParentTask) || addingNewSubtask;
-  const hasParentTaskIdentifier = !!selectedTask?.parentTaskIdentifier;
+  const isSubtask = !!selectedTask?.parentTaskIdentifier;
   const parentTask = selectedTask?.parentTask;
   const selectedTaskDueDate = selectedTask?.dueDate;
   const selectedTaskStatus = selectedTask?.status;
@@ -472,11 +472,8 @@ const initializeTaskDrawerHooks = ({
   );
 
   const isAddingSubtask = useMemo(
-    () =>
-      selectedTask &&
-      selectedTaskIdentifier === null &&
-      hasParentTaskIdentifier,
-    [hasParentTaskIdentifier, selectedTask, selectedTaskIdentifier],
+    () => selectedTask && selectedTaskIdentifier === null && isSubtask,
+    [isSubtask, selectedTask, selectedTaskIdentifier],
   );
 
   const isSelectedTaskComplete = useMemo(
@@ -530,7 +527,7 @@ const initializeTaskDrawerHooks = ({
     handleDueDateSave,
     handleQuickAddSubtask,
     handleUpdateTask,
-    hasParentTaskIdentifier,
+    isSubtask,
     isAddingOrEditingSubtask,
     isAddingSubtask,
     isDescriptionFocused,

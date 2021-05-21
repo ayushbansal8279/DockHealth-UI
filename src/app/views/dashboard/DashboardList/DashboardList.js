@@ -38,7 +38,7 @@ import {
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
-import usePrevious from 'helpers/use-previous';
+import usePrevious from 'hooks/use-previous';
 
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';

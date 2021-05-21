@@ -67,7 +67,7 @@ const TaskDrawer = ({
     handleDueDateSave,
     handleQuickAddSubtask,
     handleUpdateTask,
-    hasParentTaskIdentifier,
+    isSubtask,
     isAddingOrEditingSubtask,
     isAddingSubtask,
     isDescriptionFocused,
@@ -159,7 +159,7 @@ const TaskDrawer = ({
               </Grid>
               {selectedTask && <TaskDrawerDivider />}
               <Spacing vertical={2} />
-              {hasParentTaskIdentifier && (
+              {isSubtask && (
                 <Grid item xs={12} style={styleFullRowThin}>
                   <Spacing vertical={4} />
                   {selectedParentTask ? (
@@ -320,7 +320,7 @@ const TaskDrawer = ({
               <Grid item xs={12} style={styleFullRow}>
                 <AttachmentsSection selectedTask={selectedTask} />
               </Grid>
-              {selectedTask && !hasParentTaskIdentifier && (
+              {selectedTask && !isSubtask && (
                 <Grid item xs={12}>
                   <SubtasksSection
                     subtasks={selectedTask.subtasks}
