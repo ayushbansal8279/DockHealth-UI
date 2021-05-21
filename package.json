@@ -46,6 +46,7 @@
     "lodash.escape": "^4.0.1",
     "lodash.escaperegexp": "^4.1.2",
     "lodash.memoize": "^4.1.2",
+    "material-ui-phone-number": "^2.2.6",
     "material-ui-pickers": "^2.2.4",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",

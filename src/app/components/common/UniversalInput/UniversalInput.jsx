@@ -1,16 +1,19 @@
 import { Collapse, TextField } from '@material-ui/core';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { useMount, useUnmount } from 'react-use';
 import useBoolean from 'hooks/useBoolean';
 import { RequiredLabel } from 'components/common/Input/styled';
+import PhoneNumberInput from 'material-ui-phone-number';
 import {
   UniversalInputBase,
   UniversalInputLabel,
   UniversalFormControl,
   ErrorLabel,
+  usePhoneNumberStyles,
 } from './styled';
 
 export const UniversalTimePicker = ({ inputRef, name, setValue }) => (
@@ -34,17 +37,24 @@ export const UniversalMobileInputComponent = ({
   name,
   setValue,
   ...otherProps
-}) => (
-  <InputMask
-    {...otherProps}
-    name={name}
-    ref={inputRef}
-    mask="(999) 999-9999"
-    onChange={event => {
-      setValue(name, event.target.value);
-    }}
-  />
-);
+}) => {
+  const classes = usePhoneNumberStyles();
+
+  return (
+    <PhoneNumberInput
+      {...otherProps}
+      ref={inputRef}
+      className={clsx({
+        [otherProps.className]: otherProps.className,
+        [classes.root]: true,
+      })}
+      name={name}
+      onChange={phone => {
+        setValue(name, phone);
+      }}
+    />
+  );
+};
 
 export const UniversalBirthdayInputComponent = ({
   inputRef,
