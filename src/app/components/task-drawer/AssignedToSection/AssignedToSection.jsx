@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
-import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
+import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
+import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { AdornmentClear } from '../styled';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
@@ -67,11 +68,14 @@ const AssignedToSection = ({
   );
 
   return (
-    <MultiAssignPopover
-      fullWidth
-      taskListIdentifiers={taskListIdentifier}
-      selectedMembers={assignedToUsersValue}
-      onSelect={handleAssignToSelection}
+    <TaskDrawerPopover
+      content={() => (
+        <MultiAssignMembersList
+          taskListIdentifiers={taskListIdentifier}
+          selectedMembers={assignedToUsersValue}
+          onSelect={handleAssignToSelection}
+        />
+      )}
     >
       <TextInput
         type="text"
@@ -92,7 +96,7 @@ const AssignedToSection = ({
           value: displayValue,
         }}
       />
-    </MultiAssignPopover>
+    </TaskDrawerPopover>
   );
 };
 

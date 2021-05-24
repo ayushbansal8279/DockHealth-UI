@@ -1,16 +1,22 @@
 import React from 'react';
 import CalendarIcon from 'img/bulk-edit/CalendarIcon';
-import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
+import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
+import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import { WrapperContainer, IconBox } from './styled';
 
 const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
   return (
-    <DueDatePickerPopover
+    <TaskItemPopover
       placement="bottom"
-      onDateChange={newDueDate => {
-        handleChangeDateTasks(newDueDate.toISOString());
-      }}
-      disableRecurring
+      content={({ closePopover }) => (
+        <DueDatePicker
+          onDateChange={newDueDate => {
+            handleChangeDateTasks(newDueDate.toISOString());
+          }}
+          disableRecurring
+          onCloseClick={closePopover}
+        />
+      )}
     >
       <WrapperContainer disabled={isDisabled}>
         <IconBox>
@@ -18,7 +24,7 @@ const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
         </IconBox>
         <p>Date</p>
       </WrapperContainer>
-    </DueDatePickerPopover>
+    </TaskItemPopover>
   );
 };
 

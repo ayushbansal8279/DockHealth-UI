@@ -1,23 +1,7 @@
 import styled from 'styled-components';
-import { Popover } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-
-export const StyledPopover = withStyles({
-  paper: {
-    border: 'none',
-    boxShadow: '0px 0px 11px rgba(0, 0, 0, 0.15)',
-    minWidth: 230,
-    width: ({ width }) => `${width || 230}px`,
-  },
-})(Popover);
-
-export const StyledButton = styled.button`
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-  text-align: left;
-`;
 
 export const Input = styled.input`
   border: none;

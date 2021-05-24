@@ -1,27 +1,29 @@
 import React, { useRef } from 'react';
 import useBoolean from 'hooks/useBoolean';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
-import { ClickAwayListener, Popper } from '@material-ui/core';
-import DueDatePicker from './DueDatePicker';
+import { Box, ClickAwayListener, Popper } from '@material-ui/core';
+import { Button } from './styled';
 
-const DueDatePickerPopover = ({
-  taskIdentifier,
-  selectedDate,
-  onDateChange,
+const TaskItemPopover = ({
   children,
-  minDate,
-  maxDate,
+  content,
+  contentWidth = 'auto',
+  fullWidth,
   disabled,
-  recurring,
-  disableRecurring,
   placement = 'bottom-end',
 }) => {
   const elementReference = useRef(null);
-  const { 0: isPopoverOpen, 2: closePopover, 3: togglePopover } = useBoolean();
+  const [
+    isPopoverOpen,
+    openPopover,
+    closePopover,
+    togglePopover,
+  ] = useBoolean();
 
   return (
     <>
-      <button
+      <Button
+        fullWidth={fullWidth}
         type="button"
         disabled={disabled}
         onClick={event => {
@@ -31,7 +33,7 @@ const DueDatePickerPopover = ({
         ref={elementReference}
       >
         {children}
-      </button>
+      </Button>
       {isPopoverOpen && (
         <ClickAwayListener onClickAway={closePopover}>
           <Popper
@@ -41,18 +43,13 @@ const DueDatePickerPopover = ({
             open={isPopoverOpen}
             onClose={closePopover}
           >
-            <PopoverCard>
-              <DueDatePicker
-                taskIdentifier={taskIdentifier}
-                selectedDate={selectedDate}
-                onDateChange={onDateChange}
-                minDate={minDate}
-                maxDate={maxDate}
-                recurring={recurring}
-                disableRecurring={disableRecurring}
-                onCloseClick={closePopover}
-              />
-            </PopoverCard>
+            <Box width={contentWidth}>
+              <PopoverCard>
+                {typeof content === 'function'
+                  ? content({ openPopover, closePopover, togglePopover })
+                  : content}
+              </PopoverCard>
+            </Box>
           </Popper>
         </ClickAwayListener>
       )}
@@ -60,4 +57,4 @@ const DueDatePickerPopover = ({
   );
 };
 
-export default DueDatePickerPopover;
+export default TaskItemPopover;

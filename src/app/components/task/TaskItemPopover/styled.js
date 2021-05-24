@@ -1,0 +1,11 @@
+/* eslint-disable import/prefer-default-export */
+import styled from 'styled-components';
+
+export const Button = styled.button`
+  ${({ fullWidth }) =>
+    fullWidth &&
+    `
+      width: 100%; 
+      text-align: left;
+    `}
+`;
