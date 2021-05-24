@@ -67,7 +67,7 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
-  const [searchValue, setSearchValue] = useState(false);
+  const [searchValue, setSearchValue] = useState(null);
 
   const prevTaskLists = usePrevious(taskLists);
   const prevCurrentUser = usePrevious(currentUser);
