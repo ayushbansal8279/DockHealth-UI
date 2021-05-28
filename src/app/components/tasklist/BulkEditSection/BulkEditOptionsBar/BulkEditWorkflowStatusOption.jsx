@@ -10,7 +10,7 @@ const BulkEditWorkflowStatusOption = ({
 }) => (
   <TaskItemPopover
     placement="top"
-    contentWidth={126}
+    contentWidth={280}
     content={({ closePopover }) => (
       <TaskWorkflowStatus
         updateWorkflowStatus={workflowStatus =>
