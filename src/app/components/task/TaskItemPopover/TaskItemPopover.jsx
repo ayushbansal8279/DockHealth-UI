@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
+import { useUpdate } from 'react-use';
 import useBoolean from 'hooks/useBoolean';
+import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { Box, ClickAwayListener, Popper } from '@material-ui/core';
 import { Button } from './styled';
@@ -13,6 +15,8 @@ const TaskItemPopover = ({
   placement = 'bottom-end',
 }) => {
   const elementReference = useRef(null);
+  const forceUpdate = useUpdate();
+
   const [
     isPopoverOpen,
     openPopover,
@@ -37,7 +41,7 @@ const TaskItemPopover = ({
       {isPopoverOpen && (
         <ClickAwayListener onClickAway={closePopover}>
           <Popper
-            style={{ zIndex: 2001 }}
+            style={{ zIndex: zIndex.taskPopover }}
             anchorEl={elementReference?.current}
             placement={placement}
             open={isPopoverOpen}
@@ -46,7 +50,12 @@ const TaskItemPopover = ({
             <Box width={contentWidth}>
               <PopoverCard>
                 {typeof content === 'function'
-                  ? content({ openPopover, closePopover, togglePopover })
+                  ? content({
+                      openPopover,
+                      closePopover,
+                      togglePopover,
+                      resetPosition: forceUpdate,
+                    })
                   : content}
               </PopoverCard>
             </Box>

@@ -38,7 +38,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
           event.stopPropagation();
           closePopover();
         }}
-        minWidth={buttonReference.current?.offsetWidth}
+        width={buttonReference.current?.offsetWidth}
       >
         {isPopoverOpen && (
           <PopoverCard>

@@ -31,12 +31,12 @@ export function onTaskDrawerTaskAssigned() {
   });
 }
 
-export function onTaskDrawerTaskStatusChanged(value) {
+export function onTaskDrawerTaskStatusChanged(label) {
   sendEvent({
     usageEventType: USAGE_ACTION_EVENT_TYPE,
     eventCategory: TASK_DRAWER_CATEGORY,
     eventAction: 'Task status changed',
-    eventLabel: value,
+    eventLabel: label || 'No status',
   });
 }
 
@@ -154,13 +154,13 @@ export function onNotificationsToggled(notifications) {
 }
 
 export function onTaskStatusChanged(status) {
-  const label = typeof status === 'string' ? status : status.label;
+  const label = typeof status === 'string' ? status : status?.label;
 
   sendEvent({
     usageEventType: USAGE_ACTION_EVENT_TYPE,
     eventCategory: TASK_LIST_CATEGORY,
     eventAction: 'Task status changed',
-    eventLabel: label,
+    eventLabel: label || 'No status',
   });
 }
 

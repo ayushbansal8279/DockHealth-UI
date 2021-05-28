@@ -6,8 +6,7 @@ export const StyledPopover = withStyles({
   paper: {
     border: 'none',
     boxShadow: 'none',
-    minWidth: ({ minWidth }) => minWidth,
-    width: 'auto',
+    width: ({ width }) => width,
     overflow: 'visible',
   },
 })(Popover);

@@ -271,7 +271,6 @@ const initializeTaskDrawerHooks = ({
     }
 
     setValue('priority', selectedTask?.priority ?? null);
-    setValue('workflowStatus', selectedTask?.workflowStatus ?? null);
     setValue(
       'labels',
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),

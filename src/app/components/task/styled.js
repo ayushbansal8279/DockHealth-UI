@@ -313,9 +313,18 @@ export const TaskItemParentTaskLabel = styled.div`
   }
 `;
 
-export const InfoText = styled.p`
-  cursor: initial;
+export const StatusWrapper = styled.div`
+  display: flex;
+`;
+
+export const StatusName = styled.p`
+  display: block;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   margin-bottom: 0;
+  text-align: left;
 `;
 
 export const MatchingWrapper = styled.div`

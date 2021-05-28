@@ -1,17 +1,25 @@
 import React from 'react';
 import StatusIcon from 'img/bulk-edit/StatusIcon';
-import TaskWorkflowStatus from 'components/tasklist/TaskWorkflowStatus/TaskWorkflowStatus';
+import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
+import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import { WrapperContainer, IconBox } from './styled';
 
 const BulkEditWorkflowStatusOption = ({
   handleChangeWorkflowStatusTasks,
   isDisabled,
 }) => (
-  <TaskWorkflowStatus
-    updateWorkflowStatus={workflowStatus =>
-      handleChangeWorkflowStatusTasks(workflowStatus)
-    }
-    isDisabled={isDisabled}
+  <TaskItemPopover
+    placement="top"
+    contentWidth={126}
+    content={({ closePopover }) => (
+      <TaskWorkflowStatus
+        updateWorkflowStatus={workflowStatus =>
+          handleChangeWorkflowStatusTasks(workflowStatus)
+        }
+        isDisabled={isDisabled}
+        onClose={closePopover}
+      />
+    )}
   >
     <WrapperContainer disabled={isDisabled}>
       <IconBox>
@@ -19,7 +27,7 @@ const BulkEditWorkflowStatusOption = ({
       </IconBox>
       <p>Status</p>
     </WrapperContainer>
-  </TaskWorkflowStatus>
+  </TaskItemPopover>
 );
 
 export default BulkEditWorkflowStatusOption;

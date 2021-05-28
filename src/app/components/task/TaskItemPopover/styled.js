@@ -2,6 +2,8 @@
 import styled from 'styled-components';
 
 export const Button = styled.button`
+  cursor: ${({ disabled }) => (!disabled ? 'pointer' : 'initial')};
+
   ${({ fullWidth }) =>
     fullWidth &&
     `

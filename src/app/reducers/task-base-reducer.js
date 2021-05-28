@@ -20,6 +20,7 @@ import {
   UNSELECT_ALL_TASKS,
   CHANGE_TASKS_SELECTED_STATE,
   ADD_SUBTASK,
+  UPDATE_WORKFLOW_STATUS_FOR_TASKS,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -486,6 +487,26 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
             ...task,
             subtasks: updatedSubtasks,
             subTasksCount: updatedSubtasks.length,
+          };
+        }
+
+        return task;
+      };
+
+      return updateStateCallback(state, updateStateFromAction);
+    }
+
+    case UPDATE_WORKFLOW_STATUS_FOR_TASKS: {
+      const { statusIdentifier, dataToUpdate } = action;
+
+      const updateStateFromAction = task => {
+        if (task.workflowStatus?.identifier === statusIdentifier) {
+          return {
+            ...task,
+            workflowStatus: {
+              ...task.workflowStatus,
+              ...dataToUpdate,
+            },
           };
         }
 

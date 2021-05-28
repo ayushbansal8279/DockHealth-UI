@@ -31,15 +31,15 @@ const styles = {
       boxShadow: 'none',
     },
     '& label + .MuiInput-formControl': {
-      marginTop: props => (props.parentType === 'text' ? '2px' : '16px'),
+      marginTop: '16px',
     },
     '& .MuiInputBase-inputMultiline': {
-      height: '24px',
-      minHeight: '24px',
+      height: '19px',
+      minHeight: 0,
     },
     '& .MuiInputBase-multiline': {
-      paddingTop: props => (props.parentType === 'text' ? '12px' : '0px'),
-      paddingBottom: props => (props.parentType === 'text' ? '5px' : '0px'),
+      paddingTop: 0,
+      paddingBottom: 0,
     },
     '& .MuiInputBase-root': {
       flexWrap: props => (props.parentType === 'selectTag' ? 'wrap' : ''),
@@ -73,11 +73,8 @@ const styles = {
     color: palette.mediumGrey,
     fontFamily: FONT_FAMILY,
     fontWeight: 'bold',
-    padding: props =>
-      props.parentType === 'text' && !props.multiple
-        ? '1.25rem 0'
-        : '0.75rem 0',
-    paddingBottom: props => (props.multiple ? '0px' : '5px'),
+    padding: '0.75rem 0',
+    paddingBottom: '5px',
     '&::placeholder': {
       opacity: 1,
       color: palette.coolGrey1,
