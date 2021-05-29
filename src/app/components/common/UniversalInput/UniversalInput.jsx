@@ -44,6 +44,10 @@ export const UniversalMobileInputComponent = ({
     <PhoneNumberInput
       {...otherProps}
       ref={inputRef}
+      defaultCountry="us"
+      countryCodeEditable={false}
+      disableAreaCodes
+      onlyCountries={['us', 'ca', 'au', 'pl']}
       className={clsx({
         [otherProps.className]: otherProps.className,
         [classes.root]: true,
