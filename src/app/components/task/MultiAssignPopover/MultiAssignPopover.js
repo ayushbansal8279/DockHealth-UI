@@ -43,32 +43,32 @@ const MultiAssignPopover = ({
       >
         {children}
       </StyledButton>
-      <StyledPopover
-        anchorEl={assignMemberButtonReference?.current}
-        anchorOrigin={{
-          vertical: placement,
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: placement === 'top' ? 'bottom' : 'top',
-          horizontal: 'right',
-        }}
-        open={isOpen}
-        onClose={event => {
-          event.stopPropagation();
-          openPopover(false);
-        }}
-        width={assignMemberButtonReference.current?.offsetWidth}
-      >
-        {isOpen && (
+      {isOpen && (
+        <StyledPopover
+          anchorEl={assignMemberButtonReference?.current}
+          anchorOrigin={{
+            vertical: placement,
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: placement === 'top' ? 'bottom' : 'top',
+            horizontal: 'right',
+          }}
+          open={isOpen}
+          onClose={event => {
+            event.stopPropagation();
+            openPopover(false);
+          }}
+          width={assignMemberButtonReference.current?.offsetWidth}
+        >
           <MultiAssignMembersList
             taskListIdentifiers={taskListIdentifiers}
             selectedMembers={selectedMembers}
             onSelect={onSelect}
             onError={() => openPopover(false)}
           />
-        )}
-      </StyledPopover>
+        </StyledPopover>
+      )}
     </>
   );
 };

@@ -200,7 +200,6 @@ const ListDetailsOpenedTasks = ({
                 taskGroupIdentifier,
                 startPosition:
                   groupedTasks[taskGroupIdentifier]?.tasks?.length || 0,
-                sort,
                 refresh: false,
               });
             }}
@@ -208,7 +207,6 @@ const ListDetailsOpenedTasks = ({
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
                 startPosition: 0,
-                sort,
                 viewMode,
                 refresh: true,
               });
@@ -223,7 +221,6 @@ const ListDetailsOpenedTasks = ({
               isFetchingMoreTasks,
               isCompletedGroup,
               isFullView,
-              isTaskDrawerOpen,
               tasks,
               addingNewSubtask,
               addingNewSubtaskParentId,
@@ -255,9 +252,7 @@ const ListDetailsOpenedTasks = ({
                               draggableId={String(task.identifier)}
                               index={index}
                               isDragDisabled={
-                                isCompletedGroup ||
-                                dragAndDropDisabled ||
-                                isTaskDrawerOpen
+                                isCompletedGroup || dragAndDropDisabled
                               }
                             >
                               {(draggableProvided, { isDragging }) => (
@@ -283,7 +278,7 @@ const ListDetailsOpenedTasks = ({
                                         isCompletedGroup || dragAndDropDisabled
                                       }
                                       // selectedTask={selectedTask}
-                                      isDraggable={!isTaskDrawerOpen}
+                                      isDraggable
                                       addingNewSubtask={addingNewSubtask}
                                       addingNewSubtaskParentId={
                                         addingNewSubtaskParentId
