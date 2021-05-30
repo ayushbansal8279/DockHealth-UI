@@ -230,12 +230,14 @@ const PatientForm = ({
                 name="phoneHome"
                 label="Home Phone"
                 type="tel"
+                customShrinkCondition
                 CustomComponent={UniversalMobileInputComponent}
               />
               <PatientInput
                 name="phoneMobile"
-                label="Cell Phone"
+                label="Mobile Phone"
                 type="tel"
+                customShrinkCondition
                 CustomComponent={UniversalMobileInputComponent}
               />
             </SingleFormPanelContainer>
