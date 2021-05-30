@@ -334,3 +334,12 @@ export const PopperContent = styled.div`
   box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.17);
   background: ${palette.white};
 `;
+
+export const StatusBar = styled.div`
+  background-color: ${props => props.color};
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 6px;
+`;

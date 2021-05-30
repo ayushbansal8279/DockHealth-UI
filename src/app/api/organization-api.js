@@ -210,3 +210,33 @@ export function downloadBAADocument() {
     })
     .catch(noop);
 }
+
+export function getOrganizationStatuses() {
+  return axios
+    .get(`/organization/settings/taskStatus/getAllTaskStatuses`)
+    .then(({ data }) => data);
+}
+
+export function deleteOrganizationStatus(identifier) {
+  return axios
+    .delete(`/organization/settings/taskStatus/${identifier}`)
+    .then(({ data }) => data);
+}
+
+export function createOrganizationStatus(statusData) {
+  return axios
+    .post(`/organization/settings/taskStatus`, statusData)
+    .then(({ data }) => data);
+}
+
+export function updateOrganizationStatus(identifier, statusData) {
+  return axios
+    .put(`/organization/settings/taskStatus`, { identifier, ...statusData })
+    .then(({ data }) => data);
+}
+
+export function reorderOrganizationStatuses(taskStatusIdentifiers) {
+  return axios
+    .put(`/organization/settings/taskStatus/sort`, { taskStatusIdentifiers })
+    .then(({ data }) => data);
+}

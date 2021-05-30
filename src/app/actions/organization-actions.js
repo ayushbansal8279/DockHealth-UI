@@ -18,8 +18,12 @@ import {
   SAVE_BILLING_DETAILS_FAILURE,
   SAVE_BILLING_DETAILS_SUCCESS,
   SELECT_USERS_FOR_PLAN,
+  SET_FETCHING_ORGANIZATION_STATUSES,
   SET_NEW_PAYMENT_PLAN,
+  SET_ORGANIZATION_STATUSES,
+  SET_ORGANIZATION_STATUSES_ERROR,
   UPDATE_ORGANIZATION,
+  UPDATE_ORGANIZATION_STATUS,
 } from './action-types';
 
 export const handleOrganizationResponse = ({ fetchMethod, dispatch }) =>
@@ -214,3 +218,30 @@ export const getConfigurationForReferral = ({ referralCode }) => dispatch => {
       throw error;
     });
 };
+
+export function setOrganizationStatuses(statuses) {
+  return {
+    type: SET_ORGANIZATION_STATUSES,
+    statuses,
+  };
+}
+
+export function setFetchingOrganizationStatuses() {
+  return {
+    type: SET_FETCHING_ORGANIZATION_STATUSES,
+  };
+}
+
+export function setOrganizationStatusesError() {
+  return {
+    type: SET_ORGANIZATION_STATUSES_ERROR,
+  };
+}
+
+export function updateOrganizationStatus(identifier, dataToUpdate) {
+  return {
+    type: UPDATE_ORGANIZATION_STATUS,
+    identifier,
+    dataToUpdate,
+  };
+}

@@ -545,21 +545,29 @@ export const updateReminder = (task, reminderDt) => dispatch =>
 
 export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
   const { taskIdentifier } = task;
-  const taskWorkflowStatus =
-    workflowStatus === 'NO_STATUS' ? '' : workflowStatus;
 
-  return TaskApi.updateWorkflowStatus(taskIdentifier, workflowStatus)
+  const updatedTask = {
+    ...task,
+    workflowStatus,
+  };
+  dispatch({
+    type: ActionTypes.UPDATE_TASK_SUCCESS,
+    task: updatedTask,
+  });
+
+  return TaskApi.updateWorkflowStatus(
+    taskIdentifier,
+    workflowStatus?.identifier || null,
+  )
     .then(() => {
-      const newTask = task;
-      newTask.workflowStatus = taskWorkflowStatus;
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: newTask,
-      });
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      return newTask;
+      return updatedTask;
     })
     .catch(error => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_SUCCESS,
+        task,
+      });
       throw error;
     });
 };
@@ -924,5 +932,13 @@ export function addSubtask(parentTaskIdentifier, subtask) {
         dispatch(AlertActions.showGlobalErrorAlert());
         throw error;
       });
+  };
+}
+
+export function updateWorkflowStatusForTasks(statusIdentifier, dataToUpdate) {
+  return {
+    type: ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS,
+    statusIdentifier,
+    dataToUpdate,
   };
 }

@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import moment from 'moment';
-import { Box } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import palette from 'styles/palette';
 import {
   getTaskRecurringSchedule,
   saveTaskRecurringSchedule,
@@ -12,6 +10,7 @@ import {
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { setRecurringScheduleFlag } from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
+import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import Spacing from 'components/common/Spacing';
 import DayOfWeekPicker from 'components/common/DayOfWeekPicker/DayOfWeekPicker';
@@ -21,8 +20,6 @@ import SecondaryDateInput from 'components/common/DateInput/SecondaryDateInput';
 import {
   RecurringForm,
   SectionWrapper,
-  BottomBar,
-  ActionButton,
   FormRow,
   RowLabel,
   SelectWrapper,
@@ -313,20 +310,19 @@ const RecurringSection = ({
             </SelectWrapper>
           </FormRow>
         </SectionWrapper>
-        <BottomBar>
-          <ActionButton
+        <PopoverBottomBar>
+          <PopoverBottomBar.Button
             type="button"
-            textColor={palette.coolGrey1}
+            theme="light"
             onClick={onClose}
             disabled={isSaving}
           >
             Cancel
-          </ActionButton>
-          <Box m={0.5} />
-          <ActionButton disabled={isSaving} type="submit">
+          </PopoverBottomBar.Button>
+          <PopoverBottomBar.Button disabled={isSaving} type="submit">
             Save
-          </ActionButton>
-        </BottomBar>
+          </PopoverBottomBar.Button>
+        </PopoverBottomBar>
       </FormContext>
     </RecurringForm>
   );

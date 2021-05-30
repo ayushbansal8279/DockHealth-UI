@@ -20,17 +20,19 @@ import {
   updateDueDate,
   partialUpdateTask,
 } from 'actions/task-actions';
+import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { openDrawer } from 'actions/task-drawer-actions';
-import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
+import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
 import MemberGroup from 'components/members/MemberGroup/MemberGroup';
-import MultiAssignPopover from 'components/task/MultiAssignPopover/MultiAssignPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
 import { DueDateBasicLabel } from 'components/task/styled';
+import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import {
+  checkIfTemplateTask,
   getAttachmentsIconTooltipTitle,
   getCommentsIconTooltipTitle,
   getLabelsIconTooltipTitle,
@@ -78,6 +80,7 @@ const Subtask = ({ subtask, currentUser }) => {
   } = subtask;
 
   const isCompleted = status === 'COMPLETE';
+  const isTemplateTask = checkIfTemplateTask(subtask);
 
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -209,11 +212,18 @@ const Subtask = ({ subtask, currentUser }) => {
         </IconContainer>
       </IconsSection>
       <DueDateContainer>
-        <DueDatePickerPopover
-          taskIdentifier={taskIdentifier}
-          selectedDate={dueDate}
-          onDateChange={handleDueDateChange}
-          recurring={hasRecurringSchedule}
+        <TaskItemPopover
+          disabled={isTemplateTask}
+          placement="top-end"
+          content={({ closePopover }) => (
+            <DueDatePicker
+              taskIdentifier={taskIdentifier}
+              selectedDate={dueDate}
+              onDateChange={handleDueDateChange}
+              recurring={hasRecurringSchedule}
+              onCloseClick={closePopover}
+            />
+          )}
         >
           {dueDate ? (
             <Tooltip placement="top" title="Edit due date">
@@ -238,15 +248,21 @@ const Subtask = ({ subtask, currentUser }) => {
               <TaskIcon type="calendar" isHovered={isHovered} />
             </Tooltip>
           )}
-        </DueDatePickerPopover>
+        </TaskItemPopover>
       </DueDateContainer>
       <AssigneeContainer>
-        <MultiAssignPopover
+        <TaskItemPopover
+          placement="top-end"
           fullWidth
-          placement="top"
-          taskListIdentifiers={taskList?.taskListIdentifier}
-          selectedMembers={assignedToUsers}
-          onSelect={handleReassignSubtask}
+          content={({ closePopover }) => (
+            <MultiAssignMembersList
+              fullWidth
+              taskListIdentifiers={taskList?.taskListIdentifier}
+              selectedMembers={assignedToUsers}
+              onSelect={handleReassignSubtask}
+              onError={closePopover}
+            />
+          )}
         >
           {assignedToUsers?.length ? (
             <MemberGroup members={assignedToUsers} />
@@ -255,7 +271,7 @@ const Subtask = ({ subtask, currentUser }) => {
               <AssignMemberIcon />
             </Tooltip>
           )}
-        </MultiAssignPopover>
+        </TaskItemPopover>
       </AssigneeContainer>
       <GoToParentIconContainer
         onClick={() => {

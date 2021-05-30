@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import moment from 'moment';
-import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
+import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
+import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
@@ -37,11 +38,16 @@ const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
         event.stopPropagation();
       }}
     >
-      <DueDatePickerPopover
-        taskIdentifier={taskIdentifier}
-        selectedDate={dueDate}
-        onDateChange={handleDueDateChange}
-        recurring={hasRecurringSchedule}
+      <TaskItemPopover
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={taskIdentifier}
+            selectedDate={dueDate}
+            onDateChange={handleDueDateChange}
+            recurring={hasRecurringSchedule}
+            onCloseClick={closePopover}
+          />
+        )}
       >
         <Tooltip
           placement="top"
@@ -67,7 +73,7 @@ const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
             <TaskIcon type="calendar" isHovered={isHovered} />
           )}
         </Tooltip>
-      </DueDatePickerPopover>
+      </TaskItemPopover>
     </StandardTaskItemCell>
   );
 };

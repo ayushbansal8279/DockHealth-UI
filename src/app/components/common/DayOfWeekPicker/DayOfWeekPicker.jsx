@@ -17,6 +17,7 @@ const DayOfWeekPicker = ({ disabled, onSelect, values }) => {
     <Wrapper>
       {Object.values(DayOfWeek).map(value => (
         <DayButton
+          key={value}
           type="button"
           disabled={disabled}
           isSelected={values?.includes(value)}

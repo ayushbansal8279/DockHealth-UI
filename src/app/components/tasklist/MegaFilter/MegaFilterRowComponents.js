@@ -2,7 +2,6 @@ import React, { cloneElement } from 'react';
 import Member from 'components/members/Member/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
-import TaskItemStatus from 'components/task/StandardTaskItem/TaskItemStatus';
 import DueDateRangePicker from './DueDateRangePicker';
 import {
   StyledFilterRow,
@@ -10,6 +9,7 @@ import {
   MemberOptionLabel,
   OptionLabel,
   OptionCount,
+  StatusBar,
 } from './styled';
 
 const getPriorityConfig = priority => {
@@ -47,18 +47,21 @@ const PeopleFilterRowComponent = ({
 );
 
 const StatusFilterRowComponent = ({
-  itemKey,
+  reference: workflowStatus,
   taskCount,
   isSelected,
   onClick,
 }) => {
+  const { name, color } = workflowStatus || {};
+
   return (
     <StyledFilterRow
       isSelected={isSelected}
       isDisabled={taskCount === 0}
       onClick={taskCount !== 0 && onClick}
     >
-      <TaskItemStatus workflowStatus={itemKey} labelWidth="180px" />
+      <StatusBar color={color} />
+      <OptionLabel>{name}</OptionLabel>
       <OptionCount>{taskCount}</OptionCount>
     </StyledFilterRow>
   );

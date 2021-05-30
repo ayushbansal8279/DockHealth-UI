@@ -3,7 +3,7 @@ import moment from 'moment';
 import RecurringIcon from 'img/recurring-arrows';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
-import DueDatePickerPopover from 'components/task/DueDatePicker/DueDatePickerPopover';
+import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import Spacing from 'components/common/Spacing';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
@@ -15,6 +15,7 @@ import {
   DueDateText,
 } from './styled';
 import { AdornmentClear } from '../styled';
+import TaskDrawerPopover from '../TaskDrawerPopover/TaskDrawerPopover';
 
 function formatDueTime(dueDate) {
   if (!dueDate) return null;
@@ -39,12 +40,17 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
   return (
     <DueDateSectionWrapper disabled={isTemplateTask}>
       <DueDateLabel>Due date</DueDateLabel>
-      <DueDatePickerPopover
-        taskIdentifier={taskIdentifier}
+      <TaskDrawerPopover
         disabled={isTemplateTask}
-        selectedDate={dueDate}
-        onDateChange={onDueDateChange}
-        recurring={hasRecurringSchedule}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={taskIdentifier}
+            selectedDate={dueDate}
+            onDateChange={onDueDateChange}
+            recurring={hasRecurringSchedule}
+            onCloseClick={closePopover}
+          />
+        )}
       >
         <DueDateContentWrapper>
           {momentDueDate ? (
@@ -74,7 +80,7 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
             </Placeholder>
           )}
         </DueDateContentWrapper>
-      </DueDatePickerPopover>
+      </TaskDrawerPopover>
     </DueDateSectionWrapper>
   );
 };

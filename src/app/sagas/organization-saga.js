@@ -1,0 +1,141 @@
+import * as ActionTypes from 'actions/action-types';
+import { all, call, put, select, takeLatest } from 'redux-saga/effects';
+import * as OrganizationApi from 'api/organization-api';
+import * as OrganizationActions from 'actions/organization-actions';
+import { showGlobalErrorAlert, showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
+import { updateWorkflowStatusForTasks } from 'actions/task-actions';
+import { organizationStatusesSelector } from 'selectors/organization-selectors';
+import { pluck, move } from 'ramda';
+
+const GET_ORGANIZATION_STATUSES = '@@saga/GET_ORGANIZATION_STATUSES';
+const DELETE_ORGANIZATION_STATUS = '@@saga/DELETE_ORGANIZATION_STATUS';
+const CREATE_ORGANIZATION_STATUS = '@@saga/CREATE_ORGANIZATION_STATUS';
+const UPDATE_ORGANIZATION_STATUS = '@@saga/UPDATE_ORGANIZATION_STATUS';
+const REORDER_ORGANIZATION_STATUSES = '@@saga/REORDER_ORGANIZATION_STATUSES';
+
+export function getOrganizationStatuses() {
+  return {
+    type: GET_ORGANIZATION_STATUSES,
+  };
+}
+
+export function deleteOrganizationStatus(identifier) {
+  return {
+    type: DELETE_ORGANIZATION_STATUS,
+    identifier,
+  };
+}
+
+export function createOrganizationStatus(status) {
+  return {
+    type: CREATE_ORGANIZATION_STATUS,
+    status,
+  };
+}
+
+export function updateOrganizationStatus(identifier, dataToUpdate) {
+  return {
+    type: UPDATE_ORGANIZATION_STATUS,
+    identifier,
+    dataToUpdate,
+  };
+}
+
+export function reorderOrganizationStatuses(sourceId, destinationId) {
+  return {
+    type: REORDER_ORGANIZATION_STATUSES,
+    sourceId,
+    destinationId,
+  };
+}
+
+function* doGetOrganizationStatuses() {
+  try {
+    yield put(OrganizationActions.setFetchingOrganizationStatuses());
+    const statuses = yield call(OrganizationApi.getOrganizationStatuses);
+    yield put(OrganizationActions.setOrganizationStatuses(statuses));
+  } catch {
+    yield put(OrganizationActions.setOrganizationStatusesError());
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* doDeleteOrganizationStatus({ identifier }) {
+  try {
+    yield call(OrganizationApi.deleteOrganizationStatus, identifier);
+    yield put({ type: ActionTypes.DELETE_ORGANIZATION_STATUS, identifier });
+    yield put(showGlobalAlert(AlertMessages.DELETED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* doCreateOrganizationStatus({ status }) {
+  try {
+    const createdStatus = yield call(
+      OrganizationApi.createOrganizationStatus,
+      status,
+    );
+    yield put({
+      type: ActionTypes.ADD_ORGANIZATION_STATUS,
+      status: createdStatus,
+    });
+    yield put(showGlobalAlert(AlertMessages.CREATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* doUpdateOrganizationStatus({ identifier, dataToUpdate }) {
+  try {
+    const updatedStatus = yield call(
+      OrganizationApi.updateOrganizationStatus,
+      identifier,
+      dataToUpdate,
+    );
+    yield put(
+      OrganizationActions.updateOrganizationStatus(identifier, updatedStatus),
+    );
+    yield put(updateWorkflowStatusForTasks(identifier, dataToUpdate));
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* doReorderOrganizationStatuses({ sourceId, destinationId }) {
+  const statuses = yield select(organizationStatusesSelector);
+  if (!statuses || statuses.length === 0) return;
+
+  try {
+    const statusIds = pluck('identifier', statuses);
+    const sourceIndex = statusIds.indexOf(sourceId);
+    const destinationIndex = statusIds.indexOf(destinationId);
+
+    if (sourceIndex === -1 || destinationIndex === -1) return;
+
+    const reorderedStatuses = move(sourceIndex, destinationIndex, statuses);
+    yield all([
+      put(OrganizationActions.setOrganizationStatuses(reorderedStatuses)),
+      call(
+        OrganizationApi.reorderOrganizationStatuses,
+        pluck('identifier', reorderedStatuses),
+      ),
+    ]);
+  } catch {
+    yield put(OrganizationActions.setOrganizationStatuses(statuses));
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+export default function* watchOrganization() {
+  yield takeLatest(GET_ORGANIZATION_STATUSES, doGetOrganizationStatuses);
+  yield takeLatest(DELETE_ORGANIZATION_STATUS, doDeleteOrganizationStatus);
+  yield takeLatest(CREATE_ORGANIZATION_STATUS, doCreateOrganizationStatus);
+  yield takeLatest(UPDATE_ORGANIZATION_STATUS, doUpdateOrganizationStatus);
+  yield takeLatest(
+    REORDER_ORGANIZATION_STATUSES,
+    doReorderOrganizationStatuses,
+  );
+}

@@ -3,6 +3,7 @@ import moment from 'moment';
 import useBoolean from 'hooks/useBoolean';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
+import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import TimeIcon from 'img/time';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import {
@@ -10,8 +11,6 @@ import {
   Divider,
   QuickAddSectionWrapper,
   QuickSelectButton,
-  BottomBar,
-  ActionButton,
   PlusButton,
   SectionWrapper,
 } from './styled';
@@ -115,11 +114,11 @@ const DueDatePicker = ({
                   Repeat
                 </PlusButton>
               </SectionWrapper>
-              <BottomBar>
-                <ActionButton type="button" onClick={onCloseClick}>
+              <PopoverBottomBar>
+                <PopoverBottomBar.Button type="button" onClick={onCloseClick}>
                   Close
-                </ActionButton>
-              </BottomBar>
+                </PopoverBottomBar.Button>
+              </PopoverBottomBar>
             </>
           )}
         </>
