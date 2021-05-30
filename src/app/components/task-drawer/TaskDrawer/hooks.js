@@ -1,15 +1,22 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable sonarjs/cognitive-complexity */
-import moment from 'moment';
-import { useCallback, useEffect, useState, useRef } from 'react';
-import { EditorState } from 'draft-js';
+import {
+  useCallback,
+  useState,
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  useMemo,
+} from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { useMount } from 'react-use';
-import * as TaskListApi from 'api/task-list-api';
+import { useDispatch, useSelector, batch } from 'react-redux';
+import moment from 'moment';
+import { EditorState } from 'draft-js';
+import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import * as TaskApi from 'api/task-api';
-import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 import {
   saveTask,
   partialUpdateTask,
@@ -31,15 +38,14 @@ import {
   taskDrawerFocusFieldSelector,
   addingNewSubtaskSelector,
 } from 'selectors/task-drawer-selectors';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import {
   onTaskDrawerSubtaskAdd,
   onTaskDrawerTaskDeleted,
   onTaskDrawerTaskDuplicated,
 } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -121,36 +127,45 @@ const onSubmit = ({
     });
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const initializeTaskDrawerHooks = ({
   onTaskUpdate,
   onTaskCreation,
   onTaskDelete,
 }) => {
+  const dispatch = useDispatch();
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const selectedTask = useSelector(selectedTaskSelector);
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
+  // console.log(taskDrawerOpen, selectedTask);
 
-  const { taskIdentifier, subTasksCount, subtasks } = selectedTask || {};
-
-  const taskDrawerReference = useRef(null);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState();
   const [selectedParentTask, setSelectedParentTask] = useState(null);
+  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
+  const [isSaving, setSaving] = useState(false);
+
+  const descriptionReference = useRef(null);
+  const previousTaskIdentifierValue = useRef();
+  const taskDrawerReference = useRef(null);
+
+  const [descriptionState, setDescriptionState] = useMentionsEditorState();
   const [
     parentDescriptionState,
     setParentDescriptionState,
   ] = useMentionsEditorState();
-  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
-  const descriptionReference = useRef(null);
 
-  const [emailBodyMembers, setEmailBodyMembers] = useState(null);
-
+  const { taskIdentifier, subTasksCount, subtasks } = selectedTask || {};
   const taskList = selectedTask?.taskList;
   const taskListIdentifier = taskList?.taskListIdentifier;
   const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
-
-  const [isSaving, setSaving] = useState(false);
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+  const selectedTaskSourceMessage = selectedTask?.sourceMessage;
+  const isAddingOrEditingSubtask =
+    Boolean(selectedParentTask) || addingNewSubtask;
+  const isSubtask = !!selectedTask?.parentTaskIdentifier;
+  const parentTask = selectedTask?.parentTask;
+  const selectedTaskDueDate = selectedTask?.dueDate;
+  const selectedTaskStatus = selectedTask?.status;
 
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
@@ -158,32 +173,14 @@ const initializeTaskDrawerHooks = ({
 
   const { setValue, clearError } = formMethods;
 
-  const dispatch = useDispatch();
-
-  const setAutoSaveVisible = useCallback(() => {
-    dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
-  }, [dispatch]);
-
-  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
-
-  const isAddingOrEditingSubtask =
-    Boolean(selectedParentTask) || addingNewSubtask;
-
-  const previousTaskIdentifierValue = useRef();
+  useEffect(() => {
+    setValue('newTaskListId', null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    if (taskIdentifier !== previousTaskIdentifierValue.current) {
-      // eslint-disable-next-line no-unused-expressions
-      taskDrawerReference?.current.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [taskIdentifier]);
-
-  useEffect(() => {
-    if (
-      selectedTask?.parentTask &&
-      taskIdentifier !== previousTaskIdentifierValue.current
-    ) {
-      setSelectedParentTask(selectedTask.parentTask);
+    if (parentTask && taskIdentifier !== previousTaskIdentifierValue.current) {
+      setSelectedParentTask(parentTask);
     }
 
     if (
@@ -201,10 +198,21 @@ const initializeTaskDrawerHooks = ({
   }, [taskIdentifier, subtasks]);
 
   useEffect(() => {
-    setSelectedParentTask(null);
-  }, [taskDrawerOpen]);
+    if (selectedTask && selectedTask.description === '') {
+      setTimeout(() => {
+        descriptionReference.current.focus();
+      }, 0);
+    }
+  }, [descriptionReference, isAddingOrEditingSubtask, selectedTask]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (taskIdentifier !== previousTaskIdentifierValue.current) {
+      // eslint-disable-next-line no-unused-expressions
+      taskDrawerReference?.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [taskIdentifier]);
+
+  useLayoutEffect(() => {
     if (selectedParentTask) {
       const {
         tokenizedDescription,
@@ -226,24 +234,8 @@ const initializeTaskDrawerHooks = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedParentTask]);
 
-  useEffect(() => {
-    if (taskListIdentifier && selectedTask?.sourceMessage) {
-      TaskListApi.getMembersByTaskListId(
-        taskList.taskListIdentifier,
-        'ALL',
-      ).then(data => {
-        setEmailBodyMembers(data);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskListIdentifier, taskIdentifier]);
-
-  useEffect(() => {
-    if (
-      taskDrawerOpen &&
-      taskList !== undefined &&
-      taskList?.taskListIdentifier
-    ) {
+  useLayoutEffect(() => {
+    if (taskDrawerOpen && taskList !== undefined && taskListIdentifier) {
       markTaskRead(selectedTask)(dispatch);
     }
 
@@ -271,27 +263,29 @@ const initializeTaskDrawerHooks = ({
     }
 
     setValue('priority', selectedTask?.priority ?? null);
-    setValue('workflowStatus', selectedTask?.workflowStatus ?? null);
     setValue(
       'labels',
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
     );
-    // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
 
-  useMount(() => {
-    setValue('newTaskListId', null);
-  });
+  const setAutoSaveVisible = useCallback(() => {
+    dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
+  }, [dispatch]);
 
   const openTaskDrawer = useCallback(() => {
     openDrawer()(dispatch);
   }, [dispatch]);
 
-  const closeTaskDrawer = useCallback(() => {
-    closeDrawer()(dispatch);
-    storeAsCurrentTask(null)(dispatch);
-  }, [dispatch]);
+  const closeTaskDrawer = useCallback(
+    () =>
+      batch(() => {
+        closeDrawer()(dispatch);
+        storeAsCurrentTask(null)(dispatch);
+      }),
+    [dispatch],
+  );
 
   const reFileTask = useCallback(
     ({ newTaskList }) => {
@@ -322,75 +316,85 @@ const initializeTaskDrawerHooks = ({
     [selectedTask],
   );
 
-  const onDelete = async ({ afterDelete }) => {
-    if (selectedTask) {
-      try {
-        onTaskDrawerTaskDeleted();
-        await deleteTask(selectedTask)(dispatch);
-        onTaskDelete(selectedTask);
-        storeAsCurrentTask(null)(dispatch);
-        afterDelete();
-      } catch {
-        noop();
-      }
-    }
-  };
-
-  const onDuplicate = ({
-    afterDuplicate,
-    includeAttachments,
-  }) => async event => {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    if (selectedTask && selectedTask.taskIdentifier != null) {
-      try {
-        const newTask = await duplicateTask(
-          selectedTask,
-          includeAttachments,
-        )(dispatch);
-        onTaskCreation(newTask);
-        storeAsCurrentTask(newTask)(dispatch);
-        afterDuplicate({ newTask });
-        onTaskDrawerTaskDuplicated();
-      } catch {
-        noop();
-      }
-    }
-  };
-
-  const onAddSubTask = ({ afterAddSubTask, assignToSelf }) => async event => {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    if (selectedTask && selectedTask.taskIdentifier != null) {
-      try {
-        let assignedToUsers = null;
-        if (assignToSelf && selectedTask.assignedToUsers) {
-          assignedToUsers = selectedTask.assignedToUsers;
+  const onDelete = useCallback(
+    async ({ afterDelete }) => {
+      if (selectedTask) {
+        try {
+          onTaskDrawerTaskDeleted();
+          await deleteTask(selectedTask)(dispatch);
+          onTaskDelete(selectedTask);
+          storeAsCurrentTask(null)(dispatch);
+          afterDelete();
+        } catch {
+          noop();
         }
-        await prepareSubtask(
-          selectedTask.taskIdentifier,
-          assignedToUsers,
-          selectedTask,
-        )(dispatch);
-        if (typeof afterAddSubTask === 'function') afterAddSubTask();
-      } catch {
-        noop();
       }
-    }
-  };
+    },
+    [dispatch, onTaskDelete, selectedTask],
+  );
 
-  const handleQuickAddSubtask = async newSubtask => {
-    onTaskDrawerSubtaskAdd('Quick add input');
-    return dispatch(addSubtask(selectedTask.taskIdentifier, newSubtask));
-  };
+  const onDuplicate = ({ afterDuplicate, includeAttachments }) =>
+    useCallback(
+      async event => {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
 
-  const handleTaskDescriptionUpdate = async () => {
+        if (selectedTask && selectedTask.taskIdentifier != null) {
+          try {
+            const newTask = await duplicateTask(
+              selectedTask,
+              includeAttachments,
+            )(dispatch);
+            onTaskCreation(newTask);
+            storeAsCurrentTask(newTask)(dispatch);
+            afterDuplicate({ newTask });
+            onTaskDrawerTaskDuplicated();
+          } catch {
+            noop();
+          }
+        }
+      },
+      [afterDuplicate, includeAttachments],
+    );
+
+  const onAddSubTask = useCallback(
+    ({ afterAddSubTask, assignToSelf }) => async event => {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      if (selectedTask && selectedTask.taskIdentifier != null) {
+        try {
+          let assignedToUsers = null;
+          if (assignToSelf && selectedTask.assignedToUsers) {
+            assignedToUsers = selectedTask.assignedToUsers;
+          }
+          await prepareSubtask(
+            selectedTask.taskIdentifier,
+            assignedToUsers,
+            selectedTask,
+          )(dispatch);
+          if (typeof afterAddSubTask === 'function') afterAddSubTask();
+        } catch {
+          noop();
+        }
+      }
+    },
+    [dispatch, selectedTask],
+  );
+
+  const handleQuickAddSubtask = useCallback(
+    async newSubtask => {
+      onTaskDrawerSubtaskAdd('Quick add input');
+      return dispatch(addSubtask(selectedTaskIdentifier, newSubtask));
+    },
+    [dispatch, selectedTaskIdentifier],
+  );
+
+  const handleTaskDescriptionUpdate = useCallback(async () => {
     const updatedTaskDescription = convertFromEditorStateToOutput(
       descriptionState,
     ).tokenizedText;
@@ -419,7 +423,13 @@ const initializeTaskDrawerHooks = ({
         );
       }
     }
-  };
+  }, [
+    descriptionState,
+    dispatch,
+    onTaskUpdate,
+    selectedTask,
+    setAutoSaveVisible,
+  ]);
 
   const handleDueDateSave = useCallback(
     updatedDueDateTime => {
@@ -455,11 +465,82 @@ const initializeTaskDrawerHooks = ({
     [dispatch, onTaskUpdate, selectedTaskIdentifier, setAutoSaveVisible],
   );
 
-  return {
+  const newTaskFlag = useMemo(
+    () => !(selectedTask && selectedTaskIdentifier != null),
+    [selectedTask, selectedTaskIdentifier],
+  );
+
+  const isAddingSubtask = useMemo(
+    () => selectedTask && selectedTaskIdentifier === null && isSubtask,
+    [isSubtask, selectedTask, selectedTaskIdentifier],
+  );
+
+  const isSelectedTaskComplete = useMemo(
+    () => selectedTaskStatus === 'COMPLETE',
+    [selectedTaskStatus],
+  );
+
+  const taskDueTime = useMemo(() => {
+    const momentDueTime = moment(selectedTaskDueDate || null);
+    if (momentDueTime.isValid()) {
+      return momentDueTime.format(TIME_12H_FORMAT);
+    }
+    return null;
+  }, [selectedTaskDueDate]);
+
+  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
     selectedTask,
-    selectedParentTask,
-    taskDrawerOpen,
-    taskDrawerFocusField,
+  ]);
+  const onClickParentTask = useCallback(
+    () => storeAsCurrentTask(selectedParentTask)(dispatch),
+    [dispatch, selectedParentTask],
+  );
+  const onFocusMentionsEditor = useCallback(
+    () => setIsDescriptionFocused(true),
+    [],
+  );
+  const onBlurMentionsEditor = useCallback(() => {
+    handleTaskDescriptionUpdate();
+    setIsDescriptionFocused(false);
+  }, [handleTaskDescriptionUpdate]);
+
+  const onChangeMentionsEditor = useCallback(
+    state => {
+      if (descriptionErrorState) {
+        const { tokenizedText } = convertFromEditorStateToOutput(state);
+        if (tokenizedText) {
+          setDescriptionErrorState(false);
+        }
+      }
+      setDescriptionState(state);
+    },
+    [descriptionErrorState, setDescriptionState],
+  );
+
+  return {
+    closeTaskDrawer,
+    descriptionErrorState,
+    descriptionReference,
+    descriptionState,
+    formMethods,
+    handleDueDateSave,
+    handleQuickAddSubtask,
+    handleUpdateTask,
+    isSubtask,
+    isAddingOrEditingSubtask,
+    isAddingSubtask,
+    isDescriptionFocused,
+    isSaving,
+    isSelectedTaskComplete,
+    isTemplateTask,
+    newTaskFlag,
+    onAddSubTask,
+    onBlurMentionsEditor,
+    onChangeMentionsEditor,
+    onClickParentTask,
+    onDelete,
+    onDuplicate,
+    onFocusMentionsEditor,
     onSubmit: onSubmit({
       selectedTask,
       taskList,
@@ -471,32 +552,20 @@ const initializeTaskDrawerHooks = ({
       descriptionState,
       setDescriptionErrorState,
     }),
-    formMethods,
-    isAddingOrEditingSubtask,
     openTaskDrawer,
-    closeTaskDrawer,
-    isSaving,
-    reFileTask,
-    onDelete,
-    onDuplicate,
-    onAddSubTask,
-    handleQuickAddSubtask,
-    handleTaskDescriptionUpdate,
-    setAutoSaveVisible,
-    emailBodyMembers,
-    descriptionState,
-    setDescriptionState,
-    descriptionReference,
-    descriptionErrorState,
-    setDescriptionErrorState,
-    dispatch,
     parentDescriptionState,
+    reFileTask,
+    selectedParentTask,
+    selectedTask,
+    selectedTaskSourceMessage,
+    setAutoSaveVisible,
     setParentDescriptionState,
+    taskDrawerFocusField,
+    taskDrawerOpen,
     taskDrawerReference,
+    taskDueTime,
     taskListIdentifier,
     templateBundleIdentifier,
-    handleUpdateTask,
-    handleDueDateSave,
   };
 };
 

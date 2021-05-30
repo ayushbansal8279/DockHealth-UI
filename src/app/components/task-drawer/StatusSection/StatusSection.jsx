@@ -1,78 +1,100 @@
-import React, { useRef } from 'react';
-import SmallSwitchChevron from 'img/list-switch-chevron';
+/* eslint-disable react/jsx-no-duplicate-props */
+import React, { useCallback } from 'react';
 import palette from 'styles/palette';
-import { RobotoTypography } from 'styles/theme';
+import SmallSwitchChevron from 'img/list-switch-chevron';
+import { useDispatch } from 'react-redux';
+import { updateWorkflowStatus } from 'actions/task-actions';
+import * as AlertActions from 'alert/actions';
 import { onTaskDrawerTaskStatusChanged } from 'helpers/ga-event-helper';
-import DropdownInput from 'components/common/DropdownInput/DropdownInput';
-import initializeStatusSectionHooks, { STATUSES } from './hooks';
+import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
+import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
+import TextInput from 'components/common/TextInput/TextInput';
 import {
   StatusFlag,
-  StatusLabelContainer,
   StatusFieldContainer,
   StatusFlagContainer,
 } from './styled';
-import { EndAdornmentContainer, AdornmentContainer } from '../styled';
+import {
+  EndAdornmentContainer,
+  AdornmentContainer,
+  AdornmentClear,
+} from '../styled';
 
-const statusOptions = STATUSES.map(({ value, label, color }) => ({
-  key: value,
-  value,
-  label: isHovered => (
-    <StatusLabelContainer isHovered={isHovered}>
-      <StatusFlag color={color} />
-      <RobotoTypography condensed variant="h4">
-        {label}
-      </RobotoTypography>
-    </StatusLabelContainer>
-  ),
-  displayLabel: label,
-}));
+const StatusSection = ({ selectedTask, setAutoSaveVisible, onTaskUpdate }) => {
+  const dispatch = useDispatch();
+  const { workflowStatus, taskIdentifier } = selectedTask || {};
 
-const STATUS_FIELD_NAME = 'workflowStatus';
+  const handleUpdateWorkflowStatus = useCallback(
+    newWorkflowStatus => {
+      if (taskIdentifier) {
+        updateWorkflowStatus(
+          selectedTask,
+          newWorkflowStatus,
+        )(dispatch)
+          .then(updatedTask => {
+            onTaskDrawerTaskStatusChanged(newWorkflowStatus?.name);
+            onTaskUpdate(updatedTask);
+            setAutoSaveVisible();
+          })
+          .catch(() => {
+            dispatch(
+              AlertActions.showGlobalAlert(
+                'Error updating status, please try again later',
+                'error',
+              ),
+            );
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskIdentifier],
+  );
 
-const StatusSection = ({ setAutoSaveVisible, onTaskUpdate }) => {
-  const reference = useRef(null);
-  const {
-    currentStatusFlagColor,
-    saveTaskStatus,
-    setValue,
-  } = initializeStatusSectionHooks({
-    setAutoSaveVisible,
-    onTaskUpdate,
-  });
-
-  const selectOption = value => {
-    if (value === 'NO_STATUS') {
-      setValue(STATUS_FIELD_NAME, null); // default to null since we just clear the selection
-    } else {
-      setValue(STATUS_FIELD_NAME, value);
-    }
-    onTaskDrawerTaskStatusChanged(value);
-    saveTaskStatus({ newTaskStatus: value });
+  const handleClear = () => {
+    handleUpdateWorkflowStatus(null);
   };
 
   return (
-    <StatusFieldContainer>
-      <StatusFlagContainer>
-        <StatusFlag color={currentStatusFlagColor} />
-      </StatusFlagContainer>
-      <DropdownInput
-        ref={reference}
-        name={STATUS_FIELD_NAME}
-        label="Status"
-        placeholder="Is there a status?"
-        InputProps={{
-          endAdornment: (
-            <EndAdornmentContainer>
-              <SmallSwitchChevron color={palette.orangeJulius} />
-            </EndAdornmentContainer>
-          ),
-          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
-        }}
-        onSelect={selectOption}
-      >
-        {statusOptions}
-      </DropdownInput>
-    </StatusFieldContainer>
+    <TaskDrawerPopover
+      content={({ closePopover }) => (
+        <TaskWorkflowStatus
+          selectedStatusIdentifier={workflowStatus?.identifier}
+          updateWorkflowStatus={handleUpdateWorkflowStatus}
+          onClose={closePopover}
+        />
+      )}
+    >
+      <StatusFieldContainer>
+        <StatusFlagContainer>
+          <StatusFlag color={workflowStatus?.color} />
+        </StatusFlagContainer>
+        <TextInput
+          label="Status"
+          name="workflowStatus"
+          placeholder="Is there a status?"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            startAdornment: !workflowStatus && (
+              <AdornmentContainer>+</AdornmentContainer>
+            ),
+            endAdornment: workflowStatus ? (
+              <AdornmentClear onClick={handleClear} />
+            ) : (
+              <EndAdornmentContainer>
+                <SmallSwitchChevron color={palette.orangeJulius} />
+              </EndAdornmentContainer>
+            ),
+          }}
+          inputProps={{
+            tabIndex: -1,
+            readOnly: true,
+            value: workflowStatus?.name || '',
+          }}
+        />
+      </StatusFieldContainer>
+    </TaskDrawerPopover>
   );
 };
 

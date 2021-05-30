@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { getPatientName } from 'helpers/utility-functions';
-import { getWorkflowStatusConfig } from 'components/task/StandardTaskItem/TaskItemStatus';
 
 const getDueDateData = ({ dueDate }) => {
   const dueDateMoment = moment(dueDate ?? null);
@@ -52,10 +51,8 @@ const getPdfTaskData = props => {
     ? columnsWidth.task - 42
     : columnsWidth.task - 30;
 
-  const {
-    color: workflowStatusColor,
-    label: workflowStatusLabel,
-  } = getWorkflowStatusConfig(workflowStatus);
+  const { color: workflowStatusColor, name: workflowStatusLabel } =
+    workflowStatus || {};
 
   const assignedMemberColor =
     (taskListMembers ?? []).find(

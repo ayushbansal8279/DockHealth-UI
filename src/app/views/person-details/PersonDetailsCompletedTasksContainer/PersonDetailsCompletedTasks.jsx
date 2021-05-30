@@ -93,7 +93,6 @@ const PersonDetailsCompletedTasks = ({
                 {({
                   isCompletedGroup,
                   isFullView,
-                  isTaskDrawerOpen,
                   addingNewSubtask,
                   addingNewSubtaskParentId,
                   subtaskShape,
@@ -113,7 +112,6 @@ const PersonDetailsCompletedTasks = ({
                           onTaskUpdate={onTaskUpdate}
                           updateDueDate={updateDueDate}
                           selectedTask={selectedTask}
-                          isDraggable={!isTaskDrawerOpen}
                           addingNewSubtask={addingNewSubtask}
                           addingNewSubtaskParentId={addingNewSubtaskParentId}
                           subtaskShape={subtaskShape}

@@ -1,0 +1,81 @@
+import styled from 'styled-components';
+import palette from 'styles/palette';
+import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
+import { prop } from 'ramda';
+
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${palette.coolGrey3};
+`;
+
+export const StatusListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.mediumGrey};
+`;
+
+export const StatusList = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 32px);
+  grid-template-columns: repeat(2, 1fr);
+  min-width: 280px;
+  width: 100%;
+  max-height: ${({ elementsInColumn }) => elementsInColumn * 32}px;
+  margin: ${spacing.small} 0;
+`;
+
+export const NewStatusButtonWrapper = styled.div`
+  width: 100%;
+  padding: ${spacing.tiny} ${spacing.smallPlus} ${spacing.tiny}
+    ${spacing.regular};
+`;
+
+export const NewStatusButton = styled.button`
+  height: 24px;
+  width: 100%;
+  border: 1px solid ${palette.coolGrey2};
+  color: ${palette.coolGrey2};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  text-align: center;
+  line-height: 22px;
+  cursor: pointer;
+`;
+
+export const ColorPickerWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 280px;
+  padding: ${spacing.small} ${spacing.regular};
+  margin: 0 auto;
+`;
+
+export const ColorButton = styled.button`
+  display: block;
+  background-color: ${prop('color')};
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+
+  ${({ selected }) =>
+    selected &&
+    `
+    border: 1px solid ${palette.white};
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  `}
+`;
+
+export const SortableItemWrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
+`;

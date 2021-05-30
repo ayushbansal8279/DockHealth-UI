@@ -1,20 +1,16 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Grid } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FormContext } from 'react-hook-form';
-import { storeAsCurrentTask } from 'actions/task-actions';
+import { Button, Grid } from '@material-ui/core';
+
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
-import initializeTaskDrawerHooks from './hooks';
-import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import LabelsSection from '../LabelsSection/LabelsSection';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import TopSection from '../TopSection/TopSection';
@@ -24,6 +20,8 @@ import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
+import initializeTaskDrawerHooks from './hooks';
+import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import {
   DescriptionLabel,
   TaskDrawerContainer,
@@ -61,46 +59,50 @@ const TaskDrawer = ({
   hideTour = false,
 }) => {
   const {
-    taskDrawerOpen,
-    taskDrawerFocusField,
-    onSubmit,
-    formMethods,
-    isAddingOrEditingSubtask,
     closeTaskDrawer,
+    descriptionErrorState,
+    descriptionReference,
+    descriptionState,
+    formMethods,
+    handleDueDateSave,
+    handleQuickAddSubtask,
+    handleUpdateTask,
+    isSubtask,
+    isAddingOrEditingSubtask,
+    isAddingSubtask,
+    isDescriptionFocused,
     isSaving,
-    selectedTask,
-    selectedParentTask,
-    // currentUser,
-    // currentOrganization,
-    reFileTask,
+    isSelectedTaskComplete,
+    isTemplateTask,
+    newTaskFlag,
+    onAddSubTask,
+    onBlurMentionsEditor,
+    onChangeMentionsEditor,
+    onClickParentTask,
     onDelete,
     onDuplicate,
-    onAddSubTask,
-    handleQuickAddSubtask,
-    handleTaskDescriptionUpdate,
-    setAutoSaveVisible,
-    emailBodyMembers,
-    descriptionState,
-    setDescriptionState,
-    descriptionReference,
-    descriptionErrorState,
-    setDescriptionErrorState,
-    dispatch,
+    onFocusMentionsEditor,
+    onSubmit,
     parentDescriptionState,
+    reFileTask,
+    selectedParentTask,
+    selectedTask,
+    selectedTaskSourceMessage,
+    setAutoSaveVisible,
     setParentDescriptionState,
+    taskDrawerFocusField,
+    taskDrawerOpen,
     taskDrawerReference,
     taskListIdentifier,
-    handleUpdateTask,
-    handleDueDateSave,
     templateBundleIdentifier,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
     onTaskCreation,
     onTaskDelete,
+    fromFirstAddTask,
+    hideTour,
   });
-
-  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 
   const {
     taskMenuReference,
@@ -118,50 +120,13 @@ const TaskDrawer = ({
   });
 
   const { handleSubmit, setValue } = formMethods;
-
-  useEffect(() => {
-    if (selectedTask && selectedTask.description === '') {
-      setTimeout(() => {
-        descriptionReference.current.focus();
-      }, 0);
-    }
-  }, [descriptionReference, isAddingOrEditingSubtask, selectedTask]);
-
   const parentFormSubmit = handleSubmit(onSubmit);
-
-  const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
-
-  const isAddingSubtask =
-    selectedTask &&
-    selectedTask.taskIdentifier === null &&
-    selectedTask.parentTaskIdentifier !== null;
-
-  const isSelectedTaskComplete = selectedTask?.status === 'COMPLETE';
-
-  const isTemplateTask = checkIfTemplateTask(selectedTask);
-  const closeDrawer = () => closeTaskDrawer();
-  const onClickParentTask = () =>
-    storeAsCurrentTask(selectedParentTask)(dispatch);
-  const onFocusMentionsEditor = () => setIsDescriptionFocused(true);
-  const onBlurMentionsEditor = () => {
-    handleTaskDescriptionUpdate();
-    setIsDescriptionFocused(false);
-  };
-  const onChangeMentionsEditor = state => {
-    if (descriptionErrorState) {
-      const { tokenizedText } = convertFromEditorStateToOutput(state);
-      if (tokenizedText) {
-        setDescriptionErrorState(false);
-      }
-    }
-    setDescriptionState(state);
-  };
 
   return (
     <>
       <TaskDrawerContainer
         open={taskDrawerOpen}
-        onClose={closeDrawer}
+        onClose={closeTaskDrawer}
         ref={taskDrawerReference}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -194,7 +159,7 @@ const TaskDrawer = ({
               </Grid>
               {selectedTask && <TaskDrawerDivider />}
               <Spacing vertical={2} />
-              {selectedTask?.parentTaskIdentifier && (
+              {isSubtask && (
                 <Grid item xs={12} style={styleFullRowThin}>
                   <Spacing vertical={4} />
                   {selectedParentTask ? (
@@ -271,12 +236,12 @@ const TaskDrawer = ({
                   </DescriptionError>
                 )}
               </Grid>
-              {selectedTask?.sourceMessage && (
+              {selectedTaskSourceMessage && (
                 <Grid item xs={12} style={styleEmailRow}>
                   <TaskDrawerEmailBodyContainer
                     emailBody={selectedTask.sourceMessage}
-                    task={selectedTask}
-                    members={emailBodyMembers}
+                    selectedTaskSourceMessage={selectedTaskSourceMessage}
+                    taskListIdentifier={taskListIdentifier}
                   />
                 </Grid>
               )}
@@ -355,7 +320,7 @@ const TaskDrawer = ({
               <Grid item xs={12} style={styleFullRow}>
                 <AttachmentsSection selectedTask={selectedTask} />
               </Grid>
-              {selectedTask && !selectedTask.parentTaskIdentifier && (
+              {selectedTask && !isSubtask && (
                 <Grid item xs={12}>
                   <SubtasksSection
                     subtasks={selectedTask.subtasks}
@@ -442,4 +407,4 @@ const TaskDrawer = ({
   );
 };
 
-export default TaskDrawer;
+export default React.memo(TaskDrawer);

@@ -1,4 +1,4 @@
-import { mergeDeepRight } from 'ramda';
+import { mergeDeepRight, omit } from 'ramda';
 import {
   GET_BILLING_DETAILS_FAILURE,
   GET_BILLING_DETAILS_SUCCESS,
@@ -20,9 +20,18 @@ import {
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
   SELECT_USERS_FOR_PLAN,
+  SET_FETCHING_ORGANIZATION_STATUSES,
+  SET_ORGANIZATION_STATUSES,
+  SET_ORGANIZATION_STATUSES_ERROR,
+  DELETE_ORGANIZATION_STATUS,
+  ADD_ORGANIZATION_STATUS,
+  UPDATE_ORGANIZATION_STATUS,
 } from 'actions/action-types';
 
 const initialState = {
+  statuses: null,
+  isFetchingStatuses: false,
+  statusesError: false,
   organization: null,
   billingData: null,
   billingDetails: null,
@@ -39,8 +48,8 @@ const initialState = {
   currentUsers: null,
 };
 
-const reducer = (state = initialState, { type, payload, error }) => {
-  switch (type) {
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
     case REQUEST_SAVE_BILLING_DETAILS:
     case REQUEST_GET_ORGANIZATION: {
       return {
@@ -77,7 +86,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
     case GET_ORGANIZATION_SUCCESS: {
       return {
         ...state,
-        organization: payload,
+        organization: action.payload,
         isFetching: false,
         requestError: null,
       };
@@ -94,7 +103,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
     case GET_BILLING_ESTIMATE_SUCCESS: {
       return {
         ...state,
-        billingData: payload,
+        billingData: action.payload,
         isFetchingBilling: false,
         requestErrorBilling: null,
       };
@@ -103,7 +112,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
     case GET_BILLING_DETAILS_SUCCESS: {
       return {
         ...state,
-        billingDetails: payload,
+        billingDetails: action.payload,
         isFetchingBillingDetails: false,
         requestErrorBillingDetails: null,
       };
@@ -112,7 +121,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
     case GET_INVOICE_DETAILS_SUCCESS: {
       return {
         ...state,
-        invoiceDetails: payload,
+        invoiceDetails: action.payload,
         isFetchingInvoiceDetails: false,
         requestErrorInvoiceDetails: null,
       };
@@ -124,7 +133,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
         ...state,
         organization: null,
         isFetching: false,
-        requestError: error,
+        requestError: action.error,
       };
     }
 
@@ -133,7 +142,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
         ...state,
         billingData: null,
         isFetchingBilling: false,
-        requestErrorBilling: error,
+        requestErrorBilling: action.error,
       };
     }
 
@@ -142,7 +151,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
         ...state,
         billingDetails: null,
         isFetchingBillingDetails: false,
-        requestErrorBillingDetails: error,
+        requestErrorBillingDetails: action.error,
       };
     }
 
@@ -151,35 +160,35 @@ const reducer = (state = initialState, { type, payload, error }) => {
         ...state,
         invoiceDetails: null,
         isFetchingInvoiceDetails: false,
-        requestErrorInvoiceDetails: error,
+        requestErrorInvoiceDetails: action.error,
       };
     }
 
     case SET_NEW_PAYMENT_PLAN: {
       return {
         ...state,
-        newPaymentPlan: payload,
+        newPaymentPlan: action.payload,
       };
     }
 
     case UPDATE_ORGANIZATION: {
       return {
         ...state,
-        organization: mergeDeepRight(state.organization, payload),
+        organization: mergeDeepRight(state.organization, action.payload),
       };
     }
 
     case SELECT_USERS_FOR_PLAN: {
       return {
         ...state,
-        currentUsers: payload,
+        currentUsers: action.payload,
       };
     }
 
     case GET_REFERRAL_CONFIG_SUCCESS: {
       return {
         ...state,
-        referralConfig: payload,
+        referralConfig: action.payload,
       };
     }
 
@@ -187,6 +196,65 @@ const reducer = (state = initialState, { type, payload, error }) => {
       return {
         ...state,
         referralConfig: null,
+      };
+    }
+
+    case SET_FETCHING_ORGANIZATION_STATUSES: {
+      return {
+        ...state,
+        isFetchingStatuses: true,
+        statusesError: false,
+      };
+    }
+
+    case SET_ORGANIZATION_STATUSES_ERROR: {
+      return {
+        ...state,
+        isFetchingStatuses: false,
+        statusesError: true,
+      };
+    }
+
+    case SET_ORGANIZATION_STATUSES: {
+      const { statuses } = action;
+
+      return {
+        ...state,
+        statuses,
+        isFetchingStatuses: false,
+        statusesError: false,
+      };
+    }
+
+    case DELETE_ORGANIZATION_STATUS: {
+      const { identifier: identifierToDelete } = action;
+      return {
+        ...state,
+        statuses: state.statuses?.filter(
+          ({ identifier }) => identifier !== identifierToDelete,
+        ),
+      };
+    }
+
+    case ADD_ORGANIZATION_STATUS: {
+      const { status } = action;
+
+      return {
+        ...state,
+        statuses: [...(state.statuses || []), status],
+      };
+    }
+
+    case UPDATE_ORGANIZATION_STATUS: {
+      const { identifier, dataToUpdate } = action;
+
+      return {
+        ...state,
+        statuses: state.statuses?.map(status =>
+          status.identifier === identifier
+            ? { ...status, ...omit('identifier', dataToUpdate) }
+            : status,
+        ),
       };
     }
 

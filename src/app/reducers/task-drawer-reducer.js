@@ -7,6 +7,7 @@ import {
   SET_AS_CURRENT_TASK,
   TASK_READ_SUCCESS,
   SET_TASK_DRAWER_STATE,
+  OPEN_TASK_DRAWER_WITH_CONTENT,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -106,6 +107,18 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         open,
         focusField,
+      };
+    }
+
+    case OPEN_TASK_DRAWER_WITH_CONTENT: {
+      const { open, focusField, task } = action;
+
+      return {
+        ...state,
+        open,
+        focusField,
+        selectedTask: task,
+        selectedTaskId: task != null ? task.taskIdentifier : null,
       };
     }
 

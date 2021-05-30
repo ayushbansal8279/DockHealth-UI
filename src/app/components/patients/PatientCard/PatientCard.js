@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Popper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
-import useCardWithTimeout from 'hooks/use-card-with-timeout';
+import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import Spacing from 'components/common/Spacing';
 import {
   PatientCardContainer,
@@ -59,7 +59,7 @@ const PatientCard = ({ children, patientIdentifier }) => {
   const reference = useRef(null);
   const [patientData, setPatientData] = useState(null);
 
-  const { cardOpen, openTrigger, closeTrigger } = useCardWithTimeout();
+  const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
 
   useEffect(() => {
     if (cardOpen && !patientData) {
@@ -86,11 +86,7 @@ const PatientCard = ({ children, patientIdentifier }) => {
     allNotes,
   } = patientData || {};
   return (
-    <span
-      ref={reference}
-      onMouseEnter={openTrigger}
-      onMouseLeave={closeTrigger}
-    >
+    <span ref={reference} onMouseEnter={openCard} onMouseLeave={closeCard}>
       {children}
       <Popper
         anchorEl={reference.current}

@@ -74,14 +74,12 @@ const ListDetailsCompletedTasks = ({
                   loadMoreTasksForList({
                     status: 'COMPLETE',
                     startPosition: completedTasksGroup?.tasks?.length || 0,
-                    sort,
                   });
                 }}
                 onTaskGroupViewModeChange={viewMode => {
                   loadMoreTasksForList({
                     status: 'COMPLETE',
                     startPosition: 0,
-                    sort,
                     viewMode,
                   });
                 }}
@@ -92,7 +90,6 @@ const ListDetailsCompletedTasks = ({
                   isLoadingGroup,
                   isCompletedGroup,
                   isFullView,
-                  isTaskDrawerOpen,
                   addingNewSubtask,
                   addingNewSubtaskParentId,
                   subtaskShape,
@@ -117,7 +114,6 @@ const ListDetailsCompletedTasks = ({
                             isCompletedGroup || dragAndDropDisabled
                           }
                           selectedTask={selectedTask}
-                          isDraggable={!isTaskDrawerOpen}
                           addingNewSubtask={addingNewSubtask}
                           addingNewSubtaskParentId={addingNewSubtaskParentId}
                           subtaskShape={subtaskShape}

@@ -17,6 +17,17 @@ export const selectedTaskIdentifierSelector = createSelector(
   ({ selectedTask }) => selectedTask?.taskIdentifier,
 );
 
+export const isTaskSelectedSelector = (
+  taskIdentifier,
+  isSelectedByHighlighted,
+) =>
+  createSelector(
+    taskDrawerSelector,
+    ({ selectedTask }) =>
+      selectedTask?.taskIdentifier === taskIdentifier ||
+      isSelectedByHighlighted,
+  );
+
 export const addingNewSubtaskSelector = createSelector(
   taskDrawerSelector,
   ({ addingNewSubtask }) => addingNewSubtask,
