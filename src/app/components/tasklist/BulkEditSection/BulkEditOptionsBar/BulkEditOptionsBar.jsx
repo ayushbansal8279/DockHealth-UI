@@ -211,7 +211,7 @@ const BulkEditOptionsBar = ({
       bulkEditTasksApi({
         bulkEditType: 'STATUS',
         taskIdentifiers: allSelectedTasksIdentifiers,
-        workflowStatus: workflowStatus?.identifier || null,
+        workflowStatusIdentifier: workflowStatus?.identifier || null,
       })
         .then(({ transactionIdentifier }) => {
           dispatch(
