@@ -52,6 +52,7 @@ export const UniversalMobileInputComponent = ({
         [otherProps.className]: otherProps.className,
         [classes.root]: true,
       })}
+      dropdownClass={classes.dropdown}
       name={name}
       onChange={phone => {
         setValue(name, phone);

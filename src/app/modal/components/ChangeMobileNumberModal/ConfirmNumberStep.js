@@ -31,12 +31,12 @@ const validationSchema = object({
     .required(REQUIRED_MESSAGE),
 });
 
-const onSubmit = ({ onUpdateSuccess, setError, dispatch }) => ({
+const onSubmit = ({ onUpdateSuccess, setError, dispatch, newPhoneNumber }) => ({
   authorizationCode,
 }) => {
   UserApi.verifyNewPhoneNumber(authorizationCode)
     .then(() => {
-      onUpdateSuccess();
+      onUpdateSuccess(newPhoneNumber);
       dispatch(
         openModal('Confirmation', {
           description: 'Your mobile number has been verified and updated.',
@@ -81,7 +81,7 @@ const ConfirmNumberStep = ({
     <FormContext {...formMethods}>
       <StyledForm
         onSubmit={handleSubmit(
-          onSubmit({ dispatch, onUpdateSuccess, setError }),
+          onSubmit({ dispatch, onUpdateSuccess, setError, newPhoneNumber }),
         )}
       >
         <GridMaxHeight container direction="column" justify="space-between">

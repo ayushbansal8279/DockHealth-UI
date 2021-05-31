@@ -66,6 +66,7 @@ const UserProfileForm = ({ userProfile }) => {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = formMethods;
 
   const openChangePasswordModal = () => {
@@ -76,7 +77,10 @@ const UserProfileForm = ({ userProfile }) => {
     dispatch(
       openModal('ChangeMobileNumber', {
         userProfile,
-        onUpdateSuccess: userApi.getUserById,
+        onUpdateSuccess: updatedPhoneNumber => {
+          setValue('accountPhoneNumber', updatedPhoneNumber);
+          userApi.getUserById();
+        },
       }),
     );
   };
@@ -164,7 +168,7 @@ const UserProfileForm = ({ userProfile }) => {
                   label="Your Mobile Phone Number"
                   required
                   readOnly
-                  customShrinkCondition
+                  disabled
                   CustomComponent={UniversalMobileInputComponent}
                   endAdornment={
                     <InputActionButton

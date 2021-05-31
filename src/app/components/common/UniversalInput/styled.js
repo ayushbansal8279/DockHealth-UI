@@ -95,6 +95,9 @@ export const UniversalInputBase = withStyles({
 })(InputBase);
 
 export const usePhoneNumberStyles = makeStyles({
+  dropdown: {
+    zIndex: '6000 !important',
+  },
   root: {
     '& .MuiButtonBase-root': {
       height: 30,
