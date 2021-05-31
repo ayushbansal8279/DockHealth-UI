@@ -41,6 +41,7 @@
     "hellosign-embedded": "^2.9.0",
     "history": "^5.0.0",
     "immer": "^4.0.2",
+    "libphonenumber-js": "^1.9.19",
     "linkifyjs": "^2.1.8",
     "lodash.debounce": "^4.0.8",
     "lodash.escape": "^4.0.1",
