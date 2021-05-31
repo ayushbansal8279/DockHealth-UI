@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import MobilePhoneIcon from 'img/modals/mobile-phone';
 import { FormContext, useForm } from 'react-hook-form';
@@ -68,15 +68,6 @@ const ConfirmNumberStep = ({
 
   const { handleSubmit, setError } = formMethods;
 
-  const formattedPhoneNumber = useMemo(
-    () =>
-      newPhoneNumber.replace(
-        /\(([1-9]\d{2}\)) (\d{3})-(\d{4})$/g,
-        '***-***-$3',
-      ),
-    [newPhoneNumber],
-  );
-
   return (
     <FormContext {...formMethods}>
       <StyledForm
@@ -88,8 +79,7 @@ const ConfirmNumberStep = ({
           <Grid item>
             <Spacing vertical={4} />
             <LargeHelperText>
-              Please enter the 6-digit code that was sent to{' '}
-              {formattedPhoneNumber}
+              Please enter the 6-digit code that was sent to {newPhoneNumber}
             </LargeHelperText>
             <Spacing vertical={2} />
             <HelperText>
