@@ -191,10 +191,11 @@ const PatientDetails = ({
           <PatientDetailsInput
             label="mobile phone"
             isActive={isActive}
-            placeholder="- -"
             name="phoneMobile"
+            type="tel"
             register={register}
-            mask={isActive && '(999) 999-9999'}
+            control={control}
+            setValue={setValue}
             error={errorMessages?.phoneMobile}
             isRequired={false}
             defaultValue={phoneMobile}
@@ -202,10 +203,11 @@ const PatientDetails = ({
           <PatientDetailsInput
             label="home phone"
             isActive={isActive}
-            placeholder="- -"
             name="phoneHome"
+            type="tel"
             register={register}
-            mask={isActive && '(999) 999-9999'}
+            control={control}
+            setValue={setValue}
             error={errorMessages?.phoneHome}
             isRequired={false}
             defaultValue={phoneHome}

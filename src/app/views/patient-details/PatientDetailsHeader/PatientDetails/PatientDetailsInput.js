@@ -1,6 +1,8 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import PhoneNumberInput from 'material-ui-phone-number';
+import clsx from 'clsx';
 import {
   InputBox,
   PatientDetailsInputContainer,
@@ -8,12 +10,17 @@ import {
   StyledPatientDetailsInputMask,
   StyledPatientDetailsInput,
   PatientDetailsInputError,
+  usePhoneNumberStyles,
 } from './styled';
+
+const { PHONE_COUNTRY_CODES } = process.env;
 
 const InputComponent = ({
   options,
   name,
+  type,
   register,
+  setValue,
   control,
   defaultValue,
   hasError,
@@ -21,6 +28,8 @@ const InputComponent = ({
   ...rest
 }) => {
   const { disabled } = rest;
+  const classes = usePhoneNumberStyles();
+
   if (options?.length > 0) {
     return (
       <Controller
@@ -48,6 +57,33 @@ const InputComponent = ({
       />
     );
   }
+  if (type === 'tel') {
+    return (
+      <Controller
+        name={name}
+        rules={{ required: isRequired }}
+        control={control}
+        defaultValue={defaultValue}
+        as={props => (
+          <PhoneNumberInput
+            {...props}
+            disabled={disabled}
+            disableDropdown={disabled}
+            defaultCountry="us"
+            countryCodeEditable={false}
+            disableAreaCodes
+            onlyCountries={PHONE_COUNTRY_CODES.split(',')}
+            className={clsx({
+              [classes.root]: true,
+            })}
+            onChange={phone => {
+              setValue(name, phone);
+            }}
+          />
+        )}
+      />
+    );
+  }
 
   return (
     <StyledPatientDetailsInputMask
@@ -69,7 +105,9 @@ const PatientDetailsInput = ({
   mask,
   options,
   name,
+  type,
   register,
+  setValue,
   defaultValue,
   control,
   error,
@@ -89,7 +127,9 @@ const PatientDetailsInput = ({
           mask={mask}
           options={options}
           name={name}
+          type={type}
           register={register}
+          setValue={setValue}
           defaultValue={defaultValue}
           control={control}
           hasError={hasError}

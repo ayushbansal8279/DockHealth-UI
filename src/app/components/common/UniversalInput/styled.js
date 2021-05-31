@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormControl, InputBase, InputLabel } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import palette, { opacify } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
@@ -93,3 +93,30 @@ export const UniversalInputBase = withStyles({
     },
   },
 })(InputBase);
+
+export const usePhoneNumberStyles = makeStyles({
+  dropdown: {
+    zIndex: '6000 !important',
+  },
+  root: {
+    '& .MuiButtonBase-root': {
+      height: 30,
+    },
+    '& .MuiInputBase-input': {
+      border: 'none',
+      background: 'transparent',
+      boxShadow: 'none',
+    },
+    '& .Mui-focused input': {
+      background: 'transparent',
+      border: 'none',
+      boxShadow: 'none',
+    },
+    '& .MuiInput-underline:after': {
+      display: 'none',
+    },
+    '& .MuiInput-underline:before': {
+      display: 'none',
+    },
+  },
+});

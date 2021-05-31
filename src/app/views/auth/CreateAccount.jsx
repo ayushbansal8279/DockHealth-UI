@@ -274,12 +274,13 @@ const CreateAccount = props => {
           <UniversalMontserratInput
             name="mobilePhoneNumber"
             label="Your Mobile Phone Number"
+            customShrinkCondition
             CustomComponent={UniversalMobileInputComponent}
           />
           <Spacing vertical={3} />
           <MontserratTypography variant="h5">
             This must be a mobile phone number as we are required to send a
-            secondary authentication code for HIPPA compliance
+            secondary authentication code
           </MontserratTypography>
           <Spacing vertical={5} />
           <NextButton type="submit">Continue</NextButton>

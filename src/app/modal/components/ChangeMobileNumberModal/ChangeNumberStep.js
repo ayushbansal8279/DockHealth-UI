@@ -12,9 +12,9 @@ import Button from 'components/common/Button/Button';
 import { StyledForm, HelperText, GridMaxHeight } from './styled';
 import { REQUIRED_MESSAGE } from './helpers';
 
-const PHONE_MASK = /\([1-9]\d{2}\) \d{3}-\d{4}|^$/;
+const PHONE_MASK = /^\+\d{1,2}? \(?(\d{3})\)?[ -]?(\d{3})[ -]?(\d{3,4})$|^$/;
 const MASK_MESSAGE =
-  'Phone number has incorrect format (NNN) NNN-NNNN is required)';
+  'Phone number has incorrect format. (NNN) NNN-NNNN or NNN-NNN-NNN is required.';
 
 export const matchEmptyNumber = value =>
   value.replace(/_/g, '').replace(/^-+$/, '');
@@ -23,6 +23,9 @@ const validationSchema = object({
   phoneNumber: string()
     // eslint-disable-next-line func-names
     .transform(function(value) {
+      if (value.length <= 3) {
+        return '';
+      }
       return this.isType(value) && matchEmptyNumber(value);
     })
     .matches(PHONE_MASK, MASK_MESSAGE)
@@ -79,6 +82,7 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
               autoFocus
               label="Your Mobile Number"
               name="phoneNumber"
+              customShrinkCondition
               CustomComponent={UniversalMobileInputComponent}
               required
             />

@@ -5,6 +5,7 @@ import InputMask from 'react-input-mask';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { makeStyles } from '@material-ui/core/styles';
 
 export const PatientDetailsInputContainer = styled.div`
   max-width: 320px;
@@ -108,3 +109,33 @@ export const PatientDetailsInputError = styled.div`
   font-size: ${fontSizes.small};
   transition: color 0.3s ease-in;
 `;
+
+export const usePhoneNumberStyles = makeStyles({
+  root: {
+    '& .MuiButtonBase-root': {
+      height: 30,
+    },
+    '& .MuiInputBase-input': {
+      border: 'none',
+      background: 'transparent',
+      boxShadow: 'none',
+      fontFamily: 'roboto condensed',
+      fontWeight: '700',
+    },
+    '& .MuiInputBase-input:disabled': {
+      color: 'black',
+      backgroundColor: 'white',
+    },
+    '& .Mui-focused input': {
+      background: 'transparent',
+      border: 'none',
+      boxShadow: 'none',
+    },
+    '& .MuiInput-underline:after': {
+      display: 'none',
+    },
+    '& .MuiInput-underline:before': {
+      display: 'none',
+    },
+  },
+});

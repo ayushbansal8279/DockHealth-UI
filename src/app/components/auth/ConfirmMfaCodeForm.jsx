@@ -26,10 +26,6 @@ const ConfirmMFACodeForm = props => {
   }, [customError, formMethods]);
 
   const smsPhone = window.sessionStorage.getItem('SMS_PHONE');
-  const smsPhoneLast4 =
-    smsPhone && smsPhone.length > 4
-      ? smsPhone.substr(smsPhone.length - 4, smsPhone.length - 1)
-      : '****';
 
   return (
     <form
@@ -40,9 +36,7 @@ const ConfirmMFACodeForm = props => {
         <MontserratTypography variant="h2">
           Please enter the 6-digit code that was sent to
         </MontserratTypography>
-        <MontserratTypography variant="h2">
-          ***-***-{smsPhoneLast4}
-        </MontserratTypography>
+        <MontserratTypography variant="h2">{smsPhone}</MontserratTypography>
         <Spacing vertical={4} />
         {/* <MontserratTypography variant="h4">
           <StyledLink to="/onboarding/create-account">Change</StyledLink>
