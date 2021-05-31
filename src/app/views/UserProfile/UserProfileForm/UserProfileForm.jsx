@@ -25,7 +25,7 @@ const onSubmit = ({ dispatch }) => async data => {
       lastName: data.lastName,
       titles: [{ name: data.title }],
       department: data.department,
-      workPhoneNumber: data?.workPhoneNumber?.replace(/[\s()-]/g, '') || '',
+      workPhoneNumber: data?.workPhoneNumber,
     };
 
     await userApi.updateUser(requestData);
@@ -52,16 +52,8 @@ const UserProfileForm = ({ userProfile }) => {
       title: head(userProfile.titles || [])?.name,
       department: userProfile.department,
       email: userProfile.email,
-      accountPhoneNumber: userProfile.accountPhoneNumber
-        ? userProfile.accountPhoneNumber
-            .replace(/^\+1/, '')
-            .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
-        : userProfile.accountPhoneNumber,
-      workPhoneNumber: userProfile.workPhoneNumber
-        ? userProfile.workPhoneNumber
-            .replace(/^\+1/, '')
-            .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
-        : '',
+      accountPhoneNumber: userProfile.accountPhoneNumber,
+      workPhoneNumber: userProfile.workPhoneNumber,
     };
   }, [userProfile]);
 
@@ -74,6 +66,7 @@ const UserProfileForm = ({ userProfile }) => {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = formMethods;
 
   const openChangePasswordModal = () => {
@@ -84,7 +77,10 @@ const UserProfileForm = ({ userProfile }) => {
     dispatch(
       openModal('ChangeMobileNumber', {
         userProfile,
-        onUpdateSuccess: userApi.getUserById,
+        onUpdateSuccess: updatedPhoneNumber => {
+          setValue('accountPhoneNumber', updatedPhoneNumber);
+          userApi.getUserById();
+        },
       }),
     );
   };
@@ -172,6 +168,7 @@ const UserProfileForm = ({ userProfile }) => {
                   label="Your Mobile Phone Number"
                   required
                   readOnly
+                  disabled
                   CustomComponent={UniversalMobileInputComponent}
                   endAdornment={
                     <InputActionButton
@@ -187,6 +184,7 @@ const UserProfileForm = ({ userProfile }) => {
                 <UniversalInput
                   name="workPhoneNumber"
                   label="Additional Phone Number"
+                  customShrinkCondition
                   CustomComponent={UniversalMobileInputComponent}
                 />
               </Grid>

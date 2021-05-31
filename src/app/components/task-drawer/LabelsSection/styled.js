@@ -66,3 +66,12 @@ export const LabelChip = styled(Chip)`
     margin-right: ${spacing.tiny};
   }
 `;
+
+export const NoOptionContainer = styled.div`
+  padding: ${spacing.small};
+
+  &:hover {
+    background-color: #f1f1f1;
+    color: black;
+  }
+`;

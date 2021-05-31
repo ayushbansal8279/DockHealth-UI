@@ -4,6 +4,7 @@ import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import { curry } from 'ramda';
 import Swal from 'sweetalert2';
+import parsePhoneNumber from 'libphonenumber-js';
 
 export const noop = () => {};
 
@@ -117,12 +118,14 @@ export const linkifyTaskText = ({ value }) =>
 export const mentionifyAndLinkifyTaskText = ({ members, value }) =>
   mentionifyDescription({ members, value: linkifyTaskText({ value }) });
 
-export const formatPhoneNumber = (phoneNumber = '') =>
-  phoneNumber
-    ? phoneNumber
-        .replace(/^\+1/, '')
-        .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
-    : '';
+export const formatPhoneNumber = (phoneNumber = '') => {
+  if (!phoneNumber) return '';
+
+  const parsedNumber = parsePhoneNumber(phoneNumber);
+  if (!parsedNumber) return '';
+
+  return `+${parsedNumber.countryCallingCode} ${parsedNumber.formatNational()}`;
+};
 
 export const showToast = ({
   status: icon,

@@ -728,7 +728,7 @@ export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   const { user } = store.getState().userState;
 
   // eslint-disable-next-line @typescript-eslint/camelcase
-  await Auth.updateUserAttributes(user, { phone_number: `+1${newPhone}` });
+  await Auth.updateUserAttributes(user, { phone_number: `${newPhone}` });
 
   await Auth.verifyUserAttribute(user, 'phone_number');
 
