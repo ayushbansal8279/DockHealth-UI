@@ -16,6 +16,7 @@ import {
   OptionButtonsInput,
   NoOptionTextLabel,
   LabelChip,
+  NoOptionContainer,
 } from './styled';
 
 const renderOption = ({
@@ -157,25 +158,24 @@ const LabelsSection = ({
           event.preventDefault();
         }}
       >
-        <div>
+        <NoOptionContainer
+          onClick={event => {
+            if (inputState) {
+              event.stopPropagation();
+              event.preventDefault();
+              saveAddLabel({ labelName: inputState });
+            }
+          }}
+        >
           {inputState ? (
             <>
               No results - Create{' '}
-              <NoOptionTextLabel
-                onClick={event => {
-                  event.stopPropagation();
-                  event.preventDefault();
-                  saveAddLabel({ labelName: inputState });
-                }}
-              >
-                {inputState}
-              </NoOptionTextLabel>{' '}
-              label
+              <NoOptionTextLabel>{inputState}</NoOptionTextLabel> label
             </>
           ) : (
             <>No results</>
           )}
-        </div>
+        </NoOptionContainer>
       </div>
     ),
     [inputState, saveAddLabel],
@@ -195,6 +195,16 @@ const LabelsSection = ({
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputState}
+      InputProps={{
+        onKeyDown: event => {
+          if (event.key === 'Enter' && event?.target.value !== '') {
+            event.stopPropagation();
+            event.preventDefault();
+            event?.target?.blur();
+            saveAddLabel({ labelName: inputState });
+          }
+        },
+      }}
       noOptionsText={noOptionText}
       onOpen={refreshLabels}
       isLoading={isLoadingLabels}

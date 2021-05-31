@@ -14,6 +14,9 @@ const StandardAutocompleteMUI = withStyles({
   listbox: {
     padding: 0,
   },
+  noOptions: {
+    padding: 0,
+  },
 })(AutocompleteMUI);
 
 const StandardInput = ({
