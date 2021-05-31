@@ -32,6 +32,7 @@ const exposed = [
   'HELLOSIGN_CLIENT_ID',
   'HELLOSIGN_DOMAIN_VERIFICATION_ENABLED',
   'INTERCOM_APP_CODE',
+  'PHONE_COUNTRY_CODES',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {

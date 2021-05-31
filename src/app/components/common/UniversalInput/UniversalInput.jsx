@@ -16,6 +16,8 @@ import {
   usePhoneNumberStyles,
 } from './styled';
 
+const { PHONE_COUNTRY_CODES } = process.env;
+
 export const UniversalTimePicker = ({ inputRef, name, setValue }) => (
   <TextField
     id={inputRef}
@@ -47,7 +49,7 @@ export const UniversalMobileInputComponent = ({
       defaultCountry="us"
       countryCodeEditable={false}
       disableAreaCodes
-      onlyCountries={['us', 'ca', 'au', 'pl']}
+      onlyCountries={PHONE_COUNTRY_CODES.split(',')}
       className={clsx({
         [otherProps.className]: otherProps.className,
         [classes.root]: true,

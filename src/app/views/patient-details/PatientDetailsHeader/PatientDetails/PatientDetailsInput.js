@@ -13,6 +13,8 @@ import {
   usePhoneNumberStyles,
 } from './styled';
 
+const { PHONE_COUNTRY_CODES } = process.env;
+
 const InputComponent = ({
   options,
   name,
@@ -70,7 +72,7 @@ const InputComponent = ({
             defaultCountry="us"
             countryCodeEditable={false}
             disableAreaCodes
-            onlyCountries={['us', 'ca', 'au', 'pl']}
+            onlyCountries={PHONE_COUNTRY_CODES.split(',')}
             className={clsx({
               [classes.root]: true,
             })}
