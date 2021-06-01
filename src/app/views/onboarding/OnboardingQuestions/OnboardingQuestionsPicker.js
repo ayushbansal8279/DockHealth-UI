@@ -39,7 +39,7 @@ const OnboardingQuestionsPicker = ({
       key="search"
       type="text"
       name="search"
-      placeholder="Search or add custom role"
+      placeholder="Search or add custom"
     />
   );
 

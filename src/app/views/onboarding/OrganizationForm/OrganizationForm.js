@@ -56,7 +56,7 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
         <>
           <OnboardingIndicator
             steps={orgUserRole === 'OWNER' ? 4 : 3}
-            completedSteps={orgUserRole === 'OWNER' ? 4 : 3}
+            completedSteps={orgUserRole === 'OWNER' ? 3 : 2}
           />
           <Spacing vertical={5} />
         </>
