@@ -198,6 +198,7 @@ export const StyledFilterRow = styled.div`
   font-size: ${fontSizes.small};
   margin-bottom: ${spacing.tiny};
   padding: 0 ${spacing.small};
+  overflow: hidden;
 
   & > span {
     margin-left: ${spacing.small};
@@ -342,4 +343,8 @@ export const StatusBar = styled.div`
   left: 0;
   position: absolute;
   width: 6px;
+`;
+
+export const MemberAvatarWrapper = styled.div`
+  flex: auto 0 0;
 `;
