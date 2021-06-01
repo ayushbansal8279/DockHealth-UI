@@ -169,10 +169,10 @@ const RoleSelectionPopover = ({
       }}
       open={isPopoverOpen}
       withPadding
-      HeaderComponent={() => (
+      renderHeader={() => (
         <Header>Select their role in your Organization</Header>
       )}
-      FooterComponent={() => (
+      renderFooter={() => (
         <RoleSelectorFooter multipleButtons={!isInactive}>
           {!isInactive && (
             <RoleSelectorCancelRemoveUserButton

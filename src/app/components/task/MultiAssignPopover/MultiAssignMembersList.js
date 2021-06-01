@@ -206,7 +206,7 @@ const MultiAssignMembersList = ({
                         searchWords={searchValue?.toLowerCase().split(/\s+/)}
                         autoEscape
                         textToHighlight="Assign All"
-                      />{' '}
+                      />
                       ({membersOptions.length})
                     </MemberName>
                   </MemberRow>

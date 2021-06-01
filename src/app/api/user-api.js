@@ -764,3 +764,10 @@ export const approveOrDenyInvitation = ({
   axios.put(
     `/invite/request/review/${requestIdentifier}/${decisionType}/${userIdentifier}`,
   );
+
+export const sendUserOnboardingAnswers = ({ answers }) => {
+  return axios.put(
+    `${process.env.HEYDOC_SERVICES_BASE_URL}user/updateUserPreferences`,
+    answers,
+  );
+};

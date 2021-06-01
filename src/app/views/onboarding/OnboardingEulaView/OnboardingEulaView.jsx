@@ -32,16 +32,9 @@ const OnboardingEulaView = () => {
   const onAgreeClick = useCallback(() => {
     acknowledgeEula()(dispatch).then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      if (
-        userProfile.orgUserRole === 'ADMIN' ||
-        userProfile.orgUserRole === 'OWNER'
-      ) {
-        history.push('/onboarding/organization-setup');
-      } else {
-        history.push('/core/home/my-tasks');
-      }
+      history.push('/onboarding/questions');
     });
-  }, [dispatch, history, userProfile.orgUserRole]);
+  }, [dispatch, history]);
 
   const isSmallScreen = useSmallScreen();
 

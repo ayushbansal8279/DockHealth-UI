@@ -27,3 +27,9 @@ export const approveOrDenyInvitation = ({
     userIdentifier,
   });
 };
+
+export const sendUserOnboardingAnswers = ({ answers }) => {
+  return userApi.sendUserOnboardingAnswers({
+    answers,
+  });
+};
