@@ -10,6 +10,8 @@ import {
   toLower,
   trim,
   ifElse,
+  isNil,
+  unless,
 } from 'ramda';
 
 /* eslint-disable import/prefer-default-export */
@@ -116,7 +118,14 @@ export const TASK_ITEM_SORT_METHODS = {
     ascend(pipe(prop('dueDate'), defaultTo('~'))),
   ]),
   [TaskItemColumn.WORKFLOW_STATUS]: sortWith([
-    ascend(pipe(prop('workflowStatus'), defaultTo('~'), toLower)),
+    ascend(
+      pipe(
+        prop('workflowStatus'),
+        unless(isNil, prop('name')),
+        defaultTo('~'),
+        toLower,
+      ),
+    ),
   ]),
   [TaskItemColumn.PATIENT]: sortWith([
     ascend(
@@ -150,7 +159,14 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     descend(pipe(prop('dueDate'), defaultTo(' '))),
   ]),
   [TaskItemColumn.WORKFLOW_STATUS]: sortWith([
-    descend(pipe(prop('workflowStatus'), defaultTo(' '), toLower)),
+    descend(
+      pipe(
+        prop('workflowStatus'),
+        unless(isNil, prop('name')),
+        defaultTo(' '),
+        toLower,
+      ),
+    ),
   ]),
   [TaskItemColumn.PATIENT]: sortWith([
     descend(
