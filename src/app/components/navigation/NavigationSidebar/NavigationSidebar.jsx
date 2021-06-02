@@ -17,6 +17,7 @@ import Member from 'components/members/Member/Member';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
+import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import menuTourHooks from './menu-tour-hooks';
@@ -42,7 +43,7 @@ const SubmenuComponents = {
   [SubmenuKey.PROFILE]: ProfileSubmenu,
   [SubmenuKey.LISTS]: ListsSubmenu,
   [SubmenuKey.SETTINGS]: SettingsSubmenu,
-  [SubmenuKey.EDUCATION_CENTER]: null,
+  [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
 };
 
 const NavigationSidebar = ({

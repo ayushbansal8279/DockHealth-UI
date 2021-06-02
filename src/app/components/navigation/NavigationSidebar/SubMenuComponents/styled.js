@@ -6,7 +6,16 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 
-export const SubMenuDivider = styled.hr`
+export const SubmenuHeader = styled.h3`
+  margin: 0;
+  padding: ${spacing.smallPlus};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.bold};
+  font-family: 'Roboto Condensed', sans-serif;
+  color: ${palette.coolGrey1};
+`;
+
+export const SubmenuDivider = styled.hr`
   width: 100%;
   height: 1px;
   margin: 0;
@@ -39,29 +48,6 @@ export const DrawerItemOptions = styled.div`
   align-items: center;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.smallPlus};
-`;
-
-export const DrawerSubmenuLabel = styled.div`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-`;
-
-export const DrawerAddLink = styled(Link)`
-  color: ${palette.coolGrey1};
-  outline: none;
-  border: none;
-  background-color: ${palette.coolGrey4};
-  border-radius: 9px;
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.tiny} 10px;
-
-  & > span {
-    color: ${palette.orange};
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 export const RolloverPopover = styled(Popover)`
@@ -169,32 +155,16 @@ export const UserInitialCircle = styled.div`
 `;
 
 // Organization submenu
-export const DrawerOrganizationHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 6px 0;
-
-  & > div {
-    word-break: break-all;
-  }
-`;
-
-export const DrawerOrganizationLabel = styled.div`
+export const MyOrganizationLabel = styled.h2`
+  flex: 1;
+  margin: 0;
+  padding: ${spacing.smallPlus};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
+  font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.bold};
-  white-space: normal;
-`;
-
-export const DrawerMyOrganizationLabel = styled(DrawerSubmenuLabel)`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.giga} ${spacing.smallPlus} ${spacing.smallPlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  font-size: ${fontSizes.smallPlus};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  word-break: break-all;
+  white-space: initial;
 `;
 
 export const DrawerOrganizationsList = styled.div`
@@ -203,17 +173,6 @@ export const DrawerOrganizationsList = styled.div`
 `;
 
 // Lists
-export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.smallPlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  font-size: ${fontSizes.smallPlus};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
 export const DrawerListsList = styled.div`
   padding: ${spacing.largePlus} 0 ${spacing.largePlus} ${spacing.smallPlus};
   border-bottom: 1px solid ${palette.coolGrey2};

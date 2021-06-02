@@ -11,7 +11,7 @@ import { openModal } from 'modal/actions';
 import {
   ProfileSubmenuContainer,
   ReferButton,
-  SubMenuDivider,
+  SubmenuDivider,
   Title,
   Top,
   UserName,
@@ -64,7 +64,7 @@ const ProfileSubmenu = () => {
             </Top>
             <Title>{titles[0]?.name}</Title>
             <Box m={1} />
-            <SubMenuDivider />
+            <SubmenuDivider />
             <Box m={1} />
             {profilePictureHash && profilePicture ? (
               <UserImage src={profilePicture} alt={userName} />
@@ -77,7 +77,7 @@ const ProfileSubmenu = () => {
             <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
             <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
             <Box m={0.5} />
-            <SubMenuDivider />
+            <SubmenuDivider />
             <Box m={0.5} />
             <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
           </>
