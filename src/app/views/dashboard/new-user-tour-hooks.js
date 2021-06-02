@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as TemplateActions from 'actions/template-actions';
-import { LISTS_SUBMENU_KEY } from 'components/navigation/NavigationSidebar/NavigationSidebar';
+import { SubmenuKey } from 'components/navigation/NavigationSidebar/NavigationSidebar';
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 import localStorageHelper from 'helpers/local-storage-helper';
@@ -57,7 +57,7 @@ const newUserTourHooks = ({
         (isNil(dashboardInboxTourValue) || dashboardInboxTourValue) &&
         hasInbox
       ) {
-        dispatch(TemplateActions.showSubMenu(LISTS_SUBMENU_KEY));
+        dispatch(TemplateActions.showSubMenu(SubmenuKey.LISTS));
         setTimeout(() => {
           const inboxElement = document.querySelector(
             `.drawer-menu-list-inbox`,
@@ -94,7 +94,7 @@ const newUserTourHooks = ({
     ) {
       const targetListIdentifier = firstCreatedUserListIdentifier;
       setFirstCreatedUserListIdentifier(null);
-      dispatch(TemplateActions.showSubMenu(LISTS_SUBMENU_KEY));
+      dispatch(TemplateActions.showSubMenu(SubmenuKey.LISTS));
       setTimeout(() => {
         const listElement = document.querySelector(
           `.drawer-menu-list-item[data-list-id="${targetListIdentifier}"]`,

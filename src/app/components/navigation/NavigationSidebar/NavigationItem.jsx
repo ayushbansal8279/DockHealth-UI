@@ -11,7 +11,8 @@ const NavigationItem = ({
   subMenuOpen,
   onItemClick,
 }) => {
-  const isActive = useRouteMatch(path);
+  const routeIsMatching = useRouteMatch(path);
+  const isActive = path !== undefined && routeIsMatching;
 
   const defaultPath = Array.isArray(path) ? path[0] : path;
 
