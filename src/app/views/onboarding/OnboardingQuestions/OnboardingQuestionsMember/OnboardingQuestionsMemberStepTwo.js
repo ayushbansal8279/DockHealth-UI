@@ -1,13 +1,12 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import React from 'react';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import {
   Option,
   QuestionContainer,
   TutorialOptionsContainer,
   ButtonContainer,
-  PreviousButton,
-  NextButton,
 } from '../styled';
 
 const OnboardingQuestionsOwnerGuest = ({
@@ -49,17 +48,13 @@ const OnboardingQuestionsOwnerGuest = ({
     )}
     <Spacing vertical={6} />
     <ButtonContainer>
-      <PreviousButton type="button" onClick={clickPreviousStep}>
+      <Button onClick={clickPreviousStep} type="button" variant="outlined">
         Previous Step
-      </PreviousButton>
+      </Button>
       <Spacing horizontal={4} />
-      <NextButton
-        type="button"
-        onClick={onSendAnswers}
-        disabled={isDisabledButton}
-      >
+      <Button onClick={onSendAnswers} type="button" disabled={isDisabledButton}>
         Next Step
-      </NextButton>
+      </Button>
     </ButtonContainer>
   </div>
 );

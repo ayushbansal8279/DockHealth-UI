@@ -60,10 +60,17 @@ export const PickerItem = styled.div`
   align-items: center;
   padding: 10px 4px;
   cursor: pointer;
+  width: 300px;
+
+  & > span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 `;
 
 export const StyledInput = styled.input`
-  width: 100%;
+  width: 300px;
   padding: ${spacing.regular};
   border-top: none;
   border-left: none;
@@ -88,26 +95,4 @@ export const StyledInput = styled.input`
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-export const PreviousButton = styled.button`
-  font-weight: 600;
-  padding: 8px 26px;
-  color: #074a86;
-  border: 2px solid #074a86;
-  width: fit-content;
-  cursor: pointer;
-`;
-
-export const NextButton = styled.button`
-  font-weight: 600;
-  padding: 10px 28px;
-  color: white;
-  background-color: #074a86;
-  width: fit-content;
-  cursor: pointer;
-
-  &:disabled {
-    filter: grayscale(80%);
-  }
 `;

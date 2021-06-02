@@ -2,15 +2,10 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { HEALTH_RECORD_OPTIONS, SOFTWARE_OPTIONS } from '../options';
-import {
-  Option,
-  QuestionContainer,
-  ButtonContainer,
-  PreviousButton,
-  NextButton,
-} from '../styled';
+import { Option, QuestionContainer, ButtonContainer } from '../styled';
 
 const OnboardingQuestionsOwnerStepTwo = ({
   clickPreviousStep,
@@ -154,17 +149,17 @@ const OnboardingQuestionsOwnerStepTwo = ({
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <ButtonContainer>
-        <PreviousButton type="button" onClick={clickPreviousStep}>
+        <Button onClick={clickPreviousStep} type="button" variant="outlined">
           Previous Step
-        </PreviousButton>
+        </Button>
         <Spacing horizontal={4} />
-        <NextButton
-          type="button"
+        <Button
           onClick={onSendAnswers}
+          type="button"
           disabled={isDisabledButton}
         >
           Next Step
-        </NextButton>
+        </Button>
       </ButtonContainer>
     </div>
   );
