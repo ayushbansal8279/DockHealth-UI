@@ -112,12 +112,12 @@ const DashboardView = ({
     if (currentUser && !isEmpty(currentUser) && !isNewUser) {
       const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('TASK_WORKFLOWS')) {
+      if (!appFeaturesReviewed?.includes('TASK_STATUSES')) {
         dispatch(
-          openModal('TaskWorkflowTour', {
+          openModal('TaskStatusTour', {
             onClose: () => {
               UserApi.updateUserDashboardPrefs({
-                appFeaturesReviewed: ['TASK_WORKFLOWS'],
+                appFeaturesReviewed: ['TASK_STATUSES'],
               });
             },
           }),
