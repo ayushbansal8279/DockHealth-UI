@@ -56,6 +56,7 @@ export const MemberWrapper = styled.div`
 
 export const ListDescription = styled.div`
   padding-left: ${spacing.giga};
+  padding-right: 72px;
   display: block;
   margin-bottom: 0;
   color: ${palette.mediumGrey};
