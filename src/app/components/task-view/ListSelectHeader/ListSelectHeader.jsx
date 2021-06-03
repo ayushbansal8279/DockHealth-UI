@@ -27,7 +27,7 @@ const transformTaskList = ({ closeListPopover, taskList, history }) => ({
 });
 
 const ListSelectHeader = ({ taskList }) => {
-  const { taskListIdentifier, listName } = taskList || {};
+  const { listName } = taskList || {};
 
   const listPopoverReference = useRef(null);
   const history = useHistory();
@@ -44,15 +44,6 @@ const ListSelectHeader = ({ taskList }) => {
     ...mergedTaskLists.map(
       transformTaskList({ closeListPopover, taskList, history }),
     ),
-    {
-      key: 'inbox',
-      active: !taskListIdentifier,
-      label: 'Inbox',
-      onClick: () => {
-        closeListPopover();
-        history.push(`/core/tasks/Inbox`);
-      },
-    },
   ];
 
   return (
