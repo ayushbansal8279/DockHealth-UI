@@ -4,6 +4,7 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
 import DueDateRangePicker from './DueDateRangePicker';
 import {
+  MemberAvatarWrapper,
   StyledFilterRow,
   StyledUnassignedIcon,
   MemberOptionLabel,
@@ -40,7 +41,9 @@ const PeopleFilterRowComponent = ({
     isDisabled={taskCount === 0}
     onClick={taskCount !== 0 && onClick}
   >
-    <Member member={reference} size={25} />
+    <MemberAvatarWrapper>
+      <Member member={reference} size={25} />
+    </MemberAvatarWrapper>
     <MemberOptionLabel>{displayValue}</MemberOptionLabel>
     <OptionCount>{taskCount}</OptionCount>
   </StyledFilterRow>

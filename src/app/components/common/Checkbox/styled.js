@@ -9,7 +9,7 @@ export const Icon = styled.svg`
 export const CheckboxInput = styled.button`
   width ${({ size }) => size}px;
   height: ${({ size }) => size}px;
-  border-radius: 2px;
+  border-radius: ${({ isCircle }) => (isCircle ? '50%' : '2px')};
   border: ${props =>
     props.isChecked
       ? `1px solid ${palette.brightBlue}`

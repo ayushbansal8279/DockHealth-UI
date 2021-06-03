@@ -17,9 +17,10 @@ const SelectorPopover = props => {
   const {
     items,
     renderItem,
-    HeaderComponent,
-    FooterComponent,
+    renderHeader,
+    renderFooter,
     withPadding,
+    listMaxHeight,
   } = props;
   const popoverClasses = usePopoverClasses(props);
   const renderItemMethod = renderItem;
@@ -33,11 +34,11 @@ const SelectorPopover = props => {
       }}
       {...omit(['maxItems'], props)}
     >
-      {HeaderComponent && <HeaderComponent />}
-      <ItemsList withPadding={withPadding}>
+      {renderHeader && renderHeader()}
+      <ItemsList withPadding={withPadding} listMaxHeight={listMaxHeight}>
         {items?.map(item => renderItemMethod(item))}
       </ItemsList>
-      {FooterComponent && <FooterComponent />}
+      {renderFooter && renderFooter()}
     </Popover>
   );
 };

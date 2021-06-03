@@ -74,6 +74,7 @@ const FilterColumn = ({
   selectedFilters,
   onSelectFilters,
   searchedFilterQuery,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
@@ -109,6 +110,9 @@ const FilterColumn = ({
             filterValue => filterValue !== value,
           ),
         };
+        if (updatedFilters[key]?.length === 0) {
+          delete updatedFilters[key];
+        }
       } else {
         updatedFilters = {
           ...selectedFilters,

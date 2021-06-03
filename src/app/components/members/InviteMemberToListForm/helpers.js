@@ -10,11 +10,11 @@ export const getMenuOptionsForMember = (
     resendApprovalRequestToList,
   },
 ) => {
-  const { userStatus, taskListUserRole, userIdentifier } = member;
+  const { userStatus, taskListUserRole, orgUserRole, userIdentifier } = member;
 
   switch (userStatus) {
     case 'ACTIVE':
-      if (taskListUserRole === 'ADMIN')
+      if (taskListUserRole === 'ADMIN') {
         return [
           {
             title: 'Remove as List Admin',
@@ -31,7 +31,19 @@ export const getMenuOptionsForMember = (
             },
           },
         ];
-
+      }
+      if (orgUserRole === 'GUEST') {
+        return [
+          {
+            title: 'Remove From This List',
+            description:
+              'If you remove a user they will lose access to this list.',
+            action: () => {
+              removeUserFromList(userIdentifier);
+            },
+          },
+        ];
+      }
       return [
         {
           title: 'Make List Admin',

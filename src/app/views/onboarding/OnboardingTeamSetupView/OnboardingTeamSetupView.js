@@ -1,7 +1,10 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
+import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
 import { FormContext, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
 import { Grid } from '@material-ui/core';
@@ -130,6 +133,9 @@ const onSubmit = ({
 const OnboardingTeamSetupView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const firstTimeUser = localStorage.getItem('STORAGE_NEW_USER_FIRST_TIME');
+
   const [isSaving, setIsSaving] = useState(false);
   const [fieldsState, setFiledsState] = useState([]);
   const [
@@ -190,6 +196,15 @@ const OnboardingTeamSetupView = () => {
 
   return (
     <ViewContainer>
+      {firstTimeUser && (
+        <>
+          <OnboardingIndicator
+            steps={orgUserRole === 'OWNER' ? 4 : 3}
+            completedSteps={orgUserRole === 'OWNER' ? 4 : 3}
+          />
+          <Spacing vertical={5} />
+        </>
+      )}
       <Title>Bring your team together on Dock!</Title>
       <Description>
         Dock is designed specifically to help all your team members collaborate

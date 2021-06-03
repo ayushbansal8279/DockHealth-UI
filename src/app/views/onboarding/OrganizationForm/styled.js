@@ -22,13 +22,6 @@ export const Description = styled.p`
   font-family: inherit;
 `;
 
-export const BottomSection = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
 export const ButtonWrapper = styled.div`
   width: 265px;
 `;
@@ -36,29 +29,6 @@ export const ButtonWrapper = styled.div`
 export const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
-`;
-
-export const TileSettingsHeader = styled.h3`
-  margin-bottom: 0;
-  font-size: ${fontSizes.regularPlus};
-  font-weight: ${fontWeights.light};
-  font-family: inherit;
-`;
-
-export const TileSettingsDescription = styled.p`
-  margin-bottom: 0;
-  font-size: ${fontSizes.small};
-  font-weight: ${fontWeights.light};
-  font-family: inherit;
-  color: ${palette.lightGrey};
-`;
-
-export const ColorPickerHeader = styled.h4`
-  margin-bottom: 0;
-  font-size: ${fontSizes.small};
-  font-weight: ${fontWeights.light};
-  font-family: inherit;
-  color: ${palette.lightGrey};
 `;
 
 export const InitialsError = styled.p`
