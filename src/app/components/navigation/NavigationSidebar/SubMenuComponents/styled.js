@@ -341,6 +341,18 @@ export const EducationOverviewText = styled.p`
   font-size: ${fontSizes.smallPlus};
 `;
 
+export const EducationItemLink = styled.a`
+  font-size: ${fontSizes.smallPlus};
+  color: ${palette.brightBlue};
+`;
+
+export const EducationItemTourButton = styled.button`
+  padding: ${spacing.tiny} ${spacing.small};
+  font-size: ${fontSizes.smallPlus};
+  background-color: ${palette.brightBlue};
+  color: ${palette.white};
+`;
+
 export const EducationItemOverview = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};

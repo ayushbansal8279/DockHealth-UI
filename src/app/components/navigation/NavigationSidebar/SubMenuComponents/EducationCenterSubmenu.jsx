@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Box, Collapse } from '@material-ui/core';
 import InfoIcon from 'img/info';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -20,10 +21,13 @@ import {
   EducationItemName,
   EducationItemHeaderButton,
   EducationOverviewText,
+  EducationItemLink,
+  EducationItemTourButton,
 } from './styled';
 
 const EducationCenterSubmenu = () => {
   const [openedItem, setOpenedItem] = useState(null);
+  const history = useHistory();
 
   return (
     <EducationCenterWrapper>
@@ -76,6 +80,28 @@ const EducationCenterSubmenu = () => {
                             </EducationOverviewText>
                           </>
                         )}
+                      </>
+                    )}
+                    {item.helpCenterUrl && (
+                      <>
+                        <Spacing vertical={4} />
+                        <EducationItemLink
+                          href={item.helpCenterUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Visit our help center
+                        </EducationItemLink>
+                      </>
+                    )}
+                    {item.productTourUrl && (
+                      <>
+                        <Spacing vertical={4} />
+                        <EducationItemTourButton
+                          onClick={() => history.push(item.productTourUrl)}
+                        >
+                          Step by Step
+                        </EducationItemTourButton>
                       </>
                     )}
                   </Box>
