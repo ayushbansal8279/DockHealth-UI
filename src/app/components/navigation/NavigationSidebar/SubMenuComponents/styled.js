@@ -255,7 +255,7 @@ export const EducationCenterFooter = styled.div`
   grid-gap: ${spacing.small};
   align-items: center;
   width: 100%;
-  padding: ${spacing.smallPlus};
+  padding: ${spacing.smallPlus} 0;
   color: ${palette.darkGrey};
 `;
 

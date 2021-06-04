@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Collapse } from '@material-ui/core';
 import InfoIcon from 'img/info';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import Video from 'components/common/Video/Video';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import Spacing from 'components/common/Spacing';
@@ -58,7 +59,7 @@ const EducationCenterSubmenu = () => {
                   <Box width="100%" py={spacing.small}>
                     {item.videoUrl && (
                       <>
-                        <div>{item.videoUrl}</div>
+                        <Video url={item.videoUrl} />
                         <Spacing vertical={4} />
                       </>
                     )}

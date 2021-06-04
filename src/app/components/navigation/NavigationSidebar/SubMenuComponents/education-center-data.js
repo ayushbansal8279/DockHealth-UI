@@ -9,7 +9,7 @@ export const EDUCATION_CENTER_CATEGORIES = [
         overview:
           'Neque, erat felis lorem duis risus venenatis mmauris ac vulputate. Libero auctor etiam sit in turpis.',
         videoUrl: 'https://www.youtube.com/embed/gNzPoCI3Dvw',
-        helpCenterUrl: '',
+        helpCenterUrl: 'helpUrl',
       },
       {
         name: 'Home Tour',
@@ -17,11 +17,12 @@ export const EDUCATION_CENTER_CATEGORIES = [
           'Neque, erat felis lorem duis risus venenatis mauris ac vulputate. Libero auctor etiam sit in turpis.',
         additionalOverview:
           'Neque, erat felis lorem duis risus venenatis mauris ac vulputate. Libero auctor etiam sit in turpis.',
-        productTourUrl: '',
+        productTourUrl: 'testUrl',
       },
       {
         name: 'Create a List',
-        overview: '',
+        overview:
+          'Neque, erat felis lorem duis risus venenatis mauris ac vulputate. Libero auctor etiam sit in tur',
       },
       {
         name: 'Create a Task',
