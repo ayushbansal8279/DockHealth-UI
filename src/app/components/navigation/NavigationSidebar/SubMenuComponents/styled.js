@@ -237,3 +237,111 @@ export const UpdatesForMemberIndicator = styled.div`
   border-radius: 3px;
   background: ${palette.brightBlue};
 `;
+
+// Education Center
+export const EducationCenterWrapper = styled.div`
+  display: flex;
+  padding: 0 ${spacing.small};
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  white-space: initial;
+`;
+
+export const EducationCenterFooter = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto auto 1fr;
+  grid-template-rows: auto auto;
+  grid-gap: ${spacing.small};
+  align-items: center;
+  width: 100%;
+  padding: ${spacing.smallPlus};
+  color: ${palette.darkGrey};
+`;
+
+export const FooterIcon = styled.div`
+  grid-column: 2;
+  grid-row: 1;
+`;
+
+export const FooterInfoText = styled.p`
+  grid-row: 1;
+  grid-column: 3;
+  margin: 0;
+  text-align: center;
+  line-height: 16px;
+`;
+
+export const FooterLink = styled.a`
+  grid-row: 2;
+  grid-column: 3;
+  margin: 0;
+  line-height: 16px;
+  text-align: center;
+  color: ${palette.brightBlue};
+`;
+
+export const EducationCenterTitle = styled.h3`
+  margin: 0;
+  padding: ${spacing.smallPlus} 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: ${palette.brightBlue};
+`;
+
+export const EducationCenterList = styled.div`
+  position: relative;
+  flex: 1 0 0;
+  width: 100%;
+  overflow-y: auto;
+  color: ${palette.darkGrey};
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: ${fontWeights.light};
+`;
+
+export const CategoryName = styled.p`
+  display: block;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  margin-bottom: ${spacing.small};
+  font-size: ${fontSizes.largePlus};
+  font-weight: ${fontWeights.light};
+  background: ${palette.white};
+`;
+
+export const EducationItem = styled.div`
+  padding: ${spacing.small};
+  border: 1px solid ${palette.coolGrey3};
+  background: ${palette.coolGrey4};
+
+  &:not(:last-of-type) {
+    margin-bottom: ${spacing.smallPlus};
+  }
+`;
+
+export const EducationItemHeaderButton = styled.button`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+export const EducationItemName = styled.p`
+  display: block;
+  flex: 1;
+  margin: 0;
+  font-size: ${fontSizes.regular};
+  text-align: left;
+`;
+
+export const EducationOverviewText = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPlus};
+`;
+
+export const EducationItemOverview = styled.p`
+  margin: 0;
+  font-size: ${fontSizes.smallPlus};
+`;
