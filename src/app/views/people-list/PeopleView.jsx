@@ -80,7 +80,11 @@ class PeopleView extends PureComponent {
 
   render() {
     const { searchTerm, invitePopoverOpen } = this.state;
-    const { isFetching, peopleList } = this.props;
+    const { isFetching, peopleList, currentUserProfile } = this.props;
+
+    const isOwnerOrAdmin =
+      currentUserProfile.orgUserRole === 'OWNER' ||
+      currentUserProfile.orgUserRole === 'ADMIN';
 
     return (
       <Grid container justify="center">
@@ -92,21 +96,23 @@ class PeopleView extends PureComponent {
         <Grid container xs={12} item justify="center">
           <Grid item xs={8}>
             <Spacing vertical={4} />
-            <ManageUsersContainer>
-              <img alt="lightbulb" src={LightbulbBig} />
-              <HeaderMessage>
-                <HeaderMessageTitle>
-                  Manage people in the Subscription and Users section.
-                </HeaderMessageTitle>
-                <HeaderMessageDescription>
-                  Invite, remove, and change roles for people within your
-                  organization.
-                </HeaderMessageDescription>
-              </HeaderMessage>
-              <Link to="/settings/subscriptions">
-                <Button variant="contained">Manage Users</Button>
-              </Link>
-            </ManageUsersContainer>
+            {isOwnerOrAdmin && (
+              <ManageUsersContainer>
+                <img alt="lightbulb" src={LightbulbBig} />
+                <HeaderMessage>
+                  <HeaderMessageTitle>
+                    Manage people in the Subscription and Users section.
+                  </HeaderMessageTitle>
+                  <HeaderMessageDescription>
+                    Invite, remove, and change roles for people within your
+                    organization.
+                  </HeaderMessageDescription>
+                </HeaderMessage>
+                <Link to="/settings/subscriptions">
+                  <Button variant="contained">Manage Users</Button>
+                </Link>
+              </ManageUsersContainer>
+            )}
             <Spacing vertical={4} />
             {isFetching ? (
               <ListLoaderContainer>
