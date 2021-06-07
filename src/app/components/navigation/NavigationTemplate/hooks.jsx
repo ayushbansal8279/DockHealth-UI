@@ -171,10 +171,13 @@ export const initializeNavigationDrawerHooks = (
 ) => {
   const user = useSelector(userProfileSelector);
   const { isNavbarVisible } = useSelector(templateStateSelector);
-  const intercomUser = {
-    email: user.email,
-    name: `${user.firstName} ${user.lastName}`,
-  };
+  const intercomUser =
+    user.email && user.firstName
+      ? {
+          email: user.email,
+          name: `${user.firstName} ${user.lastName}`,
+        }
+      : undefined;
 
   const drawerClasses = useDrawerClasses({
     isNavbarVisible,
