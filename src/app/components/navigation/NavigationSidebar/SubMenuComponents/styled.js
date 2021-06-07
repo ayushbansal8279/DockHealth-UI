@@ -357,3 +357,12 @@ export const EducationItemOverview = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};
 `;
+
+export const EducationSearchInput = styled.input`
+  flex: 1;
+  color: ${palette.darkGrey};
+  font-weight: ${fontWeights.light};
+  font-family: 'Roboto Condensed', sans-serif;
+  border: none;
+  outline: none;
+`;
