@@ -27,14 +27,16 @@ const TaskTourView = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    window.addEventListener('resize', () => setWindowWidth(window.innerWidth));
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+    }
 
     onNewUserTourEnter('Task tour view');
 
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      window.removeEventListener('resize', () =>
-        setWindowWidth(window.innerWidth),
-      );
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
