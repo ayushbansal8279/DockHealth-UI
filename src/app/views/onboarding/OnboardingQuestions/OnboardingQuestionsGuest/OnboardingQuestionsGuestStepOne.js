@@ -105,7 +105,7 @@ const OnboardingQuestionsGuest = ({
   return (
     <div>
       <QuestionContainer>
-        Im a{' '}
+        I&apos;m a{' '}
         <Option
           ref={roleReference}
           onClick={openRolePicker}
