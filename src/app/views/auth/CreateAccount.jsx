@@ -81,7 +81,7 @@ const onSubmit = ({
       username: email,
       password,
       email,
-      phone_number: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
+      phone_number: `+${mobilePhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
       'custom:referral': referral,
