@@ -98,7 +98,7 @@ const OnboardingQuestionsPicker = ({
       open={isOpen}
       items={filteredOptions}
       listMaxHeight="400px"
-      width="300px"
+      width="320px"
     />
   );
 };
