@@ -333,31 +333,30 @@ const initializeTaskDrawerHooks = ({
     [dispatch, onTaskDelete, selectedTask],
   );
 
-  const onDuplicate = ({ afterDuplicate, includeAttachments }) =>
-    useCallback(
-      async event => {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
+  const onDuplicate = useCallback(
+    ({ afterDuplicate, includeAttachments }) => async event => {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
 
-        if (selectedTask && selectedTask.taskIdentifier != null) {
-          try {
-            const newTask = await duplicateTask(
-              selectedTask,
-              includeAttachments,
-            )(dispatch);
-            onTaskCreation(newTask);
-            storeAsCurrentTask(newTask)(dispatch);
-            afterDuplicate({ newTask });
-            onTaskDrawerTaskDuplicated();
-          } catch {
-            noop();
-          }
+      if (selectedTask && selectedTask.taskIdentifier != null) {
+        try {
+          const newTask = await duplicateTask(
+            selectedTask,
+            includeAttachments,
+          )(dispatch);
+          onTaskCreation(newTask);
+          storeAsCurrentTask(newTask)(dispatch);
+          afterDuplicate({ newTask });
+          onTaskDrawerTaskDuplicated();
+        } catch {
+          noop();
         }
-      },
-      [afterDuplicate, includeAttachments],
-    );
+      }
+    },
+    [dispatch, onTaskCreation, selectedTask],
+  );
 
   const onAddSubTask = useCallback(
     ({ afterAddSubTask, assignToSelf }) => async event => {
