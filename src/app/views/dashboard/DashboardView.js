@@ -59,7 +59,10 @@ const DashboardView = ({
   ]);
 
   const firstUserList = allLists?.find(
-    list => list.listType !== 'INBOX' && list.listType !== 'PUBLIC',
+    list =>
+      list.listType !== 'INBOX' &&
+      list.listType !== 'PUBLIC' &&
+      list.listType !== 'SHARED_SAMPLE',
   );
 
   const sampleList = allLists?.find(list => list.listType === 'SHARED_SAMPLE');
