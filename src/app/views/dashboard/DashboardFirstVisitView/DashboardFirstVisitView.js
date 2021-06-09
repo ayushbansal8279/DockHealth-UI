@@ -72,7 +72,7 @@ const DashboardFirstVisitView = ({
                   fullWidth
                   variant="text"
                   onClick={() => {
-                    if (list) {
+                    if (sampleList) {
                       history.push(`/tasks/${sampleList?.taskListIdentifier}`);
                     }
                   }}
