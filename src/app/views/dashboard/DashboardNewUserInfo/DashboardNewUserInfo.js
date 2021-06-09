@@ -6,10 +6,16 @@ const DashboardNewUserInfo = () => {
     <Wrapper>
       <Section>
         <Title>Quickly add a new task</Title>
-        <Description>
+        {/* <Description>
           You can add a new task quickly and easily. Simply type in your task in
           the new box with “+&nbsp;Add&nbsp;Task,” hit the enter key and the new
           task is saved to your list.
+        </Description> */}
+        <Description>
+          You can add a new task quickly and easily to a list. Open a list from
+          the left menu and simply type in your task in the new box with
+          “+&nbsp;Add&nbsp;Task,” hit the enter key and the new task is saved to
+          your list.
         </Description>
       </Section>
       <Section>

@@ -438,7 +438,11 @@ export function getUserProfilePic(userIdentifier, pictureType) {
 
 export function saveUserProfilePic(data) {
   return axios
-    .post(`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture`, data)
+    .post(`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture`, data, {
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+    })
     .then(response => {
       getUserById();
       return response?.data;

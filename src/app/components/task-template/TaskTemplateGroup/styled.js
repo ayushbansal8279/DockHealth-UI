@@ -5,7 +5,6 @@ import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskTemplateGroupContainer = styled.div`
-  display: flex;
   flex-direction: column;
   margin: ${spacing.small} 0;
 `;
