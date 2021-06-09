@@ -18,8 +18,8 @@ const OnboardingQuestionsGuest = ({
 }) => (
   <div>
     <QuestionContainer>
-      I’d like to learn more about how to optimize Dock with a 1:1 info session
-      with the Dock team{' '}
+      I&apos;d like to learn more about how to optimize Dock with a 1:1 info
+      session with the Dock team{' '}
       <TutorialOptionsContainer>
         <Option
           onClick={() => setTutorialOption('yes')}

@@ -70,7 +70,7 @@ export const PickerItem = styled.div`
 `;
 
 export const StyledInput = styled.input`
-  width: 300px;
+  width: 320px;
   padding: ${spacing.regular};
   border-top: none;
   border-left: none;

@@ -105,7 +105,7 @@ const OnboardingQuestionsOwnerStepOne = ({
   return (
     <div>
       <QuestionContainer>
-        I’m a{' '}
+        I&apos;m a{' '}
         <Option
           ref={roleReference}
           onClick={openRolePicker}

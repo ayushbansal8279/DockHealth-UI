@@ -315,7 +315,6 @@ const TaskTemplateGroup = ({
             <TaskTemplateNameInput
               ref={nameInputReference}
               readOnly={!isEditing}
-              disabled={!isEditing}
               error={nameInputError}
               onChange={event => {
                 setNameInputValue(event.target?.value);
