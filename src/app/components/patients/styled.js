@@ -30,3 +30,8 @@ export const SidebarInnerContainer = styled.div`
     display: none;
   }
 `;
+
+export const PatientsListDescription = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+`;

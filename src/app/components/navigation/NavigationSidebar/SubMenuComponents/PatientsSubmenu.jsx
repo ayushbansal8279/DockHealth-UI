@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
+import * as PatientsActions from 'actions/patients-actions';
 import palette from 'styles/palette';
 import { Box } from '@material-ui/core';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -13,7 +14,6 @@ import {
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
-import * as PatientsActions from 'actions/patients-actions';
 
 import {
   DrawerMyListsLabel,
@@ -27,11 +27,11 @@ import {
 function getDefaultPatientsListUrl(patientListIdentifier) {
   switch (patientListIdentifier) {
     case 'ACTIVE_PATIENTS':
-      return '/core/patients/active';
+      return '/core/patients/list/active';
 
     case 'ALL_PATIENTS':
     default:
-      return '/core/patients';
+      return '/core/list/patients';
   }
 }
 
@@ -98,7 +98,7 @@ const PatientsSubmenu = () => {
                 <ListNameText
                   onClick={() => {
                     history.push(
-                      `/core/patients/${patientsList.patientListIdentifier}`,
+                      `/core/patients/list/${patientsList.patientListIdentifier}`,
                     );
                   }}
                 >
