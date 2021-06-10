@@ -130,26 +130,20 @@ function* moveTemplateBundle({
   }
 }
 
-function* changePatientForTemplateBundle({
-  taskTemplateIdentifier,
-  patientIdentifier,
-}) {
+function* changePatientForTemplateBundle({ taskTemplateIdentifier, patient }) {
   try {
     const bundle = yield call(
       TemplateBundleApi.updateTemplateBundle,
       taskTemplateIdentifier,
       {
-        patientIdentifier,
+        patientIdentifier: patient?.patientIdentifier || 'UNASSIGNED',
       },
     );
 
     yield put({
       type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
       bundleIdentifier: bundle.identifier,
-      dataToUpdate:
-        patientIdentifier === 'UNASSIGNED'
-          ? { ...bundle, patient: {} }
-          : bundle,
+      dataToUpdate: !patient ? { ...bundle, patient: null } : bundle,
     });
   } catch {
     yield put({

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import {
   onTaskListDeleted,
@@ -255,18 +255,22 @@ const ListsSubmenu = () => {
             )}
             <DrawerItemOptions>
               <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-              <IconButton
-                ref={element => {
-                  if (element)
-                    itemsMoreButtonReferences.current[index] = element;
-                }}
-                size="small"
-                onClick={() => {
-                  openListMenuPopover(list, index);
-                }}
-              >
-                <MoreVert style={{ color: palette.coolGrey1 }} />
-              </IconButton>
+              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                <IconButton
+                  ref={element => {
+                    if (element)
+                      itemsMoreButtonReferences.current[index] = element;
+                  }}
+                  size="small"
+                  onClick={() => {
+                    openListMenuPopover(list, index);
+                  }}
+                >
+                  <MoreVert style={{ color: palette.coolGrey1 }} />
+                </IconButton>
+              ) : (
+                <Box m={2} />
+              )}
             </DrawerItemOptions>
           </DrawerListsItem>
         ))}

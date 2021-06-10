@@ -24,7 +24,8 @@ export const TemplateHandle = styled.img`
   }
 `;
 
-export const Placeholder = styled.span`
+export const Placeholder = styled.div`
+  width: 100%;
   color: ${palette.mediumGrey};
   padding: 0 ${spacing.regular};
   cursor: pointer;
@@ -87,7 +88,7 @@ export const TaskTemplateOptionsContainer = styled.div`
   justify-content: flex-end;
   padding-right: ${spacing.smallPlus};
   width: ${({ groupHasMultipleAssignees }) =>
-    groupHasMultipleAssignees ? '420px' : '390px'};
+    groupHasMultipleAssignees ? '438px' : '408px'};
 `;
 
 export const TaskTemplateNameInput = styled.input`
@@ -119,7 +120,7 @@ export const TaskTemplateNameInput = styled.input`
 `;
 
 export const TaskTemplatePatientHeader = styled.div`
-  width: 182px;
+  width: 164px;
 `;
 
 export const TaskTemplateRight = styled.div`

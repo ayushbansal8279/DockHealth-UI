@@ -41,6 +41,7 @@ export const InputBox = styled.div`
 `;
 
 export const ListContainer = styled.div`
+  position: relative;
   max-height: 208;
   overflow-y: auto;
   overflow-x: hidden;

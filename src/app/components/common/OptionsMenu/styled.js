@@ -14,6 +14,7 @@ export const MenuContainer = styled.ul`
 `;
 
 export const MenuOptionButton = styled.button`
+  display: block;
   width: 100%;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
   text-align: left;

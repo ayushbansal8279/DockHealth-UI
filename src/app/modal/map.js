@@ -46,6 +46,8 @@ import SelectTaskDestinationModal from './components/SelectDestinationModal/Sele
 import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
 import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
 import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
+import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
+import AddPatientToListModal from './components/AddPatientToListModal/AddPatientToListModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -96,6 +98,8 @@ const MODAL_MAP = {
   SelectDestination: SelectDestinationModal,
   AssignPatient: AssignPatientModal,
   UnassignPatient: UnassignPatientModal,
+  EditPatientList: EditPatientListModal,
+  AddPatientToList: AddPatientToListModal,
 };
 
 export default MODAL_MAP;

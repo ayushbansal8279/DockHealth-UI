@@ -7,18 +7,11 @@ export const defaultPatientsListsSelector = createSelector(
   ({ defaultPatientsLists }) => defaultPatientsLists,
 );
 
-export const allPatientsStatsSelector = createSelector(
+export const customPatientsListsSelector = createSelector(
   patientsStateSelector,
-  ({ defaultPatientsLists }) =>
-    defaultPatientsLists.find(
-      pl => pl.listName === 'All Patients' && pl.listType === 'DEFAULT',
-    ),
+  ({ customPatientsLists }) => customPatientsLists,
 );
-
-export const activePatientsStatsSelector = createSelector(
+export const isFetchingPatientsListsSelector = createSelector(
   patientsStateSelector,
-  ({ defaultPatientsLists }) =>
-    defaultPatientsLists.find(
-      pl => pl.listName === 'Active Patients' && pl.listType === 'DEFAULT',
-    ),
+  ({ isFetching }) => isFetching,
 );

@@ -1,9 +1,17 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { openModal } from 'modal/actions';
+import { hideSubMenu } from 'actions/template-actions';
+import palette from 'styles/palette';
+import { Box } from '@material-ui/core';
+import AddButton from 'components/common/AddButton/AddButton';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { MoreVert } from '@material-ui/icons';
 import {
-  allPatientsStatsSelector,
-  activePatientsStatsSelector,
+  defaultPatientsListsSelector,
+  customPatientsListsSelector,
+  isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
 import * as PatientsActions from 'actions/patients-actions';
 
@@ -12,46 +20,126 @@ import {
   DrawerListsItem,
   ListNameText,
   DrawerListsList,
-  PatientsCount,
+  DrawerItemOptions,
+  DrawerListsItemLoader,
 } from './styled';
+
+function getDefaultPatientsListUrl(patientListIdentifier) {
+  switch (patientListIdentifier) {
+    case 'ACTIVE_PATIENTS':
+      return '/core/patients/active';
+
+    case 'ALL_PATIENTS':
+    default:
+      return '/core/patients';
+  }
+}
 
 const PatientsSubmenu = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const allPatientsStats = useSelector(allPatientsStatsSelector);
-  const activePatientsStats = useSelector(activePatientsStatsSelector);
+  const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
+  const customPatientsLists = useSelector(customPatientsListsSelector);
+  const isFetching = useSelector(isFetchingPatientsListsSelector);
 
   useEffect(() => {
-    PatientsActions.getDefaultPatientsLists()(dispatch);
+    PatientsActions.getPatientsLists()(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleAddCustomListClick = () => {
+    dispatch(openModal('EditPatientList'));
+    dispatch(hideSubMenu());
+  };
 
   return (
     <>
       <DrawerMyListsLabel>
         <div>Patients </div>
       </DrawerMyListsLabel>
+      <DrawerListsList flexShrink={0}>
+        {!isFetching ? (
+          <>
+            {defaultPatientsLists?.map(
+              ({ patientListIdentifier, listName, patientsCount }) => (
+                <DrawerListsItem key={patientListIdentifier}>
+                  <ListNameText
+                    onClick={() => {
+                      history.push(
+                        getDefaultPatientsListUrl(patientListIdentifier),
+                      );
+                    }}
+                  >
+                    {listName}
+                  </ListNameText>
+                  <DrawerItemOptions>
+                    <div>{patientsCount}</div>
+                    <Box m={1.5} />
+                  </DrawerItemOptions>
+                </DrawerListsItem>
+              ),
+            )}
+          </>
+        ) : (
+          // eslint-disable-next-line react/no-array-index-key
+          new Array(2).fill().map((_, i) => <DrawerListsItemLoader key={i} />)
+        )}
+      </DrawerListsList>
+      <Box m={6} flexShrink={0} />
+      <DrawerMyListsLabel>
+        <div>Custom Lists</div>
+        <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+      </DrawerMyListsLabel>
       <DrawerListsList>
-        <DrawerListsItem>
-          <ListNameText
-            onClick={() => {
-              history.push(`/core/patients`);
-            }}
-          >
-            All Patients
-          </ListNameText>
-          <PatientsCount>{allPatientsStats?.patientsCount}</PatientsCount>
-        </DrawerListsItem>
-        <DrawerListsItem>
-          <ListNameText
-            onClick={() => {
-              history.push(`/core/patients/active`);
-            }}
-          >
-            Active Tasks
-          </ListNameText>
-          <PatientsCount>{activePatientsStats?.patientsCount}</PatientsCount>
-        </DrawerListsItem>
+        {!isFetching ? (
+          <>
+            {customPatientsLists?.map(patientsList => (
+              <DrawerListsItem key={patientsList.patientListIdentifier}>
+                <ListNameText
+                  onClick={() => {
+                    history.push(
+                      `/core/patients/${patientsList.patientListIdentifier}`,
+                    );
+                  }}
+                >
+                  {patientsList.listName}
+                </ListNameText>
+                <DrawerItemOptions>
+                  <div>{patientsList.patientsCount}</div>
+                  <OptionsMenu
+                    disablePortal
+                    options={[
+                      {
+                        name: 'Edit',
+                        onClick: () => {
+                          dispatch(
+                            openModal('AddPatientToList', {
+                              patientsList,
+                            }),
+                          );
+                          dispatch(hideSubMenu());
+                        },
+                      },
+                      {
+                        name: 'Delete',
+                        onClick: () =>
+                          PatientsActions.deletePatientsList(
+                            patientsList.patientListIdentifier,
+                          )(dispatch),
+                        color: palette.oPlusRed,
+                      },
+                    ]}
+                  >
+                    <MoreVert style={{ color: palette.coolGrey1 }} />
+                  </OptionsMenu>
+                </DrawerItemOptions>
+              </DrawerListsItem>
+            ))}
+          </>
+        ) : (
+          // eslint-disable-next-line react/no-array-index-key
+          new Array(5).fill().map((_, i) => <DrawerListsItemLoader key={i} />)
+        )}
       </DrawerListsList>
     </>
   );

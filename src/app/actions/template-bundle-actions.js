@@ -55,12 +55,12 @@ export function moveTemplateBundle({
 
 export function changePatientForTemplateBundle(
   taskTemplateIdentifier,
-  patientIdentifier,
+  patient,
 ) {
   return {
     type: ActionTypesSaga.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
     taskTemplateIdentifier,
-    patientIdentifier,
+    patient,
   };
 }
 
