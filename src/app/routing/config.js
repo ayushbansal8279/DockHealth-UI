@@ -132,6 +132,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onLeave: onLeavePatientsView,
   },
   {
+    path: '/patients/active',
+    RouteComponent: PatientsView,
+    onEnter: onEnterPatientsView,
+    onLeave: onLeavePatientsView,
+  },
+  {
     path: '/patient/:patientIdentifier/:tabName?',
     RouteComponent: PatientDetailsView,
     onEnter: onEnterPatientDetailsView,

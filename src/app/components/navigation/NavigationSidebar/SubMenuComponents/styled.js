@@ -278,3 +278,7 @@ export const UpdatesForMemberIndicator = styled.div`
   border-radius: 3px;
   background: ${palette.brightBlue};
 `;
+
+export const PatientsCount = styled(DrawerItemOptions)`
+  margin-right: ${spacing.small};
+`;
