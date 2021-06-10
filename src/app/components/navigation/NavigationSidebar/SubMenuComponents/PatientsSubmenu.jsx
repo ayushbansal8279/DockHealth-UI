@@ -31,7 +31,7 @@ function getDefaultPatientsListUrl(patientListIdentifier) {
 
     case 'ALL_PATIENTS':
     default:
-      return '/core/list/patients';
+      return '/core/patients/list';
   }
 }
 

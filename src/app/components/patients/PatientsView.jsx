@@ -1,12 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Grid } from '@material-ui/core';
+
 import { isEmpty } from 'ramda';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import { getPatients } from 'api/patient-api';
-import { useDispatch } from 'react-redux';
-
+import { getPatientsList } from 'api/patients-api';
+import PatientsList from './PatientsList/PatientsList';
 import { PatientsViewContainer, PatientsListDescription } from './styled';
 
 const parsePatientsListIdentifier = listIdentifier => {
@@ -39,7 +41,7 @@ const PatientsView = () => {
   const [patientsList, setPatientsList] = useState({});
 
   useEffect(() => {
-    getPatients(listIdentifier).then(data => setPatientsList(data));
+    getPatientsList(listIdentifier).then(data => setPatientsList(data));
   }, [listIdentifier]);
 
   useEffect(() => {
@@ -66,7 +68,27 @@ const PatientsView = () => {
     }
   }, [dispatch, listIdentifier, patientsList]);
 
-  return <PatientsViewContainer />;
+  return (
+    <PatientsViewContainer>
+      <Grid container sm={12} item direction="column">
+        <PatientsList
+          patients={patientsList?.patients}
+          // isFiltered={searchValue !== ''}
+          // isCompact={isSidebarOpen}
+          // patientImportDetails={patientImportDetails}
+          // refreshPatientList={refreshPatientList}
+          // importPopoverOpen={importPopoverOpen}
+          // setImportPopoverOpen={setImportPopoverOpen}
+          // hasImportErrors={hasImportErrors}
+          // isGuest={isGuest}
+          // isFetching={isFetchingPatients}
+          // onAddPatientClick={setIsSidebarOpen}
+          // emrIntegrationEnabled={emrIntegrationEnabled}
+        />
+        {/* <SideClickListener /> */}
+      </Grid>
+    </PatientsViewContainer>
+  );
 };
 
 export default PatientsView;

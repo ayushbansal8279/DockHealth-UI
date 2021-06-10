@@ -305,13 +305,3 @@ export function getLatestPatientImportDetails() {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
-
-export function getPatients(listIdentifier) {
-  return axios
-    .get(`patient/list/${listIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
