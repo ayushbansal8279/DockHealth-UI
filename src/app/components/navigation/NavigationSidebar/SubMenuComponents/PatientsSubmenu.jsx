@@ -14,6 +14,7 @@ import {
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
+import { isEmpty } from 'ramda';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 
@@ -48,6 +49,7 @@ const PatientsSubmenu = () => {
     locationParametersSelector,
   );
   const isGuest = orgUserRole === 'GUEST';
+  const isInitialListFetching = isFetching && isEmpty(defaultPatientsLists);
 
   useEffect(() => {
     PatientsActions.getPatientsLists()(dispatch);
@@ -65,7 +67,7 @@ const PatientsSubmenu = () => {
         <div>Patients </div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={0}>
-        {!isFetching ? (
+        {!isInitialListFetching ? (
           <>
             {defaultPatientsLists?.map(
               ({ patientListIdentifier, listName, patientsCount }) => (
@@ -107,7 +109,7 @@ const PatientsSubmenu = () => {
             <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
           </DrawerMyListsLabel>
           <DrawerListsList>
-            {!isFetching ? (
+            {!isInitialListFetching ? (
               <>
                 {customPatientsLists?.map(patientsList => (
                   <DrawerListsItem key={patientsList.patientListIdentifier}>

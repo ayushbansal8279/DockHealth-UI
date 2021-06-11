@@ -123,22 +123,25 @@ const PatientsView = () => {
     }
   }, [dispatch, patientsListDetails]);
 
-  const fetchPatientsBySearchTerm = useCallback(searchTerm => {
-    PatientApi.getPatientsByCriteria(searchTerm)
-      .then(fetchedPatients => {
-        setPatients(fetchedPatients);
-        setIsFetchingPatients(false);
-      })
-      .catch(() => {
-        setIsFetchingPatients(false);
-      });
-  }, []);
+  const fetchPatientsBySearchTerm = useCallback(
+    searchTerm => {
+      PatientApi.getPatientsByCriteria(searchTerm, listIdentifier)
+        .then(fetchedPatients => {
+          setPatients(fetchedPatients);
+          setIsFetchingPatients(false);
+        })
+        .catch(() => {
+          setIsFetchingPatients(false);
+        });
+    },
+    [listIdentifier],
+  );
 
   const searchPatientsBySearchTermWithDebounce = useCallback(
     debounce(value => {
       fetchPatientsBySearchTerm(value);
     }, 300),
-    [],
+    [fetchPatientsBySearchTerm],
   );
 
   const refreshPatients = useCallback(() => {
