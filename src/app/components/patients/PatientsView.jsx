@@ -1,10 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import debounce from 'lodash.debounce';
 import { Grid } from '@material-ui/core';
-
+import { getPatientsByCriteria } from 'api/patient-api';
 import { isEmpty } from 'ramda';
+import { showGlobalErrorAlert } from 'alert/actions';
 import { setHeader } from 'actions/template-actions';
 import { organizationSelector } from 'selectors/organization-selectors';
 import SearchInput from 'components/common/SearchInput/SearchInput';
@@ -48,15 +50,23 @@ const PatientsView = () => {
 
   const [patientsListDetails, setPatientsListDetails] = useState({});
   const [patients, setPatients] = useState(null);
+  const [isFetchingPatients, setIsFetchingPatients] = useState(true);
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    getPatientsList(listIdentifier).then(data => {
-      const fetchedData = { ...data };
-      setPatients(fetchedData.patients);
-      delete fetchedData.patients;
-      setPatientsListDetails(fetchedData);
-    });
+    setIsFetchingPatients(true);
+    getPatientsList(listIdentifier)
+      .then(data => {
+        const fetchedData = { ...data };
+        setPatients(fetchedData.patients);
+        setIsFetchingPatients(false);
+        delete fetchedData.patients;
+        setPatientsListDetails(fetchedData);
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listIdentifier]);
 
   useEffect(() => {
@@ -83,6 +93,38 @@ const PatientsView = () => {
     }
   }, [dispatch, patientsListDetails]);
 
+  const fetchPatientsBySearchTerm = useCallback(searchTerm => {
+    getPatientsByCriteria(searchTerm)
+      .then(fetchedPatients => {
+        setPatients(fetchedPatients);
+        setIsFetchingPatients(false);
+      })
+      .catch(() => {
+        setIsFetchingPatients(false);
+      });
+  }, []);
+
+  const searchPatientsBySearchTermWithDebounce = useCallback(
+    debounce(value => {
+      setIsFetchingPatients(true);
+      fetchPatientsBySearchTerm(value);
+    }, 300),
+    [],
+  );
+
+  useEffect(() => {
+    if (!searchValue && emrIntegrationEnabled) {
+      searchPatientsBySearchTermWithDebounce.cancel();
+      setPatients(null);
+    } else {
+      searchPatientsBySearchTermWithDebounce(searchValue);
+    }
+  }, [
+    searchPatientsBySearchTermWithDebounce,
+    searchValue,
+    emrIntegrationEnabled,
+  ]);
+
   return (
     <PatientsViewContainer>
       {patientsListDetails?.patientListIdentifier === 'ALL_PATIENTS' &&
@@ -107,7 +149,7 @@ const PatientsView = () => {
       <Grid container sm={12} item direction="column">
         <PatientsList
           patients={patients}
-          // isFiltered={searchValue !== ''}
+          isFiltered={searchValue !== ''}
           // isCompact={isSidebarOpen}
           // patientImportDetails={patientImportDetails}
           // refreshPatientList={refreshPatientList}
@@ -115,7 +157,7 @@ const PatientsView = () => {
           // setImportPopoverOpen={setImportPopoverOpen}
           // hasImportErrors={hasImportErrors}
           // isGuest={isGuest}
-          // isFetching={isFetchingPatients}
+          isFetching={isFetchingPatients}
           // onAddPatientClick={setIsSidebarOpen}
           // emrIntegrationEnabled={emrIntegrationEnabled}
         />
