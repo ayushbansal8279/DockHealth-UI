@@ -113,6 +113,11 @@ const Routes = () => {
           path="/auth"
           render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
         />
+        <Redirect
+          exact
+          from="/core/patients/list"
+          to="/core/patients/list/all"
+        />
         <Route
           path="/core"
           render={() => (

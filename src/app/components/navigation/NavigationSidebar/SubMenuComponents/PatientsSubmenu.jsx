@@ -15,6 +15,7 @@ import {
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { locationParametersSelector } from 'location/selectors';
 
 import {
   DrawerMyListsLabel,
@@ -25,14 +26,14 @@ import {
   DrawerListsItemLoader,
 } from './styled';
 
-function getDefaultPatientsListUrl(patientListIdentifier) {
+function getDefaultPatientsListUrlParameter(patientListIdentifier) {
   switch (patientListIdentifier) {
     case 'ACTIVE_PATIENTS':
-      return '/core/patients/list/active';
+      return 'active';
 
     case 'ALL_PATIENTS':
     default:
-      return '/core/patients/list';
+      return 'all';
   }
 }
 
@@ -43,6 +44,9 @@ const PatientsSubmenu = () => {
   const customPatientsLists = useSelector(customPatientsListsSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const { orgUserRole } = useSelector(userProfileSelector);
+  const { listIdentifier: listIdentifierUrlParameter } = useSelector(
+    locationParametersSelector,
+  );
   const isGuest = orgUserRole === 'GUEST';
 
   useEffect(() => {
@@ -67,9 +71,16 @@ const PatientsSubmenu = () => {
               ({ patientListIdentifier, listName, patientsCount }) => (
                 <DrawerListsItem key={patientListIdentifier}>
                   <ListNameText
+                    isActive={
+                      getDefaultPatientsListUrlParameter(
+                        patientListIdentifier,
+                      ) === listIdentifierUrlParameter
+                    }
                     onClick={() => {
                       history.push(
-                        getDefaultPatientsListUrl(patientListIdentifier),
+                        `/core/patients/list/${getDefaultPatientsListUrlParameter(
+                          patientListIdentifier,
+                        )}`,
                       );
                     }}
                   >
@@ -101,6 +112,10 @@ const PatientsSubmenu = () => {
                 {customPatientsLists?.map(patientsList => (
                   <DrawerListsItem key={patientsList.patientListIdentifier}>
                     <ListNameText
+                      isActive={
+                        patientsList.patientListIdentifier ===
+                        listIdentifierUrlParameter
+                      }
                       onClick={() => {
                         history.push(
                           `/core/patients/list/${patientsList.patientListIdentifier}`,

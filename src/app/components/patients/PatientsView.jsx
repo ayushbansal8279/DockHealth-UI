@@ -28,7 +28,7 @@ import {
 } from './styled';
 
 const parsePatientsListIdentifier = listIdentifier => {
-  if (!listIdentifier)
+  if (listIdentifier === 'all')
     return {
       listIdentifier: 'ALL_PATIENTS',
       listType: 'DEFAULT',
