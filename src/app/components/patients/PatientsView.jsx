@@ -232,17 +232,12 @@ const PatientsView = () => {
           <Grid container sm={isSidebarOpen ? 6 : 12} item direction="column">
             <PatientsList
               patients={patients}
-              isFiltered={searchValue !== ''}
-              isCompact={isSidebarOpen}
               patientImportDetails={patientImportDetails}
               refreshPatientList={refreshPatientList}
               importPopoverOpen={importPopoverOpen}
               setImportPopoverOpen={setImportPopoverOpen}
               hasImportErrors={hasImportErrors}
-              isGuest={isGuest}
               isFetching={isFetchingPatients}
-              onAddPatientClick={setIsSidebarOpen}
-              emrIntegrationEnabled={emrIntegrationEnabled}
             />
           </Grid>
           {isSidebarOpen && (
