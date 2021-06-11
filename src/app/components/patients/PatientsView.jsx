@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
-import { Grid } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { isEmpty } from 'ramda';
 
 import useBoolean from 'hooks/useBoolean';
@@ -136,7 +136,6 @@ const PatientsView = () => {
 
   const searchPatientsBySearchTermWithDebounce = useCallback(
     debounce(value => {
-      setIsFetchingPatients(true);
       fetchPatientsBySearchTerm(value);
     }, 300),
     [],
@@ -180,67 +179,73 @@ const PatientsView = () => {
     [refreshPatients, setHasImportErrors, unsetHasImportErrors],
   );
 
+  const hidePatientsList =
+    emrIntegrationEnabled && !searchValue && listIdentifier === 'ALL_PATIENTS';
+
   const handleSearchChange = useCallback(
     searchTerm => {
       setSearchValue(searchTerm);
-      if (!searchTerm && emrIntegrationEnabled) {
+      if (hidePatientsList) {
         searchPatientsBySearchTermWithDebounce.cancel();
         setPatients(null);
+        setIsFetchingPatients(false);
       } else {
+        setIsFetchingPatients(true);
         searchPatientsBySearchTermWithDebounce(searchTerm);
       }
     },
-    [emrIntegrationEnabled, searchPatientsBySearchTermWithDebounce],
+    [hidePatientsList, searchPatientsBySearchTermWithDebounce],
   );
 
   return (
     <PatientsViewContainer>
-      <PatientsToolbar
-        hasPatients
-        refreshPatientList={refreshPatientList}
-        patientImportDetails={patientImportDetails}
-        setImportPopoverOpen={setImportPopoverOpen}
-        isGuest={isGuest}
-        searchValue={searchValue}
-        onSearchChange={handleSearchChange}
-        onAddPatientClick={setIsSidebarOpen}
-        hideButtons={
-          emrIntegrationEnabled || patientsListDetails?.listType !== 'DEFAULT'
-        }
-      />
-      {patientsListDetails?.patientListIdentifier === 'ALL_PATIENTS' &&
-        emrIntegrationEnabled && (
-          <Grid container xs={12} justify="center">
-            <Grid item xs={8}>
-              <InputWrapper hasValue={searchValue}>
-                <SearchInput
-                  value={searchValue}
-                  onValueChange={handleSearchChange}
-                />
-                {!searchValue && (
-                  <SearchHelperText>
-                    Dock is connected to your EHR. Please search by name or
-                    medical record number to find a patient.
-                  </SearchHelperText>
-                )}
-              </InputWrapper>
-            </Grid>
-          </Grid>
-        )}
+      {listIdentifier === 'ALL_PATIENTS' && emrIntegrationEnabled ? (
+        <Box width="100%">
+          <InputWrapper hasValue={searchValue}>
+            <SearchInput
+              value={searchValue}
+              onValueChange={handleSearchChange}
+            />
+            {!searchValue && (
+              <SearchHelperText>
+                Dock is connected to your EHR. Please search by name or medical
+                record number to find a patient.
+              </SearchHelperText>
+            )}
+          </InputWrapper>
+        </Box>
+      ) : (
+        <PatientsToolbar
+          hasPatients
+          refreshPatientList={refreshPatientList}
+          patientImportDetails={patientImportDetails}
+          setImportPopoverOpen={setImportPopoverOpen}
+          isGuest={isGuest}
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+          onAddPatientClick={setIsSidebarOpen}
+          hideButtons={
+            emrIntegrationEnabled || patientsListDetails?.listType !== 'DEFAULT'
+          }
+        />
+      )}
+
       <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>
-          <Grid container sm={isSidebarOpen ? 6 : 12} item direction="column">
-            <PatientsList
-              isFiltered={searchValue}
-              patients={patients}
-              patientImportDetails={patientImportDetails}
-              refreshPatientList={refreshPatientList}
-              importPopoverOpen={importPopoverOpen}
-              setImportPopoverOpen={setImportPopoverOpen}
-              hasImportErrors={hasImportErrors}
-              isFetching={isFetchingPatients}
-            />
-          </Grid>
+          {!hidePatientsList && (
+            <Grid container sm={isSidebarOpen ? 6 : 12} item direction="column">
+              <PatientsList
+                isFiltered={searchValue}
+                patients={patients}
+                patientImportDetails={patientImportDetails}
+                refreshPatientList={refreshPatientList}
+                importPopoverOpen={importPopoverOpen}
+                setImportPopoverOpen={setImportPopoverOpen}
+                hasImportErrors={hasImportErrors}
+                isFetching={isFetchingPatients}
+              />
+            </Grid>
+          )}
           {isSidebarOpen && (
             <Grid sm={6} item container direction="column">
               <SidebarInnerContainer

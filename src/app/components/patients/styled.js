@@ -34,10 +34,9 @@ export const PatientsListDescription = styled.div`
 `;
 
 export const InputWrapper = styled.div`
-  width: 100%;
+  width: 66.67%;
   max-width: 1147px;
   margin: 0 auto;
-  padding: 0 ${spacing.huge};
   padding-top: ${({ hasValue }) => (hasValue ? 32 : 200)}px;
   transition: padding 0.3s ease-out;
 `;
