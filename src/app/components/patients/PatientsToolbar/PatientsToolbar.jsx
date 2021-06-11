@@ -6,10 +6,9 @@ import { downloadPatientImportTemplate } from 'api/patient-api';
 import Button from 'components/common/Button/Button';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
-import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import useBoolean from 'hooks/useBoolean';
 import SearchInput from 'components/common/SearchInput/SearchInput';
-import { SearchInputWrapper } from './styled';
+import { SearchInputWrapper, Container } from './styled';
 
 const PatientsToolbar = ({
   hasPatients,
@@ -30,13 +29,14 @@ const PatientsToolbar = ({
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   return (
-    <PageContentHeader>
+    <Container>
       <Grid
         container
+        item
         justify="space-between"
         alignItems="center"
         wrap="nowrap"
-        spacing={3}
+        spacing={6}
       >
         <Grid item xs={5} xl={4}>
           <SearchInputWrapper fullWidth={isSearchFocused || searchValue}>
@@ -98,7 +98,7 @@ const PatientsToolbar = ({
           step={1}
         />
       </Dialog>
-    </PageContentHeader>
+    </Container>
   );
 };
 

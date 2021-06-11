@@ -2,19 +2,16 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 
 export const PatientsViewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 100%;
   max-height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 export const PatientsListContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-`;
-
-export const SideClickListener = styled.div`
-  flex: 1;
 `;
 
 export const SidebarInnerContainer = styled.div`
