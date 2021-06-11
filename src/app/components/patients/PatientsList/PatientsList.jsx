@@ -34,7 +34,6 @@ const renderColumnHeader = props => {
 
 const PatientsList = ({
   patients,
-  highlightedPatientIdentifier,
   patientImportDetails,
   importPopoverOpen,
   setImportPopoverOpen,
@@ -281,10 +280,7 @@ const PatientsList = ({
           {patients?.length > 0 ? (
             <Grid container xs={12} item justify="center">
               <Grid item xs={8}>
-                <NonEmptyListTable
-                  listLength={patients?.length ?? 0}
-                  highlightedPatientIdentifier={highlightedPatientIdentifier}
-                >
+                <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     columns={columns}
                     rows={formattedPatients}
