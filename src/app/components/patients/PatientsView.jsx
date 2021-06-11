@@ -1,15 +1,22 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 
 import { isEmpty } from 'ramda';
 import { setHeader } from 'actions/template-actions';
+import { organizationSelector } from 'selectors/organization-selectors';
+import SearchInput from 'components/common/SearchInput/SearchInput';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { getPatientsList } from 'api/patients-api';
 import PatientsList from './PatientsList/PatientsList';
-import { PatientsViewContainer, PatientsListDescription } from './styled';
+import {
+  PatientsViewContainer,
+  PatientsListDescription,
+  InputWrapper,
+  SearchHelperText,
+} from './styled';
 
 const parsePatientsListIdentifier = listIdentifier => {
   if (!listIdentifier)
@@ -37,15 +44,23 @@ const PatientsView = () => {
   const { listIdentifier } = parsePatientsListIdentifier(
     listIdentifierParameter,
   );
+  const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
 
-  const [patientsList, setPatientsList] = useState({});
+  const [patientsListDetails, setPatientsListDetails] = useState({});
+  const [patients, setPatients] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    getPatientsList(listIdentifier).then(data => setPatientsList(data));
+    getPatientsList(listIdentifier).then(data => {
+      const fetchedData = { ...data };
+      setPatients(fetchedData.patients);
+      delete fetchedData.patients;
+      setPatientsListDetails(fetchedData);
+    });
   }, [listIdentifier]);
 
   useEffect(() => {
-    if (!isEmpty(patientsList)) {
+    if (!isEmpty(patientsListDetails)) {
       dispatch(
         setHeader({
           layout: [
@@ -54,9 +69,9 @@ const PatientsView = () => {
               component: (
                 <>
                   <GenericHeader>
-                    {patientsList?.listName}
+                    {patientsListDetails?.listName}
                     <PatientsListDescription>
-                      {patientsList?.listDescription}
+                      {patientsListDetails?.listDescription}
                     </PatientsListDescription>
                   </GenericHeader>
                 </>
@@ -66,13 +81,32 @@ const PatientsView = () => {
         }),
       );
     }
-  }, [dispatch, listIdentifier, patientsList]);
+  }, [dispatch, patientsListDetails]);
 
   return (
     <PatientsViewContainer>
+      {patientsListDetails?.patientListIdentifier === 'ALL_PATIENTS' &&
+        emrIntegrationEnabled && (
+          <Grid container xs={12} justify="center">
+            <Grid item xs={8}>
+              <InputWrapper hasValue={searchValue}>
+                <SearchInput
+                  value={searchValue}
+                  onValueChange={setSearchValue}
+                />
+                {!searchValue && (
+                  <SearchHelperText>
+                    Dock is connected to your EHR. Please search by name or
+                    medical record number to find a patient.
+                  </SearchHelperText>
+                )}
+              </InputWrapper>
+            </Grid>
+          </Grid>
+        )}
       <Grid container sm={12} item direction="column">
         <PatientsList
-          patients={patientsList?.patients}
+          patients={patients}
           // isFiltered={searchValue !== ''}
           // isCompact={isSidebarOpen}
           // patientImportDetails={patientImportDetails}

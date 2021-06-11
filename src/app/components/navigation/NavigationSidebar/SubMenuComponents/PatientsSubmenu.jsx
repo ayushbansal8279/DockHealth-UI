@@ -14,6 +14,7 @@ import {
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 import {
   DrawerMyListsLabel,
@@ -41,6 +42,8 @@ const PatientsSubmenu = () => {
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
   const customPatientsLists = useSelector(customPatientsListsSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const isGuest = orgUserRole === 'GUEST';
 
   useEffect(() => {
     PatientsActions.getPatientsLists()(dispatch);
@@ -85,62 +88,68 @@ const PatientsSubmenu = () => {
           new Array(2).fill().map((_, i) => <DrawerListsItemLoader key={i} />)
         )}
       </DrawerListsList>
-      <Box m={6} flexShrink={0} />
-      <DrawerMyListsLabel>
-        <div>Custom Lists</div>
-        <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
-      </DrawerMyListsLabel>
-      <DrawerListsList>
-        {!isFetching ? (
-          <>
-            {customPatientsLists?.map(patientsList => (
-              <DrawerListsItem key={patientsList.patientListIdentifier}>
-                <ListNameText
-                  onClick={() => {
-                    history.push(
-                      `/core/patients/list/${patientsList.patientListIdentifier}`,
-                    );
-                  }}
-                >
-                  {patientsList.listName}
-                </ListNameText>
-                <DrawerItemOptions>
-                  <div>{patientsList.patientsCount}</div>
-                  <OptionsMenu
-                    disablePortal
-                    options={[
-                      {
-                        name: 'Edit',
-                        onClick: () => {
-                          dispatch(
-                            openModal('AddPatientToList', {
-                              patientsList,
-                            }),
-                          );
-                          dispatch(hideSubMenu());
-                        },
-                      },
-                      {
-                        name: 'Delete',
-                        onClick: () =>
-                          PatientsActions.deletePatientsList(
-                            patientsList.patientListIdentifier,
-                          )(dispatch),
-                        color: palette.oPlusRed,
-                      },
-                    ]}
-                  >
-                    <MoreVert style={{ color: palette.coolGrey1 }} />
-                  </OptionsMenu>
-                </DrawerItemOptions>
-              </DrawerListsItem>
-            ))}
-          </>
-        ) : (
-          // eslint-disable-next-line react/no-array-index-key
-          new Array(5).fill().map((_, i) => <DrawerListsItemLoader key={i} />)
-        )}
-      </DrawerListsList>
+      {!isGuest && (
+        <>
+          <Box m={6} flexShrink={0} />
+          <DrawerMyListsLabel>
+            <div>Custom Lists</div>
+            <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+          </DrawerMyListsLabel>
+          <DrawerListsList>
+            {!isFetching ? (
+              <>
+                {customPatientsLists?.map(patientsList => (
+                  <DrawerListsItem key={patientsList.patientListIdentifier}>
+                    <ListNameText
+                      onClick={() => {
+                        history.push(
+                          `/core/patients/list/${patientsList.patientListIdentifier}`,
+                        );
+                      }}
+                    >
+                      {patientsList.listName}
+                    </ListNameText>
+                    <DrawerItemOptions>
+                      <div>{patientsList.patientsCount}</div>
+                      <OptionsMenu
+                        disablePortal
+                        options={[
+                          {
+                            name: 'Edit',
+                            onClick: () => {
+                              dispatch(
+                                openModal('AddPatientToList', {
+                                  patientsList,
+                                }),
+                              );
+                              dispatch(hideSubMenu());
+                            },
+                          },
+                          {
+                            name: 'Delete',
+                            onClick: () =>
+                              PatientsActions.deletePatientsList(
+                                patientsList.patientListIdentifier,
+                              )(dispatch),
+                            color: palette.oPlusRed,
+                          },
+                        ]}
+                      >
+                        <MoreVert style={{ color: palette.coolGrey1 }} />
+                      </OptionsMenu>
+                    </DrawerItemOptions>
+                  </DrawerListsItem>
+                ))}
+              </>
+            ) : (
+              new Array(5)
+                .fill()
+                // eslint-disable-next-line react/no-array-index-key
+                .map((_, i) => <DrawerListsItemLoader key={i} />)
+            )}
+          </DrawerListsList>
+        </>
+      )}
     </>
   );
 };

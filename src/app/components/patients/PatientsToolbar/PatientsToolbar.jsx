@@ -43,7 +43,6 @@ const PatientsToolbar = ({
             <SearchInput
               value={searchValue}
               onValueChange={onSearchChange}
-              onClear={() => onSearchChange('')}
               onFocus={setIsSearchFocused}
               onBlur={unsetIsSearchFocused}
             />
