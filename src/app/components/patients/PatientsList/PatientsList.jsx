@@ -33,6 +33,7 @@ const renderColumnHeader = props => {
 };
 
 const PatientsList = ({
+  isFiltered,
   patients,
   highlightedPatientIdentifier,
   patientImportDetails,
@@ -300,7 +301,7 @@ const PatientsList = ({
               </Grid>
             </Grid>
           ) : (
-            <EmptyFilteredPatientsList />
+            <EmptyFilteredPatientsList isFiltered={isFiltered} />
           )}
         </>
       )}
