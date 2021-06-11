@@ -231,6 +231,7 @@ const PatientsView = () => {
         <Grid container>
           <Grid container sm={isSidebarOpen ? 6 : 12} item direction="column">
             <PatientsList
+              isFiltered={searchValue}
               patients={patients}
               patientImportDetails={patientImportDetails}
               refreshPatientList={refreshPatientList}
