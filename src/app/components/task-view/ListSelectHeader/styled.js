@@ -28,3 +28,9 @@ export const TitleContainer = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+
+export const ListDescription = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: -2px;
+`;
