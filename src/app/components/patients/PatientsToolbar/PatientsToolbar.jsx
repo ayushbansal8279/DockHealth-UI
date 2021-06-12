@@ -32,10 +32,9 @@ const PatientsToolbar = ({
       <Grid
         container
         item
-        justify="space-around"
+        justify="space-between"
         alignItems="center"
         wrap="nowrap"
-        spacing={6}
       >
         <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
           <SearchInputWrapper fullWidth={isSearchFocused || searchValue}>
@@ -57,7 +56,7 @@ const PatientsToolbar = ({
           justify="flex-end"
           alignItems="center"
           wrap="nowrap"
-          spacing={3}
+          spacing={2}
         >
           {hasPatients && !isGuest && !hideButtons && (
             <>

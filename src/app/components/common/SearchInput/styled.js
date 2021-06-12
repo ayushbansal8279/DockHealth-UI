@@ -16,15 +16,15 @@ export const StyledInput = styled.input`
   width: 100%;
   padding: ${spacing.regular} ${END_PADDING}px ${spacing.regular}
     ${START_PADDING}px;
-  border: none;
-  background: none;
+  border: 1px solid ${palette.coolGrey3};
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%),
+    #ffffff;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};
 
   &:focus {
     outline: none;
-    background: ${palette.white};
   }
 
   &::placeholder {
