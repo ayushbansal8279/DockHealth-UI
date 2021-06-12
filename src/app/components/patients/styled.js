@@ -31,6 +31,7 @@ export const SidebarInnerContainer = styled.div`
 export const PatientsListDescription = styled.div`
   font-size: 12px;
   font-weight: 400;
+  margin-top: -2px;
 `;
 
 export const InputWrapper = styled.div`
