@@ -9,7 +9,6 @@ const StyledButton = styled.button`
   position: relative;
   box-sizing: border-box;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-  ${({ fullWidth }) => !fullWidth && 'min-width: 10.625rem;'}
 
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
@@ -17,12 +16,12 @@ const StyledButton = styled.button`
   outline: none;
 
   ${({ disabled }) => !disabled && `cursor: pointer;`}
-  
+
   & > span {
     position: relative;
     z-index: 100;
   }
-  
+
   ${({ size }) => {
     switch (size) {
       case 'small':

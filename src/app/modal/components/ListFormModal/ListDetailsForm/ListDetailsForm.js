@@ -30,15 +30,18 @@ const onSubmit = ({
     .then(updatedList => {
       if (updatedList) {
         setList(updatedList);
-        nextStep();
 
-        if (!taskListIdentifier) {
+        const isNewList = !taskListIdentifier;
+
+        if (isNewList) {
           if (typeof onListCreationSuccess === 'function') {
             onListCreationSuccess(updatedList.taskListIdentifier);
           }
           onTaskListAdded();
+          nextStep();
         } else {
           onTaskListEdited();
+          closeModal();
         }
       }
     })
@@ -176,7 +179,7 @@ const ListDetailsForm = ({
               size="small"
               disabled={isSavingList}
             >
-              Next
+              Save
             </Button>
           </ButtonWrapper>
         </Grid>

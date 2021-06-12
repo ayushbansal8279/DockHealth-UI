@@ -33,7 +33,6 @@ import {
   SearchWrapper,
   MemberWrapper,
   ToolbarContainer,
-  ListDescription,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -237,7 +236,6 @@ const Toolbar = ({
           pdfTitle={pdfTitle}
         />
       </Grid>
-      <ListDescription>{taskList?.listDescription}</ListDescription>
       {(haveTasks ||
         searchValue ||
         !isEmpty(selectedFilters) ||

@@ -5,9 +5,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { useDispatch } from 'react-redux';
 import debounce from 'lodash.debounce';
-import { openModal } from 'modal/actions';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import MagnifierIcon from 'img/magnifier';
 import { getPatientsByCriteria } from 'api/patient-api';
@@ -24,15 +22,9 @@ import {
   UnassignRow,
 } from './styled';
 
-const UNASSIGNED_KEY = 'UNASSIGNED';
-
 const PatientList = ({
-  onChangePatient,
+  onSelect,
   selectedPatientIdentifier,
-  isMultipleChange,
-  closePopover,
-  isSubtask,
-  hasSubtasks,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -61,8 +53,6 @@ const PatientList = ({
       inputReference?.current?.focus();
     }
   }, [inputReference]);
-
-  const dispatch = useDispatch();
 
   const fetchPatients = useCallback(
     value =>
@@ -100,6 +90,7 @@ const PatientList = ({
         fetchPatientsWithDebounce(value);
       } else {
         fetchPatientsWithDebounce.cancel();
+        setSearchValue('');
         setIsLoadingPatients(false);
         setPatients([]);
       }
@@ -107,45 +98,10 @@ const PatientList = ({
     [fetchPatientsWithDebounce],
   );
 
-  const unassignAction = () => {
-    if (isMultipleChange || isSubtask || hasSubtasks) {
-      dispatch(
-        openModal('UnassignPatient', {
-          isWorkflowModal: isMultipleChange,
-          confirm: () => {
-            onChangePatient(UNASSIGNED_KEY);
-            closePopover();
-          },
-        }),
-      );
-    } else {
-      onChangePatient(UNASSIGNED_KEY);
-      closePopover();
-    }
-  };
-
-  const onPatientSelect = ({ patient }) => {
-    if (
-      (selectedPatientIdentifier && isMultipleChange) ||
-      isSubtask ||
-      hasSubtasks
-    ) {
-      dispatch(
-        openModal('AssignPatient', {
-          isWorkflowModal: isMultipleChange,
-          confirm: () => {
-            onChangePatient(patient?.patientIdentifier, patient);
-            closePopover();
-          },
-          patientName: patient?.lastName
-            ? `${patient?.lastName}, ${patient?.firstName}`
-            : patient?.firstName,
-        }),
-      );
-    } else {
-      onChangePatient(patient?.patientIdentifier, patient);
-      closePopover();
-    }
+  const clearInput = () => {
+    setSearchValue('');
+    setPatients([]);
+    inputReference.current.focus();
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -156,8 +112,7 @@ const PatientList = ({
       case 27:
         event.preventDefault();
         event.stopPropagation();
-        inputReference.current.blur();
-        closePopover();
+        clearInput();
         break;
 
       // enter key
@@ -169,7 +124,8 @@ const PatientList = ({
           (searchValue && patients?.length > 0 && patients[hoveredItemIndex]) ||
           displayUnassignedOption
         ) {
-          onPatientSelect(patients[hoveredItemIndex]);
+          onSelect(patients[hoveredItemIndex].patient);
+          clearInput();
         }
         break;
 
@@ -239,6 +195,7 @@ const PatientList = ({
         <Input
           ref={inputReference}
           placeholder="Search patient"
+          value={searchValue}
           onChange={onPatientInputChange}
           onKeyDown={handleInputKeyDown}
         />
@@ -257,13 +214,16 @@ const PatientList = ({
         <ListContainer withBorder={patients.length !== 0} ref={listReference}>
           {!isLoadingPatients &&
             patients.length !== 0 &&
-            patients?.map((patient, index) =>
-              patient.unassignOption ? (
+            patients?.map((option, index) =>
+              option.unassignOption ? (
                 <UnassignRowContainer withBorder={displayUnassignedOption}>
                   <UnassignRow
+                    key="UNASSIGNED"
                     type="button"
-                    isSelected={!selectedPatientIdentifier}
-                    onClick={unassignAction}
+                    onClick={() => {
+                      clearInput();
+                      onSelect(null);
+                    }}
                     isHovered={hoveredItemIndex === index}
                   >
                     Unassign
@@ -271,14 +231,15 @@ const PatientList = ({
                 </UnassignRowContainer>
               ) : (
                 <Row
+                  key={option.patient.patientIdentifier}
                   type="button"
                   isHovered={hoveredItemIndex === index}
-                  isSelected={
-                    selectedPatientIdentifier === patient?.patientIdentifier
-                  }
-                  onClick={() => onPatientSelect(patient)}
+                  onClick={() => {
+                    clearInput();
+                    onSelect(option.patient);
+                  }}
                 >
-                  {patient.label({ searchValue })}
+                  {option.label({ searchValue })}
                 </Row>
               ),
             )}

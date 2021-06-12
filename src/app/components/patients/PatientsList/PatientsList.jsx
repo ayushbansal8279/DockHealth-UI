@@ -1,12 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
-import EmptyPatientsList from '../EmptyPatientsList/EmptyPatientsList';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
 import { NonEmptyListTable, ListLoaderContainer } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
@@ -34,20 +33,14 @@ const renderColumnHeader = props => {
 };
 
 const PatientsList = ({
-  patients,
   isFiltered,
-  highlightedPatientIdentifier,
+  patients,
   patientImportDetails,
-  refreshPatientList,
   importPopoverOpen,
   setImportPopoverOpen,
   hasImportErrors,
-  isGuest,
   isFetching,
-  onAddPatientClick,
-  emrIntegrationEnabled,
 }) => {
-  const [importPopupOpen, setImportPopupOpen] = useState(false);
   const history = useHistory();
 
   const columns = [
@@ -287,11 +280,8 @@ const PatientsList = ({
         <>
           {patients?.length > 0 ? (
             <Grid container xs={12} item justify="center">
-              <Grid item xs={8}>
-                <NonEmptyListTable
-                  listLength={patients?.length ?? 0}
-                  highlightedPatientIdentifier={highlightedPatientIdentifier}
-                >
+              <Grid item xs={12} xl={10} md={10} lg={10}>
+                <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     columns={columns}
                     rows={formattedPatients}
@@ -307,21 +297,7 @@ const PatientsList = ({
               </Grid>
             </Grid>
           ) : (
-            <>
-              {isFiltered || isGuest || emrIntegrationEnabled ? (
-                <EmptyFilteredPatientsList />
-              ) : (
-                <>
-                  <EmptyPatientsList
-                    onAddPatientClick={onAddPatientClick}
-                    importPopupOpen={importPopupOpen}
-                    setImportPopupOpen={setImportPopupOpen}
-                    setImportPopoverOpen={setImportPopoverOpen}
-                    refreshPatientList={refreshPatientList}
-                  />
-                </>
-              )}
-            </>
+            <EmptyFilteredPatientsList isFiltered={isFiltered} />
           )}
         </>
       )}

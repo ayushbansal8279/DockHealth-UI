@@ -61,9 +61,17 @@ export function getPatientsByName(searchedPatientName) {
     });
 }
 
-export function getPatientsByCriteria(seacrhCriteria) {
+export function getPatientsByCriteria(
+  searchCriteria,
+  patientListIdentifier = 'ALL_PATIENTS',
+) {
   return axios
-    .get(`patient/getPatientsByCriteria?seacrhCriteria=${seacrhCriteria}`)
+    .get(`patient/getPatientsByCriteria`, {
+      params: {
+        searchCriteria,
+        patientListIdentifier,
+      },
+    })
     .then(response => response.data)
     .catch(error => {
       console.log(error);
