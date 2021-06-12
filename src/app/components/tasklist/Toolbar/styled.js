@@ -37,8 +37,8 @@ export const HeaderActionButtonsGrid = styled(Grid)`
 
 export const ToolbarBottomGrid = styled(Grid)`
   padding-left: ${spacing.giga};
-  padding-top: ${spacing.regular};
-  padding-bottom: ${spacing.regular};
+  padding-top: ${spacing.small};
+  padding-bottom: ${spacing.small};
   background-color: ${palette.coolGrey4};
 `;
 
