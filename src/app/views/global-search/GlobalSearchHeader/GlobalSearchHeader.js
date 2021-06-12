@@ -1,7 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
-import { isSearchingCompletedTasksSelector } from 'selectors/global-search-selectors';
+import {
+  isSearchingCompletedTasksSelector,
+  searchValueSelector,
+} from 'selectors/global-search-selectors';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import * as TemplateActions from 'actions/template-actions';
 import Spacing from 'components/common/Spacing';
@@ -18,23 +21,17 @@ import {
 
 const GlobalSearchHeader = ({
   isSearchingCompletedTasks,
+  searchValue,
   setSearchValue,
   setSearchCompletedTasks,
-  clearSearchValue,
 }) => {
-  const searchInputReference = useRef(null);
   const history = useHistory();
-
-  const search = value => {
-    setSearchValue(value);
-  };
 
   useEffect(() => {
     if (window.location.href) {
       const queryValues = queryString.parse(history?.location?.search);
       if (queryValues.criteria !== undefined) {
         setSearchValue(queryValues.criteria);
-        searchInputReference.current.value = queryValues.criteria;
       }
       if (
         queryValues.completed !== undefined &&
@@ -43,7 +40,7 @@ const GlobalSearchHeader = ({
         setSearchCompletedTasks(true);
       }
     }
-  }, [searchInputReference, history, setSearchValue, setSearchCompletedTasks]);
+  }, [history, setSearchValue, setSearchCompletedTasks]);
 
   return (
     <TopSectionGrid
@@ -53,13 +50,7 @@ const GlobalSearchHeader = ({
       alignItems="center"
     >
       <InputWrapper>
-        <SearchInput
-          ref={searchInputReference}
-          onValueChange={search}
-          onClear={() =>
-            clearSearchValue() && searchInputReference?.current?.focus()
-          }
-        />
+        <SearchInput value={searchValue} onValueChange={setSearchValue} />
       </InputWrapper>
       <Spacing horizontal={5} />
       <CheckboxContainer>
@@ -79,10 +70,10 @@ const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
   setSearchValue: GlobalSearchSagaActions.setSearchValue,
   setSearchCompletedTasks: GlobalSearchSagaActions.setSearchCompletedTasks,
-  clearSearchValue: GlobalSearchSagaActions.clearSearchValue,
 };
 
 const mapStateToProps = store => ({
+  searchValue: searchValueSelector(store),
   isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),
 });
 

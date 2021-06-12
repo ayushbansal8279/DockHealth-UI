@@ -150,7 +150,7 @@ export const UserInitialCircle = styled.div`
   height: ${IMAGE_SIZE}px;
   border-radius: ${IMAGE_SIZE / 2}px;
   background-color: ${({ color }) => color || palette.coolGrey2};
-  font-family: 'Montserrant', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: ${IMAGE_SIZE / 40}rem;
   font-weight: ${fontWeights.bold};
   color: ${palette.white};
@@ -218,6 +218,9 @@ export const DrawerListsList = styled.div`
   padding: ${spacing.largePlus} 0 ${spacing.largePlus} ${spacing.smallPlus};
   border-bottom: 1px solid ${palette.coolGrey2};
   overflow-y: auto;
+
+  ${({ flexShrink }) =>
+    flexShrink !== undefined && `flex-shrink: ${flexShrink}`}
 `;
 
 export const DrawerListsItem = styled.div`
@@ -227,6 +230,13 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
+  margin-bottom: 10px;
+`;
+
+export const DrawerListsItemLoader = styled.div`
+  width: 100%;
+  height: 24px;
+  background: ${palette.skeletonLoader};
   margin-bottom: 10px;
 `;
 

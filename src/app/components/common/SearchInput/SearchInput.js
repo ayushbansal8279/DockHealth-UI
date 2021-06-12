@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import SearchHeadsupIcon from 'img/search-headsup';
 import {
   StyledInput,
@@ -10,47 +10,39 @@ import {
 
 const SearchInput = React.forwardRef(
   (
-    { value, onValueChange, onClear, onFocus, onBlur, placeholder = null },
+    { value, onValueChange, onFocus, onBlur, placeholder = null },
     reference,
   ) => {
-    const hasValueProps = value !== undefined;
-
-    const [clearVisible, setClearVisible] = useState(value ?? false);
+    const innerInputReference = useRef(null);
+    const inputReference = reference || innerInputReference;
 
     const clearInput = () => {
-      onClear();
-      setClearVisible(false);
+      onValueChange('');
 
-      // eslint-disable-next-line no-param-reassign
-      if (!hasValueProps) reference.current.value = '';
+      // eslint-disable-next-line no-unused-expressions
+      inputReference.current?.focus();
     };
 
     const onInputChange = event => {
       const inputValue = event?.target?.value;
-      if (inputValue && !clearVisible) {
-        setClearVisible(true);
-      } else if (!inputValue && clearVisible) {
-        setClearVisible(false);
-      }
       onValueChange(inputValue);
     };
 
     const inputProps = {
+      value,
       onChange: onInputChange,
       placeholder: placeholder || 'Search',
       onFocus,
       onBlur,
     };
 
-    if (hasValueProps) inputProps.value = value;
-
     return (
       <SearchInputWrapper>
         <InputIconWrapper>
           <img src={SearchHeadsupIcon} alt="search" />
         </InputIconWrapper>
-        <StyledInput ref={reference} {...inputProps} />
-        {clearVisible && (
+        <StyledInput ref={inputReference} {...inputProps} />
+        {value && (
           <ClearButtonWrapper>
             <ClearButton type="button" onClick={clearInput}>
               Clear

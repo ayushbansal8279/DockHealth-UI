@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { openModal } from 'modal/actions';
 import PatientList from './PatientList';
 import { StyledPopover } from './styled';
 
@@ -14,6 +16,53 @@ const PatientDropdown = ({
   hasSubtasks,
 }) => {
   const popoverReference = useRef(null);
+  const dispatch = useDispatch();
+
+  const unassignPatient = () => {
+    if (isMultipleChange || isSubtask || hasSubtasks) {
+      dispatch(
+        openModal('UnassignPatient', {
+          isWorkflowModal: isMultipleChange,
+          confirm: () => {
+            onChangePatient(null);
+            closePopover();
+          },
+        }),
+      );
+    } else {
+      onChangePatient(null);
+      closePopover();
+    }
+  };
+
+  const handlePatientSelect = patient => {
+    if (!patient) {
+      unassignPatient();
+      return;
+    }
+
+    if (
+      (selectedPatientIdentifier && isMultipleChange) ||
+      isSubtask ||
+      hasSubtasks
+    ) {
+      dispatch(
+        openModal('AssignPatient', {
+          isWorkflowModal: isMultipleChange,
+          confirm: () => {
+            onChangePatient(patient?.patientIdentifier, patient);
+            closePopover();
+          },
+          patientName: patient?.lastName
+            ? `${patient?.lastName}, ${patient?.firstName}`
+            : patient?.firstName,
+        }),
+      );
+    } else {
+      onChangePatient(patient?.patientIdentifier, patient);
+      closePopover();
+    }
+  };
 
   return (
     <>
@@ -27,12 +76,8 @@ const PatientDropdown = ({
         width="330"
       >
         <PatientList
-          onChangePatient={onChangePatient}
+          onSelect={handlePatientSelect}
           selectedPatientIdentifier={selectedPatientIdentifier}
-          isMultipleChange={isMultipleChange}
-          closePopover={closePopover}
-          isSubtask={isSubtask}
-          hasSubtasks={hasSubtasks}
         />
       </StyledPopover>
     </>

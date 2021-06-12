@@ -55,14 +55,15 @@ const renderPatientNotes = (notes, { firstName, middleName, lastName }) => {
   ) : null;
 };
 
-const PatientCard = ({ children, patientIdentifier }) => {
+const PatientCard = ({ children, patientIdentifier, disabled }) => {
   const reference = useRef(null);
   const [patientData, setPatientData] = useState(null);
 
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
 
   useEffect(() => {
-    if (cardOpen && !patientData) {
+    if (cardOpen && patientIdentifier !== patientData?.patientIdentifier) {
+      setPatientData(null);
       PatientApi.getPatientById(patientIdentifier)
         .then(fetchedPatient => {
           setPatientData(fetchedPatient);
@@ -70,7 +71,14 @@ const PatientCard = ({ children, patientIdentifier }) => {
         .catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardOpen, patientData]);
+  }, [cardOpen, patientIdentifier]);
+
+  useEffect(() => {
+    if (disabled && cardOpen) {
+      closeCard();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disabled]);
 
   const {
     firstName,
@@ -86,7 +94,11 @@ const PatientCard = ({ children, patientIdentifier }) => {
     allNotes,
   } = patientData || {};
   return (
-    <span ref={reference} onMouseEnter={openCard} onMouseLeave={closeCard}>
+    <span
+      ref={reference}
+      onMouseEnter={!disabled && openCard}
+      onMouseLeave={closeCard}
+    >
       {children}
       <Popper
         anchorEl={reference.current}

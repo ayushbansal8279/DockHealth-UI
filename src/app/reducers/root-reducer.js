@@ -21,6 +21,7 @@ import GlobalSearchReducer from './global-search-reducer';
 import ActiveUsersReducer from './active-users-reducer';
 import PersonDetailsReducer from './person-details-reducer';
 import TaskTemplateReducer from './task-template-reducer';
+import PatientsReducer from './patients-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -44,6 +45,7 @@ const appReducer = combineReducers({
   activeUsers: ActiveUsersReducer,
   personDetails: PersonDetailsReducer,
   taskTemplate: TaskTemplateReducer,
+  patients: PatientsReducer,
 });
 
 export default function rootReducer(state, action) {
