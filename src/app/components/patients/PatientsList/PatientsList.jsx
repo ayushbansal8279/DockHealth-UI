@@ -280,7 +280,7 @@ const PatientsList = ({
         <>
           {patients?.length > 0 ? (
             <Grid container xs={12} item justify="center">
-              <Grid item xs={8}>
+              <Grid item xs={12} xl={10} md={10} lg={10}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     columns={columns}
