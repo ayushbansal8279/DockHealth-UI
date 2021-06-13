@@ -92,4 +92,12 @@ export const StyledDataGrid = styled(DataGrid)`
       cursor: default;
     }
   }
+
+  .MuiTablePagination-caption:nth-of-type(1) {
+    display: none;
+  }
+
+  .MuiTablePagination-input {
+    display: none;
+  }
 `;

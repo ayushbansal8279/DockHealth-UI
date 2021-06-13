@@ -117,8 +117,7 @@ class PeopleContainer extends PureComponent {
             rows={filteredPeople}
             rowHeight={35}
             headerHeight={45}
-            hideFooter
-            hideFooterPagination
+            hideFooterSelectedRowCount
             autoHeight
             disableSelectionOnClick
             disableColumnMenu
