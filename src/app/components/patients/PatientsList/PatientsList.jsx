@@ -287,8 +287,7 @@ const PatientsList = ({
                     rows={formattedPatients}
                     rowHeight={35}
                     headerHeight={45}
-                    hideFooter
-                    hideFooterPagination
+                    hideFooterSelectedRowCount
                     autoHeight
                     disableColumnMenu
                     disableSelectionOnClick

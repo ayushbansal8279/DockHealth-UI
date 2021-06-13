@@ -16,7 +16,6 @@ export const ImportButton = styled.button`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
-  width: 250px;
 
   &:hover {
     cursor: pointer;
