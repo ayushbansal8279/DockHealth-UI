@@ -43,106 +43,86 @@ const StyledButton = styled.button`
     }
   }}
 
-  ${({ variant, colors, theme }) => {
+  ${({ variant }) => {
     switch (variant) {
-      case 'contained':
+      case 'primary':
         return `
           border: none;
           color: ${palette.white};
-          background: linear-gradient(to top right, ${colors.main}, ${colors.secondary});
-
-          &:before {
-            position: absolute;
-            top: 0;
-            left: 0;
-            content: '';
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.25s ease-out;
-                background: linear-gradient(to top right, ${colors.main}, ${colors.main});
-          }
+          background: ${palette.darkBlue};
+          transition: opacity 0.25s;
 
           &:hover:not(:disabled) {
-            &:before {
-              opacity: 1;
-            }
+              opacity: 0.8;
           }
 
           &:disabled {
-            background: ${palette.coolGrey1};
+            background: ${palette.coolGrey7};
           }
           `;
 
-      case 'outlined':
+      case 'primary-red':
+        return `
+          border: none;
+          color: ${palette.white};
+          background: ${palette.oPlusRed};
+          transition: opacity 0.3s;
+
+          &:hover:not(:disabled) {
+              opacity: 0.8;
+          }
+
+          &:disabled {
+            background: ${palette.coolGrey7};
+          }
+          `;
+
+      case 'secondary':
         return `
             border-width: 2px;
             border-style: solid;
             background: none;
-            transition: background 0.25s ease-out;
-            
-            &:before {
-              background: none;
-            }
-            
-            ${
-              theme === 'dark'
-                ? `
-                  border-color: ${palette.white};
-                  color: ${palette.white};
-                `
-                : `
-                  border-color: ${colors.main};
-                  color: ${colors.main};
-                  &:hover {
-                    color: ${colors.secondary};
-                    border-color: ${colors.secondary};
-                  }
-              `
-            }
+            color: ${palette.darkBlue};
+            transition: opacity 0.3s;
 
+            &:hover:not(:disabled) {
+                opacity: 0.8;
+            }
+            
             &:disabled {
               color: ${palette.coolGrey1};
               border-color: ${palette.coolGrey1};
             }
-
-
         `;
-      case 'text':
+
+      case 'secondary-red':
         return `
-          border: none;
-          text-decoration: underline;
-          color: ${colors.main};
+            border-width: 2px;
+            border-style: solid;
+            background: none;
+            color: ${palette.oPlusRed};
+            transition: opacity 0.3s;
+
+            &:hover:not(:disabled) {
+                opacity: 0.8;
+            }
+            
+            &:disabled {
+              color: ${palette.coolGrey1};
+              border-color: ${palette.coolGrey1};
+            }
         `;
+
       default:
         return ``;
     }
   }}
 `;
 
-function getButtonColors(color) {
-  switch (color) {
-    case 'blue':
-      return {
-        main: palette.darkBlue,
-        secondary: palette.brightBlue,
-      };
-
-    case 'red':
-      return {
-        main: palette.oPlusRed,
-        secondary: palette.orange,
-      };
-
-    default:
-      return {};
-  }
-}
-
 const Button = ({
+  id,
   children,
   variant,
-  color,
   uppercase,
   onClick,
   size,
@@ -154,8 +134,8 @@ const Button = ({
 }) => {
   return (
     <StyledButton
+      id={id}
       variant={variant}
-      colors={getButtonColors(color)}
       uppercase={uppercase}
       onClick={onClick}
       size={size}
@@ -172,8 +152,12 @@ const Button = ({
 
 Button.propTypes = {
   children: PropTypes.string.isRequired,
-  variant: PropTypes.oneOf(['contained', 'outlined', 'text']),
-  color: PropTypes.oneOf(['blue', 'red']),
+  variant: PropTypes.oneOf([
+    'primary',
+    'primary-red',
+    'secondary',
+    'secondary-red',
+  ]),
   size: PropTypes.oneOf(['small', 'medium']),
   type: PropTypes.oneOf(['button', 'submit']),
   uppercase: PropTypes.bool,
@@ -183,8 +167,7 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  variant: 'contained',
-  color: 'blue',
+  variant: 'primary',
   size: 'medium',
   type: 'button',
   uppercase: true,
