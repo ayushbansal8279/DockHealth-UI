@@ -7,7 +7,6 @@ import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import {
-  OnboardingButton,
   OnboardingDialog,
   OnboardingDivider,
   OnboardingH2,
@@ -102,9 +101,9 @@ const ChangePhoneNumberForm = () => {
           justify="space-between"
           wrap="nowrap"
         >
-          <OnboardingButton variant="containedAutoWidth" size="small">
-            <OnboardingH2Bold onClick={hideDialog}>Ok</OnboardingH2Bold>
-          </OnboardingButton>
+          <Button size="small" onClick={hideDialog}>
+            <OnboardingH2Bold>Ok</OnboardingH2Bold>
+          </Button>
         </Grid>
       </OnboardingDialog>
     </form>

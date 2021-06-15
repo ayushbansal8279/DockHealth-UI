@@ -60,13 +60,10 @@ const DashboardFirstVisitView = ({
               many lists as you&apos;d like. Let’s get started!
             </Description>
             <ButtonsContainer>
-              <Button fullWidth variant="contained" onClick={onCreateList}>
+              <Button fullWidth onClick={onCreateList}>
                 Create a list
               </Button>
               <Spacing horizontal={4} />
-              {/* <Button fullWidth variant="text" onClick={onTakeATour}>
-                Take tour of Dock
-              </Button> */}
               {sampleList && (
                 <Button
                   fullWidth

@@ -11,9 +11,9 @@ import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
 } from 'components/common/UniversalInput/UniversalInput';
+import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { OnboardingButton } from '../OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -144,15 +144,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
             justify="flex-end"
             direction={isSmallScreen ? 'column' : 'row'}
           >
-            <OnboardingButton
-              variant="outlinedSkip"
-              onClick={hideInvitationForm}
-              style={{
-                order: isSmallScreen ? 3 : 1,
-              }}
-            >
+            <Button variant="secondary" onClick={hideInvitationForm}>
               Cancel
-            </OnboardingButton>
+            </Button>
             <div style={{ order: 2 }}>
               {isSmallScreen ? (
                 <Spacing vertical={4} style={{ order: 2 }} />
@@ -160,13 +154,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
                 <Spacing horizontal={4} style={{ order: 2 }} />
               )}
             </div>
-            <OnboardingButton
-              variant={isSmallScreen ? 'containedAutoWidth' : 'contained'}
-              type="submit"
-              style={{ order: isSmallScreen ? 1 : 3 }}
-            >
+            <Button variant="primary" type="submit">
               Send invite
-            </OnboardingButton>
+            </Button>
           </Grid>
         </Grid>
       </FormContext>
