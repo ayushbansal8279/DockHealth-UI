@@ -5,6 +5,7 @@ import { object, string } from 'yup';
 import { useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Button from 'components/common/Button/Button';
 import {
   OnboardingButton,
   OnboardingDialog,
@@ -19,7 +20,6 @@ import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
 } from '../common/UniversalInput/UniversalInput';
-import { NextButton } from './AuthComponents.styled';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -79,9 +79,7 @@ const ChangePhoneNumberForm = () => {
         />
       </FormContext>
       <Spacing vertical={5} />
-      <NextButton variant="contained" type="submit">
-        Continue
-      </NextButton>
+      <Button type="submit">Continue</Button>
       <OnboardingDialog
         isSmallScreen={isSmallScreen}
         open={isDialogShown}

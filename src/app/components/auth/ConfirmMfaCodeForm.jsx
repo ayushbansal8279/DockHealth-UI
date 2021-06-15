@@ -4,8 +4,8 @@ import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
+import Button from '../common/Button/Button';
 import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
-import { NextButton } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),
@@ -38,10 +38,6 @@ const ConfirmMFACodeForm = props => {
         </MontserratTypography>
         <MontserratTypography variant="h2">{smsPhone}</MontserratTypography>
         <Spacing vertical={4} />
-        {/* <MontserratTypography variant="h4">
-          <StyledLink to="/onboarding/create-account">Change</StyledLink>
-          &nbsp;my cell phone number
-        </MontserratTypography> */}
         <Spacing vertical={4} />
         <UniversalMontserratInput
           name="mfaCode"
@@ -49,7 +45,7 @@ const ConfirmMFACodeForm = props => {
           autoFocus
         />
         <Spacing vertical={5} />
-        <NextButton type="submit">CONTINUE</NextButton>
+        <Button type="submit">CONTINUE</Button>
       </FormContext>
     </form>
   );

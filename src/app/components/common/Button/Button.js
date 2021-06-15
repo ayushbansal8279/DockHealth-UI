@@ -129,7 +129,6 @@ const Button = ({
   type,
   fullWidth,
   disabled,
-  theme,
   padding,
 }) => {
   return (
@@ -142,7 +141,6 @@ const Button = ({
       type={type}
       fullWidth={fullWidth}
       disabled={disabled}
-      theme={theme}
       padding={padding}
     >
       <span>{children}</span>
@@ -163,7 +161,6 @@ Button.propTypes = {
   uppercase: PropTypes.bool,
   fullWidth: PropTypes.bool,
   disabled: PropTypes.bool,
-  theme: PropTypes.oneOf(['light', 'dark']),
 };
 
 Button.defaultProps = {
@@ -173,7 +170,6 @@ Button.defaultProps = {
   uppercase: true,
   fullWidth: false,
   disabled: false,
-  theme: 'light',
 };
 
 export default Button;

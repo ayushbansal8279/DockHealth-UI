@@ -6,11 +6,11 @@ import { object, string } from 'yup';
 import * as UserApi from 'api/user-api';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
 import {
-  NextButton,
   StyledForm,
   // StyledLink,
   StyledHyperLink,
@@ -94,14 +94,9 @@ const LoginFormUsername = props => {
               autoFocus
             />
             <Spacing vertical={5} />
-            <NextButton
-              id="loginButton"
-              type="submit"
-              variant="contained"
-              color="primary"
-            >
+            <Button id="loginButton" type="submit">
               Continue
-            </NextButton>
+            </Button>
             {/* <Spacing vertical={6} />
             <MontserratTypography variant="h4">
               <span>New to Dock? </span>
