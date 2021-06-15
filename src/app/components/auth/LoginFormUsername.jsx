@@ -12,7 +12,7 @@ import { showAlert } from 'helpers/utility-functions';
 import {
   NextButton,
   StyledForm,
-  StyledLink,
+  // StyledLink,
   StyledHyperLink,
 } from './AuthComponents.styled';
 
@@ -22,6 +22,7 @@ const validationSchema = object().shape({
     .email('Please enter a valid email address'),
 });
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const LoginFormUsername = props => {
   const { onSubmit } = props;
   const [showLoginMessage, setShowLoginMessage] = useState(false);
@@ -101,13 +102,13 @@ const LoginFormUsername = props => {
             >
               Continue
             </NextButton>
-            <Spacing vertical={6} />
+            {/* <Spacing vertical={6} />
             <MontserratTypography variant="h4">
               <span>New to Dock? </span>
               <StyledLink to="/auth/create-account">
                 CREATE AN ACCOUNT
               </StyledLink>
-            </MontserratTypography>
+            </MontserratTypography> */}
             <Spacing vertical={6} />
             <Spacing vertical={4} />
           </>
