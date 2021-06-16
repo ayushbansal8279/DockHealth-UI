@@ -89,19 +89,12 @@ const ImportPatientsModal = ({
             <Spacing vertical={5} />
             <Grid container direction="row" spacing={2}>
               <Grid item xs={6}>
-                <StyledButton
-                  variant="outlined"
-                  type="button"
-                  size="medium"
-                  onClick={closeModal}
-                >
+                <StyledButton variant="secondary" onClick={closeModal}>
                   Cancel
                 </StyledButton>
               </Grid>
               <Grid item xs={6}>
                 <StyledButton
-                  variant="contained"
-                  size="medium"
                   onClick={() => {
                     downloadTemplate();
                     setModalStep(2);

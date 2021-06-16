@@ -62,7 +62,6 @@ const PatientsToolbar = ({
             <>
               <Grid item>
                 <ImportButton
-                  variant="contained"
                   onClick={() => {
                     setImportPopupOpen(true);
                   }}

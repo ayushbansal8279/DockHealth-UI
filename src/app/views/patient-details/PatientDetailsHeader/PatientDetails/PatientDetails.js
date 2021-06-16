@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
-
-import { Button, Collapse } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import PatientDetailsInput from './PatientDetailsInput';
 import {
   PatientDetailsForm,
@@ -243,9 +243,7 @@ const PatientDetails = ({
                 >
                   CANCEL
                 </PatientDetailsCancelButton>
-                <Button type="submit" variant="contained" size="small">
-                  SAVE
-                </Button>
+                <Button type="submit">SAVE</Button>
               </PatietnDetailsFormFooter>
             )}
           </>

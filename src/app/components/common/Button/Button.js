@@ -12,15 +12,10 @@ const StyledButton = styled.button`
 
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
-  ${({ uppercase }) => uppercase && 'text-transform: uppercase'};
   outline: none;
-
+  
+  ${({ uppercase }) => uppercase && 'text-transform: uppercase'};
   ${({ disabled }) => !disabled && `cursor: pointer;`}
-
-  & > span {
-    position: relative;
-    z-index: 100;
-  }
 
   ${({ size }) => {
     switch (size) {
@@ -33,9 +28,18 @@ const StyledButton = styled.button`
 
       case 'medium':
         return `
-          height: 50px;
+          height: 40px;
+          min-width: 100px;
           padding: 0 ${spacing.regular};
           font-size: ${fontSizes.regular};
+        `;
+
+      case 'large':
+        return `
+          height: 50px;
+          min-width: 120px;
+          padding: 0 ${spacing.regular};
+          font-size: ${fontSizes.large};
         `;
 
       default:

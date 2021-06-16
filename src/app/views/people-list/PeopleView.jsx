@@ -109,7 +109,7 @@ class PeopleView extends PureComponent {
                   </HeaderMessageDescription>
                 </HeaderMessage>
                 <Link to="/settings/subscriptions">
-                  <Button variant="contained">Manage Users</Button>
+                  <Button>Manage Users</Button>
                 </Link>
               </ManageUsersContainer>
             )}
