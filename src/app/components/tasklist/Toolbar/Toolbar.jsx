@@ -163,7 +163,7 @@ const Toolbar = ({
           >
             <Button
               variant="text"
-              ref={moreButtonReference}
+              reference={moreButtonReference}
               onClick={openMorePopover}
             >
               <ToolbarLabel variant="body1" component="span">

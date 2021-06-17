@@ -269,6 +269,7 @@ const ListMembersSelect = ({
             fullWidth
             onClick={handleInviteSelectedPeople}
             disabled={selectedMembers.length === 0 || disabled}
+            size="small"
           >
             Invite
           </Button>

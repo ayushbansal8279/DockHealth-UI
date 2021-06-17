@@ -6,14 +6,19 @@ import PropTypes from 'prop-types';
 import { fontSizes, fontWeights } from 'styles/font';
 
 const StyledButton = styled.button`
-  position: relative;
   box-sizing: border-box;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
   outline: none;
-  
+  min-width: 104px;
+
+
+  & > span {
+    display: flex;
+    align-items: center;
+  }
+
   ${({ uppercase }) => uppercase && 'text-transform: uppercase'};
   ${({ disabled }) => !disabled && `cursor: pointer;`}
 
@@ -131,10 +136,12 @@ const Button = ({
   fullWidth,
   disabled,
   padding,
+  reference,
 }) => {
   return (
     <StyledButton
       id={id}
+      ref={reference}
       variant={variant}
       uppercase={uppercase}
       onClick={onClick}
@@ -156,6 +163,7 @@ Button.propTypes = {
     'primary-red',
     'secondary',
     'secondary-red',
+    'text',
   ]),
   size: PropTypes.oneOf(['small', 'medium']),
   type: PropTypes.oneOf(['button', 'submit']),

@@ -172,6 +172,7 @@ const SelectDestinationModal = ({
                 : !selectedList
             }
             onClick={handleConfirmWrapper}
+            size="small"
           >
             {confirmText || 'Save'}
           </Button>
