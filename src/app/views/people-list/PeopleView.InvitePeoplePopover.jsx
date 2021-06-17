@@ -92,7 +92,6 @@ const InvitePeopleForm = ({
             onClick={closePopover}
             type="button"
             variant="text"
-            size="small"
             onKeyUp={event => {
               event.preventDefault();
               event.stopPropagation();
@@ -100,7 +99,7 @@ const InvitePeopleForm = ({
           >
             Cancel
           </Button>
-          <Button size="small" variant="text" bold type="submit">
+          <Button variant="text" bold type="submit">
             <b>Send invite</b>
           </Button>
         </Grid>

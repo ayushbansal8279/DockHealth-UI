@@ -37,10 +37,8 @@ const CompleteAllTasksModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Do not complete
@@ -50,10 +48,8 @@ const CompleteAllTasksModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={172}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={confirm}
             >
               Complete all

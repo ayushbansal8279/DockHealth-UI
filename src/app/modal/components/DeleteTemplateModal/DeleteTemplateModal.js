@@ -36,10 +36,8 @@ const DeleteTemplateModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Cancel
@@ -49,10 +47,8 @@ const DeleteTemplateModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={231}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 closeModal();

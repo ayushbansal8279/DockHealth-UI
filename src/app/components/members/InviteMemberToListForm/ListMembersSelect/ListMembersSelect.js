@@ -267,7 +267,6 @@ const ListMembersSelect = ({
         <ButtonWrapper>
           <Button
             fullWidth
-            size="small"
             onClick={handleInviteSelectedPeople}
             disabled={selectedMembers.length === 0 || disabled}
           >

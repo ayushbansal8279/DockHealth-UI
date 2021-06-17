@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Grid, IconButton, Button } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import moment from 'moment';
 import { func } from 'prop-types';
@@ -9,6 +9,7 @@ import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import Button from 'components/common/Button/Button';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import {
@@ -396,8 +397,6 @@ const SubscriptionsViewMembersTable = ({
                     <Spacing horizontal={5} />
                     <Button
                       disabled={buyButtonDisabled}
-                      variant="contained"
-                      size="small"
                       onClick={onClickBuyButton}
                     >
                       Buy this plan

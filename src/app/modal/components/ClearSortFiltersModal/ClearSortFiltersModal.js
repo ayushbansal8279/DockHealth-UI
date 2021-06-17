@@ -35,10 +35,8 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
           <FixedWidthButtonWrapper width={120}>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Cancel
@@ -48,10 +46,8 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
           <FixedWidthButtonWrapper width={152}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 if (closeOnConfirm) closeModal();

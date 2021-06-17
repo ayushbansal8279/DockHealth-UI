@@ -29,17 +29,8 @@ const StyledButton = styled.button`
       case 'medium':
         return `
           height: 40px;
-          min-width: 100px;
           padding: 0 ${spacing.regular};
           font-size: ${fontSizes.regular};
-        `;
-
-      case 'large':
-        return `
-          height: 50px;
-          min-width: 120px;
-          padding: 0 ${spacing.regular};
-          font-size: ${fontSizes.large};
         `;
 
       default:
@@ -116,6 +107,12 @@ const StyledButton = styled.button`
               border-color: ${palette.coolGrey1};
             }
         `;
+
+      case 'text':
+        return `
+          border: none;
+          text-decoration: underline;
+          color: ${palette.darkBlue};`;
 
       default:
         return ``;

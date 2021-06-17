@@ -149,7 +149,7 @@ const OnboardingQuestionsOwnerStepTwo = ({
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <ButtonContainer>
-        <Button onClick={clickPreviousStep} type="button" variant="outlined">
+        <Button onClick={clickPreviousStep} type="button" variant="secondary">
           Previous Step
         </Button>
         <Spacing horizontal={4} />

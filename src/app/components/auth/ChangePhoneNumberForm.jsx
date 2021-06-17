@@ -101,7 +101,7 @@ const ChangePhoneNumberForm = () => {
           justify="space-between"
           wrap="nowrap"
         >
-          <Button size="small" onClick={hideDialog}>
+          <Button onClick={hideDialog}>
             <OnboardingH2Bold>Ok</OnboardingH2Bold>
           </Button>
         </Grid>

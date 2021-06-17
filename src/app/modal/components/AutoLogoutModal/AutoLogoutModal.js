@@ -29,10 +29,8 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
           <FixedWidthButtonWrapper width={100}>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={onLogout}
             >
               Logout
@@ -42,10 +40,8 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
           <FixedWidthButtonWrapper width={182}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={closeModal}
             >
               Stay logged in

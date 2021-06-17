@@ -79,7 +79,7 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
           <FixedWidthButtonWrapper width={170}>
             <Button
               fullWidth
-              variant="outlined"
+              variant="secondary"
               onClick={closeModal}
               size="small"
             >

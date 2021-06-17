@@ -1,9 +1,10 @@
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { Done, Add } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useUnmount } from 'react-use';
 import { IntercomAPI } from 'react-intercom';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import { BILLING_FREQUENCY } from '../helpers';
@@ -178,9 +179,7 @@ const SubscriptionsPlansView = ({
           <Spacing vertical={5} />
           <Grid container direction="column">
             <Button
-              variant="contained"
               fullWidth
-              size="small"
               onClick={() => setAnnualPayment(BILLING_FREQUENCY.ANNUAL)}
             >
               {chosenSubscriptionPlan &&
@@ -227,9 +226,7 @@ const SubscriptionsPlansView = ({
           <Spacing vertical={5} />
           <Grid container direction="column">
             <Button
-              variant="contained"
               fullWidth
-              size="small"
               onClick={() => setAnnualPayment(BILLING_FREQUENCY.MONTHLY)}
             >
               {chosenSubscriptionPlan &&

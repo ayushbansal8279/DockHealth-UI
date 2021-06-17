@@ -2,10 +2,11 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React from 'react';
 import { FormContext } from 'react-hook-form';
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
@@ -353,9 +354,7 @@ const TaskDrawer = ({
                 >
                   <Button
                     onClick={closeTaskDrawer}
-                    color="secondary"
-                    variant="text"
-                    size="small"
+                    variant="secondary"
                     disabled={isSaving}
                   >
                     <MontserratTypography
@@ -369,8 +368,6 @@ const TaskDrawer = ({
                   </Button>
                   <Spacing horizontal={3} />
                   <Button
-                    variant="contained"
-                    size="small"
                     type="submit"
                     disableRipple={isSaving}
                     disabled={isSaving}

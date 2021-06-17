@@ -1,4 +1,4 @@
-import { Button, Collapse, Grid } from '@material-ui/core';
+import { Collapse, Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ import {
   UniversalFormControl,
   UniversalInputLabel,
 } from 'components/common/UniversalInput/styled';
+import Button from 'components/common/Button/Button';
 import useBoolean from 'hooks/useBoolean';
 import CardAmexIcon from 'img/cards/american-express.png';
 import CardDiscoverIcon from 'img/cards/discover.png';
@@ -180,7 +181,6 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
       <Button
         onClick={cancelSaveBillingClick}
         variant="text"
-        size="small"
         disabled={processingPayment}
       >
         <MontserratTypography
@@ -192,12 +192,7 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         </MontserratTypography>
       </Button>
       <Spacing horizontal={4} />
-      <Button
-        type="submit"
-        variant="contained"
-        size="small"
-        disabled={processingPayment}
-      >
+      <Button type="submit" disabled={processingPayment}>
         {processingPayment ? <Loader size={LoaderSizes.medium} /> : 'Subscribe'}
       </Button>
     </Grid>
@@ -212,7 +207,6 @@ const UpdateBillingElement = ({
   isUpdatingBilling && (
     <Grid item sm={12} container justify="flex-end" wrap="nowrap">
       <Button
-        size="small"
         onClick={cancelUpdateBilling}
         variant="text"
         disabled={processingUpdate}
@@ -226,12 +220,7 @@ const UpdateBillingElement = ({
         </MontserratTypography>
       </Button>
       <Spacing horizontal={4} />
-      <Button
-        type="submit"
-        variant="contained"
-        size="small"
-        disabled={processingUpdate}
-      >
+      <Button type="submit" disabled={processingUpdate}>
         {processingUpdate ? <Loader size={LoaderSizes.medium} /> : 'SAVE'}
       </Button>
     </Grid>
@@ -333,12 +322,6 @@ const CreditPaymentForm = ({
         </MontserratTypography>
       </Grid>
       <Spacing vertical={3} />
-      {/* <Grid item sm={12}>
-        <UniversalMontserratInput name="name" label="Name" required />
-      </Grid> */}
-      {/* <Grid item sm={12}>
-        <UniversalMontserratInput name="email" label="Email" required />
-      </Grid> */}
       <Grid item sm={12}>
         <UniversalMontserratInput
           name="address"

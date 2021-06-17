@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Grid, ClickAwayListener } from '@material-ui/core';
+import { Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
 import {
   toggleListNotifications,
@@ -23,6 +23,7 @@ import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover';
+import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover';
@@ -164,7 +165,6 @@ const Toolbar = ({
               variant="text"
               ref={moreButtonReference}
               onClick={openMorePopover}
-              size="small"
             >
               <ToolbarLabel variant="body1" component="span">
                 ACTIONS

@@ -393,7 +393,6 @@ const CreateAccount = props => {
                   fullWidth
                   variant="primary-red"
                   type="button"
-                  size="small"
                   onClick={() => {
                     hideUserExistsDialog();
                     history.push(`/auth/login`);

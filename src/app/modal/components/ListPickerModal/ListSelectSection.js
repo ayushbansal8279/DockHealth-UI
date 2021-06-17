@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import {
   Title,
   Description,
   ListsWrapper,
   ListItem,
   EmptyMessage,
-  StyledButton,
   AddListInputWrapper,
   AddListInput,
 } from './styled';
@@ -83,24 +83,19 @@ const ListSelectSection = ({
       <Spacing vertical={4} />
       <Grid container direction="row" spacing={2}>
         <Grid item xs={6}>
-          <StyledButton
-            variant="outlined"
+          <Button
+            variant="secondary"
             type="button"
-            size="small"
             onClick={onCancel}
+            size="small"
           >
             Cancel
-          </StyledButton>
+          </Button>
         </Grid>
         <Grid item xs={6}>
-          <StyledButton
-            variant="contained"
-            type="button"
-            size="small"
-            onClick={() => handleSaveClick()}
-          >
+          <Button type="button" onClick={() => handleSaveClick()} size="small">
             Save
-          </StyledButton>
+          </Button>
         </Grid>
       </Grid>
     </>

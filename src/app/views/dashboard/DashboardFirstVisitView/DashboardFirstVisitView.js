@@ -33,9 +33,6 @@ const DashboardFirstVisitView = ({
             </Title>
             <Spacing vertical={6} />
             <ButtonsContainer>
-              {/* <Button fullWidth variant="contained" onClick={onTakeATour}>
-                Take tour of Dock
-              </Button> */}
               <Spacing horizontal={4} />
               <Button
                 fullWidth

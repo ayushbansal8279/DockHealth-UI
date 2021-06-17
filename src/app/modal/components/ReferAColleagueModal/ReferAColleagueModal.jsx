@@ -120,7 +120,7 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
                 <ButtonWrapper>
                   <Button
                     fullWidth
-                    variant="outlined"
+                    variant="secondary"
                     onClick={closeModal}
                     size="small"
                   >

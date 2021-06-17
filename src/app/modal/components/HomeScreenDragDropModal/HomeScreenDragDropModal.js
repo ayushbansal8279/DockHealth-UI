@@ -38,10 +38,9 @@ const HomeScreenDragDropModal = ({ closeModal }) => {
           <FixedWidthButtonWrapper width={136}>
             <Button
               fullWidth
-              variant="contained"
+              variant="primary-red"
               type="button"
               size="small"
-              color="red"
               onClick={closeModal}
             >
               OKAY, GOT IT
