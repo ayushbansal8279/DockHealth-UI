@@ -1,5 +1,12 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
 import {
@@ -16,14 +23,15 @@ import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
-import AdditionalMembersCounter from 'components/members/AdditionalMembersCounter/AdditionalMembersCounter';
+import AdditionalMembersCounterPopover from 'components/members/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import Member from 'components/members/Member/Member';
+import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover';
 import { showGlobalAlert } from 'alert/actions';
+import { userProfileSelector } from '../../../selectors/user-selectors';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover';
 import {
@@ -92,7 +100,6 @@ const Toolbar = ({
   patientColumnVisible = true,
   tipsContent,
   isFetching,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
@@ -114,8 +121,17 @@ const Toolbar = ({
     taskListIdentifier,
     dispatch,
   });
-
-  const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
+  const { userIdentifier } = useSelector(userProfileSelector);
+  const currentMember = useMemo(
+    () => members?.filter(member => member?.userIdentifier === userIdentifier),
+    [members, userIdentifier],
+  );
+  const anotherMembers = useMemo(
+    () => members?.filter(member => member?.userIdentifier !== userIdentifier),
+    [members, userIdentifier],
+  );
+  const [shownMembers, hiddenMembers] = splitAt(3, anotherMembers ?? []);
+  const shownMembersWithCurrent = [...currentMember, ...shownMembers];
 
   useEffect(() => {
     if (!tipsContent || taskList?.listType !== 'INBOX') {
@@ -130,8 +146,6 @@ const Toolbar = ({
       setTipsOpened(true);
       localStorageHelper.setItem(INBOX_FIRST_TIME_KEY, false);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openTasksAmount, tipsContent, taskList]);
 
   return (
@@ -179,21 +193,34 @@ const Toolbar = ({
             <Spacing horizontal={4} />
             {showMembers && (
               <>
-                {shownMembers?.map(member => (
-                  <MemberWrapper
-                    key={member?.userIdentifier}
-                    isPending={isMemberPending(member)}
-                  >
-                    <Spacing horizontal={2} />
-                    <Member member={member} size={45} />
-                  </MemberWrapper>
-                ))}
+                {shownMembersWithCurrent?.map(member => {
+                  const isSelected = selectedFilters?.assignedTo?.includes(
+                    member?.userIdentifier,
+                  );
+                  return (
+                    <MemberWrapper
+                      key={member?.userIdentifier}
+                      isPending={isMemberPending(member)}
+                    >
+                      <Spacing horizontal={2} />
+                      <AvatarFilterMember
+                        member={member}
+                        size={45}
+                        isSelected={isSelected}
+                        onSelectFilters={onSelectFilters}
+                        selectedFilters={selectedFilters}
+                      />
+                    </MemberWrapper>
+                  );
+                })}
                 {hiddenMembers?.length > 0 && (
                   <>
                     <Spacing horizontal={2} />
-                    <AdditionalMembersCounter
+                    <AdditionalMembersCounterPopover
                       hiddenMembers={hiddenMembers}
                       size={45}
+                      onSelectFilters={onSelectFilters}
+                      selectedFilters={selectedFilters}
                     />
                   </>
                 )}
