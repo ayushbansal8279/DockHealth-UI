@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 import { addTaskList } from 'api/task-list-api';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import ModalFormInput from './ModalFormInput/ModalFormInput';
-import { Title, Description, StyledButton, AddListForm } from './styled';
+import { Title, Description, AddListForm } from './styled';
 
 const ListAddSection = ({
   initialListName,
@@ -63,19 +64,12 @@ const ListAddSection = ({
         </div>
         <Grid container direction="row" spacing={2}>
           <Grid item xs={6}>
-            <StyledButton
-              variant="outlined"
-              type="button"
-              size="small"
-              onClick={onCancel}
-            >
+            <Button variant="secondary" onClick={onCancel}>
               Cancel
-            </StyledButton>
+            </Button>
           </Grid>
           <Grid item xs={6}>
-            <StyledButton variant="contained" type="submit" size="small">
-              Save
-            </StyledButton>
+            <Button type="submit">Save</Button>
           </Grid>
         </Grid>
       </AddListForm>

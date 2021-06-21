@@ -3,9 +3,9 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Button from '../common/Button/Button';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
-import { NextButton } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -57,18 +57,12 @@ const ForgotPasswordForm = ({
           autoFocus
         />
         <Spacing vertical={5} />
-        <NextButton type="submit" variant="contained">
+        <Button type="submit" fullWidth>
           {unconfirmedUserFlag
             ? 'Resend confirmation Email'
             : 'Send me a recovery code'}
-        </NextButton>
+        </Button>
         <Spacing vertical={6} />
-        {/* <MontserratTypography variant="h4">
-          <span>Want to change your email? </span>
-          <StyledLink to="/onboarding/create-account">
-            Recreate account
-          </StyledLink>
-        </MontserratTypography> */}
       </FormContext>
     </form>
   );

@@ -35,10 +35,8 @@ const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={() => {
                 skip();
                 closeModal();
@@ -51,10 +49,8 @@ const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
           <FixedWidthButtonWrapper width={88}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 closeModal();

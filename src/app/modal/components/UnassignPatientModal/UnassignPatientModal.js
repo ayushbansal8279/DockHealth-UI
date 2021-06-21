@@ -42,21 +42,13 @@ const UnassignPatientModal = ({ closeModal, confirm, isWorkflowModal }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <Button
-            variant="outlined"
-            type="button"
-            color="red"
-            size="small"
-            onClick={closeModal}
-          >
+          <Button variant="secondary-red" size="small" onClick={closeModal}>
             CANCEL
           </Button>
           <Spacing horizontal={4} />
           <Button
-            variant="contained"
-            type="button"
+            variant="primary-red"
             size="small"
-            color="red"
             onClick={() => {
               confirm();
               closeModal();

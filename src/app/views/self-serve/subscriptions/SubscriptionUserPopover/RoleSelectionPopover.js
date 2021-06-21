@@ -220,7 +220,6 @@ const RoleSelectionPopover = ({
                 selectedRole?.onSave();
               }
             }}
-            size="small"
             disabled={!selectedRole?.key}
           >
             Save

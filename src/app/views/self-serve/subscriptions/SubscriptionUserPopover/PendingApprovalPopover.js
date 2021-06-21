@@ -171,19 +171,14 @@ const PendingApprovalSelectionPopover = props => {
                   closePopover();
                 })
             }
-            size="small"
-            variant="outlined"
+            variant="secondary"
             fullWidth
           >
             DENY
           </Button>
         </DenyButtonContainer>
         <ApprovalButtonContainer>
-          <Button
-            onClick={() => setSelectedStep('second')}
-            size="small"
-            fullWidth
-          >
+          <Button onClick={() => setSelectedStep('second')} fullWidth>
             APPROVE
           </Button>
         </ApprovalButtonContainer>
@@ -244,7 +239,6 @@ const PendingApprovalSelectionPopover = props => {
                 closePopover();
               })
           }
-          size="small"
           disabled={!selectedRole?.key}
         >
           Save

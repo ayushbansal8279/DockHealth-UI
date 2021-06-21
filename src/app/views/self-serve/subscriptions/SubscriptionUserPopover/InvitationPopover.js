@@ -90,8 +90,7 @@ const renderInvitationItem = ({
       <Button
         onClick={onSave}
         disabled={isDisabled}
-        variant={key === 'cancel' ? 'outlined' : 'contained'}
-        size="small"
+        variant={key === 'cancel' ? 'secondary' : 'primary'}
       >
         {label}
       </Button>

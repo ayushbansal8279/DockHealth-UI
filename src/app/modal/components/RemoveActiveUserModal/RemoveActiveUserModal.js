@@ -51,9 +51,7 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              variant="outlined"
-              type="button"
-              color="red"
+              variant="secondary-red"
               size="small"
               onClick={closeModal}
             >
@@ -64,10 +62,8 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
           <FixedWidthButtonWrapper width={124}>
             <Button
               fullWidth
-              variant="contained"
-              type="button"
+              variant="primary-red"
               size="small"
-              color="red"
               onClick={() => {
                 closeModal();
                 confirm();

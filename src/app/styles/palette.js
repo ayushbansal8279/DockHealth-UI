@@ -31,6 +31,7 @@ const palette = {
   coolGrey4: '#f9fafc',
   coolGrey6: '#f2f2f2',
   coolGrey9: '#17191c',
+  coolGrey7: '#C0CBD4',
   blueGrey: '#f5f8fa',
 
   // COLORS NOT EXISTING IN GLOBAL PALETTE

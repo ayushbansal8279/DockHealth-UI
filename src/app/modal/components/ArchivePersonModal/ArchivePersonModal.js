@@ -35,10 +35,8 @@ const ArchivePersonModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Do not archive
@@ -48,10 +46,8 @@ const ArchivePersonModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={127}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 closeModal();

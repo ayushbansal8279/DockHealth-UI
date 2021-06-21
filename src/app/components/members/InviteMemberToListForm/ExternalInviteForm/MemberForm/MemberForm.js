@@ -99,22 +99,15 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             <Grid item xs={4}>
               <Button
                 fullWidth
-                variant="outlined"
+                variant="secondary"
                 type="button"
-                size="small"
                 onClick={closeInviteForm}
               >
                 Cancel
               </Button>
             </Grid>
             <Grid item xs={4}>
-              <Button
-                fullWidth
-                variant="contained"
-                type="submit"
-                size="small"
-                disabled={disabled}
-              >
+              <Button fullWidth type="submit" disabled={disabled}>
                 Invite
               </Button>
             </Grid>

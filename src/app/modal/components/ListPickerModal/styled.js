@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import { Button } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
@@ -100,15 +98,3 @@ export const EmptyMessage = styled.p`
   margin-top: ${spacing.huge};
   text-align: center;
 `;
-
-export const StyledButton = withStyles({
-  root: {
-    minWidth: 'unset',
-    width: '100%',
-  },
-  outlined: {
-    borderRadius: 0,
-    color: palette.darkBlue,
-    border: `2px solid ${palette.darkBlue}`,
-  },
-})(Button);

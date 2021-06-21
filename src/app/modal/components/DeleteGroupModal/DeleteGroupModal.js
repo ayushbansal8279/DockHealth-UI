@@ -35,10 +35,8 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={160}>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Do not delete
@@ -48,10 +46,8 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={88}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={confirm}
             >
               Yes

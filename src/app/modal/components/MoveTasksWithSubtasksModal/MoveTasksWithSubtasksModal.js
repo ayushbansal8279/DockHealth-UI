@@ -40,9 +40,7 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              variant="outlined"
-              type="button"
-              color="red"
+              variant="secondary-red"
               size="small"
               onClick={closeModal}
             >
@@ -53,10 +51,8 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={136}>
             <Button
               fullWidth
-              variant="contained"
-              type="button"
+              variant="primary-red"
               size="small"
-              color="red"
               onClick={() => {
                 confirm();
                 closeModal();

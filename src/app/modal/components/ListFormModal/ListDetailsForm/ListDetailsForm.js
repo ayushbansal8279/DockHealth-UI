@@ -164,7 +164,7 @@ const ListDetailsForm = ({
           <ButtonWrapper>
             <Button
               fullWidth
-              variant="outlined"
+              variant="secondary"
               onClick={closeModal}
               size="small"
             >
@@ -176,8 +176,8 @@ const ListDetailsForm = ({
             <Button
               fullWidth
               type="submit"
-              size="small"
               disabled={isSavingList}
+              size="small"
             >
               Save
             </Button>

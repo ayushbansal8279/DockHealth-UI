@@ -2,8 +2,8 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
+import Button from 'components/common/Button/Button';
 import {
-  OnboardingButton,
   OnboardingH2Bold,
   OnboardingH3,
   OnboardingSpacing3,
@@ -22,13 +22,9 @@ const OnboardingTrialCheckView = () => {
       <OnboardingH2Bold>Your free trial period has expired.</OnboardingH2Bold>
       <OnboardingSpacing3 />
       <Grid container justify="flex-start">
-        <OnboardingButton
-          type="button"
-          variant="contained"
-          onClick={() => subscribeNow(history)}
-        >
+        <Button onClick={() => subscribeNow(history)}>
           <OnboardingH2Bold>Subscribe Now</OnboardingH2Bold>
-        </OnboardingButton>
+        </Button>
       </Grid>
       <OnboardingSpacing3 />
       <OnboardingSpacing3 />

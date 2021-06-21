@@ -3,8 +3,8 @@ import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
+import Button from '../common/Button/Button';
 import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
-import { NextButton } from './AuthComponents.styled';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -62,15 +62,9 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           label="Enter a new password"
         />
         <Spacing vertical={5} />
-        <NextButton
-          active
-          id="loginButton"
-          type="submit"
-          variant="contained"
-          color="primary"
-        >
+        <Button active id="loginButton" type="submit">
           Continue
-        </NextButton>
+        </Button>
       </FormContext>
     </form>
   );

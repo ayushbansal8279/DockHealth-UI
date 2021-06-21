@@ -157,7 +157,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
             <ButtonWrapper>
               <Button
                 fullWidth
-                variant="outlined"
+                variant="secondary"
                 onClick={closeModal}
                 size="small"
               >
@@ -166,7 +166,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
             </ButtonWrapper>
             <Spacing horizontal={3} />
             <ButtonWrapper>
-              <Button fullWidth type="submit" size="small" disabled={isSaving}>
+              <Button fullWidth type="submit" disabled={isSaving} size="small">
                 Save
               </Button>
             </ButtonWrapper>

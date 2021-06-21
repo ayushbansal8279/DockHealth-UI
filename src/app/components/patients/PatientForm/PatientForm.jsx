@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { identity } from 'ramda';
-import { Button, Divider, Grid, MenuItem, Select } from '@material-ui/core';
+import { Divider, Grid, MenuItem, Select } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDeepCompareEffect, useEffectOnce } from 'react-use';
 import { mixed, object, string } from 'yup';
@@ -13,6 +13,7 @@ import { showAlert } from 'helpers/utility-functions';
 import * as PatientApi from 'api/patient-api';
 import useBoolean from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import {
   UniversalBirthdayInputComponent,
   UniversalMobileInputComponent,
@@ -244,13 +245,11 @@ const PatientForm = ({
           </Grid>
         </Grid>
         <PanelActionContainer>
-          <Button variant="text" size="small" onClick={onCancel}>
+          <Button variant="text" onClick={onCancel}>
             Cancel
           </Button>
           <Spacing horizontal={3} />
-          <Button variant="contained" size="small" type="submit">
-            Save
-          </Button>
+          <Button type="submit">Save</Button>
         </PanelActionContainer>
         <Spacing vertical={4} />
         <Divider />
