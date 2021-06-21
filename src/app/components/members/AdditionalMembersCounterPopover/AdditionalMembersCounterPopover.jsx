@@ -1,26 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import palette from 'styles/palette';
 import { activeUsersListSelector } from 'selectors/active-users-selector';
-import {
-  arrayOf,
-  number,
-  shape,
-  string,
-  func,
-  objectOf,
-  array,
-} from 'prop-types';
-import AdditionalMembersPopover from 'components/task/AdditionalMembersPopover';
-import { Container, Text } from './styled';
+import { arrayOf, shape, string, func, objectOf } from 'prop-types';
+import AdditionalMembersPopover from 'components/task/AdditionalMembersPopover/AdditionalMembersPopover';
+import AdditionalMembersCounter from 'components/members/AdditionalMembersCounter/AdditionalMembersCounter';
 import { getHiddenMembersWithStatusContent } from './helpers';
 
 const AdditionalMembersCounterPopover = ({
   hiddenMembers,
-  size,
-  color,
   onSelectFilters,
   selectedFilters,
+  ...props
 }) => {
   const activeUsers = useSelector(activeUsersListSelector);
   const hiddenMembersWithStatus = useMemo(
@@ -34,12 +24,11 @@ const AdditionalMembersCounterPopover = ({
         selectedFilters={selectedFilters}
         onSelectFilters={onSelectFilters}
       >
-        <Container color={color} size={size}>
-          <Text color={color} size={size}>
-            {hiddenMembers?.length < 100 && `+`}
-            {hiddenMembers?.length}
-          </Text>
-        </Container>
+        <AdditionalMembersCounter
+          {...props}
+          hiddenMembers={hiddenMembers}
+          hideTooltip
+        />
       </AdditionalMembersPopover>
     </>
   ) : null;
@@ -55,15 +44,8 @@ AdditionalMembersCounterPopover.propTypes = {
       profileThumbnailPictureHash: string,
     }),
   ).isRequired,
-  size: number,
-  color: string,
   onSelectFilters: func.isRequired,
-  selectedFilters: objectOf(array).isRequired,
-};
-
-AdditionalMembersCounterPopover.defaultProps = {
-  size: 30,
-  color: palette.coolGrey1,
+  selectedFilters: objectOf(arrayOf(string)).isRequired,
 };
 
 export default AdditionalMembersCounterPopover;

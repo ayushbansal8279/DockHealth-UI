@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { func, arrayOf, string, objectOf, object } from 'prop-types';
+import { func, arrayOf, string, objectOf, shape } from 'prop-types';
 import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import { Box, ClickAwayListener } from '@material-ui/core';
 import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
@@ -18,7 +18,7 @@ import {
 
 const filterName = 'assignedTo';
 
-const MultiAssignMembersList = ({
+const AdditionalMembersPopover = ({
   members,
   onSelectFilters,
   selectedFilters,
@@ -99,10 +99,18 @@ const MultiAssignMembersList = ({
   );
 };
 
-MultiAssignMembersList.propTypes = {
-  members: arrayOf(object).isRequired,
+AdditionalMembersPopover.propTypes = {
+  members: arrayOf(
+    shape({
+      userIdentifier: string,
+      firstName: string,
+      lastName: string,
+      initials: string,
+      profileThumbnailPictureHash: string,
+    }),
+  ).isRequired,
   onSelectFilters: func.isRequired,
   selectedFilters: objectOf(arrayOf(string)).isRequired,
 };
 
-export default MultiAssignMembersList;
+export default AdditionalMembersPopover;
