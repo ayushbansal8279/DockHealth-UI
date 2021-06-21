@@ -16,6 +16,13 @@ export const BackgroundContainer = styled.div`
 export const AvatarContainer = styled.div`
   align-items: center;
   border: 2px solid ${({ color }) => color};
+  border: ${({ color, isSelected, size }) =>
+    isSelected
+      ? `${getScaledSize({
+          normalSize: 6,
+          propSize: size,
+        }) + 2}px solid ${palette.cyanBlue}`
+      : `2px solid ${color}`};
   border-radius: 50%;
   display: inline-flex;
   min-height: ${props => props.size ?? 110}px;
@@ -31,13 +38,16 @@ export const AvatarContainer = styled.div`
 
 export const InnerAvatarContainer = styled.div`
   align-items: center;
+  cursor: pointer;
   background-color: ${({ color }) => color};
-  border: ${props =>
-      getScaledSize({
-        normalSize: 6,
-        propSize: props.size,
-      })}px
-    solid #ffffff;
+  border: ${({ size, isSelected }) => {
+    const scaledSize = getScaledSize({
+      normalSize: 6,
+      propSize: size,
+    });
+    return isSelected ? 'none' : `${scaledSize}px solid #ffffff`;
+  }};
+
   border-radius: 50%;
   box-sizing: border-box;
   color: ${palette.white};
