@@ -6,8 +6,10 @@ import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
 import { Grid } from '@material-ui/core';
 import Input from 'components/common/Input/Input';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
+import { useHistory } from 'react-router-dom';
+import { createTaskListPath } from '../../../../routing/helpers/paths';
 import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
 import { StyledForm } from './styled';
@@ -21,6 +23,7 @@ const onSubmit = ({
   onListCreationSuccess,
   setList,
   taskListIdentifier,
+  history,
 }) => data => {
   event.stopPropagation();
   event.preventDefault();
@@ -28,6 +31,7 @@ const onSubmit = ({
   setIsSavingList(true);
   dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier }))
     .then(updatedList => {
+      history.push(createTaskListPath(updatedList.taskListIdentifier));
       if (updatedList) {
         setList(updatedList);
 
@@ -66,6 +70,7 @@ const ListDetailsForm = ({
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
   const listNameReference = useRef(null);
+  const history = useHistory();
 
   const formContext = useForm({
     defaultValues: {
@@ -123,6 +128,7 @@ const ListDetailsForm = ({
             onListCreationSuccess,
             setList,
             taskListIdentifier: list?.taskListIdentifier,
+            history,
           }),
         )(event)
       }
