@@ -10,28 +10,30 @@ const AdditionalMembersCounterPopover = ({
   hiddenMembers,
   onSelectFilters,
   selectedFilters,
-  ...props
+  ...restProps
 }) => {
   const activeUsers = useSelector(activeUsersListSelector);
   const hiddenMembersWithStatus = useMemo(
     () => getHiddenMembersWithStatusContent(hiddenMembers, activeUsers),
     [hiddenMembers, activeUsers],
   );
-  return hiddenMembers?.length ? (
-    <>
-      <AdditionalMembersPopover
-        members={hiddenMembersWithStatus}
-        selectedFilters={selectedFilters}
-        onSelectFilters={onSelectFilters}
-      >
-        <AdditionalMembersCounter
-          {...props}
-          hiddenMembers={hiddenMembers}
-          hideTooltip
-        />
-      </AdditionalMembersPopover>
-    </>
-  ) : null;
+  return (
+    hiddenMembers?.length && (
+      <>
+        <AdditionalMembersPopover
+          members={hiddenMembersWithStatus}
+          selectedFilters={selectedFilters}
+          onSelectFilters={onSelectFilters}
+        >
+          <AdditionalMembersCounter
+            {...restProps}
+            hiddenMembers={hiddenMembers}
+            hideTooltip
+          />
+        </AdditionalMembersPopover>
+      </>
+    )
+  );
 };
 
 AdditionalMembersCounterPopover.propTypes = {

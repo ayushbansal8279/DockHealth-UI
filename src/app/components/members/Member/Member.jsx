@@ -112,7 +112,9 @@ const Member = React.forwardRef(
           hideTooltip={!showTooltip}
         >
           <BackgroundContainer
-            onClick={error => onClickAvatar && onClickAvatar(error)}
+            onClick={error => {
+              if (typeof onClickAvatar === 'function') onClickAvatar(error);
+            }}
           >
             <AvatarContainer
               ref={reference}

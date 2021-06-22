@@ -11,14 +11,14 @@ export const getHiddenMembersWithStatusContent = (
         return userIdentifier === hiddenMember?.userIdentifier;
       }) || {};
 
-    let userStatusLabel = 'Offline';
-
     if (!isEmpty(onlineActiveUser) && !onlineActiveUser.idle) {
-      userStatusLabel = 'Online';
-    } else if (!isEmpty(onlineActiveUser) && onlineActiveUser.idle) {
-      userStatusLabel = 'Idle';
-    } else if (hiddenMember?.userStatus === 'INVITED') {
-      userStatusLabel = 'Pending';
+      return { ...hiddenMember, userStatusLabel: 'Online' };
     }
-    return { ...hiddenMember, userStatusLabel };
+    if (!isEmpty(onlineActiveUser) && onlineActiveUser.idle) {
+      return { ...hiddenMember, userStatusLabel: 'Idle' };
+    }
+    if (hiddenMember?.userStatus === 'INVITED') {
+      return { ...hiddenMember, userStatusLabel: 'Pending' };
+    }
+    return { ...hiddenMember, userStatusLabel: 'Offline' };
   });

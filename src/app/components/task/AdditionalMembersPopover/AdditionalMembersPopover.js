@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { func, arrayOf, string, objectOf, shape } from 'prop-types';
 import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -7,9 +7,11 @@ import { Box, ClickAwayListener } from '@material-ui/core';
 import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import {
-  ListContainer,
   MemberRow,
   MemberName,
+} from 'components/task/MultiAssignPopover/styled';
+import {
+  ListContainer,
   ListContentSection,
   Arrow,
   StyledPopper,
@@ -27,22 +29,26 @@ const AdditionalMembersPopover = ({
   const elementReference = useRef();
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleSelect = (isSelected, { userIdentifier }) => {
-    if (isSelected) {
-      const filteredWithoutTheSelectedOne = selectedFilters?.[
-        filterName
-      ]?.filter(userId => userId !== userIdentifier);
-      onSelectFilters({
-        ...selectedFilters,
-        [filterName]: [...filteredWithoutTheSelectedOne],
-      });
-    } else {
-      onSelectFilters({
-        ...selectedFilters,
-        [filterName]: [...selectedFilters[filterName], userIdentifier],
-      });
-    }
-  };
+  const toggleSelect = useCallback(
+    (isSelected, { userIdentifier }) => {
+      if (isSelected) {
+        const filteredWithoutTheSelectedOne = selectedFilters?.[
+          filterName
+        ]?.filter(userId => userId !== userIdentifier);
+        onSelectFilters({
+          ...selectedFilters,
+          [filterName]: [...filteredWithoutTheSelectedOne],
+        });
+      } else {
+        onSelectFilters({
+          ...selectedFilters,
+          [filterName]: [...selectedFilters[filterName], userIdentifier],
+        });
+      }
+    },
+    [onSelectFilters, selectedFilters],
+  );
+
   return (
     <>
       <div onClick={() => setIsOpen(true)} ref={elementReference}>
