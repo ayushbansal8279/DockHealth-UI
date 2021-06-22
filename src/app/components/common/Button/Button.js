@@ -15,7 +15,7 @@ const StyledButton = styled.button`
 
 
   & > span {
-    display: flex;
+    display: inherit;
     align-items: center;
   }
 
@@ -34,6 +34,13 @@ const StyledButton = styled.button`
       case 'medium':
         return `
           height: 40px;
+          padding: 0 ${spacing.regular};
+          font-size: ${fontSizes.regular};
+        `;
+
+      case 'large':
+        return `
+          height: 50px;
           padding: 0 ${spacing.regular};
           font-size: ${fontSizes.regular};
         `;
@@ -165,7 +172,7 @@ Button.propTypes = {
     'secondary-red',
     'text',
   ]),
-  size: PropTypes.oneOf(['small', 'medium']),
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
   type: PropTypes.oneOf(['button', 'submit']),
   uppercase: PropTypes.bool,
   fullWidth: PropTypes.bool,
@@ -174,7 +181,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   variant: 'primary',
-  size: 'medium',
+  size: 'large',
   type: 'button',
   uppercase: true,
   fullWidth: false,
