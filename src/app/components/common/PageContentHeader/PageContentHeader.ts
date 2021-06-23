@@ -3,7 +3,6 @@ import palette from 'styles/palette';
 
 const PageContentHeader = styled.div<{ paneled?: boolean }>`
   align-items: center;
-  background-color: ${palette.white};
   color: ${palette.coolGrey1};
   ${props =>
     props.paneled
