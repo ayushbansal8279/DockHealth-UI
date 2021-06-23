@@ -104,7 +104,7 @@ const OnboardingEulaView = () => {
           <Grid item xs={12} sm={12} md={4}>
             <Button
               disabled={continueButtonDisabled}
-              variant="secondary"
+              variant="primary"
               onClick={onAgreeClick}
               fullWidth
             >
