@@ -114,25 +114,29 @@ class PeopleView extends PureComponent {
           </Grid>
         </PageContentHeader>
         <Grid container xs={12} item justify="center">
-          <Grid item xs={8}>
+          <Grid item xs={12} sm={12} md={8}>
             <Spacing vertical={4} />
             {isOwnerOrAdmin && (
               <ManageUsersContainer>
-                <HeaderMessageContainer>
-                  <img alt="lightbulb" src={LightbulbBig} />
-                  <HeaderMessage>
-                    <HeaderMessageTitle>
-                      Manage people in the Subscription and Users section.
-                    </HeaderMessageTitle>
-                    <HeaderMessageDescription>
-                      Invite, remove, and change roles for people within your
-                      organization.
-                    </HeaderMessageDescription>
-                  </HeaderMessage>
-                </HeaderMessageContainer>
-                <Link to="/settings/subscriptions">
-                  <Button fullWidth>Manage Users</Button>
-                </Link>
+                <Grid item xs={12} sm={12} md={8}>
+                  <HeaderMessageContainer>
+                    <img alt="lightbulb" src={LightbulbBig} />
+                    <HeaderMessage>
+                      <HeaderMessageTitle>
+                        Manage people in the Subscription and Users section.
+                      </HeaderMessageTitle>
+                      <HeaderMessageDescription>
+                        Invite, remove, and change roles for people within your
+                        organization.
+                      </HeaderMessageDescription>
+                    </HeaderMessage>
+                  </HeaderMessageContainer>
+                </Grid>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Link to="/settings/subscriptions">
+                    <Button fullWidth>Manage Users</Button>
+                  </Link>
+                </Grid>
               </ManageUsersContainer>
             )}
             <Spacing vertical={4} />

@@ -83,7 +83,7 @@ export const PopoverSectionButton = styled.button`
 export const ManageUsersContainer = styled.div`
   align-items: center;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   width: 100%;
   border: 1px solid ${palette.blueOcean};
