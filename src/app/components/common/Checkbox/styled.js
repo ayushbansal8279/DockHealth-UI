@@ -13,7 +13,7 @@ export const CheckboxInput = styled.button`
   border: ${props =>
     props.isChecked
       ? `1px solid ${palette.brightBlue}`
-      : `1px solid ${palette.coolGrey3}`};
+      : `1px solid ${palette.coolGrey2}`};
   transition: all 150ms;
   cursor: pointer;
   display: flex;
