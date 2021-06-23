@@ -11,7 +11,7 @@ import {
   ModalMainIcon,
   ModalIconContainer,
   ButtonsContainer,
-  FixedWidthButtonWrapper,
+  FlexButtonWrapper,
 } from '../styled';
 
 const AutoLogoutModal = ({ closeModal, onLogout }) => {
@@ -26,7 +26,7 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
         </ModalIconContainer>
         <Spacing vertical={4} />
         <ButtonsContainer>
-          <FixedWidthButtonWrapper width={100}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="secondary-red"
@@ -35,9 +35,9 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
             >
               Logout
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={182}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -46,7 +46,7 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
             >
               Stay logged in
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

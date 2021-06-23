@@ -6,7 +6,7 @@ import * as TaskTemplateActions from 'actions/task-template-actions';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import { CloseIconButton, CloseIcon, FixedWidthButtonWrapper } from '../styled';
+import { CloseIconButton, CloseIcon, FlexButtonWrapper } from '../styled';
 import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
@@ -76,7 +76,7 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
           error={errors?.[TEMPLATE_NAME_FIELD_NAME]?.message}
         />
         <Grid container direction="row" justify="center">
-          <FixedWidthButtonWrapper width={170}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="secondary"
@@ -85,13 +85,13 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
             >
               Cancel
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
           <Spacing horizontal={3} />
-          <FixedWidthButtonWrapper width={170}>
+          <FlexButtonWrapper>
             <Button fullWidth type="submit" size="small">
               Save
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </Grid>
       </StyledForm>
     </ListFormModalWrapper>
