@@ -18,7 +18,7 @@ const LoginWelcome = () => (
       healthcare.
     </MontserratTypography>
     <Spacing vertical={5} />
-    <Button type="button" component={Link} to="/onboarding">
+    <Button size="large" component={Link} to="/onboarding">
       Create an account
     </Button>
     <Spacing vertical={5} />

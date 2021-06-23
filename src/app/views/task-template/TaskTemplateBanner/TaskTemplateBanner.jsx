@@ -31,7 +31,7 @@ const TaskTemplateBanner = ({ onClose, onCreateTemplate, firstTemplate }) => {
         </Description>
       </TextContainer>
       {firstTemplate && (
-        <Button uppercase={false} onClick={onCreateTemplate}>
+        <Button uppercase={false} onClick={onCreateTemplate} width="250px">
           Create your first workflow
         </Button>
       )}

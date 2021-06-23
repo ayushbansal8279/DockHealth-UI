@@ -177,7 +177,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
         <Spacing vertical={6} />
         <Grid container direction="row" justify="flex-end" alignItems="center">
           <SaveButtonWrapper>
-            <Button fullWidth disabled={isSubmitting} type="submit">
+            <Button disabled={isSubmitting} type="submit">
               Save
             </Button>
           </SaveButtonWrapper>

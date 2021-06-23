@@ -94,7 +94,7 @@ const LoginFormUsername = props => {
               autoFocus
             />
             <Spacing vertical={5} />
-            <Button id="loginButton" type="submit">
+            <Button id="loginButton" fullWidth size="large" type="submit">
               Continue
             </Button>
             {/* <Spacing vertical={6} />

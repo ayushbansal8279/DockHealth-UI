@@ -89,7 +89,7 @@ const LoginFormPassword = ({
           }
         />
         <Spacing vertical={5} />
-        <Button id="loginButton" type="submit">
+        <Button id="loginButton" fullWidth size="large" type="submit">
           {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
         </Button>
         <Spacing vertical={6} />

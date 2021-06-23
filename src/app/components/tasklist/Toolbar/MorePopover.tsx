@@ -71,10 +71,21 @@ const MorePopover = ({
   const moreButtonElement = {
     key: 'filter',
     label: (
-      <Button variant="text" onClick={closeMorePopover}>
-        <ToolbarLabel variant="body1">ACTIONS</ToolbarLabel>
-        <Spacing horizontal={3} />
-        <RotatableChevron rotated={isMorePopoverOpen} onClick={() => {}} />
+      <Button
+        variant="text"
+        width="200px"
+        onClick={closeMorePopover}
+        endIcon={
+          <RotatableChevron
+            rotated={isMorePopoverOpen}
+            color={palette.brightBlue}
+            onClick={() => {}}
+          />
+        }
+      >
+        <ToolbarLabel variant="body1" component="span">
+          ACTIONS
+        </ToolbarLabel>
       </Button>
     ),
     disableHover: true,

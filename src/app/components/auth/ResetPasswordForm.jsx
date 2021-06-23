@@ -62,7 +62,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           label="Enter a new password"
         />
         <Spacing vertical={5} />
-        <Button active id="loginButton" type="submit">
+        <Button active id="loginButton" size="large" type="submit">
           Continue
         </Button>
       </FormContext>

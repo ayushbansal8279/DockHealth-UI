@@ -45,7 +45,9 @@ const ConfirmMFACodeForm = props => {
           autoFocus
         />
         <Spacing vertical={5} />
-        <Button type="submit">CONTINUE</Button>
+        <Button type="submit" size="large">
+          CONTINUE
+        </Button>
       </FormContext>
     </form>
   );

@@ -21,7 +21,9 @@ export default () => {
         Nice work, you’re back in action!
       </MontserratTypography>
       <Spacing vertical={5} />
-      <Button onClick={() => redirectToLogin(history)}>Sign In</Button>
+      <Button size="large" onClick={() => redirectToLogin(history)}>
+        Sign In
+      </Button>
     </Grid>
   );
 };

@@ -163,17 +163,21 @@ const Toolbar = ({
           >
             <Button
               variant="text"
+              width="200px"
               reference={moreButtonReference}
               onClick={openMorePopover}
+              endIcon={
+                <RotatableChevron
+                  rotated={isMorePopoverOpen}
+                  color={palette.brightBlue}
+                />
+              }
             >
-              <ToolbarLabel variant="body1" component="span">
-                ACTIONS
-              </ToolbarLabel>
-              <Spacing horizontal={3} />
-              <RotatableChevron
-                rotated={isMorePopoverOpen}
-                color={palette.brightBlue}
-              />
+              <div>
+                <ToolbarLabel variant="body1" component="span">
+                  ACTIONS
+                </ToolbarLabel>
+              </div>
             </Button>
             <Spacing horizontal={4} />
             {showMembers && (

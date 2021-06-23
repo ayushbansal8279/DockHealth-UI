@@ -218,6 +218,7 @@ export default () => {
               )}
               <Spacing horizontal={4} />
               <Button
+                width="300px"
                 disabled={buyButtonDisabled}
                 onClick={onSubscriptionPlanChosen({
                   annualPayment,
