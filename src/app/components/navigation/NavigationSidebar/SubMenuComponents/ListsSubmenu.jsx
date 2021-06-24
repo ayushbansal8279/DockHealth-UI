@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Grid, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import {
   onTaskListDeleted,
@@ -37,7 +37,7 @@ import {
   DrawerListsNewLabel,
   ListNameText,
   UpdatesForMemberIndicator,
-  SubmenuHeader,
+  DrawerMyListsLabel,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -221,10 +221,10 @@ const ListsSubmenu = () => {
 
   return (
     <>
-      <Grid container justify="space-between">
-        <SubmenuHeader>My Lists </SubmenuHeader>
+      <DrawerMyListsLabel>
+        <div>My Lists </div>
         <AddButton onClick={openListAddModal}>Add</AddButton>
-      </Grid>
+      </DrawerMyListsLabel>
       <SubmenuDivider />
       {hasAnyPendingList && (
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>

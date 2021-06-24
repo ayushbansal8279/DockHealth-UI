@@ -162,8 +162,8 @@ const NavigationSidebar = ({
             <IconNavigationItem
               name="Patients"
               icon={PatientsIcon}
-              subMenuKey={PATIENTS_SUBMENU_KEY}
-              subMenuOpen={openedSubMenuKey === PATIENTS_SUBMENU_KEY}
+              subMenuKey={SubmenuKey.PATIENTS}
+              subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
               path="/core/patients"
               onItemClick={handleNavigationItemClick}
             />
