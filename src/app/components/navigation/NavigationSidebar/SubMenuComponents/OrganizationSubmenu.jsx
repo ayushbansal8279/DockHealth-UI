@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
 import { getUserById, leaveOrganization, logout } from 'api/user-api';
@@ -13,19 +13,19 @@ import {
 import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
 import AlertTypes from 'alert/AlertTypes';
 
+import AddButton from 'components/common/AddButton/AddButton';
 import OrganizationIdentifier from 'components/org/OrganizationIdentifier/OrganizationIdentifier';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Spacing from 'components/common/Spacing';
 
 import {
-  DrawerOrganizationHeader,
-  DrawerOrganizationLabel,
   DrawerOrganizationsList,
-  DrawerMyOrganizationLabel,
-  DrawerAddLink,
+  MyOrganizationLabel,
   RolloverPopover,
   RolloverPopoverLabel,
   SpacingContainer,
+  SubmenuHeader,
+  SubmenuDivider,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -109,10 +109,10 @@ const OrganizationSubmenu = ({
 
   return (
     <>
-      <DrawerOrganizationHeader>
-        <DrawerOrganizationLabel>
+      <Grid container justify="space-between" alignItems="center">
+        <MyOrganizationLabel>
           {currentOrganization?.organizationName}
-        </DrawerOrganizationLabel>
+        </MyOrganizationLabel>
         <IconButton
           ref={currentOrgMenuPopupReference}
           size="small"
@@ -150,13 +150,14 @@ const OrganizationSubmenu = ({
             },
           ]}
         />
-      </DrawerOrganizationHeader>
-      <DrawerMyOrganizationLabel>
-        <div>My Organizations </div>
-        <DrawerAddLink to="/onboarding/new-organization">
-          <span>+</span> Add
-        </DrawerAddLink>
-      </DrawerMyOrganizationLabel>
+      </Grid>
+      <Grid container justify="space-between" alignItems="center">
+        <SubmenuHeader>My Organizations </SubmenuHeader>
+        <AddButton onClick={() => history.push('/onboarding/new-organization')}>
+          Add
+        </AddButton>
+      </Grid>
+      <SubmenuDivider />
       <DrawerOrganizationsList>
         {availableUserOrganizations?.map(org => (
           <>

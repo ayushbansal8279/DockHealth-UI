@@ -6,7 +6,16 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 
-export const SubMenuDivider = styled.hr`
+export const SubmenuHeader = styled.h3`
+  margin: 0;
+  padding: ${spacing.smallPlus};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.bold};
+  font-family: 'Roboto Condensed', sans-serif;
+  color: ${palette.coolGrey1};
+`;
+
+export const SubmenuDivider = styled.hr`
   width: 100%;
   height: 1px;
   margin: 0;
@@ -39,29 +48,6 @@ export const DrawerItemOptions = styled.div`
   align-items: center;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.smallPlus};
-`;
-
-export const DrawerSubmenuLabel = styled.div`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-`;
-
-export const DrawerAddLink = styled(Link)`
-  color: ${palette.coolGrey1};
-  outline: none;
-  border: none;
-  background-color: ${palette.coolGrey4};
-  border-radius: 9px;
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.tiny} 10px;
-
-  & > span {
-    color: ${palette.orange};
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 export const RolloverPopover = styled(Popover)`
@@ -169,32 +155,16 @@ export const UserInitialCircle = styled.div`
 `;
 
 // Organization submenu
-export const DrawerOrganizationHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 6px 0;
-
-  & > div {
-    word-break: break-all;
-  }
-`;
-
-export const DrawerOrganizationLabel = styled.div`
+export const MyOrganizationLabel = styled.h2`
+  flex: 1;
+  margin: 0;
+  padding: ${spacing.smallPlus};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
+  font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.bold};
-  white-space: normal;
-`;
-
-export const DrawerMyOrganizationLabel = styled(DrawerSubmenuLabel)`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.giga} ${spacing.smallPlus} ${spacing.smallPlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  font-size: ${fontSizes.smallPlus};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  word-break: break-all;
+  white-space: initial;
 `;
 
 export const DrawerOrganizationsList = styled.div`
@@ -203,17 +173,6 @@ export const DrawerOrganizationsList = styled.div`
 `;
 
 // Lists
-export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.smallPlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  font-size: ${fontSizes.smallPlus};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
 export const DrawerListsList = styled.div`
   padding: ${spacing.largePlus} 0 ${spacing.largePlus} ${spacing.smallPlus};
   border-bottom: 1px solid ${palette.coolGrey2};
@@ -287,4 +246,133 @@ export const UpdatesForMemberIndicator = styled.div`
   height: 6px;
   border-radius: 3px;
   background: ${palette.brightBlue};
+`;
+
+// Education Center
+export const EducationCenterWrapper = styled.div`
+  display: flex;
+  padding: 0 ${spacing.small};
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  white-space: initial;
+`;
+
+export const EducationCenterFooter = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto auto 1fr;
+  grid-template-rows: auto auto;
+  grid-gap: ${spacing.small};
+  align-items: center;
+  width: 100%;
+  padding: ${spacing.smallPlus} 0;
+  color: ${palette.darkGrey};
+`;
+
+export const FooterIcon = styled.div`
+  grid-column: 2;
+  grid-row: 1;
+`;
+
+export const FooterInfoText = styled.p`
+  grid-row: 1;
+  grid-column: 3;
+  margin: 0;
+  text-align: center;
+  line-height: 16px;
+`;
+
+export const FooterLink = styled.a`
+  grid-row: 2;
+  grid-column: 3;
+  margin: 0;
+  line-height: 16px;
+  text-align: center;
+  color: ${palette.brightBlue};
+`;
+
+export const EducationCenterTitle = styled.h3`
+  margin: 0;
+  padding: ${spacing.smallPlus} 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: ${palette.brightBlue};
+`;
+
+export const EducationCenterList = styled.div`
+  position: relative;
+  flex: 1 0 0;
+  width: 100%;
+  overflow-y: auto;
+  color: ${palette.darkGrey};
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: ${fontWeights.light};
+`;
+
+export const CategoryName = styled.p`
+  display: block;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  margin-bottom: ${spacing.small};
+  font-size: ${fontSizes.largePlus};
+  font-weight: ${fontWeights.light};
+  background: ${palette.white};
+`;
+
+export const EducationItem = styled.div`
+  padding: ${spacing.small};
+  border: 1px solid ${palette.coolGrey3};
+  background: ${palette.coolGrey4};
+
+  &:not(:last-of-type) {
+    margin-bottom: ${spacing.smallPlus};
+  }
+`;
+
+export const EducationItemHeaderButton = styled.button`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+export const EducationItemName = styled.p`
+  display: block;
+  flex: 1;
+  margin: 0;
+  font-size: ${fontSizes.regular};
+  text-align: left;
+`;
+
+export const EducationOverviewText = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPlus};
+`;
+
+export const EducationItemLink = styled.a`
+  font-size: ${fontSizes.smallPlus};
+  color: ${palette.brightBlue};
+`;
+
+export const EducationItemTourButton = styled.button`
+  padding: ${spacing.tiny} ${spacing.small};
+  font-size: ${fontSizes.smallPlus};
+  background-color: ${palette.brightBlue};
+  color: ${palette.white};
+`;
+
+export const EducationItemOverview = styled.p`
+  margin: 0;
+  font-size: ${fontSizes.smallPlus};
+`;
+
+export const EducationSearchInput = styled.input`
+  flex: 1;
+  color: ${palette.darkGrey};
+  font-weight: ${fontWeights.light};
+  font-family: 'Roboto Condensed', sans-serif;
+  border: none;
+  outline: none;
 `;

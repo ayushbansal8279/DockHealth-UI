@@ -12,10 +12,12 @@ import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
+import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
 import Member from 'components/members/Member/Member';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
+import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
@@ -29,18 +31,22 @@ import {
 import IconNavigationItem from './IconNavigationItem';
 import NavigationItem from './NavigationItem';
 
-const ORGANIZATION_SUBMENU_KEY = 'ORGANIZATION';
-const PROFILE_SUBMENU_KEY = 'PROFILE';
-export const LISTS_SUBMENU_KEY = 'LISTS';
-const SETTINGS_SUBMENU_KEY = 'SETTINGS';
-const PATIENTS_SUBMENU_KEY = 'PATIENTS';
+export const SubmenuKey = {
+  ORGANIZATION: 'ORGANIZATION',
+  PROFILE: 'PROFILE',
+  LISTS: 'LISTS',
+  PATIENTS: 'PATIENTS',
+  SETTINGS: 'SETTINGS',
+  EDUCATION_CENTER: 'EDUCATION_CENTER',
+};
 
-const SUBMENU_COMPONENTS = {
-  [ORGANIZATION_SUBMENU_KEY]: OrganizationSubmenu,
-  [PROFILE_SUBMENU_KEY]: ProfileSubmenu,
-  [LISTS_SUBMENU_KEY]: ListsSubmenu,
-  [PATIENTS_SUBMENU_KEY]: PatientsSubmenu,
-  [SETTINGS_SUBMENU_KEY]: SettingsSubmenu,
+const SubmenuComponents = {
+  [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
+  [SubmenuKey.PROFILE]: ProfileSubmenu,
+  [SubmenuKey.LISTS]: ListsSubmenu,
+  [SubmenuKey.PATIENTS]: PatientsSubmenu,
+  [SubmenuKey.SETTINGS]: SettingsSubmenu,
+  [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
 };
 
 const NavigationSidebar = ({
@@ -68,7 +74,7 @@ const NavigationSidebar = ({
   });
 
   const SubMenuComponent = openedSubMenuKey
-    ? SUBMENU_COMPONENTS[openedSubMenuKey]
+    ? SubmenuComponents[openedSubMenuKey]
     : null;
 
   const { organizationProfileColor, organizationInitials } =
@@ -112,8 +118,8 @@ const NavigationSidebar = ({
             <div ref={orgMenuReference}>
               <NavigationItem
                 name="Organization"
-                subMenuKey={ORGANIZATION_SUBMENU_KEY}
-                subMenuOpen={openedSubMenuKey === ORGANIZATION_SUBMENU_KEY}
+                subMenuKey={SubmenuKey.ORGANIZATION}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.ORGANIZATION}
                 onItemClick={handleNavigationItemClick}
               >
                 <>
@@ -141,9 +147,9 @@ const NavigationSidebar = ({
             />
             <IconNavigationItem
               name="Lists"
-              subMenuKey={LISTS_SUBMENU_KEY}
+              subMenuKey={SubmenuKey.LISTS}
               icon={ListsIcon}
-              subMenuOpen={openedSubMenuKey === LISTS_SUBMENU_KEY}
+              subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
               path="/core/tasks"
               onItemClick={handleNavigationItemClick}
             />
@@ -167,18 +173,25 @@ const NavigationSidebar = ({
                 icon={TemplatesIcon}
                 path="/core/workflows"
                 onItemClick={handleNavigationItemClick}
-                isNew
               />
             )}
+            <IconNavigationItem
+              name="Education Center"
+              icon={EducationCenterIcon}
+              subMenuKey={SubmenuKey.EDUCATION_CENTER}
+              subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+              onItemClick={handleNavigationItemClick}
+              isNew
+            />
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Admin"
-                  subMenuKey={SETTINGS_SUBMENU_KEY}
+                  subMenuKey={SubmenuKey.SETTINGS}
                   icon={SettingsIcon}
-                  subMenuOpen={openedSubMenuKey === SETTINGS_SUBMENU_KEY}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.SETTINGS}
                   path={['/settings/billing', '/settings/subscriptions']}
                   onItemClick={handleNavigationItemClick}
                 />
@@ -187,8 +200,8 @@ const NavigationSidebar = ({
             <div ref={profileMenuReference}>
               <NavigationItem
                 name="Account"
-                subMenuKey={PROFILE_SUBMENU_KEY}
-                subMenuOpen={openedSubMenuKey === PROFILE_SUBMENU_KEY}
+                subMenuKey={SubmenuKey.PROFILE}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.PROFILE}
                 onItemClick={handleNavigationItemClick}
               >
                 <>
