@@ -109,7 +109,6 @@ const Subtasks = ({
                               isLast={isLast}
                               showSubtaskStylingLink={!draggedId}
                               isNestedTask
-                              subTasksCount={subTasksCount}
                               {...restProps}
                             />
                             {shouldRenderComments &&
