@@ -9,7 +9,6 @@ import { openModal } from 'modal/actions';
 import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
-import { useHistory } from 'react-router-dom';
 import {
   EditPatientListModalWrapper,
   Title,
@@ -18,14 +17,12 @@ import {
   StyledForm,
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
-import { createPatientListPath } from '../../../routing/helpers/paths';
 
 const onSubmit = ({
   patientListIdentifier,
   event,
   dispatch,
   setIsSaving,
-  history,
 }) => data => {
   event.stopPropagation();
   event.preventDefault();
@@ -40,10 +37,6 @@ const onSubmit = ({
   if (!patientListIdentifier) {
     PatientsApi.createPatientsList(data)
       .then(createdPatientList => {
-        history.push(
-          createPatientListPath(createdPatientList.patientListIdentifier),
-        );
-
         setIsSaving(false);
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         dispatch(
@@ -68,7 +61,6 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
   const dispatch = useDispatch();
   const [isSaving, setIsSaving] = useState(false);
   const nameReference = useRef(null);
-  const history = useHistory();
 
   const formContext = useForm({
     defaultValues: {
@@ -124,7 +116,6 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
               dispatch,
               setIsSaving,
               patientListIdentifier: patientsList?.patientListIdentifier,
-              history,
             }),
           )(event)
         }
