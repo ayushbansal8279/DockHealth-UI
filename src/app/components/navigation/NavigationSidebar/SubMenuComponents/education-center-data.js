@@ -5,39 +5,42 @@ export const EDUCATION_CENTER_CATEGORIES = [
     name: 'Getting Started',
     items: [
       {
-        name: 'Home Tour',
+        name: 'Home Page Tour',
         overview:
-          'Home is a place for you to see all your tasks aggregated by due dates',
+          "Home is a place for you to see all of your or your team's tasks aggregated from all of your lists by due dates",
         videoUrl: 'https://www.youtube.com/embed/-LBenmywNrA',
       },
       {
-        name: 'Create a List',
-        overview:
-          'Create a list from the left menu by selecting the Lists option',
+        name: 'Making Lists',
+        overview: 'Add a new list for just yourself or a group of users',
+        additionalOverview:
+          'Lists are a great way to get organized around tasks or teams',
         videoUrl: 'https://www.youtube.com/embed/Ddb96fncKTU',
       },
       {
         name: 'Create a Task',
-        overview: '',
+        overview:
+          'Tasks are the to-dos for you and your team. Add patient context, due dates, status, assignments and attachments to get the most from tasks',
+        helpUrl: 'https://www.dock.health/101',
       },
       {
-        name: 'Invite others to a List',
-        overview: '',
+        name: 'Invite Users to a List',
+        overview:
+          'Users who are members of your organization can easily be invited to a list by simply clicking on the "+" button on the top of a list',
+        additionalOverview:
+          'Only users who have been invited to your organization can be added to lists',
       },
       {
-        name: 'Subscription',
-        overview: '',
+        name: 'Organizing Lists with Groups',
+        overview: 'Groups are a great way to organize tasks within a list',
+        videoUrl: 'https://www.youtube.com/embed/U5A1OBX3V9M',
       },
       {
         name: 'Inbox and email integration',
-        overview: '',
-      },
-      {
-        name: 'Overview',
-        overview: 'Dock Health',
-        additionalOverview: 'Dock Overview',
-        helpCenterUrl: 'helpUrl',
-        productTourUrl: 'testUrl',
+        overview:
+          'Forward emails to your Dock account and automagically turn them into tasks',
+        additionalOverview:
+          'Simply forward emails to task@dockhealth.email and check out "Tips" in your Dock Inbox for more details',
       },
     ],
   },
@@ -45,56 +48,34 @@ export const EDUCATION_CENTER_CATEGORIES = [
     name: 'How Tos',
     items: [
       {
-        name: 'Arrange Tasks',
+        name: 'Get Help',
         overview:
-          'Tasks can be organized in lists as well as using groups within a list',
-        videoUrl: 'https://www.youtube.com/embed/U5A1OBX3V9M',
+          "We're here to help every step of the way. Feel free to ping us on Intercom (little blue button on bottom right) or simply grab a time to connect on Zoom",
+        additionalOverview:
+          "Let's chat about setting up integrations, automations, and some workflows for your practice",
+        helpUrl: 'https://www.dock.health/calendar',
+        helpUrlLabel: 'Schedule a Meeting',
       },
       {
         name: 'Guests',
         overview:
-          'Guests are outside collaborators that you can invite to a specific list with visibility on tasks only in that list.',
-        videoUrl: 'https://www.youtube.com/embed/g0PxjTuUCwY',
+          'Guests are outside collaborators that you can invite to a specific list with visibility on tasks and patients only in that list',
+        additionalOverview:
+          'Only guests who have been invited to your organization by an owner/admin can be added to lists',
       },
       {
-        name: 'Mentions',
+        name: '@ Mentions',
         overview:
-          'Mentions is a way to tag people and patients to tasks and comments.',
+          'Mentions is a way to assign members to tasks and call them out in comments',
         additionalOverview:
-          'Also mentions can be used to quickly assign a patient and members to a task.',
+          'Simply use the @ symbol before their name in the task description or comments',
         videoUrl: 'https://www.youtube.com/embed/72hQU9jx89g',
       },
       {
-        name: 'Filter and Search',
-        overview: '',
-      },
-      {
-        name: 'Patient Context',
-        overview: '',
-      },
-      {
-        name: 'Workflows',
-        overview: '',
-      },
-      {
-        name: 'Labels',
-        overview: '',
-      },
-      {
-        name: 'Bulk Editing',
-        overview: '',
-      },
-      {
-        name: 'Integrations',
-        overview: '',
-      },
-      {
-        name: 'Multiple Organizations',
-        overview: '',
-      },
-      {
-        name: 'Notifications',
-        overview: '',
+        name: '# Patients',
+        overview:
+          'Quickly add patient context to a task by typing #PatientName in the task description',
+        videoUrl: 'https://www.youtube.com/embed/72hQU9jx89g',
       },
     ],
   },

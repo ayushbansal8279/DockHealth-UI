@@ -149,15 +149,15 @@ const EducationCenterSubmenu = () => {
                         )}
                       </>
                     )}
-                    {item.helpCenterUrl && (
+                    {item.helpUrl && (
                       <>
                         <Spacing vertical={4} />
                         <EducationItemLink
-                          href={item.helpCenterUrl}
+                          href={item.helpUrl}
                           target="_blank"
                           rel="noreferrer"
                         >
-                          Visit our help center
+                          {item.helpUrlLabel || 'More Details'}
                         </EducationItemLink>
                       </>
                     )}
@@ -185,7 +185,11 @@ const EducationCenterSubmenu = () => {
         <FooterInfoText>
           Can&apos;t find what you’re looking for?
         </FooterInfoText>
-        <FooterLink href="" target="_blank" rel="noreferrer">
+        <FooterLink
+          href="https://www.dock.health/101"
+          target="_blank"
+          rel="noreferrer"
+        >
           Visit our help center
         </FooterLink>
       </EducationCenterFooter>
