@@ -12,7 +12,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  FixedWidthButtonWrapper,
+  FlexButtonWrapper,
 } from '../styled';
 
 const LeaveOrganizationModal = ({ closeModal, confirm }) => {
@@ -32,7 +32,7 @@ const LeaveOrganizationModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FixedWidthButtonWrapper width={120}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="secondary-red"
@@ -41,9 +41,9 @@ const LeaveOrganizationModal = ({ closeModal, confirm }) => {
             >
               Cancel
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={108}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -52,7 +52,7 @@ const LeaveOrganizationModal = ({ closeModal, confirm }) => {
             >
               Leave
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

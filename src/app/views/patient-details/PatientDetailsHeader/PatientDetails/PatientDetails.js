@@ -9,8 +9,6 @@ import PatientDetailsInput from './PatientDetailsInput';
 import {
   PatientDetailsForm,
   PatientDetailsFormRow,
-  PatientDetailsButton,
-  PatientDetailsCancelButton,
   PatietnDetailsFormFooter,
 } from './styled';
 
@@ -224,25 +222,26 @@ const PatientDetails = ({
         </PatientDetailsFormRow>
         {!editingDisabled && (
           <>
-            {!isActive && (
-              <PatientDetailsButton isEdit onClick={() => setIsActive(true)}>
-                EDIT
-              </PatientDetailsButton>
-            )}
-            {!isActive && (
-              <PatientDetailsButton type="button" onClick={archivePatient}>
-                ARCHIVE
-              </PatientDetailsButton>
-            )}
+            <PatietnDetailsFormFooter>
+              {!isActive && (
+                <Button onClick={() => setIsActive(true)}>EDIT</Button>
+              )}
+              {!isActive && (
+                <Button variant="text" onClick={archivePatient}>
+                  ARCHIVE
+                </Button>
+              )}
+            </PatietnDetailsFormFooter>
             {isActive && (
               <PatietnDetailsFormFooter>
-                <PatientDetailsCancelButton
+                <Button
+                  variant="text"
                   onClick={() => {
                     setIsActive(false);
                   }}
                 >
                   CANCEL
-                </PatientDetailsCancelButton>
+                </Button>
                 <Button type="submit">SAVE</Button>
               </PatietnDetailsFormFooter>
             )}

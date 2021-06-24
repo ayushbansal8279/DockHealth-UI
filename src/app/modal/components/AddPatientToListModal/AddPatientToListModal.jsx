@@ -125,7 +125,12 @@ const AddPatientToListModal = ({
             )}
           </ListInfo>
           <Spacing horizontal={4} />
-          <Button variant="text" onClick={handleEditList} size="small">
+          <Button
+            width="100px"
+            variant="text"
+            onClick={handleEditList}
+            size="small"
+          >
             Edit
           </Button>
         </Grid>
@@ -192,11 +197,17 @@ const AddPatientToListModal = ({
       </MainContentWrapper>
       <Spacing vertical={4} />
       <Grid container direction="row" justify="flex-end">
-        <Button variant="secondary" onClick={closeModal} size="small">
+        <Button
+          variant="secondary"
+          width="150px"
+          onClick={closeModal}
+          size="small"
+        >
           Cancel
         </Button>
         <Spacing horizontal={4} />
         <Button
+          width="200px"
           disabled={!edited || saving}
           onClick={handleSavePatients}
           size="small"

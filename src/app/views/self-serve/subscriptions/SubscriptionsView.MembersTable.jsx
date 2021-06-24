@@ -396,6 +396,7 @@ const SubscriptionsViewMembersTable = ({
                   <>
                     <Spacing horizontal={5} />
                     <Button
+                      width="300px"
                       disabled={buyButtonDisabled}
                       onClick={onClickBuyButton}
                     >

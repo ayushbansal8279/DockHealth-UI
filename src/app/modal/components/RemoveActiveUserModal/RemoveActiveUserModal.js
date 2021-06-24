@@ -13,7 +13,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 import { FirstDescription, SecondDescription } from './styled';
 
@@ -59,7 +58,7 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={124}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -71,7 +70,7 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
             >
               Remove
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

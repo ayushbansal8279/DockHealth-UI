@@ -11,7 +11,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  FixedWidthButtonWrapper,
+  FlexButtonWrapper,
 } from '../styled';
 
 const PrimaryText = styled.span`
@@ -35,7 +35,7 @@ const HomeScreenDragDropModal = ({ closeModal }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FixedWidthButtonWrapper width={136}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -45,7 +45,7 @@ const HomeScreenDragDropModal = ({ closeModal }) => {
             >
               OKAY, GOT IT
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

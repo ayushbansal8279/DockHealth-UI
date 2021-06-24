@@ -72,13 +72,16 @@ const ChangePhoneNumberForm = () => {
       <FormContext {...formMethods}>
         <UniversalMontserratInput
           label="Your Mobile Phone Number"
+          customShrinkCondition
           name="mobilePhoneNumber"
           CustomComponent={UniversalMobileInputComponent}
           autoComplete="none"
         />
       </FormContext>
       <Spacing vertical={5} />
-      <Button type="submit">Continue</Button>
+      <Button type="submit" size="large">
+        Continue
+      </Button>
       <OnboardingDialog
         isSmallScreen={isSmallScreen}
         open={isDialogShown}

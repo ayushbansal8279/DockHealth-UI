@@ -16,7 +16,7 @@ import {
   FlexButtonWrapper,
 } from '../styled';
 
-const DeleteGroupModal = ({ closeModal, confirm }) => {
+const DeleteNoteModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -60,4 +60,4 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
   );
 };
 
-export default DeleteGroupModal;
+export default DeleteNoteModal;

@@ -13,7 +13,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 
 const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
@@ -46,7 +45,7 @@ const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={88}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -58,7 +57,7 @@ const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
             >
               Yes
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

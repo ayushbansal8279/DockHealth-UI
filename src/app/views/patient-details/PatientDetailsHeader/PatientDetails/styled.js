@@ -99,6 +99,8 @@ export const PatientDetailsCancelButton = styled(PatientDetailsButton)`
 export const PatietnDetailsFormFooter = styled.div`
   display: flex;
   align-items: center;
+  width: 300px;
+  margin-left: 30px;
 `;
 
 export const PatientDetailsInputError = styled.div`

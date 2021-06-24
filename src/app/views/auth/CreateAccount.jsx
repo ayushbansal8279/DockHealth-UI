@@ -282,7 +282,7 @@ const CreateAccount = props => {
             secondary authentication code
           </MontserratTypography>
           <Spacing vertical={5} />
-          <Button type="submit" fullWidth>
+          <Button type="submit" fullWidth size="large">
             Continue
           </Button>
           <Spacing vertical={5} />

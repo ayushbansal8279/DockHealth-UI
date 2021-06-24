@@ -182,6 +182,7 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         onClick={cancelSaveBillingClick}
         variant="text"
         disabled={processingPayment}
+        width="300px"
       >
         <MontserratTypography
           variant="h4"
@@ -192,7 +193,7 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         </MontserratTypography>
       </Button>
       <Spacing horizontal={4} />
-      <Button type="submit" disabled={processingPayment}>
+      <Button type="submit" disabled={processingPayment} width="300px">
         {processingPayment ? <Loader size={LoaderSizes.medium} /> : 'Subscribe'}
       </Button>
     </Grid>

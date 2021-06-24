@@ -57,7 +57,7 @@ const ForgotPasswordForm = ({
           autoFocus
         />
         <Spacing vertical={5} />
-        <Button type="submit" fullWidth>
+        <Button type="submit" fullWidth size="large">
           {unconfirmedUserFlag
             ? 'Resend confirmation Email'
             : 'Send me a recovery code'}

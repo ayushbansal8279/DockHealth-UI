@@ -8,15 +8,14 @@ import { object, string } from 'yup';
 import { invitePersonToOrganization } from 'actions/people-actions';
 import { noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
+import Button from 'components/common/Button/Button';
 import * as AlertActions from 'alert/actions';
 import {
-  AddMoreUsersLabel,
   CloseButtonContainer,
   InputErrorLabel,
   InvitationPanelContainer,
   InvitationPanelHeader,
   PanelButtonContainer,
-  StyledButton,
   StyledFormControl,
   StyledInputBase,
   StyledInputLabel,
@@ -83,9 +82,14 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
   return (
     <InvitationPanelContainer open={isInvitationPanelOpen}>
       <InvitationPanelHeader>
-        <AddMoreUsersLabel onClick={openInvitationPanel}>
+        <Button
+          width="400px"
+          size="small"
+          variant="text"
+          onClick={openInvitationPanel}
+        >
           + Add more users to my organization
-        </AddMoreUsersLabel>
+        </Button>
         <CloseButtonContainer
           open={isInvitationPanelOpen}
           onClick={isInvitationPanelOpen ? closeInvitationPanel : noop}
@@ -146,16 +150,17 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
               </Grid>
             </Grid>
             <PanelButtonContainer container justify="flex-end">
-              <StyledButton
-                type="button"
+              <Button
+                width="150px"
+                size="small"
                 variant="text"
                 onClick={closeInvitationPanel}
               >
                 Cancel
-              </StyledButton>
-              <StyledButton type="submit" variant="contained">
+              </Button>
+              <Button type="submit" width="300px" size="small">
                 Add to organization
-              </StyledButton>
+              </Button>
             </PanelButtonContainer>
           </motion.form>
         )}

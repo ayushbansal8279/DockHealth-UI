@@ -13,7 +13,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 
 const CompleteAllTasksModal = ({ closeModal, confirm }) => {
@@ -45,7 +44,7 @@ const CompleteAllTasksModal = ({ closeModal, confirm }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={172}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -54,7 +53,7 @@ const CompleteAllTasksModal = ({ closeModal, confirm }) => {
             >
               Complete all
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

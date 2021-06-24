@@ -12,7 +12,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  FixedWidthButtonWrapper,
+  FlexButtonWrapper,
 } from '../styled';
 
 const DeleteGroupModal = ({ closeModal, confirm }) => {
@@ -32,7 +32,7 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FixedWidthButtonWrapper width={160}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="secondary-red"
@@ -41,9 +41,9 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
             >
               Do not delete
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={88}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -52,7 +52,7 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
             >
               Yes
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

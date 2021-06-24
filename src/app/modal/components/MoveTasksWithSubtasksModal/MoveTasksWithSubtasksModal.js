@@ -13,7 +13,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 
 const PrimaryText = styled.span`
@@ -48,7 +47,7 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={136}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
               variant="primary-red"
@@ -60,7 +59,7 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
             >
               MOVE ALL
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>
