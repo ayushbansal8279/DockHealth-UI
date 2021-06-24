@@ -456,6 +456,12 @@ export const PatientLabel = styled.span`
   }
 `;
 
+export const DisabledPatientLabel = styled.span`
+  opacity: 0.5;
+  cursor: not-allowed;
+  ${PatientLabel}
+`;
+
 export const DateText = styled.p`
   margin-bottom: 0;
 `;
