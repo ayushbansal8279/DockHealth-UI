@@ -6,13 +6,13 @@ import { object, string } from 'yup';
 import * as UserApi from 'api/user-api';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
 import {
-  NextButton,
   StyledForm,
-  StyledLink,
+  // StyledLink,
   StyledHyperLink,
 } from './AuthComponents.styled';
 
@@ -22,6 +22,7 @@ const validationSchema = object().shape({
     .email('Please enter a valid email address'),
 });
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const LoginFormUsername = props => {
   const { onSubmit } = props;
   const [showLoginMessage, setShowLoginMessage] = useState(false);
@@ -93,21 +94,16 @@ const LoginFormUsername = props => {
               autoFocus
             />
             <Spacing vertical={5} />
-            <NextButton
-              id="loginButton"
-              type="submit"
-              variant="contained"
-              color="primary"
-            >
+            <Button id="loginButton" fullWidth size="large" type="submit">
               Continue
-            </NextButton>
-            <Spacing vertical={6} />
+            </Button>
+            {/* <Spacing vertical={6} />
             <MontserratTypography variant="h4">
               <span>New to Dock? </span>
               <StyledLink to="/auth/create-account">
                 CREATE AN ACCOUNT
               </StyledLink>
-            </MontserratTypography>
+            </MontserratTypography> */}
             <Spacing vertical={6} />
             <Spacing vertical={4} />
           </>

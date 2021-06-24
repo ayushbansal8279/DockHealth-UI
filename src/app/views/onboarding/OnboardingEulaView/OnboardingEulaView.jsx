@@ -6,14 +6,12 @@ import { useToggle } from 'react-use';
 import { acknowledgeEula } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import Button from 'components/common/Button/Button';
 import { useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import { downloadBAADocument } from 'api/organization-api';
-import {
-  OnboardingAnchor,
-  OnboardingButton,
-} from '../OnboardingTemplate.Components';
+import { OnboardingAnchor } from '../OnboardingTemplate.Components';
 
 const OnboardingEulaView = () => {
   const dispatch = useDispatch();
@@ -104,14 +102,14 @@ const OnboardingEulaView = () => {
         <Spacing vertical={isSmallScreen ? 4 : 6} />
         <Grid item sm={12} container justify="flex-end">
           <Grid item xs={12} sm={12} md={4}>
-            <OnboardingButton
+            <Button
               disabled={continueButtonDisabled}
-              variant="containedAutoWidth"
+              variant="primary"
               onClick={onAgreeClick}
               fullWidth
             >
               Agree & Continue
-            </OnboardingButton>
+            </Button>
           </Grid>
         </Grid>
       </Grid>

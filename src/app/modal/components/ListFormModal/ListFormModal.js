@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ListFormModalWrapper, StepCounter, Step } from './styled';
+import { ListFormModalWrapper } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 import ListDetailsForm from './ListDetailsForm/ListDetailsForm';
 import InviteMembersForm from './InviteMembersForm/InviteMembersForm';
@@ -49,16 +49,6 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
         <CloseIcon />
       </CloseIconButton>
       {renderStep(currentStep)}
-      <StepCounter>
-        {Object.values(ModalSteps).map(value => (
-          <Step
-            key={value}
-            isCurrent={currentStep >= value}
-            onClick={() => editedList && setCurrentStep(value)}
-            isDisabled={!editedList}
-          />
-        ))}
-      </StepCounter>
     </ListFormModalWrapper>
   );
 };

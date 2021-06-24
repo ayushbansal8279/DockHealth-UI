@@ -32,6 +32,7 @@ import MultiAssignTourModal from './components/NewFeaturesModals/MultiAssignTour
 import HomeImprovementsTourModal from './components/NewFeaturesModals/HomeImprovementsTourModal/HomeImprovementsTourModal';
 import TaskWorkflowTourModal from './components/NewFeaturesModals/TaskWorkflowTourModal/TaskWorkflowTourModal';
 import RecurringTaskTourModal from './components/NewFeaturesModals/RecurringTaskTourModal/RecurringTaskTourModal';
+import TaskStatusTourModal from './components/NewFeaturesModals/TaskStatusTourModal/TaskStatusTourModal';
 import MultiMentionAssignTourModal from './components/NewFeaturesModals/MultiMentionAssignTourModal/MultiMentionAssignTourModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
@@ -45,6 +46,8 @@ import SelectTaskDestinationModal from './components/SelectDestinationModal/Sele
 import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
 import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
 import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
+import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
+import AddPatientToListModal from './components/AddPatientToListModal/AddPatientToListModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -79,6 +82,7 @@ const MODAL_MAP = {
   HomeImprovementsTour: HomeImprovementsTourModal,
   TaskWorkflowTour: TaskWorkflowTourModal,
   RecurringTaskTour: RecurringTaskTourModal,
+  TaskStatusTour: TaskStatusTourModal,
   MultiMentionAssignTour: MultiMentionAssignTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
@@ -94,6 +98,8 @@ const MODAL_MAP = {
   SelectDestination: SelectDestinationModal,
   AssignPatient: AssignPatientModal,
   UnassignPatient: UnassignPatientModal,
+  EditPatientList: EditPatientListModal,
+  AddPatientToList: AddPatientToListModal,
 };
 
 export default MODAL_MAP;

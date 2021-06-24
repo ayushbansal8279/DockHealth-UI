@@ -293,8 +293,8 @@ function* doUpdateTask({ payload }) {
 }
 
 export default function* watchGlobalSearch() {
-  yield debounce(500, DO_SET_SEARCH_VALUE, doSetSearchValue);
-  yield takeEvery(DO_SEARCH_TASKS, doSearchTasks);
+  yield takeEvery(DO_SET_SEARCH_VALUE, doSetSearchValue);
+  yield debounce(500, DO_SEARCH_TASKS, doSearchTasks);
   yield takeEvery(DO_REFRESH_TASKS, doRefreshTasks);
   yield takeEvery(DO_SET_SEARCH_COMPLETED_TASKS, doSetSearchCompletedTasks);
   yield takeLatest(

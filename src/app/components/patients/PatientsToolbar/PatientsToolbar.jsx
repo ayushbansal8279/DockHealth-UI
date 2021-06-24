@@ -3,13 +3,11 @@ import { Add as AddIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { downloadPatientImportTemplate } from 'api/patient-api';
 
-import Button from 'components/common/Button/Button';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
-import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import useBoolean from 'hooks/useBoolean';
 import SearchInput from 'components/common/SearchInput/SearchInput';
-import { SearchInputWrapper } from './styled';
+import { SearchInputWrapper, Container, ImportButton } from './styled';
 
 const PatientsToolbar = ({
   hasPatients,
@@ -30,55 +28,58 @@ const PatientsToolbar = ({
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   return (
-    <PageContentHeader>
+    <Container>
       <Grid
         container
+        item
         justify="space-between"
         alignItems="center"
         wrap="nowrap"
-        spacing={3}
       >
-        <Grid item xs={5} xl={4}>
+        <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
           <SearchInputWrapper fullWidth={isSearchFocused || searchValue}>
             <SearchInput
               value={searchValue}
               onValueChange={onSearchChange}
-              onClear={() => onSearchChange('')}
               onFocus={setIsSearchFocused}
               onBlur={unsetIsSearchFocused}
             />
           </SearchInputWrapper>
         </Grid>
-        {hasPatients && !isGuest && !hideButtons && (
-          <Grid
-            container
-            item
-            xs={7}
-            justify="flex-end"
-            alignItems="center"
-            wrap="nowrap"
-            spacing={3}
-          >
-            <Grid item>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setImportPopupOpen(true);
-                }}
-              >
-                IMPORT PATIENTS FROM EXCEL
-              </Button>
-            </Grid>
-            <Grid item>
-              <AdornedButton
-                adornment={<AddIcon />}
-                onClick={onAddPatientClick}
-              >
-                ADD A PATIENT
-              </AdornedButton>
-            </Grid>
-          </Grid>
-        )}
+        <Grid
+          container
+          item
+          xs={6}
+          xl={7}
+          md={5}
+          lg={4}
+          justify="flex-end"
+          alignItems="center"
+          wrap="nowrap"
+          spacing={2}
+        >
+          {hasPatients && !isGuest && !hideButtons && (
+            <>
+              <Grid item>
+                <ImportButton
+                  onClick={() => {
+                    setImportPopupOpen(true);
+                  }}
+                >
+                  IMPORT PATIENTS FROM EXCEL
+                </ImportButton>
+              </Grid>
+              <Grid item>
+                <AdornedButton
+                  adornment={<AddIcon />}
+                  onClick={onAddPatientClick}
+                >
+                  ADD A PATIENT
+                </AdornedButton>
+              </Grid>
+            </>
+          )}
+        </Grid>
       </Grid>
       <Dialog
         open={importPopupOpen}
@@ -99,7 +100,7 @@ const PatientsToolbar = ({
           step={1}
         />
       </Dialog>
-    </PageContentHeader>
+    </Container>
   );
 };
 

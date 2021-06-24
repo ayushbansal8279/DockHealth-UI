@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
-
-import { Button, Collapse } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
+import Button from 'components/common/Button/Button';
 import PatientDetailsInput from './PatientDetailsInput';
 import {
   PatientDetailsForm,
   PatientDetailsFormRow,
-  PatientDetailsButton,
-  PatientDetailsCancelButton,
   PatietnDetailsFormFooter,
 } from './styled';
 
@@ -224,28 +222,27 @@ const PatientDetails = ({
         </PatientDetailsFormRow>
         {!editingDisabled && (
           <>
-            {!isActive && (
-              <PatientDetailsButton isEdit onClick={() => setIsActive(true)}>
-                EDIT
-              </PatientDetailsButton>
-            )}
-            {!isActive && (
-              <PatientDetailsButton type="button" onClick={archivePatient}>
-                ARCHIVE
-              </PatientDetailsButton>
-            )}
+            <PatietnDetailsFormFooter>
+              {!isActive && (
+                <Button onClick={() => setIsActive(true)}>EDIT</Button>
+              )}
+              {!isActive && (
+                <Button variant="text" onClick={archivePatient}>
+                  ARCHIVE
+                </Button>
+              )}
+            </PatietnDetailsFormFooter>
             {isActive && (
               <PatietnDetailsFormFooter>
-                <PatientDetailsCancelButton
+                <Button
+                  variant="text"
                   onClick={() => {
                     setIsActive(false);
                   }}
                 >
                   CANCEL
-                </PatientDetailsCancelButton>
-                <Button type="submit" variant="contained" size="small">
-                  SAVE
                 </Button>
+                <Button type="submit">SAVE</Button>
               </PatietnDetailsFormFooter>
             )}
           </>

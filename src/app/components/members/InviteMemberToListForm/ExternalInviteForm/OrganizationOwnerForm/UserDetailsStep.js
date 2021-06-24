@@ -95,22 +95,15 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
           <Grid item xs={5}>
             <Button
               fullWidth
-              variant="outlined"
+              variant="secondary"
               type="button"
-              size="small"
               onClick={closeInviteForm}
             >
               No, cancel
             </Button>
           </Grid>
           <Grid item xs={5}>
-            <Button
-              fullWidth
-              variant="contained"
-              size="small"
-              disabled={disabled}
-              type="submit"
-            >
+            <Button fullWidth disabled={disabled} type="submit">
               Yes, approve
             </Button>
           </Grid>

@@ -1,7 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { NextButton, StyledLink } from 'components/auth/AuthComponents.styled';
+import { StyledLink } from 'components/auth/AuthComponents.styled';
+import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
@@ -17,15 +18,9 @@ const LoginWelcome = () => (
       healthcare.
     </MontserratTypography>
     <Spacing vertical={5} />
-    <NextButton
-      type="button"
-      variant="contained"
-      color="primary"
-      component={Link}
-      to="/onboarding"
-    >
+    <Button size="large" component={Link} to="/onboarding">
       Create an account
-    </NextButton>
+    </Button>
     <Spacing vertical={5} />
     <MontserratTypography variant="h4">
       <span>Already have an account? </span>

@@ -448,6 +448,8 @@ export const TaskItemDescriptionIndicators = styled.div`
 `;
 
 export const PatientLabel = styled.span`
+  color: ${palette.mediumGrey};
+
   &:hover {
     color: ${palette.brightBlue};
     text-decoration: underline;

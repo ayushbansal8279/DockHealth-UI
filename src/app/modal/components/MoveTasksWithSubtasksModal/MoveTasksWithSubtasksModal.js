@@ -13,7 +13,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 
 const PrimaryText = styled.span`
@@ -40,9 +39,7 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              variant="outlined"
-              type="button"
-              color="red"
+              variant="secondary-red"
               size="small"
               onClick={closeModal}
             >
@@ -50,13 +47,11 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={136}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
-              variant="contained"
-              type="button"
+              variant="primary-red"
               size="small"
-              color="red"
               onClick={() => {
                 confirm();
                 closeModal();
@@ -64,7 +59,7 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
             >
               MOVE ALL
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

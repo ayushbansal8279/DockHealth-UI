@@ -26,7 +26,7 @@ const TrialExpirationModal = ({ closeModal }) => {
         </div>
 
         <Link to="/settings/subscriptions">
-          <Button color="red" onClick={closeModal} size="small">
+          <Button color="primary-red" onClick={closeModal} size="small">
             SUBSCRIBE
           </Button>
         </Link>

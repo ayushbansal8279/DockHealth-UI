@@ -1,8 +1,9 @@
-import { Button, Fade, Grid } from '@material-ui/core';
+import { Fade, Grid } from '@material-ui/core';
 import React from 'react';
 import NotificationsCheck from 'img/toolbar-notifications-check';
 import palette from 'styles/palette';
 import { onPrint } from 'helpers/ga-event-helper';
+import Button from 'components/common/Button/Button';
 import ListPopover from 'components/common/ListPopover/ListPopover';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
@@ -70,10 +71,21 @@ const MorePopover = ({
   const moreButtonElement = {
     key: 'filter',
     label: (
-      <Button variant="text" onClick={closeMorePopover} size="small">
-        <ToolbarLabel variant="body1">ACTIONS</ToolbarLabel>
-        <Spacing horizontal={3} />
-        <RotatableChevron rotated={isMorePopoverOpen} onClick={() => {}} />
+      <Button
+        variant="text"
+        width="200px"
+        onClick={closeMorePopover}
+        endIcon={
+          <RotatableChevron
+            rotated={isMorePopoverOpen}
+            color={palette.brightBlue}
+            onClick={() => {}}
+          />
+        }
+      >
+        <ToolbarLabel variant="body1" component="span">
+          ACTIONS
+        </ToolbarLabel>
       </Button>
     ),
     disableHover: true,

@@ -16,10 +16,7 @@ import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { selectCurrentOrganization } from 'api/user-api';
 import HelloSign from 'hellosign-embedded';
-import {
-  OnboardingAnchorDiv,
-  OnboardingButton,
-} from '../OnboardingTemplate.Components';
+import { OnboardingAnchorDiv } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
 const {
@@ -45,8 +42,7 @@ const getPanelDetails = ({
             <Button onClick={onCancel} type="button" variant="text">
               Cancel
             </Button>
-            <OnboardingButton
-              variant="contained"
+            <Button
               onClick={clickReadAndSign}
               fullWidth={isSmallScreen}
               disabled={isProcessing}
@@ -56,7 +52,7 @@ const getPanelDetails = ({
               ) : (
                 <span>Continue</span>
               )}
-            </OnboardingButton>
+            </Button>
           </>
         ),
         bottomElement: (

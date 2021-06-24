@@ -13,7 +13,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 
 const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
@@ -35,23 +34,19 @@ const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Do not complete
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={172}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 closeModal();
@@ -59,7 +54,7 @@ const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
             >
               Complete all
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

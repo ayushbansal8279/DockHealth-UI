@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Grid, IconButton } from '@material-ui/core';
+import { Box, Grid, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import {
   onTaskListDeleted,
@@ -21,6 +21,7 @@ import {
 } from 'selectors/task-list-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
+import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import palette from 'styles/palette';
@@ -99,11 +100,13 @@ const ListsSubmenu = () => {
 
   const openListAddModal = () => {
     dispatch(openModal('ListForm'));
+    dispatch(hideSubMenu());
   };
 
   const openListEditModal = useCallback(
     list => {
       dispatch(openModal('ListForm', { list }));
+      dispatch(hideSubMenu());
     },
     [dispatch],
   );
@@ -111,6 +114,7 @@ const ListsSubmenu = () => {
   const openInviteToListModal = useCallback(
     list => {
       dispatch(openModal('InviteToList', { list }));
+      dispatch(hideSubMenu());
     },
     [dispatch],
   );
@@ -130,6 +134,7 @@ const ListsSubmenu = () => {
         },
       };
       dispatch(openModal('DeleteList', modalProps));
+      dispatch(hideSubMenu());
     },
     [activeTaskListIdentifier, dispatch, history],
   );
@@ -152,6 +157,7 @@ const ListsSubmenu = () => {
       };
 
       dispatch(openModal('LeaveList', modalProps));
+      dispatch(hideSubMenu());
     },
     [dispatch],
   );
@@ -257,18 +263,22 @@ const ListsSubmenu = () => {
             )}
             <DrawerItemOptions>
               <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-              <IconButton
-                ref={element => {
-                  if (element)
-                    itemsMoreButtonReferences.current[index] = element;
-                }}
-                size="small"
-                onClick={() => {
-                  openListMenuPopover(list, index);
-                }}
-              >
-                <MoreVert style={{ color: palette.coolGrey1 }} />
-              </IconButton>
+              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                <IconButton
+                  ref={element => {
+                    if (element)
+                      itemsMoreButtonReferences.current[index] = element;
+                  }}
+                  size="small"
+                  onClick={() => {
+                    openListMenuPopover(list, index);
+                  }}
+                >
+                  <MoreVert style={{ color: palette.coolGrey1 }} />
+                </IconButton>
+              ) : (
+                <Box m={2} />
+              )}
             </DrawerItemOptions>
           </DrawerListsItem>
         ))}

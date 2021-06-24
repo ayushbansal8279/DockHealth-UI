@@ -41,10 +41,8 @@ const BulkDeleteTasksModal = ({
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Cancel
@@ -54,10 +52,8 @@ const BulkDeleteTasksModal = ({
           <FixedWidthButtonWrapper width={231}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 closeModal();

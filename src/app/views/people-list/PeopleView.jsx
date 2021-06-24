@@ -12,22 +12,25 @@ import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import Spacing from 'components/common/Spacing';
 import PeopleContainer from 'components/people/PeopleContainer';
-import Search from 'components/task-view/Search/Search';
 import Button from 'components/common/Button/Button';
 import LightbulbBig from 'img/lightbulb-big';
+import SearchInput from 'components/common/SearchInput/SearchInput';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
 import {
   ListLoaderContainer,
   ManageUsersContainer,
+  HeaderMessageContainer,
   HeaderMessage,
   HeaderMessageTitle,
   HeaderMessageDescription,
+  SearchInputWrapper,
 } from './styled';
 
 class PeopleView extends PureComponent {
   state = {
     searchTerm: '',
     invitePopoverOpen: false,
+    isSearchFocused: false,
   };
 
   invitePeopleButtonReference = React.createRef();
@@ -74,39 +77,68 @@ class PeopleView extends PureComponent {
     });
   };
 
-  handleSearch = event => {
-    this.setState({ searchTerm: event.target.value });
+  handleSearch = value => {
+    this.setState({ searchTerm: value });
+  };
+
+  setIsSearchFocused = () => {
+    this.setState({ isSearchFocused: true });
+  };
+
+  unsetIsSearchFocused = () => {
+    this.setState({ isSearchFocused: false });
   };
 
   render() {
-    const { searchTerm, invitePopoverOpen } = this.state;
-    const { isFetching, peopleList } = this.props;
+    const { searchTerm, invitePopoverOpen, isSearchFocused } = this.state;
+    const { isFetching, peopleList, currentUserProfile } = this.props;
+
+    const isOwnerOrAdmin =
+      currentUserProfile.orgUserRole === 'OWNER' ||
+      currentUserProfile.orgUserRole === 'ADMIN';
 
     return (
       <Grid container justify="center">
         <PageContentHeader>
           <Grid container wrap="nowrap">
-            <Search onChange={this.handleSearch} />
+            <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
+              <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
+                <SearchInput
+                  value={searchTerm}
+                  onValueChange={this.handleSearch}
+                  onFocus={this.setIsSearchFocused}
+                  onBlur={this.unsetIsSearchFocused}
+                />
+              </SearchInputWrapper>
+            </Grid>
           </Grid>
         </PageContentHeader>
         <Grid container xs={12} item justify="center">
-          <Grid item xs={8}>
+          <Grid item xs={12} sm={12} md={8}>
             <Spacing vertical={4} />
-            <ManageUsersContainer>
-              <img alt="lightbulb" src={LightbulbBig} />
-              <HeaderMessage>
-                <HeaderMessageTitle>
-                  Manage people in the Subscription and Users section.
-                </HeaderMessageTitle>
-                <HeaderMessageDescription>
-                  Invite, remove, and change roles for people within your
-                  organization.
-                </HeaderMessageDescription>
-              </HeaderMessage>
-              <Link to="/settings/subscriptions">
-                <Button variant="contained">Manage Users</Button>
-              </Link>
-            </ManageUsersContainer>
+            {isOwnerOrAdmin && (
+              <ManageUsersContainer>
+                <Grid item xs={12} sm={12} md={8}>
+                  <HeaderMessageContainer>
+                    <img alt="lightbulb" src={LightbulbBig} />
+                    <HeaderMessage>
+                      <HeaderMessageTitle>
+                        Manage people in the Subscription and Users section.
+                      </HeaderMessageTitle>
+                      <HeaderMessageDescription>
+                        Invite, remove, and change roles for people within your
+                        organization.
+                      </HeaderMessageDescription>
+                    </HeaderMessage>
+                  </HeaderMessageContainer>
+                </Grid>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Link to="/settings/subscriptions">
+                    <Button fullWidth>Manage Users</Button>
+                  </Link>
+                </Grid>
+              </ManageUsersContainer>
+            )}
             <Spacing vertical={4} />
             {isFetching ? (
               <ListLoaderContainer>

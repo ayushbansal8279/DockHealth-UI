@@ -20,6 +20,7 @@ import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
+import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
 import menuTourHooks from './menu-tour-hooks';
 
 import {
@@ -34,6 +35,7 @@ export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
   PROFILE: 'PROFILE',
   LISTS: 'LISTS',
+  PATIENTS: 'PATIENTS',
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
 };
@@ -42,6 +44,7 @@ const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
   [SubmenuKey.PROFILE]: ProfileSubmenu,
   [SubmenuKey.LISTS]: ListsSubmenu,
+  [SubmenuKey.PATIENTS]: PatientsSubmenu,
   [SubmenuKey.SETTINGS]: SettingsSubmenu,
   [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
 };
@@ -159,6 +162,8 @@ const NavigationSidebar = ({
             <IconNavigationItem
               name="Patients"
               icon={PatientsIcon}
+              subMenuKey={PATIENTS_SUBMENU_KEY}
+              subMenuOpen={openedSubMenuKey === PATIENTS_SUBMENU_KEY}
               path="/core/patients"
               onItemClick={handleNavigationItemClick}
             />

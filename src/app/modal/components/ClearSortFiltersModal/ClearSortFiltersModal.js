@@ -12,7 +12,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
-  FixedWidthButtonWrapper,
+  FlexButtonWrapper,
 } from '../styled';
 
 const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
@@ -32,26 +32,22 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FixedWidthButtonWrapper width={120}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Cancel
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={152}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 if (closeOnConfirm) closeModal();
@@ -59,7 +55,7 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
             >
               CLEAR SORT
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

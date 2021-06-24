@@ -12,7 +12,6 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
-  FixedWidthButtonWrapper,
 } from '../styled';
 
 const ArchivePersonModal = ({ closeModal, confirm }) => {
@@ -35,23 +34,19 @@ const ArchivePersonModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Do not archive
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={127}>
+          <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={() => {
                 confirm();
                 closeModal();
@@ -59,7 +54,7 @@ const ArchivePersonModal = ({ closeModal, confirm }) => {
             >
               Archive
             </Button>
-          </FixedWidthButtonWrapper>
+          </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

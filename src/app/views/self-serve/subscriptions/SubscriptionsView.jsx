@@ -1,10 +1,10 @@
-import { Button } from '@material-ui/core';
-import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { setPaymentNewPlan } from 'actions/organization-actions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import SubscriptionsPlansView from './SubscriptionsPlansView/SubscriptionsPlansView';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import initializeSubscriptionsViewHooks from './hooks';
@@ -42,10 +42,27 @@ const onSubscriptionPlanChosen = ({
   }
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const scrollElementReference = useRef(null);
+
+  const { userProfile } = useSelector(store => ({
+    userProfile: store.userState?.userProfile,
+  }));
+
+  useEffect(() => {
+    if (
+      !(
+        userProfile?.orgUserRole === 'OWNER' ||
+        userProfile?.orgUserRole === 'ADMIN'
+      )
+    ) {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile]);
 
   const {
     selectedUsers,
@@ -195,19 +212,14 @@ export default () => {
           {plansViewVisible && chosenPlan && (
             <>
               {!subscriptionPlanData?.planIsTrial && (
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={hideSubscriptionPlans}
-                >
+                <Button variant="text" onClick={hideSubscriptionPlans}>
                   Cancel
                 </Button>
               )}
               <Spacing horizontal={4} />
               <Button
+                width="300px"
                 disabled={buyButtonDisabled}
-                variant="contained"
-                size="small"
                 onClick={onSubscriptionPlanChosen({
                   annualPayment,
                   chosenPlan,

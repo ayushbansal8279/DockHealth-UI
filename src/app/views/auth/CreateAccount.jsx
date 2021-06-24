@@ -17,7 +17,6 @@ import {
   resendConfirmationCode,
 } from 'api/user-api';
 import {
-  NextButton,
   StyledAnchorDiv,
   StyledLink,
 } from 'components/auth/AuthComponents.styled';
@@ -81,7 +80,7 @@ const onSubmit = ({
       username: email,
       password,
       email,
-      phone_number: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
+      phone_number: `+${mobilePhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
       'custom:referral': referral,
@@ -283,7 +282,9 @@ const CreateAccount = props => {
             secondary authentication code
           </MontserratTypography>
           <Spacing vertical={5} />
-          <NextButton type="submit">Continue</NextButton>
+          <Button type="submit" fullWidth size="large">
+            Continue
+          </Button>
           <Spacing vertical={5} />
           <MontserratTypography variant="h4">
             <span style={{ padding: '0rem 1rem' }}>
@@ -390,10 +391,8 @@ const CreateAccount = props => {
               <FixedWidthButtonWrapper width={300}>
                 <Button
                   fullWidth
-                  variant="contained"
+                  variant="primary-red"
                   type="button"
-                  size="small"
-                  color="red"
                   onClick={() => {
                     hideUserExistsDialog();
                     history.push(`/auth/login`);

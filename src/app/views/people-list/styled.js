@@ -83,8 +83,8 @@ export const PopoverSectionButton = styled.button`
 export const ManageUsersContainer = styled.div`
   align-items: center;
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
+  flex-flow: row wrap;
+  justify-content: space-between;
   width: 100%;
   border: 1px solid ${palette.blueOcean};
   padding: 0.5rem 1rem 0.5rem 1rem;
@@ -92,9 +92,12 @@ export const ManageUsersContainer = styled.div`
   max-width: 1179px;
 `;
 
+export const HeaderMessageContainer = styled.div`
+  display: flex;
+`;
+
 export const HeaderMessage = styled.div`
   align-items: left;
-  width: 100%;
   padding-left: 0.5rem;
 `;
 
@@ -111,4 +114,9 @@ export const HeaderMessageDescription = styled.p`
   font-size: ${fontSizes.smallPLus};
   font-weight: ${fontWeights.extraLight};
   font-family: 'Montserrat', sans-serif;
+`;
+
+export const SearchInputWrapper = styled.div`
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : '300px')};
+  transition: all 0.25s ease-in-out;
 `;

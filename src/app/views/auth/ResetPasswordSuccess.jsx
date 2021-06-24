@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { NextButton } from 'components/auth/AuthComponents.styled';
+import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
@@ -21,9 +21,9 @@ export default () => {
         Nice work, you’re back in action!
       </MontserratTypography>
       <Spacing vertical={5} />
-      <NextButton variant="contained" onClick={() => redirectToLogin(history)}>
+      <Button size="large" onClick={() => redirectToLogin(history)}>
         Sign In
-      </NextButton>
+      </Button>
     </Grid>
   );
 };

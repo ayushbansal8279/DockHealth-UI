@@ -207,12 +207,7 @@ const UserProfileForm = ({ userProfile }) => {
         </SettingsSection>
         <Grid container justify="flex-end">
           <Grid item xs={12} md={4}>
-            <Button
-              variant="contained"
-              fullWidth
-              type="submit"
-              disabled={isSubmitting}
-            >
+            <Button fullWidth type="submit" disabled={isSubmitting}>
               Save
             </Button>
           </Grid>

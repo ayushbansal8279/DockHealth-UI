@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
@@ -108,11 +108,24 @@ const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { newPaymentPlan, currentUsers } = useSelector(store => ({
+  const { newPaymentPlan, currentUsers, userProfile } = useSelector(store => ({
     ...store.organizationState,
     organizationIdentifier:
       store.userState?.userProfile?.organizationIdentifier,
+    userProfile: store.userState?.userProfile,
   }));
+
+  useEffect(() => {
+    if (
+      !(
+        userProfile?.orgUserRole === 'OWNER' ||
+        userProfile?.orgUserRole === 'ADMIN'
+      )
+    ) {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile]);
 
   const onCancelSaveBillingClick = useCallback(() => {
     cancelSubscriptionPayment(history);

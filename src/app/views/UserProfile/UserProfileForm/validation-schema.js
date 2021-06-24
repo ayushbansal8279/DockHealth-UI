@@ -18,7 +18,7 @@ export default object().shape({
   workPhoneNumber: string()
     // eslint-disable-next-line func-names
     .transform(function(value) {
-      if (value.length <= 3) {
+      if (!value || value.length <= 3) {
         return '';
       }
       return this.isType(value) && matchEmptyNumber(value);

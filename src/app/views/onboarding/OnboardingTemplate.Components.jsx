@@ -1,5 +1,4 @@
 import {
-  ButtonBase,
   Collapse,
   Dialog,
   FormControl,
@@ -12,9 +11,7 @@ import { useFormContext } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
-import clsx from 'clsx';
 import palette, { opacify } from 'styles/palette';
-import { MontserratTypography } from 'styles/theme-montserrat';
 
 export const OnboardingBackground = styled.div`
   background-color: ${palette.white};
@@ -216,110 +213,6 @@ export const OnboardingInputBase = withStyles({
     },
   },
 })(InputBase);
-
-export const OnboardingButton = withStyles({
-  root: {
-    borderRadius: 0,
-    fontSize: '1rem',
-    height: '3.125rem',
-    padding: '0.25rem 1.5rem',
-    position: 'relative',
-    textTransform: 'uppercase',
-    transition: 'all 0.25s ease-out',
-    whiteSpace: 'nowrap',
-    '&::before': {
-      backgroundColor: palette.darkBlue,
-      content: '""',
-      height: '100%',
-      left: 0,
-      opacity: 0,
-      position: 'absolute',
-      top: 0,
-      transition: 'all 0.25s ease-out',
-      width: '100%',
-      zIndex: 0,
-    },
-  },
-  small: {
-    '&&': {
-      height: '2.5rem',
-      padding: '0.5rem 0.75rem',
-    },
-  },
-  narrow: {
-    '&&': {
-      minWidth: '12rem',
-    },
-  },
-  contained: {
-    background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
-    color: palette.white,
-    minWidth: '20rem',
-    '&:hover::before': {
-      opacity: 1,
-    },
-  },
-  containedAutoWidth: {
-    background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
-    color: palette.white,
-    '&:hover::before': {
-      opacity: 1,
-    },
-  },
-  containedDisabled: {
-    background: palette.white,
-    border: `0.125rem solid ${palette.coolGrey1}`,
-    color: palette.coolGrey1,
-  },
-  containedAutoWidthDisabled: {
-    background: palette.white,
-    border: `0.125rem solid ${palette.coolGrey1}`,
-    color: palette.coolGrey1,
-  },
-  outlined: {
-    color: palette.unknownGrey1,
-    textTransform: 'none',
-  },
-  outlinedError: {
-    color: palette.error,
-    textTransform: 'none',
-  },
-  outlinedLink: {
-    color: palette.lighterCyanBlue,
-    textTransform: 'none',
-  },
-  outlinedSkip: {
-    color: palette.lighterCyanBlue,
-    padding: '0.5rem 0.25rem',
-    textTransform: 'none',
-  },
-  fullWidth: {
-    width: '100%',
-  },
-  label: {
-    zIndex: 100,
-  },
-})(({ classes, variant, size, fullWidth, disabled, children, ...props }) => {
-  const className = clsx(
-    classes.root,
-    classes[variant],
-    classes[size],
-    disabled && classes[`${variant}Disabled`],
-    fullWidth && classes.fullWidth,
-  );
-
-  return (
-    <ButtonBase disabled={disabled} className={className} {...props}>
-      <MontserratTypography
-        variant="h4"
-        weight="600"
-        className={clsx(classes.label)}
-      >
-        {children}
-      </MontserratTypography>
-    </ButtonBase>
-  );
-});
 
 export const OnboardingAdditionalFormControlText = styled.div`
   padding: ${props => (props.isSmallScreen ? '0.5rem' : '0.5rem 1.5rem')};

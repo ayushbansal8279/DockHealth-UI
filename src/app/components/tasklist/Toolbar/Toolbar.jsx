@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Grid, ClickAwayListener } from '@material-ui/core';
+import { Grid, ClickAwayListener } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
 import {
   toggleListNotifications,
@@ -23,6 +23,7 @@ import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover';
+import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover';
@@ -33,7 +34,6 @@ import {
   SearchWrapper,
   MemberWrapper,
   ToolbarContainer,
-  ListDescription,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -163,18 +163,21 @@ const Toolbar = ({
           >
             <Button
               variant="text"
-              ref={moreButtonReference}
+              width="200px"
+              reference={moreButtonReference}
               onClick={openMorePopover}
-              size="small"
+              endIcon={
+                <RotatableChevron
+                  rotated={isMorePopoverOpen}
+                  color={palette.brightBlue}
+                />
+              }
             >
-              <ToolbarLabel variant="body1" component="span">
-                ACTIONS
-              </ToolbarLabel>
-              <Spacing horizontal={3} />
-              <RotatableChevron
-                rotated={isMorePopoverOpen}
-                color={palette.brightBlue}
-              />
+              <div>
+                <ToolbarLabel variant="body1" component="span">
+                  ACTIONS
+                </ToolbarLabel>
+              </div>
             </Button>
             <Spacing horizontal={4} />
             {showMembers && (
@@ -237,7 +240,6 @@ const Toolbar = ({
           pdfTitle={pdfTitle}
         />
       </Grid>
-      <ListDescription>{taskList?.listDescription}</ListDescription>
       {(haveTasks ||
         searchValue ||
         !isEmpty(selectedFilters) ||

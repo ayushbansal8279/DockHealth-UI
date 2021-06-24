@@ -110,19 +110,14 @@ const InactiveRoleSelectionPopover = props => {
               );
               closePopover();
             }}
-            size="small"
-            variant="outlined"
+            variant="secondary"
             fullWidth
           >
             ARCHIVE
           </Button>
         </DenyButtonContainer>
         <ApprovalButtonContainer>
-          <Button
-            onClick={() => setSelectedStep('second')}
-            size="small"
-            fullWidth
-          >
+          <Button onClick={() => setSelectedStep('second')} fullWidth>
             REACTIVATE
           </Button>
         </ApprovalButtonContainer>
@@ -160,7 +155,6 @@ const InactiveRoleSelectionPopover = props => {
               reloadUsers();
             });
           }}
-          size="small"
           disabled={!selectedRole?.key}
         >
           Save

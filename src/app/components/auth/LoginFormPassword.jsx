@@ -6,9 +6,10 @@ import { object, string } from 'yup';
 import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Button from 'components/common/Button/Button';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
-import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
+import { StyledForm, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -88,14 +89,9 @@ const LoginFormPassword = ({
           }
         />
         <Spacing vertical={5} />
-        <NextButton
-          id="loginButton"
-          type="submit"
-          variant="contained"
-          color="primary"
-        >
+        <Button id="loginButton" fullWidth size="large" type="submit">
           {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
-        </NextButton>
+        </Button>
         <Spacing vertical={6} />
         <MontserratTypography variant="h4">
           <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>

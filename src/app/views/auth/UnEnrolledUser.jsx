@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { NextButton } from 'components/auth/AuthComponents.styled';
+import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
@@ -28,9 +28,7 @@ const UnEnrolledUser = () => {
         <a href="mailto:support@dock.health">support@dock.health</a>
       </MontserratTypography>
       <Spacing vertical={5} />
-      <NextButton onClick={() => redirectToLogout(history)} variant="contained">
-        Logout here
-      </NextButton>
+      <Button onClick={() => redirectToLogout(history)}>Logout here</Button>
     </div>
   );
 };

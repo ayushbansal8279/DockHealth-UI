@@ -5,8 +5,8 @@ import { object, string } from 'yup';
 import { useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import Button from 'components/common/Button/Button';
 import {
-  OnboardingButton,
   OnboardingDialog,
   OnboardingDivider,
   OnboardingH2,
@@ -19,7 +19,6 @@ import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
 } from '../common/UniversalInput/UniversalInput';
-import { NextButton } from './AuthComponents.styled';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -73,15 +72,16 @@ const ChangePhoneNumberForm = () => {
       <FormContext {...formMethods}>
         <UniversalMontserratInput
           label="Your Mobile Phone Number"
+          customShrinkCondition
           name="mobilePhoneNumber"
           CustomComponent={UniversalMobileInputComponent}
           autoComplete="none"
         />
       </FormContext>
       <Spacing vertical={5} />
-      <NextButton variant="contained" type="submit">
+      <Button type="submit" size="large">
         Continue
-      </NextButton>
+      </Button>
       <OnboardingDialog
         isSmallScreen={isSmallScreen}
         open={isDialogShown}
@@ -104,9 +104,9 @@ const ChangePhoneNumberForm = () => {
           justify="space-between"
           wrap="nowrap"
         >
-          <OnboardingButton variant="containedAutoWidth" size="small">
-            <OnboardingH2Bold onClick={hideDialog}>Ok</OnboardingH2Bold>
-          </OnboardingButton>
+          <Button onClick={hideDialog}>
+            <OnboardingH2Bold>Ok</OnboardingH2Bold>
+          </Button>
         </Grid>
       </OnboardingDialog>
     </form>

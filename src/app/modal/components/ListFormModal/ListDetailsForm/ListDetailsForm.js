@@ -30,15 +30,18 @@ const onSubmit = ({
     .then(updatedList => {
       if (updatedList) {
         setList(updatedList);
-        nextStep();
 
-        if (!taskListIdentifier) {
+        const isNewList = !taskListIdentifier;
+
+        if (isNewList) {
           if (typeof onListCreationSuccess === 'function') {
             onListCreationSuccess(updatedList.taskListIdentifier);
           }
           onTaskListAdded();
+          nextStep();
         } else {
           onTaskListEdited();
+          closeModal();
         }
       }
     })
@@ -161,7 +164,7 @@ const ListDetailsForm = ({
           <ButtonWrapper>
             <Button
               fullWidth
-              variant="outlined"
+              variant="secondary"
               onClick={closeModal}
               size="small"
             >
@@ -173,10 +176,10 @@ const ListDetailsForm = ({
             <Button
               fullWidth
               type="submit"
-              size="small"
               disabled={isSavingList}
+              size="small"
             >
-              Next
+              Save
             </Button>
           </ButtonWrapper>
         </Grid>

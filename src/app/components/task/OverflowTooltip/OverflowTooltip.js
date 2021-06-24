@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 
 function checkIfShouldDisplayTooltip(textReference) {
@@ -11,27 +11,20 @@ const OverflowTooltip = ({ children, textReference }) => {
   const [allowTooltip, setAllowTooltip] = useState(() =>
     checkIfShouldDisplayTooltip(textReference),
   );
-  const handleResizeCallback = useRef(null);
 
   useEffect(() => {
     setAllowTooltip(checkIfShouldDisplayTooltip(textReference));
 
-    if (handleResizeCallback.current) {
-      window.removeEventListener('resize', handleResizeCallback.current);
-    }
-
-    handleResizeCallback.current = debounce(() => {
+    const handleResizeCallback = debounce(() => {
       setAllowTooltip(checkIfShouldDisplayTooltip(textReference));
     }, 1000);
 
-    window.addEventListener('resize', handleResizeCallback.current);
-  }, [textReference]);
+    window.addEventListener('resize', handleResizeCallback);
 
-  useEffect(() => {
     return () => {
-      window.removeEventListener('resize', handleResizeCallback.current);
+      window.removeEventListener('resize', handleResizeCallback);
     };
-  }, []);
+  }, [textReference]);
 
   return allowTooltip ? children : null;
 };

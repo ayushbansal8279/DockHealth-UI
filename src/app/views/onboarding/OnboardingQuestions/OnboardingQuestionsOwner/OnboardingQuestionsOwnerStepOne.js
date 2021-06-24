@@ -2,9 +2,10 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
-import { Option, QuestionContainer, NextButton } from '../styled';
+import { Option, QuestionContainer } from '../styled';
 
 const OnboardingQuestionsOwnerStepOne = ({
   clickNextStep,
@@ -104,7 +105,7 @@ const OnboardingQuestionsOwnerStepOne = ({
   return (
     <div>
       <QuestionContainer>
-        I’m a{' '}
+        I&apos;m a{' '}
         <Option
           ref={roleReference}
           onClick={openRolePicker}
@@ -133,13 +134,9 @@ const OnboardingQuestionsOwnerStepOne = ({
       />
       <Spacing vertical={5} />
       <Spacing vertical={6} />
-      <NextButton
-        type="button"
-        onClick={clickNextStep}
-        disabled={isDisabledButton}
-      >
+      <Button onClick={clickNextStep} type="button" disabled={isDisabledButton}>
         Next Step
-      </NextButton>
+      </Button>
     </div>
   );
 };

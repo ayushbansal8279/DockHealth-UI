@@ -16,7 +16,7 @@ import {
   FlexButtonWrapper,
 } from '../styled';
 
-const DeleteGroupModal = ({ closeModal, confirm }) => {
+const DeleteNoteModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -36,10 +36,8 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
           <FlexButtonWrapper>
             <Button
               fullWidth
-              color="red"
+              variant="secondary-red"
               size="small"
-              variant="outlined"
-              type="button"
               onClick={closeModal}
             >
               Cancel
@@ -49,10 +47,8 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
           <FixedWidthButtonWrapper width={231}>
             <Button
               fullWidth
-              color="red"
+              variant="primary-red"
               size="small"
-              variant="contained"
-              type="button"
               onClick={confirm}
             >
               Delete permanently
@@ -64,4 +60,4 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
   );
 };
 
-export default DeleteGroupModal;
+export default DeleteNoteModal;

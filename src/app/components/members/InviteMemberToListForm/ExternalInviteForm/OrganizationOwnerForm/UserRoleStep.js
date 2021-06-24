@@ -73,22 +73,15 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         <Grid item xs={5}>
           <Button
             fullWidth
-            variant="outlined"
+            variant="secondary"
             type="button"
-            size="small"
             onClick={navigateToPreviousStep}
           >
             Back
           </Button>
         </Grid>
         <Grid item xs={5}>
-          <Button
-            fullWidth
-            variant="contained"
-            size="small"
-            disabled={disabled}
-            type="submit"
-          >
+          <Button fullWidth disabled={disabled} type="submit">
             Assign role
           </Button>
         </Grid>

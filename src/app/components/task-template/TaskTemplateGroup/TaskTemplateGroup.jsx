@@ -33,7 +33,8 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
-import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
+import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
+import PatientList from 'components/patients/PatientDropdown/PatientList';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -81,8 +82,8 @@ const TaskTemplateGroup = ({
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
-  const [isPopoverOpen, setPopoverOpen] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
+  const patientReference = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -291,6 +292,38 @@ const TaskTemplateGroup = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
+  const openPatientPopover = useCallback(() => {
+    if (!disablePatientAssignment && patientReference.current)
+      patientReference.current.click();
+  }, [disablePatientAssignment]);
+
+  const handlePatientSelect = useCallback(
+    newPatient => {
+      const patientName = newPatient?.lastName
+        ? `${newPatient?.lastName}, ${newPatient?.firstName}`
+        : newPatient?.firstName;
+
+      dispatch(
+        ModalActions.openModal(
+          newPatient ? 'AssignPatient' : 'UnassignPatient',
+          {
+            isWorkflowModal: true,
+            confirm: () => {
+              dispatch(
+                TemplateBundleActions.changePatientForTemplateBundle(
+                  identifier,
+                  newPatient,
+                ),
+              );
+            },
+            patientName,
+          },
+        ),
+      );
+    },
+    [dispatch, identifier],
+  );
+
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeaderContainer>
@@ -315,7 +348,6 @@ const TaskTemplateGroup = ({
             <TaskTemplateNameInput
               ref={nameInputReference}
               readOnly={!isEditing}
-              disabled={!isEditing}
               error={nameInputError}
               onChange={event => {
                 setNameInputValue(event.target?.value);
@@ -336,35 +368,43 @@ const TaskTemplateGroup = ({
         <TaskTemplateRight>
           {!disablePatientAssignment && (
             <TaskTemplatePatientHeader>
-              <PatientDropdown
-                selectedPatientIdentifier={
-                  patient ? patient.patientIdentifier : null
-                }
-                isPopoverOpen={isPopoverOpen}
-                onChangePatient={patientIdentifier =>
-                  dispatch(
-                    TemplateBundleActions.changePatientForTemplateBundle(
-                      identifier,
-                      patientIdentifier,
-                    ),
-                  )
-                }
-                openPopover={() => setPopoverOpen(true)}
-                closePopover={() => setPopoverOpen(false)}
-                isMultipleChange
-              >
-                {patient ? (
-                  <PatientCard patientIdentifier={patient.patientIdentifier}>
-                    <Placeholder>
-                      {patient?.lastName
-                        ? `${patient?.lastName}, ${patient?.firstName}`
-                        : patient?.firstName}
-                    </Placeholder>
-                  </PatientCard>
-                ) : (
-                  <AddPlaceholder>+ Add Patient</AddPlaceholder>
+              <TaskItemPopover
+                ref={patientReference}
+                fullWidth
+                contentWidth={330}
+                content={({ closePopover }) => (
+                  <PatientList
+                    onSelect={newPatient => {
+                      handlePatientSelect(newPatient);
+                      closePopover();
+                    }}
+                    selectedPatientIdentifier={
+                      patient ? patient.patientIdentifier : null
+                    }
+                    isMultipleChange
+                    closePopover={closePopover}
+                  />
                 )}
-              </PatientDropdown>
+              >
+                {({ isPopoverOpen }) => (
+                  <>
+                    {patient ? (
+                      <PatientCard
+                        patientIdentifier={patient.patientIdentifier}
+                        disabled={isPopoverOpen}
+                      >
+                        <Placeholder>
+                          {patient?.lastName
+                            ? `${patient?.lastName}, ${patient?.firstName}`
+                            : patient?.firstName}
+                        </Placeholder>
+                      </PatientCard>
+                    ) : (
+                      <AddPlaceholder>+ Add Patient</AddPlaceholder>
+                    )}
+                  </>
+                )}
+              </TaskItemPopover>
             </TaskTemplatePatientHeader>
           )}
           <TaskTemplateOptionsContainer
@@ -434,11 +474,7 @@ const TaskTemplateGroup = ({
                           isBundleTask
                           templateBundleIdentifier={identifier}
                           parentTaskGroupIdentifier={parentTaskGroupIdentifier}
-                          openPatientPopover={
-                            disablePatientAssignment
-                              ? () => {}
-                              : () => setPopoverOpen(true)
-                          }
+                          openPatientPopover={openPatientPopover}
                           noMargin
                         />
                       )}

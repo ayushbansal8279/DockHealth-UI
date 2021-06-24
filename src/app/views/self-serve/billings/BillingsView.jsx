@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
@@ -80,6 +80,22 @@ const BillingsView = () => {
   const { organizationIdentifier } = useSelector(
     store => store.userState.userProfile,
   );
+
+  const { userProfile } = useSelector(store => ({
+    userProfile: store.userState?.userProfile,
+  }));
+
+  useEffect(() => {
+    if (
+      !(
+        userProfile?.orgUserRole === 'OWNER' ||
+        userProfile?.orgUserRole === 'ADMIN'
+      )
+    ) {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile]);
 
   const [
     isUpdatingBilling,

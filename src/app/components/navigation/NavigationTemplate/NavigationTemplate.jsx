@@ -59,7 +59,9 @@ const NavigationDrawer = ({
           currentOrganization={currentOrganization}
           selectCurrentOrganization={selectCurrentOrganization}
         />
-        <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
+        {intercomUser && intercomUser.name && (
+          <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
+        )}
       </MaterialDrawer>
     </>
   );

@@ -155,9 +155,9 @@ const SelectDestinationModal = ({
         <FlexButtonWrapper>
           <Button
             fullWidth
-            variant="outlined"
-            size="small"
+            variant="secondary"
             onClick={closeModal}
+            size="small"
           >
             Cancel
           </Button>
@@ -166,13 +166,13 @@ const SelectDestinationModal = ({
         <FlexButtonWrapper>
           <Button
             fullWidth
-            size="small"
             disabled={
               selectParentTask
                 ? !selectedList || !selectedGroup || !selectedParentTask
                 : !selectedList
             }
             onClick={handleConfirmWrapper}
+            size="small"
           >
             {confirmText || 'Save'}
           </Button>
