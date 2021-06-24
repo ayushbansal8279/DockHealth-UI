@@ -181,22 +181,19 @@ const SubscriptionsPlansView = ({
             <Button
               fullWidth
               onClick={() => setAnnualPayment(BILLING_FREQUENCY.ANNUAL)}
-            >
-              {chosenSubscriptionPlan &&
+              startIcon={
+                chosenSubscriptionPlan &&
                 chosenBillingFrequency === BILLING_FREQUENCY.ANNUAL && (
-                  <>
-                    <img
-                      src={ConfirmEmailHeaderCheck}
-                      style={{
-                        float: 'left',
-                        height: '2.2rem',
-                        marginLeft: '-50px',
-                      }}
-                      alt="Dock Health"
-                    />
-                    <Spacing horizontal={5} />
-                  </>
-                )}
+                  <img
+                    src={ConfirmEmailHeaderCheck}
+                    alt="Dock Health"
+                    style={{
+                      marginRight: '10px',
+                    }}
+                  />
+                )
+              }
+            >
               PAY ANNUALLY
             </Button>
             <Spacing vertical={4} />
@@ -228,22 +225,19 @@ const SubscriptionsPlansView = ({
             <Button
               fullWidth
               onClick={() => setAnnualPayment(BILLING_FREQUENCY.MONTHLY)}
-            >
-              {chosenSubscriptionPlan &&
+              startIcon={
+                chosenSubscriptionPlan &&
                 chosenBillingFrequency === BILLING_FREQUENCY.MONTHLY && (
-                  <>
-                    <img
-                      src={ConfirmEmailHeaderCheck}
-                      style={{
-                        float: 'left',
-                        height: '2.2rem',
-                        marginLeft: '-50px',
-                      }}
-                      alt="Dock Health"
-                    />
-                    <Spacing horizontal={5} />
-                  </>
-                )}
+                  <img
+                    src={ConfirmEmailHeaderCheck}
+                    alt="Dock Health"
+                    style={{
+                      marginRight: '10px',
+                    }}
+                  />
+                )
+              }
+            >
               PAY MONTHLY
             </Button>
             <Spacing vertical={4} />
