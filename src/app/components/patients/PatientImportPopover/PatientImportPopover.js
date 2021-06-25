@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import ExcelLogo from 'img/excel-logo.svg';
 import { Add as AddIcon } from '@material-ui/icons';
 import circleCompleted from 'img/circle-completed.svg';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import {
   ImportPatientPopoverWrapper,
   ImportPatientPopoverWrapperMinimized,
@@ -49,13 +52,20 @@ const PatientImportPopover = ({
     ? patientImportDetails?.errorDetails
     : `${patientImportDetails?.trackingDetails?.length} Errors`;
 
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
   // DEFAULT POPOVER
   return (
     <>
       {!minimizedState && (
         <ImportPatientPopoverWrapper>
           <PopoverHeader>
-            Patient Upload
+            {customerTypeLabelCapitalized} Upload
             {(fileProgress < 100 ||
               patientImportDetails?.trackingDetails?.length > 0) && (
               <PopoverCloseButton
@@ -121,7 +131,7 @@ const PatientImportPopover = ({
                   Re-upload corrected file
                 </FixErrors>
                 <FixErrors onClick={closePopover}>
-                  Add patients manually
+                  Add {customerTypeLabel}s manually
                 </FixErrors>
               </FixErrorContainer>
             </ErrorDisplayArea>
@@ -132,7 +142,7 @@ const PatientImportPopover = ({
       {minimizedState && (
         <ImportPatientPopoverWrapperMinimized>
           <PopoverHeader>
-            Patient Upload
+            {customerTypeLabelCapitalized} Upload
             <PopoverExpandButton
               onClick={() => {
                 setMinimizedState(false);

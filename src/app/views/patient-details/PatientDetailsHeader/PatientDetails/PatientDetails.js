@@ -5,6 +5,7 @@ import moment from 'moment';
 import { useForm } from 'react-hook-form';
 import { Collapse } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
+import { getCustomerUniqueIDLabel } from 'helpers/customer-type-helper';
 import PatientDetailsInput from './PatientDetailsInput';
 import {
   PatientDetailsForm,
@@ -41,6 +42,7 @@ const PatientDetails = ({
   patientIdentifier,
   archivePatient,
   editingDisabled,
+  currentUser,
 }) => {
   const formattedDob = dob ? moment(dob).format('MM/DD/YYYY') : null;
   const defaultValues = {
@@ -115,6 +117,8 @@ const PatientDetails = ({
     }
   }, [isActive]);
 
+  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
+
   return (
     <Collapse timeout={150} in={isOpenedDetails}>
       <PatientDetailsForm
@@ -176,7 +180,7 @@ const PatientDetails = ({
             defaultValue={dob ? moment(dob).format('MM/DD/YYYY') : null}
           />
           <PatientDetailsInput
-            label="mrn"
+            label={uniqueIdentifierLabel}
             isActive={isActive}
             placeholder="- -"
             name="mrn"

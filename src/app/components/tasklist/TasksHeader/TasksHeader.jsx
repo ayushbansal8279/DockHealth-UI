@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
@@ -6,6 +7,8 @@ import {
   TaskItemColumn,
   TASK_ITEM_BASE_COLUMN_CONFIG,
 } from 'helpers/task-helpers';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import { BulkContainer } from './styled';
 
 const TasksHeader = ({
@@ -17,6 +20,12 @@ const TasksHeader = ({
   groupHasMultipleAssignees,
   taskItemConfig = {},
 }) => {
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
   const mergedConfig = useMemo(
     () => ({
       ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -53,7 +62,7 @@ const TasksHeader = ({
       {mergedConfig[TaskItemColumn.PATIENT] && (
         <ColumnSortHeader
           id={TaskItemColumn.PATIENT}
-          label="Patient"
+          label={customerTypeLabelCapitalized}
           width={164}
           sort={sort}
           onSortChange={onSortChange}

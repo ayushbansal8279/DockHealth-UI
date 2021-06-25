@@ -3,6 +3,8 @@ import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Spacing from 'components/common/Spacing';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import { subMenuKeySelector } from 'selectors/template-selectors';
 import * as TemplateActions from 'actions/template-actions';
 import SearchIcon from 'img/navigation/SearchIcon';
@@ -79,6 +81,9 @@ const NavigationSidebar = ({
 
   const { organizationProfileColor, organizationInitials } =
     currentOrganization || {};
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   useEffect(() => {
     const unlisten = history.listen(() =>
@@ -160,7 +165,7 @@ const NavigationSidebar = ({
               onItemClick={handleNavigationItemClick}
             />
             <IconNavigationItem
-              name="Patients"
+              name={`${customerTypeLabelCapitalized}s`}
               icon={PatientsIcon}
               subMenuKey={SubmenuKey.PATIENTS}
               subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}

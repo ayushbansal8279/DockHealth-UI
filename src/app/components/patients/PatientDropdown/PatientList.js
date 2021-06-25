@@ -5,11 +5,13 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
+import { useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import MagnifierIcon from 'img/magnifier';
 import { getPatientsByCriteria } from 'api/patient-api';
 import { getFormattedPatients } from 'components/task-drawer/PatientSection/helpers';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import {
   Input,
   InputBox,
@@ -33,6 +35,11 @@ const PatientList = ({
   const listReference = useRef(null);
   const inputReference = useRef(null);
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const displayUnassignedOption = useMemo(
     () =>
@@ -194,7 +201,7 @@ const PatientList = ({
         <img src={MagnifierIcon} alt="magnifier" />
         <Input
           ref={inputReference}
-          placeholder="Search patient"
+          placeholder={`Search ${customerTypeLabel}`}
           value={searchValue}
           onChange={onPatientInputChange}
           onKeyDown={handleInputKeyDown}
@@ -208,7 +215,7 @@ const PatientList = ({
         </LoaderContainer>
       )}
       {!isLoadingPatients && patients.length === 0 && searchValue !== '' && (
-        <NoPatientFound>No patient found</NoPatientFound>
+        <NoPatientFound>No {customerTypeLabel} found</NoPatientFound>
       )}
       {!isLoadingPatients && (
         <ListContainer withBorder={patients.length !== 0} ref={listReference}>

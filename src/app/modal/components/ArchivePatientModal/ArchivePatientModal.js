@@ -1,8 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import RedFolder from 'img/modals/red-folder';
 import { redTheme } from '../../themes/red-theme';
 
@@ -16,19 +19,25 @@ import {
 } from '../styled';
 
 const ArchivePatientModal = ({ closeModal, confirm }) => {
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={RedFolder} alt="red-folder" />
           <Typography color="textPrimary" variant="h2">
-            Archive Patient
+            Archive {customerTypeLabelCapitalized}
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to archive this patient? This action cannot be
-            undone.
+            Are you sure you want to archive this {customerTypeLabel}? This
+            action cannot be undone.
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>

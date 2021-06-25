@@ -34,6 +34,7 @@ const DashboardStatistics = ({
   dashboardStatistics,
   dashboardIsLoading,
   dashboardTab,
+  customerTypeLabel,
 }) => {
   const patientStatsAmount = dashboardStatistics?.find(
     ({ metricName }) => metricName === 'PATIENTS_SERVED_COUNT',
@@ -103,8 +104,8 @@ const DashboardStatistics = ({
               icon="patientsCared"
               label={
                 showPatientAmount
-                  ? 'PATIENTS CARED FOR'
-                  : 'We can calculate patients when they are assigned to their tasks'
+                  ? `${customerTypeLabel.toUpperCase()}S CARED FOR`
+                  : `We can calculate ${customerTypeLabel}s when they are assigned to their tasks`
               }
               alignText="center"
               amount={patientStatsAmount}

@@ -1,12 +1,14 @@
 import { Grid, Dialog } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { downloadPatientImportTemplate } from 'api/patient-api';
 
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import useBoolean from 'hooks/useBoolean';
 import SearchInput from 'components/common/SearchInput/SearchInput';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { SearchInputWrapper, Container, ImportButton } from './styled';
 
 const PatientsToolbar = ({
@@ -24,6 +26,11 @@ const PatientsToolbar = ({
     setIsSearchFocused,
     unsetIsSearchFocused,
   ] = useBoolean(false);
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser).toUpperCase();
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
@@ -66,7 +73,7 @@ const PatientsToolbar = ({
                     setImportPopupOpen(true);
                   }}
                 >
-                  IMPORT PATIENTS FROM EXCEL
+                  IMPORT {customerTypeLabel}S FROM EXCEL
                 </ImportButton>
               </Grid>
               <Grid item>
@@ -74,7 +81,7 @@ const PatientsToolbar = ({
                   adornment={<AddIcon />}
                   onClick={onAddPatientClick}
                 >
-                  ADD A PATIENT
+                  ADD A {customerTypeLabel}
                 </AdornedButton>
               </Grid>
             </>

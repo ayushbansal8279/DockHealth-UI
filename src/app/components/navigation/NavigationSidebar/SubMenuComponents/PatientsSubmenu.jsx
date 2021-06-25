@@ -18,6 +18,8 @@ import {
 import { isEmpty } from 'ramda';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 
 import {
   DrawerMyListsLabel,
@@ -52,6 +54,12 @@ const PatientsSubmenu = () => {
   const isGuest = orgUserRole === 'GUEST';
   const isInitialListFetching = isFetching && isEmpty(defaultPatientsLists);
 
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
   useEffect(() => {
     PatientsActions.getPatientsLists()(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,7 +92,7 @@ const PatientsSubmenu = () => {
   return (
     <>
       <DrawerMyListsLabel>
-        <div>Patients </div>
+        <div>{`${customerTypeLabelCapitalized}s`} </div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={0}>
         {!isInitialListFetching ? (

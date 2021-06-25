@@ -17,7 +17,7 @@ const WorkflowUseStep = () => {
       <Title>Deploy Workflows in a List</Title>
       <Description>
         Easily add a Workflow to a list right from the &quot;add task&quot; bar.
-        Once created, you can add patient context and modify as needed.
+        Once created, you can add patient/client context and modify as needed.
       </Description>
     </>
   );

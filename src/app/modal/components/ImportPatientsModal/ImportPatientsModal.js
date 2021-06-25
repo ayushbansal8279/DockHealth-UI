@@ -1,18 +1,20 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useRef, useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import palette from 'styles/palette';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import { uploadPatientData } from 'api/patient-api';
 import UploadFileIcon from 'img/upload-file.svg';
 import { useDropzone } from 'react-dropzone';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import Button from 'components/common/Button/Button';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   ImportPatientModalWrapper,
   Description,
   ContentMessage,
   Title,
-  StyledButton,
   AlreadyHaveTemplate,
   FileInputArea,
   FileInputMessage,
@@ -29,6 +31,11 @@ const ImportPatientsModal = ({
   const inputFileReference = useRef(null);
 
   const [modalStep, setModalStep] = useState(step);
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const onFileInputChange = useCallback(() => {
     const fileInputElement = inputFileReference.current;
@@ -75,33 +82,34 @@ const ImportPatientsModal = ({
         {modalStep === 1 && (
           <>
             <Description>Step 1 of 2</Description>
-            <Title>Import Patient list</Title>
+            <Title>Import {customerTypeLabel} list</Title>
             <Spacing vertical={1} />
             <ContentMessage>
-              To ensure your patient list gets uploaded properly, please
-              download our easy template.
+              To ensure your {customerTypeLabel} list gets uploaded properly,
+              please download our easy template.
             </ContentMessage>
             <ContentMessage style={{ marginBottom: '50px' }}>
-              Copy and paste your patient lists into the template, then upload
-              to Dock here.
+              Copy and paste your {customerTypeLabel} lists into the template,
+              then upload to Dock here.
             </ContentMessage>
             <Spacing vertical={5} />
             <Spacing vertical={5} />
             <Grid container direction="row" spacing={2}>
-              <Grid item xs={6}>
-                <StyledButton variant="secondary" onClick={closeModal}>
+              <Grid item xs={4}>
+                <Button variant="secondary" onClick={closeModal}>
                   Cancel
-                </StyledButton>
+                </Button>
               </Grid>
-              <Grid item xs={6}>
-                <StyledButton
+              <Grid item xs={8} style={{ textAlign: 'center' }}>
+                <Button
+                  width="250px"
                   onClick={() => {
                     downloadTemplate();
                     setModalStep(2);
                   }}
                 >
                   Download Template
-                </StyledButton>
+                </Button>
               </Grid>
             </Grid>
             <Spacing vertical={5} />
@@ -118,11 +126,11 @@ const ImportPatientsModal = ({
         {modalStep === 2 && (
           <>
             <Description>Step 2 of 2</Description>
-            <Title>Import Patient list</Title>
+            <Title>Import {customerTypeLabel} list</Title>
             <Spacing vertical={1} />
             <ContentMessage style={{ marginBottom: '50px' }}>
-              Copy and paste your patients into the template, then upload To
-              Dock here.
+              Copy and paste your {customerTypeLabel}s into the template, then
+              upload To Dock here.
             </ContentMessage>
             <FileInputArea {...getRootProps()}>
               <FileInputImage src={UploadFileIcon} alt="file upload icon" />

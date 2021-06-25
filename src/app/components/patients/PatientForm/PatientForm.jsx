@@ -84,6 +84,7 @@ const onSubmit = ({
   onCancel,
   onPatientCreated,
   onPatientEdited,
+  uniqueIdentifierLabel,
 }) => data => {
   const patientApiMethod = patient
     ? PatientApi.updatePatient({ ...patient, ...data })
@@ -108,10 +109,10 @@ const onSubmit = ({
       if (!patient) {
         showAlert({
           status: 'error',
-          title: 'Potential Duplicate Patient',
+          title: 'Potential Duplicate',
           text:
             error?.message ??
-            'A patient with this name and MRN already exists!',
+            `A patient with this name and ${uniqueIdentifierLabel} already exists!`,
           showConfirmButton: true,
           allowOutsideClick: false,
           allowEscapeKey: false,
@@ -126,6 +127,7 @@ const PatientForm = ({
   onPatientCreated,
   onPatientEdited,
   onCancel,
+  uniqueIdentifierLabel,
 }) => {
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
@@ -183,6 +185,7 @@ const PatientForm = ({
             onCancel,
             onPatientCreated,
             onPatientEdited,
+            uniqueIdentifierLabel,
           }),
         )}
       >
@@ -197,7 +200,7 @@ const PatientForm = ({
               />
               <NameInput name="middleName" label="Middle Name" />
               <NameInput name="lastName" required label="Last Name" />
-              <PatientInput name="mrn" label="MRN" />
+              <PatientInput name="mrn" label={uniqueIdentifierLabel} />
               <Select
                 onOpen={setGenderSelectOpen}
                 onClose={unsetGenderSelectOpen}

@@ -25,7 +25,7 @@ const PatientsSuggestionsPopover = React.forwardRef(
             tagType="#Patients"
             hint={
               suggestionsToDisplay.length === 0 && !searchValue
-                ? `Start typing patient's name`
+                ? `Start typing patient/client name`
                 : ''
             }
           />

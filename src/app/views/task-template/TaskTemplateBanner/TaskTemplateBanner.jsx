@@ -26,8 +26,8 @@ const TaskTemplateBanner = ({ onClose, onCreateTemplate, firstTemplate }) => {
           accountable process for your organization. Simply design a reusable
           Workflow by giving it a name and adding tasks, subtasks, assignments
           and attachments to your template. Once saved, you can easily add any
-          Workflow to a list from the “Add Task” bar, add patient context and
-          customize it as needed.
+          Workflow to a list from the “Add Task” bar, add patient/client context
+          and customize it as needed.
         </Description>
       </TextContainer>
       {firstTemplate && (

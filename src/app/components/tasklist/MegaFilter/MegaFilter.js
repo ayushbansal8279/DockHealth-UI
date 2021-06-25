@@ -1,7 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { isEmpty, isNil, partition } from 'ramda';
 import { onFilterChanged } from 'helpers/ga-event-helper';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import palette from 'styles/palette';
 import {
   getFilterRowComponent,
@@ -74,6 +77,7 @@ const FilterColumn = ({
   selectedFilters,
   onSelectFilters,
   searchedFilterQuery,
+  customerTypeLabelCapitalized,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const FilterRow = getFilterRowComponent(type);
@@ -136,9 +140,16 @@ const FilterColumn = ({
     onSelectFilters(updatedFilters);
   };
 
+  let colLabel = '';
+  if (label === 'Patients') {
+    colLabel = `${customerTypeLabelCapitalized}s`;
+  } else {
+    colLabel = label;
+  }
+
   return (
     <StyledFilter>
-      <FilterLabel>{label}</FilterLabel>
+      <FilterLabel>{colLabel}</FilterLabel>
       <FilterList>
         {!isEmpty(searchedFiletrs) && (
           <FilterSearched>
@@ -217,6 +228,12 @@ const MegaFilter = ({
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterReference = useRef(null);
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   const clearFilters = () => {
     onSelectFilters({});
@@ -340,6 +357,7 @@ const MegaFilter = ({
                     taskStatus={taskStatus}
                     filters={filters}
                     searchedFilterQuery={searchedFilterQuery}
+                    customerTypeLabelCapitalized={customerTypeLabelCapitalized}
                   />
                 ))}
           </Filters>

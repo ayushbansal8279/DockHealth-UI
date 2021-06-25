@@ -23,7 +23,7 @@ const DeleteNoteModal = ({ closeModal, confirm }) => {
         <ModalIconContainer>
           <ModalMainIcon src={Note} alt="note" />
           <Typography color="textPrimary" variant="h2">
-            Delete patient note
+            Delete note
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>

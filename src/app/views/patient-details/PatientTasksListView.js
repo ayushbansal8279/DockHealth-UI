@@ -25,6 +25,7 @@ import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResul
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { TaskItemColumn } from 'helpers/task-helpers';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
@@ -68,6 +69,8 @@ const PatientTasksListView = ({
     applyTemplateForPatient,
   } = patientTasksSagaActions;
 
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
   const isListFlattened =
     areFiltersApplied ||
     !!taskSearch ||
@@ -89,8 +92,8 @@ const PatientTasksListView = ({
     return (
       <EmptyListViewWithQuickAddTask quickAddTask={handleQuickAddTask}>
         <EmptyListView
-          title="This patient has no tasks"
-          description="Add tasks for this patient above."
+          title={`This ${customerTypeLabel} has no tasks`}
+          description={`Add tasks for this ${customerTypeLabel} above.`}
           image={EmptyTaskListBird}
         />
       </EmptyListViewWithQuickAddTask>

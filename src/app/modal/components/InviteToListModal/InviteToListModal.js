@@ -22,7 +22,7 @@ const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
           <Description>
             Invite as many people as you’d like to share it with. The people you
             invite to this list will have access to the tasks, people and
-            patients who are part of this list.
+            clients who are part of this list.
           </Description>
         </Header>
         <InviteMemberToListForm

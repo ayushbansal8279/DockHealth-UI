@@ -14,7 +14,7 @@ import {
   checkIfHasIncompleteTasks,
   extractTasksAndSubtasks,
 } from 'helpers/tasklist-helpers';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
@@ -35,6 +35,8 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -84,6 +86,12 @@ const TaskTemplateGroup = ({
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const patientReference = useRef(null);
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   const dispatch = useDispatch();
 
@@ -400,7 +408,9 @@ const TaskTemplateGroup = ({
                         </Placeholder>
                       </PatientCard>
                     ) : (
-                      <AddPlaceholder>+ Add Patient</AddPlaceholder>
+                      <AddPlaceholder>
+                        + Add {customerTypeLabelCapitalized}
+                      </AddPlaceholder>
                     )}
                   </>
                 )}

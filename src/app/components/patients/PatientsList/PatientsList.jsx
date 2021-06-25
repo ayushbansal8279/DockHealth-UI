@@ -1,10 +1,15 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
+import {
+  getCustomerTypeLabel,
+  getCustomerUniqueIDLabel,
+} from 'helpers/customer-type-helper';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
 import { NonEmptyListTable, ListLoaderContainer } from './styled';
@@ -42,11 +47,16 @@ const PatientsList = ({
   isFetching,
 }) => {
   const history = useHistory();
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
 
   const columns = [
     {
       field: 'patient',
-      headerName: 'PATIENT',
+      headerName: customerTypeLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
       renderCell: ({ row }) => (
         <span
@@ -99,7 +109,7 @@ const PatientsList = ({
     },
     {
       field: 'mrn',
-      headerName: 'MRN',
+      headerName: uniqueIdentifierLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
       flex: 0.5,
       sortComparator: (v1, v2, parameters1, parameters2) => {
