@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as PatientsActions from 'actions/patients-actions';
 import palette from 'styles/palette';
 import { Box } from '@material-ui/core';
-import AddButton from 'components/common/AddButton/AddButton';
+import AddButton from 'components/common/AddButton/AddButton.tsx';
+
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
 import {
@@ -60,6 +61,25 @@ const PatientsSubmenu = () => {
     dispatch(openModal('EditPatientList'));
     dispatch(hideSubMenu());
   };
+
+  const openDeleteConfirmationModal = useCallback(
+    list => {
+      const modalProps = {
+        confirm: () => {
+          if (list?.patientListIdentifier === listIdentifierUrlParameter) {
+            history.push(`/`);
+          }
+          PatientsActions.deletePatientsList(list.patientListIdentifier)(
+            dispatch,
+          );
+          dispatch(closeModal());
+        },
+      };
+      dispatch(openModal('DeleteList', modalProps));
+      dispatch(hideSubMenu());
+    },
+    [dispatch, history, listIdentifierUrlParameter],
+  );
 
   return (
     <>
@@ -145,9 +165,7 @@ const PatientsSubmenu = () => {
                           {
                             name: 'Delete',
                             onClick: () =>
-                              PatientsActions.deletePatientsList(
-                                patientsList.patientListIdentifier,
-                              )(dispatch),
+                              openDeleteConfirmationModal(patientsList),
                             color: palette.oPlusRed,
                           },
                         ]}
