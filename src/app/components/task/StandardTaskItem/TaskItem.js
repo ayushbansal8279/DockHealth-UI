@@ -80,7 +80,6 @@ const TaskItem = ({
   onTaskUpdate,
   updateDueDate,
   updateWorkflowStatus,
-  subTasksCount,
   dragAndDropDisabled,
   parentHasPatient,
   highlightedValue,
@@ -120,6 +119,7 @@ const TaskItem = ({
     parentTask,
     subtaskQuickAddOpen,
     selected,
+    subTasksCount,
   } = task;
 
   const { listName, taskListIdentifier } = taskList || {};

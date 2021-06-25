@@ -165,7 +165,6 @@ const Task = React.memo(
             dragHandleProps={dragHandleProps}
             isDragging={isDragging}
             subtasks={renderedSubtasks}
-            subTasksCount={subTasksCount}
             isDraggable={isDraggable}
             subtasksDisabled={subtasksDisabled}
             isFullView={isFullView}
