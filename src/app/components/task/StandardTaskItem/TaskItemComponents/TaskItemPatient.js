@@ -7,6 +7,7 @@ import {
   ClickablePatient,
   StandardTaskItemCell,
   PatientLabel,
+  DisabledPatientLabel,
 } from '../../styled';
 
 const TaskItemPatient = ({
@@ -23,6 +24,7 @@ const TaskItemPatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const isCompleted = taskStatus === 'COMPLETE';
   const onPatientClick = useCallback(() => {
     if (openPatientPopover && typeof openPatientPopover === 'function') {
       openPatientPopover();
@@ -40,6 +42,9 @@ const TaskItemPatient = ({
     [onTaskUpdate, task],
   );
 
+  const openPopoverWhenNotCompleted = open =>
+    !isCompleted ? setPopoverOpen(open) : () => {};
+
   const patientName = patient?.middleName
     ? `${patient?.lastName}, ${patient?.firstName} ${patient?.middleName?.slice(
         0,
@@ -48,34 +53,34 @@ const TaskItemPatient = ({
     : `${patient?.lastName}, ${patient?.firstName}`;
 
   const hasSubtasks = task?.subTasksCount > 0;
+  const PatientLabelComponent = isCompleted
+    ? DisabledPatientLabel
+    : PatientLabel;
+  const properOnPatientClick = !isCompleted ? onPatientClick : () => {};
   return (
     <StandardTaskItemCell width="164px">
-      <ClickablePatient onClick={onPatientClick}>
-        {taskStatus !== 'COMPLETE' &&
-          !patient &&
-          !isSubtask &&
-          !openPatientPopover && (
-            <PatientDropdown
-              selectedPatientIdentifier={
-                patient ? patient.patientIdentifier : null
-              }
-              isPopoverOpen={isPopoverOpen}
-              onChangePatient={handleUpdateRegularTaskPatient}
-              openPopover={() => setPopoverOpen(true)}
-              closePopover={() => setPopoverOpen(false)}
-              isSubtask={isSubtask}
-              hasSubtasks={hasSubtasks}
-            >
-              <AddPlaceholder>+ Add Patient</AddPlaceholder>
-            </PatientDropdown>
-          )}
-        {taskStatus !== 'COMPLETE' &&
-          !patient &&
-          !isSubtask &&
-          openPatientPopover && <AddPlaceholder>+ Add Patient</AddPlaceholder>}
+      <ClickablePatient onClick={properOnPatientClick}>
+        {!isCompleted && !patient && !isSubtask && !openPatientPopover && (
+          <PatientDropdown
+            selectedPatientIdentifier={
+              patient ? patient.patientIdentifier : null
+            }
+            isPopoverOpen={isPopoverOpen}
+            onChangePatient={handleUpdateRegularTaskPatient}
+            openPopover={() => openPopoverWhenNotCompleted(true)}
+            closePopover={() => setPopoverOpen(false)}
+            isSubtask={isSubtask}
+            hasSubtasks={hasSubtasks}
+          >
+            <AddPlaceholder>+ Add Patient</AddPlaceholder>
+          </PatientDropdown>
+        )}
+        {!isCompleted && !patient && !isSubtask && openPatientPopover && (
+          <AddPlaceholder>+ Add Patient</AddPlaceholder>
+        )}
         {patient && (openPatientPopover || hasParentTaskLabel) && (
           <PatientCard patientIdentifier={patient.patientIdentifier}>
-            <PatientLabel>
+            <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
                 <Highlighter
                   highlightClassName="list-highlight"
@@ -90,7 +95,7 @@ const TaskItemPatient = ({
               ) : (
                 `${patientName}`
               )}
-            </PatientLabel>
+            </PatientLabelComponent>
           </PatientCard>
         )}
         {patient && !isSubtask && !openPatientPopover && (
@@ -100,13 +105,13 @@ const TaskItemPatient = ({
             }
             isPopoverOpen={isPopoverOpen}
             onChangePatient={handleUpdateRegularTaskPatient}
-            openPopover={() => setPopoverOpen(true)}
+            openPopover={() => openPopoverWhenNotCompleted(true)}
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
           >
             <PatientCard patientIdentifier={patient.patientIdentifier}>
-              <PatientLabel>
+              <PatientLabelComponent>
                 {(matchPatient || matchPatientMRN) && highlightedValue ? (
                   <Highlighter
                     highlightClassName="list-highlight"
@@ -121,7 +126,7 @@ const TaskItemPatient = ({
                 ) : (
                   `${patientName}`
                 )}
-              </PatientLabel>
+              </PatientLabelComponent>
             </PatientCard>
           </PatientDropdown>
         )}
