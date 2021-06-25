@@ -24,6 +24,7 @@ const TaskItemPatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const isCompleted = taskStatus === 'COMPLETE';
   const onPatientClick = useCallback(() => {
     if (openPatientPopover && typeof openPatientPopover === 'function') {
       openPatientPopover();
@@ -41,6 +42,9 @@ const TaskItemPatient = ({
     [onTaskUpdate, task],
   );
 
+  const openPopoverWhenNotCompleted = open =>
+    !isCompleted ? setPopoverOpen(open) : () => {};
+
   const patientName = patient?.middleName
     ? `${patient?.lastName}, ${patient?.firstName} ${patient?.middleName?.slice(
         0,
@@ -49,13 +53,13 @@ const TaskItemPatient = ({
     : `${patient?.lastName}, ${patient?.firstName}`;
 
   const hasSubtasks = task?.subTasksCount > 0;
-  const isCompleted = taskStatus === 'COMPLETE';
   const PatientLabelComponent = isCompleted
     ? DisabledPatientLabel
     : PatientLabel;
+  const properOnPatientClick = !isCompleted ? onPatientClick : () => {};
   return (
     <StandardTaskItemCell width="164px">
-      <ClickablePatient onClick={!isCompleted ? onPatientClick : () => {}}>
+      <ClickablePatient onClick={properOnPatientClick}>
         {!isCompleted && !patient && !isSubtask && !openPatientPopover && (
           <PatientDropdown
             selectedPatientIdentifier={
@@ -63,7 +67,7 @@ const TaskItemPatient = ({
             }
             isPopoverOpen={isPopoverOpen}
             onChangePatient={handleUpdateRegularTaskPatient}
-            openPopover={() => setPopoverOpen(true)}
+            openPopover={() => openPopoverWhenNotCompleted(true)}
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
@@ -101,13 +105,13 @@ const TaskItemPatient = ({
             }
             isPopoverOpen={isPopoverOpen}
             onChangePatient={handleUpdateRegularTaskPatient}
-            openPopover={() => setPopoverOpen(true)}
+            openPopover={() => openPopoverWhenNotCompleted(true)}
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
           >
             <PatientCard patientIdentifier={patient.patientIdentifier}>
-              <PatientLabel>
+              <PatientLabelComponent>
                 {(matchPatient || matchPatientMRN) && highlightedValue ? (
                   <Highlighter
                     highlightClassName="list-highlight"
@@ -122,7 +126,7 @@ const TaskItemPatient = ({
                 ) : (
                   `${patientName}`
                 )}
-              </PatientLabel>
+              </PatientLabelComponent>
             </PatientCard>
           </PatientDropdown>
         )}

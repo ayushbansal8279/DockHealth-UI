@@ -456,10 +456,9 @@ export const PatientLabel = styled.span`
   }
 `;
 
-export const DisabledPatientLabel = styled.span`
+export const DisabledPatientLabel = styled(PatientLabel)`
   opacity: 0.5;
   cursor: not-allowed;
-  ${PatientLabel}
 `;
 
 export const DateText = styled.p`
