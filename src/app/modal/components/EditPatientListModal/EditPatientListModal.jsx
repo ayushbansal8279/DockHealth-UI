@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { openModal } from 'modal/actions';
 import Input from 'components/common/Input/Input';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import {
   EditPatientListModalWrapper,

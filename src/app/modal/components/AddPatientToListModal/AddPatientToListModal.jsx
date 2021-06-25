@@ -1,4 +1,6 @@
+/* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { pluck } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -9,6 +11,7 @@ import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
+import { createPatientListPath } from '../../../routing/helpers/paths';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientModalWrapper,
@@ -36,6 +39,7 @@ const AddPatientToListModal = ({
   const [selectedPatients, setSelectedPatients] = useState([]);
   const [saving, setSaving] = useState(false);
   const [edited, setEdited] = useState(false);
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const { patientListIdentifier, listName, listDescription } =
@@ -102,6 +106,7 @@ const AddPatientToListModal = ({
         setSaving(false);
         dispatch(showGlobalAlert(AlertMessages.SAVED));
         closeModal();
+        history.push(createPatientListPath(patientListIdentifier));
       })
       .catch(() => {
         setSaving(false);

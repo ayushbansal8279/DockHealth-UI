@@ -1,10 +1,14 @@
+/* eslint-disable import/extensions */
 import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
 import PersonIcon from 'img/modals/person';
 import PeopleIcon from 'img/modals/people';
 import Spacing from 'components/common/Spacing';
 import InviteMemberToListForm from 'components/members/InviteMemberToListForm/InviteMemberToListForm';
+import { useDispatch } from 'react-redux';
+import { getMembersByTaskListId } from '../../../../actions/task-list-actions';
 import { Title, Header, Description } from '../styled';
+
 import {
   InviteInitialViewWrapper,
   InviteInitialViewContent,
@@ -21,8 +25,12 @@ const InviteMembersForm = ({
   list,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
+  const getListMembers = () => {
+    const { taskListIdentifier } = list;
+    dispatch(getMembersByTaskListId(taskListIdentifier, 'ALL'));
+  };
   const [newListView, setNewListView] = useState(!isListEditMode);
-
   if (newListView) {
     return (
       <InviteInitialViewWrapper>
@@ -62,6 +70,7 @@ const InviteMembersForm = ({
           <InviteMemberToListForm
             list={list}
             externalInvitePosition={{ bottom: -60 }}
+            onMembersRefresh={getListMembers}
           />
         </Grid>
         <Spacing vertical={4} />
