@@ -303,7 +303,7 @@ const SubscriptionsPlansView = ({
       {/* </TermsLabel> */}
       {/* <TermsLabel style={{ marginTop: 0 }}> */}
       {/*   Before our decision to focus on the COVID-19 response, Dock Health */}
-      {/*   offered a 30-day free trial and a subscription model of $20/user/month. */}
+      {/*   offered a 15-day free trial and a subscription model of $20/user/month. */}
       {/*   In light of the urgent need to take care of providers, help them get */}
       {/*   organized and provide them the most relevant information easily, we have */}
       {/*   decided to make it free as long as it can be helpful during this public */}

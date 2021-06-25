@@ -17,7 +17,7 @@ import {
 import { selectCurrentOrganization } from 'api/user-api';
 import { TrialBannerLink, useDrawerClasses } from './styled';
 
-const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
+const TRIAL_USAGE_THRESHOLD_PERIOD = 5;
 const CARD_EXPIRATION_WARNING_DAYS = 15;
 
 export const initializeNavigationTemplateHooks = () => {
