@@ -17,7 +17,7 @@ const OnboardingNewOrganizationInfoView = () => {
       <Title>New Organization</Title>
       <Spacing vertical={4} />
       <Description>
-        You are about to create a new organization and start a free 30 day
+        You are about to create a new organization and start a free 15 day
         trial. Each organization has its own people, patients and tasks which
         are associated with it. You can invite people from other organizations
         to join a list within your organization. That person will then only have

@@ -2,10 +2,13 @@ import React from 'react';
 import SendingInviteIcon from 'img/SendingInviteIcon';
 import { ModalWrapper, ModalLabel } from './styled';
 
-const SendingInviteModal = ({ email }) => (
+const SendingInviteModal = ({ firstName, lastName }) => (
   <ModalWrapper>
     <SendingInviteIcon />
-    <ModalLabel>Email sent to {email}</ModalLabel>
+    <ModalLabel>
+      Thank you for referring {firstName} {lastName}! We will keep you posted
+      once we hear from them.
+    </ModalLabel>
   </ModalWrapper>
 );
 

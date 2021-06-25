@@ -67,8 +67,10 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
   });
 
   const openSuccessModal = useCallback(
-    email =>
+    (firstName, lastName, email) =>
       openModal('SendingInvite', {
+        firstName,
+        lastName,
         email,
       }),
     [openModal],
@@ -99,9 +101,10 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
                 </RobotoTypography>
               </Title>
               <DialogContentText>
-                If you love Dock Health and want to refer a friend or colleague,
-                simply fill in their information below and we&apos;ll send an
-                invite to their inbox.
+                Welcome to Dockcoin - the Dock Health Referral Rewards program.
+                If you love Dock and want to refer a friend or colleague, simply
+                fill in their information below and we&apos;ll send an invite to
+                their inbox.
               </DialogContentText>
               <Spacing vertical={4} />
               <MontserratTypography variant="h5">
