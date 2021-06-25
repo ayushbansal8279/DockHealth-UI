@@ -32,6 +32,7 @@ const Member = React.forwardRef(
       showTooltip,
       isInactive,
       showOnlineIndicator,
+      onClickAvatar,
       ...props
     },
     reference,
@@ -110,7 +111,11 @@ const Member = React.forwardRef(
           placement="bottom"
           hideTooltip={!showTooltip}
         >
-          <BackgroundContainer>
+          <BackgroundContainer
+            onClick={error => {
+              if (typeof onClickAvatar === 'function') onClickAvatar(error);
+            }}
+          >
             <AvatarContainer
               ref={reference}
               size={size}
@@ -148,6 +153,7 @@ Member.propTypes = {
     profileThumbnailPictureHash: PropTypes.string,
   }),
   color: string,
+  onClickAvatar: PropTypes.func,
 };
 
 Member.defaultProps = {
@@ -156,6 +162,7 @@ Member.defaultProps = {
   size: 30,
   member: null,
   color: palette.coolGrey2,
+  onClickAvatar: () => {},
 };
 
 export default Member;
