@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
@@ -21,6 +22,7 @@ import {
   NotesTitle,
   NoteDescription,
   NoteInfo,
+  PatientCellWrapper,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
@@ -57,6 +59,7 @@ const renderPatientNotes = (notes, { firstName, middleName, lastName }) => {
 
 const PatientCard = ({ children, patientIdentifier, disabled }) => {
   const reference = useRef(null);
+
   const [patientData, setPatientData] = useState(null);
 
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
@@ -94,7 +97,7 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
     allNotes,
   } = patientData || {};
   return (
-    <span
+    <PatientCellWrapper
       ref={reference}
       onMouseEnter={!disabled && openCard}
       onMouseLeave={closeCard}
@@ -167,7 +170,7 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
           )}
         </PatientCardContainer>
       </Popper>
-    </span>
+    </PatientCellWrapper>
   );
 };
 
