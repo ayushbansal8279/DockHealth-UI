@@ -2,8 +2,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Grid, IconButton } from '@material-ui/core';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import { Grid } from '@material-ui/core';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import {
@@ -16,23 +15,14 @@ import { NonEmptyListTable, ListLoaderContainer } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
 const renderColumnHeader = props => {
-  const { colDef, api, field } = props;
+  const { colDef } = props;
   const { headerName } = colDef;
-  const { sorting } = api.getState();
-  const { sortModel } = sorting;
-  const showArrowPlaceholder =
-    sortModel.length === 0 || sortModel[0].field !== field;
 
   return (
     <>
       <div className="MuiDataGrid-colCellTitle">
         <span>{headerName}</span>
       </div>
-      {showArrowPlaceholder && (
-        <IconButton className="Sorting-Arrow" size="small">
-          <ArrowUpwardIcon fontSize="inherit" />
-        </IconButton>
-      )}
     </>
   );
 };

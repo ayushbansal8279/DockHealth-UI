@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
-import { Grid, IconButton } from '@material-ui/core';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import { Grid } from '@material-ui/core';
 import moment from 'moment';
 import { func } from 'prop-types';
 import { filter, includes, isEmpty, reject } from 'ramda';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Search from 'components/task-view/Search/Search';
 import Member from 'components/members/Member/Member';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -93,23 +92,14 @@ const renderListNames = listNames => {
 };
 
 const renderColumnHeader = props => {
-  const { colDef, api, field } = props;
+  const { colDef } = props;
   const { headerName } = colDef;
-  const { sorting } = api.getState();
-  const { sortModel } = sorting;
-  const showArrowPlaceholder =
-    sortModel.length === 0 || sortModel[0].field !== field;
 
   return (
     <>
       <div className="MuiDataGrid-colCellTitle">
         <span>{headerName}</span>
       </div>
-      {showArrowPlaceholder && (
-        <IconButton className="Sorting-Arrow" size="small">
-          <ArrowUpwardIcon fontSize="inherit" />
-        </IconButton>
-      )}
     </>
   );
 };

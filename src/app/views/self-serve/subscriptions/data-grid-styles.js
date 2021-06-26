@@ -12,9 +12,10 @@ export const StyledDataGrid = styled(DataGrid)`
     background-color: ${palette.blueGrey};
   }
 
-  .MuiDataGrid-colCellTitleContainer {
+  .MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
+    margin-left: -10px;
 
     &:hover {
       & > .Sorting-Arrow {
@@ -58,7 +59,7 @@ export const StyledDataGrid = styled(DataGrid)`
     visibility: hidden;
   }
 
-  .MuiDataGrid-colCellWrapper {
+  .MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 

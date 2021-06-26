@@ -11,14 +11,21 @@ export const StyledDataGrid = styled(DataGrid)`
     max-width: 1179px;
   }
 
-  .MuiDataGrid-colCellTitleContainer {
+  .MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
+    margin-left: -15px;
 
     &:hover {
       & > .Sorting-Arrow {
         opacity: 0.5;
       }
+    }
+  }
+
+  .MuiDataGrid-columnHeader--sortable {
+    &:focus {
+      outline: none;
     }
   }
 
@@ -57,7 +64,7 @@ export const StyledDataGrid = styled(DataGrid)`
     visibility: hidden;
   }
 
-  .MuiDataGrid-colCellWrapper {
+  .MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
