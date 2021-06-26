@@ -199,8 +199,8 @@ const OnboardingTeamSetupView = () => {
       {firstTimeUser && (
         <>
           <OnboardingIndicator
-            steps={orgUserRole === 'OWNER' ? 4 : 3}
-            completedSteps={orgUserRole === 'OWNER' ? 4 : 3}
+            steps={orgUserRole === 'OWNER' ? 5 : 3}
+            completedSteps={orgUserRole === 'OWNER' ? 5 : 3}
           />
           <Spacing vertical={5} />
         </>

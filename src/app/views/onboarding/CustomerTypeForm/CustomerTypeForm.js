@@ -17,10 +17,10 @@ import {
   PickerItem,
 } from './styled';
 
-const CallTypeForm = ({ onSubmit, callTypesList }) => {
+const CustomerTypeForm = ({ onSubmit, customerTypesList }) => {
   const { orgUserRole } = useSelector(userProfileSelector);
   const firstTimeUser = localStorage.getItem('STORAGE_NEW_USER_FIRST_TIME');
-  const [selectedRecord, setselectedRecord] = useState(callTypesList[0]);
+  const [selectedRecord, setselectedRecord] = useState(customerTypesList[0]);
   const formContext = useForm({
     revalidationMode: 'onChange',
   });
@@ -48,7 +48,7 @@ const CallTypeForm = ({ onSubmit, callTypesList }) => {
       {firstTimeUser && (
         <>
           <OnboardingIndicator
-            steps={orgUserRole === 'OWNER' ? 5 : 4}
+            steps={orgUserRole === 'OWNER' ? 5 : 3}
             completedSteps={orgUserRole === 'OWNER' ? 4 : 3}
           />
           <Spacing vertical={5} />
@@ -58,7 +58,7 @@ const CallTypeForm = ({ onSubmit, callTypesList }) => {
         <UnderTitle>Almost Done!</UnderTitle>
         <Title>What do you call your customers?</Title>
         <Spacing vertical={5} />
-        {callTypesList.map(element => renderItem(element))}
+        {customerTypesList.map(element => renderItem(element))}
         <Spacing vertical={5} />
         <ButtonsContainer>
           <ButtonWrapper>
@@ -72,4 +72,4 @@ const CallTypeForm = ({ onSubmit, callTypesList }) => {
   );
 };
 
-export default CallTypeForm;
+export default CustomerTypeForm;

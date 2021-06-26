@@ -55,8 +55,9 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
       {firstTimeUser && (
         <>
           <OnboardingIndicator
-            steps={orgUserRole === 'OWNER' ? 4 : 3}
-            completedSteps={orgUserRole === 'OWNER' ? 3 : 2}
+            steps={orgUserRole === 'OWNER' ? 5 : 3}
+            // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+            completedSteps={orgUserRole === 'OWNER' ? 3 : 3}
           />
           <Spacing vertical={5} />
         </>

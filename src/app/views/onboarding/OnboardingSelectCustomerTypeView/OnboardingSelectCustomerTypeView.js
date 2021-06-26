@@ -2,21 +2,21 @@
 /* eslint-disable sonarjs/no-extra-arguments */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import CallTypeForm from 'views/onboarding/CallTypeForm/CallTypeForm';
+import CustomerTypeForm from 'views/onboarding/CustomerTypeForm/CustomerTypeForm';
 import { useHistory } from 'react-router-dom';
 import { updateOrganizationCallType } from 'api/organization-api';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
 import { useDispatch, useSelector } from 'react-redux';
 
-const callTypesList = [
+const customerTypesList = [
   { name: 'Patients', key: 'PATIENT' },
   { name: 'Clients', key: 'CLIENT' },
   { name: 'Members', key: 'MEMBER' },
   { name: 'Customenrs', key: 'CUSTOMER' },
 ];
 
-const onSubmit = async ({ dispatch, type }) => {
+const onSubmit = async ({ dispatch, history, type }) => {
   const organizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
@@ -25,26 +25,19 @@ const onSubmit = async ({ dispatch, type }) => {
     organizationIdentifier,
   });
 
-  // const { baaSigned } = await checkBAASignedStatus(organizationIdentifier)(
-  //   dispatch,
-  // );
-
-  // await selectCurrentOrganizationWithRedirection(
-  //   organizationIdentifier,
-  //   baaSigned ? '#/onboarding/team-setup' : '#/onboarding/eula',
-  // );
+  history.push('/onboarding/team-setup');
 };
 
-const OnboardingSelectCallTypeView = () => {
+const OnboardingSelectCustomerTypeView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   return (
-    <CallTypeForm
-      onSubmit={type => onSubmit({ dispatch, type })}
+    <CustomerTypeForm
+      onSubmit={type => onSubmit({ dispatch, history, type })}
       onCancel={history.goBack}
-      callTypesList={callTypesList}
+      customerTypesList={customerTypesList}
     />
   );
 };
 
-export default OnboardingSelectCallTypeView;
+export default OnboardingSelectCustomerTypeView;
