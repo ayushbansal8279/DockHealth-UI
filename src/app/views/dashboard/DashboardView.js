@@ -12,6 +12,7 @@ import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import * as TaskListActions from 'actions/task-list-actions';
 import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserApi from 'api/user-api';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
@@ -68,6 +69,8 @@ const DashboardView = ({
   const sampleList = allLists?.find(list => list.listType === 'SHARED_SAMPLE');
 
   const isNewUser = currentUser?.usageState?.loginCount <= 5;
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
@@ -180,7 +183,10 @@ const DashboardView = ({
             ) : (
               <DashboardListWrapper fullWidth={createListViewVisible}>
                 <DashboardHeaderContainer>
-                  <DashboardStatistics dashboardTab={dashboardTab} />
+                  <DashboardStatistics
+                    dashboardTab={dashboardTab}
+                    customerTypeLabel={customerTypeLabel}
+                  />
                 </DashboardHeaderContainer>
                 <DashboardList
                   currentUser={currentUser}
@@ -188,6 +194,7 @@ const DashboardView = ({
                   dashboardTab={dashboardTab}
                   tourModalIsOpen={tourModalIsOpen}
                   openTourModal={forceOpenTourModal}
+                  customerTypeLabel={customerTypeLabel}
                 />
               </DashboardListWrapper>
             )}

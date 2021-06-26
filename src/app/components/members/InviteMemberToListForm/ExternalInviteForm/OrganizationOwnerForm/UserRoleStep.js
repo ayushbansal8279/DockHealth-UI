@@ -42,8 +42,8 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionHeaderWrapper>
           <RoleOptionDescription>
             Part of your Organization. Can add and invite members who are
-            already part of your organization. Can access all patients and
-            people in the group/practice.
+            already part of your organization. Can access all patients/clients
+            and people in the group/practice.
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
@@ -64,8 +64,8 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionHeaderWrapper>
           <RoleOptionDescription>
             An outside collaborator you can invite into selected lists, who will
-            only have access to the tasks, patients and people who are part of
-            those lists.
+            only have access to the tasks, patients/clients and people who are
+            part of those lists.
           </RoleOptionDescription>
         </RoleOptionLabel>
       </RoleSelectionWrapper>

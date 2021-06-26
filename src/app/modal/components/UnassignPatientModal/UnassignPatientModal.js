@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import patient from 'img/modals/patient';
 import { redTheme } from '../../themes/red-theme';
 import {
@@ -21,6 +23,11 @@ const PrimaryText = styled.span`
 `;
 
 const UnassignPatientModal = ({ closeModal, confirm, isWorkflowModal }) => {
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -33,9 +40,9 @@ const UnassignPatientModal = ({ closeModal, confirm, isWorkflowModal }) => {
         <ModalDescriptionContainer>
           <Typography variant="body1">
             {isWorkflowModal
-              ? `Un-assigning the patient from here will update all tasks and
+              ? `Un-assigning the ${customerTypeLabel} from here will update all tasks and
             subtasks in this workflow to:`
-              : `Un-assigning a patient from this task will update the primary task and related subtasks to:`}
+              : `Un-assigning a ${customerTypeLabel} from this task will update the primary task and related subtasks to:`}
           </Typography>
           <Typography variant="body1">
             <b>Un-assigned</b>

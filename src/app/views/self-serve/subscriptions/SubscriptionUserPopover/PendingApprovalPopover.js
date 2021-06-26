@@ -37,7 +37,7 @@ const USER_TYPES = new Proxy(
       selectable: true,
       changeable: true,
       description:
-        'Part of your Organization. Can add and invite members who are already part of your organization. Can access all patients and people in the group/practice.',
+        'Part of your Organization. Can add and invite members who are already part of your organization. Can access all patients/clients and people in the group/practice.',
     },
     GUEST: {
       label: 'Guest',
@@ -45,7 +45,7 @@ const USER_TYPES = new Proxy(
       changeable: true,
       isLimitedAccess: true,
       description:
-        'An outside collaborator you can invite into selected lists, who will only have access to the tasks, patients and people who are part of those lists.',
+        'An outside collaborator you can invite into selected lists, who will only have access to the tasks, patients/clients and people who are part of those lists.',
     },
   },
   {

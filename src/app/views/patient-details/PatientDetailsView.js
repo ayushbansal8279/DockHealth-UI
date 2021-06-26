@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import Toolbar from 'components/tasklist/Toolbar/Toolbar';
@@ -17,6 +17,7 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
@@ -24,6 +25,7 @@ import {
   patientListHasTasksSelector,
   patientTaskSearchSelector,
 } from 'selectors/patient-tasks-selectors';
+import { setHeader } from 'actions/template-actions';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -33,6 +35,8 @@ import {
   onEnterPatientCompleteTasksListView,
 } from 'routing/TemplateCoreSubscriptionPlan/PatientDetails';
 import { RouteWrapper } from 'routing/components';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
@@ -69,6 +73,7 @@ const PatientDetailsView = ({
   patientTasksSagaActions,
   taskSearch,
   organization,
+  currentUser,
 }) => {
   const { selectedFilters } = megaFilter;
   const [searchValue, setSearchValue] = useState(taskSearch);
@@ -101,6 +106,27 @@ const PatientDetailsView = ({
       });
     }
   }, [patientIdentifier, fetchPatient]);
+
+  const dispatch = useDispatch();
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
+  useEffect(() => {
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'patients-header',
+            component: (
+              <>
+                <GenericHeader>{customerTypeLabelCapitalized}</GenericHeader>
+              </>
+            ),
+          },
+        ],
+      }),
+    );
+  }, [dispatch, customerTypeLabelCapitalized]);
 
   const navigateToTab = tabName => {
     history.push(

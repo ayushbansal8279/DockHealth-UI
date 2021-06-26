@@ -21,7 +21,7 @@ const TrialExpirationModal = ({ closeModal }) => {
           </ModalContentItem>
           <ModalContentItem>
             <img src={CircleCompleted} alt="circle-completed" />
-            Streamline and improve patient care
+            Streamline and improve patient/client care
           </ModalContentItem>
         </div>
 

@@ -122,7 +122,7 @@ export function addPatient(patient) {
         title: 'Error',
         text:
           error?.response?.data?.errorMessage ??
-          'Error adding patient. Please try again.',
+          'Error adding. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
@@ -143,7 +143,7 @@ export function updatePatient(patient) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error updating patient. Please try again.',
+        text: 'Error updating. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
@@ -206,8 +206,7 @@ export const createPatientNote = (patientIdentifier, note) =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text:
-          'Error adding patient note. It may be too long. Please try again.',
+        text: 'Error adding note. It may be too long. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
@@ -220,7 +219,7 @@ export const updatePatientNote = note =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error updating patient note. Please try again.',
+        text: 'Error updating note. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
@@ -233,7 +232,7 @@ export const deletePatientNote = patientNoteIdentifier =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error deleting patient note. Please try again.',
+        text: 'Error deleting note. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
@@ -246,7 +245,7 @@ export const archivePatient = patientNoteIdentifier =>
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error archiving patient. Please try again.',
+        text: 'Error archiving. Please try again.',
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
@@ -297,7 +296,7 @@ export function uploadPatientData(fileData, additionalConfig = {}) {
         showAlert({
           status: 'error',
           title: 'Error',
-          text: 'Error in uploading patient data. Please try again.',
+          text: 'Error in uploading data. Please try again.',
         });
       }
       throw error;

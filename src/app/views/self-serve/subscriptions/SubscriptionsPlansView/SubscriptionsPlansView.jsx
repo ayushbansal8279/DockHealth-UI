@@ -23,7 +23,7 @@ import {
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './SubscriptionsPlansView.PlanData';
 
 const standardFeaturesList = [
-  'Create tasks with patient context',
+  'Create tasks with patient/client context',
   'Add Subtasks',
   'Team commenting',
   'Assign/reassign tasks',
@@ -34,7 +34,7 @@ const standardFeaturesList = [
   'View history of events',
   'Forward email to your task lists',
   'Add Attachments or call',
-  'Upload patient list',
+  'Upload patient/client list',
 ];
 
 const renderStandardFeature = feature => (

@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
-import Button from 'components/common/Button/Button';
 import { ModalWrapperWithPadding } from '../styled';
 
 export const ImportPatientModalWrapper = styled(ModalWrapperWithPadding)`
   display: flex;
   flex-direction: column;
-  width: 419px;
+  width: 479px;
   height: 376px;
 `;
 
@@ -37,15 +36,6 @@ export const Title = styled.h5`
   margin-bottom: 25px;
 `;
 
-export const StyledButton = styled(Button)`
-  &&& {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 40px;
-    width: 265px;
-    height: 50px;
-  }
-`;
 export const AlreadyHaveTemplate = styled.a`
   font-family: Roboto Condensed;
   font-style: normal;

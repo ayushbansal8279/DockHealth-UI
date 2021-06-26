@@ -15,8 +15,8 @@ const MentionsCards = () => {
       <Spacing vertical={4} />
       <Title>Patient and People details</Title>
       <Description>
-        Hovering over the name of team members or patients will pop up detailed
-        information about them.
+        Hovering over the name of team members or patients/clients will pop up
+        detailed information about them.
       </Description>
     </>
   );

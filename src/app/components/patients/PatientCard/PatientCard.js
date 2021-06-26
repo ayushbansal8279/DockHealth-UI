@@ -1,12 +1,17 @@
 /* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { Popper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import Spacing from 'components/common/Spacing';
+import {
+  getCustomerTypeLabel,
+  getCustomerUniqueIDShortLabel,
+} from 'helpers/customer-type-helper';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -63,6 +68,13 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
   const [patientData, setPatientData] = useState(null);
 
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
 
   useEffect(() => {
     if (cardOpen && patientIdentifier !== patientData?.patientIdentifier) {
@@ -124,7 +136,7 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                       .toUpperCase()}
                   </PatientName>
                   <Link to={`/core/patient/${patientIdentifier}`}>
-                    <PatientLinkText>view patient</PatientLinkText>
+                    <PatientLinkText>view {customerTypeLabel}</PatientLinkText>
                   </Link>
                 </TopSection>
                 {(dob ||
@@ -143,7 +155,11 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                           {gender && ` ${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
-                      {mrn && <InfoItem>MRN# {mrn}</InfoItem>}
+                      {mrn && (
+                        <InfoItem>
+                          {uniqueIdentifierLabel}# {mrn}
+                        </InfoItem>
+                      )}
                       {(dob || gender || mrn) && <br />}
                       {email && (
                         <>

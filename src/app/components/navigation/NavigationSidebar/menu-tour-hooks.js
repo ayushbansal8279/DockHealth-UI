@@ -21,7 +21,7 @@ const menuTourHooks = ({ menuDrawerOpen, hideTour, isUserAdmin }) => {
     afterScrollPosition: 'center',
     title: 'Access your Organization',
     description:
-      'We understand there are instances when people work with more than one organization. If you own your own practice yet are a partner at another practice, you may want to use Dock at both organizations but keep your patients and people you work with separate. Here is where you add and access your organizations.',
+      'We understand there are instances when people work with more than one organization. If you own your own practice yet are a partner at another practice, you may want to use Dock at both organizations but keep your patients/clients and people you work with separate. Here is where you add and access your organizations.',
   };
 
   const settingsMenuStep = {

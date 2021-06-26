@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import Arrow from 'components/common/Arrow/Arrow';
+import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import {
   PatientDetailsInformationContainer,
   PatientDetailsBio,
@@ -64,9 +65,11 @@ const PatientDetailsInformation = ({
   isOpenedDetails,
   setIsOpenedDetails,
   isLoadingDetails,
+  currentUser,
 }) => {
   const { width } = useWindowDimensions();
   const history = useHistory();
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
   return (
     <PatientDetailsInformationContainer>
       <PatientDetailsBio style={{ flexDirection: 'row' }}>
@@ -105,7 +108,9 @@ const PatientDetailsInformation = ({
                     )}
                     {mrn && (
                       <>
-                        <PatientInfo>MRN# {mrn}</PatientInfo>
+                        <PatientInfo>
+                          {uniqueIdentifierLabel}# {mrn}
+                        </PatientInfo>
                         <PatientInfoDivider />
                       </>
                     )}

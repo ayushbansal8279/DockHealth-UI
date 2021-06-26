@@ -1,16 +1,18 @@
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { pluck } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { updatePatientsList, getPatientsList } from 'api/patients-api';
-import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import { createPatientListPath } from '../../../routing/helpers/paths';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -44,6 +46,13 @@ const AddPatientToListModal = ({
 
   const { patientListIdentifier, listName, listDescription } =
     patientsList || {};
+
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   useEffect(() => {
     setFetchingPatients(true);
@@ -120,7 +129,7 @@ const AddPatientToListModal = ({
         <CloseIcon />
       </CloseIconButton>
       <MainContentWrapper>
-        <Header>Patient list builder</Header>
+        <Header>{customerTypeLabelCapitalized} list builder</Header>
         <Spacing vertical={5} />
         <Grid container alignItems="flex-end">
           <ListInfo>
@@ -142,13 +151,13 @@ const AddPatientToListModal = ({
         <Spacing vertical={5} />
         <PatientsSection>
           <Column width={320}>
-            <Header>Add patients</Header>
+            <Header>Add {customerTypeLabel}s</Header>
             <Spacing vertical={4} />
             <PatientList onSelect={handleSelectPatient} />
           </Column>
           <Spacing horizontal={4} />
           <Column>
-            <Header>Included patients in list</Header>
+            <Header>Included {customerTypeLabel}s in list</Header>
             <Spacing vertical={4} />
             <SelectedPatientsWrapper>
               {!fetchingPatients ? (
@@ -217,7 +226,7 @@ const AddPatientToListModal = ({
           onClick={handleSavePatients}
           size="small"
         >
-          Save patient list
+          Save {customerTypeLabel} list
         </Button>
       </Grid>
     </AddPatientModalWrapper>

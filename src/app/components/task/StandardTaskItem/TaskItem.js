@@ -426,6 +426,7 @@ const TaskItem = ({
               task={task}
               openPatientPopover={openPatientPopover}
               onTaskUpdate={onTaskUpdate}
+              currentUser={currentUser}
             />
           )}
           {workflowStatusIsInConfig && (

@@ -90,7 +90,7 @@ const InboxHelpPanel = () => (
           <b>#FirstLast</b>
         </MontserratTypography>
         <SmallRobotoTypography variant="h4" weight="500">
-          Assign an existing patient to the task (e.g. #JohnDoe)
+          Assign an existing patient/client to the task (e.g. #JohnDoe)
         </SmallRobotoTypography>
         <Spacing vertical={4} />
         <MontserratTypography variant="h4">

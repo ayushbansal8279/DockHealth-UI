@@ -12,6 +12,8 @@ import { openModal } from 'modal/actions';
 import { getPatientsByCriteria, addPatient } from 'api/patient-api';
 import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import { AdornmentContainer } from '../styled';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
@@ -46,6 +48,9 @@ const PatientSection = ({
   const formattedPatients = getFormattedPatients({ patients });
 
   const { register, unregister, setValue } = useFormContext();
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   useEffect(() => {
     register(PATIENT_IDENTIFIER_FIELD_NAME);
@@ -166,13 +171,20 @@ const PatientSection = ({
       } catch {
         dispatch(
           AlertActions.showGlobalAlert(
-            'Error updating patient, please try again later',
+            `Error updating ${customerTypeLabel}, please try again later`,
             'error',
           ),
         );
       }
     },
-    [dispatch, isSubtask, onSave, selectedPatient, templateBundleIdentifier],
+    [
+      dispatch,
+      isSubtask,
+      onSave,
+      selectedPatient,
+      templateBundleIdentifier,
+      customerTypeLabel,
+    ],
   );
 
   const fetchPatients = useCallback(
@@ -301,8 +313,8 @@ const PatientSection = ({
     <SelectDropdown
       ref={patientInputReference}
       name={PATIENT_IDENTIFIER_FIELD_NAME}
-      label="Patient"
-      placeholder={placeholder || 'Who is the patient?'}
+      label={customerTypeLabelCapitalized}
+      placeholder={placeholder || `Who is the ${customerTypeLabel}?`}
       disabled={disabled}
       startAdornment={!disabled && <AdornmentContainer>+</AdornmentContainer>}
       selectedOption={getFormattedPatient(selectedPatient)}
@@ -311,7 +323,7 @@ const PatientSection = ({
       onInputChange={onPatientInputChange}
       onOptionSelect={handlePatientSelect}
       onClear={handleClearSelectedPatient}
-      addItemLabel="Add patient"
+      addItemLabel={`Add ${customerTypeLabel}`}
       onAddItemClick={
         currentOrganization?.emrIntegrationEnabled ? null : handleAddPatient
       }

@@ -20,7 +20,7 @@ export const EDUCATION_CENTER_CATEGORIES = [
       {
         name: 'Create a Task',
         overview:
-          'Tasks are the to-dos for you and your team. Add patient context, due dates, status, assignments and attachments to get the most from tasks',
+          'Tasks are the to-dos for you and your team. Add patient/client context, due dates, status, assignments and attachments to get the most from tasks',
         helpUrl: 'https://www.dock.health/101',
       },
       {
@@ -59,7 +59,7 @@ export const EDUCATION_CENTER_CATEGORIES = [
       {
         name: 'Guests',
         overview:
-          'Guests are outside collaborators that you can invite to a specific list with visibility on tasks and patients only in that list',
+          'Guests are outside collaborators that you can invite to a specific list with visibility on tasks and patients/clients only in that list',
         additionalOverview:
           'Only guests who have been invited to your organization by an owner/admin can be added to lists',
       },
@@ -72,9 +72,9 @@ export const EDUCATION_CENTER_CATEGORIES = [
         videoUrl: 'https://www.youtube.com/embed/72hQU9jx89g',
       },
       {
-        name: '# Patients',
+        name: '# Patients/Clients',
         overview:
-          'Quickly add patient context to a task by typing #PatientName in the task description',
+          'Quickly add patient/client context to a task by typing #PatientName in the task description',
         videoUrl: 'https://www.youtube.com/embed/72hQU9jx89g',
       },
     ],

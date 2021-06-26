@@ -13,10 +13,10 @@ const PatientsMentionsStep = () => {
     <>
       <Image height={310} src={PatientsMentionsImage} alt="Mention" />
       <Spacing vertical={5} />
-      <Title># Hashtag your Patients</Title>
+      <Title># Hashtag your Patients/Clients</Title>
       <Description>
-        Never hunt for your patients names again, now you can quickly assign a
-        patient by typing # and their name.
+        Never hunt for your patients/clients names again, now you can quickly
+        assign a patient/client by typing # and their name.
       </Description>
     </>
   );

@@ -131,7 +131,9 @@ const Toolbar = ({
     [members, userIdentifier],
   );
   const [shownMembers, hiddenMembers] = splitAt(3, anotherMembers ?? []);
-  const shownMembersWithCurrent = [...currentMember, ...shownMembers];
+  const shownMembersWithCurrent = currentMember
+    ? [...currentMember, ...shownMembers]
+    : [];
 
   useEffect(() => {
     if (!tipsContent || taskList?.listType !== 'INBOX') {

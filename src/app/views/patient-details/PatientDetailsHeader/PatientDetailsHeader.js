@@ -153,6 +153,7 @@ const PatientDetailsHeader = ({
         isLoadingDetails={isLoadingPatient}
         setIsOpenedDetails={setIsOpenedDetails}
         isOpenedDetails={isOpenedDetails}
+        currentUser={currentUser}
       />
       {!isLoadingPatient && (
         <PatientDetails
@@ -162,6 +163,7 @@ const PatientDetailsHeader = ({
           patientIdentifier={patientIdentifier}
           archivePatient={archivePatient}
           editingDisabled={emrIntegrationEnabled}
+          currentUser={currentUser}
         />
       )}
       <PatientDetailsNotes

@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as PatientsApi from 'api/patients-api';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { openModal } from 'modal/actions';
 import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import {
   EditPatientListModalWrapper,
   Title,
@@ -75,6 +77,12 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
   const nameValue = watch('listName');
   const descriptionValue = watch('listDescription');
 
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
   useEffect(() => {
     register(
       {
@@ -123,7 +131,9 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
         <Grid container direction="column" justify="space-between">
           <Grid item>
             <Header>
-              <Title>{patientsList ? 'Edit' : 'Create'} a patient list</Title>
+              <Title>
+                {patientsList ? 'Edit' : 'Create'} a {customerTypeLabel} list
+              </Title>
             </Header>
             <Input
               ref={element => {
@@ -131,12 +141,12 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
                 register(element);
               }}
               fullWidth
-              label="Patient list name"
+              label={`${customerTypeLabelCapitalized} list name`}
               name="listName"
               required
               showError
               centerizedLabelOnStart
-              placeholder="Add your patient list name here"
+              placeholder={`Add your ${customerTypeLabel} list name here`}
               value={nameValue}
               error={errors?.['listName']?.message}
             />

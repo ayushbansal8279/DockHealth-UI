@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import Highlighter from 'react-highlight-words';
 import {
   AddPlaceholder,
@@ -21,6 +23,7 @@ const TaskItemPatient = ({
   task,
   openPatientPopover,
   onTaskUpdate,
+  currentUser,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
@@ -57,6 +60,10 @@ const TaskItemPatient = ({
     ? DisabledPatientLabel
     : PatientLabel;
   const properOnPatientClick = !isCompleted ? onPatientClick : () => {};
+
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
   return (
     <StandardTaskItemCell width="164px">
       <ClickablePatient onClick={properOnPatientClick}>
@@ -72,11 +79,13 @@ const TaskItemPatient = ({
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
           >
-            <AddPlaceholder>+ Add Patient</AddPlaceholder>
+            <AddPlaceholder>
+              + Add {customerTypeLabelCapitalized}
+            </AddPlaceholder>
           </PatientDropdown>
         )}
         {!isCompleted && !patient && !isSubtask && openPatientPopover && (
-          <AddPlaceholder>+ Add Patient</AddPlaceholder>
+          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         )}
         {patient && (openPatientPopover || hasParentTaskLabel) && (
           <PatientCard patientIdentifier={patient.patientIdentifier}>
