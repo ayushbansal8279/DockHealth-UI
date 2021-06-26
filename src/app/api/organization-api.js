@@ -2,6 +2,15 @@ import memoize from 'lodash.memoize';
 import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 
+export function updateOrganizationCallType({ type, organizationIdentifier }) {
+  return axios
+    .patch(`organization`, {
+      organizationIdentifier,
+      customerType: type.selectedRecord.key,
+    })
+    .then(({ data }) => data);
+}
+
 export const get = ({ organizationIdentifier }) => {
   return axios.get(`/organization/${organizationIdentifier}`).then(response => {
     if (response.data) {

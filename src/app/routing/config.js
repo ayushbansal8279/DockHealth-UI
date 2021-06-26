@@ -31,6 +31,7 @@ import OnboardingNewOrganizationInfoView from 'views/onboarding/OnboardingNewOrg
 import OnboardingCreateOrganizationView from 'views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView';
 import OnboardingOrgSetupView from 'views/onboarding/OnboardingOrgSetupView/OnboardingOrgSetupView';
 import OnboardingTeamSetupView from 'views/onboarding/OnboardingTeamSetupView/OnboardingTeamSetupView';
+import OnboardingSelectCustomerTypeView from 'views/onboarding/OnboardingSelectCustomerTypeView/OnboardingSelectCustomerTypeView';
 import OnboardingQuestions from 'views/onboarding/OnboardingQuestions/OnboardingQuestions';
 import PageNotFound from 'views/PageNotFound';
 import PatientDetailsView from 'views/patient-details/PatientDetailsView';
@@ -206,6 +207,10 @@ export const ONBOARDING_ROUTES = [
   {
     path: '/questions',
     RouteComponent: OnboardingQuestions,
+  },
+  {
+    path: '/customer-preference',
+    RouteComponent: OnboardingSelectCustomerTypeView,
   },
 ];
 

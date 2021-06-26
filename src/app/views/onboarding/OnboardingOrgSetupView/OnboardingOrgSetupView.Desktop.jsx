@@ -14,7 +14,7 @@ const onSubmit = ({ dispatch, history }) => ({
     organizationInitials,
     organizationProfileColor: organizationThemeColor,
   })(dispatch).then(() => {
-    history.push('/onboarding/team-setup');
+    history.push('/onboarding/customer-preference');
   });
 };
 

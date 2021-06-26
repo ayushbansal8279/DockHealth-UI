@@ -22,7 +22,7 @@ const OnboardingQuestions = () => {
   return (
     <div>
       <OnboardingIndicator
-        steps={orgUserRole === 'OWNER' ? 4 : 2}
+        steps={orgUserRole === 'OWNER' ? 5 : 2}
         completedSteps={step}
       />
       <Spacing vertical={5} />
