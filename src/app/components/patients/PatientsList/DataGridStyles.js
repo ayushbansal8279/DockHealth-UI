@@ -14,12 +14,12 @@ export const StyledDataGrid = styled(DataGrid)`
   .MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
-    margin-left: -10px;
+    margin-left: -15px;
+  }
 
-    &:hover {
-      & > .Sorting-Arrow {
-        opacity: 0.5;
-      }
+  .MuiDataGrid-columnHeader {
+    &:focus {
+      outline: none !important;
     }
   }
 

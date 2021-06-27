@@ -15,17 +15,11 @@ export const StyledDataGrid = styled(DataGrid)`
     display: flex;
     align-items: center;
     margin-left: -15px;
-
-    &:hover {
-      & > .Sorting-Arrow {
-        opacity: 0.5;
-      }
-    }
   }
 
-  .MuiDataGrid-columnHeader--sortable {
+  .MuiDataGrid-columnHeader {
     &:focus {
-      outline: none;
+      outline: none !important;
     }
   }
 
