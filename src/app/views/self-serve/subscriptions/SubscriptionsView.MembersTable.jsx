@@ -198,16 +198,31 @@ const SubscriptionsViewMembersTable = ({
           );
         },
         sortComparator: (v1, v2, parameters1, parameters2) => {
-          const {
-            userStatus: userStatus1,
-            orgUserRole: orgUserRole1,
-            eulaAcknowledged: eulaAcknowledged1,
-          } = parameters1.row;
-          const {
-            userStatus: userStatus2,
-            orgUserRole: orgUserRole2,
-            eulaAcknowledged: eulaAcknowledged2,
-          } = parameters2.row;
+          const userStatus1 = parameters1.api.getCellValue(
+            parameters1.id,
+            'userStatus',
+          );
+          const orgUserRole1 = parameters1.api.getCellValue(
+            parameters1.id,
+            'orgUserRole',
+          );
+          const eulaAcknowledged1 = parameters1.api.getCellValue(
+            parameters1.id,
+            'eulaAcknowledged',
+          );
+
+          const userStatus2 = parameters2.api.getCellValue(
+            parameters2.id,
+            'userStatus',
+          );
+          const orgUserRole2 = parameters2.api.getCellValue(
+            parameters2.id,
+            'orgUserRole',
+          );
+          const eulaAcknowledged2 = parameters2.api.getCellValue(
+            parameters2.id,
+            'eulaAcknowledged',
+          );
 
           const { label: label1 } = getUserTypeLabel({
             userStatus: userStatus1,
@@ -240,7 +255,20 @@ const SubscriptionsViewMembersTable = ({
             ? registrationMoment.format('LL')
             : '';
 
-          if (userStatus === 'INVITED') return <span>Invitation sent</span>;
+          // if (userStatus === 'INVITED') return <span>Invitation sent ({formattedRegistrationDate})</span>;
+
+          if (userStatus === 'INVITED')
+            return (
+              <Tooltip placement="top" title={formattedRegistrationDate}>
+                Invitation sent
+              </Tooltip>
+            );
+          if (userStatus === 'PENDING')
+            return (
+              <Tooltip placement="top" title={formattedRegistrationDate}>
+                Approval requested
+              </Tooltip>
+            );
 
           return (
             <>
@@ -249,6 +277,21 @@ const SubscriptionsViewMembersTable = ({
               )}
             </>
           );
+        },
+        sortComparator: (v1, v2, parameters1, parameters2) => {
+          const registrationDate1 = parameters1.api.getCellValue(
+            parameters1.id,
+            'registrationDate',
+          );
+          const registrationDate2 = parameters2.api.getCellValue(
+            parameters2.id,
+            'registrationDate',
+          );
+
+          if (registrationDate1 > registrationDate2) return 1;
+          if (registrationDate1 < registrationDate2) return -1;
+
+          return 0;
         },
       },
       {

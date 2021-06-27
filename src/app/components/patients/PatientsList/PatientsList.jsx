@@ -62,115 +62,30 @@ const PatientsList = ({
           }}
           className="patient-cell"
         >
-          {row.lastName}, {row.firstName}
+          {row?.lastName}, {row?.firstName}
         </span>
       ),
       flex: 1,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        if (
-          parameters1.row.lastName?.toLowerCase() ===
-          parameters2.row.lastName?.toLowerCase()
-        ) {
-          if (
-            parameters1.row.firstName?.toLowerCase() >
-            parameters2.row.firstName?.toLowerCase()
-          )
-            return 1;
-          if (
-            parameters1.row.firstName?.toLowerCase() <
-            parameters2.row.firstName?.toLowerCase()
-          )
-            return -1;
-        }
-
-        if (
-          parameters1.row.lastName?.toLowerCase() >
-          parameters2.row.lastName?.toLowerCase()
-        )
-          return 1;
-        if (
-          parameters1.row.lastName?.toLowerCase() <
-          parameters2.row.lastName?.toLowerCase()
-        )
-          return -1;
-
-        return 0;
-      },
+      // valueGetter: (params) => {
+      //   return `${params.getValue(params.id, 'lastName') || ''}, ${
+      //     params.getValue(params.id, 'firstName') || ''
+      //   }`;
+      // },
     },
     {
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
       flex: 0.5,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        const { api } = parameters2;
-        const sortModel = api.getSortModel();
-
-        if (parameters1.row.mrn === parameters2.row.mrn) {
-          return 0;
-        }
-
-        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'mrn') {
-          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (parameters1.row.mrn === null || parameters1.row.mrn === '') {
-            return -1;
-          }
-
-          if (parameters2.row.mrn === null || parameters2.row.mrn === '') {
-            return 1;
-          }
-
-          return parameters2.row.mrn < parameters1.row.mrn ? 1 : -1;
-        }
-
-        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (parameters1.row.mrn === null || parameters1.row.mrn === '') {
-          return 1;
-        }
-
-        if (parameters2.row.mrn === null || parameters2.row.mrn === '') {
-          return -1;
-        }
-
-        return parameters1.row.mrn < parameters2.row.mrn ? -1 : 1;
-      },
     },
     {
       field: 'dob',
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       flex: 0.5,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        const { api } = parameters2;
-        const sortModel = api.getSortModel();
-
-        if (parameters1.row.dob === parameters2.row.dob) {
-          return 0;
-        }
-
-        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'dob') {
-          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (parameters1.row.dob === null || parameters1.row.dob === '') {
-            return -1;
-          }
-
-          if (parameters2.row.dob === null || parameters2.row.dob === '') {
-            return 1;
-          }
-
-          return parameters2.row.dob < parameters1.row.dob ? 1 : -1;
-        }
-
-        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (parameters1.row.dob === null || parameters1.row.dob === '') {
-          return 1;
-        }
-
-        if (parameters2.row.dob === null || parameters2.row.dob === '') {
-          return -1;
-        }
-
-        return parameters1.row.dob < parameters2.row.dob ? -1 : 1;
+      type: 'date',
+      valueGetter: parameters => {
+        return parameters.value ? new Date(parameters.value) : null;
       },
     },
     {
@@ -181,34 +96,36 @@ const PatientsList = ({
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
         const sortModel = api.getSortModel();
+        const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
+        const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
 
-        if (parameters1.row.dob === parameters2.row.dob) {
+        if (dob1 === dob2) {
           return 0;
         }
 
         if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
           // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (parameters1.row.dob === null || parameters1.row.dob === '') {
+          if (dob1 === null || dob1 === '') {
             return -1;
           }
 
-          if (parameters2.row.dob === null || parameters2.row.dob === '') {
+          if (dob2 === null || dob2 === '') {
             return 1;
           }
 
-          return parameters2.row.dob < parameters1.row.dob ? -1 : 1;
+          return dob2 < dob1 ? -1 : 1;
         }
 
         // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (parameters1.row.dob === null || parameters1.row.dob === '') {
+        if (dob1 === null || dob1 === '') {
           return 1;
         }
 
-        if (parameters2.row.dob === null || parameters2.row.dob === '') {
+        if (dob2 === null || dob2 === '') {
           return -1;
         }
 
-        return parameters1.row.dob < parameters2.row.dob ? 1 : -1;
+        return dob1 < dob2 ? 1 : -1;
       },
     },
     {
@@ -216,53 +133,6 @@ const PatientsList = ({
       headerName: 'GENDER',
       renderHeader: renderColumnHeader,
       flex: 0.5,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        const { api } = parameters2;
-        const sortModel = api.getSortModel();
-
-        if (
-          parameters1.row.gender?.toLowerCase() ===
-          parameters2.row.gender?.toLowerCase()
-        ) {
-          return 0;
-        }
-
-        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'gender') {
-          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (
-            parameters1.row.gender === null ||
-            parameters1.row.gender === ''
-          ) {
-            return -1;
-          }
-
-          if (
-            parameters2.row.gender === null ||
-            parameters2.row.gender === ''
-          ) {
-            return 1;
-          }
-
-          return parameters2.row.gender?.toLowerCase() <
-            parameters1.row.gender?.toLowerCase()
-            ? 1
-            : -1;
-        }
-
-        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (parameters1.row.gender === null || parameters1.row.gender === '') {
-          return 1;
-        }
-
-        if (parameters2.row.gender === null || parameters2.row.gender === '') {
-          return -1;
-        }
-
-        return parameters1.row.gender?.toLowerCase() <
-          parameters2.row.gender?.toLowerCase()
-          ? -1
-          : 1;
-      },
     },
   ];
 
