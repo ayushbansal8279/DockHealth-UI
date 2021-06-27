@@ -44,3 +44,17 @@ export const ModalContentItem = styled.div`
     margin-right: ${spacing.tiny};
   }
 `;
+
+export const ModalIconContainer = styled.div`
+  padding: ${spacing.largePlus};
+  border-bottom: 1px solid ${palette.coolGrey2};
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const ModalMainIcon = styled.img`
+  cursor: default;
+  margin-bottom: ${spacing.large};
+`;
