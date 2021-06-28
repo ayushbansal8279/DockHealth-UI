@@ -2,7 +2,7 @@ import { Grid, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import palette from 'styles/palette';
 import Search from 'components/task-view/Search/Search';
 
@@ -25,7 +25,7 @@ const faqArticles = [
   },
   {
     title: 'Can I use Dock with colleagues outside of our practice?',
-    content: `We think Dock provides a powerful collaborative platform to help providers from within and across organizations work better together for superlative patient/client care. You are free to invite whomever you would like from within and outside your organization. Having said this, Dock health is a HIPAA compliant application. In order to use Dock you will sign a Business Associate Agreement (BAA) as a covered entity and agreed to our End User License Agreement (EULA), Privacy Statement and Terms of Service. As an owner of an organization you will want to ensure that privacy and security measures are in place such as ensuring all users are known and have been trained on HIPAA. Your organizations may consider data sharing agreements and other safeguards to ensure patient/client data is protected and secure across users and devices.`,
+    content: `We think Dock provides a powerful collaborative platform to help providers from within and across organizations work better together for superlative patient/client care. You are free to invite whomever you would like from within and outside your organization. Having said this, Dock health is a HIPAA-compliant application. In order to use Dock you will sign a Business Associate Agreement (BAA) as a covered entity and agreed to our End User License Agreement (EULA), Privacy Statement and Terms of Service. As an owner of an organization you will want to ensure that privacy and security measures are in place such as ensuring all users are known and have been trained on HIPAA. Your organizations may consider data sharing agreements and other safeguards to ensure patient/client data is protected and secure across users and devices.`,
   },
   {
     title: 'Does Dock integrate with the EHR (Electronic Health Record)?',

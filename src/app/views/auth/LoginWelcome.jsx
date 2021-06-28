@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { StyledLink } from 'components/auth/AuthComponents.styled';
 import Button from 'components/common/Button/Button';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
 const LoginWelcome = () => (
@@ -13,7 +13,7 @@ const LoginWelcome = () => (
     </MontserratTypography>
     <Spacing vertical={4} />
     <MontserratTypography variant="h4">
-      Dock Health is a simple, HIPAA compliant platform for managing clinical
+      Dock Health is a simple, HIPAA-compliant platform for managing clinical
       tasks as a team. Our mission is to offer a better way <b>to&#8209;do</b>{' '}
       healthcare.
     </MontserratTypography>
