@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import EmptyTaskListBear from 'img/animals/bear';
+import EmptyTaskListBear from 'img/animals/bear.svg';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -125,6 +125,7 @@ const PersonDetailsCompletedTasks = ({
                           highlightTasksOfTheSameParent={
                             highlightTasksOfTheSameParent
                           }
+                          taskItemConfig={taskItemConfig}
                           dragAndDropDisabled
                         />
                       ) : (

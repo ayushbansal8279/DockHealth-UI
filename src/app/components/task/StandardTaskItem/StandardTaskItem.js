@@ -37,6 +37,7 @@ const Task = React.memo(
     shouldShowBlockModalOnDrag,
     showClearSortFiltersModal,
     highlightedTasksParentIdentifier,
+    taskItemConfig,
     noMargin,
     ...restProps
   }) => {
@@ -168,6 +169,7 @@ const Task = React.memo(
             isDraggable={isDraggable}
             subtasksDisabled={subtasksDisabled}
             isFullView={isFullView}
+            taskItemConfig={taskItemConfig}
             isSelected={
               highlightedTasksParentIdentifier &&
               (highlightedTasksParentIdentifier === task.taskIdentifier ||
@@ -201,6 +203,7 @@ const Task = React.memo(
               patientVisible={patientVisible}
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
+              taskItemConfig={taskItemConfig}
               {...restProps}
             />
             {subtaskQuickAddOpen &&
