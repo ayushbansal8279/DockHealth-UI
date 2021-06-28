@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { subMenuKeySelector } from 'selectors/template-selectors';
@@ -15,8 +15,10 @@ import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
+import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import Member from 'components/members/Member/Member';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
+import { openModal } from 'modal/actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -24,11 +26,11 @@ import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
 import menuTourHooks from './menu-tour-hooks';
-
 import {
   DrawerContentContainer,
   MainMenuContainer,
   SubMenuContainer,
+  DockcoinIcon,
 } from './styled';
 import IconNavigationItem from './IconNavigationItem';
 import NavigationItem from './NavigationItem';
@@ -40,6 +42,7 @@ export const SubmenuKey = {
   PATIENTS: 'PATIENTS',
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
+  DOCKCOIN: 'DOCKCOIN',
 };
 
 const SubmenuComponents = {
@@ -114,6 +117,11 @@ const NavigationSidebar = ({
     },
     [dispatch, history, openedSubMenuKey, closeSubMenu],
   );
+
+  const handleReferClick = () => {
+    dispatch(TemplateActions.hideSubMenu());
+    dispatch(openModal('ReferAColleague'));
+  };
 
   return (
     <ClickAwayListener onClickAway={closeSubMenu}>
@@ -202,6 +210,15 @@ const NavigationSidebar = ({
                 />
               </div>
             )}
+            <NavigationItem
+              name="Dockcoin"
+              subMenuKey={SubmenuKey.DOCKCOIN}
+              onItemClick={handleReferClick}
+            >
+              <>
+                <DockcoinIcon src={DockcoinIconImage} />
+              </>
+            </NavigationItem>
             <div ref={profileMenuReference}>
               <NavigationItem
                 name="Account"

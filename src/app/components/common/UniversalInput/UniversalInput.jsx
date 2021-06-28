@@ -167,4 +167,7 @@ export const UniversalMontserratInput = styled(UniversalInput)`
   &&& * {
     font-family: 'Montserrat', sans-serif;
   }
+  & textarea {
+    margin-top: 40px;
+  }
 `;

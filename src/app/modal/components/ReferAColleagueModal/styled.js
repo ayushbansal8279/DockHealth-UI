@@ -4,6 +4,8 @@ import palette, { opacify } from 'styles/palette';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import AuthTemplateTopBackgroundTop from 'img/bubble-pattern-top.svg';
 import AuthTemplateTopBackgroundBottom from 'img/bubble-pattern-bottom.svg';
+import DockCoinReferralRewards from 'img/dockcoin-referral-rewards.svg';
+import DockFooterMessage from 'img/dock-footer-message.svg';
 
 const mdBreakpoint = 960;
 
@@ -59,8 +61,8 @@ export const RightSideMainContainer = styled.div`
   background-color: ${palette.midnightBlue};
   background-image: linear-gradient(
       to bottom,
-      ${opacify(palette.midnightBlue, 0.5)},
-      ${opacify(palette.midnightBlue, 0.5)}
+      ${opacify(palette.midnightBlue, 0.2)},
+      ${opacify(palette.midnightBlue, 0.2)}
     ),
     url(${AuthTemplateTopBackgroundTop}),
     url(${AuthTemplateTopBackgroundBottom});
@@ -71,7 +73,7 @@ export const RightSideMainContainer = styled.div`
   height: 100%;
   justify-content: center;
   min-height: 100%;
-  padding: 10rem 7rem 2rem 7rem;
+  padding: 6rem 5rem 2rem 5rem;
   width: 50%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {
@@ -107,6 +109,22 @@ export const DockLogoImage = styled.img.attrs({
 })`
   object-fit: contain;
   height: 128px;
+`;
+
+export const DockCoinReferralRewardsImage = styled.img.attrs({
+  src: DockCoinReferralRewards,
+  alt: 'Dockcoin Referral Rewards',
+})`
+  object-fit: contain;
+  width: 360px;
+`;
+
+export const DockFooterMessageImage = styled.img.attrs({
+  src: DockFooterMessage,
+  alt: 'Dock Health',
+})`
+  object-fit: contain;
+  width: 360px;
 `;
 
 export const StyledForm = styled.form`

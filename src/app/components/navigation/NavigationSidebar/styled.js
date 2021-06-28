@@ -78,3 +78,7 @@ export const NavigationIconNewLabel = styled.div`
     margin-bottom: -10px;
   }
 `;
+
+export const DockcoinIcon = styled.img`
+  width: 48px;
+`;
