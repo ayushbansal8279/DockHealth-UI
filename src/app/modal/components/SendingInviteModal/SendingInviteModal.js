@@ -6,8 +6,13 @@ const SendingInviteModal = ({ firstName, lastName }) => (
   <ModalWrapper>
     <SendingInviteIcon />
     <ModalLabel>
-      Thank you for referring {firstName} {lastName}! We will keep you posted
-      once we hear from them.
+      Thank you for referring{' '}
+      <span style={{ fontWeight: 'bold' }}>
+        {firstName} {lastName}
+      </span>
+      !
+      <br />
+      We will keep you posted once we hear from them.
     </ModalLabel>
   </ModalWrapper>
 );

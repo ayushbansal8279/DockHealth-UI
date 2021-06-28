@@ -15,7 +15,6 @@ export const ModalWrapper = styled.div`
 
 export const ModalLabel = styled.div`
   font-size: 18px;
-  text-transform: uppercase;
   color: ${palette.mediumGrey};
   margin-left: ${spacing.regular};
 `;

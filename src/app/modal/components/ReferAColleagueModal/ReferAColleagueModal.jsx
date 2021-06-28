@@ -53,7 +53,7 @@ const onSubmit = ({ handleReferralSuccess }) => async ({
       email,
       comments,
     });
-    handleReferralSuccess(email);
+    handleReferralSuccess(firstName, lastName);
   } catch (error) {
     showAlert({
       status: 'error',
@@ -70,11 +70,10 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
   });
 
   const openSuccessModal = useCallback(
-    (firstName, lastName, email) =>
+    (firstName, lastName) =>
       openModal('SendingInvite', {
         firstName,
         lastName,
-        email,
       }),
     [openModal],
   );
@@ -97,12 +96,13 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
               <Title>
                 <RobotoTypography
                   weight="normal"
-                  variant="h4"
+                  variant="h3"
                   color={palette.mediumGrey}
                 >
                   REFER A COLLEAGUE
                 </RobotoTypography>
               </Title>
+              <Spacing vertical={3} />
               <DialogContentText>
                 Welcome to Dockcoin - the Dock Health Referral Rewards program.
                 If you love Dock and want to refer a friend or colleague, simply
