@@ -62,15 +62,14 @@ const PatientsList = ({
           }}
           className="patient-cell"
         >
-          {row?.lastName}, {row?.firstName}
+          {row.lastName}, {row.firstName}
         </span>
       ),
       flex: 1,
-      // valueGetter: (params) => {
-      //   return `${params.getValue(params.id, 'lastName') || ''}, ${
-      //     params.getValue(params.id, 'firstName') || ''
-      //   }`;
-      // },
+      valueGetter: parameters => {
+        return `${parameters.getValue(parameters.id, 'lastName') ||
+          ''}, ${parameters.getValue(parameters.id, 'firstName') || ''}`;
+      },
     },
     {
       field: 'mrn',
