@@ -1,9 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patient-api';
 import { getListMembersByName } from 'api/task-list-api';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
@@ -84,6 +86,12 @@ const MentionsEditor = React.forwardRef(
 
     const arePeopleSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
+
+    const { currentUser } = useSelector(store => ({
+      currentUser: store.userState.userProfile,
+    }));
+
+    const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
     const handleChange = newState => {
       if (!state) setEditorState(newState);
@@ -217,7 +225,10 @@ const MentionsEditor = React.forwardRef(
             onAddMention={onAddMention}
             entryComponent={PatientSuggestionItem}
             popoverComponent={
-              <PatientsSuggestionsPopover searchValue={patientSearchValue} />
+              <PatientsSuggestionsPopover
+                searchValue={patientSearchValue}
+                customerTypeLabel={customerTypeLabel}
+              />
             }
             onOpen={() => {
               arePatientSuggestionsOpened.current = true;

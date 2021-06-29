@@ -3,7 +3,7 @@ import DefaultSuggestionItem from '../DefaultSuggestionItem/DefaultSuggestionIte
 import { PopoverContainer, SuggestionsContainer, Spacer } from './styled';
 
 const PatientsSuggestionsPopover = React.forwardRef(
-  ({ children, searchValue, ...props }, reference) => {
+  ({ children, searchValue, customerTypeLabel, ...props }, reference) => {
     const suggestionsToDisplay = React.Children.toArray(children).filter(
       suggestionChild => suggestionChild.props.mention.type !== 'DEFAULT',
     );
@@ -22,10 +22,10 @@ const PatientsSuggestionsPopover = React.forwardRef(
           )}
           {suggestionsToDisplay.length > 0 && <Spacer />}
           <DefaultSuggestionItem
-            tagType="#Patients"
+            tagType={`#${customerTypeLabel}s`}
             hint={
               suggestionsToDisplay.length === 0 && !searchValue
-                ? `Start typing patient/client name`
+                ? `Start typing ${customerTypeLabel} name`.toLowerCase()
                 : ''
             }
           />
