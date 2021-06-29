@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import React from 'react';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import {
   Option,
@@ -48,11 +48,21 @@ const OnboardingQuestionsGuest = ({
     )}
     <Spacing vertical={6} />
     <ButtonContainer>
-      <Button onClick={clickPreviousStep} type="button" variant="secondary">
+      <Button
+        onClick={clickPreviousStep}
+        type="button"
+        variant="secondary"
+        width="265px"
+      >
         Previous Step
       </Button>
       <Spacing horizontal={4} />
-      <Button onClick={onSendAnswers} type="button" disabled={isDisabledButton}>
+      <Button
+        onClick={onSendAnswers}
+        type="button"
+        disabled={isDisabledButton}
+        width="265px"
+      >
         Next Step
       </Button>
     </ButtonContainer>

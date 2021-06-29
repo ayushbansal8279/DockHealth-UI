@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { HEALTH_RECORD_OPTIONS, SOFTWARE_OPTIONS } from '../options';
@@ -149,7 +149,12 @@ const OnboardingQuestionsOwnerStepTwo = ({
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <ButtonContainer>
-        <Button onClick={clickPreviousStep} type="button" variant="secondary">
+        <Button
+          onClick={clickPreviousStep}
+          type="button"
+          variant="secondary"
+          width="265px"
+        >
           Previous Step
         </Button>
         <Spacing horizontal={4} />
@@ -157,6 +162,7 @@ const OnboardingQuestionsOwnerStepTwo = ({
           onClick={onSendAnswers}
           type="button"
           disabled={isDisabledButton}
+          width="265px"
         >
           Next Step
         </Button>
