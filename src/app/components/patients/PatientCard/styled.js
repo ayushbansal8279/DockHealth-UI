@@ -3,9 +3,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-export const PatientCellWrapper = styled.span`
-  display: block;
-`;
+export const PatientCellWrapper = styled.span``;
 
 export const PatientCardContainer = styled.div`
   width: 436px;
