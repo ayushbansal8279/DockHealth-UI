@@ -2,13 +2,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import debounce from 'lodash.debounce';
 import { isEmpty, isNil, move } from 'ramda';
-
 import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
-import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { TaskStatus } from 'helpers/task-helpers';
@@ -74,18 +71,20 @@ const initializeListDetailsViewHooks = (match, history) => {
   const prevTaskCounters = usePrevious(taskCounters);
   const prevMatch = usePrevious(match);
 
-  const searchWithDebounce = debounce(searchQuery => {
-    const tabName = match?.params?.tabName;
+  const searchTasks = useCallback(
+    searchQuery => {
+      const tabName = match?.params?.tabName;
 
-    const taskStatus =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+      const taskStatus =
+        tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
-    onSearchChanged();
-    return listDetailsSagaActions.fetchTasksBySearchedTerm({
-      status: taskStatus,
-      searchedTerm: searchQuery,
-    });
-  }, 400);
+      listDetailsSagaActions.fetchTasksBySearchedTerm({
+        status: taskStatus,
+        searchedTerm: searchQuery,
+      });
+    },
+    [listDetailsSagaActions, match],
+  );
 
   const refreshTab = useCallback(
     (withLoader = false) => {
@@ -326,12 +325,12 @@ const initializeListDetailsViewHooks = (match, history) => {
       setSearchValue(searchQuery);
 
       if (searchQuery) {
-        searchWithDebounce(searchQuery);
+        searchTasks(searchQuery);
       } else {
         refreshTab(true);
       }
     },
-    [refreshTab, searchWithDebounce],
+    [refreshTab, searchTasks],
   );
 
   const resetSort = useCallback(() => {
