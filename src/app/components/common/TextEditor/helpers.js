@@ -1,6 +1,7 @@
 import React from 'react';
 import { isEmpty } from 'ramda';
 import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js';
+import { draftToMarkdown } from 'markdown-draft-js';
 import { createMentionEntities } from './create-mention-entities';
 import { HighlightedElement } from './styled';
 
@@ -49,6 +50,7 @@ const substituteNameForIdInText = (rawText, mentions) => {
 
 export const convertFromEditorStateToOutput = editorState => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
+
   const textBlocks = stateContent.blocks.map(block => block.text);
   const rawText = textBlocks.join('\n');
   const mentions = Object.values(stateContent.entityMap)?.map(entity => ({
@@ -56,9 +58,11 @@ export const convertFromEditorStateToOutput = editorState => {
     type: entity.type,
   }));
 
+  const markdown = draftToMarkdown(stateContent);
+
   return {
     rawText,
-    tokenizedText: substituteNameForIdInText(rawText, mentions),
+    tokenizedText: substituteNameForIdInText(markdown, mentions),
     mentions,
   };
 };

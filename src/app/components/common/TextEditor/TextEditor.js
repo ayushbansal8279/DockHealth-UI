@@ -4,15 +4,18 @@ import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patient-api';
 import { getListMembersByName } from 'api/task-list-api';
+import createToolbarPlugin from '@draft-js-plugins/static-toolbar';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
+import '../../../../../node_modules/@draft-js-plugins/static-toolbar/lib/plugin.css';
 import {
   initializeLinkifyPlugin,
   initializePeopleMentionPlugin,
   initializePatientMentionPlugin,
 } from './plugin-config';
+
 import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
@@ -37,9 +40,10 @@ const fetchPatientsWithDebounce = debounce(
   300,
 );
 
-const MentionsEditor = React.forwardRef(
+const TextEditor = React.forwardRef(
   (
     {
+      showToolbar = false,
       readOnly,
       withEditedLabel,
       keyBindingFn,
@@ -57,8 +61,12 @@ const MentionsEditor = React.forwardRef(
       oneline = false,
       disableMentions = false,
     },
-    reference,
+    outerReference,
   ) => {
+    const innerReference = useRef();
+    const reference = outerReference || innerReference;
+    const staticToolbarPlugin = useRef(createToolbarPlugin());
+    const { Toolbar } = staticToolbarPlugin.current;
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
     const peopleMentionPlugin = useRef(
       initializePeopleMentionPlugin(isDrawerEditor),
@@ -68,6 +76,7 @@ const MentionsEditor = React.forwardRef(
     );
 
     const [editorState, setEditorState] = useState(initialState);
+    const [isFocused, setIsFocused] = useState(false);
 
     const [peopleSuggestions, setPeopleSuggestions] = useState([
       [SUGGESTIONS_PLACEHOLDER],
@@ -91,7 +100,13 @@ const MentionsEditor = React.forwardRef(
       onChange(newState);
     };
 
+    const handleFocus = event => {
+      onFocus(event);
+      setIsFocused(true);
+    };
+
     const handleBlur = () => {
+      setIsFocused(false);
       onBlur(state || editorState);
     };
 
@@ -162,6 +177,7 @@ const MentionsEditor = React.forwardRef(
       peopleMentionPlugin.current,
       patientMentionPlugin.current,
       linkifyPlugin.current,
+      staticToolbarPlugin.current,
     ];
 
     return (
@@ -177,7 +193,7 @@ const MentionsEditor = React.forwardRef(
           editorState={state || editorState}
           readOnly={readOnly}
           placeholder={placeholder}
-          onFocus={onFocus}
+          onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}
           keyBindingFn={keyBindingFn}
@@ -188,6 +204,8 @@ const MentionsEditor = React.forwardRef(
               : null
           }
         />
+
+        {showToolbar && isFocused && <Toolbar />}
         {!disableMentions && taskListIdentifier && (
           <PeopleMentionSuggestions
             onSearchChange={onPeopleSearchChange}
@@ -234,4 +252,4 @@ const MentionsEditor = React.forwardRef(
   },
 );
 
-export default MentionsEditor;
+export default TextEditor;

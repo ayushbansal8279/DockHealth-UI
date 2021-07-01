@@ -9,6 +9,21 @@ export const StyledEditorContainer = styled.div`
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
 
+  .editor {
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    cursor: text;
+    padding: 16px;
+    border-radius: 2px;
+    margin-bottom: 2em;
+    box-shadow: inset 0px 1px 8px -3px #ababab;
+    background: #fefefe;
+  }
+
+  .editor :global(.public-DraftEditor-content) {
+    min-height: 140px;
+  }
+
   ${({ isOneline }) =>
     isOneline &&
     `

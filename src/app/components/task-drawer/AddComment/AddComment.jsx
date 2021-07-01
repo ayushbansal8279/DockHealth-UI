@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Member from 'components/members/Member/Member';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import TextEditor from 'components/common/TextEditor/TextEditor';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import initializeAddCommentHooks from './hooks';
 import {
@@ -48,7 +48,8 @@ const AddComment = ({
     <AddCommentContainer ref={addCommentContainerReference}>
       <Member member={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        <MentionsEditor
+        <TextEditor
+          showToolbar
           ref={addCommentReference}
           taskListIdentifier={taskListIdentifier}
           disableMentions={isTemplateTask}

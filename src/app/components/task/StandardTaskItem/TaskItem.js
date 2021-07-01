@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -21,9 +22,9 @@ import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import ThreeDotsIcon from 'img/three-dots';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import { convertToEditorState } from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
   onTaskAssigned,

@@ -1,4 +1,5 @@
-import { convertFromRaw, convertToRaw, ContentState } from 'draft-js';
+import { convertFromRaw } from 'draft-js';
+import { markdownToDraft } from 'markdown-draft-js';
 
 const getIndicesOf = (searchValue, text, caseSensitive) => {
   let temporaryText = text;
@@ -39,7 +40,8 @@ const getEntityRanges = (text, mentionName, mentionKey) => {
 };
 
 export const createMentionEntitiesFromRawText = (text, tags) => {
-  const rawContent = convertToRaw(ContentState.createFromText(text));
+  const rawContent = markdownToDraft(text);
+
   const rawState = tags.map(tag => {
     const { mentionType, ...data } = tag;
     return {

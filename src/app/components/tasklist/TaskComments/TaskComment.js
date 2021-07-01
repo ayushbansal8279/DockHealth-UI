@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
 import Member from 'components/members/Member/Member';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { convertToEditorState } from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -83,8 +83,9 @@ const TaskComment = ({
           ref={commentTextReference}
           wholeCommentVisible={wholeCommentVisible}
         >
-          <MentionsEditor
+          <TextEditor
             readOnly
+            showToolbar
             withEditedLabel={dateCreated !== dateUpdated}
             state={commentState}
             onChange={setCommentState}

@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import moment from 'moment';
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
@@ -23,9 +24,9 @@ import {
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { convertToEditorState } from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import MemberGroup from 'components/members/MemberGroup/MemberGroup';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
@@ -146,7 +147,7 @@ const Subtask = ({ subtask, currentUser }) => {
         }}
       >
         <Description isCrossedOut={isCompleted}>
-          <MentionsEditor
+          <TextEditor
             readOnly
             oneline
             isDrawerEditor
