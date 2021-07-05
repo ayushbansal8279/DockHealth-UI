@@ -13,9 +13,9 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
 import { EditorState } from 'draft-js';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/MentionsEditor/create-mention-entities';
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import * as TaskApi from 'api/task-api';
 import {
   saveTask,

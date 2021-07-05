@@ -1,5 +1,6 @@
 import createMentionPlugin from 'draft-js-mention-plugin';
 import createLinkifyPlugin from 'draft-js-linkify-plugin';
+import createToolbarPlugin from '@draft-js-plugins/static-toolbar';
 import PeopleMention from './PeopleMention/PeopleMention';
 import PatientMention from './PatientMention/PatientMention';
 import EditorLink from './EditorLink/EditorLink';
@@ -75,3 +76,5 @@ export const initializePatientMentionPlugin = isDrawerEditor =>
       return styles;
     },
   });
+
+export const initializeStaticToolbarPlugin = () => createToolbarPlugin();

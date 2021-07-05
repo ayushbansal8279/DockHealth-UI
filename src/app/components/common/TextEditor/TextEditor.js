@@ -5,23 +5,44 @@ import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patient-api';
 import { getListMembersByName } from 'api/task-list-api';
+import createToolbarPlugin, {
+  Separator,
+} from '@draft-js-plugins/static-toolbar';
+import StrikethroughSIcon from '@material-ui/icons/StrikethroughS';
+import createEmojiPlugin from '@draft-js-plugins/emoji';
+import Spacing from 'components/common/Spacing.tsx';
+import {
+  ItalicButton,
+  BoldButton,
+  UnderlineButton,
+  UnorderedListButton,
+  OrderedListButton,
+  createInlineStyleButton,
+} from '@draft-js-plugins/buttons';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
+import '@draft-js-plugins/static-toolbar/lib/plugin.css';
+import '@draft-js-plugins/emoji/lib/plugin.css';
 import {
   initializeLinkifyPlugin,
   initializePeopleMentionPlugin,
   initializePatientMentionPlugin,
 } from './plugin-config';
+
 import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
   mapPeopleToSuggestions,
   createHighlightDecorator,
 } from './helpers';
-import { StyledEditorContainer } from './styled';
+import {
+  StyledEditorContainer,
+  EmojiContainer,
+  ToolbarContainer,
+} from './styled';
 
 const fetchPatientsWithDebounce = debounce(
   (value, setPatientSuggestions, areSuggestionsOpened) => {
@@ -39,9 +60,10 @@ const fetchPatientsWithDebounce = debounce(
   300,
 );
 
-const MentionsEditor = React.forwardRef(
+const TextEditor = React.forwardRef(
   (
     {
+      showToolbar = false,
       readOnly,
       withEditedLabel,
       keyBindingFn,
@@ -59,8 +81,14 @@ const MentionsEditor = React.forwardRef(
       oneline = false,
       disableMentions = false,
     },
-    reference,
+    outerReference,
   ) => {
+    const innerReference = useRef();
+    const reference = outerReference || innerReference;
+    const staticToolbarPlugin = useRef(createToolbarPlugin());
+    const emojiPlugin = useRef(createEmojiPlugin());
+    const { EmojiSelect } = emojiPlugin.current;
+    const { Toolbar } = staticToolbarPlugin.current;
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
     const peopleMentionPlugin = useRef(
       initializePeopleMentionPlugin(isDrawerEditor),
@@ -70,6 +98,7 @@ const MentionsEditor = React.forwardRef(
     );
 
     const [editorState, setEditorState] = useState(initialState);
+    const [isFocused, setIsFocused] = useState(false);
 
     const [peopleSuggestions, setPeopleSuggestions] = useState([
       [SUGGESTIONS_PLACEHOLDER],
@@ -99,7 +128,13 @@ const MentionsEditor = React.forwardRef(
       onChange(newState);
     };
 
+    const handleFocus = event => {
+      onFocus(event);
+      setIsFocused(true);
+    };
+
     const handleBlur = () => {
+      setIsFocused(false);
       onBlur(state || editorState);
     };
 
@@ -170,7 +205,43 @@ const MentionsEditor = React.forwardRef(
       peopleMentionPlugin.current,
       patientMentionPlugin.current,
       linkifyPlugin.current,
+      staticToolbarPlugin.current,
+      emojiPlugin.current,
     ];
+
+    const ThroughLineButton = outerProps => {
+      const StrikethroughButton = createInlineStyleButton(
+        {
+          style: 'STRIKETHROUGH',
+          children: (
+            <div>
+              <StrikethroughSIcon />
+            </div>
+          ),
+        },
+        'STRIKETHROUGH',
+      );
+      return <StrikethroughButton {...outerProps} />;
+    };
+    const EmojiiButton = outerProps => {
+      const StrikethroughButton = createInlineStyleButton(
+        {
+          children: (
+            <EmojiContainer>
+              <EmojiSelect style={{ border: 'none' }} />
+            </EmojiContainer>
+          ),
+        },
+        'STRIKETHROUGH',
+      );
+      return <StrikethroughButton {...outerProps} />;
+    };
+
+    const styleMap = {
+      STRIKETHROUGH: {
+        textDecoration: 'line-through',
+      },
+    };
 
     return (
       <StyledEditorContainer
@@ -179,13 +250,33 @@ const MentionsEditor = React.forwardRef(
         isOneline={oneline}
         onClick={focus}
       >
+        {showToolbar && isFocused && (
+          <ToolbarContainer>
+            <Toolbar>
+              {externalProps => (
+                <div>
+                  <BoldButton {...externalProps} />
+                  <ItalicButton {...externalProps} />
+                  <UnderlineButton {...externalProps} />
+                  <ThroughLineButton {...externalProps} />
+                  <Separator {...externalProps} />
+                  <UnorderedListButton {...externalProps} />
+                  <OrderedListButton {...externalProps} />
+                  <Separator {...externalProps} />
+                  <EmojiiButton {...externalProps} />
+                </div>
+              )}
+            </Toolbar>
+          </ToolbarContainer>
+        )}
         <Editor
+          customStyleMap={styleMap}
           ref={reference}
           plugins={plugins}
           editorState={state || editorState}
           readOnly={readOnly}
           placeholder={placeholder}
-          onFocus={onFocus}
+          onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}
           keyBindingFn={keyBindingFn}
@@ -196,6 +287,8 @@ const MentionsEditor = React.forwardRef(
               : null
           }
         />
+        <Spacing horizontal={4} />
+
         {!disableMentions && taskListIdentifier && (
           <PeopleMentionSuggestions
             onSearchChange={onPeopleSearchChange}
@@ -245,4 +338,4 @@ const MentionsEditor = React.forwardRef(
   },
 );
 
-export default MentionsEditor;
+export default TextEditor;

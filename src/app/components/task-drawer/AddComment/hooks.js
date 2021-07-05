@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import useBoolean from 'hooks/useBoolean';
 
 const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {

@@ -38,7 +38,7 @@ const validationObjectShape = {
       }
 
       if (
-        newValue?.replace(/[-/_]/g, '')?.length <
+        newValue?.replace(/[/_-]/g, '')?.length <
         DATE_FORMAT.replace(/\//g, '').length
       ) {
         return new Error();

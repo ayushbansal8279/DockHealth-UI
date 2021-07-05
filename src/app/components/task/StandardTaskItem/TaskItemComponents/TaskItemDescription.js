@@ -1,8 +1,9 @@
+/* eslint-disable import/extensions */
 import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
 import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
@@ -58,7 +59,7 @@ const TaskItemDescription = ({
           }}
           isCrossedOut={!isCompletedGroup && isCompleted}
         >
-          <MentionsEditor
+          <TextEditor
             readOnly
             oneline
             state={descriptionState}

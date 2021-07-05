@@ -1,7 +1,8 @@
+/* eslint-disable import/extensions */
 import React, { useRef, useState } from 'react';
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Spacing from 'components/common/Spacing';
 import { validateNewSubtask } from 'helpers/validation-helper';
 import {
@@ -65,7 +66,7 @@ const QuickAddSubtask = ({
   return (
     <AddSubtaskInputWrapper hidePlaceholder={hasInputValue}>
       <MentionsEditorContainer>
-        <MentionsEditor
+        <TextEditor
           ref={editorReference}
           taskListIdentifier={taskListIdentifier}
           disabled={isDisabled}

@@ -1,6 +1,7 @@
-import { convertFromEditorStateToOutput } from 'components/common/MentionsEditor/helpers';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+/* eslint-disable import/extensions */
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Spacing from 'components/common/Spacing';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -88,7 +89,7 @@ const QuickAddTaskInput = React.forwardRef(
       <>
         <AddTaskInputWrapper hasError={!!error}>
           <MentionsEditorContainer>
-            <MentionsEditor
+            <TextEditor
               ref={reference || quickAddTaskInputReference}
               taskListIdentifier={taskListIdentifier}
               disableMentions={disableMentions}

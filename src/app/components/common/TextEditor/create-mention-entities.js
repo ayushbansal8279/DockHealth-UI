@@ -1,4 +1,6 @@
-import { convertFromRaw, convertToRaw, ContentState } from 'draft-js';
+/* eslint-disable @typescript-eslint/camelcase */
+import { convertFromRaw } from 'draft-js';
+import { markdownToDraft } from 'markdown-draft-js';
 
 const getIndicesOf = (searchValue, text, caseSensitive) => {
   let temporaryText = text;
@@ -39,7 +41,18 @@ const getEntityRanges = (text, mentionName, mentionKey) => {
 };
 
 export const createMentionEntitiesFromRawText = (text, tags) => {
-  const rawContent = convertToRaw(ContentState.createFromText(text));
+  const rawContent = markdownToDraft(text, {
+    blockStyles: {
+      ins_open: 'UNDERLINE',
+      del_open: 'STRIKETHROUGH',
+    },
+    remarkableOptions: {
+      enable: {
+        inline: 'ins',
+      },
+    },
+  });
+
   const rawState = tags.map(tag => {
     const { mentionType, ...data } = tag;
     return {

@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';

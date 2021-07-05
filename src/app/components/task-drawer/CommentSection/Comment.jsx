@@ -1,16 +1,16 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useRef, useEffect } from 'react';
 import moment from 'moment';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Member from 'components/members/Member/Member';
 import { RobotoTypography } from 'styles/theme';
 import useBoolean from 'hooks/useBoolean';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
-} from 'components/common/MentionsEditor/helpers';
-import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
+} from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {
   CommentActionLabel,
   CommentContainer,
@@ -104,7 +104,8 @@ const Comment = ({
         <CommentContainer isEditing={isEditing}>
           <CommentContent>
             <CommentText>
-              <MentionsEditor
+              <TextEditor
+                showToolbar
                 ref={commentEditorReference}
                 taskListIdentifier={taskListIdentifier}
                 disableMentions={isTemplateTask}

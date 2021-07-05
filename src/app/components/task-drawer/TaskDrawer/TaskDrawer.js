@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import React from 'react';
@@ -7,7 +8,7 @@ import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import MentionsEditor from 'components/common/MentionsEditor/MentionsEditor';
+import TextEditor from 'components/common/TextEditor/TextEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
@@ -166,7 +167,7 @@ const TaskDrawer = ({
                   {selectedParentTask ? (
                     <ParentTaskButton onClick={onClickParentTask}>
                       <ParentTaskDescription>
-                        <MentionsEditor
+                        <TextEditor
                           readOnly
                           isDrawerEditor
                           withEditedLabel={selectedParentTask.edited}
@@ -200,7 +201,7 @@ const TaskDrawer = ({
                       )}
                   </Grid>
                   <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
-                    <MentionsEditor
+                    <TextEditor
                       ref={descriptionReference}
                       taskListIdentifier={taskListIdentifier}
                       disableMentions={isTemplateTask}
