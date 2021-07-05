@@ -25,6 +25,7 @@ import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
 import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { Box } from '@material-ui/core';
 import {
   SubmenuDivider,
   DrawerListsList,
@@ -158,8 +159,6 @@ const ListsSubmenu = () => {
         baseList = [
           ...baseList,
           {
-            key: 'invite',
-            button: true,
             name: 'Invite to list',
             onClick: () => openInviteToListModal(list),
           },
@@ -169,12 +168,10 @@ const ListsSubmenu = () => {
           baseList = [
             ...baseList,
             {
-              key: 'edit',
               name: 'Edit list',
               onClick: () => openListEditModal(list),
             },
             {
-              key: 'delete',
               name: 'Delete',
               onClick: () => {
                 openDeleteConfirmationModal(list);
@@ -243,9 +240,13 @@ const ListsSubmenu = () => {
             )}
             <DrawerItemOptions>
               <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-              <OptionsMenu disablePortal options={getMenuItems(list)}>
-                <MoreVert style={{ color: palette.coolGrey1 }} />
-              </OptionsMenu>
+              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                <OptionsMenu disablePortal options={getMenuItems(list)}>
+                  <MoreVert style={{ color: palette.coolGrey1 }} />
+                </OptionsMenu>
+              ) : (
+                <Box m={2} />
+              )}
             </DrawerItemOptions>
           </DrawerListsItem>
         ))}
