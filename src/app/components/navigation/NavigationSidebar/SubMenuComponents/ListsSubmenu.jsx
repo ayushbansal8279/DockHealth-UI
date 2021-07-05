@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import {
   onTaskListDeleted,
@@ -19,13 +18,14 @@ import {
   taskListsSelector,
   pendingTaskListsSelector,
 } from 'selectors/task-list-selectors';
-import AddButton from 'components/common/AddButton/AddButton';
+import AddButton from 'components/common/AddButton/AddButton.tsx';
 import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
-import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import palette from 'styles/palette';
 import { locationParametersSelector } from 'location/selectors';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { Box } from '@material-ui/core';
 import {
   SubmenuDivider,
   DrawerListsList,
@@ -55,19 +55,6 @@ const ListsSubmenu = () => {
 
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
-  const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
-  const [currentList, setCurrentList] = useState([]);
-  const itemsMoreButtonReferences = useRef([]);
-  const [
-    currentListMenuPopupReference,
-    setCurrentListMenuPopupReference,
-  ] = useState(false);
-
-  useEffect(() => {
-    if (!listMenuPopupOpen && currentList?.length > 0) {
-      setCurrentList([]);
-    }
-  }, [listMenuPopupOpen, currentList]);
 
   const lists = useMemo(
     () => [...(taskLists || []), ...(pendingTaskLists || [])],
@@ -79,14 +66,6 @@ const ListsSubmenu = () => {
     dispatch(TaskListActions.getPendingTaskListsForUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const openListMenuPopover = (list, indexOnList) => {
-    setCurrentListMenuPopupReference({
-      current: itemsMoreButtonReferences.current[indexOnList],
-    });
-    setCurrentList(list);
-    setListMenuPopupOpen(true);
-  };
 
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
@@ -170,7 +149,7 @@ const ListsSubmenu = () => {
           ...baseList,
           {
             key: 'leave',
-            label: 'Leave list',
+            name: 'Leave list',
             onClick: () => openLeaveListModal(list),
           },
         ];
@@ -180,9 +159,7 @@ const ListsSubmenu = () => {
         baseList = [
           ...baseList,
           {
-            key: 'invite',
-            button: true,
-            label: 'Invite to list',
+            name: 'Invite to list',
             onClick: () => openInviteToListModal(list),
           },
         ];
@@ -191,16 +168,15 @@ const ListsSubmenu = () => {
           baseList = [
             ...baseList,
             {
-              key: 'edit',
-              label: 'Edit list',
+              name: 'Edit list',
               onClick: () => openListEditModal(list),
             },
             {
-              key: 'delete',
-              label: 'Delete',
+              name: 'Delete',
               onClick: () => {
                 openDeleteConfirmationModal(list);
               },
+              color: palette.oPlusRed,
             },
           ];
         }
@@ -232,6 +208,7 @@ const ListsSubmenu = () => {
       <DrawerListsList>
         {lists?.map((list, index) => (
           <DrawerListsItem
+            // eslint-disable-next-line react/no-array-index-key
             key={`listsubmenu_${list.taskListIdentifier}_${index}`}
             data-list-id={list.taskListIdentifier}
             className={
@@ -264,32 +241,15 @@ const ListsSubmenu = () => {
             <DrawerItemOptions>
               <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
               {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                <IconButton
-                  ref={element => {
-                    if (element)
-                      itemsMoreButtonReferences.current[index] = element;
-                  }}
-                  size="small"
-                  onClick={() => {
-                    openListMenuPopover(list, index);
-                  }}
-                >
+                <OptionsMenu disablePortal options={getMenuItems(list)}>
                   <MoreVert style={{ color: palette.coolGrey1 }} />
-                </IconButton>
+                </OptionsMenu>
               ) : (
                 <Box m={2} />
               )}
             </DrawerItemOptions>
           </DrawerListsItem>
         ))}
-        <MenuPopover
-          anchorEl={currentListMenuPopupReference?.current}
-          open={listMenuPopupOpen}
-          onClose={() => setListMenuPopupOpen(false)}
-          onAfterOptionClick={() => setListMenuPopupOpen(false)}
-          options={getMenuItems(currentList)}
-          itemType="secondary"
-        />
         <RolloverPopover
           anchorEl={hoveredItemReference?.current}
           anchorOrigin={{
