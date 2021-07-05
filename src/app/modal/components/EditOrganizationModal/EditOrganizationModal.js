@@ -8,8 +8,8 @@ import Button from 'components/common/Button/Button';
 import OrganizationAvatarInput from 'components/org/OrganizationAvatarInput/OrganizationAvatarInput';
 import OrganizationColorPicker from 'components/org/OrganizationColorPicker/OrganizationColorPicker';
 import Spacing from 'components/common/Spacing';
-import Input from 'components/common/Input/Input';
-import { useForm } from 'react-hook-form';
+import FormInput from 'components/common/Input/FormInput';
+import { FormContext, useForm } from 'react-hook-form';
 import {
   EditOrganizationModalWrapper,
   Header,
@@ -21,6 +21,14 @@ import {
   SaveButtonWrapper,
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
+
+const validateOrganizationName = value => {
+  if (![...value]?.filter(char => char !== ' ').length > 0) {
+    return 'This field is required';
+  }
+
+  return true;
+};
 
 const onSubmit = ({ dispatch, onSuccess, organizationIdentifier }) => ({
   organizationName,
@@ -47,7 +55,7 @@ const onSubmit = ({ dispatch, onSuccess, organizationIdentifier }) => ({
 const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
   const dispatch = useDispatch();
 
-  const formContext = useForm({
+  const formMethods = useForm({
     defaultValues: {
       organizationName: userProfile.organizationName,
       organizationInitials: userProfile.organizationInitials,
@@ -64,27 +72,12 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
     errors,
     handleSubmit,
     formState: { isSubmitting },
-  } = formContext;
+  } = formMethods;
 
-  const organizationNameValue = watch('organizationName');
   const organizationInitialsValue = watch('organizationInitials');
   const organizationProfileColorValue = watch('organizationProfileColor');
 
   useEffect(() => {
-    register(
-      {
-        name: 'organizationName',
-      },
-      {
-        validate: value => {
-          if (![...value]?.filter(char => char !== ' ').length > 0) {
-            return 'This field is required';
-          }
-
-          return true;
-        },
-      },
-    );
     register(
       { name: 'organizationInitials' },
       {
@@ -122,66 +115,70 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
           }),
         )}
       >
-        <Input
-          ref={register}
-          error={errors?.organizationName?.message}
-          fullWidth
-          label="What is the name of your organization?"
-          name="organizationName"
-          required
-          showError
-          centerizedLabelOnStart
-          value={organizationNameValue}
-        />
-        <Spacing vertical={4} />
-        <TileSettingsHeader>Create your organization tile</TileSettingsHeader>
-        <Spacing vertical={3} />
-        <TileSettingsDescription>
-          2-3 initials to represent your organization
-        </TileSettingsDescription>
-        <Spacing vertical={4} />
-        <OrganizationAvatarInput
-          name="organizationInitials"
-          placeholder="abc"
-          onChange={event => {
-            const newValue = event.target.value.trim().toUpperCase();
+        <FormContext {...formMethods}>
+          <FormInput
+            autoFocus
+            label="Organization name"
+            placeholder="What is the name of your organization?"
+            name="organizationName"
+            required
+            validate={validateOrganizationName}
+          />
+          <Spacing vertical={4} />
+          <TileSettingsHeader>Create your organization tile</TileSettingsHeader>
+          <Spacing vertical={3} />
+          <TileSettingsDescription>
+            2-3 initials to represent your organization
+          </TileSettingsDescription>
+          <Spacing vertical={4} />
+          <OrganizationAvatarInput
+            name="organizationInitials"
+            placeholder="abc"
+            onChange={event => {
+              const newValue = event.target.value.trim().toUpperCase();
 
-            if (newValue.length > 3) {
-              setValue('organizationInitials', newValue.slice(0, 3));
-            } else {
-              setValue('organizationInitials', newValue);
-            }
-          }}
-          value={organizationInitialsValue}
-          backgroundColor={organizationProfileColorValue}
-        />
-        {errors?.organizationInitials && (
-          <>
-            <Spacing vertical={2} />
-            <InitialsError>
-              {errors?.organizationInitials?.message}
-            </InitialsError>
-          </>
-        )}
-        <Spacing vertical={5} />
-        <ColorPickerHeader>Choose your theme color</ColorPickerHeader>
-        <Spacing vertical={3} />
-        <OrganizationColorPicker
-          name="organizationProfileColor"
-          onChange={event => {
-            const { name, value } = event.target;
-            setValue(name, value);
-          }}
-          value={organizationProfileColorValue}
-        />
-        <Spacing vertical={6} />
-        <Grid container direction="row" justify="flex-end" alignItems="center">
-          <SaveButtonWrapper>
-            <Button disabled={isSubmitting} type="submit">
-              Save
-            </Button>
-          </SaveButtonWrapper>
-        </Grid>
+              if (newValue.length > 3) {
+                setValue('organizationInitials', newValue.slice(0, 3));
+              } else {
+                setValue('organizationInitials', newValue);
+              }
+            }}
+            value={organizationInitialsValue}
+            backgroundColor={organizationProfileColorValue}
+          />
+          {errors?.organizationInitials && (
+            <>
+              <Spacing vertical={2} />
+              <InitialsError>
+                {errors?.organizationInitials?.message}
+              </InitialsError>
+            </>
+          )}
+          <Spacing vertical={5} />
+          <ColorPickerHeader>Choose your theme color</ColorPickerHeader>
+          <Spacing vertical={3} />
+          <OrganizationColorPicker
+            name="organizationProfileColor"
+            onChange={event => {
+              const { name, value } = event.target;
+              setValue(name, value);
+            }}
+            value={organizationProfileColorValue}
+          />
+          <Spacing vertical={6} />
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+          >
+            <SaveButtonWrapper>
+              <Button disabled={isSubmitting} type="submit">
+                Save
+              </Button>
+            </SaveButtonWrapper>
+          </Grid>
+        </FormContext>
       </OrganizationForm>
     </EditOrganizationModalWrapper>
   );

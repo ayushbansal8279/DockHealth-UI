@@ -75,7 +75,6 @@ const PatientSidebar = ({
             patient={patient}
             onPatientCreated={onPatientCreated}
             onPatientEdited={onPatientEdited}
-            compact
             onCancel={onClose}
             uniqueIdentifierLabel={uniqueIdentifierLabel}
           />

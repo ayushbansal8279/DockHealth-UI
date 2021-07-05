@@ -3,10 +3,7 @@ import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import * as UserApi from 'api/user-api';
-import {
-  UniversalInput,
-  UniversalMobileInputComponent,
-} from 'components/common/UniversalInput/UniversalInput';
+import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { StyledForm, HelperText, GridMaxHeight } from './styled';
@@ -78,13 +75,11 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
               A valid mobile phone number is required to send an authentication
               code for HIPAA compliance
             </HelperText>
-            <UniversalInput
+            <FormPhoneNumberInput
+              required
               autoFocus
               label="Your Mobile Number"
               name="phoneNumber"
-              customShrinkCondition
-              CustomComponent={UniversalMobileInputComponent}
-              required
             />
           </Grid>
           <Grid item>

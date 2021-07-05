@@ -6,8 +6,8 @@ import { Grid } from '@material-ui/core';
 import LockIcon from 'img/modals/lock';
 import * as UserApi from 'api/user-api';
 import { openModal } from 'modal/actions';
-import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
 import Spacing from 'components/common/Spacing';
+import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import { validPasswordSchema } from 'helpers/validation-helper';
 import {
@@ -72,7 +72,7 @@ const ChangePasswordModal = ({ closeModal }) => {
       <Title>Change your password</Title>
       <FormContext {...formMethods}>
         <StyledForm onSubmit={handleSubmit(onSubmit({ setError, dispatch }))}>
-          <UniversalInput
+          <FormInput
             autoFocus
             type="password"
             label="Current Password"
@@ -82,14 +82,14 @@ const ChangePasswordModal = ({ closeModal }) => {
           <HelperText>
             Eight characters • One capital letter • One number
           </HelperText>
-          <UniversalInput
+          <FormInput
             type="password"
             label="New Password"
             name="newPassword"
             show
           />
           <Spacing vertical={4} />
-          <UniversalInput
+          <FormInput
             type="password"
             label="Confirm Password"
             name="confirmPassword"

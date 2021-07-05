@@ -2,9 +2,9 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import Spacing from '../common/Spacing';
-import Button from '../common/Button/Button';
-import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
+import Button from 'components/common/Button/Button';
+import FormInput from 'components/common/Input/FormInput';
+import Spacing from 'components/common/Spacing';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -42,7 +42,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
               cell phone
             </MontserratTypography>
             <Spacing vertical={4} />
-            <UniversalMontserratInput
+            <FormInput
               name="code"
               type="text"
               label="Authorization code"
@@ -56,7 +56,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           character minimum, includes at least one number and one capital letter
         </MontserratTypography>
         <Spacing vertical={4} />
-        <UniversalMontserratInput
+        <FormInput
           name="password"
           type="password"
           label="Enter a new password"

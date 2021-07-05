@@ -22,7 +22,7 @@ const SelfEnrolledUser = () => {
       <div className="row expanded unenrolled-terms">
         <div className="columns large-12 top-buffer">
           <h6>
-            We would love to setup you and your team to be HIPAA complaint which
+            We would love to setup you and your team to be HIPAA-complaint which
             requires signing a Business Associates Agreement (BAA) and being
             part of our paid program.
           </h6>
@@ -50,7 +50,7 @@ const SelfEnrolledUser = () => {
       <div className="row expanded unenrolled-terms">
         <div className="columns large-12 top-buffer">
           <h6>
-            For questions or to setup your HIPAA compliant organization, contact
+            For questions or to setup your HIPAA-compliant organization, contact
             us at support@dock.health or find us at Dock.Health
           </h6>
         </div>

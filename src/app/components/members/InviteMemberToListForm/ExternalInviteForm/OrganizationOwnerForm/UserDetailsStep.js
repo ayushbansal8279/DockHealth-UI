@@ -41,8 +41,6 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               type="text"
               name="firstName"
               label="First name"
-              styling="secondary"
-              showError
               required
               error={errors?.firstName?.message}
               value={firstNameValue}
@@ -54,8 +52,6 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               type="text"
               name="lastName"
               label="Last name"
-              styling="secondary"
-              showError
               required
               error={errors?.lastName?.message}
               value={lastNameInputValue}
@@ -69,10 +65,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
             type="email"
             name="email"
             label="Email address"
-            styling="secondary"
             placeholder="Type the email address to invite"
-            fullWidth
-            showError
             required
             error={errors?.email?.message}
             value={emailInputValue}

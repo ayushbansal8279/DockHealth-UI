@@ -30,9 +30,3 @@ export const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
-
-export const InitialsError = styled.p`
-  margin-bottom: 0;
-  color: ${palette.oPlusRed};
-  font-size: ${fontSizes.small};
-`;

@@ -9,9 +9,15 @@ import {
   shape,
   string,
 } from 'prop-types';
-import { ClickAwayListener, Popper } from '@material-ui/core';
+import {
+  ClickAwayListener,
+  Paper,
+  Popper,
+  MenuList,
+  MenuItem,
+} from '@material-ui/core';
 import zIndex from 'styles/z-index';
-import { StyledButton, MenuContainer, MenuOptionButton } from './styled';
+import { StyledButton } from './styled';
 
 const OptionsMenu = ({
   isDisabled,
@@ -52,21 +58,22 @@ const OptionsMenu = ({
       >
         {isOpen && (
           <ClickAwayListener onClickAway={() => openPopover(false)}>
-            <MenuContainer width={width}>
-              {options?.map(({ name, color, onClick }) => (
-                <MenuOptionButton
-                  key={name}
-                  color={color}
-                  onClick={event => {
-                    openPopover(false);
-                    onClick(event);
-                  }}
-                  type="button"
-                >
-                  {name}
-                </MenuOptionButton>
-              ))}
-            </MenuContainer>
+            <Paper>
+              <MenuList width={width}>
+                {options?.map(({ name, color, onClick }) => (
+                  <MenuItem
+                    key={name}
+                    color={color}
+                    onClick={event => {
+                      openPopover(false);
+                      onClick(event);
+                    }}
+                  >
+                    {name}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Paper>
           </ClickAwayListener>
         )}
       </Popper>

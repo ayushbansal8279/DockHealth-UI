@@ -201,7 +201,7 @@ const PatientSection = ({
       fetchPatients(value).then(() => {
         setIsLoadingPatients(false);
       });
-    }, 300),
+    }, 500),
     [],
   );
 

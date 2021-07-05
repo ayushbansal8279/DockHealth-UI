@@ -2,8 +2,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo } from 'react';
 import { isEmpty } from 'ramda';
-import EmptyTaskListFox from 'img/animals/fox';
-import EmptyTaskListBear from 'img/animals/bear';
+import EmptyTaskListFox from 'img/animals/fox.png';
+import EmptyTaskListBear from 'img/animals/bear.svg';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -130,6 +130,7 @@ const PersonDetailsOpenedTasks = ({
                         highlightTasksOfTheSameParent={
                           highlightTasksOfTheSameParent
                         }
+                        taskItemConfig={taskItemConfig}
                         dragAndDropDisabled
                       />
                     ) : (

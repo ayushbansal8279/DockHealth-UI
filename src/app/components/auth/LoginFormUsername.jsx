@@ -4,17 +4,13 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import * as UserApi from 'api/user-api';
+import FormInput from 'components/common/Input/FormInput';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
-import {
-  StyledForm,
-  // StyledLink,
-  StyledHyperLink,
-} from './AuthComponents.styled';
+import { StyledForm, StyledHyperLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -87,23 +83,11 @@ const LoginFormUsername = props => {
               Please sign in
             </MontserratTypography>
             <Spacing vertical={4} />
-            <UniversalMontserratInput
-              name="username"
-              type="text"
-              label="Email"
-              autoFocus
-            />
+            <FormInput name="username" type="text" label="Email" autoFocus />
             <Spacing vertical={5} />
             <Button id="loginButton" fullWidth size="large" type="submit">
               Continue
             </Button>
-            {/* <Spacing vertical={6} />
-            <MontserratTypography variant="h4">
-              <span>New to Dock? </span>
-              <StyledLink to="/auth/create-account">
-                CREATE AN ACCOUNT
-              </StyledLink>
-            </MontserratTypography> */}
             <Spacing vertical={6} />
             <Spacing vertical={4} />
           </>

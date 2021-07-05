@@ -140,7 +140,7 @@ const PatientsView = () => {
   const searchPatientsBySearchTermWithDebounce = useCallback(
     debounce(value => {
       fetchPatientsBySearchTerm(value);
-    }, 300),
+    }, 500),
     [fetchPatientsBySearchTerm],
   );
 

@@ -7,13 +7,11 @@ import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { inviteAuthorizedSigner } from 'api/organization-api';
 import Spacing from 'components/common/Spacing';
-import {
-  UniversalMobileInputComponent,
-  UniversalMontserratInput,
-} from 'components/common/UniversalInput/UniversalInput';
 import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import FormInput from 'components/common/Input/FormInput';
+import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -102,59 +100,46 @@ const InvitationForm = ({ hideInvitationForm }) => {
         </Grid>
         <Spacing vertical={4} />
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={6}>
-            <UniversalMontserratInput
+          <Grid item xs={12} md={6}>
+            <FormInput
               label="First Name"
               name="firstName"
               required
               autoComplete={uuid()}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <UniversalMontserratInput
+          <Grid item xs={12} md={6}>
+            <FormInput
               label="Last Name"
               name="lastName"
               required
               autoComplete={uuid()}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <UniversalMontserratInput
+          <Grid item xs={12} md={6}>
+            <FormInput
               label="His/Her Email"
               name="email"
               required
               autoComplete={uuid()}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <UniversalMontserratInput
+          <Grid item xs={12} md={6}>
+            <FormPhoneNumberInput
+              required
               label="His/Her Mobile Phone Number"
               name="mobilePhoneNumber"
-              CustomComponent={UniversalMobileInputComponent}
-              required
               autoComplete={uuid()}
             />
           </Grid>
-          {!isSmallScreen && <Spacing vertical={4} />}
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            container
-            justify="flex-end"
-            direction={isSmallScreen ? 'column' : 'row'}
-          >
-            <Button variant="secondary" onClick={hideInvitationForm}>
+          <Spacing vertical={4} />
+          <Grid item xs={6}>
+            <Button fullWidth variant="secondary" onClick={hideInvitationForm}>
               Cancel
             </Button>
-            <div style={{ order: 2 }}>
-              {isSmallScreen ? (
-                <Spacing vertical={4} style={{ order: 2 }} />
-              ) : (
-                <Spacing horizontal={4} style={{ order: 2 }} />
-              )}
-            </div>
-            <Button variant="primary" type="submit">
+          </Grid>
+          <Grid item xs={6}>
+            <Button fullWidth variant="primary" type="submit">
               Send invite
             </Button>
           </Grid>

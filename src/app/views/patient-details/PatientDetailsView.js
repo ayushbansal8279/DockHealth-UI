@@ -37,6 +37,7 @@ import {
 import { RouteWrapper } from 'routing/components';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import debounce from 'lodash.debounce';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 
 import { PatientListsContainer } from './styled';
@@ -168,10 +169,17 @@ const PatientDetailsView = ({
     fetchPatientFilters,
   } = patientTasksSagaActions;
 
+  const onSearchChangedWithDebouce = useCallback(
+    debounce(value => {
+      setPatientTaskSearch(value);
+      onSearchChanged();
+    }, 500),
+    [setPatientTaskSearch, onSearchChanged],
+  );
+
   const handleSearchValueChange = value => {
-    onSearchChanged();
     setSearchValue(value);
-    setPatientTaskSearch(value);
+    onSearchChangedWithDebouce(value);
   };
 
   const handleTaskUpdate = useCallback(

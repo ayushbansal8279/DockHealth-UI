@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useToggle } from 'react-use';
 import { acknowledgeEula } from 'actions/user-actions';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Button from 'components/common/Button/Button';
 import { useSmallScreen } from 'helpers/utility-functions';
@@ -44,12 +44,12 @@ const OnboardingEulaView = () => {
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h3">
-        Securing patient data, being HIPAA compliant, and getting your team
+        Securing patient data, being HIPAA-compliant, and getting your team
         ready to work better. Sounds like the start of a great relationship.
       </MontserratTypography>
       <Spacing vertical={5} />
       <MontserratTypography variant="h4">
-        To get you and your team set up to be HIPAA complaint, please agree to
+        To get you and your team set up to be HIPAA-complaint, please agree to
         the terms below..
       </MontserratTypography>
       <Spacing vertical={5} />

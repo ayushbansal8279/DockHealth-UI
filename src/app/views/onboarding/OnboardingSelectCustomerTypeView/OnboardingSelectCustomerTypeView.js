@@ -13,7 +13,7 @@ const customerTypesList = [
   { name: 'Patients', key: 'PATIENT' },
   { name: 'Clients', key: 'CLIENT' },
   { name: 'Members', key: 'MEMBER' },
-  { name: 'Customenrs', key: 'CUSTOMER' },
+  { name: 'Customers', key: 'CUSTOMER' },
 ];
 
 const onSubmit = async ({ dispatch, history, type }) => {

@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
@@ -32,7 +32,7 @@ const TemplateAuthBaseDefaultContent = () => {
       </a>
       <Spacing vertical={5} />
       <MontserratTypography weight="normal" variant="h3" color="inherit">
-        A simple, HIPAA compliant task management and collaboration platform
+        A simple, HIPAA-compliant task management and collaboration platform
         built specifically for healthcare.
       </MontserratTypography>
     </StyledGrid>

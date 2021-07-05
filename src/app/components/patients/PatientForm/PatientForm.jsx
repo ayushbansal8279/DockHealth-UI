@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import { identity } from 'ramda';
-import { Divider, Grid, MenuItem, Select } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
-import { useDeepCompareEffect, useEffectOnce } from 'react-use';
+import { useDeepCompareEffect } from 'react-use';
 import { mixed, object, string } from 'yup';
 import {
   onPatientAdded as onPatientAddedEvent,
@@ -11,19 +11,12 @@ import {
 } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import * as PatientApi from 'api/patient-api';
-import useBoolean from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import {
-  UniversalBirthdayInputComponent,
-  UniversalMobileInputComponent,
-} from 'components/common/UniversalInput/UniversalInput';
-import {
-  PanelActionContainer,
-  PatientInput,
-  SingleFormPanelContainer,
-  SmallPatientInput,
-} from './styled';
+import FormInput from 'components/common/Input/FormInput';
+import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
+import DateInput from 'components/common/DateInput/DateInput';
+import FormSelect from 'components/common/Select/FormSelect';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 
@@ -31,7 +24,7 @@ const REQUIRED_MESSAGE = 'This field is required';
 
 const validationObjectShape = {
   firstName: string().required(REQUIRED_MESSAGE),
-  middleName: string(),
+  middleName: string().nullable(),
   lastName: string().required(REQUIRED_MESSAGE),
   mrn: string(),
   gender: string().nullable(),
@@ -45,7 +38,7 @@ const validationObjectShape = {
       }
 
       if (
-        newValue?.replace(/[-/_]/g, '')?.length <
+        newValue?.replace(/[/_-]/g, '')?.length <
         DATE_FORMAT.replace(/\//g, '').length
       ) {
         return new Error();
@@ -121,8 +114,22 @@ const onSubmit = ({
     });
 };
 
+const GENDER_OPTIONS = [
+  {
+    value: 'female',
+    label: 'Female',
+  },
+  {
+    value: 'male',
+    label: 'Male',
+  },
+  {
+    value: 'other',
+    label: 'Other',
+  },
+];
+
 const PatientForm = ({
-  compact = false,
   patient = null,
   onPatientCreated,
   onPatientEdited,
@@ -134,34 +141,7 @@ const PatientForm = ({
     validationSchema,
   });
 
-  const { handleSubmit, watch, setValue } = formMethods;
-
-  const [
-    isGenderSelectOpen,
-    setGenderSelectOpen,
-    unsetGenderSelectOpen,
-  ] = useBoolean(false);
-
-  const genderValue = watch('gender') ?? '';
-
-  const { spacing, gridSize, NameInput } = compact
-    ? {
-        spacing: 1,
-        gridSize: 12,
-        NameInput: PatientInput,
-      }
-    : {
-        spacing: 2,
-        gridSize: 6,
-        NameInput: SmallPatientInput,
-      };
-
-  useEffectOnce(() => {
-    formMethods.register({ name: 'gender' });
-    return () => {
-      formMethods.unregister({ name: 'gender' });
-    };
-  });
+  const { handleSubmit } = formMethods;
 
   useDeepCompareEffect(() => {
     Object.keys(validationObjectShape).forEach(key => {
@@ -189,73 +169,59 @@ const PatientForm = ({
           }),
         )}
       >
-        <Grid container spacing={spacing}>
-          <Grid item xs={gridSize}>
-            <SingleFormPanelContainer>
-              <NameInput
-                name="firstName"
-                autoFocus
-                required
-                label="First Name"
-              />
-              <NameInput name="middleName" label="Middle Name" />
-              <NameInput name="lastName" required label="Last Name" />
-              <PatientInput name="mrn" label={uniqueIdentifierLabel} />
-              <Select
-                onOpen={setGenderSelectOpen}
-                onClose={unsetGenderSelectOpen}
-                onChange={event => setValue('gender', event?.target?.value)}
-                variant="standard"
-                value={genderValue}
-                input={
-                  <PatientInput
-                    customShrinkCondition={isGenderSelectOpen || genderValue}
-                    name="gender"
-                    label="Gender"
-                  />
-                }
-              >
-                <MenuItem value="female">Female</MenuItem>
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
-              </Select>
-              <PatientInput
-                name="dob"
-                label="Birthday"
-                placeholder="MM/DD/YYYY"
-                CustomComponent={UniversalBirthdayInputComponent}
-              />
-            </SingleFormPanelContainer>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <FormInput name="firstName" autoFocus required label="First Name" />
           </Grid>
-          <Grid item xs={gridSize}>
-            <SingleFormPanelContainer>
-              <PatientInput name="email" label="Email" />
-              <PatientInput
-                name="phoneHome"
-                label="Home Phone"
-                type="tel"
-                customShrinkCondition
-                CustomComponent={UniversalMobileInputComponent}
-              />
-              <PatientInput
-                name="phoneMobile"
-                label="Mobile Phone"
-                type="tel"
-                customShrinkCondition
-                CustomComponent={UniversalMobileInputComponent}
-              />
-            </SingleFormPanelContainer>
+          <Grid item xs={12}>
+            <FormInput name="middleName" label="Middle Name" />
+          </Grid>
+          <Grid item xs={12}>
+            <FormInput name="lastName" required label="Last Name" />
+          </Grid>
+          <Grid item xs={12}>
+            <FormInput name="mrn" label={uniqueIdentifierLabel} />
+          </Grid>
+          <Grid item xs={12}>
+            <FormSelect name="gender" label="Gender" options={GENDER_OPTIONS} />
+          </Grid>
+          <Grid item xs={12}>
+            <FormInput
+              name="dob"
+              label="Birthday"
+              placeholder="MM/DD/YYYY"
+              inputComponent={DateInput}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormInput name="email" label="Email" />
+          </Grid>
+          <Grid item xs={12}>
+            <FormPhoneNumberInput
+              name="phoneHome"
+              label="Home Phone"
+              type="tel"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormPhoneNumberInput
+              name="phoneMobile"
+              label="Mobile Phone"
+              type="tel"
+            />
           </Grid>
         </Grid>
-        <PanelActionContainer>
-          <Button variant="text" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Spacing horizontal={3} />
-          <Button type="submit">Save</Button>
-        </PanelActionContainer>
         <Spacing vertical={4} />
-        <Divider />
+        <Grid container item xs={12}>
+          <Grid item xs={6}>
+            <Button variant="text" onClick={onCancel}>
+              Cancel
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button type="submit">Save</Button>
+          </Grid>
+        </Grid>
         <Spacing vertical={4} />
       </form>
     </FormContext>

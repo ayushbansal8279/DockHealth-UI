@@ -47,22 +47,18 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             <Grid item xs={6}>
               <Input
                 ref={register}
+                required
                 name="firstName"
                 label="First name"
-                styling="secondary"
-                showError
-                required
                 error={errors?.firstName?.message}
               />
             </Grid>
             <Grid item xs={6}>
               <Input
                 ref={register}
+                required
                 name="lastName"
                 label="Last name"
-                styling="secondary"
-                showError
-                required
                 error={errors?.lastName?.message}
               />
             </Grid>
@@ -73,13 +69,10 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
                 register(element);
                 emailInputReference.current = element;
               }}
+              required
               name="email"
               label="Email address"
-              styling="secondary"
               placeholder="Type the email address to invite"
-              fullWidth
-              showError
-              required
               error={errors?.email?.message}
             />
           </Grid>

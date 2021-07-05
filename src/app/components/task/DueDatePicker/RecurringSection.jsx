@@ -16,7 +16,7 @@ import Spacing from 'components/common/Spacing';
 import DayOfWeekPicker from 'components/common/DayOfWeekPicker/DayOfWeekPicker';
 import { DayOfWeek } from 'components/common/DayOfWeekPicker/helper';
 import SecondaryNumberInput from 'components/common/NumberInput/SecondaryNumberInput';
-import SecondaryDateInput from 'components/common/DateInput/SecondaryDateInput';
+import SecondaryDateInput from 'components/common/SecondaryDateInput/SecondaryDateInput';
 import {
   RecurringForm,
   SectionWrapper,

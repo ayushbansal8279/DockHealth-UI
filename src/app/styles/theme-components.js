@@ -1,23 +1,32 @@
-import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron/RotatableChevron';
+/* eslint-disable import/prefer-default-export */
+import React from 'react';
+import styled from 'styled-components';
+import ListSwitchChevron from 'img/list-switch-chevron';
 import palette, { opacify } from './palette';
+
+const IconWrapper = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+export const ArrowIcon = () => (
+  <IconWrapper>
+    <ListSwitchChevron />
+  </IconWrapper>
+);
 
 const STANDARD_TRANSITION = 'all 0.25s ease-out';
 
 const themeCommonOverrides = () => ({
   props: {
-    MuiPopover: {
-      PaperProps: {
-        elevation: 0,
-        square: true,
-      },
+    MuiPaper: {
+      square: true,
+      elevation: 2,
     },
     MuiSelect: {
-      IconComponent: RotatableChevronWithSpacing,
-    },
-    MuiMenu: {
-      PaperProps: {
-        square: true,
-      },
+      IconComponent: ArrowIcon,
     },
   },
   overrides: {
@@ -51,31 +60,10 @@ const themeCommonOverrides = () => ({
     },
     MuiPopover: {
       paper: {
-        border: `0.0625rem solid ${palette.coolGrey2}`,
+        border: 'none',
+        borderRadius: 0,
         margin: 0,
         padding: 0,
-      },
-    },
-    MuiSelect: {
-      outlined: {
-        borderRadius: 0,
-        height: '2.5rem',
-        '&$selectMenu': {
-          color: palette.brightBlue,
-        },
-      },
-      select: {
-        '&:focus': {
-          backgroundColor: 'transparent',
-        },
-      },
-      selectMenu: {
-        alignItems: 'center',
-        display: 'flex',
-        fontSize: '1rem',
-        height: '2.5rem',
-        padding: '0 1rem',
-        textTransform: 'uppercase',
       },
     },
     MuiTypography: {
@@ -83,122 +71,106 @@ const themeCommonOverrides = () => ({
         marginBottom: '0.5rem',
       },
     },
-    MuiList: {
+    MuiFormControl: {
       root: {
-        padding: 0,
+        width: '100%',
       },
     },
-    MuiMenu: {
-      paper: {
-        border: `0.0625rem solid ${palette.coolGrey2}`,
-        borderRadius: 0,
-        boxShadow: 'none',
+    MuiInputLabel: {
+      root: {
+        color: palette.coolGrey6,
+        textTransform: 'uppercase',
+        fontSize: '16px',
+
+        '&$error': {
+          color: palette.error,
+        },
+        '&$focused': {
+          color: palette.brightBlue,
+        },
       },
-      list: {
-        padding: 0,
+      shrink: {
+        fontSize: '12px',
+      },
+    },
+    MuiInputBase: {
+      root: {
+        border: 'none',
+        borderRadius: 0,
+      },
+      input: {
+        border: 'none',
+        outline: 'none',
+        boxShadow: 'none',
+        backgroundColor: 'transparent',
+        fontSize: '16px',
+        height: 'auto',
+
+        '&:focus, &:active, &:disabled, &[readonly]': {
+          border: 'none',
+          boxShadow: 'none',
+          backgroundColor: 'transparent',
+        },
+        '&[readonly]': {
+          cursor: 'initial',
+        },
+      },
+    },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: '#F7FAFB !important',
+      },
+      underline: {
+        '&:before': {
+          borderBottomColor: palette.coolGrey6,
+        },
+        '&$focused:after': {
+          borderBottomColor: palette.brightBlue,
+        },
+        '&.Mui-readonly': {
+          '&:after, &:before': {
+            borderBottom: 'none',
+          },
+        },
+        '&$error:after': {
+          borderBottomColor: palette.error,
+        },
+        '&$disabled:before': {
+          borderBottomStyle: 'solid',
+        },
+      },
+    },
+    MuiPaper: {
+      root: {
+        border: 'none',
+        borderRadius: 0,
       },
     },
     MuiMenuItem: {
       root: {
-        backgroundColor: palette.white,
-        filter: 'brightness(1)',
-        fontSize: '1rem',
-        padding: '0.125rem 1rem',
-        textTransform: 'uppercase',
+        backgroundColor: 'transparent',
         transition: STANDARD_TRANSITION,
-        '&:hover': {
-          backgroundColor: palette.white,
-          color: palette.lighterCyanBlue,
-          filter: 'brightness(1.05)',
+        fontFamily: "'Roboto Condensed', sans-serif",
+        color: ({ color }) => color || palette.mediumGrey,
+
+        '&:hover, &:active, &:focus': {
+          backgroundColor: palette.brightBlueWithAlpha,
         },
-        '&:active, &:focus': {
-          backgroundColor: palette.white,
-        },
+
         '&$selected': {
-          backgroundColor: palette.white,
-          color: palette.lighterCyanBlue,
-          '&:hover': {
-            backgroundColor: palette.white,
-            color: palette.lightCyanBlue,
-            filter: 'brightness(1.05)',
-          },
-          '&:active, &:focus': {
-            backgroundColor: palette.white,
+          backgroundColor: palette.brightBlueWithAlpha,
+
+          '&:hover, &:active, &:focus': {
+            backgroundColor: palette.brightBlueWithAlpha,
           },
         },
       },
     },
-    MuiButton: {
-      label: {
-        zIndex: 100,
-      },
-      text: {
-        color: palette.cyanBlue,
-        fontSize: '1.5rem',
-        minHeight: '3.625rem',
-        textTransform: 'none',
-        borderRadius: 0,
-      },
-      contained: {
-        background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
-        borderRadius: 0,
-        color: palette.white,
-        filter: 'brightness(1)',
-        fontFamily: '"Montserrat", sans-serif',
-        fontSize: '1.5rem',
-        fontWeight: 'bold',
-        minHeight: '3.625rem',
-        minWidth: '16.5625rem',
-        position: 'relative',
-        textTransform: 'uppercase',
-        transition: STANDARD_TRANSITION,
-        '&::before': {
-          background: `linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue})`,
-          content: '""',
-          height: '100%',
-          left: 0,
-          opacity: 0,
-          position: 'absolute',
-          top: 0,
-          transition: STANDARD_TRANSITION,
-          width: '100%',
+    MuiSelect: {
+      select: {
+        '&:focus': {
+          backgroundColor: 'transparent',
         },
-        '&$disabled': {
-          background: `linear-gradient(to top right, ${palette.white}, ${palette.white})`,
-          border: `0.125rem solid ${palette.coolGrey1}`,
-          color: palette.coolGrey1,
-        },
-        '&:hover': {
-          color: palette.white,
-          '&::before': {
-            opacity: 1,
-          },
-        },
-      },
-      containedPrimary: {
-        background: `linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue})`,
-        color: palette.white,
-        fontSize: '1.5rem',
-        '&::before': {
-          content: '',
-        },
-        '&$disabled': {
-          background: `linear-gradient(to top right, ${palette.white}, ${palette.white})`,
-          border: `0.125rem solid ${palette.coolGrey1}`,
-          color: palette.coolGrey1,
-        },
-        '&:hover': {
-          background: `linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue})`,
-          color: palette.white,
-          filter: 'brightness(1.2)',
-          '&::before': {
-            opacity: 0,
-          },
-        },
-      },
-      sizeSmall: {
-        fontSize: '1rem',
-        minHeight: '2.5rem',
       },
     },
   },

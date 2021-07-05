@@ -8,7 +8,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
-import MagnifierIcon from 'img/magnifier';
+import MagnifierIcon from 'img/magnifier.svg';
 import { getPatientsByCriteria } from 'api/patient-api';
 import { getFormattedPatients } from 'components/task-drawer/PatientSection/helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -84,7 +84,7 @@ const PatientList = ({
       fetchPatients(value).then(() => {
         setIsLoadingPatients(false);
       });
-    }, 300),
+    }, 500),
     [],
   );
 

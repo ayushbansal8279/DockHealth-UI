@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { Button, Grid, Popover } from '@material-ui/core';
+import { Grid, Popover } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +7,8 @@ import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from 'actions/people-actions';
 import Spacing from 'components/common/Spacing';
-import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
+import Button from 'components/common/Button/Button';
+import FormInput from 'components/common/Input/FormInput';
 import { showAlert } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';
 import {
@@ -64,44 +65,27 @@ const InvitePeopleForm = ({
       autoCorrect="off"
     >
       <InvitePeoplePopoverSection>
-        <UniversalInput
+        <FormInput
           label="First Name"
           name="first_name"
           autoFocus
           autoComplete={uuid()}
-          whiteBackground
         />
         <Spacing vertical={3} />
-        <UniversalInput
-          label="Last Name"
-          name="last_name"
-          autoComplete={uuid()}
-          whiteBackground
-        />
+        <FormInput label="Last Name" name="last_name" autoComplete={uuid()} />
         <Spacing vertical={3} />
-        <UniversalInput
-          label="Email"
-          name="email"
-          autoComplete={uuid()}
-          whiteBackground
-        />
+        <FormInput label="Email" name="email" autoComplete={uuid()} />
       </InvitePeoplePopoverSection>
       <InvitePeoplePopoverSection>
-        <Grid container justify="center">
-          <Button
-            onClick={closePopover}
-            type="button"
-            variant="text"
-            onKeyUp={event => {
-              event.preventDefault();
-              event.stopPropagation();
-            }}
-          >
-            Cancel
-          </Button>
-          <Button variant="text" bold type="submit">
-            <b>Send invite</b>
-          </Button>
+        <Grid container justify="center" spacing={2}>
+          <Grid item xs={4}>
+            <Button onClick={closePopover} variant="text">
+              Cancel
+            </Button>
+          </Grid>
+          <Grid item xs={4}>
+            <Button type="submit">Send invite</Button>
+          </Grid>
         </Grid>
       </InvitePeoplePopoverSection>
     </form>

@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
@@ -134,7 +134,12 @@ const OnboardingQuestionsOwnerStepOne = ({
       />
       <Spacing vertical={5} />
       <Spacing vertical={6} />
-      <Button onClick={clickNextStep} type="button" disabled={isDisabledButton}>
+      <Button
+        onClick={clickNextStep}
+        type="button"
+        disabled={isDisabledButton}
+        width="265px"
+      >
         Next Step
       </Button>
     </div>

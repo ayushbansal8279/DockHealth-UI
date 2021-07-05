@@ -8,12 +8,11 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import { showAlert } from 'helpers/utility-functions';
 import { referAColleague } from 'api/organization-api';
-import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import Button from 'components/common/Button/Button';
-
+import FormInput from 'components/common/Input/FormInput';
 import {
   MainContainer,
   LeftSideMainContainer,
@@ -21,7 +20,8 @@ import {
   RightSideMainContainer,
   RightSideContentContainer,
   StyledGrid,
-  DockLogoImage,
+  DockCoinReferralRewardsImage,
+  DockFooterMessageImage,
   StyledForm,
   Title,
   CloseButton,
@@ -43,14 +43,16 @@ const onSubmit = ({ handleReferralSuccess }) => async ({
   firstName,
   lastName,
   email,
+  comments,
 }) => {
   try {
     await referAColleague({
       firstName,
       lastName,
       email,
+      comments,
     });
-    handleReferralSuccess(email);
+    handleReferralSuccess(firstName, lastName);
   } catch (error) {
     showAlert({
       status: 'error',
@@ -67,11 +69,10 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
   });
 
   const openSuccessModal = useCallback(
-    (firstName, lastName, email) =>
+    (firstName, lastName) =>
       openModal('SendingInvite', {
         firstName,
         lastName,
-        email,
       }),
     [openModal],
   );
@@ -94,31 +95,36 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
               <Title>
                 <RobotoTypography
                   weight="normal"
-                  variant="h4"
+                  variant="h3"
                   color={palette.mediumGrey}
                 >
                   REFER A COLLEAGUE
                 </RobotoTypography>
               </Title>
+              <Spacing vertical={3} />
               <DialogContentText>
                 Welcome to Dockcoin - the Dock Health Referral Rewards program.
                 If you love Dock and want to refer a friend or colleague, simply
                 fill in their information below and we&apos;ll send an invite to
-                their inbox.
+                their inbox. If they join Dock, you’ll then earn a Dockcoin
+                credit once they subscribe.
               </DialogContentText>
               <Spacing vertical={4} />
-              <MontserratTypography variant="h5">
-                <span style={{ color: palette.error }}>*</span>
-                <span> All fields required</span>
-              </MontserratTypography>
               <Spacing vertical={3} />
-              <UniversalMontserratInput name="firstName" label="First Name" />
+              <FormInput name="firstName" label="First Name" required />
               <Spacing vertical={3} />
-              <UniversalMontserratInput name="lastName" label="Last Name" />
+              <FormInput name="lastName" label="Last Name" required />
               <Spacing vertical={3} />
-              <UniversalMontserratInput name="email" label="Email" />
-              <Spacing vertical={3} />
+              <FormInput name="email" label="Email" required />
 
+              <Spacing vertical={3} />
+              <FormInput
+                name="comments"
+                label="Comments for Dock Team"
+                multiline
+                rows={3}
+              />
+              <Spacing vertical={4} />
               <DialogActions>
                 <ButtonWrapper>
                   <Button
@@ -150,13 +156,21 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
             direction="column"
           >
             <a href="/#/core/home/my-tasks">
-              <DockLogoImage />
+              {/* <DockLogoImage /> */}
+              <DockCoinReferralRewardsImage />
             </a>
-            <Spacing vertical={5} />
-            <MontserratTypography weight="normal" variant="h4" color="inherit">
-              A simple, HIPAA compliant task management and collaboration
+            <Spacing vertical={2} />
+            <div style={{ textAlign: 'center' }}>
+              <MontserratTypography weight="bold" variant="h3" color="inherit">
+                REFERRAL REWARDS
+              </MontserratTypography>
+            </div>
+            <Spacing vertical={7} />
+            <DockFooterMessageImage />
+            {/* <MontserratTypography weight="normal" variant="h4" color="inherit">
+              A simple, HIPAA-compliant task management and collaboration
               platform built specifically for healthcare.
-            </MontserratTypography>
+            </MontserratTypography> */}
           </StyledGrid>
         </RightSideContentContainer>
       </RightSideMainContainer>

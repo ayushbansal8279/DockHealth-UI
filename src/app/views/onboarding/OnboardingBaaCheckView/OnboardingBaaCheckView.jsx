@@ -1,5 +1,5 @@
 import React from 'react';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import OnboardingBaaSigning from '../OnboardingBaaOverviewView/OnboardingBaaSigning';
 
@@ -12,7 +12,7 @@ const OnboardingBaaCheckView = () => (
     </MontserratTypography>
     <Spacing vertical={5} />
     <MontserratTypography variant="h4">
-      In order to be HIPAA compliant and rock your world, we will first need the
+      In order to be HIPAA-compliant and rock your world, we will first need the
       Business Associate Agreement (BAA) signed. Once an authorized signer in
       your organization has signed the BAA, you&apos;re off to the races. Feel
       free to keep bothering them, we&apos;re sure they&apos;re busy trying to

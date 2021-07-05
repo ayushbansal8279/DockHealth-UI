@@ -7,10 +7,8 @@ import {
   userProfilePictureSelector,
 } from 'selectors/user-selectors';
 import * as TemplateActions from 'actions/template-actions';
-import { openModal } from 'modal/actions';
 import {
   ProfileSubmenuContainer,
-  ReferButton,
   SubmenuDivider,
   Title,
   Top,
@@ -42,11 +40,6 @@ const ProfileSubmenu = () => {
       UserApi.getUserProfilePic(userIdentifier, 'PROFILE');
     }
   }, [userIdentifier, profilePictureHash]);
-
-  const handleReferClick = () => {
-    dispatch(TemplateActions.hideSubMenu());
-    dispatch(openModal('ReferAColleague'));
-  };
 
   return (
     <ProfileSubmenuContainer>
@@ -83,9 +76,6 @@ const ProfileSubmenu = () => {
           </>
         ) : null}
       </Grid>
-      <ReferButton type="button" onClick={handleReferClick}>
-        Refer a colleague
-      </ReferButton>
     </ProfileSubmenuContainer>
   );
 };

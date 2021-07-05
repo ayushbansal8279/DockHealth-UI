@@ -6,6 +6,7 @@ import {
   all,
   takeLatest,
   select,
+  debounce,
 } from 'redux-saga/effects';
 import {
   getGroupsByListId,
@@ -44,7 +45,7 @@ import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
-import { onSortChanged } from 'helpers/ga-event-helper';
+import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -634,6 +635,8 @@ function* doFetchTasksBySearchedTerm(payload) {
     const { status, searchedTerm } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
 
+    onSearchChanged();
+
     yield put({
       type:
         status === 'INCOMPLETE'
@@ -756,5 +759,9 @@ export default function* watchTasksGroupsList() {
     doReassignTasksToAnotherGroup,
   );
   yield takeEvery(DO_GET_TASKS_FOR_GROUP, doGetTasksForTaskGroup);
-  yield takeEvery(DO_FETCH_TASKS_BY_SEARCHED_TERM, doFetchTasksBySearchedTerm);
+  yield debounce(
+    500,
+    DO_FETCH_TASKS_BY_SEARCHED_TERM,
+    doFetchTasksBySearchedTerm,
+  );
 }

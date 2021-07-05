@@ -7,10 +7,8 @@ import { head } from 'ramda';
 import * as userApi from 'api/user-api';
 import * as AlertActions from 'alert/actions';
 import { openModal } from 'modal/actions';
-import {
-  UniversalInput,
-  UniversalMobileInputComponent,
-} from 'components/common/UniversalInput/UniversalInput';
+import FormInput from 'components/common/Input/FormInput';
+import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
 import Spacing from 'components/common/Spacing';
 import validationSchema from './validation-schema';
@@ -107,34 +105,29 @@ const UserProfileForm = ({ userProfile }) => {
               <UserAvatarUploader />
             </Grid>
             <Spacing vertical={4} />
-            <Grid container item alignItems="flex-end" spacing={2}>
+            <Grid container item spacing={2}>
               <Grid item xs={12} md={6}>
-                <UniversalInput
+                <FormInput
+                  required
                   type="text"
                   name="firstName"
                   label="First name"
-                  required
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <UniversalInput
+                <FormInput
+                  required
                   type="text"
                   name="lastName"
                   label="Last name"
-                  required
                 />
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <UniversalInput
-                type="email"
-                name="email"
-                label="Email"
-                readOnly
-              />
+              <FormInput readOnly type="email" name="email" label="Email" />
             </Grid>
             <Grid item xs={12}>
-              <UniversalInput
+              <FormInput
                 type="password"
                 label="Password"
                 readOnly
@@ -155,21 +148,13 @@ const UserProfileForm = ({ userProfile }) => {
                 authentication code for HIPAA compliance
               </FormInfoText>
             </Grid>
-            <Grid
-              container
-              item
-              direction="row"
-              alignItems="flex-end"
-              spacing={2}
-            >
+            <Grid container item direction="row" spacing={2}>
               <Grid item md={6} xs={12}>
-                <UniversalInput
+                <FormPhoneNumberInput
                   name="accountPhoneNumber"
                   label="Your Mobile Phone Number"
                   required
                   readOnly
-                  disabled
-                  CustomComponent={UniversalMobileInputComponent}
                   endAdornment={
                     <InputActionButton
                       type="button"
@@ -181,31 +166,23 @@ const UserProfileForm = ({ userProfile }) => {
                 />
               </Grid>
               <Grid item md={6} xs={12}>
-                <UniversalInput
+                <FormPhoneNumberInput
                   name="workPhoneNumber"
                   label="Additional Phone Number"
-                  customShrinkCondition
-                  CustomComponent={UniversalMobileInputComponent}
                 />
               </Grid>
             </Grid>
-            <Grid
-              container
-              item
-              direction="row"
-              alignItems="flex-end"
-              spacing={2}
-            >
+            <Grid container item direction="row" spacing={2}>
               <Grid item md={6} xs={12}>
-                <UniversalInput name="title" label="Title" />
+                <FormInput name="title" label="Title" />
               </Grid>
               <Grid item md={6} xs={12}>
-                <UniversalInput name="department" label="Department" />
+                <FormInput name="department" label="Department" />
               </Grid>
             </Grid>
           </Grid>
         </SettingsSection>
-        <Grid container justify="flex-end">
+        <Grid container>
           <Grid item xs={12} md={4}>
             <Button fullWidth type="submit" disabled={isSubmitting}>
               Save

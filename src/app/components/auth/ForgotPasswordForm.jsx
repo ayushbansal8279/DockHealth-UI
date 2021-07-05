@@ -2,10 +2,10 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
+import Spacing from 'components/common/Spacing';
+import FormInput from 'components/common/Input/FormInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from '../common/Button/Button';
-import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
 
 const validationSchema = object().shape({
   username: string()
@@ -50,12 +50,7 @@ const ForgotPasswordForm = ({
           with your account.
         </MontserratTypography>
         <Spacing vertical={5} />
-        <UniversalMontserratInput
-          name="username"
-          type="text"
-          label="Email"
-          autoFocus
-        />
+        <FormInput name="username" type="text" label="Email" autoFocus />
         <Spacing vertical={5} />
         <Button type="submit" fullWidth size="large">
           {unconfirmedUserFlag

@@ -7,8 +7,8 @@ import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
-import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
+import FormInput from 'components/common/Input/FormInput';
+import Spacing from 'components/common/Spacing';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
@@ -66,14 +66,14 @@ const LoginFormPassword = ({
         <Spacing vertical={4} />
         <MontserratTypography variant="h3">Please sign in</MontserratTypography>
         <Spacing vertical={4} />
-        <UniversalMontserratInput
+        <FormInput
           name="username"
           type="text"
           label="Email"
           onChange={onChange}
         />
         <Spacing vertical={4} />
-        <UniversalMontserratInput
+        <FormInput
           name="password"
           type={isPasswordShown ? 'text' : 'password'}
           label="Password"
