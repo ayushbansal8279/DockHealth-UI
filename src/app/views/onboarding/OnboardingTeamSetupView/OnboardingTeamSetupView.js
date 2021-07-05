@@ -234,11 +234,7 @@ const OnboardingTeamSetupView = () => {
             return (
               <div key={item.index}>
                 {index !== 0 && <Spacing vertical={5} />}
-                <Input
-                  ref={register}
-                  name={`organizationMembers[${item.index}].index`}
-                  type="hidden"
-                />
+
                 <Grid
                   container
                   direction="row"
@@ -258,10 +254,8 @@ const OnboardingTeamSetupView = () => {
                       }}
                       type="text"
                       name={`organizationMembers[${item.index}].firstName`}
-                      placeholder="FIRST NAME"
+                      label="First name"
                       required
-                      showError
-                      styling="secondary"
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.firstName
@@ -272,12 +266,9 @@ const OnboardingTeamSetupView = () => {
                   <Grid item xs={3}>
                     <Input
                       ref={register}
-                      type="text"
                       name={`organizationMembers[${item.index}].lastName`}
-                      placeholder="LAST NAME"
+                      label="Last name"
                       required
-                      showError
-                      styling="secondary"
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.lastName
@@ -290,10 +281,8 @@ const OnboardingTeamSetupView = () => {
                       ref={register}
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
-                      placeholder="EMAIL"
+                      label="Email"
                       required
-                      showError
-                      styling="secondary"
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.email
@@ -317,6 +306,11 @@ const OnboardingTeamSetupView = () => {
                     </Grid>
                   )}
                 </Grid>
+                <Input
+                  ref={register}
+                  name={`organizationMembers[${item.index}].index`}
+                  type="hidden"
+                />
               </div>
             );
           })}

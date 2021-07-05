@@ -1,5 +1,5 @@
-import { Collapse, Grid } from '@material-ui/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Grid } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import {
@@ -11,11 +11,8 @@ import {
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import Spacing from 'components/common/Spacing';
-import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
-import {
-  UniversalFormControl,
-  UniversalInputLabel,
-} from 'components/common/UniversalInput/styled';
+import Input from 'components/common/Input/Input';
+import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import useBoolean from 'hooks/useBoolean';
 import CardAmexIcon from 'img/cards/american-express.png';
@@ -28,21 +25,36 @@ import BillingInformation from '../BillingInformation/BillingInformation';
 import {
   AcceptedCardsContainer,
   AddressLineToggleContainer,
-  BillingElementContainer,
-  CardNumberElementContainer,
   FormContainer,
-  StyledFormHelperText,
 } from './styled';
-import { StyledCollapse, StyledLabel, H3, Anchor } from '../styled';
+import { StyledCollapse, H3, Anchor } from '../styled';
+
+const CardNumberInput = ({ inputRef, onChange, ...restProps }) => {
+  const [isEmpty, setIsEmpty] = useState(true);
+
+  return (
+    <CardNumberElement
+      ref={inputRef}
+      showIcon={!isEmpty}
+      onChange={event => {
+        // eslint-disable-next-line no-unused-expressions
+        onChange?.(event);
+        if (isEmpty !== event.empty) setIsEmpty(event.empty);
+      }}
+      {...restProps}
+    />
+  );
+};
+
+const CardExpiryInput = ({ inputRef, ...restProps }) => {
+  return <CardExpiryElement ref={inputRef} {...restProps} />;
+};
+
+const CardCvcInput = ({ inputRef, ...restProps }) => {
+  return <CardCVCElement ref={inputRef} {...restProps} />;
+};
 
 const REQUIRED_MESSAGE = 'This field is required.';
-
-const billingElementStyling = {
-  base: {
-    fontFamily: '"Montserrat", sans-serif',
-    fontSize: '16px',
-  },
-};
 
 const formFields = [
   {
@@ -105,61 +117,34 @@ const validationSchema = object().shape(
 const BillingElement = ({
   Component,
   disabled,
+  name,
   label,
-  alwaysShrink,
-  setInputEmpty,
   required,
+  endAdornment,
 }) => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  const [isEmpty, setEmptyRaw] = useToggle(true);
-  const [componentReference, setComponentReference] = useState(null);
-
+  const [isEmpty, setIsEmpty] = useState(true);
   const [fieldError, setFieldError] = useState(null);
 
-  const setEmpty = useCallback(
-    value => {
-      setEmptyRaw(value);
-      // eslint-disable-next-line no-unused-expressions
-      setInputEmpty?.(value);
-    },
-    [setEmptyRaw, setInputEmpty],
-  );
-
   return (
-    <>
-      <UniversalFormControl
-        fullWidth
-        onClick={() => componentReference?.focus()}
-        error={Boolean(fieldError)}
-      >
-        <UniversalInputLabel shrink={isFocused || !isEmpty || alwaysShrink}>
-          <MontserratTypography variant="h4">
-            <StyledLabel>
-              {label}
-              {required && <span> (required)</span>}
-            </StyledLabel>
-          </MontserratTypography>
-        </UniversalInputLabel>
-        <BillingElementContainer error={Boolean(fieldError)}>
-          <Component
-            onChange={({ empty, error }) => {
-              setFieldError(error?.message ?? null);
-              setEmpty(empty);
-            }}
-            placeholder=""
-            onFocus={setFocused}
-            onBlur={unsetFocused}
-            style={billingElementStyling}
-            onReady={reference => setComponentReference(reference)}
-            disabled={disabled}
-            showIcon={!isEmpty}
-          />
-        </BillingElementContainer>
-      </UniversalFormControl>
-      <Collapse in={Boolean(fieldError)}>
-        <StyledFormHelperText>{fieldError}</StyledFormHelperText>
-      </Collapse>
-    </>
+    <Input
+      name={name}
+      label={label}
+      required={required}
+      disabled={disabled}
+      shrink={!isEmpty || isFocused}
+      onFocus={setFocused}
+      onBlur={unsetFocused}
+      placeholder=""
+      error={fieldError}
+      customInputComponent={Component}
+      endAdornment={isEmpty && endAdornment}
+      onChange={({ empty, error }) => {
+        if (empty !== isEmpty) setIsEmpty(empty);
+
+        setFieldError(error?.message ?? null);
+      }}
+    />
   );
 };
 
@@ -227,29 +212,16 @@ const UpdateBillingElement = ({
     </Grid>
   );
 
-const getInputPropsMethod = ({ setValue, values, errors }) => ({ name }) => ({
-  onChange: event => setValue(name, event.target.value),
-  name,
-  value: values[name],
-  error: Boolean(errors[name]),
-});
-
 const CreditPaymentForm = ({
   isUpdatingBilling,
   cancelUpdateBilling,
-  setValue,
-  values,
-  errors,
   firstTimeSaveBillingDetails,
   processingPayment,
   cancelSaveBillingClick,
   hasDiscountCode,
   processingUpdate,
 }) => {
-  const getInputProps = getInputPropsMethod({ setValue, values, errors });
-
   const [addressLine2Visible, toggleAddressLine2Visible] = useToggle(false);
-  const [isCardNumberEmpty, setCardNumberEmpty] = useToggle(true);
 
   return (
     <FormContainer container spacing={2} visible={isUpdatingBilling}>
@@ -260,24 +232,17 @@ const CreditPaymentForm = ({
       </Grid>
       <Spacing vertical={3} />
       <Grid item sm={12} md={6}>
-        <UniversalMontserratInput
-          name="nameOnCard"
-          label="Name on card"
-          required
-        />
+        <FormInput required name="nameOnCard" label="Name on card" />
       </Grid>
       <Grid item sm={12} md={6} style={{ placeSelf: 'flex-end' }}>
-        <CardNumberElementContainer>
-          <BillingElement
-            id="card-number"
-            Component={CardNumberElement}
-            label="Card number"
-            isUpdatingBilling={isUpdatingBilling}
-            required
-            inputProps={getInputProps({ name: 'cardNumber' })}
-            setInputEmpty={setCardNumberEmpty}
-          />
-          {isCardNumberEmpty && (
+        <BillingElement
+          id="card-number"
+          name="cardNumber"
+          Component={CardNumberInput}
+          label="Card number"
+          required
+          onChange={() => {}}
+          endAdornment={
             <AcceptedCardsContainer>
               <img alt="Visa" title="Visa" src={CardVisaIcon} />
               <img
@@ -292,28 +257,26 @@ const CreditPaymentForm = ({
               />
               <img alt="Discover" title="Discover" src={CardDiscoverIcon} />
             </AcceptedCardsContainer>
-          )}
-        </CardNumberElementContainer>
+          }
+        />
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
           id="card-expiry"
-          Component={CardExpiryElement}
+          name="cardExpiration"
+          Component={CardExpiryInput}
           label="Expiration date"
-          isUpdatingBilling={isUpdatingBilling}
           required
-          inputProps={getInputProps({ name: 'cardExpiration' })}
         />
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
           id="card-cvc"
-          Component={CardCVCElement}
+          name="cardCvc"
+          Component={CardCvcInput}
           label="CVC"
           disabled={!isUpdatingBilling}
-          isUpdatingBilling={isUpdatingBilling}
           required
-          inputProps={getInputProps({ name: 'cardCvc' })}
         />
       </Grid>
       <Spacing vertical={4} />
@@ -324,11 +287,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Spacing vertical={3} />
       <Grid item sm={12}>
-        <UniversalMontserratInput
-          name="address"
-          label="Address line 1"
-          required
-        />
+        <FormInput required name="address" label="Address line 1" />
       </Grid>
       <Grid item sm={12}>
         <MontserratTypography variant="h4">
@@ -339,22 +298,22 @@ const CreditPaymentForm = ({
         </MontserratTypography>
         <StyledCollapse in={addressLine2Visible} timeout={250}>
           <Spacing vertical={3} />
-          <UniversalMontserratInput name="address2" label="" />
+          <FormInput name="address2" label="" />
         </StyledCollapse>
       </Grid>
       <Grid item sm={12} md={3}>
-        <UniversalMontserratInput name="zip" label="ZIP" required />
+        <FormInput required name="zip" label="ZIP" />
       </Grid>
       <Grid item sm={12} md={6}>
-        <UniversalMontserratInput name="city" label="City" required />
+        <FormInput required name="city" label="City" />
       </Grid>
       <Grid item sm={12} md={3}>
-        <UniversalMontserratInput name="state" label="State" required />
+        <FormInput required name="state" label="State" />
       </Grid>
       {hasDiscountCode && <Grid item sm={12} md={9} />}
       {hasDiscountCode && (
         <Grid item sm={12} md={3} wrap="nowrap" justify="flex-end">
-          <UniversalMontserratInput name="discountCode" label="Discount code" />
+          <FormInput name="discountCode" label="Discount code" />
         </Grid>
       )}
       {firstTimeSaveBillingDetails && (
@@ -398,10 +357,8 @@ const BillingData = ({
 
   const {
     handleSubmit,
-    errors,
     register,
     setValue,
-    watch,
     unregister,
     clearError,
   } = formMethods;
@@ -448,17 +405,6 @@ const BillingData = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingDetails, isUpdatingBilling]);
 
-  const values = Object.fromEntries(
-    formFields.map(({ key, defaultValue }) => [
-      key,
-      watch(key) ?? defaultValue,
-    ]),
-  );
-
-  const errorsValues = Object.fromEntries(
-    formFields.map(({ key }) => [key, errors?.[key]?.message ?? '']),
-  );
-
   const [
     processingUpdate,
     setProcessingUpdate,
@@ -482,9 +428,6 @@ const BillingData = ({
         <CreditPaymentForm
           isUpdatingBilling={isUpdatingBilling}
           cancelUpdateBilling={cancelUpdateBilling}
-          setValue={setValue}
-          values={values}
-          errors={errorsValues}
           firstTimeSaveBillingDetails={firstTimeSaveBillingDetails}
           processingPayment={processingPayment}
           cancelSaveBillingClick={cancelSaveBillingClick}

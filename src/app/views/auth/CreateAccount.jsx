@@ -21,10 +21,8 @@ import {
   StyledLink,
 } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import {
-  UniversalMobileInputComponent,
-  UniversalMontserratInput,
-} from 'components/common/UniversalInput/UniversalInput';
+import FormInput from 'components/common/Input/FormInput';
+import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
@@ -169,6 +167,7 @@ const CreateAccount = props => {
   });
 
   const email = formMethods.watch('email');
+
   const { setValue } = formMethods;
 
   const locationParameters = queryString.parse(history?.location?.search);
@@ -254,27 +253,22 @@ const CreateAccount = props => {
             <span> All fields required</span>
           </MontserratTypography>
           <Spacing vertical={3} />
-          <UniversalMontserratInput name="firstName" label="First Name" />
+          <FormInput name="firstName" label="First Name" />
           <Spacing vertical={3} />
-          <UniversalMontserratInput name="lastName" label="Last Name" />
+          <FormInput name="lastName" label="Last Name" />
           <Spacing vertical={3} />
-          <UniversalMontserratInput name="email" label="Email" />
+          <FormInput name="email" label="Email" />
           <Spacing vertical={3} />
-          <UniversalMontserratInput
-            name="password"
-            label="Password"
-            type="password"
-          />
+          <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
           <MontserratTypography variant="h5">
             Eight characters • One capital letter • One number
           </MontserratTypography>
           <Spacing vertical={3} />
-          <UniversalMontserratInput
+          <FormPhoneNumberInput
             name="mobilePhoneNumber"
             label="Your Mobile Phone Number"
             customShrinkCondition
-            CustomComponent={UniversalMobileInputComponent}
           />
           <Spacing vertical={3} />
           <MontserratTypography variant="h5">
@@ -305,7 +299,6 @@ const CreateAccount = props => {
                 lineHeight: '45px',
               }}
             >
-              {' '}
               {dialogTitle}{' '}
             </span>
             <img

@@ -4,6 +4,8 @@ import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
+import Spacing from 'components/common/Spacing';
+import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import {
@@ -14,11 +16,6 @@ import {
   OnboardingSpacing2,
   OnboardingSpacing4,
 } from 'views/onboarding/OnboardingTemplate.Components';
-import Spacing from '../common/Spacing';
-import {
-  UniversalMobileInputComponent,
-  UniversalMontserratInput,
-} from '../common/UniversalInput/UniversalInput';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -70,11 +67,10 @@ const ChangePhoneNumberForm = () => {
       </MontserratTypography>
       <Spacing vertical={4} />
       <FormContext {...formMethods}>
-        <UniversalMontserratInput
+        <FormPhoneNumberInput
           label="Your Mobile Phone Number"
           customShrinkCondition
           name="mobilePhoneNumber"
-          CustomComponent={UniversalMobileInputComponent}
           autoComplete="none"
         />
       </FormContext>

@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import Spacing from '../common/Spacing';
-import Button from '../common/Button/Button';
-import { UniversalMontserratInput } from '../common/UniversalInput/UniversalInput';
+import FormInput from 'components/common/Input/FormInput';
+import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),
@@ -37,13 +37,8 @@ const ConfirmMFACodeForm = props => {
           Please enter the 6-digit code that was sent to
         </MontserratTypography>
         <MontserratTypography variant="h2">{smsPhone}</MontserratTypography>
-        <Spacing vertical={4} />
-        <Spacing vertical={4} />
-        <UniversalMontserratInput
-          name="mfaCode"
-          label="Authorization code"
-          autoFocus
-        />
+        <Spacing vertical={5} />
+        <FormInput name="mfaCode" label="Authorization code" autoFocus />
         <Spacing vertical={5} />
         <Button type="submit" size="large">
           CONTINUE

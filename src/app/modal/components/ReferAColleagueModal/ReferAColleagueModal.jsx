@@ -11,9 +11,8 @@ import { object, string } from 'yup';
 import Spacing from 'components/common/Spacing.tsx';
 import { showAlert } from 'helpers/utility-functions';
 import { referAColleague } from 'api/organization-api';
-import { UniversalMontserratInput } from 'components/common/UniversalInput/UniversalInput';
 import Button from 'components/common/Button/Button';
-
+import FormInput from 'components/common/Input/FormInput';
 import {
   MainContainer,
   LeftSideMainContainer,
@@ -112,22 +111,14 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
               </DialogContentText>
               <Spacing vertical={4} />
               <Spacing vertical={3} />
-              <UniversalMontserratInput
-                name="firstName"
-                label="First Name"
-                required
-              />
+              <FormInput name="firstName" label="First Name" required />
               <Spacing vertical={3} />
-              <UniversalMontserratInput
-                name="lastName"
-                label="Last Name"
-                required
-              />
+              <FormInput name="lastName" label="Last Name" required />
               <Spacing vertical={3} />
-              <UniversalMontserratInput name="email" label="Email" required />
+              <FormInput name="email" label="Email" required />
 
               <Spacing vertical={3} />
-              <UniversalMontserratInput
+              <FormInput
                 name="comments"
                 label="Comments for Dock Team"
                 multiline

@@ -43,7 +43,7 @@ const PatientsToolbar = ({
         alignItems="center"
         wrap="nowrap"
       >
-        <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
+        <Grid item xs={6} xl={6} md={5} lg={4}>
           <SearchInputWrapper fullWidth={isSearchFocused || searchValue}>
             <SearchInput
               value={searchValue}

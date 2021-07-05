@@ -1,7 +1,6 @@
 import {
   ButtonBase,
   FormControl,
-  FormHelperText,
   InputBase,
   InputLabel,
   Grid,
@@ -71,28 +70,6 @@ export const StyledInputBase = withStyles({
   },
 })(InputBase);
 
-export const BillingElementContainer = styled.div`
-  align-items: center;
-  border-color: ${props =>
-    props.error ? palette.error : opacify(palette.error, 0)};
-  border-style: solid;
-  border-width: 0.0625rem;
-  display: flex;
-  cursor: text;
-  height: 4rem;
-  justify-content: flex-start;
-  padding: 1rem;
-  padding-bottom: 0;
-  transition: all 0.25s ease-out;
-  width: 100%;
-
-  > * {
-    height: 1.0625rem;
-    width: 100%;
-    padding-left: 5px;
-  }
-`;
-
 export const BillingButton = withStyles({
   root: {
     borderRadius: '0.25rem',
@@ -121,13 +98,6 @@ export const BillingButton = withStyles({
   return <ButtonBase className={className} {...props} />;
 });
 
-export const StyledFormHelperText = withStyles({
-  root: {
-    color: palette.error,
-    fontSize: '0.75rem',
-  },
-})(FormHelperText);
-
 export const FormContainer = styled(Grid)`
   && {
     display: ${props => (props.visible ? 'flex' : 'none')};
@@ -137,10 +107,6 @@ export const FormContainer = styled(Grid)`
 export const AddressLineToggleContainer = styled.div`
   color: ${palette.midnightBlue};
   cursor: pointer;
-`;
-
-export const CardNumberElementContainer = styled.div`
-  position: relative;
 `;
 
 export const AcceptedCardsContainer = styled.div`

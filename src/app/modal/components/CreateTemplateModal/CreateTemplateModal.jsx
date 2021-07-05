@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
-import { useForm } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import * as TaskTemplateActions from 'actions/task-template-actions';
-import Input from 'components/common/Input/Input';
+import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { CloseIconButton, CloseIcon, FlexButtonWrapper } from '../styled';
@@ -22,9 +22,10 @@ function createSubmit({ onCreateSuccess, closeModal, event, dispatch }) {
 
 const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
   const dispatch = useDispatch();
-  const { register, unregister, watch, errors, handleSubmit } = useForm({
+  const formMethods = useForm({
     mode: 'onSubmit',
   });
+  const { register, unregister, handleSubmit } = formMethods;
 
   useEffect(() => {
     register(
@@ -63,36 +64,33 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
           )(event)
         }
       >
-        <Input
-          ref={register}
-          autoFocus
-          fullWidth
-          required
-          showError
-          label="Workflow name"
-          value={watch(TEMPLATE_NAME_FIELD_NAME)}
-          name={TEMPLATE_NAME_FIELD_NAME}
-          placeholder="What would you like to name this workflow?"
-          error={errors?.[TEMPLATE_NAME_FIELD_NAME]?.message}
-        />
-        <Grid container direction="row" justify="center">
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary"
-              onClick={closeModal}
-              size="small"
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
-          <Spacing horizontal={3} />
-          <FlexButtonWrapper>
-            <Button fullWidth type="submit" size="small">
-              Save
-            </Button>
-          </FlexButtonWrapper>
-        </Grid>
+        <FormContext {...formMethods}>
+          <FormInput
+            autoFocus
+            required
+            label="Workflow name"
+            name={TEMPLATE_NAME_FIELD_NAME}
+            placeholder="What would you like to name this workflow?"
+          />
+          <Grid container direction="row" justify="center">
+            <FlexButtonWrapper>
+              <Button
+                fullWidth
+                variant="secondary"
+                onClick={closeModal}
+                size="small"
+              >
+                Cancel
+              </Button>
+            </FlexButtonWrapper>
+            <Spacing horizontal={3} />
+            <FlexButtonWrapper>
+              <Button fullWidth type="submit" size="small">
+                Save
+              </Button>
+            </FlexButtonWrapper>
+          </Grid>
+        </FormContext>
       </StyledForm>
     </ListFormModalWrapper>
   );

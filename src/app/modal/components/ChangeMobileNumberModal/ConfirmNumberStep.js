@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
 import { openModal } from 'modal/actions';
 import * as UserApi from 'api/user-api';
-import { UniversalInput } from 'components/common/UniversalInput/UniversalInput';
+import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import {
@@ -88,11 +88,11 @@ const ConfirmNumberStep = ({
               </button>{' '}
               my mobile phone number
             </HelperText>
-            <UniversalInput
+            <FormInput
+              required
               autoFocus
               label="Authorization code"
               name="authorizationCode"
-              required
             />
           </Grid>
           <Grid item>

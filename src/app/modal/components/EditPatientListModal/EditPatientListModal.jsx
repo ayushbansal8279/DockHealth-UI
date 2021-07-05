@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as PatientsApi from 'api/patients-api';
-import { useForm } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import { openModal } from 'modal/actions';
-import Input from 'components/common/Input/Input';
+import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -19,6 +19,14 @@ import {
   StyledForm,
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
+
+const validatePatientListName = value => {
+  if (![...value]?.filter(char => char !== ' ').length > 0) {
+    return 'This field is required';
+  }
+
+  return true;
+};
 
 const onSubmit = ({
   patientListIdentifier,
@@ -62,9 +70,8 @@ const onSubmit = ({
 const EditPatientListModal = ({ closeModal, patientsList }) => {
   const dispatch = useDispatch();
   const [isSaving, setIsSaving] = useState(false);
-  const nameReference = useRef(null);
 
-  const formContext = useForm({
+  const formMethods = useForm({
     defaultValues: {
       listName: patientsList?.listName || '',
       listDescription: patientsList?.listDescription || '',
@@ -72,44 +79,13 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
     reValidateMode: 'onSubmit',
   });
 
-  const { register, errors, unregister, handleSubmit, watch } = formContext;
-
-  const nameValue = watch('listName');
-  const descriptionValue = watch('listDescription');
+  const { handleSubmit } = formMethods;
 
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-
-  useEffect(() => {
-    register(
-      {
-        name: 'listName',
-      },
-      {
-        validate: value => {
-          if (![...value]?.filter(char => char !== ' ').length > 0) {
-            return 'This field is required';
-          }
-
-          return true;
-        },
-      },
-    );
-
-    register({ name: 'listDescription' });
-
-    // eslint-disable-next-line no-unused-expressions
-    nameReference?.current?.focus();
-
-    return () => {
-      unregister('listName');
-      unregister('listDescription');
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <EditPatientListModalWrapper>
@@ -128,60 +104,57 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
           )(event)
         }
       >
-        <Grid container direction="column" justify="space-between">
-          <Grid item>
-            <Header>
-              <Title>
-                {patientsList ? 'Edit' : 'Create'} a {customerTypeLabel} list
-              </Title>
-            </Header>
-            <Input
-              ref={element => {
-                nameReference.current = element;
-                register(element);
-              }}
-              fullWidth
-              label={`${customerTypeLabelCapitalized} list name`}
-              name="listName"
-              required
-              showError
-              centerizedLabelOnStart
-              placeholder={`Add your ${customerTypeLabel} list name here`}
-              value={nameValue}
-              error={errors?.['listName']?.message}
-            />
-            <Spacing vertical={4} />
-            <Input
-              ref={register}
-              fullWidth
-              label="Description"
-              name="listDescription"
-              centerizedLabelOnStart
-              placeholder="Do you want to add a description for the list?"
-              value={descriptionValue}
-              error={errors?.['listDescription']?.message}
-            />
-            <Spacing vertical={4} />
-          </Grid>
-          <Grid container direction="row" justify="center">
-            <ButtonWrapper>
-              <Button
+        <FormContext {...formMethods}>
+          <Grid container direction="column" justify="space-between">
+            <Grid item>
+              <Header>
+                <Title>
+                  {patientsList ? 'Edit' : 'Create'} a {customerTypeLabel} list
+                </Title>
+              </Header>
+              <FormInput
+                autoFocus
                 fullWidth
-                variant="secondary"
-                onClick={closeModal}
-                size="small"
-              >
-                Cancel
-              </Button>
-            </ButtonWrapper>
-            <Spacing horizontal={3} />
-            <ButtonWrapper>
-              <Button fullWidth type="submit" disabled={isSaving} size="small">
-                Save
-              </Button>
-            </ButtonWrapper>
+                label={`${customerTypeLabelCapitalized} list name`}
+                name="listName"
+                required
+                placeholder={`Add your ${customerTypeLabel} list name here`}
+                validate={validatePatientListName}
+              />
+              <Spacing vertical={4} />
+              <FormInput
+                fullWidth
+                label="Description"
+                name="listDescription"
+                placeholder="Do you want to add a description for the list?"
+              />
+              <Spacing vertical={4} />
+            </Grid>
+            <Grid container direction="row" justify="center">
+              <ButtonWrapper>
+                <Button
+                  fullWidth
+                  variant="secondary"
+                  onClick={closeModal}
+                  size="small"
+                >
+                  Cancel
+                </Button>
+              </ButtonWrapper>
+              <Spacing horizontal={3} />
+              <ButtonWrapper>
+                <Button
+                  fullWidth
+                  type="submit"
+                  disabled={isSaving}
+                  size="small"
+                >
+                  Save
+                </Button>
+              </ButtonWrapper>
+            </Grid>
           </Grid>
-        </Grid>
+        </FormContext>
       </StyledForm>
     </EditPatientListModalWrapper>
   );

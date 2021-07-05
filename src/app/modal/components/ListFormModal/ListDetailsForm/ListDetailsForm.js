@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
 import { Grid } from '@material-ui/core';
-import Input from 'components/common/Input/Input';
+import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import { useHistory } from 'react-router-dom';
@@ -13,6 +13,14 @@ import { createTaskListPath } from '../../../../routing/helpers/paths';
 import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
 import { StyledForm } from './styled';
+
+const validateListName = value => {
+  if (![...value]?.filter(char => char !== ' ').length > 0) {
+    return 'This field is required';
+  }
+
+  return true;
+};
 
 const onSubmit = ({
   event,
@@ -69,10 +77,9 @@ const ListDetailsForm = ({
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
-  const listNameReference = useRef(null);
   const history = useHistory();
 
-  const formContext = useForm({
+  const formMethods = useForm({
     defaultValues: {
       listName: list?.listName,
       listDescription: list?.listDescription,
@@ -80,40 +87,7 @@ const ListDetailsForm = ({
     reValidateMode: 'onSubmit',
   });
 
-  const { register, errors, unregister, handleSubmit, watch } = formContext;
-
-  const listNameValue = watch('listName');
-  const listDescriptionValue = watch('listDescription');
-
-  useEffect(() => {
-    register(
-      {
-        name: 'listName',
-      },
-      {
-        validate: value => {
-          if (![...value]?.filter(char => char !== ' ').length > 0) {
-            return 'This field is required';
-          }
-
-          return true;
-        },
-      },
-    );
-
-    register({ name: 'listDescription' });
-
-    if (!list) {
-      // eslint-disable-next-line no-unused-expressions
-      listNameReference?.current?.focus();
-    }
-
-    return () => {
-      unregister('listName');
-      unregister('listDescription');
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { handleSubmit } = formMethods;
 
   return (
     <StyledForm
@@ -133,63 +107,55 @@ const ListDetailsForm = ({
         )(event)
       }
     >
-      <Grid container direction="column" justify="space-between">
-        <Grid item>
-          <Header>
-            <Title>{list ? 'Edit a list' : 'Create a list'}</Title>
-          </Header>
-          <Input
-            ref={event => {
-              register(event);
-              listNameReference.current = event;
-            }}
-            fullWidth
-            label={messages.form.listName.label}
-            name="listName"
-            required
-            showError
-            centerizedLabelOnStart
-            placeholder="Add your list name here"
-            value={listNameValue}
-            error={errors?.['listName']?.message}
-          />
-          <Spacing vertical={4} />
-          <Input
-            ref={register}
-            fullWidth
-            label={messages.form.description.label}
-            name="listDescription"
-            centerizedLabelOnStart
-            placeholder="Do you want to add a desciption for the list?"
-            value={listDescriptionValue}
-            error={errors?.['listDescription']?.message}
-          />
-          <Spacing vertical={4} />
-        </Grid>
-        <Grid container direction="row" justify="center">
-          <ButtonWrapper>
-            <Button
+      <FormContext {...formMethods}>
+        <Grid container direction="column" justify="space-between">
+          <Grid item>
+            <Header>
+              <Title>{list ? 'Edit a list' : 'Create a list'}</Title>
+            </Header>
+            <FormInput
+              autoFocus
               fullWidth
-              variant="secondary"
-              onClick={closeModal}
-              size="small"
-            >
-              Cancel
-            </Button>
-          </ButtonWrapper>
-          <Spacing horizontal={3} />
-          <ButtonWrapper>
-            <Button
+              label={messages.form.listName.label}
+              name="listName"
+              required
+              placeholder="Add your list name here"
+              validate={validateListName}
+            />
+            <Spacing vertical={4} />
+            <FormInput
               fullWidth
-              type="submit"
-              disabled={isSavingList}
-              size="small"
-            >
-              Save
-            </Button>
-          </ButtonWrapper>
+              label={messages.form.description.label}
+              name="listDescription"
+              placeholder="Do you want to add a desciption for the list?"
+            />
+            <Spacing vertical={4} />
+          </Grid>
+          <Grid container direction="row" justify="center">
+            <ButtonWrapper>
+              <Button
+                fullWidth
+                variant="secondary"
+                onClick={closeModal}
+                size="small"
+              >
+                Cancel
+              </Button>
+            </ButtonWrapper>
+            <Spacing horizontal={3} />
+            <ButtonWrapper>
+              <Button
+                fullWidth
+                type="submit"
+                disabled={isSavingList}
+                size="small"
+              >
+                Save
+              </Button>
+            </ButtonWrapper>
+          </Grid>
         </Grid>
-      </Grid>
+      </FormContext>
     </StyledForm>
   );
 };

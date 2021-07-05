@@ -116,7 +116,8 @@ const DashboardView = ({
 
   useEffect(() => {
     if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-      const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
+      const { userPreference } = currentUser || {};
+      const { appFeaturesReviewed } = userPreference || {};
 
       if (!appFeaturesReviewed?.includes('TASK_STATUSES')) {
         dispatch(

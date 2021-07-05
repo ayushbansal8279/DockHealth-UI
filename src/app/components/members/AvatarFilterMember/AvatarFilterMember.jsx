@@ -5,7 +5,7 @@ import Member from 'components/members/Member/Member';
 
 const filterName = 'assignedTo';
 
-const AvatarFilterMember = React.forwardRef(props => {
+const AvatarFilterMember = props => {
   const { onSelectFilters, selectedFilters, isSelected, member } = props;
   const { userIdentifier } = member || {};
 
@@ -37,7 +37,7 @@ const AvatarFilterMember = React.forwardRef(props => {
     }
   }, [userIdentifier, selectedFilters, isSelected, onSelectFilters]);
   return <Member onClickAvatar={toggleSelect} {...props} />;
-});
+};
 
 AvatarFilterMember.propTypes = {
   member: shape({

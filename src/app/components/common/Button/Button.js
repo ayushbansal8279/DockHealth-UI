@@ -19,7 +19,7 @@ const StyledButton = withStyles(() => ({
     fontWeight: `${fontWeights.regularPlus}`,
     fontFamily: `'Montserrat', sans-serif`,
     outline: `none`,
-    minWidth: `150px`,
+    minWidth: 0,
     minHeight: '30px',
     height: ({ size }) => {
       switch (size) {
