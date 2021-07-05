@@ -22,8 +22,8 @@ import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestio
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
-import '../../../../../node_modules/@draft-js-plugins/static-toolbar/lib/plugin.css';
-import '../../../../../node_modules/@draft-js-plugins/emoji/lib/plugin.css';
+import '@draft-js-plugins/static-toolbar/lib/plugin.css';
+import '@draft-js-plugins/emoji/lib/plugin.css';
 import {
   initializeLinkifyPlugin,
   initializePeopleMentionPlugin,
