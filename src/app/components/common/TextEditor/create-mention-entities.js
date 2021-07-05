@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { convertFromRaw } from 'draft-js';
 import { markdownToDraft } from 'markdown-draft-js';
 
@@ -40,7 +41,17 @@ const getEntityRanges = (text, mentionName, mentionKey) => {
 };
 
 export const createMentionEntitiesFromRawText = (text, tags) => {
-  const rawContent = markdownToDraft(text);
+  const rawContent = markdownToDraft(text, {
+    blockStyles: {
+      ins_open: 'UNDERLINE',
+      del_open: 'STRIKETHROUGH',
+    },
+    remarkableOptions: {
+      enable: {
+        inline: 'ins',
+      },
+    },
+  });
 
   const rawState = tags.map(tag => {
     const { mentionType, ...data } = tag;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import { isEmpty } from 'ramda';
 import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js';
@@ -58,7 +59,30 @@ export const convertFromEditorStateToOutput = editorState => {
     type: entity.type,
   }));
 
-  const markdown = draftToMarkdown(stateContent);
+  const extendedStyleItems = {
+    STRIKETHROUGH: {
+      open: function open() {
+        return '~~';
+      },
+
+      close: function close() {
+        return '~~';
+      },
+    },
+    UNDERLINE: {
+      open: function open() {
+        return '++';
+      },
+
+      close: function close() {
+        return '++';
+      },
+    },
+  };
+
+  const markdown = draftToMarkdown(stateContent, {
+    styleItems: extendedStyleItems,
+  });
 
   return {
     rawText,

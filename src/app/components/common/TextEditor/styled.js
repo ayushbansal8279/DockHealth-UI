@@ -9,6 +9,10 @@ export const StyledEditorContainer = styled.div`
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
 
+  .emojiSelectButton {
+    background: transparent;
+  }
+
   .editor {
     box-sizing: border-box;
     border: 1px solid #ddd;
@@ -22,6 +26,26 @@ export const StyledEditorContainer = styled.div`
 
   .editor :global(.public-DraftEditor-content) {
     min-height: 140px;
+  }
+
+  ul {
+    li {
+      margin-left: 1.25rem;
+      list-style-type: disc;
+    }
+  }
+
+  ol {
+    list-style: none;
+    counter-reset: my-awesome-counter;
+  }
+  ol li {
+    counter-increment: my-awesome-counter;
+    display: flex;
+  }
+  ol li::before {
+    content: counter(my-awesome-counter) '. ';
+    font-weight: bold;
   }
 
   ${({ isOneline }) =>
@@ -70,4 +94,35 @@ export const StyledEditorContainer = styled.div`
 export const HighlightedElement = styled.span`
   color: inherit;
   background-color: ${featurePalette.globalSearchHighlight};
+`;
+
+export const EmojiContainer = styled.div`
+  display: inline-block;
+  ul {
+    li {
+      margin-left: 0px;
+      list-style-type: none;
+    }
+  }
+  button {
+    border: none;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    line-height: 0px;
+    font-size: 26px;
+    background: transparent;
+    border-radius: 0px;
+    &:focus,
+    &:active {
+      background: transparent !important;
+    }
+  }
+  & > div > div {
+    position: fixed;
+  }
+`;
+export const ToolbarContainer = styled.div`
+  box-sizing: border-box;
+  padding-bottom: 20px;
 `;

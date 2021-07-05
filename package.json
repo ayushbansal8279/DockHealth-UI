@@ -22,6 +22,8 @@
     "@dnd-kit/core": "^3.0.3",
     "@dnd-kit/sortable": "^3.0.1",
     "@dnd-kit/utilities": "^2.0.0",
+    "@draft-js-plugins/buttons": "^4.1.1",
+    "@draft-js-plugins/emoji": "^4.5.5",
     "@draft-js-plugins/static-toolbar": "^4.1.1",
     "@material-ui/core": "^4.9.11",
     "@material-ui/data-grid": "^4.0.0-alpha.18",
