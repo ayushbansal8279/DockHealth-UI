@@ -21,20 +21,20 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
-import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
-import Spacing from 'components/common/Spacing';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
+import Spacing from 'components/common/Spacing.tsx';
 import AdditionalMembersCounterPopover from 'components/members/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
-import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover';
+import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover.tsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
 import { userProfileSelector } from '../../../selectors/user-selectors';
 import TipsButton from './TipsButton';
-import MorePopover from './MorePopover';
+import MorePopover from './MorePopover.tsx';
 import {
   ToolbarLabel,
   ToolbarBottomGrid,
@@ -121,7 +121,7 @@ const Toolbar = ({
     taskListIdentifier,
     dispatch,
   });
-  const { userIdentifier } = useSelector(userProfileSelector);
+  const { userIdentifier, orgUserRole } = useSelector(userProfileSelector);
   const currentMember = useMemo(
     () => members?.filter(member => member?.userIdentifier === userIdentifier),
     [members, userIdentifier],
@@ -134,6 +134,8 @@ const Toolbar = ({
   const shownMembersWithCurrent = currentMember
     ? [...currentMember, ...shownMembers]
     : [];
+
+  const isGuest = orgUserRole === 'GUEST';
 
   useEffect(() => {
     if (!tipsContent || taskList?.listType !== 'INBOX') {
@@ -230,7 +232,8 @@ const Toolbar = ({
                   </>
                 )}
                 <Spacing horizontal={2} />
-                {taskList?.listType !== 'INBOX' &&
+                {!isGuest &&
+                  taskList?.listType !== 'INBOX' &&
                   taskList?.listType !== 'PUBLIC' && (
                     <InviteMemberButton
                       size={45}

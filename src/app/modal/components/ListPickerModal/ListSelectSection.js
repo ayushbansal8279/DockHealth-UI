@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
-import Spacing from 'components/common/Spacing';
+import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   Title,
   Description,
@@ -23,6 +25,9 @@ const ListSelectSection = ({
 }) => {
   const addListInput = useRef();
   const [isInputFoucused, setInputFocused] = useState(false);
+
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const isGuest = orgUserRole === 'GUEST';
 
   const handleAddNewList = listName => {
     if (listName) {
@@ -65,21 +70,23 @@ const ListSelectSection = ({
           </>
         )}
       </ListsWrapper>
-      <AddListInputWrapper isFocused={isInputFoucused}>
-        <AddListInput
-          ref={addListInput}
-          type="text"
-          placeholder="Add list"
-          onFocus={() => {
-            onListSelection(null);
-            setInputFocused(true);
-          }}
-          onBlur={() => setInputFocused(false)}
-          onKeyDown={event =>
-            event.keyCode === 13 && handleAddNewList(event.target.value)
-          }
-        />
-      </AddListInputWrapper>
+      {!isGuest && (
+        <AddListInputWrapper isFocused={isInputFoucused}>
+          <AddListInput
+            ref={addListInput}
+            type="text"
+            placeholder="Add list"
+            onFocus={() => {
+              onListSelection(null);
+              setInputFocused(true);
+            }}
+            onBlur={() => setInputFocused(false)}
+            onKeyDown={event =>
+              event.keyCode === 13 && handleAddNewList(event.target.value)
+            }
+          />
+        </AddListInputWrapper>
+      )}
       <Spacing vertical={4} />
       <Grid container direction="row" spacing={2}>
         <Grid item xs={6}>

@@ -18,6 +18,7 @@ import {
   taskListsSelector,
   pendingTaskListsSelector,
 } from 'selectors/task-list-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
 import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
@@ -55,6 +56,22 @@ const ListsSubmenu = () => {
 
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
+  // const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
+  // const [currentList, setCurrentList] = useState([]);
+  // const itemsMoreButtonReferences = useRef([]);
+  // const [
+  //   currentListMenuPopupReference,
+  //   setCurrentListMenuPopupReference,
+  // ] = useState(false);
+
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const isGuest = orgUserRole === 'GUEST';
+
+  // useEffect(() => {
+  //   if (!listMenuPopupOpen && currentList?.length > 0) {
+  //     setCurrentList([]);
+  //   }
+  // }, [listMenuPopupOpen, currentList]);
 
   const lists = useMemo(
     () => [...(taskLists || []), ...(pendingTaskLists || [])],
@@ -156,13 +173,15 @@ const ListsSubmenu = () => {
       }
 
       if (PRIVILEGE_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
-        baseList = [
-          ...baseList,
-          {
-            name: 'Invite to list',
-            onClick: () => openInviteToListModal(list),
-          },
-        ];
+        if (!isGuest) {
+          baseList = [
+            ...baseList,
+            {
+              name: 'Invite to list',
+              onClick: () => openInviteToListModal(list),
+            },
+          ];
+        }
 
         if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
           baseList = [
@@ -190,6 +209,7 @@ const ListsSubmenu = () => {
       openLeaveListModal,
       openListEditModal,
       openDeleteConfirmationModal,
+      isGuest,
     ],
   );
 
@@ -199,17 +219,16 @@ const ListsSubmenu = () => {
     <>
       <DrawerMyListsLabel>
         <div>My Lists </div>
-        <AddButton onClick={openListAddModal}>Add</AddButton>
+        {!isGuest && <AddButton onClick={openListAddModal}>Add</AddButton>}
       </DrawerMyListsLabel>
       <SubmenuDivider />
       {hasAnyPendingList && (
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>
       )}
       <DrawerListsList>
-        {lists?.map((list, index) => (
+        {lists?.map(list => (
           <DrawerListsItem
-            // eslint-disable-next-line react/no-array-index-key
-            key={`listsubmenu_${list.taskListIdentifier}_${index}`}
+            key={`listsubmenu_${list.taskListIdentifier}`}
             data-list-id={list.taskListIdentifier}
             className={
               list.listType === 'INBOX'
