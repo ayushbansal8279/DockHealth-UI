@@ -17,9 +17,9 @@ import {
   selectTask,
   storeAsCurrentTask,
 } from 'actions/task-actions';
-import Circle from 'img/circle';
-import CircleCompleted from 'img/circle-completed';
-import ThreeDotsIcon from 'img/three-dots';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
+import ThreeDotsIcon from 'img/three-dots.svg';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { convertToEditorState } from 'components/common/MentionsEditor/helpers';
 import { useMentionsEditorState } from 'components/common/MentionsEditor/use-mentions-editor-state';
@@ -102,6 +102,7 @@ const TaskItem = ({
     taskIdentifier,
     edited,
     duplicated,
+    type,
     assignedToUsers,
     attachments,
     comments,
@@ -294,6 +295,9 @@ const TaskItem = ({
     dispatch(storeAsCurrentTask(null));
   };
 
+  const isEdited = type === 'TEMPLATE' ? false : edited;
+  const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
+
   const {
     descriptionIsInCofnig,
     subtasksIsInConfig,
@@ -388,8 +392,8 @@ const TaskItem = ({
                 matchDescription={matchDescription}
                 highlightedValue={highlightedValue}
                 description={description}
-                edited={edited}
-                duplicated={duplicated}
+                edited={isEdited}
+                duplicated={isDuplicated}
                 hasParentTaskLabel={hasParentTaskLabel}
                 parentTask={parentTask}
                 completedByName={completedByName}
