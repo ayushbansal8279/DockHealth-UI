@@ -2,6 +2,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 
-export const PatientDetailsContainer = styled.div`
-  margin: ${spacing.large} ${spacing.huge};
+export const TasksListContainer = styled.div`
+  margin: 0 -${spacing.huge};
 `;

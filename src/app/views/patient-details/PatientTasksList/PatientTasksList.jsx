@@ -1,20 +1,23 @@
-import React, { useCallback } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Tabs, Tab } from '@material-ui/core';
+import { useParams, useRouteMatch, useHistory } from 'react-router-dom';
+import Spacing from 'components/common/Spacing';
 import TaskListDetailsDropdown from 'views/patient-details/TaskListDetailsDropdown/TaskListDetailsDropdown';
 import EmptyTaskListBird from 'img/animals/bird';
-
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
-import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
+import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import {
   patientTaskListsSelector,
   patientTaskListsActiveTabSelector,
   patientTaskSearchSelector,
   patientTasksSortSelector,
-} from 'selectors/patient-tasks-selectors';
+} from 'selectors/patient-details-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -26,6 +29,7 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { TasksListContainer } from './styled';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
@@ -56,6 +60,12 @@ const PatientTasksListView = ({
   areFiltersApplied,
   sort,
 }) => {
+  const {
+    patientIdentifier,
+    taskListIdentifier: taskListIdentifierParameter,
+  } = useParams();
+  const history = useHistory();
+  const { url } = useRouteMatch();
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
@@ -68,6 +78,13 @@ const PatientTasksListView = ({
     sortPatientTasks,
     applyTemplateForPatient,
   } = patientTasksSagaActions;
+
+  useEffect(() => {
+    if (!taskListIdentifierParameter && patientLists?.length > 0) {
+      history.push(`${url}/${patientLists[0].taskListIdentifier}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskListIdentifierParameter, patientLists]);
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
@@ -131,31 +148,55 @@ const PatientTasksListView = ({
     ? searchTaskInPatientLists(patientLists, taskSearch)
     : patientLists;
 
-  return filteredLists?.length > 0
-    ? filteredLists.map(list => (
-        <TaskListDetailsDropdown
-          key={list.taskListIdentifier}
-          list={list}
-          tasks={list.tasks}
-          currentUser={currentUser}
-          selectedTask={selectedTask}
-          isCompleteTab={activeTab === TaskListTabName.COMPLETE}
-          openDrawer={openDrawer}
-          storeAsCurrentTask={storeAsCurrentTask}
-          toggleTaskStatus={handleToggleTaskStatus}
-          onTaskUpdate={updatePatientTaskInList}
-          updateDueDate={updatePatientTaskDueDate}
-          updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-          quickAddTask={quickAddPatientTask}
-          refreshView={refreshPatientTasks}
-          hideSubtasks={isListFlattened}
-          sort={sort}
-          onSortChange={sortPatientTasks}
-          taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
-          applyTemplate={applyTemplate}
-        />
-      ))
-    : renderEmptyListView();
+  const handleTabChange = (_, newListIdentifier) => {
+    history.push(
+      `/core/patient/${patientIdentifier}/tasks/${newListIdentifier}`,
+    );
+  };
+
+  const activeList = useMemo(
+    () =>
+      filteredLists.find(
+        l => l.taskListIdentifier === taskListIdentifierParameter,
+      ),
+    [filteredLists, taskListIdentifierParameter],
+  );
+
+  return filteredLists?.length > 0 && activeList ? (
+    <>
+      <TasksListContainer>
+        <Tabs value={taskListIdentifierParameter} onChange={handleTabChange}>
+          {patientLists.map(list => (
+            <Tab value={list.taskListIdentifier} label={list.listName} />
+          ))}
+        </Tabs>
+      </TasksListContainer>
+      <Spacing vertical={5} />
+      <TaskListDetailsDropdown
+        key={activeList.taskListIdentifier}
+        list={activeList}
+        tasks={activeList.tasks}
+        currentUser={currentUser}
+        selectedTask={selectedTask}
+        isCompleteTab={activeTab === TaskListTabName.COMPLETE}
+        openDrawer={openDrawer}
+        storeAsCurrentTask={storeAsCurrentTask}
+        toggleTaskStatus={handleToggleTaskStatus}
+        onTaskUpdate={updatePatientTaskInList}
+        updateDueDate={updatePatientTaskDueDate}
+        updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+        quickAddTask={quickAddPatientTask}
+        refreshView={refreshPatientTasks}
+        hideSubtasks={isListFlattened}
+        sort={sort}
+        onSortChange={sortPatientTasks}
+        taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
+        applyTemplate={applyTemplate}
+      />
+    </>
+  ) : (
+    renderEmptyListView()
+  );
 };
 
 const mapDispatchToProps = dispatch => ({

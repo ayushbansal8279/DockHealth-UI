@@ -1,38 +1,48 @@
 import { createSelector } from 'reselect';
 
-export const patientTasksStateSelector = state => state.patientTasks;
+export const patientDetailsStateSelector = state => state.patientDetails;
 
 export const patientTaskListsSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ lists }) => lists,
 );
 
 export const patientTaskListsActiveTabSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ activeTab }) => activeTab,
 );
 
 export const patientListHasTasksSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ lists }) => lists?.length > 0,
 );
 
 export const currentPatientIdentifierSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ patientIdentifier }) => patientIdentifier,
 );
 
 export const patientTaskSearchSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ taskSearch }) => taskSearch,
 );
 
 export const completeTasksCountSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ completeTasksCount }) => completeTasksCount,
 );
 
 export const patientTasksSortSelector = createSelector(
-  patientTasksStateSelector,
+  patientDetailsStateSelector,
   ({ sort }) => sort,
+);
+
+export const patientSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ patient }) => patient,
+);
+
+export const isFetchingPatientSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ isFetchingPatient }) => isFetchingPatient,
 );

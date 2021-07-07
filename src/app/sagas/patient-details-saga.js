@@ -13,6 +13,7 @@ import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as TemplateBundleApi from 'api/template-bundle-api';
+import * as PatientApi from 'api/patient-api';
 import AlertMessages from 'alert/AlertMessages';
 import {
   REQUEST_PATIENT_STATS_SUCCESS,
@@ -27,14 +28,19 @@ import {
   SORT_PATIENT_TASKS,
   ADD_TASK,
 } from 'actions/action-types';
+import {
+  setPatientFetching,
+  setPatient,
+  initializePatient,
+} from 'actions/patient-details-actions';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientTaskListsActiveTabSelector,
   patientListHasTasksSelector,
   patientTasksSortSelector,
-} from 'selectors/patient-tasks-selectors';
+  patientSelector,
+} from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
 import {
@@ -71,6 +77,8 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_APPLY_TEMPLATE_FOR_PATIENT = 'DO_APPLY_TEMPLATE_FOR_PATIENT';
+export const DO_FETCH_PATIENT = 'DO_FETCH_PATIENT';
+export const DO_RELOAD_PATIENT = 'DO_RELOAD_PATIENT';
 
 export const quickAddPatientTask = ({ description, taskListIdentifier }) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -202,6 +210,15 @@ export const applyTemplateForPatient = ({
   type: DO_APPLY_TEMPLATE_FOR_PATIENT,
   taskListIdentifier,
   taskTemplateIdentifier,
+});
+
+export const fetchPatient = patientIdentifier => ({
+  type: DO_FETCH_PATIENT,
+  patientIdentifier,
+});
+
+export const reloadPatient = () => ({
+  type: DO_RELOAD_PATIENT,
 });
 
 export const PatientTasksSagaActions = {
@@ -604,7 +621,33 @@ function* doApplyTemplateForPatient({
   }
 }
 
-export default function* watchPatientTasks() {
+function* doFetchPatient({ patientIdentifier }) {
+  try {
+    yield put(initializePatient(patientIdentifier));
+    yield put(setPatientFetching());
+    const patient = yield call(PatientApi.getPatientById, patientIdentifier);
+    yield put(setPatient(patient));
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* doReloadPatient() {
+  try {
+    const currentPatient = yield select(patientSelector);
+    if (currentPatient?.patientIdentifier) {
+      const patient = yield call(
+        PatientApi.getPatientById,
+        currentPatient.patientIdentifier,
+      );
+      yield put(setPatient(patient));
+    }
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+export default function* watchPatientDetails() {
   yield takeLatest(
     DO_FETCH_STATS_FOR_PATIENT_TASKS,
     doFetchStatsForPatientTasks,
@@ -638,4 +681,6 @@ export default function* watchPatientTasks() {
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
   yield takeEvery(DO_APPLY_TEMPLATE_FOR_PATIENT, doApplyTemplateForPatient);
+  yield takeLatest(DO_FETCH_PATIENT, doFetchPatient);
+  yield takeLatest(DO_RELOAD_PATIENT, doReloadPatient);
 }

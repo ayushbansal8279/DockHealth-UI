@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ListSwitchChevron from 'img/list-switch-chevron';
 import palette, { opacify } from './palette';
+import { fontWeights } from './font';
 
 const IconWrapper = styled.div`
   position: absolute;
@@ -27,6 +28,9 @@ const themeCommonOverrides = () => ({
     },
     MuiSelect: {
       IconComponent: ArrowIcon,
+    },
+    MuiTabs: {
+      textColor: 'inherit',
     },
   },
   overrides: {
@@ -170,6 +174,27 @@ const themeCommonOverrides = () => ({
       select: {
         '&:focus': {
           backgroundColor: 'transparent',
+        },
+      },
+    },
+    MuiTabs: {
+      indicator: {
+        backgroundColor: palette.brightBlue,
+      },
+    },
+    MuiTab: {
+      root: {
+        fontFamily: "'Montserrat', sans-serif",
+        fontWeight: fontWeights.bold,
+      },
+      textColorInherit: {
+        color: palette.mediumGrey,
+
+        '&$selected': {
+          color: palette.brightBlue,
+        },
+        '&$disabled': {
+          color: palette.coolGrey1,
         },
       },
     },

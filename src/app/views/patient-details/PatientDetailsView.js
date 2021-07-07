@@ -1,118 +1,78 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
-import { bindActionCreators } from 'redux';
+import React, { useEffect, useMemo } from 'react';
+import { Tabs, Tab } from '@material-ui/core';
 import { connect, useDispatch } from 'react-redux';
-import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
-import * as PatientApi from 'api/patient-api';
-import Toolbar from 'components/tasklist/Toolbar/Toolbar';
-import { onSearchChanged } from 'helpers/ga-event-helper';
-import { TaskListTabName } from 'helpers/tasklist-helpers';
-import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import * as ModalActions from 'modal/actions';
-import { PatientTasksSagaActions } from 'sagas/patient-tasks-saga';
 import {
-  patientTasksStateSelector,
-  patientListHasTasksSelector,
-  patientTaskSearchSelector,
-} from 'selectors/patient-tasks-selectors';
-import { setHeader } from 'actions/template-actions';
-import { megaFilterSelector } from 'selectors/mega-filter-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { organizationSelector } from 'selectors/organization-selectors';
-import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
+  useHistory,
+  useRouteMatch,
+  Switch,
+  useLocation,
+  Redirect,
+} from 'react-router-dom';
 import {
-  onEnterPatientOpenTasksListView,
-  onEnterPatientCompleteTasksListView,
-} from 'routing/TemplateCoreSubscriptionPlan/PatientDetails';
+  fetchPatientTasks,
+  fetchPatientFilters,
+  initalizeSavedFilters,
+} from 'sagas/patient-details-saga';
 import { RouteWrapper } from 'routing/components';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import { setHeader } from 'actions/template-actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import debounce from 'lodash.debounce';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
+import { PatientDetailsContainer } from './styled';
+import PatientTasksList from './PatientTasksList/PatientTasksList';
 
-import { PatientListsContainer } from './styled';
-import PatientToolbarSkeletonLoader from './PatientToolbarSkeletonLoader/PatientToolbarSkeletonLoader';
-
-import PatientTasksListView from './PatientTasksListView';
-
-const TABS = [
+const TABS_CONFIG = [
   {
-    path: '/',
-    RouteComponent: PatientTasksListView,
-    onEnter: onEnterPatientOpenTasksListView,
+    label: 'All tasks',
+    mainPath: 'tasks',
+    additionalPath: ':taskListIdentifier?',
+    RouteComponent: PatientTasksList,
+    onEnter: ({ dispatch }) => {
+      dispatch(initalizeSavedFilters());
+      dispatch(fetchPatientTasks());
+      dispatch(fetchPatientFilters());
+    },
     exact: true,
   },
   {
-    path: '/complete',
-    RouteComponent: PatientTasksListView,
-    onEnter: onEnterPatientCompleteTasksListView,
+    label: 'Notes',
+    mainPath: 'notes',
+    RouteComponent: () => <div>Notes</div>,
+    onEnter: () => {},
+  },
+  {
+    label: 'Documents',
+    mainPath: 'documents',
+    RouteComponent: () => <div>Documents</div>,
+    onEnter: () => {},
   },
 ];
 
-const PatientDetailsView = ({
-  match,
-  patientTasks: {
-    isFetching,
-    activeTab,
-    incompleteTasksCount,
-    completeTasksCount,
-    lists,
-  },
-  modalActions,
-  megaFilter,
-  hasTasks,
-  patientTasksSagaActions,
-  taskSearch,
-  organization,
-  currentUser,
-}) => {
-  const { selectedFilters } = megaFilter;
-  const [searchValue, setSearchValue] = useState(taskSearch);
-  const [patient, setPatient] = useState({});
-  const [isLoadingPatient, setIsLoadingPatient] = useState(false);
-  const previousSelectedFilters = useRef(selectedFilters);
-  const previousSearchValue = useRef(null);
+const DEFAULT_TAB = TABS_CONFIG[0];
 
-  const history = useHistory();
-  const { params } = match;
-  const { patientIdentifier } = params;
-  const { path } = useRouteMatch();
-
-  const fetchPatient = useCallback(
-    () =>
-      PatientApi.getPatientById(patientIdentifier)
-        .then(fetchedPatient => {
-          setPatient(fetchedPatient);
-          return fetchedPatient;
-        })
-        .catch(() => {}),
-    [patientIdentifier],
-  );
-
-  useEffect(() => {
-    if (patientIdentifier) {
-      setIsLoadingPatient(true);
-      fetchPatient().then(() => {
-        setIsLoadingPatient(false);
-      });
-    }
-  }, [patientIdentifier, fetchPatient]);
-
+const PatientDetailsView = ({ currentUser }) => {
   const dispatch = useDispatch();
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+  const history = useHistory();
+  const { path, url } = useRouteMatch();
+  const { pathname } = useLocation();
+
+  const activeTabPath = useMemo(() => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const tab of TABS_CONFIG) {
+      const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
+      if (regex.test(pathname)) {
+        return tab.mainPath;
+      }
+    }
+    return DEFAULT_TAB.mainPath;
+  }, [pathname]);
 
   useEffect(() => {
+    const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
     dispatch(
       setHeader({
         layout: [
@@ -120,187 +80,50 @@ const PatientDetailsView = ({
             key: 'patients-header',
             component: (
               <>
-                <GenericHeader>{customerTypeLabelCapitalized}</GenericHeader>
+                <GenericHeader>{capitalize(customerTypeLabel)}</GenericHeader>
               </>
             ),
           },
         ],
       }),
     );
-  }, [dispatch, customerTypeLabelCapitalized]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const navigateToTab = tabName => {
-    history.push(
-      tabName === TaskListTabName.OPEN
-        ? `/core/patient/${patientIdentifier}/`
-        : `/core/patient/${patientIdentifier}/${TaskListTabName.COMPLETE}`,
-    );
+  const handleTabChange = (_, newTabValue) => {
+    history.push(`${url}/${newTabValue}`);
   };
-
-  const allMembers = useMemo(() => {
-    const allListsMembers = [];
-    if (lists) {
-      lists.forEach(list => {
-        const { listUsers } = list;
-        const listMembers = listUsers;
-
-        if (!listMembers) {
-          return;
-        }
-
-        listMembers.forEach(member => {
-          if (
-            !allListsMembers.find(
-              ({ userIdentifier }) => userIdentifier === member.userIdentifier,
-            )
-          ) {
-            allListsMembers.push(member);
-          }
-        });
-      });
-    }
-    return allListsMembers;
-  }, [lists]);
-
-  const {
-    patientTasksFilterChange,
-    setPatientTaskSearch,
-    refreshPatientTasks,
-    fetchPatientFilters,
-  } = patientTasksSagaActions;
-
-  const onSearchChangedWithDebouce = useCallback(
-    debounce(value => {
-      setPatientTaskSearch(value);
-      onSearchChanged();
-    }, 500),
-    [setPatientTaskSearch, onSearchChanged],
-  );
-
-  const handleSearchValueChange = value => {
-    setSearchValue(value);
-    onSearchChangedWithDebouce(value);
-  };
-
-  const handleTaskUpdate = useCallback(
-    updatedTask => {
-      fetchPatientFilters();
-      if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
-        refreshPatientTasks({ withLoader: false });
-      }
-    },
-    [selectedFilters, refreshPatientTasks, fetchPatientFilters],
-  );
-
-  const refreshTab = useCallback(() => {
-    fetchPatientFilters();
-    refreshPatientTasks({ withLoader: true });
-  }, [refreshPatientTasks, fetchPatientFilters]);
-
-  useEffect(() => {
-    previousSelectedFilters.current = selectedFilters;
-  }, [selectedFilters]);
-
-  useEffect(() => {
-    previousSearchValue.current = searchValue;
-  }, [searchValue]);
-
-  const openedTasks =
-    activeTab === TaskListTabName.OPEN
-      ? lists.flatMap(({ tasks }) => tasks)
-      : [];
-
-  const completedTasks =
-    activeTab === TaskListTabName.COMPLETE
-      ? lists.flatMap(({ tasks }) => tasks)
-      : [];
 
   return (
-    <BulkEditSection
-      allTasks={openedTasks}
-      refreshTasks={refreshTab}
-      disabled={activeTab === TaskListTabName.COMPLETE}
-      searchValue={searchValue}
-    >
-      <div>
-        <PatientDetailsHeader
-          patient={patient}
-          isLoadingPatient={isLoadingPatient}
-          organization={organization}
-          setPatient={setPatient}
-          refreshPatient={fetchPatient}
-        />
-        {incompleteTasksCount > 0 || completeTasksCount > 0 ? (
-          <Toolbar
-            onSelectTab={navigateToTab}
-            selectedTab={activeTab}
-            printData={{
-              completedTasks,
-              openedTasks,
-              taskListMembers: allMembers,
-            }}
-            openTasksAmount={incompleteTasksCount}
-            completedTasksAmount={completeTasksCount}
-            onSearchChange={handleSearchValueChange}
-            showNotifications={false}
-            searchValue={searchValue}
-            onSelectFilters={patientTasksFilterChange}
-            showMembers={false}
-            megaFilter={megaFilter}
-            haveTasks={hasTasks}
-            patientColumnVisible={false}
-            listNameColumnVisible
-            pdfTitle={
-              patient
-                ? `Patient: ${patient.firstName} ${patient.lastName}`
-                : null
-            }
-          />
-        ) : (
-          <PatientToolbarSkeletonLoader />
-        )}
-        <PatientListsContainer>
-          <Switch>
-            {TABS?.map(route => (
-              <RouteWrapper
-                key={route.path}
-                path={`${path}${route.path}`}
-                RouteComponent={
-                  isFetching ? GroupedListSkeletonLoader : route.RouteComponent
-                }
-                onEnter={route.onEnter}
-                exact={route.exact}
-              />
-            ))}
-          </Switch>
-        </PatientListsContainer>
-        <TaskDrawer
-          modalActions={modalActions}
-          onTaskUpdate={handleTaskUpdate}
-          onTaskCreation={handleTaskUpdate}
-          onTaskDelete={fetchPatientFilters}
-          disabledFields={[DrawerFieldEnum.PATIENT]}
-        />
-      </div>
-    </BulkEditSection>
+    <div>
+      <PatientDetailsHeader />
+      <Tabs value={activeTabPath} onChange={handleTabChange}>
+        {TABS_CONFIG.map(t => (
+          <Tab key={t.mainPath} value={t.mainPath} label={t.label} />
+        ))}
+      </Tabs>
+      <PatientDetailsContainer>
+        <Switch>
+          {TABS_CONFIG?.map(route => (
+            <RouteWrapper
+              key={route.mainPath}
+              path={`${path}/${route.mainPath}${
+                route.additionalPath ? `/${route.additionalPath}` : ''
+              }`}
+              RouteComponent={route.RouteComponent}
+              onEnter={route.onEnter}
+              exact={route.exact}
+            />
+          ))}
+          <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
+        </Switch>
+      </PatientDetailsContainer>
+    </div>
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(ModalActions, dispatch),
-  patientTasksSagaActions: bindActionCreators(
-    PatientTasksSagaActions,
-    dispatch,
-  ),
-});
-
 const mapStateToProps = state => ({
-  patientTasks: patientTasksStateSelector(state),
-  megaFilter: megaFilterSelector(state),
-  hasTasks: patientListHasTasksSelector(state),
-  taskSearch: patientTaskSearchSelector(state),
   currentUser: userProfileSelector(state),
-  organization: organizationSelector(state),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PatientDetailsView);
+export default connect(mapStateToProps)(PatientDetailsView);

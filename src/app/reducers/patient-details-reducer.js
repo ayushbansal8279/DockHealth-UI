@@ -15,6 +15,8 @@ import {
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
   COMPLETE_TEMPLATE_BUNDLE,
+  SET_PATIENT_FETCHING,
+  SET_PATIENT,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -23,6 +25,8 @@ import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
+  patient: null,
+  isFetchingPatient: false,
   activeTab: null,
   patientIdentifier: null,
   lists: [],
@@ -64,6 +68,12 @@ export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
 
   switch (type) {
+    case SET_PATIENT_FETCHING: {
+      return { ...state, patient: null, isFetchingPatient: true };
+    }
+    case SET_PATIENT: {
+      return { ...state, patient: payload.patient, isFetchingPatient: false };
+    }
     case CLEAR_PATIENT_TASKS:
       return {
         ...INITIAL_STATE,
