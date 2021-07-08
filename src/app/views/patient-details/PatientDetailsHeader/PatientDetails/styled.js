@@ -6,6 +6,20 @@ import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { makeStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+
+export const SubmitButtonWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  padding: 20px;
+  box-sizing: border-box;
+`;
+
+export const MoreActinsWrapper = styled.div`
+  display: flex;
+  width: auto;
+`;
 
 export const PatientDetailsInputContainer = styled.div`
   max-width: 320px;
@@ -13,6 +27,27 @@ export const PatientDetailsInputContainer = styled.div`
   margin-right: ${spacing.huge};
   position: relative;
   padding-bottom: ${spacing.large};
+`;
+
+export const ContentWrapper = styled.div`
+  padding: 20px;
+  box-sizing: border-box;
+`;
+
+export const TitleName = styled.span`
+  font-weight: ${fontWeights.regularPlus};
+`;
+
+export const StickyHeader = styled.div`
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const DrawerWrapper = styled(Drawer)`
+  .MuiDrawer-paper {
+    width: 378px;
+  }
 `;
 
 const getInputBorderBottom = ({ isActive, hasError }) => {

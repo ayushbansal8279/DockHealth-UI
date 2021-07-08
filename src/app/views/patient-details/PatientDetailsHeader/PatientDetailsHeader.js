@@ -174,6 +174,7 @@ const PatientDetailsHeader = () => {
           archivePatient={archivePatient}
           editingDisabled={emrIntegrationEnabled}
           currentUser={currentUser}
+          closeDetails={() => setIsOpenedDetails(false)}
         />
       )}
       <PatientDetailsNotes

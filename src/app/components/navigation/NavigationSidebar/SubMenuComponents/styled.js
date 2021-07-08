@@ -384,30 +384,6 @@ export const CategoryName = styled.p`
   background: ${palette.white};
 `;
 
-export const EducationItem = styled.div`
-  padding: ${spacing.small};
-  border: 1px solid ${palette.coolGrey3};
-  background: ${palette.coolGrey4};
-
-  &:not(:last-of-type) {
-    margin-bottom: ${spacing.smallPlus};
-  }
-`;
-
-export const EducationItemHeaderButton = styled.button`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`;
-
-export const EducationItemName = styled.p`
-  display: block;
-  flex: 1;
-  margin: 0;
-  font-size: ${fontSizes.regular};
-  text-align: left;
-`;
-
 export const EducationOverviewText = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.smallPlus};

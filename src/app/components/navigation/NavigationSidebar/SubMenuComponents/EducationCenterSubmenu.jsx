@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box, Collapse, Grid } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import InfoIcon from 'img/info';
 import SearchIcon from 'img/search-headsup';
 import SearchClearIcon from 'img/search-clear';
-import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Video from 'components/common/Video/Video';
-import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import Spacing from 'components/common/Spacing';
+import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { EDUCATION_CENTER_CATEGORIES } from './education-center-data';
 import {
   EducationCenterWrapper,
@@ -19,9 +18,6 @@ import {
   FooterLink,
   FooterIcon,
   CategoryName,
-  EducationItem,
-  EducationItemName,
-  EducationItemHeaderButton,
   EducationOverviewText,
   EducationItemLink,
   EducationItemTourButton,
@@ -109,72 +105,65 @@ const EducationCenterSubmenu = () => {
           >
             <CategoryName>{category.name}</CategoryName>
             {category.items.map(item => (
-              <EducationItem key={item.name}>
-                <EducationItemHeaderButton
-                  type="button"
-                  onClick={() =>
-                    setOpenedItem(previousOpenedItem =>
-                      previousOpenedItem === item.name ? null : item.name,
-                    )
-                  }
-                >
-                  <EducationItemName>{item.name}</EducationItemName>
-                  <Spacing horizontal={3} />
-                  <RotatableChevron
-                    color={palette.darkGrey}
-                    rotated={openedItem === item.name}
-                  />
-                  <Spacing horizontal={3} />
-                </EducationItemHeaderButton>
-                <Collapse in={openedItem === item.name}>
-                  <Box width="100%" py={spacing.small}>
-                    {item.videoUrl && (
-                      <>
-                        <Video url={item.videoUrl} />
-                        <Spacing vertical={4} />
-                      </>
-                    )}
-                    {item.overview && (
-                      <>
-                        <EducationOverviewText>
-                          {item.overview}
-                        </EducationOverviewText>
-                        {item.additionalOverview && (
-                          <>
-                            <Spacing vertical={4} />
-                            <EducationOverviewText>
-                              {item.additionalOverview}
-                            </EducationOverviewText>
-                          </>
-                        )}
-                      </>
-                    )}
-                    {item.helpUrl && (
-                      <>
-                        <Spacing vertical={4} />
-                        <EducationItemLink
-                          href={item.helpUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {item.helpUrlLabel || 'More Details'}
-                        </EducationItemLink>
-                      </>
-                    )}
-                    {item.productTourUrl && (
-                      <>
-                        <Spacing vertical={4} />
-                        <EducationItemTourButton
-                          onClick={() => history.push(item.productTourUrl)}
-                        >
-                          Step by Step
-                        </EducationItemTourButton>
-                      </>
-                    )}
-                  </Box>
-                </Collapse>
-              </EducationItem>
+              <LabeledCollapse
+                key={item.name}
+                onClick={() =>
+                  setOpenedItem(previousOpenedItem =>
+                    previousOpenedItem === item.name ? null : item.name,
+                  )
+                }
+                name={item.name}
+                isOpened={openedItem === item.name}
+              >
+                <Box width="100%" py={spacing.small}>
+                  {item.videoUrl && (
+                    <>
+                      <Video url={item.videoUrl} />
+                      <Spacing vertical={4} />
+                    </>
+                  )}
+                  {item.overview && (
+                    <>
+                      <EducationOverviewText>
+                        {item.overview}
+                      </EducationOverviewText>
+                      {item.additionalOverview && (
+                        <>
+                          <Spacing vertical={4} />
+                          <EducationOverviewText>
+                            {item.additionalOverview}
+                          </EducationOverviewText>
+                        </>
+                      )}
+                    </>
+                  )}
+                  {item.helpUrl && (
+                    <>
+                      <Spacing vertical={4} />
+                      <EducationItemLink
+                        href={item.helpUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {item.helpUrlLabel || 'More Details'}
+                      </EducationItemLink>
+                    </>
+                  )}
+                  {item.productTourUrl && (
+                    <>
+                      <Spacing vertical={4} />
+                      <EducationItemTourButton
+                        onClick={() => history.push(item.productTourUrl)}
+                      >
+                        Step by Step
+                      </EducationItemTourButton>
+                    </>
+                  )}
+                </Box>
+              </LabeledCollapse>
             ))}
+
+            {/* ------ */}
           </Box>
         ))}
       </EducationCenterList>
