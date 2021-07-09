@@ -39,6 +39,7 @@ import {
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
+import PatientLabels from './PatientLabels/PatientLabels';
 
 const TABS_CONFIG = [
   {
@@ -134,6 +135,7 @@ const PatientDetailsView = () => {
   return (
     <div>
       <PatientDetailsHeader />
+      <PatientLabels />
       <PatientDetailsTabsContainer>
         <Grid container justify="space-between">
           <Grid item xs={8}>
