@@ -725,11 +725,17 @@ function* doRemovePatientNote({ patientNoteIdentifier }) {
 
 function* doChangePatientNotePin({ patientNoteIdentifier, pinned }) {
   try {
-    if (pinned) {
-      yield put(PatientDetailsActions.pinPatientNote(patientNoteIdentifier));
-    } else {
-      yield put(PatientDetailsActions.unpinPatientNote(patientNoteIdentifier));
-    }
+    const updatedNote = yield call(
+      PatientApi.changePatientNotePinnedFlag,
+      patientNoteIdentifier,
+      pinned,
+    );
+    yield put(
+      PatientDetailsActions.updatePatientNote(
+        patientNoteIdentifier,
+        updatedNote,
+      ),
+    );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
