@@ -61,3 +61,13 @@ export const isFetchingPatientSelector = createSelector(
   patientDetailsStateSelector,
   ({ isFetchingPatient }) => isFetchingPatient,
 );
+
+export const isFetchingPatientLabelsSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ isFetchingLabels }) => isFetchingLabels,
+);
+
+export const patientLabelsSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ labels }) => labels,
+);
