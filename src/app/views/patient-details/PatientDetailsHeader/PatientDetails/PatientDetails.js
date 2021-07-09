@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useForm, FormContext } from 'react-hook-form';
 // import { Collapse } from '@material-ui/core';
@@ -18,7 +17,6 @@ import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Button from 'components/common/Button/Button';
 import { openModal, closeModal } from 'modal/actions';
 import { useDispatch } from 'react-redux';
-import { PATIENTS_LIST_ALL } from '../../../../routing/helpers/paths';
 import {
   PatientDetailsForm,
   DrawerWrapper,
@@ -117,7 +115,6 @@ const PatientDetails = ({
   const [isActive, setIsActive] = useState(false);
   const [contextMenuIsOpened, setContextMenuIsOpened] = useState(false);
   const [isOpened, setisOpened] = useState(true);
-  const history = useHistory();
   const contextMenuReference = useRef();
   const formMethods = useForm({
     defaultValues,
@@ -159,7 +156,6 @@ const PatientDetails = ({
 
   const handlePatientArchive = () => {
     archivePatient();
-    history.push(PATIENTS_LIST_ALL);
   };
 
   useEffect(() => {

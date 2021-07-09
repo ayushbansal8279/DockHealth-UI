@@ -1,3 +1,5 @@
+/* eslint-disable require-yield */
+/* eslint-disable no-console */
 import {
   put,
   call,
@@ -27,6 +29,8 @@ import {
   SET_PATIENT_TASK_SEARCH_VALUE,
   SORT_PATIENT_TASKS,
   ADD_TASK,
+  UPDATE_PATIENT_DETAILS,
+  ARCHIEVE_PATIENT,
 } from 'actions/action-types';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -49,7 +53,11 @@ import {
   onSortChanged,
   onPatientNoteAdded,
   onPatientNoteEdited,
+  onPatientDetailsEdited,
 } from 'helpers/ga-event-helper';
+import { closeModal } from 'modal/actions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
 export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
   'DO_FETCH_STATS_FOR_PATIENT_TASKS';
@@ -696,6 +704,29 @@ function* doUpdatePatientNote({ note }) {
   }
 }
 
+function* doUpdatePatientDetails({ payload: { details } }) {
+  try {
+    onPatientDetailsEdited();
+    yield call(PatientApi.updatePatient, details);
+    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+  } catch (error) {
+    yield put(AlertActions.showGlobalErrorAlert());
+    yield put(reloadPatient());
+  }
+}
+
+function* doArchievePatient({ payload: { patientIdentifier, history } }) {
+  try {
+    yield call(PatientApi.archivePatient, patientIdentifier);
+    yield put(closeModal());
+    yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    history.push(PATIENTS_LIST_ALL);
+  } catch (error) {
+    yield put(showGlobalErrorAlert());
+    yield put(closeModal());
+  }
+}
+
 function* doAddPatientNote({ patientIdentifier, note }) {
   try {
     onPatientNoteAdded();
@@ -790,6 +821,8 @@ export default function* watchPatientDetails() {
     doToggleCompleteTasksVisible,
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
+  yield takeEvery(UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
+  yield takeEvery(ARCHIEVE_PATIENT, doArchievePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
