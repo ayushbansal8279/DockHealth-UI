@@ -1,7 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useMemo } from 'react';
-import { Tabs, Tab } from '@material-ui/core';
-import { connect, useDispatch } from 'react-redux';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Tabs, Tab, Grid } from '@material-ui/core';
+import { compose } from 'ramda';
+import { useDispatch, useSelector } from 'react-redux';
+import debounce from 'lodash.debounce';
 import {
   useHistory,
   useRouteMatch,
@@ -9,20 +11,34 @@ import {
   useLocation,
   Redirect,
 } from 'react-router-dom';
+import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
 import {
-  fetchPatientTasks,
-  fetchPatientFilters,
-  initalizeSavedFilters,
-} from 'sagas/patient-details-saga';
-import { RouteWrapper } from 'routing/components';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import { setHeader } from 'actions/template-actions';
+  availableFiltersInInMegaFilterSelector,
+  selectedFiltersInMegaFilterSelector,
+} from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import useBoolean from 'hooks/useBoolean';
+import {
+  setPatientTaskSearch,
+  patientTasksFilterChange,
+} from 'sagas/patient-details-saga';
+import { onSearchChanged } from 'helpers/ga-event-helper';
+import { RouteWrapper } from 'routing/components';
+import Spacing from 'components/common/Spacing';
+import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import Search from 'components/task-view/Search/Search';
+import { setHeader } from 'actions/template-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
-import { PatientDetailsContainer } from './styled';
+import {
+  PatientDetailsContainer,
+  PatientDetailsTabsContainer,
+  SearchWrapper,
+} from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
+import PatientNotes from './PatientNotes/PatientNotes';
 
 const TABS_CONFIG = [
   {
@@ -30,17 +46,12 @@ const TABS_CONFIG = [
     mainPath: 'tasks',
     additionalPath: ':taskListIdentifier?',
     RouteComponent: PatientTasksList,
-    onEnter: ({ dispatch }) => {
-      dispatch(initalizeSavedFilters());
-      dispatch(fetchPatientTasks());
-      dispatch(fetchPatientFilters());
-    },
     exact: true,
   },
   {
     label: 'Notes',
     mainPath: 'notes',
-    RouteComponent: () => <div>Notes</div>,
+    RouteComponent: PatientNotes,
     onEnter: () => {},
   },
   {
@@ -53,11 +64,21 @@ const TABS_CONFIG = [
 
 const DEFAULT_TAB = TABS_CONFIG[0];
 
-const PatientDetailsView = ({ currentUser }) => {
+const PatientDetailsView = () => {
+  const [
+    isSearchFocused,
+    setIsSearchFocused,
+    unsetIsSearchFocused,
+  ] = useBoolean(false);
+  const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
   const { path, url } = useRouteMatch();
   const { pathname } = useLocation();
+  const currentUser = useSelector(userProfileSelector);
+  const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
+  const filters = useSelector(availableFiltersInInMegaFilterSelector);
+  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
@@ -94,14 +115,60 @@ const PatientDetailsView = ({ currentUser }) => {
     history.push(`${url}/${newTabValue}`);
   };
 
+  const onSearchChangedWithDebouce = useCallback(
+    debounce(value => {
+      dispatch(setPatientTaskSearch(value));
+      onSearchChanged();
+    }, 500),
+    [setPatientTaskSearch, onSearchChanged],
+  );
+
+  const handleSearchValueChange = event => {
+    const newValue = event.target?.value;
+    setSearchValue(newValue);
+    onSearchChangedWithDebouce(newValue);
+  };
+
+  const handleFilterChange = compose(dispatch, patientTasksFilterChange);
+
   return (
     <div>
       <PatientDetailsHeader />
-      <Tabs value={activeTabPath} onChange={handleTabChange}>
-        {TABS_CONFIG.map(t => (
-          <Tab key={t.mainPath} value={t.mainPath} label={t.label} />
-        ))}
-      </Tabs>
+      <PatientDetailsTabsContainer>
+        <Grid container justify="space-between">
+          <Grid item xs={8}>
+            <Tabs value={activeTabPath} onChange={handleTabChange}>
+              {TABS_CONFIG.map(t => (
+                <Tab key={t.mainPath} value={t.mainPath} label={t.label} />
+              ))}
+            </Tabs>
+          </Grid>
+          {activeTabPath === 'tasks' && (
+            <Grid container item xs={4} justify="flex-end" alignItems="center">
+              <MegaFilter
+                filters={filters}
+                selectedFilters={selectedFilters}
+                onSelectFilters={handleFilterChange}
+                isFetching={isFetchingLists}
+              />
+              <Spacing horizontal={5} />
+              <SearchWrapper fullWidth={isSearchFocused || searchValue}>
+                <Search
+                  fullWidth
+                  noBackground
+                  value={searchValue}
+                  onFocus={setIsSearchFocused}
+                  onBlur={unsetIsSearchFocused}
+                  onChange={handleSearchValueChange}
+                  placeholder={
+                    isSearchFocused ? 'Search Tasks and Comments' : 'Search'
+                  }
+                />
+              </SearchWrapper>
+            </Grid>
+          )}
+        </Grid>
+      </PatientDetailsTabsContainer>
       <PatientDetailsContainer>
         <Switch>
           {TABS_CONFIG?.map(route => (
@@ -122,8 +189,4 @@ const PatientDetailsView = ({ currentUser }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  currentUser: userProfileSelector(state),
-});
-
-export default connect(mapStateToProps)(PatientDetailsView);
+export default PatientDetailsView;

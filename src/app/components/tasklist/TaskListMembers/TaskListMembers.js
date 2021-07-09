@@ -17,8 +17,8 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
     <>
       {shownMembers?.map((member, index) => (
         <MemberWrapper
-          isPending={isMemberPending(member)}
           key={member.userIdentifier}
+          isPending={isMemberPending(member)}
         >
           {index !== 0 && <Spacing horizontal={2} />}
           <Member member={member} size={40} />

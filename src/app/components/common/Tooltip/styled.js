@@ -27,4 +27,5 @@ export const StyledMaterialTooltip = withStyles({
 export const Container = styled.div`
   display: inline-block;
   overflow: hidden;
+  flex-shrink: 0;
 `;

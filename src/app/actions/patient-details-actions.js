@@ -1,9 +1,14 @@
 import {
   SET_PATIENT_FETCHING,
   SET_PATIENT,
-  SET_ACTIVE_TAB,
+  SET_COMPLETE_TASKS_VISIBILITY,
   CLEAR_PATIENT_TASKS,
   INITIALIZE_PATIENT,
+  UPDATE_PATIENT_NOTE,
+  ADD_PATIENT_NOTE,
+  REMOVE_PATIENT_NOTE,
+  PIN_PATIENT_NOTE,
+  UNPIN_PATIENT_NOTE,
 } from './action-types';
 
 export const setPatientFetching = () => ({
@@ -17,9 +22,9 @@ export const setPatient = patient => ({
   },
 });
 
-export const setActiveTab = activeTab => ({
-  type: SET_ACTIVE_TAB,
-  payload: { activeTab },
+export const setCompleteTasksVisibility = completeTasksVisible => ({
+  type: SET_COMPLETE_TASKS_VISIBILITY,
+  payload: { completeTasksVisible },
 });
 
 export const initializePatient = patientIdentifier => ({
@@ -31,4 +36,29 @@ export const initializePatient = patientIdentifier => ({
 
 export const clearPatientTasksState = () => ({
   type: CLEAR_PATIENT_TASKS,
+});
+
+export const updatePatientNote = (patientNoteIdentifier, note) => ({
+  type: UPDATE_PATIENT_NOTE,
+  payload: { patientNoteIdentifier, note },
+});
+
+export const addPatientNote = note => ({
+  type: ADD_PATIENT_NOTE,
+  payload: { note },
+});
+
+export const deletePatientNote = patientNoteIdentifier => ({
+  type: REMOVE_PATIENT_NOTE,
+  payload: { patientNoteIdentifier },
+});
+
+export const pinPatientNote = patientNoteIdentifier => ({
+  type: PIN_PATIENT_NOTE,
+  payload: { patientNoteIdentifier },
+});
+
+export const unpinPatientNote = patientNoteIdentifier => ({
+  type: UNPIN_PATIENT_NOTE,
+  payload: { patientNoteIdentifier },
 });

@@ -96,7 +96,6 @@ const TaskItem = ({
   openPatientPopover,
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
-  isBundleTask,
   isSelectedByHighlighted,
 }) => {
   const {
@@ -128,9 +127,7 @@ const TaskItem = ({
   const isTemplateTask = checkIfTemplateTask(task);
   const isSubtask = !!parentTaskIdentifier;
   const isTaskStatusTogglingDisabled =
-    isTemplateTask ||
-    (isSubtask && isCompletedGroup) ||
-    (!!isCompleted !== !!isCompletedGroup && !isSubtask && !isBundleTask);
+    isTemplateTask || (isSubtask && isCompletedGroup);
 
   const {
     matchAssignedTo,
@@ -356,7 +353,7 @@ const TaskItem = ({
         <StandardTaskItemContainer
           isSelected={isSelected || selected}
           height={
-            hasParentTaskLabel || isCompletedGroup
+            hasParentTaskLabel || isCompleted
               ? EXTENDED_TASK_HEIGHT
               : STANDARD_TASK_HEIGHT
           }

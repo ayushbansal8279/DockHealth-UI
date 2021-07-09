@@ -216,11 +216,9 @@ const FilterColumn = ({
 const MegaFilter = ({
   children,
   filters,
-  activeItemsAmount,
   selectedFilters,
   onSelectFilters,
-  taskList,
-  taskStatus,
+  activeItemsAmount,
   tasksAndSubTasksCount,
   isFetching,
   popoverStyles = {},
@@ -318,9 +316,9 @@ const MegaFilter = ({
                       ITEMS
                     </>
                   )}
-                  {isFilterApplied && !tasksAndSubTasksCount && (
-                    <>SHOWING {activeItemsAmount} ITEMS</>
-                  )}
+                  {isFilterApplied &&
+                    !tasksAndSubTasksCount &&
+                    activeItemsAmount && <>SHOWING {activeItemsAmount} ITEMS</>}
                 </MegaFilterLabel>
                 {isFilterApplied && (
                   <ClearButton type="button" onClick={clearFilters}>
@@ -353,8 +351,6 @@ const MegaFilter = ({
                     filter={{ ...filter, key: filter.filterKey }}
                     selectedFilters={selectedFilters}
                     onSelectFilters={onSelectFilters}
-                    taskList={taskList}
-                    taskStatus={taskStatus}
                     filters={filters}
                     searchedFilterQuery={searchedFilterQuery}
                     customerTypeLabelCapitalized={customerTypeLabelCapitalized}
