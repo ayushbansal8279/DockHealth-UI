@@ -1,6 +1,8 @@
 import {
   SET_PATIENT_FETCHING,
   SET_PATIENT,
+  SET_PATIENT_LABELS_FETCHING,
+  SET_PATIENT_LABELS,
   SET_COMPLETE_TASKS_VISIBILITY,
   CLEAR_PATIENT_TASKS,
   INITIALIZE_PATIENT,
@@ -19,6 +21,17 @@ export const setPatient = patient => ({
   type: SET_PATIENT,
   payload: {
     patient,
+  },
+});
+
+export const setPatientLabelsFetching = () => ({
+  type: SET_PATIENT_LABELS_FETCHING,
+});
+
+export const setPatientLabels = labels => ({
+  type: SET_PATIENT_LABELS,
+  payload: {
+    labels,
   },
 });
 

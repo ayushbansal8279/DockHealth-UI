@@ -77,6 +77,7 @@ export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_APPLY_TEMPLATE_FOR_PATIENT = 'DO_APPLY_TEMPLATE_FOR_PATIENT';
 export const DO_FETCH_PATIENT = 'DO_FETCH_PATIENT';
+export const DO_FETCH_PATIENT_LABELS = 'DO_FETCH_PATIENT_LABELS';
 export const DO_RELOAD_PATIENT = 'DO_RELOAD_PATIENT';
 export const DO_TOGGLE_COMPLETE_TASKS_VISIBLE =
   'DO_TOGGLE_COMPLETE_TASKS_VISIBLE';
@@ -222,6 +223,11 @@ export const applyTemplateForPatient = ({
 
 export const fetchPatient = patientIdentifier => ({
   type: DO_FETCH_PATIENT,
+  patientIdentifier,
+});
+
+export const fetchPatientLabels = patientIdentifier => ({
+  type: DO_FETCH_PATIENT_LABELS,
   patientIdentifier,
 });
 
@@ -661,6 +667,19 @@ function* doFetchPatient({ patientIdentifier }) {
   }
 }
 
+function* doFetchPatientLabels({ patientIdentifier }) {
+  try {
+    yield put(PatientDetailsActions.setPatientLabelsFetching());
+    const labels = yield call(
+      PatientApi.getLabelsForPatient,
+      patientIdentifier,
+    );
+    yield put(PatientDetailsActions.setPatientLabels(labels));
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
 function* doReloadPatient() {
   try {
     const currentPatient = yield select(patientSelector);
@@ -790,6 +809,7 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
   yield takeEvery(DO_APPLY_TEMPLATE_FOR_PATIENT, doApplyTemplateForPatient);
   yield takeLatest(DO_FETCH_PATIENT, doFetchPatient);
+  yield takeLatest(DO_FETCH_PATIENT_LABELS, doFetchPatientLabels);
   yield takeLatest(DO_RELOAD_PATIENT, doReloadPatient);
   yield takeLatest(
     DO_TOGGLE_COMPLETE_TASKS_VISIBLE,
