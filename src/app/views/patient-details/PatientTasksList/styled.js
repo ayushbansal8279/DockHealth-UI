@@ -1,7 +1,18 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
-import spacing from 'styles/spacing';
+import palette from 'styles/palette';
 
-export const TasksListContainer = styled.div`
-  margin: 0 -${spacing.huge};
+export const ListsToolbarContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+`;
+
+export const ListsTabsContainer = styled.div`
+  flex: 1 0 0;
+  overflow: hidden;
+`;
+
+export const MenuText = styled.p`
+  margin-bottom: 0;
+  color: ${palette.mediumGrey};
 `;

@@ -12,11 +12,17 @@ export const UNENROLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 
-export const TASK_LIST = '/core/tasks/';
-export const PATIENTS_LIST = '/core/patients/list/';
+export const TASK_LIST = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
+export const PATIENTS_LIST = '/core/patients/list';
 
 export const createTaskListPath = taskListIdentifier =>
-  `${TASK_LIST}${taskListIdentifier}`;
+  `${TASK_LIST}/${taskListIdentifier}`;
+
 export const createPatientListPath = patientListIdentifier =>
-  `${PATIENTS_LIST}${patientListIdentifier}`;
+  `${PATIENTS_LIST}/${patientListIdentifier}`;
+
+export const createPatientDetailsListPath = (
+  patientIdentifier,
+  taskListIdentifier,
+) => `/core/patient/${patientIdentifier}/tasks/${taskListIdentifier}`;

@@ -8,7 +8,7 @@ export const fetchPatientTasksByPatientIdentifier = (
   axios
     .get(`/task/findTasksByPatientGroupedByTaskList/${patientIdentifier}`, {
       params: {
-        status,
+        status: status === 'ALL' ? undefined : status,
         sortBy: sortBy?.key || undefined,
         sortDirection: sortBy?.order || undefined,
       },
@@ -30,7 +30,7 @@ export const fetchPatientTasksByPatientIdentifierWithFilters = (
       selectedFilters,
       {
         params: {
-          status,
+          status: status === 'ALL' ? undefined : status,
           sortBy: sortBy?.key || undefined,
           sortDirection: sortBy?.order || undefined,
         },
@@ -51,9 +51,11 @@ export const fetchStatsForPatientTasks = patientIdentifier =>
 
 export const fetchPatientFilters = (patientIdentifier, status = 'INCOMPLETE') =>
   axios
-    .get(
-      `/task/filter/filterOptionsForPatient/${patientIdentifier}?status=${status}`,
-    )
+    .get(`/task/filter/filterOptionsForPatient/${patientIdentifier}`, {
+      params: {
+        status: status === 'ALL' ? undefined : status,
+      },
+    })
     .then(({ data }) => data)
     .catch(error => {
       throw error;

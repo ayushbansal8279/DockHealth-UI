@@ -7,9 +7,14 @@ export const patientTaskListsSelector = createSelector(
   ({ lists }) => lists,
 );
 
-export const patientTaskListsActiveTabSelector = createSelector(
+export const isFetchingPatientTaskListsSelector = createSelector(
   patientDetailsStateSelector,
-  ({ activeTab }) => activeTab,
+  ({ isFetching }) => isFetching,
+);
+
+export const completeTasksVisibilitySelector = createSelector(
+  patientDetailsStateSelector,
+  ({ completeTasksVisible }) => completeTasksVisible,
 );
 
 export const patientListHasTasksSelector = createSelector(
@@ -40,6 +45,16 @@ export const patientTasksSortSelector = createSelector(
 export const patientSelector = createSelector(
   patientDetailsStateSelector,
   ({ patient }) => patient,
+);
+
+export const patientNotesSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ patient }) => patient?.allNotes || null,
+);
+
+export const isFetchingNotesSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ isFetchingPatient }) => isFetchingPatient,
 );
 
 export const isFetchingPatientSelector = createSelector(

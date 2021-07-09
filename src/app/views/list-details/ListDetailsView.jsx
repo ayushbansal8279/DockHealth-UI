@@ -47,6 +47,7 @@ const ListDetailsView = props => {
     taskListIdentifier,
     toggleTaskCompletedStatus,
   } = initializeListDetailsViewHooks(match, history);
+
   return (
     <BulkEditSection
       allTasks={bulkEditTasks}
