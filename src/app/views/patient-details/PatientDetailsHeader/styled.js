@@ -1,8 +1,26 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import { fontWeights } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
+import Button from '@material-ui/core/Button';
 
+export const ButtonContainer = styled(Button)``;
+export const IconWrapper = styled.a`
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+`;
+
+export const ContactContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const PatientInfoRow = styled.div`
+  display: flex;
+`;
 export const PatientDetailsContainer = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
   display: flex;
@@ -26,6 +44,7 @@ export const PatientDetailsBio = styled.div`
 
 export const PatientName = styled.div`
   font-weight: ${fontWeights.bold};
+  font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   position: relative;
 `;
@@ -69,6 +88,11 @@ export const NavigationBackIcon = styled.img`
 `;
 
 export const PatientDetailsLabel = styled.div`
+  color: ${palette.brightBlue};
+  text-transform: none;
+`;
+
+export const PatientDetailsButtonContainer = styled.div`
   color: ${palette.brightBlue};
 `;
 

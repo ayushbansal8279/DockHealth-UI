@@ -1,8 +1,13 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import Arrow from 'components/common/Arrow/Arrow';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
+import EmailIcon from 'img/email-icon.svg';
+import PhoneIcon from 'img/phone-icon.svg';
+import MobileIcon from 'img/mobile-icon.svg';
+import { Box } from '@material-ui/core';
+
 import {
   PatientDetailsInformationContainer,
   PatientDetailsBio,
@@ -12,8 +17,9 @@ import {
   PatientDetailsInformations,
   PatientDetails,
   PatientDetailsLabel,
-  ArrowBox,
-  ArrowBoxIndicator,
+  ButtonContainer,
+  IconWrapper,
+  ContactContainer,
 } from './styled';
 import PatientDetailsLoader from './PatientDetailsLoader/PatientDetailsLoader';
 
@@ -72,22 +78,49 @@ const PatientDetailsInformation = ({
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
   return (
     <PatientDetailsInformationContainer>
-      <PatientDetailsBio style={{ flexDirection: 'row' }}>
-        <div style={{ width: '30px' }}>
+      <PatientDetailsBio style={{ flexDirection: 'row', width: '100%' }}>
+        <Box flexBasis={30}>
           <button type="button" onClick={history.goBack}>
             <img
               src={ArrowLeftIcon}
               alt="back-navigation"
-              style={{ width: '20px' }}
+              style={{ width: '16px', paddingTop: '6px' }}
             />
           </button>
-        </div>
-        <div>
+        </Box>
+        <Box flex="1">
           {!isLoadingDetails ? (
             <>
-              <PatientName>
-                {[`${lastName},`, firstName, middleName].join(' ')}
-              </PatientName>
+              <Box display="flex" alignItems="center">
+                <Box flex="1 0 0" display="flex" alignItems="center">
+                  <PatientName>
+                    {[`${lastName},`, firstName, middleName].join(' ')}
+                  </PatientName>
+                  <ButtonContainer
+                    onClick={setIsOpenedDetails}
+                    disabled={isOpenedDetails}
+                  >
+                    <PatientDetailsLabel>View details</PatientDetailsLabel>
+                  </ButtonContainer>
+                </Box>
+                <ContactContainer>
+                  {email && (
+                    <IconWrapper href={`mailto:${email}`}>
+                      <img src={EmailIcon} alt="email icon" />
+                    </IconWrapper>
+                  )}
+                  {phoneHome && (
+                    <IconWrapper href={`tel:${phoneHome}`}>
+                      <img src={PhoneIcon} alt="phone icon" />
+                    </IconWrapper>
+                  )}
+                  {phoneMobile && (
+                    <IconWrapper href={`tel:${phoneMobile}`}>
+                      <img src={MobileIcon} alt="mobile phon icon" />
+                    </IconWrapper>
+                  )}
+                </ContactContainer>
+              </Box>
               {(dob ||
                 age ||
                 gender ||
@@ -141,15 +174,8 @@ const PatientDetailsInformation = ({
           ) : (
             <PatientDetailsLoader />
           )}
-        </div>
+        </Box>
       </PatientDetailsBio>
-      <ArrowBox>
-        <ArrowBoxIndicator>
-          <Arrow isOpen={isOpenedDetails} setOpen={setIsOpenedDetails}>
-            <PatientDetailsLabel>DETAILS</PatientDetailsLabel>
-          </Arrow>
-        </ArrowBoxIndicator>
-      </ArrowBox>
     </PatientDetailsInformationContainer>
   );
 };

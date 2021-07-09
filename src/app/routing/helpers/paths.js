@@ -14,6 +14,7 @@ export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 
 export const TASK_LIST = '/core/tasks/';
 export const PATIENTS_LIST = '/core/patients/list/';
+export const PATIENTS_LIST_ALL = '/core/patients/list/all';
 
 export const createTaskListPath = taskListIdentifier =>
   `${TASK_LIST}${taskListIdentifier}`;

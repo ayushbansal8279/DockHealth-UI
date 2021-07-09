@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useForm, FormContext } from 'react-hook-form';
 // import { Collapse } from '@material-ui/core';
@@ -17,6 +18,7 @@ import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Button from 'components/common/Button/Button';
 import { openModal, closeModal } from 'modal/actions';
 import { useDispatch } from 'react-redux';
+import { PATIENTS_LIST_ALL } from '../../../../routing/helpers/paths';
 import {
   PatientDetailsForm,
   DrawerWrapper,
@@ -24,7 +26,6 @@ import {
   TitleName,
   StickyHeader,
   MoreActinsWrapper,
-  // PatientDetailsFormRow,
   PatietnDetailsFormFooter,
   SubmitButtonWrapper,
 } from './styled';
@@ -116,6 +117,7 @@ const PatientDetails = ({
   const [isActive, setIsActive] = useState(false);
   const [contextMenuIsOpened, setContextMenuIsOpened] = useState(false);
   const [isOpened, setisOpened] = useState(true);
+  const history = useHistory();
   const contextMenuReference = useRef();
   const formMethods = useForm({
     defaultValues,
@@ -127,32 +129,15 @@ const PatientDetails = ({
     setIsActive(true);
   };
 
-  const { setValue, handleSubmit, clearError, getValues } = formMethods;
+  const { handleSubmit, clearError, getValues, reset } = formMethods;
 
   const { gender: genderValue } = getValues();
 
-  useEffect(() => {
-    setValue('firstName', firstName);
-    setValue('middleName', middleName);
-    setValue('lastName', lastName);
-    setValue('email', email);
-    setValue('phoneMobile', phoneMobile);
-    setValue('phoneHome', phoneHome);
-    setValue('dob', formattedDob);
-    setValue('gender', gender);
-    setValue('mrn', mrn);
-  }, [
-    firstName,
-    middleName,
-    lastName,
-    email,
-    phoneMobile,
-    phoneHome,
-    dob,
-    gender,
-    mrn,
-    setValue,
-  ]);
+  const close = () => {
+    setIsActive(false);
+    closeDetails();
+    clearError(Object.keys(defaultValues));
+  };
 
   const handleClose = () => {
     if (isActive) {
@@ -162,40 +147,29 @@ const PatientDetails = ({
           confirm: () => {
             updatePatient({ ...getValues(), patientIdentifier });
             dispatch(closeModal());
-            setIsActive(false);
+            close();
           },
-          skip: () => {
-            setIsActive(false);
-            closeDetails();
-          },
+          onClose: close,
         }),
       );
     } else {
-      setIsActive(false);
-      closeDetails();
+      close();
     }
+  };
+
+  const handlePatientArchive = () => {
+    archivePatient();
+    history.push(PATIENTS_LIST_ALL);
   };
 
   useEffect(() => {
     if (!isOpenedDetails) {
       setIsActive(false);
-    }
-  }, [isOpenedDetails]);
-
-  useEffect(() => {
-    if (!isActive) {
-      setValue('firstName', defaultValues.firstName);
-      setValue('middleName', defaultValues.middleName);
-      setValue('lastName', defaultValues.lastName);
-      setValue('email', defaultValues.email);
-      setValue('phoneMobile', defaultValues.phoneMobile);
-      setValue('phoneHome', defaultValues.phoneHome);
-      setValue('dob', defaultValues.dob);
-      setValue('gender', defaultValues.gender);
-      setValue('mrn', defaultValues.mrn);
+    } else {
+      reset({ ...defaultValues });
       clearError(Object.keys(defaultValues));
     }
-  }, [isActive]);
+  }, [isOpenedDetails]);
 
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
   const GENDER_OPTIONS = [
@@ -221,7 +195,7 @@ const PatientDetails = ({
     {
       key: 'archivePatient',
       label: 'Archive patient',
-      onClick: archivePatient,
+      onClick: handlePatientArchive,
     },
   ];
   return (
