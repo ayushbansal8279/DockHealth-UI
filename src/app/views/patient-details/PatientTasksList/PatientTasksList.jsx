@@ -232,7 +232,7 @@ const PatientTasksListView = ({
                       <Tab
                         key={list.taskListIdentifier}
                         value={list.taskListIdentifier}
-                        label={list.listName}
+                        label={`${list.listName} (${list.tasks.length})`}
                         disabled={list.tasks.length === 0 && !!taskSearch}
                       />
                     ))}
@@ -269,7 +269,7 @@ const PatientTasksListView = ({
                   )}
                 </Popper>
               </ListsToolbarContainer>
-              <Spacing vertical={5} />
+              <Spacing vertical={3} />
               {activeList ? (
                 <BulkEditSection
                   allTasks={activeList.tasks}

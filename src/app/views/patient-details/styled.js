@@ -8,7 +8,7 @@ export const PatientDetailsTabsContainer = styled.div`
 `;
 
 export const PatientDetailsContainer = styled.div`
-  padding: ${spacing.large} ${spacing.huge};
+  padding: ${spacing.small} ${spacing.huge};
   background-color: ${palette.white};
 `;
 
