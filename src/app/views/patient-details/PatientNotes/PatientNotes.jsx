@@ -105,7 +105,7 @@ const PatientNotes = () => {
             ?.map(renderPatient)}
           <NoteInput
             ref={addNoteInputReference}
-            placeholder="Leave a comment"
+            placeholder="Add a note"
             value={newNoteValue}
             onKeyDown={handleAddNoteInputKeyDown}
             onChange={event => setNewNoteValue(event.target.value)}
