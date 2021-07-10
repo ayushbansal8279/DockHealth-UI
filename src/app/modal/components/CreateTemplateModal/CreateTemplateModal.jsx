@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -6,10 +6,18 @@ import * as TaskTemplateActions from 'actions/task-template-actions';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import { CloseIconButton, CloseIcon, FlexButtonWrapper } from '../styled';
+import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
+
+const validateTemplateName = value => {
+  if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
+    return 'This field is required';
+  }
+
+  return true;
+};
 
 function createSubmit({ onCreateSuccess, closeModal, event, dispatch }) {
   return function onSubmit(data) {
@@ -25,29 +33,7 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
   const formMethods = useForm({
     mode: 'onSubmit',
   });
-  const { register, unregister, handleSubmit } = formMethods;
-
-  useEffect(() => {
-    register(
-      {
-        name: TEMPLATE_NAME_FIELD_NAME,
-      },
-      {
-        validate: value => {
-          if (![...value]?.filter(char => char !== ' ').length > 0) {
-            return 'This field is required';
-          }
-
-          return true;
-        },
-      },
-    );
-
-    return () => {
-      unregister(TEMPLATE_NAME_FIELD_NAME);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { handleSubmit } = formMethods;
 
   return (
     <ListFormModalWrapper>
@@ -67,28 +53,25 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
         <FormContext {...formMethods}>
           <FormInput
             autoFocus
-            required
+            isRequired
             label="Workflow name"
             name={TEMPLATE_NAME_FIELD_NAME}
             placeholder="What would you like to name this workflow?"
+            validate={validateTemplateName}
           />
           <Grid container direction="row" justify="center">
-            <FlexButtonWrapper>
-              <Button
-                fullWidth
-                variant="secondary"
-                onClick={closeModal}
-                size="small"
-              >
-                Cancel
-              </Button>
-            </FlexButtonWrapper>
+            <Button
+              width="170px"
+              variant="secondary"
+              onClick={closeModal}
+              size="small"
+            >
+              Cancel
+            </Button>
             <Spacing horizontal={3} />
-            <FlexButtonWrapper>
-              <Button fullWidth type="submit" size="small">
-                Save
-              </Button>
-            </FlexButtonWrapper>
+            <Button fullWidth type="submit" size="small" width="170px">
+              Save
+            </Button>
           </Grid>
         </FormContext>
       </StyledForm>
