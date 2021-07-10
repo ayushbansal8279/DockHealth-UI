@@ -20,11 +20,11 @@ const validationSchema = object().shape({
   lastName: string().required(REQUIRED_MESSAGE),
   email: string()
     .required(REQUIRED_MESSAGE)
-    .email('This field should have a valid email address'),
+    .email('Please enter a valid email address'),
   mobilePhoneNumber: string()
     .transform(value => value.replace(/\D/g, ''))
     .required(REQUIRED_MESSAGE)
-    .matches(/\d{10}/, 'This field should have a valid phone number'),
+    .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
 
 const goToBaaInvitationSent = history => {

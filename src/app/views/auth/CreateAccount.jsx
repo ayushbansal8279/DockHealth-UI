@@ -53,14 +53,14 @@ const validationSchema = object().shape({
   lastName: string().required(REQUIRED_MESSAGE),
   email: string()
     .required(REQUIRED_MESSAGE)
-    .email('This field should contain a valid email address'),
+    .email('Please enter a valid email address'),
   password: string()
     .required(REQUIRED_MESSAGE)
     .concat(validPasswordSchema),
   mobilePhoneNumber: string()
     .transform(value => value.replace(/\D/g, ''))
     .required(REQUIRED_MESSAGE)
-    .matches(/\d{10}/, 'This field should contain a valid phone number'),
+    .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
 
 const onSubmit = ({
