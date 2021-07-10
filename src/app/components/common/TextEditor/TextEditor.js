@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patient-api';
@@ -9,7 +10,7 @@ import createToolbarPlugin, {
   Separator,
 } from '@draft-js-plugins/static-toolbar';
 import StrikethroughSIcon from '@material-ui/icons/StrikethroughS';
-import createEmojiPlugin from '@draft-js-plugins/emoji';
+// import createEmojiPlugin from '@draft-js-plugins/emoji';
 import Spacing from 'components/common/Spacing.tsx';
 import {
   ItalicButton,
@@ -17,6 +18,9 @@ import {
   UnderlineButton,
   UnorderedListButton,
   OrderedListButton,
+  HeadlineOneButton,
+  HeadlineTwoButton,
+  HeadlineThreeButton,
   createInlineStyleButton,
 } from '@draft-js-plugins/buttons';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -25,7 +29,7 @@ import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSug
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
-import '@draft-js-plugins/emoji/lib/plugin.css';
+// import '@draft-js-plugins/emoji/lib/plugin.css';
 import {
   initializeLinkifyPlugin,
   initializePeopleMentionPlugin,
@@ -40,7 +44,7 @@ import {
 } from './helpers';
 import {
   StyledEditorContainer,
-  EmojiContainer,
+  // EmojiContainer,
   ToolbarContainer,
 } from './styled';
 
@@ -59,6 +63,16 @@ const fetchPatientsWithDebounce = debounce(
   },
   300,
 );
+
+const separatorStyles = makeStyles({
+  root: {
+    display: 'inline-block',
+    borderRight: '1px solid #ddd',
+    height: '30px',
+    margin: '0 0.5em',
+    marginBottom: '2px',
+  },
+});
 
 const TextEditor = React.forwardRef(
   (
@@ -86,8 +100,8 @@ const TextEditor = React.forwardRef(
     const innerReference = useRef();
     const reference = outerReference || innerReference;
     const staticToolbarPlugin = useRef(createToolbarPlugin());
-    const emojiPlugin = useRef(createEmojiPlugin());
-    const { EmojiSelect } = emojiPlugin.current;
+    // const emojiPlugin = useRef(createEmojiPlugin());
+    // const { EmojiSelect } = emojiPlugin.current;
     const { Toolbar } = staticToolbarPlugin.current;
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
     const peopleMentionPlugin = useRef(
@@ -206,7 +220,7 @@ const TextEditor = React.forwardRef(
       patientMentionPlugin.current,
       linkifyPlugin.current,
       staticToolbarPlugin.current,
-      emojiPlugin.current,
+      // emojiPlugin.current,
     ];
 
     const ThroughLineButton = outerProps => {
@@ -223,25 +237,27 @@ const TextEditor = React.forwardRef(
       );
       return <StrikethroughButton {...outerProps} />;
     };
-    const EmojiiButton = outerProps => {
-      const StrikethroughButton = createInlineStyleButton(
-        {
-          children: (
-            <EmojiContainer>
-              <EmojiSelect style={{ border: 'none' }} />
-            </EmojiContainer>
-          ),
-        },
-        'STRIKETHROUGH',
-      );
-      return <StrikethroughButton {...outerProps} />;
-    };
+    // const EmojiiButton = outerProps => {
+    //   const StrikethroughButton = createInlineStyleButton(
+    //     {
+    //       children: (
+    //         <EmojiContainer>
+    //           <EmojiSelect style={{ border: 'none' }} />
+    //         </EmojiContainer>
+    //       ),
+    //     },
+    //     'STRIKETHROUGH',
+    //   );
+    //   return <StrikethroughButton {...outerProps} />;
+    // };
 
     const styleMap = {
       STRIKETHROUGH: {
         textDecoration: 'line-through',
       },
     };
+
+    const separaterClass = separatorStyles();
 
     return (
       <StyledEditorContainer
@@ -259,11 +275,20 @@ const TextEditor = React.forwardRef(
                   <ItalicButton {...externalProps} />
                   <UnderlineButton {...externalProps} />
                   <ThroughLineButton {...externalProps} />
-                  <Separator {...externalProps} />
+                  <Separator
+                    {...externalProps}
+                    className={separaterClass.root}
+                  />
                   <UnorderedListButton {...externalProps} />
                   <OrderedListButton {...externalProps} />
-                  <Separator {...externalProps} />
-                  <EmojiiButton {...externalProps} />
+                  <Separator
+                    {...externalProps}
+                    className={separaterClass.root}
+                  />
+                  <HeadlineOneButton {...externalProps} />
+                  <HeadlineTwoButton {...externalProps} />
+                  <HeadlineThreeButton {...externalProps} />
+                  {/* <EmojiiButton {...externalProps} /> */}
                 </div>
               )}
             </Toolbar>
