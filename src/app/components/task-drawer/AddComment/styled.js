@@ -22,7 +22,6 @@ export const AddCommentInputContainer = styled.div`
   padding: ${spacing.regular};
   overflow: hidden;
   min-height: 60px;
-  max-height: 120px;
   overflow-y: auto;
 
   ${({ isFocused }) =>
