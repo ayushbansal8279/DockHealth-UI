@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
@@ -10,15 +10,12 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import Button from 'components/common/Button/Button';
 import * as AlertActions from 'alert/actions';
+import FormInput from 'components/common/Input/FormInput';
 import {
   CloseButtonContainer,
-  InputErrorLabel,
   InvitationPanelContainer,
   InvitationPanelHeader,
   PanelButtonContainer,
-  StyledFormControl,
-  StyledInputBase,
-  StyledInputLabel,
 } from './styled';
 
 const REQUIRED_MESSAGE = 'This field is required';
@@ -48,8 +45,7 @@ const onSubmit = ({ closeInvitationPanel, dispatch, getAllUsers }) => data => {
         status: 'error',
         title: 'Error',
         text:
-          error?.errorMessage ??
-          'User could not be added, please try again later',
+          error?.message ?? 'User could not be added, please try again later',
       });
     });
 };
@@ -59,7 +55,7 @@ const validationSchema = object().shape({
   lastName: string().required(REQUIRED_MESSAGE),
   email: string()
     .required(REQUIRED_MESSAGE)
-    .email('Invalid email format'),
+    .email('Please enter a valid email address'),
 });
 
 const InvitationPanel = ({ getAllUsers = () => {} }) => {
@@ -71,13 +67,10 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
     closeInvitationPanel,
   ] = useBoolean(false);
 
-  const { handleSubmit, errors, register } = useForm({
+  const formMethods = useForm({
     validationSchema,
+    reValidateMode: 'onSubmit',
   });
-
-  const firstNameError = errors?.firstName?.message;
-  const lastNameError = errors?.lastName?.message;
-  const emailError = errors?.email?.message;
 
   return (
     <InvitationPanelContainer open={isInvitationPanelOpen}>
@@ -104,64 +97,54 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
             onSubmit={event => {
               event.preventDefault();
               event.stopPropagation();
-              handleSubmit(
+              formMethods.handleSubmit(
                 onSubmit({ closeInvitationPanel, dispatch, getAllUsers }),
               )(event);
             }}
             autoComplete="off"
             autoCorrect="off"
           >
-            <Grid container spacing={2}>
-              <Grid item xs={3}>
-                <InputErrorLabel>{firstNameError}</InputErrorLabel>
-                <StyledFormControl error={firstNameError} fullWidth>
-                  <StyledInputLabel required>First Name</StyledInputLabel>
-                  <StyledInputBase
-                    error={firstNameError}
+            <FormContext {...formMethods}>
+              <Grid container spacing={2}>
+                <Grid item xs={3}>
+                  <FormInput
                     name="firstName"
-                    inputRef={register}
+                    label="First Name"
                     autoComplete={uuid()}
+                    isRequired
                   />
-                </StyledFormControl>
-              </Grid>
-              <Grid item xs={3}>
-                <InputErrorLabel>{lastNameError}</InputErrorLabel>
-                <StyledFormControl error={lastNameError} fullWidth>
-                  <StyledInputLabel required>Last Name</StyledInputLabel>
-                  <StyledInputBase
-                    error={lastNameError}
+                </Grid>
+                <Grid item xs={3}>
+                  <FormInput
                     name="lastName"
-                    inputRef={register}
+                    label="Last Name"
                     autoComplete={uuid()}
+                    isRequired
                   />
-                </StyledFormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <InputErrorLabel>{emailError}</InputErrorLabel>
-                <StyledFormControl error={emailError} fullWidth>
-                  <StyledInputLabel required>Email</StyledInputLabel>
-                  <StyledInputBase
-                    error={emailError}
+                </Grid>
+                <Grid item xs={6}>
+                  <FormInput
                     name="email"
-                    inputRef={register}
+                    label="Email"
                     autoComplete={uuid()}
+                    isRequired
                   />
-                </StyledFormControl>
+                </Grid>
               </Grid>
-            </Grid>
-            <PanelButtonContainer container justify="flex-end">
-              <Button
-                width="150px"
-                size="small"
-                variant="text"
-                onClick={closeInvitationPanel}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" width="300px" size="small">
-                Add to organization
-              </Button>
-            </PanelButtonContainer>
+              <PanelButtonContainer container justify="flex-end">
+                <Button
+                  width="150px"
+                  size="small"
+                  variant="text"
+                  onClick={closeInvitationPanel}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" width="300px" size="small">
+                  Add to organization
+                </Button>
+              </PanelButtonContainer>
+            </FormContext>
           </motion.form>
         )}
       </AnimatePresence>
