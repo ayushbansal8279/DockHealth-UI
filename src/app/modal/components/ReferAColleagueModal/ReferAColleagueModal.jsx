@@ -35,7 +35,7 @@ const validationSchema = object().shape({
   lastName: string().required(REQUIRED_MESSAGE),
   email: string()
     .required(REQUIRED_MESSAGE)
-    .email('This field should contain a valid email address'),
+    .email('Please enter a valid email address'),
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -111,11 +111,11 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
               </DialogContentText>
               <Spacing vertical={4} />
               <Spacing vertical={3} />
-              <FormInput name="firstName" label="First Name" required />
+              <FormInput name="firstName" label="First Name" isRequired />
               <Spacing vertical={3} />
-              <FormInput name="lastName" label="Last Name" required />
+              <FormInput name="lastName" label="Last Name" isRequired />
               <Spacing vertical={3} />
-              <FormInput name="email" label="Email" required />
+              <FormInput name="email" label="Email" isRequired />
 
               <Spacing vertical={3} />
               <FormInput
