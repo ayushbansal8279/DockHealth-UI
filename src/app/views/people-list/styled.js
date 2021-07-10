@@ -31,7 +31,7 @@ export const InvitePeopleButton = styled.button`
 `;
 
 export const InvitePeoplePopoverContainer = styled.div`
-  background-color: ${palette.coolGrey3};
+  background-color: ${palette.white};
 `;
 
 export const InvitePeoplePopoverSection = styled.div`
@@ -119,4 +119,11 @@ export const HeaderMessageDescription = styled.p`
 export const SearchInputWrapper = styled.div`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : '300px')};
   transition: all 0.25s ease-in-out;
+`;
+
+export const InvitePopoverHeader = styled.span`
+  font-size: ${fontSizes.regularPlus};
+  color: ${palette.brightBlue};
+  text-transform: uppercase;
+  text-align: center;
 `;

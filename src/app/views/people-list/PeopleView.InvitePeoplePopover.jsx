@@ -10,12 +10,15 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import { showAlert } from 'helpers/utility-functions';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
 import {
   InvitePeoplePopoverContainer,
   InvitePeoplePopoverSection,
   InvitePopoverCloseButton,
   InvitePopoverDivider,
+  InvitePopoverHeader,
 } from './styled';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
@@ -65,6 +68,11 @@ const InvitePeopleForm = ({
       autoCorrect="off"
     >
       <InvitePeoplePopoverSection>
+        <MontserratTypography variant="h5">
+          <span style={{ color: palette.error }}>*</span>
+          <span> All fields required</span>
+        </MontserratTypography>
+        <Spacing vertical={3} />
         <FormInput
           label="First Name"
           name="first_name"
@@ -78,12 +86,12 @@ const InvitePeopleForm = ({
       </InvitePeoplePopoverSection>
       <InvitePeoplePopoverSection>
         <Grid container justify="center" spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Button onClick={closePopover} variant="text">
               Cancel
             </Button>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Button type="submit">Send invite</Button>
           </Grid>
         </Grid>
@@ -99,7 +107,7 @@ const validationSchema = object().shape({
   last_name: string().required(REQUIRED_MESSAGE),
   email: string()
     .required(REQUIRED_MESSAGE)
-    .email('This field requires valid email address'),
+    .email('Please enter a valid email address'),
 });
 
 const InvitePeoplePopover = ({
@@ -148,7 +156,7 @@ const InvitePeoplePopover = ({
       <InvitePeoplePopoverContainer>
         <InvitePeoplePopoverSection>
           <Grid container justify="space-between" alignItems="center">
-            <span>Invite to list</span>
+            <InvitePopoverHeader>Invite User</InvitePopoverHeader>
             <InvitePopoverCloseButton onClick={closePopover} type="button">
               &times;
             </InvitePopoverCloseButton>
