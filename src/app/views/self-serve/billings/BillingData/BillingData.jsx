@@ -196,6 +196,7 @@ const UpdateBillingElement = ({
         onClick={cancelUpdateBilling}
         variant="text"
         disabled={processingUpdate}
+        width="300px"
       >
         <MontserratTypography
           variant="h4"
@@ -206,7 +207,7 @@ const UpdateBillingElement = ({
         </MontserratTypography>
       </Button>
       <Spacing horizontal={4} />
-      <Button type="submit" disabled={processingUpdate}>
+      <Button type="submit" disabled={processingUpdate} width="300px">
         {processingUpdate ? <Loader size={LoaderSizes.medium} /> : 'SAVE'}
       </Button>
     </Grid>
@@ -232,7 +233,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Spacing vertical={3} />
       <Grid item sm={12} md={6}>
-        <FormInput required name="nameOnCard" label="Name on card" />
+        <FormInput isRequired name="nameOnCard" label="Name on card" />
       </Grid>
       <Grid item sm={12} md={6} style={{ placeSelf: 'flex-end' }}>
         <BillingElement
@@ -240,7 +241,7 @@ const CreditPaymentForm = ({
           name="cardNumber"
           Component={CardNumberInput}
           label="Card number"
-          required
+          isRequired
           onChange={() => {}}
           endAdornment={
             <AcceptedCardsContainer>
@@ -266,7 +267,7 @@ const CreditPaymentForm = ({
           name="cardExpiration"
           Component={CardExpiryInput}
           label="Expiration date"
-          required
+          isRequired
         />
       </Grid>
       <Grid item sm={12} md={6}>
@@ -276,7 +277,7 @@ const CreditPaymentForm = ({
           Component={CardCvcInput}
           label="CVC"
           disabled={!isUpdatingBilling}
-          required
+          isRequired
         />
       </Grid>
       <Spacing vertical={4} />
@@ -287,7 +288,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Spacing vertical={3} />
       <Grid item sm={12}>
-        <FormInput required name="address" label="Address line 1" />
+        <FormInput isRequired name="address" label="Address line 1" />
       </Grid>
       <Grid item sm={12}>
         <MontserratTypography variant="h4">
@@ -302,13 +303,13 @@ const CreditPaymentForm = ({
         </StyledCollapse>
       </Grid>
       <Grid item sm={12} md={3}>
-        <FormInput required name="zip" label="ZIP" />
+        <FormInput isRequired name="zip" label="ZIP" />
       </Grid>
       <Grid item sm={12} md={6}>
-        <FormInput required name="city" label="City" />
+        <FormInput isRequired name="city" label="City" />
       </Grid>
       <Grid item sm={12} md={3}>
-        <FormInput required name="state" label="State" />
+        <FormInput isRequired name="state" label="State" />
       </Grid>
       {hasDiscountCode && <Grid item sm={12} md={9} />}
       {hasDiscountCode && (
