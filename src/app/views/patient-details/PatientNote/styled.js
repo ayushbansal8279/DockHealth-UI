@@ -68,7 +68,7 @@ export const PatientNoteTextarea = styled.textarea`
   background-color: transparent;
   outline: none;
   border: none;
-  padding: 0;
+  padding: 5px;
   min-height: ${props =>
     props.textareaHeight > 100 ? `${props.textareaHeight}px` : '100px'};
   max-height: ${props =>
@@ -78,7 +78,7 @@ export const PatientNoteTextarea = styled.textarea`
 
   &:focus {
     background-color: transparent;
-    border: none;
+    border: 1px ${palette.coolGrey2} solid;
     box-shadow: none;
     outline: none;
   }
