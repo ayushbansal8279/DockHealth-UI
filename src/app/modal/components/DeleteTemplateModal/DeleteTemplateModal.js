@@ -13,6 +13,7 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  FixedWidthButtonWrapper,
 } from '../styled';
 
 const DeleteTemplateModal = ({ closeModal, confirm }) => {
@@ -43,7 +44,7 @@ const DeleteTemplateModal = ({ closeModal, confirm }) => {
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
+          <FixedWidthButtonWrapper width={231}>
             <Button
               fullWidth
               variant="primary-red"
@@ -55,7 +56,7 @@ const DeleteTemplateModal = ({ closeModal, confirm }) => {
             >
               Delete Permanently
             </Button>
-          </FlexButtonWrapper>
+          </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>
