@@ -117,7 +117,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
                 fullWidth
                 label={`${customerTypeLabelCapitalized} list name`}
                 name="listName"
-                required
+                isRequired
                 placeholder={`Add your ${customerTypeLabel} list name here`}
                 validate={validatePatientListName}
               />

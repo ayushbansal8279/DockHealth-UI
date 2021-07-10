@@ -121,7 +121,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
             label="Organization name"
             placeholder="What is the name of your organization?"
             name="organizationName"
-            required
+            isRequired
             validate={validateOrganizationName}
           />
           <Spacing vertical={4} />

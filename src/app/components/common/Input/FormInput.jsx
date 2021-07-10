@@ -8,6 +8,7 @@ const FormInput = ({
   onChange,
   inputComponent: InputComponent = Input,
   validate,
+  isRequired,
   ...restProps
 }) => {
   const {
@@ -39,6 +40,7 @@ const FormInput = ({
     <InputComponent
       name={name}
       value={value}
+      isRequired={isRequired}
       onChange={handleChange}
       error={error}
       onKeyUp={() => clearError(name)}

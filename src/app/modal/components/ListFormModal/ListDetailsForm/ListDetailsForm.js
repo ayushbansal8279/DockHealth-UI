@@ -15,7 +15,7 @@ import messages from './messages';
 import { StyledForm } from './styled';
 
 const validateListName = value => {
-  if (![...value]?.filter(char => char !== ' ').length > 0) {
+  if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
     return 'This field is required';
   }
 
@@ -118,7 +118,7 @@ const ListDetailsForm = ({
               fullWidth
               label={messages.form.listName.label}
               name="listName"
-              required
+              isRequired
               placeholder="Add your list name here"
               validate={validateListName}
             />

@@ -47,7 +47,7 @@ const formSchema = {
       is: (firstName, lastName) => lastName || firstName,
       then: string().required(REQUIRED_MESSAGE),
     })
-    .email('This field should contain a valid email address'),
+    .email('Please enter a valid email address'),
 };
 
 const fieldsSchema = object().shape({
@@ -255,7 +255,7 @@ const OnboardingTeamSetupView = () => {
                       type="text"
                       name={`organizationMembers[${item.index}].firstName`}
                       label="First name"
-                      required
+                      isRequired
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.firstName
@@ -268,7 +268,7 @@ const OnboardingTeamSetupView = () => {
                       ref={register}
                       name={`organizationMembers[${item.index}].lastName`}
                       label="Last name"
-                      required
+                      isRequired
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.lastName
@@ -282,7 +282,7 @@ const OnboardingTeamSetupView = () => {
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
                       label="Email"
-                      required
+                      isRequired
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.email

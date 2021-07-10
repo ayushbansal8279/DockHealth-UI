@@ -20,6 +20,7 @@ const Input = React.forwardRef(
       endAdornment,
       shrink,
       readOnly,
+      isRequired,
       variant = 'filled',
       ...restProps
     },
@@ -29,7 +30,7 @@ const Input = React.forwardRef(
       ref={reference}
       id={id}
       name={name}
-      label={label}
+      label={isRequired ? `${label} *` : label}
       placeholder={placeholder}
       multiline={multiline}
       error={error}

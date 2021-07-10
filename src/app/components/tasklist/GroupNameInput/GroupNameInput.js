@@ -63,7 +63,7 @@ const GroupNameInput = ({
         width={width}
         value={value}
         ref={wrapperReference}
-        required
+        isRequired
       />
     </MontserratTypography>
   );

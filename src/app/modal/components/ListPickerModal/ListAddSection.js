@@ -49,7 +49,7 @@ const ListAddSection = ({
             initialValue={initialListName}
             disabled={isSavingList}
             register={register}
-            required
+            isRequired
             errors={errors.listName}
           />
           <Spacing vertical={4} />

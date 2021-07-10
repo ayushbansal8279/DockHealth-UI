@@ -108,7 +108,7 @@ const UserProfileForm = ({ userProfile }) => {
             <Grid container item spacing={2}>
               <Grid item xs={12} md={6}>
                 <FormInput
-                  required
+                  isRequired
                   type="text"
                   name="firstName"
                   label="First name"
@@ -116,7 +116,7 @@ const UserProfileForm = ({ userProfile }) => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormInput
-                  required
+                  isRequired
                   type="text"
                   name="lastName"
                   label="Last name"
@@ -153,7 +153,7 @@ const UserProfileForm = ({ userProfile }) => {
                 <FormPhoneNumberInput
                   name="accountPhoneNumber"
                   label="Your Mobile Phone Number"
-                  required
+                  isRequired
                   readOnly
                   endAdornment={
                     <InputActionButton
