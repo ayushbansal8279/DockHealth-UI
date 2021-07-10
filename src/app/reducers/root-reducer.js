@@ -13,7 +13,7 @@ import TaskDrawerReducer from './task-drawer-reducer';
 import TaskListReducer from './task-list-reducer';
 import UserReducer from './user-reducer';
 import ListDetailsReducer from './list-details-reducer';
-import PatientTasksReducer from './patient-tasks-reducer';
+import PatientDetailsReducer from './patient-details-reducer';
 import TemplateReducer from './template-reducer';
 import DashboardTasksReducer from './dashboard-tasks-reducer';
 import DashboardStatisticsReducer from './dashboard-statistics-reducer';
@@ -38,7 +38,7 @@ const appReducer = combineReducers({
   megaFilter: MegaFilterReducer,
   location: LocationReducer,
   listDetails: ListDetailsReducer,
-  patientTasks: PatientTasksReducer,
+  patientDetails: PatientDetailsReducer,
   dashboardTasks: DashboardTasksReducer,
   dashboardStatistics: DashboardStatisticsReducer,
   globalSearch: GlobalSearchReducer,

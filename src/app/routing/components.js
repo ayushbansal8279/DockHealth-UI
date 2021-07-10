@@ -16,6 +16,7 @@ export const RouteWrapper = ({
   const dispatch = useDispatch();
   const history = useHistory();
   const match = useRouteMatch(path);
+  const { url } = match;
 
   useEffect(() => {
     (async function() {
@@ -35,7 +36,7 @@ export const RouteWrapper = ({
         }
       })();
     };
-  }, [match]);
+  }, [url]);
 
   return <Route path={path} component={RouteComponent} exact={exact} />;
 };

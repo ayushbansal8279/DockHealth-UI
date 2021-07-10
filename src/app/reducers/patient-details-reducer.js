@@ -1,5 +1,5 @@
 import {
-  SET_ACTIVE_TAB,
+  SET_COMPLETE_TASKS_VISIBILITY,
   REQUEST_PATIENT_TASKS,
   REQUEST_PATIENT_TASKS_SUCCESS,
   REQUEST_PATIENT_TASKS_FAILURE,
@@ -15,6 +15,13 @@ import {
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
   COMPLETE_TEMPLATE_BUNDLE,
+  SET_PATIENT_FETCHING,
+  SET_PATIENT,
+  UPDATE_PATIENT_NOTE,
+  ADD_PATIENT_NOTE,
+  REMOVE_PATIENT_NOTE,
+  PIN_PATIENT_NOTE,
+  UNPIN_PATIENT_NOTE,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -23,7 +30,9 @@ import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
-  activeTab: null,
+  patient: null,
+  isFetchingPatient: false,
+  completeTasksVisible: false,
   patientIdentifier: null,
   lists: [],
   taskSearch: null,
@@ -64,14 +73,20 @@ export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
 
   switch (type) {
+    case SET_PATIENT_FETCHING: {
+      return { ...state, patient: null, isFetchingPatient: true };
+    }
+    case SET_PATIENT: {
+      return { ...state, patient: payload.patient, isFetchingPatient: false };
+    }
     case CLEAR_PATIENT_TASKS:
       return {
         ...INITIAL_STATE,
       };
-    case SET_ACTIVE_TAB:
+    case SET_COMPLETE_TASKS_VISIBILITY:
       return {
         ...state,
-        activeTab: payload?.activeTab,
+        completeTasksVisible: payload.completeTasksVisible,
       };
     case INITIALIZE_PATIENT:
       return {
@@ -216,6 +231,80 @@ export default function(state = INITIAL_STATE, action = {}) {
             ({ identifier }) => identifier !== bundleIdentifier,
           ),
         })),
+      };
+    }
+
+    case UPDATE_PATIENT_NOTE: {
+      const { patientNoteIdentifier, note: noteToUpdate } = payload;
+
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          allNotes: state.patient.allNotes.map(note =>
+            note.patientNoteIdentifier === patientNoteIdentifier
+              ? { ...note, ...noteToUpdate }
+              : note,
+          ),
+        },
+      };
+    }
+
+    case ADD_PATIENT_NOTE: {
+      const { note } = payload;
+
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          allNotes: [note, ...state.patient.allNotes],
+        },
+      };
+    }
+
+    case REMOVE_PATIENT_NOTE: {
+      const { patientNoteIdentifier } = payload;
+
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          allNotes: state.patient.allNotes.filter(
+            note => note.patientNoteIdentifier !== patientNoteIdentifier,
+          ),
+        },
+      };
+    }
+
+    case PIN_PATIENT_NOTE: {
+      const { patientNoteIdentifier } = payload;
+
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          allNotes: state.patient.allNotes.map(note =>
+            note.patientNoteIdentifier === patientNoteIdentifier
+              ? { ...note, pinned: true }
+              : note,
+          ),
+        },
+      };
+    }
+
+    case UNPIN_PATIENT_NOTE: {
+      const { patientNoteIdentifier } = payload;
+
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          allNotes: state.patient.allNotes.map(note =>
+            note.patientNoteIdentifier === patientNoteIdentifier
+              ? { ...note, pinned: false }
+              : note,
+          ),
+        },
       };
     }
 

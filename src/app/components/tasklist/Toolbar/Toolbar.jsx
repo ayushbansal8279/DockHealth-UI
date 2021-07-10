@@ -282,10 +282,6 @@ const Toolbar = ({
               filters={filters}
               selectedFilters={selectedFilters}
               onSelectFilters={onSelectFilters}
-              taskList={taskList}
-              taskStatus={
-                selectedTab === TaskListTabName.OPEN ? 'INCOMPLETE' : 'COMPLETE'
-              }
               tasksAndSubTasksCount={tasksAndSubTasksCount}
               activeItemsAmount={
                 selectedTab === TaskListTabName.OPEN

@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useRef, useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid } from '@material-ui/core';
-import ArrowIcon from 'img/arrow';
+import { Grid, Collapse } from '@material-ui/core';
+// import ArrowIcon from 'img/arrow';
 import { pluck } from 'ramda';
 import * as TaskActions from 'actions/task-actions';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
@@ -19,19 +19,18 @@ import {
 } from 'selectors/task-drawer-selectors';
 import {
   onSlimViewChanged,
-  onTaskGroupCollapsed,
-  onTaskGroupExpanded,
+  // onTaskGroupCollapsed,
+  // onTaskGroupExpanded,
 } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import {
-  Arrow,
-  Tasks,
+  // Arrow,
   ListDetailsContainer,
   ListDetailsHeader,
-  ListNameSection,
+  // ListNameSection,
   ListNameContainer,
   ListDescription,
 } from 'components/tasklist/DropdownListSection/styled';
@@ -60,7 +59,10 @@ const TaskListDetailsDropdown = ({
   applyTemplate,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
-  const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
+  // const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
+  //   sessionStorageKey,
+  // );
+  const { viewType, isOpen, setViewType } = listSectionSavedState(
     sessionStorageKey,
   );
   const quickAddTaskInputReference = useRef(null);
@@ -72,7 +74,7 @@ const TaskListDetailsDropdown = ({
   const subtaskShape = useSelector(subtaskShapeSelector);
   const isFullView = viewType === ViewType.FULL_VIEW;
 
-  const { listName, taskListIdentifier, listUsers } = list;
+  const { taskListIdentifier, listUsers } = list;
 
   const listMembers = listUsers;
 
@@ -108,6 +110,7 @@ const TaskListDetailsDropdown = ({
       ),
     );
   }, [dispatch, isGroupSelected, tasks]);
+
   const handleTemplateSelect = useCallback(
     template => {
       applyTemplate({
@@ -122,7 +125,7 @@ const TaskListDetailsDropdown = ({
     <ListDetailsContainer>
       <ListDetailsHeader>
         <ListNameContainer>
-          <Arrow
+          {/* <Arrow
             alt="arrow"
             isOpen={isOpen}
             onClick={() => {
@@ -135,7 +138,8 @@ const TaskListDetailsDropdown = ({
             }}
             src={ArrowIcon}
           />
-          <ListNameSection>{listName}</ListNameSection>
+          <ListNameSection>{listName}</ListNameSection> */}
+          <ListDescription>{list?.listDescription}</ListDescription>
         </ListNameContainer>
         {listMembers?.length > 0 && (
           <TaskListMembers
@@ -152,8 +156,7 @@ const TaskListDetailsDropdown = ({
           }}
         />
       </ListDetailsHeader>
-      <ListDescription>{list?.listDescription}</ListDescription>
-      <Tasks timeout={150} in={isOpen}>
+      <Collapse timeout={150} in={isOpen}>
         {!isCompleteTab && (
           <Grid container direction="row">
             <Grid item xs>
@@ -182,11 +185,11 @@ const TaskListDetailsDropdown = ({
           isGroupSelected={isGroupSelected}
           onGroupSelect={handleGroupSelect}
         />
-        <div>
+        <>
           {tasks?.map(task =>
             task.itemType === TaskItemType.TASK ? (
               <StandardTaskItem
-                key={task.taskIdentifier}
+                key={task.identifier}
                 currentUser={currentUser}
                 isFullView={isFullView}
                 openDrawer={openDrawer}
@@ -209,6 +212,7 @@ const TaskListDetailsDropdown = ({
               />
             ) : (
               <TaskTemplateGroup
+                key={task.identifier}
                 templateGroup={task}
                 taskItemConfig={taskItemConfig}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
@@ -218,8 +222,8 @@ const TaskListDetailsDropdown = ({
               />
             ),
           )}
-        </div>
-      </Tasks>
+        </>
+      </Collapse>
     </ListDetailsContainer>
   );
 };

@@ -312,3 +312,13 @@ export function getLatestPatientImportDetails() {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function changePatientNotePinnedFlag(patientNoteIdentifier, pinnedFlag) {
+  return axios
+    .patch(
+      `/patient/note/pinned/${patientNoteIdentifier}`,
+      {},
+      { params: { pinnedFlag } },
+    )
+    .then(({ data }) => data);
+}

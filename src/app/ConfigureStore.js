@@ -1,7 +1,7 @@
 import { all } from 'redux-saga/effects';
 import store, { saga } from './store';
 import watchTasksGroupsList from './sagas/list-details-saga';
-import watchPatientTasks from './sagas/patient-tasks-saga';
+import watchPatientDetails from './sagas/patient-details-saga';
 import watchDashboard from './sagas/dashboard-saga';
 import watchTemplate from './sagas/template-saga';
 import watchGlobalSearch from './sagas/global-search-saga';
@@ -14,7 +14,7 @@ import watchOrganization from './sagas/organization-saga';
 function* rootSaga() {
   yield all([
     watchTasksGroupsList(),
-    watchPatientTasks(),
+    watchPatientDetails(),
     watchDashboard(),
     watchTemplate(),
     watchGlobalSearch(),

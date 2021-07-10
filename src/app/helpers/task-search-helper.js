@@ -1,59 +1,62 @@
-import { pluck } from 'ramda';
+import { partial, pluck } from 'ramda';
+import { TaskItemType } from './task-helpers';
 
-export const filterTasksBySearchValue = (tasks, searchValue) => {
-  const searchedTasks = [];
+export function checkIfTaskMatchSearchValue(searchValue, task) {
+  const { description, comments, patient, assignedTo, workflowStatus } = task;
+  const workflowStatusName = workflowStatus ? workflowStatus.name : 'No status';
 
-  tasks.forEach(parentTask => {
-    const { description, comments, patient, assignedTo, subtasks } = parentTask;
+  return !!(
+    description?.toLowerCase().includes(searchValue.toLowerCase()) ||
+    pluck('comment', comments).filter(s =>
+      new RegExp(searchValue.toLowerCase(), 'ig').test(s),
+    ).length > 0 ||
+    patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    assignedTo?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    assignedTo?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    workflowStatusName.toLowerCase().includes(searchValue.toLowerCase())
+  );
+}
 
-    const parentTaskIncludeSearchedValue =
-      description.toLowerCase().includes(searchValue.toLowerCase()) ||
-      pluck('comment', comments).filter(s =>
-        new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-      ).length > 0 ||
-      patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-      patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
-      assignedTo?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-      assignedTo?.lastName.toLowerCase().includes(searchValue.toLowerCase());
+export function filterTasksBySearchValue(tasks, searchValue) {
+  if (!searchValue) return tasks;
+
+  if (!tasks) return [];
+
+  return tasks.reduce((accumulator, parentTask) => {
+    const { itemType } = parentTask;
+
+    if (itemType === TaskItemType.BUNDLE) {
+      return [
+        ...accumulator,
+        ...filterTasksBySearchValue(parentTask.tasks, searchValue),
+      ];
+    }
+
+    const checkIfTaskMatchSearch = partial(checkIfTaskMatchSearchValue, [
+      searchValue,
+    ]);
+
+    const parentTaskIncludeSearchedValue = checkIfTaskMatchSearch(parentTask);
+
+    const { subtasks } = parentTask;
 
     const searchedSubtasks = subtasks
-      .filter(
-        ({
-          description: subtaskDescription,
-          comments: subtaskComments,
-          assignedTo: subtaskAssignedTo,
-        }) => {
-          return (
-            subtaskDescription
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) ||
-            pluck('comment', subtaskComments).filter(s =>
-              new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-            ).length > 0 ||
-            subtaskAssignedTo?.firstName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) ||
-            subtaskAssignedTo?.lastName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
-          );
-        },
-      )
-      .map(subtask => ({ ...subtask, parentTask }));
+      ? subtasks.filter(checkIfTaskMatchSearch)
+      : [];
 
     if (parentTaskIncludeSearchedValue) {
-      searchedTasks.push({
-        ...parentTask,
-        subtasks: searchedSubtasks,
-      });
-    } else {
-      searchedSubtasks.forEach(filteredSubtask =>
-        searchedTasks.push(filteredSubtask),
-      );
+      return [
+        ...accumulator,
+        {
+          ...parentTask,
+          subtasks: searchedSubtasks,
+        },
+      ];
     }
-  });
 
-  return searchedTasks;
-};
+    return [...accumulator, ...searchedSubtasks];
+  }, []);
+}
 
 export default filterTasksBySearchValue;

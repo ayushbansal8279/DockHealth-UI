@@ -1,40 +1,43 @@
 import React, { useState, useCallback } from 'react';
+import { compose } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { openModal, closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
-import * as PatientApi from 'api/patient-api';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
-  onPatientNoteAdded,
-  onPatientNoteEdited,
-} from 'helpers/ga-event-helper';
+  patientSelector,
+  isFetchingPatientSelector,
+} from 'selectors/patient-details-selectors';
+import { setPatient as setPatientAction } from 'actions/patient-details-actions';
+import { reloadPatient } from 'sagas/patient-details-saga';
+import * as PatientApi from 'api/patient-api';
 import PatientDetailsInformation from './PatientDetailsInformation';
-import PatientDetailsNotes from './PatientDetailsNotes/PatientDetailsNotes';
 import PatientDetails from './PatientDetails/PatientDetails';
 import { PatientDetailsContainer } from './styled';
 
-const PatientDetailsHeader = ({
-  patient,
-  isLoadingPatient,
-  organization,
-  setPatient,
-  refreshPatient,
-}) => {
+const PatientDetailsHeader = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [isOpenedDetails, setIsOpenedDetails] = useState(false);
 
   const currentUser = useSelector(userProfileSelector);
+  const organization = useSelector(organizationSelector);
+  const patient = useSelector(patientSelector);
+  const isFetchingPatient = useSelector(isFetchingPatientSelector);
 
   const { emrIntegrationEnabled } = organization || {};
-  const { patientIdentifier } = patient;
-  const { allNotes } = patient;
+  const { patientIdentifier } = patient || {};
 
+  const setPatient = compose(dispatch, setPatientAction);
+  const refreshPatient = compose(dispatch, reloadPatient);
+
+  // TODO: move to saga
   const updatePatient = useCallback(
     dataToUpdate => {
-      setPatient(previousPatient => ({ ...previousPatient, ...dataToUpdate }));
+      setPatient({ ...patient, ...dataToUpdate });
       PatientApi.updatePatient(dataToUpdate)
         .then(updatedPatient => {
           setPatient(updatedPatient);
@@ -45,7 +48,7 @@ const PatientDetailsHeader = ({
           refreshPatient();
         });
     },
-    [dispatch, refreshPatient, setPatient],
+    [dispatch, patient, refreshPatient, setPatient],
   );
 
   const archivePatient = useCallback(() => {
@@ -60,102 +63,22 @@ const PatientDetailsHeader = ({
           .catch(() => {
             dispatch(showGlobalErrorAlert());
             dispatch(closeModal());
-            refreshPatient();
           });
       },
     };
     dispatch(openModal('ArchivePatient', modalProps));
-  }, [dispatch, patientIdentifier, history, refreshPatient]);
-
-  const addPatientNote = useCallback(
-    description => {
-      PatientApi.createPatientNote(patientIdentifier, { description })
-        .then(addedNote => {
-          onPatientNoteAdded();
-          dispatch(showGlobalAlert(AlertMessages.CREATED));
-          setPatient(previousPatient => ({
-            ...previousPatient,
-            allNotes: [addedNote, ...(previousPatient.allNotes || [])],
-          }));
-        })
-        .catch(() => {
-          refreshPatient();
-          dispatch(showGlobalErrorAlert());
-        });
-    },
-    [patientIdentifier, dispatch, setPatient, refreshPatient],
-  );
-
-  const editPatientNote = useCallback(
-    editedNote => {
-      setPatient(previousPatient => ({
-        ...previousPatient,
-        allNotes: previousPatient.allNotes?.map(note =>
-          note.patientNoteIdentifier === editedNote.patientNoteIdentifier
-            ? { ...note, description: editedNote.description }
-            : note,
-        ),
-      }));
-
-      PatientApi.updatePatientNote(editedNote)
-        .then(updatedNote => {
-          onPatientNoteEdited();
-          dispatch(showGlobalAlert(AlertMessages.UPDATED));
-          setPatient(previousPatient => ({
-            ...previousPatient,
-            allNotes: previousPatient.allNotes?.map(note =>
-              note.patientNoteIdentifier === editedNote.patientNoteIdentifier
-                ? { ...note, ...updatedNote }
-                : note,
-            ),
-          }));
-        })
-        .catch(() => {
-          dispatch(showGlobalErrorAlert());
-          refreshPatient();
-        });
-    },
-    [dispatch, refreshPatient, setPatient],
-  );
-
-  const deletePatientNote = useCallback(
-    patientNoteIdentifierToDelete => {
-      const modalProps = {
-        confirm: () => {
-          setPatient(previousPatient => ({
-            ...previousPatient,
-            allNotes: previousPatient.allNotes.filter(
-              ({ patientNoteIdentifier }) =>
-                patientNoteIdentifier !== patientNoteIdentifierToDelete,
-            ),
-          }));
-
-          PatientApi.deletePatientNote(patientNoteIdentifierToDelete)
-            .then(() => {
-              dispatch(showGlobalAlert(AlertMessages.DELETED));
-            })
-            .catch(() => {
-              dispatch(showGlobalErrorAlert());
-              refreshPatient();
-            });
-          dispatch(closeModal());
-        },
-      };
-      dispatch(openModal('DeleteNote', modalProps));
-    },
-    [dispatch, refreshPatient, setPatient],
-  );
+  }, [dispatch, patientIdentifier, history]);
 
   return (
     <PatientDetailsContainer>
       <PatientDetailsInformation
         {...patient}
-        isLoadingDetails={isLoadingPatient}
+        isLoadingDetails={isFetchingPatient || !patient}
         setIsOpenedDetails={setIsOpenedDetails}
         isOpenedDetails={isOpenedDetails}
         currentUser={currentUser}
       />
-      {!isLoadingPatient && (
+      {!isFetchingPatient && patient && (
         <PatientDetails
           {...patient}
           isOpenedDetails={isOpenedDetails}
@@ -166,14 +89,6 @@ const PatientDetailsHeader = ({
           currentUser={currentUser}
         />
       )}
-      <PatientDetailsNotes
-        isLoadingDetails={isLoadingPatient}
-        allNotes={allNotes}
-        currentUser={currentUser}
-        addPatientNote={addPatientNote}
-        editPatientNote={editPatientNote}
-        deletePatientNote={deletePatientNote}
-      />
     </PatientDetailsContainer>
   );
 };
