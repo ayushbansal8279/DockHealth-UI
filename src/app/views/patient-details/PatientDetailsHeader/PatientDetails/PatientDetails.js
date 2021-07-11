@@ -16,6 +16,7 @@ import { mixed, object, string } from 'yup';
 import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Button from 'components/common/Button/Button';
 import { openModal, closeModal } from 'modal/actions';
+import Spacing from 'components/common/Spacing';
 import { useDispatch } from 'react-redux';
 import {
   PatientDetailsForm,
@@ -114,7 +115,8 @@ const PatientDetails = ({
   const dispatch = useDispatch();
   const [isActive, setIsActive] = useState(false);
   const [contextMenuIsOpened, setContextMenuIsOpened] = useState(false);
-  const [isOpened, setisOpened] = useState(true);
+  const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
+  const [isOpenedContact, setIsOpenedContact] = useState(true);
   const contextMenuReference = useRef();
   const formMethods = useForm({
     defaultValues,
@@ -122,7 +124,8 @@ const PatientDetails = ({
     validationSchema,
   });
   const handleEdit = () => {
-    setisOpened(true);
+    setIsOpenedPersonal(true);
+    setIsOpenedContact(true);
     setIsActive(true);
   };
 
@@ -214,17 +217,17 @@ const PatientDetails = ({
             </button>
           </MoreActinsWrapper>
         </StickyHeader>
-        <LabeledCollapse
-          name="Patient contact info"
-          isOpened={isOpened}
-          onClick={() => setisOpened(!isOpened)}
-        >
-          <FormContext {...formMethods}>
-            <PatientDetailsForm
-              onSubmit={handleSubmit(data => {
-                setIsActive(false);
-                updatePatient({ ...data, patientIdentifier });
-              })}
+        <FormContext {...formMethods}>
+          <PatientDetailsForm
+            onSubmit={handleSubmit(data => {
+              setIsActive(false);
+              updatePatient({ ...data, patientIdentifier });
+            })}
+          >
+            <LabeledCollapse
+              name="Patient personal info"
+              isOpened={isOpenedPersonal}
+              onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
             >
               <FormInput
                 label="first name"
@@ -232,18 +235,21 @@ const PatientDetails = ({
                 name="firstName"
                 isRequired
               />
+              <Spacing vertical={1} />
               <FormInput
                 label="middle name"
                 readOnly={!isActive}
                 name="middleName"
                 isRequired={false}
               />
+              <Spacing vertical={1} />
               <FormInput
                 label="last name"
                 readOnly={!isActive}
                 name="lastName"
                 isRequired
               />
+              <Spacing vertical={1} />
               <FormSelect
                 label="gender"
                 readOnly={!isActive}
@@ -252,6 +258,7 @@ const PatientDetails = ({
                 defaultValue={genderValue}
                 isRequired={false}
               />
+              <Spacing vertical={1} />
               <FormInput
                 label="birthday"
                 readOnly={!isActive}
@@ -260,6 +267,7 @@ const PatientDetails = ({
                 name="dob"
                 isRequired={false}
               />
+              <Spacing vertical={1} />
               <FormInput
                 label={uniqueIdentifierLabel}
                 readOnly={!isActive}
@@ -267,12 +275,20 @@ const PatientDetails = ({
                 name="mrn"
                 isRequired={false}
               />
+              <Spacing vertical={1} />
+            </LabeledCollapse>
+            <LabeledCollapse
+              name="Patient contact info"
+              isOpened={isOpenedContact}
+              onClick={() => setIsOpenedContact(!isOpenedContact)}
+            >
               <FormPhoneNumberInput
                 label="mobile phone"
                 readOnly={!isActive}
                 name="phoneMobile"
                 isRequired={false}
               />
+              <Spacing vertical={1} />
               <FormPhoneNumberInput
                 label="home phone"
                 readOnly={!isActive}
@@ -280,26 +296,28 @@ const PatientDetails = ({
                 type="tel"
                 isRequired={false}
               />
+              <Spacing vertical={1} />
               <FormInput
                 label="email"
                 readOnly={!isActive}
                 name="email"
                 isRequired={false}
               />
-              {!editingDisabled && (
-                <PatietnDetailsFormFooter>
-                  {isActive && (
-                    <SubmitButtonWrapper>
-                      <Button width="153px" type="submit">
-                        SAVE EDITS
-                      </Button>
-                    </SubmitButtonWrapper>
-                  )}
-                </PatietnDetailsFormFooter>
-              )}
-            </PatientDetailsForm>
-          </FormContext>
-        </LabeledCollapse>
+              <Spacing vertical={1} />
+            </LabeledCollapse>
+            {!editingDisabled && (
+              <PatietnDetailsFormFooter>
+                {isActive && (
+                  <SubmitButtonWrapper>
+                    <Button width="153px" type="submit">
+                      SAVE EDITS
+                    </Button>
+                  </SubmitButtonWrapper>
+                )}
+              </PatietnDetailsFormFooter>
+            )}
+          </PatientDetailsForm>
+        </FormContext>
       </ContentWrapper>
       <MenuPopover
         anchorEl={contextMenuReference?.current}

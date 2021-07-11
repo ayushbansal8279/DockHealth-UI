@@ -46,7 +46,7 @@ export const StickyHeader = styled.div`
 
 export const DrawerWrapper = styled(Drawer)`
   .MuiDrawer-paper {
-    width: 378px;
+    width: 500px;
   }
 `;
 
@@ -134,7 +134,6 @@ export const PatientDetailsCancelButton = styled(PatientDetailsButton)`
 export const PatietnDetailsFormFooter = styled.div`
   display: flex;
   align-items: center;
-  width: 300px;
   margin-left: 30px;
 `;
 

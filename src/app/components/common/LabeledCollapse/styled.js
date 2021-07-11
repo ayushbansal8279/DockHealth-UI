@@ -2,12 +2,12 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const LabeledCollapseWrapper = styled.div`
   padding: ${spacing.small};
   border: 1px solid ${palette.coolGrey3};
-  background: ${palette.coolGrey4};
+  background: ${palette.white};
 
   &:not(:last-of-type) {
     margin-bottom: ${spacing.smallPlus};
@@ -25,5 +25,6 @@ export const LabeledCollapseItemName = styled.p`
   flex: 1;
   margin: 0;
   font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
   text-align: left;
 `;
