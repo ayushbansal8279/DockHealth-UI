@@ -391,6 +391,14 @@ export function onPatientNoteEdited() {
   });
 }
 
+export function onPatientDetailsEdited() {
+  sendEvent({
+    usageEventType: USAGE_ACTION_EVENT_TYPE,
+    eventCategory: PATIENTS_CATEGORY,
+    eventAction: 'Patient details edited',
+  });
+}
+
 export function onLogin() {
   sendEvent({
     usageEventType: USAGE_ACTION_EVENT_TYPE,

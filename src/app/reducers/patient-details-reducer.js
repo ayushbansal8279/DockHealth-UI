@@ -18,6 +18,7 @@ import {
   SET_PATIENT_FETCHING,
   SET_PATIENT,
   UPDATE_PATIENT_NOTE,
+  UPDATE_PATIENT_DETAILS,
   ADD_PATIENT_NOTE,
   REMOVE_PATIENT_NOTE,
   PIN_PATIENT_NOTE,
@@ -75,7 +76,6 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
-
   switch (type) {
     case SET_PATIENT_FETCHING: {
       return { ...state, patient: null, isFetchingPatient: true };
@@ -257,6 +257,14 @@ export default function(state = INITIAL_STATE, action = {}) {
               : note,
           ),
         },
+      };
+    }
+
+    case UPDATE_PATIENT_DETAILS: {
+      const { details } = payload;
+      return {
+        ...state,
+        patient: { ...state.patient, ...details },
       };
     }
 

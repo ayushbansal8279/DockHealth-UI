@@ -7,6 +7,8 @@ import {
   CLEAR_PATIENT_TASKS,
   INITIALIZE_PATIENT,
   UPDATE_PATIENT_NOTE,
+  UPDATE_PATIENT_DETAILS,
+  ARCHIEVE_PATIENT,
   ADD_PATIENT_NOTE,
   REMOVE_PATIENT_NOTE,
   PIN_PATIENT_NOTE,
@@ -54,6 +56,16 @@ export const clearPatientTasksState = () => ({
 export const updatePatientNote = (patientNoteIdentifier, note) => ({
   type: UPDATE_PATIENT_NOTE,
   payload: { patientNoteIdentifier, note },
+});
+
+export const archievePatient = (patientIdentifier, history) => ({
+  type: ARCHIEVE_PATIENT,
+  payload: { patientIdentifier, history },
+});
+
+export const updatePatientDetails = details => ({
+  type: UPDATE_PATIENT_DETAILS,
+  payload: { details },
 });
 
 export const addPatientNote = note => ({
