@@ -7,7 +7,7 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import { Box } from '@material-ui/core';
-
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   PatientDetailsInformationContainer,
   PatientDetailsBio,
@@ -105,19 +105,25 @@ const PatientDetailsInformation = ({
                 </Box>
                 <ContactContainer>
                   {email && (
-                    <IconWrapper href={`mailto:${email}`}>
-                      <img src={EmailIcon} alt="email icon" />
-                    </IconWrapper>
+                    <Tooltip title={email} placement="bottom">
+                      <IconWrapper href={`mailto:${email}`}>
+                        <img src={EmailIcon} alt="email icon" />
+                      </IconWrapper>
+                    </Tooltip>
                   )}
                   {phoneHome && (
-                    <IconWrapper href={`tel:${phoneHome}`}>
-                      <img src={PhoneIcon} alt="phone icon" />
-                    </IconWrapper>
+                    <Tooltip title={phoneHome} placement="bottom">
+                      <IconWrapper href={`tel:${phoneHome}`}>
+                        <img src={PhoneIcon} alt="phone icon" />
+                      </IconWrapper>
+                    </Tooltip>
                   )}
                   {phoneMobile && (
-                    <IconWrapper href={`tel:${phoneMobile}`}>
-                      <img src={MobileIcon} alt="mobile phon icon" />
-                    </IconWrapper>
+                    <Tooltip title={phoneMobile} placement="bottom">
+                      <IconWrapper href={`tel:${phoneMobile}`}>
+                        <img src={MobileIcon} alt="mobile phon icon" />
+                      </IconWrapper>
+                    </Tooltip>
                   )}
                 </ContactContainer>
               </Box>
