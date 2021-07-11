@@ -322,9 +322,3 @@ export function changePatientNotePinnedFlag(patientNoteIdentifier, pinnedFlag) {
     )
     .then(({ data }) => data);
 }
-
-export function getLabelsForPatient(patientIdentifier) {
-  return axios
-    .get(`/patient/label/getLabelsForPatient/${patientIdentifier}`)
-    .then(({ data }) => data);
-}

@@ -4,6 +4,14 @@ import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
+export const PatientLabelsContainer = styled.div`
+  display: flex;
+  padding: ${spacing.small} ${spacing.huge};
+  justify-content: space-between;
+  width: 100%;
+  background-color: white;
+`;
+
 export const OptionButtonsContainer = styled.div`
   display: flex;
 `;

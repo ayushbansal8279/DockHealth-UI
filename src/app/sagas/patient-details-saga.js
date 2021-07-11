@@ -14,6 +14,7 @@ import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as PatientApi from 'api/patient-api';
+import * as PatientLabelApi from 'api/patient-label-api';
 import AlertMessages from 'alert/AlertMessages';
 import {
   REQUEST_PATIENT_STATS_SUCCESS,
@@ -226,9 +227,8 @@ export const fetchPatient = patientIdentifier => ({
   patientIdentifier,
 });
 
-export const fetchPatientLabels = patientIdentifier => ({
+export const fetchPatientLabels = () => ({
   type: DO_FETCH_PATIENT_LABELS,
-  patientIdentifier,
 });
 
 export const reloadPatient = () => ({
@@ -667,13 +667,10 @@ function* doFetchPatient({ patientIdentifier }) {
   }
 }
 
-function* doFetchPatientLabels({ patientIdentifier }) {
+function* doFetchPatientLabels() {
   try {
     yield put(PatientDetailsActions.setPatientLabelsFetching());
-    const labels = yield call(
-      PatientApi.getLabelsForPatient,
-      patientIdentifier,
-    );
+    const labels = yield call(PatientLabelApi.getAllPatientLabels);
     yield put(PatientDetailsActions.setPatientLabels(labels));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());

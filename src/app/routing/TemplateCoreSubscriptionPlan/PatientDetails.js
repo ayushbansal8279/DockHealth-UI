@@ -6,7 +6,7 @@ export const onEnterPatientDetailsView = ({ match, dispatch }) => {
   const { patientIdentifier } = params;
 
   dispatch(fetchPatient(patientIdentifier));
-  dispatch(fetchPatientLabels(patientIdentifier));
+  dispatch(fetchPatientLabels());
 };
 
 export const onLeavePatientDetailsView = ({ dispatch }) => {

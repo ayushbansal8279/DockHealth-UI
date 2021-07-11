@@ -87,7 +87,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       return { ...state, labels: null, isFetchingLabels: true };
     }
     case SET_PATIENT_LABELS: {
-      return { ...state, labels: payload.patient, isFetchingLabels: false };
+      return { ...state, labels: payload.labels, isFetchingLabels: false };
     }
     case CLEAR_PATIENT_TASKS:
       return {

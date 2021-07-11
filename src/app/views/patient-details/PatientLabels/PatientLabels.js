@@ -8,7 +8,11 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
-import { patientLabelsSelector } from 'selectors/patient-details-selectors';
+import {
+  patientSelector,
+  patientLabelsSelector,
+} from 'selectors/patient-details-selectors';
+import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
   OptionButtonsContainer,
@@ -80,11 +84,23 @@ const renderOption = ({
 );
 
 const PatientLabels = () => {
-  const labels = useSelector(patientLabelsSelector);
+  const {
+    saveAddLabel,
+    saveEditLabel,
+    removeLabelFromPatient,
+    deleteLabel,
+    refreshLabels,
+    isLoadingLabels,
+  } = initializeLabelsSectionHooks({});
+
+  const patient = useSelector(patientSelector);
+  const labels = useSelector(patientLabelsSelector) || [];
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
   const [inputReference, setInputReference] = useState(null);
+
+  const selectedLabels = patient?.patientLabels || [];
 
   useEffect(() => {
     if (currentEditableOption) {
@@ -111,22 +127,22 @@ const PatientLabels = () => {
         onBlur: () => {
           setCurrentEditableOption(null);
         },
-        onSaveEdit: () => {},
-        onDelete: () => {},
+        onSaveEdit: value => saveEditLabel(option?.labelIdentifier, value),
+        onDelete: () => deleteLabel(option),
       }),
-    [],
+    [deleteLabel, saveEditLabel],
   );
 
   const renderTagsCallback = useCallback(
     () =>
-      labels.map(option => (
+      selectedLabels.map(option => (
         <LabelChip
           key={option.labelIdentifier}
-          onDelete={() => {}}
+          onDelete={() => removeLabelFromPatient(option)}
           label={option.labelName}
         />
       )),
-    [labels],
+    [removeLabelFromPatient, selectedLabels],
   );
 
   const noOptionText = useMemo(
@@ -141,6 +157,7 @@ const PatientLabels = () => {
             if (inputState) {
               event.stopPropagation();
               event.preventDefault();
+              saveAddLabel({ labelName: inputState });
             }
           }}
         >
@@ -155,15 +172,15 @@ const PatientLabels = () => {
         </NoOptionContainer>
       </div>
     ),
-    [inputState],
+    [inputState, saveAddLabel],
   );
 
   return (
     <Autocomplete
       options={labels}
-      label="Labels"
+      label=""
       placeholder="Are there labels you'd like to add?"
-      value={labels}
+      value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={option => option?.labelName}
@@ -177,17 +194,17 @@ const PatientLabels = () => {
             event.stopPropagation();
             event.preventDefault();
             event?.target?.blur();
+            saveAddLabel({ labelName: inputState });
           }
         },
       }}
       noOptionsText={noOptionText}
-      onOpen={() => {}}
-      isLoading={false}
+      onOpen={refreshLabels}
+      isLoading={isLoadingLabels}
       onChange={values => {
         const valuesLength = values.length;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const value = values[valuesLength - 1];
-        // saveAddLabel(value);
+        saveAddLabel(value);
         if (currentEditableOption) {
           setCurrentEditableOption(null);
         }
