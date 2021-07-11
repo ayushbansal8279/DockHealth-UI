@@ -22,6 +22,8 @@ import {
   REMOVE_PATIENT_NOTE,
   PIN_PATIENT_NOTE,
   UNPIN_PATIENT_NOTE,
+  SET_PATIENT_LABELS,
+  SET_PATIENT_LABELS_FETCHING,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -32,6 +34,8 @@ import TaskBaseReducer from './task-base-reducer';
 const INITIAL_STATE = {
   patient: null,
   isFetchingPatient: false,
+  labels: null,
+  isFetchingLabels: false,
   completeTasksVisible: false,
   patientIdentifier: null,
   lists: [],
@@ -78,6 +82,12 @@ export default function(state = INITIAL_STATE, action = {}) {
     }
     case SET_PATIENT: {
       return { ...state, patient: payload.patient, isFetchingPatient: false };
+    }
+    case SET_PATIENT_LABELS_FETCHING: {
+      return { ...state, labels: null, isFetchingLabels: true };
+    }
+    case SET_PATIENT_LABELS: {
+      return { ...state, labels: payload.labels, isFetchingLabels: false };
     }
     case CLEAR_PATIENT_TASKS:
       return {

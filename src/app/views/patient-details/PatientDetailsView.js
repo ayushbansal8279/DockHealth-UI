@@ -36,9 +36,11 @@ import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   SearchWrapper,
+  PatientsLabelContainer,
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
+import PatientLabels from './PatientLabels/PatientLabels';
 
 const TABS_CONFIG = [
   {
@@ -134,6 +136,11 @@ const PatientDetailsView = () => {
   return (
     <div>
       <PatientDetailsHeader />
+      <PatientsLabelContainer container justify="space-between">
+        <Grid item xs={8}>
+          <PatientLabels />
+        </Grid>
+      </PatientsLabelContainer>
       <PatientDetailsTabsContainer>
         <Grid container justify="space-between">
           <Grid item xs={8}>

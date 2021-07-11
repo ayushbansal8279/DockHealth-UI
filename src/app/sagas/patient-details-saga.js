@@ -14,6 +14,7 @@ import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as PatientApi from 'api/patient-api';
+import * as PatientLabelApi from 'api/patient-label-api';
 import AlertMessages from 'alert/AlertMessages';
 import {
   REQUEST_PATIENT_STATS_SUCCESS,
@@ -77,6 +78,7 @@ export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_APPLY_TEMPLATE_FOR_PATIENT = 'DO_APPLY_TEMPLATE_FOR_PATIENT';
 export const DO_FETCH_PATIENT = 'DO_FETCH_PATIENT';
+export const DO_FETCH_PATIENT_LABELS = 'DO_FETCH_PATIENT_LABELS';
 export const DO_RELOAD_PATIENT = 'DO_RELOAD_PATIENT';
 export const DO_TOGGLE_COMPLETE_TASKS_VISIBLE =
   'DO_TOGGLE_COMPLETE_TASKS_VISIBLE';
@@ -223,6 +225,10 @@ export const applyTemplateForPatient = ({
 export const fetchPatient = patientIdentifier => ({
   type: DO_FETCH_PATIENT,
   patientIdentifier,
+});
+
+export const fetchPatientLabels = () => ({
+  type: DO_FETCH_PATIENT_LABELS,
 });
 
 export const reloadPatient = () => ({
@@ -661,6 +667,16 @@ function* doFetchPatient({ patientIdentifier }) {
   }
 }
 
+function* doFetchPatientLabels() {
+  try {
+    yield put(PatientDetailsActions.setPatientLabelsFetching());
+    const labels = yield call(PatientLabelApi.getAllPatientLabels);
+    yield put(PatientDetailsActions.setPatientLabels(labels));
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
 function* doReloadPatient() {
   try {
     const currentPatient = yield select(patientSelector);
@@ -790,6 +806,7 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
   yield takeEvery(DO_APPLY_TEMPLATE_FOR_PATIENT, doApplyTemplateForPatient);
   yield takeLatest(DO_FETCH_PATIENT, doFetchPatient);
+  yield takeLatest(DO_FETCH_PATIENT_LABELS, doFetchPatientLabels);
   yield takeLatest(DO_RELOAD_PATIENT, doReloadPatient);
   yield takeLatest(
     DO_TOGGLE_COMPLETE_TASKS_VISIBLE,
