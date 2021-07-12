@@ -106,17 +106,15 @@ const LabelsSection = ({
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
-  const [inputReference, setInputReference] = useState(null);
+  const inputReference = useState(null);
 
   useEffect(() => {
     if (currentEditableOption) {
       optionReferences?.current[currentEditableOption]?.focus();
     } else {
-      inputReference?.focus();
+      inputReference.current?.focus();
     }
   }, [currentEditableOption, inputReference]);
-
-  const getInputReference = element => setInputReference(element);
 
   const renderOptionCallback = useCallback(
     option =>
@@ -189,7 +187,9 @@ const LabelsSection = ({
       placeholder="Are there labels you'd like to add?"
       value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
-      getInputReference={getInputReference}
+      getInputReference={element => {
+        inputReference.current = element;
+      }}
       getOptionLabel={option => option?.labelName}
       isDisabled={!!currentEditableOption}
       renderOption={renderOptionCallback}
@@ -217,6 +217,7 @@ const LabelsSection = ({
         }
       }}
       multiple
+      disableClearable
     />
   );
 };

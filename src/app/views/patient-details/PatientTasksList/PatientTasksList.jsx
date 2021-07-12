@@ -109,12 +109,6 @@ const PatientTasksListView = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);
 
-  const navigateToList = taskListIdentifier => {
-    history.push(
-      createPatientDetailsListPath(patientIdentifier, taskListIdentifier),
-    );
-  };
-
   const filteredLists = useMemo(
     () => (taskSearch ? searchTaskInPatientLists(lists, taskSearch) : lists),
     [lists, taskSearch],
@@ -129,7 +123,12 @@ const PatientTasksListView = ({
           taskListIdentifierParameter,
         ))
     ) {
-      navigateToList(filteredLists[0].taskListIdentifier);
+      history.replace(
+        createPatientDetailsListPath(
+          patientIdentifier,
+          filteredLists[0].taskListIdentifier,
+        ),
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskListIdentifierParameter, filteredLists]);
@@ -203,7 +202,9 @@ const PatientTasksListView = ({
   );
 
   const handleTabChange = (_, newListIdentifier) => {
-    navigateToList(newListIdentifier);
+    history.push(
+      createPatientDetailsListPath(patientIdentifier, newListIdentifier),
+    );
   };
 
   const activeList = useMemo(

@@ -95,22 +95,24 @@ const PatientLabels = () => {
 
   const patient = useSelector(patientSelector);
   const labels = useSelector(patientLabelsSelector) || [];
-  const [inputState, setInputState] = useState();
+  const [inputValue, setInputValue] = useState('');
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
-  const [inputReference, setInputReference] = useState(null);
+  const inputReference = useRef(null);
 
-  const selectedLabels = patient?.patientLabels || [];
+  const selectedLabels = useMemo(() => patient?.patientLabels || [], [patient]);
 
   useEffect(() => {
     if (currentEditableOption) {
       optionReferences?.current[currentEditableOption]?.focus();
     } else {
-      inputReference?.focus();
+      inputReference.current?.focus();
     }
   }, [currentEditableOption, inputReference]);
 
-  const getInputReference = element => setInputReference(element);
+  const getInputReference = element => {
+    inputReference.current = element;
+  };
 
   const renderOptionCallback = useCallback(
     option =>
@@ -154,17 +156,17 @@ const PatientLabels = () => {
       >
         <NoOptionContainer
           onClick={event => {
-            if (inputState) {
+            if (inputValue) {
               event.stopPropagation();
               event.preventDefault();
-              saveAddLabel({ labelName: inputState });
+              saveAddLabel({ labelName: inputValue });
             }
           }}
         >
-          {inputState ? (
+          {inputValue ? (
             <>
               No results - Create{' '}
-              <NoOptionTextLabel>{inputState}</NoOptionTextLabel> label
+              <NoOptionTextLabel>{inputValue}</NoOptionTextLabel> label
             </>
           ) : (
             <>No results</>
@@ -172,13 +174,12 @@ const PatientLabels = () => {
         </NoOptionContainer>
       </div>
     ),
-    [inputState, saveAddLabel],
+    [inputValue, saveAddLabel],
   );
 
   return (
     <Autocomplete
       options={labels}
-      label=""
       placeholder="Are there labels you'd like to add?"
       value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
@@ -187,14 +188,14 @@ const PatientLabels = () => {
       isDisabled={!!currentEditableOption}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
-      onInputChange={setInputState}
+      onInputChange={setInputValue}
       InputProps={{
         onKeyDown: event => {
           if (event.key === 'Enter' && event?.target.value !== '') {
             event.stopPropagation();
             event.preventDefault();
             event?.target?.blur();
-            saveAddLabel({ labelName: inputState });
+            saveAddLabel({ labelName: inputValue });
           }
         },
       }}
@@ -205,11 +206,13 @@ const PatientLabels = () => {
         const valuesLength = values.length;
         const value = values[valuesLength - 1];
         saveAddLabel(value);
+
         if (currentEditableOption) {
           setCurrentEditableOption(null);
         }
       }}
       multiple
+      disableClearable
     />
   );
 };
