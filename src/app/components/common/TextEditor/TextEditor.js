@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { convertToRaw } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
@@ -126,6 +127,7 @@ const TextEditor = React.forwardRef(
     ]);
     const [patientSearchValue, setPatientSearchValue] = useState(null);
     const [peopleSearchValue, setPeopleSearchValue] = useState(null);
+    const [showPlaceholder, setShowPlaceholder] = useState(true);
 
     const arePeopleSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
@@ -138,6 +140,17 @@ const TextEditor = React.forwardRef(
 
     const handleChange = newState => {
       if (!state) setEditorState(newState);
+      const rawState = convertToRaw(newState.getCurrentContent());
+      if (rawState && rawState.blocks && rawState.blocks[0]) {
+        const { type } = rawState.blocks[0];
+        const onlyListVisible =
+          type === 'ordered-list-item' || type === 'unordered-list-item';
+        if (onlyListVisible) {
+          setShowPlaceholder(false);
+        } else {
+          setShowPlaceholder(true);
+        }
+      }
 
       onChange(newState);
     };
@@ -300,7 +313,7 @@ const TextEditor = React.forwardRef(
           plugins={plugins}
           editorState={state || editorState}
           readOnly={readOnly}
-          placeholder={placeholder}
+          placeholder={showPlaceholder ? placeholder : ''}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}
