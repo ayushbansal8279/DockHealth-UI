@@ -1,23 +1,23 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import moment from 'moment';
 import { useForm, FormContext } from 'react-hook-form';
 // import { Collapse } from '@material-ui/core';
-import { getCustomerUniqueIDLabel } from 'helpers/customer-type-helper';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import CloseIcon from '@material-ui/icons/Close';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import { mixed, object, string } from 'yup';
-import MenuPopover from 'components/common/MenuPopover/MenuPopover';
 import Button from 'components/common/Button/Button';
 import { openModal, closeModal } from 'modal/actions';
 import Spacing from 'components/common/Spacing';
 import { useDispatch } from 'react-redux';
+import * as PatientApi from 'api/patient-api';
+import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
+import { showAlert } from 'helpers/utility-functions';
 import {
   PatientDetailsForm,
   DrawerWrapper,
@@ -27,10 +27,24 @@ import {
   MoreActinsWrapper,
   PatietnDetailsFormFooter,
   SubmitButtonWrapper,
-} from './styled';
+} from 'views/patient-details/PatientDetailsHeader/PatientDetails/styled.js';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
+const GENDER_OPTIONS = [
+  {
+    value: 'female',
+    label: 'Female',
+  },
+  {
+    value: 'male',
+    label: 'Male',
+  },
+  {
+    value: 'other',
+    label: 'Other',
+  },
+];
 
 const validationObjectShape = {
   firstName: string().required(REQUIRED_MESSAGE),
@@ -82,72 +96,71 @@ const validationObjectShape = {
 
 const validationSchema = object().shape(validationObjectShape);
 
-const PatientDetails = ({
-  firstName,
-  middleName,
-  lastName,
-  email,
-  phoneMobile,
-  phoneHome,
-  dob,
-  gender,
-  mrn,
+const onSubmit = ({
+  onCancel,
+  onPatientCreated,
+  uniqueIdentifierLabel,
+}) => data => {
+  const patientApiMethod = PatientApi.addPatient(data);
+
+  patientApiMethod
+    .then(response => {
+      onPatientAddedEvent();
+      if (typeof onPatientCreated === 'function') {
+        onPatientCreated(response);
+      }
+      onCancel();
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Potential Duplicate',
+        text:
+          error?.message ??
+          `A patient with this name and ${uniqueIdentifierLabel} already exists!`,
+        showConfirmButton: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+    });
+};
+
+const PatientCreateDrawer = ({
   isOpenedDetails,
-  updatePatient,
-  patientIdentifier,
-  archivePatient,
   editingDisabled,
-  currentUser,
-  closeDetails,
+  uniqueIdentifierLabel,
+  customerTypeLabel,
+  onPatientCreated,
+  onCancel,
 }) => {
-  const formattedDob = dob ? moment(dob).format('MM/DD/YYYY') : null;
-  const defaultValues = {
-    firstName,
-    middleName,
-    lastName,
-    email,
-    phoneMobile,
-    phoneHome,
-    dob: formattedDob,
-    gender,
-    mrn,
-  };
   const dispatch = useDispatch();
-  const [isActive, setIsActive] = useState(false);
-  const [contextMenuIsOpened, setContextMenuIsOpened] = useState(false);
   const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
   const [isOpenedContact, setIsOpenedContact] = useState(true);
-  const contextMenuReference = useRef();
   const formMethods = useForm({
-    defaultValues,
     reValidateMode: 'onSubmit',
     validationSchema,
   });
-  const handleEdit = () => {
-    setIsOpenedPersonal(true);
-    setIsOpenedContact(true);
-    setIsActive(true);
-  };
 
   const { handleSubmit, clearError, getValues, reset } = formMethods;
-
+  const submitButtonReference = useRef(null);
   const { gender: genderValue } = getValues();
 
   const close = () => {
-    setIsActive(false);
-    closeDetails();
-    clearError(Object.keys(defaultValues));
+    reset();
+    clearError();
+    onCancel();
   };
 
   const handleClose = () => {
-    if (isActive) {
+    const values = getValues();
+    const inProgress = !Object.values(values).every(p => p === undefined);
+    if (inProgress) {
       dispatch(
         openModal('InterruptEdit', {
           isWorkflowModal: true,
           confirm: () => {
-            updatePatient({ ...getValues(), patientIdentifier });
+            submitButtonReference.current.click();
             dispatch(closeModal());
-            close();
           },
           onClose: close,
         }),
@@ -157,61 +170,12 @@ const PatientDetails = ({
     }
   };
 
-  const handlePatientArchive = () => {
-    archivePatient();
-  };
-
-  useEffect(() => {
-    if (!isOpenedDetails) {
-      setIsActive(false);
-    } else {
-      reset({ ...defaultValues });
-      clearError(Object.keys(defaultValues));
-    }
-  }, [isOpenedDetails]);
-
-  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
-  const GENDER_OPTIONS = [
-    {
-      value: 'female',
-      label: 'Female',
-    },
-    {
-      value: 'male',
-      label: 'Male',
-    },
-    {
-      value: 'other',
-      label: 'Other',
-    },
-  ];
-  const CONTEXT_MENU_OPTIONS = [
-    {
-      key: 'edit',
-      label: 'Edit',
-      onClick: handleEdit,
-    },
-    {
-      key: 'archivePatient',
-      label: 'Archive patient',
-      onClick: handlePatientArchive,
-    },
-  ];
   return (
     <DrawerWrapper open={isOpenedDetails} anchor="right" onClose={handleClose}>
       <ContentWrapper>
         <StickyHeader>
-          <TitleName>{`${defaultValues.firstName} ${
-            defaultValues.middleName ? defaultValues.middleName : ''
-          } ${defaultValues.lastName}`}</TitleName>
+          <TitleName>Add a {customerTypeLabel}</TitleName>
           <MoreActinsWrapper>
-            <button
-              type="button"
-              ref={contextMenuReference}
-              onClick={() => setContextMenuIsOpened(true)}
-            >
-              {!editingDisabled && <MoreVertIcon />}
-            </button>
             <button type="button" onClick={handleClose}>
               <CloseIcon />
             </button>
@@ -219,40 +183,31 @@ const PatientDetails = ({
         </StickyHeader>
         <FormContext {...formMethods}>
           <PatientDetailsForm
-            onSubmit={handleSubmit(data => {
-              setIsActive(false);
-              updatePatient({ ...data, patientIdentifier });
-            })}
+            onSubmit={handleSubmit(
+              onSubmit({
+                onCancel,
+                onPatientCreated,
+                uniqueIdentifierLabel,
+              }),
+            )}
           >
             <LabeledCollapse
               name="Patient personal info"
               isOpened={isOpenedPersonal}
               onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
             >
-              <FormInput
-                label="first name"
-                readOnly={!isActive}
-                name="firstName"
-                isRequired
-              />
+              <FormInput label="first name" name="firstName" isRequired />
               <Spacing vertical={3} />
               <FormInput
                 label="middle name"
-                readOnly={!isActive}
                 name="middleName"
                 isRequired={false}
               />
               <Spacing vertical={3} />
-              <FormInput
-                label="last name"
-                readOnly={!isActive}
-                name="lastName"
-                isRequired
-              />
+              <FormInput label="last name" name="lastName" isRequired />
               <Spacing vertical={3} />
               <FormSelect
                 label="gender"
-                readOnly={!isActive}
                 options={GENDER_OPTIONS}
                 name="gender"
                 defaultValue={genderValue}
@@ -261,7 +216,6 @@ const PatientDetails = ({
               <Spacing vertical={3} />
               <FormInput
                 label="birthday"
-                readOnly={!isActive}
                 placeholder="MM/DD/YYYY"
                 inputComponent={DateInput}
                 name="dob"
@@ -270,7 +224,6 @@ const PatientDetails = ({
               <Spacing vertical={3} />
               <FormInput
                 label={uniqueIdentifierLabel}
-                readOnly={!isActive}
                 placeholder="- -"
                 name="mrn"
                 isRequired={false}
@@ -284,50 +237,38 @@ const PatientDetails = ({
             >
               <FormPhoneNumberInput
                 label="mobile phone"
-                readOnly={!isActive}
                 name="phoneMobile"
                 isRequired={false}
               />
-              <Spacing vertical={3} />
+              <Spacing vertical={1} />
               <FormPhoneNumberInput
                 label="home phone"
-                readOnly={!isActive}
                 name="phoneHome"
                 type="tel"
                 isRequired={false}
               />
-              <Spacing vertical={3} />
-              <FormInput
-                label="email"
-                readOnly={!isActive}
-                name="email"
-                isRequired={false}
-              />
-              <Spacing vertical={3} />
+              <Spacing vertical={1} />
+              <FormInput label="email" name="email" isRequired={false} />
+              <Spacing vertical={1} />
             </LabeledCollapse>
             {!editingDisabled && (
               <PatietnDetailsFormFooter>
-                {isActive && (
-                  <SubmitButtonWrapper>
-                    <Button width="153px" type="submit">
-                      SAVE EDITS
-                    </Button>
-                  </SubmitButtonWrapper>
-                )}
+                <SubmitButtonWrapper>
+                  <Button
+                    style={{ textTransform: 'uppercase' }}
+                    width="153px"
+                    type="submit"
+                    reference={submitButtonReference}
+                  >
+                    SAVE {customerTypeLabel}
+                  </Button>
+                </SubmitButtonWrapper>
               </PatietnDetailsFormFooter>
             )}
           </PatientDetailsForm>
         </FormContext>
       </ContentWrapper>
-      <MenuPopover
-        anchorEl={contextMenuReference?.current}
-        open={contextMenuIsOpened}
-        onClose={() => setContextMenuIsOpened(false)}
-        onAfterOptionClick={() => setContextMenuIsOpened(false)}
-        itemType="secondary"
-        options={CONTEXT_MENU_OPTIONS}
-      />
     </DrawerWrapper>
   );
 };
-export default PatientDetails;
+export default PatientCreateDrawer;

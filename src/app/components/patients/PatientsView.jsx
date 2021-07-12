@@ -24,7 +24,6 @@ import {
   InputWrapper,
   SearchHelperText,
   PatientsListContainer,
-  SidebarInnerContainer,
 } from './styled';
 
 const parsePatientsListIdentifier = listIdentifier => {
@@ -249,20 +248,13 @@ const PatientsView = () => {
               />
             </Grid>
           )}
-          {isSidebarOpen && (
-            <Grid sm={6} item container direction="column">
-              <SidebarInnerContainer
-                height={patientsListContainerReference.current?.clientHeight}
-              >
-                <PatientSidebar
-                  onPatientCreated={patient =>
-                    handleAfterPatientCreation(patient, history)
-                  }
-                  onClose={unsetIsSidebarOpen}
-                />
-              </SidebarInnerContainer>
-            </Grid>
-          )}
+          <PatientSidebar
+            onPatientCreated={patient =>
+              handleAfterPatientCreation(patient, history)
+            }
+            onClose={unsetIsSidebarOpen}
+            isSidebarOpen={isSidebarOpen}
+          />
         </Grid>
       </PatientsListContainer>
     </PatientsViewContainer>
