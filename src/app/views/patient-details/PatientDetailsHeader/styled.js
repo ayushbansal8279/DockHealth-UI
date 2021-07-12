@@ -30,7 +30,8 @@ export const PatientDetailsContainer = styled.div`
 
 export const PatientDetailsInformationContainer = styled.div`
   display: flex;
-  padding: ${spacing.huge} ${spacing.largePlus};
+  padding: ${spacing.regular} ${spacing.regular};
+  padding-bottom: ${spacing.small};
   justify-content: space-between;
   width: 100%;
   border-bottom: 3px solid #f5f8fa;
