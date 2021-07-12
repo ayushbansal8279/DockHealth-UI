@@ -21,6 +21,7 @@ export const EDUCATION_CENTER_CATEGORIES = [
         name: 'Create a Task',
         overview:
           'Tasks are the to-dos for you and your team. Add patient/client context, due dates, status, assignments and attachments to get the most from tasks',
+        videoUrl: 'https://www.youtube.com/embed/lQgbbTqCK_8',
         helpUrl: 'https://www.dock.health/101',
       },
       {
