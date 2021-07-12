@@ -3,6 +3,8 @@ import {
   SET_PATIENT,
   SET_PATIENT_LABELS_FETCHING,
   SET_PATIENT_LABELS,
+  SET_PATIENT_ATTACHMENTS_FETCHING,
+  SET_PATIENT_ATTACHMENTS,
   SET_COMPLETE_TASKS_VISIBILITY,
   CLEAR_PATIENT_TASKS,
   INITIALIZE_PATIENT,
@@ -34,6 +36,17 @@ export const setPatientLabels = labels => ({
   type: SET_PATIENT_LABELS,
   payload: {
     labels,
+  },
+});
+
+export const setPatientAttachmentsFetching = () => ({
+  type: SET_PATIENT_ATTACHMENTS_FETCHING,
+});
+
+export const setPatientAttachments = attachments => ({
+  type: SET_PATIENT_ATTACHMENTS,
+  payload: {
+    attachments,
   },
 });
 

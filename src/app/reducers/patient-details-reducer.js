@@ -25,6 +25,8 @@ import {
   UNPIN_PATIENT_NOTE,
   SET_PATIENT_LABELS,
   SET_PATIENT_LABELS_FETCHING,
+  SET_PATIENT_ATTACHMENTS,
+  SET_PATIENT_ATTACHMENTS_FETCHING,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -88,6 +90,16 @@ export default function(state = INITIAL_STATE, action = {}) {
     }
     case SET_PATIENT_LABELS: {
       return { ...state, labels: payload.labels, isFetchingLabels: false };
+    }
+    case SET_PATIENT_ATTACHMENTS_FETCHING: {
+      return { ...state, attachments: null, isFetchingAttachments: true };
+    }
+    case SET_PATIENT_ATTACHMENTS: {
+      return {
+        ...state,
+        attachments: payload.attachments,
+        isFetchingAttachments: false,
+      };
     }
     case CLEAR_PATIENT_TASKS:
       return {

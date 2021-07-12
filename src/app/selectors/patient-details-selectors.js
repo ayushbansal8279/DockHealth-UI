@@ -71,3 +71,13 @@ export const patientLabelsSelector = createSelector(
   patientDetailsStateSelector,
   ({ labels }) => labels,
 );
+
+export const isFetchingPatientAttachmentsSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ isFetchingAttachments }) => isFetchingAttachments,
+);
+
+export const patientDocumentsSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ attachments }) => attachments,
+);

@@ -1,0 +1,33 @@
+/* eslint-disable import/prefer-default-export */
+import styled from 'styled-components';
+import palette from 'styles/palette';
+import spacing from 'styles/spacing';
+
+export const PatientAttachmentsWrapper = styled.div`
+  width: 100%;
+  min-height: 300px;
+  padding: ${spacing.regular} ${spacing.huge};
+  background-color: ${props =>
+    props.isDragActive ? palette.coolGrey3 : palette.white};
+  border: ${props =>
+    props.isDragActive ? `solid 1px ${palette.coolGrey2}` : `none`};
+`;
+
+export const NoteInput = styled.input`
+  height: 52px;
+  width: 100%;
+  margin: ${spacing.regular} 0;
+  background-color: ${palette.coolGrey4};
+  border: 1px solid ${palette.coolGrey3};
+  box-shadow: none;
+  color: ${palette.mediumGrey};
+  padding: ${spacing.regular};
+
+  &:focus,
+  &:active {
+    background-color: ${palette.coolGrey4};
+    border: 1px solid ${palette.coolGrey3};
+    box-shadow: none;
+    outline: none;
+  }
+`;

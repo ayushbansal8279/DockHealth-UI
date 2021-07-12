@@ -40,6 +40,7 @@ import {
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
+import PatientAttachments from './PatientAttachments/PatientAttachments';
 import PatientLabels from './PatientLabels/PatientLabels';
 
 const TABS_CONFIG = [
@@ -54,13 +55,11 @@ const TABS_CONFIG = [
     label: 'Notes',
     mainPath: 'notes',
     RouteComponent: PatientNotes,
-    onEnter: () => {},
   },
   {
-    label: 'Documents',
-    mainPath: 'documents',
-    RouteComponent: () => <div>Documents</div>,
-    onEnter: () => {},
+    label: 'Files',
+    mainPath: 'files',
+    RouteComponent: PatientAttachments,
   },
 ];
 

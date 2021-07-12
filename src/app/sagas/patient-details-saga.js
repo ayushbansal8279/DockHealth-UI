@@ -17,6 +17,7 @@ import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as PatientApi from 'api/patient-api';
 import * as PatientLabelApi from 'api/patient-label-api';
+import * as PatientAttachmentApi from 'api/patient-attachment-api';
 import AlertMessages from 'alert/AlertMessages';
 import {
   REQUEST_PATIENT_STATS_SUCCESS,
@@ -87,6 +88,9 @@ export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_APPLY_TEMPLATE_FOR_PATIENT = 'DO_APPLY_TEMPLATE_FOR_PATIENT';
 export const DO_FETCH_PATIENT = 'DO_FETCH_PATIENT';
 export const DO_FETCH_PATIENT_LABELS = 'DO_FETCH_PATIENT_LABELS';
+export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
+export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
+export const DO_REMOVE_PATIENT_ATTACHMENT = 'DO_REMOVE_PATIENT_ATTACHMENT';
 export const DO_RELOAD_PATIENT = 'DO_RELOAD_PATIENT';
 export const DO_TOGGLE_COMPLETE_TASKS_VISIBLE =
   'DO_TOGGLE_COMPLETE_TASKS_VISIBLE';
@@ -237,6 +241,37 @@ export const fetchPatient = patientIdentifier => ({
 
 export const fetchPatientLabels = () => ({
   type: DO_FETCH_PATIENT_LABELS,
+});
+
+export const fetchPatientAttachments = patientIdentifier => ({
+  type: DO_FETCH_PATIENT_ATTACHMENTS,
+  patientIdentifier,
+});
+
+export const addPatientAttachment = (
+  patientIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+) => ({
+  type: DO_ADD_PATIENT_ATTACHMENT,
+  patientIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+});
+
+export const removePatientAttachment = (
+  patientIdentifier,
+  attachmentIdentifier,
+) => ({
+  type: DO_REMOVE_PATIENT_ATTACHMENT,
+  patientIdentifier,
+  attachmentIdentifier,
 });
 
 export const reloadPatient = () => ({
@@ -685,6 +720,76 @@ function* doFetchPatientLabels() {
   }
 }
 
+function* doFetchPatientAttachments({ patientIdentifier }) {
+  try {
+    yield put(PatientDetailsActions.setPatientAttachmentsFetching());
+    const attachments = yield call(
+      PatientAttachmentApi.getPatientAttachments,
+      patientIdentifier,
+    );
+    yield put(PatientDetailsActions.setPatientAttachments(attachments));
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* doAddPatientAttachment({
+  patientIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+}) {
+  try {
+    yield call(
+      PatientAttachmentApi.addPatientAttachment,
+      patientIdentifier,
+      fileData,
+      additionalConfig,
+    );
+    setCurrentlyUploadedAttachment(null);
+    onAttachmentFileInputChange(restAttachments);
+    const attachments = yield call(
+      PatientAttachmentApi.getPatientAttachments,
+      patientIdentifier,
+    );
+    yield put(PatientDetailsActions.setPatientAttachments(attachments));
+  } catch (error) {
+    setCurrentlyUploadedAttachment(null);
+    onAttachmentFileInputChange(restAttachments);
+
+    if (error.response && error.response.status === 413) {
+      yield put(
+        AlertActions.showGlobalErrorAlert(
+          'File exceeded the allowed size of 100 MB',
+        ),
+      );
+    } else {
+      yield put(AlertActions.showGlobalErrorAlert());
+    }
+  }
+}
+
+function* doRemovePatientAttachment({
+  patientIdentifier,
+  attachmentIdentifier,
+}) {
+  try {
+    yield call(
+      PatientAttachmentApi.removePatientAttachment,
+      attachmentIdentifier,
+    );
+    const attachments = yield call(
+      PatientAttachmentApi.getPatientAttachments,
+      patientIdentifier,
+    );
+    yield put(PatientDetailsActions.setPatientAttachments(attachments));
+  } catch {
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
 function* doReloadPatient() {
   try {
     const currentPatient = yield select(patientSelector);
@@ -838,6 +943,9 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_APPLY_TEMPLATE_FOR_PATIENT, doApplyTemplateForPatient);
   yield takeLatest(DO_FETCH_PATIENT, doFetchPatient);
   yield takeLatest(DO_FETCH_PATIENT_LABELS, doFetchPatientLabels);
+  yield takeLatest(DO_FETCH_PATIENT_ATTACHMENTS, doFetchPatientAttachments);
+  yield takeLatest(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
+  yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(DO_RELOAD_PATIENT, doReloadPatient);
   yield takeLatest(
     DO_TOGGLE_COMPLETE_TASKS_VISIBLE,
