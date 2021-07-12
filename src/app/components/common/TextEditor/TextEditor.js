@@ -145,7 +145,7 @@ const TextEditor = React.forwardRef(
         const { type } = rawState.blocks[0];
         const onlyListVisible =
           type === 'ordered-list-item' || type === 'unordered-list-item';
-        if (onlyListVisible) {
+        if (onlyListVisible && showPlaceholder) {
           setShowPlaceholder(false);
         } else {
           setShowPlaceholder(true);
