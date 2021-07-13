@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { convertToRaw } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
@@ -134,13 +135,26 @@ const TextEditor = React.forwardRef(
       currentUser: store.userState.userProfile,
     }));
 
+    const currentState = state || editorState;
+
     const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
     const handleChange = newState => {
       if (!state) setEditorState(newState);
-
       onChange(newState);
     };
+
+    const showPlaceholder = useMemo(() => {
+      const rawState = convertToRaw(currentState.getCurrentContent());
+      const firstBlock = rawState?.blocks?.[0];
+      if (firstBlock) {
+        const { type } = firstBlock;
+        const containOnlyList =
+          type === 'ordered-list-item' || type === 'unordered-list-item';
+        return !containOnlyList;
+      }
+      return false;
+    }, [currentState]);
 
     const handleFocus = event => {
       onFocus(event);
@@ -149,7 +163,7 @@ const TextEditor = React.forwardRef(
 
     const handleBlur = () => {
       setIsFocused(false);
-      onBlur(state || editorState);
+      onBlur(currentState);
     };
 
     const clearPeopleSuggestions = () => {
@@ -298,9 +312,9 @@ const TextEditor = React.forwardRef(
           customStyleMap={styleMap}
           ref={reference}
           plugins={plugins}
-          editorState={state || editorState}
+          editorState={currentState}
           readOnly={readOnly}
-          placeholder={placeholder}
+          placeholder={showPlaceholder ? placeholder : ''}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}
