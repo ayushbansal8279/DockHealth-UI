@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { convertToRaw } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
@@ -127,7 +127,6 @@ const TextEditor = React.forwardRef(
     ]);
     const [patientSearchValue, setPatientSearchValue] = useState(null);
     const [peopleSearchValue, setPeopleSearchValue] = useState(null);
-    const [showPlaceholder, setShowPlaceholder] = useState(true);
 
     const arePeopleSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
@@ -136,24 +135,26 @@ const TextEditor = React.forwardRef(
       currentUser: store.userState.userProfile,
     }));
 
+    const currentState = state || editorState;
+
     const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
     const handleChange = newState => {
       if (!state) setEditorState(newState);
-      const rawState = convertToRaw(newState.getCurrentContent());
-      if (rawState && rawState.blocks && rawState.blocks[0]) {
-        const { type } = rawState.blocks[0];
-        const onlyListVisible =
-          type === 'ordered-list-item' || type === 'unordered-list-item';
-        if (onlyListVisible && showPlaceholder) {
-          setShowPlaceholder(false);
-        } else {
-          setShowPlaceholder(true);
-        }
-      }
-
       onChange(newState);
     };
+
+    const showPlaceholder = useMemo(() => {
+      const rawState = convertToRaw(currentState.getCurrentContent());
+      const firstBlock = rawState?.blocks?.[0];
+      if (firstBlock) {
+        const { type } = firstBlock;
+        const containOnlyList =
+          type === 'ordered-list-item' || type === 'unordered-list-item';
+        return !containOnlyList;
+      }
+      return false;
+    }, [currentState]);
 
     const handleFocus = event => {
       onFocus(event);
@@ -162,7 +163,7 @@ const TextEditor = React.forwardRef(
 
     const handleBlur = () => {
       setIsFocused(false);
-      onBlur(state || editorState);
+      onBlur(currentState);
     };
 
     const clearPeopleSuggestions = () => {
@@ -311,7 +312,7 @@ const TextEditor = React.forwardRef(
           customStyleMap={styleMap}
           ref={reference}
           plugins={plugins}
-          editorState={state || editorState}
+          editorState={currentState}
           readOnly={readOnly}
           placeholder={showPlaceholder ? placeholder : ''}
           onFocus={handleFocus}
