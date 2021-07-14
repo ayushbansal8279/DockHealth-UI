@@ -34,8 +34,12 @@ export const ContentWrapper = styled.div`
   box-sizing: border-box;
 `;
 
-export const TitleName = styled.span`
+export const TitleName = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
 `;
 
 export const StickyHeader = styled.div`

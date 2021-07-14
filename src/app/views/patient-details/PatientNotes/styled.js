@@ -7,6 +7,8 @@ import spacing from 'styles/spacing';
 export const PatientNotesWrapper = styled.div`
   width: 100%;
   max-width: 800px;
+  background: ${palette.white};
+  padding: 12px;
 `;
 
 export const PinnedNotesWrapper = styled.div`

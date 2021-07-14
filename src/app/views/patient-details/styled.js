@@ -5,12 +5,13 @@ import spacing from 'styles/spacing';
 import { Grid } from '@material-ui/core';
 
 export const PatientDetailsTabsContainer = styled.div`
-  margin: 0 ${spacing.huge};
+  padding: 0 ${spacing.huge};
+  background-color: ${palette.white};
 `;
 
 export const PatientDetailsContainer = styled.div`
   padding: ${spacing.small} ${spacing.huge};
-  background-color: ${palette.white};
+  background-color: ${palette.coolGrey4};
 `;
 
 export const SearchWrapper = styled.div`

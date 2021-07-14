@@ -192,6 +192,7 @@ const themeCommonOverrides = () => ({
 
         '&$selected': {
           color: palette.brightBlue,
+          backgroundColor: palette.coolGrey4,
         },
         '&$disabled': {
           color: palette.coolGrey1,

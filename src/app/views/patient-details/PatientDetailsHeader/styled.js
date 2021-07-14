@@ -31,17 +31,10 @@ export const PatientDetailsContainer = styled.div`
 
 export const PatientDetailsInformationContainer = styled.div`
   display: flex;
+  flex-direction: column;
   padding: ${spacing.regular} ${spacing.regular};
-  padding-bottom: ${spacing.small};
   justify-content: space-between;
   width: 100%;
-  border-bottom: 3px solid #f5f8fa;
-`;
-
-export const PatientDetailsBio = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 `;
 
 export const PatientName = styled.div`
@@ -80,6 +73,7 @@ export const PatientDetails = styled.div`
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  padding-left: 30px;
 `;
 
 export const NavigationBackIcon = styled.img`
