@@ -46,18 +46,39 @@ export const RolloverPopover = styled(Popover)`
   }
 `;
 
-export const RolloverPopoverLabel = styled.label`
-  padding: 0 ${spacing.regular};
-  font-size: ${fontSizes.large};
-  font-weight: ${fontWeights.regular};
-  color: ${palette.brightBlue};
+export const DarkPopover = styled.div`
   display: block;
+  top: 30px;
+  left: 60px;
+  padding: ${spacing.small};
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  z-index: 10;
+  cursor: initial;
 `;
 
-export const RolloverPopoverDescription = styled.label`
-  padding: 0 ${spacing.regular};
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.light};
-  color: ${palette.brightBlue};
-  display: block;
+export const LabelBig = styled.div`
+  max-width: 850px;
+  font-size: ${fontSizes.large};
+  font-weight: ${fontWeights.regularPlus};
 `;
+
+export const LabelSmall = styled.div`
+  max-width: 650px;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.smallPlus};
+`;
+
+// export const DescriptionTooltip = styled.div`
+//   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+//   position: absolute;
+//   top: 30px;
+//   left: 60px;
+//   max-width: 650px;
+//   padding: ${spacing.small};
+//   color: ${palette.white};
+//   background: ${palette.mediumGrey};
+//   z-index: 10;
+//   font-size: ${fontSizes.smallPlus};
+//   cursor: initial;
+// `;
