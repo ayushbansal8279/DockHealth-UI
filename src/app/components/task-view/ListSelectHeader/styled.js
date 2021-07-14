@@ -1,5 +1,9 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Popover } from '@material-ui/core';
 import styled from 'styled-components';
+import palette from 'styles/palette';
+
+import spacing from 'styles/spacing';
+import { fontWeights, fontSizes } from 'styles/font';
 
 export const StyledTitle = styled(Typography)`
   && {
@@ -33,4 +37,34 @@ export const ListDescription = styled.div`
   font-size: 12px;
   font-weight: 400;
   margin-top: -2px;
+`;
+
+export const RolloverPopover = styled(Popover)`
+  && {
+    pointer-events: none;
+    transform: translateX(-${spacing.small});
+  }
+`;
+
+export const DarkPopover = styled.div`
+  display: block;
+  top: 30px;
+  left: 60px;
+  padding: ${spacing.small};
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  z-index: 10;
+  cursor: initial;
+`;
+
+export const LabelBig = styled.div`
+  max-width: 850px;
+  font-size: ${fontSizes.large};
+  font-weight: ${fontWeights.regularPlus};
+`;
+
+export const LabelSmall = styled.div`
+  max-width: 650px;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.smallPlus};
 `;
