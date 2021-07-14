@@ -117,7 +117,7 @@ const PatientDetails = ({
     },
     {
       key: 'archivePatient',
-      label: 'Archive patient',
+      label: 'Archive',
       onClick: handlePatientArchive,
     },
   ];
@@ -129,9 +129,9 @@ const PatientDetails = ({
     <DrawerWrapper open={isOpenedDetails} anchor="right" onClose={handleClose}>
       <ContentWrapper>
         <StickyHeader>
-          <TitleName>{`${defaultValues.firstName} ${
+          <TitleName>{`${defaultValues.lastName}, ${defaultValues.firstName} ${
             defaultValues.middleName ? defaultValues.middleName : ''
-          } ${defaultValues.lastName}`}</TitleName>
+          }`}</TitleName>
           <MoreActinsWrapper>
             <button
               type="button"
