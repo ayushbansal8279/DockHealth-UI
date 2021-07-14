@@ -20,8 +20,6 @@ const ListSelectHeader = ({ taskList }) => {
     hoveredItemReference.current = target;
     setPopoverLabel(listNameProperty);
     setBigPopover(bigPopoverState);
-    // eslint-disable-next-line no-console
-    console.log('Mouse entered');
   };
 
   const handleMouseLeave = () => {
