@@ -60,5 +60,4 @@ export const ListDescription = styled.div`
   font-size: ${fontSizes.smallPLus};
   font-weight: ${fontWeights.regular};
   font-family: 'Montserrat', sans-serif;
-  padding-bottom: ${spacing.regular};
 `;

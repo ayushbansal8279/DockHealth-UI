@@ -246,6 +246,10 @@ export const OptionCount = styled.div`
   color: ${palette.coolGrey1};
 `;
 
+export const MegaFilterButtonWrapper = styled.div`
+  display: flex;
+`;
+
 export const MegaFilterOptions = styled.div`
   display: flex;
 `;

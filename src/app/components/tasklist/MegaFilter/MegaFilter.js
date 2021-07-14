@@ -33,6 +33,7 @@ import {
   ClearButton,
   MegaFilterLeftOptions,
   MegaFilterOptions,
+  MegaFilterButtonWrapper,
 } from './styled';
 
 const UNASSIGNED = 'UNASSIGNED';
@@ -277,7 +278,7 @@ const MegaFilter = ({
   const isFilterApplied = !isEmpty(selectedFilters);
   return (
     <>
-      <div ref={megaFilterReference}>
+      <MegaFilterButtonWrapper ref={megaFilterReference}>
         {children || (
           <FilterButton
             isOpen={isOpen}
@@ -287,7 +288,7 @@ const MegaFilter = ({
           />
         )}
         {isFilterApplied && <FilterClearButton clearFilters={clearFilters} />}
-      </div>
+      </MegaFilterButtonWrapper>
       <MegaFilterPopover
         customStyles={popoverStyles}
         anchorEl={megaFilterReference?.current}
