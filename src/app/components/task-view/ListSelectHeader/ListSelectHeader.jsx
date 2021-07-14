@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import { trunc } from 'helpers/utility-functions';
 
 import {
   ListDescription,
@@ -8,12 +9,6 @@ import {
   LabelBig,
   LabelSmall,
 } from './styled';
-
-function trunc(text, maxLength = 30) {
-  return text?.length > maxLength
-    ? `${text?.substring(0, maxLength)}...`
-    : text;
-}
 
 const ListSelectHeader = ({ taskList }) => {
   const { listName, listDescription } = taskList || {};

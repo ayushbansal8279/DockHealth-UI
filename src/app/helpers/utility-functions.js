@@ -187,3 +187,9 @@ export const useMobile = () =>
   navigator?.userAgent?.toLowerCase()?.includes?.('mobi') ?? false;
 
 export const useIOS = () => /ipad|iphone|ipod/i.test(navigator.userAgent);
+
+export function trunc(text, maxLength = 30) {
+  return text?.length > maxLength
+    ? `${text?.substring(0, maxLength)}...`
+    : text;
+}
