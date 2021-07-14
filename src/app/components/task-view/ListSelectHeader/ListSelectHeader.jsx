@@ -1,7 +1,13 @@
 import React, { useState, useRef } from 'react';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 
-import * as styled from './styled';
+import {
+  ListDescription,
+  RolloverPopover,
+  DarkPopover,
+  LabelBig,
+  LabelSmall,
+} from './styled';
 
 function trunc(text, maxLength = 30) {
   return text?.length > maxLength
@@ -44,7 +50,7 @@ const ListSelectHeader = ({ taskList }) => {
       >
         {trunc(listName, 27)}
       </div>
-      <styled.ListDescription>
+      <ListDescription>
         <div
           onMouseEnter={event =>
             handleMouseEnter(event, listDescription, false, longDescription)
@@ -53,8 +59,8 @@ const ListSelectHeader = ({ taskList }) => {
         >
           {trunc(listDescription, 97)}
         </div>
-      </styled.ListDescription>
-      <styled.RolloverPopover
+      </ListDescription>
+      <RolloverPopover
         anchorEl={hoveredItemReference?.current}
         anchorOrigin={{
           vertical: 'top',
@@ -67,11 +73,11 @@ const ListSelectHeader = ({ taskList }) => {
         }}
         transitionDuration={100}
       >
-        <styled.DarkPopover>
-          <styled.LabelBig>{bigPopover && popoverLabel}</styled.LabelBig>
-          <styled.LabelSmall>{!bigPopover && popoverLabel}</styled.LabelSmall>
-        </styled.DarkPopover>
-      </styled.RolloverPopover>
+        <DarkPopover>
+          <LabelBig>{bigPopover && popoverLabel}</LabelBig>
+          <LabelSmall>{!bigPopover && popoverLabel}</LabelSmall>
+        </DarkPopover>
+      </RolloverPopover>
     </GenericHeader>
   );
 };
