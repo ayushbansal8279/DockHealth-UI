@@ -47,8 +47,10 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { trunc } from 'helpers/utility-functions';
 import { ListsTabsContainer, ListsToolbarContainer, MenuText } from './styled';
 import {
   checkIfSelectedListIsPresent,
@@ -233,8 +235,18 @@ const PatientTasksListView = ({
                       <Tab
                         key={list.taskListIdentifier}
                         value={list.taskListIdentifier}
-                        label={`${list.listName} (${list.tasks.length})`}
+                        label={
+                          <Tooltip
+                            title={
+                              list.listName?.length >= 20 ? list.listName : ''
+                            }
+                            placement="bottom"
+                          >
+                            {trunc(list.listName, 20)} ({list.tasks.length})
+                          </Tooltip>
+                        }
                         disabled={list.tasks.length === 0 && !!taskSearch}
+                        wrapped={false}
                       />
                     ))}
                   </Tabs>
