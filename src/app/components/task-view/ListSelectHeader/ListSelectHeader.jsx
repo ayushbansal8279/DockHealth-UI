@@ -15,7 +15,13 @@ const ListSelectHeader = ({ taskList }) => {
   const hoveredItemReference = useRef(null);
   const [bigPopover, setBigPopover] = useState(false);
 
-  const handleMouseEnter = (event, listNameProperty, bigPopoverState) => {
+  const handleMouseEnter = (
+    event,
+    listNameProperty,
+    bigPopoverState,
+    relevant,
+  ) => {
+    if (!relevant) return;
     const { target } = event;
     hoveredItemReference.current = target;
     setPopoverLabel(listNameProperty);
@@ -31,8 +37,8 @@ const ListSelectHeader = ({ taskList }) => {
   return (
     <GenericHeader>
       <div
-        onMouseEnter={
-          longName && (event => handleMouseEnter(event, listName, true))
+        onMouseEnter={event =>
+          handleMouseEnter(event, listName, true, longName)
         }
         onMouseLeave={() => handleMouseLeave()}
       >
@@ -40,9 +46,8 @@ const ListSelectHeader = ({ taskList }) => {
       </div>
       <styled.ListDescription>
         <div
-          onMouseEnter={
-            longDescription &&
-            (event => handleMouseEnter(event, listDescription, false))
+          onMouseEnter={event =>
+            handleMouseEnter(event, listDescription, false, longDescription)
           }
           onMouseLeave={() => setPopoverLabel(null)}
         >
