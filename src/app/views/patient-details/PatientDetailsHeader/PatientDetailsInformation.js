@@ -19,7 +19,6 @@ import {
   ButtonContainer,
   IconWrapper,
   ContactContainer,
-  PatientsLabelContainer,
 } from './styled';
 import PatientDetailsLoader from './PatientDetailsLoader/PatientDetailsLoader';
 import PatientLabels from '../PatientLabels/PatientLabels';
@@ -103,9 +102,10 @@ const PatientDetailsInformation = ({
                 >
                   <PatientDetailsLabel>View details</PatientDetailsLabel>
                 </ButtonContainer>
-                <PatientsLabelContainer>
+                <Box mx={1} />
+                <Box flex="500px 0 0">
                   <PatientLabels />
-                </PatientsLabelContainer>
+                </Box>
               </Grid>
             </Box>
             <ContactContainer>

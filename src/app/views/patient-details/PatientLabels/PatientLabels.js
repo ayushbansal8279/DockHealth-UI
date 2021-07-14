@@ -6,6 +6,8 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import {
@@ -21,6 +23,8 @@ import {
   NoOptionTextLabel,
   LabelChip,
   NoOptionContainer,
+  ReadOnlyLabelsContainer,
+  ReadOnlyLabelContainer,
 } from './styled';
 
 const renderOption = ({
@@ -97,6 +101,7 @@ const PatientLabels = () => {
   const patient = useSelector(patientSelector);
   const labels = useSelector(patientLabelsSelector) || [];
   const [inputValue, setInputValue] = useState('');
+  const [isEditing, setIsEditing, unsetIsEditing] = useBoolean(false);
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
   const inputReference = useRef(null);
@@ -178,8 +183,9 @@ const PatientLabels = () => {
     [inputValue, saveAddLabel],
   );
 
-  return (
+  return isEditing ? (
     <Autocomplete
+      autoFocus
       options={labels}
       placeholder={
         labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
@@ -200,6 +206,9 @@ const PatientLabels = () => {
             event?.target?.blur();
             saveAddLabel({ labelName: inputValue });
           }
+          if (event.key === 'Escape') {
+            unsetIsEditing();
+          }
         },
       }}
       noOptionsText={noOptionText}
@@ -217,6 +226,28 @@ const PatientLabels = () => {
       multiple
       disableClearable
     />
+  ) : (
+    <ReadOnlyLabelsContainer>
+      {selectedLabels.map(label => (
+        <ReadOnlyLabelContainer>
+          <LabelChip
+            key={label.labelIdentifier}
+            clickable
+            label={label.labelName}
+            onClick={setIsEditing}
+          />
+        </ReadOnlyLabelContainer>
+      ))}
+      <ReadOnlyLabelContainer>
+        <LabelChip
+          key="add"
+          clickable
+          textColor={palette.orange}
+          label="+"
+          onClick={setIsEditing}
+        />
+      </ReadOnlyLabelContainer>
+    </ReadOnlyLabelsContainer>
   );
 };
 

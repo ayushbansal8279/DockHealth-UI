@@ -72,6 +72,8 @@ export const LabelChip = styled(Chip)`
   && {
     height: ${spacing.large};
     margin-right: ${spacing.tiny};
+
+    ${({ textColor }) => textColor && `color: ${textColor};`}
   }
 `;
 
@@ -82,4 +84,16 @@ export const NoOptionContainer = styled.div`
     background-color: #f1f1f1;
     color: black;
   }
+`;
+
+export const ReadOnlyLabelsContainer = styled.div`
+  display: inline-flex;
+  padding: 8px 0;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+export const ReadOnlyLabelContainer = styled.div`
+  padding: 1px 0;
 `;
