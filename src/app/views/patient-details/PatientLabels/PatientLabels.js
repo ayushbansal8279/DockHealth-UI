@@ -14,6 +14,7 @@ import {
   patientSelector,
   patientLabelsSelector,
 } from 'selectors/patient-details-selectors';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -239,13 +240,15 @@ const PatientLabels = () => {
         </ReadOnlyLabelContainer>
       ))}
       <ReadOnlyLabelContainer>
-        <LabelChip
-          key="add"
-          clickable
-          textColor={palette.orange}
-          label="+"
-          onClick={setIsEditing}
-        />
+        <Tooltip title="Add a label" placement="bottom">
+          <LabelChip
+            key="add"
+            clickable
+            textColor={palette.orange}
+            label="+"
+            onClick={setIsEditing}
+          />
+        </Tooltip>
       </ReadOnlyLabelContainer>
     </ReadOnlyLabelsContainer>
   );
