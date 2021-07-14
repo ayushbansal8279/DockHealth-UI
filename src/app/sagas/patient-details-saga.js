@@ -32,7 +32,6 @@ import {
   SORT_PATIENT_TASKS,
   ADD_TASK,
   UPDATE_PATIENT_DETAILS,
-  ARCHIEVE_PATIENT,
 } from 'actions/action-types';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -98,6 +97,7 @@ export const DO_UPDATE_PATIENT_NOTE = 'DO_UPDATE_PATIENT_NOTE';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
 export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
+export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
 
 export const quickAddPatientTask = ({ description, taskListIdentifier }) => ({
   type: DO_QUICK_ADD_PATIENT_TASK,
@@ -302,6 +302,11 @@ export const changePatientNotePin = (patientNoteIdentifier, pinned) => ({
   type: DO_CHANGE_PATIENT_NOTE_PIN,
   patientNoteIdentifier,
   pinned,
+});
+
+export const archivePatient = (patientIdentifier, history) => ({
+  type: DO_ARCHIVE_PATIENT,
+  payload: { patientIdentifier, history },
 });
 
 export const PatientTasksSagaActions = {
@@ -836,7 +841,7 @@ function* doUpdatePatientDetails({ payload: { details } }) {
   }
 }
 
-function* doArchievePatient({ payload: { patientIdentifier, history } }) {
+function* doArchivePatient({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.archivePatient, patientIdentifier);
     yield put(closeModal());
@@ -953,7 +958,7 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
   yield takeEvery(UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
-  yield takeEvery(ARCHIEVE_PATIENT, doArchievePatient);
+  yield takeEvery(DO_ARCHIVE_PATIENT, doArchivePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);

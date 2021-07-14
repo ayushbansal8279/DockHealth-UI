@@ -114,7 +114,7 @@ const PatientDetailsView = () => {
     history.push(`${url}/${newTabValue}`);
   };
 
-  const onSearchChangedWithDebouce = useCallback(
+  const onSearchChangedWithDebounce = useCallback(
     debounce(value => {
       dispatch(setPatientTaskSearch(value));
       onSearchChanged();
@@ -125,7 +125,7 @@ const PatientDetailsView = () => {
   const handleSearchValueChange = event => {
     const newValue = event.target?.value;
     setSearchValue(newValue);
-    onSearchChangedWithDebouce(newValue);
+    onSearchChangedWithDebounce(newValue);
   };
 
   const handleFilterChange = compose(dispatch, patientTasksFilterChange);

@@ -8,10 +8,8 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  updatePatientDetails as updatePatientDetailsAction,
-  archievePatient as archievePatientAction,
-} from 'actions/patient-details-actions';
+import { archivePatient as archivePatientAction } from 'sagas/patient-details-saga';
+import { updatePatientDetails as updatePatientDetailsAction } from 'actions/patient-details-actions';
 import PatientDetailsInformation from './PatientDetailsInformation';
 import PatientDetails from './PatientDetails/PatientDetails';
 import { PatientDetailsContainer } from './styled';
@@ -31,8 +29,7 @@ const PatientDetailsHeader = () => {
 
   const archivePatient = useCallback(() => {
     const modalProps = {
-      confirm: () =>
-        dispatch(archievePatientAction(patientIdentifier, history)),
+      confirm: () => dispatch(archivePatientAction(patientIdentifier, history)),
     };
     dispatch(openModal('ArchivePatient', modalProps));
   }, [dispatch, patientIdentifier, history]);

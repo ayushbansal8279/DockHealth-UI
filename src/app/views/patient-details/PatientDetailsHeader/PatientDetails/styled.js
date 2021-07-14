@@ -131,7 +131,7 @@ export const PatientDetailsCancelButton = styled(PatientDetailsButton)`
   padding: 0 54px; // per design
 `;
 
-export const PatietnDetailsFormFooter = styled.div`
+export const PatientDetailsFormFooter = styled.div`
   display: flex;
   align-items: center;
   margin-left: 30px;
