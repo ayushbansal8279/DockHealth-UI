@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Tabs, Tab, Grid } from '@material-ui/core';
+import { Tabs, Grid } from '@material-ui/core';
 import { compose } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
@@ -36,6 +36,7 @@ import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   SearchWrapper,
+  MainTab,
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
@@ -138,7 +139,7 @@ const PatientDetailsView = () => {
           <Grid item xs={8}>
             <Tabs value={activeTabPath} onChange={handleTabChange}>
               {TABS_CONFIG.map(t => (
-                <Tab key={t.mainPath} value={t.mainPath} label={t.label} />
+                <MainTab key={t.mainPath} value={t.mainPath} label={t.label} />
               ))}
             </Tabs>
           </Grid>
