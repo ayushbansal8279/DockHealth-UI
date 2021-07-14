@@ -6,7 +6,7 @@ import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
-import { Box } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   PatientDetailsInformationContainer,
@@ -20,8 +20,10 @@ import {
   ButtonContainer,
   IconWrapper,
   ContactContainer,
+  PatientsLabelContainer,
 } from './styled';
 import PatientDetailsLoader from './PatientDetailsLoader/PatientDetailsLoader';
+import PatientLabels from '../PatientLabels/PatientLabels';
 
 const formatInformation = (information, width) => {
   if (width <= 1152 && information?.length > 24) {
@@ -93,35 +95,52 @@ const PatientDetailsInformation = ({
             <>
               <Box display="flex" alignItems="center">
                 <Box flex="1 0 0" display="flex" alignItems="center">
-                  <PatientName>
-                    {[`${lastName},`, firstName, middleName].join(' ')}
-                  </PatientName>
-                  <ButtonContainer
-                    onClick={setIsOpenedDetails}
-                    disabled={isOpenedDetails}
-                  >
-                    <PatientDetailsLabel>View details</PatientDetailsLabel>
-                  </ButtonContainer>
+                  <Grid container row style={{ paddingRight: '20px' }}>
+                    <PatientName>
+                      {[`${lastName},`, firstName, middleName].join(' ')}
+                    </PatientName>
+                    <ButtonContainer
+                      onClick={setIsOpenedDetails}
+                      disabled={isOpenedDetails}
+                    >
+                      <PatientDetailsLabel>View details</PatientDetailsLabel>
+                    </ButtonContainer>
+                    <PatientsLabelContainer>
+                      <PatientLabels />
+                    </PatientsLabelContainer>
+                  </Grid>
                 </Box>
                 <ContactContainer>
                   {email && (
                     <Tooltip title={email} placement="bottom">
                       <IconWrapper href={`mailto:${email}`}>
-                        <img src={EmailIcon} alt="email icon" />
+                        <img
+                          src={EmailIcon}
+                          alt="email icon"
+                          style={{ height: '16px' }}
+                        />
                       </IconWrapper>
                     </Tooltip>
                   )}
                   {phoneHome && (
                     <Tooltip title={phoneHome} placement="bottom">
                       <IconWrapper href={`tel:${phoneHome}`}>
-                        <img src={PhoneIcon} alt="phone icon" />
+                        <img
+                          src={PhoneIcon}
+                          alt="phone icon"
+                          style={{ height: '16px' }}
+                        />
                       </IconWrapper>
                     </Tooltip>
                   )}
                   {phoneMobile && (
                     <Tooltip title={phoneMobile} placement="bottom">
                       <IconWrapper href={`tel:${phoneMobile}`}>
-                        <img src={MobileIcon} alt="mobile phon icon" />
+                        <img
+                          src={MobileIcon}
+                          alt="mobile phon icon"
+                          style={{ height: '16px' }}
+                        />
                       </IconWrapper>
                     </Tooltip>
                   )}

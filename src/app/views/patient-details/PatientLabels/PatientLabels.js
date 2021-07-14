@@ -83,6 +83,7 @@ const renderOption = ({
   </OptionContainer>
 );
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientLabels = () => {
   const {
     saveAddLabel,
@@ -180,7 +181,9 @@ const PatientLabels = () => {
   return (
     <Autocomplete
       options={labels}
-      placeholder="Are there labels you'd like to add?"
+      placeholder={
+        labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
+      }
       value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}

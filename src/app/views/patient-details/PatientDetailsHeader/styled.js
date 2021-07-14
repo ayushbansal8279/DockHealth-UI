@@ -3,6 +3,7 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import Button from '@material-ui/core/Button';
+import { Grid } from '@material-ui/core';
 
 export const ButtonContainer = styled(Button)``;
 export const IconWrapper = styled.a`
@@ -104,4 +105,13 @@ export const ArrowBox = styled.div`
 
 export const ArrowBoxIndicator = styled.div`
   height: fit-content;
+`;
+
+export const PatientsLabelContainer = styled(Grid)`
+  && {
+    background-color: white;
+    width: 500px;
+    padding-left: 20px;
+    margin-top: -10px;
+  }
 `;
