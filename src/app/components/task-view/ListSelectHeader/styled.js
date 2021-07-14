@@ -68,17 +68,3 @@ export const LabelSmall = styled.div`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.smallPlus};
 `;
-
-// export const DescriptionTooltip = styled.div`
-//   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
-//   position: absolute;
-//   top: 30px;
-//   left: 60px;
-//   max-width: 650px;
-//   padding: ${spacing.small};
-//   color: ${palette.white};
-//   background: ${palette.mediumGrey};
-//   z-index: 10;
-//   font-size: ${fontSizes.smallPlus};
-//   cursor: initial;
-// `;
