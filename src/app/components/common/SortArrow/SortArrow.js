@@ -6,7 +6,6 @@ import { SortArrowContainer } from './styled';
 const SortArrow = ({ orderType, onClick = () => {}, isParentHovered }) => {
   return (
     <SortArrowContainer
-      type="button"
       onClick={onClick}
       hideIcon={!isParentHovered}
       ordered={!!orderType}

@@ -4,7 +4,6 @@ import { CheckboxInput, Icon } from './styled';
 
 const Checkbox = ({ onClick, isChecked, isDisabled, size, isCircle }) => (
   <CheckboxInput
-    type="button"
     onClick={onClick}
     isChecked={isChecked}
     disabled={isDisabled}
@@ -28,14 +27,16 @@ const Checkbox = ({ onClick, isChecked, isDisabled, size, isCircle }) => (
 
 Checkbox.propTypes = {
   size: number,
-  isChecked: bool.isRequired,
+  isChecked: bool,
   isDisabled: bool,
-  onClick: func.isRequired,
+  onClick: func,
 };
 
 Checkbox.defaultProps = {
   size: 12,
+  isChecked: false,
   isDisabled: false,
+  onClick: null,
 };
 
 export default Checkbox;

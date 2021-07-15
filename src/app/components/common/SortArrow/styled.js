@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-export const SortArrowContainer = styled.button`
+export const SortArrowContainer = styled.div`
   position: relative;
   height: 13px;
   width: 9px;

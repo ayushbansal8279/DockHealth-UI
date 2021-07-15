@@ -6,7 +6,7 @@ export const Icon = styled.svg`
   stroke: ${palette.brightBlue};
 `;
 
-export const CheckboxInput = styled.button`
+export const CheckboxInput = styled.div`
   width ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   border-radius: ${({ isCircle }) => (isCircle ? '50%' : '2px')};

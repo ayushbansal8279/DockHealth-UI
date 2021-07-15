@@ -22,13 +22,12 @@ const TaskIcon: React.FC<TaskIconProps> = ({
   isHovered,
   isActive,
   isNew,
-  onClick,
+  // onClick,
 }) => (
   <ButtonWrapper
-    type="button"
     isHovered={isHovered}
     isActive={isActive}
-    onClick={typeof onClick === 'function' ? onClick : undefined}
+    // onClick={typeof onClick === 'function' ? onClick : undefined}
   >
     {
       {

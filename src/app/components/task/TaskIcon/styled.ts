@@ -3,7 +3,7 @@ import palette from 'styles/palette';
 
 const ICON_HOVERED_COLOR = palette.coolGrey2;
 
-export const ButtonWrapper = styled.button<{
+export const ButtonWrapper = styled.div<{
   isHovered?: boolean;
   isActive?: boolean;
 }>`
