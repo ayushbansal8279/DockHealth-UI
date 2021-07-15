@@ -255,7 +255,7 @@ const OnboardingTeamSetupView = () => {
                       type="text"
                       name={`organizationMembers[${item.index}].firstName`}
                       label="First name"
-                      isRequired
+                      required
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.firstName
@@ -268,7 +268,7 @@ const OnboardingTeamSetupView = () => {
                       ref={register}
                       name={`organizationMembers[${item.index}].lastName`}
                       label="Last name"
-                      isRequired
+                      required
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.lastName
@@ -282,7 +282,7 @@ const OnboardingTeamSetupView = () => {
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
                       label="Email"
-                      isRequired
+                      required
                       disabled={fieldState?.disabled}
                       error={
                         errors?.organizationMembers?.[item.index]?.email

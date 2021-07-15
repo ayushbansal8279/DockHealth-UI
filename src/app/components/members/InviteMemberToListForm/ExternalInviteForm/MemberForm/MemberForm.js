@@ -47,7 +47,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             <Grid item xs={6}>
               <Input
                 ref={register}
-                isRequired
+                required
                 name="firstName"
                 label="First name"
                 error={errors?.firstName?.message}
@@ -56,7 +56,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             <Grid item xs={6}>
               <Input
                 ref={register}
-                isRequired
+                required
                 name="lastName"
                 label="Last name"
                 error={errors?.lastName?.message}
@@ -69,7 +69,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
                 register(element);
                 emailInputReference.current = element;
               }}
-              isRequired
+              required
               name="email"
               label="Email address"
               placeholder="Type the email address to invite"

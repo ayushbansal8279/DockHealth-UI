@@ -111,21 +111,21 @@ const PatientForm = forwardRef(
               readOnly={readOnly}
               label="first name"
               name="firstName"
-              isRequired
+              required
             />
             <Spacing vertical={3} />
             <FormInput
               readOnly={readOnly}
               label="middle name"
               name="middleName"
-              isRequired={false}
+              required={false}
             />
             <Spacing readOnly={readOnly} vertical={3} />
             <FormInput
               readOnly={readOnly}
               label="last name"
               name="lastName"
-              isRequired
+              required
             />
             <Spacing vertical={3} />
             <FormSelect
@@ -134,7 +134,7 @@ const PatientForm = forwardRef(
               options={GENDER_OPTIONS}
               name="gender"
               defaultValue={genderValue}
-              isRequired={false}
+              required={false}
             />
             <Spacing vertical={3} />
             <FormInput
@@ -143,7 +143,7 @@ const PatientForm = forwardRef(
               placeholder="MM/DD/YYYY"
               inputComponent={DateInput}
               name="dob"
-              isRequired={false}
+              required={false}
             />
             <Spacing vertical={3} />
             <FormInput
@@ -151,7 +151,7 @@ const PatientForm = forwardRef(
               label={uniqueIdentifierLabel}
               placeholder="- -"
               name="mrn"
-              isRequired={false}
+              required={false}
             />
             <Spacing vertical={3} />
           </LabeledCollapse>
@@ -164,7 +164,7 @@ const PatientForm = forwardRef(
               readOnly={readOnly}
               label="mobile phone"
               name="phoneMobile"
-              isRequired={false}
+              required={false}
             />
             <Spacing vertical={1} />
             <FormPhoneNumberInput
@@ -172,14 +172,14 @@ const PatientForm = forwardRef(
               label="home phone"
               name="phoneHome"
               type="tel"
-              isRequired={false}
+              required={false}
             />
             <Spacing vertical={1} />
             <FormInput
               readOnly={readOnly}
               label="email"
               name="email"
-              isRequired={false}
+              required={false}
             />
             <Spacing vertical={1} />
           </LabeledCollapse>

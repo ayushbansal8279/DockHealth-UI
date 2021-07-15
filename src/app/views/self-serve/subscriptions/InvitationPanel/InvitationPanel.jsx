@@ -111,7 +111,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     name="firstName"
                     label="First Name"
                     autoComplete={uuid()}
-                    isRequired
+                    required
                   />
                 </Grid>
                 <Grid item xs={3}>
@@ -119,7 +119,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     name="lastName"
                     label="Last Name"
                     autoComplete={uuid()}
-                    isRequired
+                    required
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -127,7 +127,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     name="email"
                     label="Email"
                     autoComplete={uuid()}
-                    isRequired
+                    required
                   />
                 </Grid>
               </Grid>

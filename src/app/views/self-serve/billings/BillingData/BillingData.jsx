@@ -233,7 +233,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Spacing vertical={3} />
       <Grid item sm={12} md={6}>
-        <FormInput isRequired name="nameOnCard" label="Name on card" />
+        <FormInput required name="nameOnCard" label="Name on card" />
       </Grid>
       <Grid item sm={12} md={6} style={{ placeSelf: 'flex-end' }}>
         <BillingElement
@@ -241,7 +241,7 @@ const CreditPaymentForm = ({
           name="cardNumber"
           Component={CardNumberInput}
           label="Card number"
-          isRequired
+          required
           onChange={() => {}}
           endAdornment={
             <AcceptedCardsContainer>
@@ -267,7 +267,7 @@ const CreditPaymentForm = ({
           name="cardExpiration"
           Component={CardExpiryInput}
           label="Expiration date"
-          isRequired
+          required
         />
       </Grid>
       <Grid item sm={12} md={6}>
@@ -277,7 +277,7 @@ const CreditPaymentForm = ({
           Component={CardCvcInput}
           label="CVC"
           disabled={!isUpdatingBilling}
-          isRequired
+          required
         />
       </Grid>
       <Spacing vertical={4} />
@@ -288,7 +288,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Spacing vertical={3} />
       <Grid item sm={12}>
-        <FormInput isRequired name="address" label="Address line 1" />
+        <FormInput required name="address" label="Address line 1" />
       </Grid>
       <Grid item sm={12}>
         <MontserratTypography variant="h4">
@@ -303,13 +303,13 @@ const CreditPaymentForm = ({
         </StyledCollapse>
       </Grid>
       <Grid item sm={12} md={3}>
-        <FormInput isRequired name="zip" label="ZIP" />
+        <FormInput required name="zip" label="ZIP" />
       </Grid>
       <Grid item sm={12} md={6}>
-        <FormInput isRequired name="city" label="City" />
+        <FormInput required name="city" label="City" />
       </Grid>
       <Grid item sm={12} md={3}>
-        <FormInput isRequired name="state" label="State" />
+        <FormInput required name="state" label="State" />
       </Grid>
       {hasDiscountCode && <Grid item sm={12} md={9} />}
       {hasDiscountCode && (

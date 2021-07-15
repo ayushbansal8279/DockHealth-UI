@@ -76,7 +76,7 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
               code for HIPAA compliance
             </HelperText>
             <FormPhoneNumberInput
-              isRequired
+              required
               autoFocus
               label="Your Mobile Number"
               name="phoneNumber"

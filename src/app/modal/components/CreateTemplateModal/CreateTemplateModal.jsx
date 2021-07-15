@@ -53,7 +53,7 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
         <FormContext {...formMethods}>
           <FormInput
             autoFocus
-            isRequired
+            required
             label="Workflow name"
             name={TEMPLATE_NAME_FIELD_NAME}
             placeholder="What would you like to name this workflow?"

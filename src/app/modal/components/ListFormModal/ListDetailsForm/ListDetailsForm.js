@@ -118,7 +118,7 @@ const ListDetailsForm = ({
               fullWidth
               label={messages.form.listName.label}
               name="listName"
-              isRequired
+              required
               placeholder="Add your list name here"
               validate={validateListName}
             />

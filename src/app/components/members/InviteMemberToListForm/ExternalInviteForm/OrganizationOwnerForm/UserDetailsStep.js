@@ -41,7 +41,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               type="text"
               name="firstName"
               label="First name"
-              isRequired
+              required
               error={errors?.firstName?.message}
               value={firstNameValue}
               onChange={event => setValue('firstName', event.target.value)}
@@ -52,7 +52,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               type="text"
               name="lastName"
               label="Last name"
-              isRequired
+              required
               error={errors?.lastName?.message}
               value={lastNameInputValue}
               onChange={event => setValue('lastName', event.target.value)}
@@ -66,7 +66,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
             name="email"
             label="Email address"
             placeholder="Type the email address to invite"
-            isRequired
+            required
             error={errors?.email?.message}
             value={emailInputValue}
             onChange={event => setValue('email', event.target.value)}
