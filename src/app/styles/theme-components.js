@@ -64,7 +64,7 @@ const themeCommonOverrides = () => ({
     },
     MuiPopover: {
       paper: {
-        border: 'none',
+        border: `1px solid ${palette.coolGrey2}`,
         borderRadius: 0,
         margin: 0,
         padding: 0,
