@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { splitAt } from 'ramda';
 import { openModal } from 'modal/actions';
 import { isMemberPending } from 'helpers/list-members-helper';
@@ -7,11 +7,15 @@ import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
 import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
 import AdditionalMembersCounter from 'components/members/AdditionalMembersCounter/AdditionalMembersCounter';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { MemberWrapper } from './styled';
 
 const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
   const dispatch = useDispatch();
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
+
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const isGuest = orgUserRole === 'GUEST';
 
   return (
     <>
@@ -31,17 +35,19 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
         </>
       )}
       <Spacing horizontal={2} />
-      <InviteMemberButton
-        size={40}
-        onClick={() =>
-          dispatch(
-            openModal('InviteToList', {
-              list,
-              onMembersRefresh: refreshMembers,
-            }),
-          )
-        }
-      />
+      {!isGuest && list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC' && (
+        <InviteMemberButton
+          size={40}
+          onClick={() =>
+            dispatch(
+              openModal('InviteToList', {
+                list,
+                onMembersRefresh: refreshMembers,
+              }),
+            )
+          }
+        />
+      )}
     </>
   );
 };
