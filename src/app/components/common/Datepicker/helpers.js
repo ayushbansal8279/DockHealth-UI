@@ -97,7 +97,10 @@ export const renderDayLabels = ({
     );
 
     return (
-      <CalendarIconWrapper isToday={dayMoment.isSame(moment(), 'days')}>
+      <CalendarIconWrapper
+        isToday={dayMoment.isSame(moment(), 'days')}
+        key={dayMoment.format(DATE_ISO_FORMAT)}
+      >
         <CalendarIconButton
           key={dayMoment.format(DATE_ISO_FORMAT)}
           color={isDaySelected || isDayInSelectedRange ? 'primary' : 'default'}

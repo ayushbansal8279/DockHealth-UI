@@ -61,7 +61,6 @@ TaskDrawerPopover.propTypes = {
   disabled: bool,
   placement: oneOf(['top', 'bottom']),
   children: node.isRequired,
-  content: node.isRequired,
 };
 
 TaskDrawerPopover.defaultProps = {

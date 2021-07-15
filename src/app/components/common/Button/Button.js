@@ -47,7 +47,8 @@ const StyledButton = withStyles(() => ({
     },
     padding: `0 ${spacing.regular}`,
     transition: `opacity 0.25s`,
-    textTransform: ({ uppercase }) => (uppercase ? 'uppercase' : 'none'),
+    textTransform: ({ uppercase }) =>
+      uppercase === 'true' ? 'uppercase' : 'none',
     cursor: ({ disabled }) => (!disabled ? 'pointer' : 'auto'),
 
     '&:hover:not(:disabled)': {
@@ -194,7 +195,7 @@ const Button = ({
       ref={reference}
       variant={muiVariant}
       color={muiColor}
-      uppercase={uppercase}
+      uppercase={`${uppercase}`}
       onClick={onClick}
       size={size}
       type={type}
@@ -211,7 +212,7 @@ const Button = ({
 };
 
 Button.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
   variant: PropTypes.oneOf([
     PRIMARY,
     PRIMARY_RED,

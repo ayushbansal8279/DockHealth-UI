@@ -319,7 +319,7 @@ TimeDropdownInput.propTypes = {
   label: string,
   disabled: bool,
   error: bool,
-  savedValue: string.isRequired,
+  savedValue: string,
   onSave: func.isRequired,
   endAdornment: node,
   validate: func,
@@ -332,6 +332,7 @@ TimeDropdownInput.defaultProps = {
   error: false,
   endAdornment: null,
   validate: null,
+  savedValue: '',
 };
 
 export default TimeDropdownInput;

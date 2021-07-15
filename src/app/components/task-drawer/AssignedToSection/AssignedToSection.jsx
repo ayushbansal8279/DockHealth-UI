@@ -78,6 +78,7 @@ const AssignedToSection = ({
       )}
     >
       <TextInput
+        name="assignTo"
         type="text"
         label="Assigned to"
         placeholder="Who would you like to assign this task to?"

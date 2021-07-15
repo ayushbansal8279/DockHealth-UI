@@ -289,7 +289,7 @@ SelectDropdown.propTypes = {
   ),
   selectedOption: shape({
     key: string,
-    label: node,
+    label: func,
     displayLabel: string,
     value: string,
   }),
