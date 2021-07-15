@@ -230,7 +230,7 @@ const PatientLabels = () => {
   ) : (
     <ReadOnlyLabelsContainer>
       {selectedLabels.map(label => (
-        <ReadOnlyLabelContainer>
+        <ReadOnlyLabelContainer key={label.labelIdentifier}>
           <LabelChip
             key={label.labelIdentifier}
             clickable
@@ -244,7 +244,7 @@ const PatientLabels = () => {
           <LabelChip
             key="add"
             clickable
-            textColor={palette.orange}
+            textcolor={palette.orange}
             label="+"
             onClick={setIsEditing}
           />

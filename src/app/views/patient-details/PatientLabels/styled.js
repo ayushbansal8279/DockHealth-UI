@@ -73,7 +73,7 @@ export const LabelChip = styled(Chip)`
     height: ${spacing.large};
     margin-right: ${spacing.tiny};
 
-    ${({ textColor }) => textColor && `color: ${textColor};`}
+    ${({ textcolor }) => textcolor && `color: ${textcolor};`}
   }
 `;
 
