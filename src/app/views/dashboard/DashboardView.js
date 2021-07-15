@@ -119,12 +119,12 @@ const DashboardView = ({
       const { userPreference } = currentUser || {};
       const { appFeaturesReviewed } = userPreference || {};
 
-      if (!appFeaturesReviewed?.includes('TASK_STATUSES')) {
+      if (!appFeaturesReviewed?.includes('PATIENT_PROFILE')) {
         dispatch(
-          openModal('TaskStatusTour', {
+          openModal('PatientProfileTour', {
             onClose: () => {
               UserApi.updateUserDashboardPrefs({
-                appFeaturesReviewed: ['TASK_STATUSES'],
+                appFeaturesReviewed: ['PATIENT_PROFILE'],
               });
             },
           }),
