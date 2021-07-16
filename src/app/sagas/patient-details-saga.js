@@ -502,7 +502,7 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
     yield call(
       TaskApi.updateWorkflowStatus,
       task.taskIdentifier,
-      workflowStatus,
+      workflowStatus?.identifier,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([
