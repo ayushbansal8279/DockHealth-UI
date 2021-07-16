@@ -141,7 +141,9 @@ export const TASK_ITEM_SORT_METHODS = {
     ),
   ]),
   [TaskItemColumn.ASSIGNED]: sortWith([
-    ascend(pipe(path(['assignedTo', 'userName']), defaultTo('~'), toLower)),
+    ascend(
+      pipe(path(['assignedToUsers', 0, 'userName']), defaultTo('~'), toLower),
+    ),
   ]),
   [TaskItemColumn.LIST_NAME]: sortWith([
     ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
@@ -182,7 +184,9 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     ),
   ]),
   [TaskItemColumn.ASSIGNED]: sortWith([
-    descend(pipe(path(['assignedTo', 'userName']), defaultTo(' '), toLower)),
+    descend(
+      pipe(path(['assignedToUsers', 0, 'userName']), defaultTo(' '), toLower),
+    ),
   ]),
   [TaskItemColumn.LIST_NAME]: sortWith([
     descend(
