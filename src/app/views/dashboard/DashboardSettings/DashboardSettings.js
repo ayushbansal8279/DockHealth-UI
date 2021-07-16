@@ -64,19 +64,22 @@ const DashboardSettings = ({ columnsConfig, setColumnsConfig }) => {
           <DashboardSettingsHeader>
             Which column would you like to see?
           </DashboardSettingsHeader>
-          {Object.keys(columnsConfig).map(columnKey => (
-            <DashboardSettingsOption>
-              <Checkbox
-                isChecked={columnsConfig[columnKey]}
-                onClick={() => {
-                  onClickChecbkox(columnKey);
-                }}
-              />
-              <DashboardSettingsLabel>
-                {ColumnOptionNames[columnKey]}
-              </DashboardSettingsLabel>
-            </DashboardSettingsOption>
-          ))}
+          {Object.keys(columnsConfig).map(columnKey => {
+            const optionName = ColumnOptionNames[columnKey];
+            return (
+              optionName && (
+                <DashboardSettingsOption>
+                  <Checkbox
+                    isChecked={columnsConfig[columnKey]}
+                    onClick={() => {
+                      onClickChecbkox(columnKey);
+                    }}
+                  />
+                  <DashboardSettingsLabel>{optionName}</DashboardSettingsLabel>
+                </DashboardSettingsOption>
+              )
+            );
+          })}
         </DashboardSettingsContainer>
       </Popover>
       <StyledDashboardSettingsIcon
