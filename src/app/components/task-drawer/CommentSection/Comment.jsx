@@ -50,6 +50,7 @@ const Comment = ({
       rawText: commentContent,
       tokenizedText: tokenizedComment,
       mentions: commentMentions,
+      handleRichText: true,
     }),
   );
 
@@ -165,6 +166,7 @@ const Comment = ({
                             rawText: commentContent,
                             tokenizedText: tokenizedComment,
                             mentions: commentMentions,
+                            handleRichText: true,
                           }),
                         );
                       }}
