@@ -128,6 +128,7 @@ export const convertToEditorState = state => {
       state.tokenizedText,
       state.rawText,
       state.mentions || [],
+      state.handleRichText || false,
     ),
   );
 };

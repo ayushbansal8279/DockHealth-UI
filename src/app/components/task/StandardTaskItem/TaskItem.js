@@ -152,6 +152,7 @@ const TaskItem = ({
       rawText: description,
       tokenizedText: tokenizedDescription,
       mentions: taskMentions,
+      handleRichText: false,
     }),
   );
   const [contextMenu, setContextMenu] = useState(null);
@@ -175,6 +176,7 @@ const TaskItem = ({
         tokenizedDescription,
         description,
         taskMentions,
+        false,
       );
       setDescriptionState(EditorState.push(descriptionState, newContent));
     }
