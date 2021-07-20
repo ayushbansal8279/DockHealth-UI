@@ -224,6 +224,7 @@ const initializeTaskDrawerHooks = ({
           tokenizedDescription,
           description,
           taskMentions,
+          false,
         );
 
         setParentDescriptionState(
@@ -248,6 +249,7 @@ const initializeTaskDrawerHooks = ({
           tokenizedDescription,
           description,
           taskMentions,
+          false,
         );
 
         setDescriptionState(EditorState.push(descriptionState, newContent));

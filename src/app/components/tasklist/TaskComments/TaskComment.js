@@ -34,6 +34,7 @@ const TaskComment = ({
       rawText: comment,
       tokenizedText: tokenizedComment,
       mentions: commentMentions,
+      handleRichText: true,
     }),
   );
   const [wholeCommentVisible, setWholeCommentVisible] = useState(false);
@@ -44,6 +45,7 @@ const TaskComment = ({
         tokenizedComment,
         comment,
         commentMentions,
+        true,
       );
       setCommentState(EditorState.push(commentState, newContent));
     }

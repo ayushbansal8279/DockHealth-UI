@@ -88,6 +88,7 @@ const Subtask = ({ subtask, currentUser }) => {
       rawText: description,
       tokenizedText: tokenizedDescription,
       mentions: taskMentions,
+      handleRichText: false,
     }),
   );
 

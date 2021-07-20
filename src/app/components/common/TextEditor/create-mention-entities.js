@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { convertFromRaw } from 'draft-js';
+import { convertFromRaw, convertToRaw, ContentState } from 'draft-js';
 import { markdownToDraft } from 'markdown-draft-js';
 
 const getIndicesOf = (searchValue, text, caseSensitive) => {
@@ -40,18 +40,24 @@ const getEntityRanges = (text, mentionName, mentionKey) => {
   return null;
 };
 
-export const createMentionEntitiesFromRawText = (text, tags) => {
-  const rawContent = markdownToDraft(text, {
-    blockStyles: {
-      ins_open: 'UNDERLINE',
-      del_open: 'STRIKETHROUGH',
-    },
-    remarkableOptions: {
-      enable: {
-        inline: 'ins',
-      },
-    },
-  });
+export const createMentionEntitiesFromRawText = (
+  text,
+  tags,
+  handleRichText,
+) => {
+  const rawContent = handleRichText
+    ? markdownToDraft(text, {
+        blockStyles: {
+          ins_open: 'UNDERLINE',
+          del_open: 'STRIKETHROUGH',
+        },
+        remarkableOptions: {
+          enable: {
+            inline: 'ins',
+          },
+        },
+      })
+    : convertToRaw(ContentState.createFromText(text));
 
   const rawState = tags.map(tag => {
     const { mentionType, ...data } = tag;
@@ -84,7 +90,12 @@ export const createMentionEntitiesFromRawText = (text, tags) => {
   return convertFromRaw(rawContent);
 };
 
-export const createMentionEntities = (tokenizedText, rawText, tags) => {
+export const createMentionEntities = (
+  tokenizedText,
+  rawText,
+  tags,
+  handleRichText,
+) => {
   const tagsWithType = tags.map(tag => {
     const foundIndex = tokenizedText.indexOf(`{${tag.identifier}}`);
 
@@ -98,5 +109,9 @@ export const createMentionEntities = (tokenizedText, rawText, tags) => {
     return { ...tag };
   });
 
-  return createMentionEntitiesFromRawText(rawText, tagsWithType);
+  return createMentionEntitiesFromRawText(
+    rawText,
+    tagsWithType,
+    handleRichText,
+  );
 };
