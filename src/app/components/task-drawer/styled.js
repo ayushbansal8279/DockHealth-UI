@@ -10,6 +10,8 @@ export const AdornmentContainer = styled.div`
   justify-content: center;
   margin-bottom: 0.3rem;
   width: 2ch;
+  position: relative;
+  top: -6px;
 `;
 
 export const EndAdornmentContainer = styled.div`
@@ -20,6 +22,8 @@ export const EndAdornmentContainer = styled.div`
   justify-content: center;
   margin-bottom: 0.7rem;
   width: 2ch;
+  position: relative;
+  top: -14px;
 `;
 
 export const AdornmentClear = styled(Close)`

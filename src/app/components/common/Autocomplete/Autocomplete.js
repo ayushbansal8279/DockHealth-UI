@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import propTypes from 'prop-types';
 import { Autocomplete as AutocompleteMUI } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
-import { StyledLabel, StyledTextField } from './styled';
+import Input from 'components/common/Input/Input';
 
 const StandardAutocompleteMUI = withStyles({
   option: {
@@ -33,10 +33,8 @@ const StandardInput = ({
 
   return (
     <>
-      <StyledLabel htmlFor={`autocomplete-input-${label}`}>
-        {label?.toUpperCase()}
-      </StyledLabel>
-      <StyledTextField
+      <Input
+        label={label}
         fullWidth
         id={`autocomplete-input-${label}`}
         onBlur={onBlurInput}

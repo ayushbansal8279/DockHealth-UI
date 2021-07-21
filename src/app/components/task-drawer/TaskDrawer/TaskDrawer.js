@@ -4,7 +4,6 @@
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
-
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -120,9 +119,41 @@ const TaskDrawer = ({
     taskDrawerReference,
     hideTour,
   });
-
   const { handleSubmit, setValue } = formMethods;
   const parentFormSubmit = handleSubmit(onSubmit);
+
+  // const CustomTextEditor = () => (
+  //   <TextEditor
+  //     ref={descriptionReference}
+  //     taskListIdentifier={taskListIdentifier}
+  //     disableMentions={isTemplateTask}
+  //     placeholder={
+  //       isAddingOrEditingSubtask ? 'What is the subtask?' : 'What is the task?'
+  //     }
+  //     isDrawerEditor
+  //     onFocus={onFocusMentionsEditor}
+  //     onBlur={onBlurMentionsEditor}
+  //     state={descriptionState}
+  //     onChange={onChangeMentionsEditor}
+  //     keyBindingFn={event => {
+  //       if (event.keyCode === 13) {
+  //         return 'enter-command';
+  //       }
+  //       return undefined;
+  //     }}
+  //     handleKeyCommand={command => {
+  //       if (command === 'enter-command') {
+  //         parentFormSubmit();
+  //         return 'handled';
+  //       }
+
+  //       return 'not-handled';
+  //     }}
+  //   />
+  // );
+
+  // const CustomTextEditorInput = () =>
+  //   useCallback(() => <Input customInputComponent={CustomTextEditor} />, []);
 
   return (
     <>

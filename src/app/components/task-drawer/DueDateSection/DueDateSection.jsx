@@ -6,11 +6,11 @@ import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import Spacing from 'components/common/Spacing';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import Input from 'components/common/Input/Input';
 import {
   DueDateContentWrapper,
   DueDateContent,
   DueDateSectionWrapper,
-  DueDateLabel,
   Placeholder,
   DueDateText,
 } from './styled';
@@ -39,48 +39,57 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
 
   return (
     <DueDateSectionWrapper disabled={isTemplateTask}>
-      <DueDateLabel>Due date</DueDateLabel>
-      <TaskDrawerPopover
-        disabled={isTemplateTask}
-        content={({ closePopover }) => (
-          <DueDatePicker
-            taskIdentifier={taskIdentifier}
-            selectedDate={dueDate}
-            onDateChange={onDueDateChange}
-            recurring={hasRecurringSchedule}
-            onCloseClick={closePopover}
-          />
-        )}
-      >
-        <DueDateContentWrapper>
-          {momentDueDate ? (
-            <DueDateContent error={isDueDateOverdue(selectedTask)}>
-              <DueDateText>
-                {momentDueDate.format('MM/DD/YY')}
-                {hasRecurringSchedule && (
-                  <>
-                    <Spacing horizontal={3} />
-                    <Tooltip title="Recurring Task" placement="right">
+      {/* <DueDateLabel>Due date</DueDateLabel> */}
+      <Input
+        label="Due date"
+        shrink
+        customInputComponent={() => (
+          <TaskDrawerPopover
+            disabled={isTemplateTask}
+            content={({ closePopover }) => (
+              <DueDatePicker
+                taskIdentifier={taskIdentifier}
+                selectedDate={dueDate}
+                onDateChange={onDueDateChange}
+                recurring={hasRecurringSchedule}
+                onCloseClick={closePopover}
+              />
+            )}
+          >
+            <DueDateContentWrapper>
+              {momentDueDate ? (
+                <DueDateContent error={isDueDateOverdue(selectedTask)}>
+                  <DueDateText>
+                    {momentDueDate.format('MM/DD/YY')}
+                    {hasRecurringSchedule && (
                       <>
-                        <RecurringIcon />
                         <Spacing horizontal={3} />
+                        <Tooltip title="Recurring Task" placement="right">
+                          <>
+                            <RecurringIcon />
+                            <Spacing horizontal={3} />
+                          </>
+                        </Tooltip>
                       </>
-                    </Tooltip>
-                  </>
-                )}
-              </DueDateText>
-              <DueDateText>{formatDueTime(dueDate)}</DueDateText>
-              <AdornmentClear onClick={() => onDueDateChange(null)} />
-            </DueDateContent>
-          ) : (
-            <Placeholder>
-              {!isTemplateTask
-                ? 'Set a due date?'
-                : 'Not available when creating a template'}
-            </Placeholder>
-          )}
-        </DueDateContentWrapper>
-      </TaskDrawerPopover>
+                    )}
+                  </DueDateText>
+                  <DueDateText>{formatDueTime(dueDate)}</DueDateText>
+                  <AdornmentClear
+                    style={{ position: 'relative', top: '-6px' }}
+                    onClick={() => onDueDateChange(null)}
+                  />
+                </DueDateContent>
+              ) : (
+                <Placeholder>
+                  {!isTemplateTask
+                    ? 'Set a due date?'
+                    : 'Not available when creating a template'}
+                </Placeholder>
+              )}
+            </DueDateContentWrapper>
+          </TaskDrawerPopover>
+        )}
+      />
     </DueDateSectionWrapper>
   );
 };

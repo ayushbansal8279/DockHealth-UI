@@ -160,7 +160,7 @@ export const DescriptionLabel = styled.label`
   display: block;
   margin-bottom: ${spacing.small};
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
   text-transform: uppercase;
