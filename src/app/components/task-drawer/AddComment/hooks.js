@@ -29,7 +29,7 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
   const onSubmit = useCallback(() => {
     setAddingComment();
 
-    const newComment = convertFromEditorStateToOutput(commentState);
+    const newComment = convertFromEditorStateToOutput(commentState, true);
     const commentTokenizedText = newComment.tokenizedText;
 
     if (commentTokenizedText !== undefined && commentTokenizedText === '') {
