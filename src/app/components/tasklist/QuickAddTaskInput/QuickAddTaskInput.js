@@ -54,7 +54,7 @@ const QuickAddTaskInput = React.forwardRef(
         rawText,
         tokenizedText,
         mentions,
-      } = convertFromEditorStateToOutput(newTaskDescription);
+      } = convertFromEditorStateToOutput(newTaskDescription, false);
 
       // look for first patient mention to assign to created task
       const { identifier: patientIdentifier } =
@@ -82,7 +82,7 @@ const QuickAddTaskInput = React.forwardRef(
         setError(null);
       }
       setNewTaskDescription(state);
-      setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
+      setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
     };
 
     return (

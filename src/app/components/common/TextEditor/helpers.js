@@ -49,7 +49,7 @@ const substituteNameForIdInText = (rawText, mentions) => {
   return textWithIds;
 };
 
-export const convertFromEditorStateToOutput = editorState => {
+export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
 
   const textBlocks = stateContent.blocks.map(block => block.text);
@@ -80,13 +80,15 @@ export const convertFromEditorStateToOutput = editorState => {
     },
   };
 
-  const markdown = draftToMarkdown(stateContent, {
-    styleItems: extendedStyleItems,
-  });
+  const textValue = handleRichText
+    ? draftToMarkdown(stateContent, {
+        styleItems: extendedStyleItems,
+      })
+    : rawText;
 
   return {
     rawText,
-    tokenizedText: substituteNameForIdInText(markdown, mentions),
+    tokenizedText: substituteNameForIdInText(textValue, mentions),
     mentions,
   };
 };

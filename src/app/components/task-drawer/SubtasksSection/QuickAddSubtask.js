@@ -41,6 +41,7 @@ const QuickAddSubtask = ({
 
     const { rawText, tokenizedText } = convertFromEditorStateToOutput(
       newTaskDescription,
+      false,
     );
 
     validatorError = validateNewSubtask(rawText);
@@ -60,7 +61,7 @@ const QuickAddSubtask = ({
       setError(null);
     }
     setNewTaskDescription(state);
-    setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
+    setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
   };
 
   return (

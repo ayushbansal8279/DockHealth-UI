@@ -64,7 +64,10 @@ const onSubmit = ({
   descriptionState,
   setDescriptionErrorState,
 }) => (data, event) => {
-  const { tokenizedText } = convertFromEditorStateToOutput(descriptionState);
+  const { tokenizedText } = convertFromEditorStateToOutput(
+    descriptionState,
+    false,
+  );
 
   if (!tokenizedText) {
     setDescriptionErrorState(true);
@@ -398,6 +401,7 @@ const initializeTaskDrawerHooks = ({
   const handleTaskDescriptionUpdate = useCallback(async () => {
     const updatedTaskDescription = convertFromEditorStateToOutput(
       descriptionState,
+      false,
     ).tokenizedText;
 
     if (
@@ -508,7 +512,7 @@ const initializeTaskDrawerHooks = ({
   const onChangeMentionsEditor = useCallback(
     state => {
       if (descriptionErrorState) {
-        const { tokenizedText } = convertFromEditorStateToOutput(state);
+        const { tokenizedText } = convertFromEditorStateToOutput(state, false);
         if (tokenizedText) {
           setDescriptionErrorState(false);
         }
