@@ -4,7 +4,6 @@
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
-
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -120,7 +119,6 @@ const TaskDrawer = ({
     taskDrawerReference,
     hideTour,
   });
-
   const { handleSubmit, setValue } = formMethods;
   const parentFormSubmit = handleSubmit(onSubmit);
 

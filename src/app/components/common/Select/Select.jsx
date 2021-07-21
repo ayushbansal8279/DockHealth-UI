@@ -5,6 +5,7 @@ import {
   InputLabel,
   MenuItem,
   FormHelperText,
+  ListItemText,
 } from '@material-ui/core';
 import {
   func,
@@ -28,7 +29,7 @@ const Select = ({
   value,
   ...restProps
 }) => {
-  const selectedOption = options.find(element => element.value === value);
+  const selectedOption = options?.find(element => element.value === value);
   return (
     <FormControl error={error}>
       <InputLabel shrink={!!value} variant={variant}>
@@ -56,11 +57,21 @@ const Select = ({
           }}
           inputProps={{ name }}
           variant={variant}
+          value={value}
+          renderValue={selected =>
+            options.find(option => option.value === selected)?.label
+          }
           {...restProps}
         >
-          {options.map(option => (
-            <MenuItem value={option.value}>{option.label}</MenuItem>
-          ))}
+          {options?.map(option => {
+            const { OptionIcon } = option;
+            return (
+              <MenuItem value={option.value}>
+                {OptionIcon || null}
+                <ListItemText>{option.label}</ListItemText>
+              </MenuItem>
+            );
+          })}
         </MuiSelect>
       )}
       {error && (

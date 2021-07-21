@@ -8,7 +8,7 @@ import * as AlertActions from 'alert/actions';
 import { onTaskDrawerTaskStatusChanged } from 'helpers/ga-event-helper';
 import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
-import TextInput from 'components/common/TextInput/TextInput';
+import Input from 'components/common/Input/Input';
 import {
   StatusFlag,
   StatusFieldContainer,
@@ -68,7 +68,7 @@ const StatusSection = ({ selectedTask, setAutoSaveVisible, onTaskUpdate }) => {
         <StatusFlagContainer>
           <StatusFlag color={workflowStatus?.color} />
         </StatusFlagContainer>
-        <TextInput
+        <Input
           label="Status"
           name="workflowStatus"
           placeholder="Is there a status?"

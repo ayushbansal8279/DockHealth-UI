@@ -2,11 +2,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import TextInput from 'components/common/TextInput/TextInput';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import { RobotoTypography } from 'styles/theme';
+import Input from 'components/common/Input/Input';
 import {
   arrayOf,
   bool,
@@ -172,7 +172,7 @@ const SelectDropdown = React.forwardRef(
     return (
       <>
         <div ref={inputContainerReference}>
-          <TextInput
+          <Input
             ref={reference}
             label={label}
             name={name}

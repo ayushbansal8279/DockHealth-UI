@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useCallback, useEffect } from 'react';
-import TextInput from 'components/common/TextInput/TextInput';
 import { pluck, trim } from 'ramda';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
@@ -8,6 +7,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
+import Input from 'components/common/Input/Input';
 import { AdornmentClear } from '../styled';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
@@ -77,25 +77,18 @@ const AssignedToSection = ({
         />
       )}
     >
-      <TextInput
+      <Input
         name="assignTo"
         type="text"
         label="Assigned to"
         placeholder="Who would you like to assign this task to?"
         multiple
-        InputLabelProps={{
-          shrink: true,
-        }}
-        InputProps={{
-          endAdornment: assignedToUsers?.length > 0 && (
+        value={displayValue}
+        endAdornment={
+          assignedToUsers?.length > 0 && (
             <AdornmentClear onClick={handleClearAssignedToUsers} />
-          ),
-        }}
-        inputProps={{
-          tabIndex: -1,
-          readOnly: true,
-          value: displayValue,
-        }}
+          )
+        }
       />
     </TaskDrawerPopover>
   );

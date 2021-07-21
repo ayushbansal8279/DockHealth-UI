@@ -14,6 +14,7 @@ export const DueDateContentWrapper = styled.div`
   padding: ${spacing.tiny} 0;
   text-align: left;
   border-bottom: 1px solid ${palette.coolGrey1};
+  padding: 25px 10px 6px 10px;
 `;
 
 export const DueDateContent = styled.div`
