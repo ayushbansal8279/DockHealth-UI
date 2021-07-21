@@ -32,7 +32,7 @@ const Select = ({
   const selectedOption = options?.find(element => element.value === value);
   return (
     <FormControl error={error}>
-      <InputLabel shrink variant={variant}>
+      <InputLabel shrink={!!value} variant={variant}>
         {label}
       </InputLabel>
       {readOnly ? (

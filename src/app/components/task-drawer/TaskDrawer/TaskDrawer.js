@@ -122,39 +122,6 @@ const TaskDrawer = ({
   const { handleSubmit, setValue } = formMethods;
   const parentFormSubmit = handleSubmit(onSubmit);
 
-  // const CustomTextEditor = () => (
-  //   <TextEditor
-  //     ref={descriptionReference}
-  //     taskListIdentifier={taskListIdentifier}
-  //     disableMentions={isTemplateTask}
-  //     placeholder={
-  //       isAddingOrEditingSubtask ? 'What is the subtask?' : 'What is the task?'
-  //     }
-  //     isDrawerEditor
-  //     onFocus={onFocusMentionsEditor}
-  //     onBlur={onBlurMentionsEditor}
-  //     state={descriptionState}
-  //     onChange={onChangeMentionsEditor}
-  //     keyBindingFn={event => {
-  //       if (event.keyCode === 13) {
-  //         return 'enter-command';
-  //       }
-  //       return undefined;
-  //     }}
-  //     handleKeyCommand={command => {
-  //       if (command === 'enter-command') {
-  //         parentFormSubmit();
-  //         return 'handled';
-  //       }
-
-  //       return 'not-handled';
-  //     }}
-  //   />
-  // );
-
-  // const CustomTextEditorInput = () =>
-  //   useCallback(() => <Input customInputComponent={CustomTextEditor} />, []);
-
   return (
     <>
       <TaskDrawerContainer

@@ -22,8 +22,6 @@ const Input = React.forwardRef(
       readOnly,
       required,
       variant = 'filled',
-      inputProps,
-      InputProps,
       ...restProps
     },
     reference,
@@ -40,13 +38,12 @@ const Input = React.forwardRef(
       size={size}
       helperText={error || null}
       disabled={disabled}
-      inputProps={{ readOnly, ...inputProps }}
+      inputProps={{ readOnly }}
       InputProps={{
         inputComponent: CustomInputComponent,
         startAdornment,
         endAdornment,
         className: clsx({ 'Mui-readonly': readOnly }),
-        ...InputProps,
       }}
       InputLabelProps={{
         shrink,
