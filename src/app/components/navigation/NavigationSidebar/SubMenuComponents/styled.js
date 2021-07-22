@@ -263,7 +263,7 @@ export const DrawerListsItemLoader = styled.div`
 
 export const DrawerListsItemNewLabel = styled.div`
   position: absolute;
-  top: -4px;
+  top: -8px;
   left: 0;
   color: ${palette.brightBlue};
   font-size: 10px;
