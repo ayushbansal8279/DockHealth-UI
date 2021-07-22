@@ -82,7 +82,7 @@ const Comment = ({
 
   const onCommentEdited = useCallback(() => {
     unsetEditing();
-    const updatedComment = convertFromEditorStateToOutput(commentState);
+    const updatedComment = convertFromEditorStateToOutput(commentState, true);
     const commentTokenizedText = updatedComment.tokenizedText;
 
     if (!commentTokenizedText) {

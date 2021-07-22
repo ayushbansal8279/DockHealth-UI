@@ -51,6 +51,7 @@ const QuickAddSubatask = ({
 
     const { rawText, tokenizedText } = convertFromEditorStateToOutput(
       newTaskDescription,
+      false,
     );
 
     validatorError = validateNewSubtask(rawText);
@@ -74,7 +75,7 @@ const QuickAddSubatask = ({
       setError(null);
     }
     setNewTaskDescription(state);
-    setHasInputValue(!!convertFromEditorStateToOutput(state).rawText);
+    setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
   };
 
   const onBlurMentionsEditor = () => {
