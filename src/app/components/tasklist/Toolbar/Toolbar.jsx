@@ -152,6 +152,11 @@ const Toolbar = ({
     }
   }, [openTasksAmount, tipsContent, taskList]);
 
+  const showNotificationsOption =
+    taskList?.listType === 'INBOX' || taskList?.listType === 'PUBLIC'
+      ? false
+      : showNotifications;
+
   return (
     <ToolbarContainer>
       <Grid
@@ -266,7 +271,7 @@ const Toolbar = ({
           taskListMembers={taskListMembers}
           notificationsEnabled={notificationsEnabled}
           toggleNotifications={toggleNotifications}
-          showNotifications={showNotifications}
+          showNotifications={showNotificationsOption}
           listNameColumnVisible={listNameColumnVisible}
           patientColumnVisible={patientColumnVisible}
           pdfTitle={pdfTitle}
