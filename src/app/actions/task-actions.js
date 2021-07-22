@@ -492,6 +492,41 @@ export const updateTaskDescription = (task, description) => dispatch =>
       throw error;
     });
 
+export const updateTaskDetails = (task, details) => dispatch =>
+  TaskApi.updateTaskDetails(shapeTask(task), details)
+    // .then(({ details: updatedDetails, tokenizedDetails, taskMentions }) => {
+    //   const newTask = task;
+    //   newTask.details = updatedDetails;
+    //   newTask.tokenizedDetails = tokenizedDetails;
+    //   newTask.taskMentions = taskMentions;
+    //   dispatch({
+    //     type: ActionTypes.UPDATE_TASK_SUCCESS,
+    //     task: newTask,
+    //   });
+    //   return newTask;
+    // })
+    .then(
+      ({
+        description: updatedDescription,
+        tokenizedDescription,
+        taskMentions,
+      }) => {
+        const newTask = task;
+        newTask.details = updatedDescription;
+        newTask.tokenizedDetails = tokenizedDescription;
+        newTask.taskMentionsDetails = taskMentions;
+
+        dispatch({
+          type: ActionTypes.UPDATE_TASK_SUCCESS,
+          task: newTask,
+        });
+        return newTask;
+      },
+    )
+    .catch(error => {
+      throw error;
+    });
+
 export const updateDueDate = (
   task,
   dueDate,

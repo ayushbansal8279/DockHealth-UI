@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
-import { Chip, Divider } from '@material-ui/core';
+import { Chip, Divider, InputLabel } from '@material-ui/core';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
@@ -26,6 +26,23 @@ export const TaskDrawerContainer = styled.div`
   z-index: 1101;
 `;
 
+export const TextEditorInputLabel = styled(InputLabel)`
+  margin-bottom: ${({ richTextEnabled, focused }) =>
+    richTextEnabled && focused ? '20px' : '0px'};
+`;
+
+export const TextEditorFormStyleContainer = styled.div`
+  background-color: #f7fafb !important;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  padding: 10px;
+  border-bottom: ${({ focused, hasError }) => {
+    if (!hasError) {
+      return focused ? '2px solid #0ca1c7' : '1px solid #8492a4';
+    }
+    return '2px solid #e40909';
+  }};
+`;
 export const TaskDrawerBackground = styled.div`
   position: fixed;
   top: 0;
@@ -150,6 +167,10 @@ export const DescriptionContainer = styled.div`
     ${({ isFocused }) => (isFocused ? palette.coolGrey1 : 'transparent')};
 
   ${({ hasError }) => hasError && `border-color: ${palette.error};`}
+`;
+export const DetailsContainer = styled.div`
+  padding: 1rem 2rem;
+  height: fit-content;
 `;
 
 export const DescriptionTextContainer = styled.div`
