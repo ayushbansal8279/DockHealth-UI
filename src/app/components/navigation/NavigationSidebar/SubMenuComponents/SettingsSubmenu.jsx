@@ -10,6 +10,7 @@ const SettingsSubmenu = () => {
       <SubMenuLink to="/settings/subscriptions">
         Subscription &amp; Users
       </SubMenuLink>
+      <SubMenuLink to="/settings/custom-fields">Custom Fields</SubMenuLink>
     </Box>
   );
 };

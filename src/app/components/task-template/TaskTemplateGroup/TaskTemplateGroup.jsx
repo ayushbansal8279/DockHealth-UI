@@ -21,7 +21,6 @@ import { MoreHoriz } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import palette from 'styles/palette';
 import { TaskStatus } from 'helpers/task-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -427,11 +426,7 @@ const TaskTemplateGroup = ({
               />
             </TaskTemplateProgressCircle>
             <OptionsMenu options={menuOptions}>
-              <MoreHoriz
-                fontSize="large"
-                color="inherit"
-                style={{ color: palette.coolGrey1 }}
-              />
+              <MoreHoriz fontSize="large" color="primary" />
             </OptionsMenu>
           </TaskTemplateOptionsContainer>
         </TaskTemplateRight>

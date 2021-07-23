@@ -1,6 +1,7 @@
 import React from 'react';
+import MuiTooltip from '@material-ui/core/Tooltip';
 import { bool, node, oneOf, oneOfType, string } from 'prop-types';
-import { StyledMaterialTooltip, Container } from './styled';
+import { useTooltipStyles } from './styled';
 
 const Tooltip = ({
   children,
@@ -9,16 +10,18 @@ const Tooltip = ({
   arrow = true,
   hideTooltip = false,
 }) => {
+  const classes = useTooltipStyles({ hideTooltip: hideTooltip || !title });
+
   return (
-    <StyledMaterialTooltip
+    <MuiTooltip
       title={title}
       placement={placement}
       arrow={arrow}
-      hideTooltip={hideTooltip || !title}
+      classes={classes}
       disablePortal
     >
-      <Container>{children}</Container>
-    </StyledMaterialTooltip>
+      {children}
+    </MuiTooltip>
   );
 };
 

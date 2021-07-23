@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { Box, Grid } from '@material-ui/core';
 import { isEmpty } from 'ramda';
-
+import { createPatientDetailsPath } from 'routing/helpers/paths';
 import useBoolean from 'hooks/useBoolean';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as PatientApi from 'api/patient-api';
@@ -17,7 +17,7 @@ import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { getPatientsList } from 'api/patients-api';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
-import PatientSidebar from './PatientSidebar/PatientSidebar';
+import CreatePatientDrawer from './CreatePatientDrawer/CreatePatientDrawer';
 import {
   PatientsViewContainer,
   PatientsListDescription,
@@ -43,10 +43,6 @@ const parsePatientsListIdentifier = listIdentifier => {
     listIdentifier,
     listType: 'CUSTOM',
   };
-};
-
-const handleAfterPatientCreation = ({ patientIdentifier }, history) => {
-  history.push(`/core/patient/${patientIdentifier}`);
 };
 
 const PatientsView = () => {
@@ -76,6 +72,10 @@ const PatientsView = () => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] = useBoolean(
     false,
   );
+
+  const handleAfterPatientCreation = ({ patientIdentifier }) => {
+    history.push(createPatientDetailsPath(patientIdentifier));
+  };
 
   const fetchPatients = useCallback(() => {
     setIsFetchingPatients(true);
@@ -235,23 +235,19 @@ const PatientsView = () => {
       <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>
           {!hidePatientsList && (
-            <Grid container sm={isSidebarOpen ? 6 : 12} item direction="column">
-              <PatientsList
-                isFiltered={searchValue}
-                patients={patients}
-                patientImportDetails={patientImportDetails}
-                refreshPatientList={refreshPatientList}
-                importPopoverOpen={importPopoverOpen}
-                setImportPopoverOpen={setImportPopoverOpen}
-                hasImportErrors={hasImportErrors}
-                isFetching={isFetchingPatients}
-              />
-            </Grid>
+            <PatientsList
+              isFiltered={searchValue}
+              patients={patients}
+              patientImportDetails={patientImportDetails}
+              refreshPatientList={refreshPatientList}
+              importPopoverOpen={importPopoverOpen}
+              setImportPopoverOpen={setImportPopoverOpen}
+              hasImportErrors={hasImportErrors}
+              isFetching={isFetchingPatients}
+            />
           )}
-          <PatientSidebar
-            onPatientCreated={patient =>
-              handleAfterPatientCreation(patient, history)
-            }
+          <CreatePatientDrawer
+            onPatientCreated={handleAfterPatientCreation}
             onClose={unsetIsSidebarOpen}
             isSidebarOpen={isSidebarOpen}
           />

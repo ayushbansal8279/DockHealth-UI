@@ -15,8 +15,9 @@ import {
   arrayOf,
   oneOfType,
   oneOf,
+  bool,
 } from 'prop-types';
-import { boolean } from 'yup';
+import zIndex from 'styles/z-index';
 import Input from '../Input/Input';
 
 const Select = ({
@@ -30,50 +31,51 @@ const Select = ({
   ...restProps
 }) => {
   const selectedOption = options?.find(element => element.value === value);
-  return (
+  return readOnly ? (
+    <Input
+      name={name}
+      label={label}
+      readOnly={readOnly}
+      value={selectedOption?.label}
+      error={error}
+      {...restProps}
+    />
+  ) : (
     <FormControl error={error}>
       <InputLabel shrink={!!value} variant={variant}>
         {label}
       </InputLabel>
-      {readOnly ? (
-        <Input
-          name={name}
-          readOnly={readOnly}
-          value={selectedOption?.label}
-          {...restProps}
-        />
-      ) : (
-        <MuiSelect
-          MenuProps={{
-            anchorOrigin: {
-              vertical: 'bottom',
-              horizontal: 'left',
-            },
-            transformOrigin: {
-              vertical: 'top',
-              horizontal: 'left',
-            },
-            getContentAnchorEl: null,
-          }}
-          inputProps={{ name }}
-          variant={variant}
-          value={value}
-          renderValue={selected =>
-            options.find(option => option.value === selected)?.label
-          }
-          {...restProps}
-        >
-          {options?.map(option => {
-            const { OptionIcon } = option;
-            return (
-              <MenuItem value={option.value}>
-                {OptionIcon || null}
-                <ListItemText>{option.label}</ListItemText>
-              </MenuItem>
-            );
-          })}
-        </MuiSelect>
-      )}
+      <MuiSelect
+        MenuProps={{
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+          transformOrigin: {
+            vertical: 'top',
+            horizontal: 'left',
+          },
+          getContentAnchorEl: null,
+          style: { zIndex: zIndex.optionsMenu },
+        }}
+        inputProps={{ name }}
+        variant={variant}
+        value={value}
+        renderValue={selectedValue =>
+          options.find(option => option.value === selectedValue)?.label
+        }
+        {...restProps}
+      >
+        {options?.map(option => {
+          const { OptionIcon } = option;
+          return (
+            <MenuItem value={option.value}>
+              {OptionIcon || null}
+              <ListItemText>{option.label}</ListItemText>
+            </MenuItem>
+          );
+        })}
+      </MuiSelect>
       {error && (
         <FormHelperText variant={variant} error={error}>
           {error}
@@ -88,7 +90,7 @@ Select.propTypes = {
   label: string.isRequired,
   name: string.isRequired,
   variant: oneOf(['filled']),
-  readonly: boolean,
+  readOnly: bool,
   options: arrayOf(
     shape({
       label: string.isRequired,
@@ -99,7 +101,7 @@ Select.propTypes = {
 
 Select.defaultProps = {
   variant: 'filled',
-  readonly: false,
+  readOnly: false,
   onChange: undefined,
 };
 

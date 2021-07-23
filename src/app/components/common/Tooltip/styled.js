@@ -1,12 +1,11 @@
-import MaterialTooltip from '@material-ui/core/Tooltip';
-import styled from 'styled-components';
-import { withStyles } from '@material-ui/core/styles';
+/* eslint-disable import/prefer-default-export */
+import { makeStyles } from '@material-ui/core/styles';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import zIndex from 'styles/z-index';
 
-export const StyledMaterialTooltip = withStyles({
+export const useTooltipStyles = makeStyles({
   popper: {
     opacity: ({ hideTooltip }) => (hideTooltip ? 0 : 1),
     transition: 'opacity .2s ease-out',
@@ -22,10 +21,4 @@ export const StyledMaterialTooltip = withStyles({
   arrow: {
     color: palette.mediumGrey,
   },
-})(MaterialTooltip);
-
-export const Container = styled.div`
-  display: inline-block;
-  overflow: hidden;
-  flex-shrink: 0;
-`;
+});

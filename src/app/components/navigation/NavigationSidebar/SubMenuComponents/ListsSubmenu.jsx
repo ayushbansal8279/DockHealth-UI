@@ -261,7 +261,7 @@ const ListsSubmenu = () => {
               <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
               {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
                 <OptionsMenu disablePortal options={getMenuItems(list)}>
-                  <MoreVert style={{ color: palette.coolGrey1 }} />
+                  <MoreVert color="primary" />
                 </OptionsMenu>
               ) : (
                 <Box m={2} />

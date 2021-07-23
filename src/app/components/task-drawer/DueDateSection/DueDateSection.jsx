@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { Box } from '@material-ui/core';
 import RecurringIcon from 'img/recurring-arrows';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
@@ -65,10 +66,9 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
                       <>
                         <Spacing horizontal={3} />
                         <Tooltip title="Recurring Task" placement="right">
-                          <>
+                          <Box display="inline-block">
                             <RecurringIcon />
-                            <Spacing horizontal={3} />
-                          </>
+                          </Box>
                         </Tooltip>
                       </>
                     )}

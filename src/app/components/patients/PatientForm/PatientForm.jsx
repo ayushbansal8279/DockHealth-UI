@@ -1,92 +1,31 @@
-import React, { useState, forwardRef } from 'react';
-import moment from 'moment';
-import { FormContext } from 'react-hook-form';
+import React, { useState, forwardRef, useEffect, useCallback } from 'react';
+import { Box } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
+import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
+import { groupBy, prop, compose } from 'ramda';
+import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
+import * as CustomFieldsApi from 'api/custom-fields-api';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
-import { mixed, string } from 'yup';
+import CustomField from 'components/patients/CustomField/CustomField';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import {
-  PatientDetailsForm,
-  PatientDetailsFormFooter,
-  SubmitButtonWrapper,
-} from 'views/patient-details/PatientDetailsHeader/PatientDetails/styled.js';
+import AddButton from 'components/common/AddButton/AddButton';
+import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
+import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
+import { PatientDetailsForm } from './styled.js';
 
-const DATE_FORMAT = 'MM/DD/YYYY';
-const REQUIRED_MESSAGE = 'This field is required';
-const GENDER_OPTIONS = [
-  {
-    value: 'female',
-    label: 'Female',
-  },
-  {
-    value: 'male',
-    label: 'Male',
-  },
-  {
-    value: 'other',
-    label: 'Other',
-  },
-];
-
-export const validationObjectShape = {
-  firstName: string().required(REQUIRED_MESSAGE),
-  middleName: string().nullable(),
-  lastName: string().required(REQUIRED_MESSAGE),
-  mrn: string(),
-  gender: string().nullable(),
-  dob: mixed()
-    .nullable()
-    .transform(newValue => {
-      const dobMoment = moment(newValue, DATE_FORMAT);
-
-      if (!newValue) {
-        return null;
-      }
-
-      if (
-        newValue?.replace(/[/_-]/g, '')?.length <
-        DATE_FORMAT.replace(/\//g, '').length
-      ) {
-        return new Error();
-      }
-
-      if (dobMoment.isValid()) {
-        return newValue;
-      }
-
-      return new Error();
-    })
-    .test(
-      'validDate',
-      `This field requires date in ${DATE_FORMAT} format`,
-      function validDate(value) {
-        if (value instanceof Error) {
-          this.createError();
-          return false;
-        }
-
-        return true;
-      },
-    ),
-  email: string()
-    .nullable()
-    .transform(value => (!value ? null : value))
-    .email('This field requires a valid email address'),
-  phoneHome: string().nullable(),
-  phoneMobile: string().nullable(),
-};
+const groupByCategory = groupBy(prop('fieldCategoryType'));
 
 const PatientForm = forwardRef(
   (
     {
-      formMethods,
+      patient,
       uniqueIdentifierLabel,
-      editingDisabled,
       customerTypeLabel = '',
       onSubmit,
       readOnly = false,
@@ -94,110 +33,143 @@ const PatientForm = forwardRef(
     },
     reference,
   ) => {
-    const { getValues } = formMethods;
+    const history = useHistory();
+    const { handleSubmit } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
-    const { gender: genderValue } = getValues();
+    const [customFields, setCustomFields] = useState(null);
+
+    useEffect(() => {
+      CustomFieldsApi.getAllPatientCustomFields(
+        true,
+        patient?.patientIdentifier || undefined,
+      ).then(data => {
+        compose(setCustomFields, groupByCategory)(data);
+      });
+    }, [patient]);
+
+    const renderCustomField = useCallback(
+      (field, index) => {
+        const initialFieldValue = patient?.patientMetaData?.find(
+          ({ customFieldIdentifier }) =>
+            field.identifier === customFieldIdentifier,
+        );
+        return (
+          <div key={field.identifier}>
+            {index !== 0 && <Spacing vertical={3} />}
+            <CustomField
+              readOnly={readOnly}
+              field={field}
+              initialValue={initialFieldValue}
+            />
+          </div>
+        );
+      },
+      [patient, readOnly],
+    );
 
     return (
-      <FormContext {...formMethods}>
-        <PatientDetailsForm onSubmit={onSubmit} ref={reference}>
+      <PatientDetailsForm
+        onSubmit={handleSubmit(compose(onSubmit, formatMetaDataOutput))}
+        ref={reference}
+      >
+        <LabeledCollapse
+          name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
+            Category.PERSONAL_INFO
+          ].toLowerCase()}`}
+          isOpened={isOpenedPersonal}
+          onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
+        >
+          <FormInput
+            readOnly={readOnly}
+            label="first name"
+            name="firstName"
+            required
+          />
+          <Spacing vertical={3} />
+          <FormInput
+            readOnly={readOnly}
+            label="middle name"
+            name="middleName"
+          />
+          <Spacing readOnly={readOnly} vertical={3} />
+          <FormInput
+            readOnly={readOnly}
+            label="last name"
+            name="lastName"
+            required
+          />
+          <Spacing vertical={3} />
+          <FormSelect
+            readOnly={readOnly}
+            label="gender"
+            options={GENDER_OPTIONS}
+            name="gender"
+          />
+          <Spacing vertical={3} />
+          <FormInput
+            readOnly={readOnly}
+            label="birthday"
+            placeholder="MM/DD/YYYY"
+            inputComponent={DateInput}
+            name="dob"
+          />
+          <Spacing vertical={3} />
+          <FormInput
+            readOnly={readOnly}
+            label={uniqueIdentifierLabel}
+            placeholder="- -"
+            name="mrn"
+          />
+          <Spacing vertical={3} />
+          {customFields?.[Category.PERSONAL_INFO]?.map(renderCustomField)}
+        </LabeledCollapse>
+        <LabeledCollapse
+          name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
+            Category.CONTACT_INFO
+          ].toLowerCase()}`}
+          isOpened={isOpenedContact}
+          onClick={() => setIsOpenedContact(!isOpenedContact)}
+        >
+          <FormPhoneNumberInput
+            readOnly={readOnly}
+            label="mobile phone"
+            name="phoneMobile"
+          />
+          <Spacing vertical={3} />
+          <FormPhoneNumberInput
+            readOnly={readOnly}
+            label="home phone"
+            name="phoneHome"
+            type="tel"
+          />
+          <Spacing vertical={3} />
+          <FormInput readOnly={readOnly} label="email" name="email" />
+          <Spacing vertical={3} />
+          {customFields?.[Category.CONTACT_INFO]?.map(renderCustomField)}
+        </LabeledCollapse>
+        {customFields?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
-            name={`${capitalize(customerTypeLabel)} personal info`}
-            isOpened={isOpenedPersonal}
-            onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
-          >
-            <FormInput
-              readOnly={readOnly}
-              label="first name"
-              name="firstName"
-              required
-            />
-            <Spacing vertical={3} />
-            <FormInput
-              readOnly={readOnly}
-              label="middle name"
-              name="middleName"
-              required={false}
-            />
-            <Spacing readOnly={readOnly} vertical={3} />
-            <FormInput
-              readOnly={readOnly}
-              label="last name"
-              name="lastName"
-              required
-            />
-            <Spacing vertical={3} />
-            <FormSelect
-              readOnly={readOnly}
-              label="gender"
-              options={GENDER_OPTIONS}
-              name="gender"
-              defaultValue={genderValue}
-              required={false}
-            />
-            <Spacing vertical={3} />
-            <FormInput
-              readOnly={readOnly}
-              label="birthday"
-              placeholder="MM/DD/YYYY"
-              inputComponent={DateInput}
-              name="dob"
-              required={false}
-            />
-            <Spacing vertical={3} />
-            <FormInput
-              readOnly={readOnly}
-              label={uniqueIdentifierLabel}
-              placeholder="- -"
-              name="mrn"
-              required={false}
-            />
-            <Spacing vertical={3} />
-          </LabeledCollapse>
-          <LabeledCollapse
-            name={`${capitalize(customerTypeLabel)} contact info`}
+            name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
+              Category.OTHER_INFO
+            ].toLowerCase()}`}
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >
-            <FormPhoneNumberInput
-              readOnly={readOnly}
-              label="mobile phone"
-              name="phoneMobile"
-              required={false}
-            />
-            <Spacing vertical={1} />
-            <FormPhoneNumberInput
-              readOnly={readOnly}
-              label="home phone"
-              name="phoneHome"
-              type="tel"
-              required={false}
-            />
-            <Spacing vertical={1} />
-            <FormInput
-              readOnly={readOnly}
-              label="email"
-              name="email"
-              required={false}
-            />
-            <Spacing vertical={1} />
+            {customFields?.[Category.OTHER_INFO]?.map(renderCustomField)}
           </LabeledCollapse>
-          {!editingDisabled && !readOnly && (
-            <PatientDetailsFormFooter>
-              <SubmitButtonWrapper>
-                <Button
-                  style={{ textTransform: 'uppercase' }}
-                  width="153px"
-                  type="submit"
-                >
-                  {buttonLabel || `SAVE ${customerTypeLabel}`}
-                </Button>
-              </SubmitButtonWrapper>
-            </PatientDetailsFormFooter>
+        )}
+        <Box display="flex" justifyContent="space-between">
+          <AddButton onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}>
+            Add or edit fields
+          </AddButton>
+          {!readOnly && (
+            <Button width="auto" type="submit">
+              {buttonLabel || `SAVE ${customerTypeLabel}`}
+            </Button>
           )}
-        </PatientDetailsForm>
-      </FormContext>
+        </Box>
+      </PatientDetailsForm>
     );
   },
 );

@@ -169,13 +169,15 @@ const Subtask = ({ subtask, currentUser }) => {
                 : null
             }
           >
-            <TaskIcon
-              type="comments"
-              onClick={handleCommentIconClick}
-              isActive={comments?.length > 0}
-              isNew={updatedComment}
-              isHovered={isHovered}
-            />
+            <div>
+              <TaskIcon
+                type="comments"
+                onClick={handleCommentIconClick}
+                isActive={comments?.length > 0}
+                isNew={updatedComment}
+                isHovered={isHovered}
+              />
+            </div>
           </Tooltip>
         </IconContainer>
         <IconContainer>
@@ -185,13 +187,15 @@ const Subtask = ({ subtask, currentUser }) => {
               labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : null
             }
           >
-            <TaskIcon
-              type="labels"
-              onClick={handleLabelIconClick}
-              isActive={labels?.length > 0}
-              isNew={updatedLabel}
-              isHovered={isHovered}
-            />
+            <div>
+              <TaskIcon
+                type="labels"
+                onClick={handleLabelIconClick}
+                isActive={labels?.length > 0}
+                isNew={updatedLabel}
+                isHovered={isHovered}
+              />
+            </div>
           </Tooltip>
         </IconContainer>
         <IconContainer>
@@ -203,13 +207,15 @@ const Subtask = ({ subtask, currentUser }) => {
                 : ''
             }
           >
-            <TaskIcon
-              type="attachments"
-              onClick={handleAttachementIconClick}
-              isActive={attachments?.length > 0}
-              isNew={updatedAttachment}
-              isHovered={isHovered}
-            />
+            <div>
+              <TaskIcon
+                type="attachments"
+                onClick={handleAttachementIconClick}
+                isActive={attachments?.length > 0}
+                isNew={updatedAttachment}
+                isHovered={isHovered}
+              />
+            </div>
           </Tooltip>
         </IconContainer>
       </IconsSection>
@@ -247,7 +253,9 @@ const Subtask = ({ subtask, currentUser }) => {
             </Tooltip>
           ) : (
             <Tooltip placement="top" title="Add due date">
-              <TaskIcon type="calendar" isHovered={isHovered} />
+              <div>
+                <TaskIcon type="calendar" isHovered={isHovered} />
+              </div>
             </Tooltip>
           )}
         </TaskItemPopover>
@@ -270,7 +278,9 @@ const Subtask = ({ subtask, currentUser }) => {
             <MemberGroup members={assignedToUsers} />
           ) : (
             <Tooltip placement="top" title="Assign to">
-              <AssignMemberIcon />
+              <div>
+                <AssignMemberIcon />
+              </div>
             </Tooltip>
           )}
         </TaskItemPopover>

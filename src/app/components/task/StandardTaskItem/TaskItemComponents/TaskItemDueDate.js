@@ -70,7 +70,9 @@ const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
               )}
             </DueDateBasicLabel>
           ) : (
-            <TaskIcon type="calendar" isHovered={isHovered} />
+            <div>
+              <TaskIcon type="calendar" isHovered={isHovered} />
+            </div>
           )}
         </Tooltip>
       </TaskItemPopover>

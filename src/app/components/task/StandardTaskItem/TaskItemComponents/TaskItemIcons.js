@@ -52,13 +52,15 @@ const TaskItemIcons = ({
                 : 'Add a new comment'
             }
           >
-            <TaskIcon
-              type="comments"
-              isHovered={isHovered}
-              isActive={comments?.length > 0}
-              isNew={task.updatedComment}
-              onClick={onCommentClick}
-            />
+            <div>
+              <TaskIcon
+                type="comments"
+                isHovered={isHovered}
+                isActive={comments?.length > 0}
+                isNew={task.updatedComment}
+                onClick={onCommentClick}
+              />
+            </div>
           </Tooltip>
         </GridImg>
         <GridImg item xs={4} matched={matchLabels}>
@@ -70,13 +72,15 @@ const TaskItemIcons = ({
                 : 'Add label'
             }
           >
-            <TaskIcon
-              type="labels"
-              isHovered={isHovered}
-              isActive={labels?.length > 0}
-              isNew={task.updatedLabel}
-              onClick={onLabelClick}
-            />
+            <div>
+              <TaskIcon
+                type="labels"
+                isHovered={isHovered}
+                isActive={labels?.length > 0}
+                isNew={task.updatedLabel}
+                onClick={onLabelClick}
+              />
+            </div>
           </Tooltip>
         </GridImg>
         <GridImg item xs={4} matched={matchAttachments}>
@@ -88,13 +92,15 @@ const TaskItemIcons = ({
                 : 'Add file'
             }
           >
-            <TaskIcon
-              type="attachments"
-              onClick={onAttachmentsClick}
-              isHovered={isHovered}
-              isActive={attachments?.length > 0}
-              isNew={task.updatedAttachment}
-            />
+            <div>
+              <TaskIcon
+                type="attachments"
+                onClick={onAttachmentsClick}
+                isHovered={isHovered}
+                isActive={attachments?.length > 0}
+                isNew={task.updatedAttachment}
+              />
+            </div>
           </Tooltip>
         </GridImg>
       </Grid>

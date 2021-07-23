@@ -64,7 +64,7 @@ const IconWithTooltip = ({ text, children }) => {
   if (text)
     return (
       <Tooltip placement="top" title={text}>
-        {children}
+        <div>{children}</div>
       </Tooltip>
     );
 

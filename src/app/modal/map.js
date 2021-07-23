@@ -50,6 +50,8 @@ import UnassignPatientModal from './components/UnassignPatientModal/UnassignPati
 import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
 import AddPatientToListModal from './components/AddPatientToListModal/AddPatientToListModal';
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
+import EditCustomPatientFieldModal from './components/EditCustomPatientFieldModal/EditCustomPatientFieldModal';
+import DeleteFieldModal from './components/DeleteFieldModal/DeleteFieldModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -104,6 +106,8 @@ const MODAL_MAP = {
   EditPatientList: EditPatientListModal,
   AddPatientToList: AddPatientToListModal,
   InterruptEdit: InterruptEditModal,
+  EditCustomPatientField: EditCustomPatientFieldModal,
+  DeleteField: DeleteFieldModal,
 };
 
 export default MODAL_MAP;

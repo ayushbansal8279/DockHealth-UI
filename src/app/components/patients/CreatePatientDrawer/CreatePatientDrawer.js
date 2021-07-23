@@ -1,25 +1,20 @@
 import React, { useRef } from 'react';
-import { useForm } from 'react-hook-form';
-import CloseIcon from '@material-ui/icons/Close';
-import { object } from 'yup';
+import { FormContext, useForm } from 'react-hook-form';
+import {
+  getCustomerTypeLabel,
+  getCustomerUniqueIDLabel,
+} from 'helpers/customer-type-helper';
 import { openModal, closeModal } from 'modal/actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
-import {
-  DrawerWrapper,
-  ContentWrapper,
-  TitleName,
-  StickyHeader,
-  MoreActinsWrapper,
-} from 'views/patient-details/PatientDetailsHeader/PatientDetails/styled.js';
-import PatientForm, { validationObjectShape } from '../PatientForm/PatientForm';
-
-const validationSchema = object().shape(validationObjectShape);
+import PatientForm from 'components/patients/PatientForm/PatientForm';
+import { validationSchema } from 'components/patients/PatientForm/helpers';
+import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
 
 const onSubmit = ({
-  onCancel,
+  onClose,
   onPatientCreated,
   uniqueIdentifierLabel,
 }) => data => {
@@ -31,7 +26,7 @@ const onSubmit = ({
       if (typeof onPatientCreated === 'function') {
         onPatientCreated(response);
       }
-      onCancel();
+      onClose();
     })
     .catch(error => {
       showAlert({
@@ -47,27 +42,29 @@ const onSubmit = ({
     });
 };
 
-const PatientCreateDrawer = ({
-  isOpenedDetails,
+const CreatePatientDrawer = ({
+  isSidebarOpen,
   editingDisabled,
-  uniqueIdentifierLabel,
-  customerTypeLabel,
   onPatientCreated,
-  onCancel,
+  onClose,
 }) => {
+  const { currentUser } = useSelector(store => ({
+    currentUser: store.userState.userProfile,
+  }));
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
   const dispatch = useDispatch();
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
     validationSchema,
   });
 
-  const { handleSubmit, clearError, getValues, reset } = formMethods;
+  const { clearError, getValues } = formMethods;
   const formReference = useRef(null);
 
   const close = () => {
-    reset();
     clearError();
-    onCancel();
+    onClose();
   };
 
   const handleClose = () => {
@@ -89,25 +86,19 @@ const PatientCreateDrawer = ({
     }
   };
 
-  const handleFormSubmit = handleSubmit(
-    onSubmit({
-      onCancel,
-      onPatientCreated,
-      uniqueIdentifierLabel,
-    }),
-  );
+  const handleFormSubmit = onSubmit({
+    onClose,
+    onPatientCreated,
+    uniqueIdentifierLabel,
+  });
 
   return (
-    <DrawerWrapper open={isOpenedDetails} anchor="right" onClose={handleClose}>
-      <ContentWrapper>
-        <StickyHeader>
-          <TitleName>Add a {customerTypeLabel}</TitleName>
-          <MoreActinsWrapper>
-            <button type="button" onClick={handleClose}>
-              <CloseIcon />
-            </button>
-          </MoreActinsWrapper>
-        </StickyHeader>
+    <PatientDrawer
+      isOpen={isSidebarOpen}
+      title={`Add a ${customerTypeLabel}`}
+      onClose={handleClose}
+    >
+      <FormContext {...formMethods}>
         <PatientForm
           formMethods={formMethods}
           onSubmit={handleFormSubmit}
@@ -117,8 +108,9 @@ const PatientCreateDrawer = ({
           ref={formReference}
           buttonLabel={`SAVE ${customerTypeLabel}`}
         />
-      </ContentWrapper>
-    </DrawerWrapper>
+      </FormContext>
+    </PatientDrawer>
   );
 };
-export default PatientCreateDrawer;
+
+export default CreatePatientDrawer;

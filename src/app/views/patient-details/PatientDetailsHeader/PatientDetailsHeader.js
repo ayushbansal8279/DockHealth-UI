@@ -1,61 +1,161 @@
-import React, { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { openModal } from 'modal/actions';
-import { userProfileSelector } from 'selectors/user-selectors';
+import useBoolean from 'hooks/useBoolean';
+import EmailIcon from 'img/email-icon.svg';
+import PhoneIcon from 'img/phone-icon.svg';
+import MobileIcon from 'img/mobile-icon.svg';
+import ArrowLeftIcon from 'img/arrow-left.svg';
+import { Box, Grid } from '@material-ui/core';
+import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import { organizationSelector } from 'selectors/organization-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
-import { archivePatient as archivePatientAction } from 'sagas/patient-details-saga';
-import { updatePatientDetails as updatePatientDetailsAction } from 'actions/patient-details-actions';
-import PatientDetailsInformation from './PatientDetailsInformation';
-import PatientDetails from './PatientDetails/PatientDetails';
-import { PatientDetailsContainer } from './styled';
+import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
+import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
+import PatientLabels from '../PatientLabels/PatientLabels';
+import {
+  PatientDetailsContainer,
+  PatientName,
+  PatientInfo,
+  PatientInfoDivider,
+  PatientDetailsInformation,
+  PatientDetails,
+  PatientDetailsLabel,
+  ButtonContainer,
+  IconWrapper,
+  ContactContainer,
+} from './styled';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
-  const [isOpenedDetails, setIsOpenedDetails] = useState(false);
-
-  const currentUser = useSelector(userProfileSelector);
+  const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const organization = useSelector(organizationSelector);
   const patient = useSelector(patientSelector);
+  const {
+    firstName,
+    middleName,
+    lastName,
+    email,
+    phoneMobile,
+    phoneHome,
+    dob,
+    age,
+    mrn,
+    gender,
+  } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
+  const currentUser = useSelector(userProfileSelector);
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
 
   const { emrIntegrationEnabled } = organization || {};
-  const { patientIdentifier } = patient || {};
 
-  const archivePatient = useCallback(() => {
-    const modalProps = {
-      confirm: () => dispatch(archivePatientAction(patientIdentifier, history)),
-    };
-    dispatch(openModal('ArchivePatient', modalProps));
-  }, [dispatch, patientIdentifier, history]);
+  const isLoadingDetails = isFetchingPatient || !patient;
 
   return (
     <PatientDetailsContainer>
-      <PatientDetailsInformation
-        {...patient}
-        isLoadingDetails={isFetchingPatient || !patient}
-        setIsOpenedDetails={setIsOpenedDetails}
-        isOpenedDetails={isOpenedDetails}
-        currentUser={currentUser}
-      />
-      {!isFetchingPatient && patient && (
-        <PatientDetails
-          {...patient}
-          isOpenedDetails={isOpenedDetails}
-          updatePatient={details =>
-            dispatch(updatePatientDetailsAction(details))
-          }
-          patientIdentifier={patientIdentifier}
-          archivePatient={archivePatient}
-          editingDisabled={emrIntegrationEnabled}
-          currentUser={currentUser}
-          closeDetails={() => setIsOpenedDetails(false)}
-        />
+      {!isLoadingDetails ? (
+        <>
+          <Box display="flex" alignItems="center">
+            <Box flex="1 0 0" display="flex" alignItems="center">
+              <Grid container alignItems="center">
+                <Box flexBasis={30}>
+                  <button type="button" onClick={history.goBack}>
+                    <img
+                      src={ArrowLeftIcon}
+                      alt="back-navigation"
+                      style={{ width: '16px' }}
+                    />
+                  </button>
+                </Box>
+                <PatientName>
+                  {[`${lastName},`, firstName, middleName].join(' ')}
+                </PatientName>
+                <Box mx={1} />
+                <ButtonContainer onClick={setIsDrawerOpen}>
+                  <PatientDetailsLabel>View details</PatientDetailsLabel>
+                </ButtonContainer>
+                <Box mx={1} />
+                <Box flex="500px 0 0">
+                  <PatientLabels />
+                </Box>
+              </Grid>
+            </Box>
+            <ContactContainer>
+              {email && (
+                <Tooltip title={email} placement="bottom">
+                  <IconWrapper href={`mailto:${email}`}>
+                    <img
+                      src={EmailIcon}
+                      alt="email icon"
+                      style={{ height: '16px' }}
+                    />
+                  </IconWrapper>
+                </Tooltip>
+              )}
+              {phoneHome && (
+                <Tooltip title={phoneHome} placement="bottom">
+                  <IconWrapper href={`tel:${phoneHome}`}>
+                    <img
+                      src={PhoneIcon}
+                      alt="phone icon"
+                      style={{ height: '16px' }}
+                    />
+                  </IconWrapper>
+                </Tooltip>
+              )}
+              {phoneMobile && (
+                <Tooltip title={phoneMobile} placement="bottom">
+                  <IconWrapper href={`tel:${phoneMobile}`}>
+                    <img
+                      src={MobileIcon}
+                      alt="mobile phon icon"
+                      style={{ height: '16px' }}
+                    />
+                  </IconWrapper>
+                </Tooltip>
+              )}
+            </ContactContainer>
+          </Box>
+          {(dob || age || gender || mrn) && (
+            <PatientDetails>
+              <PatientDetailsInformation>
+                {(age || gender) && (
+                  <>
+                    <PatientInfo>
+                      {age && `${age} `}
+                      {gender && gender?.charAt(0)?.toUpperCase()}
+                    </PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+                {mrn && (
+                  <>
+                    <PatientInfo>
+                      {uniqueIdentifierLabel}# {mrn}
+                    </PatientInfo>
+                    <PatientInfoDivider />
+                  </>
+                )}
+              </PatientDetailsInformation>
+            </PatientDetails>
+          )}
+          <PatientDetailsDrawer
+            patient={patient}
+            isOpenedDetails={isDrawerOpen}
+            editingDisabled={emrIntegrationEnabled}
+            closeDetails={unsetIsDrawerOpen}
+          />
+        </>
+      ) : (
+        <Box pl="30px">
+          <PatientDetailsLoader />
+        </Box>
       )}
     </PatientDetailsContainer>
   );

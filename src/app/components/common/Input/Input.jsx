@@ -20,7 +20,7 @@ const Input = React.forwardRef(
       endAdornment,
       shrink,
       readOnly,
-      required,
+      required = false,
       variant = 'filled',
       ...restProps
     },

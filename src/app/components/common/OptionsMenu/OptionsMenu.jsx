@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
+import { prop } from 'ramda';
 import {
   arrayOf,
   bool,
+  elementType,
   func,
   node,
-  number,
   oneOf,
   shape,
   string,
@@ -15,24 +16,27 @@ import {
   Popper,
   MenuList,
   MenuItem,
+  ListItemText,
 } from '@material-ui/core';
 import zIndex from 'styles/z-index';
-import { StyledButton } from './styled';
+import { StyledButton, useMenuStyles } from './styled';
 
 const OptionsMenu = ({
   isDisabled,
   disablePortal,
   placement,
   children,
-  width,
   options,
+  customButtonComponent: CustomButtonComponent,
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
+  const Button = CustomButtonComponent || StyledButton;
+  const menuClasses = useMenuStyles();
 
   return (
     <>
-      <StyledButton
+      <Button
         type="button"
         ref={assignMemberButtonReference}
         disabled={isDisabled}
@@ -42,7 +46,7 @@ const OptionsMenu = ({
         }}
       >
         {children}
-      </StyledButton>
+      </Button>
       <Popper
         anchorEl={assignMemberButtonReference?.current}
         placement={placement}
@@ -59,19 +63,21 @@ const OptionsMenu = ({
         {isOpen && (
           <ClickAwayListener onClickAway={() => openPopover(false)}>
             <Paper>
-              <MenuList width={width}>
-                {options?.map(({ name, color, onClick }) => (
-                  <MenuItem
-                    key={name}
-                    color={color}
-                    onClick={event => {
-                      openPopover(false);
-                      onClick(event);
-                    }}
-                  >
-                    {name}
-                  </MenuItem>
-                ))}
+              <MenuList classes={menuClasses}>
+                {options
+                  ?.filter(prop('name'))
+                  ?.map(({ name, description, color, onClick }) => (
+                    <MenuItem
+                      key={name}
+                      color={color}
+                      onClick={event => {
+                        openPopover(false);
+                        onClick(event);
+                      }}
+                    >
+                      <ListItemText primary={name} secondary={description} />
+                    </MenuItem>
+                  ))}
               </MenuList>
             </Paper>
           </ClickAwayListener>
@@ -86,21 +92,22 @@ OptionsMenu.propTypes = {
   options: arrayOf(
     shape({
       name: string.isRequired,
+      description: string,
       onClick: func,
       color: string,
     }),
   ).isRequired,
   isDisabled: bool,
   disablePortal: bool,
-  placement: oneOf(['bottom-end', 'top-end']),
-  width: number,
+  placement: oneOf(['bottom-end', 'top-end', 'left-start']),
+  customButtonComponent: elementType,
 };
 
 OptionsMenu.defaultProps = {
   isDisabled: false,
   disablePortal: false,
   placement: 'bottom-end',
-  width: 180,
+  customButtonComponent: null,
 };
 
 export default OptionsMenu;

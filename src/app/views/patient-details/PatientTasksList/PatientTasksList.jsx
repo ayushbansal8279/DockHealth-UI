@@ -242,7 +242,9 @@ const PatientTasksListView = ({
                             }
                             placement="bottom"
                           >
-                            {trunc(list.listName, 20)} ({list.tasks.length})
+                            <div>
+                              {trunc(list.listName, 20)} ({list.tasks.length})
+                            </div>
                           </Tooltip>
                         }
                         disabled={list.tasks.length === 0 && !!taskSearch}

@@ -8,9 +8,10 @@ export const TEAM_SETUP_PATH = '/onboarding/team-setup';
 export const QUESTIONS_PATH = '/onboarding/eula';
 export const TRIAL_EXPIRATION_PATH = '/settings/trial-check';
 export const HOME_PATH = '/core/home/my-tasks';
-export const UNENROLED_USER = '/auth/unEnrolledUser';
+export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
+export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 
 export const TASK_LIST = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
@@ -21,6 +22,9 @@ export const createTaskListPath = taskListIdentifier =>
 
 export const createPatientListPath = patientListIdentifier =>
   `${PATIENTS_LIST}/${patientListIdentifier}`;
+
+export const createPatientDetailsPath = patientIdentifier =>
+  `/core/patient/${patientIdentifier}`;
 
 export const createPatientDetailsListPath = (
   patientIdentifier,

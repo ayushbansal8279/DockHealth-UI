@@ -128,11 +128,7 @@ class GlobalAlertChip extends Component {
       >
         <MainChipButton type="button" onClick={this.handleCloseAlert}>
           <IconContainer>
-            {type === 'error' ? (
-              <CloseIcon color="inherit" />
-            ) : (
-              <CheckCircleOutlineIcon color="inherit" />
-            )}
+            {type === 'error' ? <CloseIcon /> : <CheckCircleOutlineIcon />}
           </IconContainer>
           <ChipText>{text}</ChipText>
         </MainChipButton>

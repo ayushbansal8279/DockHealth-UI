@@ -32,6 +32,9 @@ const themeCommonOverrides = () => ({
     MuiTabs: {
       textColor: 'inherit',
     },
+    MuiIconButton: {
+      size: 'small',
+    },
   },
   overrides: {
     MuiListItem: {
@@ -60,14 +63,6 @@ const themeCommonOverrides = () => ({
     MuiPickersDay: {
       isSelected: {
         fontWeight: 'bold',
-      },
-    },
-    MuiPopover: {
-      paper: {
-        border: `1px solid ${palette.coolGrey2}`,
-        borderRadius: 0,
-        margin: 0,
-        padding: 0,
       },
     },
     MuiTypography: {
@@ -156,6 +151,7 @@ const themeCommonOverrides = () => ({
         transition: STANDARD_TRANSITION,
         fontFamily: "'Roboto Condensed', sans-serif",
         color: ({ color }) => color || palette.mediumGrey,
+        whiteSpace: 'normal',
 
         '&:hover, &:active, &:focus': {
           backgroundColor: palette.brightBlueWithAlpha,
@@ -197,6 +193,21 @@ const themeCommonOverrides = () => ({
         '&$disabled': {
           color: palette.coolGrey1,
         },
+      },
+    },
+    MuiIconButton: {
+      root: {
+        color: palette.coolGrey1,
+      },
+    },
+    MuiSvgIcon: {
+      colorPrimary: {
+        color: palette.coolGrey1,
+      },
+    },
+    MuiSkeleton: {
+      root: {
+        backgroundColor: palette.skeletonLoader,
       },
     },
   },

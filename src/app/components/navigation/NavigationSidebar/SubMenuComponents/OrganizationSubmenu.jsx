@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
 import { getUserById, leaveOrganization, logout } from 'api/user-api';
 import { openNotifications } from 'actions/template-actions';
@@ -15,7 +16,7 @@ import AlertTypes from 'alert/AlertTypes';
 
 import AddButton from 'components/common/AddButton/AddButton';
 import OrganizationIdentifier from 'components/org/OrganizationIdentifier/OrganizationIdentifier';
-import MenuPopover from 'components/common/MenuPopover/MenuPopover';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
 
 import {
@@ -46,8 +47,6 @@ const OrganizationSubmenu = ({
 
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
-  const [orgMenuPopupOpen, setOrgMenuPopupOpen] = useState(false);
-  const currentOrgMenuPopupReference = useRef(null);
 
   const currentOrganization = useMemo(
     () =>
@@ -107,49 +106,43 @@ const OrganizationSubmenu = ({
     );
   }, [currentUser, dispatch]);
 
+  const menuOptions = useMemo(
+    () => [
+      MASTER_ROLES.includes(orgUserRole) && {
+        name: 'Edit Organization',
+        onClick: handleEditOrganization,
+      },
+      GUEST_ROLE === orgUserRole && {
+        name: 'Leave Organization',
+        onClick: handleLeaveOrganiztion,
+      },
+      MASTER_ROLES.includes(orgUserRole) && {
+        name: 'Manage Users',
+        onClick: () => history.push(SUBS_SETTINGS_PATH),
+      },
+      {
+        name: 'Notifications',
+        onClick: () => dispatch(openNotifications('SETTINGS')),
+      },
+    ],
+    [
+      dispatch,
+      handleEditOrganization,
+      handleLeaveOrganiztion,
+      history,
+      orgUserRole,
+    ],
+  );
+
   return (
     <>
       <Grid container justify="space-between" alignItems="center">
         <MyOrganizationLabel>
           {currentOrganization?.organizationName}
         </MyOrganizationLabel>
-        <IconButton
-          ref={currentOrgMenuPopupReference}
-          size="small"
-          color="secondary"
-          onClick={() => setOrgMenuPopupOpen(true)}
-        >
+        <OptionsMenu customButtonComponent={IconButton} options={menuOptions}>
           <MoreVert />
-        </IconButton>
-        <MenuPopover
-          anchorEl={currentOrgMenuPopupReference?.current}
-          open={orgMenuPopupOpen}
-          onClose={() => setOrgMenuPopupOpen(false)}
-          onAfterOptionClick={() => setOrgMenuPopupOpen(false)}
-          itemType="secondary"
-          options={[
-            MASTER_ROLES.includes(orgUserRole) && {
-              key: 'edit_org',
-              label: 'Edit Organization',
-              onClick: handleEditOrganization,
-            },
-            GUEST_ROLE === orgUserRole && {
-              key: 'leave_org',
-              label: 'Leave Organization',
-              onClick: handleLeaveOrganiztion,
-            },
-            MASTER_ROLES.includes(orgUserRole) && {
-              key: 'manage_users',
-              label: 'Manage Users',
-              onClick: () => history.push('/settings/subscriptions'),
-            },
-            {
-              key: 'notifications',
-              label: 'Notifications',
-              onClick: () => dispatch(openNotifications('SETTINGS')),
-            },
-          ]}
-        />
+        </OptionsMenu>
       </Grid>
       <Grid container justify="space-between" alignItems="center">
         <SubmenuHeader>My Organizations </SubmenuHeader>

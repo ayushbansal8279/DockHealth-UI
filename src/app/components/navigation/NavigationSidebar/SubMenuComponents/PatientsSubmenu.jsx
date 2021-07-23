@@ -178,7 +178,7 @@ const PatientsSubmenu = () => {
                           },
                         ]}
                       >
-                        <MoreVert style={{ color: palette.coolGrey1 }} />
+                        <MoreVert />
                       </OptionsMenu>
                     </DrawerItemOptions>
                   </DrawerListsItem>

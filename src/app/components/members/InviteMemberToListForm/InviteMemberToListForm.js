@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Grid, IconButton, ClickAwayListener } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import * as TaskListActions from 'actions/task-list-actions';
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member/Member';
 import Loader from 'components/common/Loader/Loader';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import {
   onListMemberAdded,
   onListMemberRemoved,
@@ -25,11 +26,6 @@ import {
   MemberFullName,
   MemberFullNameWrapper,
   MemberAvatarWrapper,
-  MemberMenuWrapper,
-  MemberMenuButton,
-  MemberMenuButtonTitle,
-  MemberMenuButtonDescription,
-  MenuPopover,
   ExternalUserInviteFormWrapper,
   Container,
   MemberStatusLabel,
@@ -43,9 +39,6 @@ const InviteMemberToListForm = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
-
-  const menuAnchor = useRef(null);
-
   const [isSavingList, setIsSavingList] = useState(false);
   const [isUpdatingMembersList, setIsUpdatingMembersList] = useState(false);
   const [listMembersFetched, setListMembersFetched] = useState(false);
@@ -53,8 +46,6 @@ const InviteMemberToListForm = ({
     allOrganizationMembersFetched,
     setAllOrganizationMembersFetched,
   ] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentMenuOptions, setCurrentMenuOptions] = useState(null);
   const [externalInviteFormState, setExternalInviteFormState] = useState({
     opened: false,
   });
@@ -213,26 +204,6 @@ const InviteMemberToListForm = ({
       });
   };
 
-  const handleOpenMenu = (event, member) => {
-    menuAnchor.current = event.target;
-    setCurrentMenuOptions(
-      getMenuOptionsForMember(member, {
-        changeUserRole,
-        removeUserFromList,
-        cancelInviteToList,
-        resendInvitationToList,
-        resendApprovalRequestToList,
-      }),
-    );
-    setIsMenuOpen(true);
-  };
-
-  const handleCloseMenu = () => {
-    menuAnchor.current = null;
-    setCurrentMenuOptions(null);
-    setIsMenuOpen(false);
-  };
-
   const handleOpenExternalInviteForm = searchedValue => {
     const [firstName, lastName] = searchedValue?.split(' ');
     setExternalInviteFormState({
@@ -278,14 +249,20 @@ const InviteMemberToListForm = ({
                   </MemberFullNameWrapper>
                   {status && <MemberStatusLabel>{status}</MemberStatusLabel>}
                   {currentUserListRole === 'ADMIN' && (
-                    <IconButton
-                      onClick={event => handleOpenMenu(event, member)}
-                      disabled={isUpdatingMembersList}
-                      size="small"
-                      color="secondary"
+                    <OptionsMenu
+                      placement="left-start"
+                      options={getMenuOptionsForMember(member, {
+                        changeUserRole,
+                        removeUserFromList,
+                        cancelInviteToList,
+                        resendInvitationToList,
+                        resendApprovalRequestToList,
+                      })}
+                      customButtonComponent={IconButton}
+                      isDisabled={isUpdatingMembersList}
                     >
                       <MoreVert />
-                    </IconButton>
+                    </OptionsMenu>
                   )}
                 </MemberListItem>
               );
@@ -304,42 +281,6 @@ const InviteMemberToListForm = ({
         <LoaderWrapper>
           <Loader />
         </LoaderWrapper>
-      )}
-      {currentMenuOptions && (
-        <MenuPopover
-          anchorEl={menuAnchor?.current}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={isMenuOpen}
-          onClose={handleCloseMenu}
-          transitionDuration={0}
-        >
-          <MemberMenuWrapper>
-            {currentMenuOptions.map(({ title, description, action }) => (
-              <MemberMenuButton
-                key={title}
-                type="button"
-                onClick={() => {
-                  handleCloseMenu();
-                  action();
-                }}
-              >
-                <MemberMenuButtonTitle>{title}</MemberMenuButtonTitle>
-                {description && (
-                  <MemberMenuButtonDescription>
-                    {description}
-                  </MemberMenuButtonDescription>
-                )}
-              </MemberMenuButton>
-            ))}
-          </MemberMenuWrapper>
-        </MenuPopover>
       )}
       {externalInviteFormState.opened && (
         <ClickAwayListener

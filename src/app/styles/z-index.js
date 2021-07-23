@@ -1,5 +1,5 @@
 const zIndex = {
-  optionsMenu: 2000,
+  optionsMenu: 6000,
   taskPopover: 2001,
   tooltip: 10000,
 };

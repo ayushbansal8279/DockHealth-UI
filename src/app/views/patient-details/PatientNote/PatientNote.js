@@ -90,26 +90,10 @@ const PatientNote = ({ note, isEditable, onSave, onRemove, onPinChange }) => {
         <>
           <Box m={2} />
           <OptionsMenu options={menuOptions}>
-            <MoreVert style={{ color: palette.coolGrey2 }} />
+            <MoreVert />
           </OptionsMenu>
         </>
       )}
-      {/* {currentUserIdentifier === creatorUserIdentifier && (
-        <PatientNoteOptions>
-          <PatientNoteOption
-            onClick={() => {
-              setEditableNote(isEditable ? null : patientNoteIdentifier);
-            }}
-          >
-            {isEditable ? 'Cancel' : 'Edit'}
-          </PatientNoteOption>
-          <PatientNoteOption
-            onClick={() => deletePatientNote(patientNoteIdentifier)}
-          >
-            Delete
-          </PatientNoteOption>
-        </PatientNoteOptions>
-      )} */}
     </NoteContainer>
   );
 };

@@ -164,7 +164,6 @@ const Button = ({
   onClick,
   size,
   type,
-  fullWidth,
   width,
   disabled,
   padding,
@@ -199,7 +198,6 @@ const Button = ({
       onClick={onClick}
       size={size}
       type={type}
-      fullWidth={fullWidth}
       width={width}
       disabled={disabled}
       padding={padding}
@@ -224,7 +222,6 @@ Button.propTypes = {
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   type: PropTypes.oneOf(['button', 'submit']),
   uppercase: PropTypes.bool,
-  fullWidth: PropTypes.bool,
   disabled: PropTypes.bool,
   width: PropTypes.string,
   startIcon: PropTypes.string,
@@ -236,7 +233,6 @@ Button.defaultProps = {
   size: 'medium',
   type: 'button',
   uppercase: true,
-  fullWidth: false,
   disabled: false,
   width: '100%',
   startIcon: null,

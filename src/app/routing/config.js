@@ -45,7 +45,7 @@ import SubscriptionsView from 'views/self-serve/subscriptions/SubscriptionsView'
 import SupportView from 'views/Support/SupportView';
 import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
 import UserProfileView from 'views/UserProfile/UserProfileView';
-
+import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
 import {
   onEnterDashboard,
   onUpdateDashboard,
@@ -104,6 +104,10 @@ export const SETTINGS_ROUTES = [
   {
     path: '/subscription-payment-finished',
     RouteComponent: SubscriptionPaymentFinishedView,
+  },
+  {
+    path: '/custom-fields',
+    RouteComponent: CustomFieldsView,
   },
 ];
 

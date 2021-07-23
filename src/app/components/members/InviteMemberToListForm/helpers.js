@@ -17,16 +17,16 @@ export const getMenuOptionsForMember = (
       if (taskListUserRole === 'ADMIN') {
         return [
           {
-            title: 'Remove as List Admin',
-            action: () => {
+            name: 'Remove as List Admin',
+            onClick: () => {
               changeUserRole(userIdentifier, 'MEMBER');
             },
           },
           {
-            title: 'Remove From This List',
+            name: 'Remove From This List',
             description:
               'If you remove a user they will lose access to this list.',
-            action: () => {
+            onClick: () => {
               removeUserFromList(userIdentifier);
             },
           },
@@ -35,10 +35,10 @@ export const getMenuOptionsForMember = (
       if (orgUserRole === 'GUEST') {
         return [
           {
-            title: 'Remove From This List',
+            name: 'Remove From This List',
             description:
               'If you remove a user they will lose access to this list.',
-            action: () => {
+            onClick: () => {
               removeUserFromList(userIdentifier);
             },
           },
@@ -46,17 +46,17 @@ export const getMenuOptionsForMember = (
       }
       return [
         {
-          title: 'Make List Admin',
+          name: 'Make List Admin',
           description: 'Can edit and delete the list.',
-          action: () => {
+          onClick: () => {
             changeUserRole(userIdentifier, 'ADMIN');
           },
         },
         {
-          title: 'Remove From This List',
+          name: 'Remove From This List',
           description:
             'If you remove a user they will lose access to this list.',
-          action: () => {
+          onClick: () => {
             removeUserFromList(userIdentifier);
           },
         },
@@ -65,10 +65,10 @@ export const getMenuOptionsForMember = (
     case 'DENIED':
       return [
         {
-          title: 'Remove From This List',
+          name: 'Remove From This List',
           description:
             'If you remove a user they will lose access to this list.',
-          action: () => {
+          onClick: () => {
             removeUserFromList(userIdentifier);
           },
         },
@@ -77,14 +77,14 @@ export const getMenuOptionsForMember = (
     case 'PENDING':
       return [
         {
-          title: 'Resend Request to Group Owner(s)',
-          action: () => {
+          name: 'Resend Request to Group Owner(s)',
+          onClick: () => {
             resendApprovalRequestToList(userIdentifier);
           },
         },
         {
-          title: 'Cancel Invitation',
-          action: () => {
+          name: 'Cancel Invitation',
+          onClick: () => {
             cancelInviteToList(userIdentifier);
           },
         },
@@ -93,14 +93,14 @@ export const getMenuOptionsForMember = (
     case 'INVITED':
       return [
         {
-          title: 'Resend Invitation',
-          action: () => {
+          name: 'Resend Invitation',
+          onClick: () => {
             resendInvitationToList(userIdentifier);
           },
         },
         {
-          title: 'Cancel Invitation',
-          action: () => {
+          name: 'Cancel Invitation',
+          onClick: () => {
             cancelInviteToList(userIdentifier);
           },
         },

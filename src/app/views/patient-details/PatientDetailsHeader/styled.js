@@ -22,18 +22,13 @@ export const PatientInfoRow = styled.div`
   display: flex;
 `;
 export const PatientDetailsContainer = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
-  display: flex;
-  background-color: white;
-  flex-direction: column;
-`;
-
-export const PatientDetailsInformationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: ${spacing.regular} ${spacing.regular};
-  justify-content: space-between;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: ${spacing.regular} ${spacing.regular};
+  font-family: 'Roboto Condensed', sans-serif;
+  background-color: ${palette.white};
 `;
 
 export const PatientName = styled.div`
@@ -62,7 +57,7 @@ export const PatientInfoDivider = styled.div`
   }
 `;
 
-export const PatientDetailsInformations = styled.div`
+export const PatientDetailsInformation = styled.div`
   display: flex;
   align-items: center;
   margin-top: ${spacing.small};

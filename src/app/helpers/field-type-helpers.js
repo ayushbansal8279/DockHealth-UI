@@ -1,0 +1,77 @@
+import FieldTypeToggleImg from 'img/patient/field-type-toggle';
+import FieldTypeNumberImg from 'img/patient/field-type-number';
+import FieldTypeDateImg from 'img/patient/field-type-date';
+import FieldTypeTextImg from 'img/patient/field-type-text';
+import FieldTypeDropdownImg from 'img/patient/field-type-dropdown';
+
+export const FieldType = {
+  DATE: 'DATE',
+  DROPDOWN: 'PICK_LIST',
+  TEXT: 'TEXT',
+  BOOL: 'BOOLEAN',
+  NUMBER: 'NUMBER',
+};
+
+export const FieldTypeLabel = {
+  [FieldType.DATE]: 'Calendar Date',
+  [FieldType.DROPDOWN]: 'Dropdown Selection',
+  [FieldType.TEXT]: 'Open Text Field',
+  [FieldType.BOOL]: 'Yes/No',
+  [FieldType.NUMBER]: 'Number',
+};
+
+export const FIELD_TYPE_OPTIONS = [
+  {
+    value: FieldType.DROPDOWN,
+    label: FieldTypeLabel[FieldType.DROPDOWN],
+  },
+  {
+    value: FieldType.DATE,
+    label: FieldTypeLabel[FieldType.DATE],
+  },
+  {
+    value: FieldType.TEXT,
+    label: FieldTypeLabel[FieldType.TEXT],
+  },
+  {
+    value: FieldType.NUMBER,
+    label: FieldTypeLabel[FieldType.NUMBER],
+  },
+  {
+    value: FieldType.BOOL,
+    label: FieldTypeLabel[FieldType.BOOL],
+  },
+];
+
+export const FIELD_TYPES = [
+  {
+    key: FieldType.DROPDOWN,
+    image: FieldTypeDropdownImg,
+    title: FieldTypeLabel[FieldType.DROPDOWN],
+    description: 'Create your own selections to choose from in a dropdown',
+  },
+  {
+    key: FieldType.DATE,
+    image: FieldTypeDateImg,
+    title: FieldTypeLabel[FieldType.DATE],
+    description: 'Choose a date from a calendar selection',
+  },
+  {
+    key: FieldType.TEXT,
+    image: FieldTypeTextImg,
+    title: FieldTypeLabel[FieldType.TEXT],
+    description: 'Allow free form text in an open text field',
+  },
+  {
+    key: FieldType.NUMBER,
+    image: FieldTypeNumberImg,
+    title: FieldTypeLabel[FieldType.NUMBER],
+    description: 'Choose from a selection of numbers',
+  },
+  {
+    key: FieldType.BOOL,
+    image: FieldTypeToggleImg,
+    title: FieldTypeLabel[FieldType.BOOL],
+    description: 'Choose from two options yes or no',
+  },
+];

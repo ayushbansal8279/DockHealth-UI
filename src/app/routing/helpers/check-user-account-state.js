@@ -5,7 +5,7 @@ import { useMobile as checkIsMobile } from 'helpers/utility-functions';
 import { openModal } from 'modal/actions';
 import {
   EULA_PATH,
-  UNENROLED_USER,
+  UNENROLLED_USER,
   HOME_PATH,
   DEFAULT_REDIRECT_PATH,
   SUBS_SETTINGS_PATH,
@@ -50,7 +50,7 @@ const checkUserAccountState = async ({
     // });
 
     if (data?.organizationIdentifier === '') {
-      return UNENROLED_USER;
+      return UNENROLLED_USER;
     }
 
     if (data && !data.eulaAcknowledged && pathname !== EULA_PATH) {

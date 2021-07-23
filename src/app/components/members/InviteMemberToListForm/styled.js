@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
-import { Popover } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 
 export const Container = styled.div`
   position: relative;
@@ -78,62 +76,12 @@ export const MemberFullName = styled.p`
   text-overflow: ellipsis;
 `;
 
-export const MemberMenuWrapper = styled.div`
-  width: 210px;
-  background: ${palette.white};
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-`;
-
-export const MemberMenuButton = styled.button`
-  width: 100%;
-  padding: ${spacing.smallPlus};
-  text-align: left;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${palette.coolGrey3};
-  }
-
-  &:hover {
-    cursor: pointer;
-    background: ${palette.coolGrey4};
-  }
-`;
-
-export const MemberMenuButtonTitle = styled.p`
-  margin-bottom: 0;
-  font-family: 'Roboto', sans-serif;
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.bold};
-  color: ${palette.mediumGrey};
-`;
-
-export const MemberMenuButtonDescription = styled.p`
-  margin-bottom: 0;
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.regular};
-  color: ${palette.coolGrey1};
-`;
-
 export const MemberStatusLabel = styled.p`
   margin-left: ${spacing.smallPlus};
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;
-
-export const MenuPopover = withStyles({
-  root: {
-    zIndex: '5006 !important',
-  },
-  paper: {
-    border: 'none',
-    overflow: 'visible',
-  },
-  backdrop: {
-    zIndex: '5005 !important',
-  },
-})(Popover);
 
 export const ExternalUserInviteFormWrapper = styled.div`
   position: absolute;

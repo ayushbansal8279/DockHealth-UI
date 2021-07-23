@@ -86,7 +86,7 @@ const renderListNames = listNames => {
 
   return (
     <Tooltip placement="top" title={title}>
-      +{listNames?.length}
+      <div>+{listNames?.length}</div>
     </Tooltip>
   );
 };
@@ -260,13 +260,13 @@ const SubscriptionsViewMembersTable = ({
           if (userStatus === 'INVITED')
             return (
               <Tooltip placement="top" title={formattedRegistrationDate}>
-                Invitation sent
+                <div>Invitation sent</div>
               </Tooltip>
             );
           if (userStatus === 'PENDING')
             return (
               <Tooltip placement="top" title={formattedRegistrationDate}>
-                Approval requested
+                <div>Approval requested</div>
               </Tooltip>
             );
 
