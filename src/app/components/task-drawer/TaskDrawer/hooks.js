@@ -143,7 +143,6 @@ const initializeTaskDrawerHooks = ({
   const [selectedParentTask, setSelectedParentTask] = useState(null);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
-  // const [detailsErrorState, setDetailsErrorState] = useState(false);
   const [isDetailsFocused, setIsDetailsFocused] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
@@ -256,7 +255,8 @@ const initializeTaskDrawerHooks = ({
         tokenizedDescription,
         description,
         taskMentions,
-        // details,
+        details,
+        tokenizedDetails,
       } = selectedTask;
       if (description) {
         const newContent = createMentionEntities(
@@ -270,22 +270,15 @@ const initializeTaskDrawerHooks = ({
       } else {
         setDescriptionState();
       }
-      // TODO!: Finish when API will be ready!
-      // if(details){
-      //   setDetailsState();
-      // }
-
-      // TODO!: temporary
-      if (description) {
+      if (details) {
         const newContent = createMentionEntities(
-          tokenizedDescription,
-          description,
+          tokenizedDetails,
+          details,
           taskMentions,
           true,
         );
-        setDetailsState(EditorState.push(descriptionState, newContent));
+        setDetailsState(EditorState.push(detailsState, newContent));
       }
-      // TODO!: temporary END
     }
     const dueDateMoment = moment(selectedTask?.dueDate ?? null);
     if (dueDateMoment.isValid()) {

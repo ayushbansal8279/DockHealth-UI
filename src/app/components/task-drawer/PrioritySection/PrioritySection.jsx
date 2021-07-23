@@ -43,6 +43,7 @@ const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
         name={PRIORITY_FIELD_NAME}
         required={false}
         onChange={selectOption}
+        // placeholder="Is there a priority?"
       />
     </PriorityFieldContainer>
   );

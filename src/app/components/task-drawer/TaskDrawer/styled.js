@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
-import { Chip, Divider, InputLabel } from '@material-ui/core';
+import { Divider, InputLabel } from '@material-ui/core';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
@@ -52,67 +52,6 @@ export const TaskDrawerBackground = styled.div`
   z-index: 98;
 `;
 
-export const MemberAdornmentContainer = styled.div`
-  align-self: flex-end;
-  margin-bottom: 0;
-  margin-right: 1rem;
-`;
-
-export const FormSectionDivider = styled.div`
-  background-color: ${props =>
-    props.active ? palette.vividPink : palette.unknownGrey2};
-  height: ${props => (props.shown ? '0.0625rem' : 0)};
-  position: relative;
-  transition: background-color 0.25s ease-out;
-  width: 100%;
-
-  ${props => props.condensed && 'margin: 0 0.5rem;'}
-`;
-
-export const AutoSaveContainer = styled.div`
-  height: ${props => (props.visible ? 2 : 0)}rem;
-  left: 0;
-  overflow: hidden;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  transition: height 0.25s ease-out;
-  width: 100%;
-  text-align: center;
-  margin-top: 10px;
-`;
-
-export const AutoSaveChip = styled(Chip)`
-  && {
-    background-color: ${palette.accentYellow};
-    color: ${palette.white};
-    border: 0;
-    font-weight: bold; 
-    font-size: 16px;
-    left:
-    top: 0;
-    padding: 0 0.25rem;
-    transition: top 0.25s ease-out;
-    transform: translateX(0%);
-  }
-`;
-
-export const AutoSaveLabel = styled.div`
-  align-items: center;
-  background-color: ${palette.vividPink};
-  border-radius: 0 0 0.5rem 0.5rem;
-  color: ${palette.white};
-  display: flex;
-  height: 1.5rem;
-  left: 50%;
-  padding: 0 0.75rem;
-  pointer-events: none;
-  position: absolute;
-  top: ${props => (props.visible ? 0 : -1.5)}rem;
-  transition: top 0.25s ease-out;
-  transform: translateX(-50%);
-`;
-
 export const rowHeight = 'fit-content';
 
 export const styleTaskDrawerContainer = {
@@ -156,18 +95,6 @@ export const styleRightColumn = {
   height: rowHeight,
 };
 
-export const DescriptionContainer = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.bold};
-  color: ${palette.mediumGrey};
-  transition: all 0.2s ease-out;
-
-  border-bottom: 1px solid
-    ${({ isFocused }) => (isFocused ? palette.coolGrey1 : 'transparent')};
-
-  ${({ hasError }) => hasError && `border-color: ${palette.error};`}
-`;
 export const DetailsContainer = styled.div`
   padding: 1rem 2rem;
   height: fit-content;
