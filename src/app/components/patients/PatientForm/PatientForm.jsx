@@ -17,7 +17,6 @@ import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
-import { PatientDetailsForm } from './styled.js';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -69,7 +68,7 @@ const PatientForm = forwardRef(
     );
 
     return (
-      <PatientDetailsForm
+      <form
         onSubmit={handleSubmit(compose(onSubmit, formatMetaDataOutput))}
         ref={reference}
       >
@@ -169,7 +168,7 @@ const PatientForm = forwardRef(
             </Button>
           )}
         </Box>
-      </PatientDetailsForm>
+      </form>
     );
   },
 );
