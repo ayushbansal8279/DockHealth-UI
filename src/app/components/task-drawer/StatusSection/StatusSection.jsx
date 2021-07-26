@@ -14,11 +14,7 @@ import {
   StatusFieldContainer,
   StatusFlagContainer,
 } from './styled';
-import {
-  EndAdornmentContainer,
-  AdornmentContainer,
-  AdornmentClear,
-} from '../styled';
+import { EndAdornmentContainer, AdornmentClear } from '../styled';
 
 const StatusSection = ({ selectedTask, setAutoSaveVisible, onTaskUpdate }) => {
   const dispatch = useDispatch();
@@ -76,9 +72,6 @@ const StatusSection = ({ selectedTask, setAutoSaveVisible, onTaskUpdate }) => {
             shrink: true,
           }}
           InputProps={{
-            startAdornment: !workflowStatus && (
-              <AdornmentContainer>+</AdornmentContainer>
-            ),
             endAdornment: workflowStatus ? (
               <AdornmentClear onClick={handleClear} />
             ) : (
