@@ -13,12 +13,12 @@ export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 
-export const TASK_LIST = '/core/tasks';
+export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
 export const PATIENTS_LIST = '/core/patients/list';
 
 export const createTaskListPath = taskListIdentifier =>
-  `${TASK_LIST}/${taskListIdentifier}`;
+  `${TASK_LIST_PATH}/${taskListIdentifier}`;
 
 export const createPatientListPath = patientListIdentifier =>
   `${PATIENTS_LIST}/${patientListIdentifier}`;

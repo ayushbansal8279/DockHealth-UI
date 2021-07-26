@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { MoreVert } from '@material-ui/icons';
 import {
   onTaskListDeleted,
@@ -24,6 +24,7 @@ import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
+import { TASK_LIST_PATH } from 'routing/helpers/paths';
 import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Box } from '@material-ui/core';
@@ -44,11 +45,17 @@ import {
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
 const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
   const history = useHistory();
-  const { taskListIdentifier: activeTaskListIdentifier } = useSelector(
+  const { pathname } = useLocation();
+
+  const { taskListIdentifier: taskListIdentifierParameter } = useSelector(
     locationParametersSelector,
   );
+  const activeTaskListIdentifier = pathname?.startsWith(TASK_LIST_PATH)
+    ? taskListIdentifierParameter
+    : null;
   const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
 
