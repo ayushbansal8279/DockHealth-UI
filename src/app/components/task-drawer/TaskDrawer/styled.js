@@ -32,6 +32,7 @@ export const TextEditorInputLabel = styled(InputLabel)`
 `;
 
 export const TextEditorFormStyleContainer = styled.div`
+  width: 100%;
   background-color: #f7fafb !important;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
@@ -60,11 +61,6 @@ export const styleTaskDrawerContainer = {
 
 export const styleFullRow = {
   padding: '1rem 2rem',
-  height: rowHeight,
-};
-
-export const styleFullRowThin = {
-  padding: '0rem 2rem',
   height: rowHeight,
 };
 
@@ -100,6 +96,11 @@ export const DetailsContainer = styled.div`
   height: fit-content;
 `;
 
+export const ParentTask = styled.div`
+  padding: 1rem 2rem;
+  height: fit-content;
+`;
+
 export const DescriptionTextContainer = styled.div`
   ${({ isCrossed }) => isCrossed && `text-decoration: line-through;`}
 `;
@@ -127,13 +128,6 @@ export const DescriptionError = styled.p`
 
 export const ParentTaskButton = styled.button`
   cursor: pointer;
-`;
-
-export const ParentTaskDescription = styled.p`
-  color: ${palette.brightBlue};
-  font-weight: ${fontWeights.bold};
-  font-size: ${fontSizes.regular};
-  margin-bottom: 0;
 `;
 
 export const ParentTaskDescriptionPlaceholder = styled.div`

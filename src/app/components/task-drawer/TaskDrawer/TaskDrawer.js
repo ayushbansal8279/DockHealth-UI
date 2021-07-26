@@ -3,7 +3,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
@@ -28,12 +28,10 @@ import initializeTaskDrawerHooks from './hooks';
 import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 
 import {
-  DescriptionLabel,
   TaskDrawerContainer,
   TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
-  styleFullRowThin,
   styleEmailRow,
   styleFirstRow,
   styleLeftColumn,
@@ -42,13 +40,12 @@ import {
   styleCommentRow,
   DescriptionError,
   ParentTaskButton,
-  ParentTaskDescription,
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
   TaskDrawerDivider,
   DetailsContainer,
+  ParentTask,
 } from './styled';
-import { getCompletedByLabel } from './helpers';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import CustomTextEditor from '../CustomTextEditor/CustomTextEditor';
@@ -142,10 +139,10 @@ const TaskDrawer = ({
   const { handleSubmit, setValue } = formMethods;
   const parentFormSubmit = handleSubmit(onSubmit);
 
-  const isEmptyDetailsState = useCallback(() => isEmptyState(detailsState), [
+  const isEmptyDetailsState = useMemo(() => isEmptyState(detailsState), [
     detailsState,
   ]);
-  const isEmptyDescriptionState = useCallback(
+  const isEmptyDescriptionState = useMemo(
     () => isEmptyState(descriptionState),
     [descriptionState],
   );
@@ -188,11 +185,19 @@ const TaskDrawer = ({
               {selectedTask && <TaskDrawerDivider />}
               <Spacing vertical={2} />
               {isSubtask && (
-                <Grid item xs={12} style={styleFullRowThin}>
+                <ParentTask>
                   <Spacing vertical={4} />
                   {selectedParentTask ? (
                     <ParentTaskButton onClick={onClickParentTask}>
-                      <ParentTaskDescription>
+                      <CustomTextEditor
+                        // hasError={descriptionErrorState}
+                        // empty={isEmptyDescriptionState}
+                        // focused={isDescriptionFocused}
+                        // required
+                        // isSelectedTaskComplete={isSelectedTaskComplete}
+                        label="Task"
+                        // selectedTask={selectedTask}
+                      >
                         <TextEditor
                           readOnly
                           isDrawerEditor
@@ -202,33 +207,23 @@ const TaskDrawer = ({
                           taskListIdentifier={taskListIdentifier}
                           disableMentions={isTemplateTask}
                         />
-                      </ParentTaskDescription>
+                      </CustomTextEditor>
                     </ParentTaskButton>
                   ) : (
                     <ParentTaskDescriptionPlaceholder />
                   )}
-                </Grid>
+                </ParentTask>
               )}
               <Grid item xs={12} style={styleFullRow}>
                 <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
                   <CustomTextEditor
                     hasError={descriptionErrorState}
-                    empty={isEmptyDescriptionState()}
+                    empty={isEmptyDescriptionState}
                     focused={isDescriptionFocused}
-                    label={
-                      <>
-                        <DescriptionLabel>
-                          {isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
-                          <Spacing horizontal={3} />
-                          <span>(required)</span>
-                        </DescriptionLabel>
-                        {isSelectedTaskComplete &&
-                          getCompletedByLabel(
-                            selectedTask.completedBy,
-                            selectedTask.completedDt,
-                          )}
-                      </>
-                    }
+                    required
+                    isSelectedTaskComplete={isSelectedTaskComplete}
+                    label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
+                    selectedTask={selectedTask}
                   >
                     <TextEditor
                       ref={descriptionReference}
@@ -279,7 +274,7 @@ const TaskDrawer = ({
               <Grid item xs={12}>
                 <DetailsContainer>
                   <CustomTextEditor
-                    empty={isEmptyDetailsState()}
+                    empty={isEmptyDetailsState}
                     focused={isDetailsFocused}
                     label="details"
                     richTextEnabled

@@ -1,16 +1,21 @@
 import React from 'react';
+import Spacing from 'components/common/Spacing';
 import {
   TextEditorFormStyleContainer,
   TextEditorInputLabel,
+  DescriptionLabel,
 } from '../TaskDrawer/styled';
+import { getCompletedByLabel } from '../TaskDrawer/helpers';
 
 const CustomTextEditor = ({
   children,
   empty,
   focused,
   label,
-  richTextEnabled,
+  richTextEnabled = false,
   hasError,
+  isSelectedTaskComplete = false,
+  selectedTask,
 }) => {
   return (
     <TextEditorFormStyleContainer focused={focused}>
@@ -20,7 +25,18 @@ const CustomTextEditor = ({
         shrink={!empty}
         hasError={hasError}
       >
-        {label}
+        <>
+          <DescriptionLabel>
+            {label}
+            <Spacing horizontal={3} />
+            <span>*</span>
+          </DescriptionLabel>
+          {isSelectedTaskComplete &&
+            getCompletedByLabel(
+              selectedTask.completedBy,
+              selectedTask.completedDt,
+            )}
+        </>
       </TextEditorInputLabel>
       <div>{children}</div>
     </TextEditorFormStyleContainer>
