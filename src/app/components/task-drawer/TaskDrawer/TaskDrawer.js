@@ -26,7 +26,6 @@ import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
 import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
-
 import {
   TaskDrawerContainer,
   TaskDrawerBackground,
@@ -290,6 +289,7 @@ const TaskDrawer = ({
                       }}
                       handleKeyCommand={command => {
                         if (command === 'enter-command') {
+                          onBlurDetailsEditor();
                           parentFormSubmit();
                           return 'handled';
                         }

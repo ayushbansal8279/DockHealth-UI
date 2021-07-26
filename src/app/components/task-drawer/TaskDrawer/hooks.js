@@ -278,6 +278,8 @@ const initializeTaskDrawerHooks = ({
           true,
         );
         setDetailsState(EditorState.push(detailsState, newContent));
+      } else {
+        setDetailsState();
       }
     }
     const dueDateMoment = moment(selectedTask?.dueDate ?? null);
