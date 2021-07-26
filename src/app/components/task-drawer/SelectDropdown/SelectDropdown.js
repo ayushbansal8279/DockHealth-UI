@@ -5,7 +5,6 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
-import { RobotoTypography } from 'styles/theme';
 import Input from 'components/common/Input/Input';
 import {
   arrayOf,
@@ -17,12 +16,13 @@ import {
   string,
 } from 'prop-types';
 import {
-  AddItemButton,
+  ListItemCustomText,
   ListContainer,
   ListItem,
   ListItemButton,
+  AddText,
 } from './styled';
-import { AdornmentClear } from '../styled';
+import { AdornmentClear, CustomAdornmentContainer } from '../styled';
 
 const SelectDropdown = React.forwardRef(
   (
@@ -31,14 +31,12 @@ const SelectDropdown = React.forwardRef(
       label,
       placeholder,
       disabled,
-      startAdornment,
       options,
       selectedOption,
       isLoadingOptions,
       onInputChange,
       onOptionSelect,
       onClear,
-      addItemLabel,
       onAddItemClick,
       clearOnSuccess,
     },
@@ -169,6 +167,13 @@ const SelectDropdown = React.forwardRef(
       }
     };
 
+    const showAddRecordOption =
+      typeof onAddItemClick === 'function' &&
+      inputValue &&
+      !isLoadingOptions &&
+      (!options || options.length === 0) &&
+      currentSelectedOption?.displayLabel !== inputValue;
+
     return (
       <>
         <div ref={inputContainerReference}>
@@ -189,24 +194,8 @@ const SelectDropdown = React.forwardRef(
               onKeyDown: handleInputKeyDown,
             }}
             InputProps={{
-              startAdornment:
-                !isFocused && startAdornment && !inputValue
-                  ? startAdornment
-                  : null,
               endAdornment: !disabled ? (
                 <>
-                  {typeof onAddItemClick === 'function' &&
-                    inputValue &&
-                    !isLoadingOptions &&
-                    (!options || options.length === 0) &&
-                    currentSelectedOption?.displayLabel !== inputValue && (
-                      <AddItemButton
-                        type="button"
-                        onMouseDown={() => onAddItemClick(inputValue)}
-                      >
-                        {addItemLabel || 'Add'}
-                      </AddItemButton>
-                    )}
                   {currentSelectedOption?.displayLabel === inputValue && (
                     <AdornmentClear
                       onClick={() => {
@@ -234,29 +223,34 @@ const SelectDropdown = React.forwardRef(
             {!isLoadingOptions ? (
               <>
                 {' '}
-                {options?.length > 0 ? (
-                  options.map((option, index) => (
-                    <ListItem key={option.key}>
-                      <ListItemButton
-                        type="button"
-                        isHovered={hoveredItemIndex === index}
-                        onMouseDown={() => handleOptionSelect(option)}
-                        onMouseEnter={() => setHoveredItemIndex(index)}
-                      >
-                        {typeof option.label === 'function'
-                          ? option.label({ searchValue: inputValue })
-                          : option.label}
-                      </ListItemButton>
-                    </ListItem>
-                  ))
-                ) : (
-                  <Grid container justify="center" alignItems="center">
-                    <Spacing vertical={2} />
-                    <RobotoTypography condensed variant="h4" color="inherit">
-                      No record found
-                    </RobotoTypography>
-                    <Spacing vertical={2} />
-                  </Grid>
+                {options?.length > 0
+                  ? options.map((option, index) => (
+                      <ListItem key={option.key}>
+                        <ListItemButton
+                          type="button"
+                          isHovered={hoveredItemIndex === index}
+                          onMouseDown={() => handleOptionSelect(option)}
+                          onMouseEnter={() => setHoveredItemIndex(index)}
+                        >
+                          {typeof option.label === 'function'
+                            ? option.label({ searchValue: inputValue })
+                            : option.label}
+                        </ListItemButton>
+                      </ListItem>
+                    ))
+                  : null}
+                {showAddRecordOption && (
+                  <ListItem key="addRecordButton">
+                    <ListItemButton
+                      type="button"
+                      onMouseDown={() => onAddItemClick(inputValue)}
+                    >
+                      <ListItemCustomText>
+                        <CustomAdornmentContainer>+</CustomAdornmentContainer>
+                        <AddText>Add &quot;{inputValue}&quot;</AddText>
+                      </ListItemCustomText>
+                    </ListItemButton>
+                  </ListItem>
                 )}
               </>
             ) : (
@@ -277,7 +271,6 @@ SelectDropdown.propTypes = {
   name: string.isRequired,
   label: string.isRequired,
   placeholder: string,
-  startAdornment: node,
   disabled: bool,
   options: arrayOf(
     shape({
@@ -297,18 +290,15 @@ SelectDropdown.propTypes = {
   onInputChange: func.isRequired,
   onOptionSelect: func.isRequired,
   onClear: func.isRequired,
-  addItemLabel: string,
   onAddItemClick: func,
 };
 
 SelectDropdown.defaultProps = {
   placeholder: null,
   disabled: false,
-  startAdornment: null,
   options: [],
   selectedOption: null,
   isLoadingOptions: false,
-  addItemLabel: null,
   onAddItemClick: null,
 };
 export default SelectDropdown;

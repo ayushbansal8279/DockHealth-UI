@@ -323,7 +323,6 @@ const PatientSection = ({
       onInputChange={onPatientInputChange}
       onOptionSelect={handlePatientSelect}
       onClear={handleClearSelectedPatient}
-      addItemLabel={`Add ${customerTypeLabel}`}
       onAddItemClick={
         currentOrganization?.emrIntegrationEnabled ? null : handleAddPatient
       }

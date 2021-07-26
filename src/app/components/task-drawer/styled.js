@@ -14,6 +14,11 @@ export const AdornmentContainer = styled.div`
   top: -6px;
 `;
 
+export const CustomAdornmentContainer = styled(AdornmentContainer)`
+  display: inline;
+  top: -0px;
+`;
+
 export const EndAdornmentContainer = styled.div`
   align-items: center;
   align-self: flex-end;

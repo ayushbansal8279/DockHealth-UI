@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Close } from '@material-ui/icons';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
 
 export const ListContainer = styled.ul`
   width: ${({ width }) => width}px;
@@ -16,6 +15,11 @@ export const ListContainer = styled.ul`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 10;
 }`;
+
+export const AddText = styled.span`
+  display: flex;
+  padding: 4px;
+`;
 
 export const ListItem = styled.li`
   width: 100%;
@@ -38,13 +42,8 @@ export const AdornmentClear = styled(Close)`
   }
 `;
 
-export const AddItemButton = styled.button`
-  color: ${palette.blueOcean};
-  font-size: ${fontSizes.smallPlus};
-  white-space: nowrap;
+export const ListItemCustomText = styled.button`
+  padding: 10px;
+  display: flex;
   cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;
