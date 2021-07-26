@@ -44,7 +44,8 @@ import {
   DescriptionTextContainer,
   TaskDrawerDivider,
   DetailsContainer,
-  ParentTask,
+  ParentTaskDescription,
+  styleFullRowThin,
 } from './styled';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
@@ -185,19 +186,11 @@ const TaskDrawer = ({
               {selectedTask && <TaskDrawerDivider />}
               <Spacing vertical={2} />
               {isSubtask && (
-                <ParentTask>
+                <Grid item xs={12} style={styleFullRowThin}>
                   <Spacing vertical={4} />
                   {selectedParentTask ? (
                     <ParentTaskButton onClick={onClickParentTask}>
-                      <CustomTextEditor
-                        // hasError={descriptionErrorState}
-                        // empty={isEmptyDescriptionState}
-                        // focused={isDescriptionFocused}
-                        // required
-                        // isSelectedTaskComplete={isSelectedTaskComplete}
-                        label="Task"
-                        // selectedTask={selectedTask}
-                      >
+                      <ParentTaskDescription>
                         <TextEditor
                           readOnly
                           isDrawerEditor
@@ -207,12 +200,12 @@ const TaskDrawer = ({
                           taskListIdentifier={taskListIdentifier}
                           disableMentions={isTemplateTask}
                         />
-                      </CustomTextEditor>
+                      </ParentTaskDescription>
                     </ParentTaskButton>
                   ) : (
                     <ParentTaskDescriptionPlaceholder />
                   )}
-                </ParentTask>
+                </Grid>
               )}
               <Grid item xs={12} style={styleFullRow}>
                 <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
