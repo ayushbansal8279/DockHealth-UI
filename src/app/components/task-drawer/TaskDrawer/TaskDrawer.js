@@ -1,7 +1,9 @@
+/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
@@ -10,6 +12,7 @@ import Button from 'components/common/Button/Button';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import { convertToRaw } from 'draft-js';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -24,29 +27,37 @@ import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
 import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import {
-  DescriptionLabel,
   TaskDrawerContainer,
   TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
-  styleFullRowThin,
   styleEmailRow,
   styleFirstRow,
   styleLeftColumn,
   styleRightColumn,
   styleLastRow,
   styleCommentRow,
-  DescriptionContainer,
   DescriptionError,
   ParentTaskButton,
-  ParentTaskDescription,
   ParentTaskDescriptionPlaceholder,
   DescriptionTextContainer,
   TaskDrawerDivider,
+  DetailsContainer,
+  ParentTaskDescription,
+  styleFullRowThin,
 } from './styled';
-import { getCompletedByLabel } from './helpers';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
+import CustomTextEditor from '../CustomTextEditor/CustomTextEditor';
+
+const isEmptyState = state => {
+  const rawState = convertToRaw(state.getCurrentContent());
+  const firstBlock = rawState?.blocks?.[0];
+  if (firstBlock && firstBlock.text === '') {
+    return true;
+  }
+  return false;
+};
 
 const TaskDrawer = ({
   isInbox,
@@ -96,6 +107,12 @@ const TaskDrawer = ({
     taskDrawerReference,
     taskListIdentifier,
     templateBundleIdentifier,
+    detailsReference,
+    detailsState,
+    onBlurDetailsEditor,
+    onChangeDetailsEditor,
+    onFocusDetailsEditor,
+    isDetailsFocused,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -121,6 +138,14 @@ const TaskDrawer = ({
   });
   const { handleSubmit, setValue } = formMethods;
   const parentFormSubmit = handleSubmit(onSubmit);
+
+  const isEmptyDetailsState = useMemo(() => isEmptyState(detailsState), [
+    detailsState,
+  ]);
+  const isEmptyDescriptionState = useMemo(
+    () => isEmptyState(descriptionState),
+    [descriptionState],
+  );
 
   return (
     <>
@@ -182,23 +207,16 @@ const TaskDrawer = ({
                 </Grid>
               )}
               <Grid item xs={12} style={styleFullRow}>
-                <DescriptionContainer
-                  isFocused={isDescriptionFocused}
-                  hasError={descriptionErrorState}
-                >
-                  <Grid container justify="space-between" alignItems="flex-end">
-                    <DescriptionLabel>
-                      {isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
-                      <Spacing horizontal={3} />
-                      <span>(required)</span>
-                    </DescriptionLabel>
-                    {isSelectedTaskComplete &&
-                      getCompletedByLabel(
-                        selectedTask.completedBy,
-                        selectedTask.completedDt,
-                      )}
-                  </Grid>
-                  <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
+                <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
+                  <CustomTextEditor
+                    hasError={descriptionErrorState}
+                    empty={isEmptyDescriptionState}
+                    focused={isDescriptionFocused}
+                    required
+                    isSelectedTaskComplete={isSelectedTaskComplete}
+                    label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
+                    selectedTask={selectedTask}
+                  >
                     <TextEditor
                       ref={descriptionReference}
                       taskListIdentifier={taskListIdentifier}
@@ -228,8 +246,8 @@ const TaskDrawer = ({
                         return 'not-handled';
                       }}
                     />
-                  </DescriptionTextContainer>
-                </DescriptionContainer>
+                  </CustomTextEditor>
+                </DescriptionTextContainer>
                 {descriptionErrorState && (
                   <DescriptionError>
                     Task description is required
@@ -245,6 +263,43 @@ const TaskDrawer = ({
                   />
                 </Grid>
               )}
+              <Grid item xs={12}>
+                <DetailsContainer>
+                  <CustomTextEditor
+                    empty={isEmptyDetailsState}
+                    focused={isDetailsFocused}
+                    label="details"
+                    richTextEnabled
+                  >
+                    <TextEditor
+                      ref={detailsReference}
+                      taskListIdentifier={taskListIdentifier}
+                      disableMentions={isTemplateTask}
+                      isDrawerEditor
+                      showToolbar
+                      onFocus={onFocusDetailsEditor}
+                      onBlur={onBlurDetailsEditor}
+                      state={detailsState}
+                      onChange={onChangeDetailsEditor}
+                      keyBindingFn={event => {
+                        if (event.keyCode === 13) {
+                          return 'enter-command';
+                        }
+                        return undefined;
+                      }}
+                      handleKeyCommand={command => {
+                        if (command === 'enter-command') {
+                          onBlurDetailsEditor();
+                          parentFormSubmit();
+                          return 'handled';
+                        }
+
+                        return 'not-handled';
+                      }}
+                    />
+                  </CustomTextEditor>
+                </DetailsContainer>
+              </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <PatientSection
                   selectedPatient={

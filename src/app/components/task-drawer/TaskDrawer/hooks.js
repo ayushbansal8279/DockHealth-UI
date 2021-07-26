@@ -25,6 +25,7 @@ import {
   deleteTask,
   duplicateTask,
   updateTaskDescription,
+  updateTaskDetails,
   prepareSubtask,
   markTaskRead,
   updateDueDate,
@@ -145,13 +146,16 @@ const initializeTaskDrawerHooks = ({
   const [selectedParentTask, setSelectedParentTask] = useState(null);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
+  const [isDetailsFocused, setIsDetailsFocused] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
   const descriptionReference = useRef(null);
+  const detailsReference = useRef(null);
   const previousTaskIdentifierValue = useRef();
   const taskDrawerReference = useRef(null);
 
   const [descriptionState, setDescriptionState] = useMentionsEditorState();
+  const [detailsState, setDetailsState] = useMentionsEditorState();
   const [
     parentDescriptionState,
     setParentDescriptionState,
@@ -173,6 +177,10 @@ const initializeTaskDrawerHooks = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
+
+  const onFocusDetailsEditor = () => {
+    setIsDetailsFocused(true);
+  };
 
   const { setValue, clearError } = formMethods;
 
@@ -246,7 +254,13 @@ const initializeTaskDrawerHooks = ({
     clearError(); // clear any previous validation errors
 
     if (selectedTask) {
-      const { tokenizedDescription, description, taskMentions } = selectedTask;
+      const {
+        tokenizedDescription,
+        description,
+        taskMentions,
+        details,
+        tokenizedDetails,
+      } = selectedTask;
       if (description) {
         const newContent = createMentionEntities(
           tokenizedDescription,
@@ -258,6 +272,17 @@ const initializeTaskDrawerHooks = ({
         setDescriptionState(EditorState.push(descriptionState, newContent));
       } else {
         setDescriptionState();
+      }
+      if (details) {
+        const newContent = createMentionEntities(
+          tokenizedDetails,
+          details,
+          taskMentions,
+          true,
+        );
+        setDetailsState(EditorState.push(detailsState, newContent));
+      } else {
+        setDetailsState();
       }
     }
     const dueDateMoment = moment(selectedTask?.dueDate ?? null);
@@ -436,6 +461,36 @@ const initializeTaskDrawerHooks = ({
     setAutoSaveVisible,
   ]);
 
+  const handleTaskDetailsUpdate = useCallback(async () => {
+    const updatedTaskDetails = convertFromEditorStateToOutput(detailsState)
+      .tokenizedText;
+
+    if (
+      updatedTaskDetails === '' ||
+      selectedTask.tokenizedDetails === updatedTaskDetails
+    ) {
+      return;
+    }
+
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        const updatedTask = await updateTaskDetails(
+          selectedTask,
+          updatedTaskDetails,
+        )(dispatch);
+        setAutoSaveVisible();
+        onTaskUpdate(updatedTask);
+      } catch {
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error updating task Details, please try again later',
+            'error',
+          ),
+        );
+      }
+    }
+  }, [detailsState, dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible]);
+
   const handleDueDateSave = useCallback(
     updatedDueDateTime => {
       updateDueDate(
@@ -509,6 +564,11 @@ const initializeTaskDrawerHooks = ({
     setIsDescriptionFocused(false);
   }, [handleTaskDescriptionUpdate]);
 
+  const onBlurDetailsEditor = useCallback(() => {
+    setIsDetailsFocused(false);
+    handleTaskDetailsUpdate();
+  }, [handleTaskDetailsUpdate]);
+
   const onChangeMentionsEditor = useCallback(
     state => {
       if (descriptionErrorState) {
@@ -522,11 +582,20 @@ const initializeTaskDrawerHooks = ({
     [descriptionErrorState, setDescriptionState],
   );
 
+  const onChangeDetailsEditor = useCallback(
+    state => {
+      setDetailsState(state);
+    },
+    [setDetailsState],
+  );
+
   return {
     closeTaskDrawer,
     descriptionErrorState,
     descriptionReference,
+    detailsReference,
     descriptionState,
+    detailsState,
     formMethods,
     handleDueDateSave,
     handleQuickAddSubtask,
@@ -571,6 +640,10 @@ const initializeTaskDrawerHooks = ({
     taskDueTime,
     taskListIdentifier,
     templateBundleIdentifier,
+    onBlurDetailsEditor,
+    onChangeDetailsEditor,
+    onFocusDetailsEditor,
+    isDetailsFocused,
   };
 };
 
