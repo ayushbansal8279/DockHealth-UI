@@ -9,9 +9,17 @@ import { useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import MagnifierIcon from 'img/magnifier.svg';
-import { getPatientsByCriteria } from 'api/patient-api';
+import { getPatientsByCriteria, addPatient } from 'api/patient-api';
 import { getFormattedPatients } from 'components/task-drawer/PatientSection/helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import {
+  ListItemButton,
+  ListItemCustomText,
+  AddText,
+} from 'components/task-drawer/SelectDropdown/styled';
+import { CustomAdornmentContainer } from 'components/task-drawer/styled';
+import { onTaskDrawerPatientAdded } from 'helpers/ga-event-helper';
+import { noop } from 'helpers/utility-functions';
 import {
   Input,
   InputBox,
@@ -35,10 +43,17 @@ const PatientList = ({
   const listReference = useRef(null);
   const inputReference = useRef(null);
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
-
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const currentOrganization =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const displayUnassignedOption = useMemo(
@@ -110,6 +125,44 @@ const PatientList = ({
     setPatients([]);
     inputReference.current.focus();
   };
+
+  const handleAddPatient = useCallback(() => {
+    const patient = searchValue;
+    console.log('patient', patient);
+
+    if (currentOrganization.emrIntegrationEnabled) {
+      return;
+    }
+
+    let data = {};
+    if (patient.includes(',')) {
+      const [lastName, ...firstNames] = patient.split(',');
+      data = { lastName, firstName: firstNames.join(' ').trim() };
+    } else {
+      const [firstName, ...lastNames] = patient.split(' ');
+      data = { firstName, lastName: lastNames.join(' ') };
+    }
+
+    onTaskDrawerPatientAdded();
+
+    addPatient(data)
+      .then(async ({ patientIdentifier, firstName, lastName }) => {
+        clearInput();
+        await onSelect({
+          firstName,
+          lastName,
+          value: patientIdentifier,
+          patientIdentifier,
+          displayLabel: `${lastName}, ${firstName} `,
+        });
+      })
+      .catch(noop);
+  }, [
+    searchValue,
+    currentOrganization.emrIntegrationEnabled,
+    // fetchPatients,
+    onSelect,
+  ]);
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -195,6 +248,19 @@ const PatientList = ({
     }
   };
 
+  const renderEmptyOption = useCallback(() => {
+    return currentOrganization?.emrIntegrationEnabled ? (
+      <NoPatientFound>No {customerTypeLabel} found</NoPatientFound>
+    ) : (
+      <ListItemButton type="button" onMouseDown={handleAddPatient}>
+        <ListItemCustomText>
+          <CustomAdornmentContainer>+</CustomAdornmentContainer>
+          <AddText>Add &quot;{searchValue}&quot;</AddText>
+        </ListItemCustomText>
+      </ListItemButton>
+    );
+  }, [currentOrganization, customerTypeLabel, handleAddPatient, searchValue]);
+
   return (
     <>
       <InputBox>
@@ -214,9 +280,10 @@ const PatientList = ({
           <LoaderItem />
         </LoaderContainer>
       )}
-      {!isLoadingPatients && patients.length === 0 && searchValue !== '' && (
-        <NoPatientFound>No {customerTypeLabel} found</NoPatientFound>
-      )}
+      {!isLoadingPatients &&
+        patients.length === 0 &&
+        searchValue !== '' &&
+        renderEmptyOption()}
       {!isLoadingPatients && (
         <ListContainer withBorder={patients.length !== 0} ref={listReference}>
           {!isLoadingPatients &&

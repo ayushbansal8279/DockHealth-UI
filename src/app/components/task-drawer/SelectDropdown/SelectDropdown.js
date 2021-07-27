@@ -39,6 +39,7 @@ const SelectDropdown = React.forwardRef(
       onClear,
       onAddItemClick,
       clearOnSuccess,
+      addItemEnabled,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -170,6 +171,7 @@ const SelectDropdown = React.forwardRef(
     const showAddRecordOption =
       typeof onAddItemClick === 'function' &&
       inputValue &&
+      addItemEnabled &&
       !isLoadingOptions &&
       (!options || options.length === 0) &&
       currentSelectedOption?.displayLabel !== inputValue;
@@ -291,6 +293,7 @@ SelectDropdown.propTypes = {
   onOptionSelect: func.isRequired,
   onClear: func.isRequired,
   onAddItemClick: func,
+  addItemEnabled: bool,
 };
 
 SelectDropdown.defaultProps = {
@@ -300,5 +303,6 @@ SelectDropdown.defaultProps = {
   selectedOption: null,
   isLoadingOptions: false,
   onAddItemClick: null,
+  addItemEnabled: true,
 };
 export default SelectDropdown;

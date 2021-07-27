@@ -326,6 +326,7 @@ const PatientSection = ({
       onAddItemClick={
         currentOrganization?.emrIntegrationEnabled ? null : handleAddPatient
       }
+      addItemEnabled={!currentOrganization?.emrIntegrationEnabled}
       clearOnSuccess
     />
   );

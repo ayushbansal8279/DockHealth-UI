@@ -4,6 +4,12 @@ import Member from 'components/members/Member/Member';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import Loader from 'components/common/Loader/Loader';
 import {
+  ListItemButton,
+  ListItemCustomText,
+  AddText,
+} from 'components/task-drawer/SelectDropdown/styled';
+import { CustomAdornmentContainer } from 'components/task-drawer/styled';
+import {
   Wrapper,
   Placeholder,
   SelectElement,
@@ -19,8 +25,6 @@ import {
   UserNameText,
   SelectElementWrapper,
   EmptyPeopleResult,
-  EmptyResultText,
-  EmptyResultButton,
 } from './styled';
 
 const ListMembersSelect = ({
@@ -246,15 +250,20 @@ const ListMembersSelect = ({
                     ))
                   ) : (
                     <EmptyPeopleResult>
-                      <EmptyResultText>No record found</EmptyResultText>
-                      {typeof emptyListAction === 'function' && (
-                        <EmptyResultButton
-                          type="button"
-                          onClick={handleEmptyResultActionClick}
-                        >
-                          Invite
-                        </EmptyResultButton>
-                      )}
+                      {/* <EmptyResultText>No record found</EmptyResultText> */}
+                      <ListItemButton
+                        type="button"
+                        onMouseDown={
+                          typeof emptyListAction === 'function'
+                            ? handleEmptyResultActionClick
+                            : () => {}
+                        }
+                      >
+                        <ListItemCustomText>
+                          <CustomAdornmentContainer>+</CustomAdornmentContainer>
+                          <AddText>Add &quot;{searchInputValue}&quot;</AddText>
+                        </ListItemCustomText>
+                      </ListItemButton>
                     </EmptyPeopleResult>
                   )}
                 </>
