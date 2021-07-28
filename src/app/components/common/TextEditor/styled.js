@@ -8,7 +8,12 @@ export const StyledEditorContainer = styled.div`
   box-sizing: border-box;
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
+  max-height: ${({ height }) => (height ? `${height}px` : 'auto')};
+  overflow: auto;
 
+  .DraftEditor-root {
+    height: ${({ height }) => (height ? `${height}px` : 'auto')};
+  }
   .emojiSelectButton {
     background: transparent;
   }

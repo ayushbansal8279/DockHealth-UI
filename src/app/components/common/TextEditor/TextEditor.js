@@ -95,6 +95,7 @@ const TextEditor = React.forwardRef(
       isDrawerEditor = false,
       oneline = false,
       disableMentions = false,
+      height,
     },
     outerReference,
   ) => {
@@ -279,6 +280,7 @@ const TextEditor = React.forwardRef(
         isReadOnly={readOnly}
         isOneline={oneline}
         onClick={focus}
+        height={isFocused ? height : null}
       >
         {showToolbar && isFocused && (
           <ToolbarContainer>

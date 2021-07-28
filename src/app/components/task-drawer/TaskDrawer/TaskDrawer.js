@@ -232,7 +232,10 @@ const TaskDrawer = ({
                       state={descriptionState}
                       onChange={onChangeMentionsEditor}
                       keyBindingFn={event => {
-                        if (event.keyCode === 13) {
+                        if (
+                          event.keyCode === 13 &&
+                          !event.nativeEvent.shiftKey
+                        ) {
                           return 'enter-command';
                         }
                         return undefined;
@@ -272,6 +275,7 @@ const TaskDrawer = ({
                     richTextEnabled
                   >
                     <TextEditor
+                      height={100}
                       ref={detailsReference}
                       taskListIdentifier={taskListIdentifier}
                       disableMentions={isTemplateTask}
@@ -282,14 +286,17 @@ const TaskDrawer = ({
                       state={detailsState}
                       onChange={onChangeDetailsEditor}
                       keyBindingFn={event => {
-                        if (event.keyCode === 13) {
+                        if (
+                          event.keyCode === 13 &&
+                          !event.nativeEvent.shiftKey
+                        ) {
                           return 'enter-command';
                         }
                         return undefined;
                       }}
                       handleKeyCommand={command => {
                         if (command === 'enter-command') {
-                          onBlurDetailsEditor();
+                          detailsReference.current.blur();
                           parentFormSubmit();
                           return 'handled';
                         }
