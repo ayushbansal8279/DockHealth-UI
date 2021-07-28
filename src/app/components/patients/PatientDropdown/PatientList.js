@@ -9,9 +9,12 @@ import { useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import MagnifierIcon from 'img/magnifier.svg';
-import { getPatientsByCriteria } from 'api/patient-api';
+import { getPatientsByCriteria, addPatient } from 'api/patient-api';
 import { getFormattedPatients } from 'components/task-drawer/PatientSection/helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { onTaskDrawerPatientAdded } from 'helpers/ga-event-helper';
+import { noop } from 'helpers/utility-functions';
+import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import {
   Input,
   InputBox,
@@ -19,7 +22,6 @@ import {
   Row,
   LoaderItem,
   LoaderContainer,
-  NoPatientFound,
   UnassignRowContainer,
   UnassignRow,
 } from './styled';
@@ -35,10 +37,17 @@ const PatientList = ({
   const listReference = useRef(null);
   const inputReference = useRef(null);
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
-
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const currentOrganization =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const displayUnassignedOption = useMemo(
@@ -110,6 +119,44 @@ const PatientList = ({
     setPatients([]);
     inputReference.current.focus();
   };
+
+  const handleAddPatient = useCallback(() => {
+    const patient = searchValue;
+    console.log('patient', patient);
+
+    if (currentOrganization.emrIntegrationEnabled) {
+      return;
+    }
+
+    let data = {};
+    if (patient.includes(',')) {
+      const [lastName, ...firstNames] = patient.split(',');
+      data = { lastName, firstName: firstNames.join(' ').trim() };
+    } else {
+      const [firstName, ...lastNames] = patient.split(' ');
+      data = { firstName, lastName: lastNames.join(' ') };
+    }
+
+    onTaskDrawerPatientAdded();
+
+    addPatient(data)
+      .then(async ({ patientIdentifier, firstName, lastName }) => {
+        clearInput();
+        await onSelect({
+          firstName,
+          lastName,
+          value: patientIdentifier,
+          patientIdentifier,
+          displayLabel: `${lastName}, ${firstName} `,
+        });
+      })
+      .catch(noop);
+  }, [
+    searchValue,
+    currentOrganization.emrIntegrationEnabled,
+    // fetchPatients,
+    onSelect,
+  ]);
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -215,7 +262,12 @@ const PatientList = ({
         </LoaderContainer>
       )}
       {!isLoadingPatients && patients.length === 0 && searchValue !== '' && (
-        <NoPatientFound>No {customerTypeLabel} found</NoPatientFound>
+        <AddRecordOption
+          showAddOption={!currentOrganization?.emrIntegrationEnabled}
+          customerTypeLabel={customerTypeLabel}
+          handleAddRecord={handleAddPatient}
+          searchValue={searchValue}
+        />
       )}
       {!isLoadingPatients && (
         <ListContainer withBorder={patients.length !== 0} ref={listReference}>

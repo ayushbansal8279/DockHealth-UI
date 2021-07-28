@@ -2,18 +2,6 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { Close } from '@material-ui/icons';
 
-export const AdornmentContainer = styled.div`
-  align-items: center;
-  align-self: flex-end;
-  color: ${palette.orange};
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.3rem;
-  width: 2ch;
-  position: relative;
-  top: -6px;
-`;
-
 export const EndAdornmentContainer = styled.div`
   align-items: center;
   align-self: flex-end;

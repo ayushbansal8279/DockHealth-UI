@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import { Close } from '@material-ui/icons';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
 
 export const ListContainer = styled.ul`
   width: ${({ width }) => width}px;
@@ -27,24 +25,4 @@ export const ListItemButton = styled.button`
   font-family: 'Roboto Condensed', sans-serif;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
-`;
-
-export const AdornmentClear = styled(Close)`
-  && {
-    width: 20px;
-    height: 20px;
-    color: ${palette.coolGrey2};
-    cursor: pointer;
-  }
-`;
-
-export const AddItemButton = styled.button`
-  color: ${palette.blueOcean};
-  font-size: ${fontSizes.smallPlus};
-  white-space: nowrap;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;

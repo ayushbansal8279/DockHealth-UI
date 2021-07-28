@@ -3,6 +3,7 @@ import Button from 'components/common/Button/Button';
 import Member from 'components/members/Member/Member';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import Loader from 'components/common/Loader/Loader';
+import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import {
   Wrapper,
   Placeholder,
@@ -19,8 +20,6 @@ import {
   UserNameText,
   SelectElementWrapper,
   EmptyPeopleResult,
-  EmptyResultText,
-  EmptyResultButton,
 } from './styled';
 
 const ListMembersSelect = ({
@@ -246,15 +245,10 @@ const ListMembersSelect = ({
                     ))
                   ) : (
                     <EmptyPeopleResult>
-                      <EmptyResultText>No record found</EmptyResultText>
-                      {typeof emptyListAction === 'function' && (
-                        <EmptyResultButton
-                          type="button"
-                          onClick={handleEmptyResultActionClick}
-                        >
-                          Invite
-                        </EmptyResultButton>
-                      )}
+                      <AddRecordOption
+                        handleAddRecord={handleEmptyResultActionClick}
+                        searchValue={searchInputValue}
+                      />
                     </EmptyPeopleResult>
                   )}
                 </>
