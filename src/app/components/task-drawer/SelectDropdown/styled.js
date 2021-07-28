@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Close } from '@material-ui/icons';
 import palette from 'styles/palette';
 
 export const ListContainer = styled.ul`
@@ -16,11 +15,6 @@ export const ListContainer = styled.ul`
   z-index: 10;
 }`;
 
-export const AddText = styled.span`
-  display: flex;
-  padding: 4px;
-`;
-
 export const ListItem = styled.li`
   width: 100%;
 `;
@@ -31,19 +25,4 @@ export const ListItemButton = styled.button`
   font-family: 'Roboto Condensed', sans-serif;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
-`;
-
-export const AdornmentClear = styled(Close)`
-  && {
-    width: 20px;
-    height: 20px;
-    color: ${palette.coolGrey2};
-    cursor: pointer;
-  }
-`;
-
-export const ListItemCustomText = styled.button`
-  padding: 10px;
-  display: flex;
-  cursor: pointer;
 `;

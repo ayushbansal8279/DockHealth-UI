@@ -3,12 +3,7 @@ import Button from 'components/common/Button/Button';
 import Member from 'components/members/Member/Member';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import Loader from 'components/common/Loader/Loader';
-import {
-  ListItemButton,
-  ListItemCustomText,
-  AddText,
-} from 'components/task-drawer/SelectDropdown/styled';
-import { CustomAdornmentContainer } from 'components/task-drawer/styled';
+import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import {
   Wrapper,
   Placeholder,
@@ -250,20 +245,10 @@ const ListMembersSelect = ({
                     ))
                   ) : (
                     <EmptyPeopleResult>
-                      {/* <EmptyResultText>No record found</EmptyResultText> */}
-                      <ListItemButton
-                        type="button"
-                        onMouseDown={
-                          typeof emptyListAction === 'function'
-                            ? handleEmptyResultActionClick
-                            : () => {}
-                        }
-                      >
-                        <ListItemCustomText>
-                          <CustomAdornmentContainer>+</CustomAdornmentContainer>
-                          <AddText>Add &quot;{searchInputValue}&quot;</AddText>
-                        </ListItemCustomText>
-                      </ListItemButton>
+                      <AddRecordOption
+                        handleAddRecord={handleEmptyResultActionClick}
+                        searchValue={searchInputValue}
+                      />
                     </EmptyPeopleResult>
                   )}
                 </>

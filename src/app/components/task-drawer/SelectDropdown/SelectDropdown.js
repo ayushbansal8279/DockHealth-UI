@@ -15,14 +15,9 @@ import {
   shape,
   string,
 } from 'prop-types';
-import {
-  ListItemCustomText,
-  ListContainer,
-  ListItem,
-  ListItemButton,
-  AddText,
-} from './styled';
-import { AdornmentClear, CustomAdornmentContainer } from '../styled';
+import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
+import { ListContainer, ListItem, ListItemButton } from './styled';
+import { AdornmentClear } from '../styled';
 
 const SelectDropdown = React.forwardRef(
   (
@@ -243,15 +238,10 @@ const SelectDropdown = React.forwardRef(
                   : null}
                 {showAddRecordOption && (
                   <ListItem key="addRecordButton">
-                    <ListItemButton
-                      type="button"
-                      onMouseDown={() => onAddItemClick(inputValue)}
-                    >
-                      <ListItemCustomText>
-                        <CustomAdornmentContainer>+</CustomAdornmentContainer>
-                        <AddText>Add &quot;{inputValue}&quot;</AddText>
-                      </ListItemCustomText>
-                    </ListItemButton>
+                    <AddRecordOption
+                      handleAddRecord={() => onAddItemClick(inputValue)}
+                      searchValue={inputValue}
+                    />
                   </ListItem>
                 )}
               </>

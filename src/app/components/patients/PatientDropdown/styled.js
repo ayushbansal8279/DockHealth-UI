@@ -84,10 +84,3 @@ export const LoaderItem = styled(LoaderFillElement)`
 export const LoaderContainer = styled.div`
   padding: ${spacing.smallPlus} 0;
 `;
-
-export const NoPatientFound = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
-  text-align: center;
-  color: ${palette.coolGrey1};
-  padding-bottom: ${spacing.tiny};
-`;
