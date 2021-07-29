@@ -60,6 +60,7 @@ const PatientNote = ({ note, isEditable, onSave, onRemove, onPinChange }) => {
             {description}
           </PatientNoteDescription>
         ) : (
+          // TODO: ~WIKTOR~ replace for richtext supporting "TextEditor", connected with todo#2
           <PatientNoteTextarea
             autoFocus
             disabled={!isEditable}

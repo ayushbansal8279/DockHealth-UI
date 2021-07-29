@@ -42,3 +42,18 @@ export const NoteInput = styled.input`
     outline: none;
   }
 `;
+
+export const RichTextInputContainer = styled.div`
+  background-color: ${palette.coolGrey4};
+  border: 1px solid ${palette.coolGrey3};
+  box-shadow: none;
+  transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+  color: ${palette.mediumGrey};
+  font-family: 'Roboto Condensed', sans-serif;
+  margin: 0;
+  outline: 12px;
+  padding: ${spacing.regular};
+  overflow: hidden;
+  min-height: 60px;
+  overflow-y: auto;
+`;
