@@ -15,8 +15,13 @@ import {
 } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
+import { EditorState } from 'draft-js';
 // import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import {
+  convertFromEditorStateToOutput,
+  // convertToEditorState,
+} from 'components/common/TextEditor/helpers';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -84,7 +89,7 @@ const PatientNotes = () => {
     if ([...tokenizedText]?.filter(char => char !== ' ').length > 0) {
       dispatch(addPatientNote(patientIdentifier, tokenizedText));
       clearNote();
-      addNoteInputReference.current.focus();
+      addNoteInputReference.current.clear();
     }
   };
 
@@ -105,16 +110,29 @@ const PatientNotes = () => {
   );
 
   // TODO: ~WIKTOR~ it should support TextEditor, connected with todo#1
-  const renderPatient = note => (
-    <PatientNote
-      key={note.patientNoteIdentifier}
-      note={note}
-      isEditable={currentUser.userIdentifier === note.creator?.userIdentifier}
-      onSave={handleSaveNote}
-      onRemove={handleRemoveNote}
-      onPinChange={handlePinChange}
-    />
-  );
+  const renderPatient = note => {
+    const { description, mentions, ...restNotes } = note;
+    const state = EditorState.createWithContent(
+      createMentionEntities(description, description, mentions || [], true),
+    );
+    // console.log(
+    //   `[${description}], [${note.rawText}], [${note.mentions}], [${
+    //     note.tokenizedText
+    //   }], [${convertFromEditorStateToOutput(state).rawText}]`,
+    // );
+    console.log(note);
+    return (
+      <PatientNote
+        key={note.patientNoteIdentifier}
+        note={restNotes}
+        isEditable={currentUser.userIdentifier === note.creator?.userIdentifier}
+        onSave={handleSaveNote}
+        onRemove={handleRemoveNote}
+        onPinChange={handlePinChange}
+        state={state}
+      />
+    );
+  };
 
   const handleOnFocus = () => {};
 
