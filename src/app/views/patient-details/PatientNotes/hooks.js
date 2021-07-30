@@ -1,23 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { EditorState } from 'draft-js';
 
-const initializeAddNotesHooks = () => {
+const initializeAddNoteHooks = () => {
   const currentUser = useSelector(userProfileSelector);
   const [noteState, setNoteState] = useMentionsEditorState();
-  const onNoteChange = state => {
-    setNoteState(state);
-    console.log(
-      `currNote: ${convertFromEditorStateToOutput(state, true).rawText}`,
-    );
-  };
-  const clearNote = () => {
-    setNoteState(EditorState.createEmpty());
-    console.log(`clearing note`);
-  };
+  const onNoteChange = state => setNoteState(state);
+  const clearNote = () => setNoteState(EditorState.createEmpty());
   return {
     currentUser,
     noteState,
@@ -26,4 +17,4 @@ const initializeAddNotesHooks = () => {
   };
 };
 
-export default initializeAddNotesHooks;
+export default initializeAddNoteHooks;
