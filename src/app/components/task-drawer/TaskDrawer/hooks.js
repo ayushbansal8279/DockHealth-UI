@@ -13,9 +13,12 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
 import { EditorState } from 'draft-js';
+import {
+  convertToEditorState,
+  convertFromEditorStateToOutput,
+} from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import * as TaskApi from 'api/task-api';
 import {
   saveTask,
@@ -154,13 +157,6 @@ const initializeTaskDrawerHooks = ({
   const previousTaskIdentifierValue = useRef();
   const taskDrawerReference = useRef(null);
 
-  const [descriptionState, setDescriptionState] = useMentionsEditorState();
-  const [detailsState, setDetailsState] = useMentionsEditorState();
-  const [
-    parentDescriptionState,
-    setParentDescriptionState,
-  ] = useMentionsEditorState();
-
   const { taskIdentifier, subTasksCount, subtasks } = selectedTask || {};
   const taskList = selectedTask?.taskList;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -173,6 +169,20 @@ const initializeTaskDrawerHooks = ({
   const parentTask = selectedTask?.parentTask;
   const selectedTaskDueDate = selectedTask?.dueDate;
   const selectedTaskStatus = selectedTask?.status;
+
+  const [descriptionState, setDescriptionState] = useMentionsEditorState();
+  const [detailsState, setDetailsState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: selectedTask?.details,
+      tokenizedText: selectedTask?.tokenizedDetails,
+      mentions: selectedTask?.taskMentions,
+      handleRichText: true,
+    }),
+  );
+  const [
+    parentDescriptionState,
+    setParentDescriptionState,
+  ] = useMentionsEditorState();
 
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
@@ -462,8 +472,10 @@ const initializeTaskDrawerHooks = ({
   ]);
 
   const handleTaskDetailsUpdate = useCallback(async () => {
-    const updatedTaskDetails = convertFromEditorStateToOutput(detailsState)
-      .tokenizedText;
+    const updatedTaskDetails = convertFromEditorStateToOutput(
+      detailsState,
+      true,
+    ).tokenizedText;
 
     if (
       updatedTaskDetails === '' ||
