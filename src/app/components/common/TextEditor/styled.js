@@ -129,6 +129,6 @@ export const EmojiContainer = styled.div`
 `;
 export const ToolbarContainer = styled.div`
   box-sizing: border-box;
-  margin-top: -10px;
+  margin-top: 0px;
   padding-bottom: 5px;
 `;
