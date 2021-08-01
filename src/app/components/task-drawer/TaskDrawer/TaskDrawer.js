@@ -275,7 +275,6 @@ const TaskDrawer = ({
                     richTextEnabled
                   >
                     <TextEditor
-                      height={100}
                       ref={detailsReference}
                       taskListIdentifier={taskListIdentifier}
                       disableMentions={isTemplateTask}
