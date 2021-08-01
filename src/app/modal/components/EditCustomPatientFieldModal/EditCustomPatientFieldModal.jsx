@@ -53,7 +53,7 @@ const EditCustomPatientFieldModal = ({
     validationSchema,
     mode: 'onSubmit',
     defaultValues: isCreatingNewField
-      ? { fieldCategoryType: Category.PERSONAL_INFO }
+      ? { fieldCategoryType: Category.OTHER_INFO }
       : customField,
   });
   const {
