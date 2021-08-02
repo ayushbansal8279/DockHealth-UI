@@ -65,7 +65,7 @@ const InboxHelpPanel = () => (
           <b>*High</b>
         </MontserratTypography>
         <SmallRobotoTypography variant="h4" weight="500">
-          To make the task a high priority task, put #High in the subject line.
+          To make the task a high priority task, put *High in the subject line.
         </SmallRobotoTypography>
         <Spacing vertical={4} />
         <MontserratTypography variant="h4">
