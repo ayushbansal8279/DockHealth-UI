@@ -92,10 +92,9 @@ const TextEditor = React.forwardRef(
       state,
       highlightedValues,
       taskListIdentifier,
-      isDrawerEditor = false,
       oneline = false,
       disableMentions = false,
-      height,
+      minHeight,
     },
     outerReference,
   ) => {
@@ -106,12 +105,8 @@ const TextEditor = React.forwardRef(
     // const { EmojiSelect } = emojiPlugin.current;
     const { Toolbar } = staticToolbarPlugin.current;
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
-    const peopleMentionPlugin = useRef(
-      initializePeopleMentionPlugin(isDrawerEditor),
-    );
-    const patientMentionPlugin = useRef(
-      initializePatientMentionPlugin(isDrawerEditor),
-    );
+    const peopleMentionPlugin = useRef(initializePeopleMentionPlugin());
+    const patientMentionPlugin = useRef(initializePatientMentionPlugin());
 
     const [editorState, setEditorState] = useState(initialState);
     const [isFocused, setIsFocused] = useState(false);
@@ -280,7 +275,7 @@ const TextEditor = React.forwardRef(
         isReadOnly={readOnly}
         isOneline={oneline}
         onClick={focus}
-        height={isFocused ? height : null}
+        minHeight={minHeight}
       >
         {showToolbar && isFocused && (
           <ToolbarContainer>

@@ -151,7 +151,6 @@ const Subtask = ({ subtask, currentUser }) => {
           <TextEditor
             readOnly
             oneline
-            isDrawerEditor
             state={descriptionState}
             onChange={setDescriptionState}
           />
