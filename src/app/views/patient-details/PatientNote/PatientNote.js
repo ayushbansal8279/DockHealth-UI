@@ -69,7 +69,7 @@ const PatientNote = ({
           <TextEditor
             disableMentions
             readOnly
-            placeholder="why empty note? :<"
+            placeholder="empty note"
             state={noteState}
           />
         ) : (
@@ -78,7 +78,7 @@ const PatientNote = ({
             taskListIdentifier={patientNoteIdentifier}
             disableMentions
             ref={editNoteInputReference}
-            placeholder="Leave a NOTE PLEASE and press enter on your keyboard to save"
+            placeholder="Leave a note and press enter on your keyboard to save"
             isDrawerEditor
             onBlur={async () => {
               setIsEdited(false);

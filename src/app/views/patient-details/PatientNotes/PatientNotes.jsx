@@ -127,7 +127,7 @@ const PatientNotes = () => {
               ref={addNoteInputReference}
               taskListIdentifier={patientIdentifier}
               disableMentions
-              placeholder="Leave a NOTE PLEASE and press enter on your keyboard to save"
+              placeholder="Leave a note and press enter on your keyboard to save"
               isDrawerEditor
               onFocus={handleOnFocus}
               onBlur={handleOnBlur}
