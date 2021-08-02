@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { partial } from 'ramda';
@@ -46,6 +46,7 @@ const EditCustomPatientFieldModal = ({
   onAdded,
   onUpdated,
 }) => {
+  const addOptionButtonReference = useRef(null);
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
@@ -78,6 +79,13 @@ const EditCustomPatientFieldModal = ({
 
   const fieldTypeValue = watch('fieldType');
   const optionsValue = watch('options');
+  const numberOfOptions = optionsValue?.length;
+
+  useEffect(() => {
+    if (numberOfOptions) {
+      addOptionButtonReference.current.scrollIntoView(false);
+    }
+  }, [numberOfOptions]);
 
   useEffect(() => {
     if (isCreatingNewField) {
@@ -233,6 +241,7 @@ const EditCustomPatientFieldModal = ({
                           </Grid>
                         ))}
                         <Button
+                          reference={addOptionButtonReference}
                           variant="text"
                           width="auto"
                           onClick={handleAddOption}
