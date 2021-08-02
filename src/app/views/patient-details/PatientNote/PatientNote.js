@@ -61,49 +61,41 @@ const PatientNote = ({
       <Member member={creator} />
       <Box m={2} />
       <PatientNoteInformation>
-        {!isEdited ? (
-          <TextEditor
-            disableMentions
-            readOnly
-            placeholder="empty note"
-            state={noteState}
-          />
-        ) : (
-          <TextEditor
-            showToolbar
-            taskListIdentifier={patientNoteIdentifier}
-            disableMentions
-            ref={editNoteInputReference}
-            placeholder="Leave a note and press enter on your keyboard to save"
-            isDrawerEditor
-            onBlur={async () => {
-              setIsEdited(false);
-              await onSave({
-                ...note,
-                description: convertFromEditorStateToOutput(noteState, true)
-                  .tokenizedText,
-              });
-            }}
-            state={noteState}
-            onChange={newState => setNoteState(newState)}
-            keyBindingFn={event => {
-              if (event.keyCode === 13 && event.shiftKey) {
-                return undefined;
-              }
-              if (event.keyCode === 13) {
-                return 'enter-command';
-              }
+        <TextEditor
+          readOnly={!isEdited}
+          showToolbar
+          taskListIdentifier={patientNoteIdentifier}
+          disableMentions
+          ref={editNoteInputReference}
+          placeholder="Leave a note and press enter on your keyboard to save"
+          isDrawerEditor
+          onBlur={async () => {
+            setIsEdited(false);
+            await onSave({
+              ...note,
+              description: convertFromEditorStateToOutput(noteState, true)
+                .tokenizedText,
+            });
+          }}
+          state={noteState}
+          onChange={newState => setNoteState(newState)}
+          keyBindingFn={event => {
+            if (event.keyCode === 13 && event.shiftKey) {
               return undefined;
-            }}
-            handleKeyCommand={command => {
-              if (command === 'enter-command') {
-                editNoteInputReference.current.blur();
-                return 'handled';
-              }
-              return 'not-handled';
-            }}
-          />
-        )}
+            }
+            if (event.keyCode === 13) {
+              return 'enter-command';
+            }
+            return undefined;
+          }}
+          handleKeyCommand={command => {
+            if (command === 'enter-command') {
+              editNoteInputReference.current.blur();
+              return 'handled';
+            }
+            return 'not-handled';
+          }}
+        />
         <PatientNoteAuthor>
           {creator.firstName} {creator.lastName}{' '}
           {moment(dateUpdated).format('h:mma M/DD/YY')}
