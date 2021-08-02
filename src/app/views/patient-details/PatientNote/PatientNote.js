@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import palette from 'styles/palette';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Box } from '@material-ui/core';
@@ -28,6 +28,13 @@ const PatientNote = ({
   const [noteState, setNoteState] = useState(state);
   const editNoteInputReference = useRef(null);
 
+  useEffect(() => {
+    if (isEdited) {
+      // eslint-disable-next-line no-unused-expressions
+      editNoteInputReference?.current?.focus();
+    }
+  }, [isEdited, editNoteInputReference]);
+
   const menuOptions = useMemo(() => {
     const options = [
       {
@@ -39,11 +46,7 @@ const PatientNote = ({
     if (isEditable) {
       options.unshift({
         name: 'Edit',
-        onClick: () => {
-          setIsEdited(true);
-          // TODO: ~~WIKTOR~~ Focus note window on edit button for toolbar to show
-          editNoteInputReference.current.focus();
-        },
+        onClick: () => setIsEdited(true),
       });
       options.push({
         name: 'Delete',
@@ -58,7 +61,7 @@ const PatientNote = ({
     onRemove,
     patientNoteIdentifier,
     pinned,
-    editNoteInputReference,
+    // editNoteInputReference,
   ]);
   return (
     <NoteContainer>
