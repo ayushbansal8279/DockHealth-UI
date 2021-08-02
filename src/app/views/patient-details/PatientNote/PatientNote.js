@@ -55,14 +55,7 @@ const PatientNote = ({
       });
     }
     return options;
-  }, [
-    isEditable,
-    onPinChange,
-    onRemove,
-    patientNoteIdentifier,
-    pinned,
-    // editNoteInputReference,
-  ]);
+  }, [isEditable, onPinChange, onRemove, patientNoteIdentifier, pinned]);
   return (
     <NoteContainer>
       <Member member={creator} />
