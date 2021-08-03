@@ -17,8 +17,10 @@ import { openModal, closeModal } from 'modal/actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { EditorState } from 'draft-js';
 
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import {
+  convertFromEditorStateToOutput,
+  convertToEditorState,
+} from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
@@ -31,14 +33,14 @@ import {
 // TODO: ~~WIKTOR~~
 // create AddPatientNotes component and move the logic there (optional)
 // move hooks.js logic to this component (done)
-// use function from helpers to build an EditorState
-// try removing useEffect to focus on window on edit
+// use function from helpers to build an EditorState (done)
+// try removing useEffect to focus on window on edit [failed]
 // use useEffect for updating state with the backend
-// change onKeyDown logic (key==='Enter')
+// change onKeyDown logic (key==='Enter') (done)
 // complete comments from code review from github
 // merge from dev before merging on github
 // test after changes with merge on github
-// TextEditor now deletes prop isDrawerEditor, don't use it
+// TextEditor now deletes prop isDrawerEditor, don't use it (irrelevant)
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
@@ -98,9 +100,12 @@ const PatientNotes = () => {
   );
   const renderPatient = note => {
     const { description, mentions, ...restNotes } = note;
-    const state = EditorState.createWithContent(
-      createMentionEntities(description, description, mentions || [], true),
-    );
+    const state = convertToEditorState({
+      tokenizedText: description,
+      rawText: description,
+      mentions,
+      handleRichText: true,
+    });
     return (
       <PatientNote
         key={note.patientNoteIdentifier}
@@ -147,10 +152,7 @@ const PatientNotes = () => {
               state={noteState}
               onChange={onNoteChange}
               keyBindingFn={event => {
-                if (event.keyCode === 13 && event.shiftKey) {
-                  return undefined;
-                }
-                if (event.keyCode === 13) {
+                if (event.key === 'Enter' && !event.shiftKey) {
                   return 'enter-command';
                 }
                 return undefined;
