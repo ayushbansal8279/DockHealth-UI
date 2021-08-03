@@ -337,15 +337,15 @@ const TaskDrawer = ({
                   />
                 </div>
               </Grid>
-              {!isTemplateTask && (
-                <Grid item xs={6} style={styleRightColumn}>
+              <Grid item xs={6} style={styleRightColumn}>
+                {!isTemplateTask && (
                   <ReminderSection
                     selectedTask={selectedTask}
                     isDisabled={!selectedTask?.dueDate}
                     onSave={handleUpdateTask}
                   />
-                </Grid>
-              )}
+                )}
+              </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <PrioritySection
                   selectedTask={selectedTask}
