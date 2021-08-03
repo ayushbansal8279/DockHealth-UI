@@ -27,19 +27,6 @@ import {
   RichTextInputContainer,
 } from './styled';
 
-// TODO: ~~WIKTOR~~
-// create AddPatientNotes component and move the logic there (optional)
-// move hooks.js logic to this component (done)
-// use function from helpers to build an EditorState (done)
-// try removing useEffect to focus on window on edit [failed]
-// use useEffect for updating state with the backend (shouldn't use)
-// change onKeyDown logic (key==='Enter') (done)
-// complete comments from code review from github (done)
-// move state creation to PatientNote (done)
-// merge from dev before merging on github
-// test after changes with merge on github
-// TextEditor now deletes prop isDrawerEditor, don't use it (irrelevant)
-
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
   const dispatch = useDispatch();
@@ -107,7 +94,6 @@ const PatientNotes = () => {
         onSave={handleSaveNote}
         onRemove={handleRemoveNote}
         onPinChange={handlePinChange}
-        // state={state}
         mentions={mentions}
         description={description}
       />
