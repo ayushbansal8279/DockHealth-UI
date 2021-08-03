@@ -6,7 +6,11 @@ import { MoreVert } from '@material-ui/icons';
 import moment from 'moment';
 import Member from 'components/members/Member/Member';
 import TextEditor from 'components/common/TextEditor/TextEditor';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import {
+  convertFromEditorStateToOutput,
+  convertToEditorState,
+} from 'components/common/TextEditor/helpers';
+
 import {
   NoteContainer,
   PatientNoteAuthor,
@@ -19,11 +23,16 @@ const PatientNote = ({
   onSave,
   onRemove,
   onPinChange,
-  state,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  mentions,
+  description,
 }) => {
   const { patientNoteIdentifier, dateUpdated, creator, pinned } = note;
-
+  const state = convertToEditorState({
+    tokenizedText: description,
+    rawText: description,
+    mentions,
+    handleRichText: true,
+  });
   const [isEdited, setIsEdited] = useState(false);
   const [noteState, setNoteState] = useState(state);
   const editNoteInputReference = useRef(null);
@@ -31,7 +40,7 @@ const PatientNote = ({
   useEffect(() => {
     if (isEdited) {
       // eslint-disable-next-line no-unused-expressions
-      editNoteInputReference?.current?.focus();
+      editNoteInputReference.current?.focus();
     }
   }, [isEdited, editNoteInputReference]);
 

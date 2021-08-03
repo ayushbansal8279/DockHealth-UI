@@ -17,10 +17,7 @@ import { openModal, closeModal } from 'modal/actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { EditorState } from 'draft-js';
 
-import {
-  convertFromEditorStateToOutput,
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
@@ -38,6 +35,7 @@ import {
 // use useEffect for updating state with the backend
 // change onKeyDown logic (key==='Enter') (done)
 // complete comments from code review from github
+// move state creation to PatientNote (done)
 // merge from dev before merging on github
 // test after changes with merge on github
 // TextEditor now deletes prop isDrawerEditor, don't use it (irrelevant)
@@ -100,12 +98,7 @@ const PatientNotes = () => {
   );
   const renderPatient = note => {
     const { description, mentions, ...restNotes } = note;
-    const state = convertToEditorState({
-      tokenizedText: description,
-      rawText: description,
-      mentions,
-      handleRichText: true,
-    });
+
     return (
       <PatientNote
         key={note.patientNoteIdentifier}
@@ -114,7 +107,9 @@ const PatientNotes = () => {
         onSave={handleSaveNote}
         onRemove={handleRemoveNote}
         onPinChange={handlePinChange}
-        state={state}
+        // state={state}
+        mentions={mentions}
+        description={description}
       />
     );
   };
