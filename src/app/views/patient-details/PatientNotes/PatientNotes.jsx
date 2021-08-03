@@ -19,6 +19,7 @@ import { EditorState } from 'draft-js';
 
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -27,7 +28,17 @@ import {
   RichTextInputContainer,
 } from './styled';
 
-import initializeAddNoteHooks from './hooks';
+// TODO: ~~WIKTOR~~
+// create AddPatientNotes component and move the logic there (optional)
+// move hooks.js logic to this component (done)
+// use function from helpers to build an EditorState
+// try removing useEffect to focus on window on edit
+// use useEffect for updating state with the backend
+// change onKeyDown logic (key==='Enter')
+// complete comments from code review from github
+// merge from dev before merging on github
+// test after changes with merge on github
+// TextEditor now deletes prop isDrawerEditor, don't use it
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
@@ -57,7 +68,9 @@ const PatientNotes = () => {
     [],
   );
 
-  const { onNoteChange, noteState, clearNote } = initializeAddNoteHooks();
+  const [noteState, setNoteState] = useMentionsEditorState();
+  const onNoteChange = state => setNoteState(state);
+  const clearNote = () => setNoteState(EditorState.createEmpty());
 
   const saveNote = state => {
     const { tokenizedText } = convertFromEditorStateToOutput(state, true);

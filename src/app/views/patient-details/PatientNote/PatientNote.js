@@ -80,10 +80,7 @@ const PatientNote = ({
           state={noteState}
           onChange={newState => setNoteState(newState)}
           keyBindingFn={event => {
-            if (event.keyCode === 13 && event.shiftKey) {
-              return undefined;
-            }
-            if (event.keyCode === 13) {
+            if (event.key === 'Enter' && !event.shiftKey) {
               return 'enter-command';
             }
             return undefined;
