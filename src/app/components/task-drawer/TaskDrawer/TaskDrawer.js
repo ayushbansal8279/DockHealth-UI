@@ -192,7 +192,6 @@ const TaskDrawer = ({
                       <ParentTaskDescription>
                         <TextEditor
                           readOnly
-                          isDrawerEditor
                           withEditedLabel={selectedParentTask.edited}
                           state={parentDescriptionState}
                           onChange={setParentDescriptionState}
@@ -226,23 +225,21 @@ const TaskDrawer = ({
                           ? 'What is the subtask?'
                           : 'What is the task?'
                       }
-                      isDrawerEditor
                       onFocus={onFocusMentionsEditor}
                       onBlur={onBlurMentionsEditor}
                       state={descriptionState}
                       onChange={onChangeMentionsEditor}
                       keyBindingFn={event => {
-                        if (
-                          event.keyCode === 13 &&
-                          !event.nativeEvent.shiftKey
-                        ) {
+                        if (event.key === 'Enter') {
                           return 'enter-command';
                         }
+
                         return undefined;
                       }}
                       handleKeyCommand={command => {
                         if (command === 'enter-command') {
-                          parentFormSubmit();
+                          // eslint-disable-next-line no-unused-expressions
+                          descriptionReference.current?.blur();
                           return 'handled';
                         }
 
@@ -275,11 +272,10 @@ const TaskDrawer = ({
                     richTextEnabled
                   >
                     <TextEditor
-                      height={100}
+                      minHeight={100}
                       ref={detailsReference}
                       taskListIdentifier={taskListIdentifier}
                       disableMentions={isTemplateTask}
-                      isDrawerEditor
                       showToolbar
                       onFocus={onFocusDetailsEditor}
                       onBlur={onBlurDetailsEditor}
@@ -341,15 +337,15 @@ const TaskDrawer = ({
                   />
                 </div>
               </Grid>
-              {!isTemplateTask && (
-                <Grid item xs={6} style={styleRightColumn}>
+              <Grid item xs={6} style={styleRightColumn}>
+                {!isTemplateTask && (
                   <ReminderSection
                     selectedTask={selectedTask}
                     isDisabled={!selectedTask?.dueDate}
                     onSave={handleUpdateTask}
                   />
-                </Grid>
-              )}
+                )}
+              </Grid>
               <Grid item xs={6} style={styleLeftColumn}>
                 <PrioritySection
                   selectedTask={selectedTask}

@@ -110,7 +110,6 @@ const Comment = ({
                 ref={commentEditorReference}
                 taskListIdentifier={taskListIdentifier}
                 disableMentions={isTemplateTask}
-                isDrawerEditor
                 readOnly={!isEditing}
                 withEditedLabel={dateCreated !== dateUpdated}
                 state={commentState}

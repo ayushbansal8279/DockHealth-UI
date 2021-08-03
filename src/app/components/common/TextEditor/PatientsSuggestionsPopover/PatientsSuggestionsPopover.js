@@ -9,28 +9,26 @@ const PatientsSuggestionsPopover = React.forwardRef(
     );
 
     return (
-      <div {...props} ref={reference}>
-        <PopoverContainer>
-          {suggestionsToDisplay.length > 0 && (
-            <SuggestionsContainer>
-              {suggestionsToDisplay.map(child => (
-                <div key={child.props.mention.id}>
-                  {React.cloneElement(child, child.props)}
-                </div>
-              ))}
-            </SuggestionsContainer>
-          )}
-          {suggestionsToDisplay.length > 0 && <Spacer />}
-          <DefaultSuggestionItem
-            tagType={`#${customerTypeLabel}s`}
-            hint={
-              suggestionsToDisplay.length === 0 && !searchValue
-                ? `Start typing ${customerTypeLabel} name`.toLowerCase()
-                : ''
-            }
-          />
-        </PopoverContainer>
-      </div>
+      <PopoverContainer {...props} ref={reference}>
+        {suggestionsToDisplay.length > 0 && (
+          <SuggestionsContainer>
+            {suggestionsToDisplay.map(child => (
+              <div key={child.props.mention.id}>
+                {React.cloneElement(child, child.props)}
+              </div>
+            ))}
+          </SuggestionsContainer>
+        )}
+        {suggestionsToDisplay.length > 0 && <Spacer />}
+        <DefaultSuggestionItem
+          tagType={`#${customerTypeLabel}s`}
+          hint={
+            suggestionsToDisplay.length === 0 && !searchValue
+              ? `Start typing ${customerTypeLabel} name`.toLowerCase()
+              : ''
+          }
+        />
+      </PopoverContainer>
     );
   },
 );

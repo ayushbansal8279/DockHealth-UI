@@ -19,7 +19,7 @@ export const AddCommentInputContainer = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
   margin: 0;
   outline: 0;
-  padding: ${spacing.regular};
+  padding: ${spacing.tiny} ${spacing.regular};
   overflow: hidden;
   min-height: 60px;
   overflow-y: auto;

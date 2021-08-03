@@ -59,7 +59,10 @@ const CustomFieldsView = () => {
 
     CustomFieldsApi.getAllPatientCustomFields()
       .then(data => {
-        setCustomFields(data);
+        const customFieldsData = data?.filter(
+          cf => cf.contextType === 'CUSTOM',
+        );
+        setCustomFields(customFieldsData);
         setIsFetching(false);
       })
       .catch(() => {

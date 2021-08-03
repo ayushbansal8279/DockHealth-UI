@@ -359,7 +359,7 @@ const TaskItem = ({
         <StandardTaskItemContainer
           isSelected={isSelected || selected}
           height={
-            hasParentTaskLabel || isCompleted
+            hasParentTaskLabel || isCompletedGroup
               ? EXTENDED_TASK_HEIGHT
               : STANDARD_TASK_HEIGHT
           }

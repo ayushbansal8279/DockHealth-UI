@@ -14,31 +14,29 @@ const PeopleSuggestionsPopover = React.forwardRef(
     );
 
     return (
-      <div {...props} ref={reference}>
-        <PopoverContainer>
-          {suggestionsToDisplay.length > 0 && (
-            <SuggestionsContainer>
-              {suggestionsToDisplay.map(child => (
-                <div key={child.props.mention.id}>
-                  {React.cloneElement(child, child.props)}
-                </div>
-              ))}
-            </SuggestionsContainer>
-          )}
-          {searchValue && suggestionsToDisplay.length === 0 && !isFetching && (
-            <EmptySuggestions>{`@${searchValue} is not invited to this list`}</EmptySuggestions>
-          )}
-          {suggestionsToDisplay.length > 0 && <Spacer />}
-          <DefaultSuggestionItem
-            tagType="@People"
-            hint={
-              suggestionsToDisplay.length === 0 && !searchValue
-                ? `Start typing user's name`
-                : ''
-            }
-          />
-        </PopoverContainer>
-      </div>
+      <PopoverContainer {...props} ref={reference}>
+        {suggestionsToDisplay.length > 0 && (
+          <SuggestionsContainer>
+            {suggestionsToDisplay.map(child => (
+              <div key={child.props.mention.id}>
+                {React.cloneElement(child, child.props)}
+              </div>
+            ))}
+          </SuggestionsContainer>
+        )}
+        {searchValue && suggestionsToDisplay.length === 0 && !isFetching && (
+          <EmptySuggestions>{`@${searchValue} is not invited to this list`}</EmptySuggestions>
+        )}
+        {suggestionsToDisplay.length > 0 && <Spacer />}
+        <DefaultSuggestionItem
+          tagType="@People"
+          hint={
+            suggestionsToDisplay.length === 0 && !searchValue
+              ? `Start typing user's name`
+              : ''
+          }
+        />
+      </PopoverContainer>
     );
   },
 );

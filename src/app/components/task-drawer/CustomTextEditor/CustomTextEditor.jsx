@@ -8,6 +8,7 @@ import {
 import { getCompletedByLabel } from '../TaskDrawer/helpers';
 
 const CustomTextEditor = ({
+  required,
   children,
   empty,
   focused,
@@ -29,7 +30,7 @@ const CustomTextEditor = ({
           <DescriptionLabel>
             {label}
             <Spacing horizontal={3} />
-            <span>*</span>
+            {required && <span>*</span>}
           </DescriptionLabel>
           {isSelectedTaskComplete &&
             getCompletedByLabel(
