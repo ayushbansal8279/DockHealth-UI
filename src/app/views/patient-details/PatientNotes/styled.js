@@ -24,25 +24,6 @@ export const PinnedNotesWrapper = styled.div`
   }
 `;
 
-export const NoteInput = styled.input`
-  height: 52px;
-  width: 100%;
-  margin: ${spacing.regular} 0;
-  background-color: ${palette.coolGrey4};
-  border: 1px solid ${palette.coolGrey3};
-  box-shadow: none;
-  color: ${palette.mediumGrey};
-  padding: ${spacing.regular};
-
-  &:focus,
-  &:active {
-    background-color: ${palette.coolGrey4};
-    border: 1px solid ${palette.coolGrey3};
-    box-shadow: none;
-    outline: none;
-  }
-`;
-
 export const RichTextInputContainer = styled.div`
   background-color: ${palette.coolGrey4};
   border: 1px solid ${palette.coolGrey3};
