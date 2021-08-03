@@ -100,12 +100,6 @@ const PatientNotes = () => {
     );
   };
 
-  const handleOnFocus = () => {};
-
-  const handleOnBlur = state => {
-    saveNote(state);
-  };
-
   return (
     <PatientNotesWrapper>
       {!isFetching ? (
@@ -128,8 +122,7 @@ const PatientNotes = () => {
               disableMentions
               placeholder="Leave a note and press enter on your keyboard to save"
               isDrawerEditor
-              onFocus={handleOnFocus}
-              onBlur={handleOnBlur}
+              onBlur={saveNote}
               state={noteState}
               onChange={onNoteChange}
               keyBindingFn={event => {
