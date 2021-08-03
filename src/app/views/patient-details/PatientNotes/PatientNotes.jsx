@@ -32,9 +32,9 @@ import {
 // move hooks.js logic to this component (done)
 // use function from helpers to build an EditorState (done)
 // try removing useEffect to focus on window on edit [failed]
-// use useEffect for updating state with the backend
+// use useEffect for updating state with the backend (shouldn't use)
 // change onKeyDown logic (key==='Enter') (done)
-// complete comments from code review from github
+// complete comments from code review from github (done)
 // move state creation to PatientNote (done)
 // merge from dev before merging on github
 // test after changes with merge on github
