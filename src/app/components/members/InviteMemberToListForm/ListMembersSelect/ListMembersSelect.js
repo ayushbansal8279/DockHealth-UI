@@ -39,8 +39,9 @@ const ListMembersSelect = ({
   const searchedAvailablePeople = useMemo(
     () =>
       availablePeople.filter(
-        ({ userName, userIdentifier }) =>
-          userName.toLowerCase().startsWith(searchInputValue.toLowerCase()) &&
+        ({ userName, email, userIdentifier }) =>
+          (userName.toLowerCase().includes(searchInputValue.toLowerCase()) ||
+            email?.toLowerCase().startsWith(searchInputValue.toLowerCase())) &&
           !selectedMembers.some(
             selectedMember => selectedMember.userIdentifier === userIdentifier,
           ),
