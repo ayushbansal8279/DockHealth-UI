@@ -1,5 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable sonarjs/no-duplicate-string */
+import { string } from 'yup';
+
 export const getMenuOptionsForMember = (
   member,
   {
@@ -109,4 +111,10 @@ export const getMenuOptionsForMember = (
     default:
       return null;
   }
+};
+
+export const isEmail = value => {
+  return string()
+    .email()
+    .isValidSync(value);
 };

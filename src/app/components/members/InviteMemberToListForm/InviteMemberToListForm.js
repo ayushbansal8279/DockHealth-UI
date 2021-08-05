@@ -30,7 +30,7 @@ import {
   Container,
   MemberStatusLabel,
 } from './styled';
-import { getMenuOptionsForMember } from './helpers';
+import { getMenuOptionsForMember, isEmail } from './helpers';
 
 const InviteMemberToListForm = ({
   list,
@@ -206,16 +206,19 @@ const InviteMemberToListForm = ({
 
   const handleOpenExternalInviteForm = searchedValue => {
     const [firstName, lastName] = searchedValue?.split(' ');
+    const emailEntered = isEmail(searchedValue);
     setExternalInviteFormState({
       opened: true,
-      initialValues: {
-        firstName: firstName
-          ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
-          : '',
-        lastName: lastName
-          ? lastName.charAt(0).toUpperCase() + lastName.slice(1)
-          : '',
-      },
+      initialValues: emailEntered
+        ? { email: searchedValue }
+        : {
+            firstName: firstName
+              ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
+              : '',
+            lastName: lastName
+              ? lastName.charAt(0).toUpperCase() + lastName.slice(1)
+              : '',
+          },
     });
   };
 
