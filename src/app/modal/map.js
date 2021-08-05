@@ -34,6 +34,7 @@ import TaskWorkflowTourModal from './components/NewFeaturesModals/TaskWorkflowTo
 import RecurringTaskTourModal from './components/NewFeaturesModals/RecurringTaskTourModal/RecurringTaskTourModal';
 import TaskStatusTourModal from './components/NewFeaturesModals/TaskStatusTourModal/TaskStatusTourModal';
 import PatientProfileTourModal from './components/NewFeaturesModals/PatientProfileTourModal/PatientProfileTourModal';
+import PatientCustomFieldTourModal from './components/NewFeaturesModals/PatientCustomFieldTourModal/PatientCustomFieldTourModal';
 import MultiMentionAssignTourModal from './components/NewFeaturesModals/MultiMentionAssignTourModal/MultiMentionAssignTourModal';
 import ReferAColleagueModal from './components/ReferAColleagueModal/ReferAColleagueModal';
 import BulkDeleteTasksModal from './components/BulkDeleteTasksModal/BulkDeleteTasksModal';
@@ -88,6 +89,7 @@ const MODAL_MAP = {
   RecurringTaskTour: RecurringTaskTourModal,
   TaskStatusTour: TaskStatusTourModal,
   PatientProfileTour: PatientProfileTourModal,
+  PatientCustomFieldTour: PatientCustomFieldTourModal,
   MultiMentionAssignTour: MultiMentionAssignTourModal,
   TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
