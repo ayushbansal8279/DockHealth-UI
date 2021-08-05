@@ -33,11 +33,7 @@ import {
 import { getMenuOptionsForMember } from './helpers';
 
 const isEmail = value => {
-  const input = document.createElement(`input`);
-  input.type = `email`;
-  input.required = true;
-  input.value = value;
-  return input.checkValidity();
+  return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value);
 };
 
 const InviteMemberToListForm = ({
