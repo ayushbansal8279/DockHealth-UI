@@ -209,17 +209,16 @@ const InviteMemberToListForm = ({
     const emailEntered = isEmail(searchedValue);
     setExternalInviteFormState({
       opened: true,
-      initialValues: {
-        email: emailEntered ? searchedValue : '',
-        firstName:
-          firstName && !emailEntered
-            ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
-            : '',
-        lastName:
-          lastName && !emailEntered
-            ? lastName.charAt(0).toUpperCase() + lastName.slice(1)
-            : '',
-      },
+      initialValues: emailEntered
+        ? { email: searchedValue }
+        : {
+            firstName: firstName
+              ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
+              : '',
+            lastName: lastName
+              ? lastName.charAt(0).toUpperCase() + lastName.slice(1)
+              : '',
+          },
     });
   };
 
