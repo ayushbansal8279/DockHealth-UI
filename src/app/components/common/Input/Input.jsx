@@ -27,7 +27,7 @@ const Input = React.forwardRef(
     reference,
   ) => (
     <TextField
-      ref={reference}
+      inputRef={reference}
       id={id}
       name={name}
       label={required ? `${label} *` : label}
