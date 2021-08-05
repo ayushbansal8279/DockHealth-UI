@@ -11,70 +11,18 @@ export const initializeLinkifyPlugin = () =>
     component: EditorLink,
   });
 
-export const initializePeopleMentionPlugin = isDrawerEditor =>
+export const initializePeopleMentionPlugin = () =>
   createMentionPlugin({
     mentionPrefix: '@',
     mentionTrigger: '@',
-    // supportWhitespace: true,
     mentionComponent: PeopleMention,
-    positionSuggestions: props => {
-      const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
-
-      // calculate from right side because of task drawer fixed position
-      const rightPosition = windowWidth - props.decoratorRect.left - 244;
-
-      const styles = {
-        position: 'fixed',
-        right: rightPosition < 8 ? 8 : rightPosition,
-        left: 'auto',
-        width: 252,
-        zIndex: 1001,
-      };
-
-      if (!isDrawerEditor) {
-        styles.top = props.decoratorRect.top + 22;
-      }
-
-      if (windowHeight - props.decoratorRect.top < 300) {
-        styles.transform = `translateY(-100%) translateY(-${props.decoratorRect
-          .height + 5}px)`;
-      }
-
-      return styles;
-    },
   });
 
-export const initializePatientMentionPlugin = isDrawerEditor =>
+export const initializePatientMentionPlugin = () =>
   createMentionPlugin({
     mentionPrefix: '#',
     mentionTrigger: '#',
     mentionComponent: PatientMention,
-    // supportWhitespace: true,
-    positionSuggestions: props => {
-      const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
-
-      // calculate from right side because of task drawer fixed position
-      const rightPosition = windowWidth - props.decoratorRect.left - 309;
-
-      const styles = {
-        position: 'fixed',
-        right: rightPosition < 8 ? 8 : rightPosition,
-        left: 'auto',
-        width: 317,
-        zIndex: 1001,
-      };
-
-      if (!isDrawerEditor) {
-        styles.top = props.decoratorRect.top + 22;
-      }
-
-      if (windowHeight - props.decoratorRect.top < 300) {
-        styles.transform = `translateY(-100%) translateY(-${props.decoratorRect
-          .height + 5}px)`;
-      }
-
-      return styles;
-    },
   });
 
 export const initializeStaticToolbarPlugin = () => createToolbarPlugin();

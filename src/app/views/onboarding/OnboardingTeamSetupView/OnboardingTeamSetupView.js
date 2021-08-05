@@ -68,11 +68,11 @@ const onSubmit = ({
   dispatch,
   history,
 }) => ({ organizationMembers }) => {
-  const filledFileds = organizationMembers.filter(
+  const filledFields = organizationMembers.filter(
     ({ firstName, lastName, email }) => firstName && lastName && email,
   );
 
-  if (filledFileds.length === 0) {
+  if (filledFields.length === 0) {
     setError(
       'organizationMembers',
       'manual',
@@ -83,7 +83,7 @@ const onSubmit = ({
 
   setIsSaving(true);
   const invitationPromises = [];
-  filledFileds.forEach(person => {
+  filledFields.forEach(person => {
     if (fieldsState[person.index]?.success) {
       return;
     }
@@ -121,7 +121,7 @@ const onSubmit = ({
       history.push('/core/home/my-tasks');
       dispatch(
         openModal('OnboardingInviteConfirmation', {
-          moreThanOneInvite: filledFileds.length > 1,
+          moreThanOneInvite: filledFields.length > 1,
         }),
       );
     })
@@ -243,7 +243,7 @@ const OnboardingTeamSetupView = () => {
                 >
                   <Grid item xs={3}>
                     <Input
-                      ref={element => {
+                      inputRef={element => {
                         register(element);
                         if (!firstFirstNameFieldReference.current) {
                           firstFirstNameFieldReference.current = element;
@@ -265,7 +265,7 @@ const OnboardingTeamSetupView = () => {
                   </Grid>
                   <Grid item xs={3}>
                     <Input
-                      ref={register}
+                      inputRef={register}
                       name={`organizationMembers[${item.index}].lastName`}
                       label="Last name"
                       required
@@ -278,7 +278,7 @@ const OnboardingTeamSetupView = () => {
                   </Grid>
                   <Grid item xs={fieldState ? 5 : 6}>
                     <Input
-                      ref={register}
+                      inputRef={register}
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
                       label="Email"
@@ -306,7 +306,7 @@ const OnboardingTeamSetupView = () => {
                     </Grid>
                   )}
                 </Grid>
-                <Input
+                <input
                   ref={register}
                   name={`organizationMembers[${item.index}].index`}
                   type="hidden"

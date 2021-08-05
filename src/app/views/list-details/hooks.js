@@ -1,6 +1,12 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useCallback, useState, useMemo } from 'react';
+import React, {
+  useEffect,
+  useCallback,
+  useState,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty, isNil, move } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
@@ -44,6 +50,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   const sort = useSelector(taskDetailsSortSelector);
   const taskLists = useSelector(taskListsSelector);
   const currentUser = useSelector(userProfileSelector);
+  const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
   const isFetching = useSelector(tasksIsFetchingSelector);
@@ -70,6 +77,9 @@ const initializeListDetailsViewHooks = (match, history) => {
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
   const prevMatch = usePrevious(match);
+
+  const pusher = useRef(initializePusher());
+  const [channel, setChannel] = useState(null);
 
   const searchTasks = useCallback(
     searchQuery => {
@@ -101,44 +111,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
     },
     [listDetailsActions, match, megaFilterActions],
-  );
-
-  const listenForRealTimeEvents = useCallback(
-    taskListIdentifier => {
-      if (!currentUser || !currentUser.userIdentifier) {
-        return;
-      }
-
-      const currentUserIdentifier = currentUser.userIdentifier;
-      const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
-
-      const pusher = initializePusher();
-      let channel = pusher?.channel(channelName);
-      if (!channel || !channel.subscribed) {
-        channel = pusher?.subscribe(channelName);
-      }
-
-      if (channel) {
-        channel.bind('task-update', data => {
-          const currentTaskListIdentifier = taskListIdentifier;
-          if (
-            data.task?.taskList &&
-            data.task?.taskList.taskListIdentifier === currentTaskListIdentifier
-          ) {
-            if (
-              (data.eventType?.startsWith('CREATE_TASK') ||
-                data.eventType?.startsWith('DUPLICATE_TASK')) &&
-              data.task?.taskList &&
-              data.task?.creator.userIdentifier !== currentUserIdentifier
-            ) {
-              refreshTab();
-            }
-            actions.refreshAnotherTask(data.task);
-          }
-        });
-      }
-    },
-    [actions, currentUser, refreshTab],
   );
 
   const setViewHeader = useCallback(
@@ -483,7 +455,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     ]);
 
     refreshAccessToken(currentUser);
-    listenForRealTimeEvents(params.taskListIdentifier);
     launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -522,18 +493,8 @@ const initializeListDetailsViewHooks = (match, history) => {
         openTourModal();
       }
     }
-
-    if (
-      (prevCurrentUser &&
-        currentUser &&
-        prevCurrentUser.userIdentifier !== currentUser.userIdentifier) ||
-      match.params.taskListIdentifier !== prevMatch?.params?.taskListIdentifier
-    ) {
-      listenForRealTimeEvents(match.params.taskListIdentifier);
-    }
   }, [
     currentUser,
-    listenForRealTimeEvents,
     match.params.tabName,
     match.params.taskListIdentifier,
     navigateToTab,
@@ -587,6 +548,52 @@ const initializeListDetailsViewHooks = (match, history) => {
     () => selectedTab === TaskListTabName.COMPLETE,
     [selectedTab],
   );
+
+  useEffect(() => {
+    const callback = data => {
+      if (
+        data.task?.taskList &&
+        data.task?.taskList.taskListIdentifier === taskListIdentifier
+      ) {
+        if (
+          (data.eventType?.startsWith('CREATE_TASK') ||
+            data.eventType?.startsWith('DUPLICATE_TASK')) &&
+          data.task?.creator.userIdentifier !== currentUserIdentifier
+        ) {
+          refreshTab();
+        } else if (
+          data.eventType === 'UPDATE_TASK' &&
+          data.task.taskIdentifier
+        ) {
+          actions.refreshAnotherTask(data.task);
+        }
+      }
+    };
+
+    if (channel && taskListIdentifier) {
+      channel.bind('task-update', callback);
+    }
+
+    return () => {
+      if (channel && taskListIdentifier) {
+        channel.unbind('task-update', callback);
+      }
+    };
+  }, [channel, refreshTab, taskListIdentifier, currentUserIdentifier, actions]);
+
+  useEffect(() => {
+    if (currentUserIdentifier) {
+      const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
+      const ch = pusher.current.subscribe(channelName);
+      setChannel(ch);
+
+      return () => {
+        if (ch) ch.unsubscribe(channelName);
+      };
+    }
+
+    return () => {};
+  }, [currentUserIdentifier]);
 
   return {
     bulkEditIsDisabled,

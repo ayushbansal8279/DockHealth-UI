@@ -54,7 +54,6 @@ const AddComment = ({
           taskListIdentifier={taskListIdentifier}
           disableMentions={isTemplateTask}
           placeholder="Leave a comment and press enter on your keyboard to save"
-          isDrawerEditor
           onFocus={() => {
             onCommentFocus();
             setIsFocused(true);

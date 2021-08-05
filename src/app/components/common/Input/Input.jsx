@@ -20,6 +20,7 @@ const Input = React.forwardRef(
       endAdornment,
       shrink,
       readOnly,
+      inputRef,
       required = false,
       variant = 'filled',
       ...restProps
@@ -28,6 +29,7 @@ const Input = React.forwardRef(
   ) => (
     <TextField
       ref={reference}
+      inputRef={inputRef}
       id={id}
       name={name}
       label={required ? `${label} *` : label}

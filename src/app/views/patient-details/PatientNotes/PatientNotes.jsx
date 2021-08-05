@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { compose, descend, prop } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -14,13 +14,21 @@ import {
   changePatientNotePin,
 } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { EditorState } from 'draft-js';
+
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
-import { PatientNotesWrapper, PinnedNotesWrapper, NoteInput } from './styled';
+import {
+  PatientNotesWrapper,
+  PinnedNotesWrapper,
+  RichTextInputContainer,
+} from './styled';
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
-  const [newNoteValue, setNewNoteValue] = useState('');
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
   const isFetching = useSelector(isFetchingNotesSelector);
@@ -47,18 +55,16 @@ const PatientNotes = () => {
     [],
   );
 
-  const handleAddNoteInputKeyDown = event => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      if ([...newNoteValue]?.filter(char => char !== ' ').length > 0) {
-        dispatch(addPatientNote(patientIdentifier, newNoteValue));
-        setNewNoteValue('');
-        addNoteInputReference.current.focus();
-      }
-    }
+  const [noteState, setNoteState] = useMentionsEditorState();
+  const onNoteChange = state => setNoteState(state);
+  const clearNote = () => setNoteState(EditorState.createEmpty());
 
-    if (event.key === 'Escape') {
-      setNewNoteValue('');
+  const saveNote = state => {
+    const { tokenizedText } = convertFromEditorStateToOutput(state, true);
+    if ([...tokenizedText]?.filter(char => char !== ' ').length > 0) {
+      dispatch(addPatientNote(patientIdentifier, tokenizedText));
+      clearNote();
+      addNoteInputReference.current.clear();
     }
   };
 
@@ -77,17 +83,22 @@ const PatientNotes = () => {
       ) || [null, null],
     [notes],
   );
+  const renderPatient = note => {
+    const { description, mentions, ...restNotes } = note;
 
-  const renderPatient = note => (
-    <PatientNote
-      key={note.patientNoteIdentifier}
-      note={note}
-      isEditable={currentUser.userIdentifier === note.creator?.userIdentifier}
-      onSave={handleSaveNote}
-      onRemove={handleRemoveNote}
-      onPinChange={handlePinChange}
-    />
-  );
+    return (
+      <PatientNote
+        key={note.patientNoteIdentifier}
+        note={restNotes}
+        isEditable={currentUser.userIdentifier === note.creator?.userIdentifier}
+        onSave={handleSaveNote}
+        onRemove={handleRemoveNote}
+        onPinChange={handlePinChange}
+        mentions={mentions}
+        description={description}
+      />
+    );
+  };
 
   return (
     <PatientNotesWrapper>
@@ -103,13 +114,32 @@ const PatientNotes = () => {
           {unpinnedNotes
             ?.sort(descend(prop('dateUpdated')))
             ?.map(renderPatient)}
-          <NoteInput
-            ref={addNoteInputReference}
-            placeholder="Add a note"
-            value={newNoteValue}
-            onKeyDown={handleAddNoteInputKeyDown}
-            onChange={event => setNewNoteValue(event.target.value)}
-          />
+          <RichTextInputContainer>
+            <TextEditor
+              showToolbar
+              ref={addNoteInputReference}
+              taskListIdentifier={patientIdentifier}
+              disableMentions
+              placeholder="Leave a note and press enter on your keyboard to save"
+              isDrawerEditor
+              onBlur={saveNote}
+              state={noteState}
+              onChange={onNoteChange}
+              keyBindingFn={event => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                  return 'enter-command';
+                }
+                return undefined;
+              }}
+              handleKeyCommand={command => {
+                if (command === 'enter-command') {
+                  addNoteInputReference.current.blur();
+                  return 'handled';
+                }
+                return 'not-handled';
+              }}
+            />
+          </RichTextInputContainer>
         </>
       ) : (
         <PatientNotesLoader />

@@ -3,16 +3,14 @@ import { fontWeights } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
 
 export const StyledEditorContainer = styled.div`
-  position: relative;
   width: 100%;
   box-sizing: border-box;
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
-  max-height: ${({ height }) => (height ? `${height}px` : 'auto')};
-  overflow: auto;
 
   .DraftEditor-root {
-    height: ${({ height }) => (height ? `${height}px` : 'auto')};
+    height: auto;
+    ${({ minHeight }) => minHeight && `min-height: ${minHeight}px`}
   }
   .emojiSelectButton {
     background: transparent;
@@ -74,12 +72,10 @@ export const StyledEditorContainer = styled.div`
     position: absolute;
     font-weight: ${fontWeights.light};
     color: ${palette.coolGrey2};
-    z-index: 1;
   }
 
   .DraftEditor-editorContainer {
     position: relative;
-    z-index: 2;
   }
 
   ${({ withEditedLabel }) =>

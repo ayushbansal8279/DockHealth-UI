@@ -95,7 +95,6 @@ const QuickAddSubtask = ({
 
             return 'not-handled';
           }}
-          isDrawerEditor
         />
       </MentionsEditorContainer>
       {hasInputValue && isFocused && !error && (

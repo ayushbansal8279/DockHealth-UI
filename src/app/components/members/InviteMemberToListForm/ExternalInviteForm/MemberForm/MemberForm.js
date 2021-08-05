@@ -1,9 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
-import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import FormInput from 'components/common/Input/FormInput';
 import { object, string } from 'yup';
 import { FormWrapper, InfoContainer, InfoHeader, InfoText } from './styled';
 
@@ -18,20 +18,12 @@ const validationSchema = object().shape({
 });
 
 const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
-  const emailInputReference = useRef(null);
-
   const formContext = useForm({
     validationSchema,
     defaultValues: initialValues,
   });
 
-  const { handleSubmit, register, errors } = formContext;
-
-  useEffect(() => {
-    if (emailInputReference.current) {
-      emailInputReference.current.focus();
-    }
-  }, [emailInputReference]);
+  const { handleSubmit } = formContext;
 
   return (
     <FormWrapper onSubmit={handleSubmit(onSubmit)}>
@@ -45,35 +37,33 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             spacing={2}
           >
             <Grid item xs={6}>
-              <Input
-                ref={register}
+              <FormInput
+                autoFocus={!initialValues.firstName}
                 required
                 name="firstName"
                 label="First name"
-                error={errors?.firstName?.message}
               />
             </Grid>
             <Grid item xs={6}>
-              <Input
-                ref={register}
+              <FormInput
+                autoFocus={initialValues.firstName && !initialValues.lastName}
                 required
                 name="lastName"
                 label="Last name"
-                error={errors?.lastName?.message}
               />
             </Grid>
           </Grid>
           <Grid item>
-            <Input
-              ref={element => {
-                register(element);
-                emailInputReference.current = element;
-              }}
+            <FormInput
+              autoFocus={
+                initialValues.firstName &&
+                initialValues.lastName &&
+                !initialValues.email
+              }
               required
               name="email"
               label="Email address"
               placeholder="Type the email address to invite"
-              error={errors?.email?.message}
             />
           </Grid>
           <Grid item>

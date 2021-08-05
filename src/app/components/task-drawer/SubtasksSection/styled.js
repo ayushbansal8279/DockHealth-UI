@@ -59,6 +59,7 @@ export const AddSubtaskInputWrapper = styled.div`
     font-weight: ${fontWeights.bold};
     font-size: ${fontSizes.smallPlus};
     text-transform: uppercase;
+    pointer-events: none;
   }
 
   ${({ hidePlaceholder }) =>
