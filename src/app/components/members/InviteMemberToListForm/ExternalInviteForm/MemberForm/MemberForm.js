@@ -1,9 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
-import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import FormInput from 'components/common/Input/FormInput';
 import { object, string } from 'yup';
 import { FormWrapper, InfoContainer, InfoHeader, InfoText } from './styled';
 
@@ -18,20 +18,12 @@ const validationSchema = object().shape({
 });
 
 const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
-  const emailInputReference = useRef(null);
-
   const formContext = useForm({
     validationSchema,
     defaultValues: initialValues,
   });
 
   const { handleSubmit } = formContext;
-
-  useEffect(() => {
-    if (emailInputReference.current) {
-      emailInputReference.current.focus();
-    }
-  }, [emailInputReference]);
 
   return (
     <FormWrapper onSubmit={handleSubmit(onSubmit)}>
@@ -45,17 +37,29 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             spacing={2}
           >
             <Grid item xs={6}>
-              <FormInput required name="firstName" label="First name" />
+              <FormInput
+                autoFocus={!initialValues.firstName}
+                required
+                name="firstName"
+                label="First name"
+              />
             </Grid>
             <Grid item xs={6}>
-              <FormInput required name="lastName" label="Last name" />
+              <FormInput
+                autoFocus={initialValues.firstName && !initialValues.lastName}
+                required
+                name="lastName"
+                label="Last name"
+              />
             </Grid>
           </Grid>
           <Grid item>
             <FormInput
-              ref={element => {
-                emailInputReference.current = element;
-              }}
+              autoFocus={
+                initialValues.firstName &&
+                initialValues.lastName &&
+                !initialValues.email
+              }
               required
               name="email"
               label="Email address"
