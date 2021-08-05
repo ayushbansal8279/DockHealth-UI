@@ -222,7 +222,6 @@ const InviteMemberToListForm = ({
           email: searchedValue,
         },
       });
-      console.log(searchedValue);
       return;
     }
     const [firstName, lastName] = searchedValue?.split(' ');
