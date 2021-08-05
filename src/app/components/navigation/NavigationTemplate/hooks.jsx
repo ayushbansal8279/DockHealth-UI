@@ -97,7 +97,11 @@ export const initializeNavigationHeaderHooks = (
   const hasMinimalUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_THRESHOLD_PERIOD;
 
-  const trialLabelMinimalPeriodNotPassed = `You are in a ${subscriptionPlanTrialLabel}. There are ${trialEndDayDifference} days left in your trial.`;
+  const trialLabelMinimalPeriodNotPassed = `You are in a ${subscriptionPlanTrialLabel}. There ${
+    trialEndDayDifference > 1
+      ? `are ${trialEndDayDifference} days`
+      : `is ${trialEndDayDifference} day`
+  } left in your trial.`;
 
   const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed}`;
 
