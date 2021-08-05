@@ -243,7 +243,7 @@ const OnboardingTeamSetupView = () => {
                 >
                   <Grid item xs={3}>
                     <Input
-                      ref={element => {
+                      inputRef={element => {
                         register(element);
                         if (!firstFirstNameFieldReference.current) {
                           firstFirstNameFieldReference.current = element;
@@ -265,7 +265,7 @@ const OnboardingTeamSetupView = () => {
                   </Grid>
                   <Grid item xs={3}>
                     <Input
-                      ref={register}
+                      inputRef={register}
                       name={`organizationMembers[${item.index}].lastName`}
                       label="Last name"
                       required
@@ -278,7 +278,7 @@ const OnboardingTeamSetupView = () => {
                   </Grid>
                   <Grid item xs={fieldState ? 5 : 6}>
                     <Input
-                      ref={register}
+                      inputRef={register}
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
                       label="Email"
