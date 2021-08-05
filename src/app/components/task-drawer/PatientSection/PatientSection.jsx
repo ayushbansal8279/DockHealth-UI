@@ -14,7 +14,6 @@ import { changePatientForTemplateBundle } from 'actions/template-bundle-actions'
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import { AdornmentContainer } from '../styled';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 
@@ -316,7 +315,6 @@ const PatientSection = ({
       label={customerTypeLabelCapitalized}
       placeholder={placeholder || `Who is the ${customerTypeLabel}?`}
       disabled={disabled}
-      startAdornment={!disabled && <AdornmentContainer>+</AdornmentContainer>}
       selectedOption={getFormattedPatient(selectedPatient)}
       options={formattedPatients}
       isLoadingOptions={isLoadingPatients}
