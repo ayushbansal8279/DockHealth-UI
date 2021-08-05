@@ -30,11 +30,7 @@ import {
   Container,
   MemberStatusLabel,
 } from './styled';
-import { getMenuOptionsForMember } from './helpers';
-
-const isEmail = value => {
-  return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value);
-};
+import { getMenuOptionsForMember, isEmail } from './helpers';
 
 const InviteMemberToListForm = ({
   list,

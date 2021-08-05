@@ -110,3 +110,7 @@ export const getMenuOptionsForMember = (
       return null;
   }
 };
+
+export const isEmail = value => {
+  return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value);
+};
