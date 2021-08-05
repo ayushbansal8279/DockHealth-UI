@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
-import Input from 'components/common/Input/Input';
+import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { object, string } from 'yup';
@@ -25,7 +25,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
     defaultValues: initialValues,
   });
 
-  const { handleSubmit, register, errors } = formContext;
+  const { handleSubmit } = formContext;
 
   useEffect(() => {
     if (emailInputReference.current) {
@@ -45,36 +45,21 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             spacing={2}
           >
             <Grid item xs={6}>
-              <Input
-                ref={register}
-                required
-                name="firstName"
-                label="First name"
-                error={errors?.firstName?.message}
-              />
+              <FormInput required name="firstName" label="First name" />
             </Grid>
             <Grid item xs={6}>
-              <Input
-                ref={register}
-                required
-                name="lastName"
-                label="Last name"
-                error={errors?.lastName?.message}
-              />
+              <FormInput required name="lastName" label="Last name" />
             </Grid>
           </Grid>
           <Grid item>
-            <Input
+            <FormInput
               ref={element => {
-                register(element);
                 emailInputReference.current = element;
               }}
               required
-              value={initialValues.email || ''}
               name="email"
               label="Email address"
               placeholder="Type the email address to invite"
-              error={errors?.email?.message}
             />
           </Grid>
           <Grid item>
