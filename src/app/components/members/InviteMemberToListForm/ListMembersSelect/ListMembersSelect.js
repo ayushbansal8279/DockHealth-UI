@@ -212,9 +212,7 @@ const ListMembersSelect = ({
               />
               {(!selectedMembers || selectedMembers.length === 0) &&
                 !searchInputValue && (
-                  <Placeholder>
-                    Type the name of a the person to invite
-                  </Placeholder>
+                  <Placeholder>Type the name of a person to invite</Placeholder>
                 )}
             </>
           </SelectElement>

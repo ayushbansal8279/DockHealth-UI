@@ -70,6 +70,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
                 emailInputReference.current = element;
               }}
               required
+              value={initialValues.email || ''}
               name="email"
               label="Email address"
               placeholder="Type the email address to invite"

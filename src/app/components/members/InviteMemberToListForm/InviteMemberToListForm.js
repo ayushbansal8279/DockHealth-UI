@@ -32,6 +32,14 @@ import {
 } from './styled';
 import { getMenuOptionsForMember } from './helpers';
 
+const isEmail = value => {
+  const input = document.createElement(`input`);
+  input.type = `email`;
+  input.required = true;
+  input.value = value;
+  return input.checkValidity();
+};
+
 const InviteMemberToListForm = ({
   list,
   onMembersRefresh,
@@ -205,6 +213,18 @@ const InviteMemberToListForm = ({
   };
 
   const handleOpenExternalInviteForm = searchedValue => {
+    if (isEmail(searchedValue)) {
+      setExternalInviteFormState({
+        opened: true,
+        initialValues: {
+          firstName: '',
+          lastName: '',
+          email: searchedValue,
+        },
+      });
+      console.log(searchedValue);
+      return;
+    }
     const [firstName, lastName] = searchedValue?.split(' ');
     setExternalInviteFormState({
       opened: true,
