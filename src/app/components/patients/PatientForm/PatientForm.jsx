@@ -81,34 +81,34 @@ const PatientForm = forwardRef(
         >
           <FormInput
             readOnly={readOnly}
-            label="first name"
+            label="First Name"
             name="firstName"
             required
           />
           <Spacing vertical={3} />
           <FormInput
             readOnly={readOnly}
-            label="middle name"
+            label="Middle Name"
             name="middleName"
           />
           <Spacing readOnly={readOnly} vertical={3} />
           <FormInput
             readOnly={readOnly}
-            label="last name"
+            label="Last Name"
             name="lastName"
             required
           />
           <Spacing vertical={3} />
           <FormSelect
             readOnly={readOnly}
-            label="gender"
+            label="Gender"
             options={GENDER_OPTIONS}
             name="gender"
           />
           <Spacing vertical={3} />
           <FormInput
             readOnly={readOnly}
-            label="birthday"
+            label="Date of Birth"
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
             name="dob"
@@ -132,13 +132,13 @@ const PatientForm = forwardRef(
         >
           <FormPhoneNumberInput
             readOnly={readOnly}
-            label="mobile phone"
+            label="Mobile Phone"
             name="phoneMobile"
           />
           <Spacing vertical={3} />
           <FormPhoneNumberInput
             readOnly={readOnly}
-            label="home phone"
+            label="Home Phone"
             name="phoneHome"
             type="tel"
           />
