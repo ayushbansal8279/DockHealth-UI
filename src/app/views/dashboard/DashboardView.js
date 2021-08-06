@@ -119,12 +119,12 @@ const DashboardView = ({
       const { userPreference } = currentUser || {};
       const { appFeaturesReviewed } = userPreference || {};
 
-      if (!appFeaturesReviewed?.includes('PATIENT_PROFILE')) {
+      if (!appFeaturesReviewed?.includes('PATIENT_CUSTOM_FIELD')) {
         dispatch(
-          openModal('PatientProfileTour', {
+          openModal('PatientCustomFieldTour', {
             onClose: () => {
               UserApi.updateUserDashboardPrefs({
-                appFeaturesReviewed: ['PATIENT_PROFILE'],
+                appFeaturesReviewed: ['PATIENT_CUSTOM_FIELD'],
               });
             },
           }),
