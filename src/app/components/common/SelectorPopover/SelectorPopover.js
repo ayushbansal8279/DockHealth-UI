@@ -3,6 +3,7 @@ import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { omit } from 'ramda';
+import { ShadowWrapper } from 'views/onboarding/OnboardingQuestions/styled';
 import { ItemsList } from './styled';
 
 const usePopoverClasses = makeStyles({
@@ -34,11 +35,13 @@ const SelectorPopover = props => {
       }}
       {...omit(['maxItems'], props)}
     >
-      {renderHeader && renderHeader()}
-      <ItemsList withPadding={withPadding} listMaxHeight={listMaxHeight}>
-        {items?.map(item => renderItemMethod(item))}
-      </ItemsList>
-      {renderFooter && renderFooter()}
+      <ShadowWrapper>
+        {renderHeader && renderHeader()}
+        <ItemsList withPadding={withPadding} listMaxHeight={listMaxHeight}>
+          {items?.map(item => renderItemMethod(item))}
+        </ItemsList>
+        {renderFooter && renderFooter()}
+      </ShadowWrapper>
     </Popover>
   );
 };
