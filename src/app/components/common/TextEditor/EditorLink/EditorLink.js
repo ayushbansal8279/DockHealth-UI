@@ -13,7 +13,7 @@ const StyledLink = styled.a`
 `;
 
 const EditorLink = ({ href, target, children }) => (
-  <StyledLink href={href} target={target}>
+  <StyledLink target={target} onClick={() => window.open(href, target)}>
     {children}
   </StyledLink>
 );
