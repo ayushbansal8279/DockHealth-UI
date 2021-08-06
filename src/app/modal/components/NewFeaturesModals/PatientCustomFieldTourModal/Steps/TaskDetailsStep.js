@@ -16,7 +16,7 @@ const TaskDetailsStep = () => {
       <Spacing vertical={5} />
       <Title>Task Details</Title>
       <Description>
-        Capture more details for a task in this new section in the task drawer.
+        Capture more information for a task in the task details section!
       </Description>
     </>
   );

@@ -21,9 +21,9 @@ const PatientCustomFieldsStep = () => {
         alt="Patient Custom Fields"
       />
       <Spacing vertical={5} />
-      <Title>Custom fields for Patient</Title>
+      <Title>Custom fields for Patients</Title>
       <Description>
-        Add new data elements you want to track for Patient or Client. If you
+        Add new data elements you want to track for Patients or Clients. If you
         are an Admin, refer to the Settings menu to add custom fields.
       </Description>
     </>
