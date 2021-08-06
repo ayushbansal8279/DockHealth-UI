@@ -3,8 +3,7 @@ import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { omit } from 'ramda';
-import { ShadowWrapper } from 'views/onboarding/OnboardingQuestions/styled';
-import { ItemsList } from './styled';
+import { ItemsList, ShadowWrapper } from './styled';
 
 const usePopoverClasses = makeStyles({
   root: {
