@@ -1,7 +1,9 @@
 import React, { useState, forwardRef, useEffect, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { groupBy, prop, compose } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
@@ -37,6 +39,10 @@ const PatientForm = forwardRef(
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
+    const userProfile = useSelector(userProfileSelector);
+    const { orgUserRole } = userProfile || {};
+
+    const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
     useEffect(() => {
       CustomFieldsApi.getAllPatientCustomFields(
@@ -159,9 +165,15 @@ const PatientForm = forwardRef(
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
-          <AddButton onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}>
-            Add or edit fields
-          </AddButton>
+          <div>
+            {isAdmin && (
+              <AddButton
+                onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}
+              >
+                Add or edit fields
+              </AddButton>
+            )}
+          </div>
           {!readOnly && (
             <Button width="auto" type="submit">
               {buttonLabel || `SAVE ${customerTypeLabel}`}

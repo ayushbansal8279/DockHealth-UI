@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
-import FormInput from 'components/common/Input/FormInput';
+import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import {
@@ -11,13 +12,11 @@ import {
 } from './styled';
 
 const UserDetailsStep = ({ closeInviteForm, disabled }) => {
-  const emailInputReference = useRef(null);
+  const { errors, watch, setValue } = useFormContext();
 
-  useEffect(() => {
-    if (emailInputReference.current) {
-      emailInputReference.current.focus();
-    }
-  }, [emailInputReference]);
+  const firstNameValue = watch('firstName');
+  const lastNameInputValue = watch('lastName');
+  const emailInputValue = watch('email');
 
   return (
     <UserDetailsFormWrapper>
@@ -30,25 +29,39 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
           spacing={2}
         >
           <Grid item xs={6}>
-            <FormInput
+            <Input
               type="text"
               name="firstName"
               label="First name"
               required
+              error={errors?.firstName?.message}
+              value={firstNameValue}
+              onChange={event => setValue('firstName', event.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput type="text" name="lastName" label="Last name" required />
+            <Input
+              type="text"
+              name="lastName"
+              label="Last name"
+              required
+              error={errors?.lastName?.message}
+              value={lastNameInputValue}
+              onChange={event => setValue('lastName', event.target.value)}
+            />
           </Grid>
         </Grid>
         <Grid item>
-          <FormInput
-            ref={emailInputReference}
+          <Input
+            autoFocus
             type="email"
             name="email"
             label="Email address"
             placeholder="Type the email address to invite"
             required
+            error={errors?.email?.message}
+            value={emailInputValue}
+            onChange={event => setValue('email', event.target.value)}
           />
         </Grid>
         <Grid item>
