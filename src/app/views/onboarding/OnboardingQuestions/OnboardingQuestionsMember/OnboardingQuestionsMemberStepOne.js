@@ -61,7 +61,7 @@ const OnboardingQuestionsOwnerGuest = ({
         options={options}
         onSelect={onSelectOption}
         selectedOptions={roleOptions}
-        useGlobalPosition
+        positionGlobal
         topOffset={65}
       />
       <Spacing vertical={5} />

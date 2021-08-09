@@ -13,7 +13,7 @@ const OnboardingQuestionsPicker = ({
   isSingleChoice,
   selectedOptions,
   topOffset = 0,
-  useGlobalPosition = false,
+  positionGlobal = false,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchOption, setSearchOption] = useState('');
@@ -24,7 +24,7 @@ const OnboardingQuestionsPicker = ({
   });
 
   useEffect(() => {
-    if (useGlobalPosition) {
+    if (positionGlobal) {
       const { offsetLeft, offsetTop } = questionReference?.current;
       setPopoverPosition({
         horizontal: offsetLeft,
@@ -103,12 +103,10 @@ const OnboardingQuestionsPicker = ({
   };
   return (
     <SelectorPopover
-      anchorEl={!useGlobalPosition && questionReference?.current}
-      anchorPosition={useGlobalPosition && popoverPosition}
-      transformOrigin={!useGlobalPosition && { vertical: 'top' }}
-      anchorOrigin={
-        useGlobalPosition ? popoverPosition : { vertical: 'bottom' }
-      }
+      anchorEl={!positionGlobal && questionReference?.current}
+      anchorPosition={positionGlobal && popoverPosition}
+      transformOrigin={!positionGlobal && { vertical: 'top' }}
+      anchorOrigin={positionGlobal ? popoverPosition : { vertical: 'bottom' }}
       renderItem={renderItem}
       renderHeader={renderHeader}
       onClose={onClosePopover}

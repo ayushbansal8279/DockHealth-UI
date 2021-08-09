@@ -131,7 +131,7 @@ const OnboardingQuestionsOwnerStepOne = ({
         onSelect={onSelectOption}
         isSingleChoice={isSingleChoice}
         selectedOptions={selectedOptions}
-        useGlobalPosition
+        positionGlobal
         topOffset={65}
       />
       <Spacing vertical={5} />

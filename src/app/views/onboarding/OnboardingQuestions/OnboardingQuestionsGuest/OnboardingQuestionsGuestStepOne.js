@@ -131,7 +131,7 @@ const OnboardingQuestionsGuest = ({
         onSelect={onSelectOption}
         closeOnSelect={closeOnSelect}
         selectedOptions={selectedOptions}
-        useGlobalPosition
+        positionGlobal
         topOffset={65}
       />
       <Spacing vertical={5} />
