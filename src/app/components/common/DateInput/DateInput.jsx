@@ -74,9 +74,7 @@ const DateInput = ({
       >
         <Datepicker
           selectedDate={
-            momentDate.isValid() && momentDate.isBefore(moment.now())
-              ? momentDate.toISOString()
-              : undefined
+            momentDate.isValid() ? momentDate.toISOString() : undefined
           }
           onDateChange={handleDatepickerChange}
         />
