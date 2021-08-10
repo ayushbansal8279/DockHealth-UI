@@ -48,7 +48,8 @@ export const validationSchema = object().shape({
 
       if (
         newValue?.replace(/[/_-]/g, '')?.length <
-        DATE_FORMAT.replace(/\//g, '').length
+          DATE_FORMAT.replace(/\//g, '').length ||
+        dobMoment.isAfter(moment.now())
       ) {
         return new Error();
       }
