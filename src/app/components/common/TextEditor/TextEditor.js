@@ -24,6 +24,7 @@ import {
   HeadlineThreeButton,
   createInlineStyleButton,
 } from '@draft-js-plugins/buttons';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
@@ -108,7 +109,7 @@ const TextEditor = React.forwardRef(
     const peopleMentionPlugin = useRef(initializePeopleMentionPlugin());
     const patientMentionPlugin = useRef(initializePatientMentionPlugin());
 
-    const [editorState, setEditorState] = useState(initialState);
+    const [editorState, setEditorState] = useMentionsEditorState(initialState);
     const [isFocused, setIsFocused] = useState(false);
 
     const [peopleSuggestions, setPeopleSuggestions] = useState([
@@ -280,28 +281,34 @@ const TextEditor = React.forwardRef(
         {showToolbar && isFocused && (
           <ToolbarContainer>
             <Toolbar>
-              {externalProps => (
-                <div>
-                  <BoldButton {...externalProps} />
-                  <ItalicButton {...externalProps} />
-                  <UnderlineButton {...externalProps} />
-                  <ThroughLineButton {...externalProps} />
-                  <Separator
-                    {...externalProps}
-                    className={separaterClass.root}
-                  />
-                  <UnorderedListButton {...externalProps} />
-                  <OrderedListButton {...externalProps} />
-                  <Separator
-                    {...externalProps}
-                    className={separaterClass.root}
-                  />
-                  <HeadlineOneButton {...externalProps} />
-                  <HeadlineTwoButton {...externalProps} />
-                  <HeadlineThreeButton {...externalProps} />
-                  {/* <EmojiiButton {...externalProps} /> */}
-                </div>
-              )}
+              {externalProps => {
+                const currentProps = {
+                  ...externalProps,
+                  getEditorState: () => currentState,
+                };
+                return (
+                  <div>
+                    <BoldButton {...currentProps} />
+                    <ItalicButton {...currentProps} />
+                    <UnderlineButton {...currentProps} />
+                    <ThroughLineButton {...currentProps} />
+                    <Separator
+                      {...currentProps}
+                      className={separaterClass.root}
+                    />
+                    <UnorderedListButton {...currentProps} />
+                    <OrderedListButton {...currentProps} />
+                    <Separator
+                      {...currentProps}
+                      className={separaterClass.root}
+                    />
+                    <HeadlineOneButton {...currentProps} />
+                    <HeadlineTwoButton {...currentProps} />
+                    <HeadlineThreeButton {...currentProps} />
+                    {/* <EmojiiButton {...currentProps} /> */}
+                  </div>
+                );
+              }}
             </Toolbar>
           </ToolbarContainer>
         )}
@@ -323,8 +330,8 @@ const TextEditor = React.forwardRef(
               : null
           }
         />
-        <Spacing horizontal={4} />
 
+        <Spacing horizontal={4} />
         {!disableMentions && taskListIdentifier && (
           <PeopleMentionSuggestions
             onSearchChange={onPeopleSearchChange}
