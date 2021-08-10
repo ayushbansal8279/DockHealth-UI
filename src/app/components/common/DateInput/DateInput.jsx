@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
@@ -18,6 +18,8 @@ const DateInput = ({
   disabled,
   error,
   name,
+  // eslint-disable-next-line unicorn/prevent-abbreviations
+  errFutureDate = false,
   ...otherProps
 }) => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
@@ -30,6 +32,14 @@ const DateInput = ({
     onChange({ target: { value: date } });
   };
 
+  const errorShow = useCallback(() => {
+    if (errFutureDate && momentDate.isAfter(moment.now()))
+      return 'Date of birth in future';
+    if (momentDate.isValid() || !value || value === '__/__/____') return error;
+    return 'Invalid date format';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [momentDate, value]);
+
   return (
     <>
       <Input
@@ -40,11 +50,7 @@ const DateInput = ({
         disabled={disabled}
         shrink={!!value}
         name={name}
-        error={
-          momentDate.isValid() || !value || value === '__/__/____'
-            ? error
-            : 'Invalid date format'
-        }
+        error={errorShow()}
         endAdornment={
           <IconButton disabled={readOnly || disabled} onClick={setOpen}>
             <CalendarTodayIcon />
@@ -68,7 +74,9 @@ const DateInput = ({
       >
         <Datepicker
           selectedDate={
-            momentDate.isValid() ? momentDate.toISOString() : undefined
+            momentDate.isValid() && momentDate.isBefore(moment.now())
+              ? momentDate.toISOString()
+              : undefined
           }
           onDateChange={handleDatepickerChange}
         />

@@ -118,6 +118,7 @@ const PatientForm = forwardRef(
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
             name="dob"
+            errFutureDate
           />
           <Spacing vertical={3} />
           <FormInput
