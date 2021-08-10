@@ -37,8 +37,7 @@ const DateInput = ({
       return 'Date of birth in the future';
     if (momentDate.isValid() || !value || value === '__/__/____') return error;
     return 'Invalid date format';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [momentDate, value]);
+  }, [errFutureDate, error, momentDate, value]);
 
   return (
     <>
