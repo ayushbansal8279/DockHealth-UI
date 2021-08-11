@@ -48,8 +48,7 @@ export const validationSchema = object().shape({
 
       if (
         newValue?.replace(/[/_-]/g, '')?.length <
-          DATE_FORMAT.replace(/\//g, '').length ||
-        dobMoment.isAfter(moment.now())
+        DATE_FORMAT.replace(/\//g, '').length
       ) {
         return new Error();
       }
@@ -66,12 +65,22 @@ export const validationSchema = object().shape({
       function validDate(value) {
         if (value instanceof Error) {
           this.createError();
-          return false;
+          return value;
         }
-
-        return true;
+        return value;
       },
-    ),
+    )
+    .test('pastDate', `Date of birth is in the future`, function pastDate(
+      value,
+    ) {
+      if (!value) return false;
+      if (value instanceof Error) return false;
+      if (moment(value, DATE_FORMAT).isAfter(moment())) {
+        this.createError();
+        return false;
+      }
+      return true;
+    }),
   email: string()
     .nullable()
     .transform(value => (!value ? null : value))

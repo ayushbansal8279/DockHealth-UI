@@ -18,6 +18,7 @@ import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
+import moment from 'moment';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
@@ -118,7 +119,7 @@ const PatientForm = forwardRef(
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
             name="dob"
-            errFutureDate
+            maxDate={moment()}
           />
           <Spacing vertical={3} />
           <FormInput
