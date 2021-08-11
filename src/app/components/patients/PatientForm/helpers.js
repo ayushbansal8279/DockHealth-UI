@@ -65,7 +65,7 @@ export const validationSchema = object().shape({
       function validDate(value) {
         if (value instanceof Error) {
           this.createError();
-          return value;
+          return false;
         }
         return value;
       },
@@ -73,8 +73,6 @@ export const validationSchema = object().shape({
     .test('pastDate', `Date of birth is in the future`, function pastDate(
       value,
     ) {
-      if (!value) return false;
-      if (value instanceof Error) return false;
       if (moment(value, DATE_FORMAT).isAfter(moment())) {
         this.createError();
         return false;
