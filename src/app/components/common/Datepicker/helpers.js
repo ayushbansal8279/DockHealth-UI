@@ -16,11 +16,7 @@ const checkIfDayIsInSelectedRange = (
   momentSelectedDate,
   minDate,
   maxDate,
-  showRange,
 ) => {
-  if (!showRange) {
-    return momentCurrentDay.isSame(moment(momentSelectedDate, 'days'));
-  }
   if (
     minDate &&
     momentSelectedDate &&
@@ -94,13 +90,14 @@ export const renderDayLabels = ({
       isOutOfRange = true;
     }
 
-    const isDayInSelectedRange = checkIfDayIsInSelectedRange(
-      dayMoment,
-      momentSelectedDate,
-      minDate,
-      maxDate,
-      showRange,
-    );
+    const isDayInSelectedRange =
+      showRange &&
+      checkIfDayIsInSelectedRange(
+        dayMoment,
+        momentSelectedDate,
+        minDate,
+        maxDate,
+      );
 
     return (
       <CalendarIconWrapper
