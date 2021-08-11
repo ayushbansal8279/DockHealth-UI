@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
@@ -12,8 +12,27 @@ const OnboardingQuestionsPicker = ({
   onSelect,
   isSingleChoice,
   selectedOptions,
+  topOffset = 0,
+  positionGlobal = false,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchOption, setSearchOption] = useState('');
+
+  const [popoverPosition, setPopoverPosition] = useState({
+    vertical: 0,
+    horizontal: 0,
+  });
+
+  useEffect(() => {
+    if (positionGlobal) {
+      const { offsetLeft, offsetTop } = questionReference?.current;
+      setPopoverPosition({
+        horizontal: offsetLeft,
+        vertical: offsetTop + topOffset,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const filteredAvailableOptions = useMemo(
     () =>
@@ -82,16 +101,12 @@ const OnboardingQuestionsPicker = ({
     setSearchOption('');
     onClose();
   };
-
   return (
     <SelectorPopover
-      anchorEl={questionReference?.current}
-      anchorOrigin={{
-        vertical: 'bottom',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-      }}
+      anchorEl={!positionGlobal && questionReference?.current}
+      anchorPosition={positionGlobal && popoverPosition}
+      transformOrigin={!positionGlobal && { vertical: 'top' }}
+      anchorOrigin={positionGlobal ? popoverPosition : { vertical: 'bottom' }}
       renderItem={renderItem}
       renderHeader={renderHeader}
       onClose={onClosePopover}
