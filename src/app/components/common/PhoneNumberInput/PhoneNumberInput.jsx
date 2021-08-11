@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React from 'react';
 import MUIPhoneNumberInput from 'material-ui-phone-number';
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '../Input/Input';
@@ -42,18 +42,16 @@ export const usePhoneNumberStyles = makeStyles({
 
 const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
   const classes = usePhoneNumberStyles();
-  const getLocalPhone = useMemo(() => {
-    return navigator?.language === undefined
-      ? 'us'
-      : navigator.language.slice(0, 2).toLowerCase();
-  }, []);
+  const locLang = navigator?.language?.slice(0, 2).toLowerCase() || 'us';
   return (
     <MUIPhoneNumberInput
       ref={inputRef}
       {...otherProps}
       inputProps={{ readOnly }}
       disableDropdown={readOnly}
-      defaultCountry={getLocalPhone}
+      defaultCountry={
+        ['us', 'ca', 'au', 'pl'].includes(locLang) ? locLang : 'us'
+      }
       countryCodeEditable={false}
       disableAreaCodes
       onlyCountries={PHONE_COUNTRY_CODES.split(',')}
