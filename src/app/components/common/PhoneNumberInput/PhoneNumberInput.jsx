@@ -40,18 +40,19 @@ export const usePhoneNumberStyles = makeStyles({
   },
 });
 
+const temporaryLang = navigator?.language?.slice(0, 2).toLowerCase();
+const locLang = PHONE_COUNTRY_CODES.includes(temporaryLang)
+  ? temporaryLang
+  : 'us';
 const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
   const classes = usePhoneNumberStyles();
-  const locLang = navigator?.language?.slice(0, 2).toLowerCase() || 'us';
   return (
     <MUIPhoneNumberInput
       ref={inputRef}
       {...otherProps}
       inputProps={{ readOnly }}
       disableDropdown={readOnly}
-      defaultCountry={
-        ['us', 'ca', 'au', 'pl'].includes(locLang) ? locLang : 'us'
-      }
+      defaultCountry={locLang}
       countryCodeEditable={false}
       disableAreaCodes
       onlyCountries={PHONE_COUNTRY_CODES.split(',')}
