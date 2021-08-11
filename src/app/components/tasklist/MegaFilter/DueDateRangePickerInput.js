@@ -106,6 +106,7 @@ const DueDateRangePickerInput = ({
                 }}
                 minDate={minDate}
                 maxDate={maxDate}
+                showRange
               />
             )}
           </PopperContent>

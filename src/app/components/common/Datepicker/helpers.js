@@ -55,6 +55,7 @@ export const renderDayLabels = ({
   onDateChange,
   maxDate,
   minDate,
+  showRange,
 }) => {
   const currentMonthStartPoint = moment(currentMonthMoment)
     .startOf('month')
@@ -89,12 +90,14 @@ export const renderDayLabels = ({
       isOutOfRange = true;
     }
 
-    const isDayInSelectedRange = checkIfDayIsInSelectedRange(
-      dayMoment,
-      momentSelectedDate,
-      minDate,
-      maxDate,
-    );
+    const isDayInSelectedRange =
+      showRange &&
+      checkIfDayIsInSelectedRange(
+        dayMoment,
+        momentSelectedDate,
+        minDate,
+        maxDate,
+      );
 
     return (
       <CalendarIconWrapper

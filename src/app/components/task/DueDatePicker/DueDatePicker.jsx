@@ -22,8 +22,6 @@ const DueDatePicker = ({
   taskIdentifier,
   selectedDate,
   onDateChange,
-  minDate,
-  maxDate,
   recurring,
   disableRecurring,
   onCloseClick,
@@ -91,12 +89,7 @@ const DueDatePicker = ({
         />
       </QuickAddSectionWrapper>
       <Divider />
-      <Datepicker
-        selectedDate={selectedDate}
-        onDateChange={handleDatePick}
-        minDate={minDate}
-        maxDate={maxDate}
-      />
+      <Datepicker selectedDate={selectedDate} onDateChange={handleDatePick} />
       {!disableRecurring && (
         <>
           <Divider />
