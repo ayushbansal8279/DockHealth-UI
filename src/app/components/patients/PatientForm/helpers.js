@@ -67,7 +67,7 @@ export const validationSchema = object().shape({
           this.createError();
           return false;
         }
-        return value;
+        return true;
       },
     )
     .test('pastDate', `Date of birth is in the future`, function pastDate(
