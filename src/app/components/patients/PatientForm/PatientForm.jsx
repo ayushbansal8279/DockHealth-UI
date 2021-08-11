@@ -119,7 +119,7 @@ const PatientForm = forwardRef(
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
             name="dob"
-            maxDate={moment()}
+            maxDate={moment().toISOString()}
           />
           <Spacing vertical={3} />
           <FormInput
