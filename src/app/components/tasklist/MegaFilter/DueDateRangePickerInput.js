@@ -15,6 +15,7 @@ const DueDateRangePickerInput = ({
   hasError,
   minDate,
   maxDate,
+  showRange = true,
   dueDateChange,
 }) => {
   const inputReference = useRef(null);
@@ -106,6 +107,7 @@ const DueDateRangePickerInput = ({
                 }}
                 minDate={minDate}
                 maxDate={maxDate}
+                showRange={showRange}
               />
             )}
           </PopperContent>

@@ -24,6 +24,7 @@ const DueDatePicker = ({
   onDateChange,
   minDate,
   maxDate,
+  showRange = true,
   recurring,
   disableRecurring,
   onCloseClick,
@@ -96,6 +97,7 @@ const DueDatePicker = ({
         onDateChange={handleDatePick}
         minDate={minDate}
         maxDate={maxDate}
+        showRange={showRange}
       />
       {!disableRecurring && (
         <>

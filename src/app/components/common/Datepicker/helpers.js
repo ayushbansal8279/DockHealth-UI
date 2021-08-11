@@ -16,7 +16,11 @@ const checkIfDayIsInSelectedRange = (
   momentSelectedDate,
   minDate,
   maxDate,
+  showRange,
 ) => {
+  if (!showRange) {
+    return momentCurrentDay.isSame(moment(momentSelectedDate, 'days'));
+  }
   if (
     minDate &&
     momentSelectedDate &&
@@ -55,6 +59,7 @@ export const renderDayLabels = ({
   onDateChange,
   maxDate,
   minDate,
+  showRange,
 }) => {
   const currentMonthStartPoint = moment(currentMonthMoment)
     .startOf('month')
@@ -94,6 +99,7 @@ export const renderDayLabels = ({
       momentSelectedDate,
       minDate,
       maxDate,
+      showRange,
     );
 
     return (
