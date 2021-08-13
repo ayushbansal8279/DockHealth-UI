@@ -580,3 +580,10 @@ export function saveTaskRecurringSchedule(taskIdentifier, recurringData) {
     .patch(`task/setTaskRecurringSchedule/${taskIdentifier}`, recurringData)
     .then(({ data }) => data);
 }
+export function chooseTaskOutcome(taskOutcomeIdentifier) {
+  return axios
+    .patch(`task/outcome/select/${taskOutcomeIdentifier} `, {
+      isSelected: true,
+    })
+    .then(({ data }) => data);
+}

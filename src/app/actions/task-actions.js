@@ -21,6 +21,14 @@ export const clearPreparedSubtask = curry(dispatch =>
     subtaskShape: {},
   }),
 );
+export const chooseTaskDecisionOutcome = (
+  taskOutcomeIdentifier,
+  task,
+  templateBundleIdentifier,
+) => ({
+  type: ActionTypesSaga.CHOOSE_DECISION_TASK_OPTION,
+  payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
+});
 
 export function storeAsCurrentTask(task) {
   return dispatch => {
