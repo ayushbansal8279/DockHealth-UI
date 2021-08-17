@@ -69,7 +69,6 @@ const InvitePeoplePopover = ({
     event => {
       // eslint-disable-next-line no-unused-expressions
       event?.preventDefault();
-      console.log('works closePopover');
       toggleInvitePopover({ newInvitePopoverState: false });
     },
     [toggleInvitePopover],
@@ -104,8 +103,6 @@ const InvitePeoplePopover = ({
         {isOwnerOrAdmin && (
           <FormContext {...formMethods}>
             <OrganizationOwnerForm
-              initialValues=""
-              closeInviteForm={closePopover}
               onSubmit={onSubmit({ closePopover, dispatch, getAllUsers })}
             />
           </FormContext>
