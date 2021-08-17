@@ -17,7 +17,7 @@ import {
 } from './styled';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => data => {
-  invitePersonToOrganization(data, { userRole: data.userRole })(dispatch)
+  dispatch(invitePersonToOrganization(data))
     .then(() => {
       closePopover();
       dispatch(
