@@ -16,28 +16,6 @@ import {
   InvitePopoverHeader,
 } from './styled';
 
-const onSubmit = ({ closePopover, dispatch, getAllUsers }) => data => {
-  dispatch(invitePersonToOrganization(data))
-    .then(() => {
-      closePopover();
-      dispatch(
-        AlertActions.showGlobalAlert('Invitation sent successfully', 'success'),
-      );
-      getAllUsers();
-    })
-    .catch(error => {
-      closePopover();
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.response?.data?.errorMessage ??
-          error?.message ??
-          'Invitation could not be sent, please try again later',
-      });
-    });
-};
-
 const REQUIRED_MESSAGE = 'This field is required';
 
 const validationSchema = object().shape({
@@ -74,6 +52,31 @@ const InvitePeoplePopover = ({
     [toggleInvitePopover],
   );
 
+  const onSubmit = data => {
+    dispatch(invitePersonToOrganization(data))
+      .then(() => {
+        closePopover();
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Invitation sent successfully',
+            'success',
+          ),
+        );
+        getAllUsers();
+      })
+      .catch(error => {
+        closePopover();
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.errorMessage ??
+            error?.message ??
+            'Invitation could not be sent, please try again later',
+        });
+      });
+  };
+
   return (
     <Popover
       anchorEl={anchor}
@@ -102,9 +105,7 @@ const InvitePeoplePopover = ({
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
           <FormContext {...formMethods}>
-            <OrganizationOwnerForm
-              onSubmit={onSubmit({ closePopover, dispatch, getAllUsers })}
-            />
+            <OrganizationOwnerForm onSubmit={onSubmit} />
           </FormContext>
         )}
         {!isOwnerOrAdmin && (
