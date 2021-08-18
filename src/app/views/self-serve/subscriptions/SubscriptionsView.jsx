@@ -180,7 +180,6 @@ export default () => {
           userSubscriptionStatus={userSubscriptionStatus}
           setUserSubscriptionStatus={setUserSubscriptionStatus}
           subscriptionPlanData={memberTableSubscriptionData}
-          toggleInvitationPanelVisibility={() => {}}
           plansViewVisible={plansViewVisible}
           buyButtonDisabled={buyButtonDisabled}
           onClickBuyButton={onSubscriptionPlanChosen({
