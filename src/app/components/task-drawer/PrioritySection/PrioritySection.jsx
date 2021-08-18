@@ -3,13 +3,21 @@ import PriorityFlag from 'img/priority-flag';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
 import FormSelect from 'components/common/Select/FormSelect';
 import initializePrioritySectionHooks, { PRIORITIES } from './hooks';
-import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
+import {
+  PriorityFieldContainer,
+  PriorityFlagContainer,
+  PriorityFlagPadding,
+} from './styled';
 
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
   value,
   label,
-  OptionIcon: <PriorityFlag color={color} />,
+  OptionIcon: (
+    <PriorityFlagPadding>
+      <PriorityFlag color={color} />
+    </PriorityFlagPadding>
+  ),
 }));
 
 const PRIORITY_FIELD_NAME = 'priority';
