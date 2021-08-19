@@ -28,14 +28,8 @@ export function loading() {
 }
 
 export function invitePersonToOrganization(formProps) {
-  const personInfo = {
-    email: formProps.email,
-    firstName: formProps.firstName,
-    lastName: formProps.lastName,
-  };
-
   return dispatch =>
-    PeopleApi.invitePersonToOrganization(personInfo)
+    PeopleApi.invitePersonToOrganization(formProps)
       .then(response => {
         if (response?.statusCode === 'FAILURE') {
           throw response;

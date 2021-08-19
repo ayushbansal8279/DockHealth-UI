@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
 import { func } from 'prop-types';
@@ -23,8 +23,6 @@ import MemberTypeOptions from './SubscriptionsView.MemberTypeOptions';
 import EmptyOrganizationMemberRow from './EmptyOrganizationMemberRow/EmptyOrganizationMemberRow';
 import { getUserTypeLabel } from './SubscriptionsView.MembersTable.helpers';
 import { StyledDataGrid } from './data-grid-styles';
-
-const MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT = 10;
 
 const getFilteredOrganizationMembers = ({
   organizationMembers,
@@ -115,7 +113,6 @@ const SubscriptionsViewMembersTable = ({
   userSubscriptionStatus = USER_SUBSCRIPTION_STATUS.ALL,
   setUserSubscriptionStatus = () => {},
   subscriptionPlanData,
-  toggleInvitationPanelVisibility,
   plansViewVisible,
   buyButtonDisabled,
   onClickBuyButton,
@@ -369,15 +366,6 @@ const SubscriptionsViewMembersTable = ({
     userSubscriptionStatus,
     currentSearch,
   });
-
-  const filteredOrganizationMembersCount = filteredOrganizationMembers.length;
-
-  useEffect(() => {
-    toggleInvitationPanelVisibility(
-      filteredOrganizationMembersCount >=
-        MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT,
-    );
-  }, [filteredOrganizationMembersCount, toggleInvitationPanelVisibility]);
 
   const filteredOrganizationMembersWithId = useMemo(
     () =>
