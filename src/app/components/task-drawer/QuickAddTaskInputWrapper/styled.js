@@ -3,17 +3,6 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-export const Container = styled.div`
-  padding: 42px ${spacing.huge};
-  border-top: 1px solid ${palette.coolGrey2};
-`;
-
-export const Title = styled.h3`
-  font-family: 'Montserrat', sans-serif;
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.regularPlus};
-`;
-
 export const AddSubtaskInputWrapper = styled.div`
   position: relative;
   display: flex;
@@ -25,7 +14,8 @@ export const AddSubtaskInputWrapper = styled.div`
   font-size: ${fontSizes.smallPlus};
   background-color: ${palette.white};
   text-align: left;
-  border: 1px solid transparent;
+  border: 1px solid;
+  border-color: transparent;
 
   &:before {
     position: absolute;
@@ -38,20 +28,19 @@ export const AddSubtaskInputWrapper = styled.div`
     font-size: ${fontSizes.regular};
   }
 
-  &:focus-within {
-    border: 1px solid
-      ${props => (props.hasError ? palette.red : palette.coolGrey3)};
-
+  ${({ isFocused, hasError }) =>
+    isFocused &&
+    `border-color: ${hasError ? palette.red : palette.coolGrey3};
+  
     &:before {
       visibility: hidden;
-    }
-  }
+    }`}
 
   &:after {
     position: absolute;
     top: 50%;
     left: ${spacing.regular};
-    content: 'ADD A SUBTASK';
+    content: '${({ placeholder }) => placeholder}';
     display: block;
     transform: translateY(-50%);
     color: ${palette.coolGrey1};
@@ -65,15 +54,16 @@ export const AddSubtaskInputWrapper = styled.div`
   ${({ hidePlaceholder }) =>
     hidePlaceholder &&
     `
-      &:after {
-        visibility: hidden;
-  `}
-
-  &:focus-within {
     &:after {
       visibility: hidden;
-    }
-  }
+      `}
+
+  ${({ isFocused }) =>
+    isFocused &&
+    `
+        &:after {
+      visibility: hidden;
+   `}
 `;
 
 export const QuickAddHint = styled.p`
@@ -81,11 +71,6 @@ export const QuickAddHint = styled.p`
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.smallPlus};
   white-space: nowrap;
-`;
-
-export const MentionsEditorContainer = styled.div`
-  flex: 1;
-  overflow: hidden;
 `;
 
 export const ErrorLabel = styled.div`

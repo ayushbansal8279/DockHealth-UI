@@ -67,10 +67,18 @@ export const validationSchema = object().shape({
           this.createError();
           return false;
         }
-
         return true;
       },
-    ),
+    )
+    .test('pastDate', `Date of birth is in the future`, function pastDate(
+      value,
+    ) {
+      if (moment(value, DATE_FORMAT).isAfter(moment())) {
+        this.createError();
+        return false;
+      }
+      return true;
+    }),
   email: string()
     .nullable()
     .transform(value => (!value ? null : value))

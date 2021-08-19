@@ -7,8 +7,11 @@ import * as TaskApi from 'api/task-api';
 import {
   REORDER_SUBTASKS,
   CHOOSE_DECISION_TASK_OPTION,
+  ADD_TASK_HARD_DEPENDENCY,
 } from 'actions/action-types-saga';
-import { getTemplateBundle } from '../api/template-bundle-api';
+import { getTemplateBundle } from 'api/template-bundle-api';
+import { addTaskDependency } from 'api/task-api';
+import { refreshTask } from 'actions/task-actions';
 
 function* reorderSubtasks(payload) {
   const {
@@ -79,7 +82,22 @@ function* chooseTaskOutcome({
   }
 }
 
+function* addTaskHardDependency({
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+}) {
+  try {
+    yield call(addTaskDependency, sourceTaskIdentifier, targetTaskIdentifier, {
+      isDependent: true,
+    });
+    yield put(refreshTask(targetTaskIdentifier));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
+  yield takeEvery(ADD_TASK_HARD_DEPENDENCY, addTaskHardDependency);
 }

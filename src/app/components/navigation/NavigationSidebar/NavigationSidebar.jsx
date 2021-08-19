@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -184,7 +185,7 @@ const NavigationSidebar = ({
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
-                path="/core/workflows"
+                path={TASK_TEMPLATES_PATH}
                 onItemClick={handleNavigationItemClick}
               />
             )}

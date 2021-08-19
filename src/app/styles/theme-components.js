@@ -20,6 +20,26 @@ export const ArrowIcon = () => (
 
 const STANDARD_TRANSITION = 'all 0.25s ease-out';
 
+const listItemStyles = {
+  backgroundColor: 'transparent',
+  transition: STANDARD_TRANSITION,
+  fontFamily: "'Roboto Condensed', sans-serif",
+  color: ({ color }) => color || palette.mediumGrey,
+  whiteSpace: 'normal',
+
+  '&:hover, &:active, &:focus': {
+    backgroundColor: palette.brightBlueWithAlpha,
+  },
+
+  '&$selected': {
+    backgroundColor: palette.brightBlueWithAlpha,
+
+    '&:hover, &:active, &:focus': {
+      backgroundColor: palette.brightBlueWithAlpha,
+    },
+  },
+};
+
 const themeCommonOverrides = () => ({
   props: {
     MuiPaper: {
@@ -146,25 +166,10 @@ const themeCommonOverrides = () => ({
       },
     },
     MuiMenuItem: {
-      root: {
-        backgroundColor: 'transparent',
-        transition: STANDARD_TRANSITION,
-        fontFamily: "'Roboto Condensed', sans-serif",
-        color: ({ color }) => color || palette.mediumGrey,
-        whiteSpace: 'normal',
-
-        '&:hover, &:active, &:focus': {
-          backgroundColor: palette.brightBlueWithAlpha,
-        },
-
-        '&$selected': {
-          backgroundColor: palette.brightBlueWithAlpha,
-
-          '&:hover, &:active, &:focus': {
-            backgroundColor: palette.brightBlueWithAlpha,
-          },
-        },
-      },
+      root: listItemStyles,
+    },
+    MuiAutocomplete: {
+      option: listItemStyles,
     },
     MuiSelect: {
       select: {

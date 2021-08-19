@@ -86,6 +86,12 @@ export function checkIfTemplateTask(task) {
   return task?.type === 'TEMPLATE';
 }
 
+export function checkIfBundleTask(task) {
+  return !!task?.taskGroups?.find(
+    ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+  );
+}
+
 export const TaskItemColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
   DUE_DATE: 'DUE_DT',

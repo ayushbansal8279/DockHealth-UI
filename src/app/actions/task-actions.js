@@ -717,23 +717,8 @@ export const removeTaskAttachment = (
       throw error;
     });
 
-export const refreshAnotherTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
-    .then(task => {
-      // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
-      dispatch({
-        type: ActionTypes.REFRESH_ANOTHER_TASK_SUCCESS,
-        task,
-      });
-      return task;
-    })
-    .catch(error => {
-      throw error;
-    });
-
-export const refreshTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+export const refreshTask = taskIdentifier => dispatch =>
+  TaskApi.getTaskDetails(taskIdentifier)
     .then(task => {
       // explicitly mark task as updated so we can show the flag
       task.updated = true; // eslint-disable-line no-param-reassign
@@ -965,5 +950,16 @@ export function updateWorkflowStatusForTasks(statusIdentifier, dataToUpdate) {
     type: ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS,
     statusIdentifier,
     dataToUpdate,
+  };
+}
+
+export function addTaskHardDependency(
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+) {
+  return {
+    type: ActionTypesSaga.ADD_TASK_HARD_DEPENDENCY,
+    sourceTaskIdentifier,
+    targetTaskIdentifier,
   };
 }

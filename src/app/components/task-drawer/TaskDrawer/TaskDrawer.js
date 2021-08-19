@@ -6,6 +6,7 @@
 import React, { useMemo } from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
+import { checkIfBundleTask } from 'helpers/task-helpers';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -21,7 +22,7 @@ import TopSection from '../TopSection/TopSection';
 import HistorySection from '../HistorySection/HistorySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
-import SubtasksSection from '../SubtasksSection/SubtasksSection';
+import TasksList from '../TasksList/TasksList';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
@@ -49,6 +50,8 @@ import {
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import CustomTextEditor from '../CustomTextEditor/CustomTextEditor';
+import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
+import DependenciesAutocomplete from '../DependenciesAutocomplete/DependenciesAutocomplete';
 
 const isEmptyState = state => {
   const rawState = convertToRaw(state.getCurrentContent());
@@ -61,7 +64,6 @@ const isEmptyState = state => {
 
 const TaskDrawer = ({
   isInbox,
-  modalActions,
   onTaskUpdate = () => {},
   onTaskCreation = () => {},
   onTaskDelete = () => {},
@@ -77,7 +79,6 @@ const TaskDrawer = ({
     descriptionState,
     formMethods,
     handleDueDateSave,
-    handleQuickAddSubtask,
     handleUpdateTask,
     isSubtask,
     isAddingOrEditingSubtask,
@@ -176,7 +177,6 @@ const TaskDrawer = ({
                   isInbox={isInbox}
                   closeTaskDrawer={closeTaskDrawer}
                   setAutoSaveVisible={setAutoSaveVisible}
-                  modalActions={modalActions}
                   setTourTaskMenuReference={element => {
                     taskMenuReference.current = element;
                   }}
@@ -380,20 +380,40 @@ const TaskDrawer = ({
               </Grid>
               {selectedTask && !isSubtask && (
                 <Grid item xs={12}>
-                  <SubtasksSection
-                    subtasks={selectedTask.subtasks}
-                    subTasksCount={selectedTask.subTasksCount}
-                    taskListIdentifier={taskListIdentifier}
-                    onQuickAddSubtask={handleQuickAddSubtask}
+                  <TasksList
+                    title="Subtasks"
+                    tasks={selectedTask.subtasks}
+                    tasksCount={selectedTask.subTasksCount}
+                    input={
+                      <QuickAddSubtask
+                        taskIdentifier={selectedTask?.identifier}
+                        taskListIdentifier={taskListIdentifier}
+                      />
+                    }
                   />
                 </Grid>
               )}
+              {selectedTask &&
+                !isSubtask &&
+                (isTemplateTask || checkIfBundleTask(selectedTask)) && (
+                  <Grid item xs={12}>
+                    <TasksList
+                      title="Dependencies"
+                      tasks={selectedTask.taskDependencies}
+                      tasksCount={selectedTask.dependencyTasksCount}
+                      input={
+                        <DependenciesAutocomplete
+                          taskIdentifier={selectedTask.identifier}
+                        />
+                      }
+                    />
+                  </Grid>
+                )}
               <Grid item xs={12} style={styleCommentRow}>
                 <div ref={commentsSectionReference}>
                   <CommentSection
                     parentFormSubmit={parentFormSubmit}
                     taskDrawerFocusField={taskDrawerFocusField}
-                    modalActions={modalActions}
                     taskListIdentifier={taskListIdentifier}
                     isTemplateTask={isTemplateTask}
                   />

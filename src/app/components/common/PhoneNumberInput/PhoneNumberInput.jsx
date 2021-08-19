@@ -4,7 +4,7 @@ import MUIPhoneNumberInput from 'material-ui-phone-number';
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '../Input/Input';
 
-const { PHONE_COUNTRY_CODES } = process.env;
+const phoneCountryCodes = process.env.PHONE_COUNTRY_CODES.split(',');
 
 export const usePhoneNumberStyles = makeStyles({
   dropdown: {
@@ -40,19 +40,22 @@ export const usePhoneNumberStyles = makeStyles({
   },
 });
 
+const browserLang = navigator?.language?.slice(0, 2).toLowerCase();
+const defaultLang = phoneCountryCodes.includes(browserLang)
+  ? browserLang
+  : 'us';
 const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
   const classes = usePhoneNumberStyles();
-
   return (
     <MUIPhoneNumberInput
       ref={inputRef}
       {...otherProps}
       inputProps={{ readOnly }}
       disableDropdown={readOnly}
-      defaultCountry="us"
+      defaultCountry={defaultLang}
       countryCodeEditable={false}
       disableAreaCodes
-      onlyCountries={PHONE_COUNTRY_CODES.split(',')}
+      onlyCountries={phoneCountryCodes}
       className={clsx({
         [otherProps.className]: otherProps.className,
         [classes.root]: true,

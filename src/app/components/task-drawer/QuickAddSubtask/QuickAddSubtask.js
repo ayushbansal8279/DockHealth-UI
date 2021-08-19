@@ -1,29 +1,24 @@
 /* eslint-disable import/extensions */
+import { Box } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addSubtask } from 'actions/task-actions';
+import useBoolean from 'hooks/useBoolean';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import Spacing from 'components/common/Spacing';
 import { validateNewSubtask } from 'helpers/validation-helper';
-import {
-  AddSubtaskInputWrapper,
-  ErrorLabel,
-  MentionsEditorContainer,
-  QuickAddHint,
-} from './styled';
+import { onTaskDrawerSubtaskAdd } from 'helpers/ga-event-helper';
+import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
 
-const QuickAddSubtask = ({
-  onQuickAddSubtask,
-  onFocus,
-  onBlur,
-  taskListIdentifier = null,
-}) => {
+const QuickAddSubtask = ({ taskIdentifier, taskListIdentifier = null }) => {
   const editorReference = useRef(null);
   const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
   const [hasInputValue, setHasInputValue] = useState(false);
   const [error, setError] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [isDisabled, setDisabled] = useState(false);
+  const dispatch = useDispatch();
 
   const resetInputState = () => {
     setDisabled(false);
@@ -48,9 +43,8 @@ const QuickAddSubtask = ({
     setError(validatorError);
 
     if (rawText && !validatorError) {
-      onQuickAddSubtask({
-        description: tokenizedText,
-      })
+      onTaskDrawerSubtaskAdd('Quick add input');
+      dispatch(addSubtask(taskIdentifier, { description: tokenizedText }))
         .then(resetInputState)
         .catch(resetInputState);
     }
@@ -65,20 +59,19 @@ const QuickAddSubtask = ({
   };
 
   return (
-    <AddSubtaskInputWrapper hidePlaceholder={hasInputValue}>
-      <MentionsEditorContainer>
+    <QuickAddTaskInputWrapper
+      placeholder="Add a subtask"
+      isFocused={isFocused}
+      error={error}
+      hasInputValue={hasInputValue}
+    >
+      <Box flex={1} overflow="hidden">
         <TextEditor
           ref={editorReference}
           taskListIdentifier={taskListIdentifier}
           disabled={isDisabled}
-          onFocus={() => {
-            setIsFocused(true);
-            if (typeof onFocus === 'function') onFocus();
-          }}
-          onBlur={() => {
-            setIsFocused(false);
-            if (typeof onBlur === 'function') onBlur();
-          }}
+          onFocus={setFocused}
+          onBlur={unsetFocused}
           state={newTaskDescription}
           onChange={handleOnChange}
           keyBindingFn={event => {
@@ -96,15 +89,8 @@ const QuickAddSubtask = ({
             return 'not-handled';
           }}
         />
-      </MentionsEditorContainer>
-      {hasInputValue && isFocused && !error && (
-        <>
-          <Spacing horizontal={4} />
-          <QuickAddHint>Hit enter to save</QuickAddHint>
-        </>
-      )}
-      {error && <ErrorLabel>{error}</ErrorLabel>}
-    </AddSubtaskInputWrapper>
+      </Box>
+    </QuickAddTaskInputWrapper>
   );
 };
 

@@ -99,7 +99,7 @@ const TaskTemplateView = ({
         ) : (
           <TaskTemplatesLoader />
         )}
-        <TaskDrawer modalActions={modalActions} />
+        <TaskDrawer />
       </TaskTemplateViewContainer>
     </TaskTemplateBulkEditContainer>
   );

@@ -91,3 +91,61 @@ export function reorderTasksForTemplate(
       throw error;
     });
 }
+
+export function getTemplateLayout(taskTemplateIdentifier) {
+  return axios
+    .get(`task/template/layout/${taskTemplateIdentifier}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function saveTemplateLayout(taskTemplateIdentifier, layout) {
+  return axios
+    .post(`task/template/layout/${taskTemplateIdentifier}`, layout)
+    .then(response => response.data);
+}
+
+export function createTasksLink(
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+  parameters = {},
+) {
+  return axios
+    .post(`task/link`, {
+      sourceTaskIdentifier,
+      targetTaskIdentifier,
+      ...parameters,
+    })
+    .then(({ data }) => data);
+}
+
+export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  return axios
+    .delete(`task/link`, {
+      data: {
+        sourceTaskIdentifier,
+        targetTaskIdentifier,
+      },
+    })
+    .then(({ data }) => data);
+}
+
+export function updateTasksLink(link) {
+  return axios.put(`task/link`, link).then(({ data }) => data);
+}
+
+export function addTaskOutcome(taskIdentifier, name) {
+  return axios
+    .post(`task/outcome/${taskIdentifier}`, {
+      name,
+    })
+    .then(({ data }) => data);
+}
+
+export function updateTaskOutcome(taskOutcomeIdentifier, dataToUpdate) {
+  return axios
+    .patch(`task/outcome`, { ...dataToUpdate, taskOutcomeIdentifier })
+    .then(({ data }) => data);
+}

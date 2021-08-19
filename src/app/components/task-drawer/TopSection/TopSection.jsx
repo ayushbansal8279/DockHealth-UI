@@ -101,7 +101,6 @@ const TopSection = ({
   onAddSubTask,
   isInbox,
   closeTaskDrawer,
-  modalActions,
   setTourTaskMenuReference,
   assignToSelf,
 }) => {
@@ -129,7 +128,6 @@ const TopSection = ({
     dispatch,
     taskLists,
   } = initializeTaskDrawerTopSectionHooks({
-    modalActions,
     onDelete,
     onDuplicate,
     closeTaskDrawer,
