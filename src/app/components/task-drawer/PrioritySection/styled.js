@@ -31,7 +31,3 @@ export const PriorityFlagContainer = styled.div`
   top: calc(50% + 0.5rem);
   transform: translate(-100%, -50%);
 `;
-
-export const PriorityFlagPadding = styled.div`
-  padding-right: 10px;
-`;

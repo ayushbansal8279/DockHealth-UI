@@ -2,21 +2,18 @@ import React from 'react';
 import PriorityFlag from 'img/priority-flag';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
 import FormSelect from 'components/common/Select/FormSelect';
+import { Box } from '@material-ui/core';
 import initializePrioritySectionHooks, { PRIORITIES } from './hooks';
-import {
-  PriorityFieldContainer,
-  PriorityFlagContainer,
-  PriorityFlagPadding,
-} from './styled';
+import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
 
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
   value,
   label,
   OptionIcon: (
-    <PriorityFlagPadding>
+    <Box pr="10px">
       <PriorityFlag color={color} />
-    </PriorityFlagPadding>
+    </Box>
   ),
 }));
 
