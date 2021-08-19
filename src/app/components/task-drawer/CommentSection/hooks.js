@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { isEmpty } from 'ramda';
 import { useEffect, useState, useCallback } from 'react';
+import { openModal, closeModal } from 'modal/actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 
 import { deleteComment, updateComment, addComment } from 'actions/task-actions';
 
-const initializeCommentSectionHooks = ({ modalActions }) => {
+const initializeCommentSectionHooks = () => {
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector);
 
@@ -45,10 +46,10 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
         );
 
         setCommentsList(newComments);
-        modalActions.closeModal();
+        dispatch(closeModal());
       });
     },
-    [selectedTask, dispatch, modalActions],
+    [selectedTask, dispatch],
   );
 
   const boundUpdateComment = useCallback(
@@ -78,7 +79,7 @@ const initializeCommentSectionHooks = ({ modalActions }) => {
     const modalProps = {
       confirm: () => boundRemoveComment(comment),
     };
-    modalActions.openModal('DeleteComment', modalProps);
+    dispatch(openModal('DeleteComment', modalProps));
   };
 
   return {

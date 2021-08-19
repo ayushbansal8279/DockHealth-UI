@@ -565,7 +565,7 @@ const initializeListDetailsViewHooks = (match, history) => {
           data.eventType === 'UPDATE_TASK' &&
           data.task.taskIdentifier
         ) {
-          actions.refreshAnotherTask(data.task);
+          actions.refreshTask(data.task.identifier);
         }
       }
     };
@@ -616,7 +616,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
-    modalActions,
     navigateToTab,
     openedTasks,
     quickAddTask,

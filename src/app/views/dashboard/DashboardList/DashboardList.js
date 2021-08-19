@@ -480,7 +480,6 @@ const DashboardList = ({
         </>
       )}
       <TaskDrawer
-        modalActions={modalActions}
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
         onTaskDelete={fetchDashboardFilters}

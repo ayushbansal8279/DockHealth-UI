@@ -425,14 +425,6 @@ const initializeTaskDrawerHooks = ({
     [dispatch, selectedTask],
   );
 
-  const handleQuickAddSubtask = useCallback(
-    async newSubtask => {
-      onTaskDrawerSubtaskAdd('Quick add input');
-      return dispatch(addSubtask(selectedTaskIdentifier, newSubtask));
-    },
-    [dispatch, selectedTaskIdentifier],
-  );
-
   const handleTaskDescriptionUpdate = useCallback(async () => {
     const updatedTaskDescription = convertFromEditorStateToOutput(
       descriptionState,
@@ -610,7 +602,6 @@ const initializeTaskDrawerHooks = ({
     detailsState,
     formMethods,
     handleDueDateSave,
-    handleQuickAddSubtask,
     handleUpdateTask,
     isSubtask,
     isAddingOrEditingSubtask,

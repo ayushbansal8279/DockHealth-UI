@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { openModal, closeModal } from 'modal/actions';
 import useBoolean from 'hooks/useBoolean';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const initializeTaskDrawerTopSectionHooks = ({
-  modalActions,
   onDelete,
   onDuplicate,
   closeTaskDrawer,
@@ -39,7 +39,7 @@ const initializeTaskDrawerTopSectionHooks = ({
   const deleteTask = async () => {
     await onDelete({
       afterDelete: () => {
-        modalActions.closeModal();
+        dispatch(closeModal());
         closeTaskDrawer();
       },
       selectedTask,
@@ -47,16 +47,18 @@ const initializeTaskDrawerTopSectionHooks = ({
   };
 
   const openDeleteConfirmationModal = () => {
-    modalActions.openModal('DeleteTask', {
-      isSubtask: !!selectedTask.parentTaskIdentifier,
-      confirm: () => deleteTask(),
-    });
+    dispatch(
+      openModal('DeleteTask', {
+        isSubtask: !!selectedTask.parentTaskIdentifier,
+        confirm: () => deleteTask(),
+      }),
+    );
   };
 
   const duplicateTaskWithAttachments = async () => {
     await onDuplicate({
       afterDuplicate: () => {
-        modalActions.closeModal();
+        dispatch(closeModal());
         closeTaskDrawer();
       },
       selectedTask,
@@ -67,7 +69,7 @@ const initializeTaskDrawerTopSectionHooks = ({
   const duplicateTask = async () => {
     await onDuplicate({
       afterDuplicate: () => {
-        modalActions.closeModal();
+        dispatch(closeModal());
         closeTaskDrawer();
       },
       selectedTask,
@@ -79,7 +81,7 @@ const initializeTaskDrawerTopSectionHooks = ({
       confirm: () => duplicateTaskWithAttachments(),
       skip: () => duplicateTask(),
     };
-    modalActions.openModal('AttachmentsDuplicate', modalProps);
+    dispatch(openModal('AttachmentsDuplicate', modalProps));
   };
 
   const duplicateTaskWithoutConfirmation = event => {

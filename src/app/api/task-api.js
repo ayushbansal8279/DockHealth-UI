@@ -580,3 +580,27 @@ export function saveTaskRecurringSchedule(taskIdentifier, recurringData) {
     .patch(`task/setTaskRecurringSchedule/${taskIdentifier}`, recurringData)
     .then(({ data }) => data);
 }
+
+export function getAvailableTaskDependencies(taskIdentifier, searchTerm = '') {
+  return axios
+    .get(`task/lookupTasksForDependency/${taskIdentifier}`, {
+      params: {
+        searchTerm,
+      },
+    })
+    .then(({ data }) => data);
+}
+
+export function addTaskDependency(
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+  payload,
+) {
+  return axios
+    .post(`task/link`, {
+      sourceTaskIdentifier,
+      targetTaskIdentifier,
+      ...payload,
+    })
+    .then(({ data }) => data);
+}

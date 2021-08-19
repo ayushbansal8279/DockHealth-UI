@@ -12,6 +12,7 @@ export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
+export const TASK_TEMPLATES_PATH = '/core/workflows';
 
 export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
@@ -30,3 +31,6 @@ export const createPatientDetailsListPath = (
   patientIdentifier,
   taskListIdentifier,
 ) => `/core/patient/${patientIdentifier}/tasks/${taskListIdentifier}`;
+
+export const createTaskTemplateDetailsPath = taskTemplateIdentifier =>
+  `${TASK_TEMPLATES_PATH}/${taskTemplateIdentifier}`;

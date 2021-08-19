@@ -3,25 +3,19 @@ import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Subtask from '../Subtask/Subtask';
 import SubtasksLoader from '../SubtasksLoader/SubtasksLoader';
-import QuickAddSubtask from './QuickAddSubtask';
 import { Container, Title } from './styled';
 
-const SubtasksSection = ({
-  subtasks,
-  subTasksCount,
-  taskListIdentifier,
-  onQuickAddSubtask,
-}) => {
+const TasksList = ({ title, tasks, tasksCount, input }) => {
   const currentUser = useSelector(userProfileSelector);
 
   return (
     <Container>
-      <Title>Subtasks</Title>
-      {subTasksCount > 0 && (!subtasks || subtasks.length === 0) ? (
-        <SubtasksLoader rows={subTasksCount || 4} />
+      <Title>{title}</Title>
+      {tasksCount > 0 && (!tasks || tasks.length === 0) ? (
+        <SubtasksLoader rows={tasksCount || 4} />
       ) : (
         <>
-          {subtasks?.map(subtask => (
+          {tasks?.map(subtask => (
             <Subtask
               key={subtask.taskIdentifier}
               subtask={subtask}
@@ -30,12 +24,9 @@ const SubtasksSection = ({
           ))}
         </>
       )}
-      <QuickAddSubtask
-        taskListIdentifier={taskListIdentifier}
-        onQuickAddSubtask={onQuickAddSubtask}
-      />
+      {input}
     </Container>
   );
 };
 
-export default SubtasksSection;
+export default TasksList;

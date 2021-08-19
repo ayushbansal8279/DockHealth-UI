@@ -17,7 +17,6 @@ import EmptyGlobalSearchResults from 'img/empty-global-search-results';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
-import * as ModalActions from 'modal/actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
@@ -43,7 +42,6 @@ const GlobalSearchView = ({
   selectedTask,
   taskDrawerActions,
   taskActions,
-  modalActions,
   globalSearchSagaActions,
 }) => {
   const { openDrawer } = taskDrawerActions;
@@ -122,7 +120,7 @@ const GlobalSearchView = ({
           </>
         )}
       </ViewSidePadding>
-      <TaskDrawer modalActions={modalActions} />
+      <TaskDrawer />
     </GlobalSearchWrapper>
   );
 };
@@ -130,7 +128,6 @@ const GlobalSearchView = ({
 const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
-  modalActions: bindActionCreators(ModalActions, dispatch),
   globalSearchSagaActions: bindActionCreators(
     GlobalSearchSagaActions,
     dispatch,
