@@ -43,7 +43,7 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.DUE_DATE]: false,
 };
 
-const TaskTemplate = ({ template, isFullView }) => {
+const TaskTemplate = ({ template, isFullView, children }) => {
   const { taskTemplateIdentifier, name, description } = template;
 
   const [draggableId, setDraggableId] = useState(null);
@@ -248,6 +248,7 @@ const TaskTemplate = ({ template, isFullView }) => {
           value={nameInputValue}
           onClick={onClickName}
         />
+        {children}
         <Spacer />
         <OptionsMenu options={menuOptions}>
           <MenuContainer size="small">

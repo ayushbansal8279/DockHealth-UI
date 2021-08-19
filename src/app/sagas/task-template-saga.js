@@ -1,5 +1,6 @@
 import {
   ADD_TASK_TEMPLATE,
+  ADD_TASK_TEMPLATE_FOLDER,
   DELETE_TASK_TEMPLATE,
   DUPLICATE_TASK_TEMPLATE,
   GET_TASK_TEMPLATES,
@@ -8,6 +9,7 @@ import {
   REORDER_TASKS_FOR_TEMPLATE,
   ADD_TASK_TO_TEMPLATE,
   RELOAD_OPENED_TEMPLATE_TASKS,
+  GO_TO_TASK_TEMPLATE_FOLDER,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -28,6 +30,7 @@ import {
   taskTemplateDetailsSelector,
   taskTemplateSelector,
   allTemplateDetailsSelector,
+  parentFolderIdSelector,
 } from 'selectors/task-template-selectors';
 
 function* getTemplates() {
@@ -40,6 +43,7 @@ function* getTemplates() {
       type: ActionTypes.LOAD_TASK_TEMPLATES,
       templates,
     });
+    yield put(TaskTemplateActions.cleanBreadcrumbs());
 
     if (templates?.length > 0)
       yield put(
@@ -54,10 +58,45 @@ function* getTemplates() {
   }
 }
 
+function* getTaskTemplatesFolder({
+  payload: { taskTemplateFolderIdentifier },
+}) {
+  try {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATES_FETCHING,
+    });
+    const templates = yield call(
+      TaskTemplateApi.getTemplatesForSpecificFolder,
+      taskTemplateFolderIdentifier,
+    );
+    yield put({
+      type: ActionTypes.LOAD_TASK_TEMPLATES_FOLDER,
+      templates,
+      taskTemplateFolderIdentifier,
+    });
+
+    if (templates?.length > 0)
+      yield put(
+        TaskTemplateActions.toggleTemplateOpen(
+          templates[0]?.taskTemplateIdentifier,
+        ),
+      );
+  } catch (error) {
+    console.log(error);
+    yield put({
+      type: ActionTypes.TASK_TEMPLATES_ERROR,
+    });
+  }
+}
+
 function* addTemplate({ template }) {
   try {
-    const createdTemplate = yield call(TaskTemplateApi.addTemplate, template);
-
+    const parentId = yield select(parentFolderIdSelector);
+    const createdTemplate = yield call(
+      TaskTemplateApi.addTemplate,
+      template,
+      parentId,
+    );
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE,
       template: createdTemplate,
@@ -75,7 +114,8 @@ function* addTemplate({ template }) {
     );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -265,7 +305,9 @@ function* reloadOpenedTemplateTasks() {
 }
 
 export default function* watchTaskTemplate() {
+  yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
+  yield takeEvery(ADD_TASK_TEMPLATE_FOLDER, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
   yield takeLatest(GET_TASK_TEMPLATES, getTemplates);
   yield takeEvery(TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);

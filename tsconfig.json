@@ -31,5 +31,5 @@
     "src/app/**/*.jsx",
     "src/app/**/*.png",
     "src/app/**/*.svg"
-  ]
+, "src/app/views/task-template/TaskTemplateHeader"  ]
 }

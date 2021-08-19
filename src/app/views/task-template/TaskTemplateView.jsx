@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -22,11 +22,20 @@ import {
   BULK_EDIT_MOVE_OPTION,
 } from 'components/tasklist/BulkEditSection/helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
+import TasksTemplatesHeader from 'components/tasklist/TasksTemplatesHeader/TasksTemplatesHeader';
+import {
+  goToTaskTemplateFolder,
+  getTemplates,
+  cleanAndPushToBreadcrumbs,
+} from 'actions/task-template-actions';
 import { TaskTemplateViewContainer } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
 import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
 import TaskTemplateBulkEditContainer from './TaskTemplateBulkEditContainer/TaskTemplateBulkEditContainer';
+import TaskTemplateHeader from './TaskTemplateHeader/TaskTemplateHeader';
+import TaskTemplateFolder from './TaskTemplateFolder/TaskTemplateFolder';
+import TemplateBreadcumbs from './TaskTemplateBreadcrumbs';
 
 const BULK_EDIT_OPTIONS_CONFIG = {
   [BULK_EDIT_MOVE_OPTION]: false,
@@ -43,9 +52,13 @@ const TaskTemplateView = ({
   modalActions,
   taskTemplateActions,
   userProfile,
+  goToFolder,
+  getAllTemplates,
+  cleanAndPushBreadcrumbs,
 }) => {
   const history = useHistory();
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
+  const [sort, setSort] = useState({});
   const [isBannerOpen, setIsBannerOpen] = useState(
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
@@ -60,6 +73,44 @@ const TaskTemplateView = ({
   const handleCreateTemplate = useCallback(() => {
     modalActions.openModal('CreateTemplate');
   }, [modalActions]);
+
+  const handleCreateTemplateFolder = useCallback(() => {
+    modalActions.openModal('CreateTemplateFolder');
+  }, [modalActions]);
+
+  const handleSortChange = (key, order) => {
+    setSort({
+      key: order ? key : null,
+      order,
+    });
+  };
+
+  const folders = useMemo(
+    () => taskTemplates.filter(template => template.type === 'FOLDER'),
+    [taskTemplates],
+  );
+  const templates = useMemo(
+    () => taskTemplates.filter(template => template.type !== 'FOLDER'),
+    [taskTemplates],
+  );
+  const handleBreadcrumbsRootClick = useCallback(() => {
+    getAllTemplates();
+  }, [getAllTemplates]);
+  const handleBreadcrumbsChildClick = useCallback(
+    (listBeforeClicked, clickedBreadcrumb) => {
+      cleanAndPushBreadcrumbs(listBeforeClicked);
+      goToFolder(clickedBreadcrumb.taskTemplateFolderIdentifier);
+    },
+    [cleanAndPushBreadcrumbs, goToFolder],
+  );
+
+  const handleGoToFolder = useCallback(
+    (taskTemplateIdentifier, name) => {
+      goToFolder(taskTemplateIdentifier);
+      taskTemplateActions.pushToBreadcrumbs(name, taskTemplateIdentifier);
+    },
+    [taskTemplateActions, goToFolder],
+  );
 
   return (
     <TaskTemplateBulkEditContainer
@@ -83,19 +134,57 @@ const TaskTemplateView = ({
             <Spacing vertical={4} />
           </>
         )}
+        <TemplateBreadcumbs
+          onRootClick={handleBreadcrumbsRootClick}
+          onChildClick={handleBreadcrumbsChildClick}
+        />
         <Grid container justify="flex-end" alignItems="center">
           <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
+          <AddButton onClick={handleCreateTemplateFolder}>Add Folder</AddButton>
           <ViewTypeSwitch value={viewType} onChange={setViewType} />
         </Grid>
         <Spacing vertical={4} />
+        <TasksTemplatesHeader
+          sort={sort}
+          onSortChange={handleSortChange}
+          // bulkEditEnabled={bulkEditEnabled}
+          // isGroupSelected={isGroupSelected}
+          // onGroupSelect={handleGroupSelect}
+        />
         {!isFetchingTaskTemplates ? (
-          taskTemplates.map(template => (
-            <TaskTemplate
-              key={template.taskTemplateIdentifier}
-              template={template}
-              isFullView={viewType === ViewType.FULL_VIEW}
-            />
-          ))
+          <>
+            {folders.map(template => (
+              <TaskTemplateFolder
+                key={template.taskTemplateIdentifier}
+                template={template}
+                onClick={() =>
+                  handleGoToFolder(
+                    template.taskTemplateIdentifier,
+                    template.name,
+                  )
+                }
+              >
+                <TaskTemplateHeader
+                  createdBy="Test User"
+                  createdDate="3 days ago"
+                  taskTemplate={template}
+                />
+              </TaskTemplateFolder>
+            ))}
+            {templates.map(template => (
+              <TaskTemplate
+                key={template.taskTemplateIdentifier}
+                template={template}
+                isFullView={viewType === ViewType.FULL_VIEW}
+              >
+                <TaskTemplateHeader
+                  createdBy="Test User"
+                  createdDate="3 days ago"
+                  taskTemplate={template}
+                />
+              </TaskTemplate>
+            ))}
+          </>
         ) : (
           <TaskTemplatesLoader />
         )}
@@ -117,6 +206,12 @@ function mapDispatchToProps(dispatch) {
   return {
     modalActions: bindActionCreators(ModalActions, dispatch),
     taskTemplateActions: bindActionCreators(TaskTemplateActions, dispatch),
+    goToFolder: bindActionCreators(goToTaskTemplateFolder, dispatch),
+    getAllTemplates: bindActionCreators(getTemplates, dispatch),
+    cleanAndPushBreadcrumbs: bindActionCreators(
+      cleanAndPushToBreadcrumbs,
+      dispatch,
+    ),
   };
 }
 

@@ -42,6 +42,7 @@ import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkComp
 import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/MoveTasksWithSubtasksModal';
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
 import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
+import CreateTemplateFolderModal from './components/CreateTemplateFolderModal/CreateTemplateFolderModal';
 import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeScreenDragDropModal';
 import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
 import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
@@ -99,6 +100,7 @@ const MODAL_MAP = {
   MoveTasksWithSubtasks: MoveTasksWithSubtasksModal,
   SendingInvite: SendingInviteModal,
   CreateTemplate: CreateTemplateModal,
+  CreateTemplateFolder: CreateTemplateFolderModal,
   HomeScreenDragDrop: HomeScreenDragDropModal,
   DeleteTemplate: DeleteTemplateModal,
   SelectTaskDestination: SelectTaskDestinationModal,

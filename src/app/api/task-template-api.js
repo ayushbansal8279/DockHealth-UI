@@ -2,7 +2,17 @@ import axios from './axios-heydoc';
 
 export function getTemplates() {
   return axios
-    .get(`task/template/getTemplatesForOrganization`)
+    .get(`task/template/getRootTemplatesForOrganization`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+export function getTemplatesForSpecificFolder(taskTemplateIdentifier) {
+  return axios
+    .get(`task/template/findChildTemplates/${taskTemplateIdentifier}`)
     .then(response => {
       return response.data;
     })
@@ -22,9 +32,9 @@ export function getTasksForTemplate(taskTemplateIdentifier) {
     });
 }
 
-export function addTemplate(newTemplate) {
+export function addTemplate(newTemplate, parentTaskTemplateIdentifier) {
   return axios
-    .post(`task/template`, newTemplate)
+    .post(`task/template`, { ...newTemplate, parentTaskTemplateIdentifier })
     .then(response => {
       return response.data;
     })
