@@ -561,10 +561,7 @@ const initializeListDetailsViewHooks = (match, history) => {
           data.task?.creator.userIdentifier !== currentUserIdentifier
         ) {
           refreshTab();
-        } else if (
-          data.eventType === 'UPDATE_TASK' &&
-          data.task.taskIdentifier
-        ) {
+        } else if (data.task.taskIdentifier) {
           actions.refreshAnotherTask(data.task);
         }
       }
