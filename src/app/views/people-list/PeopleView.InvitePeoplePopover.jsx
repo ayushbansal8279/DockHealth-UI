@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Grid, Popover } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { object, string } from 'yup';
@@ -52,7 +52,10 @@ const InvitePeoplePopover = ({
     [toggleInvitePopover],
   );
 
+  const [isInviting, setIsInviting] = useState(false);
+
   const onSubmit = data => {
+    setIsInviting(true);
     dispatch(invitePersonToOrganization(data))
       .then(() => {
         closePopover();
@@ -63,6 +66,7 @@ const InvitePeoplePopover = ({
           ),
         );
         getAllUsers();
+        setIsInviting(false);
       })
       .catch(error => {
         closePopover();
@@ -74,6 +78,7 @@ const InvitePeoplePopover = ({
             error?.message ??
             'Invitation could not be sent, please try again later',
         });
+        setIsInviting(false);
       });
   };
 
@@ -105,7 +110,11 @@ const InvitePeoplePopover = ({
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
           <FormContext {...formMethods}>
-            <OrganizationOwnerForm onSubmit={onSubmit} />
+            <OrganizationOwnerForm
+              onSubmit={onSubmit}
+              isInviting={isInviting}
+              setIsInviting={setIsInviting}
+            />
           </FormContext>
         )}
         {!isOwnerOrAdmin && (

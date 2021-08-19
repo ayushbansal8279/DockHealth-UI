@@ -68,13 +68,16 @@ const ExternalInviteForm = ({
           initialValues={initialValues}
           closeInviteForm={closeInviteForm}
           onSubmit={handleSubmitForm}
+          isInviting={isInviting}
+          setIsInviting={setIsInviting}
         />
       ) : (
         <MemberForm
           initialValues={initialValues}
           closeInviteForm={closeInviteForm}
           onSubmit={handleSubmitForm}
-          disabled={isInviting}
+          isInviting={isInviting}
+          setIsInviting={setIsInviting}
         />
       )}
     </ExternalInviteContainer>
