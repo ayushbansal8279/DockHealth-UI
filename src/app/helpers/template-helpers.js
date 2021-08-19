@@ -1,0 +1,51 @@
+import {
+  pipe,
+  prop,
+  sortWith,
+  ascend,
+  descend,
+  defaultTo,
+  toLower,
+} from 'ramda';
+
+/* eslint-disable import/prefer-default-export */
+
+export const TaskTemplateItemColumn = {
+  NAME: 'NAME',
+  CREATED_BY: 'CREATED_BY',
+  CREATED: 'CREATED',
+  PERMISSIONS: 'PERMISSIONS',
+};
+
+export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
+  [TaskTemplateItemColumn.NAME]: true,
+  [TaskTemplateItemColumn.CREATED_BY]: true,
+  [TaskTemplateItemColumn.CREATED]: true,
+  [TaskTemplateItemColumn.PERMISSIONS]: false,
+};
+
+export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
+
+export const TEMPLATE_TASK_ITEM_SORT_METHODS = {
+  [TaskTemplateItemColumn.NAME]: sortWith([
+    ascend(pipe(prop('name'), defaultTo('~'), toLower)),
+  ]),
+  [TaskTemplateItemColumn.CREATED]: sortWith([
+    ascend(pipe(prop('createdDate'), defaultTo('~'))),
+  ]),
+  [TaskTemplateItemColumn.CREATED_BY]: sortWith([
+    ascend(pipe(prop('createdBy'), defaultTo('~'))),
+  ]),
+};
+
+export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
+  [TaskTemplateItemColumn.NAME]: sortWith([
+    descend(pipe(prop('name'), defaultTo('~'), toLower)),
+  ]),
+  [TaskTemplateItemColumn.CREATED]: sortWith([
+    descend(pipe(prop('createdDate'), defaultTo('~'))),
+  ]),
+  [TaskTemplateItemColumn.CREATED_BY]: sortWith([
+    descend(pipe(prop('createdBy'), defaultTo('~'))),
+  ]),
+};

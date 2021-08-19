@@ -28,6 +28,12 @@ import {
   getTemplates,
   cleanAndPushToBreadcrumbs,
 } from 'actions/task-template-actions';
+import {
+  TEMPLATE_TASK_ITEM_SORT_METHODS,
+  TEMPLATE_TASK_ITEM_SORT_DESC_METHODS,
+} from 'helpers/template-helpers';
+import { identity } from 'ramda';
+import { SortOrderType } from 'helpers/sorting-helper';
 import { TaskTemplateViewContainer } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
@@ -85,6 +91,30 @@ const TaskTemplateView = ({
     });
   };
 
+  const currentSortMethod = useMemo(() => {
+    if (!sort.key) return identity;
+    return TEMPLATE_TASK_ITEM_SORT_METHODS[sort.key];
+  }, [sort.key]);
+
+  const currentSortDescMethod = useMemo(() => {
+    if (!sort.key) return identity;
+    return TEMPLATE_TASK_ITEM_SORT_DESC_METHODS[sort.key];
+  }, [sort.key]);
+
+  const currentSortMethodWithOrder = useMemo(() => {
+    if (sort.order === SortOrderType.DESC) {
+      return currentSortDescMethod;
+    }
+    return currentSortMethod;
+  }, [sort.order, currentSortMethod, currentSortDescMethod]);
+
+  function resetSort() {
+    setSort({
+      key: null,
+      order: null,
+    });
+  }
+
   const folders = useMemo(
     () => taskTemplates.filter(template => template.type === 'FOLDER'),
     [taskTemplates],
@@ -94,10 +124,12 @@ const TaskTemplateView = ({
     [taskTemplates],
   );
   const handleBreadcrumbsRootClick = useCallback(() => {
+    resetSort();
     getAllTemplates();
   }, [getAllTemplates]);
   const handleBreadcrumbsChildClick = useCallback(
     (listBeforeClicked, clickedBreadcrumb) => {
+      resetSort();
       cleanAndPushBreadcrumbs(listBeforeClicked);
       goToFolder(clickedBreadcrumb.taskTemplateFolderIdentifier);
     },
@@ -108,6 +140,7 @@ const TaskTemplateView = ({
     (taskTemplateIdentifier, name) => {
       goToFolder(taskTemplateIdentifier);
       taskTemplateActions.pushToBreadcrumbs(name, taskTemplateIdentifier);
+      resetSort();
     },
     [taskTemplateActions, goToFolder],
   );
@@ -144,16 +177,10 @@ const TaskTemplateView = ({
           <ViewTypeSwitch value={viewType} onChange={setViewType} />
         </Grid>
         <Spacing vertical={4} />
-        <TasksTemplatesHeader
-          sort={sort}
-          onSortChange={handleSortChange}
-          // bulkEditEnabled={bulkEditEnabled}
-          // isGroupSelected={isGroupSelected}
-          // onGroupSelect={handleGroupSelect}
-        />
+        <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
         {!isFetchingTaskTemplates ? (
           <>
-            {folders.map(template => (
+            {currentSortMethodWithOrder(folders).map(template => (
               <TaskTemplateFolder
                 key={template.taskTemplateIdentifier}
                 template={template}
@@ -171,7 +198,7 @@ const TaskTemplateView = ({
                 />
               </TaskTemplateFolder>
             ))}
-            {templates.map(template => (
+            {currentSortMethodWithOrder(templates).map(template => (
               <TaskTemplate
                 key={template.taskTemplateIdentifier}
                 template={template}

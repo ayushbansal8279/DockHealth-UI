@@ -4,7 +4,7 @@ import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import {
   TaskTemplateItemColumn,
   TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG,
-} from 'helpers/task-helpers';
+} from 'helpers/template-helpers';
 
 const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
   const mergedConfig = useMemo(
@@ -39,7 +39,7 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
         <ColumnSortHeader
           id={TaskTemplateItemColumn.CREATED}
           label="Created"
-          width={130}
+          width={200}
           sort={sort}
           onSortChange={onSortChange}
         />

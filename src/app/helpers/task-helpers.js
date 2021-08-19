@@ -108,20 +108,6 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.LIST_NAME]: false,
 };
 
-export const TaskTemplateItemColumn = {
-  NAME: 'NAME',
-  CREATED_BY: 'CREATED_BY',
-  CREATED: 'CREATED',
-  PERMISSIONS: 'PERMISSIONS',
-};
-
-export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
-  [TaskTemplateItemColumn.NAME]: true,
-  [TaskTemplateItemColumn.CREATED_BY]: true,
-  [TaskTemplateItemColumn.CREATED]: true,
-  [TaskTemplateItemColumn.PERMISSIONS]: false,
-};
-
 export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
 
 export const TASK_ITEM_SORT_METHODS = {
