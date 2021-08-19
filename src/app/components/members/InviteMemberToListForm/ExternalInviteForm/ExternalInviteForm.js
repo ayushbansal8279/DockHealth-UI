@@ -42,7 +42,6 @@ const ExternalInviteForm = ({
   const handleSubmitForm = useCallback(
     data => {
       setIsInviting(true);
-
       TaskListApi.invitePersonToTaskList(taskListIdentifier, data)
         .then(() => {
           setIsInviting(false);
@@ -76,8 +75,7 @@ const ExternalInviteForm = ({
           initialValues={initialValues}
           closeInviteForm={closeInviteForm}
           onSubmit={handleSubmitForm}
-          isInviting={isInviting}
-          setIsInviting={setIsInviting}
+          disabled={isInviting}
         />
       )}
     </ExternalInviteContainer>

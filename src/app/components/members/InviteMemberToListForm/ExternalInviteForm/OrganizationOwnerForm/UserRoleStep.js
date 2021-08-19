@@ -14,12 +14,7 @@ import {
   RoleOptionHeaderAdditionalInfo,
 } from './styled';
 
-const UserRoleStep = ({
-  navigateToPreviousStep,
-  disabled,
-  isInviting,
-  setIsInviting,
-}) => {
+const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
@@ -86,14 +81,7 @@ const UserRoleStep = ({
           </Button>
         </Grid>
         <Grid item xs={5}>
-          <Button
-            fullWidth
-            disabled={disabled || isInviting}
-            type="submit"
-            onClick={() => {
-              setIsInviting(true);
-            }}
-          >
+          <Button fullWidth disabled={disabled} type="submit">
             Assign role
           </Button>
         </Grid>

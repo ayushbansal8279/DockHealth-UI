@@ -27,8 +27,6 @@ const OrganizationOwnerForm = ({
   disabled,
   onSubmit,
   closeInviteForm,
-  isInviting,
-  setIsInviting,
 }) => {
   const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_DETAILS);
 
@@ -76,8 +74,6 @@ const OrganizationOwnerForm = ({
               setCurrentFormStep(FormStep.USER_DETAILS)
             }
             disabled={disabled}
-            isInviting={isInviting}
-            setIsInviting={setIsInviting}
           />
         )}
         <Grid container direction="row" justify="center">

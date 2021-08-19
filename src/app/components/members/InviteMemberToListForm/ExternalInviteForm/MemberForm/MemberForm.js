@@ -17,13 +17,7 @@ const validationSchema = object().shape({
     .email('Please enter a valid email address'),
 });
 
-const MemberForm = ({
-  initialValues,
-  closeInviteForm,
-  onSubmit,
-  isInviting,
-  setIsInviting,
-}) => {
+const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
   const formContext = useForm({
     validationSchema,
     defaultValues: initialValues,
@@ -96,14 +90,7 @@ const MemberForm = ({
               </Button>
             </Grid>
             <Grid item xs={4}>
-              <Button
-                fullWidth
-                type="submit"
-                disabled={isInviting}
-                onClick={() => {
-                  setIsInviting(true);
-                }}
-              >
+              <Button fullWidth type="submit" disabled={disabled}>
                 Invite
               </Button>
             </Grid>
