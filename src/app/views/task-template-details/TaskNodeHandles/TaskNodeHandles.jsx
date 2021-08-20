@@ -9,8 +9,7 @@ import {
 } from 'helpers/task-template-builder-helpers';
 import { AddIcon } from './styled';
 
-function validateConnection({ source, target, sourceHandle, targetHandle }) {
-  console.log('connection', sourceHandle, targetHandle);
+function validateConnection({ source, target }) {
   if (source === target) return false;
 
   return true;

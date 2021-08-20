@@ -953,12 +953,24 @@ export function updateWorkflowStatusForTasks(statusIdentifier, dataToUpdate) {
   };
 }
 
-export function addTaskHardDependency(
-  sourceTaskIdentifier,
-  targetTaskIdentifier,
-) {
+export function addTaskDependencyLink(sourceTask, targetTaskIdentifier) {
   return {
-    type: ActionTypesSaga.ADD_TASK_HARD_DEPENDENCY,
+    type: ActionTypes.ADD_TASK_DEPENDENCY_LINK,
+    sourceTask,
+    targetTaskIdentifier,
+  };
+}
+
+export function updateTasksLink(link) {
+  return {
+    type: ActionTypes.UPDATE_TASKS_LINK,
+    link,
+  };
+}
+
+export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  return {
+    type: ActionTypes.DELETE_TASKS_LINK,
     sourceTaskIdentifier,
     targetTaskIdentifier,
   };

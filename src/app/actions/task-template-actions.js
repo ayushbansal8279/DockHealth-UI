@@ -126,15 +126,6 @@ export function updateTaskPositionInLayout(taskIdentifier, position) {
   };
 }
 
-export function linkTasks(source, target, isDependent = false) {
-  return {
-    type: ActionTypes.LINK_TASKS,
-    source,
-    target,
-    isDependent,
-  };
-}
-
 export function addTaskOutcome(outcomeName, taskIdentifier, link = null) {
   return {
     type: ActionTypes.ADD_TASK_OUTCOME,
@@ -157,17 +148,10 @@ export function updateTaskOutcome(
   };
 }
 
-export function updateTasksLink(link) {
+export function linkTasks(source, target) {
   return {
-    type: ActionTypes.UPDATE_TASKS_LINK,
-    link,
-  };
-}
-
-export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
-  return {
-    type: ActionTypes.DELETE_TASKS_LINK,
-    sourceTaskIdentifier,
-    targetTaskIdentifier,
+    type: ActionTypes.LINK_TASKS,
+    source,
+    target,
   };
 }

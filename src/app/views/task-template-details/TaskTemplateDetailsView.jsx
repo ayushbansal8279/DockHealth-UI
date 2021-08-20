@@ -3,11 +3,11 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { compose, isEmpty, isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
+import { deleteTasksLink } from 'actions/task-actions';
 import {
   addNewDecisionTaskElement,
   addNewTaskElement,
   deleteNewTaskElement,
-  deleteTasksLink,
   linkTasks,
   saveTaskTemplateLayout,
   selectTaskTemplate,
@@ -52,8 +52,6 @@ const linkTypes = {
 
 const TaskTemplateDetailsView = () => {
   const fitViewFunctionReference = useRef(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedElement, setSelectedElement] = useState(null);
   const [elements, setElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const { identifier } = useParams();
@@ -171,9 +169,6 @@ const TaskTemplateDetailsView = () => {
           ))}
         </ElementsSidebar>
         <Box flex={1}>
-          {/* {selectedElement && (
-            <ContextMenu>Selected element: {selectedElement.id}</ContextMenu>
-          )} */}
           {mergedElementsWithActions && (
             <ReactFlow
               elements={mergedElementsWithActions}
@@ -183,7 +178,6 @@ const TaskTemplateDetailsView = () => {
               edgeTypes={linkTypes}
               onElementsRemove={handleRemoveElement}
               deleteKeyCode={46}
-              onSelectionChange={e => setSelectedElement(e?.[0] || null)}
               onConnectStart={(_, { nodeId }) => setDraggedEdgeSourceId(nodeId)}
               onConnectEnd={() => setDraggedEdgeSourceId(null)}
               onNodeDragStop={handleNodeDragStop}

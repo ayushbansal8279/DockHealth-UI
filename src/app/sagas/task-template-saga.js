@@ -347,7 +347,7 @@ function* updateTaskPositionInLayout({ taskIdentifier, position }) {
   }
 }
 
-function* linkTasks({ source, target, isDependent }) {
+function* linkTasks({ source, target }) {
   try {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
@@ -372,12 +372,9 @@ function* linkTasks({ source, target, isDependent }) {
 
     if (targetTask && sourceTask && !checkIfTasksAreLinked()) {
       const { sourceTaskIdentifier, targetTaskIdentifier } = yield call(
-        TaskTemplateApi.createTasksLink,
+        TaskApi.createTasksLink,
         source.id,
         target.id,
-        {
-          isDependent,
-        },
       );
 
       if (source.handle || target.handle) {
@@ -406,37 +403,6 @@ function* linkTasks({ source, target, isDependent }) {
   }
 }
 
-function* updateTasksLink({ link }) {
-  const { sourceTaskIdentifier, targetTaskIdentifier } = link;
-  try {
-    yield call(TaskTemplateApi.updateTasksLink, link);
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-    yield all([
-      put(TaskActions.refreshTask(sourceTaskIdentifier)),
-      put(TaskActions.refreshTask(targetTaskIdentifier)),
-    ]);
-  } catch {
-    yield put(showGlobalErrorAlert());
-  }
-}
-
-function* deleteTasksLink({ sourceTaskIdentifier, targetTaskIdentifier }) {
-  try {
-    yield call(
-      TaskTemplateApi.deleteTasksLink,
-      sourceTaskIdentifier,
-      targetTaskIdentifier,
-    );
-    yield put(showGlobalAlert(AlertMessages.DELETED));
-    yield all([
-      put(TaskActions.refreshTask(sourceTaskIdentifier)),
-      put(TaskActions.refreshTask(targetTaskIdentifier)),
-    ]);
-  } catch {
-    yield put(showGlobalErrorAlert());
-  }
-}
-
 function* addTaskOutcome({ outcomeName, taskIdentifier, link }) {
   try {
     const createdOutcome = yield call(
@@ -446,15 +412,17 @@ function* addTaskOutcome({ outcomeName, taskIdentifier, link }) {
     );
 
     if (link) {
-      yield put(TaskTemplateApi.updateTasksLink, {
+      yield call(TaskApi.updateTasksLink, {
         ...link,
         decisionOutcome: createdOutcome.taskOutcomeIdentifier,
       });
     }
 
-    yield put(showGlobalAlert(AlertMessages.CREATED));
-    yield put(TaskActions.refreshTask(taskIdentifier));
-  } catch {
+    yield all([
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put(TaskActions.refreshTask(taskIdentifier)),
+    ]);
+  } catch (error) {
     yield put(showGlobalErrorAlert());
   }
 }
@@ -468,9 +436,10 @@ function* updateTaskOutcome({
     yield call(TaskTemplateApi.updateTaskOutcome, taskOutcomeIdentifier, {
       name: outcomeName,
     });
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-
-    yield put(TaskActions.refreshTask(taskIdentifier));
+    yield all([
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(TaskActions.refreshTask(taskIdentifier)),
+    ]);
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -500,6 +469,4 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ActionTypes.LINK_TASKS, linkTasks);
   yield takeEvery(ActionTypes.ADD_TASK_OUTCOME, addTaskOutcome);
   yield takeEvery(ActionTypes.UPDATE_TASK_OUTCOME, updateTaskOutcome);
-  yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
-  yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
 }

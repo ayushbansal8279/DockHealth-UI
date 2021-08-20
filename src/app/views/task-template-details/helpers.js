@@ -36,7 +36,7 @@ export function mapLayoutToElements(layout, tasks) {
             data: { link },
           };
 
-          if (t.intentType === LinkType.DECISION) {
+          if (t.intentType === NodeType.DECISION) {
             const outcome =
               t.taskOutcomes?.find(
                 ({ taskOutcomeIdentifier }) =>

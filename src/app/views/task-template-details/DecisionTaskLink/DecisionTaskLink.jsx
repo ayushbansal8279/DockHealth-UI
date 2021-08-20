@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { deleteTasksLink } from 'actions/task-actions';
 import {
   addTaskOutcome,
-  deleteTasksLink,
   updateTaskOutcome,
 } from 'actions/task-template-actions';
 import useBoolean from 'hooks/useBoolean';

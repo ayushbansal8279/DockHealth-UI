@@ -1,17 +1,15 @@
-import { takeEvery, put, call } from 'redux-saga/effects';
+import { takeEvery, put, call, all } from 'redux-saga/effects';
 import { pluck, move } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as ActionTypes from 'actions/action-types';
 import * as TaskApi from 'api/task-api';
+import * as TaskActions from 'actions/task-actions';
 import {
   REORDER_SUBTASKS,
   CHOOSE_DECISION_TASK_OPTION,
-  ADD_TASK_HARD_DEPENDENCY,
 } from 'actions/action-types-saga';
 import { getTemplateBundle } from 'api/template-bundle-api';
-import { addTaskDependency } from 'api/task-api';
-import { refreshTask } from 'actions/task-actions';
 
 function* reorderSubtasks(payload) {
   const {
@@ -82,15 +80,59 @@ function* chooseTaskOutcome({
   }
 }
 
-function* addTaskHardDependency({
-  sourceTaskIdentifier,
-  targetTaskIdentifier,
-}) {
+function* addTaskDependencyLink({ sourceTask, targetTaskIdentifier }) {
   try {
-    yield call(addTaskDependency, sourceTaskIdentifier, targetTaskIdentifier, {
-      isDependent: true,
-    });
-    yield put(refreshTask(targetTaskIdentifier));
+    const link = sourceTask.taskLinks?.find(
+      t => t.targetTaskIdentifier === targetTaskIdentifier,
+    );
+    if (link) {
+      yield put(TaskActions.updateTasksLink({ ...link, isDependent: true }));
+    } else {
+      yield call(
+        TaskApi.addTaskDependencyLink,
+        sourceTask.identifier,
+        targetTaskIdentifier,
+        {
+          isDependent: true,
+        },
+      );
+      yield all([
+        put(showGlobalAlert(AlertMessages.CREATED)),
+        put(TaskActions.refreshTask(targetTaskIdentifier)),
+        put(TaskActions.refreshTask(sourceTask.identifier)),
+      ]);
+    }
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* updateTasksLink({ link }) {
+  const { sourceTaskIdentifier, targetTaskIdentifier } = link;
+  try {
+    yield call(TaskApi.updateTasksLink, link);
+    yield all([
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(TaskActions.refreshTask(sourceTaskIdentifier)),
+      put(TaskActions.refreshTask(targetTaskIdentifier)),
+    ]);
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* deleteTasksLink({ sourceTaskIdentifier, targetTaskIdentifier }) {
+  try {
+    yield call(
+      TaskApi.deleteTasksLink,
+      sourceTaskIdentifier,
+      targetTaskIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.DELETED)),
+      put(TaskActions.refreshTask(sourceTaskIdentifier)),
+      put(TaskActions.refreshTask(targetTaskIdentifier)),
+    ]);
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -98,6 +140,8 @@ function* addTaskHardDependency({
 
 export default function* watchTask() {
   yield takeEvery(REORDER_SUBTASKS, reorderSubtasks);
+  yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
+  yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
+  yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
   yield takeEvery(CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
-  yield takeEvery(ADD_TASK_HARD_DEPENDENCY, addTaskHardDependency);
 }

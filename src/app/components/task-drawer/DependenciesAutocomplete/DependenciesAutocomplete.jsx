@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import useBoolean from 'hooks/useBoolean';
 import { showGlobalErrorAlert } from 'alert/actions';
-import { addTaskHardDependency } from 'actions/task-actions';
+import { addTaskDependencyLink } from 'actions/task-actions';
 import { getAvailableTaskDependencies } from 'api/task-api';
 import { prop } from 'ramda';
 import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
@@ -36,14 +36,15 @@ const DependenciesAutocomplete = ({ taskIdentifier }) => {
   };
 
   const handleSelection = (_, selectedValue) => {
-    dispatch(addTaskHardDependency(selectedValue.id, taskIdentifier));
+    dispatch(addTaskDependencyLink(selectedValue.task, taskIdentifier));
   };
 
   const options = useMemo(
     () =>
-      availableDependencies?.map(({ identifier, description }) => ({
-        id: identifier,
-        label: description,
+      availableDependencies?.map(task => ({
+        id: task.identifier,
+        label: task.description,
+        task,
       })) || [],
     [availableDependencies],
   );
