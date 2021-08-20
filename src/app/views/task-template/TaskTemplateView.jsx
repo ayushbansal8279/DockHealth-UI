@@ -34,14 +34,15 @@ import {
 } from 'helpers/template-helpers';
 import { identity } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
-import { TaskTemplateViewContainer } from './styled';
+import moment from 'moment';
+import { TaskTemplateViewContainer, HeaderSelectContainer } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
 import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
 import TaskTemplateBulkEditContainer from './TaskTemplateBulkEditContainer/TaskTemplateBulkEditContainer';
 import TaskTemplateHeader from './TaskTemplateHeader/TaskTemplateHeader';
 import TaskTemplateFolder from './TaskTemplateFolder/TaskTemplateFolder';
-import TemplateBreadcumbs from './TaskTemplateBreadcrumbs';
+import TemplateBreadcrumbs from './TaskTemplateBreadcrumbs';
 
 const BULK_EDIT_OPTIONS_CONFIG = {
   [BULK_EDIT_MOVE_OPTION]: false,
@@ -167,11 +168,15 @@ const TaskTemplateView = ({
             <Spacing vertical={4} />
           </>
         )}
-        <TemplateBreadcumbs
+        <TemplateBreadcrumbs
           onRootClick={handleBreadcrumbsRootClick}
           onChildClick={handleBreadcrumbsChildClick}
         />
         <Grid container justify="flex-end" alignItems="center">
+          <HeaderSelectContainer
+            width="200px"
+            options={[{ label: 'test', value: 'test' }]}
+          />
           <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
           <AddButton onClick={handleCreateTemplateFolder}>Add Folder</AddButton>
           <ViewTypeSwitch value={viewType} onChange={setViewType} />
@@ -192,8 +197,10 @@ const TaskTemplateView = ({
                 }
               >
                 <TaskTemplateHeader
-                  createdBy="Test User"
-                  createdDate="3 days ago"
+                  createdBy={template.creator.userName}
+                  createdDate={moment(template.createdDateTime).format(
+                    'MM/DD/YYYY',
+                  )}
                   taskTemplate={template}
                 />
               </TaskTemplateFolder>
@@ -205,8 +212,10 @@ const TaskTemplateView = ({
                 isFullView={viewType === ViewType.FULL_VIEW}
               >
                 <TaskTemplateHeader
-                  createdBy="Test User"
-                  createdDate="3 days ago"
+                  createdBy={template.creator.userName}
+                  createdDate={moment(template.createdDateTime).format(
+                    'MM/DD/YYYY',
+                  )}
                   taskTemplate={template}
                 />
               </TaskTemplate>

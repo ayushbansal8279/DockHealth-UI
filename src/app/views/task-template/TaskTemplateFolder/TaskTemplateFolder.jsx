@@ -50,28 +50,10 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
           nameInputReference.current?.focus();
         },
       },
-      {
-        name: 'Duplicate Folder',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('AttachmentsDuplicate', {
-              confirm: () =>
-                dispatch(
-                  TaskTemplateActions.duplicateTemplate(
-                    taskTemplateIdentifier,
-                    true,
-                  ),
-                ),
-              skip: () =>
-                dispatch(
-                  TaskTemplateActions.duplicateTemplate(
-                    taskTemplateIdentifier,
-                    false,
-                  ),
-                ),
-            }),
-          ),
-      },
+      // {
+      //   name: 'Move to folder',
+      //   onClick: () => {},
+      // },
       {
         name: 'Delete Folder',
         color: palette.oPlusRed,

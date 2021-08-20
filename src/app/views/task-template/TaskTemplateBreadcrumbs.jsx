@@ -11,7 +11,7 @@ const BreadcrumbContainer = styled.div`
   text-align: left;
 `;
 
-const TemplateBreadcumbs = ({ onRootClick, onChildClick }) => {
+const TemplateBreadcrumbs = ({ onRootClick, onChildClick }) => {
   const breadcrumbs = useSelector(taskTemplateBreadcrumbsSelector);
   const handleChildClick = useCallback(
     (index, breadcrumb, event) => {
@@ -58,4 +58,4 @@ const TemplateBreadcumbs = ({ onRootClick, onChildClick }) => {
   ) : null;
 };
 
-export default TemplateBreadcumbs;
+export default TemplateBreadcrumbs;

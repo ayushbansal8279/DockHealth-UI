@@ -1,6 +1,7 @@
 import {
   pipe,
   prop,
+  path,
   sortWith,
   ascend,
   descend,
@@ -31,10 +32,10 @@ export const TEMPLATE_TASK_ITEM_SORT_METHODS = {
     ascend(pipe(prop('name'), defaultTo('~'), toLower)),
   ]),
   [TaskTemplateItemColumn.CREATED]: sortWith([
-    ascend(pipe(prop('createdDate'), defaultTo('~'))),
+    ascend(pipe(prop('createdDateTime'), defaultTo('~'))),
   ]),
   [TaskTemplateItemColumn.CREATED_BY]: sortWith([
-    ascend(pipe(prop('createdBy'), defaultTo('~'))),
+    ascend(pipe(path(['creator', 'userName']), defaultTo('~'))),
   ]),
 };
 
@@ -43,9 +44,9 @@ export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
     descend(pipe(prop('name'), defaultTo('~'), toLower)),
   ]),
   [TaskTemplateItemColumn.CREATED]: sortWith([
-    descend(pipe(prop('createdDate'), defaultTo('~'))),
+    descend(pipe(prop('createdDateTime'), defaultTo('~'))),
   ]),
   [TaskTemplateItemColumn.CREATED_BY]: sortWith([
-    descend(pipe(prop('createdBy'), defaultTo('~'))),
+    descend(pipe(path(['creator', 'userName']), defaultTo('~'))),
   ]),
 };
