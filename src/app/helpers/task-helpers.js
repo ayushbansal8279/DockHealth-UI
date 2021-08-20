@@ -101,6 +101,7 @@ export const TaskItemColumn = {
   PATIENT: 'PATIENT',
   SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
+  DECISION_SELECT: 'DECISION_SELECT',
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
@@ -112,6 +113,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
+  [TaskItemColumn.DECISION_SELECT]: true,
 };
 
 export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];

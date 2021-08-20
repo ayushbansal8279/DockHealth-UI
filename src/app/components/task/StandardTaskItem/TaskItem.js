@@ -17,6 +17,7 @@ import {
   openQuickAddSubtask,
   selectTask,
   storeAsCurrentTask,
+  chooseTaskDecisionOutcome,
 } from 'actions/task-actions';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
@@ -60,6 +61,7 @@ import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
 import TaskItemList from './TaskItemComponents/TaskItemList';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
+import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
 
 const STANDARD_TASK_HEIGHT = 35;
 const EXTENDED_TASK_HEIGHT = 50;
@@ -127,8 +129,15 @@ const TaskItem = ({
   const isCompleted = task.status === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
   const isSubtask = !!parentTaskIdentifier;
+  const isDecisionTask = task.intentType === 'DECISION';
+  const isDecisionSelected = task.taskOutcomes?.reduce(
+    (accumulator, currentValue) => accumulator || currentValue.isSelected,
+    false,
+  );
   const isTaskStatusTogglingDisabled =
-    isTemplateTask || (isSubtask && isCompletedGroup);
+    isTemplateTask ||
+    (isSubtask && isCompletedGroup) ||
+    (isDecisionTask && !isDecisionSelected);
 
   const {
     matchAssignedTo,
@@ -278,6 +287,7 @@ const TaskItem = ({
 
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
+  const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
 
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
@@ -307,6 +317,7 @@ const TaskItem = ({
     dueDateIsInConfig,
     assignedIsInConfig,
     listNameIsInConfig,
+    decisionInConfig,
   } = useMemo(() => {
     return {
       descriptionIsInCofnig: checkColumnIsInConfig(
@@ -339,6 +350,10 @@ const TaskItem = ({
       ),
       listNameIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.LIST_NAME,
+        mergedTaskItemConfig,
+      ),
+      decisionInConfig: checkColumnIsInConfig(
+        TaskItemColumn.DECISION_SELECT,
         mergedTaskItemConfig,
       ),
     };
@@ -402,6 +417,15 @@ const TaskItem = ({
               />
             )}
           </MainStandardTaskItemCell>
+          {decisionInConfig && showDecisionRow && (
+            <TaskItemDecision
+              outcomes={task.taskOutcomes}
+              dispatch={dispatch}
+              onSelect={chooseTaskDecisionOutcome}
+              task={task}
+              templateBundleIdentifier={templateBundleIdentifier}
+            />
+          )}
           {subtasksIsInConfig && (
             <TaskItemSubtasks
               isSubtask={isSubtask}
