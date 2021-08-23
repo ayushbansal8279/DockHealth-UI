@@ -35,7 +35,7 @@ import {
 import { identity } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
-import { TaskTemplateViewContainer, HeaderSelectContainer } from './styled';
+import { TaskTemplateViewContainer } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
 import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
@@ -173,10 +173,6 @@ const TaskTemplateView = ({
           onChildClick={handleBreadcrumbsChildClick}
         />
         <Grid container justify="flex-end" alignItems="center">
-          <HeaderSelectContainer
-            width="200px"
-            options={[{ label: 'test', value: 'test' }]}
-          />
           <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
           <AddButton onClick={handleCreateTemplateFolder}>Add Folder</AddButton>
           <ViewTypeSwitch value={viewType} onChange={setViewType} />

@@ -15,7 +15,10 @@ import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
+import {
+  taskTemplateDetailsSelector,
+  parentFolderIdSelector,
+} from 'selectors/task-template-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
@@ -26,6 +29,8 @@ import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkelet
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { TaskItemColumn } from 'helpers/task-helpers';
+import { moveTemplate } from 'actions/task-template-actions';
+import * as ActionTypes from 'actions/action-types';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -55,6 +60,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   const dispatch = useDispatch();
   const { isOpen, isFetching, tasks } =
     useSelector(taskTemplateDetailsSelector(taskTemplateIdentifier)) || {};
+  const mainListId = useSelector(parentFolderIdSelector);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -71,6 +77,31 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           // eslint-disable-next-line no-unused-expressions
           nameInputReference.current?.focus();
         },
+      },
+      {
+        name: 'Move to folder',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('SelectWorkflowDestination', {
+              confirmText: 'Move',
+              confirm: parentTaskTemplateIdentifier => {
+                dispatch(
+                  moveTemplate({
+                    parentTaskTemplateIdentifier,
+                    taskTemplateIdentifier,
+                  }),
+                );
+              },
+              onAddFolderCallback: createdFolder => {
+                if (mainListId === createdFolder.parentTaskTemplateIdentifier) {
+                  dispatch({
+                    type: ActionTypes.ADD_TASK_TEMPLATE,
+                    template: createdFolder,
+                  });
+                }
+              },
+            }),
+          ),
       },
       {
         name: 'Duplicate Workflow',
@@ -108,7 +139,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           ),
       },
     ],
-    [taskTemplateIdentifier, dispatch, nameInputReference],
+    [taskTemplateIdentifier, dispatch, nameInputReference, mainListId],
   );
 
   const handleNameInputKeyDown = useCallback(

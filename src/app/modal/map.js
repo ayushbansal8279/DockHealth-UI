@@ -47,6 +47,7 @@ import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeSc
 import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
 import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
 import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
+import SelectWorkflowDestinationModal from './components/SelectWorkflowDestinationModal/SelectWorkflowDestinationModal';
 import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
 import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
 import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
@@ -105,6 +106,7 @@ const MODAL_MAP = {
   DeleteTemplate: DeleteTemplateModal,
   SelectTaskDestination: SelectTaskDestinationModal,
   SelectDestination: SelectDestinationModal,
+  SelectWorkflowDestination: SelectWorkflowDestinationModal,
   AssignPatient: AssignPatientModal,
   UnassignPatient: UnassignPatientModal,
   EditPatientList: EditPatientListModal,

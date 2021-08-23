@@ -50,10 +50,6 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
           nameInputReference.current?.focus();
         },
       },
-      // {
-      //   name: 'Move to folder',
-      //   onClick: () => {},
-      // },
       {
         name: 'Delete Folder',
         color: palette.oPlusRed,

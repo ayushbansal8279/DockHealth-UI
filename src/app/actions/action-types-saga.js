@@ -10,6 +10,7 @@ export const FILTER__LIST_DETAILS_TASKS = '@@saga/FILTER__LIST_DETAILS_TASKS';
 export const APPLY_TASK_TEMPLATE = '@@saga/APPLY_TASK_TEMPLATE';
 
 // Task templates
+export const MOVE_TASK_TEMPLATE = '@@saga/MOVE_TASK_TEMPLATE';
 export const ADD_TASK_TEMPLATE = '@@saga/ADD_TASK_TEMPLATE';
 export const ADD_TASK_TEMPLATE_FOLDER = '@@saga/ADD_TASK_TEMPLATE_FOLDER';
 export const GO_TO_TASK_TEMPLATE_FOLDER = '@@saga/GO_TO_TASK_TEMPLATE_FOLDER';

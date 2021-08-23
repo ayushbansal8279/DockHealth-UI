@@ -2,6 +2,19 @@
 import * as ActionTypes from 'actions/action-types';
 import * as ActionTypesSaga from './action-types-saga';
 
+export function moveTemplate({
+  parentTaskTemplateIdentifier,
+  taskTemplateIdentifier,
+}) {
+  return {
+    type: ActionTypesSaga.MOVE_TASK_TEMPLATE,
+    payload: {
+      parentTaskTemplateIdentifier,
+      taskTemplateIdentifier,
+    },
+  };
+}
+
 export function addTemplate(template) {
   return {
     type: ActionTypesSaga.ADD_TASK_TEMPLATE,
@@ -34,10 +47,10 @@ export function cleanBreadcrumbs() {
   };
 }
 
-export function addTemplateFolder(template) {
+export function addTemplateFolder(template, parentIdentifier = null) {
   return {
     type: ActionTypesSaga.ADD_TASK_TEMPLATE_FOLDER,
-    template: { ...template, type: 'FOLDER' },
+    template: { ...template, parentIdentifier, type: 'FOLDER' },
   };
 }
 

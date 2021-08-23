@@ -10,6 +10,7 @@ import {
   ADD_TASK_TO_TEMPLATE,
   RELOAD_OPENED_TEMPLATE_TASKS,
   GO_TO_TASK_TEMPLATE_FOLDER,
+  MOVE_TASK_TEMPLATE,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -32,6 +33,29 @@ import {
   allTemplateDetailsSelector,
   parentFolderIdSelector,
 } from 'selectors/task-template-selectors';
+
+function* moveTemplates({
+  payload: { parentTaskTemplateIdentifier, taskTemplateIdentifier },
+}) {
+  try {
+    const parentId = yield select(parentFolderIdSelector);
+    if (parentTaskTemplateIdentifier !== parentId) {
+      yield call(TaskTemplateApi.moveTemplate, {
+        parentTaskTemplateIdentifier,
+        taskTemplateIdentifier,
+      });
+      yield put({
+        type: ActionTypes.DELETE_TASK_TEMPLATE,
+        taskTemplateIdentifier,
+      });
+    }
+    yield put(showGlobalAlert(AlertMessages.MOVED));
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATES_ERROR,
+    });
+  }
+}
 
 function* getTemplates() {
   try {
@@ -89,13 +113,13 @@ function* getTaskTemplatesFolder({
   }
 }
 
-function* addTemplate({ template }) {
+function* addTemplate({ template, parentIdentifier = null }) {
   try {
     const parentId = yield select(parentFolderIdSelector);
     const createdTemplate = yield call(
       TaskTemplateApi.addTemplate,
       template,
-      parentId,
+      parentIdentifier || parentId,
     );
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE,
@@ -305,6 +329,7 @@ function* reloadOpenedTemplateTasks() {
 }
 
 export default function* watchTaskTemplate() {
+  yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
   yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ADD_TASK_TEMPLATE_FOLDER, addTemplate);
