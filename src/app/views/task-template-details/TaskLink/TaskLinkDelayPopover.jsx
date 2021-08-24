@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, ClickAwayListener, Paper } from '@material-ui/core';
+import { Box, Popover } from '@material-ui/core';
 import { updateTasksLink } from 'actions/task-actions';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
@@ -11,7 +11,7 @@ import { DELAY_PERIOD_UNIT_OPTIONS, DelayPeriodUnit } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
 const TaskLinkDelayPopover = props => {
-  const { link, onClose } = props;
+  const { anchorEl, link, onClose } = props;
   const dispatch = useDispatch();
   const formMethods = useForm({
     mode: 'onSubmit',
@@ -43,6 +43,7 @@ const TaskLinkDelayPopover = props => {
     dispatch(
       updateTasksLink({
         ...link,
+        isDependent: true,
         ...delayPeriodData,
       }),
     );
@@ -50,65 +51,73 @@ const TaskLinkDelayPopover = props => {
   };
 
   return (
-    <ClickAwayListener onClickAway={onClose}>
-      <Paper>
-        <FormContext {...formMethods}>
-          <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
-            <Box py={1} px={2}>
-              <Title>Time till next task</Title>
-              <Box p={1} />
-              <Box width="100%" display="flex" justifyContent="space-between">
-                <SecondaryNumberInput
-                  name="delayPeriod"
-                  value={delayPeriodValue}
-                  onChange={newValue => {
-                    if (newValue === '' || Number(newValue) > 0) {
-                      setValue(
-                        'delayPeriod',
-                        newValue === '' ? '' : Number(newValue),
-                      );
-                    }
-                  }}
-                  onBlur={() => {
-                    if (delayPeriodValue === '') setValue('delayPeriod', 1);
-                  }}
-                />
-                <SecondaryDropdownInput
-                  name="delayPeriodUnit"
-                  placeholder="Select unit"
-                  onSelect={newValue => setValue('delayPeriodUnit', newValue)}
-                  width={207}
-                  options={DELAY_PERIOD_UNIT_OPTIONS}
-                />
-              </Box>
-              <Box p={1} />
-              <Box width="100%" display="flex" alignItems="center">
-                <Checkbox
-                  isChecked={delayIsBusinessDaysValue}
-                  onClick={() =>
-                    setValue('delayIsBusinessDays', !delayIsBusinessDaysValue)
+    <Popover
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open
+      onClose={onClose}
+    >
+      <FormContext {...formMethods}>
+        <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
+          <Box py={1} px={2}>
+            <Title>Time till next task</Title>
+            <Box p={1} />
+            <Box width="100%" display="flex" justifyContent="space-between">
+              <SecondaryNumberInput
+                name="delayPeriod"
+                value={delayPeriodValue}
+                onChange={newValue => {
+                  if (newValue === '' || Number(newValue) > 0) {
+                    setValue(
+                      'delayPeriod',
+                      newValue === '' ? '' : Number(newValue),
+                    );
                   }
-                />
-                <Box p={0.5} />
-                <CheckboxLabel>Include business</CheckboxLabel>
-              </Box>
+                }}
+                onBlur={() => {
+                  if (delayPeriodValue === '') setValue('delayPeriod', 1);
+                }}
+              />
+              <SecondaryDropdownInput
+                name="delayPeriodUnit"
+                placeholder="Select unit"
+                onSelect={newValue => setValue('delayPeriodUnit', newValue)}
+                width={207}
+                options={DELAY_PERIOD_UNIT_OPTIONS}
+              />
             </Box>
-            <PopoverBottomBar>
-              <PopoverBottomBar.Button
-                type="button"
-                theme="light"
-                onClick={onClose}
-              >
-                Close
-              </PopoverBottomBar.Button>
-              <PopoverBottomBar.Button type="submit">
-                Ok
-              </PopoverBottomBar.Button>
-            </PopoverBottomBar>
-          </DelayPeriodForm>
-        </FormContext>
-      </Paper>
-    </ClickAwayListener>
+            <Box p={1} />
+            <Box width="100%" display="flex" alignItems="center">
+              <Checkbox
+                isChecked={delayIsBusinessDaysValue}
+                onClick={() =>
+                  setValue('delayIsBusinessDays', !delayIsBusinessDaysValue)
+                }
+              />
+              <Box p={0.5} />
+              <CheckboxLabel>Include business</CheckboxLabel>
+            </Box>
+          </Box>
+          <PopoverBottomBar>
+            <PopoverBottomBar.Button
+              type="button"
+              theme="light"
+              onClick={onClose}
+            >
+              Close
+            </PopoverBottomBar.Button>
+            <PopoverBottomBar.Button type="submit">Ok</PopoverBottomBar.Button>
+          </PopoverBottomBar>
+        </DelayPeriodForm>
+      </FormContext>
+    </Popover>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { isNil } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
@@ -42,6 +42,7 @@ const TaskLink = props => {
     sourcePosition,
     targetPosition,
   });
+  const labelWrapperReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const menuClasses = useMenuStyles();
   const dispatch = useDispatch();
@@ -86,7 +87,7 @@ const TaskLink = props => {
         requiredExtensions="http://www.w3.org/1999/xhtml"
         style={{ overflow: 'visible' }}
       >
-        <LabelsWrapper>
+        <LabelsWrapper ref={labelWrapperReference}>
           {delayOptionsVisible && (
             <DelayPeriodLabel onClick={openPopover}>
               {delayPeriod} {delayPeriodUnit.toLowerCase()}
@@ -100,7 +101,11 @@ const TaskLink = props => {
           )}
           {isPopoverOpen && (
             <DelayPeriodPopoverWrapper>
-              <TaskLinkDelayPopover link={link} onClose={closePopover} />
+              <TaskLinkDelayPopover
+                anchorEl={labelWrapperReference.current}
+                link={link}
+                onClose={closePopover}
+              />
             </DelayPeriodPopoverWrapper>
           )}
           {selected && (
