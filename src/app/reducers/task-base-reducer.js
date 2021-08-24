@@ -9,7 +9,6 @@ import {
   UPDATE_TASK_SUCCESS,
   SET_COMPLETE_STATUS,
   UPDATE_TASK_COMMENT_SUCCESS,
-  REFRESH_ANOTHER_TASK_SUCCESS,
   OPEN_QUICK_ADD_SUBTASK_INPUT,
   CLOSE_QUICK_ADD_SUBTASK_INPUT,
   REQUEST_LOAD_SUBTASKS,
@@ -214,23 +213,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
               isFetchingSubTasks: false,
             }
           : t;
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case REFRESH_ANOTHER_TASK_SUCCESS: {
-      const { task } = action;
-
-      const updateTaskFromAction = t => {
-        if (t.taskIdentifier === task.taskIdentifier) {
-          return {
-            ...t,
-            ...task,
-          };
-        }
-
-        return updateSubtasksInTask(task, task.taskIdentifier, t);
-      };
 
       return updateStateCallback(state, updateTaskFromAction);
     }

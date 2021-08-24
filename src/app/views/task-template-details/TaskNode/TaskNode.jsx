@@ -1,0 +1,108 @@
+import React from 'react';
+import { Box, IconButton } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { openModal, closeModal } from 'modal/actions';
+import { deleteTask, storeAsCurrentTask } from 'actions/task-actions';
+import { openDrawer } from 'actions/task-drawer-actions';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
+import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
+import {
+  OptionsContainer,
+  TaskInfoWrapper,
+  TaskDescription,
+  ContentWrapper,
+  SubtasksLabel,
+} from './styled';
+
+const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
+  const { task } = data || {};
+  const {
+    description,
+    labels,
+    updatedLabel,
+    attachments,
+    updatedAttachment,
+    comments,
+    updatedComment,
+    subtasks,
+  } = task || {};
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    const modalProps = {
+      isSubtask: !!task.parentTaskIdentifier,
+      confirm: () => {
+        dispatch(deleteTask(task));
+        dispatch(closeModal());
+      },
+    };
+
+    dispatch(openModal('DeleteTask', modalProps));
+  };
+
+  const handleEdit = () => {
+    dispatch(storeAsCurrentTask(task));
+    dispatch(openDrawer());
+  };
+
+  return (
+    <TaskNodeHandles
+      isConnectable={isConnectable}
+      targetVisible={data.draggedEdgeSourceId}
+    >
+      <TaskNodeWrapper selected={selected} type={type}>
+        <ContentWrapper>
+          <OptionsContainer>
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon fontSize="small" color="inherit" />
+            </IconButton>
+            <IconButton onClick={handleEdit}>
+              <EditIcon fontSize="small" color="inherit" />
+            </IconButton>
+          </OptionsContainer>
+          <TaskInfoWrapper>
+            <TaskDescription>{description}</TaskDescription>
+            <Box p={1.2} />
+            <Box
+              display="flex"
+              width="100%"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box display="flex">
+                <TaskIcon
+                  type="comments"
+                  isActive={comments?.length > 0}
+                  isNew={updatedComment}
+                  onClick={() => {}}
+                />
+                <Box p={1} />
+                <TaskIcon
+                  type="labels"
+                  isActive={labels?.length > 0}
+                  isNew={updatedLabel}
+                  onClick={() => {}}
+                />
+                <Box p={1} />
+                <TaskIcon
+                  type="attachments"
+                  onClick={() => {}}
+                  isActive={attachments?.length > 0}
+                  isNew={updatedAttachment}
+                />
+              </Box>
+              {subtasks?.length > 0 && (
+                <SubtasksLabel>{subtasks.length} Subtasks</SubtasksLabel>
+              )}
+            </Box>
+          </TaskInfoWrapper>
+        </ContentWrapper>
+      </TaskNodeWrapper>
+    </TaskNodeHandles>
+  );
+});
+
+export default TaskNode;

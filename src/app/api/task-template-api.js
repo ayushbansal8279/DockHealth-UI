@@ -129,3 +129,32 @@ export function reorderTasksForTemplate(
       throw error;
     });
 }
+
+export function getTemplateLayout(taskTemplateIdentifier) {
+  return axios
+    .get(`task/template/layout/${taskTemplateIdentifier}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function saveTemplateLayout(taskTemplateIdentifier, layout) {
+  return axios
+    .post(`task/template/layout/${taskTemplateIdentifier}`, layout)
+    .then(response => response.data);
+}
+
+export function addTaskOutcome(taskIdentifier, name) {
+  return axios
+    .post(`task/outcome/${taskIdentifier}`, {
+      name,
+    })
+    .then(({ data }) => data);
+}
+
+export function updateTaskOutcome(taskOutcomeIdentifier, dataToUpdate) {
+  return axios
+    .patch(`task/outcome`, { ...dataToUpdate, taskOutcomeIdentifier })
+    .then(({ data }) => data);
+}

@@ -7,11 +7,15 @@ import {
   TOGGLE_TASK_TEMPLATE_OPEN,
   UPDATE_TASK_TEMPLATE,
   REORDER_TASKS_FOR_TEMPLATE,
-  ADD_TASK_TO_TEMPLATE,
   RELOAD_OPENED_TEMPLATE_TASKS,
   GO_TO_TASK_TEMPLATE_FOLDER,
   MOVE_TASK_TEMPLATE,
 } from 'actions/action-types-saga';
+import {
+  ADD_TASK_TO_TEMPLATE,
+  SELECT_TASK_TEMPLATE,
+  GET_TASK_TEMPLATE_TASKS,
+} from 'actions/action-types';
 import {
   all,
   call,
@@ -24,6 +28,7 @@ import { move, omit, pluck } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
+import * as TaskActions from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as TaskTemplateApi from 'api/task-template-api';
 import * as TaskApi from 'api/task-api';
@@ -32,7 +37,9 @@ import {
   taskTemplateSelector,
   allTemplateDetailsSelector,
   parentFolderIdSelector,
+  currentTaskTemplateIdentifierSelector,
 } from 'selectors/task-template-selectors';
+import { getUniqueLinkId } from 'helpers/task-template-builder-helpers';
 
 function* moveTemplates({
   payload: { parentTaskTemplateIdentifier, taskTemplateIdentifier },
@@ -205,15 +212,8 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
   }
 }
 
-function* getTasksForTemplate({ taskTemplateIdentifier, withLoader = true }) {
+function* getTasksForTemplate({ taskTemplateIdentifier }) {
   try {
-    if (withLoader) {
-      yield put({
-        type: ActionTypes.TASK_TEMPLATE_FETCHING,
-        taskTemplateIdentifier,
-      });
-    }
-
     const tasks = yield call(
       TaskTemplateApi.getTasksForTemplate,
       taskTemplateIdentifier,
@@ -224,6 +224,7 @@ function* getTasksForTemplate({ taskTemplateIdentifier, withLoader = true }) {
       tasks,
     });
   } catch {
+    yield put(showGlobalErrorAlert());
     yield put({
       type: ActionTypes.TASK_TEMPLATE_ERROR,
       taskTemplateIdentifier,
@@ -239,10 +240,12 @@ function* toggleTemplateOpen({ taskTemplateIdentifier }) {
 
     yield all([
       !templateDetails?.isOpen
-        ? call(getTasksForTemplate, {
-            taskTemplateIdentifier,
-            withLoader: !templateDetails?.tasks,
-          })
+        ? put(
+            TaskTemplateActions.getTemplateTasks(
+              taskTemplateIdentifier,
+              !templateDetails?.tasks,
+            ),
+          )
         : null,
       put({
         type: ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN,
@@ -295,16 +298,25 @@ function* reorderTasksForTemplate(payload) {
   }
 }
 
-function* addTaskToTemplate({ task }) {
+function* addTaskToTemplate({ task, elementId, position }) {
   try {
     const createdTask = yield call(TaskApi.addTask, task);
-    yield put({
-      type: ActionTypes.ADD_TASK_TO_TEMPLATE,
-      task: {
-        ...createdTask,
-        taskTemplateIdentifier: task.taskTemplateIdentifier,
-      },
-    });
+    yield all([
+      position &&
+        put({
+          type: ActionTypes.UPDATE_TASK_POSITION_IN_LAYOUT,
+          taskIdentifier: createdTask.identifier,
+          position,
+        }),
+      put({
+        type: ActionTypes.ADD_TASK_TO_TEMPLATE_SUCCESS,
+        task: {
+          ...createdTask,
+          taskTemplateIdentifier: task.taskTemplateIdentifier,
+        },
+      }),
+      elementId && put(TaskTemplateActions.deleteNewTaskElement(elementId)),
+    ]);
     yield put(showGlobalAlert(AlertMessages.CREATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -320,10 +332,7 @@ function* reloadOpenedTemplateTasks() {
         if (value.isOpen) {
           return [
             ...accumulator,
-            call(getTasksForTemplate, {
-              taskTemplateIdentifier: key,
-              withLoader: false,
-            }),
+            put(TaskTemplateActions.getTemplateTasks(key, false)),
           ];
         }
         return accumulator;
@@ -333,6 +342,178 @@ function* reloadOpenedTemplateTasks() {
   ]);
 }
 
+function* getTaskTemplateLayout({ taskTemplateIdentifier }) {
+  try {
+    const layout = yield call(
+      TaskTemplateApi.getTemplateLayout,
+      taskTemplateIdentifier,
+    );
+    yield put({
+      type: ActionTypes.GET_TASK_TEMPLATE_LAYOUT_SUCCESS,
+      taskTemplateIdentifier,
+      layout,
+    });
+  } catch (error) {
+    if (error.response?.status === 404) {
+      yield put({
+        type: ActionTypes.GET_TASK_TEMPLATE_LAYOUT_SUCCESS,
+        taskTemplateIdentifier,
+        layout: [],
+      });
+    } else {
+      yield put(showGlobalErrorAlert());
+    }
+  }
+}
+
+function* selectTaskTemplate({ taskTemplateIdentifier }) {
+  try {
+    yield all([
+      put(TaskTemplateActions.getTemplateTasks(taskTemplateIdentifier)),
+      put({
+        type: ActionTypes.GET_TASK_TEMPLATE_LAYOUT,
+        taskTemplateIdentifier,
+      }),
+    ]);
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* saveTaskTemplateLayout({ layout }) {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    yield call(
+      TaskTemplateApi.saveTemplateLayout,
+      taskTemplateIdentifier,
+      layout,
+    );
+    yield put({
+      type: ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* updateTaskPositionInLayout({ taskIdentifier, position }) {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    const { layout } = yield select(
+      taskTemplateDetailsSelector(taskTemplateIdentifier),
+    );
+    const updatedLayout = [
+      ...(layout?.filter(({ id }) => id !== taskIdentifier) || []),
+      { id: taskIdentifier, position },
+    ];
+    yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* linkTasks({ source, target }) {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    const { layout, tasks } = yield select(
+      taskTemplateDetailsSelector(taskTemplateIdentifier),
+    );
+
+    const sourceTask = tasks.find(({ identifier }) => identifier === source.id);
+    const targetTask = tasks.find(({ identifier }) => identifier === target.id);
+
+    const checkIfTasksAreLinked = () => {
+      return (
+        sourceTask.taskLinks?.some(
+          ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
+        ) ||
+        targetTask.taskLinks?.some(
+          ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
+        )
+      );
+    };
+
+    if (targetTask && sourceTask && !checkIfTasksAreLinked()) {
+      const { sourceTaskIdentifier, targetTaskIdentifier } = yield call(
+        TaskApi.createTasksLink,
+        source.id,
+        target.id,
+      );
+
+      if (source.handle || target.handle) {
+        const linkId = getUniqueLinkId(
+          sourceTaskIdentifier,
+          targetTaskIdentifier,
+        );
+        const updatedLayout = [
+          ...(layout?.filter(({ id }) => id !== linkId) || []),
+          {
+            id: linkId,
+            sourceHandle: source.handle,
+            targetHandle: target.handle,
+          },
+        ];
+        yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
+      }
+
+      yield all([
+        put(TaskActions.refreshTask(sourceTaskIdentifier)),
+        put(TaskActions.refreshTask(targetTaskIdentifier)),
+      ]);
+    }
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* addTaskOutcome({ outcomeName, taskIdentifier, link }) {
+  try {
+    const createdOutcome = yield call(
+      TaskTemplateApi.addTaskOutcome,
+      taskIdentifier,
+      outcomeName,
+    );
+
+    if (link) {
+      yield call(TaskApi.updateTasksLink, {
+        ...link,
+        decisionOutcome: createdOutcome.taskOutcomeIdentifier,
+      });
+    }
+
+    yield all([
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put(TaskActions.refreshTask(taskIdentifier)),
+    ]);
+  } catch (error) {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* updateTaskOutcome({
+  taskOutcomeIdentifier,
+  taskIdentifier,
+  outcomeName,
+}) {
+  try {
+    yield call(TaskTemplateApi.updateTaskOutcome, taskOutcomeIdentifier, {
+      name: outcomeName,
+    });
+    yield all([
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(TaskActions.refreshTask(taskIdentifier)),
+    ]);
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
   yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
@@ -340,10 +521,24 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TEMPLATE_FOLDER, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
   yield takeLatest(GET_TASK_TEMPLATES, getTemplates);
+  yield takeEvery(GET_TASK_TEMPLATE_TASKS, getTasksForTemplate);
   yield takeEvery(TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
   yield takeEvery(UPDATE_TASK_TEMPLATE, updateTemplate);
   yield takeEvery(DUPLICATE_TASK_TEMPLATE, duplicateTemplate);
   yield takeEvery(REORDER_TASKS_FOR_TEMPLATE, reorderTasksForTemplate);
   yield takeEvery(ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
   yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
+  yield takeEvery(ActionTypes.GET_TASK_TEMPLATE_LAYOUT, getTaskTemplateLayout);
+  yield takeLatest(SELECT_TASK_TEMPLATE, selectTaskTemplate);
+  yield takeLatest(
+    ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT,
+    saveTaskTemplateLayout,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_TASK_POSITION_IN_LAYOUT,
+    updateTaskPositionInLayout,
+  );
+  yield takeEvery(ActionTypes.LINK_TASKS, linkTasks);
+  yield takeEvery(ActionTypes.ADD_TASK_OUTCOME, addTaskOutcome);
+  yield takeEvery(ActionTypes.UPDATE_TASK_OUTCOME, updateTaskOutcome);
 }

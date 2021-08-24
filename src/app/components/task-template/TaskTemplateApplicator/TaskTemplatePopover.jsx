@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Popover } from '@material-ui/core';
+import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 
 import {
@@ -67,7 +68,7 @@ const TaskTemplatePopover = ({
         <EmptyLabel>There are no workflows to select from</EmptyLabel>
       )}
       <CreateTaskLinkContainer>
-        <Link to="/core/workflows">
+        <Link to={TASK_TEMPLATES_PATH}>
           <CreateTaskLinkText>Create New Workflow</CreateTaskLinkText>
         </Link>
       </CreateTaskLinkContainer>

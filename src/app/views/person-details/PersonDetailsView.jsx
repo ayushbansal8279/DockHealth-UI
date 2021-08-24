@@ -530,7 +530,6 @@ class PersonDetailsView extends PureComponent {
             </div>
           </BulkEditSection>
           <TaskDrawer
-            modalActions={modalActions}
             onTaskUpdate={this.refreshTabAfterTaskUpdate}
             onTaskDelete={this.handleTaskDelete}
             onTaskCreation={this.refreshTabAfterTaskUpdate}

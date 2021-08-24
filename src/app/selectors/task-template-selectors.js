@@ -1,3 +1,4 @@
+import { prop } from 'ramda';
 import { createSelector } from 'reselect';
 
 export const taskTemplateStateSelector = state => state.taskTemplate;
@@ -46,4 +47,9 @@ export const allTasksSelector = createSelector(
     taskTemplateDetails
       ? Object.values(taskTemplateDetails)?.flatMap(({ tasks }) => tasks || [])
       : [],
+);
+
+export const currentTaskTemplateIdentifierSelector = createSelector(
+  taskTemplateStateSelector,
+  prop('currentTaskTemplateIdentifier'),
 );

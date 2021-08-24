@@ -8,9 +8,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { pluck } from 'ramda';
+import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import { createTaskTemplateDetailsPath } from 'routing/helpers/paths';
 import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
@@ -56,6 +58,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
+  const history = useHistory();
 
   const dispatch = useDispatch();
   const { isOpen, isFetching, tasks } =
@@ -249,10 +252,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
 
   const onClickName = () => {
     if (!isEditing) {
-      if (isOpen) {
-        dispatch(TaskActions.unselectAllTasks());
-      }
-      dispatch(TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier));
+      history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier));
     }
   };
 

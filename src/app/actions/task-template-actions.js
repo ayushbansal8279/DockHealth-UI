@@ -91,6 +91,14 @@ export function getTemplates(searchPhrase = null) {
   };
 }
 
+export function getTemplateTasks(taskTemplateIdentifier, withLoader = true) {
+  return {
+    type: ActionTypes.GET_TASK_TEMPLATE_TASKS,
+    taskTemplateIdentifier,
+    withLoader,
+  };
+}
+
 export function toggleTemplateOpen(taskTemplateIdentifier) {
   return {
     type: ActionTypesSaga.TOGGLE_TASK_TEMPLATE_OPEN,
@@ -111,13 +119,92 @@ export function reorderTasksForTemplate({
   };
 }
 
-export function addTaskToTemplate(task) {
+export function addTaskToTemplate(task, elementId, position) {
   return {
-    type: ActionTypesSaga.ADD_TASK_TO_TEMPLATE,
+    type: ActionTypes.ADD_TASK_TO_TEMPLATE,
     task,
+    elementId,
+    position,
   };
 }
 
 export function reloadOpenedTemplateTasks() {
   return { type: ActionTypesSaga.RELOAD_OPENED_TEMPLATE_TASKS };
+}
+
+export function selectTaskTemplate(taskTemplateIdentifier) {
+  return {
+    type: ActionTypes.SELECT_TASK_TEMPLATE,
+    taskTemplateIdentifier,
+  };
+}
+
+export function unselectTaskTemplate() {
+  return {
+    type: ActionTypes.UNSELECT_TASK_TEMPLATE,
+  };
+}
+
+export function saveTaskTemplateLayout(layout) {
+  return {
+    type: ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT,
+    layout,
+  };
+}
+
+export function addNewTaskElement() {
+  return {
+    type: ActionTypes.ADD_NEW_TASK_ELEMENT,
+  };
+}
+
+export function addNewDecisionTaskElement() {
+  return {
+    type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,
+  };
+}
+
+export function deleteNewTaskElement(elementId) {
+  return {
+    type: ActionTypes.DELETE_NEW_TASK_ELEMENT,
+    elementId,
+  };
+}
+
+export function updateTaskPositionInLayout(taskIdentifier, position) {
+  return {
+    type: ActionTypes.UPDATE_TASK_POSITION_IN_LAYOUT,
+    taskIdentifier,
+    position,
+  };
+}
+
+export function addTaskOutcome(outcomeName, taskIdentifier, link = null) {
+  return {
+    type: ActionTypes.ADD_TASK_OUTCOME,
+    outcomeName,
+    taskIdentifier,
+    link,
+  };
+}
+
+export function updateTaskOutcome(
+  taskOutcomeIdentifier,
+  taskIdentifier,
+  outcomeName,
+) {
+  return {
+    type: ActionTypes.UPDATE_TASK_OUTCOME,
+    taskOutcomeIdentifier,
+    taskIdentifier,
+    outcomeName,
+  };
+}
+
+export function linkTasks(source, target) {
+  return {
+    type: ActionTypes.LINK_TASKS,
+    source,
+    target,
+  };
 }

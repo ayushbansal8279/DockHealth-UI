@@ -1,18 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Grid, Popover } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from 'actions/people-actions';
-import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
-import FormInput from 'components/common/Input/FormInput';
 import { showAlert } from 'helpers/utility-functions';
-import palette from 'styles/palette';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
+import OrganizationOwnerForm from 'components/members/InviteMemberToListForm/ExternalInviteForm/OrganizationOwnerForm/OrganizationOwnerForm';
 import {
   InvitePeoplePopoverContainer,
   InvitePeoplePopoverSection,
@@ -20,85 +15,6 @@ import {
   InvitePopoverDivider,
   InvitePopoverHeader,
 } from './styled';
-
-const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
-  email,
-  first_name: firstName,
-  last_name: lastName,
-}) => {
-  invitePersonToOrganization({
-    email,
-    firstName,
-    lastName,
-  })(dispatch)
-    .then(() => {
-      closePopover();
-      dispatch(
-        AlertActions.showGlobalAlert('Invitation sent successfully', 'success'),
-      );
-      getAllUsers();
-    })
-    .catch(error => {
-      closePopover();
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.response?.data?.errorMessage ??
-          error?.message ??
-          'Invitation could not be sent, please try again later',
-      });
-    });
-};
-
-const InvitePeopleForm = ({
-  handleSubmit,
-  closePopover,
-  dispatch,
-  getAllUsers,
-}) => {
-  return (
-    <form
-      onSubmit={event => {
-        event.stopPropagation();
-        event.preventDefault();
-        handleSubmit(onSubmit({ closePopover, dispatch, getAllUsers }))(event);
-      }}
-      autoComplete="off"
-      autoCorrect="off"
-    >
-      <InvitePeoplePopoverSection>
-        <MontserratTypography variant="h5">
-          <span style={{ color: palette.error }}>*</span>
-          <span> All fields required</span>
-        </MontserratTypography>
-        <Spacing vertical={3} />
-        <FormInput
-          label="First Name"
-          name="first_name"
-          autoFocus
-          autoComplete={uuid()}
-        />
-        <Spacing vertical={3} />
-        <FormInput label="Last Name" name="last_name" autoComplete={uuid()} />
-        <Spacing vertical={3} />
-        <FormInput label="Email" name="email" autoComplete={uuid()} />
-      </InvitePeoplePopoverSection>
-      <InvitePeoplePopoverSection>
-        <Grid container justify="center" spacing={2}>
-          <Grid item xs={6}>
-            <Button onClick={closePopover} variant="text">
-              Cancel
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button type="submit">Send invite</Button>
-          </Grid>
-        </Grid>
-      </InvitePeoplePopoverSection>
-    </form>
-  );
-};
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -120,7 +36,6 @@ const InvitePeoplePopover = ({
     validationSchema,
     reValidateMode: 'onSubmit',
   });
-  const { handleSubmit } = formMethods;
   const dispatch = useDispatch();
   const orgUserRole = useSelector(
     store => store.userState.userProfile?.orgUserRole,
@@ -136,6 +51,36 @@ const InvitePeoplePopover = ({
     },
     [toggleInvitePopover],
   );
+
+  const [isInviting, setIsInviting] = useState(false);
+
+  const onSubmit = data => {
+    setIsInviting(true);
+    dispatch(invitePersonToOrganization(data))
+      .then(() => {
+        closePopover();
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Invitation sent successfully',
+            'success',
+          ),
+        );
+        getAllUsers();
+        setIsInviting(false);
+      })
+      .catch(error => {
+        closePopover();
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.errorMessage ??
+            error?.message ??
+            'Invitation could not be sent, please try again later',
+        });
+        setIsInviting(false);
+      });
+  };
 
   return (
     <Popover
@@ -165,12 +110,7 @@ const InvitePeoplePopover = ({
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
           <FormContext {...formMethods}>
-            <InvitePeopleForm
-              closePopover={closePopover}
-              dispatch={dispatch}
-              handleSubmit={handleSubmit}
-              getAllUsers={getAllUsers}
-            />
+            <OrganizationOwnerForm onSubmit={onSubmit} disabled={isInviting} />
           </FormContext>
         )}
         {!isOwnerOrAdmin && (

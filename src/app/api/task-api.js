@@ -580,3 +580,63 @@ export function saveTaskRecurringSchedule(taskIdentifier, recurringData) {
     .patch(`task/setTaskRecurringSchedule/${taskIdentifier}`, recurringData)
     .then(({ data }) => data);
 }
+export function chooseTaskOutcome(taskOutcomeIdentifier) {
+  return axios
+    .patch(`task/outcome/select/${taskOutcomeIdentifier} `, {
+      isSelected: true,
+    })
+    .then(({ data }) => data);
+}
+
+export function getAvailableTaskDependencies(taskIdentifier, searchTerm = '') {
+  return axios
+    .get(`task/lookupTasksForDependency/${taskIdentifier}`, {
+      params: {
+        searchTerm,
+      },
+    })
+    .then(({ data }) => data);
+}
+
+export function addTaskDependencyLink(
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+  payload,
+) {
+  return axios
+    .post(`task/link`, {
+      sourceTaskIdentifier,
+      targetTaskIdentifier,
+      ...payload,
+    })
+    .then(({ data }) => data);
+}
+
+export function createTasksLink(
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+  options = {},
+) {
+  return axios
+    .post(`task/link`, {
+      sourceTaskIdentifier,
+      targetTaskIdentifier,
+      ...options,
+    })
+    .then(({ data }) => data);
+}
+
+export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  return axios
+    .delete(`task/link`, {
+      data: {
+        sourceTaskIdentifier,
+        targetTaskIdentifier,
+      },
+    })
+    .then(({ data }) => data);
+}
+
+export function updateTasksLink(link) {
+  return axios.put(`task/link`, link).then(({ data }) => data);
+}

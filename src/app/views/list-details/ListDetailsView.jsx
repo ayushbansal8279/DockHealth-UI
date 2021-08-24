@@ -32,7 +32,6 @@ const ListDetailsView = props => {
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
-    modalActions,
     navigateToTab,
     openedTasks,
     quickAddTask,
@@ -116,7 +115,6 @@ const ListDetailsView = props => {
           )}
         </TaskViewContainer>
         <TaskDrawer
-          modalActions={modalActions}
           fromFirstAddTask={taskCounters?.incomplete === 0}
           hideTour={isTourOpen}
           onTaskUpdate={refreshTabAfterTaskUpdate}

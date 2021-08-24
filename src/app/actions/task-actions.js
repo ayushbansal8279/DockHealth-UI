@@ -21,6 +21,14 @@ export const clearPreparedSubtask = curry(dispatch =>
     subtaskShape: {},
   }),
 );
+export const chooseTaskDecisionOutcome = (
+  taskOutcomeIdentifier,
+  task,
+  templateBundleIdentifier,
+) => ({
+  type: ActionTypesSaga.CHOOSE_DECISION_TASK_OPTION,
+  payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
+});
 
 export function storeAsCurrentTask(task) {
   return dispatch => {
@@ -709,23 +717,8 @@ export const removeTaskAttachment = (
       throw error;
     });
 
-export const refreshAnotherTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
-    .then(task => {
-      // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
-      dispatch({
-        type: ActionTypes.REFRESH_ANOTHER_TASK_SUCCESS,
-        task,
-      });
-      return task;
-    })
-    .catch(error => {
-      throw error;
-    });
-
-export const refreshTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+export const refreshTask = taskIdentifier => dispatch =>
+  TaskApi.getTaskDetails(taskIdentifier)
     .then(task => {
       // explicitly mark task as updated so we can show the flag
       task.updated = true; // eslint-disable-line no-param-reassign
@@ -957,5 +950,28 @@ export function updateWorkflowStatusForTasks(statusIdentifier, dataToUpdate) {
     type: ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS,
     statusIdentifier,
     dataToUpdate,
+  };
+}
+
+export function addTaskDependencyLink(sourceTask, targetTaskIdentifier) {
+  return {
+    type: ActionTypes.ADD_TASK_DEPENDENCY_LINK,
+    sourceTask,
+    targetTaskIdentifier,
+  };
+}
+
+export function updateTasksLink(link) {
+  return {
+    type: ActionTypes.UPDATE_TASKS_LINK,
+    link,
+  };
+}
+
+export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  return {
+    type: ActionTypes.DELETE_TASKS_LINK,
+    sourceTaskIdentifier,
+    targetTaskIdentifier,
   };
 }
