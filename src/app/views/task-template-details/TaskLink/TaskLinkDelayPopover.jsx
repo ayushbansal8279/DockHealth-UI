@@ -102,7 +102,7 @@ const TaskLinkDelayPopover = props => {
                 }
               />
               <Box p={0.5} />
-              <CheckboxLabel>Include business</CheckboxLabel>
+              <CheckboxLabel>Business days only</CheckboxLabel>
             </Box>
           </Box>
           <PopoverBottomBar>
