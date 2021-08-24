@@ -55,6 +55,7 @@ import AddPatientToListModal from './components/AddPatientToListModal/AddPatient
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
 import EditCustomPatientFieldModal from './components/EditCustomPatientFieldModal/EditCustomPatientFieldModal';
 import DeleteFieldModal from './components/DeleteFieldModal/DeleteFieldModal';
+import DeleteFolderModal from './components/DeleteFolder/DeleteFolderModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -104,6 +105,7 @@ const MODAL_MAP = {
   CreateTemplateFolder: CreateTemplateFolderModal,
   HomeScreenDragDrop: HomeScreenDragDropModal,
   DeleteTemplate: DeleteTemplateModal,
+  DeleteFolder: DeleteFolderModal,
   SelectTaskDestination: SelectTaskDestinationModal,
   SelectDestination: SelectDestinationModal,
   SelectWorkflowDestination: SelectWorkflowDestinationModal,

@@ -27,6 +27,16 @@ export function getTemplates() {
       throw error;
     });
 }
+export function searchTemplates(searchPhrase) {
+  return axios
+    .get(`task/template/searchTemplatesByName?searchTerm=${searchPhrase}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
 
 export function getTemplatesForSpecificFolder(taskTemplateIdentifier) {
   return axios

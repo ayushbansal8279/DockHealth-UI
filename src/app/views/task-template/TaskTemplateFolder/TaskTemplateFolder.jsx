@@ -55,7 +55,7 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
         color: palette.oPlusRed,
         onClick: () =>
           dispatch(
-            ModalActions.openModal('DeleteTemplate', {
+            ModalActions.openModal('DeleteFolder', {
               confirm: () =>
                 dispatch(
                   TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),

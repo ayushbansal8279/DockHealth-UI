@@ -98,7 +98,7 @@ const SelectStep = ({
       pushToBreadcrumbsList(taskTemplateIdentifier);
       getTemplatesForSpecificFolder(taskTemplateIdentifier)
         .then(folders => {
-          setFoldersList(folders);
+          setFoldersList(folders.filter(({ type }) => type === 'FOLDER'));
           setIsFetchingFolders(false);
         })
         .catch(() => {

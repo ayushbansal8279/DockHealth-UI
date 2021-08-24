@@ -84,9 +84,10 @@ export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
   };
 }
 
-export function getTemplates() {
+export function getTemplates(searchPhrase = null) {
   return {
     type: ActionTypesSaga.GET_TASK_TEMPLATES,
+    searchPhrase,
   };
 }
 

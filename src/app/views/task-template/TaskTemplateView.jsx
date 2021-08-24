@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -27,6 +28,7 @@ import {
   goToTaskTemplateFolder,
   getTemplates,
   cleanAndPushToBreadcrumbs,
+  cleanBreadcrumbs,
 } from 'actions/task-template-actions';
 import {
   TEMPLATE_TASK_ITEM_SORT_METHODS,
@@ -35,7 +37,13 @@ import {
 import { identity } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
-import { TaskTemplateViewContainer } from './styled';
+import Search from 'components/task-view/Search/Search';
+import debounce from 'lodash.debounce';
+import {
+  TaskTemplateViewContainer,
+  SearchWrapper,
+  SearchAndFilterContainer,
+} from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
 import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
@@ -62,10 +70,13 @@ const TaskTemplateView = ({
   goToFolder,
   getAllTemplates,
   cleanAndPushBreadcrumbs,
+  cleanBreadcrumbs,
 }) => {
   const history = useHistory();
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
   const [sort, setSort] = useState({});
+  const [searchPhrase, setSearchPhrase] = useState('');
+  const [isSearchFocused, setSearchFocused] = useState(false);
   const [isBannerOpen, setIsBannerOpen] = useState(
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
@@ -146,6 +157,22 @@ const TaskTemplateView = ({
     [taskTemplateActions, goToFolder],
   );
 
+  const debouncedGetTemplate = useCallback(
+    debounce(getAllTemplates, 500, {
+      leading: true,
+    }),
+    [],
+  );
+
+  const onSearchHandle = event => {
+    const searchPhrase = event.target.value;
+    setSearchPhrase(searchPhrase);
+    if (searchPhrase.length !== 1) {
+      debouncedGetTemplate(searchPhrase);
+      cleanBreadcrumbs();
+    }
+  };
+
   return (
     <TaskTemplateBulkEditContainer
       optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
@@ -172,11 +199,29 @@ const TaskTemplateView = ({
           onRootClick={handleBreadcrumbsRootClick}
           onChildClick={handleBreadcrumbsChildClick}
         />
-        <Grid container justify="flex-end" alignItems="center">
-          <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
-          <AddButton onClick={handleCreateTemplateFolder}>Add Folder</AddButton>
-          <ViewTypeSwitch value={viewType} onChange={setViewType} />
-        </Grid>
+        <Spacing vertical={4} />
+        <SearchAndFilterContainer>
+          <SearchWrapper fullWidth={isSearchFocused}>
+            <Search
+              fullWidth
+              noBackground
+              value={searchPhrase}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              onChange={onSearchHandle}
+              placeholder={
+                isSearchFocused ? 'Search Workflows and Folders' : 'Search'
+              }
+            />
+          </SearchWrapper>
+          <Grid container justify="flex-end" alignItems="center">
+            <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
+            <AddButton onClick={handleCreateTemplateFolder}>
+              Add Folder
+            </AddButton>
+            <ViewTypeSwitch value={viewType} onChange={setViewType} />
+          </Grid>
+        </SearchAndFilterContainer>
         <Spacing vertical={4} />
         <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
         {!isFetchingTaskTemplates ? (
@@ -244,6 +289,7 @@ function mapDispatchToProps(dispatch) {
       cleanAndPushToBreadcrumbs,
       dispatch,
     ),
+    cleanBreadcrumbs: bindActionCreators(cleanBreadcrumbs, dispatch),
   };
 }
 

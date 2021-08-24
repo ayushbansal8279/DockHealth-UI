@@ -57,12 +57,17 @@ function* moveTemplates({
   }
 }
 
-function* getTemplates() {
+function* getTemplates({ searchPhrase }) {
   try {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_FETCHING,
     });
-    const templates = yield call(TaskTemplateApi.getTemplates);
+    const searchPhraseExist =
+      searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
+    const api = searchPhraseExist
+      ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
+      : TaskTemplateApi.getTemplates;
+    const templates = yield call(api, searchPhrase);
     yield put({
       type: ActionTypes.LOAD_TASK_TEMPLATES,
       templates,
