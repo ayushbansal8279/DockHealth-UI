@@ -1,8 +1,12 @@
 import React from 'react';
+import { isNil } from 'ramda';
+import useBoolean from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { MenuItem, Paper, MenuList } from '@material-ui/core';
-import { updateTasksLink } from 'actions/task-actions';
+import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
+import CalendarIcon from 'img/template/calendar-icon';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter } from 'react-flow-renderer';
 import LinkPath from '../LinkPath/LinkPath';
 import {
@@ -11,7 +15,10 @@ import {
   MenuWrapper,
   useMenuStyles,
   MenuItemIconWrapper,
+  DelayPeriodPopoverWrapper,
+  DelayPeriodLabel,
 } from './styled';
+import TaskLinkDelayPopover from './TaskLinkDelayPopover';
 
 const TaskLink = props => {
   const {
@@ -19,11 +26,14 @@ const TaskLink = props => {
     sourceY,
     targetX,
     targetY,
+    source: sourceTaskIdentifier,
+    target: targetTaskIdentifier,
     sourcePosition,
     targetPosition,
     selected,
     data: { link },
   } = props;
+  const { isDependent, delayPeriod, delayPeriodUnit } = link || {};
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,
     sourceY,
@@ -32,11 +42,36 @@ const TaskLink = props => {
     sourcePosition,
     targetPosition,
   });
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const menuClasses = useMenuStyles();
   const dispatch = useDispatch();
+  const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 
   const toggleDependent = () => {
-    dispatch(updateTasksLink({ ...link, isDependent: !link.isDependent }));
+    dispatch(updateTasksLink({ ...link, isDependent: !isDependent }));
+  };
+
+  const removeDelayPeriod = () => {
+    dispatch(
+      updateTasksLink({
+        ...link,
+        delayPeriod: null,
+        delayPeriodUnit: null,
+        delayIsBusinessDays: null,
+      }),
+    );
+  };
+
+  const handleDelayPeriodToggle = () => {
+    if (delayOptionsVisible) {
+      removeDelayPeriod();
+    } else {
+      openPopover();
+    }
+  };
+
+  const deleteLink = () => {
+    dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
   };
 
   return (
@@ -52,10 +87,21 @@ const TaskLink = props => {
         style={{ overflow: 'visible' }}
       >
         <LabelsWrapper>
-          {link.isDependent && (
+          {delayOptionsVisible && (
+            <DelayPeriodLabel onClick={openPopover}>
+              {delayPeriod} {delayPeriodUnit.toLowerCase()}
+              {delayPeriod > 1 ? 's' : ''}
+            </DelayPeriodLabel>
+          )}
+          {isDependent && (
             <HardDependencyLabel>
               <HardDependencyIcon />
             </HardDependencyLabel>
+          )}
+          {isPopoverOpen && (
+            <DelayPeriodPopoverWrapper>
+              <TaskLinkDelayPopover link={link} onClose={closePopover} />
+            </DelayPeriodPopoverWrapper>
           )}
           {selected && (
             <MenuWrapper>
@@ -65,7 +111,20 @@ const TaskLink = props => {
                     <MenuItemIconWrapper>
                       <HardDependencyIcon size={11} />
                     </MenuItemIconWrapper>
-                    {link.isDependent ? 'Remove' : 'Make'} dependent
+                    {isDependent ? 'Remove' : 'Make'} dependent
+                  </MenuItem>
+                  <MenuItem onClick={handleDelayPeriodToggle}>
+                    <MenuItemIconWrapper>
+                      <CalendarIcon size={11} />
+                    </MenuItemIconWrapper>
+                    {delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'} time
+                    till task
+                  </MenuItem>
+                  <MenuItem onClick={deleteLink}>
+                    <MenuItemIconWrapper>
+                      <DeleteOutlineIcon style={{ height: 13 }} />
+                    </MenuItemIconWrapper>
+                    Delete link
                   </MenuItem>
                 </MenuList>
               </Paper>

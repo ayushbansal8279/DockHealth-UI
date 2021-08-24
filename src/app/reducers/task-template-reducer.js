@@ -301,6 +301,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_NEW_TASK_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
+      const { viewPosition } = action;
 
       const { temporaryElements } = state.taskTemplateDetails[
         currentTaskTemplateIdentifier
@@ -314,7 +315,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createTaskNode(temporaryElements),
+              createTaskNode(temporaryElements, viewPosition),
             ],
           },
         ),
@@ -323,6 +324,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
+      const { viewPosition } = action;
 
       const { temporaryElements } = state.taskTemplateDetails[
         currentTaskTemplateIdentifier
@@ -336,7 +338,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createDecisionTaskNode(temporaryElements),
+              createDecisionTaskNode(temporaryElements, viewPosition),
             ],
           },
         ),

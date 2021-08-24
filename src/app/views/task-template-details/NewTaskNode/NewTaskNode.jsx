@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
+import { IconButton } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { addTaskToTemplate } from 'actions/task-template-actions';
+import DeleteIcon from '@material-ui/icons/Delete';
+import {
+  addTaskToTemplate,
+  deleteNewTaskElement,
+} from 'actions/task-template-actions';
 import { getTargetNodeType } from 'helpers/task-template-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
-import { NewTaskInput } from './styled';
+import { NewTaskInput, NewTaskWrapper } from './styled';
 
 const NewTaskNode = React.memo(props => {
   const { id, type, data, selected, xPos, yPos } = props;
@@ -49,12 +54,17 @@ const NewTaskNode = React.memo(props => {
 
   return (
     <TaskNodeWrapper selected={selected} type={type}>
-      <NewTaskInput
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Add Task Description"
-      />
+      <NewTaskWrapper>
+        <NewTaskInput
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Add Task Description"
+        />
+        <IconButton onClick={() => dispatch(deleteNewTaskElement(id))}>
+          <DeleteIcon />
+        </IconButton>
+      </NewTaskWrapper>
     </TaskNodeWrapper>
   );
 });

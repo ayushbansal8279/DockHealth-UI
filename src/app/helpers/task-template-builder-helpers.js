@@ -24,7 +24,7 @@ export function getUniqueLinkId(sourceId, targetId) {
   return `${sourceId}_${targetId}`;
 }
 
-export function createDecisionTaskNode(currentTemporaryElements) {
+export function createDecisionTaskNode(currentTemporaryElements, viewPosition) {
   const newDecisionTaskId = `${
     NodeType.NEW_DECISION
   }-${currentTemporaryElements?.filter(
@@ -34,11 +34,14 @@ export function createDecisionTaskNode(currentTemporaryElements) {
   return {
     id: newDecisionTaskId,
     type: NodeType.NEW_DECISION,
-    position: { x: 300, y: 100 },
+    position: {
+      x: -viewPosition.x / viewPosition.zoom + 100,
+      y: -viewPosition.y / viewPosition.zoom + 200,
+    },
   };
 }
 
-export function createTaskNode(currentTemporaryElements) {
+export function createTaskNode(currentTemporaryElements, viewPosition) {
   const numberOfNewTasks =
     currentTemporaryElements?.filter(
       element => element.type === NodeType.NEW_STANDARD,
@@ -46,7 +49,10 @@ export function createTaskNode(currentTemporaryElements) {
   return {
     id: `${NodeType.NEW_STANDARD}-${numberOfNewTasks}`,
     type: NodeType.NEW_STANDARD,
-    position: { x: 150, y: 100 },
+    position: {
+      x: -viewPosition.x / viewPosition.zoom + 100,
+      y: -viewPosition.y / viewPosition.zoom + 100,
+    },
   };
 }
 

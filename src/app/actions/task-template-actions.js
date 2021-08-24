@@ -99,15 +99,17 @@ export function saveTaskTemplateLayout(layout) {
   };
 }
 
-export function addNewTaskElement() {
+export function addNewTaskElement(viewPosition) {
   return {
     type: ActionTypes.ADD_NEW_TASK_ELEMENT,
+    viewPosition,
   };
 }
 
-export function addNewDecisionTaskElement() {
+export function addNewDecisionTaskElement(viewPosition) {
   return {
     type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,
+    viewPosition,
   };
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { compose, isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTasksLink } from 'actions/task-actions';
 import {
@@ -51,13 +51,13 @@ const linkTypes = {
 };
 
 const TaskTemplateDetailsView = () => {
-  const fitViewFunctionReference = useRef(null);
   const [elements, setElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const { identifier } = useParams();
   const dispatch = useDispatch();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
+  const [viewPosition, setViewPosition] = useState({ x: 0, y: 0, zoom: 1 });
 
   useEffect(() => {
     dispatch(selectTaskTemplate(identifier));
@@ -66,11 +66,6 @@ const TaskTemplateDetailsView = () => {
       dispatch(unselectTaskTemplate);
     };
   }, [dispatch, identifier]);
-
-  useEffect(() => {
-    if (typeof fitViewFunctionReference.current === 'function')
-      fitViewFunctionReference.current();
-  }, [temporaryElements, fitViewFunctionReference]);
 
   useEffect(() => {
     if (tasks && !isNil(layout)) {
@@ -92,13 +87,13 @@ const TaskTemplateDetailsView = () => {
       id: NodeType.NEW_STANDARD,
       label: 'Task',
       icon: TaskElementIcon,
-      onClick: compose(dispatch, addNewTaskElement),
+      onClick: () => dispatch(addNewTaskElement({ ...viewPosition })),
     },
     {
       id: NodeType.NEW_DECISION,
       label: 'Decision tree',
       icon: DecisionTaskElementIcon,
-      onClick: compose(dispatch, addNewDecisionTaskElement),
+      onClick: () => dispatch(addNewDecisionTaskElement({ ...viewPosition })),
     },
   ];
 
@@ -181,9 +176,9 @@ const TaskTemplateDetailsView = () => {
               onConnectStart={(_, { nodeId }) => setDraggedEdgeSourceId(nodeId)}
               onConnectEnd={() => setDraggedEdgeSourceId(null)}
               onNodeDragStop={handleNodeDragStop}
+              onMoveEnd={setViewPosition}
               onLoad={({ fitView }) => {
-                setTimeout(fitView);
-                fitViewFunctionReference.current = fitView;
+                if (tasks.length > 4) setTimeout(fitView, 100);
               }}
             >
               <Controls />

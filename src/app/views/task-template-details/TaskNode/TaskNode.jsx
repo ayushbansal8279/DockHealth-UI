@@ -64,7 +64,10 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
             </IconButton>
           </OptionsContainer>
           <TaskInfoWrapper>
-            <TaskDescription>{description}</TaskDescription>
+            <TaskDescription>
+              {description.slice(0, 53)}
+              {description.length > 53 && '...'}
+            </TaskDescription>
             <Box p={1.2} />
             <Box
               display="flex"

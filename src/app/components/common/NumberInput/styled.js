@@ -4,6 +4,7 @@ import spacing from 'styles/spacing';
 
 export const InputWrapper = styled.div`
   position: relative;
+  width: fit-content;
 `;
 
 export const NumberInput = styled.input`
