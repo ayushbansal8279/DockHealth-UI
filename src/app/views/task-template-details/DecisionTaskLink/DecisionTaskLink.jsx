@@ -68,7 +68,7 @@ const DecisionTaskLink = props => {
 
     switch (key) {
       case 'Enter':
-        if (inputValue.length > 2) {
+        if (inputValue.length > 1) {
           if (outcome) {
             dispatch(
               updateTaskOutcome(
