@@ -43,6 +43,7 @@ import {
 } from 'helpers/task-helpers';
 import dependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
+import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
@@ -174,19 +175,13 @@ const TaskItem = ({
   const [contextMenu, setContextMenu] = useState(null);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
-  // const dependencyIconReference = useRef(null);
+  const dependencyIconReference = useRef(null);
+
   const [
-    dependencyIconAnchorElement,
-    setDependencyIconAnchorElement,
-  ] = React.useState(null);
-
-  const handleDependencyListPopoverOpen = event => {
-    setDependencyIconAnchorElement(event.currentTarget);
-  };
-
-  const handleDependencyListPopoverClose = () => {
-    setDependencyIconAnchorElement(null);
-  };
+    dependencyPopoverOpen,
+    openDependencyPopover,
+    closeDependencyPopover,
+  ] = useBooleanWithTimeout();
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -424,13 +419,14 @@ const TaskItem = ({
             {!!dependencyTasksCount && (
               <>
                 <DependencyIconContainer
-                  onMouseEnter={handleDependencyListPopoverOpen}
-                  onMouseLeave={handleDependencyListPopoverClose}
+                  onMouseEnter={openDependencyPopover}
+                  onMouseLeave={closeDependencyPopover}
+                  ref={dependencyIconReference}
                 >
                   <img src={dependencyIcon} alt="search" />
                   <DependencyListPopover
-                    anchorElement={dependencyIconAnchorElement}
-                    open={!!dependencyIconAnchorElement}
+                    anchorElement={dependencyIconReference.current}
+                    open={dependencyPopoverOpen}
                     dependencyTasksCount={dependencyTasksCount}
                     task={task}
                   />
