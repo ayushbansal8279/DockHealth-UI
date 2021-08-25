@@ -70,6 +70,10 @@ export const PriorityIndicator = styled.div`
   left: 0;
 `;
 
+export const DependencyIconContainer = styled.div`
+  margin-right: ${spacing.small};
+`;
+
 export const BulkContainer = styled.div`
   display: flex;
   align-items: center;

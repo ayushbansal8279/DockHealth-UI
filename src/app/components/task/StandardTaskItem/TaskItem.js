@@ -41,6 +41,8 @@ import {
   TaskItemColumn,
   TASK_ITEM_BASE_COLUMN_CONFIG,
 } from 'helpers/task-helpers';
+import depencencyIcon from 'img/dependency-icon.svg';
+import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
@@ -49,6 +51,7 @@ import {
   StandardTaskItemPanel,
   StandardTaskThreeDots,
   PriorityIndicator,
+  DependencyIconContainer,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -123,6 +126,8 @@ const TaskItem = ({
     subtaskQuickAddOpen,
     selected,
     subTasksCount,
+    dependencyTasksCompletedCount,
+    dependencyTasksCount,
   } = task;
 
   const { listName, taskListIdentifier } = taskList || {};
@@ -139,6 +144,9 @@ const TaskItem = ({
     (isSubtask && isCompletedGroup) ||
     (isDecisionTask && !isDecisionSelected);
 
+  const isDependencyEmptyOrCompleted =
+    dependencyTasksCount === dependencyTasksCompletedCount;
+
   const {
     matchAssignedTo,
     matchAttachments,
@@ -154,7 +162,6 @@ const TaskItem = ({
   const isSelected = useSelector(
     isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
   );
-
   const [isHovered, setIsHovered] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -167,6 +174,19 @@ const TaskItem = ({
   const [contextMenu, setContextMenu] = useState(null);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
+  // const dependencyIconReference = useRef(null);
+  const [
+    dependencyIconAnchorElement,
+    setDependencyIconAnchorElement,
+  ] = React.useState(null);
+
+  const handleDependencyListPopoverOpen = event => {
+    setDependencyIconAnchorElement(event.currentTarget);
+  };
+
+  const handleDependencyListPopoverClose = () => {
+    setDependencyIconAnchorElement(null);
+  };
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -219,7 +239,7 @@ const TaskItem = ({
 
   const onCircleClick = useCallback(
     event => {
-      if (!isTaskStatusTogglingDisabled) {
+      if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
         toggleCompleteTask(task);
       }
 
@@ -237,6 +257,7 @@ const TaskItem = ({
       isCompleted,
       toggleCompleteTask,
       task,
+      isDependencyEmptyOrCompleted,
     ],
   );
 
@@ -393,10 +414,29 @@ const TaskItem = ({
           >
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
-              isClickable={!isTaskStatusTogglingDisabled}
+              isClickable={
+                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+              }
               isCompleted={isCompleted}
               onClick={onCircleClick}
             />
+
+            {!!dependencyTasksCount && (
+              <>
+                <DependencyIconContainer
+                  onMouseEnter={handleDependencyListPopoverOpen}
+                  onMouseLeave={handleDependencyListPopoverClose}
+                >
+                  <img src={depencencyIcon} alt="search" />
+                  <DependencyListPopover
+                    anchorElement={dependencyIconAnchorElement}
+                    open={!!dependencyIconAnchorElement}
+                    dependencyTasksCount={dependencyTasksCount}
+                    task={task}
+                  />
+                </DependencyIconContainer>
+              </>
+            )}
 
             {descriptionIsInCofnig && (
               <TaskItemDescription
