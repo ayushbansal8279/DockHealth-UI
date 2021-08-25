@@ -25,7 +25,7 @@ import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import {
   TaskStatus,
-  updateSubtasksInTask,
+  updateNestedTask,
   updateSubtasksInTaskWithCallback,
 } from 'helpers/task-helpers';
 
@@ -225,7 +225,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           return { ...t, ...task };
         }
 
-        return updateSubtasksInTask(task, task.taskIdentifier, t);
+        return updateNestedTask(task, task.taskIdentifier, t);
       };
 
       return updateStateCallback(state, updateTaskFromAction);
@@ -254,18 +254,19 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           };
         }
 
-        if (t.subtasks?.length > 0) {
-          let updatedTask = updateSubtasksInTask(
-            dataToUpdate,
-            taskIdentifier,
-            t,
-          );
+        if (t.subtasks?.length > 0 || t.taskDependencies?.length > 0) {
+          let updatedTask = updateNestedTask(dataToUpdate, taskIdentifier, t);
 
           updatedTask = {
             ...updatedTask,
-            subTasksCompletedCount: updatedTask.subtasks?.filter(
-              s => s.status === TaskStatus.COMPLETE,
-            ).length,
+            dependencyTasksCompletedCount:
+              updatedTask.taskDependencies?.filter(
+                s => s.status === TaskStatus.COMPLETE,
+              ).length || 0,
+            subTasksCompletedCount:
+              updatedTask.subtasks?.filter(
+                s => s.status === TaskStatus.COMPLETE,
+              ).length || 0,
           };
           return updatedTask;
         }

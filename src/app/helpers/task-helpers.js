@@ -206,28 +206,34 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   ]),
 };
 
-export function updateSubtasksInTask(dataToUpdate, subtaskIdentifier, task) {
+export function updateNestedTask(dataToUpdate, taskIdentifier, task) {
   return {
     ...task,
     subtasks: task?.subtasks?.map(subtask =>
-      subtaskIdentifier === subtask.taskIdentifier
+      taskIdentifier === subtask.taskIdentifier
         ? { ...subtask, ...dataToUpdate }
         : subtask,
+    ),
+    taskDependencies: task?.taskDependencies?.map(t =>
+      taskIdentifier === t.taskIdentifier ? { ...t, ...dataToUpdate } : t,
     ),
   };
 }
 
 export function updateSubtasksInTaskWithCallback(
   updateCallback,
-  subtaskIdentifier,
+  taskIdentifier,
   task,
 ) {
   return {
     ...task,
     subtasks: task?.subtasks?.map(subtask =>
-      subtaskIdentifier === subtask.taskIdentifier
+      taskIdentifier === subtask.taskIdentifier
         ? updateCallback(subtask)
         : subtask,
+    ),
+    taskDependencies: task?.taskDependencies?.map(t =>
+      taskIdentifier === t.taskIdentifier ? updateCallback(t) : t,
     ),
   };
 }
