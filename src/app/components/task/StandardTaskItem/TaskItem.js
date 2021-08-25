@@ -41,7 +41,7 @@ import {
   TaskItemColumn,
   TASK_ITEM_BASE_COLUMN_CONFIG,
 } from 'helpers/task-helpers';
-import depencencyIcon from 'img/dependency-icon.svg';
+import dependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import { getSubtaskStylingLink } from './helpers';
 import {
@@ -427,7 +427,7 @@ const TaskItem = ({
                   onMouseEnter={handleDependencyListPopoverOpen}
                   onMouseLeave={handleDependencyListPopoverClose}
                 >
-                  <img src={depencencyIcon} alt="search" />
+                  <img src={dependencyIcon} alt="search" />
                   <DependencyListPopover
                     anchorElement={dependencyIconAnchorElement}
                     open={!!dependencyIconAnchorElement}
