@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -70,7 +69,7 @@ const TaskTemplateView = ({
   goToFolder,
   getAllTemplates,
   cleanAndPushBreadcrumbs,
-  cleanBreadcrumbs,
+  resetBreadcrumbs,
 }) => {
   const history = useHistory();
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
@@ -165,11 +164,11 @@ const TaskTemplateView = ({
   );
 
   const onSearchHandle = event => {
-    const searchPhrase = event.target.value;
-    setSearchPhrase(searchPhrase);
-    if (searchPhrase.length !== 1) {
-      debouncedGetTemplate(searchPhrase);
-      cleanBreadcrumbs();
+    const searchPhraseValue = event.target.value;
+    setSearchPhrase(searchPhraseValue);
+    if (searchPhraseValue.length !== 1) {
+      debouncedGetTemplate(searchPhraseValue);
+      resetBreadcrumbs();
     }
   };
 
@@ -289,7 +288,7 @@ function mapDispatchToProps(dispatch) {
       cleanAndPushToBreadcrumbs,
       dispatch,
     ),
-    cleanBreadcrumbs: bindActionCreators(cleanBreadcrumbs, dispatch),
+    resetBreadcrumbs: bindActionCreators(cleanBreadcrumbs, dispatch),
   };
 }
 

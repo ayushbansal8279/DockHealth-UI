@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
-// import Checkbox from 'components/common/Checkbox/Checkbox';
 import { MoreHoriz } from '@material-ui/icons';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
@@ -105,11 +104,6 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
-        {/* <Checkbox
-          isDisabled={!isOpen}
-          isChecked={isTemplateSelected}
-          onClick={handleTemplateSelect}
-        /> */}
         <FolderIconContainer>
           <FolderIcon src={Folder} alt="folder icon" />
         </FolderIconContainer>
