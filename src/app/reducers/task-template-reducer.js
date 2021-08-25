@@ -12,6 +12,8 @@ const initialState = {
   isFetching: false,
   isError: false,
   taskTemplateDetails: {},
+  parent: null,
+  breadcrumbs: [],
   currentTaskTemplateIdentifier: null,
 };
 
@@ -54,6 +56,21 @@ function updateTaskTemplateDetailsState(
 
 const TaskTemplateReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: [...state.breadcrumbs, action.payload.breadcrumb],
+      };
+    case ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: [...action.payload.breadcrumbs],
+      };
+    case ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: [],
+      };
     case ActionTypes.ADD_TASK_TEMPLATE:
       return {
         ...state,
@@ -72,6 +89,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
         ...state,
         taskTemplates: action.templates || [],
 
+        isFetching: false,
+      };
+    case ActionTypes.LOAD_TASK_TEMPLATES_FOLDER:
+      return {
+        ...state,
+        taskTemplates: action.templates || [],
+        parent: action.taskTemplateFolderIdentifier,
         isFetching: false,
       };
 

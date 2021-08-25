@@ -11,8 +11,8 @@ export const TaskTemplateContainer = styled.div`
 
 export const TaskTemplateHeader = styled.div`
   display: grid;
-  grid-template-columns: auto auto 1fr auto auto auto;
-  grid-template-rows: 30px auto;
+  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-rows: 30px;
   grid-column-gap: ${spacing.tiny};
   align-items: center;
   width: 100%;
@@ -23,14 +23,8 @@ export const TaskTemplateHeader = styled.div`
   font-size: ${fontSizes.smallPlus};
 `;
 
-export const ArrowButton = styled.button`
-  grid-column: 2;
-  grid-row: 1;
-`;
-
 export const NameInput = styled.input`
-  grid-row: 1;
-  grid-column: 3;
+  grid-column: 2;
   margin-bottom: 0;
   padding: ${spacing.small};
   color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
@@ -46,7 +40,7 @@ export const NameInput = styled.input`
 
   &[readonly] {
     background-color: transparent;
-    cursor: initial;
+    cursor: pointer;
     outline: none;
     border: none;
   }
@@ -56,33 +50,28 @@ export const NameInput = styled.input`
   }
 `;
 
-export const Description = styled.p`
+export const HeaderChildrenContainer = styled.div`
   grid-column: 3;
-  grid-row: 2;
-  margin-bottom: 0;
-  color: ${palette.coolGrey1};
-  font-size: ${fontSizes.regular};
 `;
 
 export const MenuContainer = styled.div`
-  grid-column: 5;
-  grid-row: 1;
+  grid-column: 4;
   overflow: hidden;
   color: ${palette.coolGrey2};
 `;
 
-export const QuickAddInputWrapper = styled.div`
-  margin-top: -1px;
+export const Spacer = styled.div`
+  grid-column: 4;
 `;
 
-export const ArrowButtonContainer = styled.div`
+export const FolderIcon = styled.img`
+  grid-column: 1;
+`;
+
+export const FolderIconContainer = styled.div`
   display: flex;
   width: 26px;
   justify-content: center;
   margin-left: ${spacing.small};
-`;
-
-export const Spacer = styled.div`
-  grid-column: 4;
-  grid-row: 1;
+  grid-column: 1;
 `;

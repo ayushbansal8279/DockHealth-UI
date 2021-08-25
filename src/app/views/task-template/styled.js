@@ -6,3 +6,11 @@ export const TaskTemplateViewContainer = styled.div`
   text-align: right;
   padding: ${spacing.giga} 42px;
 `;
+
+export const SearchWrapper = styled.div`
+  width: 600;
+  transition: width 0.25s ease-out;
+`;
+export const SearchAndFilterContainer = styled.div`
+  display: flex;
+`;
