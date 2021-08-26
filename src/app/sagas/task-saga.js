@@ -8,6 +8,7 @@ import * as TaskActions from 'actions/task-actions';
 import {
   REORDER_SUBTASKS,
   CHOOSE_DECISION_TASK_OPTION,
+  REFRESH_TASK_BUNDLE,
 } from 'actions/action-types-saga';
 import { getTemplateBundle } from 'api/template-bundle-api';
 
@@ -53,30 +54,6 @@ function* reorderSubtasks(payload) {
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: parentTask,
     });
-  }
-}
-function* chooseTaskOutcome({
-  payload: { taskOutcomeIdentifier, templateBundleIdentifier },
-}) {
-  try {
-    yield call(TaskApi.chooseTaskOutcome, taskOutcomeIdentifier);
-    const templateBundle = yield call(
-      getTemplateBundle,
-      templateBundleIdentifier,
-    );
-    yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
-      bundleIdentifier: templateBundleIdentifier,
-      dataToUpdate: templateBundle,
-    });
-    yield put({
-      type: ActionTypes.UPDATE_TASKLIST_SUCCESS,
-      updatedTasklist: templateBundle.tasks,
-    });
-
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -137,6 +114,37 @@ function* deleteTasksLink({ sourceTaskIdentifier, targetTaskIdentifier }) {
     yield put(showGlobalErrorAlert());
   }
 }
+function* refreshTemplateBundle({ templateBundleIdentifier }) {
+  try {
+    const templateBundle = yield call(
+      getTemplateBundle,
+      templateBundleIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      bundleIdentifier: templateBundleIdentifier,
+      dataToUpdate: templateBundle,
+    });
+    yield put({
+      type: ActionTypes.UPDATE_TASKLIST_SUCCESS,
+      updatedTasklist: templateBundle.tasks,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* chooseTaskOutcome({
+  payload: { taskOutcomeIdentifier, templateBundleIdentifier },
+}) {
+  try {
+    yield call(TaskApi.chooseTaskOutcome, taskOutcomeIdentifier);
+    yield call(refreshTemplateBundle, { templateBundleIdentifier });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
 
 export default function* watchTask() {
   yield takeEvery(REORDER_SUBTASKS, reorderSubtasks);
@@ -144,4 +152,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
   yield takeEvery(CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
+  yield takeEvery(REFRESH_TASK_BUNDLE, refreshTemplateBundle);
 }

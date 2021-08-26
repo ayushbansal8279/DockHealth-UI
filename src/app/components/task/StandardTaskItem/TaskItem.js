@@ -148,6 +148,12 @@ const TaskItem = ({
   const isDependencyEmptyOrCompleted =
     dependencyTasksCount === dependencyTasksCompletedCount;
 
+  if (dependencyTasksCount) {
+    console.log('dependencyTasksCompletedCount', dependencyTasksCompletedCount);
+    console.log('dependencyTasksCount', dependencyTasksCount);
+    console.log('isDependencyEmptyOrCompleted', isDependencyEmptyOrCompleted);
+  }
+
   const {
     matchAssignedTo,
     matchAttachments,
@@ -235,7 +241,7 @@ const TaskItem = ({
   const onCircleClick = useCallback(
     event => {
       if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
-        toggleCompleteTask(task);
+        toggleCompleteTask({ ...task, templateBundleIdentifier });
       }
 
       if (!isSubtask) {
@@ -247,6 +253,7 @@ const TaskItem = ({
       event.stopPropagation();
     },
     [
+      templateBundleIdentifier,
       isTaskStatusTogglingDisabled,
       isSubtask,
       isCompleted,
@@ -416,7 +423,7 @@ const TaskItem = ({
               onClick={onCircleClick}
             />
 
-            {!!dependencyTasksCount && (
+            {!isDependencyEmptyOrCompleted && !isTemplateTask && (
               <>
                 <DependencyIconContainer
                   onMouseEnter={openDependencyPopover}

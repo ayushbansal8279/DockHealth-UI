@@ -8,6 +8,7 @@ export const GET_LIST_DETAILS_TASK_COUNTERS =
 export const SORT_LIST_DETAILS_TASKS = '@@saga/SORT_LIST_DETAILS_TASKS';
 export const FILTER__LIST_DETAILS_TASKS = '@@saga/FILTER__LIST_DETAILS_TASKS';
 export const APPLY_TASK_TEMPLATE = '@@saga/APPLY_TASK_TEMPLATE';
+export const REFRESH_TASK_BUNDLE = '@@saga/REFRESH_TASK_BUNDLE';
 
 // Task templates
 export const MOVE_TASK_TEMPLATE = '@@saga/MOVE_TASK_TEMPLATE';
