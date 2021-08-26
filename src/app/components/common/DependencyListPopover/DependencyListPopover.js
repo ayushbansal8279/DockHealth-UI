@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Popper } from '@material-ui/core';
 import { bool, shape, object, string, number } from 'prop-types';
-import { getAvailableTaskDependencies } from 'api/task-api';
+import { getTaskDependencies } from 'api/task-api';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import dependencyIcon from 'img/dependency-icon.svg';
 import { useDispatch } from 'react-redux';
@@ -30,7 +30,7 @@ const DependencyListPopover = ({
   const getDependenciesList = () => {
     if (open) {
       setLoading(true);
-      getAvailableTaskDependencies(taskIdentifier)
+      getTaskDependencies(taskIdentifier)
         .then(data => {
           setList(data);
           setLoading(false);

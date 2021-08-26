@@ -588,6 +588,14 @@ export function chooseTaskOutcome(taskOutcomeIdentifier) {
     .then(({ data }) => data);
 }
 
+export function getTaskDependencies(taskIdentifier) {
+  return axios
+    .get(`task/link/dependencies/${taskIdentifier}`, {
+      params: {},
+    })
+    .then(({ data }) => data);
+}
+
 export function getAvailableTaskDependencies(taskIdentifier, searchTerm = '') {
   return axios
     .get(`task/lookupTasksForDependency/${taskIdentifier}`, {
