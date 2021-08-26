@@ -2,7 +2,7 @@ import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
 import { mapWithRemove } from 'helpers/utility-functions';
 import {
-  createDecisionTaskNode,
+  createDecisionTaskNodes,
   createTaskNode,
 } from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
@@ -325,7 +325,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_NEW_TASK_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
-      const { viewPosition } = action;
+      const { position } = action;
 
       const { temporaryElements } = state.taskTemplateDetails[
         currentTaskTemplateIdentifier
@@ -339,7 +339,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createTaskNode(temporaryElements, viewPosition),
+              createTaskNode(temporaryElements, position),
             ],
           },
         ),
@@ -348,7 +348,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
-      const { viewPosition } = action;
+      const { position } = action;
 
       const { temporaryElements } = state.taskTemplateDetails[
         currentTaskTemplateIdentifier
@@ -362,7 +362,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createDecisionTaskNode(temporaryElements, viewPosition),
+              ...createDecisionTaskNodes(temporaryElements, position),
             ],
           },
         ),

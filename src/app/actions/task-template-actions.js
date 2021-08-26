@@ -159,17 +159,17 @@ export function saveTaskTemplateLayout(layout) {
   };
 }
 
-export function addNewTaskElement(viewPosition) {
+export function addNewTaskElement(position) {
   return {
     type: ActionTypes.ADD_NEW_TASK_ELEMENT,
-    viewPosition,
+    position,
   };
 }
 
-export function addNewDecisionTaskElement(viewPosition) {
+export function addNewDecisionTaskElement(position) {
   return {
     type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,
-    viewPosition,
+    position,
   };
 }
 
@@ -177,14 +177,6 @@ export function deleteNewTaskElement(elementId) {
   return {
     type: ActionTypes.DELETE_NEW_TASK_ELEMENT,
     elementId,
-  };
-}
-
-export function updateTaskPositionInLayout(taskIdentifier, position) {
-  return {
-    type: ActionTypes.UPDATE_TASK_POSITION_IN_LAYOUT,
-    taskIdentifier,
-    position,
   };
 }
 

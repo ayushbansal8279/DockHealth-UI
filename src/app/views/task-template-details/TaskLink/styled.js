@@ -34,20 +34,6 @@ export const DelayPeriodLabel = styled.div`
   color: ${palette.white};
 `;
 
-export const MenuWrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translate(110%, -50%);
-`;
-
-export const DelayPeriodPopoverWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  transform: translate(0%, 110%);
-`;
-
 export const useMenuStyles = makeStyles({
   root: {
     width: 200,

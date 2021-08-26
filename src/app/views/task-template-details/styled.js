@@ -79,3 +79,19 @@ export const TaskElementIcon = styled.div`
   border-radius: 3px;
   color: inherit;
 `;
+
+export const BuilderHeader = styled.div`
+  position: absolute;
+  top: 14px;
+  left: 56px;
+  display: flex;
+  align-items: center;
+  z-index: 5;
+`;
+
+export const BuilderHeaderText = styled.p`
+  margin-bottom: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 32px;
+  color: ${palette.mediumGrey};
+`;

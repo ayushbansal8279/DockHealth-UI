@@ -1,24 +1,29 @@
-import React, { useRef } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useRef, useEffect } from 'react';
 import { isNil } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
-import { MenuItem, Paper, MenuList } from '@material-ui/core';
+import {
+  MenuItem,
+  Paper,
+  MenuList,
+  Popper,
+  ClickAwayListener,
+} from '@material-ui/core';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import { getEdgeCenter } from 'react-flow-renderer';
+import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import LinkPath from '../LinkPath/LinkPath';
 import {
   LabelsWrapper,
   HardDependencyLabel,
-  MenuWrapper,
   useMenuStyles,
   MenuItemIconWrapper,
-  DelayPeriodPopoverWrapper,
   DelayPeriodLabel,
 } from './styled';
-import TaskLinkDelayPopover from './TaskLinkDelayPopover';
+import TaskLinkDelayForm from './TaskLinkDelayForm';
 
 const TaskLink = props => {
   const {
@@ -42,14 +47,32 @@ const TaskLink = props => {
     sourcePosition,
     targetPosition,
   });
+  const { 2: zoom } = useStoreState(store => store.transform);
   const labelWrapperReference = useRef(null);
-  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
+  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] = useBoolean(
+    false,
+  );
+  const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
   const menuClasses = useMenuStyles();
   const dispatch = useDispatch();
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 
+  useEffect(() => {
+    if (!isDependent && selected) {
+      openOptions();
+    }
+  }, [isDependent, openOptions, selected]);
+
   const toggleDependent = () => {
-    dispatch(updateTasksLink({ ...link, isDependent: !isDependent }));
+    dispatch(
+      updateTasksLink({
+        ...link,
+        isDependent: !isDependent,
+        delayPeriod: null,
+        delayPeriodUnit: null,
+        delayIsBusinessDays: null,
+      }),
+    );
   };
 
   const removeDelayPeriod = () => {
@@ -67,7 +90,7 @@ const TaskLink = props => {
     if (delayOptionsVisible) {
       removeDelayPeriod();
     } else {
-      openPopover();
+      openDelayPopover();
     }
   };
 
@@ -89,29 +112,51 @@ const TaskLink = props => {
       >
         <LabelsWrapper ref={labelWrapperReference}>
           {delayOptionsVisible && (
-            <DelayPeriodLabel onClick={openPopover}>
+            <DelayPeriodLabel onClick={openDelayPopover}>
               {delayPeriod} {delayPeriodUnit.toLowerCase()}
               {delayPeriod > 1 ? 's' : ''}
             </DelayPeriodLabel>
           )}
           {isDependent && (
-            <HardDependencyLabel>
+            <HardDependencyLabel onClick={openOptions}>
               <HardDependencyIcon />
             </HardDependencyLabel>
           )}
-          {isPopoverOpen && (
-            <DelayPeriodPopoverWrapper>
-              <TaskLinkDelayPopover
-                anchorEl={labelWrapperReference.current}
-                link={link}
-                onClose={closePopover}
-              />
-            </DelayPeriodPopoverWrapper>
-          )}
-          {selected && (
-            <MenuWrapper>
-              <Paper>
-                <MenuList classes={menuClasses}>
+        </LabelsWrapper>
+        {isDelayPopoverOpen && (
+          <Popper
+            anchorEl={labelWrapperReference.current}
+            placement="bottom-end"
+            open
+            style={{ zIndex: 10 }}
+          >
+            <ClickAwayListener onClickAway={closeDelayPopover}>
+              <Paper
+                style={{
+                  transform: `scale(${zoom})`,
+                  transformOrigin: 'top right',
+                }}
+              >
+                <TaskLinkDelayForm link={link} onClose={closeDelayPopover} />
+              </Paper>
+            </ClickAwayListener>
+          </Popper>
+        )}
+        {areOptionsOpen && (
+          <Popper
+            anchorEl={labelWrapperReference.current}
+            placement="right"
+            open
+            style={{ zIndex: 10 }}
+          >
+            <ClickAwayListener onClickAway={closeOptions}>
+              <Paper
+                style={{
+                  transform: `scale(${zoom})`,
+                  transformOrigin: 'center left',
+                }}
+              >
+                <MenuList classes={menuClasses} onClick={closeOptions}>
                   <MenuItem onClick={toggleDependent}>
                     <MenuItemIconWrapper>
                       <HardDependencyIcon size={11} />
@@ -133,9 +178,9 @@ const TaskLink = props => {
                   </MenuItem>
                 </MenuList>
               </Paper>
-            </MenuWrapper>
-          )}
-        </LabelsWrapper>
+            </ClickAwayListener>
+          </Popper>
+        )}
       </foreignObject>
     </>
   );

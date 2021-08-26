@@ -34,8 +34,6 @@ const TaskTemplatePopover = ({
   return (
     <Popover
       PaperProps={{
-        elevation: 0,
-        square: true,
         style: {
           width: 325,
           maxHeight: 400,

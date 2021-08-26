@@ -1,8 +1,10 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
-import { isEmpty, isNil } from 'ramda';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
+import ArrowLeftIcon from 'img/arrow-left.svg';
+import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
 import { deleteTasksLink } from 'actions/task-actions';
 import {
   addNewDecisionTaskElement,
@@ -12,14 +14,17 @@ import {
   saveTaskTemplateLayout,
   selectTaskTemplate,
   unselectTaskTemplate,
-  updateTaskPositionInLayout,
 } from 'actions/task-template-actions';
 import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
 import { Box } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import ReactFlow, { Controls } from 'react-flow-renderer';
+import ReactFlow, { Controls, ReactFlowProvider } from 'react-flow-renderer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import { NodeType, LinkType } from 'helpers/task-template-builder-helpers';
+import {
+  NodeType,
+  LinkType,
+  TASK_NODE_WIDTH,
+} from 'helpers/task-template-builder-helpers';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -28,6 +33,7 @@ import {
   mapLayoutToElements,
   mapElementsToLayout,
   updateNodePosition,
+  calculateNewElementPosition,
 } from './helpers';
 import {
   ElementsSidebar,
@@ -36,6 +42,8 @@ import {
   ElementIconBackground,
   ElementDescription,
   TaskElementIcon,
+  BuilderHeader,
+  BuilderHeaderText,
 } from './styled';
 
 const nodeTypes = {
@@ -51,13 +59,15 @@ const linkTypes = {
 };
 
 const TaskTemplateDetailsView = () => {
+  const builderWrapperReference = useRef(null);
+  const setViewPositionReference = useRef(null);
   const [elements, setElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const { identifier } = useParams();
   const dispatch = useDispatch();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const [viewPosition, setViewPosition] = useState({ x: 0, y: 0, zoom: 1 });
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(selectTaskTemplate(identifier));
@@ -73,6 +83,17 @@ const TaskTemplateDetailsView = () => {
     }
   }, [layout, tasks]);
 
+  const centerViewToElement = elementPosition => {
+    const { x, y } = elementPosition;
+    const { offsetWidth, offsetHeight } = builderWrapperReference.current;
+
+    setViewPositionReference.current({
+      x: -x + offsetWidth / 2 - TASK_NODE_WIDTH / 2,
+      y: -y + offsetHeight / 2,
+      zoom: 1,
+    });
+  };
+
   const onConnect = ({ source, sourceHandle, target, targetHandle }) => {
     dispatch(
       linkTasks(
@@ -87,13 +108,21 @@ const TaskTemplateDetailsView = () => {
       id: NodeType.NEW_STANDARD,
       label: 'Task',
       icon: TaskElementIcon,
-      onClick: () => dispatch(addNewTaskElement({ ...viewPosition })),
+      onClick: () => {
+        const position = calculateNewElementPosition(layout);
+        dispatch(addNewTaskElement(position));
+        centerViewToElement(position);
+      },
     },
     {
       id: NodeType.NEW_DECISION,
       label: 'Decision tree',
       icon: DecisionTaskElementIcon,
-      onClick: () => dispatch(addNewDecisionTaskElement({ ...viewPosition })),
+      onClick: () => {
+        const position = calculateNewElementPosition(layout);
+        dispatch(addNewDecisionTaskElement(position));
+        centerViewToElement(position);
+      },
     },
   ];
 
@@ -101,17 +130,13 @@ const TaskTemplateDetailsView = () => {
     const isExistingTask = !!node.data.task;
 
     if (isExistingTask) {
-      if (isEmpty(layout)) {
-        const updatedElements = updateNodePosition(
-          node.id,
-          node.position,
-          elements,
-        );
-        const newLayout = mapElementsToLayout(updatedElements);
-        dispatch(saveTaskTemplateLayout(newLayout));
-      } else {
-        dispatch(updateTaskPositionInLayout(node.id, node.position));
-      }
+      const updatedElements = updateNodePosition(
+        node.id,
+        node.position,
+        elements,
+      );
+      const newLayout = mapElementsToLayout(updatedElements);
+      dispatch(saveTaskTemplateLayout(newLayout));
     }
   };
 
@@ -151,41 +176,55 @@ const TaskTemplateDetailsView = () => {
 
   return (
     <>
-      <Box position="relative" display="flex" height="100%" width="100%">
-        <ElementsSidebar>
-          <SidebarTitle>Workflow Toolkit</SidebarTitle>
-          {nodeElements.map(({ id, label, icon: Icon, onClick }) => (
-            <ElementButton key={id} type="button" onClick={onClick}>
-              <ElementIconBackground>
-                <Icon />
-              </ElementIconBackground>
-              <ElementDescription>{label}</ElementDescription>
-            </ElementButton>
-          ))}
-        </ElementsSidebar>
-        <Box flex={1}>
-          {mergedElementsWithActions && (
-            <ReactFlow
-              elements={mergedElementsWithActions}
-              onConnect={onConnect}
-              connectionLineType="step"
-              nodeTypes={nodeTypes}
-              edgeTypes={linkTypes}
-              onElementsRemove={handleRemoveElement}
-              deleteKeyCode={46}
-              onConnectStart={(_, { nodeId }) => setDraggedEdgeSourceId(nodeId)}
-              onConnectEnd={() => setDraggedEdgeSourceId(null)}
-              onNodeDragStop={handleNodeDragStop}
-              onMoveEnd={setViewPosition}
-              onLoad={({ fitView }) => {
-                if (tasks.length > 4) setTimeout(fitView, 100);
-              }}
-            >
-              <Controls />
-            </ReactFlow>
-          )}
+      <ReactFlowProvider>
+        <Box position="relative" display="flex" height="100%" width="100%">
+          <ElementsSidebar>
+            <SidebarTitle>Workflow Toolkit</SidebarTitle>
+            {nodeElements.map(({ id, label, icon: Icon, onClick }) => (
+              <ElementButton key={id} type="button" onClick={onClick}>
+                <ElementIconBackground>
+                  <Icon />
+                </ElementIconBackground>
+                <ElementDescription>{label}</ElementDescription>
+              </ElementButton>
+            ))}
+          </ElementsSidebar>
+          <Box ref={builderWrapperReference} position="relative" flex={1}>
+            <BuilderHeader>
+              <button
+                type="button"
+                onClick={() => history.push(TASK_TEMPLATES_PATH)}
+              >
+                <img src={ArrowLeftIcon} alt="back" style={{ width: 16 }} />
+              </button>
+              <Box m={0.5} />
+              <BuilderHeaderText>Workflows</BuilderHeaderText>
+            </BuilderHeader>
+            {mergedElementsWithActions && (
+              <ReactFlow
+                elements={mergedElementsWithActions}
+                onConnect={onConnect}
+                connectionLineType="step"
+                nodeTypes={nodeTypes}
+                edgeTypes={linkTypes}
+                onElementsRemove={handleRemoveElement}
+                deleteKeyCode={46}
+                onConnectStart={(_, { nodeId }) =>
+                  setDraggedEdgeSourceId(nodeId)
+                }
+                onConnectEnd={() => setDraggedEdgeSourceId(null)}
+                onNodeDragStop={handleNodeDragStop}
+                onLoad={({ fitView, setTransform }) => {
+                  setViewPositionReference.current = setTransform;
+                  if (tasks.length > 4) setTimeout(fitView, 100);
+                }}
+              >
+                <Controls />
+              </ReactFlow>
+            )}
+          </Box>
         </Box>
-      </Box>
+      </ReactFlowProvider>
       <TaskDrawer />
     </>
   );
