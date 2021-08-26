@@ -84,6 +84,13 @@ export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
   };
 }
 
+export function getAllTemplatesForOrganization(searchPhrase = null) {
+  return {
+    type: ActionTypesSaga.GET_ALL_TASK_TEMPLATES,
+    searchPhrase,
+  };
+}
+
 export function getTemplates(searchPhrase = null) {
   return {
     type: ActionTypesSaga.GET_TASK_TEMPLATES,

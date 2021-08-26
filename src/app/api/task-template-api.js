@@ -16,7 +16,16 @@ export function moveTemplate({
       throw error;
     });
 }
-
+export function getAllTemplatesForOrganization() {
+  return axios
+    .get(`task/template/getTemplatesForOrganization`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
 export function getTemplates() {
   return axios
     .get(`task/template/getRootTemplatesForOrganization`)

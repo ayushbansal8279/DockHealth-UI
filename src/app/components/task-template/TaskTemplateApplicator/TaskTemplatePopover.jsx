@@ -51,7 +51,9 @@ const TaskTemplatePopover = ({
       }}
       anchorEl={anchorEl}
       open={open}
-      onEnter={() => dispatch(TaskTemplateActions.getTemplates())}
+      onEnter={() =>
+        dispatch(TaskTemplateActions.getAllTemplatesForOrganization())
+      }
       onClose={onClose}
     >
       {taskTemplatesIsLoading && (

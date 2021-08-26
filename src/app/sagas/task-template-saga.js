@@ -3,6 +3,7 @@ import {
   ADD_TASK_TEMPLATE_FOLDER,
   DELETE_TASK_TEMPLATE,
   DUPLICATE_TASK_TEMPLATE,
+  GET_ALL_TASK_TEMPLATES,
   GET_TASK_TEMPLATES,
   TOGGLE_TASK_TEMPLATE_OPEN,
   UPDATE_TASK_TEMPLATE,
@@ -74,6 +75,36 @@ function* getTemplates({ searchPhrase }) {
     const api = searchPhraseExist
       ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
       : TaskTemplateApi.getTemplates;
+    const templates = yield call(api, searchPhrase);
+    yield put({
+      type: ActionTypes.LOAD_TASK_TEMPLATES,
+      templates,
+    });
+    yield put(TaskTemplateActions.cleanBreadcrumbs());
+
+    if (templates?.length > 0)
+      yield put(
+        TaskTemplateActions.toggleTemplateOpen(
+          templates[0]?.taskTemplateIdentifier,
+        ),
+      );
+  } catch {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATES_ERROR,
+    });
+  }
+}
+
+function* getAllTemplatesForOrganization({ searchPhrase }) {
+  try {
+    yield put({
+      type: ActionTypes.TASK_TEMPLATES_FETCHING,
+    });
+    const searchPhraseExist =
+      searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
+    const api = searchPhraseExist
+      ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
+      : TaskTemplateApi.getAllTemplatesForOrganization;
     const templates = yield call(api, searchPhrase);
     yield put({
       type: ActionTypes.LOAD_TASK_TEMPLATES,
@@ -520,6 +551,7 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ADD_TASK_TEMPLATE_FOLDER, addTemplate);
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
+  yield takeLatest(GET_ALL_TASK_TEMPLATES, getAllTemplatesForOrganization);
   yield takeLatest(GET_TASK_TEMPLATES, getTemplates);
   yield takeEvery(GET_TASK_TEMPLATE_TASKS, getTasksForTemplate);
   yield takeEvery(TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
