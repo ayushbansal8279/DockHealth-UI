@@ -1,3 +1,4 @@
+import { pluck } from 'ramda';
 import axios from './axios-heydoc';
 
 export function getAllPatientCustomFields(
@@ -31,4 +32,10 @@ export function updatePatientCustomField(customField) {
 
 export function deletePatientCustomField(identifier) {
   return axios.delete(`custom/field/${identifier}`).then(({ data }) => data);
+}
+
+export function sendSortedPatientCustomFields(customFields) {
+  return axios.put(`custom/field/sortCustomFields/PATIENT`, {
+    customFieldIdentifiers: pluck('identifier', customFields),
+  });
 }
