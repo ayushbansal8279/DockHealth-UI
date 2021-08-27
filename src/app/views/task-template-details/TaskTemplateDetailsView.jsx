@@ -207,6 +207,8 @@ const TaskTemplateDetailsView = () => {
                 connectionLineType="step"
                 nodeTypes={nodeTypes}
                 edgeTypes={linkTypes}
+                minZoom={0.1}
+                maxZoom={1}
                 onElementsRemove={handleRemoveElement}
                 deleteKeyCode={46}
                 onConnectStart={(_, { nodeId }) =>
