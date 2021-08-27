@@ -148,12 +148,6 @@ const TaskItem = ({
   const isDependencyEmptyOrCompleted =
     dependencyTasksCount === dependencyTasksCompletedCount;
 
-  if (dependencyTasksCount) {
-    console.log('dependencyTasksCompletedCount', dependencyTasksCompletedCount);
-    console.log('dependencyTasksCount', dependencyTasksCount);
-    console.log('isDependencyEmptyOrCompleted', isDependencyEmptyOrCompleted);
-  }
-
   const {
     matchAssignedTo,
     matchAttachments,
