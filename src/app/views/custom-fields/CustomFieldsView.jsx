@@ -201,7 +201,7 @@ const CustomFieldsView = () => {
         setLastWorkingOrder(customFields);
       });
     } catch (error) {
-      console.log('ERROR SENDING:', error);
+      dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
     }
     setIsFetching(false);
