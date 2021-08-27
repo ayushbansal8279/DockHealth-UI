@@ -135,7 +135,9 @@ const CustomFieldsView = () => {
     const lastWorkingOrder = customFields.slice();
     setCustomFields(result);
     try {
-      CustomFieldsApi.sendSortedPatientCustomFields(result);
+      CustomFieldsApi.sendSortedPatientCustomFields(
+        pluck('identifier', result),
+      );
     } catch (error) {
       dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
@@ -153,7 +155,9 @@ const CustomFieldsView = () => {
             return { ...field, sortIndex: index };
           });
           try {
-            CustomFieldsApi.sendSortedPatientCustomFields(newFields);
+            CustomFieldsApi.sendSortedPatientCustomFields(
+              pluck('identifier', newFields),
+            );
           } catch {
             // when adding a field succeds but sorting it fails, I reload the page to fetch the whole list again, because the state of the list locally doesn't reflect the backend state ot if
             window.location.reload();
