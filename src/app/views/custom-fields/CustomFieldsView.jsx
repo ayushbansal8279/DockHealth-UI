@@ -132,7 +132,7 @@ const CustomFieldsView = () => {
     );
   };
 
-  const newBetterOrder = action => {
+  const newOrder = action => {
     const idents = pluck('identifier', customFields);
     const idxFrom = idents.indexOf(action.active.id);
     const idxTo = idents.indexOf(action.over.id);
@@ -140,85 +140,39 @@ const CustomFieldsView = () => {
     return move(idxFrom, idxTo, customFields);
   };
 
-  // const newOrder = action => {
-  //   const idents = pluck('identifier', customFields);
-  //   const idxFrom = idents.indexOf(action.active.id);
-  //   const idxTo = idents.indexOf(action.over.id);
-  //   if (idxFrom === 0) {
-  //     // when taken from beginning
-  //     // [{from},{from+1, to},{to, end}]->[{from+1,to},{from},{to, end}]
-  //     console.log('case1!');
-  //     return customFields
-  //       .slice(1, idxTo)
-  //       .concat(customFields.slice(idxFrom, idxFrom))
-  //       .concat(customFields.slice(idxTo));
-  //   }
-  //   // when taken from end
-  //   // [{0, to},{to, from},{from}]->[{0, to}, {from}, {to, from}]
-  //   if (idxFrom === customFields.length - 1) {
-  //     console.log('case2!');
-  //     return customFields
-  //       .slice(0, idxTo)
-  //       .concat(customFields.slice(idxFrom, idxFrom))
-  //       .concat(customFields.slice(idxTo, idxFrom));
-  //   }
-  //   // when put after itself
-  //   // [{0, from}, {from}, {from+1, to}, {to, end}]->[{0, from}, {from+1, to}, {from}, {to, end}]
-  //   if (idxFrom < idxTo) {
-  //     console.log('case3!');
-  //     return customFields
-  //       .slice(0, idxFrom)
-  //       .concat(customFields.slice(idxFrom + 1, idxTo))
-  //       .concat(customFields.slice(idxFrom, idxFrom))
-  //       .concat(customFields.slice(idxTo));
-  //   }
-  //   // when put before itself
-  //   // [{0, to}, {to, from}, {from}, {from+1, end}]->[{0, to}, {from}, {to, from}, {from+1, end}]
-  //   console.log('case4!');
-  //   return customFields
-  //     .slice(0, idxTo)
-  //     .concat(customFields.slice(idxFrom, idxFrom))
-  //     .concat(customFields.slice(idxTo, idxFrom))
-  //     .concat(customFields.slice(idxFrom));
-  // };
-
   const updateSortIndexes = order => {
     order.map((field, index) => ({ ...field, sortIndex: index }));
   };
 
   const handleOnDragEnd = action => {
     console.log(pluck('name', customFields));
-    // const result = newOrder(action);
-    const result = newBetterOrder(action);
+    const result = newOrder(action);
     setLastWorkingOrder(customFields);
     updateSortIndexes(result);
     setCustomFields(result);
-    console.log(pluck('name', customFields));
     console.log(pluck('name', result));
-    // console.log(`new order`, customFields);
     setIsFetching(true);
+    console.log(pluck('name', customFields));
     try {
       CustomFieldsApi.sendSortedPatientCustomFields(result).then(() => {
         setLastWorkingOrder(result);
+        setIsFetching(false);
       });
     } catch (error) {
       dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
+      setIsFetching(false);
     }
-    setIsFetching(false);
   };
 
   const getSortedFields = useMemo(() => {
-    // console.log('sortingTHIS');
-    if (isFetching) return customFields;
     return customFields?.slice().sort((a, b) => {
       return a?.sortIndex - b?.sortIndex;
     });
-  }, [customFields, isFetching]);
+  }, [customFields]);
 
   return (
     <ViewContainer>
-      {/* {console.log(customFields)} */}
       <Header>Patient Custom Fields</Header>
       <Box p={1} />
       {!isFetching ? (
@@ -240,7 +194,7 @@ const CustomFieldsView = () => {
                 </CustomFieldCell>
               </CustomFieldItem>
               <DndContext sensors={sensors} onDragEnd={handleOnDragEnd}>
-                <SortableContext items={pluck('identifier', customFields)}>
+                <SortableContext items={pluck('identifier', getSortedFields)}>
                   {getSortedFields.map(field => (
                     <CustomSortableField
                       key={field.identifier}
