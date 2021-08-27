@@ -240,7 +240,7 @@ const CustomFieldsView = () => {
               </CustomFieldItem>
               <DndContext sensors={sensors} onDragEnd={handleOnDragEnd}>
                 <SortableContext items={pluck('identifier', customFields)}>
-                  {getSortedFields().map(field => (
+                  {getSortedFields.map(field => (
                     <CustomSortableField
                       key={field.identifier}
                       itemId={field.identifier}
