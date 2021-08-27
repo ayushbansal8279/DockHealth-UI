@@ -136,6 +136,7 @@ const CustomFieldsView = () => {
     const idents = pluck('identifier', customFields);
     const idxFrom = idents.indexOf(action.active.id);
     const idxTo = idents.indexOf(action.over.id);
+    console.log(`[from ${idxFrom} to ${idxTo}]`);
     return move(idxFrom, idxTo, customFields);
   };
 
@@ -181,9 +182,9 @@ const CustomFieldsView = () => {
   //     .concat(customFields.slice(idxFrom));
   // };
 
-  const updateSortIndexes = () => {
-    customFields.map((field, index) => ({ ...field, sortIndex: index }));
-  };
+  // const updateSortIndexes = () => {
+  //   customFields.map((field, index) => ({ ...field, sortIndex: index }));
+  // };
 
   const handleOnDragEnd = action => {
     console.log(pluck('name', customFields));
@@ -191,14 +192,14 @@ const CustomFieldsView = () => {
     const result = newBetterOrder(action);
     setLastWorkingOrder(customFields);
     setCustomFields(result);
-    updateSortIndexes();
+    // updateSortIndexes();
     console.log(pluck('name', customFields));
     console.log(pluck('name', result));
     // console.log(`new order`, customFields);
     setIsFetching(true);
     try {
-      CustomFieldsApi.sendSortedPatientCustomFields(customFields).then(() => {
-        setLastWorkingOrder(customFields);
+      CustomFieldsApi.sendSortedPatientCustomFields(result).then(() => {
+        setLastWorkingOrder(result);
       });
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -208,7 +209,7 @@ const CustomFieldsView = () => {
   };
 
   const getSortedFields = useMemo(() => {
-    console.log('sortingTHIS');
+    // console.log('sortingTHIS');
     if (isFetching) return customFields;
     return customFields?.slice().sort((a, b) => {
       return a?.sortIndex - b?.sortIndex;
@@ -217,7 +218,7 @@ const CustomFieldsView = () => {
 
   return (
     <ViewContainer>
-      {console.log(customFields)}
+      {/* {console.log(customFields)} */}
       <Header>Patient Custom Fields</Header>
       <Box p={1} />
       {!isFetching ? (
