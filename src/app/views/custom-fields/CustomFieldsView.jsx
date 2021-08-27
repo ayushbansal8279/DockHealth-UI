@@ -182,17 +182,17 @@ const CustomFieldsView = () => {
   //     .concat(customFields.slice(idxFrom));
   // };
 
-  // const updateSortIndexes = () => {
-  //   customFields.map((field, index) => ({ ...field, sortIndex: index }));
-  // };
+  const updateSortIndexes = order => {
+    order.map((field, index) => ({ ...field, sortIndex: index }));
+  };
 
   const handleOnDragEnd = action => {
     console.log(pluck('name', customFields));
     // const result = newOrder(action);
     const result = newBetterOrder(action);
     setLastWorkingOrder(customFields);
+    updateSortIndexes(result);
     setCustomFields(result);
-    // updateSortIndexes();
     console.log(pluck('name', customFields));
     console.log(pluck('name', result));
     // console.log(`new order`, customFields);
