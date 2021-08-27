@@ -125,10 +125,6 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
       bundleIdentifier: templateBundleIdentifier,
       dataToUpdate: templateBundle,
     });
-    yield put({
-      type: ActionTypes.UPDATE_TASKLIST_SUCCESS,
-      updatedTasklist: templateBundle.tasks,
-    });
   } catch {
     yield put(showGlobalErrorAlert());
   }
