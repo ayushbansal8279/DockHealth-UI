@@ -43,8 +43,6 @@ const CustomFieldsView = () => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
-  const [lastWorkingOrder, setLastWorkingOrder] = useState(null);
-
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   useEffect(() => {
@@ -86,17 +84,6 @@ const CustomFieldsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddFieldClick = () => {
-    dispatch(
-      openModal('EditCustomPatientField', {
-        onAdded: customField =>
-          setCustomFields(previousValue =>
-            previousValue ? [...previousValue, customField] : [customField],
-          ),
-      }),
-    );
-  };
-
   const handleEditClick = field => {
     dispatch(
       openModal('EditCustomPatientField', {
@@ -119,11 +106,11 @@ const CustomFieldsView = () => {
       openModal('DeleteField', {
         confirm: () => {
           CustomFieldsApi.deletePatientCustomField(id)
-            .then(() => {
+            .then(() =>
               setCustomFields(previousValue =>
                 previousValue.filter(({ identifier }) => id !== identifier),
-              );
-            })
+              ),
+            )
             .catch(() => {
               dispatch(showGlobalErrorAlert());
             });
@@ -133,36 +120,48 @@ const CustomFieldsView = () => {
   };
 
   const newOrder = action => {
+    if (!action) return customFields;
     const idents = pluck('identifier', customFields);
     const idxFrom = idents.indexOf(action.active.id);
     const idxTo = idents.indexOf(action.over.id);
-    console.log(`[from ${idxFrom} to ${idxTo}]`);
-    return move(idxFrom, idxTo, customFields);
-  };
-
-  const updateSortIndexes = order => {
-    order.map((field, index) => ({ ...field, sortIndex: index }));
+    return move(idxFrom, idxTo, customFields).map((field, index) => ({
+      ...field,
+      sortIndex: index,
+    }));
   };
 
   const handleOnDragEnd = action => {
-    console.log(pluck('name', customFields));
     const result = newOrder(action);
-    setLastWorkingOrder(customFields);
-    updateSortIndexes(result);
+    const lastWorkingOrder = customFields.slice();
     setCustomFields(result);
-    console.log(pluck('name', result));
-    setIsFetching(true);
-    console.log(pluck('name', customFields));
     try {
-      CustomFieldsApi.sendSortedPatientCustomFields(result).then(() => {
-        setLastWorkingOrder(result);
-        setIsFetching(false);
-      });
+      CustomFieldsApi.sendSortedPatientCustomFields(result);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
-      setIsFetching(false);
     }
+  };
+
+  const handleAddFieldClick = () => {
+    dispatch(
+      openModal('EditCustomPatientField', {
+        onAdded: customField => {
+          const newFields = (customFields
+            ? [...customFields, customField]
+            : [customField]
+          ).map((field, index) => {
+            return { ...field, sortIndex: index };
+          });
+          try {
+            CustomFieldsApi.sendSortedPatientCustomFields(newFields);
+          } catch {
+            // when adding a field succeds but sorting it fails, I reload the page to fetch the whole list again, because the state of the list locally doesn't reflect the backend state ot if
+            window.location.reload();
+          }
+          setCustomFields(newFields);
+        },
+      }),
+    );
   };
 
   const getSortedFields = useMemo(() => {
