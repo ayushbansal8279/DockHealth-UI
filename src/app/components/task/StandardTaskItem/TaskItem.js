@@ -164,6 +164,7 @@ const TaskItem = ({
     isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
   );
   const [isHovered, setIsHovered] = useState(false);
+  const [taskDecisionError, setTaskDecisionError] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
       rawText: description,
@@ -235,24 +236,28 @@ const TaskItem = ({
   const onCircleClick = useCallback(
     event => {
       if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
-        toggleCompleteTask(task);
-      }
-
-      if (!isSubtask) {
-        (isCompleted ? onTaskReActivated : onTaskCompleted)();
-      } else {
-        (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
+        setTaskDecisionError(false);
+        toggleCompleteTask({ ...task, templateBundleIdentifier });
+        if (!isSubtask) {
+          (isCompleted ? onTaskReActivated : onTaskCompleted)();
+        } else {
+          (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
+        }
+      } else if (!isDecisionSelected) {
+        setTaskDecisionError(true);
       }
 
       event.stopPropagation();
     },
     [
+      templateBundleIdentifier,
       isTaskStatusTogglingDisabled,
       isSubtask,
       isCompleted,
       toggleCompleteTask,
       task,
       isDependencyEmptyOrCompleted,
+      isDecisionSelected,
     ],
   );
 
@@ -416,7 +421,7 @@ const TaskItem = ({
               onClick={onCircleClick}
             />
 
-            {!!dependencyTasksCount && (
+            {!isDependencyEmptyOrCompleted && !isTemplateTask && (
               <>
                 <DependencyIconContainer
                   onMouseEnter={openDependencyPopover}
@@ -460,6 +465,9 @@ const TaskItem = ({
               onSelect={chooseTaskDecisionOutcome}
               task={task}
               templateBundleIdentifier={templateBundleIdentifier}
+              disabled={isCompleted}
+              error={taskDecisionError}
+              clearError={() => setTaskDecisionError(false)}
             />
           )}
           {subtasksIsInConfig && (

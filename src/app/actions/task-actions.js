@@ -13,6 +13,13 @@ import * as ActionTypes from './action-types';
 import * as ActionTypesSaga from './action-types-saga';
 import AlertMessages from '../alert/AlertMessages';
 
+export function refreshTaskBundle(templateBundleIdentifier) {
+  return {
+    type: ActionTypesSaga.REFRESH_TASK_BUNDLE,
+    templateBundleIdentifier,
+  };
+}
+
 export const clearPreparedSubtask = curry(dispatch =>
   dispatch({
     type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
@@ -423,10 +430,11 @@ export function duplicateTask(
 }
 
 export function toggleCompleteTask(
-  task,
+  taskObject,
   currentUser = null,
   isBundleTask = false,
 ) {
+  const { templateBundleIdentifier, ...task } = taskObject;
   return dispatch => {
     const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
@@ -449,7 +457,6 @@ export function toggleCompleteTask(
       newTaskData.completedBy = currentUser;
       newTaskData.completedDt = moment().toISOString();
     }
-
     dispatch({
       type: ActionTypes.SET_COMPLETE_STATUS,
       taskIdentifier: task.taskIdentifier,
@@ -467,6 +474,10 @@ export function toggleCompleteTask(
               }),
             TASK_DISAPPEAR_DELAY,
           );
+        }
+
+        if (templateBundleIdentifier) {
+          dispatch(refreshTaskBundle(templateBundleIdentifier));
         }
         dispatch(AlertActions.showGlobalAlert(successMessage));
       })

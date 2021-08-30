@@ -12,6 +12,9 @@ const TaskItemDecision = ({
   dispatch,
   task,
   templateBundleIdentifier,
+  disabled,
+  error = false,
+  clearError,
 }) => {
   const initialOptions = useMemo(
     () =>
@@ -32,10 +35,11 @@ const TaskItemDecision = ({
 
   const handleChange = useCallback(
     ({ target }) => {
+      clearError();
       setValue(target.value);
       dispatch(onSelect(target.value, task, templateBundleIdentifier));
     },
-    [dispatch, onSelect, task, templateBundleIdentifier],
+    [dispatch, onSelect, task, templateBundleIdentifier, clearError],
   );
 
   return (
@@ -44,9 +48,9 @@ const TaskItemDecision = ({
         <DecisionSelect
           value={value}
           onChange={handleChange}
-          error={false}
+          error={error}
           options={options}
-          disabled={task.isSelected}
+          disabled={disabled}
         />
       </DecisionBox>
     </StandardTaskItemCell>

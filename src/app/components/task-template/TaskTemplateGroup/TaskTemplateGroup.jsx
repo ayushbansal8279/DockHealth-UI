@@ -10,10 +10,7 @@ import React, {
 import { Box } from '@material-ui/core';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { pluck } from 'ramda';
-import {
-  checkIfHasIncompleteTasks,
-  extractTasksAndSubtasks,
-} from 'helpers/tasklist-helpers';
+import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -22,7 +19,6 @@ import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import { TaskStatus } from 'helpers/task-helpers';
-import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -97,14 +93,6 @@ const TaskTemplateGroup = ({
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
-
-  useEffect(() => {
-    if (tasks && !checkIfHasIncompleteTasks(tasks)) {
-      setTimeout(() => {
-        dispatch(TemplateBundleActions.completeTemplateBundle(identifier));
-      }, TASK_DISAPPEAR_DELAY);
-    }
-  }, [dispatch, identifier, tasks]);
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
