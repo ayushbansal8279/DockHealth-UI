@@ -457,13 +457,11 @@ export function toggleCompleteTask(
       newTaskData.completedBy = currentUser;
       newTaskData.completedDt = moment().toISOString();
     }
-    if (!templateBundleIdentifier) {
-      dispatch({
-        type: ActionTypes.SET_COMPLETE_STATUS,
-        taskIdentifier: task.taskIdentifier,
-        dataToUpdate: newTaskData,
-      });
-    }
+    dispatch({
+      type: ActionTypes.SET_COMPLETE_STATUS,
+      taskIdentifier: task.taskIdentifier,
+      dataToUpdate: newTaskData,
+    });
 
     return TaskApi[apiEndpoint](task)
       .then(() => {

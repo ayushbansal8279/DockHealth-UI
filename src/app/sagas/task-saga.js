@@ -1,4 +1,4 @@
-import { takeEvery, put, call, all } from 'redux-saga/effects';
+import { takeEvery, put, call, all, delay } from 'redux-saga/effects';
 import { pluck, move } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -11,6 +11,9 @@ import {
   REFRESH_TASK_BUNDLE,
 } from 'actions/action-types-saga';
 import { getTemplateBundle } from 'api/template-bundle-api';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import { checkIfHasIncompleteTasks } from 'helpers/tasklist-helpers';
 
 function* reorderSubtasks(payload) {
   const {
@@ -125,6 +128,12 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
       bundleIdentifier: templateBundleIdentifier,
       dataToUpdate: templateBundle,
     });
+    if (!checkIfHasIncompleteTasks(templateBundle.tasks)) {
+      yield delay(TASK_DISAPPEAR_DELAY);
+      yield put(
+        TemplateBundleActions.completeTemplateBundle(templateBundleIdentifier),
+      );
+    }
   } catch {
     yield put(showGlobalErrorAlert());
   }
