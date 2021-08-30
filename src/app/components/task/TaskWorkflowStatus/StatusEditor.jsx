@@ -18,6 +18,7 @@ import {
   reorderOrganizationStatuses,
 } from 'sagas/organization-saga';
 import EditableWorkflowStatusItem from 'components/task/WorkflowStatusItem/EditableWorkflowStatusItem';
+import SortableItem from 'components/common/SortableItem/SortableItem';
 import { RESET_STATUS, StatusColor } from './helpers';
 import {
   StatusList,
@@ -28,7 +29,6 @@ import {
   ColorPickerWrapper,
   ColorButton,
 } from './styled';
-import SortableStatusItem from './SortableStatusItem';
 
 const DEFAULT_SELECTED_COLOR = StatusColor.YELLOW;
 
@@ -150,9 +150,10 @@ const StatusEditor = ({ onClose }) => {
                   : status;
 
               return (
-                <SortableStatusItem
+                <SortableItem
                   key={status.identifier}
                   itemId={status.identifier}
+                  overflowHidden
                 >
                   {({ dragHandleProps }) => (
                     <EditableWorkflowStatusItem
@@ -173,7 +174,7 @@ const StatusEditor = ({ onClose }) => {
                       }
                     />
                   )}
-                </SortableStatusItem>
+                </SortableItem>
               );
             })}
             {isAddingNewStatus && (

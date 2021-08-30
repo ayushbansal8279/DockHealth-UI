@@ -27,7 +27,7 @@ export const DragHandle = styled.div`
   transform: translateY(-50%);
   color: ${palette.coolGrey2};
   opacity: 0;
-  transition; opacity 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
   cursor: grab;
   outline: none;
 `;
