@@ -24,6 +24,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import DragHandleIcon from 'img/drag-handle';
+import SortableItem from 'components/common/SortableItem/SortableItem';
 import {
   ViewContainer,
   Header,
@@ -34,7 +35,6 @@ import {
   CustomFieldHeaderText,
   DragHandle,
 } from './styled';
-import CustomSortableField from './CustomSortableField';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CustomFieldsView = () => {
@@ -212,7 +212,7 @@ const CustomFieldsView = () => {
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
                   {sortedFields.map(field => (
-                    <CustomSortableField
+                    <SortableItem
                       key={field.identifier}
                       itemId={field.identifier}
                     >
@@ -256,7 +256,7 @@ const CustomFieldsView = () => {
                           </CustomFieldItem>
                         </div>
                       )}
-                    </CustomSortableField>
+                    </SortableItem>
                   ))}
                 </SortableContext>
               </DndContext>

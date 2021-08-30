@@ -61,11 +61,6 @@ export const CustomFieldHeaderText = styled(CustomFieldText)`
   text-transform: uppercase;
   font-weight: ${fontWeights.bold};
 `;
-
-export const CustomSortableFieldWrapper = styled.div`
-  width: 100%;
-`;
-
 export const DragHandle = styled.div`
   position: absolute;
   left: -12px;
