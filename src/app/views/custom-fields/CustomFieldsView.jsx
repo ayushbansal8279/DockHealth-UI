@@ -45,6 +45,20 @@ const CustomFieldsView = () => {
   const [isFetching, setIsFetching] = useState(true);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
+  const fetchPatientCustomFields = () => {
+    CustomFieldsApi.getAllPatientCustomFields()
+      .then(data => {
+        const customFieldsData = data?.filter(
+          cf => cf.contextType === 'CUSTOM',
+        );
+        setCustomFields(customFieldsData);
+        setIsFetching(false);
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      });
+  };
+
   useEffect(() => {
     if (
       !(
@@ -69,18 +83,7 @@ const CustomFieldsView = () => {
         ],
       }),
     );
-
-    CustomFieldsApi.getAllPatientCustomFields()
-      .then(data => {
-        const customFieldsData = data?.filter(
-          cf => cf.contextType === 'CUSTOM',
-        );
-        setCustomFields(customFieldsData);
-        setIsFetching(false);
-      })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
-      });
+    fetchPatientCustomFields();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -153,8 +156,8 @@ const CustomFieldsView = () => {
     dispatch(
       openModal('EditCustomPatientField', {
         onAdded: async customField => {
-          const newFields = (customFields
-            ? [...customFields, customField]
+          const newFields = (sortedFields
+            ? [...sortedFields, customField]
             : [customField]
           ).map((field, index) => {
             return { ...field, sortIndex: index };
@@ -164,17 +167,7 @@ const CustomFieldsView = () => {
               pluck('identifier', newFields),
             );
           } catch {
-            CustomFieldsApi.getAllPatientCustomFields()
-              .then(data => {
-                const customFieldsData = data?.filter(
-                  field => field.contextType === 'CUSTOM',
-                );
-                setCustomFields(customFieldsData);
-                setIsFetching(false);
-              })
-              .catch(() => {
-                dispatch(showGlobalErrorAlert());
-              });
+            fetchPatientCustomFields();
           }
           setCustomFields(newFields);
         },
