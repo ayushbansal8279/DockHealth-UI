@@ -25,6 +25,7 @@ export const EmptyListPlaceholder = styled.p`
 `;
 
 export const CustomFieldItem = styled.div`
+  position: relative;
   width: 100%;
   height: 35px;
   display: grid;
@@ -63,12 +64,11 @@ export const CustomFieldHeaderText = styled(CustomFieldText)`
 
 export const CustomSortableFieldWrapper = styled.div`
   width: 100%;
-  overflow: hidden;
 `;
 
 export const DragHandle = styled.div`
   position: absolute;
-  transform: translate(-300%, 10px);
+  left: -12px;
   color: ${palette.coolGrey2};
   transition: opacity 0.3s ease-out;
   cursor: grab;

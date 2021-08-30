@@ -119,23 +119,28 @@ const CustomFieldsView = () => {
     );
   };
 
-  const newOrder = action => {
-    if (!action) return customFields;
-    const idents = pluck('identifier', customFields);
-    const idxFrom = idents.indexOf(action.active.id);
-    const idxTo = idents.indexOf(action.over.id);
-    return move(idxFrom, idxTo, customFields).map((field, index) => ({
+  const moveElementByIDs = (originID, destinationID, fields) => {
+    if (!originID || !destinationID) return fields;
+    const idents = pluck('identifier', fields);
+    const idxFrom = idents.indexOf(originID);
+    const idxTo = idents.indexOf(destinationID);
+    return move(idxFrom, idxTo, fields).map((field, index) => ({
       ...field,
       sortIndex: index,
     }));
   };
+  const sortedFields = useMemo(() => {
+    return customFields?.slice().sort((a, b) => {
+      return a?.sortIndex - b?.sortIndex;
+    });
+  }, [customFields]);
 
-  const handleOnDragEnd = action => {
-    const result = newOrder(action);
+  const handleOnDragEnd = async (originID, destinationID) => {
+    const result = moveElementByIDs(originID, destinationID, sortedFields);
     const lastWorkingOrder = customFields.slice();
     setCustomFields(result);
     try {
-      CustomFieldsApi.sendSortedPatientCustomFields(
+      await CustomFieldsApi.sortPatientCustomFields(
         pluck('identifier', result),
       );
     } catch (error) {
@@ -147,7 +152,7 @@ const CustomFieldsView = () => {
   const handleAddFieldClick = () => {
     dispatch(
       openModal('EditCustomPatientField', {
-        onAdded: customField => {
+        onAdded: async customField => {
           const newFields = (customFields
             ? [...customFields, customField]
             : [customField]
@@ -155,24 +160,27 @@ const CustomFieldsView = () => {
             return { ...field, sortIndex: index };
           });
           try {
-            CustomFieldsApi.sendSortedPatientCustomFields(
+            await CustomFieldsApi.sortPatientCustomFields(
               pluck('identifier', newFields),
             );
           } catch {
-            // when adding a field succeds but sorting it fails, I reload the page to fetch the whole list again, because the state of the list locally doesn't reflect the backend state ot if
-            window.location.reload();
+            CustomFieldsApi.getAllPatientCustomFields()
+              .then(data => {
+                const customFieldsData = data?.filter(
+                  field => field.contextType === 'CUSTOM',
+                );
+                setCustomFields(customFieldsData);
+                setIsFetching(false);
+              })
+              .catch(() => {
+                dispatch(showGlobalErrorAlert());
+              });
           }
           setCustomFields(newFields);
         },
       }),
     );
   };
-
-  const getSortedFields = useMemo(() => {
-    return customFields?.slice().sort((a, b) => {
-      return a?.sortIndex - b?.sortIndex;
-    });
-  }, [customFields]);
 
   return (
     <ViewContainer>
@@ -196,9 +204,14 @@ const CustomFieldsView = () => {
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
-              <DndContext sensors={sensors} onDragEnd={handleOnDragEnd}>
-                <SortableContext items={pluck('identifier', getSortedFields)}>
-                  {getSortedFields.map(field => (
+              <DndContext
+                sensors={sensors}
+                onDragEnd={({ active, over }) =>
+                  handleOnDragEnd(active.id, over.id)
+                }
+              >
+                <SortableContext items={pluck('identifier', sortedFields)}>
+                  {sortedFields.map(field => (
                     <CustomSortableField
                       key={field.identifier}
                       itemId={field.identifier}

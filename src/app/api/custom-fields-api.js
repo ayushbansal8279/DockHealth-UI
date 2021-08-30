@@ -33,7 +33,7 @@ export function deletePatientCustomField(identifier) {
   return axios.delete(`custom/field/${identifier}`).then(({ data }) => data);
 }
 
-export function sendSortedPatientCustomFields(identifiers) {
+export function sortPatientCustomFields(identifiers) {
   return axios.put(`custom/field/sortCustomFields/PATIENT`, {
     customFieldIdentifiers: identifiers,
   });
