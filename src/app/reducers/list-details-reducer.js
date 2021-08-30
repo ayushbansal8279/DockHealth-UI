@@ -114,12 +114,6 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
-  console.log(
-    // eslint-disable-next-line no-useless-concat
-    '%cREDUCER action.type: ' + `%c${action.type}`,
-    'color: white',
-    'color: orange',
-  );
   switch (action.type) {
     case TASK_GROUP_LIST_REQUEST:
       return {

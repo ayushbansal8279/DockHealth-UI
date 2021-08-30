@@ -6,7 +6,6 @@ export const TaskListTabName = {
 };
 
 export function checkIfTasksHaveSubtasksOrComments(tasks) {
-  console.log('task', tasks);
   if (tasks?.length === 0) return false;
 
   return tasks.find(({ subtasks, subTasksCount, comments }) => {
