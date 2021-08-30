@@ -4,6 +4,6 @@ export const TIME_12H_FORMAT = 'hh:mm A';
 export const DrawerFieldEnum = {
   PATIENT: 'patient',
   COMMENT: 'comment',
-  ATTACHEMENT: 'attachement',
+  ATTACHMENT: 'attachment',
   LABEL: 'label',
 };

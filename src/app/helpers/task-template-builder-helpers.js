@@ -10,6 +10,7 @@ export const NodeType = {
 export const LinkType = {
   STANDARD: 'STANDARD_LINK',
   DECISION: 'DECISION_LINK',
+  TEMPORARY: 'TEMPORARY_LINK',
 };
 
 export const NodeSourceHandle = {
@@ -24,6 +25,23 @@ export const NodeTargetHandle = {
 
 export function getUniqueLinkId(sourceId, targetId) {
   return `${sourceId}_${targetId}`;
+}
+
+export function createLinkElement(
+  sourceId,
+  targetId,
+  sourceHandle,
+  targetHandle,
+) {
+  return {
+    id: getUniqueLinkId(sourceId, targetId),
+    source: sourceId,
+    target: targetId,
+    sourceHandle: sourceHandle || NodeSourceHandle.SOURCE_A,
+    targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
+    type: LinkType.TEMPORARY,
+    data: {},
+  };
 }
 
 export function createTaskNode(currentTemporaryElements, elementPosition) {
@@ -49,25 +67,31 @@ export function createDecisionTaskNodes(
     element => element.type === NodeType.NEW_DECISION,
   ).length || 0}`;
 
-  const firstNewStandardTask = createTaskNode(currentTemporaryElements, {
+  const temporaryDecisionTask = {
+    id: newDecisionTaskId,
+    type: NodeType.NEW_DECISION,
+    position: elementPosition,
+  };
+
+  const firstTemporaryStandardTask = createTaskNode(currentTemporaryElements, {
     x: elementPosition.x - 200,
     y: elementPosition.y + 300,
   });
 
-  return [
+  const secondTemporaryStandardTask = createTaskNode(
+    [firstTemporaryStandardTask, ...(currentTemporaryElements || [])],
     {
-      id: newDecisionTaskId,
-      type: NodeType.NEW_DECISION,
-      position: elementPosition,
+      x: elementPosition.x + 200,
+      y: elementPosition.y + 300,
     },
-    firstNewStandardTask,
-    createTaskNode(
-      [firstNewStandardTask, ...(currentTemporaryElements || [])],
-      {
-        x: elementPosition.x + 200,
-        y: elementPosition.y + 300,
-      },
-    ),
+  );
+
+  return [
+    temporaryDecisionTask,
+    firstTemporaryStandardTask,
+    secondTemporaryStandardTask,
+    createLinkElement(temporaryDecisionTask.id, firstTemporaryStandardTask.id),
+    createLinkElement(temporaryDecisionTask.id, secondTemporaryStandardTask.id),
   ];
 }
 

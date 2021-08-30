@@ -173,9 +173,9 @@ export function addNewDecisionTaskElement(position) {
   };
 }
 
-export function deleteNewTaskElement(elementId) {
+export function deleteTemporaryElement(elementId) {
   return {
-    type: ActionTypes.DELETE_NEW_TASK_ELEMENT,
+    type: ActionTypes.DELETE_TEMPORARY_ELEMENT,
     elementId,
   };
 }
@@ -207,5 +207,20 @@ export function linkTasks(source, target) {
     type: ActionTypes.LINK_TASKS,
     source,
     target,
+  };
+}
+
+export function addTemporaryLink(
+  sourceId,
+  targetId,
+  sourceHandle,
+  targetHandle,
+) {
+  return {
+    type: ActionTypes.ADD_TEMPORARY_LINK,
+    sourceId,
+    targetId,
+    sourceHandle,
+    targetHandle,
   };
 }

@@ -29,7 +29,7 @@ const LinkPath = props => {
       id={id}
       style={{
         stroke: selected ? palette.brightBlue : undefined,
-        strokeWidth: '4px',
+        strokeWidth: '3px',
       }}
       className="react-flow__edge-path"
       d={edgePath}

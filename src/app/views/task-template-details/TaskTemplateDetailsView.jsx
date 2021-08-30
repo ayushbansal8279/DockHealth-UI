@@ -9,7 +9,7 @@ import { deleteTasksLink } from 'actions/task-actions';
 import {
   addNewDecisionTaskElement,
   addNewTaskElement,
-  deleteNewTaskElement,
+  deleteTemporaryElement,
   linkTasks,
   saveTaskTemplateLayout,
   selectTaskTemplate,
@@ -29,6 +29,7 @@ import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
 import DecisionTaskLink from './DecisionTaskLink/DecisionTaskLink';
+import TemporaryTaskLink from './TemporaryTaskLink/TemporaryTaskLink';
 import {
   mapLayoutToElements,
   mapElementsToLayout,
@@ -56,6 +57,7 @@ const nodeTypes = {
 const linkTypes = {
   [LinkType.STANDARD]: TaskLink,
   [LinkType.DECISION]: DecisionTaskLink,
+  [LinkType.TEMPORARY]: TemporaryTaskLink,
 };
 
 const TaskTemplateDetailsView = () => {
@@ -160,16 +162,20 @@ const TaskTemplateDetailsView = () => {
 
   const handleRemoveElement = elementsToDelete => {
     elementsToDelete.forEach(element => {
-      if (Object.values(LinkType).includes(element.type)) {
+      if ([LinkType.DECISION, LinkType.STANDARD].includes(element.type)) {
         const {
           source: sourceTaskIdentifier,
           target: targetTaskIdentifier,
         } = element;
         dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
       } else if (
-        [NodeType.NEW_DECISION, NodeType.NEW_STANDARD].includes(element.type)
+        [
+          NodeType.NEW_DECISION,
+          NodeType.NEW_STANDARD,
+          LinkType.TEMPORARY,
+        ].includes(element.type)
       ) {
-        dispatch(deleteNewTaskElement(element.id));
+        dispatch(deleteTemporaryElement(element.id));
       }
     });
   };

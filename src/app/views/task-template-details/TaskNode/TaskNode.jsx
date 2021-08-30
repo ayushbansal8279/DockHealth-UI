@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, IconButton } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -48,6 +49,11 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     dispatch(openDrawer());
   };
 
+  const openTaskDrawer = filed => {
+    dispatch(openDrawer(filed));
+    dispatch(storeAsCurrentTask(task));
+  };
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
@@ -80,21 +86,21 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
                   type="comments"
                   isActive={comments?.length > 0}
                   isNew={updatedComment}
-                  onClick={() => {}}
+                  onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
                 />
                 <Box p={1} />
                 <TaskIcon
                   type="labels"
                   isActive={labels?.length > 0}
                   isNew={updatedLabel}
-                  onClick={() => {}}
+                  onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
                 />
                 <Box p={1} />
                 <TaskIcon
                   type="attachments"
-                  onClick={() => {}}
                   isActive={attachments?.length > 0}
                   isNew={updatedAttachment}
+                  onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
                 />
               </Box>
               {subtasks?.length > 0 && (

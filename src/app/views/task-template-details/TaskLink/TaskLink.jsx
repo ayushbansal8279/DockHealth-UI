@@ -3,27 +3,16 @@ import React, { useRef, useEffect } from 'react';
 import { isNil } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
-import {
-  MenuItem,
-  Paper,
-  MenuList,
-  Popper,
-  ClickAwayListener,
-} from '@material-ui/core';
+import { Paper, Popper, ClickAwayListener } from '@material-ui/core';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import LinkPath from '../LinkPath/LinkPath';
-import {
-  LabelsWrapper,
-  HardDependencyLabel,
-  useMenuStyles,
-  MenuItemIconWrapper,
-  DelayPeriodLabel,
-} from './styled';
+import { LabelsWrapper, HardDependencyLabel, DelayPeriodLabel } from './styled';
 import TaskLinkDelayForm from './TaskLinkDelayForm';
+import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 
 const TaskLink = props => {
   const {
@@ -53,7 +42,6 @@ const TaskLink = props => {
     false,
   );
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
-  const menuClasses = useMenuStyles();
   const dispatch = useDispatch();
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 
@@ -86,7 +74,7 @@ const TaskLink = props => {
     );
   };
 
-  const handleDelayPeriodToggle = () => {
+  const togglePeriodDelay = () => {
     if (delayOptionsVisible) {
       removeDelayPeriod();
     } else {
@@ -97,6 +85,29 @@ const TaskLink = props => {
   const deleteLink = () => {
     dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
   };
+
+  const menuOptions = [
+    {
+      key: 'dependency',
+      icon: <HardDependencyIcon size={11} />,
+      label: `${isDependent ? 'Remove' : 'Make'} dependent`,
+      onClick: toggleDependent,
+    },
+    {
+      key: 'delay',
+      icon: <CalendarIcon size={11} />,
+      label: `${
+        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+      } time till task`,
+      onClick: togglePeriodDelay,
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      label: `Delete link`,
+      onClick: deleteLink,
+    },
+  ];
 
   return (
     <>
@@ -143,43 +154,11 @@ const TaskLink = props => {
           </Popper>
         )}
         {areOptionsOpen && (
-          <Popper
+          <TaskLinkOptions
             anchorEl={labelWrapperReference.current}
-            placement="right"
-            open
-            style={{ zIndex: 10 }}
-          >
-            <ClickAwayListener onClickAway={closeOptions}>
-              <Paper
-                style={{
-                  transform: `scale(${zoom})`,
-                  transformOrigin: 'center left',
-                }}
-              >
-                <MenuList classes={menuClasses} onClick={closeOptions}>
-                  <MenuItem onClick={toggleDependent}>
-                    <MenuItemIconWrapper>
-                      <HardDependencyIcon size={11} />
-                    </MenuItemIconWrapper>
-                    {isDependent ? 'Remove' : 'Make'} dependent
-                  </MenuItem>
-                  <MenuItem onClick={handleDelayPeriodToggle}>
-                    <MenuItemIconWrapper>
-                      <CalendarIcon size={11} />
-                    </MenuItemIconWrapper>
-                    {delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'} time
-                    till task
-                  </MenuItem>
-                  <MenuItem onClick={deleteLink}>
-                    <MenuItemIconWrapper>
-                      <DeleteOutlineIcon style={{ height: 13 }} />
-                    </MenuItemIconWrapper>
-                    Delete link
-                  </MenuItem>
-                </MenuList>
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
+            options={menuOptions}
+            onClose={closeOptions}
+          />
         )}
       </foreignObject>
     </>

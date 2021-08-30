@@ -4,6 +4,7 @@ import { mapWithRemove } from 'helpers/utility-functions';
 import {
   createDecisionTaskNodes,
   createTaskNode,
+  createLinkElement,
 } from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -346,6 +347,31 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_TEMPORARY_LINK: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { sourceId, targetId, sourceHandle, targetHandle } = action;
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []).filter(
+                ({ source, target }) =>
+                  !(source === sourceId && target === targetId),
+              ),
+              createLinkElement(sourceId, targetId, sourceHandle, targetHandle),
+            ],
+          },
+        ),
+      };
+    }
+
     case ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { position } = action;
@@ -369,7 +395,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.DELETE_NEW_TASK_ELEMENT: {
+    case ActionTypes.DELETE_TEMPORARY_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { elementId } = action;
       const { temporaryElements } = state.taskTemplateDetails[
@@ -383,7 +409,10 @@ const TaskTemplateReducer = (state = initialState, action) => {
           state.taskTemplateDetails,
           {
             temporaryElements: temporaryElements.filter(
-              ({ id }) => id !== elementId,
+              ({ id, source, target }) =>
+                id !== elementId &&
+                source !== elementId &&
+                target !== elementId,
             ),
           },
         ),

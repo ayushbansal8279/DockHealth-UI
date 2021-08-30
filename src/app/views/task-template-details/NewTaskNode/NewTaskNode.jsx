@@ -4,14 +4,15 @@ import { useDispatch } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
   addTaskToTemplate,
-  deleteNewTaskElement,
+  deleteTemporaryElement,
 } from 'actions/task-template-actions';
 import { getTargetNodeType } from 'helpers/task-template-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import { NewTaskInput, NewTaskWrapper } from './styled';
+import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 
 const NewTaskNode = React.memo(props => {
-  const { id, type, data, selected, xPos, yPos } = props;
+  const { id, type, data, selected, xPos, yPos, isConnectable } = props;
 
   const { taskTemplateIdentifier } = data;
   const [inputValue, setInputValue] = useState('');
@@ -53,19 +54,24 @@ const NewTaskNode = React.memo(props => {
   };
 
   return (
-    <TaskNodeWrapper selected={selected} type={type}>
-      <NewTaskWrapper>
-        <NewTaskInput
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Add Task Description"
-        />
-        <IconButton onClick={() => dispatch(deleteNewTaskElement(id))}>
-          <DeleteIcon />
-        </IconButton>
-      </NewTaskWrapper>
-    </TaskNodeWrapper>
+    <TaskNodeHandles
+      isConnectable={isConnectable}
+      targetVisible={data.draggedEdgeSourceId}
+    >
+      <TaskNodeWrapper selected={selected} type={type}>
+        <NewTaskWrapper>
+          <NewTaskInput
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Add Task Description"
+          />
+          <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
+            <DeleteIcon />
+          </IconButton>
+        </NewTaskWrapper>
+      </TaskNodeWrapper>
+    </TaskNodeHandles>
   );
 });
 

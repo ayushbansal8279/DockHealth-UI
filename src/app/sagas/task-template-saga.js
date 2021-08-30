@@ -13,15 +13,11 @@ import {
   MOVE_TASK_TEMPLATE,
 } from 'actions/action-types-saga';
 import {
-  ADD_TASK_TO_TEMPLATE,
-  SELECT_TASK_TEMPLATE,
-  GET_TASK_TEMPLATE_TASKS,
-} from 'actions/action-types';
-import {
   all,
   call,
   put,
   select,
+  take,
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
@@ -332,6 +328,18 @@ function* reorderTasksForTemplate(payload) {
 function* addTaskToTemplate({ task, elementId, position }) {
   try {
     const createdTask = yield call(TaskApi.addTask, task);
+
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    const { temporaryElements } = yield select(
+      taskTemplateDetailsSelector(taskTemplateIdentifier),
+    );
+
+    const linkConnectedToCreatedTask = temporaryElements?.filter(
+      ({ source, target }) => source === elementId || target === elementId,
+    );
+
     yield all([
       position &&
         put({
@@ -346,8 +354,28 @@ function* addTaskToTemplate({ task, elementId, position }) {
           taskTemplateIdentifier: task.taskTemplateIdentifier,
         },
       }),
-      elementId && put(TaskTemplateActions.deleteNewTaskElement(elementId)),
+      elementId && put(TaskTemplateActions.deleteTemporaryElement(elementId)),
     ]);
+
+    if (linkConnectedToCreatedTask?.length > 0) {
+      yield all(
+        linkConnectedToCreatedTask.map(link => {
+          const source = {
+            id:
+              elementId === link.source ? createdTask.identifier : link.source,
+            handle: link.sourceHandle,
+          };
+          const target = {
+            id:
+              elementId === link.target ? createdTask.identifier : link.target,
+            handle: link.targetHandle,
+          };
+
+          return put(TaskTemplateActions.linkTasks(source, target));
+        }),
+      );
+    }
+
     yield put(showGlobalAlert(AlertMessages.CREATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -461,42 +489,59 @@ function* linkTasks({ source, target }) {
 
     const checkIfTasksAreLinked = () => {
       return (
-        sourceTask.taskLinks?.some(
+        sourceTask?.taskLinks?.some(
           ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
         ) ||
-        targetTask.taskLinks?.some(
+        targetTask?.taskLinks?.some(
           ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
         )
       );
     };
 
-    if (targetTask && sourceTask && !checkIfTasksAreLinked()) {
-      const { sourceTaskIdentifier, targetTaskIdentifier } = yield call(
-        TaskApi.createTasksLink,
-        source.id,
-        target.id,
+    if (!checkIfTasksAreLinked()) {
+      yield put(
+        TaskTemplateActions.addTemporaryLink(
+          source.id,
+          target.id,
+          source.handle,
+          target.handle,
+        ),
       );
 
-      if (source.handle || target.handle) {
+      if (targetTask && sourceTask) {
+        const { sourceTaskIdentifier, targetTaskIdentifier } = yield call(
+          TaskApi.createTasksLink,
+          source.id,
+          target.id,
+        );
         const linkId = getUniqueLinkId(
           sourceTaskIdentifier,
           targetTaskIdentifier,
         );
-        const updatedLayout = [
-          ...(layout?.filter(({ id }) => id !== linkId) || []),
-          {
-            id: linkId,
-            sourceHandle: source.handle,
-            targetHandle: target.handle,
-          },
-        ];
-        yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
-      }
 
-      yield all([
-        put(TaskActions.refreshTask(sourceTaskIdentifier)),
-        put(TaskActions.refreshTask(targetTaskIdentifier)),
-      ]);
+        if (source.handle || target.handle) {
+          const updatedLayout = [
+            ...(layout?.filter(({ id }) => id !== linkId) || []),
+            {
+              id: linkId,
+              sourceHandle: source.handle,
+              targetHandle: target.handle,
+            },
+          ];
+          yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
+        }
+
+        yield all([
+          put(TaskActions.refreshTask(sourceTaskIdentifier)),
+          put(TaskActions.refreshTask(targetTaskIdentifier)),
+        ]);
+        yield take(
+          action =>
+            action.type === ActionTypes.UPDATE_TASK_SUCCESS &&
+            action.task?.identifier === sourceTaskIdentifier,
+        );
+        yield put(TaskTemplateActions.deleteTemporaryElement(linkId));
+      }
     }
   } catch {
     yield put(showGlobalErrorAlert());
@@ -545,6 +590,20 @@ function* updateTaskOutcome({
   }
 }
 
+function* deleteTaskFromLayout({ taskIdentifier }) {
+  const taskTemplateIdentifier = yield select(
+    currentTaskTemplateIdentifierSelector,
+  );
+  const { layout } = yield select(
+    taskTemplateDetailsSelector(taskTemplateIdentifier),
+  );
+  if (layout?.length > 0) {
+    const updatedLayout = layout?.filter(({ id }) => id !== taskIdentifier);
+    if (layout.length !== updatedLayout.length)
+      yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
   yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
@@ -553,15 +612,15 @@ export default function* watchTaskTemplate() {
   yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
   yield takeLatest(GET_ALL_TASK_TEMPLATES, getAllTemplatesForOrganization);
   yield takeLatest(GET_TASK_TEMPLATES, getTemplates);
-  yield takeEvery(GET_TASK_TEMPLATE_TASKS, getTasksForTemplate);
   yield takeEvery(TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
   yield takeEvery(UPDATE_TASK_TEMPLATE, updateTemplate);
   yield takeEvery(DUPLICATE_TASK_TEMPLATE, duplicateTemplate);
   yield takeEvery(REORDER_TASKS_FOR_TEMPLATE, reorderTasksForTemplate);
-  yield takeEvery(ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
   yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
+  yield takeEvery(ActionTypes.GET_TASK_TEMPLATE_TASKS, getTasksForTemplate);
+  yield takeEvery(ActionTypes.ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
   yield takeEvery(ActionTypes.GET_TASK_TEMPLATE_LAYOUT, getTaskTemplateLayout);
-  yield takeLatest(SELECT_TASK_TEMPLATE, selectTaskTemplate);
+  yield takeLatest(ActionTypes.SELECT_TASK_TEMPLATE, selectTaskTemplate);
   yield takeLatest(
     ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT,
     saveTaskTemplateLayout,
@@ -573,4 +632,5 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ActionTypes.LINK_TASKS, linkTasks);
   yield takeEvery(ActionTypes.ADD_TASK_OUTCOME, addTaskOutcome);
   yield takeEvery(ActionTypes.UPDATE_TASK_OUTCOME, updateTaskOutcome);
+  yield takeEvery(ActionTypes.DELETE_TASK, deleteTaskFromLayout);
 }

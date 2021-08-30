@@ -74,6 +74,11 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   const menuOptions = useMemo(
     () => [
       {
+        name: 'Edit',
+        onClick: () =>
+          history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
+      },
+      {
         name: 'Edit Workflow Name',
         onClick: () => {
           setIsEditing(true);
@@ -142,7 +147,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           ),
       },
     ],
-    [taskTemplateIdentifier, dispatch, nameInputReference, mainListId],
+    [history, taskTemplateIdentifier, dispatch, mainListId],
   );
 
   const handleNameInputKeyDown = useCallback(
@@ -250,12 +255,6 @@ const TaskTemplate = ({ template, isFullView, children }) => {
     setNameInputValue(name);
   };
 
-  const onClickName = () => {
-    if (!isEditing) {
-      history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier));
-    }
-  };
-
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
@@ -277,7 +276,6 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           onBlur={onBlurName}
           onKeyDown={handleNameInputKeyDown}
           value={nameInputValue}
-          onClick={onClickName}
         />
         {children}
         <Spacer />
