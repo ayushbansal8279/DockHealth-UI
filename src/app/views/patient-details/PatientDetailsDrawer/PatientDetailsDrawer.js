@@ -36,7 +36,7 @@ const PatientDetailsDrawer = ({
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const [isActive, setActive, unsetActive] = useBoolean(false);
-  const [hideEmptyFields, setHideEmpty, setShowEmpty] = useBoolean(false);
+  const [hideEmptyFields, , setShowEmpty, toggleEmpty] = useBoolean(false);
   const formMethods = useForm({
     defaultValues: patientValues,
     reValidateMode: 'onSubmit',
@@ -94,7 +94,6 @@ const PatientDetailsDrawer = ({
   };
 
   const contextMenuOptions = useMemo(() => {
-    // console.log(`hide empty is ${hideEmptyFields}`);
     return [
       {
         name: 'Edit',
@@ -109,10 +108,10 @@ const PatientDetailsDrawer = ({
       },
       {
         name: hideEmptyFields ? 'Show Empty Fields' : 'Hide Empty Fields',
-        onClick: hideEmptyFields ? setShowEmpty : setHideEmpty,
+        onClick: toggleEmpty,
       },
     ];
-  }, [archivePatient, hideEmptyFields, setActive, setHideEmpty, setShowEmpty]);
+  }, [archivePatient, hideEmptyFields, setActive, setShowEmpty, toggleEmpty]);
 
   return (
     <FormContext {...formMethods}>

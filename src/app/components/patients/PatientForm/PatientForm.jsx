@@ -1,4 +1,10 @@
-import React, { useState, forwardRef, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -68,13 +74,21 @@ const PatientForm = forwardRef(
               readOnly={readOnly}
               field={field}
               initialValue={initialFieldValue}
-              disableEmpty={hideEmpty && field.contextType === 'CUSTOM'}
             />
           </div>
         );
       },
-      [hideEmpty, patient, readOnly],
+      [patient, readOnly],
     );
+
+    const shownFields = useMemo(() => {
+      if (!hideEmpty) return customFields?.[Category.OTHER_INFO];
+      return customFields?.[Category.OTHER_INFO]?.filter(field => {
+        return patient?.patientMetaData?.find(({ customFieldIdentifier }) => {
+          return field.identifier === customFieldIdentifier;
+        })?.value;
+      });
+    }, [customFields, hideEmpty, patient]);
 
     return (
       <form
@@ -157,7 +171,7 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           {customFields?.[Category.CONTACT_INFO]?.map(renderCustomField)}
         </LabeledCollapse>
-        {customFields?.[Category.OTHER_INFO]?.length > 0 && (
+        {shownFields?.length > 0 && (
           <LabeledCollapse
             name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
               Category.OTHER_INFO
@@ -165,7 +179,7 @@ const PatientForm = forwardRef(
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >
-            {customFields?.[Category.OTHER_INFO]?.map(renderCustomField)}
+            {shownFields.map(renderCustomField)}
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
