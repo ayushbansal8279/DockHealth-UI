@@ -32,6 +32,7 @@ const PatientForm = forwardRef(
       onSubmit,
       readOnly = false,
       buttonLabel,
+      hideEmpty = false,
     },
     reference,
   ) => {
@@ -67,11 +68,12 @@ const PatientForm = forwardRef(
               readOnly={readOnly}
               field={field}
               initialValue={initialFieldValue}
+              disableEmpty={hideEmpty && field.contextType === 'CUSTOM'}
             />
           </div>
         );
       },
-      [patient, readOnly],
+      [hideEmpty, patient, readOnly],
     );
 
     return (

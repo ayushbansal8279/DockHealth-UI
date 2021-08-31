@@ -16,7 +16,12 @@ const BOOL_SELECT_OPTIONS = [
   },
 ];
 
-const CustomField = ({ readOnly, field, initialValue }) => {
+const CustomField = ({
+  readOnly,
+  field,
+  initialValue,
+  disableEmpty = false,
+}) => {
   const { identifier, name, placeholder, fieldType, options } = field;
 
   const { setValue } = useFormContext();
@@ -36,6 +41,8 @@ const CustomField = ({ readOnly, field, initialValue }) => {
     if (initialValue) setValue(fieldName, initialValue.value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (disableEmpty && (!initialValue || !initialValue.value)) return <div />;
 
   switch (fieldType) {
     case FieldType.TEXT:

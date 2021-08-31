@@ -36,6 +36,7 @@ const PatientDetailsDrawer = ({
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const [isActive, setActive, unsetActive] = useBoolean(false);
+  const [hideEmptyFields, setHideEmpty, setShowEmpty] = useBoolean(false);
   const formMethods = useForm({
     defaultValues: patientValues,
     reValidateMode: 'onSubmit',
@@ -92,19 +93,26 @@ const PatientDetailsDrawer = ({
     dispatch(updatePatientDetails(mergeDeepRight(patient, data)));
   };
 
-  const contextMenuOptions = useMemo(
-    () => [
+  const contextMenuOptions = useMemo(() => {
+    // console.log(`hide empty is ${hideEmptyFields}`);
+    return [
       {
         name: 'Edit',
-        onClick: setActive,
+        onClick: () => {
+          setActive();
+          setShowEmpty();
+        },
       },
       {
         name: 'Archive',
         onClick: archivePatient,
       },
-    ],
-    [archivePatient, setActive],
-  );
+      {
+        name: hideEmptyFields ? 'Show Empty Fields' : 'Hide Empty Fields',
+        onClick: hideEmptyFields ? setShowEmpty : setHideEmpty,
+      },
+    ];
+  }, [archivePatient, hideEmptyFields, setActive, setHideEmpty, setShowEmpty]);
 
   return (
     <FormContext {...formMethods}>
@@ -124,6 +132,7 @@ const PatientDetailsDrawer = ({
           readOnly={!isActive || editingDisabled}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="SAVE EDITS"
+          hideEmpty={hideEmptyFields}
         />
       </PatientDrawer>
     </FormContext>
