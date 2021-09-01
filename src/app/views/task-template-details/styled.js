@@ -82,16 +82,26 @@ export const TaskElementIcon = styled.div`
 
 export const BuilderHeader = styled.div`
   position: absolute;
-  top: 14px;
-  left: 56px;
+  top: 0px;
+  left: 0px;
+  max-width: 100%;
   display: flex;
+  padding: 16px;
   align-items: center;
   z-index: 5;
 `;
 
 export const BuilderHeaderText = styled.p`
+  display: block;
   margin-bottom: 0;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 32px;
-  color: ${palette.mediumGrey};
+  font-family: 'Roboto', sans-serif;
+  font-size: ${fontSizes.large};
+  color: ${({ color }) => color || palette.mediumGrey};
+
+  &:last-of-type {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;

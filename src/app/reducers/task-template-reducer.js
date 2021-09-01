@@ -16,6 +16,7 @@ const initialState = {
   parent: null,
   breadcrumbs: [],
   currentTaskTemplateIdentifier: null,
+  currentTaskTemplate: null,
 };
 
 const templateDetailsInitialState = {
@@ -248,6 +249,15 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.GET_CURRENT_TASK_TEMPLATE_SUCCESS: {
+      const { template } = action;
+
+      return {
+        ...state,
+        currentTaskTemplate: template,
+      };
+    }
+
     case ActionTypes.SELECT_TASK_TEMPLATE: {
       const { taskTemplateIdentifier } = action;
 
@@ -261,6 +271,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       return {
         ...state,
         currentTaskTemplateIdentifier: null,
+        currentTaskTemplate: null,
       };
     }
 

@@ -1,9 +1,9 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
-import ArrowLeftIcon from 'img/arrow-left.svg';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
 import { deleteTasksLink } from 'actions/task-actions';
 import {
@@ -15,7 +15,10 @@ import {
   selectTaskTemplate,
   unselectTaskTemplate,
 } from 'actions/task-template-actions';
-import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
+import {
+  taskTemplateDetailsSelector,
+  currentTaskTemplateSelector,
+} from 'selectors/task-template-selectors';
 import { Box } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import ReactFlow, { Controls, ReactFlowProvider } from 'react-flow-renderer';
@@ -25,6 +28,7 @@ import {
   LinkType,
   TASK_NODE_WIDTH,
 } from 'helpers/task-template-builder-helpers';
+import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -69,7 +73,7 @@ const TaskTemplateDetailsView = () => {
   const dispatch = useDispatch();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const history = useHistory();
+  const { name } = useSelector(currentTaskTemplateSelector) || {};
 
   useEffect(() => {
     dispatch(selectTaskTemplate(identifier));
@@ -197,14 +201,15 @@ const TaskTemplateDetailsView = () => {
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>
             <BuilderHeader>
-              <button
-                type="button"
-                onClick={() => history.push(TASK_TEMPLATES_PATH)}
-              >
-                <img src={ArrowLeftIcon} alt="back" style={{ width: 16 }} />
-              </button>
-              <Box m={0.5} />
-              <BuilderHeaderText>Workflows</BuilderHeaderText>
+              <Link to={TASK_TEMPLATES_PATH}>
+                <BuilderHeaderText color={palette.brightBlue}>
+                  Workflows
+                </BuilderHeaderText>
+              </Link>
+              <Box px={1}>
+                <NavigateNextIcon fontSize="small" />
+              </Box>
+              <BuilderHeaderText>{name}</BuilderHeaderText>
             </BuilderHeader>
             {mergedElementsWithActions && (
               <ReactFlow

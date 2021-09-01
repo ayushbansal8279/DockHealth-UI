@@ -224,3 +224,9 @@ export function addTemporaryLink(
     targetHandle,
   };
 }
+
+export function getCurrentTaskTemplate() {
+  return {
+    type: ActionTypes.GET_CURRENT_TASK_TEMPLATE,
+  };
+}

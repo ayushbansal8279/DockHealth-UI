@@ -428,12 +428,31 @@ function* getTaskTemplateLayout({ taskTemplateIdentifier }) {
 function* selectTaskTemplate({ taskTemplateIdentifier }) {
   try {
     yield all([
+      put(TaskTemplateActions.getCurrentTaskTemplate()),
       put(TaskTemplateActions.getTemplateTasks(taskTemplateIdentifier)),
       put({
         type: ActionTypes.GET_TASK_TEMPLATE_LAYOUT,
         taskTemplateIdentifier,
       }),
     ]);
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* getCurrentTaskTemplate() {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    const template = yield call(
+      TaskTemplateApi.getTemplate,
+      taskTemplateIdentifier,
+    );
+    yield put({
+      type: ActionTypes.GET_CURRENT_TASK_TEMPLATE_SUCCESS,
+      template,
+    });
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -633,4 +652,8 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ActionTypes.ADD_TASK_OUTCOME, addTaskOutcome);
   yield takeEvery(ActionTypes.UPDATE_TASK_OUTCOME, updateTaskOutcome);
   yield takeEvery(ActionTypes.DELETE_TASK, deleteTaskFromLayout);
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_TASK_TEMPLATE,
+    getCurrentTaskTemplate,
+  );
 }

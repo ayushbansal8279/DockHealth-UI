@@ -16,6 +16,7 @@ export function moveTemplate({
       throw error;
     });
 }
+
 export function getAllTemplatesForOrganization() {
   return axios
     .get(`task/template/getTemplatesForOrganization`)
@@ -26,6 +27,7 @@ export function getAllTemplatesForOrganization() {
       throw error;
     });
 }
+
 export function getTemplates() {
   return axios
     .get(`task/template/getRootTemplatesForOrganization`)
@@ -36,6 +38,7 @@ export function getTemplates() {
       throw error;
     });
 }
+
 export function searchTemplates(searchPhrase) {
   return axios
     .get(`task/template/searchTemplatesByName?searchTerm=${searchPhrase}`)
@@ -67,6 +70,12 @@ export function getTasksForTemplate(taskTemplateIdentifier) {
     .catch(error => {
       throw error;
     });
+}
+
+export function getTemplate(identifier) {
+  return axios.get(`task/template/${identifier}`).then(({ data }) => {
+    return data;
+  });
 }
 
 export function addTemplate(newTemplate, parentTaskTemplateIdentifier) {
