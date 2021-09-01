@@ -72,10 +72,13 @@ export function getTasksForTemplate(taskTemplateIdentifier) {
     });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getTemplate(identifier) {
-  return axios.get(`task/template/${identifier}`).then(({ data }) => {
-    return data;
-  });
+  // TODO: uncomment api request after endpoint creation
+  return Promise.resolve({});
+  // return axios.get(`task/template/${identifier}`).then(({ data }) => {
+  //   return data;
+  // });
 }
 
 export function addTemplate(newTemplate, parentTaskTemplateIdentifier) {
