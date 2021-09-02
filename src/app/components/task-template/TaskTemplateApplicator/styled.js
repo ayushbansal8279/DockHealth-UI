@@ -1,8 +1,50 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { LoaderFillElement } from 'components/task/TasksSkeletonLoader/styled';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
+export const FolderIconContainer = styled.div`
+  display: flex;
+  width: 26px;
+  justify-content: center;
+  margin-left: ${spacing.small};
+  grid-column: 1;
+`;
+
+export const PopoverHeader = styled.div`
+  display: flex;
+  box-sizing: border-box;
+  border-bottom: 1px solid ${palette.coolGrey3};
+  padding: 4px;
+`;
+
+export const BackIconContainer = styled.div`
+  display: flex;
+  padding: 4px;
+  padding-right: 20px;
+  padding-left: 10px;
+  vertical-align: middle;
+  justify-content: center;
+  cursor: pointer;
+`;
+export const HeaderTextContainer = styled.div`
+  font-weight: ${fontWeights.regularPlus};
+`;
+
+export const FolderIcon = styled.img`
+  grid-column: 1;
+`;
+
+export const SearchContainer = styled.div`
+  border-bottom: 1px solid ${palette.coolGrey3};
+`;
+
+export const SelectOptionsContainer = styled.div`
+  max-height: 400;
+  overflow: auto;
+`;
 
 export const TaskTemplateApplicatorContainer = styled.div`
   display: flex;
@@ -66,4 +108,47 @@ export const LoaderItem = styled(LoaderFillElement)`
 
 export const LoaderContainer = styled.div`
   padding: ${spacing.smallPlus} 0;
+`;
+
+export const ListItemTextButton = styled.button`
+  flex: 1;
+  margin: 0;
+  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+  font-size: ${fontSizes.regular};
+  text-align: left;
+  outline: none;
+  cursor: ${({ isSelected }) => (isSelected ? 'initial' : 'pointer')};
+`;
+
+export const NextArrow = styled(ChevronRightIcon)`
+  color: ${palette.lightGrey};
+  cursor: pointer;
+`;
+
+export const ListItem = styled.div`
+  display: block;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  appearance: none;
+  border-radius: 0;
+  background-color: ${({ isSelected }) =>
+    isSelected ? palette.darkBlue : 'transparent'};
+
+  &:hover {
+    background-color: ${({ isSelected }) =>
+      isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
+  }
+
+  & ${ListItemTextButton} {
+    color: ${({ isSelected }) =>
+      isSelected ? palette.white : palette.darkGrey};
+  }
+
+  & ${NextArrow} {
+    color: ${({ isSelected }) =>
+      isSelected ? palette.white : palette.lightGrey};
+  }
 `;
