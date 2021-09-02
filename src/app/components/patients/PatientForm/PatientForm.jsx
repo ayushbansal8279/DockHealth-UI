@@ -1,17 +1,12 @@
-import React, {
-  useState,
-  forwardRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+/* eslint-disable unicorn/no-unreadable-array-destructuring */
+import React, { useState, forwardRef, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { groupBy, prop, compose } from 'ramda';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useForm } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
@@ -25,9 +20,25 @@ import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'styles/palette';
+import { fontSizes } from 'styles/font';
+import styled from 'styled-components';
+import {
+  LabeledCollapseHeaderButton,
+  LabeledCollapseItemName,
+} from 'components/common/LabeledCollapse/styled';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
+
+const HideableContainer = styled.div`
+  visibility: ${props => (props.visibility ? 'hidden' : 'visible')};
+  max-height: ${props => (props.visibility ? '0px' : '500px')};
+  opacity: ${props => (props.visibility ? 0 : 1)};
+  transition: all 250ms ease-out;
+`;
 
 const PatientForm = forwardRef(
   (
@@ -38,7 +49,6 @@ const PatientForm = forwardRef(
       onSubmit,
       readOnly = false,
       buttonLabel,
-      hideEmpty = false,
     },
     reference,
   ) => {
@@ -49,6 +59,10 @@ const PatientForm = forwardRef(
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
+    const [emptyPersonalVisible, , , toggleEmptyPersonal] = useBoolean(true);
+    const [emptyContactsVisible, , , toggleEmptyContacts] = useBoolean(true);
+    const [emptyOtherVisible, , , toggleEmptyOther] = useBoolean(true);
+    const { getValues } = useForm();
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
@@ -62,33 +76,62 @@ const PatientForm = forwardRef(
     }, [patient]);
 
     const renderCustomField = useCallback(
-      (field, index) => {
+      (field, index, showEmpty = true) => {
         const initialFieldValue = patient?.patientMetaData?.find(
           ({ customFieldIdentifier }) =>
             field.identifier === customFieldIdentifier,
         );
         return (
-          <div key={field.identifier}>
+          <HideableContainer
+            key={field.identifier}
+            visibility={!showEmpty && !initialFieldValue?.value}
+          >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
               readOnly={readOnly}
               field={field}
               initialValue={initialFieldValue}
             />
-          </div>
+          </HideableContainer>
         );
       },
       [patient, readOnly],
     );
 
-    const shownFields = useMemo(() => {
-      if (!hideEmpty) return customFields?.[Category.OTHER_INFO];
-      return customFields?.[Category.OTHER_INFO]?.filter(field => {
-        return patient?.patientMetaData?.find(({ customFieldIdentifier }) => {
-          return field.identifier === customFieldIdentifier;
-        })?.value;
-      });
-    }, [customFields, hideEmpty, patient]);
+    const ShowHideEmpty = ({ visibility, toggleFun }) => {
+      return (
+        <div>
+          <Spacing vertical={3} />
+          <Box display="flex" justifyContent="space-between">
+            <div width="auto">
+              <LabeledCollapseHeaderButton
+                type="button"
+                onClick={toggleFun}
+                width="auto"
+              >
+                <Spacing horizontal={3} />
+                <LabeledCollapseItemName font-size={fontSizes.small}>
+                  {visibility ? 'Hide Empty' : 'Show Empty'}
+                </LabeledCollapseItemName>
+                <Spacing horizontal={3} />
+                <RotatableChevron
+                  color={palette.darkGrey}
+                  rotated={visibility}
+                />
+              </LabeledCollapseHeaderButton>
+            </div>
+            {isAdmin && (
+              <AddButton
+                width="auto"
+                onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}
+              >
+                Add or edit fields
+              </AddButton>
+            )}
+          </Box>
+        </div>
+      );
+    };
 
     return (
       <form
@@ -114,7 +157,7 @@ const PatientForm = forwardRef(
             label="Middle Name"
             name="middleName"
           />
-          <Spacing readOnly={readOnly} vertical={3} />
+          <Spacing vertical={3} />
           <FormInput
             readOnly={readOnly}
             label="Last Name"
@@ -145,7 +188,18 @@ const PatientForm = forwardRef(
             name="mrn"
           />
           <Spacing vertical={3} />
-          {customFields?.[Category.PERSONAL_INFO]?.map(renderCustomField)}
+          {customFields?.[Category.PERSONAL_INFO]?.map((field, index) => {
+            return renderCustomField(
+              field,
+              index,
+              emptyPersonalVisible || !readOnly,
+            );
+          })}
+          <Spacing vertical={3} />
+          <ShowHideEmpty
+            visibility={emptyPersonalVisible}
+            toggleFun={toggleEmptyPersonal}
+          />
         </LabeledCollapse>
         <LabeledCollapse
           name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
@@ -154,24 +208,57 @@ const PatientForm = forwardRef(
           isOpened={isOpenedContact}
           onClick={() => setIsOpenedContact(!isOpenedContact)}
         >
-          <FormPhoneNumberInput
-            readOnly={readOnly}
-            label="Mobile Phone"
-            name="phoneMobile"
+          <HideableContainer
+            visibility={
+              !(
+                emptyContactsVisible ||
+                getValues('phoneMobile').length > 5 ||
+                !readOnly
+              )
+            }
+          >
+            <FormPhoneNumberInput
+              readOnly={readOnly}
+              label="Mobile Phone"
+              name="phoneMobile"
+            />
+            <Spacing vertical={3} />
+          </HideableContainer>
+          <HideableContainer
+            visibility={
+              !(
+                emptyContactsVisible ||
+                getValues('phoneHome').length > 5 ||
+                !readOnly
+              )
+            }
+          >
+            <FormPhoneNumberInput
+              readOnly={readOnly}
+              label="Home Phone"
+              name="phoneHome"
+              type="tel"
+            />
+            <Spacing vertical={3} />
+          </HideableContainer>
+          {(emptyContactsVisible || getValues('email') || !readOnly) && (
+            <FormInput readOnly={readOnly} label="email" name="email" />
+          )}
+          <Spacing vertical={3} />
+          {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
+            return renderCustomField(
+              field,
+              index,
+              emptyContactsVisible || !readOnly,
+            );
+          })}
+          <Spacing vertical={3} />
+          <ShowHideEmpty
+            visibility={emptyContactsVisible}
+            toggleFun={toggleEmptyContacts}
           />
-          <Spacing vertical={3} />
-          <FormPhoneNumberInput
-            readOnly={readOnly}
-            label="Home Phone"
-            name="phoneHome"
-            type="tel"
-          />
-          <Spacing vertical={3} />
-          <FormInput readOnly={readOnly} label="email" name="email" />
-          <Spacing vertical={3} />
-          {customFields?.[Category.CONTACT_INFO]?.map(renderCustomField)}
         </LabeledCollapse>
-        {shownFields?.length > 0 && (
+        {customFields?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
             name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
               Category.OTHER_INFO
@@ -179,7 +266,18 @@ const PatientForm = forwardRef(
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >
-            {shownFields.map(renderCustomField)}
+            {customFields?.[Category.OTHER_INFO].map((field, index) => {
+              return renderCustomField(
+                field,
+                index,
+                emptyOtherVisible || !readOnly,
+              );
+            })}
+            <Spacing vertical={3} />
+            <ShowHideEmpty
+              visibility={emptyOtherVisible}
+              toggleFun={toggleEmptyOther}
+            />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">

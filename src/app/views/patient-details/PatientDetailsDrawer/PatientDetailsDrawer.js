@@ -36,7 +36,6 @@ const PatientDetailsDrawer = ({
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const [isActive, setActive, unsetActive] = useBoolean(false);
-  const [hideEmptyFields, , setShowEmpty, toggleEmpty] = useBoolean(false);
   const formMethods = useForm({
     defaultValues: patientValues,
     reValidateMode: 'onSubmit',
@@ -97,21 +96,14 @@ const PatientDetailsDrawer = ({
     return [
       {
         name: 'Edit',
-        onClick: () => {
-          setActive();
-          setShowEmpty();
-        },
+        onClick: setActive,
       },
       {
         name: 'Archive',
         onClick: archivePatient,
       },
-      {
-        name: hideEmptyFields ? 'Show Empty Fields' : 'Hide Empty Fields',
-        onClick: toggleEmpty,
-      },
     ];
-  }, [archivePatient, hideEmptyFields, setActive, setShowEmpty, toggleEmpty]);
+  }, [archivePatient, setActive]);
 
   return (
     <FormContext {...formMethods}>
@@ -131,7 +123,6 @@ const PatientDetailsDrawer = ({
           readOnly={!isActive || editingDisabled}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="SAVE EDITS"
-          hideEmpty={hideEmptyFields}
         />
       </PatientDrawer>
     </FormContext>
