@@ -241,9 +241,17 @@ const PatientForm = forwardRef(
             />
             <Spacing vertical={3} />
           </HideableContainer>
-          {(emptyContactsVisible || getValues('email') || !readOnly) && (
+          <HideableContainer
+            visibility={
+              !(
+                emptyContactsVisible ||
+                getValues('email').length > 5 ||
+                !readOnly
+              )
+            }
+          >
             <FormInput readOnly={readOnly} label="email" name="email" />
-          )}
+          </HideableContainer>
           <Spacing vertical={3} />
           {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
             return renderCustomField(
