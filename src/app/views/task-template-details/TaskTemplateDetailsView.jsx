@@ -1,5 +1,11 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +27,11 @@ import {
 } from 'selectors/task-template-selectors';
 import { Box } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import ReactFlow, { Controls, ReactFlowProvider } from 'react-flow-renderer';
+import ReactFlow, {
+  Controls,
+  Position,
+  ReactFlowProvider,
+} from 'react-flow-renderer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -50,6 +60,7 @@ import {
   BuilderHeader,
   BuilderHeaderText,
 } from './styled';
+import ConnectionLink from './ConnectionLink/ConnectionLink';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -69,6 +80,7 @@ const TaskTemplateDetailsView = () => {
   const setViewPositionReference = useRef(null);
   const [elements, setElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
+  const [hoveredTargetHandle, setHoveredTargetHandle] = useState(Position.Top);
   const { identifier } = useParams();
   const dispatch = useDispatch();
   const { tasks, layout, temporaryElements } =
@@ -157,6 +169,7 @@ const TaskTemplateDetailsView = () => {
                 ...e.data,
                 draggedEdgeSourceId,
                 taskTemplateIdentifier: identifier,
+                onTargetHandleHover: setHoveredTargetHandle,
               },
             };
           })
@@ -183,6 +196,11 @@ const TaskTemplateDetailsView = () => {
       }
     });
   };
+
+  const ConnectionLineComponent = useCallback(
+    props => <ConnectionLink {...props} targetPosition={hoveredTargetHandle} />,
+    [hoveredTargetHandle],
+  );
 
   return (
     <>
@@ -213,6 +231,7 @@ const TaskTemplateDetailsView = () => {
             </BuilderHeader>
             {mergedElementsWithActions && (
               <ReactFlow
+                connectionLineComponent={ConnectionLineComponent}
                 elements={mergedElementsWithActions}
                 onConnect={onConnect}
                 connectionLineType="step"
@@ -225,7 +244,10 @@ const TaskTemplateDetailsView = () => {
                 onConnectStart={(_, { nodeId }) =>
                   setDraggedEdgeSourceId(nodeId)
                 }
-                onConnectEnd={() => setDraggedEdgeSourceId(null)}
+                onConnectEnd={() => {
+                  setDraggedEdgeSourceId(null);
+                  setHoveredTargetHandle(Position.Top);
+                }}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={({ fitView, setTransform }) => {
                   setViewPositionReference.current = setTransform;

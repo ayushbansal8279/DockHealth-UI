@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSmoothStepPath, getMarkerEnd } from 'react-flow-renderer';
+import { getSmoothStepPath, getMarkerEnd, Position } from 'react-flow-renderer';
 import palette from 'styles/palette';
 
 const LinkPath = props => {
@@ -14,13 +14,22 @@ const LinkPath = props => {
     targetPosition,
     markerEndId,
   } = props;
+  let sourcePos = sourcePosition;
+  let targetPos = targetPosition;
+
+  // temporary bugfix related to wbkd/react-flow/issues/1403
+  if (sourcePosition === Position.Left && targetPosition === Position.Right) {
+    sourcePos = targetPosition;
+    targetPos = sourcePosition;
+  }
+
   const edgePath = getSmoothStepPath({
     sourceX,
     sourceY,
-    sourcePosition,
+    sourcePosition: sourcePos,
     targetX,
     targetY,
-    targetPosition,
+    targetPosition: targetPos,
   });
   const markerEnd = getMarkerEnd('arrowclosed', markerEndId);
 

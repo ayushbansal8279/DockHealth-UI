@@ -57,7 +57,8 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
-      targetVisible={data.draggedEdgeSourceId}
+      isConnecting={data.draggedEdgeSourceId}
+      onTargetHandleHover={data.onTargetHandleHover}
     >
       <TaskNodeWrapper selected={selected} type={type}>
         <ContentWrapper>

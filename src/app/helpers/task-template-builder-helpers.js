@@ -21,6 +21,9 @@ export const NodeSourceHandle = {
 
 export const NodeTargetHandle = {
   TARGET_A: 'TARGET_A',
+  TARGET_B: 'TARGET_B',
+  TARGET_C: 'TARGET_C',
+  TARGET_D: 'TARGET_D',
 };
 
 export function getUniqueLinkId(sourceId, targetId) {
