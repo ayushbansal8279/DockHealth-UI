@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { groupBy, prop, compose } from 'ramda';
-import { useFormContext, useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
@@ -21,24 +21,11 @@ import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
-import styled from 'styled-components';
-import {
-  LabeledCollapseHeaderButton,
-  LabeledCollapseItemName,
-} from 'components/common/LabeledCollapse/styled';
-import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
+import ShowHideEmpty from './ShowHideEmpty';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
-
-const HideableContainer = styled.div`
-  visibility: ${props => (props.visibility ? 'hidden' : 'visible')};
-  max-height: ${props => (props.visibility ? '0px' : '500px')};
-  opacity: ${props => (props.visibility ? 0 : 1)};
-  transition: all 250ms ease-out;
-`;
 
 const PatientForm = forwardRef(
   (
@@ -53,7 +40,7 @@ const PatientForm = forwardRef(
     reference,
   ) => {
     const history = useHistory();
-    const { handleSubmit } = useFormContext();
+    const { handleSubmit, getValues } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
@@ -62,7 +49,6 @@ const PatientForm = forwardRef(
     const [emptyPersonalVisible, , , toggleEmptyPersonal] = useBoolean(true);
     const [emptyContactsVisible, , , toggleEmptyContacts] = useBoolean(true);
     const [emptyOtherVisible, , , toggleEmptyOther] = useBoolean(true);
-    const { getValues } = useForm();
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
@@ -97,41 +83,6 @@ const PatientForm = forwardRef(
       },
       [patient, readOnly],
     );
-
-    const ShowHideEmpty = ({ visibility, toggleFun }) => {
-      return (
-        <div>
-          <Spacing vertical={3} />
-          <Box display="flex" justifyContent="space-between">
-            <div width="auto">
-              <LabeledCollapseHeaderButton
-                type="button"
-                onClick={toggleFun}
-                width="auto"
-              >
-                <Spacing horizontal={3} />
-                <LabeledCollapseItemName font-size={fontSizes.small}>
-                  {visibility ? 'Hide Empty' : 'Show Empty'}
-                </LabeledCollapseItemName>
-                <Spacing horizontal={3} />
-                <RotatableChevron
-                  color={palette.darkGrey}
-                  rotated={visibility}
-                />
-              </LabeledCollapseHeaderButton>
-            </div>
-            {isAdmin && (
-              <AddButton
-                width="auto"
-                onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}
-              >
-                Add or edit fields
-              </AddButton>
-            )}
-          </Box>
-        </div>
-      );
-    };
 
     return (
       <form
@@ -198,7 +149,8 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <ShowHideEmpty
             visibility={emptyPersonalVisible}
-            toggleFun={toggleEmptyPersonal}
+            onToggle={toggleEmptyPersonal}
+            isAdmin={isAdmin}
           />
         </LabeledCollapse>
         <LabeledCollapse
@@ -263,7 +215,8 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <ShowHideEmpty
             visibility={emptyContactsVisible}
-            toggleFun={toggleEmptyContacts}
+            onToggle={toggleEmptyContacts}
+            isAdmin={isAdmin}
           />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
@@ -284,7 +237,8 @@ const PatientForm = forwardRef(
             <Spacing vertical={3} />
             <ShowHideEmpty
               visibility={emptyOtherVisible}
-              toggleFun={toggleEmptyOther}
+              onToggle={toggleEmptyOther}
+              isAdmin={isAdmin}
             />
           </LabeledCollapse>
         )}
