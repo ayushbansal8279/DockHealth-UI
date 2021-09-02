@@ -92,8 +92,8 @@ const PatientDetailsDrawer = ({
     dispatch(updatePatientDetails(mergeDeepRight(patient, data)));
   };
 
-  const contextMenuOptions = useMemo(() => {
-    return [
+  const contextMenuOptions = useMemo(
+    () => [
       {
         name: 'Edit',
         onClick: setActive,
@@ -102,8 +102,9 @@ const PatientDetailsDrawer = ({
         name: 'Archive',
         onClick: archivePatient,
       },
-    ];
-  }, [archivePatient, setActive]);
+    ],
+    [archivePatient, setActive],
+  );
 
   return (
     <FormContext {...formMethods}>
