@@ -24,17 +24,20 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
 
-  const getNestedTemplatesList = useCallback(taskTemplateIdentifier => {
-    setTaskTemplatesIsLoading(true);
-    getTemplatesForSpecificFolder(taskTemplateIdentifier)
-      .then(templatesList => {
-        setTaskTemplatesList(templatesList);
-        setTaskTemplatesIsLoading(false);
-      })
-      .catch(() => {
-        setTaskTemplatesIsLoading(false);
-      });
-  }, []);
+  const getNestedTemplatesList = useCallback(
+    taskTemplateIdentifier => {
+      setTaskTemplatesIsLoading(true);
+      getTemplatesForSpecificFolder(taskTemplateIdentifier)
+        .then(templatesList => {
+          setTaskTemplatesList(templatesList);
+          setTaskTemplatesIsLoading(false);
+        })
+        .catch(() => {
+          setTaskTemplatesIsLoading(false);
+        });
+    },
+    [setTaskTemplatesIsLoading],
+  );
 
   const getRootTemplatesList = useCallback(() => {
     setTaskTemplatesIsLoading(true);
@@ -47,7 +50,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
       .catch(() => {
         setTaskTemplatesIsLoading(false);
       });
-  }, []);
+  }, [setTaskTemplatesIsLoading]);
 
   const handleTemplateSelect = useCallback(
     template => {
