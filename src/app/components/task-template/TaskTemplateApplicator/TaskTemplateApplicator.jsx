@@ -2,10 +2,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
-// import {
-//   taskTemplatesSelector,
-//   isFetchingTaskTemplatesSelector,
-// } from 'selectors/task-template-selectors';
 import Spacing from 'components/common/Spacing';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import debounce from 'lodash.debounce';
@@ -19,8 +15,6 @@ import {
   TaskTemplateApplicatorContainer,
   TaskTemplateApplicatorLabel,
 } from './styled';
-
-// import * as TaskTemplateActions from 'actions/task-template-actions';
 
 const TaskTemplateApplicator = ({ onTemplateSelect }) => {
   const popoverReference = useRef(null);
