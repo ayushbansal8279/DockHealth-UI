@@ -11,13 +11,13 @@ import * as TaskTemplateApi from 'api/task-template-api';
 import {
   TitleWithButtonWrapper,
   Title,
-  ListItem,
   EmptyMessage,
-  ListsWrapper,
   QuickAddInput,
   QuickAddInputWrapper,
-  ListItemTextButton,
   Step,
+  ListsWrapper,
+  ListItem,
+  ListItemTextButton,
   NextArrow,
 } from '../styled';
 
