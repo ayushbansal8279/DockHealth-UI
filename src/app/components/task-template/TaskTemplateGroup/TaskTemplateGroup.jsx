@@ -309,26 +309,34 @@ const TaskTemplateGroup = ({
       const patientName = newPatient?.lastName
         ? `${newPatient?.lastName}, ${newPatient?.firstName}`
         : newPatient?.firstName;
-
-      dispatch(
-        ModalActions.openModal(
-          newPatient ? 'AssignPatient' : 'UnassignPatient',
-          {
-            isWorkflowModal: true,
-            confirm: () => {
-              dispatch(
-                TemplateBundleActions.changePatientForTemplateBundle(
-                  identifier,
-                  newPatient,
-                ),
-              );
+      if (patient) {
+        dispatch(
+          ModalActions.openModal(
+            newPatient ? 'AssignPatient' : 'UnassignPatient',
+            {
+              isWorkflowModal: true,
+              confirm: () => {
+                dispatch(
+                  TemplateBundleActions.changePatientForTemplateBundle(
+                    identifier,
+                    newPatient,
+                  ),
+                );
+              },
+              patientName,
             },
-            patientName,
-          },
-        ),
-      );
+          ),
+        );
+      } else {
+        dispatch(
+          TemplateBundleActions.changePatientForTemplateBundle(
+            identifier,
+            newPatient,
+          ),
+        );
+      }
     },
-    [dispatch, identifier],
+    [dispatch, identifier, patient],
   );
 
   return (
