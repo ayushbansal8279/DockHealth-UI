@@ -40,7 +40,7 @@ const PatientForm = forwardRef(
     reference,
   ) => {
     const history = useHistory();
-    const { handleSubmit, getValues } = useFormContext();
+    const { handleSubmit } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
@@ -160,50 +160,20 @@ const PatientForm = forwardRef(
           isOpened={isOpenedContact}
           onClick={() => setIsOpenedContact(!isOpenedContact)}
         >
-          <HideableContainer
-            visibility={
-              !(
-                emptyContactsVisible ||
-                getValues('phoneMobile').length > 5 ||
-                !readOnly
-              )
-            }
-          >
-            <FormPhoneNumberInput
-              readOnly={readOnly}
-              label="Mobile Phone"
-              name="phoneMobile"
-            />
-            <Spacing vertical={3} />
-          </HideableContainer>
-          <HideableContainer
-            visibility={
-              !(
-                emptyContactsVisible ||
-                getValues('phoneHome').length > 5 ||
-                !readOnly
-              )
-            }
-          >
-            <FormPhoneNumberInput
-              readOnly={readOnly}
-              label="Home Phone"
-              name="phoneHome"
-              type="tel"
-            />
-            <Spacing vertical={3} />
-          </HideableContainer>
-          <HideableContainer
-            visibility={
-              !(
-                emptyContactsVisible ||
-                getValues('email').length > 5 ||
-                !readOnly
-              )
-            }
-          >
-            <FormInput readOnly={readOnly} label="email" name="email" />
-          </HideableContainer>
+          <FormPhoneNumberInput
+            readOnly={readOnly}
+            label="Mobile Phone"
+            name="phoneMobile"
+          />
+          <Spacing vertical={3} />
+          <FormPhoneNumberInput
+            readOnly={readOnly}
+            label="Home Phone"
+            name="phoneHome"
+            type="tel"
+          />
+          <Spacing vertical={3} />
+          <FormInput readOnly={readOnly} label="email" name="email" />
           <Spacing vertical={3} />
           {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
             return renderCustomField(
