@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Popover } from '@material-ui/core';
 import Search from 'components/task-view/Search/Search';
 import Folder from 'img/folder';
@@ -35,8 +35,6 @@ const TaskTemplatePopover = ({
   parentList,
   onBack,
 }) => {
-  const [isSearchFocused, setSearchFocused] = useState(false);
-
   const folders = useMemo(
     () => taskTemplatesList?.filter(({ type }) => type === 'FOLDER'),
     [taskTemplatesList],
@@ -108,10 +106,8 @@ const TaskTemplatePopover = ({
           fullWidth
           noBackground
           value={searchPhrase}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setSearchFocused(false)}
           onChange={event => onSearchChange(event?.target?.value)}
-          placeholder={isSearchFocused ? 'Search Workflows' : 'Search'}
+          placeholder="Search Workflows"
         />
       </SearchContainer>
       {parentList && (
