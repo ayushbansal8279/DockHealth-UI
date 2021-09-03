@@ -110,7 +110,11 @@ const InvitePeoplePopover = ({
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
           <FormContext {...formMethods}>
-            <OrganizationOwnerForm onSubmit={onSubmit} disabled={isInviting} />
+            <OrganizationOwnerForm
+              onSubmit={onSubmit}
+              closeInviteForm={closePopover}
+              disabled={isInviting}
+            />
           </FormContext>
         )}
         {!isOwnerOrAdmin && (

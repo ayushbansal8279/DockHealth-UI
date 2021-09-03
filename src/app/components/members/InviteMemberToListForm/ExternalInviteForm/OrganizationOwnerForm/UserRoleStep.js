@@ -70,7 +70,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         </RoleOptionLabel>
       </RoleSelectionWrapper>
       <Grid container item direction="row" justify="center" spacing={2}>
-        <Grid item xs={5}>
+        <Grid item xs={3}>
           <Button
             fullWidth
             variant="secondary"
@@ -80,9 +80,9 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             Back
           </Button>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={7}>
           <Button fullWidth disabled={disabled} type="submit">
-            Assign role
+            Assign role and Invite
           </Button>
         </Grid>
       </Grid>

@@ -68,11 +68,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
           <InfoContainer>
             <InfoHeader>New User</InfoHeader>
             <Spacing vertical={2} />
-            <InfoText>
-              Once an account is created, this person will be part of your
-              subscription. Do you approve adding this person to your
-              subscription?
-            </InfoText>
+            <InfoText>An invitation will be sent to the user.</InfoText>
           </InfoContainer>
           <Spacing vertical={2} />
         </Grid>
@@ -84,12 +80,12 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               type="button"
               onClick={closeInviteForm}
             >
-              No, cancel
+              Cancel
             </Button>
           </Grid>
           <Grid item xs={5}>
             <Button fullWidth disabled={disabled} type="submit">
-              Yes, approve
+              Next
             </Button>
           </Grid>
         </Grid>

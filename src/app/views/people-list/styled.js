@@ -32,6 +32,7 @@ export const InvitePeopleButton = styled.button`
 
 export const InvitePeoplePopoverContainer = styled.div`
   background-color: ${palette.white};
+  width: 500px;
 `;
 
 export const InvitePeoplePopoverSection = styled.div`
