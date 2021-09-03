@@ -21,6 +21,7 @@ import {
   taskTemplateDetailsSelector,
   parentFolderIdSelector,
 } from 'selectors/task-template-selectors';
+import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
@@ -52,6 +53,7 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = {
 
 const TaskTemplate = ({ template, isFullView, children }) => {
   const { taskTemplateIdentifier, name, description } = template;
+  const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const [draggableId, setDraggableId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -73,7 +75,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
 
   const menuOptions = useMemo(
     () => [
-      {
+      smartFlowsAvailable && {
         name: 'Edit',
         onClick: () =>
           history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
@@ -147,7 +149,13 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           ),
       },
     ],
-    [history, taskTemplateIdentifier, dispatch, mainListId],
+    [
+      smartFlowsAvailable,
+      history,
+      taskTemplateIdentifier,
+      dispatch,
+      mainListId,
+    ],
   );
 
   const handleNameInputKeyDown = useCallback(

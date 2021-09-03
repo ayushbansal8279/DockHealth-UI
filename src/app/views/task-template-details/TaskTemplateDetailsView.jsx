@@ -6,7 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
@@ -25,6 +25,7 @@ import {
   taskTemplateDetailsSelector,
   currentTaskTemplateSelector,
 } from 'selectors/task-template-selectors';
+import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { Box } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import ReactFlow, {
@@ -83,9 +84,17 @@ const TaskTemplateDetailsView = () => {
   const [hoveredTargetHandle, setHoveredTargetHandle] = useState(Position.Top);
   const { identifier } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
   const { name } = useSelector(currentTaskTemplateSelector) || {};
+  const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
+
+  useEffect(() => {
+    if (smartFlowsAvailable === false) {
+      history.push('/');
+    }
+  }, [smartFlowsAvailable, history]);
 
   useEffect(() => {
     dispatch(selectTaskTemplate(identifier));
