@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-unreadable-array-destructuring */
 import React, { useState, forwardRef, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
@@ -23,7 +22,7 @@ import moment from 'moment';
 import useBoolean from 'hooks/useBoolean';
 import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
-import ShowHideEmpty from './ShowHideEmpty';
+import CategoryOptions from './ShowHideEmpty';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -46,9 +45,13 @@ const PatientForm = forwardRef(
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
-    const [emptyPersonalVisible, , , toggleEmptyPersonal] = useBoolean(true);
-    const [emptyContactsVisible, , , toggleEmptyContacts] = useBoolean(true);
-    const [emptyOtherVisible, , , toggleEmptyOther] = useBoolean(true);
+    const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
+      true,
+    );
+    const { 0: emptyContactsVisible, 3: toggleEmptyContacts } = useBoolean(
+      true,
+    );
+    const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(true);
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
@@ -147,7 +150,7 @@ const PatientForm = forwardRef(
             );
           })}
           <Spacing vertical={3} />
-          <ShowHideEmpty
+          <CategoryOptions
             visibility={emptyPersonalVisible}
             onToggle={toggleEmptyPersonal}
             isAdmin={isAdmin}
@@ -183,7 +186,7 @@ const PatientForm = forwardRef(
             );
           })}
           <Spacing vertical={3} />
-          <ShowHideEmpty
+          <CategoryOptions
             visibility={emptyContactsVisible}
             onToggle={toggleEmptyContacts}
             isAdmin={isAdmin}
@@ -205,7 +208,7 @@ const PatientForm = forwardRef(
               );
             })}
             <Spacing vertical={3} />
-            <ShowHideEmpty
+            <CategoryOptions
               visibility={emptyOtherVisible}
               onToggle={toggleEmptyOther}
               isAdmin={isAdmin}

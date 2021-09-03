@@ -9,7 +9,7 @@ import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import { LabeledCollapseHeaderButton, LabeledCollapseItemName } from './styled';
 
-const ShowHideEmpty = ({ visibility, onToggle, isAdmin = false }) => {
+const CategoryOptions = ({ visibility, onToggle, isAdmin = false }) => {
   const history = useHistory();
 
   return (
@@ -43,4 +43,4 @@ const ShowHideEmpty = ({ visibility, onToggle, isAdmin = false }) => {
   );
 };
 
-export default ShowHideEmpty;
+export default CategoryOptions;
