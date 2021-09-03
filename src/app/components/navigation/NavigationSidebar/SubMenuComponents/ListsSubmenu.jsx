@@ -169,6 +169,33 @@ const ListsSubmenu = () => {
     [dispatch],
   );
 
+  const isListArchived = useCallback(list => {
+    // TODO: check if list is archived ~~Wiktor Rojecki~~
+    return !!list;
+  }, []);
+
+  const activeLists = useMemo(() => {
+    // TODO: Filter by not archived ~~Wiktor Rojecki~~
+    return lists;
+  }, [lists]);
+
+  const archivedLists = useMemo(() => {
+    // TODO: Filter by archived ~~Wiktor Rojecki~~
+    return lists;
+  }, [lists]);
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleArchiveList = list => {
+    // TODO: archive the list ~~Wiktor Rojecki~~
+    console.log(`archiving list ${list?.listName}`);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleUnarchiveList = list => {
+    // TODO: unarchive the list ~~Wiktor Rojecki~~
+    console.log(`unrchiving list ${list?.listName}`);
+  };
+
   const getMenuItems = useCallback(
     list => {
       let baseList = [];
@@ -201,6 +228,34 @@ const ListsSubmenu = () => {
               name: 'Edit list',
               onClick: () => openListEditModal(list),
             },
+          ];
+        }
+
+        if (MASTER_ROLES.includes(list?.role) && !isListArchived(list)) {
+          baseList = [
+            ...baseList,
+            {
+              name: 'Archive List',
+              onClick: () => {
+                handleArchiveList(list);
+              },
+            },
+          ];
+        }
+        if (MASTER_ROLES.includes(list?.role) && isListArchived(list)) {
+          baseList = [
+            ...baseList,
+            {
+              name: 'Unarchive List',
+              onClick: () => {
+                handleUnarchiveList(list);
+              },
+            },
+          ];
+        }
+        if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
+          baseList = [
+            ...baseList,
             {
               name: 'Delete',
               onClick: () => {
@@ -214,27 +269,17 @@ const ListsSubmenu = () => {
 
       return baseList;
     },
-
     [
-      openInviteToListModal,
       openLeaveListModal,
+      isGuest,
+      isListArchived,
+      openInviteToListModal,
       openListEditModal,
       openDeleteConfirmationModal,
-      isGuest,
     ],
   );
 
   const hasAnyPendingList = lists.some(({ status }) => status === 'PENDING');
-
-  const activeLists = useMemo(() => {
-    // TODO: Filter by not archived
-    return lists;
-  }, [lists]);
-
-  const archivedLists = useMemo(() => {
-    // TODO: Filter by archived
-    return lists;
-  }, [lists]);
 
   const renderLists = useCallback(
     listsList => {
