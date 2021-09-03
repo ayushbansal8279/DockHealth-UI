@@ -32,7 +32,7 @@ const OrganizationOwnerForm = ({
 
   const formContext = useForm({
     validationSchema,
-    defaultValues: { ...initialValues, userRole: 'GUEST' },
+    defaultValues: { ...initialValues, userRole: 'MEMBER' },
   });
 
   const { handleSubmit, register, unregister } = formContext;
