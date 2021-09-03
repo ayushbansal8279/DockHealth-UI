@@ -68,6 +68,7 @@ const TemplateReducer = (state = initialState, action) => {
 
       return {
         ...state,
+        isHeaderVisible: true,
         header: {
           ...initialHeaderState,
           show: true,

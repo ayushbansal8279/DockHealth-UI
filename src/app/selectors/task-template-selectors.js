@@ -1,3 +1,4 @@
+import { prop } from 'ramda';
 import { createSelector } from 'reselect';
 
 export const taskTemplateStateSelector = state => state.taskTemplate;
@@ -5,6 +6,16 @@ export const taskTemplateStateSelector = state => state.taskTemplate;
 export const taskTemplatesSelector = createSelector(
   taskTemplateStateSelector,
   ({ taskTemplates }) => taskTemplates,
+);
+
+export const parentFolderIdSelector = createSelector(
+  taskTemplateStateSelector,
+  ({ parent }) => parent,
+);
+
+export const taskTemplateBreadcrumbsSelector = createSelector(
+  taskTemplateStateSelector,
+  ({ breadcrumbs }) => breadcrumbs,
 );
 
 export const isFetchingTaskTemplatesSelector = createSelector(
@@ -36,4 +47,14 @@ export const allTasksSelector = createSelector(
     taskTemplateDetails
       ? Object.values(taskTemplateDetails)?.flatMap(({ tasks }) => tasks || [])
       : [],
+);
+
+export const currentTaskTemplateIdentifierSelector = createSelector(
+  taskTemplateStateSelector,
+  prop('currentTaskTemplateIdentifier'),
+);
+
+export const currentTaskTemplateSelector = createSelector(
+  taskTemplateStateSelector,
+  prop('currentTaskTemplate'),
 );

@@ -75,6 +75,7 @@ import {
   onEnterTemplatesView,
   onLeaveTemplatesView,
 } from './TemplateCoreSubscriptionPlan/TaskTemplateView';
+import { onEnterTemplateDetailsView } from './TemplateCoreSubscriptionPlan/TaskTemplateDetailsView';
 
 export const SETTINGS_ROUTES = [
   {
@@ -158,6 +159,13 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: ListDetailsView,
     onEnter: onEnterListDetailsView,
     onLeave: onLeaveListDetailsView,
+  },
+  {
+    path: '/workflows/:identifier',
+    RouteComponent: React.lazy(() =>
+      import('views/task-template-details/TaskTemplateDetailsView'),
+    ),
+    onEnter: onEnterTemplateDetailsView,
   },
   {
     path: '/workflows',

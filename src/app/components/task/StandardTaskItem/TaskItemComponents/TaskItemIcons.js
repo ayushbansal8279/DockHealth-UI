@@ -36,7 +36,7 @@ const TaskItemIcons = ({
   }, [task]);
 
   const onAttachmentsClick = useCallback(() => {
-    dispatch(openDrawer(DrawerFieldEnum.ATTACHEMENT));
+    dispatch(openDrawer(DrawerFieldEnum.ATTACHMENT));
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);

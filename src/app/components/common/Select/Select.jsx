@@ -28,6 +28,7 @@ const Select = ({
   variant,
   readOnly,
   value,
+  placeholder,
   ...restProps
 }) => {
   const selectedOption = options?.find(element => element.value === value);
@@ -38,6 +39,7 @@ const Select = ({
       readOnly={readOnly}
       value={selectedOption?.label}
       error={error}
+      placeholder={placeholder}
       {...restProps}
     />
   ) : (
@@ -58,7 +60,7 @@ const Select = ({
           getContentAnchorEl: null,
           style: { zIndex: zIndex.optionsMenu },
         }}
-        inputProps={{ name }}
+        inputProps={{ name, shrink: true, placeholder }}
         variant={variant}
         value={value}
         renderValue={selectedValue =>

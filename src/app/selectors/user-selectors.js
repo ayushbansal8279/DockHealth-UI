@@ -26,3 +26,9 @@ export const userProfileDashboardPrefsSelector = createSelector(
   userProfileSelector,
   ({ userPreference }) => userPreference?.displayColumns,
 );
+
+export const userHasSmartFlowsSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SMART_FLOWS'),
+);

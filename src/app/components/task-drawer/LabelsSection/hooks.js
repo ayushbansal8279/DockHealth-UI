@@ -78,7 +78,7 @@ const initializeLabelsSectionHooks = ({
     setAvailableLabels(freshLabels);
     setIsLoadingLabels(false);
 
-    const refreshedTask = await refreshTask(selectedTask)(dispatch);
+    const refreshedTask = await refreshTask(selectedTask.identifier)(dispatch);
 
     setSelectedLabelsValue(
       'labels',

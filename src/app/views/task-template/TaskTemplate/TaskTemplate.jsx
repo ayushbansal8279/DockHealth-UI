@@ -8,14 +8,20 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { pluck } from 'ramda';
+import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import { createTaskTemplateDetailsPath } from 'routing/helpers/paths';
 import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { taskTemplateDetailsSelector } from 'selectors/task-template-selectors';
+import {
+  taskTemplateDetailsSelector,
+  parentFolderIdSelector,
+} from 'selectors/task-template-selectors';
+import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
@@ -26,6 +32,8 @@ import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkelet
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { TaskItemColumn } from 'helpers/task-helpers';
+import { moveTemplate } from 'actions/task-template-actions';
+import * as ActionTypes from 'actions/action-types';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -43,18 +51,21 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.DUE_DATE]: false,
 };
 
-const TaskTemplate = ({ template, isFullView }) => {
+const TaskTemplate = ({ template, isFullView, children }) => {
   const { taskTemplateIdentifier, name, description } = template;
+  const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const [draggableId, setDraggableId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
+  const history = useHistory();
 
   const dispatch = useDispatch();
   const { isOpen, isFetching, tasks } =
     useSelector(taskTemplateDetailsSelector(taskTemplateIdentifier)) || {};
+  const mainListId = useSelector(parentFolderIdSelector);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -64,6 +75,11 @@ const TaskTemplate = ({ template, isFullView }) => {
 
   const menuOptions = useMemo(
     () => [
+      smartFlowsAvailable && {
+        name: 'Edit',
+        onClick: () =>
+          history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
+      },
       {
         name: 'Edit Workflow Name',
         onClick: () => {
@@ -71,6 +87,31 @@ const TaskTemplate = ({ template, isFullView }) => {
           // eslint-disable-next-line no-unused-expressions
           nameInputReference.current?.focus();
         },
+      },
+      {
+        name: 'Move to folder',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('SelectWorkflowDestination', {
+              confirmText: 'Move',
+              confirm: parentTaskTemplateIdentifier => {
+                dispatch(
+                  moveTemplate({
+                    parentTaskTemplateIdentifier,
+                    taskTemplateIdentifier,
+                  }),
+                );
+              },
+              onAddFolderCallback: createdFolder => {
+                if (mainListId === createdFolder.parentTaskTemplateIdentifier) {
+                  dispatch({
+                    type: ActionTypes.ADD_TASK_TEMPLATE,
+                    template: createdFolder,
+                  });
+                }
+              },
+            }),
+          ),
       },
       {
         name: 'Duplicate Workflow',
@@ -108,7 +149,13 @@ const TaskTemplate = ({ template, isFullView }) => {
           ),
       },
     ],
-    [taskTemplateIdentifier, dispatch, nameInputReference],
+    [
+      smartFlowsAvailable,
+      history,
+      taskTemplateIdentifier,
+      dispatch,
+      mainListId,
+    ],
   );
 
   const handleNameInputKeyDown = useCallback(
@@ -216,15 +263,6 @@ const TaskTemplate = ({ template, isFullView }) => {
     setNameInputValue(name);
   };
 
-  const onClickName = () => {
-    if (!isEditing) {
-      if (isOpen) {
-        dispatch(TaskActions.unselectAllTasks());
-      }
-      dispatch(TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier));
-    }
-  };
-
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
@@ -246,8 +284,8 @@ const TaskTemplate = ({ template, isFullView }) => {
           onBlur={onBlurName}
           onKeyDown={handleNameInputKeyDown}
           value={nameInputValue}
-          onClick={onClickName}
         />
+        {children}
         <Spacer />
         <OptionsMenu options={menuOptions}>
           <MenuContainer size="small">

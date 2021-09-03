@@ -7,7 +7,6 @@ import { renderComment } from './helpers';
 const CommentSection = ({
   parentFormSubmit,
   taskDrawerFocusField,
-  modalActions,
   taskListIdentifier,
   isTemplateTask,
 }) => {
@@ -17,7 +16,7 @@ const CommentSection = ({
     removeComment,
     updateComment,
     addComment,
-  } = initializeCommentSectionHooks({ modalActions });
+  } = initializeCommentSectionHooks();
 
   return (
     <CommentSectionContainer>

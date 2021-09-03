@@ -122,7 +122,6 @@ const PatientList = ({
 
   const handleAddPatient = useCallback(() => {
     const patient = searchValue;
-    console.log('patient', patient);
 
     if (currentOrganization.emrIntegrationEnabled) {
       return;
