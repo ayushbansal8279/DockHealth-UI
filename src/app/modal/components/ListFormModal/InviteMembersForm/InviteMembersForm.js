@@ -8,7 +8,6 @@ import InviteMemberToListForm from 'components/members/InviteMemberToListForm/In
 import { useDispatch } from 'react-redux';
 import { getMembersByTaskListId } from '../../../../actions/task-list-actions';
 import { Title, Header, Description } from '../styled';
-
 import {
   InviteInitialViewWrapper,
   InviteInitialViewContent,

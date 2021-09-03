@@ -17,7 +17,7 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
 
   return (
     <SortHeaderRow>
-      <ColumnSortHeader width={30} />
+      <ColumnSortHeader width={20} />
       {mergedConfig[TaskTemplateItemColumn.NAME] && (
         <ColumnSortHeader
           id={TaskTemplateItemColumn.NAME}
@@ -39,7 +39,7 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
         <ColumnSortHeader
           id={TaskTemplateItemColumn.CREATED}
           label="Created"
-          width={200}
+          width={150}
           sort={sort}
           onSortChange={onSortChange}
         />
@@ -48,7 +48,7 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
         <ColumnSortHeader
           id={TaskTemplateItemColumn.PERMISSIONS}
           label="Permissions"
-          width={200}
+          width={250}
           sort={sort}
           onSortChange={onSortChange}
         />

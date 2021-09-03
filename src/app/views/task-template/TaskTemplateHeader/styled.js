@@ -6,6 +6,7 @@ import spacing from 'styles/spacing';
 
 export const HeaderContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
+  border-right: 1px solid ${palette.coolGrey3};
   display: flex;
 `;
 
