@@ -90,7 +90,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       return {
         ...state,
         taskTemplates: action.templates || [],
-
+        parent: null,
         isFetching: false,
       };
     case ActionTypes.LOAD_TASK_TEMPLATES_FOLDER:
