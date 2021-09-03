@@ -89,7 +89,8 @@ export const RoleOptionLabel = styled.label`
   padding: ${spacing.small} ${spacing.regularPlus};
   margin: 0 !important;
 
-  ${({ isSelected }) => isSelected && `background: ${palette.coolGrey3};`}
+  ${({ isSelected }) =>
+    isSelected && `background: ${palette.brightBlueWithAlpha};`}
 `;
 
 export const RoleOptionHeaderWrapper = styled.div`
