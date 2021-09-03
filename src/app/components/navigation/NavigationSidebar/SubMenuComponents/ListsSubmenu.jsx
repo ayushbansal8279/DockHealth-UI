@@ -27,7 +27,10 @@ import palette from 'styles/palette';
 import { TASK_LIST_PATH } from 'routing/helpers/paths';
 import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
+import useBoolean from 'hooks/useBoolean';
+import Spacing from 'components/common/Spacing';
 import {
   SubmenuDivider,
   DrawerListsList,
@@ -63,6 +66,7 @@ const ListsSubmenu = () => {
 
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
+  const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
   // const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
   // const [currentList, setCurrentList] = useState([]);
   // const itemsMoreButtonReferences = useRef([]);
@@ -222,10 +226,68 @@ const ListsSubmenu = () => {
 
   const hasAnyPendingList = lists.some(({ status }) => status === 'PENDING');
 
+  const activeLists = useMemo(() => {
+    // TODO: Filter by not archived
+    return lists;
+  }, [lists]);
+
+  const archivedLists = useMemo(() => {
+    // TODO: Filter by archived
+    return lists;
+  }, [lists]);
+
+  const renderLists = useCallback(
+    listsList => {
+      return listsList?.map(list => (
+        <DrawerListsItem
+          key={`listsubmenu_${list.taskListIdentifier}`}
+          data-list-id={list.taskListIdentifier}
+          className={
+            list.listType === 'INBOX'
+              ? 'drawer-menu-list-inbox'
+              : `drawer-menu-list-item`
+          }
+        >
+          {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
+          <ListNameText
+            isActive={activeTaskListIdentifier === list?.taskListIdentifier}
+            onMouseEnter={event => handleMouseEnter(event, list?.listName)}
+            onMouseLeave={() => setPopoverLabel(null)}
+            onClick={() => {
+              if (activeTaskListIdentifier === list?.taskListIdentifier) return;
+
+              if (list?.status === 'PENDING') {
+                onTaskListInvitationAccepted();
+                dispatch(TaskListActions.acceptInviteToTaskList(list));
+              }
+              history.push(`/tasks/${list.taskListIdentifier}`);
+            }}
+          >
+            {list?.listName}
+          </ListNameText>
+          {list?.status === 'PENDING' && (
+            <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
+          )}
+          <DrawerItemOptions>
+            <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+            {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+              <OptionsMenu disablePortal options={getMenuItems(list)}>
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            ) : (
+              <Box m={2} />
+            )}
+          </DrawerItemOptions>
+        </DrawerListsItem>
+      ));
+    },
+    [activeTaskListIdentifier, dispatch, getMenuItems, history],
+  );
+
   return (
     <>
       <DrawerMyListsLabel>
-        <div>My Lists </div>
+        <div>My Lists</div>
         {!isGuest && <AddButton onClick={openListAddModal}>Add</AddButton>}
       </DrawerMyListsLabel>
       <SubmenuDivider />
@@ -233,49 +295,7 @@ const ListsSubmenu = () => {
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>
       )}
       <DrawerListsList>
-        {lists?.map(list => (
-          <DrawerListsItem
-            key={`listsubmenu_${list.taskListIdentifier}`}
-            data-list-id={list.taskListIdentifier}
-            className={
-              list.listType === 'INBOX'
-                ? 'drawer-menu-list-inbox'
-                : `drawer-menu-list-item`
-            }
-          >
-            {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
-            <ListNameText
-              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
-              onMouseEnter={event => handleMouseEnter(event, list?.listName)}
-              onMouseLeave={() => setPopoverLabel(null)}
-              onClick={() => {
-                if (activeTaskListIdentifier === list?.taskListIdentifier)
-                  return;
-
-                if (list?.status === 'PENDING') {
-                  onTaskListInvitationAccepted();
-                  dispatch(TaskListActions.acceptInviteToTaskList(list));
-                }
-                history.push(`/tasks/${list.taskListIdentifier}`);
-              }}
-            >
-              {list?.listName}
-            </ListNameText>
-            {list?.status === 'PENDING' && (
-              <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
-            )}
-            <DrawerItemOptions>
-              <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                <OptionsMenu disablePortal options={getMenuItems(list)}>
-                  <MoreVert color="primary" />
-                </OptionsMenu>
-              ) : (
-                <Box m={2} />
-              )}
-            </DrawerItemOptions>
-          </DrawerListsItem>
-        ))}
+        {renderLists(activeLists)}
         <RolloverPopover
           anchorEl={hoveredItemReference?.current}
           anchorOrigin={{
@@ -292,6 +312,15 @@ const ListsSubmenu = () => {
           <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
         </RolloverPopover>
       </DrawerListsList>
+      <Spacing vertical={3} />
+      <LabeledCollapse
+        name="Archived Lists"
+        isOpened={archivedVisible}
+        onClick={toggleArchived}
+        noBorder
+      >
+        {renderLists(archivedLists)}
+      </LabeledCollapse>
     </>
   );
 };

@@ -11,7 +11,13 @@ import {
   LabeledCollapseItemName,
 } from './styled';
 
-const LabeledCollapse = ({ children, onClick, name, isOpened }) => {
+const LabeledCollapse = ({
+  children,
+  onClick,
+  name,
+  isOpened,
+  noBorder = false,
+}) => {
   const [openedItem, setOpenedItem] = useState(null);
 
   const handleClick = useCallback(
@@ -26,7 +32,7 @@ const LabeledCollapse = ({ children, onClick, name, isOpened }) => {
   );
 
   return (
-    <LabeledCollapseWrapper>
+    <LabeledCollapseWrapper noBorder={noBorder}>
       <LabeledCollapseHeaderButton type="button" onClick={handleClick}>
         <LabeledCollapseItemName>{name}</LabeledCollapseItemName>
         <Spacing horizontal={3} />

@@ -6,7 +6,8 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const LabeledCollapseWrapper = styled.div`
   padding: ${spacing.small};
-  border: 1px solid ${palette.coolGrey3};
+  border: ${props =>
+    props.noBorder ? 'none' : `1px solid ${palette.coolGrey3}`};
   background: ${palette.white};
 
   &:not(:last-of-type) {
