@@ -6,6 +6,17 @@ import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
+import Select from 'components/common/Select/Select';
+
+export const DecisionSelect = styled(Select)`
+  & .MuiSelect-root {
+    padding: 0px;
+    background: white;
+  }
+  & .MuiSelect-root:before {
+    display: none;
+  }
+`;
 
 export const ListItemLink = styled(Link)`
   color: ${palette.mediumGrey};
@@ -59,6 +70,10 @@ export const PriorityIndicator = styled.div`
   left: 0;
 `;
 
+export const DependencyIconContainer = styled.div`
+  margin-right: ${spacing.small};
+`;
+
 export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
@@ -84,6 +99,7 @@ export const CircleIcon = styled.img`
   margin-right: ${spacing.smallPlus};
   align-self: center;
   ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
+  opacity: ${({ isClickable }) => (isClickable ? '1' : '0.5')};
 `;
 export const DescriptionTooltip = styled.div`
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
@@ -119,6 +135,14 @@ export const Description = styled.div`
 `;
 
 export const DescriptionBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  cursor: pointer;
+`;
+
+export const DecisionBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;

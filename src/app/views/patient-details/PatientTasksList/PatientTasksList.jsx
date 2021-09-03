@@ -324,7 +324,6 @@ const PatientTasksListView = ({
         <GroupedListSkeletonLoader />
       )}
       <TaskDrawer
-        modalActions={modalActions}
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
         onTaskDelete={fetchPatientFilters}

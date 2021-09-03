@@ -30,6 +30,6 @@
     "src/app/**/*.js",
     "src/app/**/*.jsx",
     "src/app/**/*.png",
-    "src/app/**/*.svg"
+    "src/app/**/*.svg" 
   ]
 }

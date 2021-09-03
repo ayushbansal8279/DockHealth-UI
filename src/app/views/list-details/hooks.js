@@ -561,8 +561,11 @@ const initializeListDetailsViewHooks = (match, history) => {
           data.task?.creator.userIdentifier !== currentUserIdentifier
         ) {
           refreshTab();
-        } else if (data.task.taskIdentifier) {
-          actions.refreshAnotherTask(data.task);
+        } else if (
+          data.eventType === 'UPDATE_TASK' &&
+          data.task.taskIdentifier
+        ) {
+          actions.refreshTask(data.task.identifier);
         }
       }
     };
@@ -613,7 +616,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
-    modalActions,
     navigateToTab,
     openedTasks,
     quickAddTask,

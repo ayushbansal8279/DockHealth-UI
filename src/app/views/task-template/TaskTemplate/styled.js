@@ -11,7 +11,7 @@ export const TaskTemplateContainer = styled.div`
 
 export const TaskTemplateHeader = styled.div`
   display: grid;
-  grid-template-columns: auto auto 1fr 372px auto;
+  grid-template-columns: auto auto 1fr auto auto auto;
   grid-template-rows: 30px auto;
   grid-column-gap: ${spacing.tiny};
   align-items: center;

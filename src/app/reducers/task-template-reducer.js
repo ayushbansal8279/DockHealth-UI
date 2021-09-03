@@ -1,6 +1,11 @@
 import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
 import { mapWithRemove } from 'helpers/utility-functions';
+import {
+  createDecisionTaskNodes,
+  createTaskNode,
+  createLinkElement,
+} from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -8,6 +13,10 @@ const initialState = {
   isFetching: false,
   isError: false,
   taskTemplateDetails: {},
+  parent: null,
+  breadcrumbs: [],
+  currentTaskTemplateIdentifier: null,
+  currentTaskTemplate: null,
 };
 
 const templateDetailsInitialState = {
@@ -49,6 +58,21 @@ function updateTaskTemplateDetailsState(
 
 const TaskTemplateReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: [...state.breadcrumbs, action.payload.breadcrumb],
+      };
+    case ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: [...action.payload.breadcrumbs],
+      };
+    case ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: [],
+      };
     case ActionTypes.ADD_TASK_TEMPLATE:
       return {
         ...state,
@@ -66,7 +90,14 @@ const TaskTemplateReducer = (state = initialState, action) => {
       return {
         ...state,
         taskTemplates: action.templates || [],
-
+        parent: null,
+        isFetching: false,
+      };
+    case ActionTypes.LOAD_TASK_TEMPLATES_FOLDER:
+      return {
+        ...state,
+        taskTemplates: action.templates || [],
+        parent: action.taskTemplateFolderIdentifier,
         isFetching: false,
       };
 
@@ -77,8 +108,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
         isError: true,
       };
 
-    case ActionTypes.TASK_TEMPLATE_FETCHING: {
-      const { taskTemplateIdentifier } = action;
+    case ActionTypes.GET_TASK_TEMPLATE_TASKS: {
+      const { taskTemplateIdentifier, withLoader } = action;
 
       return {
         ...state,
@@ -86,7 +117,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           taskTemplateIdentifier,
           state.taskTemplateDetails,
           {
-            isFetching: true,
+            isFetching: withLoader,
             isError: false,
           },
         ),
@@ -173,7 +204,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.ADD_TASK_TO_TEMPLATE: {
+    case ActionTypes.ADD_TASK_TO_TEMPLATE_SUCCESS: {
       const { taskTemplateIdentifier } = action.task;
 
       return {
@@ -216,6 +247,191 @@ const TaskTemplateReducer = (state = initialState, action) => {
           templateDetailsInitialState,
         ),
       };
+    }
+
+    case ActionTypes.GET_CURRENT_TASK_TEMPLATE_SUCCESS: {
+      const { template } = action;
+
+      return {
+        ...state,
+        currentTaskTemplate: template,
+      };
+    }
+
+    case ActionTypes.SELECT_TASK_TEMPLATE: {
+      const { taskTemplateIdentifier } = action;
+
+      return {
+        ...state,
+        currentTaskTemplateIdentifier: taskTemplateIdentifier,
+      };
+    }
+
+    case ActionTypes.UNSELECT_TASK_TEMPLATE: {
+      return {
+        ...state,
+        currentTaskTemplateIdentifier: null,
+        currentTaskTemplate: null,
+      };
+    }
+
+    case ActionTypes.GET_TASK_TEMPLATE_LAYOUT: {
+      const { taskTemplateIdentifier } = action;
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          taskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            isFetchingLayout: true,
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.GET_TASK_TEMPLATE_LAYOUT_SUCCESS: {
+      const { taskTemplateIdentifier, layout } = action;
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          taskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            isFetchingLayout: false,
+            layout,
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT: {
+      const { layout } = action;
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          state.currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            isSavingLayout: true,
+            layout,
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT_SUCCESS: {
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          state.currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            isSavingLayout: false,
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_TASK_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createTaskNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_TEMPORARY_LINK: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { sourceId, targetId, sourceHandle, targetHandle } = action;
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []).filter(
+                ({ source, target }) =>
+                  !(source === sourceId && target === targetId),
+              ),
+              createLinkElement(sourceId, targetId, sourceHandle, targetHandle),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              ...createDecisionTaskNodes(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.DELETE_TEMPORARY_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { elementId } = action;
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: temporaryElements.filter(
+              ({ id, source, target }) =>
+                id !== elementId &&
+                source !== elementId &&
+                target !== elementId,
+            ),
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.LINK_TASKS: {
+      return state;
     }
 
     default:

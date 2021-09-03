@@ -17,6 +17,7 @@ import {
   openQuickAddSubtask,
   selectTask,
   storeAsCurrentTask,
+  chooseTaskDecisionOutcome,
 } from 'actions/task-actions';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
@@ -40,6 +41,9 @@ import {
   TaskItemColumn,
   TASK_ITEM_BASE_COLUMN_CONFIG,
 } from 'helpers/task-helpers';
+import dependencyIcon from 'img/dependency-icon.svg';
+import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
+import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
@@ -48,6 +52,7 @@ import {
   StandardTaskItemPanel,
   StandardTaskThreeDots,
   PriorityIndicator,
+  DependencyIconContainer,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -60,6 +65,7 @@ import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
 import TaskItemList from './TaskItemComponents/TaskItemList';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
+import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
 
 const STANDARD_TASK_HEIGHT = 35;
 const EXTENDED_TASK_HEIGHT = 50;
@@ -121,14 +127,26 @@ const TaskItem = ({
     subtaskQuickAddOpen,
     selected,
     subTasksCount,
+    dependencyTasksCompletedCount,
+    dependencyTasksCount,
   } = task;
 
   const { listName, taskListIdentifier } = taskList || {};
   const isCompleted = task.status === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
   const isSubtask = !!parentTaskIdentifier;
+  const isDecisionTask = task.intentType === 'DECISION';
+  const isDecisionSelected = task.taskOutcomes?.reduce(
+    (accumulator, currentValue) => accumulator || currentValue.isSelected,
+    false,
+  );
   const isTaskStatusTogglingDisabled =
-    isTemplateTask || (isSubtask && isCompletedGroup);
+    isTemplateTask ||
+    (isSubtask && isCompletedGroup) ||
+    (isDecisionTask && !isDecisionSelected);
+
+  const isDependencyEmptyOrCompleted =
+    dependencyTasksCount === dependencyTasksCompletedCount;
 
   const {
     matchAssignedTo,
@@ -145,8 +163,8 @@ const TaskItem = ({
   const isSelected = useSelector(
     isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
   );
-
   const [isHovered, setIsHovered] = useState(false);
+  const [taskDecisionError, setTaskDecisionError] = useState(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
       rawText: description,
@@ -158,6 +176,13 @@ const TaskItem = ({
   const [contextMenu, setContextMenu] = useState(null);
   const dispatch = useDispatch();
   const previousDescription = useRef(null);
+  const dependencyIconReference = useRef(null);
+
+  const [
+    dependencyPopoverOpen,
+    openDependencyPopover,
+    closeDependencyPopover,
+  ] = useBooleanWithTimeout();
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -210,24 +235,29 @@ const TaskItem = ({
 
   const onCircleClick = useCallback(
     event => {
-      if (!isTaskStatusTogglingDisabled) {
-        toggleCompleteTask(task);
-      }
-
-      if (!isSubtask) {
-        (isCompleted ? onTaskReActivated : onTaskCompleted)();
-      } else {
-        (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
+      if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
+        setTaskDecisionError(false);
+        toggleCompleteTask({ ...task, templateBundleIdentifier });
+        if (!isSubtask) {
+          (isCompleted ? onTaskReActivated : onTaskCompleted)();
+        } else {
+          (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
+        }
+      } else if (!isDecisionSelected) {
+        setTaskDecisionError(true);
       }
 
       event.stopPropagation();
     },
     [
+      templateBundleIdentifier,
       isTaskStatusTogglingDisabled,
       isSubtask,
       isCompleted,
       toggleCompleteTask,
       task,
+      isDependencyEmptyOrCompleted,
+      isDecisionSelected,
     ],
   );
 
@@ -278,6 +308,7 @@ const TaskItem = ({
 
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
+  const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
 
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
@@ -307,6 +338,7 @@ const TaskItem = ({
     dueDateIsInConfig,
     assignedIsInConfig,
     listNameIsInConfig,
+    decisionInConfig,
   } = useMemo(() => {
     return {
       descriptionIsInCofnig: checkColumnIsInConfig(
@@ -339,6 +371,10 @@ const TaskItem = ({
       ),
       listNameIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.LIST_NAME,
+        mergedTaskItemConfig,
+      ),
+      decisionInConfig: checkColumnIsInConfig(
+        TaskItemColumn.DECISION_SELECT,
         mergedTaskItemConfig,
       ),
     };
@@ -378,10 +414,30 @@ const TaskItem = ({
           >
             <CircleIcon
               src={isCompleted ? CircleCompleted : Circle}
-              isClickable={!isTaskStatusTogglingDisabled}
+              isClickable={
+                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+              }
               isCompleted={isCompleted}
               onClick={onCircleClick}
             />
+
+            {!isDependencyEmptyOrCompleted && !isTemplateTask && (
+              <>
+                <DependencyIconContainer
+                  onMouseEnter={openDependencyPopover}
+                  onMouseLeave={closeDependencyPopover}
+                  ref={dependencyIconReference}
+                >
+                  <img src={dependencyIcon} alt="search" />
+                  <DependencyListPopover
+                    anchorElement={dependencyIconReference.current}
+                    open={dependencyPopoverOpen}
+                    dependencyTasksCount={dependencyTasksCount}
+                    task={task}
+                  />
+                </DependencyIconContainer>
+              </>
+            )}
 
             {descriptionIsInCofnig && (
               <TaskItemDescription
@@ -402,6 +458,18 @@ const TaskItem = ({
               />
             )}
           </MainStandardTaskItemCell>
+          {decisionInConfig && showDecisionRow && (
+            <TaskItemDecision
+              outcomes={task.taskOutcomes}
+              dispatch={dispatch}
+              onSelect={chooseTaskDecisionOutcome}
+              task={task}
+              templateBundleIdentifier={templateBundleIdentifier}
+              disabled={isCompleted}
+              error={taskDecisionError}
+              clearError={() => setTaskDecisionError(false)}
+            />
+          )}
           {subtasksIsInConfig && (
             <TaskItemSubtasks
               isSubtask={isSubtask}

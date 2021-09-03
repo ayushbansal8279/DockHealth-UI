@@ -99,7 +99,6 @@ export function getTaskListById(taskListIdentifier) {
 }
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
-  console.log('getMembersByTaskListId');
   return dispatch =>
     TaskListApi.getMembersByTaskListId(taskListIdentifier, memberStatus)
       .then(tasklistmembers => {

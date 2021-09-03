@@ -1,9 +1,13 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { SortableItemWrapper } from './styled';
+import styled from 'styled-components';
 
-const SortableStatusItem = ({ itemId, children }) => {
+const SortableItemWrapper = styled.div`
+  width: 100%;
+`;
+
+const SortableItem = ({ itemId, children, overflowHidden = false }) => {
   const {
     attributes,
     listeners,
@@ -16,6 +20,7 @@ const SortableStatusItem = ({ itemId, children }) => {
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
+    overflow: overflowHidden ? 'hidden' : 'visible',
   };
 
   if (typeof children === 'function') {
@@ -38,4 +43,4 @@ const SortableStatusItem = ({ itemId, children }) => {
   );
 };
 
-export default SortableStatusItem;
+export default SortableItem;

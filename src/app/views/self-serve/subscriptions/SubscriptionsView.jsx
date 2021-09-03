@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { setPaymentNewPlan } from 'actions/organization-actions';
@@ -8,7 +8,6 @@ import Button from 'components/common/Button/Button';
 import SubscriptionsPlansView from './SubscriptionsPlansView/SubscriptionsPlansView';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import initializeSubscriptionsViewHooks from './hooks';
-import InvitationPanel from './InvitationPanel/InvitationPanel';
 import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 import {
@@ -110,10 +109,6 @@ export default () => {
     userSubscriptionStatus !== USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED &&
     chosenPlan;
 
-  const [invitationPanelVisible, toggleInvitationPanelVisibility] = useState(
-    false,
-  );
-
   const {
     annualMonthlyPrice: chosenAnnualMonthlyPrice,
     subscriptionPlan: chosenSubscriptionPlan,
@@ -185,7 +180,6 @@ export default () => {
           userSubscriptionStatus={userSubscriptionStatus}
           setUserSubscriptionStatus={setUserSubscriptionStatus}
           subscriptionPlanData={memberTableSubscriptionData}
-          toggleInvitationPanelVisibility={toggleInvitationPanelVisibility}
           plansViewVisible={plansViewVisible}
           buyButtonDisabled={buyButtonDisabled}
           onClickBuyButton={onSubscriptionPlanChosen({
@@ -195,9 +189,6 @@ export default () => {
             history,
           })}
         />
-        {invitationPanelVisible && (
-          <InvitationPanel getAllUsers={getAllUsers} />
-        )}
         {billingVisible && (
           <BillingContainer>
             <MontserratTypography variant="h4">

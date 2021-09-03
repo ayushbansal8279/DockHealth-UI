@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
@@ -18,6 +18,7 @@ const DateInput = ({
   disabled,
   error,
   name,
+  maxDate,
   ...otherProps
 }) => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
@@ -30,6 +31,12 @@ const DateInput = ({
     onChange({ target: { value: date } });
   };
 
+  const showError = useMemo(() => {
+    return momentDate.isValid() || !value || value === '__/__/____'
+      ? error
+      : 'Invalid date format';
+  }, [error, momentDate, value]);
+
   return (
     <>
       <Input
@@ -40,11 +47,7 @@ const DateInput = ({
         disabled={disabled}
         shrink={!!value}
         name={name}
-        error={
-          momentDate.isValid() || !value || value === '__/__/____'
-            ? error
-            : 'Invalid date format'
-        }
+        error={showError}
         endAdornment={
           <IconButton disabled={readOnly || disabled} onClick={setOpen}>
             <CalendarTodayIcon />
@@ -71,6 +74,7 @@ const DateInput = ({
             momentDate.isValid() ? momentDate.toISOString() : undefined
           }
           onDateChange={handleDatepickerChange}
+          maxDate={maxDate}
         />
       </Popover>
     </>

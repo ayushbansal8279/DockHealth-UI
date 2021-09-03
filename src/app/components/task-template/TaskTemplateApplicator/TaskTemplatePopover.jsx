@@ -1,43 +1,91 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { useMemo, useCallback } from 'react';
 import { Popover } from '@material-ui/core';
-import * as TaskTemplateActions from 'actions/task-template-actions';
-
+import Search from 'components/task-view/Search/Search';
+import Folder from 'img/folder';
+import ArrowLeftIcon from 'img/arrow-left.svg';
+import { trunc } from 'helpers/utility-functions';
 import {
-  CreateTaskLinkText,
-  CreateTaskLinkContainer,
   Item,
   LoaderItem,
   LoaderContainer,
   EmptyLabel,
+  ListItem,
+  ListItemTextButton,
+  NextArrow,
+  SelectOptionsContainer,
+  SearchContainer,
+  FolderIcon,
+  FolderIconContainer,
+  PopoverHeader,
+  BackIconContainer,
+  HeaderTextContainer,
 } from './styled';
-
-const renderTemplateItem = ({ onClick, key, label }) => {
-  return (
-    <Item onClick={onClick} key={key}>
-      {label}
-    </Item>
-  );
-};
 
 const TaskTemplatePopover = ({
   anchorEl,
-  taskTemplatesList,
+  taskTemplatesList = [],
   taskTemplatesIsLoading,
   open,
   onClose,
+  searchPhrase,
+  onSearchChange,
+  onFolderClick,
+  onTemplateSelect,
+  getTemplatesList,
+  parentList,
+  onBack,
 }) => {
-  const dispatch = useDispatch();
+  const folders = useMemo(
+    () => taskTemplatesList?.filter(({ type }) => type === 'FOLDER'),
+    [taskTemplatesList],
+  );
+  const templates = useMemo(
+    () => taskTemplatesList?.filter(({ type }) => type !== 'FOLDER'),
+    [taskTemplatesList],
+  );
+
+  const renderTemplate = useCallback(
+    folder => {
+      const { taskTemplateIdentifier, name } = folder;
+
+      return (
+        <Item
+          onClick={() => onTemplateSelect(folder)}
+          key={taskTemplateIdentifier}
+        >
+          {name}
+        </Item>
+      );
+    },
+    [onTemplateSelect],
+  );
+
+  const renderFolder = useCallback(
+    folder => {
+      const { taskTemplateIdentifier, name } = folder;
+      return (
+        <ListItem key={taskTemplateIdentifier}>
+          <FolderIconContainer>
+            <FolderIcon src={Folder} alt="folder icon" />
+          </FolderIconContainer>
+          <ListItemTextButton
+            onClick={() => onFolderClick(folder)}
+            type="button"
+          >
+            {name}
+          </ListItemTextButton>
+          <NextArrow onClick={() => onFolderClick(taskTemplateIdentifier)} />
+        </ListItem>
+      );
+    },
+    [onFolderClick],
+  );
 
   return (
     <Popover
       PaperProps={{
-        elevation: 0,
-        square: true,
         style: {
           width: 325,
-          maxHeight: 400,
         },
       }}
       anchorOrigin={{
@@ -50,27 +98,46 @@ const TaskTemplatePopover = ({
       }}
       anchorEl={anchorEl}
       open={open}
-      onEnter={() => dispatch(TaskTemplateActions.getTemplates())}
+      onEnter={getTemplatesList}
       onClose={onClose}
     >
-      {taskTemplatesIsLoading && (
-        <LoaderContainer>
-          <LoaderItem />
-          <LoaderItem />
-          <LoaderItem />
-        </LoaderContainer>
+      <SearchContainer>
+        <Search
+          fullWidth
+          noBackground
+          value={searchPhrase}
+          onChange={event => onSearchChange(event?.target?.value)}
+          placeholder="Search Workflows"
+        />
+      </SearchContainer>
+      {parentList && (
+        <PopoverHeader>
+          <BackIconContainer onClick={onBack}>
+            <img src={ArrowLeftIcon} alt="back-navigation" />
+          </BackIconContainer>
+          <HeaderTextContainer>
+            {trunc(parentList.name, 25)}
+          </HeaderTextContainer>
+        </PopoverHeader>
       )}
-      {!taskTemplatesIsLoading &&
-        taskTemplatesList?.length > 0 &&
-        taskTemplatesList.map(renderTemplateItem)}
-      {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
-        <EmptyLabel>There are no workflows to select from</EmptyLabel>
-      )}
-      <CreateTaskLinkContainer>
-        <Link to="/core/workflows">
-          <CreateTaskLinkText>Create New Workflow</CreateTaskLinkText>
-        </Link>
-      </CreateTaskLinkContainer>
+      <SelectOptionsContainer>
+        {taskTemplatesIsLoading && (
+          <LoaderContainer>
+            <LoaderItem />
+            <LoaderItem />
+            <LoaderItem />
+          </LoaderContainer>
+        )}
+        {!taskTemplatesIsLoading &&
+          folders?.length > 0 &&
+          folders.map(folder => renderFolder(folder))}
+        {!taskTemplatesIsLoading &&
+          templates?.length > 0 &&
+          templates.map(folder => renderTemplate(folder))}
+        {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
+          <EmptyLabel>There are no workflows to select from</EmptyLabel>
+        )}
+      </SelectOptionsContainer>
     </Popover>
   );
 };

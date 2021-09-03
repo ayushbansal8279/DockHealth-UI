@@ -42,10 +42,12 @@ import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkComp
 import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/MoveTasksWithSubtasksModal';
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
 import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
+import CreateTemplateFolderModal from './components/CreateTemplateFolderModal/CreateTemplateFolderModal';
 import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeScreenDragDropModal';
 import DeleteTemplateModal from './components/DeleteTemplateModal/DeleteTemplateModal';
 import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
 import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
+import SelectWorkflowDestinationModal from './components/SelectWorkflowDestinationModal/SelectWorkflowDestinationModal';
 import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
 import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
 import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
@@ -53,6 +55,7 @@ import AddPatientToListModal from './components/AddPatientToListModal/AddPatient
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
 import EditCustomPatientFieldModal from './components/EditCustomPatientFieldModal/EditCustomPatientFieldModal';
 import DeleteFieldModal from './components/DeleteFieldModal/DeleteFieldModal';
+import DeleteFolderModal from './components/DeleteFolder/DeleteFolderModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -99,10 +102,13 @@ const MODAL_MAP = {
   MoveTasksWithSubtasks: MoveTasksWithSubtasksModal,
   SendingInvite: SendingInviteModal,
   CreateTemplate: CreateTemplateModal,
+  CreateTemplateFolder: CreateTemplateFolderModal,
   HomeScreenDragDrop: HomeScreenDragDropModal,
   DeleteTemplate: DeleteTemplateModal,
+  DeleteFolder: DeleteFolderModal,
   SelectTaskDestination: SelectTaskDestinationModal,
   SelectDestination: SelectDestinationModal,
+  SelectWorkflowDestination: SelectWorkflowDestinationModal,
   AssignPatient: AssignPatientModal,
   UnassignPatient: UnassignPatientModal,
   EditPatientList: EditPatientListModal,

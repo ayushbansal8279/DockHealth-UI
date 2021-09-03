@@ -114,8 +114,8 @@ const Subtask = ({ subtask, currentUser }) => {
     dispatch(openDrawer(DrawerFieldEnum.LABEL));
   };
 
-  const handleAttachementIconClick = () => {
-    dispatch(openDrawer(DrawerFieldEnum.ATTACHEMENT));
+  const handleAttachmentIconClick = () => {
+    dispatch(openDrawer(DrawerFieldEnum.ATTACHMENT));
   };
 
   const handleDueDateChange = useCallback(
@@ -209,7 +209,7 @@ const Subtask = ({ subtask, currentUser }) => {
             <div>
               <TaskIcon
                 type="attachments"
-                onClick={handleAttachementIconClick}
+                onClick={handleAttachmentIconClick}
                 isActive={attachments?.length > 0}
                 isNew={updatedAttachment}
                 isHovered={isHovered}

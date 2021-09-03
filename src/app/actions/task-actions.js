@@ -13,6 +13,13 @@ import * as ActionTypes from './action-types';
 import * as ActionTypesSaga from './action-types-saga';
 import AlertMessages from '../alert/AlertMessages';
 
+export function refreshTaskBundle(templateBundleIdentifier) {
+  return {
+    type: ActionTypesSaga.REFRESH_TASK_BUNDLE,
+    templateBundleIdentifier,
+  };
+}
+
 export const clearPreparedSubtask = curry(dispatch =>
   dispatch({
     type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
@@ -21,6 +28,14 @@ export const clearPreparedSubtask = curry(dispatch =>
     subtaskShape: {},
   }),
 );
+export const chooseTaskDecisionOutcome = (
+  taskOutcomeIdentifier,
+  task,
+  templateBundleIdentifier,
+) => ({
+  type: ActionTypesSaga.CHOOSE_DECISION_TASK_OPTION,
+  payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
+});
 
 export function storeAsCurrentTask(task) {
   return dispatch => {
@@ -415,10 +430,11 @@ export function duplicateTask(
 }
 
 export function toggleCompleteTask(
-  task,
+  taskObject,
   currentUser = null,
   isBundleTask = false,
 ) {
+  const { templateBundleIdentifier, ...task } = taskObject;
   return dispatch => {
     const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
@@ -441,7 +457,6 @@ export function toggleCompleteTask(
       newTaskData.completedBy = currentUser;
       newTaskData.completedDt = moment().toISOString();
     }
-
     dispatch({
       type: ActionTypes.SET_COMPLETE_STATUS,
       taskIdentifier: task.taskIdentifier,
@@ -459,6 +474,10 @@ export function toggleCompleteTask(
               }),
             TASK_DISAPPEAR_DELAY,
           );
+        }
+
+        if (templateBundleIdentifier) {
+          dispatch(refreshTaskBundle(templateBundleIdentifier));
         }
         dispatch(AlertActions.showGlobalAlert(successMessage));
       })
@@ -709,23 +728,8 @@ export const removeTaskAttachment = (
       throw error;
     });
 
-export const refreshAnotherTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
-    .then(task => {
-      // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
-      dispatch({
-        type: ActionTypes.REFRESH_ANOTHER_TASK_SUCCESS,
-        task,
-      });
-      return task;
-    })
-    .catch(error => {
-      throw error;
-    });
-
-export const refreshTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+export const refreshTask = taskIdentifier => dispatch =>
+  TaskApi.getTaskDetails(taskIdentifier)
     .then(task => {
       // explicitly mark task as updated so we can show the flag
       task.updated = true; // eslint-disable-line no-param-reassign
@@ -957,5 +961,28 @@ export function updateWorkflowStatusForTasks(statusIdentifier, dataToUpdate) {
     type: ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS,
     statusIdentifier,
     dataToUpdate,
+  };
+}
+
+export function addTaskDependencyLink(sourceTask, targetTaskIdentifier) {
+  return {
+    type: ActionTypes.ADD_TASK_DEPENDENCY_LINK,
+    sourceTask,
+    targetTaskIdentifier,
+  };
+}
+
+export function updateTasksLink(link) {
+  return {
+    type: ActionTypes.UPDATE_TASKS_LINK,
+    link,
+  };
+}
+
+export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  return {
+    type: ActionTypes.DELETE_TASKS_LINK,
+    sourceTaskIdentifier,
+    targetTaskIdentifier,
   };
 }

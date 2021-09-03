@@ -1,10 +1,63 @@
 /* eslint-disable import/prefer-default-export */
+import * as ActionTypes from 'actions/action-types';
 import * as ActionTypesSaga from './action-types-saga';
+
+export function moveTemplate({
+  parentTaskTemplateIdentifier,
+  taskTemplateIdentifier,
+}) {
+  return {
+    type: ActionTypesSaga.MOVE_TASK_TEMPLATE,
+    payload: {
+      parentTaskTemplateIdentifier,
+      taskTemplateIdentifier,
+    },
+  };
+}
 
 export function addTemplate(template) {
   return {
     type: ActionTypesSaga.ADD_TASK_TEMPLATE,
-    template,
+    template: { ...template, type: 'WORKFLOW' },
+  };
+}
+
+export function pushToBreadcrumbs(
+  taskTemplateFolder,
+  taskTemplateFolderIdentifier,
+) {
+  return {
+    type: ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS,
+    payload: {
+      breadcrumb: { name: taskTemplateFolder, taskTemplateFolderIdentifier },
+    },
+  };
+}
+
+export function cleanAndPushToBreadcrumbs(breadcrumbs) {
+  return {
+    type: ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS,
+    payload: { breadcrumbs },
+  };
+}
+
+export function cleanBreadcrumbs() {
+  return {
+    type: ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS,
+  };
+}
+
+export function addTemplateFolder(template, parentIdentifier = null) {
+  return {
+    type: ActionTypesSaga.ADD_TASK_TEMPLATE_FOLDER,
+    template: { ...template, parentIdentifier, type: 'FOLDER' },
+  };
+}
+
+export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
+  return {
+    type: ActionTypesSaga.GO_TO_TASK_TEMPLATE_FOLDER,
+    payload: { taskTemplateFolderIdentifier },
   };
 }
 
@@ -31,9 +84,25 @@ export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
   };
 }
 
-export function getTemplates() {
+export function getAllTemplatesForOrganization(searchPhrase = null) {
+  return {
+    type: ActionTypesSaga.GET_ALL_TASK_TEMPLATES,
+    searchPhrase,
+  };
+}
+
+export function getTemplates(searchPhrase = null) {
   return {
     type: ActionTypesSaga.GET_TASK_TEMPLATES,
+    searchPhrase,
+  };
+}
+
+export function getTemplateTasks(taskTemplateIdentifier, withLoader = true) {
+  return {
+    type: ActionTypes.GET_TASK_TEMPLATE_TASKS,
+    taskTemplateIdentifier,
+    withLoader,
   };
 }
 
@@ -57,13 +126,107 @@ export function reorderTasksForTemplate({
   };
 }
 
-export function addTaskToTemplate(task) {
+export function addTaskToTemplate(task, elementId, position) {
   return {
-    type: ActionTypesSaga.ADD_TASK_TO_TEMPLATE,
+    type: ActionTypes.ADD_TASK_TO_TEMPLATE,
     task,
+    elementId,
+    position,
   };
 }
 
 export function reloadOpenedTemplateTasks() {
   return { type: ActionTypesSaga.RELOAD_OPENED_TEMPLATE_TASKS };
+}
+
+export function selectTaskTemplate(taskTemplateIdentifier) {
+  return {
+    type: ActionTypes.SELECT_TASK_TEMPLATE,
+    taskTemplateIdentifier,
+  };
+}
+
+export function unselectTaskTemplate() {
+  return {
+    type: ActionTypes.UNSELECT_TASK_TEMPLATE,
+  };
+}
+
+export function saveTaskTemplateLayout(layout) {
+  return {
+    type: ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT,
+    layout,
+  };
+}
+
+export function addNewTaskElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_TASK_ELEMENT,
+    position,
+  };
+}
+
+export function addNewDecisionTaskElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,
+    position,
+  };
+}
+
+export function deleteTemporaryElement(elementId) {
+  return {
+    type: ActionTypes.DELETE_TEMPORARY_ELEMENT,
+    elementId,
+  };
+}
+
+export function addTaskOutcome(outcomeName, taskIdentifier, link = null) {
+  return {
+    type: ActionTypes.ADD_TASK_OUTCOME,
+    outcomeName,
+    taskIdentifier,
+    link,
+  };
+}
+
+export function updateTaskOutcome(
+  taskOutcomeIdentifier,
+  taskIdentifier,
+  outcomeName,
+) {
+  return {
+    type: ActionTypes.UPDATE_TASK_OUTCOME,
+    taskOutcomeIdentifier,
+    taskIdentifier,
+    outcomeName,
+  };
+}
+
+export function linkTasks(source, target) {
+  return {
+    type: ActionTypes.LINK_TASKS,
+    source,
+    target,
+  };
+}
+
+export function addTemporaryLink(
+  sourceId,
+  targetId,
+  sourceHandle,
+  targetHandle,
+) {
+  return {
+    type: ActionTypes.ADD_TEMPORARY_LINK,
+    sourceId,
+    targetId,
+    sourceHandle,
+    targetHandle,
+  };
+}
+
+export function getCurrentTaskTemplate() {
+  return {
+    type: ActionTypes.GET_CURRENT_TASK_TEMPLATE,
+  };
 }

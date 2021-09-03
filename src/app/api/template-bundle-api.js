@@ -11,6 +11,17 @@ export function deleteTemplateBundle(templateIdentifier) {
     });
 }
 
+export function getTemplateBundle(taskBundleIdentifier) {
+  return axios
+    .get(`task/taskBundle/${taskBundleIdentifier}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function duplicateTemplateBundle(
   templateIdentifier,
   includeAttachments = false,

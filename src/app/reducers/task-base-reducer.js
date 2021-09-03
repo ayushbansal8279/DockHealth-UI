@@ -9,7 +9,6 @@ import {
   UPDATE_TASK_SUCCESS,
   SET_COMPLETE_STATUS,
   UPDATE_TASK_COMMENT_SUCCESS,
-  REFRESH_ANOTHER_TASK_SUCCESS,
   OPEN_QUICK_ADD_SUBTASK_INPUT,
   CLOSE_QUICK_ADD_SUBTASK_INPUT,
   REQUEST_LOAD_SUBTASKS,
@@ -26,7 +25,7 @@ import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import {
   TaskStatus,
-  updateSubtasksInTask,
+  updateNestedTask,
   updateSubtasksInTaskWithCallback,
 } from 'helpers/task-helpers';
 
@@ -218,23 +217,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case REFRESH_ANOTHER_TASK_SUCCESS: {
-      const { task } = action;
-
-      const updateTaskFromAction = t => {
-        if (t.taskIdentifier === task.taskIdentifier) {
-          return {
-            ...t,
-            ...task,
-          };
-        }
-
-        return updateSubtasksInTask(task, task.taskIdentifier, t);
-      };
-
-      return updateStateCallback(state, updateTaskFromAction);
-    }
-
     case UPDATE_TASK_SUCCESS: {
       const { task } = action;
 
@@ -243,7 +225,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           return { ...t, ...task };
         }
 
-        return updateSubtasksInTask(task, task.taskIdentifier, t);
+        return updateNestedTask(task, task.taskIdentifier, t);
       };
 
       return updateStateCallback(state, updateTaskFromAction);
@@ -272,18 +254,19 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           };
         }
 
-        if (t.subtasks?.length > 0) {
-          let updatedTask = updateSubtasksInTask(
-            dataToUpdate,
-            taskIdentifier,
-            t,
-          );
+        if (t.subtasks?.length > 0 || t.taskDependencies?.length > 0) {
+          let updatedTask = updateNestedTask(dataToUpdate, taskIdentifier, t);
 
           updatedTask = {
             ...updatedTask,
-            subTasksCompletedCount: updatedTask.subtasks?.filter(
-              s => s.status === TaskStatus.COMPLETE,
-            ).length,
+            dependencyTasksCompletedCount:
+              updatedTask.taskDependencies?.filter(
+                s => s.status === TaskStatus.COMPLETE,
+              ).length || 0,
+            subTasksCompletedCount:
+              updatedTask.subtasks?.filter(
+                s => s.status === TaskStatus.COMPLETE,
+              ).length || 0,
           };
           return updatedTask;
         }

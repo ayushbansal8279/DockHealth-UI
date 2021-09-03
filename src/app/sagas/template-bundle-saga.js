@@ -70,7 +70,8 @@ function* updateTemplateBundle({ bundle, dataToUpdate }) {
     );
 
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    console.log('error', error);
     yield put({
       type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
       bundleIdentifier: bundle.identifier,
