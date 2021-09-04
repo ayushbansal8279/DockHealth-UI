@@ -76,7 +76,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   const menuOptions = useMemo(
     () => [
       smartFlowsAvailable && {
-        name: 'Edit',
+        name: 'Open in Workflow Builder',
         onClick: () =>
           history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
       },
