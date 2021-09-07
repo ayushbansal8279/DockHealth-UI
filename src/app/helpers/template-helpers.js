@@ -37,6 +37,9 @@ export const TEMPLATE_TASK_ITEM_SORT_METHODS = {
   [TaskTemplateItemColumn.CREATED_BY]: sortWith([
     ascend(pipe(path(['creator', 'userName']), defaultTo('~'))),
   ]),
+  [TaskTemplateItemColumn.PERMISSIONS]: sortWith([
+    ascend(pipe(path(['members', 0, 'userName']), defaultTo(' '), toLower)),
+  ]),
 };
 
 export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
@@ -48,5 +51,8 @@ export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
   ]),
   [TaskTemplateItemColumn.CREATED_BY]: sortWith([
     descend(pipe(path(['creator', 'userName']), defaultTo('~'))),
+  ]),
+  [TaskTemplateItemColumn.PERMISSIONS]: sortWith([
+    descend(pipe(path(['members', 0, 'userName']), defaultTo(' '), toLower)),
   ]),
 };
