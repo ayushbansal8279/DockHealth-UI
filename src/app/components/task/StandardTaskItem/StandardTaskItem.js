@@ -27,8 +27,6 @@ const Task = React.memo(
     taskGroupIdentifier,
     isDraggable,
     addingNewSubtask,
-    addingNewSubtaskParentId,
-    subtaskShape,
     subtasksDisabled,
     areFiltersApplied,
     isSearchApplied,
@@ -59,10 +57,7 @@ const Task = React.memo(
     const { highlightedValue, multipleAssigneesContext } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
 
-    const renderedSubtasks =
-      addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
-        ? [...subtasks, subtaskShape]
-        : subtasks;
+    const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
 
     const dispatch = useDispatch();
 

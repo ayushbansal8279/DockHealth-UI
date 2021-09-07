@@ -144,7 +144,6 @@ const initializeTaskDrawerHooks = ({
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const selectedTask = useSelector(selectedTaskSelector);
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
-  // console.log(taskDrawerOpen, selectedTask);
 
   const [selectedParentTask, setSelectedParentTask] = useState(null);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);

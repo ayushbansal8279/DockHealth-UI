@@ -28,11 +28,7 @@ import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
-import {
-  addingNewSubtaskSelector,
-  addingNewSubtaskParentIdSelector,
-  subtaskShapeSelector,
-} from 'selectors/task-drawer-selectors';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -76,11 +72,9 @@ const TasksGroup = ({
   hasMoreTasks,
   children,
 }) => {
-  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const subtaskShape = useSelector(subtaskShapeSelector);
 
   const [
     highlightedTasksParentIdentifier,
@@ -301,9 +295,7 @@ const TasksGroup = ({
           isCompletedGroup,
           isFullView,
           tasks,
-          addingNewSubtask,
           addingNewSubtaskParentId,
-          subtaskShape,
           groupHasMultipleAssignees,
           isListFlattened,
           highlightedTasksParentIdentifier,

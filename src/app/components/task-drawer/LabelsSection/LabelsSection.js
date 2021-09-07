@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
+import { Chip } from '@material-ui/core';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import initializeLabelsSectionHooks from './hooks';
@@ -15,7 +16,6 @@ import {
   OptionButton,
   OptionButtonsInput,
   NoOptionTextLabel,
-  LabelChip,
   NoOptionContainer,
 } from './styled';
 
@@ -142,7 +142,7 @@ const LabelsSection = ({
   const renderTagsCallback = useCallback(
     () =>
       selectedLabels.map(option => (
-        <LabelChip
+        <Chip
           key={option.labelIdentifier}
           onDelete={() => removeLabelFromTask(option)}
           label={option.labelName}

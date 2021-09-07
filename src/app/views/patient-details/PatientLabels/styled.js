@@ -1,4 +1,4 @@
-import Chip from '@material-ui/core/Chip';
+import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -68,15 +68,6 @@ export const NoOptionTextLabel = styled.span`
   font-weight: 600;
 `;
 
-export const LabelChip = styled(Chip)`
-  && {
-    height: ${spacing.large};
-    margin-right: ${spacing.tiny};
-
-    ${({ textcolor }) => textcolor && `color: ${textcolor};`}
-  }
-`;
-
 export const NoOptionContainer = styled.div`
   padding: ${spacing.small};
 
@@ -97,3 +88,9 @@ export const ReadOnlyLabelsContainer = styled.div`
 export const ReadOnlyLabelContainer = styled.div`
   padding: 1px 0;
 `;
+
+export const useAutocompleteStyles = makeStyles({
+  inputRoot: {
+    paddingTop: '0 !important',
+  },
+});

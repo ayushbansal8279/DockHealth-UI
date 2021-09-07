@@ -71,7 +71,7 @@ const Select = ({
         {options?.map(option => {
           const { OptionIcon } = option;
           return (
-            <MenuItem value={option.value}>
+            <MenuItem key={option.value} value={option.value}>
               {OptionIcon || null}
               <ListItemText>{option.label}</ListItemText>
             </MenuItem>

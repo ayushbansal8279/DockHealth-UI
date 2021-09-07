@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ListSwitchChevron from 'img/list-switch-chevron';
 import palette, { opacify } from './palette';
 import { fontWeights } from './font';
+import spacing from './spacing';
 
 const IconWrapper = styled.div`
   position: absolute;
@@ -213,6 +214,14 @@ const themeCommonOverrides = () => ({
     MuiSkeleton: {
       root: {
         backgroundColor: palette.skeletonLoader,
+      },
+    },
+    MuiChip: {
+      root: {
+        height: spacing.large,
+        marginRight: spacing.tiny,
+
+        color: ({ textcolor }) => textcolor || palette.mediumGrey,
       },
     },
   },

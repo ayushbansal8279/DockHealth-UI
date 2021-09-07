@@ -8,6 +8,7 @@ export const ListsToolbarContainer = styled.div`
 `;
 
 export const ListsTabsContainer = styled.div`
+  display: flex;
   flex: 1 0 0;
   overflow: hidden;
 `;

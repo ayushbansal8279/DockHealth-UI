@@ -14,11 +14,7 @@ import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
-import {
-  addingNewSubtaskSelector,
-  addingNewSubtaskParentIdSelector,
-  subtaskShapeSelector,
-} from 'selectors/task-drawer-selectors';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 
 const GlobalSearchList = ({
   list,
@@ -37,11 +33,9 @@ const GlobalSearchList = ({
 }) => {
   const { listName, tasks, hasMore: hasMoreTasks } = list;
   const [isOpen, switchOpen] = useState(true);
-  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const subtaskShape = useSelector(subtaskShapeSelector);
 
   const showMoreTasks = () => {
     getMoreTasksForTaskList(list.taskListIdentifier, list.tasks?.length);
@@ -100,9 +94,7 @@ const GlobalSearchList = ({
             selectedTask={selectedTask}
             isFullView
             highlightedValue={highlightedValue}
-            addingNewSubtask={addingNewSubtask}
-            addingNewSubtaskParentId={addingNewSubtaskParentId}
-            subtaskShape={subtaskShape}
+            addingNewSubtask={addingNewSubtaskParentId === task.identifier}
             subtasksDisabled
             multipleAssigneesContext={containsMultipleAssignees}
           />

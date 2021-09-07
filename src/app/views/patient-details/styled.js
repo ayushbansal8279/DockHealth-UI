@@ -11,7 +11,7 @@ export const PatientDetailsTabsContainer = styled.div`
 `;
 
 export const PatientDetailsContainer = styled.div`
-  padding: ${spacing.small} ${spacing.huge};
+  padding: ${spacing.large} ${spacing.huge};
   background-color: ${palette.coolGrey4};
 `;
 

@@ -54,6 +54,7 @@ const StandardInput = ({
 };
 
 const Autocomplete = ({
+  classes,
   autoFocus,
   CustomInput,
   disableCloseOnSelect,
@@ -139,6 +140,7 @@ const Autocomplete = ({
 
   return (
     <StandardAutocompleteMUI
+      classes={classes}
       disableCloseOnSelect={disableCloseOnSelect}
       disablePortal={disablePortal}
       disabled={isDisabled}

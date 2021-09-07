@@ -1,4 +1,3 @@
-import Chip from '@material-ui/core/Chip';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -58,13 +57,6 @@ export const NoOptionTextLabel = styled.span`
   cursor: pointer;
   color: ${palette.brightBlue};
   font-weight: 600;
-`;
-
-export const LabelChip = styled(Chip)`
-  && {
-    height: ${spacing.large};
-    margin-right: ${spacing.tiny};
-  }
 `;
 
 export const NoOptionContainer = styled.div`
