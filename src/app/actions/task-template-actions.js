@@ -68,6 +68,14 @@ export function deleteTemplate(taskTemplateIdentifier) {
   };
 }
 
+export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
+  return {
+    type: ActionTypesSaga.SWITCH_TEMPLATE_PUBLIC,
+    taskTemplateIdentifier,
+    flagPublic,
+  };
+}
+
 export function duplicateTemplate(taskTemplateIdentifier, includeAttachments) {
   return {
     type: ActionTypesSaga.DUPLICATE_TASK_TEMPLATE,

@@ -1,15 +1,46 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
 import MemberGroup from 'components/members/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import { useDispatch, useSelector } from 'react-redux';
+import { openModal } from 'modal/actions';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { updateTemplate } from 'actions/task-template-actions';
 
-import { StandardTaskItemCell, AssigneeMatchingWrapper } from '../../styled';
+import {
+  StandardTaskItemCell,
+  MemberGroupContainer,
+  AssignMemberIconContainer,
+  PublicInfoWrapper,
+} from '../../styled';
 
-const TaskItemPermissions = ({
-  // template,
-  assignedToUsers,
-  matchAssignedTo,
-}) => {
+const TaskItemPermissions = ({ template }) => {
+  const { members, taskTemplateIdentifier, publicAccess } = template;
+  const dispatch = useDispatch();
+  const openListEditModal = useCallback(() => {
+    dispatch(
+      openModal('ListPermissions', {
+        list: { taskTemplateIdentifier, members },
+        onMembersRefresh: refreshedMembers => {
+          dispatch(
+            updateTemplate(taskTemplateIdentifier, {
+              members: refreshedMembers,
+            }),
+          );
+        },
+      }),
+    );
+  }, [dispatch, members, taskTemplateIdentifier]);
+  const { userIdentifier } = useSelector(userProfileSelector);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const currentUser = members.find(
+    user => user.userIdentifier === userIdentifier,
+  );
+
+  const hasAccessToEdit = true; // ! temporary
+  // const hasAccessToEdit =
+  //   currentUser && currentUser.memberPermission === 'EDITOR';
+
   return (
     <StandardTaskItemCell
       width={200}
@@ -20,19 +51,19 @@ const TaskItemPermissions = ({
         event.stopPropagation();
       }}
     >
-      {assignedToUsers?.length ? (
-        <>
-          <AssigneeMatchingWrapper matched={matchAssignedTo} />
-          <MemberGroup members={assignedToUsers} />
-          <AssignMemberIcon />
-        </>
-      ) : (
+      {!!members?.length && (
+        <MemberGroupContainer>
+          <MemberGroup members={members} />
+        </MemberGroupContainer>
+      )}
+      {hasAccessToEdit && (
         <Tooltip placement="top" title="Grant permissions">
-          <div>
+          <AssignMemberIconContainer onClick={openListEditModal}>
             <AssignMemberIcon />
-          </div>
+          </AssignMemberIconContainer>
         </Tooltip>
       )}
+      {publicAccess && <PublicInfoWrapper>Public</PublicInfoWrapper>}
     </StandardTaskItemCell>
   );
 };

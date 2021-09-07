@@ -4,7 +4,7 @@ import TaskItemPermissions from 'components/task/StandardTaskItem/TaskItemCompon
 import { HeaderContainer, StandardTaskItemCell, CreatedText } from './styled';
 
 const TaskTemplateHeader = template => {
-  const { createdBy, createdDate } = template;
+  const { createdBy, createdDate, taskTemplate } = template;
   return (
     <HeaderContainer>
       <StandardTaskItemCell width={150}>
@@ -13,7 +13,7 @@ const TaskTemplateHeader = template => {
       <StandardTaskItemCell width={150}>
         <CreatedText>{createdDate}</CreatedText>
       </StandardTaskItemCell>
-      <TaskItemPermissions template={template} />
+      <TaskItemPermissions template={taskTemplate} />
     </HeaderContainer>
   );
 };

@@ -30,6 +30,10 @@ export const ListItemLink = styled(Link)`
   }
 `;
 
+export const PublicInfoWrapper = styled.span`
+  padding-left: ${spacing.small};
+`;
+
 export const ListLink = styled(ListItemLink)`
   max-height: 2.6rem;
   overflow: hidden;
@@ -132,6 +136,14 @@ export const Description = styled.div`
       display: block;
     }
   }
+`;
+
+export const MemberGroupContainer = styled.div`
+  margin-right: ${spacing.small};
+`;
+
+export const AssignMemberIconContainer = styled.div`
+  cursor: pointer;
 `;
 
 export const DescriptionBox = styled.div`

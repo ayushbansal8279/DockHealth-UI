@@ -11,6 +11,7 @@ import {
   RELOAD_OPENED_TEMPLATE_TASKS,
   GO_TO_TASK_TEMPLATE_FOLDER,
   MOVE_TASK_TEMPLATE,
+  SWITCH_TEMPLATE_PUBLIC,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -144,8 +145,7 @@ function* getTaskTemplatesFolder({
           templates[0]?.taskTemplateIdentifier,
         ),
       );
-  } catch (error) {
-    console.log(error);
+  } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
     });
@@ -177,8 +177,7 @@ function* addTemplate({ template, parentIdentifier = null }) {
     );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
-  } catch (error) {
-    console.log(error);
+  } catch {
     yield put(showGlobalErrorAlert());
   }
 }
@@ -228,6 +227,31 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
       dataToUpdate,
     });
     yield call(TaskTemplateApi.updateTemplate, updatedTemplate);
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      taskTemplateIdentifier,
+      dataToUpdate: template,
+    });
+  }
+}
+
+function* switchTemplatePublic({ taskTemplateIdentifier, flagPublic }) {
+  const template = yield select(taskTemplateSelector(taskTemplateIdentifier));
+
+  try {
+    yield put({
+      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      taskTemplateIdentifier,
+      dataToUpdate: { publicAccess: flagPublic },
+    });
+    yield call(
+      TaskTemplateApi.switchTemplatePublic,
+      taskTemplateIdentifier,
+      flagPublic,
+    );
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -624,6 +648,7 @@ function* deleteTaskFromLayout({ taskIdentifier }) {
 }
 
 export default function* watchTaskTemplate() {
+  yield takeEvery(SWITCH_TEMPLATE_PUBLIC, switchTemplatePublic);
   yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
   yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
