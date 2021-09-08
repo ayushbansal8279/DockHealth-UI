@@ -78,12 +78,12 @@ function* getTemplates({ searchPhrase }) {
     });
     yield put(TaskTemplateActions.cleanBreadcrumbs());
 
-    if (templates?.length > 0)
-      yield put(
-        TaskTemplateActions.toggleTemplateOpen(
-          templates[0]?.taskTemplateIdentifier,
-        ),
-      );
+    // if (templates?.length > 0)
+    //   yield put(
+    //     TaskTemplateActions.toggleTemplateOpen(
+    //       templates[0]?.taskTemplateIdentifier,
+    //     ),
+    //   );
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
