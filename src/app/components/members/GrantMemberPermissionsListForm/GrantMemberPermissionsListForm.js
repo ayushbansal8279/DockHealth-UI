@@ -12,7 +12,7 @@ import Member from 'components/members/Member/Member';
 import Loader from 'components/common/Loader/Loader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import {
-  addSingleUserToPermissionList,
+  addUsersToPermissionList,
   removeUserFromWorkflow,
   updateUserInWorkflowPermissions,
 } from 'api/task-template-api';
@@ -28,6 +28,7 @@ import {
   MemberAvatarWrapper,
   Container,
   MemberStatusLabel,
+  MemberCreatorLabel,
 } from './styled';
 
 const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
@@ -40,7 +41,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   const [listMembers, setListMembers] = useState(list.members);
   const [allOrganizationMembers, setAllOrganizationMembers] = useState([]);
 
-  const { taskTemplateIdentifier, members } = list;
+  const { taskTemplateIdentifier, template } = list;
 
   useEffect(() => {
     setAllOrganizationMembersFetched(false);
@@ -64,14 +65,6 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     [allOrganizationMembers, listMembers],
   );
 
-  const currentUserListRole = useMemo(() => {
-    const currentUserInList = listMembers.find(
-      ({ userIdentifier }) => userIdentifier === userProfile?.userIdentifier,
-    );
-
-    return !!currentUserInList;
-  }, [userProfile, listMembers]);
-
   const handleInviteMembers = newMembers => {
     if (newMembers.length > 0) {
       setIsSavingList(true);
@@ -81,10 +74,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
       setListMembers([...listMembers, ...newMembers]);
       if (typeof onMembersRefresh === 'function')
         onMembersRefresh([...listMembers, ...newMembers]);
-      addSingleUserToPermissionList(
-        taskTemplateIdentifier,
-        memberIdentifiers[0], // TODO! : to change when api upgrade
-      )
+      addUsersToPermissionList(taskTemplateIdentifier, memberIdentifiers)
         .then(() => {
           setIsSavingList(false);
         })
@@ -161,7 +151,6 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   return (
     <Container>
       {allOrganizationMembersFetched ? (
-        // {allOrganizationMembersFetched && listMembersFetched ? (
         <>
           <ListMembersSelect
             disabled={isSavingList}
@@ -174,6 +163,8 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
           <MembersListWrapper>
             {listMembers.map(member => {
               const hasEditorAccess = member.memberPermission === 'EDITOR';
+              const isCreator =
+                template.creator.userIdentifier === member.userIdentifier;
               return (
                 <MemberListItem key={member.userIdentifier}>
                   <MemberAvatarWrapper>
@@ -186,9 +177,10 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
                         userProfile?.userIdentifier && <span>&nbsp;(me)</span>}
                     </MemberFullName>
                   </MemberFullNameWrapper>
-                  <MemberStatusLabel>
-                    {hasEditorAccess ? 'Editor' : 'View Only'}
-                  </MemberStatusLabel>
+                  {isCreator && (
+                    <MemberCreatorLabel>Creator</MemberCreatorLabel>
+                  )}
+                  {hasEditorAccess ? 'Editor' : 'View Only'}
                   <OptionsMenu
                     placement="left-start"
                     options={[

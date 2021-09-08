@@ -83,6 +83,14 @@ export const MemberStatusLabel = styled.p`
   font-weight: ${fontWeights.regular};
 `;
 
+export const MemberCreatorLabel = styled.p`
+  margin-right: ${spacing.smallPlus};
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  color: ${palette.lightGrey};
+`;
+
 export const ExternalUserInviteFormWrapper = styled.div`
   position: absolute;
   bottom: ${({ externalInvitePosition }) =>

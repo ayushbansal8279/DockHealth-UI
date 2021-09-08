@@ -220,14 +220,14 @@ export function updateTaskOutcome(taskOutcomeIdentifier, dataToUpdate) {
     .then(({ data }) => data);
 }
 
-export function addSingleUserToPermissionList(
+export function addUsersToPermissionList(
   taskTemplateIdentifier,
-  userIdentifier,
+  invitedUsersIdentifier,
 ) {
   return axios
-    .post(
-      `task/template/${taskTemplateIdentifier}/member?userIdentifier=${userIdentifier}`,
-    )
+    .post(`task/template/${taskTemplateIdentifier}/member`, {
+      invitedUsersIdentifier,
+    })
     .then(({ data }) => data);
 }
 

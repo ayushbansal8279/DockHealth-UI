@@ -20,7 +20,7 @@ const TaskItemPermissions = ({ template }) => {
   const openListEditModal = useCallback(() => {
     dispatch(
       openModal('ListPermissions', {
-        list: { taskTemplateIdentifier, members },
+        list: { taskTemplateIdentifier, members, template },
         onMembersRefresh: refreshedMembers => {
           dispatch(
             updateTemplate(taskTemplateIdentifier, {
@@ -30,16 +30,14 @@ const TaskItemPermissions = ({ template }) => {
         },
       }),
     );
-  }, [dispatch, members, taskTemplateIdentifier]);
+  }, [dispatch, members, taskTemplateIdentifier, template]);
   const { userIdentifier } = useSelector(userProfileSelector);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const currentUser = members.find(
     user => user.userIdentifier === userIdentifier,
   );
 
-  const hasAccessToEdit = true; // ! temporary
-  // const hasAccessToEdit =
-  //   currentUser && currentUser.memberPermission === 'EDITOR';
+  const hasAccessToEdit =
+    currentUser && currentUser.memberPermission === 'EDITOR';
 
   return (
     <StandardTaskItemCell
