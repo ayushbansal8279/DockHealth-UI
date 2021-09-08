@@ -332,11 +332,11 @@ function* addTaskToTemplate({ task, elementId, position }) {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
-    const { temporaryElements } = yield select(
+    const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
 
-    const linkConnectedToCreatedTask = temporaryElements?.filter(
+    const linkConnectedToCreatedTask = templateDetails?.temporaryElements?.filter(
       ({ source, target }) => source === elementId || target === elementId,
     );
 
@@ -481,11 +481,12 @@ function* updateTaskPositionInLayout({ taskIdentifier, position }) {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
-    const { layout } = yield select(
+    const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
     const updatedLayout = [
-      ...(layout?.filter(({ id }) => id !== taskIdentifier) || []),
+      ...(templateDetails?.layout?.filter(({ id }) => id !== taskIdentifier) ||
+        []),
       { id: taskIdentifier, position },
     ];
     yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
@@ -499,12 +500,16 @@ function* linkTasks({ source, target }) {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
-    const { layout, tasks } = yield select(
+    const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
 
-    const sourceTask = tasks.find(({ identifier }) => identifier === source.id);
-    const targetTask = tasks.find(({ identifier }) => identifier === target.id);
+    const sourceTask = templateDetails?.tasks.find(
+      ({ identifier }) => identifier === source.id,
+    );
+    const targetTask = templateDetails?.tasks.find(
+      ({ identifier }) => identifier === target.id,
+    );
 
     const checkIfTasksAreLinked = () => {
       return (
@@ -540,7 +545,8 @@ function* linkTasks({ source, target }) {
 
         if (source.handle || target.handle) {
           const updatedLayout = [
-            ...(layout?.filter(({ id }) => id !== linkId) || []),
+            ...(templateDetails?.layout?.filter(({ id }) => id !== linkId) ||
+              []),
             {
               id: linkId,
               sourceHandle: source.handle,
@@ -613,12 +619,14 @@ function* deleteTaskFromLayout({ taskIdentifier }) {
   const taskTemplateIdentifier = yield select(
     currentTaskTemplateIdentifierSelector,
   );
-  const { layout } = yield select(
+  const templateDetails = yield select(
     taskTemplateDetailsSelector(taskTemplateIdentifier),
   );
-  if (layout?.length > 0) {
-    const updatedLayout = layout?.filter(({ id }) => id !== taskIdentifier);
-    if (layout.length !== updatedLayout.length)
+  if (templateDetails?.layout?.length > 0) {
+    const updatedLayout = templateDetails?.layout?.filter(
+      ({ id }) => id !== taskIdentifier,
+    );
+    if (templateDetails?.layout.length !== updatedLayout.length)
       yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
   }
 }

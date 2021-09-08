@@ -26,6 +26,7 @@ import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
@@ -34,6 +35,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { moveTemplate } from 'actions/task-template-actions';
 import * as ActionTypes from 'actions/action-types';
+import SmartFlowIcon from 'img/template/smartflow.svg';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -43,6 +45,10 @@ import {
   MenuContainer,
   QuickAddInputWrapper,
   ArrowButtonContainer,
+  SmartFlowIndicatorContainer,
+  SmartFlowButton,
+  SmartFlowIndicatorIcon,
+  CheckboxPlaceholder,
   Spacer,
 } from './styled';
 
@@ -52,7 +58,7 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = {
 };
 
 const TaskTemplate = ({ template, isFullView, children }) => {
-  const { taskTemplateIdentifier, name, description } = template;
+  const { taskTemplateIdentifier, name, description, type } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const [draggableId, setDraggableId] = useState(null);
@@ -76,7 +82,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   const menuOptions = useMemo(
     () => [
       smartFlowsAvailable && {
-        name: 'Open in Workflow Builder',
+        name: 'Open in SmartFlow Builder',
         onClick: () =>
           history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
       },
@@ -253,6 +259,10 @@ const TaskTemplate = ({ template, isFullView, children }) => {
     dispatch(TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier));
   };
 
+  const onSmartFlowClick = () => {
+    history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier));
+  };
+
   const onChangeName = event => {
     setNameInputValue(event.target?.value);
     setNameInputError(false);
@@ -266,16 +276,30 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader>
-        <Checkbox
-          isDisabled={!isOpen}
-          isChecked={isTemplateSelected}
-          onClick={handleTemplateSelect}
-        />
-        <ArrowButtonContainer>
-          <ArrowButton onClick={onArrowClick}>
-            <RotatableChevron rotated={isOpen} />
-          </ArrowButton>
-        </ArrowButtonContainer>
+        {type === 'WORKFLOW' && (
+          <Checkbox
+            isDisabled={!isOpen}
+            isChecked={isTemplateSelected}
+            onClick={handleTemplateSelect}
+          />
+        )}
+        {type === 'SMARTFLOW' && <CheckboxPlaceholder />}
+        {type === 'WORKFLOW' && (
+          <ArrowButtonContainer>
+            <ArrowButton onClick={onArrowClick}>
+              <RotatableChevron rotated={isOpen} />
+            </ArrowButton>
+          </ArrowButtonContainer>
+        )}
+        {type === 'SMARTFLOW' && (
+          <Tooltip placement="top" title="A SmartFlow">
+            <SmartFlowIndicatorContainer>
+              <SmartFlowButton onClick={onSmartFlowClick}>
+                <SmartFlowIndicatorIcon src={SmartFlowIcon} alt="SmartFlow" />
+              </SmartFlowButton>
+            </SmartFlowIndicatorContainer>
+          </Tooltip>
+        )}
         <NameInput
           ref={nameInputReference}
           readOnly={!isEditing}
@@ -283,6 +307,10 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           onChange={onChangeName}
           onBlur={onBlurName}
           onKeyDown={handleNameInputKeyDown}
+          onClick={
+            !isEditing &&
+            (type === 'SMARTFLOW' ? onSmartFlowClick : onArrowClick)
+          }
           value={nameInputValue}
         />
         {children}

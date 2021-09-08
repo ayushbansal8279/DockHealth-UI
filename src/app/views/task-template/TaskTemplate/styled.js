@@ -82,6 +82,28 @@ export const ArrowButtonContainer = styled.div`
   margin-left: ${spacing.small};
 `;
 
+export const SmartFlowIndicatorContainer = styled.div`
+  display: flex;
+  width: 20px;
+  justify-content: center;
+  margin-left: ${spacing.small};
+`;
+
+export const SmartFlowButton = styled.button`
+  grid-column: 2;
+  grid-row: 1;
+`;
+
+export const SmartFlowIndicatorIcon = styled.img`
+  cursor: default;
+`;
+
+export const CheckboxPlaceholder = styled.div`
+  grid-column: 1;
+  grid-row: 1;
+  width: 16px;
+`;
+
 export const Spacer = styled.div`
   grid-column: 4;
   grid-row: 1;

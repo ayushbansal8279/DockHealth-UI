@@ -216,7 +216,7 @@ const TaskTemplateDetailsView = () => {
       <ReactFlowProvider>
         <Box position="relative" display="flex" height="100%" width="100%">
           <ElementsSidebar>
-            <SidebarTitle>Workflow Toolkit</SidebarTitle>
+            <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
             {nodeElements.map(({ id, label, icon: Icon, onClick }) => (
               <ElementButton key={id} type="button" onClick={onClick}>
                 <ElementIconBackground>
