@@ -78,12 +78,13 @@ function* getTemplates({ searchPhrase }) {
     });
     yield put(TaskTemplateActions.cleanBreadcrumbs());
 
-    // if (templates?.length > 0)
-    //   yield put(
-    //     TaskTemplateActions.toggleTemplateOpen(
-    //       templates[0]?.taskTemplateIdentifier,
-    //     ),
-    //   );
+    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
+      yield put(
+        TaskTemplateActions.toggleTemplateOpen(
+          templates[0]?.taskTemplateIdentifier,
+        ),
+      );
+    }
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
@@ -108,12 +109,13 @@ function* getAllTemplatesForOrganization({ searchPhrase }) {
     });
     yield put(TaskTemplateActions.cleanBreadcrumbs());
 
-    if (templates?.length > 0)
+    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
       yield put(
         TaskTemplateActions.toggleTemplateOpen(
           templates[0]?.taskTemplateIdentifier,
         ),
       );
+    }
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
@@ -138,12 +140,13 @@ function* getTaskTemplatesFolder({
       taskTemplateFolderIdentifier,
     });
 
-    if (templates?.length > 0)
+    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
       yield put(
         TaskTemplateActions.toggleTemplateOpen(
           templates[0]?.taskTemplateIdentifier,
         ),
       );
+    }
   } catch (error) {
     console.log(error);
     yield put({
