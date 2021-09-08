@@ -6,6 +6,13 @@ const addWidth = ({ width }) => `
   width: ${width}pt;
 `;
 
+export const PdfTaskWrapper = styled.View`
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  ${props => props.isSubtask && 'padding-right: 45pt;'}
+`;
+
 export const TaskContainer = styled.View`
   position: relative;
   display: flex;
@@ -13,7 +20,6 @@ export const TaskContainer = styled.View`
   flex-flow: row wrap;
   width: 100vw;
   padding-right: 33pt;
-
   ${props => props.isSubtask && 'padding-right: 45pt;'}
 `;
 
@@ -28,6 +34,10 @@ export const TaskInnerContainer = styled.View`
   border-color: ${palette.coolGrey3};
   border-style: solid;
   border-width: 1pt;
+`;
+
+export const TaskInBundleContainer = styled.View`
+  padding-right: 5pt;
 `;
 
 export const SubtasksContainer = styled.View`
@@ -80,6 +90,15 @@ export const EditedLabel = styled.Text`
 export const CheckboxContainer = styled.Image`
   height: 14pt;
   width: 14pt;
+`;
+
+export const ArrowContainer = styled.View`
+  width: 14pt;
+`;
+
+export const ArrowIconWrapper = styled.Image`
+  height: 5pt;
+  width: 8pt;
 `;
 
 export const PriorityStrip = styled.Image`

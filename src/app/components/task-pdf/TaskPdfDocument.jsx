@@ -7,7 +7,7 @@ import { getUserAvatarBuffer } from 'api/people-api';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import PdfTask from './PdfTask';
-import { AvatarImage, AvatarInitials } from './PdfTask.Styled';
+import { AvatarImage, AvatarInitials, PdfTaskWrapper } from './PdfTask.Styled';
 
 const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),
@@ -56,14 +56,16 @@ const renderTask = ({
   taskListMembersAvatars,
   columnsWidth,
 }) => ({ taskIdentifier, ...props }) => (
-  <PdfTask
-    key={taskIdentifier}
-    taskIdentifier={taskIdentifier}
-    taskListMembers={taskListMembers}
-    taskListMembersAvatars={taskListMembersAvatars}
-    columnsWidth={columnsWidth}
-    {...props}
-  />
+  <PdfTaskWrapper>
+    <PdfTask
+      key={taskIdentifier}
+      taskIdentifier={taskIdentifier}
+      taskListMembers={taskListMembers}
+      taskListMembersAvatars={taskListMembersAvatars}
+      columnsWidth={columnsWidth}
+      {...props}
+    />
+  </PdfTaskWrapper>
 );
 
 const getColumnWidths = (isPatientVisible, isListNameVisible) => {
