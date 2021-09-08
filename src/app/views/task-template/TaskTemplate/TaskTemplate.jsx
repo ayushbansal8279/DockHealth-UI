@@ -292,10 +292,10 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           </ArrowButtonContainer>
         )}
         {type === 'SMARTFLOW' && (
-          <Tooltip placement="top" title="Smart Flow">
+          <Tooltip placement="top" title="A SmartFlow">
             <SmartFlowIndicatorContainer>
               <SmartFlowButton onClick={onSmartFlowClick}>
-                <SmartFlowIndicatorIcon src={SmartFlowIcon} alt="Smart Flow" />
+                <SmartFlowIndicatorIcon src={SmartFlowIcon} alt="SmartFlow" />
               </SmartFlowButton>
             </SmartFlowIndicatorContainer>
           </Tooltip>
