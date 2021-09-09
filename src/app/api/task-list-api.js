@@ -174,11 +174,9 @@ export function archiveTaskListById(taskListIdentifier, archive) {
   return axios
     .put(`list/archive/${taskListIdentifier}?archive=${archive}`)
     .then(response => {
-      console.log(response);
       return response?.data;
     })
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }

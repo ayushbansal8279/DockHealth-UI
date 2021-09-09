@@ -114,8 +114,6 @@ export function getTaskListById(taskListIdentifier) {
 }
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
-  // don't know if I can delete this debug log cause I'm not the author of it
-  // console.log('getMembersByTaskListId');
   return dispatch =>
     TaskListApi.getMembersByTaskListId(taskListIdentifier, memberStatus)
       .then(tasklistmembers => {
