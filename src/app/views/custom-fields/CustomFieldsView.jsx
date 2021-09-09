@@ -132,6 +132,7 @@ const CustomFieldsView = () => {
       sortIndex: index,
     }));
   };
+
   const sortedFields = useMemo(() => {
     return customFields?.slice().sort((a, b) => {
       return a?.sortIndex - b?.sortIndex;
