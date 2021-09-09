@@ -150,8 +150,8 @@ export function invitePersonToTaskList(
   };
 
   return dispatch =>
-    TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo)
-      .then(response => {
+    TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo).then(
+      response => {
         dispatch({
           type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS,
           addedUser: response,
@@ -161,10 +161,8 @@ export function invitePersonToTaskList(
         }
 
         return response;
-      })
-      .catch(error => {
-        throw error;
-      });
+      },
+    );
 }
 
 export function clearMembersInTaskList() {
@@ -284,8 +282,8 @@ export function deleteTaskListById(taskListIdentifier) {
 }
 
 export function archiveTaskListById(taskListIdentifier) {
-  return dispatch =>
-    TaskListApi.archiveTaskListById(taskListIdentifier, true)
+  return dispatch => {
+    return TaskListApi.archiveTaskListById(taskListIdentifier, true)
       .then(response => {
         dispatch({
           type: ActionTypes.ARCHIVE_TASKLIST_SUCCESS,
@@ -294,12 +292,12 @@ export function archiveTaskListById(taskListIdentifier) {
         });
         dispatch(AlertActions.showGlobalAlert('Task List archived'));
       })
-      .catch(error => {
+      .catch(() => {
         dispatch(
           AlertActions.showGlobalAlert('Error in archiving Task List', 'error'),
         );
-        throw error;
       });
+  };
 }
 
 export function unarchiveTaskListById(taskListIdentifier) {
@@ -313,14 +311,13 @@ export function unarchiveTaskListById(taskListIdentifier) {
         });
         dispatch(AlertActions.showGlobalAlert('Task List unarchived'));
       })
-      .catch(error => {
+      .catch(() => {
         dispatch(
           AlertActions.showGlobalAlert(
             'Error in unarchiving Task List',
             'error',
           ),
         );
-        throw error;
       });
 }
 
