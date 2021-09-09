@@ -287,6 +287,7 @@ export const ListNameText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  ${({ color }) => color && `color: ${color}`}
   ${({ isActive }) =>
     isActive
       ? `color: ${palette.brightBlue};`
@@ -297,15 +298,6 @@ export const ListNameText = styled.div`
             cursor: pointer;
           }
         `}
-`;
-
-export const GreyedOutListNameText = styled.div`
-  flex: 1;
-  padding-right: ${spacing.small};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: ${palette.coolGrey2};
 `;
 
 export const UpdatesForMemberIndicator = styled.div`

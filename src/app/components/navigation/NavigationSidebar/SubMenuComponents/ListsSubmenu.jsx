@@ -44,7 +44,6 @@ import {
   ListNameText,
   UpdatesForMemberIndicator,
   DrawerMyListsLabel,
-  GreyedOutListNameText,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -70,22 +69,8 @@ const ListsSubmenu = () => {
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
   const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
-  // const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
-  // const [currentList, setCurrentList] = useState([]);
-  // const itemsMoreButtonReferences = useRef([]);
-  // const [
-  //   currentListMenuPopupReference,
-  //   setCurrentListMenuPopupReference,
-  // ] = useState(false);
-
   const { orgUserRole } = useSelector(userProfileSelector);
   const isGuest = orgUserRole === 'GUEST';
-
-  // useEffect(() => {
-  //   if (!listMenuPopupOpen && currentList?.length > 0) {
-  //     setCurrentList([]);
-  //   }
-  // }, [listMenuPopupOpen, currentList]);
 
   const activeLists = useMemo(
     () => [...(taskLists || []), ...(pendingTaskLists || [])],
@@ -303,43 +288,23 @@ const ListsSubmenu = () => {
           }
         >
           {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
-          {!archived ? (
-            <ListNameText
-              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
-              onMouseEnter={event => handleMouseEnter(event, list?.listName)}
-              onMouseLeave={() => setPopoverLabel(null)}
-              onClick={() => {
-                if (activeTaskListIdentifier === list?.taskListIdentifier)
-                  return;
+          <ListNameText
+            color={archived && palette.coolGrey2}
+            isActive={activeTaskListIdentifier === list?.taskListIdentifier}
+            onMouseEnter={event => handleMouseEnter(event, list?.listName)}
+            onMouseLeave={() => setPopoverLabel(null)}
+            onClick={() => {
+              if (activeTaskListIdentifier === list?.taskListIdentifier) return;
 
-                if (list?.status === 'PENDING') {
-                  onTaskListInvitationAccepted();
-                  dispatch(TaskListActions.acceptInviteToTaskList(list));
-                }
-                history.push(`/tasks/${list.taskListIdentifier}`);
-              }}
-            >
-              {list?.listName}
-            </ListNameText>
-          ) : (
-            <GreyedOutListNameText
-              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
-              onMouseEnter={event => handleMouseEnter(event, list?.listName)}
-              onMouseLeave={() => setPopoverLabel(null)}
-              // eslint-disable-next-line sonarjs/no-identical-functions
-              onClick={() => {
-                if (activeTaskListIdentifier === list?.taskListIdentifier)
-                  return;
-                if (list?.status === 'PENDING') {
-                  onTaskListInvitationAccepted();
-                  dispatch(TaskListActions.acceptInviteToTaskList(list));
-                }
-                history.push(`/tasks/${list.taskListIdentifier}`);
-              }}
-            >
-              {list?.listName}
-            </GreyedOutListNameText>
-          )}
+              if (list?.status === 'PENDING') {
+                onTaskListInvitationAccepted();
+                dispatch(TaskListActions.acceptInviteToTaskList(list));
+              }
+              history.push(`/tasks/${list.taskListIdentifier}`);
+            }}
+          >
+            {list?.listName}
+          </ListNameText>
           {list?.status === 'PENDING' && (
             <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
           )}
