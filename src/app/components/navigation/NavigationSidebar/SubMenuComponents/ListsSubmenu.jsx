@@ -204,6 +204,16 @@ const ListsSubmenu = () => {
 
   const getMenuItems = useCallback(
     list => {
+      if (MASTER_ROLES.includes(list?.role) && isListArchived(list)) {
+        return [
+          {
+            name: 'Unarchive List',
+            onClick: () => {
+              handleUnarchiveList(list);
+            },
+          },
+        ];
+      }
       let baseList = [];
       if (list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC') {
         baseList = [
@@ -237,24 +247,13 @@ const ListsSubmenu = () => {
           ];
         }
 
-        if (MASTER_ROLES.includes(list?.role) && !isListArchived(list)) {
+        if (MASTER_ROLES.includes(list?.role)) {
           baseList = [
             ...baseList,
             {
               name: 'Archive List',
               onClick: () => {
                 handleArchiveList(list);
-              },
-            },
-          ];
-        }
-        if (MASTER_ROLES.includes(list?.role) && isListArchived(list)) {
-          baseList = [
-            ...baseList,
-            {
-              name: 'Unarchive List',
-              onClick: () => {
-                handleUnarchiveList(list);
               },
             },
           ];
