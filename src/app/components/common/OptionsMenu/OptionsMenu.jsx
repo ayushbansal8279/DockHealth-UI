@@ -19,6 +19,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import zIndex from 'styles/z-index';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import { StyledButton, useMenuStyles } from './styled';
 
 const OptionsMenu = ({
@@ -66,18 +67,38 @@ const OptionsMenu = ({
               <MenuList classes={menuClasses}>
                 {options
                   ?.filter(prop('name'))
-                  ?.map(({ name, description, color, onClick }) => (
-                    <MenuItem
-                      key={name}
-                      color={color}
-                      onClick={event => {
-                        openPopover(false);
-                        onClick(event);
-                      }}
-                    >
-                      <ListItemText primary={name} secondary={description} />
-                    </MenuItem>
-                  ))}
+                  ?.map(
+                    ({
+                      name,
+                      description,
+                      color,
+                      onClick,
+                      disabled = false,
+                      tooltipText,
+                      component,
+                    }) => (
+                      <Tooltip title={tooltipText} hideTooltip={!tooltipText}>
+                        <div>
+                          <MenuItem
+                            key={name}
+                            color={color}
+                            onClick={event => {
+                              openPopover(false);
+                              onClick(event);
+                            }}
+                            disabled={disabled}
+                          >
+                            {component || (
+                              <ListItemText
+                                primary={name}
+                                secondary={description}
+                              />
+                            )}
+                          </MenuItem>
+                        </div>
+                      </Tooltip>
+                    ),
+                  )}
               </MenuList>
             </Paper>
           </ClickAwayListener>
@@ -95,6 +116,9 @@ OptionsMenu.propTypes = {
       description: string,
       onClick: func,
       color: string,
+      tooltipText: string,
+      disabled: bool,
+      component: elementType,
     }),
   ).isRequired,
   isDisabled: bool,

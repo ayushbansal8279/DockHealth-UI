@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, useMemo } from 'react';
-import { IconButton } from '@material-ui/core';
+import { IconButton, ListItemText } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import * as TaskListApi from 'api/task-list-api';
@@ -16,6 +16,7 @@ import {
   removeUserFromWorkflow,
   updateUserInWorkflowPermissions,
 } from 'api/task-template-api';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import messages from './messages';
 import ListMembersSelect from './ListMembersSelect/ListMembersSelect';
 
@@ -148,6 +149,16 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
       });
   };
 
+  const membersWithEditorAccess = useMemo(
+    () => listMembers.filter(member => member.memberPermission === 'EDITOR'),
+    [listMembers],
+  );
+
+  const isOnlyOneMemberWithEditorAccess = membersWithEditorAccess.length < 2;
+
+  const disabledOptionsTitle =
+    'Grant Editor access to another user before this operation';
+
   return (
     <Container>
       {allOrganizationMembersFetched ? (
@@ -165,6 +176,11 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
               const hasEditorAccess = member.memberPermission === 'EDITOR';
               const isCreator =
                 template.creator.userIdentifier === member.userIdentifier;
+              const editorAccessOptionName = hasEditorAccess
+                ? 'Disable Editor Access'
+                : 'Enable Editor Access';
+              const optionsDisabled =
+                isOnlyOneMemberWithEditorAccess && hasEditorAccess;
               return (
                 <MemberListItem key={member.userIdentifier}>
                   <MemberAvatarWrapper>
@@ -185,14 +201,20 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
                     placement="left-start"
                     options={[
                       {
-                        name: hasEditorAccess
-                          ? 'Disable Editor Access'
-                          : 'Enable Editor Access',
+                        name: editorAccessOptionName,
                         onClick: () => switchUserAccess(member),
+                        disabled: optionsDisabled,
+                        tooltipText: optionsDisabled
+                          ? disabledOptionsTitle
+                          : null,
                       },
                       {
                         name: 'Remove from Workflow',
                         onClick: () => removeUserFromList(member),
+                        disabled: optionsDisabled,
+                        tooltipText: optionsDisabled
+                          ? disabledOptionsTitle
+                          : null,
                       },
                     ]}
                     customButtonComponent={IconButton}
