@@ -4,7 +4,7 @@ import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { groupBy, prop, compose } from 'ramda';
+import { groupBy, prop, compose, sortBy } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';
@@ -63,7 +63,8 @@ const PatientForm = forwardRef(
         compose(
           setCustomFields,
           groupByCategory,
-        )(data?.slice().sort((a, b) => a?.sortIndex - b?.sortIndex));
+          sortBy(prop('sortIndex')),
+        )(data);
       });
     }, [patient]);
 
