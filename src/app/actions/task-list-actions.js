@@ -16,6 +16,21 @@ export function getTaskListForUser() {
   };
 }
 
+export function getArchivedTaskListForUser() {
+  return dispatch => {
+    return TaskListApi.getArchivedTaskListForUser()
+      .then(taskLists => {
+        dispatch({
+          type: ActionTypes.GET_ARCHIVED_TASKLIST_SUCCESS,
+          taskLists,
+        });
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
 export function getPendingTaskListsForUser() {
   return dispatch => {
     return TaskListApi.getPendingTaskListsForUser()
@@ -99,7 +114,8 @@ export function getTaskListById(taskListIdentifier) {
 }
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
-  console.log('getMembersByTaskListId');
+  // don't know if I can delete this debug log cause I'm not the author of it
+  // console.log('getMembersByTaskListId');
   return dispatch =>
     TaskListApi.getMembersByTaskListId(taskListIdentifier, memberStatus)
       .then(tasklistmembers => {
@@ -264,6 +280,47 @@ export function deleteTaskListById(taskListIdentifier) {
       .catch(error => {
         dispatch(
           AlertActions.showGlobalAlert('Error in deleting Task List', 'error'),
+        );
+        throw error;
+      });
+}
+
+export function archiveTaskListById(taskListIdentifier) {
+  return dispatch =>
+    TaskListApi.archiveTaskListById(taskListIdentifier, true)
+      .then(response => {
+        dispatch({
+          type: ActionTypes.ARCHIVE_TASKLIST_SUCCESS,
+          response,
+          taskListIdentifier,
+        });
+        dispatch(AlertActions.showGlobalAlert('Task List archived'));
+      })
+      .catch(error => {
+        dispatch(
+          AlertActions.showGlobalAlert('Error in archiving Task List', 'error'),
+        );
+        throw error;
+      });
+}
+
+export function unarchiveTaskListById(taskListIdentifier) {
+  return dispatch =>
+    TaskListApi.archiveTaskListById(taskListIdentifier, false)
+      .then(response => {
+        dispatch({
+          type: ActionTypes.UNARCHIVE_TASKLIST_SUCCESS,
+          response,
+          taskListIdentifier,
+        });
+        dispatch(AlertActions.showGlobalAlert('Task List unarchived'));
+      })
+      .catch(error => {
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error in unarchiving Task List',
+            'error',
+          ),
         );
         throw error;
       });

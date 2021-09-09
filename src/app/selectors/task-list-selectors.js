@@ -15,3 +15,8 @@ export const taskListMembersSelector = createSelector(
   taskListStateSelector,
   ({ tasklistmembers }) => tasklistmembers,
 );
+
+export const archivedTaskListsSelector = createSelector(
+  taskListStateSelector,
+  ({ archivedTaskLists }) => archivedTaskLists,
+);

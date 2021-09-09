@@ -299,6 +299,15 @@ export const ListNameText = styled.div`
         `}
 `;
 
+export const GreyedOutListNameText = styled.div`
+  flex: 1;
+  padding-right: ${spacing.small};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${palette.coolGrey2};
+`;
+
 export const UpdatesForMemberIndicator = styled.div`
   position: absolute;
   left: -10px;

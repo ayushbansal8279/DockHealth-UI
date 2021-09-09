@@ -17,6 +17,7 @@ import {
 import {
   taskListsSelector,
   pendingTaskListsSelector,
+  archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
@@ -43,6 +44,7 @@ import {
   ListNameText,
   UpdatesForMemberIndicator,
   DrawerMyListsLabel,
+  GreyedOutListNameText,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -61,6 +63,7 @@ const ListsSubmenu = () => {
     : null;
   const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
+  const archivedTaskLists = useSelector(archivedTaskListsSelector);
 
   const dispatch = useDispatch();
 
@@ -84,14 +87,19 @@ const ListsSubmenu = () => {
   //   }
   // }, [listMenuPopupOpen, currentList]);
 
-  const lists = useMemo(
+  const activeLists = useMemo(
     () => [...(taskLists || []), ...(pendingTaskLists || [])],
     [taskLists, pendingTaskLists],
   );
 
+  const archivedLists = useMemo(() => [...(archivedTaskLists || [])], [
+    archivedTaskLists,
+  ]);
+
   useEffect(() => {
     dispatch(TaskListActions.getTaskListForUser());
     dispatch(TaskListActions.getPendingTaskListsForUser());
+    dispatch(TaskListActions.getArchivedTaskListForUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -169,32 +177,30 @@ const ListsSubmenu = () => {
     [dispatch],
   );
 
-  const isListArchived = useCallback(list => {
-    // TODO: check if list is archived ~~Wiktor Rojecki~~
-    return !!list;
-  }, []);
+  const isListArchived = useCallback(
+    list => {
+      return !!archivedLists.find(
+        taskList => taskList.taskListIdentifier === list.taskListIdentifier,
+      );
+    },
+    [archivedLists],
+  );
 
-  const activeLists = useMemo(() => {
-    // TODO: Filter by not archived ~~Wiktor Rojecki~~
-    return lists;
-  }, [lists]);
+  const handleArchiveList = useCallback(
+    list => {
+      dispatch(TaskListActions.archiveTaskListById(list?.taskListIdentifier));
+      if (list?.taskListIdentifier === activeTaskListIdentifier)
+        history.push(`/`);
+    },
+    [activeTaskListIdentifier, dispatch, history],
+  );
 
-  const archivedLists = useMemo(() => {
-    // TODO: Filter by archived ~~Wiktor Rojecki~~
-    return lists;
-  }, [lists]);
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handleArchiveList = list => {
-    // TODO: archive the list ~~Wiktor Rojecki~~
-    console.log(`archiving list ${list?.listName}`);
-  };
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handleUnarchiveList = list => {
-    // TODO: unarchive the list ~~Wiktor Rojecki~~
-    console.log(`unrchiving list ${list?.listName}`);
-  };
+  const handleUnarchiveList = useCallback(
+    list => {
+      dispatch(TaskListActions.unarchiveTaskListById(list?.taskListIdentifier));
+    },
+    [dispatch],
+  );
 
   const getMenuItems = useCallback(
     list => {
@@ -275,14 +281,18 @@ const ListsSubmenu = () => {
       isListArchived,
       openInviteToListModal,
       openListEditModal,
+      handleArchiveList,
+      handleUnarchiveList,
       openDeleteConfirmationModal,
     ],
   );
 
-  const hasAnyPendingList = lists.some(({ status }) => status === 'PENDING');
+  const hasAnyPendingList = activeLists.some(
+    ({ status }) => status === 'PENDING',
+  );
 
   const renderLists = useCallback(
-    listsList => {
+    (listsList, archived = true) => {
       return listsList?.map(list => (
         <DrawerListsItem
           key={`listsubmenu_${list.taskListIdentifier}`}
@@ -294,22 +304,43 @@ const ListsSubmenu = () => {
           }
         >
           {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
-          <ListNameText
-            isActive={activeTaskListIdentifier === list?.taskListIdentifier}
-            onMouseEnter={event => handleMouseEnter(event, list?.listName)}
-            onMouseLeave={() => setPopoverLabel(null)}
-            onClick={() => {
-              if (activeTaskListIdentifier === list?.taskListIdentifier) return;
+          {!archived ? (
+            <ListNameText
+              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
+              onMouseEnter={event => handleMouseEnter(event, list?.listName)}
+              onMouseLeave={() => setPopoverLabel(null)}
+              onClick={() => {
+                if (activeTaskListIdentifier === list?.taskListIdentifier)
+                  return;
 
-              if (list?.status === 'PENDING') {
-                onTaskListInvitationAccepted();
-                dispatch(TaskListActions.acceptInviteToTaskList(list));
-              }
-              history.push(`/tasks/${list.taskListIdentifier}`);
-            }}
-          >
-            {list?.listName}
-          </ListNameText>
+                if (list?.status === 'PENDING') {
+                  onTaskListInvitationAccepted();
+                  dispatch(TaskListActions.acceptInviteToTaskList(list));
+                }
+                history.push(`/tasks/${list.taskListIdentifier}`);
+              }}
+            >
+              {list?.listName}
+            </ListNameText>
+          ) : (
+            <GreyedOutListNameText
+              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
+              onMouseEnter={event => handleMouseEnter(event, list?.listName)}
+              onMouseLeave={() => setPopoverLabel(null)}
+              // eslint-disable-next-line sonarjs/no-identical-functions
+              onClick={() => {
+                if (activeTaskListIdentifier === list?.taskListIdentifier)
+                  return;
+                if (list?.status === 'PENDING') {
+                  onTaskListInvitationAccepted();
+                  dispatch(TaskListActions.acceptInviteToTaskList(list));
+                }
+                history.push(`/tasks/${list.taskListIdentifier}`);
+              }}
+            >
+              {list?.listName}
+            </GreyedOutListNameText>
+          )}
           {list?.status === 'PENDING' && (
             <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
           )}
@@ -340,7 +371,7 @@ const ListsSubmenu = () => {
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>
       )}
       <DrawerListsList>
-        {renderLists(activeLists)}
+        {renderLists(activeLists, false)}
         <RolloverPopover
           anchorEl={hoveredItemReference?.current}
           anchorOrigin={{
@@ -364,7 +395,7 @@ const ListsSubmenu = () => {
         onClick={toggleArchived}
         noBorder
       >
-        {renderLists(archivedLists)}
+        {renderLists(archivedLists, true)}
       </LabeledCollapse>
     </>
   );
