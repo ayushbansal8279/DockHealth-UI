@@ -42,7 +42,7 @@ const PatientForm = forwardRef(
     const { handleSubmit } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
-    const [customFieldsSorted, setCustomFields] = useState(null);
+    const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
@@ -145,7 +145,7 @@ const PatientForm = forwardRef(
             name="mrn"
           />
           <Spacing vertical={3} />
-          {customFieldsSorted?.[Category.PERSONAL_INFO]?.map((field, index) => {
+          {customFields?.[Category.PERSONAL_INFO]?.map((field, index) => {
             return renderCustomField(
               field,
               index,
@@ -181,7 +181,7 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormInput readOnly={readOnly} label="email" name="email" />
           <Spacing vertical={3} />
-          {customFieldsSorted?.[Category.CONTACT_INFO]?.map((field, index) => {
+          {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
             return renderCustomField(
               field,
               index,
@@ -195,7 +195,7 @@ const PatientForm = forwardRef(
             isAdmin={isAdmin}
           />
         </LabeledCollapse>
-        {customFieldsSorted?.[Category.OTHER_INFO]?.length > 0 && (
+        {customFields?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
             name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
               Category.OTHER_INFO
@@ -203,7 +203,7 @@ const PatientForm = forwardRef(
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >
-            {customFieldsSorted?.[Category.OTHER_INFO].map((field, index) => {
+            {customFields?.[Category.OTHER_INFO].map((field, index) => {
               return renderCustomField(
                 field,
                 index,
