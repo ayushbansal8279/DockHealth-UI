@@ -42,7 +42,7 @@ const PatientForm = forwardRef(
     const { handleSubmit } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
-    const [customFields, setCustomFields] = useState(null);
+    const [customFieldsSorted, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
@@ -60,7 +60,10 @@ const PatientForm = forwardRef(
         true,
         patient?.patientIdentifier || undefined,
       ).then(data => {
-        compose(setCustomFields, groupByCategory)(data);
+        compose(
+          setCustomFields,
+          groupByCategory,
+        )(data?.slice().sort((a, b) => a?.sortIndex - b?.sortIndex));
       });
     }, [patient]);
 
@@ -142,7 +145,7 @@ const PatientForm = forwardRef(
             name="mrn"
           />
           <Spacing vertical={3} />
-          {customFields?.[Category.PERSONAL_INFO]?.map((field, index) => {
+          {customFieldsSorted?.[Category.PERSONAL_INFO]?.map((field, index) => {
             return renderCustomField(
               field,
               index,
@@ -178,7 +181,7 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormInput readOnly={readOnly} label="email" name="email" />
           <Spacing vertical={3} />
-          {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
+          {customFieldsSorted?.[Category.CONTACT_INFO]?.map((field, index) => {
             return renderCustomField(
               field,
               index,
@@ -192,7 +195,7 @@ const PatientForm = forwardRef(
             isAdmin={isAdmin}
           />
         </LabeledCollapse>
-        {customFields?.[Category.OTHER_INFO]?.length > 0 && (
+        {customFieldsSorted?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
             name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
               Category.OTHER_INFO
@@ -200,7 +203,7 @@ const PatientForm = forwardRef(
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >
-            {customFields?.[Category.OTHER_INFO].map((field, index) => {
+            {customFieldsSorted?.[Category.OTHER_INFO].map((field, index) => {
               return renderCustomField(
                 field,
                 index,
