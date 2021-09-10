@@ -260,7 +260,7 @@ const TaskTemplateDetailsView = () => {
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={({ fitView, setTransform }) => {
                   setViewPositionReference.current = setTransform;
-                  if (tasks.length > 4) setTimeout(fitView, 100);
+                  setTimeout(fitView, 0);
                 }}
               >
                 <Controls />

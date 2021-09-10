@@ -19,5 +19,6 @@ export const TaskNodeContainer = styled.div`
   border: 2px solid ${palette.brightBlue};
   `}
 
-  ${({ selected }) => selected && `background-color: ${palette.coolGrey4};`}
+  ${({ selected }) =>
+    selected && `background-color: ${palette.brightBlueWithAlpha};`}
 `;
