@@ -17,6 +17,7 @@ import {
 import {
   taskListsSelector,
   pendingTaskListsSelector,
+  archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
@@ -27,7 +28,10 @@ import palette from 'styles/palette';
 import { TASK_LIST_PATH } from 'routing/helpers/paths';
 import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
+import useBoolean from 'hooks/useBoolean';
+import Spacing from 'components/common/Spacing';
 import {
   SubmenuDivider,
   DrawerListsList,
@@ -58,36 +62,29 @@ const ListsSubmenu = () => {
     : null;
   const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
+  const archivedTaskLists = useSelector(archivedTaskListsSelector);
 
   const dispatch = useDispatch();
 
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
-  // const [listMenuPopupOpen, setListMenuPopupOpen] = useState(false);
-  // const [currentList, setCurrentList] = useState([]);
-  // const itemsMoreButtonReferences = useRef([]);
-  // const [
-  //   currentListMenuPopupReference,
-  //   setCurrentListMenuPopupReference,
-  // ] = useState(false);
-
+  const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
   const { orgUserRole } = useSelector(userProfileSelector);
   const isGuest = orgUserRole === 'GUEST';
 
-  // useEffect(() => {
-  //   if (!listMenuPopupOpen && currentList?.length > 0) {
-  //     setCurrentList([]);
-  //   }
-  // }, [listMenuPopupOpen, currentList]);
-
-  const lists = useMemo(
+  const activeLists = useMemo(
     () => [...(taskLists || []), ...(pendingTaskLists || [])],
     [taskLists, pendingTaskLists],
   );
 
+  const archivedLists = useMemo(() => [...(archivedTaskLists || [])], [
+    archivedTaskLists,
+  ]);
+
   useEffect(() => {
     dispatch(TaskListActions.getTaskListForUser());
     dispatch(TaskListActions.getPendingTaskListsForUser());
+    dispatch(TaskListActions.getArchivedTaskListForUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -165,8 +162,43 @@ const ListsSubmenu = () => {
     [dispatch],
   );
 
+  const isListArchived = useCallback(
+    list => {
+      return !!archivedLists.find(
+        taskList => taskList.taskListIdentifier === list.taskListIdentifier,
+      );
+    },
+    [archivedLists],
+  );
+
+  const handleArchiveList = useCallback(
+    list => {
+      dispatch(TaskListActions.archiveTaskListById(list?.taskListIdentifier));
+      if (list?.taskListIdentifier === activeTaskListIdentifier)
+        history.push(`/`);
+    },
+    [activeTaskListIdentifier, dispatch, history],
+  );
+
+  const handleUnarchiveList = useCallback(
+    list => {
+      dispatch(TaskListActions.unarchiveTaskListById(list?.taskListIdentifier));
+    },
+    [dispatch],
+  );
+
   const getMenuItems = useCallback(
     list => {
+      if (MASTER_ROLES.includes(list?.role) && isListArchived(list)) {
+        return [
+          {
+            name: 'Unarchive List',
+            onClick: () => {
+              handleUnarchiveList(list);
+            },
+          },
+        ];
+      }
       let baseList = [];
       if (list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC') {
         baseList = [
@@ -197,6 +229,23 @@ const ListsSubmenu = () => {
               name: 'Edit list',
               onClick: () => openListEditModal(list),
             },
+          ];
+        }
+
+        if (MASTER_ROLES.includes(list?.role)) {
+          baseList = [
+            ...baseList,
+            {
+              name: 'Archive List',
+              onClick: () => {
+                handleArchiveList(list);
+              },
+            },
+          ];
+        }
+        if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
+          baseList = [
+            ...baseList,
             {
               name: 'Delete',
               onClick: () => {
@@ -210,22 +259,75 @@ const ListsSubmenu = () => {
 
       return baseList;
     },
-
     [
-      openInviteToListModal,
       openLeaveListModal,
-      openListEditModal,
-      openDeleteConfirmationModal,
       isGuest,
+      isListArchived,
+      openInviteToListModal,
+      openListEditModal,
+      handleArchiveList,
+      handleUnarchiveList,
+      openDeleteConfirmationModal,
     ],
   );
 
-  const hasAnyPendingList = lists.some(({ status }) => status === 'PENDING');
+  const hasAnyPendingList = activeLists.some(
+    ({ status }) => status === 'PENDING',
+  );
+
+  const renderLists = useCallback(
+    (listsList, archived = true) => {
+      return listsList?.map(list => (
+        <DrawerListsItem
+          key={`listsubmenu_${list.taskListIdentifier}`}
+          data-list-id={list.taskListIdentifier}
+          className={
+            list.listType === 'INBOX'
+              ? 'drawer-menu-list-inbox'
+              : `drawer-menu-list-item`
+          }
+        >
+          {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
+          <ListNameText
+            color={archived && palette.coolGrey2}
+            isActive={activeTaskListIdentifier === list?.taskListIdentifier}
+            onMouseEnter={event => handleMouseEnter(event, list?.listName)}
+            onMouseLeave={() => setPopoverLabel(null)}
+            onClick={() => {
+              if (activeTaskListIdentifier === list?.taskListIdentifier) return;
+
+              if (list?.status === 'PENDING') {
+                onTaskListInvitationAccepted();
+                dispatch(TaskListActions.acceptInviteToTaskList(list));
+              }
+              history.push(`/tasks/${list.taskListIdentifier}`);
+            }}
+          >
+            {list?.listName}
+          </ListNameText>
+          {list?.status === 'PENDING' && (
+            <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
+          )}
+          <DrawerItemOptions>
+            <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+            {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+              <OptionsMenu disablePortal options={getMenuItems(list)}>
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            ) : (
+              <Box m={2} />
+            )}
+          </DrawerItemOptions>
+        </DrawerListsItem>
+      ));
+    },
+    [activeTaskListIdentifier, dispatch, getMenuItems, history],
+  );
 
   return (
     <>
       <DrawerMyListsLabel>
-        <div>My Lists </div>
+        <div>My Lists</div>
         {!isGuest && <AddButton onClick={openListAddModal}>Add</AddButton>}
       </DrawerMyListsLabel>
       <SubmenuDivider />
@@ -233,49 +335,7 @@ const ListsSubmenu = () => {
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>
       )}
       <DrawerListsList>
-        {lists?.map(list => (
-          <DrawerListsItem
-            key={`listsubmenu_${list.taskListIdentifier}`}
-            data-list-id={list.taskListIdentifier}
-            className={
-              list.listType === 'INBOX'
-                ? 'drawer-menu-list-inbox'
-                : `drawer-menu-list-item`
-            }
-          >
-            {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
-            <ListNameText
-              isActive={activeTaskListIdentifier === list?.taskListIdentifier}
-              onMouseEnter={event => handleMouseEnter(event, list?.listName)}
-              onMouseLeave={() => setPopoverLabel(null)}
-              onClick={() => {
-                if (activeTaskListIdentifier === list?.taskListIdentifier)
-                  return;
-
-                if (list?.status === 'PENDING') {
-                  onTaskListInvitationAccepted();
-                  dispatch(TaskListActions.acceptInviteToTaskList(list));
-                }
-                history.push(`/tasks/${list.taskListIdentifier}`);
-              }}
-            >
-              {list?.listName}
-            </ListNameText>
-            {list?.status === 'PENDING' && (
-              <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
-            )}
-            <DrawerItemOptions>
-              <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                <OptionsMenu disablePortal options={getMenuItems(list)}>
-                  <MoreVert color="primary" />
-                </OptionsMenu>
-              ) : (
-                <Box m={2} />
-              )}
-            </DrawerItemOptions>
-          </DrawerListsItem>
-        ))}
+        {renderLists(activeLists, false)}
         <RolloverPopover
           anchorEl={hoveredItemReference?.current}
           anchorOrigin={{
@@ -292,6 +352,15 @@ const ListsSubmenu = () => {
           <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
         </RolloverPopover>
       </DrawerListsList>
+      <Spacing vertical={3} />
+      <LabeledCollapse
+        name="Archived Lists"
+        isOpened={archivedVisible}
+        onClick={toggleArchived}
+        noBorder
+      >
+        {renderLists(archivedLists, true)}
+      </LabeledCollapse>
     </>
   );
 };

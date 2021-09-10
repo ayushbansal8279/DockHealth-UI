@@ -16,6 +16,21 @@ export function getTaskListForUser() {
   };
 }
 
+export function getArchivedTaskListForUser() {
+  return dispatch => {
+    return TaskListApi.getArchivedTaskListForUser()
+      .then(taskLists => {
+        dispatch({
+          type: ActionTypes.GET_ARCHIVED_TASKLIST_SUCCESS,
+          taskLists,
+        });
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
 export function getPendingTaskListsForUser() {
   return dispatch => {
     return TaskListApi.getPendingTaskListsForUser()
@@ -135,8 +150,8 @@ export function invitePersonToTaskList(
   };
 
   return dispatch =>
-    TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo)
-      .then(response => {
+    TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo).then(
+      response => {
         dispatch({
           type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS,
           addedUser: response,
@@ -146,10 +161,8 @@ export function invitePersonToTaskList(
         }
 
         return response;
-      })
-      .catch(error => {
-        throw error;
-      });
+      },
+    );
 }
 
 export function clearMembersInTaskList() {
@@ -265,6 +278,46 @@ export function deleteTaskListById(taskListIdentifier) {
           AlertActions.showGlobalAlert('Error in deleting Task List', 'error'),
         );
         throw error;
+      });
+}
+
+export function archiveTaskListById(taskListIdentifier) {
+  return dispatch => {
+    return TaskListApi.archiveTaskListById(taskListIdentifier, true)
+      .then(response => {
+        dispatch({
+          type: ActionTypes.ARCHIVE_TASKLIST_SUCCESS,
+          response,
+          taskListIdentifier,
+        });
+        dispatch(AlertActions.showGlobalAlert('Task List archived'));
+      })
+      .catch(() => {
+        dispatch(
+          AlertActions.showGlobalAlert('Error in archiving Task List', 'error'),
+        );
+      });
+  };
+}
+
+export function unarchiveTaskListById(taskListIdentifier) {
+  return dispatch =>
+    TaskListApi.archiveTaskListById(taskListIdentifier, false)
+      .then(response => {
+        dispatch({
+          type: ActionTypes.UNARCHIVE_TASKLIST_SUCCESS,
+          response,
+          taskListIdentifier,
+        });
+        dispatch(AlertActions.showGlobalAlert('Task List unarchived'));
+      })
+      .catch(() => {
+        dispatch(
+          AlertActions.showGlobalAlert(
+            'Error in unarchiving Task List',
+            'error',
+          ),
+        );
       });
 }
 

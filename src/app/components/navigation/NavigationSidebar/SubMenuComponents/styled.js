@@ -287,6 +287,7 @@ export const ListNameText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  ${({ color }) => color && `color: ${color}`}
   ${({ isActive }) =>
     isActive
       ? `color: ${palette.brightBlue};`

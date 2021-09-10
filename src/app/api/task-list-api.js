@@ -15,6 +15,15 @@ export function getTaskListForUser() {
     });
 }
 
+export function getArchivedTaskListForUser() {
+  return axios
+    .get('list/findArchivedTaskListsForUser')
+    .then(response => response?.data)
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
 export function getSharedTaskListsWithCurrentUser(userIdentifier) {
   return axios({
     url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}`,
@@ -154,6 +163,17 @@ export function deleteTaskListById(taskListIdentifier) {
     .delete(`list/deleteTaskListById/${taskListIdentifier}`)
     .then(response => {
       onTaskListDeleted();
+      return response?.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function archiveTaskListById(taskListIdentifier, archive) {
+  return axios
+    .put(`list/archive/${taskListIdentifier}?archive=${archive}`)
+    .then(response => {
       return response?.data;
     })
     .catch(error => {
