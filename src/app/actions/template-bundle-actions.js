@@ -14,7 +14,8 @@ export function reorderSubtasksInTemplateBundle({
   source,
   destination,
   bundle,
-  completedTasksShown,
+  completedTasksShown = true,
+  incompleteTasksShown = true,
 }) {
   return {
     type: ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
@@ -22,6 +23,7 @@ export function reorderSubtasksInTemplateBundle({
     destination,
     bundle,
     completedTasksShown,
+    incompleteTasksShown,
   };
 }
 

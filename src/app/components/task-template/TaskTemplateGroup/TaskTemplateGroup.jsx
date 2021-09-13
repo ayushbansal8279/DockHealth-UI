@@ -60,6 +60,7 @@ const TaskTemplateGroup = ({
   groupDragAndDropDisabled,
   tasksDragAndDropDisabled,
   disablePatientAssignment,
+  isCompletedTab = false,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -79,6 +80,9 @@ const TaskTemplateGroup = ({
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
+  const [showIncompleteTasks, setShowIncompleteTasks] = useState(
+    !isCompletedTab,
+  );
   const [isAddingTask, setIsAddingTask] = useState(false);
   const patientReference = useRef(null);
 
@@ -112,6 +116,18 @@ const TaskTemplateGroup = ({
       ),
     [tasks],
   );
+
+  const toggleTasksVisibility = useCallback(() => {
+    return isCompletedTab
+      ? setShowIncompleteTasks(!showIncompleteTasks)
+      : setShowCompletedTasks(!showCompletedTasks);
+  }, [
+    isCompletedTab,
+    setShowIncompleteTasks,
+    setShowCompletedTasks,
+    showCompletedTasks,
+    showIncompleteTasks,
+  ]);
 
   const menuOptions = useMemo(() => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -179,22 +195,26 @@ const TaskTemplateGroup = ({
       },
     ];
 
-    if (!showCompletedTasks) {
+    if (isCompletedTab ? !showIncompleteTasks : !showCompletedTasks) {
       opts = [
         ...opts,
         {
-          name: 'Show completed tasks',
-          onClick: () => setShowCompletedTasks(true),
+          name: isCompletedTab
+            ? 'Show incomplete tasks'
+            : 'Show completed tasks',
+          onClick: toggleTasksVisibility,
         },
       ];
     }
 
-    if (showCompletedTasks) {
+    if (isCompletedTab ? showIncompleteTasks : showCompletedTasks) {
       opts = [
         ...opts,
         {
-          name: 'Hide completed tasks',
-          onClick: () => setShowCompletedTasks(false),
+          name: isCompletedTab
+            ? 'Hide incomplete tasks'
+            : 'Hide completed tasks',
+          onClick: toggleTasksVisibility,
         },
       ];
     }
@@ -214,7 +234,14 @@ const TaskTemplateGroup = ({
           ),
       },
     ];
-  }, [dispatch, identifier, showCompletedTasks]);
+  }, [
+    dispatch,
+    identifier,
+    showCompletedTasks,
+    showIncompleteTasks,
+    isCompletedTab,
+    toggleTasksVisibility,
+  ]);
 
   const handleAddBundleTask = useCallback(
     task => {
@@ -265,9 +292,11 @@ const TaskTemplateGroup = ({
   const filteredTasks = useMemo(
     () =>
       tasks.filter(
-        task => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+        isCompletedTab
+          ? task => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+          : task => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
       ),
-    [showCompletedTasks, tasks],
+    [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
   );
 
   const isBundleSelected = useMemo(
@@ -442,6 +471,7 @@ const TaskTemplateGroup = ({
                     ...dragEndData,
                     bundle: templateGroup,
                     completedTasksShown: showCompletedTasks,
+                    incompleteTasksShown: showIncompleteTasks,
                   }),
                 );
               }

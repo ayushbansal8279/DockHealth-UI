@@ -135,6 +135,7 @@ const ListDetailsCompletedTasks = ({
                           dragAndDropDisabled={
                             isCompletedGroup || dragAndDropDisabled
                           }
+                          isCompletedTab
                         />
                       ),
                     )}
