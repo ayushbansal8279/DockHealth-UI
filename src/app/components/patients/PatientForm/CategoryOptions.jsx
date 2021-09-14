@@ -23,7 +23,7 @@ const CategoryOptions = ({ visibility, onToggle, isAdmin = false }) => {
           >
             <Spacing horizontal={3} />
             <LabeledCollapseItemName font-size={fontSizes.small}>
-              {visibility ? 'Hide Empty' : 'Show Empty'}
+              {visibility ? 'Hide empty fields' : 'Show empty fields'}
             </LabeledCollapseItemName>
             <Spacing horizontal={3} />
             <RotatableChevron rotated={visibility} />

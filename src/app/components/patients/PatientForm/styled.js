@@ -12,10 +12,9 @@ export const LabeledCollapseItemName = styled.p`
   display: block;
   flex: 1;
   margin: 0;
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Montserrat', sans-serif;
-  text-transform: uppercase;
   text-align: left;
 `;
 
