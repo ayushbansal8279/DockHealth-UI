@@ -1,5 +1,4 @@
 import React from 'react';
-import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
@@ -27,7 +26,7 @@ const CategoryOptions = ({ visibility, onToggle, isAdmin = false }) => {
               {visibility ? 'Hide Empty' : 'Show Empty'}
             </LabeledCollapseItemName>
             <Spacing horizontal={3} />
-            <RotatableChevron color={palette.darkGrey} rotated={visibility} />
+            <RotatableChevron rotated={visibility} />
           </LabeledCollapseHeaderButton>
         </div>
         {isAdmin && (

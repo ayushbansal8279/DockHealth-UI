@@ -22,7 +22,7 @@ import moment from 'moment';
 import useBoolean from 'hooks/useBoolean';
 import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
-import CategoryOptions from './ShowHideEmpty';
+import CategoryOptions from './CategoryOptions';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
