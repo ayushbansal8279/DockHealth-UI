@@ -39,6 +39,7 @@ export const ListNameSection = styled.p`
 `;
 
 export const Arrow = styled.img`
+  height: 7px;
   transform: ${props => props.isOpen && 'rotateX(180deg)'};
   -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
   padding-left: ${spacing.tiny};
@@ -55,7 +56,7 @@ export const Tasks = styled(Collapse)`
 export const ListDescription = styled.div`
   display: block;
   margin-bottom: 0;
-  color: ${palette.mediumGrey}
+  color: ${palette.mediumGrey};
   background-color: ${palette.coolGrey4};
   font-size: ${fontSizes.smallPLus};
   font-weight: ${fontWeights.regular};
