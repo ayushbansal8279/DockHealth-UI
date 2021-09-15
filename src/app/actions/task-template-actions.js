@@ -173,6 +173,13 @@ export function addNewDecisionTaskElement(position) {
   };
 }
 
+export function addTemporaryElements(elements) {
+  return {
+    type: ActionTypes.ADD_TEMPORARY_ELEMENTS,
+    elements,
+  };
+}
+
 export function deleteTemporaryElement(elementId) {
   return {
     type: ActionTypes.DELETE_TEMPORARY_ELEMENT,

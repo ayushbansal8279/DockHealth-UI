@@ -6,6 +6,7 @@ import { fontWeights } from 'styles/font';
 
 export const SelectArrowImg = styled.img`
   pointer-events: none;
+  height: 7px;
 `;
 
 export const useSecondaryTypeInputStyles = makeStyles({

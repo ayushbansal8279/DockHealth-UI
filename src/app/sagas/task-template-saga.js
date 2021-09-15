@@ -36,7 +36,11 @@ import {
   parentFolderIdSelector,
   currentTaskTemplateIdentifierSelector,
 } from 'selectors/task-template-selectors';
-import { getUniqueLinkId } from 'helpers/task-template-builder-helpers';
+import {
+  createTemporaryOptionsForDecisionTask,
+  getUniqueLinkId,
+  NodeType,
+} from 'helpers/task-template-builder-helpers';
 
 function* moveTemplates({
   payload: { parentTaskTemplateIdentifier, taskTemplateIdentifier },
@@ -634,6 +638,33 @@ function* deleteTaskFromLayout({ taskIdentifier }) {
   }
 }
 
+function* changeTaskIntentType({ taskIdentifier, intentType }) {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    if (taskTemplateIdentifier && intentType === NodeType.DECISION) {
+      const { layout } = yield select(
+        taskTemplateDetailsSelector(taskTemplateIdentifier),
+      );
+      if (layout?.length > 0) {
+        const { position } =
+          layout?.find(({ id }) => taskIdentifier === id) || {};
+        const newTemporaryOptions = createTemporaryOptionsForDecisionTask(
+          layout,
+          taskIdentifier,
+          position,
+        );
+        yield put(
+          TaskTemplateActions.addTemporaryElements(newTemporaryOptions),
+        );
+      }
+    }
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
   yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
@@ -667,4 +698,5 @@ export default function* watchTaskTemplate() {
     ActionTypes.GET_CURRENT_TASK_TEMPLATE,
     getCurrentTaskTemplate,
   );
+  yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
 }

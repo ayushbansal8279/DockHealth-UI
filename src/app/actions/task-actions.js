@@ -984,3 +984,11 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
     targetTaskIdentifier,
   };
 }
+
+export function changeTaskIntentType(taskIdentifier, intentType) {
+  return {
+    type: ActionTypes.CHANGE_TASK_INTENT_TYPE,
+    taskIdentifier,
+    intentType,
+  };
+}

@@ -20,6 +20,7 @@ import {
   CHANGE_TASKS_SELECTED_STATE,
   ADD_SUBTASK,
   UPDATE_WORKFLOW_STATUS_FOR_TASKS,
+  CHANGE_TASK_INTENT_TYPE,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -497,6 +498,20 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       };
 
       return updateStateCallback(state, updateStateFromAction);
+    }
+
+    case CHANGE_TASK_INTENT_TYPE: {
+      const { taskIdentifier, intentType } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === taskIdentifier) {
+          return { ...t, intentType };
+        }
+
+        return t;
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
     }
 
     default:

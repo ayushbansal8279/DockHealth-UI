@@ -56,6 +56,7 @@ import InterruptEditModal from './components/InterruptEditModal/InterruptEditMod
 import EditCustomPatientFieldModal from './components/EditCustomPatientFieldModal/EditCustomPatientFieldModal';
 import DeleteFieldModal from './components/DeleteFieldModal/DeleteFieldModal';
 import DeleteFolderModal from './components/DeleteFolder/DeleteFolderModal';
+import InformationModal from './components/InformationModal/InformationModal';
 
 const MODAL_MAP = {
   DeleteGroup: DeleteGroupModal,
@@ -116,6 +117,7 @@ const MODAL_MAP = {
   InterruptEdit: InterruptEditModal,
   EditCustomPatientField: EditCustomPatientFieldModal,
   DeleteField: DeleteFieldModal,
+  Information: InformationModal,
 };
 
 export default MODAL_MAP;

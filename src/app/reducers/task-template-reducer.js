@@ -406,6 +406,26 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_TEMPORARY_ELEMENTS: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { elements } = action;
+
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [...(temporaryElements || []), ...elements],
+          },
+        ),
+      };
+    }
+
     case ActionTypes.DELETE_TEMPORARY_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { elementId } = action;

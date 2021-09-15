@@ -11,7 +11,8 @@ import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
-import { deleteTasksLink } from 'actions/task-actions';
+import { deleteTasksLink, changeTaskIntentType } from 'actions/task-actions';
+import { openModal } from 'modal/actions';
 import {
   addNewDecisionTaskElement,
   addNewTaskElement,
@@ -80,6 +81,7 @@ const TaskTemplateDetailsView = () => {
   const builderWrapperReference = useRef(null);
   const setViewPositionReference = useRef(null);
   const [elements, setElements] = useState(null);
+  const [selectedElements, setSelectedElements] = useState([]);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [hoveredTargetHandle, setHoveredTargetHandle] = useState(Position.Top);
   const { identifier } = useParams();
@@ -146,9 +148,24 @@ const TaskTemplateDetailsView = () => {
       label: 'Decision tree',
       icon: DecisionTaskElementIcon,
       onClick: () => {
-        const position = calculateNewElementPosition(layout);
-        dispatch(addNewDecisionTaskElement(position));
-        centerViewToElement(position);
+        if (selectedElements?.[0].type === NodeType.STANDARD) {
+          if (selectedElements[0].data.task.taskLinks?.length > 0) {
+            dispatch(
+              openModal('Information', {
+                text:
+                  'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
+              }),
+            );
+          } else {
+            const { taskIdentifier } = selectedElements[0].data.task;
+            dispatch(changeTaskIntentType(taskIdentifier, NodeType.DECISION));
+            centerViewToElement(selectedElements[0].position);
+          }
+        } else {
+          const position = calculateNewElementPosition(layout);
+          dispatch(addNewDecisionTaskElement(position));
+          centerViewToElement(position);
+        }
       },
     },
   ];
@@ -262,6 +279,7 @@ const TaskTemplateDetailsView = () => {
                   setViewPositionReference.current = setTransform;
                   setTimeout(fitView, 0);
                 }}
+                onSelectionChange={setSelectedElements}
               >
                 <Controls />
               </ReactFlow>

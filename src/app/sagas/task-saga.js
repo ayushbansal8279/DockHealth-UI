@@ -151,6 +151,19 @@ function* chooseTaskOutcome({
   }
 }
 
+function* changeTaskIntentType({ taskIdentifier, intentType }) {
+  try {
+    yield call(TaskApi.partialUpdateTask, taskIdentifier, {
+      intentType,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield put({ type: ActionTypes.CHANGE_TASK_INTENT_TYPE_SUCCESS });
+  } catch {
+    yield put({ type: ActionTypes.CHANGE_TASK_INTENT_TYPE_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
@@ -158,4 +171,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
   yield takeEvery(CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
   yield takeEvery(REFRESH_TASK_BUNDLE, refreshTemplateBundle);
+  yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
 }
