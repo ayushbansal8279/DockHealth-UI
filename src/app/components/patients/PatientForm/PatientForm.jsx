@@ -22,7 +22,7 @@ import moment from 'moment';
 import useBoolean from 'hooks/useBoolean';
 import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
-import CategoryOptions from './ShowHideEmpty';
+import CategoryOptions from './CategoryOptions';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -46,12 +46,12 @@ const PatientForm = forwardRef(
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
-      true,
+      false,
     );
     const { 0: emptyContactsVisible, 3: toggleEmptyContacts } = useBoolean(
-      true,
+      false,
     );
-    const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(true);
+    const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
