@@ -22,6 +22,7 @@ import {
   taskListsSelector,
   pendingTaskListsSelector,
   taskListMembersSelector,
+  archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -53,6 +54,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
+  const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const isFetching = useSelector(tasksIsFetchingSelector);
   const isCompletedTasksFetching = useSelector(
     completedTasksIsFetchingSelector,
@@ -452,6 +454,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     setViewHeader(params.taskListIdentifier, [
       ...taskLists,
       ...pendingTaskLists,
+      ...archivedTaskLists,
     ]);
 
     refreshAccessToken(currentUser);
@@ -477,6 +480,7 @@ const initializeListDetailsViewHooks = (match, history) => {
       setViewHeader(match.params.taskListIdentifier, [
         ...taskLists,
         ...pendingTaskLists,
+        ...archivedTaskLists,
       ]);
     }
 
@@ -494,6 +498,7 @@ const initializeListDetailsViewHooks = (match, history) => {
       }
     }
   }, [
+    archivedTaskLists,
     currentUser,
     match.params.tabName,
     match.params.taskListIdentifier,

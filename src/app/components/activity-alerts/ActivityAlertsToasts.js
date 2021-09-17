@@ -72,6 +72,7 @@ const ActivityAlertsToasts = () => {
         <ActivityAlertsToastsContainer>
           {alertsList?.map((item, idx) => (
             <ActivityAlertsToast
+              // eslint-disable-next-line react/no-array-index-key
               key={idx}
               itemAlert={item}
               positionInQueue={idx + 1}
