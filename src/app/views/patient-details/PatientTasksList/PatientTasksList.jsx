@@ -81,8 +81,10 @@ const PatientTasksListView = ({
   );
   const {
     patientIdentifier,
-    taskListIdentifier: taskListIdentifierParameter,
+    taskListIdentifier: taskListIdentifierValue,
   } = useParams();
+  const taskListIdentifierParameter =
+    taskListIdentifierValue ?? ListViewType.ALL_TASKS;
   const history = useHistory();
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
