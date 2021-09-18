@@ -269,8 +269,9 @@ const PatientTasksListView = ({
                       value={taskListIdentifierParameter}
                       onChange={handleListChange}
                       options={filteredLists?.map(
-                        ({ taskListIdentifier, listName }) => ({
-                          label: listName,
+                        ({ taskListIdentifier, listName, tasks }) => ({
+                          label: `${listName}`,
+                          secondaryLabel: `(${tasks?.length})`,
                           value: taskListIdentifier,
                         }),
                       )}
