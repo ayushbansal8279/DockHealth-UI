@@ -5,6 +5,7 @@ export const ListsToolbarContainer = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
+  height: 45px;
 `;
 
 export const ListsTabsContainer = styled.div`
