@@ -309,7 +309,7 @@ const PatientTasksListView = ({
                   )}
                 </Popper>
               </ListsToolbarContainer>
-              <Box py={1.5} />
+              <Box py={0.5} />
               {activeList ? (
                 <BulkEditSection
                   allTasks={activeList.tasks}
