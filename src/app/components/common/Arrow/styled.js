@@ -15,12 +15,12 @@ export const ArrowImg = styled.img`
       ? `rotate(${props.openDegree}deg)`
       : `rotate(${props.closeDegree}deg)`};
   transition: ${props => `all ${props.transitionTime}s ease-in-out`};
+  height: 7px;
 `;
 
 export const ArrowImgContainer = styled.div`
   display: flex;
-  padding-left: ${spacing.tiny};
-  padding-right: ${spacing.smallPlus};
+  padding-top: ${spacing.tiny};
 `;
 
 export const ArrowContainer = styled.div`
