@@ -293,7 +293,6 @@ const TaskDrawer = ({
                       handleKeyCommand={command => {
                         if (command === 'enter-command') {
                           detailsReference.current.blur();
-                          parentFormSubmit();
                           return 'handled';
                         }
 
