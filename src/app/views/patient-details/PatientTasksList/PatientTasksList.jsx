@@ -58,6 +58,12 @@ import {
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
+  [TaskItemColumn.LIST_NAME]: false,
+};
+
+const PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.PATIENT]: false,
+  [TaskItemColumn.LIST_NAME]: true,
 };
 
 const PatientTasksListView = ({
@@ -243,6 +249,33 @@ const PatientTasksListView = ({
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
 
+  const filteredListsWithCounts = filteredLists?.map(
+    ({ taskListIdentifier, listName, tasks = [] }) => {
+      return {
+        tasksCount:
+          (tasks.length > 0 &&
+            tasks?.reduce((counter, task) => {
+              if (task?.itemType === 'BUNDLE') {
+                const bundledTaskCount = task?.tasks?.reduce(
+                  (bundleTaskCounter, bundleTask) => {
+                    return (
+                      bundleTaskCounter + (bundleTask?.subTasksCount || 0) + 1
+                    );
+                  },
+                  0,
+                );
+                return counter + bundledTaskCount;
+              }
+              return counter + (task?.subTasksCount || 0) + 1;
+            }, 0)) ||
+          0,
+        taskListIdentifier,
+        listName,
+        tasks,
+      };
+    },
+  );
+
   return (
     <>
       {!isFetchingLists ? (
@@ -268,10 +301,10 @@ const PatientTasksListView = ({
                       name="currentList"
                       value={taskListIdentifierParameter}
                       onChange={handleListChange}
-                      options={filteredLists?.map(
-                        ({ taskListIdentifier, listName, tasks }) => ({
+                      options={filteredListsWithCounts?.map(
+                        ({ taskListIdentifier, listName, tasksCount }) => ({
                           label: `${listName}`,
-                          secondaryLabel: `(${tasks?.length})`,
+                          secondaryLabel: `(${tasksCount})`,
                           value: taskListIdentifier,
                         }),
                       )}
@@ -333,7 +366,11 @@ const PatientTasksListView = ({
                     hideSubtasks={isListFlattened}
                     sort={sort}
                     onSortChange={sortPatientTasks}
-                    taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
+                    taskItemConfig={
+                      isAllTasksView
+                        ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
+                        : PATIENT_VIEW_COLUMNS_CONFIG
+                    }
                     applyTemplate={applyTemplate}
                   />
                 </BulkEditSection>
