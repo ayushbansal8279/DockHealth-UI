@@ -500,6 +500,7 @@ const initializeTaskDrawerHooks = ({
     }
   }, [detailsState, dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible]);
 
+  // TODO: WIKTORROJECKI first function (drawer on change)
   const handleDueDateSave = useCallback(
     updatedDueDateTime => {
       updateDueDate(

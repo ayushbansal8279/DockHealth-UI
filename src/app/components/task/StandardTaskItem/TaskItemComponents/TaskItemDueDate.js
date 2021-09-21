@@ -19,10 +19,10 @@ const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
 
+  // TODO: WIKTORROJECKI third function (main view on change)
   const handleDueDateChange = useCallback(
     newDueDate => {
       updateDueDate(task, newDueDate, true);
-
       onTaskDueDateChanged();
     },
     [task, updateDueDate],
