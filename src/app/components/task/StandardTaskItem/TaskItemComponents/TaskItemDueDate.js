@@ -22,6 +22,7 @@ const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
   const handleDueDateChange = useCallback(
     newDueDate => {
       updateDueDate(task, newDueDate, true);
+
       onTaskDueDateChanged();
     },
     [task, updateDueDate],
