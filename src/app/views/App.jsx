@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-nested-ternary */
 /* eslint-disable sonarjs/no-duplicate-string */
 import 'normalize.css/normalize.css';
 import 'simplebar/dist/simplebar.min.css';
@@ -18,8 +19,10 @@ import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import { featurePalette } from 'styles/palette';
+import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
+import MobileSmallScreen from './MobileSmallScreen';
 
 const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;
@@ -217,6 +220,9 @@ class App extends PureComponent {
   };
 
   render() {
+    const isMobile = useMobile();
+    const isSmall = useSmallScreen();
+
     const {
       userState: { userProfile },
     } = this.props;
@@ -241,7 +247,9 @@ class App extends PureComponent {
 
     return (
       <AppContainer id="appHome">
-        {!showRotateScreenPage && (
+        {isMobile && isSmall ? (
+          <MobileSmallScreen />
+        ) : !showRotateScreenPage ? (
           <>
             <div id="portal" />
             <Modal />
@@ -271,8 +279,9 @@ class App extends PureComponent {
             <MainContainer>{children}</MainContainer>
             <Notification />
           </>
+        ) : (
+          <RotateScreen />
         )}
-        {showRotateScreenPage && <RotateScreen />}
       </AppContainer>
     );
   }
