@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
-const PHONE_MASK = /^\+\d{1,2}? \(?(\d{3})\)?[ -]?(\d{3})[ -]?(\d{3,4})$|^$/;
+const PHONE_MASK = /^\d{10,15}$/;
 const MASK_MESSAGE =
   'Phone number has incorrect format. 10 or 9 digits (for international) are required.';
 
