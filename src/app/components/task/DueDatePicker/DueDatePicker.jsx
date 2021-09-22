@@ -25,6 +25,7 @@ const DueDatePicker = ({
   recurring,
   disableRecurring,
   onCloseClick,
+  disableClearDate,
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
 
@@ -107,7 +108,17 @@ const DueDatePicker = ({
                   Repeat
                 </PlusButton>
               </SectionWrapper>
-              <PopoverBottomBar>
+              <PopoverBottomBar align="spread">
+                {!disableClearDate && (
+                  <PopoverBottomBar.Button
+                    type="button"
+                    onClick={() => {
+                      onDateChange(null);
+                    }}
+                  >
+                    Clear Date
+                  </PopoverBottomBar.Button>
+                )}
                 <PopoverBottomBar.Button type="button" onClick={onCloseClick}>
                   Close
                 </PopoverBottomBar.Button>
