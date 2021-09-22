@@ -527,13 +527,11 @@ export const updateTaskDetails = (task, details) => dispatch =>
       throw error;
     });
 
-// TODO: WIKTORROJECKI second function (task-actions)
 export const updateDueDate = (
   task,
   dueDate,
   showGlobalConfirmation,
 ) => dispatch => {
-  console.log('TUTAJ');
   dispatch({
     type: ActionTypes.UPDATE_TASK_SUCCESS,
     task: { ...task, dueDate: dueDate?.toISOString() },

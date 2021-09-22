@@ -8,7 +8,12 @@ const PopoverBottomBar = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: ${({ align }) =>
-    align === 'left' ? 'flex-start' : 'flex-end'};
+    align === 'left'
+      ? 'flex-start'
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      align === 'spread'
+      ? 'space-between'
+      : 'flex-end'};
   align-items: center;
   padding: 0 ${spacing.regular};
   background-color: ${palette.coolGrey4};

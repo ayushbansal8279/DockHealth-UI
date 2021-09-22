@@ -108,12 +108,11 @@ const DueDatePicker = ({
                   Repeat
                 </PlusButton>
               </SectionWrapper>
-              <PopoverBottomBar>
+              <PopoverBottomBar align="spread">
                 {!disableClearDate && (
                   <PopoverBottomBar.Button
                     type="button"
                     onClick={() => {
-                      console.log('Henlo my frien', onDateChange);
                       onDateChange(null);
                     }}
                   >

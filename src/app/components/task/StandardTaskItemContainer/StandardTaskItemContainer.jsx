@@ -51,10 +51,8 @@ const StandardTaskItemContainer = ({
     },
     [alertActions, onTaskChanged, taskActions],
   );
-  // TODO: fourth function
   const handleUpdateDueDate = useCallback(
     (task, dueDate) => {
-      console.log('handleUpdateDueDate');
       taskActions
         .updateDueDate(task, dueDate, true)
         .then(() => {
