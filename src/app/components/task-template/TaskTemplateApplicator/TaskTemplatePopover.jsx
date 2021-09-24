@@ -74,7 +74,7 @@ const TaskTemplatePopover = ({
           >
             {name}
           </ListItemTextButton>
-          <NextArrow onClick={() => onFolderClick(taskTemplateIdentifier)} />
+          <NextArrow onClick={() => onFolderClick(folder)} />
         </ListItem>
       );
     },
