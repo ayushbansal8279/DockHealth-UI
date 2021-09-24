@@ -26,22 +26,22 @@ import {
 } from '@draft-js-plugins/buttons';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import PeopleSuggestionsPopover from './PeopleSuggestionsPopover/PeopleSuggestionsPopover';
+import UsersSuggestionsPopover from './UsersSuggestionsPopover/UsersSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
-import PeopleSuggestionItem from './PeopleSuggestionItem/PeopleSuggestionItem';
+import UserSuggestionItem from './UserSuggestionItem/UserSuggestionItem';
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 // import '@draft-js-plugins/emoji/lib/plugin.css';
 import {
   initializeLinkifyPlugin,
-  initializePeopleMentionPlugin,
+  initializeUsersMentionPlugin,
   initializePatientMentionPlugin,
 } from './plugin-config';
 
 import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
-  mapPeopleToSuggestions,
+  mapUsersToSuggestions,
   createHighlightDecorator,
 } from './helpers';
 import {
@@ -106,26 +106,26 @@ const TextEditor = React.forwardRef(
     // const { EmojiSelect } = emojiPlugin.current;
     const { Toolbar } = staticToolbarPlugin.current;
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
-    const peopleMentionPlugin = useRef(initializePeopleMentionPlugin());
+    const usersMentionPlugin = useRef(initializeUsersMentionPlugin());
     const patientMentionPlugin = useRef(initializePatientMentionPlugin());
 
     const [editorState, setEditorState] = useMentionsEditorState(initialState);
     const [isFocused, setIsFocused] = useState(false);
 
-    const [peopleSuggestions, setPeopleSuggestions] = useState([
+    const [usersSuggestions, setUsersSuggestions] = useState([
       [SUGGESTIONS_PLACEHOLDER],
     ]);
     const [
-      isFetchingPeopleSuggestions,
-      setIsFetchingPeopleSuggestions,
+      isFetchingUsersSuggestions,
+      setIsFetchingUsersSuggestions,
     ] = useState(false);
     const [patientSuggestions, setPatientSuggestions] = useState([
       SUGGESTIONS_PLACEHOLDER,
     ]);
     const [patientSearchValue, setPatientSearchValue] = useState(null);
-    const [peopleSearchValue, setPeopleSearchValue] = useState(null);
+    const [usersSearchValue, setUsersSearchValue] = useState(null);
 
-    const arePeopleSuggestionsOpened = useRef(false);
+    const areUsersSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
 
     const { currentUser } = useSelector(store => ({
@@ -163,36 +163,36 @@ const TextEditor = React.forwardRef(
       onBlur(currentState);
     };
 
-    const clearPeopleSuggestions = () => {
-      setPeopleSuggestions([SUGGESTIONS_PLACEHOLDER]);
+    const clearUsersSuggestions = () => {
+      setUsersSuggestions([SUGGESTIONS_PLACEHOLDER]);
     };
 
-    const fetchPeopleWithDebounce = useCallback(
+    const fetchUsersWithDebounce = useCallback(
       debounce(value => {
-        getListMembersByName(taskListIdentifier, value).then(fetchedPeople => {
-          if (arePeopleSuggestionsOpened.current) {
-            const formattedPeople = mapPeopleToSuggestions(fetchedPeople);
-            setPeopleSuggestions(
-              formattedPeople.length > 0
-                ? formattedPeople
+        getListMembersByName(taskListIdentifier, value).then(fetchedUsers => {
+          if (areUsersSuggestionsOpened.current) {
+            const formattedUsers = mapUsersToSuggestions(fetchedUsers);
+            setUsersSuggestions(
+              formattedUsers.length > 0
+                ? formattedUsers
                 : [SUGGESTIONS_PLACEHOLDER],
             );
           }
-          setIsFetchingPeopleSuggestions(false);
+          setIsFetchingUsersSuggestions(false);
         });
       }, 300),
-      [arePeopleSuggestionsOpened, taskListIdentifier],
+      [areUsersSuggestionsOpened, taskListIdentifier],
     );
 
-    const onPeopleSearchChange = ({ value }) => {
+    const onUsersSearchChange = ({ value }) => {
       if (value) {
-        setIsFetchingPeopleSuggestions(true);
-        setPeopleSearchValue(value);
-        fetchPeopleWithDebounce(value);
+        setIsFetchingUsersSuggestions(true);
+        setUsersSearchValue(value);
+        fetchUsersWithDebounce(value);
       } else {
-        setIsFetchingPeopleSuggestions(false);
-        setPeopleSearchValue('');
-        clearPeopleSuggestions();
+        setIsFetchingUsersSuggestions(false);
+        setUsersSearchValue('');
+        clearUsersSuggestions();
       }
     };
 
@@ -221,13 +221,13 @@ const TextEditor = React.forwardRef(
     };
 
     const {
-      MentionSuggestions: PeopleMentionSuggestions,
-    } = peopleMentionPlugin.current;
+      MentionSuggestions: UsersMentionSuggestions,
+    } = usersMentionPlugin.current;
     const {
       MentionSuggestions: PatientsMentionSuggestions,
     } = patientMentionPlugin.current;
     const plugins = [
-      peopleMentionPlugin.current,
+      usersMentionPlugin.current,
       patientMentionPlugin.current,
       linkifyPlugin.current,
       staticToolbarPlugin.current,
@@ -333,24 +333,24 @@ const TextEditor = React.forwardRef(
 
         <Spacing horizontal={4} />
         {!disableMentions && taskListIdentifier && (
-          <PeopleMentionSuggestions
-            onSearchChange={onPeopleSearchChange}
-            suggestions={peopleSuggestions}
+          <UsersMentionSuggestions
+            onSearchChange={onUsersSearchChange}
+            suggestions={usersSuggestions}
             onAddMention={onAddMention}
-            entryComponent={PeopleSuggestionItem}
+            entryComponent={UserSuggestionItem}
             popoverComponent={
-              <PeopleSuggestionsPopover
-                searchValue={peopleSearchValue}
-                isFetching={isFetchingPeopleSuggestions}
+              <UsersSuggestionsPopover
+                searchValue={usersSearchValue}
+                isFetching={isFetchingUsersSuggestions}
               />
             }
             onOpen={() => {
-              arePeopleSuggestionsOpened.current = true;
-              setPeopleSearchValue('');
+              areUsersSuggestionsOpened.current = true;
+              setUsersSearchValue('');
             }}
             onClose={() => {
-              arePeopleSuggestionsOpened.current = false;
-              setPeopleSearchValue(null);
+              areUsersSuggestionsOpened.current = false;
+              setUsersSearchValue(null);
             }}
           />
         )}

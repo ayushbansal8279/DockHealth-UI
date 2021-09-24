@@ -630,8 +630,11 @@ const BulkEditOptionsBar = ({
 
   const handleDeleteTasks = useCallback(() => {
     dispatch(
-      openModal('BulkDeleteTasks', {
-        hasIncompleteParentTasks: !allParentTasksHaveRelatedSubtasks,
+      openModal('DeleteConfirmation', {
+        title: 'Delete tasks',
+        description: allParentTasksHaveRelatedSubtasks
+          ? 'Are you sure you want to delete these tasks? This action cannot be undone.'
+          : 'Deleting these tasks will also delete related subtasks. This action cannot be undone.',
         confirm: () => {
           bulkEditDelete(allSelectedTasksIdentifiers)(dispatch);
 

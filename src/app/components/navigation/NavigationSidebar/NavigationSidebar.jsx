@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
+import { TASK_TEMPLATES_PATH, USERS_PATH } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -17,7 +17,7 @@ import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
 import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
@@ -26,6 +26,7 @@ import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
+import UserGroupsSubmenu from './SubMenuComponents/UserGroupsSubmenu';
 import menuTourHooks from './menu-tour-hooks';
 import {
   DrawerContentContainer,
@@ -41,6 +42,7 @@ export const SubmenuKey = {
   PROFILE: 'PROFILE',
   LISTS: 'LISTS',
   PATIENTS: 'PATIENTS',
+  USER_GROUPS: 'USER_GROUPS',
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
@@ -50,6 +52,7 @@ const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
   [SubmenuKey.PROFILE]: ProfileSubmenu,
   [SubmenuKey.LISTS]: ListsSubmenu,
+  [SubmenuKey.USER_GROUPS]: UserGroupsSubmenu,
   [SubmenuKey.PATIENTS]: PatientsSubmenu,
   [SubmenuKey.SETTINGS]: SettingsSubmenu,
   [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
@@ -170,7 +173,9 @@ const NavigationSidebar = ({
             <IconNavigationItem
               name="People"
               icon={PeopleIcon}
-              path="/core/people"
+              subMenuKey={SubmenuKey.USER_GROUPS}
+              subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
+              path={USERS_PATH}
               onItemClick={handleNavigationItemClick}
             />
             <IconNavigationItem
@@ -229,7 +234,7 @@ const NavigationSidebar = ({
               >
                 <>
                   <Spacing vertical={3} />
-                  <Member showTooltip={false} member={currentUser} size={40} />
+                  <UserAvatar hideTooltip user={currentUser} size={40} />
                   <Spacing vertical={3} />
                 </>
               </NavigationItem>

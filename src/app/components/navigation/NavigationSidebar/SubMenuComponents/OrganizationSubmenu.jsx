@@ -5,7 +5,7 @@ import { Grid, IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
-import { getUserById, leaveOrganization, logout } from 'api/user-api';
+import { getCurrentUser, leaveOrganization, logout } from 'api/user-api';
 import { openNotifications } from 'actions/template-actions';
 import {
   openModal as openModalAction,
@@ -101,7 +101,7 @@ const OrganizationSubmenu = ({
     dispatch(
       openModalAction('EditOrganization', {
         userProfile: currentUser,
-        onSuccess: getUserById,
+        onSuccess: getCurrentUser,
       }),
     );
   }, [currentUser, dispatch]);

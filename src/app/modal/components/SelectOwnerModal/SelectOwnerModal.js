@@ -5,10 +5,10 @@ import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import SearchIcon from 'img/black-search-icon.svg';
 import folderUser from 'img/modals/user-folder';
-import { changeUserToOwner } from 'api/people-api';
+import { changeUserToOwner } from 'api/organization-api';
 import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
@@ -88,7 +88,7 @@ const SelectOwnerModal = ({
                   selectedUser?.userIdentifier === user?.userIdentifier
                 }
               >
-                <Member member={user} size={34} />
+                <UserAvatar user={user} size={34} />
                 <UserName>
                   {user?.firstName} {user?.lastName}
                 </UserName>

@@ -1,7 +1,7 @@
 import React from 'react';
 import OrganizationForm from 'views/onboarding/OrganizationForm/OrganizationForm';
 import { useHistory } from 'react-router-dom';
-import { updateOrganizationName } from 'actions/organization-actions';
+import { updateOrganization } from 'actions/organization-actions';
 import { useDispatch } from 'react-redux';
 
 const onSubmit = ({ dispatch, history }) => ({
@@ -9,7 +9,7 @@ const onSubmit = ({ dispatch, history }) => ({
   organizationInitials,
   organizationThemeColor,
 }) => {
-  updateOrganizationName({
+  updateOrganization({
     organizationName,
     organizationInitials,
     organizationProfileColor: organizationThemeColor,

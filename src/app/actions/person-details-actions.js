@@ -1,5 +1,5 @@
 import * as TaskApi from 'api/task-api';
-import * as PeopleApi from 'api/people-api';
+import * as UserApi from 'api/user-api';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as ActionTypes from './action-types';
@@ -86,7 +86,7 @@ export function getFilteredTasksForPeopleList(
 
 export function getUserById(userIdentifier) {
   return dispatch => {
-    return PeopleApi.getUserById(userIdentifier)
+    return UserApi.getUserById(userIdentifier)
       .then(user => {
         dispatch({
           type: ActionTypes.GET_PERSON_DETAILS_SUCCESS,

@@ -41,7 +41,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
       },
     };
 
-    dispatch(openModal('DeleteTask', modalProps));
+    dispatch(openModal('DeleteTaskConfirmation', modalProps));
   };
 
   const handleEdit = () => {

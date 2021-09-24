@@ -54,7 +54,7 @@ const initializeTaskDrawerTopSectionHooks = ({
 
   const openDeleteConfirmationModal = () => {
     dispatch(
-      openModal('DeleteTask', {
+      openModal('DeleteTaskConfirmation', {
         isSubtask: !!selectedTask.parentTaskIdentifier,
         confirm: () => deleteTask(),
       }),

@@ -5,6 +5,7 @@ import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 
 export const ArrowImg = styled.img`
+  height: 7px;
   transform-origin: center;
   transform: ${props =>
     props.isOpen
@@ -26,6 +27,7 @@ export const ArrowImgContainer = styled.div`
 export const ArrowContainer = styled.div`
   display: flex;
   justify-content: ${props => props.justifyContent || 'flex-end'};
+  align-items: center;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
   padding-left: ${props => props.paddingLeft || spacing.giga};

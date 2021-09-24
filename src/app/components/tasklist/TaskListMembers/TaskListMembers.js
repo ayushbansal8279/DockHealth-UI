@@ -4,9 +4,9 @@ import { splitAt } from 'ramda';
 import { openModal } from 'modal/actions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import Spacing from 'components/common/Spacing';
-import Member from 'components/members/Member/Member';
-import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
-import AdditionalMembersCounter from 'components/members/AdditionalMembersCounter/AdditionalMembersCounter';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
+import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/AdditionalMembersCounter';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { MemberWrapper } from './styled';
 
@@ -25,7 +25,7 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
           isPending={isMemberPending(member)}
         >
           {index !== 0 && <Spacing horizontal={2} />}
-          <Member member={member} size={40} />
+          <UserAvatar user={member} size={40} />
         </MemberWrapper>
       ))}
       {hiddenMembers?.length > 0 && (

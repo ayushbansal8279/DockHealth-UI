@@ -54,7 +54,10 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
         color: palette.oPlusRed,
         onClick: () =>
           dispatch(
-            ModalActions.openModal('DeleteFolder', {
+            ModalActions.openModal('DeleteConfirmation', {
+              title: 'Delete folder',
+              description:
+                'Are you sure you want to delete this folder? This action cannot be undone.',
               confirm: () =>
                 dispatch(
                   TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),

@@ -1,7 +1,7 @@
 import createMentionPlugin from 'draft-js-mention-plugin';
 import createLinkifyPlugin from 'draft-js-linkify-plugin';
 import createToolbarPlugin from '@draft-js-plugins/static-toolbar';
-import PeopleMention from './PeopleMention/PeopleMention';
+import UserMention from './UserMention/UserMention';
 import PatientMention from './PatientMention/PatientMention';
 import EditorLink from './EditorLink/EditorLink';
 
@@ -11,11 +11,11 @@ export const initializeLinkifyPlugin = () =>
     component: EditorLink,
   });
 
-export const initializePeopleMentionPlugin = () =>
+export const initializeUsersMentionPlugin = () =>
   createMentionPlugin({
     mentionPrefix: '@',
     mentionTrigger: '@',
-    mentionComponent: PeopleMention,
+    mentionComponent: UserMention,
   });
 
 export const initializePatientMentionPlugin = () =>

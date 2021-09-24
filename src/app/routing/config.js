@@ -35,7 +35,7 @@ import OnboardingSelectCustomerTypeView from 'views/onboarding/OnboardingSelectC
 import OnboardingQuestions from 'views/onboarding/OnboardingQuestions/OnboardingQuestions';
 import PageNotFound from 'views/PageNotFound';
 import PatientDetailsView from 'views/patient-details/PatientDetailsView';
-import PeopleView from 'views/people-list/PeopleView';
+import UserGroupView from 'views/user-group/UserGroupView';
 import PersonDetailsView from 'views/person-details/PersonDetailsView';
 import BillingsView from 'views/self-serve/billings/BillingsView';
 import DocumentsView from 'views/self-serve/documents/DocumentsView';
@@ -147,8 +147,8 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onLeave: onLeavePersonDetails,
   },
   {
-    path: '/people',
-    RouteComponent: PeopleView,
+    path: '/people/:groupIdentifier?',
+    RouteComponent: UserGroupView,
   },
   {
     path: '/task-tour/:taskListIdentifier',
@@ -175,8 +175,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onEnter: onEnterTemplatesView,
     onLeave: onLeaveTemplatesView,
   },
-
-  // <Redirect from="/onboarding/create-account" to="create-account" />
 ];
 
 export const ONBOARDING_ROUTES = [

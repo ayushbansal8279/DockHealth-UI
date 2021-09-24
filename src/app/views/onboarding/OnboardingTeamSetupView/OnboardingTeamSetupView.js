@@ -10,7 +10,7 @@ import { object, string, array } from 'yup';
 import { Grid } from '@material-ui/core';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { openModal } from 'modal/actions';
-import { invitePersonToOrganization } from 'api/people-api';
+import { invitePersonToOrganization } from 'api/organization-api';
 import Button from 'components/common/Button/Button';
 import Input from 'components/common/Input/Input';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';

@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 import PersonIcon from 'img/modals/person';
 import PeopleIcon from 'img/modals/people';
 import Spacing from 'components/common/Spacing';
-import InviteMemberToListForm from 'components/members/InviteMemberToListForm/InviteMemberToListForm';
+import InviteUserOrGroupToListForm from 'components/user/InviteMemberToListForm/InviteUserOrGroupToListForm';
 import { useDispatch } from 'react-redux';
 import { getMembersByTaskListId } from '../../../../actions/task-list-actions';
 import { Title, Header, Description } from '../styled';
@@ -67,7 +67,7 @@ const InviteMembersForm = ({
               patients who are part of this list.
             </Description>
           </Header>
-          <InviteMemberToListForm
+          <InviteUserOrGroupToListForm
             list={list}
             externalInvitePosition={{ bottom: -60 }}
             onMembersRefresh={getListMembers}

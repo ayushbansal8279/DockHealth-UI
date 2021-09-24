@@ -146,7 +146,10 @@ const TaskTemplate = ({ template, isFullView, children }) => {
         color: palette.oPlusRed,
         onClick: () =>
           dispatch(
-            ModalActions.openModal('DeleteTemplate', {
+            ModalActions.openModal('DeleteConfirmation', {
+              title: 'Delete workflow',
+              description:
+                'Are you sure you want to delete this workflow? This action cannot be undone.',
               confirm: () =>
                 dispatch(
                   TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),

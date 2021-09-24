@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { showGlobalAlert } from 'alert/actions';
 import Button from 'components/common/Button/Button';
-import { reactivateUser, archiveUser } from 'api/people-api';
+import { reactivateUser, archiveUser } from 'api/organization-api';
 import { openModal } from 'modal/actions';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {

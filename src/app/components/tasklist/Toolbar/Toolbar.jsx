@@ -23,12 +23,12 @@ import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
 import Spacing from 'components/common/Spacing.tsx';
-import AdditionalMembersCounterPopover from 'components/members/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
+import AdditionalMembersCounterPopover from 'components/user/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
-import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
+import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
+import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover.tsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
@@ -207,11 +207,11 @@ const Toolbar = ({
               <>
                 {shownMembersWithCurrent?.map(member => {
                   const isSelected = selectedFilters?.assignedTo?.includes(
-                    member?.userIdentifier,
+                    member?.identifier,
                   );
                   return (
                     <MemberWrapper
-                      key={member?.userIdentifier}
+                      key={member?.identifier}
                       isPending={isMemberPending(member)}
                     >
                       <Spacing horizontal={2} />

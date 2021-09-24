@@ -4,7 +4,7 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Box } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import moment from 'moment';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
   convertFromEditorStateToOutput,
@@ -67,7 +67,7 @@ const PatientNote = ({
   }, [isEditable, onPinChange, onRemove, patientNoteIdentifier, pinned]);
   return (
     <NoteContainer>
-      <Member member={creator} />
+      <UserAvatar user={creator} />
       <Box m={2} />
       <PatientNoteInformation>
         <TextEditor

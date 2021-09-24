@@ -3,10 +3,10 @@ import { Grid } from '@material-ui/core';
 import OfficeIcon from 'img/modals/office';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
-import { updateOrganizationName } from 'actions/organization-actions';
+import { updateOrganization } from 'actions/organization-actions';
 import Button from 'components/common/Button/Button';
-import OrganizationAvatarInput from 'components/org/OrganizationAvatarInput/OrganizationAvatarInput';
-import OrganizationColorPicker from 'components/org/OrganizationColorPicker/OrganizationColorPicker';
+import InitialsInput from 'components/common/InitialsInput/InitialsInput';
+import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import { FormContext, useForm } from 'react-hook-form';
@@ -35,7 +35,7 @@ const onSubmit = ({ dispatch, onSuccess, organizationIdentifier }) => ({
   organizationInitials,
   organizationProfileColor,
 }) => {
-  updateOrganizationName({
+  updateOrganization({
     organizationIdentifier,
     organizationName,
     organizationInitials,
@@ -131,17 +131,11 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
             2-3 initials to represent your organization
           </TileSettingsDescription>
           <Spacing vertical={4} />
-          <OrganizationAvatarInput
+          <InitialsInput
             name="organizationInitials"
             placeholder="abc"
-            onChange={event => {
-              const newValue = event.target.value.trim().toUpperCase();
-
-              if (newValue.length > 3) {
-                setValue('organizationInitials', newValue.slice(0, 3));
-              } else {
-                setValue('organizationInitials', newValue);
-              }
+            onChange={v => {
+              setValue('organizationInitials', v);
             }}
             value={organizationInitialsValue}
             backgroundColor={organizationProfileColorValue}
@@ -157,7 +151,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
           <Spacing vertical={5} />
           <ColorPickerHeader>Choose your theme color</ColorPickerHeader>
           <Spacing vertical={3} />
-          <OrganizationColorPicker
+          <ColorPicker
             name="organizationProfileColor"
             onChange={event => {
               const { name, value } = event.target;
