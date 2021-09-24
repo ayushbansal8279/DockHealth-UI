@@ -160,12 +160,16 @@ const PatientTasksListView = ({
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
   );
 
-  const handleQuickAddTask = ({ description }) => {
-    modalActions.openModal('ListPicker', {
-      fetchMethod: getTaskListForUser,
-      confirm: taskListIdentifier =>
-        quickAddPatientTask({ description, taskListIdentifier }),
-    });
+  const handleQuickAddTask = ({ description, taskListIdentifier }) => {
+    if (taskListIdentifier) {
+      quickAddPatientTask({ description, taskListIdentifier });
+    } else {
+      modalActions.openModal('ListPicker', {
+        fetchMethod: getTaskListForUser,
+        confirm: listId =>
+          quickAddPatientTask({ description, taskListIdentifier: listId }),
+      });
+    }
   };
 
   const renderEmptyListView = () => {
@@ -361,7 +365,7 @@ const PatientTasksListView = ({
                     onTaskUpdate={updatePatientTaskInList}
                     updateDueDate={updatePatientTaskDueDate}
                     updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-                    quickAddTask={quickAddPatientTask}
+                    quickAddTask={handleQuickAddTask}
                     refreshView={refreshPatientTasks}
                     hideSubtasks={isListFlattened}
                     sort={sort}
