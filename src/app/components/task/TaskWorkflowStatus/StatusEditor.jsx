@@ -138,7 +138,7 @@ const StatusEditor = ({ onClose }) => {
           items={pluck('identifier', statuses)}
           strategy={rectSortingStrategy}
         >
-          <StatusList elementsInColumn={(statuses?.length > 13 ? 10 : 7) || 7}>
+          <StatusList elementsInColumn={statuses?.length > 12 ? 10 : 7}>
             <EditableWorkflowStatusItem
               disabled
               status={RESET_STATUS}

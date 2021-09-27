@@ -58,7 +58,7 @@ const TaskWorkflowStatus = ({
     <StatusListWrapper>
       {!isEditing ? (
         <>
-          <StatusList elementsInColumn={statuses?.length > 13 ? 10 : 7}>
+          <StatusList elementsInColumn={statuses?.length > 12 ? 10 : 7}>
             {!isFetching ? (
               <>
                 <WorkflowStatusItemButton
