@@ -3,10 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 import useBoolean from 'hooks/useBoolean';
-import {
-  taskListsSelector,
-  archivedTaskListsSelector,
-} from 'selectors/task-list-selectors';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const initializeTaskDrawerTopSectionHooks = ({
   onDelete,
@@ -16,10 +13,7 @@ const initializeTaskDrawerTopSectionHooks = ({
 }) => {
   const filedInInputReference = useRef(null);
   const dispatch = useDispatch();
-  const taskLists = [
-    ...useSelector(taskListsSelector),
-    ...useSelector(archivedTaskListsSelector),
-  ];
+  const taskLists = useSelector(taskListsSelector);
 
   const [
     isFiledInPopoverOpen,
