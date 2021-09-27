@@ -205,14 +205,25 @@ const PatientTasksListView = ({
     }
   };
 
-  const applyTemplate = useCallback(
+  const handleApplyTemplate = useCallback(
     ({ taskListIdentifier, taskTemplateIdentifier }) => {
-      applyTemplateForPatient({
-        taskTemplateIdentifier,
-        taskListIdentifier,
-      });
+      if (taskListIdentifier) {
+        applyTemplateForPatient({
+          taskTemplateIdentifier,
+          taskListIdentifier,
+        });
+      } else {
+        modalActions.openModal('ListPicker', {
+          fetchMethod: getTaskListForUser,
+          confirm: listId =>
+            applyTemplateForPatient({
+              taskTemplateIdentifier,
+              taskListIdentifier: listId,
+            }),
+        });
+      }
     },
-    [applyTemplateForPatient],
+    [applyTemplateForPatient, modalActions],
   );
 
   const handleListChange = event => {
@@ -375,7 +386,7 @@ const PatientTasksListView = ({
                         ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
                         : PATIENT_VIEW_COLUMNS_CONFIG
                     }
-                    applyTemplate={applyTemplate}
+                    applyTemplate={handleApplyTemplate}
                   />
                 </BulkEditSection>
               ) : (
