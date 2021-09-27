@@ -4,6 +4,7 @@ import moment from 'moment';
 import Spacing from 'components/common/Spacing.tsx';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { RobotoTypography } from 'styles/theme';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
