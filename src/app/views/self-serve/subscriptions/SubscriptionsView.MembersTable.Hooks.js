@@ -5,10 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useToggle } from 'react-use';
 import { showGlobalAlert } from 'alert/actions';
 import {
-  addUserToOrganization,
+  isFetchingOrganizationUsersSelector,
+  organizationUsersSelector,
+} from 'selectors/organization-selectors';
+import {
+  reactivateUserInOrganization,
   cancelInviteToOrganization,
   removeUserFromOrganization,
-} from 'actions/people-actions';
+} from 'api/organization-api';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
@@ -17,10 +21,8 @@ const initializeMembersTableHooks = ({
   setSelectedUsers,
   selectedUsers,
 }) => {
-  const { isFetching, organizationMembers } = useSelector(store => ({
-    isFetching: store.peopleState.isFetching,
-    organizationMembers: store.peopleState.peoplelist ?? [],
-  }));
+  const organizationMembers = useSelector(organizationUsersSelector) || [];
+  const isFetching = useSelector(isFetchingOrganizationUsersSelector);
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
 
@@ -72,8 +74,7 @@ const initializeMembersTableHooks = ({
       if (checked) {
         setSelectedUsers(uniq([...selectedUsers, toggledUser]));
 
-        // TODO add user reactivation action here
-        addUserToOrganization(toggledUser.userIdentifier)(dispatch).then(() => {
+        reactivateUserInOrganization(toggledUser.userIdentifier).then(() => {
           getAllUsers();
         });
       } else {
@@ -84,18 +85,14 @@ const initializeMembersTableHooks = ({
         );
 
         if (toggledUser.userIdentifier) {
-          removeUserFromOrganization(toggledUser.userIdentifier)(dispatch).then(
-            () => {
-              dispatch(showGlobalAlert(`${toggledUser?.displayName} removed`));
-              getAllUsers();
-            },
-          );
+          removeUserFromOrganization(toggledUser.userIdentifier).then(() => {
+            dispatch(showGlobalAlert(`${toggledUser?.displayName} removed`));
+            getAllUsers();
+          });
         } else {
-          cancelInviteToOrganization(toggledUser.userIdentifier)(dispatch).then(
-            () => {
-              getAllUsers();
-            },
-          );
+          cancelInviteToOrganization(toggledUser.userIdentifier).then(() => {
+            getAllUsers();
+          });
         }
       }
     },

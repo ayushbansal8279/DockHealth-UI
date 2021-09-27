@@ -9,6 +9,7 @@ import {
   Paper,
   Box,
 } from '@material-ui/core';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import zIndex from 'styles/z-index';
 import { MoreVert } from '@material-ui/icons';
@@ -160,12 +161,16 @@ const PatientTasksListView = ({
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
   );
 
-  const handleQuickAddTask = ({ description }) => {
-    modalActions.openModal('ListPicker', {
-      fetchMethod: getTaskListForUser,
-      confirm: taskListIdentifier =>
-        quickAddPatientTask({ description, taskListIdentifier }),
-    });
+  const handleQuickAddTask = ({ description, taskListIdentifier }) => {
+    if (taskListIdentifier) {
+      quickAddPatientTask({ description, taskListIdentifier });
+    } else {
+      modalActions.openModal('ListPicker', {
+        fetchMethod: getTaskListForUser,
+        confirm: listId =>
+          quickAddPatientTask({ description, taskListIdentifier: listId }),
+      });
+    }
   };
 
   const renderEmptyListView = () => {
@@ -361,7 +366,7 @@ const PatientTasksListView = ({
                     onTaskUpdate={updatePatientTaskInList}
                     updateDueDate={updatePatientTaskDueDate}
                     updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-                    quickAddTask={quickAddPatientTask}
+                    quickAddTask={handleQuickAddTask}
                     refreshView={refreshPatientTasks}
                     hideSubtasks={isListFlattened}
                     sort={sort}

@@ -35,7 +35,7 @@ const AssignedToSection = ({
   }, [assignedToUsers, setValue]);
 
   const wholeDisplayValue =
-    pluck('userName', assignedToUsersValue || [])
+    pluck('name', assignedToUsersValue || [])
       .map(trim)
       .join(', ') || '';
 

@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useToggle } from 'react-use';
 import { acknowledgeEula } from 'actions/user-actions';
@@ -14,7 +14,6 @@ import { downloadBAADocument } from 'api/organization-api';
 import { OnboardingAnchor } from '../OnboardingTemplate.Components';
 
 const OnboardingEulaView = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const [isEulaAccepted, toggleEulaAccepted] = useToggle(false);
 
@@ -28,11 +27,11 @@ const OnboardingEulaView = () => {
   const continueButtonDisabled = !isEulaAccepted || !isBaaAccepted;
 
   const onAgreeClick = useCallback(() => {
-    acknowledgeEula()(dispatch).then(() => {
+    acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
       history.push('/onboarding/questions');
     });
-  }, [dispatch, history]);
+  }, [history]);
 
   const isSmallScreen = useSmallScreen();
 

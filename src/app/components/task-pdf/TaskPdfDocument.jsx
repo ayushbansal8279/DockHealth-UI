@@ -3,7 +3,7 @@ import styled from '@react-pdf/styled-components';
 import { memoizeWith, isEmpty, head } from 'ramda';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { getUserAvatarBuffer } from 'api/people-api';
+import { getUserAvatarBuffer } from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import PdfTask from './PdfTask';
@@ -13,7 +13,7 @@ const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),
   ({ userIdentifier, profileThumbnailPictureHash }) => {
     if (profileThumbnailPictureHash) {
-      return getUserAvatarBuffer({ userIdentifier });
+      return getUserAvatarBuffer(userIdentifier);
     }
 
     return Promise.resolve(null);

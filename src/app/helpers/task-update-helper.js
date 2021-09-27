@@ -50,7 +50,7 @@ export const toggleTaskCompletedStatus = (task, currentUser) => {
 export const setDueDate = (task, dueDate) => {
   return {
     ...task,
-    dueDate: dueDate.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+    dueDate: dueDate?.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
   };
 };
 

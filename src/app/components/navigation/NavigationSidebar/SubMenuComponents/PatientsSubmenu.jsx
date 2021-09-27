@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
@@ -7,7 +7,6 @@ import * as PatientsActions from 'actions/patients-actions';
 import palette from 'styles/palette';
 import { Box } from '@material-ui/core';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
-
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
 import {
@@ -15,12 +14,11 @@ import {
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
-import { isEmpty } from 'ramda';
+import { isEmpty, prop, sortBy, compose, toLower } from 'ramda';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -73,6 +71,9 @@ const PatientsSubmenu = () => {
   const openDeleteConfirmationModal = useCallback(
     list => {
       const modalProps = {
+        title: 'Delete list',
+        description:
+          'Are you sure you want to delete this list? This action cannot be undone.',
         confirm: () => {
           if (list?.patientListIdentifier === listIdentifierUrlParameter) {
             history.push(`/`);
@@ -83,10 +84,18 @@ const PatientsSubmenu = () => {
           dispatch(closeModal());
         },
       };
-      dispatch(openModal('DeleteList', modalProps));
+      dispatch(openModal('DeleteConfirmation', modalProps));
       dispatch(hideSubMenu());
     },
     [dispatch, history, listIdentifierUrlParameter],
+  );
+
+  const sortedCustomPatientsLists = useMemo(
+    () =>
+      customPatientsLists
+        ? sortBy(compose(toLower, prop('listName')), customPatientsLists)
+        : null,
+    [customPatientsLists],
   );
 
   return (
@@ -139,7 +148,7 @@ const PatientsSubmenu = () => {
           <DrawerListsList>
             {!isInitialListFetching ? (
               <>
-                {customPatientsLists?.map(patientsList => (
+                {sortedCustomPatientsLists?.map(patientsList => (
                   <DrawerListsItem key={patientsList.patientListIdentifier}>
                     <ListNameText
                       isActive={
@@ -178,7 +187,7 @@ const PatientsSubmenu = () => {
                           },
                         ]}
                       >
-                        <MoreVert />
+                        <MoreVert color="primary" />
                       </OptionsMenu>
                     </DrawerItemOptions>
                   </DrawerListsItem>

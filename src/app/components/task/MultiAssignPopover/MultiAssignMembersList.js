@@ -6,17 +6,19 @@ import React, {
   useCallback,
 } from 'react';
 import Highlighter from 'react-highlight-words';
-import * as PeopleApi from 'api/people-api';
+import * as OrganizationApi from 'api/organization-api';
 import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
 import debounce from 'lodash.debounce';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import MagnifierIcon from 'img/magnifier';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import { pluck } from 'ramda';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
-import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import { isUserGroup } from 'helpers/user-helper';
+import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import {
   Input,
   InputBox,
@@ -52,9 +54,9 @@ const MultiAssignMembersList = ({
   const filteredMembers = useMemo(
     () =>
       membersOptions?.filter(
-        ({ userName, userIdentifier }) =>
-          userName.toLowerCase().startsWith(searchValue.toLowerCase()) &&
-          userIdentifier !== currentUser?.userIdentifier,
+        ({ name, identifier }) =>
+          name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
+          identifier !== currentUser?.identifier,
       ),
     [searchValue, currentUser, membersOptions],
   );
@@ -62,7 +64,7 @@ const MultiAssignMembersList = ({
   const currentUserMember = useMemo(
     () =>
       membersOptions?.find(
-        ({ userIdentifier }) => userIdentifier === currentUser?.userIdentifier,
+        ({ identifier }) => identifier === currentUser?.identifier,
       ) || currentUser,
     [membersOptions, currentUser],
   );
@@ -71,7 +73,7 @@ const MultiAssignMembersList = ({
 
   const selectMembersWithDebounce = useCallback(
     debounce(selection => {
-      onSelect(selection);
+      onSelect(selection.map(s => ({ ...s, userIdentifier: s.identifier })));
       // eslint-disable-next-line no-unused-expressions
       inputReference.current?.focus();
     }, 700),
@@ -91,7 +93,7 @@ const MultiAssignMembersList = ({
       setMembersOptions([]);
       setSelectedMembersIdentifiers(
         savedSelectedMembers?.length > 0
-          ? pluck('userIdentifier', savedSelectedMembers)
+          ? pluck('identifier', savedSelectedMembers)
           : [],
       );
       const includeTaskListIdentifers = Array.isArray(taskListIdentifiers)
@@ -104,7 +106,7 @@ const MultiAssignMembersList = ({
           );
           setMembersOptions(joinedMembers);
         } else {
-          const organizationMembers = await PeopleApi.findAllUsersByOrganizationId();
+          const organizationMembers = await OrganizationApi.getOrganizationUsers();
           setMembersOptions(organizationMembers);
         }
       } catch (error) {
@@ -124,24 +126,24 @@ const MultiAssignMembersList = ({
         membersToReturn = membersOptions;
       } else if (selectedOption === UNASSIGNED_KEY) {
         membersToReturn = [];
-      } else if (previousSelection.includes(selectedOption?.userIdentifier)) {
+      } else if (previousSelection.includes(selectedOption?.identifier)) {
         const newlySelectedMembersIdentifiers = previousSelection.filter(
-          id => id !== selectedOption?.userIdentifier,
+          id => id !== selectedOption?.identifier,
         );
-        membersToReturn = membersOptions.filter(({ userIdentifier }) =>
-          newlySelectedMembersIdentifiers.includes(userIdentifier),
+        membersToReturn = membersOptions.filter(({ identifier }) =>
+          newlySelectedMembersIdentifiers.includes(identifier),
         );
       } else {
         const newlySelectedMembersIdentifiers = [
           ...previousSelection,
-          selectedOption?.userIdentifier,
+          selectedOption?.identifier,
         ];
-        membersToReturn = membersOptions.filter(({ userIdentifier }) =>
-          newlySelectedMembersIdentifiers.includes(userIdentifier),
+        membersToReturn = membersOptions.filter(({ identifier }) =>
+          newlySelectedMembersIdentifiers.includes(identifier),
         );
       }
       selectMembersWithDebounce(membersToReturn);
-      return pluck('userIdentifier', membersToReturn);
+      return pluck('identifier', membersToReturn);
     });
   };
 
@@ -217,31 +219,35 @@ const MultiAssignMembersList = ({
             )}
           </ListContentSection>
         )}
-        {currentUserMember?.userName
+        {currentUserMember?.name
           ?.toLowerCase()
           .includes(searchValue.toLowerCase()) &&
           (function renderCurrentUserOption() {
             const isSelected = selectedMembersIdentifiers.includes(
-              currentUserMember?.userIdentifier,
+              currentUserMember?.identifier,
             );
 
             return (
               <ListContentSection>
                 <MemberRow
-                  key={currentUserMember?.userIdentifier}
+                  key={currentUserMember?.identifier}
                   isSelected={isSelected}
                   onClick={event => handleOptionClick(event, currentUserMember)}
                 >
                   <Checkbox isChecked={isSelected} />
                   <Spacing horizontal={3} />
-                  <Member member={currentUserMember} showTooltip={false} />
+                  {isUserGroup(currentUserMember) ? (
+                    <GroupAvatar group={currentUserMember} hideTooltip />
+                  ) : (
+                    <UserAvatar user={currentUserMember} hideTooltip />
+                  )}
                   <Spacing horizontal={3} />
                   <MemberName>
                     <Highlighter
                       highlightStyle={highlightStyle}
                       searchWords={searchValue?.toLowerCase().split(/\s+/)}
                       autoEscape
-                      textToHighlight={currentUserMember?.userName}
+                      textToHighlight={currentUserMember?.name}
                     />
                   </MemberName>
                 </MemberRow>
@@ -252,25 +258,29 @@ const MultiAssignMembersList = ({
           {!isFetchingMembers ? (
             filteredMembers?.map(member => {
               const isSelected = selectedMembersIdentifiers.includes(
-                member?.userIdentifier,
+                member?.identifier,
               );
 
               return (
                 <MemberRow
-                  key={member?.userIdentifier}
+                  key={member?.identifier}
                   isSelected={isSelected}
                   onClick={event => handleOptionClick(event, member)}
                 >
                   <Checkbox isChecked={isSelected} />
                   <Spacing horizontal={3} />
-                  <Member member={member} showTooltip={false} />
+                  {isUserGroup(member) ? (
+                    <GroupAvatar group={member} hideTooltip />
+                  ) : (
+                    <UserAvatar user={member} hideTooltip />
+                  )}
                   <Spacing horizontal={3} />
                   <MemberName>
                     <Highlighter
                       highlightStyle={highlightStyle}
                       searchWords={searchValue?.toLowerCase().split(/\s+/)}
                       autoEscape
-                      textToHighlight={member?.userName}
+                      textToHighlight={member?.name}
                     />
                   </MemberName>
                 </MemberRow>
@@ -294,7 +304,7 @@ MultiAssignMembersList.propTypes = {
   taskListIdentifiers: oneOfType([string, arrayOf(string)]).isRequired,
   selectedMembers: arrayOf(
     shape({
-      userIdentifier: string,
+      identifier: string,
       firstName: string,
       lastName: string,
       initials: string,

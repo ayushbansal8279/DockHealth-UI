@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Grid } from '@material-ui/core';
-import * as UserApi from 'api/user-api';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  userProfileSelector,
-  userProfilePictureSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { getUserAvatarUrl, hasProfilePicture } from 'helpers/user-helper';
 import * as TemplateActions from 'actions/template-actions';
 import {
   ProfileSubmenuContainer,
@@ -22,32 +19,16 @@ import {
 
 const ProfileSubmenu = () => {
   const dispatch = useDispatch();
-  const { user, profilePicture } = useSelector(store => ({
-    user: userProfileSelector(store),
-    profilePicture: userProfilePictureSelector(store),
-  }));
-  const {
-    userIdentifier,
-    profilePictureHash,
-    userName,
-    titles,
-    initials,
-    bubbleColor,
-  } = user || {};
-
-  useEffect(() => {
-    if (userIdentifier && profilePictureHash) {
-      UserApi.getUserProfilePic(userIdentifier, 'PROFILE');
-    }
-  }, [userIdentifier, profilePictureHash]);
+  const userProfile = useSelector(userProfileSelector);
+  const { name, titles, initials, bubbleColor } = userProfile || {};
 
   return (
     <ProfileSubmenuContainer>
       <Grid container direction="column" alignItems="center">
-        {user ? (
+        {userProfile ? (
           <>
             <Top>
-              <UserName>{userName?.trim()}</UserName>
+              <UserName>{name?.trim()}</UserName>
               <button
                 type="button"
                 onClick={() => dispatch(TemplateActions.hideSubMenu())}
@@ -59,8 +40,8 @@ const ProfileSubmenu = () => {
             <Box m={1} />
             <SubmenuDivider />
             <Box m={1} />
-            {profilePictureHash && profilePicture ? (
-              <UserImage src={profilePicture} alt={userName} />
+            {hasProfilePicture(userProfile) ? (
+              <UserImage src={getUserAvatarUrl(userProfile)} alt={name} />
             ) : (
               <UserInitialCircle color={bubbleColor}>
                 {initials}

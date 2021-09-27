@@ -3,8 +3,7 @@ import { useDispatch } from 'react-redux';
 import { pathEq } from 'ramda';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
-import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { changeUserRoleForOrg } from 'actions/people-actions';
+import { changeUserOrganizationRole } from 'actions/organization-actions';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import { openModal } from 'modal/actions';
@@ -22,12 +21,10 @@ export const renderUserTypesOptions = ({
   userIdentifier,
   userTypes,
   closePopover,
-  reloadUsers,
   addSubscription,
   orgUserRole,
   userStatus,
   selectedRoleKey,
-  dispatch,
 }) => {
   let renderedArray = [];
 
@@ -45,22 +42,7 @@ export const renderUserTypesOptions = ({
           label,
           description,
           onSave: () => {
-            changeUserRole({ userIdentifier, role })
-              .then(() => {
-                dispatch(showGlobalAlert(`User's role changed successfully`));
-                reloadUsers();
-                closePopover();
-              })
-              .catch(error => {
-                dispatch(
-                  showGlobalErrorAlert(
-                    error?.message ??
-                      `User's role could not be changed, please try again later`,
-                  ),
-                );
-
-                closePopover();
-              });
+            changeUserRole({ userIdentifier, role });
           },
         })),
     ];
@@ -131,7 +113,6 @@ const RoleSelectionPopover = ({
   userHasSubscription,
   orgUserRole,
   userStatus,
-  reloadUsers,
   ownersCount,
   currentActiveUsers,
 }) => {
@@ -139,8 +120,8 @@ const RoleSelectionPopover = ({
   const dispatch = useDispatch();
 
   const changeUserRole = useCallback(
-    ({ userIdentifier: markedUserIdentifier, role: userRole }) =>
-      changeUserRoleForOrg(markedUserIdentifier, userRole)(dispatch),
+    ({ userIdentifier: id, role }) =>
+      dispatch(changeUserOrganizationRole(id, role)),
     [dispatch],
   );
 
@@ -235,12 +216,10 @@ const RoleSelectionPopover = ({
         closePopover,
         changeUserRole,
         email,
-        reloadUsers,
         addSubscription,
         removeSubscription,
         orgUserRole,
         selectedRoleKey: selectedRole?.key,
-        dispatch,
       })}
     />
   );

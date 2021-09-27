@@ -7,9 +7,11 @@ import {
   getBillingDetails,
   getBillingEstimate,
   selectUsersForPlan,
+  getOrganizationUsers,
 } from 'actions/organization-actions';
-import { findAllUsers, loading } from 'actions/people-actions';
+import { organizationUsersSelector } from 'selectors/organization-selectors';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './SubscriptionsPlansView/SubscriptionsPlansView.PlanData';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
@@ -27,6 +29,7 @@ const initializeSubscriptionsViewHooks = () => {
   const [chosenPlan, setChosenPlan] = useState(null);
   const [currentPlan, setCurrentPlan] = useState(null);
   const [annualPayment, toggleAnnualPayment] = useToggle(false);
+  const organizationUsers = useSelector(organizationUsersSelector);
 
   const outerContainerReference = useRef(null);
 
@@ -59,11 +62,12 @@ const initializeSubscriptionsViewHooks = () => {
   );
 
   const getAllUsers = useCallback(() => {
-    loading()(dispatch);
-    findAllUsers()(dispatch).then(() => {
-      recalculateEstimate();
-    });
-  }, [dispatch, recalculateEstimate]);
+    dispatch(getOrganizationUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    recalculateEstimate();
+  }, [organizationUsers, recalculateEstimate]);
 
   useMount(() => {
     selectUsersForPlan({ users: null })(dispatch);

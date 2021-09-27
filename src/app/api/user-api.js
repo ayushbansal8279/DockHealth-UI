@@ -1,8 +1,17 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-import { isNil } from 'ramda';
+/* eslint-disable no-async-promise-executor */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import Amplify from '@aws-amplify/core';
 import { onLogin, onLogout } from 'helpers/ga-event-helper';
-import { RESET_APP } from 'actions/action-types';
+import {
+  RESET_APP,
+  SET_USER_AUTH_DATA,
+  GET_USER_PROFILE,
+  GET_USER_PROFILE_SUCCESS,
+  GET_USER_PROFILE_FAILURE,
+  GET_USER_NOTIFICATION_PREFERENCES,
+  GET_USER_NOTIFICATION_PREFERENCES_SUCCESS,
+  GET_USER_NOTIFICATION_PREFERENCES_FAILURE,
+} from 'actions/action-types';
 import { noop } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Auth from '@aws-amplify/auth';
@@ -47,9 +56,8 @@ export function register(userData) {
       validationData: [], // optional
     })
       .then(data => {
-        // console.log(data)
         resolvedCognitoUser = data.user;
-        store.dispatch({ type: 'user/user', user: data.user });
+        store.dispatch({ type: SET_USER_AUTH_DATA, userAuth: data.user });
         resolve(data.user);
       })
       .catch(error => {
@@ -104,8 +112,8 @@ export function resendConfirmationCode(userData) {
 }
 
 export function changePassword(oldPassword, newPassword) {
-  const { user } = store.getState().userState;
-  return Auth.changePassword(user, oldPassword, newPassword);
+  const { userAuth } = store.getState().userState;
+  return Auth.changePassword(userAuth, oldPassword, newPassword);
 }
 
 export function logout(history) {
@@ -124,7 +132,7 @@ export function logout(history) {
       Auth.signOut()
         .then(() => {
           resolvedCognitoUser = null;
-          store.dispatch({ type: 'user/user', user: null });
+          store.dispatch({ type: SET_USER_AUTH_DATA, userAuth: null });
           store.dispatch({ type: RESET_APP });
           sessionStorage.removeItem('accessToken');
           sessionStorage.removeItem('userIdentifier');
@@ -159,25 +167,25 @@ export function login(loginUserName, password) {
       username, // Required, the username
       password, // Optional, the password
     })
-      .then(user => {
-        resolvedCognitoUser = user;
+      .then(userAuth => {
+        resolvedCognitoUser = userAuth;
         if (
-          user.challengeName === 'SMS_MFA' ||
-          user.challengeName === 'SOFTWARE_TOKEN_MFA'
+          userAuth.challengeName === 'SMS_MFA' ||
+          userAuth.challengeName === 'SOFTWARE_TOKEN_MFA'
         ) {
-          resolve(user);
+          resolve(userAuth);
         } else {
-          store.dispatch({ type: 'user/user', user });
+          store.dispatch({ type: SET_USER_AUTH_DATA, userAuth });
           sessionStorage.setItem(
             'accessToken',
-            user.signInUserSession.accessToken.jwtToken,
+            userAuth.signInUserSession.accessToken.jwtToken,
           );
           sendEvent({
             eventAction: 'LOGIN_SUCCESS',
             eventCategory: 'AUTH',
             usageEventType: 'USAGE_ACTION',
           });
-          resolve(user);
+          resolve(userAuth);
         }
       })
       .catch(error => {
@@ -204,7 +212,7 @@ export function sendMFACode(userData) {
     )
       .then(loggedUser => {
         resolvedCognitoUser = loggedUser;
-        store.dispatch({ type: 'user/user', user: loggedUser });
+        store.dispatch({ type: SET_USER_AUTH_DATA, userAuth: loggedUser });
         sessionStorage.setItem(
           'accessToken',
           loggedUser.signInUserSession.accessToken.jwtToken,
@@ -250,10 +258,10 @@ export async function isAuthenticated() {
     };
 
     if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      return { isLoggedIn: true, user: userData };
+      return { isLoggedIn: true, userAuth: userData };
     }
 
-    return { isLoggedIn: false, user: userData };
+    return { isLoggedIn: false, userAuth: userData };
   }
 
   try {
@@ -267,9 +275,9 @@ export async function isAuthenticated() {
     console.log(error);
     if (sessionStorage.getItem('accessToken')) {
       const authUser = JSON.parse(sessionStorage.getItem('authUser'));
-      return { isLoggedIn: true, user: authUser };
+      return { isLoggedIn: true, userAuth: authUser };
     }
-    return { isLoggedIn: false, user: null };
+    return { isLoggedIn: false, userAuth: null };
   }
 }
 
@@ -312,16 +320,6 @@ export function resetPassword(userData) {
   });
 }
 
-export function createUser(user) {
-  return axios.put('user', user).then(response => {
-    store.dispatch({
-      type: 'user/userIdentifier',
-      userIdentifier: response?.data.userIdentifier,
-    });
-    return response;
-  });
-}
-
 export async function getUserOrganization() {
   // eslint-disable-next-line no-return-await
   return await axios.get('user/findUserOrganizations');
@@ -341,37 +339,49 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
         }user/findUserByEmail?email=${encodeURIComponent(email)}`,
       )
       .then(response => {
-        getUserOrganization().then(({ data: orgData }) => {
-          const userProfile = { ...response?.data, userOrganizations: orgData };
-          store.dispatch({
-            type: 'user/userProfile',
-            userProfile,
-          });
-          sessionStorage.setItem(
-            'userIdentifier',
-            response?.data?.userIdentifier,
-          );
-          sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
-          const currentOrgIdentifier = sessionStorage.getItem(
-            'currentOrganizationIdentifier',
-          );
-
-          if (
-            currentOrgIdentifier === 'undefined' ||
-            currentOrgIdentifier === 'null' ||
-            currentOrgIdentifier === '' ||
-            !currentOrgIdentifier
-          ) {
+        getUserOrganization()
+          .then(({ data: orgData }) => {
+            store.dispatch({
+              type: GET_USER_PROFILE,
+            });
+            const userProfile = {
+              ...response?.data,
+              userOrganizations: orgData,
+            };
+            store.dispatch({
+              type: GET_USER_PROFILE_SUCCESS,
+              userProfile,
+            });
             sessionStorage.setItem(
-              'currentOrganizationIdentifier',
-              response?.data?.organizationIdentifier,
+              'userIdentifier',
+              response?.data?.userIdentifier,
             );
-            axios.defaults.headers.common.CurrentOrganizationIdentifier =
-              response?.data?.organizationIdentifier;
-          }
-          onLogin();
-          resolve({ ...userProfile, access: dummyAccess });
-        });
+            sessionStorage.setItem('userProfile', JSON.stringify(userProfile));
+            const currentOrgIdentifier = sessionStorage.getItem(
+              'currentOrganizationIdentifier',
+            );
+
+            if (
+              currentOrgIdentifier === 'undefined' ||
+              currentOrgIdentifier === 'null' ||
+              currentOrgIdentifier === '' ||
+              !currentOrgIdentifier
+            ) {
+              sessionStorage.setItem(
+                'currentOrganizationIdentifier',
+                response?.data?.organizationIdentifier,
+              );
+              axios.defaults.headers.common.CurrentOrganizationIdentifier =
+                response?.data?.organizationIdentifier;
+            }
+            onLogin();
+            resolve({ ...userProfile, access: dummyAccess });
+          })
+          .catch(() => {
+            store.dispatch({
+              type: GET_USER_PROFILE_FAILURE,
+            });
+          });
       })
       .catch(error => {
         reject(error);
@@ -394,46 +404,35 @@ export async function getUserByEmail(email, cognitoUser) {
   return await getUserByEmailAndAccessToken(email, accessToken);
 }
 
-export function getUserById() {
+export function getCurrentUser() {
+  store.dispatch({
+    type: GET_USER_PROFILE,
+  });
   return getUserOrganization().then(({ data: orgData }) => {
-    return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
-      store.dispatch({
-        type: 'user/userProfile',
-        userProfile: { ...response?.data, userOrganizations: orgData },
-      });
-      return { ...response?.data, userOrganizations: orgData };
-    });
+    return (
+      axios
+        .get(`user/${sessionStorage.userIdentifier}`)
+        .then(response => {
+          store.dispatch({
+            type: GET_USER_PROFILE_SUCCESS,
+            userProfile: { ...response?.data, userOrganizations: orgData },
+          });
+          return { ...response?.data, userOrganizations: orgData };
+        })
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .catch(() => {
+          store.dispatch({
+            type: GET_USER_PROFILE_FAILURE,
+          });
+        })
+    );
   });
 }
 
 export function updateStoreWithCurrentUser(cognitoUser) {
   resolvedCognitoUser = cognitoUser;
   sessionStorage.setItem('authUser', JSON.stringify(cognitoUser));
-  store.dispatch({ type: 'user/user', user: cognitoUser });
-}
-
-export function getUserProfilePic(userIdentifier, pictureType) {
-  return axios
-    .get(
-      `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}?UserPictureType=${pictureType}`,
-      { responseType: 'arraybuffer' },
-    )
-    .then(response => {
-      const binaryImage = Buffer.from(response?.data, 'binary').toString(
-        'base64',
-      );
-      const image = `data:${response?.headers[
-        'content-type'
-      ].toLowerCase()};base64,${binaryImage}`;
-      store.dispatch({ type: 'user/userProfilePic', userProfilePic: image });
-      return image;
-    })
-    .catch(() => {
-      store.dispatch({
-        type: 'user/userProfilePic',
-        userProfilePic: undefined,
-      });
-    });
+  store.dispatch({ type: SET_USER_AUTH_DATA, userAuth: cognitoUser });
 }
 
 export function saveUserProfilePic(data) {
@@ -444,7 +443,7 @@ export function saveUserProfilePic(data) {
       },
     })
     .then(response => {
-      getUserById();
+      getCurrentUser();
       return response?.data;
     })
     .catch(error => {
@@ -472,35 +471,22 @@ export function deleteUserProfilePic() {
 }
 
 export function getUserNotificationPrefs() {
-  return axios.get('user/userNotificationPreferences').then(response => {
-    store.dispatch({
-      type: 'user/userNotificationPrefs',
-      userNotificationPrefs: response?.data,
-    });
-    return response?.data;
+  store.dispatch({
+    type: GET_USER_NOTIFICATION_PREFERENCES,
   });
-}
-
-export function updateUserNotoficationPrefs(
-  emailNotification,
-  pushNotification,
-) {
-  const notificationPreferences = {
-    email: Boolean(emailNotification),
-  };
-
-  if (!isNil(pushNotification)) {
-    notificationPreferences.push = Boolean(pushNotification);
-  }
-
   return axios
-    .put(
-      `${process.env.HEYDOC_SERVICES_BASE_URL}user/userNotificationPreferences`,
-      notificationPreferences,
-    )
-    .then(response => response?.data)
-    .catch(error => {
-      throw error;
+    .get('user/userNotificationPreferences')
+    .then(response => {
+      store.dispatch({
+        type: GET_USER_NOTIFICATION_PREFERENCES_SUCCESS,
+        userNotificationPreferences: response?.data,
+      });
+      return response?.data;
+    })
+    .catch(() => {
+      store.dispatch({
+        type: GET_USER_NOTIFICATION_PREFERENCES_FAILURE,
+      });
     });
 }
 
@@ -514,53 +500,6 @@ export function leaveList(taskListIdentifier) {
     })
     .catch(error => {
       throw error;
-    });
-}
-
-export function findOrgInviteByEmail(email) {
-  return axios
-    .get(
-      `${process.env.HEYDOC_SERVICES_BASE_URL}user/findOrgInviteByEmail/`,
-      email,
-    )
-    .then(response => response?.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getAllSpecialties() {
-  return axios
-    .get(`${process.env.HEYDOC_SERVICES_BASE_URL}reference/specialties`)
-    .then(response => {
-      store.dispatch({
-        type: 'reference/allSpecialties',
-        allSpecialties: response?.data,
-      });
-      return response?.data;
-    });
-}
-
-export function getAllTitles() {
-  return axios
-    .get(`${process.env.HEYDOC_SERVICES_BASE_URL}reference/titles`)
-    .then(response => {
-      store.dispatch({
-        type: 'reference/allTitles',
-        allTitles: response?.data,
-      });
-      return response?.data;
-    });
-}
-
-export function performHealthCheck() {
-  return axios
-    .get(`${process.env.HEYDOC_SERVICES_BASE_URL}healthcheck/echo`)
-    .then(noop)
-    .catch(error => {
-      if (!error.response) {
-        throw error;
-      }
     });
 }
 
@@ -597,6 +536,7 @@ export const captureLocalTimezone = async () => {
 };
 
 export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
+  // eslint-disable-next-line consistent-return
   return new Promise(async (resolve, reject) => {
     try {
       const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
@@ -651,8 +591,10 @@ export function acknowledgeEula() {
 }
 
 export function updateUserDashboardPrefs(prefs) {
+  store.dispatch({
+    type: GET_USER_PROFILE,
+  });
   const currentUser = JSON.parse(sessionStorage.getItem('userProfile'));
-
   return axios
     .put(
       `${process.env.HEYDOC_SERVICES_BASE_URL}user/updateUserPreferences`,
@@ -668,11 +610,17 @@ export function updateUserDashboardPrefs(prefs) {
           ),
         },
       };
-      store.dispatch({ type: 'user/userProfile', userProfile: newCurrentUser });
+      store.dispatch({
+        type: GET_USER_PROFILE_SUCCESS,
+        userProfile: newCurrentUser,
+      });
       sessionStorage.setItem('userProfile', JSON.stringify(newCurrentUser));
       return response?.data;
     })
     .catch(error => {
+      store.dispatch({
+        type: GET_USER_PROFILE_FAILURE,
+      });
       throw error;
     });
 }
@@ -729,20 +677,20 @@ export const leaveOrganization = organizationIdentifier =>
     .then(({ data }) => data);
 
 export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
-  const { user } = store.getState().userState;
+  const { userAuth } = store.getState().userState;
 
   // eslint-disable-next-line @typescript-eslint/camelcase
-  await Auth.updateUserAttributes(user, { phone_number: `${newPhone}` });
+  await Auth.updateUserAttributes(userAuth, { phone_number: `${newPhone}` });
 
-  await Auth.verifyUserAttribute(user, 'phone_number');
+  await Auth.verifyUserAttribute(userAuth, 'phone_number');
 
   return axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
 };
 
 export const verifyNewPhoneNumber = code => {
-  const { user } = store.getState().userState;
+  const { userAuth } = store.getState().userState;
 
-  return Auth.verifyUserAttributeSubmit(user, 'phone_number', code);
+  return Auth.verifyUserAttributeSubmit(userAuth, 'phone_number', code);
 };
 
 export const getUserActiveTasksCount = userId =>
@@ -775,3 +723,31 @@ export const sendUserOnboardingAnswers = ({ answers }) => {
     answers,
   );
 };
+
+export function getUserById(userIdentifier) {
+  return axios
+    .get(`user/${userIdentifier}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => error?.response?.data);
+}
+
+export function getUserAvatarBuffer(userIdentifier) {
+  return axios
+    .get(`user/profilePicture/${userIdentifier}?UserPictureType=PROFILE`, {
+      responseType: 'arraybuffer',
+    })
+    .then(response => {
+      const dataBuffer = Buffer.from(response.data);
+
+      return {
+        data: dataBuffer,
+        // initial 2 bytes of data indicates image format -> backend returns invalid content type
+        // FF D8 - JPEG
+        // eslint-disable-next-line unicorn/number-literal-case
+        format: dataBuffer.readUInt16BE(0) === 0xffd8 ? 'jpg' : 'png',
+      };
+    })
+    .catch(error => error?.response?.data);
+}

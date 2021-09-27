@@ -1,12 +1,11 @@
-import { USER_ACKNOWLEDGED_EULA } from 'actions/action-types';
+import * as ActionTypes from '../actions/action-types';
 
 const initialState = {
-  user: false,
+  userAuth: false,
   userProfile: {},
-  userProfilePic: '',
-  userNotificationPrefs: '',
-  allSpecialties: [],
-  allTitles: [],
+  userNotificationPreferences: '',
+  isFetchingProfile: false,
+  isFetchingNotificationPreferences: false,
 };
 
 export const dummyAccess = {
@@ -24,40 +23,38 @@ export const dummyAccess = {
 
 const UserReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'user/user': {
-      const { user } = action;
-      return { ...state, user };
+    case ActionTypes.SET_USER_AUTH_DATA: {
+      const { userAuth } = action;
+      return { ...state, userAuth };
     }
-
-    case 'user/userProfile': {
+    case ActionTypes.GET_USER_PROFILE: {
+      return { ...state, isFetchingProfile: true };
+    }
+    case ActionTypes.GET_USER_PROFILE_SUCCESS: {
       const { userProfile } = action;
-      return { ...state, userProfile: { ...userProfile, access: dummyAccess } };
-    }
-
-    case 'user/userProfilePic': {
-      const { userProfilePic } = action;
-      return { ...state, userProfilePic };
-    }
-
-    case 'user/userNotificationPrefs': {
-      const { userNotificationPrefs } = action;
-      return { ...state, userNotificationPrefs };
-    }
-
-    case 'reference/allSpecialties': {
-      const { allSpecialties } = action;
-      return { ...state, allSpecialties };
-    }
-
-    case 'reference/allTitles': {
-      const { allTitles } = action;
-      return { ...state, allTitles };
-    }
-
-    case USER_ACKNOWLEDGED_EULA: {
       return {
         ...state,
+        userProfile: { ...userProfile, access: dummyAccess },
+        isFetchingProfile: false,
       };
+    }
+    case ActionTypes.GET_USER_PROFILE_FAILURE: {
+      return { ...state, isFetchingProfile: false };
+    }
+
+    case ActionTypes.GET_USER_NOTIFICATION_PREFERENCES: {
+      return { ...state, isFetchingNotificationPreferences: true };
+    }
+    case ActionTypes.GET_USER_NOTIFICATION_PREFERENCES_SUCCESS: {
+      const { userNotificationPreferences } = action;
+      return {
+        ...state,
+        userNotificationPreferences,
+        isFetchingNotificationPreferences: false,
+      };
+    }
+    case ActionTypes.GET_USER_NOTIFICATION_PREFERENCES_FAILURE: {
+      return { ...state, isFetchingNotificationPreferences: false };
     }
 
     default:

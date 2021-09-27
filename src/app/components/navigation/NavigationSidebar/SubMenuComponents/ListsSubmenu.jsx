@@ -30,6 +30,7 @@ import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
 import {
@@ -122,6 +123,9 @@ const ListsSubmenu = () => {
   const openDeleteConfirmationModal = useCallback(
     list => {
       const modalProps = {
+        title: 'Delete list',
+        description:
+          'Are you sure you want to delete this list? This action cannot be undone.',
         confirm: () => {
           onTaskListDeleted();
           dispatch(
@@ -133,7 +137,7 @@ const ListsSubmenu = () => {
           dispatch(closeModal());
         },
       };
-      dispatch(openModal('DeleteList', modalProps));
+      dispatch(openModal('DeleteConfirmation', modalProps));
       dispatch(hideSubMenu());
     },
     [activeTaskListIdentifier, dispatch, history],

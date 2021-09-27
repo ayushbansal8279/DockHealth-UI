@@ -8,7 +8,7 @@ import FormReducer from './form-reducer';
 import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
 import OrganizationReducer from './organization-reducer';
-import PeopleReducer from './people-reducer';
+import UserGroupsReducer from './user-groups-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
 import TaskListReducer from './task-list-reducer';
 import UserReducer from './user-reducer';
@@ -28,7 +28,7 @@ const appReducer = combineReducers({
   userState: UserReducer,
   notification,
   taskList: TaskListReducer,
-  peopleState: PeopleReducer,
+  userGroups: UserGroupsReducer,
   form: FormReducer,
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,

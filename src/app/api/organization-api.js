@@ -1,6 +1,55 @@
 import memoize from 'lodash.memoize';
+import { uniqBy, prop } from 'ramda';
 import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
+
+export function getOrganizationUsersAndUserGroups() {
+  return axios
+    .get('user/findAllUsersByOrganizationId?includeGroups=true')
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => error?.response?.data);
+}
+
+export function getOrganizationUsers() {
+  return axios
+    .get('user/findAllUsersByOrganizationId?includeGroups=false')
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => error?.response?.data);
+}
+
+export function findAllUsersForOrganization() {
+  return Promise.all([
+    axios({
+      method: 'get',
+      url: '/user/findAllUsersByOrganizationId?includeGroups=false',
+    }),
+    axios({
+      method: 'get',
+      url: '/user/findAllInActiveUsersByOrganizationId',
+    }),
+  ])
+    .then(([responseActive, responseInactive]) => {
+      const allUsers = [
+        ...responseActive.data.map(({ subscription, ...otherData }) => ({
+          ...otherData,
+          subscription: subscription ?? { subscriptionPlanName: 'Standard' },
+        })),
+        ...responseInactive.data.map(({ ...otherData }) => ({
+          ...otherData,
+          subscription: null,
+        })),
+      ];
+
+      return uniqBy(prop('email'), allUsers);
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data ?? error?.message);
+    });
+}
 
 export function updateOrganizationCallType({ type, organizationIdentifier }) {
   return axios
@@ -11,7 +60,7 @@ export function updateOrganizationCallType({ type, organizationIdentifier }) {
     .then(({ data }) => data);
 }
 
-export const get = ({ organizationIdentifier }) => {
+export const getOrganization = organizationIdentifier => {
   return axios.get(`/organization/${organizationIdentifier}`).then(response => {
     if (response.data) {
       return response.data;
@@ -79,16 +128,7 @@ export const getInvoiceDetails = () =>
     url: `/organization/getInvoiceDetails`,
   }).then(response => response.data);
 
-export const updateLegalEntityName = ({ legalEntityName }) =>
-  axios({
-    method: 'put',
-    url: '/organization/updateOrganizationLegalEntityName',
-    data: {
-      organizationLegalEntityName: legalEntityName,
-    },
-  }).then(response => response.data);
-
-export const updateOrganizationName = ({
+export const updateOrganization = ({
   organizationName,
   organizationInitials,
   organizationProfileColor,
@@ -186,11 +226,6 @@ export const getConfigurationForReferral = referralCode =>
     throw new Error('Referral config not found');
   });
 
-// const addAuthorizationHeader = () => {
-//   const currentAccessToken = sessionStorage.getItem('accessToken');
-//   axios.defaults.headers.common.Authorization = `Bearer ${currentAccessToken}`;
-// };
-
 export const referAColleague = referDetails => {
   axios({
     method: 'put',
@@ -248,4 +283,136 @@ export function reorderOrganizationStatuses(taskStatusIdentifiers) {
   return axios
     .put(`/organization/settings/taskStatus/sort`, { taskStatusIdentifiers })
     .then(({ data }) => data);
+}
+
+export function changeUserOrganizationRole(userIdentifier, role) {
+  return axios
+    .put(
+      `${'organization/changeUserRoleForOrg/' +
+        '?markedUserId='}${userIdentifier}&role=${role}`,
+    )
+    .then(response => {
+      return response.data;
+    });
+}
+
+export function invitePersonToOrganization(person) {
+  return axios({
+    url: 'organization/invitePersonToOrganization',
+    method: 'put',
+    data: person,
+  })
+    .then(response => {
+      return response?.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function resendInviteToOrganization(userIdentifier) {
+  return axios
+    .put(
+      `organization/resendInviteToOrganization/?userIdentifier=${userIdentifier}`,
+    )
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function resendApprovalRequestUserForOrganization(userIdentifier) {
+  return axios
+    .put(
+      `user/resendApprovalRequestUserForOrganization/?userIdentifier=${userIdentifier}`,
+    )
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function cancelInviteToOrganization(markedUserIdentifier) {
+  return axios
+    .put(
+      `${'organization/cancelInviteToOrganization/' +
+        '?userIdentifier='}${markedUserIdentifier}`,
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function removeUserFromOrganization(removedUserIdentifier) {
+  return axios
+    .delete(
+      `${'user/removeUserFromOrganization' +
+        '?userIdentifier='}${removedUserIdentifier}`,
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function reactivateUserInOrganization(userIdentifier) {
+  return axios
+    .put(`${'user/addUserToOrganization?userIdentifier='}${userIdentifier}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function approvePendingUser({ userIdentifier, role }) {
+  return axios
+    .put(`user/approveUserForOrganization?userIdentifier=${userIdentifier}`, {
+      role,
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function denyPendingUser({ userIdentifier }) {
+  return axios
+    .put(`user/denyUserForOrganization?userIdentifier=${userIdentifier}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function archiveUser(userIdentifier) {
+  return axios.delete(
+    `user/archiveUserFromOrganization?userIdentifier=${userIdentifier}`,
+  );
+}
+
+export function reactivateUser(userIdentifier, role) {
+  return axios.put(
+    `user/addUserToOrganization?userIdentifier=${userIdentifier}&role=${role}`,
+  );
+}
+
+export function changeUserToOwner(userIdentifier) {
+  return axios.put(
+    `organization/reassignOwnerForOrg?assignedUserId=${userIdentifier}`,
+  );
 }

@@ -21,6 +21,8 @@ export const ModalWrapperWithPadding = styled(ModalWrapper)`
 `;
 
 export const ModalMainIcon = styled.img`
+  display: block;
+  height: 34px;
   cursor: default;
   margin-bottom: ${spacing.large};
 `;

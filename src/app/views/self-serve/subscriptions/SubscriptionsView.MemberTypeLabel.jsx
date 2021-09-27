@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { findAllUsers } from 'actions/people-actions';
+import { getOrganizationUsers } from 'actions/organization-actions';
 import Arrow from 'components/common/Arrow/Arrow';
 import {
   MemberTypeButton,
@@ -44,7 +44,9 @@ const MemberTypeLabel = ({
 }) => {
   const labelReference = useRef(null);
   const dispatch = useDispatch();
-  const reloadUsers = useCallback(() => findAllUsers()(dispatch), [dispatch]);
+  const reloadUsers = useCallback(() => dispatch(getOrganizationUsers()), [
+    dispatch,
+  ]);
 
   const PopoverComponent = (() => {
     if (userStatus === 'PENDING') {

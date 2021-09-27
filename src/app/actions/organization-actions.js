@@ -1,43 +1,18 @@
 import * as OrganizationApi from 'api/organization-api';
-import {
-  GET_BILLING_DETAILS_FAILURE,
-  GET_BILLING_DETAILS_SUCCESS,
-  GET_BILLING_ESTIMATE_FAILURE,
-  GET_BILLING_ESTIMATE_SUCCESS,
-  GET_INVOICE_DETAILS_FAILURE,
-  GET_INVOICE_DETAILS_SUCCESS,
-  GET_ORGANIZATION_FAILURE,
-  GET_ORGANIZATION_SUCCESS,
-  GET_REFERRAL_CONFIG_FAILURE,
-  GET_REFERRAL_CONFIG_SUCCESS,
-  REQUEST_GET_BILLING_DETAILS,
-  REQUEST_GET_BILLING_ESTIMATE,
-  REQUEST_GET_INVOICE_DETAILS,
-  REQUEST_GET_ORGANIZATION,
-  REQUEST_SAVE_BILLING_DETAILS,
-  SAVE_BILLING_DETAILS_FAILURE,
-  SAVE_BILLING_DETAILS_SUCCESS,
-  SELECT_USERS_FOR_PLAN,
-  SET_FETCHING_ORGANIZATION_STATUSES,
-  SET_NEW_PAYMENT_PLAN,
-  SET_ORGANIZATION_STATUSES,
-  SET_ORGANIZATION_STATUSES_ERROR,
-  UPDATE_ORGANIZATION,
-  UPDATE_ORGANIZATION_STATUS,
-} from './action-types';
+import * as ActionTypes from 'actions/action-types';
 
 export const handleOrganizationResponse = ({ fetchMethod, dispatch }) =>
   fetchMethod()
     .then(data => {
       dispatch({
-        type: GET_ORGANIZATION_SUCCESS,
+        type: ActionTypes.GET_ORGANIZATION_SUCCESS,
         payload: data,
       });
       return data;
     })
     .catch(error => {
       dispatch({
-        type: GET_ORGANIZATION_FAILURE,
+        type: ActionTypes.GET_ORGANIZATION_FAILURE,
         error,
       });
       throw error;
@@ -49,30 +24,30 @@ export const getOrganizationById = ({ organizationIdentifier }) => dispatch => {
   }
 
   dispatch({
-    type: REQUEST_GET_ORGANIZATION,
+    type: ActionTypes.REQUEST_GET_ORGANIZATION,
   });
 
   return handleOrganizationResponse({
-    fetchMethod: () => OrganizationApi.get({ organizationIdentifier }),
+    fetchMethod: () => OrganizationApi.getOrganization(organizationIdentifier),
     dispatch,
   });
 };
 
 export const saveBillingDetails = (billingData, cardToken) => dispatch => {
   dispatch({
-    type: REQUEST_SAVE_BILLING_DETAILS,
+    type: ActionTypes.REQUEST_SAVE_BILLING_DETAILS,
   });
 
   return OrganizationApi.saveBillingDetails({ billingData, cardToken })
     .then(data => {
       dispatch({
-        type: SAVE_BILLING_DETAILS_SUCCESS,
+        type: ActionTypes.SAVE_BILLING_DETAILS_SUCCESS,
         payload: data,
       });
     })
     .catch(error => {
       dispatch({
-        type: SAVE_BILLING_DETAILS_FAILURE,
+        type: ActionTypes.SAVE_BILLING_DETAILS_FAILURE,
         error,
       });
     });
@@ -83,7 +58,7 @@ export const getBillingEstimate = ({
   billingFrequency,
 } = {}) => dispatch => {
   dispatch({
-    type: REQUEST_GET_BILLING_ESTIMATE,
+    type: ActionTypes.REQUEST_GET_BILLING_ESTIMATE,
   });
 
   return OrganizationApi.getBillingEstimate({
@@ -92,13 +67,13 @@ export const getBillingEstimate = ({
   })
     .then(data => {
       dispatch({
-        type: GET_BILLING_ESTIMATE_SUCCESS,
+        type: ActionTypes.GET_BILLING_ESTIMATE_SUCCESS,
         payload: data,
       });
     })
     .catch(error => {
       dispatch({
-        type: GET_BILLING_ESTIMATE_FAILURE,
+        type: ActionTypes.GET_BILLING_ESTIMATE_FAILURE,
         error,
       });
     });
@@ -107,19 +82,19 @@ export const getBillingEstimate = ({
 // eslint-disable-next-line unicorn/consistent-function-scoping
 export const getBillingDetails = () => dispatch => {
   dispatch({
-    type: REQUEST_GET_BILLING_DETAILS,
+    type: ActionTypes.REQUEST_GET_BILLING_DETAILS,
   });
 
   return OrganizationApi.getBillingDetails()
     .then(data => {
       dispatch({
-        type: GET_BILLING_DETAILS_SUCCESS,
+        type: ActionTypes.GET_BILLING_DETAILS_SUCCESS,
         payload: data,
       });
     })
     .catch(error => {
       dispatch({
-        type: GET_BILLING_DETAILS_FAILURE,
+        type: ActionTypes.GET_BILLING_DETAILS_FAILURE,
         error,
       });
     });
@@ -127,19 +102,19 @@ export const getBillingDetails = () => dispatch => {
 
 export const getInvoiceDetails = ({ organizationIdentifier }) => dispatch => {
   dispatch({
-    type: REQUEST_GET_INVOICE_DETAILS,
+    type: ActionTypes.REQUEST_GET_INVOICE_DETAILS,
   });
 
   OrganizationApi.getInvoiceDetails({ organizationIdentifier })
     .then(data => {
       dispatch({
-        type: GET_INVOICE_DETAILS_SUCCESS,
+        type: ActionTypes.GET_INVOICE_DETAILS_SUCCESS,
         payload: data,
       });
     })
     .catch(error => {
       dispatch({
-        type: GET_INVOICE_DETAILS_FAILURE,
+        type: ActionTypes.GET_INVOICE_DETAILS_FAILURE,
         error,
       });
     });
@@ -147,25 +122,25 @@ export const getInvoiceDetails = ({ organizationIdentifier }) => dispatch => {
 
 export const setPaymentNewPlan = ({ newPlan }) => dispatch => {
   dispatch({
-    type: SET_NEW_PAYMENT_PLAN,
+    type: ActionTypes.SET_NEW_PAYMENT_PLAN,
     payload: newPlan,
   });
 };
 
-export const updateOrganizationName = ({
+export const updateOrganization = ({
   organizationName,
   organizationInitials,
   organizationProfileColor,
   organizationIdentifier,
 }) => dispatch =>
-  OrganizationApi.updateOrganizationName({
+  OrganizationApi.updateOrganization({
     organizationName,
     organizationInitials,
     organizationProfileColor,
     organizationIdentifier,
   }).then(() => {
     dispatch({
-      type: UPDATE_ORGANIZATION,
+      type: ActionTypes.UPDATE_ORGANIZATION,
       payload: {
         organizationName,
       },
@@ -174,14 +149,14 @@ export const updateOrganizationName = ({
 
 export const selectUsersForPlan = ({ users }) => dispatch =>
   dispatch({
-    type: SELECT_USERS_FOR_PLAN,
+    type: ActionTypes.SELECT_USERS_FOR_PLAN,
     payload: users,
   });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
 export const checkBAASignedStatus = organizationIdentifier => dispatch => {
   dispatch({
-    type: REQUEST_GET_ORGANIZATION,
+    type: ActionTypes.REQUEST_GET_ORGANIZATION,
   });
 
   return handleOrganizationResponse({
@@ -205,14 +180,14 @@ export const getConfigurationForReferral = ({ referralCode }) => dispatch => {
   return OrganizationApi.getConfigurationForReferral(referralCode)
     .then(data => {
       dispatch({
-        type: GET_REFERRAL_CONFIG_SUCCESS,
+        type: ActionTypes.GET_REFERRAL_CONFIG_SUCCESS,
         payload: data,
       });
       return data;
     })
     .catch(error => {
       dispatch({
-        type: GET_REFERRAL_CONFIG_FAILURE,
+        type: ActionTypes.GET_REFERRAL_CONFIG_FAILURE,
         error,
       });
       throw error;
@@ -221,27 +196,39 @@ export const getConfigurationForReferral = ({ referralCode }) => dispatch => {
 
 export function setOrganizationStatuses(statuses) {
   return {
-    type: SET_ORGANIZATION_STATUSES,
+    type: ActionTypes.SET_ORGANIZATION_STATUSES,
     statuses,
   };
 }
 
 export function setFetchingOrganizationStatuses() {
   return {
-    type: SET_FETCHING_ORGANIZATION_STATUSES,
+    type: ActionTypes.SET_FETCHING_ORGANIZATION_STATUSES,
   };
 }
 
 export function setOrganizationStatusesError() {
   return {
-    type: SET_ORGANIZATION_STATUSES_ERROR,
+    type: ActionTypes.SET_ORGANIZATION_STATUSES_ERROR,
   };
 }
 
 export function updateOrganizationStatus(identifier, dataToUpdate) {
   return {
-    type: UPDATE_ORGANIZATION_STATUS,
+    type: ActionTypes.UPDATE_ORGANIZATION_STATUS,
     identifier,
     dataToUpdate,
+  };
+}
+
+export function getOrganizationUsers() {
+  return { type: ActionTypes.GET_ORGANIZATION_USERS };
+}
+
+export function changeUserOrganizationRole(userIdentifier, role) {
+  return {
+    type: ActionTypes.CHANGE_USER_ORGANIZATION_ROLE,
+    userIdentifier,
+    role,
   };
 }

@@ -4,9 +4,9 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
 import {
-  cancelInviteToOrganization,
   resendInviteToOrganization,
-} from 'actions/people-actions';
+  cancelInviteToOrganization,
+} from 'api/organization-api';
 import {
   InvitationItem,
   InvitationItemLabel,
@@ -112,15 +112,13 @@ const InvitationPopover = ({
   const dispatch = useDispatch();
 
   const resendInvite = useCallback(
-    ({ userIdentifier: memberUserIdentifier }) =>
-      resendInviteToOrganization(memberUserIdentifier)(dispatch),
-    [dispatch],
+    ({ userIdentifier: id }) => resendInviteToOrganization(id),
+    [],
   );
 
   const cancelInvite = useCallback(
-    ({ userIdentifier: memberUserIdentifier }) =>
-      cancelInviteToOrganization(memberUserIdentifier)(dispatch),
-    [dispatch],
+    ({ userIdentifier: id }) => cancelInviteToOrganization(id),
+    [],
   );
 
   return (

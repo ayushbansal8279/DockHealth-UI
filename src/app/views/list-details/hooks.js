@@ -41,7 +41,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
-import * as userApi from 'api/user-api';
+import * as UserApi from 'api/user-api';
 
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 
@@ -169,7 +169,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     }
 
     const refreshAccessTokenTimeoutId = setTimeout(() => {
-      userApi.refreshAccessToken(user.username);
+      UserApi.refreshAccessToken(user.username);
       refreshAccessToken(user);
     }, systemTimeout);
 
@@ -213,6 +213,9 @@ const initializeListDetailsViewHooks = (match, history) => {
       const { taskListIdentifier } = params;
 
       const modalProps = {
+        title: 'Delete group',
+        description:
+          'Are you sure you want to delete this group? If you delete this group and there are tasks within the group, the tasks will not be deleted',
         confirm: () => {
           modalActions.closeModal();
           listDetailsSagaActions.deleteTasksGroup({
@@ -221,7 +224,7 @@ const initializeListDetailsViewHooks = (match, history) => {
           });
         },
       };
-      modalActions.openModal('DeleteGroup', modalProps);
+      modalActions.openModal('DeleteConfirmation', modalProps);
     },
     [listDetailsSagaActions, match, modalActions],
   );
@@ -439,7 +442,7 @@ const initializeListDetailsViewHooks = (match, history) => {
       if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
         modalActions.openModal('MultiMentionAssignTour', {
           onClose: () => {
-            userApi.updateUserDashboardPrefs({
+            UserApi.updateUserDashboardPrefs({
               appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
             });
           },
@@ -454,7 +457,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     setViewHeader(params.taskListIdentifier, [
       ...taskLists,
       ...pendingTaskLists,
-      ...archivedTaskLists,
     ]);
 
     refreshAccessToken(currentUser);
@@ -480,7 +482,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       setViewHeader(match.params.taskListIdentifier, [
         ...taskLists,
         ...pendingTaskLists,
-        ...archivedTaskLists,
       ]);
     }
 
