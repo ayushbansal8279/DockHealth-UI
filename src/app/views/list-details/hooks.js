@@ -457,7 +457,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     setViewHeader(params.taskListIdentifier, [
       ...taskLists,
       ...pendingTaskLists,
-      ...archivedTaskLists,
     ]);
 
     refreshAccessToken(currentUser);
@@ -483,7 +482,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       setViewHeader(match.params.taskListIdentifier, [
         ...taskLists,
         ...pendingTaskLists,
-        ...archivedTaskLists,
       ]);
     }
 
