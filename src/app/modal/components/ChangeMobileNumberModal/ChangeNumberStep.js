@@ -9,7 +9,7 @@ import Button from 'components/common/Button/Button';
 import { StyledForm, HelperText, GridMaxHeight } from './styled';
 import { REQUIRED_MESSAGE } from './helpers';
 
-const PHONE_MASK = /^\+\d{1,2}? \(?(\d{3})\)?[ -]?(\d{3})[ -]?(\d{3,4})$|^$/;
+const PHONE_MASK = /^\d{10,15}$/;
 const MASK_MESSAGE =
   'Phone number has incorrect format. (NNN) NNN-NNNN or NNN-NNN-NNN is required.';
 
@@ -38,11 +38,11 @@ const onSubmit = ({
   UserApi.updatePhoneNumber(
     userProfile.email,
     userProfile.accountPhoneNumber,
-    phoneNumber.replace(/[\s()-]/g, ''),
+    `+${phoneNumber.replace(/[\s()-]/g, '')}`,
   )
     .then(() => {
       goToNextStep();
-      setNewPhoneNumber(phoneNumber);
+      setNewPhoneNumber(`+${phoneNumber}`);
     })
     .catch(() => {
       setError(
