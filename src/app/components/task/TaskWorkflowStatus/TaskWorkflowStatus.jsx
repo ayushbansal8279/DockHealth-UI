@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -57,7 +58,7 @@ const TaskWorkflowStatus = ({
     <StatusListWrapper>
       {!isEditing ? (
         <>
-          <StatusList elementsInColumn={7}>
+          <StatusList elementsInColumn={statuses?.length > 13 ? 10 : 7}>
             {!isFetching ? (
               <>
                 <WorkflowStatusItemButton
