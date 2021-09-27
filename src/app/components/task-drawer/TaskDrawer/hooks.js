@@ -146,12 +146,12 @@ const initializeTaskDrawerHooks = ({
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
 
   const [selectedParentTask, setSelectedParentTask] = useState(null);
-  const [detailsAutosaveTimeout, setDetailsAutosaveTimeout] = useState(null);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const [isDetailsFocused, setIsDetailsFocused] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
+  const detailsAutosaveTimeout = useRef(null);
   const descriptionReference = useRef(null);
   const detailsReference = useRef(null);
   const previousTaskIdentifierValue = useRef();
@@ -577,8 +577,9 @@ const initializeTaskDrawerHooks = ({
   const onBlurDetailsEditor = useCallback(() => {
     setIsDetailsFocused(false);
     handleTaskDetailsUpdate();
-    if (detailsAutosaveTimeout) clearTimeout(detailsAutosaveTimeout);
-    setDetailsAutosaveTimeout(null);
+    if (detailsAutosaveTimeout.current)
+      clearTimeout(detailsAutosaveTimeout.current);
+    detailsAutosaveTimeout.current = null;
   }, [detailsAutosaveTimeout, handleTaskDetailsUpdate]);
 
   const onChangeMentionsEditor = useCallback(
@@ -597,12 +598,11 @@ const initializeTaskDrawerHooks = ({
   const onChangeDetailsEditor = useCallback(
     state => {
       setDetailsState(state);
-      if (detailsAutosaveTimeout) clearTimeout(detailsAutosaveTimeout);
-      setDetailsAutosaveTimeout(
-        setTimeout(() => {
-          handleTaskDetailsUpdate();
-        }, 10 * 1000), // ten seconds of inactivity
-      );
+      if (detailsAutosaveTimeout.current)
+        clearTimeout(detailsAutosaveTimeout.current);
+      detailsAutosaveTimeout.current = setTimeout(() => {
+        handleTaskDetailsUpdate();
+      }, 10 * 1000); // ten seconds of inactivity
     },
     [detailsAutosaveTimeout, handleTaskDetailsUpdate, setDetailsState],
   );
