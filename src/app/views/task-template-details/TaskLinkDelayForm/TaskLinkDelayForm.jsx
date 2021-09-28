@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
-import { updateTasksLink } from 'actions/task-actions';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import SecondaryNumberInput from 'components/common/NumberInput/SecondaryNumberInput';
@@ -11,14 +9,13 @@ import { DELAY_PERIOD_UNIT_OPTIONS, DelayPeriodUnit } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
 const TaskLinkDelayForm = props => {
-  const { link, onClose } = props;
-  const dispatch = useDispatch();
+  const { link, onSubmit, onClose } = props;
   const formMethods = useForm({
     mode: 'onSubmit',
     defaultValues: {
-      delayPeriod: link.delayPeriod || 3,
-      delayPeriodUnit: link.delayPeriodUnit || DelayPeriodUnit.DAY,
-      delayIsBusinessDays: link.delayIsBusinessDays || false,
+      delayPeriod: link?.delayPeriod || 3,
+      delayPeriodUnit: link?.delayPeriodUnit || DelayPeriodUnit.DAY,
+      delayIsBusinessDays: link?.delayIsBusinessDays || false,
     },
   });
   const { watch, setValue, register, unregister, handleSubmit } = formMethods;
@@ -38,17 +35,6 @@ const TaskLinkDelayForm = props => {
 
   const delayPeriodValue = watch('delayPeriod');
   const delayIsBusinessDaysValue = watch('delayIsBusinessDays');
-
-  const onSubmit = delayPeriodData => {
-    dispatch(
-      updateTasksLink({
-        ...link,
-        isDependent: true,
-        ...delayPeriodData,
-      }),
-    );
-    onClose();
-  };
 
   return (
     <FormContext {...formMethods}>
