@@ -10,8 +10,8 @@ export const fetchTasklistForUser = () => ({
 
 function* doFetchTasklistForUser() {
   try {
-    const tasklist = yield call(getTaskListForUser);
-    yield put({ type: GET_TASKLIST_SUCCESS, tasklist });
+    const taskLists = yield call(getTaskListForUser);
+    yield put({ type: GET_TASKLIST_SUCCESS, taskLists });
   } catch (error) {
     console.error('error', error);
   }
