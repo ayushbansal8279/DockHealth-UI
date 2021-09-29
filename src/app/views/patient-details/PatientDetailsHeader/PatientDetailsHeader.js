@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Chip, Grid } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -17,7 +17,6 @@ import {
 } from 'selectors/patient-details-selectors';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
-import PatientLabels from '../PatientLabels/PatientLabels';
 import {
   PatientDetailsContainer,
   PatientName,
@@ -82,7 +81,17 @@ const PatientDetailsHeader = () => {
                 </ButtonContainer>
                 <Box mx={1} />
                 <Box flex="500px 0 0">
-                  <PatientLabels />
+                  {patient?.patientLabels?.map(
+                    ({ labelIdentifier, labelName }) => (
+                      <Box
+                        key={labelIdentifier}
+                        display="inline-block"
+                        py="1px"
+                      >
+                        <Chip label={labelName} />
+                      </Box>
+                    ),
+                  )}
                 </Box>
               </Grid>
             </Box>

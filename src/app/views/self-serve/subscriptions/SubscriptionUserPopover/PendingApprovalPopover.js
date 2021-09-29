@@ -7,8 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { changeUserRoleForOrg } from 'actions/people-actions';
-import { approvePendingUser, denyPendingUser } from 'api/people-api';
+import { changeUserOrganizationRole } from 'actions/organization-actions';
+import { approvePendingUser, denyPendingUser } from 'api/organization-api';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {
   PendingApprovalContainer,
@@ -127,8 +127,8 @@ const PendingApprovalSelectionPopover = props => {
   const dispatch = useDispatch();
 
   const changeUserRole = useCallback(
-    ({ userIdentifier: markedUserIdentifier, role: userRole }) =>
-      changeUserRoleForOrg(markedUserIdentifier, userRole)(dispatch),
+    ({ userIdentifier: id, role }) =>
+      dispatch(changeUserOrganizationRole(id, role)),
     [dispatch],
   );
 

@@ -18,7 +18,6 @@ const initialState = {
   currentTaskHistory: null,
   selectedTask: null,
   selectedTaskId: null,
-  addingNewSubtask: false,
   addingNewSubtaskParentId: null,
   subtaskShape: {},
   addingNewTask: false,
@@ -79,14 +78,9 @@ const TaskReducer = (state = initialState, action) => {
       return requestHistoryError(state, action);
 
     case CHANGE_ADDING_NEW_SUBTASK: {
-      const {
-        addingNewSubtask,
-        addingNewSubtaskParentId,
-        subtaskShape,
-      } = action;
+      const { addingNewSubtaskParentId, subtaskShape } = action;
       return {
         ...state,
-        addingNewSubtask,
         addingNewSubtaskParentId,
         subtaskShape,
       };

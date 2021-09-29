@@ -2,7 +2,7 @@
 import * as TaskListApi from 'api/task-list-api';
 import { pipe, sortBy, prop, uniqBy, innerJoin } from 'ramda';
 
-const convert = pipe(sortBy(prop('userName')), uniqBy(prop('userIdentifier')));
+const convert = pipe(sortBy(prop('userName')), uniqBy(prop('identifier')));
 
 export async function collectJoinedListMembers(taskListIdentifiers) {
   let listMemembers = [];
@@ -18,7 +18,7 @@ export async function collectJoinedListMembers(taskListIdentifiers) {
     } else {
       listMemembers = innerJoin(
         (existingRecord, newRecord) =>
-          existingRecord.userIdentifier === newRecord.userIdentifier,
+          existingRecord.identifier === newRecord.identifier,
         listMemembers,
         responseMembers,
       );

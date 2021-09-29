@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
@@ -25,6 +25,7 @@ const DueDatePicker = ({
   recurring,
   disableRecurring,
   onCloseClick,
+  disableClearDate,
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
 
@@ -107,7 +108,17 @@ const DueDatePicker = ({
                   Repeat
                 </PlusButton>
               </SectionWrapper>
-              <PopoverBottomBar>
+              <PopoverBottomBar align="spread">
+                {!disableClearDate && (
+                  <PopoverBottomBar.Button
+                    type="button"
+                    onClick={() => {
+                      onDateChange(null);
+                    }}
+                  >
+                    Clear Date
+                  </PopoverBottomBar.Button>
+                )}
                 <PopoverBottomBar.Button type="button" onClick={onCloseClick}>
                   Close
                 </PopoverBottomBar.Button>

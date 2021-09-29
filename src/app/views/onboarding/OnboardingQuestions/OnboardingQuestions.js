@@ -42,7 +42,7 @@ const OnboardingQuestions = () => {
           step={step}
         />
       )}
-      {orgUserRole === 'GUEST' && (
+      {(orgUserRole === 'GUEST' || !orgUserRole) && (
         <OnboardingQuestionsGuest
           organizationName={organizationName}
           clickNextStep={clickNextStep}

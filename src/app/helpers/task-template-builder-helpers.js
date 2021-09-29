@@ -60,6 +60,32 @@ export function createTaskNode(currentTemporaryElements, elementPosition) {
   };
 }
 
+export function createTemporaryOptionsForDecisionTask(
+  currentTemporaryElements,
+  decisionTaskId,
+  decisionTaskPosition,
+) {
+  const firstTemporaryStandardTask = createTaskNode(currentTemporaryElements, {
+    x: decisionTaskPosition.x - 200,
+    y: decisionTaskPosition.y + 300,
+  });
+
+  const secondTemporaryStandardTask = createTaskNode(
+    [firstTemporaryStandardTask, ...(currentTemporaryElements || [])],
+    {
+      x: decisionTaskPosition.x + 200,
+      y: decisionTaskPosition.y + 300,
+    },
+  );
+
+  return [
+    firstTemporaryStandardTask,
+    secondTemporaryStandardTask,
+    createLinkElement(decisionTaskId, firstTemporaryStandardTask.id),
+    createLinkElement(decisionTaskId, secondTemporaryStandardTask.id),
+  ];
+}
+
 export function createDecisionTaskNodes(
   currentTemporaryElements,
   elementPosition,
@@ -76,25 +102,13 @@ export function createDecisionTaskNodes(
     position: elementPosition,
   };
 
-  const firstTemporaryStandardTask = createTaskNode(currentTemporaryElements, {
-    x: elementPosition.x - 200,
-    y: elementPosition.y + 300,
-  });
-
-  const secondTemporaryStandardTask = createTaskNode(
-    [firstTemporaryStandardTask, ...(currentTemporaryElements || [])],
-    {
-      x: elementPosition.x + 200,
-      y: elementPosition.y + 300,
-    },
-  );
-
   return [
     temporaryDecisionTask,
-    firstTemporaryStandardTask,
-    secondTemporaryStandardTask,
-    createLinkElement(temporaryDecisionTask.id, firstTemporaryStandardTask.id),
-    createLinkElement(temporaryDecisionTask.id, secondTemporaryStandardTask.id),
+    ...createTemporaryOptionsForDecisionTask(
+      currentTemporaryElements,
+      temporaryDecisionTask.id,
+      temporaryDecisionTask.position,
+    ),
   ];
 }
 

@@ -30,12 +30,7 @@ export const isTaskSelectedSelector = (
 
 export const addingNewSubtaskSelector = createSelector(
   taskDrawerSelector,
-  ({ addingNewSubtask }) => addingNewSubtask,
-);
-
-export const subtaskShapeSelector = createSelector(
-  taskDrawerSelector,
-  ({ subtaskShape }) => subtaskShape,
+  ({ addingNewSubtaskParentId }) => !!addingNewSubtaskParentId,
 );
 
 export const addingNewSubtaskParentIdSelector = createSelector(

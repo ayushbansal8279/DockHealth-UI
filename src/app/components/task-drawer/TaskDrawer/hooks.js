@@ -144,7 +144,6 @@ const initializeTaskDrawerHooks = ({
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const selectedTask = useSelector(selectedTaskSelector);
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
-  // console.log(taskDrawerOpen, selectedTask);
 
   const [selectedParentTask, setSelectedParentTask] = useState(null);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
@@ -152,6 +151,7 @@ const initializeTaskDrawerHooks = ({
   const [isDetailsFocused, setIsDetailsFocused] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
+  const detailsAutosaveTimeout = useRef(null);
   const descriptionReference = useRef(null);
   const detailsReference = useRef(null);
   const previousTaskIdentifierValue = useRef();
@@ -469,10 +469,16 @@ const initializeTaskDrawerHooks = ({
       true,
     ).tokenizedText;
 
-    if (
-      updatedTaskDetails === '' ||
-      selectedTask.tokenizedDetails === updatedTaskDetails
-    ) {
+    if (updatedTaskDetails === '') {
+      if (
+        !selectedTask.tokenizedDetails ||
+        selectedTask.tokenizedDetails === updatedTaskDetails
+      ) {
+        return;
+      }
+      selectedTask.detailsCleared = true;
+    }
+    if (selectedTask.tokenizedDetails === updatedTaskDetails) {
       return;
     }
 
@@ -571,7 +577,10 @@ const initializeTaskDrawerHooks = ({
   const onBlurDetailsEditor = useCallback(() => {
     setIsDetailsFocused(false);
     handleTaskDetailsUpdate();
-  }, [handleTaskDetailsUpdate]);
+    if (detailsAutosaveTimeout.current)
+      clearTimeout(detailsAutosaveTimeout.current);
+    detailsAutosaveTimeout.current = null;
+  }, [detailsAutosaveTimeout, handleTaskDetailsUpdate]);
 
   const onChangeMentionsEditor = useCallback(
     state => {
@@ -589,8 +598,13 @@ const initializeTaskDrawerHooks = ({
   const onChangeDetailsEditor = useCallback(
     state => {
       setDetailsState(state);
+      if (detailsAutosaveTimeout.current)
+        clearTimeout(detailsAutosaveTimeout.current);
+      detailsAutosaveTimeout.current = setTimeout(() => {
+        handleTaskDetailsUpdate();
+      }, 10 * 1000); // ten seconds of inactivity
     },
-    [setDetailsState],
+    [detailsAutosaveTimeout, handleTaskDetailsUpdate, setDetailsState],
   );
 
   return {

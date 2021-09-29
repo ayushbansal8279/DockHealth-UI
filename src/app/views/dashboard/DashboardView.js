@@ -18,7 +18,7 @@ import { openModal as openModalAction } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
-import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
+// import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
 import {
   DashboardViewWrapper,
   DashboardContentWrapper,
@@ -184,10 +184,10 @@ const DashboardView = ({
             ) : (
               <DashboardListWrapper fullWidth={createListViewVisible}>
                 <DashboardHeaderContainer>
-                  <DashboardStatistics
+                  {/* <DashboardStatistics
                     dashboardTab={dashboardTab}
                     customerTypeLabel={customerTypeLabel}
-                  />
+                  /> */}
                 </DashboardHeaderContainer>
                 <DashboardList
                   currentUser={currentUser}

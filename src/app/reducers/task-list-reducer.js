@@ -6,6 +6,8 @@ import {
   ADD_TASKLIST_SUCCESS,
   CHANGEUSERROLE_TASKLIST_SUCCESS,
   DELETE_TASKLIST_SUCCESS,
+  ARCHIVE_TASKLIST_SUCCESS,
+  UNARCHIVE_TASKLIST_SUCCESS,
   GET_ACTIVITYFEED_BY_ALLUSERLIST_SUCCESS,
   GET_AUDITS_BY_ALLUSERLIST_SUCCESS,
   GET_AUDITS_BY_TASKLIST_SUCCESS,
@@ -28,10 +30,12 @@ import {
   UPDATE_TASKLIST_SUCCESS,
   CANCEL_TASKLIST_INVITE_SUCCESS,
   GET_PENDING_TASKLIST_SUCCESS,
+  GET_ARCHIVED_TASKLIST_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
   taskLists: [],
+  archivedTaskLists: [],
   pendingTaskLists: [],
   tasklistmembers: [],
   allTaskListMembers: [],
@@ -242,6 +246,36 @@ const TaskListReducer = (state = initialState, action) => {
         ),
       };
 
+    case ARCHIVE_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        archivedTaskLists: [
+          ...state.archivedTaskLists,
+          state.taskLists.find(
+            taskList =>
+              taskList.taskListIdentifier === action.taskListIdentifier,
+          ),
+        ],
+        taskLists: state.taskLists.filter(
+          taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
+        ),
+      };
+
+    case UNARCHIVE_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        taskLists: [
+          ...state.taskLists,
+          state.archivedTaskLists.find(
+            taskList =>
+              taskList.taskListIdentifier === action.taskListIdentifier,
+          ),
+        ],
+        archivedTaskLists: state.archivedTaskLists.filter(
+          taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
+        ),
+      };
+
     case SET_AS_CURRENT_LIST:
       return {
         ...state,
@@ -308,6 +342,12 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         pendingTaskLists: action.taskLists,
+      };
+
+    case GET_ARCHIVED_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        archivedTaskLists: action.taskLists,
       };
 
     default:

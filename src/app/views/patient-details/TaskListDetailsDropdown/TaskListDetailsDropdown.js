@@ -12,25 +12,15 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
-import {
-  addingNewSubtaskSelector,
-  subtaskShapeSelector,
-  addingNewSubtaskParentIdSelector,
-} from 'selectors/task-drawer-selectors';
-import {
-  onSlimViewChanged,
-  // onTaskGroupCollapsed,
-  // onTaskGroupExpanded,
-} from 'helpers/ga-event-helper';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import { onSlimViewChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import {
-  // Arrow,
   ListDetailsContainer,
   ListDetailsHeader,
-  // ListNameSection,
   ListNameContainer,
   ListDescription,
 } from 'components/tasklist/DropdownListSection/styled';
@@ -59,24 +49,17 @@ const TaskListDetailsDropdown = ({
   applyTemplate,
 }) => {
   const sessionStorageKey = `${list.taskListIdentifier}-patient`;
-  // const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState(
-  //   sessionStorageKey,
-  // );
   const { viewType, isOpen, setViewType } = listSectionSavedState(
     sessionStorageKey,
   );
   const quickAddTaskInputReference = useRef(null);
   const dispatch = useDispatch();
-  const addingNewSubtask = useSelector(addingNewSubtaskSelector);
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const subtaskShape = useSelector(subtaskShapeSelector);
   const isFullView = viewType === ViewType.FULL_VIEW;
 
-  const { taskListIdentifier, listUsers } = list;
-
-  const listMembers = listUsers;
+  const { taskListIdentifier, listUsers } = list || {};
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -125,25 +108,11 @@ const TaskListDetailsDropdown = ({
     <ListDetailsContainer>
       <ListDetailsHeader>
         <ListNameContainer>
-          {/* <Arrow
-            alt="arrow"
-            isOpen={isOpen}
-            onClick={() => {
-              if (isOpen) {
-                onTaskGroupCollapsed();
-              } else {
-                onTaskGroupExpanded();
-              }
-              switchOpen(!isOpen);
-            }}
-            src={ArrowIcon}
-          />
-          <ListNameSection>{listName}</ListNameSection> */}
           <ListDescription>{list?.listDescription}</ListDescription>
         </ListNameContainer>
-        {listMembers?.length > 0 && (
+        {listUsers?.length > 0 && (
           <TaskListMembers
-            members={listMembers}
+            members={listUsers}
             list={list}
             refreshMembers={refreshView}
           />
@@ -203,9 +172,7 @@ const TaskListDetailsDropdown = ({
                 dragAndDropDisabled
                 selectedTask={selectedTask}
                 patientVisible={false}
-                addingNewSubtask={addingNewSubtask}
-                addingNewSubtaskParentId={addingNewSubtaskParentId}
-                subtaskShape={subtaskShape}
+                addingNewSubtask={addingNewSubtaskParentId === task.identifier}
                 hideSubtasks={hideSubtasks}
                 multipleAssigneesContext={groupHasMultipleAssignees}
                 taskItemConfig={taskItemConfig}

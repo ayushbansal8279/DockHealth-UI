@@ -24,8 +24,10 @@ export const StatusListWrapper = styled.div`
 export const StatusList = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(7, 32px);
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: ${({ elementsInColumn }) =>
+    `repeat(${elementsInColumn}, 32px)`};
+  grid-template-columns: ${({ elementsInColumn }) =>
+    `repeat(${elementsInColumn > 7 ? 3 : 2}, 1fr)`};
   min-width: 280px;
   width: 100%;
   max-height: ${({ elementsInColumn }) => elementsInColumn * 32}px;
@@ -73,9 +75,4 @@ export const ColorButton = styled.button`
     border: 1px solid ${palette.white};
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   `}
-`;
-
-export const SortableItemWrapper = styled.div`
-  width: 100%;
-  overflow: hidden;
 `;

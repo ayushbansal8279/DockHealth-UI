@@ -1,11 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback } from 'react';
-import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
-import MemberGroup from 'components/members/MemberGroup/MemberGroup';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { updateTemplate } from 'actions/task-template-actions';
+import {
+  getTemplateTasks,
+  updateTaskTemplateSuccess,
+} from 'actions/task-template-actions';
 
 import {
   StandardTaskItemCell,
@@ -23,7 +27,7 @@ const TaskItemPermissions = ({ template }) => {
         list: { taskTemplateIdentifier, members, template },
         onMembersRefresh: refreshedMembers => {
           dispatch(
-            updateTemplate(taskTemplateIdentifier, {
+            updateTaskTemplateSuccess(taskTemplateIdentifier, {
               members: refreshedMembers,
             }),
           );

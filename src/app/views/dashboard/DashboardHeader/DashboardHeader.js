@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import AppLogo from 'img/logo/dock-logo';
 
@@ -16,11 +16,11 @@ const DashboardHeader = ({ currentUser }) => (
   <>
     <Grid container direction="row" justify="space-between" alignItems="center">
       <Grid container item sm={6} md={8} lg={9}>
-        <Member
-          member={currentUser}
-          showTooltip={false}
+        <UserAvatar
+          user={currentUser}
           showOnlineIndicator={false}
           size={60}
+          hideTooltip
         />
         <Spacing horizontal={4} />
         <HeaderTextContainer>

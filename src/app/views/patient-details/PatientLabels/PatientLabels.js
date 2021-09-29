@@ -6,7 +6,8 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import useBoolean from 'hooks/useBoolean';
+import { Chip } from '@material-ui/core';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
@@ -22,10 +23,10 @@ import {
   OptionButton,
   OptionButtonsInput,
   NoOptionTextLabel,
-  LabelChip,
   NoOptionContainer,
   ReadOnlyLabelsContainer,
   ReadOnlyLabelContainer,
+  useAutocompleteStyles,
 } from './styled';
 
 const renderOption = ({
@@ -109,6 +110,8 @@ const PatientLabels = () => {
 
   const selectedLabels = useMemo(() => patient?.patientLabels || [], [patient]);
 
+  const classes = useAutocompleteStyles();
+
   useEffect(() => {
     if (currentEditableOption) {
       optionReferences?.current[currentEditableOption]?.focus();
@@ -145,7 +148,7 @@ const PatientLabels = () => {
   const renderTagsCallback = useCallback(
     () =>
       selectedLabels.map(option => (
-        <LabelChip
+        <Chip
           key={option.labelIdentifier}
           onDelete={() => removeLabelFromPatient(option)}
           label={option.labelName}
@@ -191,6 +194,7 @@ const PatientLabels = () => {
       placeholder={
         labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
       }
+      classes={classes}
       value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
@@ -231,7 +235,7 @@ const PatientLabels = () => {
     <ReadOnlyLabelsContainer>
       {selectedLabels.map(label => (
         <ReadOnlyLabelContainer key={label.labelIdentifier}>
-          <LabelChip
+          <Chip
             key={label.labelIdentifier}
             clickable
             label={label.labelName}
@@ -241,7 +245,7 @@ const PatientLabels = () => {
       ))}
       <ReadOnlyLabelContainer>
         <Tooltip title="Add a label" placement="bottom">
-          <LabelChip
+          <Chip
             key="add"
             clickable
             textcolor={palette.orange}

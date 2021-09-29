@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
-import InviteMemberToListForm from 'components/members/InviteMemberToListForm/InviteMemberToListForm';
+import InviteUserOrGroupToListForm from 'components/user/InviteMemberToListForm/InviteUserOrGroupToListForm';
 import { InviteToListModalWrapper, Header, Title, Description } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 
@@ -25,7 +25,7 @@ const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
             clients who are part of this list.
           </Description>
         </Header>
-        <InviteMemberToListForm
+        <InviteUserOrGroupToListForm
           list={list}
           onMembersRefresh={onMembersRefresh}
         />

@@ -3,17 +3,17 @@ import styled from '@react-pdf/styled-components';
 import { memoizeWith, isEmpty, head } from 'ramda';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { getUserAvatarBuffer } from 'api/people-api';
+import { getUserAvatarBuffer } from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import PdfTask from './PdfTask';
-import { AvatarImage, AvatarInitials } from './PdfTask.Styled';
+import { AvatarImage, AvatarInitials, PdfTaskWrapper } from './PdfTask.Styled';
 
 const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),
   ({ userIdentifier, profileThumbnailPictureHash }) => {
     if (profileThumbnailPictureHash) {
-      return getUserAvatarBuffer({ userIdentifier });
+      return getUserAvatarBuffer(userIdentifier);
     }
 
     return Promise.resolve(null);
@@ -56,14 +56,16 @@ const renderTask = ({
   taskListMembersAvatars,
   columnsWidth,
 }) => ({ taskIdentifier, ...props }) => (
-  <PdfTask
-    key={taskIdentifier}
-    taskIdentifier={taskIdentifier}
-    taskListMembers={taskListMembers}
-    taskListMembersAvatars={taskListMembersAvatars}
-    columnsWidth={columnsWidth}
-    {...props}
-  />
+  <PdfTaskWrapper>
+    <PdfTask
+      key={taskIdentifier}
+      taskIdentifier={taskIdentifier}
+      taskListMembers={taskListMembers}
+      taskListMembersAvatars={taskListMembersAvatars}
+      columnsWidth={columnsWidth}
+      {...props}
+    />
+  </PdfTaskWrapper>
 );
 
 const getColumnWidths = (isPatientVisible, isListNameVisible) => {

@@ -6,7 +6,7 @@ import { filter, includes, isEmpty, reject } from 'ramda';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import Spacing from 'components/common/Spacing.tsx';
 import Search from 'components/task-view/Search/Search';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Button from 'components/common/Button/Button';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
@@ -149,7 +149,7 @@ const SubscriptionsViewMembersTable = ({
         renderCell: ({ row }) => {
           return (
             <>
-              <Member size={22} member={row} />
+              <UserAvatar size={22} user={row} />
               <Spacing horizontal={4} />
               <span className="member-cell">{row?.userName}</span>
             </>

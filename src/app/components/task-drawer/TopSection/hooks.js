@@ -2,7 +2,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const initializeTaskDrawerTopSectionHooks = ({
@@ -48,7 +48,7 @@ const initializeTaskDrawerTopSectionHooks = ({
 
   const openDeleteConfirmationModal = () => {
     dispatch(
-      openModal('DeleteTask', {
+      openModal('DeleteTaskConfirmation', {
         isSubtask: !!selectedTask.parentTaskIdentifier,
         confirm: () => deleteTask(),
       }),

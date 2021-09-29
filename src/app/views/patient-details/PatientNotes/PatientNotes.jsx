@@ -38,12 +38,15 @@ const PatientNotes = () => {
   const handleRemoveNote = useCallback(
     patientNoteIdentifier => {
       const modalProps = {
+        title: 'Delete note',
+        description:
+          'Are you sure you want to delete this note? This action cannot be undone.',
         confirm: () => {
           dispatch(removePatientNote(patientNoteIdentifier));
           dispatch(closeModal());
         },
       };
-      dispatch(openModal('DeleteNote', modalProps));
+      dispatch(openModal('DeleteConfirmation', modalProps));
     },
     [dispatch],
   );

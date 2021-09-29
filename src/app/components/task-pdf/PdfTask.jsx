@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
 import ClipIcon from 'img/clip.png';
 import Circle from 'img/pdf/pdf-circle.png';
@@ -5,11 +6,15 @@ import CircleCompleted from 'img/pdf/pdf-circle-completed.png';
 import PriorityIcon from 'img/pdf/priority-icon.png';
 import ProfileIcon from 'img/profile.png';
 import palette from 'styles/palette';
+import ArrowIcon from 'img/arrow.png';
+
 import getPdfTaskData from './PdfTask.Data';
 import {
   Avatar,
   AvatarContainer,
   CheckboxContainer,
+  ArrowContainer,
+  ArrowIconWrapper,
   EditedLabel,
   InitialSpacing,
   InlineContainer,
@@ -28,6 +33,7 @@ import {
   TaskSubLabel,
   SubtasksContainer,
   TaskInnerContainer,
+  TaskInBundleContainer,
   StatusColorContainer,
   DueDateContainer,
 } from './PdfTask.Styled';
@@ -50,12 +56,16 @@ const renderSubtask = ({
 const PdfTask = props => {
   const {
     subtasks,
-    description,
+    description: descriptionName,
     assignedTo,
     taskListMembers,
     taskListMembersAvatars,
     columnsWidth,
+    name,
+    tasks,
   } = props;
+
+  const description = descriptionName || name || '';
 
   const avatarContent = assignedTo?.userIdentifier ? (
     taskListMembersAvatars.get(assignedTo?.userIdentifier)
@@ -81,6 +91,8 @@ const PdfTask = props => {
     listName,
   } = getPdfTaskData(props);
 
+  const isWorkflowBundle = !!tasks;
+
   return (
     <>
       <TaskContainer wrap={false} isSubtask={isSubtask}>
@@ -92,7 +104,13 @@ const PdfTask = props => {
           )}
           <InitialSpacing />
           <InnerContainer>
-            <CheckboxContainer src={isComplete ? CircleCompleted : Circle} />
+            {isWorkflowBundle ? (
+              <ArrowContainer>
+                <ArrowIconWrapper src={ArrowIcon} />
+              </ArrowContainer>
+            ) : (
+              <CheckboxContainer src={isComplete ? CircleCompleted : Circle} />
+            )}
           </InnerContainer>
           <MainInnerContainer mainContainerWidth={mainContainerWidth}>
             <InlineContainer>
@@ -150,7 +168,7 @@ const PdfTask = props => {
           )}
         </TaskInnerContainer>
       </TaskContainer>
-      {subtasks?.length > 0 ? (
+      {subtasks?.length > 0 && (
         <SubtasksContainer>
           {subtasks.map(
             renderSubtask({
@@ -160,8 +178,17 @@ const PdfTask = props => {
             }),
           )}
         </SubtasksContainer>
-      ) : (
-        undefined
+      )}
+      {tasks?.length > 0 && (
+        <TaskInBundleContainer>
+          {tasks.map(
+            renderSubtask({
+              taskListMembers,
+              taskListMembersAvatars,
+              columnsWidth,
+            }),
+          )}
+        </TaskInBundleContainer>
       )}
     </>
   );

@@ -93,9 +93,7 @@ const PersonDetailsCompletedTasks = ({
                 {({
                   isCompletedGroup,
                   isFullView,
-                  addingNewSubtask,
                   addingNewSubtaskParentId,
-                  subtaskShape,
                   groupHasMultipleAssignees,
                   isListFlattened,
                   highlightedTasksParentIdentifier,
@@ -105,6 +103,7 @@ const PersonDetailsCompletedTasks = ({
                     {tasks.map(task =>
                       task?.itemType === TaskItemType.TASK ? (
                         <StandardTaskItem
+                          key={task.identifier}
                           isFullView={isFullView}
                           task={task}
                           isCompletedGroup={isCompletedGroup}
@@ -112,9 +111,9 @@ const PersonDetailsCompletedTasks = ({
                           onTaskUpdate={onTaskUpdate}
                           updateDueDate={updateDueDate}
                           selectedTask={selectedTask}
-                          addingNewSubtask={addingNewSubtask}
-                          addingNewSubtaskParentId={addingNewSubtaskParentId}
-                          subtaskShape={subtaskShape}
+                          addingNewSubtask={
+                            addingNewSubtaskParentId === task.identifier
+                          }
                           subtasksDisabled={isListFlattened}
                           areFiltersApplied={areFiltersApplied}
                           isSearchApplied={searchValue}

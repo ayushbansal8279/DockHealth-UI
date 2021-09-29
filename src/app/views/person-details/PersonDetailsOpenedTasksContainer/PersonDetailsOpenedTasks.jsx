@@ -96,9 +96,7 @@ const PersonDetailsOpenedTasks = ({
               {({
                 isCompletedGroup,
                 isFullView,
-                addingNewSubtask,
                 addingNewSubtaskParentId,
-                subtaskShape,
                 groupHasMultipleAssignees,
                 isListFlattened,
                 highlightedTasksParentIdentifier,
@@ -108,6 +106,7 @@ const PersonDetailsOpenedTasks = ({
                   {tasks.map(task =>
                     task?.itemType === TaskItemType.TASK ? (
                       <StandardTaskItem
+                        key={task.identifier}
                         isFullView={isFullView}
                         task={task}
                         taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
@@ -117,9 +116,9 @@ const PersonDetailsOpenedTasks = ({
                         updateDueDate={updateDueDate}
                         updateWorkflowStatus={updateWorkflowStatus}
                         selectedTask={selectedTask}
-                        addingNewSubtask={addingNewSubtask}
-                        addingNewSubtaskParentId={addingNewSubtaskParentId}
-                        subtaskShape={subtaskShape}
+                        addingNewSubtask={
+                          addingNewSubtaskParentId === task.identifier
+                        }
                         subtasksDisabled={isListFlattened}
                         areFiltersApplied={areFiltersApplied}
                         isSearchApplied={searchValue}

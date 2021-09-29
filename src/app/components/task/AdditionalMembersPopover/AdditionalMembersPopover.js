@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { func, arrayOf, string, objectOf, shape } from 'prop-types';
-import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
+import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing.tsx';
 import { Box, ClickAwayListener } from '@material-ui/core';
@@ -30,11 +30,11 @@ const AdditionalMembersPopover = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSelect = useCallback(
-    (isSelected, { userIdentifier }) => {
+    (isSelected, { identifier }) => {
       if (isSelected) {
         const filteredWithoutTheSelectedOne = selectedFilters?.[
           filterName
-        ]?.filter(userId => userId !== userIdentifier);
+        ]?.filter(userId => userId !== identifier);
         onSelectFilters({
           ...selectedFilters,
           [filterName]: [...filteredWithoutTheSelectedOne],
@@ -42,7 +42,7 @@ const AdditionalMembersPopover = ({
       } else {
         onSelectFilters({
           ...selectedFilters,
-          [filterName]: [...selectedFilters[filterName], userIdentifier],
+          [filterName]: [...selectedFilters[filterName], identifier],
         });
       }
     },
@@ -69,11 +69,11 @@ const AdditionalMembersPopover = ({
                   <ListContentSection>
                     {members?.map(member => {
                       const isSelected = selectedFilters?.assignedTo?.includes(
-                        member?.userIdentifier,
+                        member?.identifier,
                       );
                       return (
                         <MemberRow
-                          key={member?.userIdentifier}
+                          key={member?.identifier}
                           isSelected={isSelected}
                           onClick={() => toggleSelect(isSelected, member)}
                         >
@@ -82,11 +82,11 @@ const AdditionalMembersPopover = ({
                           <Spacing horizontal={3} />
                           <AvatarFilterMember
                             member={member}
-                            showTooltip={false}
+                            hideTooltip
                             isSelected={isSelected}
                           />
                           <Spacing horizontal={3} />
-                          <MemberName>{member?.userName}</MemberName>
+                          <MemberName>{member?.name}</MemberName>
                           <Spacing horizontal={3} />
                           <UserStatusLabel>
                             {member?.userStatusLabel}
@@ -108,7 +108,7 @@ const AdditionalMembersPopover = ({
 AdditionalMembersPopover.propTypes = {
   members: arrayOf(
     shape({
-      userIdentifier: string,
+      identifier: string,
       firstName: string,
       lastName: string,
       initials: string,

@@ -34,6 +34,7 @@ export const ReminderTypeSelectOption = styled.div`
 `;
 
 export const SelectArrowImg = styled.img`
+  height: 7px;
   cursor: pointer;
   pointer-events: none;
 `;

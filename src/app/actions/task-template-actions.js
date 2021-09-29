@@ -54,6 +54,17 @@ export function addTemplateFolder(template, parentIdentifier = null) {
   };
 }
 
+export function updateTaskTemplateSuccess(
+  taskTemplateIdentifier,
+  dataToUpdate,
+) {
+  return {
+    type: ActionTypes.UPDATE_TASK_TEMPLATE,
+    taskTemplateIdentifier,
+    dataToUpdate,
+  };
+}
+
 export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
   return {
     type: ActionTypesSaga.GO_TO_TASK_TEMPLATE_FOLDER,
@@ -178,6 +189,13 @@ export function addNewDecisionTaskElement(position) {
   return {
     type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,
     position,
+  };
+}
+
+export function addTemporaryElements(elements) {
+  return {
+    type: ActionTypes.ADD_TEMPORARY_ELEMENTS,
+    elements,
   };
 }
 

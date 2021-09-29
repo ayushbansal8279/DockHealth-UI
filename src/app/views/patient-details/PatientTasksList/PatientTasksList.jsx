@@ -3,15 +3,13 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  Tabs,
-  Tab,
   IconButton,
   Popper,
   ClickAwayListener,
   Paper,
   Box,
 } from '@material-ui/core';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import zIndex from 'styles/z-index';
 import { MoreVert } from '@material-ui/icons';
 import { useParams, useHistory } from 'react-router-dom';
@@ -38,6 +36,7 @@ import {
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
+import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -47,18 +46,24 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { trunc } from 'helpers/utility-functions';
 import { ListsTabsContainer, ListsToolbarContainer, MenuText } from './styled';
 import {
+  LIST_TYPE_OPTIONS,
+  ListViewType,
   checkIfSelectedListIsPresent,
   searchTaskInPatientLists,
 } from './helpers';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
+  [TaskItemColumn.LIST_NAME]: false,
+};
+
+const PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG = {
+  [TaskItemColumn.PATIENT]: false,
+  [TaskItemColumn.LIST_NAME]: true,
 };
 
 const PatientTasksListView = ({
@@ -82,8 +87,10 @@ const PatientTasksListView = ({
   );
   const {
     patientIdentifier,
-    taskListIdentifier: taskListIdentifierParameter,
+    taskListIdentifier: taskListIdentifierValue,
   } = useParams();
+  const taskListIdentifierParameter =
+    taskListIdentifierValue ?? ListViewType.ALL_TASKS;
   const history = useHistory();
   const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
@@ -119,6 +126,7 @@ const PatientTasksListView = ({
   useEffect(() => {
     if (
       filteredLists?.length > 0 &&
+      taskListIdentifierParameter !== ListViewType.ALL_TASKS &&
       (!taskListIdentifierParameter ||
         checkIfSelectedListIsPresent(
           filteredLists,
@@ -152,12 +160,16 @@ const PatientTasksListView = ({
     [selectedFilters, refreshPatientTasks, fetchPatientFilters],
   );
 
-  const handleQuickAddTask = ({ description }) => {
-    modalActions.openModal('ListPicker', {
-      fetchMethod: getTaskListForUser,
-      confirm: taskListIdentifier =>
-        quickAddPatientTask({ description, taskListIdentifier }),
-    });
+  const handleQuickAddTask = ({ description, taskListIdentifier }) => {
+    if (taskListIdentifier) {
+      quickAddPatientTask({ description, taskListIdentifier });
+    } else {
+      modalActions.openModal('ListPicker', {
+        fetchMethod: getTaskListForUser,
+        confirm: listId =>
+          quickAddPatientTask({ description, taskListIdentifier: listId }),
+      });
+    }
   };
 
   const renderEmptyListView = () => {
@@ -203,18 +215,69 @@ const PatientTasksListView = ({
     [applyTemplateForPatient],
   );
 
-  const handleTabChange = (_, newListIdentifier) => {
+  const handleListChange = event => {
     history.push(
-      createPatientDetailsListPath(patientIdentifier, newListIdentifier),
+      createPatientDetailsListPath(
+        patientIdentifier,
+        event.target?.value || filteredLists[0].taskListIdentifier,
+      ),
     );
   };
 
+  const handleListViewTypeChange = event => {
+    history.push(
+      createPatientDetailsListPath(
+        patientIdentifier,
+        event.target?.value === ListViewType.ALL_TASKS
+          ? ListViewType.ALL_TASKS
+          : filteredLists[0].taskListIdentifier,
+      ),
+    );
+  };
+
+  const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
   const activeList = useMemo(
     () =>
-      filteredLists.find(
-        l => l.taskListIdentifier === taskListIdentifierParameter,
-      ),
-    [filteredLists, taskListIdentifierParameter],
+      isAllTasksView
+        ? filteredLists.reduce(
+            (accumulator, { tasks }) => ({
+              ...accumulator,
+              tasks: [...accumulator.tasks, ...tasks],
+            }),
+            { tasks: [] },
+          )
+        : filteredLists.find(
+            l => l.taskListIdentifier === taskListIdentifierParameter,
+          ),
+    [filteredLists, isAllTasksView, taskListIdentifierParameter],
+  );
+
+  const filteredListsWithCounts = filteredLists?.map(
+    ({ taskListIdentifier, listName, tasks = [] }) => {
+      return {
+        tasksCount:
+          (tasks.length > 0 &&
+            tasks?.reduce((counter, task) => {
+              if (task?.itemType === 'BUNDLE') {
+                const bundledTaskCount = task?.tasks?.reduce(
+                  (bundleTaskCounter, bundleTask) => {
+                    return (
+                      bundleTaskCounter + (bundleTask?.subTasksCount || 0) + 1
+                    );
+                  },
+                  0,
+                );
+                return counter + bundledTaskCount;
+              }
+              return counter + (task?.subTasksCount || 0) + 1;
+            }, 0)) ||
+          0,
+        taskListIdentifier,
+        listName,
+        tasks,
+      };
+    },
   );
 
   return (
@@ -225,33 +288,32 @@ const PatientTasksListView = ({
             <>
               <ListsToolbarContainer>
                 <ListsTabsContainer>
-                  <Tabs
-                    value={taskListIdentifierParameter}
-                    onChange={handleTabChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                  >
-                    {filteredLists.map(list => (
-                      <Tab
-                        key={list.taskListIdentifier}
-                        value={list.taskListIdentifier}
-                        label={
-                          <Tooltip
-                            title={
-                              list.listName?.length >= 20 ? list.listName : ''
-                            }
-                            placement="bottom"
-                          >
-                            <div>
-                              {trunc(list.listName, 20)} ({list.tasks.length})
-                            </div>
-                          </Tooltip>
-                        }
-                        disabled={list.tasks.length === 0 && !!taskSearch}
-                        wrapped={false}
-                      />
-                    ))}
-                  </Tabs>
+                  <OutlinedSelect
+                    width={170}
+                    name="listType"
+                    value={
+                      isAllTasksView
+                        ? ListViewType.ALL_TASKS
+                        : ListViewType.LIST_VIEW
+                    }
+                    onChange={handleListViewTypeChange}
+                    options={LIST_TYPE_OPTIONS}
+                  />
+                  <Box px={2} />
+                  {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
+                    <OutlinedSelect
+                      name="currentList"
+                      value={taskListIdentifierParameter}
+                      onChange={handleListChange}
+                      options={filteredListsWithCounts?.map(
+                        ({ taskListIdentifier, listName, tasksCount }) => ({
+                          label: `${listName}`,
+                          secondaryLabel: `(${tasksCount})`,
+                          value: taskListIdentifier,
+                        }),
+                      )}
+                    />
+                  )}
                 </ListsTabsContainer>
                 <IconButton ref={menuReference} onClick={toggleMenuOpen}>
                   <MoreVert />
@@ -284,7 +346,7 @@ const PatientTasksListView = ({
                   )}
                 </Popper>
               </ListsToolbarContainer>
-              <Spacing vertical={3} />
+              <Box py={0.5} />
               {activeList ? (
                 <BulkEditSection
                   allTasks={activeList.tasks}
@@ -303,12 +365,16 @@ const PatientTasksListView = ({
                     onTaskUpdate={updatePatientTaskInList}
                     updateDueDate={updatePatientTaskDueDate}
                     updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-                    quickAddTask={quickAddPatientTask}
+                    quickAddTask={handleQuickAddTask}
                     refreshView={refreshPatientTasks}
                     hideSubtasks={isListFlattened}
                     sort={sort}
                     onSortChange={sortPatientTasks}
-                    taskItemConfig={PATIENT_VIEW_COLUMNS_CONFIG}
+                    taskItemConfig={
+                      isAllTasksView
+                        ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
+                        : PATIENT_VIEW_COLUMNS_CONFIG
+                    }
                     applyTemplate={applyTemplate}
                   />
                 </BulkEditSection>

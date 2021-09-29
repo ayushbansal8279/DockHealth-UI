@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { EditorState } from 'draft-js';
 import moment from 'moment';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { convertToEditorState } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
@@ -74,7 +74,7 @@ const TaskComment = ({
   return (
     <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
       <TaskCommentAvatarContainer>
-        <Member member={creator} />
+        <UserAvatar user={creator} />
       </TaskCommentAvatarContainer>
       <TaskCommentContent onClick={onClickComment}>
         <TaskCommentDetails>

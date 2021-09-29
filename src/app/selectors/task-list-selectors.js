@@ -4,7 +4,7 @@ export const taskListStateSelector = state => state.taskList;
 
 export const taskListsSelector = createSelector(
   taskListStateSelector,
-  ({ taskLists }) => taskLists,
+  ({ taskLists }) => taskLists || [],
 );
 export const pendingTaskListsSelector = createSelector(
   taskListStateSelector,
@@ -14,4 +14,9 @@ export const pendingTaskListsSelector = createSelector(
 export const taskListMembersSelector = createSelector(
   taskListStateSelector,
   ({ tasklistmembers }) => tasklistmembers,
+);
+
+export const archivedTaskListsSelector = createSelector(
+  taskListStateSelector,
+  ({ archivedTaskLists }) => archivedTaskLists,
 );

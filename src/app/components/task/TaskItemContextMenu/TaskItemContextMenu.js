@@ -163,7 +163,7 @@ const TaskItemContextMenu = ({
       },
     };
 
-    dispatch(openModal('DeleteTask', modalProps));
+    dispatch(openModal('DeleteTaskConfirmation', modalProps));
   }, []);
 
   const handleMoveTask = useCallback(() => {

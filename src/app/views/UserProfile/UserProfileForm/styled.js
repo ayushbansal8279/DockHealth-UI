@@ -27,3 +27,30 @@ export const InputActionButton = styled.button`
   font-family: 'Roboto', sans-serif;
   cursor: pointer;
 `;
+
+export const OuterAvatarContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+`;
+
+export const UserAvatarSupplement = styled.div`
+  color: ${palette.unknownGrey5};
+  cursor: pointer;
+  margin-left: 0.6rem;
+  padding: ${spacing.regular};
+  padding-right: 4rem;
+`;
+
+export const SectionTitle = styled.p`
+  margin-bottom: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: ${fontWeights.bold};
+  width: 100%;
+`;
+
+export const StyledForm = styled.form`
+  position: relative;
+  width: 100%;
+`;

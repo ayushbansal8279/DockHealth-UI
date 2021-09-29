@@ -23,7 +23,6 @@ export function refreshTaskBundle(templateBundleIdentifier) {
 export const clearPreparedSubtask = curry(dispatch =>
   dispatch({
     type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtask: false,
     addingNewSubtaskParentId: null,
     subtaskShape: {},
   }),
@@ -668,7 +667,6 @@ export const prepareSubtask = (
 
   dispatch({
     type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtask: true,
     addingNewSubtaskParentId: parentTaskIdentifier,
     subtaskShape,
   });
@@ -984,5 +982,13 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
     type: ActionTypes.DELETE_TASKS_LINK,
     sourceTaskIdentifier,
     targetTaskIdentifier,
+  };
+}
+
+export function changeTaskIntentType(taskIdentifier, intentType) {
+  return {
+    type: ActionTypes.CHANGE_TASK_INTENT_TYPE,
+    taskIdentifier,
+    intentType,
   };
 }

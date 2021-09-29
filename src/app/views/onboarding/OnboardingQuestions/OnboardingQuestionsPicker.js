@@ -24,7 +24,7 @@ const OnboardingQuestionsPicker = ({
   });
 
   useEffect(() => {
-    if (positionGlobal) {
+    if (positionGlobal && questionReference?.current) {
       const { offsetLeft, offsetTop } = questionReference?.current;
       setPopoverPosition({
         horizontal: offsetLeft,

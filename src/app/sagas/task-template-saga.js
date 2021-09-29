@@ -37,7 +37,11 @@ import {
   parentFolderIdSelector,
   currentTaskTemplateIdentifierSelector,
 } from 'selectors/task-template-selectors';
-import { getUniqueLinkId } from 'helpers/task-template-builder-helpers';
+import {
+  createTemporaryOptionsForDecisionTask,
+  getUniqueLinkId,
+  NodeType,
+} from 'helpers/task-template-builder-helpers';
 
 function* moveTemplates({
   payload: { parentTaskTemplateIdentifier, taskTemplateIdentifier },
@@ -79,12 +83,13 @@ function* getTemplates({ searchPhrase }) {
     });
     yield put(TaskTemplateActions.cleanBreadcrumbs());
 
-    if (templates?.length > 0)
+    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
       yield put(
         TaskTemplateActions.toggleTemplateOpen(
           templates[0]?.taskTemplateIdentifier,
         ),
       );
+    }
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
@@ -109,12 +114,13 @@ function* getAllTemplatesForOrganization({ searchPhrase }) {
     });
     yield put(TaskTemplateActions.cleanBreadcrumbs());
 
-    if (templates?.length > 0)
+    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
       yield put(
         TaskTemplateActions.toggleTemplateOpen(
           templates[0]?.taskTemplateIdentifier,
         ),
       );
+    }
   } catch {
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
@@ -139,13 +145,15 @@ function* getTaskTemplatesFolder({
       taskTemplateFolderIdentifier,
     });
 
-    if (templates?.length > 0)
+    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
       yield put(
         TaskTemplateActions.toggleTemplateOpen(
           templates[0]?.taskTemplateIdentifier,
         ),
       );
-  } catch {
+    }
+  } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.TASK_TEMPLATES_ERROR,
     });
@@ -177,7 +185,8 @@ function* addTemplate({ template, parentIdentifier = null }) {
     );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -356,11 +365,11 @@ function* addTaskToTemplate({ task, elementId, position }) {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
-    const { temporaryElements } = yield select(
+    const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
 
-    const linkConnectedToCreatedTask = temporaryElements?.filter(
+    const linkConnectedToCreatedTask = templateDetails?.temporaryElements?.filter(
       ({ source, target }) => source === elementId || target === elementId,
     );
 
@@ -505,11 +514,12 @@ function* updateTaskPositionInLayout({ taskIdentifier, position }) {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
-    const { layout } = yield select(
+    const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
     const updatedLayout = [
-      ...(layout?.filter(({ id }) => id !== taskIdentifier) || []),
+      ...(templateDetails?.layout?.filter(({ id }) => id !== taskIdentifier) ||
+        []),
       { id: taskIdentifier, position },
     ];
     yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
@@ -523,12 +533,16 @@ function* linkTasks({ source, target }) {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
-    const { layout, tasks } = yield select(
+    const templateDetails = yield select(
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
 
-    const sourceTask = tasks.find(({ identifier }) => identifier === source.id);
-    const targetTask = tasks.find(({ identifier }) => identifier === target.id);
+    const sourceTask = templateDetails?.tasks.find(
+      ({ identifier }) => identifier === source.id,
+    );
+    const targetTask = templateDetails?.tasks.find(
+      ({ identifier }) => identifier === target.id,
+    );
 
     const checkIfTasksAreLinked = () => {
       return (
@@ -564,7 +578,8 @@ function* linkTasks({ source, target }) {
 
         if (source.handle || target.handle) {
           const updatedLayout = [
-            ...(layout?.filter(({ id }) => id !== linkId) || []),
+            ...(templateDetails?.layout?.filter(({ id }) => id !== linkId) ||
+              []),
             {
               id: linkId,
               sourceHandle: source.handle,
@@ -637,18 +652,46 @@ function* deleteTaskFromLayout({ taskIdentifier }) {
   const taskTemplateIdentifier = yield select(
     currentTaskTemplateIdentifierSelector,
   );
-  const { layout } = yield select(
+  const templateDetails = yield select(
     taskTemplateDetailsSelector(taskTemplateIdentifier),
   );
-  if (layout?.length > 0) {
-    const updatedLayout = layout?.filter(({ id }) => id !== taskIdentifier);
-    if (layout.length !== updatedLayout.length)
+  if (templateDetails?.layout?.length > 0) {
+    const updatedLayout = templateDetails?.layout?.filter(
+      ({ id }) => id !== taskIdentifier,
+    );
+    if (templateDetails?.layout.length !== updatedLayout.length)
       yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
   }
 }
 
+function* changeTaskIntentType({ taskIdentifier, intentType }) {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    if (taskTemplateIdentifier && intentType === NodeType.DECISION) {
+      const { layout } = yield select(
+        taskTemplateDetailsSelector(taskTemplateIdentifier),
+      );
+      if (layout?.length > 0) {
+        const { position } =
+          layout?.find(({ id }) => taskIdentifier === id) || {};
+        const newTemporaryOptions = createTemporaryOptionsForDecisionTask(
+          layout,
+          taskIdentifier,
+          position,
+        );
+        yield put(
+          TaskTemplateActions.addTemporaryElements(newTemporaryOptions),
+        );
+      }
+    }
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTaskTemplate() {
-  yield takeEvery(SWITCH_TEMPLATE_PUBLIC, switchTemplatePublic);
   yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
   yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
   yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
@@ -681,4 +724,6 @@ export default function* watchTaskTemplate() {
     ActionTypes.GET_CURRENT_TASK_TEMPLATE,
     getCurrentTaskTemplate,
   );
+  yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
+  yield takeEvery(SWITCH_TEMPLATE_PUBLIC, switchTemplatePublic);
 }

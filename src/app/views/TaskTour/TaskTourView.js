@@ -4,7 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
 import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
 import { setHeader } from 'actions/template-actions';
-import { taskListsSelector } from 'selectors/task-list-selectors';
+import {
+  taskListsSelector,
+  archivedTaskListsSelector,
+} from 'selectors/task-list-selectors';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import Button from 'components/common/Button/Button';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
@@ -19,6 +22,7 @@ import {
 } from './styled';
 
 const TaskTourView = () => {
+  const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const taskLists = useSelector(taskListsSelector);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -42,11 +46,11 @@ const TaskTourView = () => {
 
   useEffect(() => {
     const setViewHeader = () => {
+      const allTaskLists = [...taskLists, ...archivedTaskLists];
       const loadedTasklist =
-        taskLists?.length > 0
-          ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
+        allTaskLists?.length > 0
+          ? allTaskLists.find(t => t.taskListIdentifier === taskListIdentifier)
           : {};
-
       const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
 
       if (loadedTasklist.listName) {
@@ -65,7 +69,7 @@ const TaskTourView = () => {
     };
 
     setViewHeader();
-  }, [taskLists, taskListIdentifier, dispatch]);
+  }, [taskLists, archivedTaskLists, taskListIdentifier, dispatch]);
 
   return (
     <TaskTourWrapper>

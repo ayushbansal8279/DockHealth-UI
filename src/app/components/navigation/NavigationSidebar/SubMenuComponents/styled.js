@@ -251,7 +251,10 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-  margin-bottom: 10px;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
 `;
 
 export const DrawerListsItemLoader = styled.div`
@@ -287,6 +290,7 @@ export const ListNameText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  ${({ color }) => color && `color: ${color}`}
   ${({ isActive }) =>
     isActive
       ? `color: ${palette.brightBlue};`

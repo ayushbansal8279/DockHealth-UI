@@ -18,6 +18,7 @@ import {
   reorderOrganizationStatuses,
 } from 'sagas/organization-saga';
 import EditableWorkflowStatusItem from 'components/task/WorkflowStatusItem/EditableWorkflowStatusItem';
+import SortableItem from 'components/common/SortableItem/SortableItem';
 import { RESET_STATUS, StatusColor } from './helpers';
 import {
   StatusList,
@@ -28,10 +29,10 @@ import {
   ColorPickerWrapper,
   ColorButton,
 } from './styled';
-import SortableStatusItem from './SortableStatusItem';
 
 const DEFAULT_SELECTED_COLOR = StatusColor.YELLOW;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const StatusEditor = ({ onClose }) => {
   const [defaultColor, setDefaultColor] = useState(DEFAULT_SELECTED_COLOR);
   const [currentlyEditedStatus, setCurrentlyEditedStatus] = useState(null);
@@ -40,7 +41,7 @@ const StatusEditor = ({ onClose }) => {
 
   const isAddingNewStatus =
     currentlyEditedStatus && !currentlyEditedStatus.identifier;
-  const newStatusButtonVisible = !isAddingNewStatus && statuses?.length < 13;
+  const newStatusButtonVisible = !isAddingNewStatus && statuses?.length < 29;
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -137,7 +138,7 @@ const StatusEditor = ({ onClose }) => {
           items={pluck('identifier', statuses)}
           strategy={rectSortingStrategy}
         >
-          <StatusList elementsInColumn={7}>
+          <StatusList elementsInColumn={statuses?.length > 12 ? 10 : 7}>
             <EditableWorkflowStatusItem
               disabled
               status={RESET_STATUS}
@@ -150,9 +151,10 @@ const StatusEditor = ({ onClose }) => {
                   : status;
 
               return (
-                <SortableStatusItem
+                <SortableItem
                   key={status.identifier}
                   itemId={status.identifier}
+                  overflowHidden
                 >
                   {({ dragHandleProps }) => (
                     <EditableWorkflowStatusItem
@@ -173,7 +175,7 @@ const StatusEditor = ({ onClose }) => {
                       }
                     />
                   )}
-                </SortableStatusItem>
+                </SortableItem>
               );
             })}
             {isAddingNewStatus && (

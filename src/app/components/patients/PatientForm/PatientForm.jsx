@@ -4,7 +4,7 @@ import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { groupBy, prop, compose } from 'ramda';
+import { groupBy, prop, compose, sortBy } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';
@@ -19,7 +19,10 @@ import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
+import { useBoolean } from 'hooks/useBoolean';
+import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
+import CategoryOptions from './CategoryOptions';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -42,6 +45,13 @@ const PatientForm = forwardRef(
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
+    const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
+      false,
+    );
+    const { 0: emptyContactsVisible, 3: toggleEmptyContacts } = useBoolean(
+      false,
+    );
+    const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
@@ -50,25 +60,32 @@ const PatientForm = forwardRef(
         true,
         patient?.patientIdentifier || undefined,
       ).then(data => {
-        compose(setCustomFields, groupByCategory)(data);
+        compose(
+          setCustomFields,
+          groupByCategory,
+          sortBy(prop('sortIndex')),
+        )(data);
       });
     }, [patient]);
 
     const renderCustomField = useCallback(
-      (field, index) => {
+      (field, index, showEmpty = true) => {
         const initialFieldValue = patient?.patientMetaData?.find(
           ({ customFieldIdentifier }) =>
             field.identifier === customFieldIdentifier,
         );
         return (
-          <div key={field.identifier}>
+          <HideableContainer
+            key={field.identifier}
+            visibility={!showEmpty && !initialFieldValue?.value}
+          >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
               readOnly={readOnly}
               field={field}
               initialValue={initialFieldValue}
             />
-          </div>
+          </HideableContainer>
         );
       },
       [patient, readOnly],
@@ -98,7 +115,7 @@ const PatientForm = forwardRef(
             label="Middle Name"
             name="middleName"
           />
-          <Spacing readOnly={readOnly} vertical={3} />
+          <Spacing vertical={3} />
           <FormInput
             readOnly={readOnly}
             label="Last Name"
@@ -129,7 +146,19 @@ const PatientForm = forwardRef(
             name="mrn"
           />
           <Spacing vertical={3} />
-          {customFields?.[Category.PERSONAL_INFO]?.map(renderCustomField)}
+          {customFields?.[Category.PERSONAL_INFO]?.map((field, index) => {
+            return renderCustomField(
+              field,
+              index,
+              emptyPersonalVisible || !readOnly,
+            );
+          })}
+          <Spacing vertical={3} />
+          <CategoryOptions
+            visibility={emptyPersonalVisible}
+            onToggle={toggleEmptyPersonal}
+            isAdmin={isAdmin}
+          />
         </LabeledCollapse>
         <LabeledCollapse
           name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
@@ -153,7 +182,19 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormInput readOnly={readOnly} label="email" name="email" />
           <Spacing vertical={3} />
-          {customFields?.[Category.CONTACT_INFO]?.map(renderCustomField)}
+          {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
+            return renderCustomField(
+              field,
+              index,
+              emptyContactsVisible || !readOnly,
+            );
+          })}
+          <Spacing vertical={3} />
+          <CategoryOptions
+            visibility={emptyContactsVisible}
+            onToggle={toggleEmptyContacts}
+            isAdmin={isAdmin}
+          />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
@@ -163,7 +204,19 @@ const PatientForm = forwardRef(
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >
-            {customFields?.[Category.OTHER_INFO]?.map(renderCustomField)}
+            {customFields?.[Category.OTHER_INFO].map((field, index) => {
+              return renderCustomField(
+                field,
+                index,
+                emptyOtherVisible || !readOnly,
+              );
+            })}
+            <Spacing vertical={3} />
+            <CategoryOptions
+              visibility={emptyOtherVisible}
+              onToggle={toggleEmptyOther}
+              isAdmin={isAdmin}
+            />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">

@@ -13,12 +13,13 @@ function* reorderTasksInTemplateBundle(payload) {
     destination: { index: destinationIndex },
     bundle,
     completedTasksShown,
+    incompleteTasksShown,
   } = payload;
 
   try {
     let reorderedTasks;
 
-    if (completedTasksShown) {
+    if (completedTasksShown && incompleteTasksShown) {
       reorderedTasks = move(sourceIndex, destinationIndex, bundle.tasks);
     } else {
       const [openedTasks, completedTasks] = bundle.tasks.reduce(
@@ -29,9 +30,19 @@ function* reorderTasksInTemplateBundle(payload) {
         [[], []],
       );
 
-      reorderedTasks = move(sourceIndex, destinationIndex, openedTasks).concat(
-        completedTasks,
-      );
+      if ((!completedTasksShown, incompleteTasksShown)) {
+        reorderedTasks = move(
+          sourceIndex,
+          destinationIndex,
+          openedTasks,
+        ).concat(completedTasks);
+      } else if ((completedTasksShown, !incompleteTasksShown)) {
+        reorderedTasks = move(
+          sourceIndex,
+          destinationIndex,
+          completedTasks,
+        ).concat(openedTasks);
+      }
     }
 
     yield put({

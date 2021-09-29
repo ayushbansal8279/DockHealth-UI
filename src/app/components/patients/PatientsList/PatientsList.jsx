@@ -84,7 +84,9 @@ const PatientsList = ({
       flex: 0.5,
       type: 'date',
       valueGetter: parameters => {
-        return parameters.value ? new Date(parameters.value) : null;
+        return parameters.value
+          ? new Date(`${parameters.value}T00:00:00`)
+          : null;
       },
     },
     {

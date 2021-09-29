@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { mergeDeepRight } from 'ramda';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +17,7 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
+import PatientLabels from '../PatientLabels/PatientLabels';
 
 const PatientDetailsDrawer = ({
   patient,
@@ -116,6 +118,8 @@ const PatientDetailsDrawer = ({
         options={!editingDisabled ? contextMenuOptions : null}
         onClose={handleClose}
       >
+        <PatientLabels />
+        <Box py={1.5} />
         <PatientForm
           ref={formReference}
           patient={patient}

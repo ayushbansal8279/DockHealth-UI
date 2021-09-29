@@ -165,7 +165,7 @@ const ListDetailsOpenedTasks = ({
         )
         .map(({ groupName, taskGroupIdentifier, metricValue }, i) => (
           <TasksGroup
-            key={i}
+            key={taskGroupIdentifier}
             isDefaultGroup={groupName === 'DEFAULT'}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
@@ -222,9 +222,7 @@ const ListDetailsOpenedTasks = ({
               isCompletedGroup,
               isFullView,
               tasks,
-              addingNewSubtask,
               addingNewSubtaskParentId,
-              subtaskShape,
               groupHasMultipleAssignees,
               isListFlattened,
               highlightedTasksParentIdentifier,
@@ -259,6 +257,7 @@ const ListDetailsOpenedTasks = ({
                                 <>
                                   {task?.itemType === TaskItemType.TASK ? (
                                     <StandardTaskItem
+                                      key={task.identifier}
                                       isFullView={isFullView}
                                       isDragging={isDragging}
                                       isStartedDnD={
@@ -277,13 +276,11 @@ const ListDetailsOpenedTasks = ({
                                       dragAndDropDisabled={
                                         isCompletedGroup || dragAndDropDisabled
                                       }
-                                      // selectedTask={selectedTask}
                                       isDraggable
-                                      addingNewSubtask={addingNewSubtask}
-                                      addingNewSubtaskParentId={
-                                        addingNewSubtaskParentId
+                                      addingNewSubtask={
+                                        addingNewSubtaskParentId ===
+                                        task.identifier
                                       }
-                                      subtaskShape={subtaskShape}
                                       subtasksDisabled={isListFlattened}
                                       areFiltersApplied={areFiltersApplied}
                                       isSearchApplied={isSearchApplied}

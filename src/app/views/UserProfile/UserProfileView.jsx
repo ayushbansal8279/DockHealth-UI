@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/template-actions';
-import * as userApi from 'api/user-api';
+import * as UserApi from 'api/user-api';
 import OrganizationAvatar from 'components/org/OrganizationAvatar/OrganizationAvatar';
 import {
   openModal as openModalAction,
@@ -15,7 +15,7 @@ import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
 import AlertTypes from 'alert/AlertTypes';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import { getOrgRole } from 'helpers/people-helper';
+import { getOrgRole } from 'helpers/user-helper';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
 import {
   ProfileSettingsWrapper,
@@ -47,7 +47,7 @@ const UserProfileView = () => {
 
   useEffect(
     () => {
-      userApi.getUserNotificationPrefs();
+      UserApi.getUserNotificationPrefs();
 
       dispatch(
         setHeader({
@@ -68,10 +68,9 @@ const UserProfileView = () => {
     dispatch(
       openModalAction('LeaveOrganization', {
         confirm: () => {
-          userApi
-            .leaveOrganization(userProfile.organizationIdentifier)
+          UserApi.leaveOrganization(userProfile.organizationIdentifier)
             .then(() => {
-              userApi.logout(history);
+              UserApi.logout(history);
             })
             .catch(() => {
               dispatch(closeModalAction());
@@ -107,7 +106,7 @@ const UserProfileView = () => {
               dispatch(
                 openModalAction('EditOrganization', {
                   userProfile,
-                  onSuccess: userApi.getUserById,
+                  onSuccess: UserApi.getCurrentUser,
                 }),
               )
             }
