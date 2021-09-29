@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
 import { Grid } from '@material-ui/core';
 import LockIcon from 'img/modals/lock';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import { openModal } from 'modal/actions';
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
@@ -35,7 +35,7 @@ const onSubmit = ({ setError, dispatch }) => ({
   currentPassword,
   newPassword,
 }) => {
-  UserApi.changePassword(currentPassword, newPassword)
+  UserAuthApi.changePassword(currentPassword, newPassword)
     .then(() => {
       dispatch(
         openModal('Confirmation', {

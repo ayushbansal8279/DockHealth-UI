@@ -30,8 +30,7 @@ import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
-// eslint-disable-next-line import/no-named-as-default
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
 import {
   SubmenuDivider,

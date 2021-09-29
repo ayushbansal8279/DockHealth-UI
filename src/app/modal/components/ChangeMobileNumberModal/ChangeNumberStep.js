@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -35,7 +35,7 @@ const onSubmit = ({
   setError,
   userProfile,
 }) => ({ phoneNumber }) => {
-  UserApi.updatePhoneNumber(
+  UserAuthApi.updatePhoneNumber(
     userProfile.email,
     userProfile.accountPhoneNumber,
     `+${phoneNumber.replace(/[\s()-]/g, '')}`,

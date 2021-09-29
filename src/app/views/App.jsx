@@ -15,7 +15,7 @@ import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 import { openModal } from 'modal/actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import { featurePalette } from 'styles/palette';
@@ -167,7 +167,7 @@ class App extends PureComponent {
 
   logout = () => {
     const { history } = this.props;
-    UserApi.logout(history)
+    UserAuthApi.logout(history)
       .then(() => {
         sessionStorage.setItem('refreshOrgMemo', true);
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {

@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import {
   taskListsSelector,
@@ -11,7 +12,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import * as TaskListActions from 'actions/task-list-actions';
 import * as TaskListSagaActions from 'sagas/task-list-saga';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
@@ -81,7 +82,7 @@ const DashboardView = ({
     }
 
     const refreshAccessTokenTimeoutId = setTimeout(() => {
-      UserApi.refreshAccessToken(user.username);
+      UserAuthApi.refreshAccessToken(user.username);
       refreshAccessToken(user);
     }, systemTimeout);
 
@@ -106,7 +107,7 @@ const DashboardView = ({
       onClose: () => {
         if (firstListIdentifier) {
           fetchTasklistForUser();
-          UserApi.getUserByEmail(currentUser.email, currentUser);
+          UserAuthApi.getUserByEmail(currentUser.email, currentUser);
           setFirstCreatedUserListIdentifier(firstListIdentifier);
           setOpenConfetti(true);
         }
@@ -123,9 +124,11 @@ const DashboardView = ({
         dispatch(
           openModal('PatientCustomFieldTour', {
             onClose: () => {
-              UserApi.updateUserDashboardPrefs({
-                appFeaturesReviewed: ['PATIENT_CUSTOM_FIELD'],
-              });
+              dispatch(
+                updateCurrentUserPreferences({
+                  appFeaturesReviewed: ['PATIENT_CUSTOM_FIELD'],
+                }),
+              );
             },
           }),
         );

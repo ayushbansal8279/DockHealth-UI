@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 
 import { error, success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import ResendCodeForm from 'components/auth/ResendCodeForm';
 
 class ResendCode extends PureComponent {
@@ -14,7 +14,7 @@ class ResendCode extends PureComponent {
 
   onSubmit(form) {
     const { history } = this.props;
-    return UserApi.resendConfirmationCode({
+    return UserAuthApi.resendConfirmationCode({
       username: form.username,
     })
       .then(() => {

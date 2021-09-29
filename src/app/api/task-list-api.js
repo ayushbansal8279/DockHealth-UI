@@ -326,3 +326,11 @@ export function rejectInviteToTaskList(taskListIdentifier) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function leaveList(taskListIdentifier) {
+  return axios
+    .delete(`user/userLeavesList/${taskListIdentifier}`)
+    .then(({ data }) => {
+      return data;
+    });
+}

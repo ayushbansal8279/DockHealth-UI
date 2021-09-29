@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect } from 'react';
 import { isNil } from 'ramda';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { Paper, Popper, ClickAwayListener } from '@material-ui/core';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';

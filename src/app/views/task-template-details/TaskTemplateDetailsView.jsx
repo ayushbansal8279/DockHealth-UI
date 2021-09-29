@@ -46,7 +46,7 @@ import {
   LinkType,
   TASK_NODE_WIDTH,
 } from 'helpers/task-template-builder-helpers';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';

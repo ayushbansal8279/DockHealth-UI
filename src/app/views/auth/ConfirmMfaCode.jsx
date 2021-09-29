@@ -9,6 +9,7 @@ import {
   success,
 } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import * as UserApi from 'api/user-api';
 import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
@@ -33,7 +34,7 @@ const ConfirmMFACode = props => {
 
   const onSubmit = useCallback(
     form => {
-      return UserApi.sendMFACode({
+      return UserAuthApi.sendMFACode({
         username,
         mfaCode: form.mfaCode,
       })
@@ -41,7 +42,7 @@ const ConfirmMFACode = props => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             CONFIRM_MFACODE_SUCCESS: 'YES',
           });
-          UserApi.rememberDevice().then(result => {
+          UserAuthApi.rememberDevice().then(result => {
             console.log(`added device to be remembered: ${result}`);
           });
           history.push('/core/home/my-tasks');

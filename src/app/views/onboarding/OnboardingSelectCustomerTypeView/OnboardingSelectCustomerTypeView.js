@@ -6,7 +6,6 @@ import CustomerTypeForm from 'views/onboarding/CustomerTypeForm/CustomerTypeForm
 import { useHistory } from 'react-router-dom';
 import { updateOrganizationCallType } from 'api/organization-api';
 import { checkBAASignedStatus } from 'actions/organization-actions';
-import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
 import { useDispatch, useSelector } from 'react-redux';
 
 const customerTypesList = [
