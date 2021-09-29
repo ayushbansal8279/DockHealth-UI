@@ -36,8 +36,6 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     setAllOrganizationMembersFetched,
   ] = useState(false);
 
-  console.log('list.members', list.members);
-
   const [listMembers, setListMembers] = useState(list.members);
   const [allOrganizationMembers, setAllOrganizationMembers] = useState([]);
 
@@ -60,7 +58,9 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
       allOrganizationMembers.filter(
         organizationMember =>
           !listMembers.some(
-            ({ identifier }) => organizationMember.identifier === identifier,
+            ({ identifier, userIdentifier }) =>
+              organizationMember.identifier === identifier ||
+              organizationMember.identifier === userIdentifier,
           ),
       ),
     [allOrganizationMembers, listMembers],
@@ -91,12 +91,10 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
 
   const removeUserFromList = member => {
     setIsSavingList(true);
-    const newList = listMembers.filter(
-      m => m.userIdentifier !== member.userIdentifier,
-    );
+    const newList = listMembers.filter(m => m.identifier !== member.identifier);
     setListMembers([...newList]);
 
-    removeUserFromWorkflow(taskTemplateIdentifier, member.userIdentifier)
+    removeUserFromWorkflow(taskTemplateIdentifier, member.identifier)
       .then(() => {
         if (typeof onMembersRefresh === 'function')
           onMembersRefresh([...newList]);
@@ -119,9 +117,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     const memberPermission = hasEditorAccess ? 'VIEW' : 'EDITOR';
 
     const newList = listMembers.flatMap(m =>
-      m.userIdentifier === member.userIdentifier
-        ? { ...member, memberPermission }
-        : m,
+      m.identifier === member.identifier ? { ...member, memberPermission } : m,
     );
 
     setListMembers([...newList]);

@@ -19,12 +19,24 @@ import {
 } from '../../styled';
 
 const TaskItemPermissions = ({ template }) => {
-  const { members, taskTemplateIdentifier, publicAccess } = template;
+  const {
+    members: transformedMembers,
+    taskTemplateIdentifier,
+    publicAccess,
+  } = template;
   const dispatch = useDispatch();
+  const members = transformedMembers.map(({ user, memberPermission }) => ({
+    ...user,
+    memberPermission,
+  }));
   const openListEditModal = useCallback(() => {
     dispatch(
       openModal('ListPermissions', {
-        list: { taskTemplateIdentifier, members, template },
+        list: {
+          taskTemplateIdentifier,
+          members,
+          template,
+        },
         onMembersRefresh: refreshedMembers => {
           dispatch(
             updateTaskTemplateSuccess(taskTemplateIdentifier, {

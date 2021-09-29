@@ -9,8 +9,8 @@ export const getHiddenMembersTooltipContent = (
 ) =>
   hiddenMembers?.map(hiddenMember => {
     const onlineActiveUser =
-      activeUsersList?.find(({ userIdentifier }) => {
-        return userIdentifier === hiddenMember?.userIdentifier;
+      activeUsersList?.find(({ identifier }) => {
+        return identifier === hiddenMember?.identifier;
       }) || {};
 
     let userStatusLabel = 'offline';
@@ -24,8 +24,8 @@ export const getHiddenMembersTooltipContent = (
     }
 
     return (
-      <HiddenMembersTooltipContainer key={hiddenMember?.userIdentifier}>
-        <HiddenMemberName>{hiddenMember?.userName}</HiddenMemberName>
+      <HiddenMembersTooltipContainer key={hiddenMember?.identifier}>
+        <HiddenMemberName>{hiddenMember?.name}</HiddenMemberName>
         {userStatusLabel}
       </HiddenMembersTooltipContainer>
     );
