@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { IconButton } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
@@ -40,6 +40,19 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   const [allOrganizationMembers, setAllOrganizationMembers] = useState([]);
 
   const { taskTemplateIdentifier, template } = list;
+  const refreshData = useCallback(
+    newMembersList => {
+      if (typeof onMembersRefresh === 'function') {
+        onMembersRefresh(
+          newMembersList.map(({ memberPermission, ...user }) => ({
+            memberPermission,
+            user,
+          })),
+        );
+      }
+    },
+    [onMembersRefresh],
+  );
 
   useEffect(() => {
     setAllOrganizationMembersFetched(false);
@@ -70,11 +83,11 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     if (newMembers.length > 0) {
       setIsSavingList(true);
       const memberIdentifiers = newMembers.map(({ identifier }) => identifier);
-      setListMembers([...listMembers, ...newMembers]);
+      const newMembersList = [...listMembers, ...newMembers];
+      setListMembers(newMembersList);
       addUsersToPermissionList(taskTemplateIdentifier, memberIdentifiers)
         .then(() => {
-          if (typeof onMembersRefresh === 'function')
-            onMembersRefresh([...listMembers, ...newMembers]);
+          refreshData(newMembersList);
           setIsSavingList(false);
         })
         .catch(error => {
@@ -96,8 +109,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
 
     removeUserFromWorkflow(taskTemplateIdentifier, member.identifier)
       .then(() => {
-        if (typeof onMembersRefresh === 'function')
-          onMembersRefresh([...newList]);
+        refreshData([...newList]);
         setIsSavingList(false);
       })
       .catch(error => {
@@ -121,8 +133,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     );
 
     setListMembers([...newList]);
-
-    if (typeof onMembersRefresh === 'function') onMembersRefresh([...newList]);
+    refreshData([...newList]);
 
     updateUserInWorkflowPermissions(
       taskTemplateIdentifier,

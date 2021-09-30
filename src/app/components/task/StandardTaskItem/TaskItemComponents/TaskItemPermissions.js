@@ -29,6 +29,7 @@ const TaskItemPermissions = ({ template }) => {
     ...user,
     memberPermission,
   }));
+  console.log('members', members);
   const openListEditModal = useCallback(() => {
     dispatch(
       openModal('ListPermissions', {
@@ -38,6 +39,7 @@ const TaskItemPermissions = ({ template }) => {
           template,
         },
         onMembersRefresh: refreshedMembers => {
+          console.log('refreshedMembers', refreshedMembers);
           dispatch(
             updateTaskTemplateSuccess(taskTemplateIdentifier, {
               members: refreshedMembers,
