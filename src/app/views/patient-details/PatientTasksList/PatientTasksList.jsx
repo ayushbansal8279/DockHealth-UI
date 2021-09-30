@@ -1,26 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {
-  IconButton,
-  Popper,
-  ClickAwayListener,
-  Paper,
-  Box,
-} from '@material-ui/core';
-// eslint-disable-next-line import/no-named-as-default
-import useBoolean from 'hooks/useBoolean';
-import zIndex from 'styles/z-index';
-import { MoreVert } from '@material-ui/icons';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import useActions from 'hooks/use-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { Box } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
-import Spacing from 'components/common/Spacing';
 import TaskListDetailsDropdown from 'views/patient-details/TaskListDetailsDropdown/TaskListDetailsDropdown';
 import EmptyTaskListBird from 'img/animals/bird';
-import * as TaskDrawerActions from 'actions/task-drawer-actions';
-import * as TaskActions from 'actions/task-actions';
+import { getPatientTasks } from 'actions/patient-details-actions';
 import * as ModalActions from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
@@ -37,8 +25,6 @@ import {
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
@@ -49,13 +35,12 @@ import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResul
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { ListsTabsContainer, ListsToolbarContainer, MenuText } from './styled';
+import { ListViewType } from '../helpers';
 import {
-  LIST_TYPE_OPTIONS,
-  ListViewType,
   checkIfSelectedListIsPresent,
   searchTaskInPatientLists,
 } from './helpers';
+import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
@@ -67,34 +52,24 @@ const PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const PatientTasksListView = ({
-  completeTasksVisible,
-  selectedFilters,
-  lists,
-  isFetchingLists,
-  currentUser,
-  selectedTask,
-  taskDrawerActions,
-  taskActions,
-  patientTasksSagaActions,
-  modalActions,
-  taskSearch,
-  areFiltersApplied,
-  sort,
-}) => {
-  const menuReference = useRef();
-  const { 0: menuOpen, 2: unsetMenuOpen, 3: toggleMenuOpen } = useBoolean(
-    false,
-  );
+const PatientTasksListView = () => {
   const {
     patientIdentifier,
-    taskListIdentifier: taskListIdentifierValue,
+    taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
-  const taskListIdentifierParameter =
-    taskListIdentifierValue ?? ListViewType.ALL_TASKS;
+
+  const sort = useSelector(patientTasksSortSelector);
+  const isFetchingLists = useSelector(isFetchingPatientTaskListsSelector);
+  const lists = useSelector(patientTaskListsSelector);
+  const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
+  const currentUser = useSelector(userProfileSelector);
+  const selectedTask = useSelector(selectedTaskSelector);
+  const taskSearch = useSelector(patientTaskSearchSelector);
+  const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+
+  const dispatch = useDispatch();
   const history = useHistory();
-  const { openDrawer } = taskDrawerActions;
-  const { storeAsCurrentTask } = taskActions;
   const {
     togglePatientTaskStatus,
     updatePatientTaskInList,
@@ -106,14 +81,13 @@ const PatientTasksListView = ({
     applyTemplateForPatient,
     fetchPatientFilters,
     initializeSavedFilters,
-    fetchPatientTasks,
-    toggleCompleteTasksVisible,
-  } = patientTasksSagaActions;
+  } = useActions(PatientTasksSagaActions);
+  const modalActions = useActions(ModalActions);
 
   useEffect(() => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
-      fetchPatientTasks(patientIdentifier);
+      dispatch(getPatientTasks(patientIdentifier));
       fetchPatientFilters(patientIdentifier);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,26 +201,6 @@ const PatientTasksListView = ({
     [applyTemplateForPatient, modalActions],
   );
 
-  const handleListChange = event => {
-    history.push(
-      createPatientDetailsListPath(
-        patientIdentifier,
-        event.target?.value || filteredLists[0].taskListIdentifier,
-      ),
-    );
-  };
-
-  const handleListViewTypeChange = event => {
-    history.push(
-      createPatientDetailsListPath(
-        patientIdentifier,
-        event.target?.value === ListViewType.ALL_TASKS
-          ? ListViewType.ALL_TASKS
-          : filteredLists[0].taskListIdentifier,
-      ),
-    );
-  };
-
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
   const activeList = useMemo(
@@ -265,99 +219,13 @@ const PatientTasksListView = ({
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
 
-  const filteredListsWithCounts = filteredLists?.map(
-    ({ taskListIdentifier, listName, tasks = [] }) => {
-      return {
-        tasksCount:
-          (tasks.length > 0 &&
-            tasks?.reduce((counter, task) => {
-              if (task?.itemType === 'BUNDLE') {
-                const bundledTaskCount = task?.tasks?.reduce(
-                  (bundleTaskCounter, bundleTask) => {
-                    return (
-                      bundleTaskCounter + (bundleTask?.subTasksCount || 0) + 1
-                    );
-                  },
-                  0,
-                );
-                return counter + bundledTaskCount;
-              }
-              return counter + (task?.subTasksCount || 0) + 1;
-            }, 0)) ||
-          0,
-        taskListIdentifier,
-        listName,
-        tasks,
-      };
-    },
-  );
-
   return (
     <>
       {!isFetchingLists ? (
         <>
           {filteredLists?.length > 0 ? (
             <>
-              <ListsToolbarContainer>
-                <ListsTabsContainer>
-                  <OutlinedSelect
-                    width={170}
-                    name="listType"
-                    value={
-                      isAllTasksView
-                        ? ListViewType.ALL_TASKS
-                        : ListViewType.LIST_VIEW
-                    }
-                    onChange={handleListViewTypeChange}
-                    options={LIST_TYPE_OPTIONS}
-                  />
-                  <Box px={2} />
-                  {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
-                    <OutlinedSelect
-                      name="currentList"
-                      value={taskListIdentifierParameter}
-                      onChange={handleListChange}
-                      options={filteredListsWithCounts?.map(
-                        ({ taskListIdentifier, listName, tasksCount }) => ({
-                          label: `${listName}`,
-                          secondaryLabel: `(${tasksCount})`,
-                          value: taskListIdentifier,
-                        }),
-                      )}
-                    />
-                  )}
-                </ListsTabsContainer>
-                <IconButton ref={menuReference} onClick={toggleMenuOpen}>
-                  <MoreVert />
-                </IconButton>
-                <Popper
-                  anchorEl={menuReference?.current}
-                  placement="bottom-end"
-                  disablePortal
-                  open={menuOpen}
-                  style={{
-                    zIndex: zIndex.optionsMenu,
-                  }}
-                >
-                  {menuOpen && (
-                    <ClickAwayListener onClickAway={unsetMenuOpen}>
-                      <Paper>
-                        <Box display="flex" alignItems="center" p={3}>
-                          <Checkbox
-                            isChecked={completeTasksVisible}
-                            onClick={() => {
-                              unsetMenuOpen();
-                              toggleCompleteTasksVisible();
-                            }}
-                          />
-                          <Spacing horizontal={3} />
-                          <MenuText>Show completed tasks</MenuText>
-                        </Box>
-                      </Paper>
-                    </ClickAwayListener>
-                  )}
-                </Popper>
-              </ListsToolbarContainer>
+              <TaskListToolbar lists={filteredLists} />
               <Box py={0.5} />
               {activeList ? (
                 <BulkEditSection
@@ -371,8 +239,6 @@ const PatientTasksListView = ({
                     currentUser={currentUser}
                     selectedTask={selectedTask}
                     isCompleteTab={completeTasksVisible}
-                    openDrawer={openDrawer}
-                    storeAsCurrentTask={storeAsCurrentTask}
                     toggleTaskStatus={handleToggleTaskStatus}
                     onTaskUpdate={updatePatientTaskInList}
                     updateDueDate={updatePatientTaskDueDate}
@@ -411,29 +277,4 @@ const PatientTasksListView = ({
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
-  taskActions: bindActionCreators(TaskActions, dispatch),
-  patientTasksSagaActions: bindActionCreators(
-    PatientTasksSagaActions,
-    dispatch,
-  ),
-  modalActions: bindActionCreators(ModalActions, dispatch),
-});
-
-const mapStateToProps = state => ({
-  sort: patientTasksSortSelector(state),
-  isFetchingLists: isFetchingPatientTaskListsSelector(state),
-  lists: patientTaskListsSelector(state),
-  completeTasksVisible: completeTasksVisibilitySelector(state),
-  currentUser: userProfileSelector(state),
-  selectedTask: selectedTaskSelector(state),
-  taskSearch: patientTaskSearchSelector(state),
-  areFiltersApplied: hasFiltersAppliedSelector(state),
-  selectedFilters: selectedFiltersInMegaFilterSelector(state),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PatientTasksListView);
+export default PatientTasksListView;

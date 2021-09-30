@@ -41,7 +41,7 @@ export const fetchPatientTasksByPatientIdentifierWithFilters = (
       throw error;
     });
 
-export const fetchStatsForPatientTasks = patientIdentifier =>
+export const getPatientTasksStats = patientIdentifier =>
   axios
     .get(`/task/stats/getTaskStatsForPatient/${patientIdentifier}`)
     .then(({ data }) => data)

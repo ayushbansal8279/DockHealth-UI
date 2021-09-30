@@ -48,16 +48,6 @@ const StyledSelect = styled(Select)`
   }
 `;
 
-const OptionItemLabel = styled(ListItemText)`
-  && {
-    float: left;
-  }
-`;
-
-export const OptionItemSecondaryLabel = styled.span`
-  float: right;
-`;
-
 const OutlinedSelect = props => {
   const { name, options, width, ...restProps } = props;
   const classes = useOutlinedSelectStyles({ width });
@@ -90,10 +80,8 @@ const OutlinedSelect = props => {
         return (
           <MenuItem key={option.value} value={option.value}>
             {OptionIcon || null}
-            <OptionItemLabel>{option.label}</OptionItemLabel>
-            <OptionItemSecondaryLabel>
-              {option.secondaryLabel}
-            </OptionItemSecondaryLabel>
+            <ListItemText>{option.label}</ListItemText>
+            <div>{option.secondaryLabel}</div>
           </MenuItem>
         );
       })}
