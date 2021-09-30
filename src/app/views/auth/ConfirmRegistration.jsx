@@ -6,11 +6,11 @@ import { useMount } from 'react-use';
 import { success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import { useDispatch } from 'react-redux';
-import { confirmRegistration, resendConfirmationCode } from 'api/user-api';
+import { confirmRegistration, resendConfirmationCode } from 'api/user-auth-api';
 import { StyledAnchorDiv } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import {

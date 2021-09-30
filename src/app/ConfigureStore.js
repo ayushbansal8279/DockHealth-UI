@@ -11,6 +11,7 @@ import watchTask from './sagas/task-saga';
 import watchTemplateBundle from './sagas/template-bundle-saga';
 import watchOrganization from './sagas/organization-saga';
 import watchUserGroups from './sagas/user-groups-saga';
+import watchUser from './sagas/user-saga';
 
 function* rootSaga() {
   yield all([
@@ -25,6 +26,7 @@ function* rootSaga() {
     watchTemplateBundle(),
     watchOrganization(),
     watchUserGroups(),
+    watchUser(),
   ]);
 }
 

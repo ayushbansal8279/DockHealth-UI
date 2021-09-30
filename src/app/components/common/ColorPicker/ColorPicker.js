@@ -9,12 +9,12 @@ const ColorPicker = ({ name, onChange, value }) => (
         <input
           type="radio"
           name={name}
-          id={uniqueName}
+          id={`${uniqueName}-${name}`}
           value={hex}
           checked={value?.toLowerCase() === hex?.toLowerCase()}
           onChange={event => typeof onChange === 'function' && onChange(event)}
         />
-        <ColorPickerLabel color={hex} htmlFor={uniqueName} />
+        <ColorPickerLabel color={hex} htmlFor={`${uniqueName}-${name}`} />
       </span>
     ))}
   </ColorPickerWrapper>

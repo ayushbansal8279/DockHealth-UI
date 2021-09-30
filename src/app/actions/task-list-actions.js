@@ -1,5 +1,4 @@
 import * as TaskListApi from 'api/task-list-api';
-import * as UserApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import * as AlertActions from 'alert/actions';
@@ -459,11 +458,10 @@ export function isInbox(boolean) {
 
 export function leaveList(taskListIdentifier) {
   return dispatch =>
-    UserApi.leaveList(taskListIdentifier)
-      .then(response => {
+    TaskListApi.leaveList(taskListIdentifier)
+      .then(() => {
         dispatch({
           type: ActionTypes.DELETE_TASKLIST_SUCCESS,
-          response,
           taskListIdentifier,
         });
       })

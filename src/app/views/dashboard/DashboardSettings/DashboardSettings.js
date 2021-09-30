@@ -1,9 +1,10 @@
 import React, { useRef, useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Popover } from '@material-ui/core';
-import { updateUserDashboardPrefs } from 'api/user-api';
 import DashboardSettingsIcon from 'img/settings-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { TaskItemColumn } from 'helpers/task-helpers';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   DashboardSettingsContainer,
   DashboardSettingsHeader,
@@ -21,6 +22,7 @@ const ColumnOptionNames = {
 const DashboardSettings = ({ columnsConfig, setColumnsConfig }) => {
   const iconReference = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const onClickChecbkox = useCallback(
     columnKey => {
@@ -30,18 +32,20 @@ const DashboardSettings = ({ columnsConfig, setColumnsConfig }) => {
           [columnKey]: !previousConfig[columnKey],
         };
 
-        updateUserDashboardPrefs({
-          displayColumns: Object.entries(newConfig).reduce(
-            (accumulator, [key, value]) =>
-              value ? [...accumulator, key] : accumulator,
-            [],
-          ),
-        });
+        dispatch(
+          updateCurrentUserPreferences({
+            displayColumns: Object.entries(newConfig).reduce(
+              (accumulator, [key, value]) =>
+                value ? [...accumulator, key] : accumulator,
+              [],
+            ),
+          }),
+        );
 
         return newConfig;
       });
     },
-    [setColumnsConfig],
+    [dispatch, setColumnsConfig],
   );
 
   return (

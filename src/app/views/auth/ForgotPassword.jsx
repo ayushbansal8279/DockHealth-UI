@@ -5,7 +5,7 @@ import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import ForgotPasswordForm from 'components/auth/ForgotPasswordForm';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
@@ -34,7 +34,7 @@ const ForgotPassword = () => {
 
   const onSubmit = useCallback(
     ({ setError }) => form => {
-      UserApi.forgotPassword({
+      UserAuthApi.forgotPassword({
         username: form.username,
       })
         .then(resp => {
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     () => form => {
       try {
-        UserApi.resendConfirmationCode({
+        UserAuthApi.resendConfirmationCode({
           username: form.username,
         }).then(() => {
           showToast({

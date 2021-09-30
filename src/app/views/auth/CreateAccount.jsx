@@ -15,7 +15,7 @@ import * as organizationApi from 'api/organization-api';
 import {
   register as registerAction,
   resendConfirmationCode,
-} from 'api/user-api';
+} from 'api/user-auth-api';
 import {
   StyledAnchorDiv,
   StyledLink,
@@ -24,7 +24,7 @@ import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import { showAlert, showToast } from 'helpers/utility-functions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';

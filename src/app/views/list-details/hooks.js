@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isNil, move } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
@@ -18,6 +18,7 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   taskListsSelector,
   pendingTaskListsSelector,
@@ -41,7 +42,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 
@@ -82,6 +83,8 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
+
+  const dispatch = useDispatch();
 
   const searchTasks = useCallback(
     searchQuery => {
@@ -169,7 +172,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     }
 
     const refreshAccessTokenTimeoutId = setTimeout(() => {
-      UserApi.refreshAccessToken(user.username);
+      UserAuthApi.refreshAccessToken(user.username);
       refreshAccessToken(user);
     }, systemTimeout);
 
@@ -442,14 +445,16 @@ const initializeListDetailsViewHooks = (match, history) => {
       if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
         modalActions.openModal('MultiMentionAssignTour', {
           onClose: () => {
-            UserApi.updateUserDashboardPrefs({
-              appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
-            });
+            dispatch(
+              updateCurrentUserPreferences({
+                appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
+              }),
+            );
           },
         });
       }
     }
-  }, [currentUser, modalActions]);
+  }, [currentUser, dispatch, modalActions]);
 
   useEffect(() => {
     const { params } = match;

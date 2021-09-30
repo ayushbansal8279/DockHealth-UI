@@ -123,3 +123,11 @@ export function calculateNewElementPosition(layout) {
 
   return { x: newElementPositionX, y: newElementPositionY };
 }
+
+export function isTargetNode(node, tasks) {
+  return tasks?.some(({ taskLinks }) =>
+    taskLinks?.some(
+      ({ targetTaskIdentifier }) => targetTaskIdentifier === node.id,
+    ),
+  );
+}

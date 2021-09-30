@@ -11,7 +11,8 @@ import {
 } from 'actions/organization-actions';
 import { organizationUsersSelector } from 'selectors/organization-selectors';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import { useBoolean } from 'hooks/useBoolean';
+// eslint-disable-next-line import/no-named-as-default
+import useBoolean from 'hooks/useBoolean';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './SubscriptionsPlansView/SubscriptionsPlansView.PlanData';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 import { BILLING_FREQUENCY } from './helpers';

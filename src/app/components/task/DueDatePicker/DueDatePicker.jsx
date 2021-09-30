@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
-import { useBoolean } from 'hooks/useBoolean';
+// eslint-disable-next-line import/no-named-as-default
+import useBoolean from 'hooks/useBoolean';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';

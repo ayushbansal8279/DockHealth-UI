@@ -416,3 +416,50 @@ export function changeUserToOwner(userIdentifier) {
     `organization/reassignOwnerForOrg?assignedUserId=${userIdentifier}`,
   );
 }
+
+export function getCurrentUserOrganizations() {
+  return axios.get('user/findUserOrganizations').then(({ data }) => data);
+}
+
+export const leaveOrganization = organizationIdentifier =>
+  axios
+    .delete(`/user/leaveOrganization/${organizationIdentifier}`)
+    .then(({ data }) => data);
+
+export function selectCurrentOrganizationWithRedirection(
+  organizationIdentifier,
+  redirectionLink,
+) {
+  return axios({
+    method: 'put',
+    url: `/user/selectOrganization/${organizationIdentifier}`,
+  }).then(() => {
+    sessionStorage.setItem(
+      'currentOrganizationIdentifier',
+      organizationIdentifier,
+    );
+    sessionStorage.setItem('redirectToLink', redirectionLink);
+    axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+    window.location.reload();
+  });
+}
+
+export function selectCurrentOrganization(
+  organizationIdentifier,
+  redirectToHome = true,
+) {
+  return axios({
+    method: 'put',
+    url: `/user/selectOrganization/${organizationIdentifier}`,
+  }).then(() => {
+    sessionStorage.setItem(
+      'currentOrganizationIdentifier',
+      organizationIdentifier,
+    );
+    if (redirectToHome) {
+      sessionStorage.setItem('redirectToHome', JSON.stringify(true));
+    }
+    axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+    window.location.reload();
+  });
+}

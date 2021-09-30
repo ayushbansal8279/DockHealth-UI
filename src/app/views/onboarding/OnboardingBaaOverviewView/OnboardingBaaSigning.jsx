@@ -7,14 +7,14 @@ import { checkBAASignedStatus } from 'actions/organization-actions';
 import {
   signOrganizationBAADocument,
   storeSignatureResult,
+  selectCurrentOrganization,
 } from 'api/organization-api';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { selectCurrentOrganization } from 'api/user-api';
 import HelloSign from 'hellosign-embedded';
 import { OnboardingAnchorDiv } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';

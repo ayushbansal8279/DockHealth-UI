@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect } from 'react';
 import { isNil } from 'ramda';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { Paper, Popper, ClickAwayListener } from '@material-ui/core';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
@@ -11,7 +11,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel, DelayPeriodLabel } from './styled';
-import TaskLinkDelayForm from './TaskLinkDelayForm';
+import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 
 const TaskLink = props => {
@@ -109,6 +109,17 @@ const TaskLink = props => {
     },
   ];
 
+  const handleDelayPeriodSubmit = delayPeriodData => {
+    dispatch(
+      updateTasksLink({
+        ...link,
+        isDependent: true,
+        ...delayPeriodData,
+      }),
+    );
+    closeDelayPopover();
+  };
+
   return (
     <>
       <LinkPath {...props} />
@@ -148,7 +159,11 @@ const TaskLink = props => {
                   transformOrigin: 'top right',
                 }}
               >
-                <TaskLinkDelayForm link={link} onClose={closeDelayPopover} />
+                <TaskLinkDelayForm
+                  link={link}
+                  onSubmit={handleDelayPeriodSubmit}
+                  onClose={closeDelayPopover}
+                />
               </Paper>
             </ClickAwayListener>
           </Popper>

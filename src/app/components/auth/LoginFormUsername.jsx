@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import FormInput from 'components/common/Input/FormInput';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
@@ -43,7 +43,7 @@ const LoginFormUsername = props => {
           issValue = queryValues.iss.replace('#/', '');
         }
 
-        UserApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
+        UserAuthApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
           .then(() => {
             const patientIdentifier = sessionStorage.getItem(
               'PatientIdentifier',

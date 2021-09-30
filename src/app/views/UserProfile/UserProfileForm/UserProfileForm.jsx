@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Grid } from '@material-ui/core';
 import palette from 'styles/palette';
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import { head } from 'ramda';
-import * as UserApi from 'api/user-api';
-import * as AlertActions from 'alert/actions';
+import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
 import { openModal } from 'modal/actions';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
@@ -31,7 +28,6 @@ import { SettingsSection, SectionHeader } from '../styled';
 
 const UserProfileForm = ({ userProfile }) => {
   const dispatch = useDispatch();
-  const [avatarEdited, setAvatarEdited] = useState(false);
   const defaultValues = useMemo(() => {
     return {
       firstName: userProfile.firstName,
@@ -41,7 +37,6 @@ const UserProfileForm = ({ userProfile }) => {
       email: userProfile.email,
       accountPhoneNumber: userProfile.accountPhoneNumber,
       workPhoneNumber: userProfile.workPhoneNumber,
-      avatar: getUserAvatarThumbnailUrl(userProfile),
       initials: userProfile?.initials,
       bubbleColor: userProfile?.bubbleColor,
     };
@@ -52,45 +47,6 @@ const UserProfileForm = ({ userProfile }) => {
     validationSchema,
     reValidateMode: 'onSubmit',
   });
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const onSubmit = async ({
-    firstName,
-    lastName,
-    title,
-    department,
-    workPhoneNumber,
-    initials,
-    bubbleColor,
-    avatar,
-  }) => {
-    try {
-      const requestData = {
-        firstName,
-        lastName,
-        titles: [{ name: title }],
-        department,
-        workPhoneNumber,
-        initials,
-        bubbleColor,
-      };
-      await UserApi.updateUser(requestData);
-
-      if (avatarEdited) {
-        if (!avatar) {
-          await UserApi.deleteUserProfilePic();
-        } else {
-          const response = await fetch(avatar);
-          const arrayBuffer = await response.arrayBuffer();
-          await UserApi.saveUserProfilePic(arrayBuffer);
-        }
-      }
-      dispatch(showGlobalAlert(AlertMessages.UPDATED));
-    } catch (error) {
-      dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
-    } finally {
-      await UserApi.getCurrentUser();
-    }
-  };
 
   const {
     handleSubmit,
@@ -128,7 +84,7 @@ const UserProfileForm = ({ userProfile }) => {
         userProfile,
         onUpdateSuccess: updatedPhoneNumber => {
           setValue('accountPhoneNumber', updatedPhoneNumber);
-          UserApi.getCurrentUser();
+          dispatch(getCurrentUser());
         },
       }),
     );
@@ -137,7 +93,7 @@ const UserProfileForm = ({ userProfile }) => {
   return (
     <FormContext {...formMethods}>
       <StyledForm
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(data => dispatch(updateCurrentUser(data)))}
         autoComplete="off"
         autoCorrect="off"
       >
@@ -155,13 +111,16 @@ const UserProfileForm = ({ userProfile }) => {
             >
               <OuterAvatarContainer>
                 <AvatarInput
-                  pictureSrc={avatarValue}
                   name="userAvatar"
+                  pictureSrc={
+                    avatarValue !== undefined
+                      ? avatarValue
+                      : getUserAvatarThumbnailUrl(userProfile)
+                  }
                   initials={initialsValue}
-                  color={palette.midnightBlue}
+                  color={avatarColorValue}
                   onChange={newAvatar => {
                     setValue('avatar', newAvatar);
-                    setAvatarEdited(true);
                   }}
                 />
                 {!userProfile.profileThumbnailPictureHash && (

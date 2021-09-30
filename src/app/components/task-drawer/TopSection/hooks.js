@@ -2,7 +2,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
-import { useBoolean } from 'hooks/useBoolean';
+// eslint-disable-next-line import/no-named-as-default
+import useBoolean from 'hooks/useBoolean';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const initializeTaskDrawerTopSectionHooks = ({

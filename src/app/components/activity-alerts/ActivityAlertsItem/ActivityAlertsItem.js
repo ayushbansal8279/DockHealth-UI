@@ -4,7 +4,7 @@
 import React from 'react';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
-import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
+import { selectCurrentOrganizationWithRedirection } from 'api/organization-api';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/notifications/cross';
 import {

@@ -3,7 +3,7 @@ import {
   isAuthenticated,
   updateStoreWithCurrentUser,
   getEnterpriseAccessTokensByAuthCode,
-} from 'api/user-api';
+} from 'api/user-auth-api';
 import queryString from 'query-string';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import {
