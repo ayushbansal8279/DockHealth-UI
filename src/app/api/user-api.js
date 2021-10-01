@@ -91,7 +91,16 @@ export function saveCurrentUserAvatar(avatarData) {
 }
 
 export function updateCurrentUser(formProps) {
-  return axios.put(`user`, formProps).then(({ data }) => {
+  const userProps = formProps;
+  if (formProps.title) {
+    userProps.titles = [
+      {
+        name: formProps.title,
+      },
+    ];
+  }
+
+  return axios.put(`user`, userProps).then(({ data }) => {
     return data;
   });
 }
