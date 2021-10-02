@@ -106,7 +106,7 @@ const MultiAssignMembersList = ({
           );
           setMembersOptions(joinedMembers);
         } else {
-          const organizationMembers = await OrganizationApi.getOrganizationUsers();
+          const organizationMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
           setMembersOptions(organizationMembers);
         }
       } catch (error) {
