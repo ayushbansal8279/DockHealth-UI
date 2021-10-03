@@ -5,6 +5,8 @@ import AlertMessages from 'alert/AlertMessages';
 import * as ActionTypes from 'actions/action-types';
 import * as TaskApi from 'api/task-api';
 import * as TaskActions from 'actions/task-actions';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import {
   REORDER_SUBTASKS,
   CHOOSE_DECISION_TASK_OPTION,
@@ -128,6 +130,17 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
       bundleIdentifier: templateBundleIdentifier,
       dataToUpdate: templateBundle,
     });
+    yield put(
+      ListDetailsActions.getListDetailsTaskCounters(
+        templateBundle.taskListIdentifier,
+      ),
+    );
+    yield put(
+      ListDetailsSagaActions.getTasksGroupsList({
+        taskListIdentifier: templateBundle.taskListIdentifier,
+        shouldSetRequestState: false,
+      }),
+    );
     if (!checkIfHasIncompleteTasks(templateBundle.tasks)) {
       yield delay(TASK_DISAPPEAR_DELAY);
       yield put(

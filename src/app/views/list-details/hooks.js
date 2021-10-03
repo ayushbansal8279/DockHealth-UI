@@ -284,6 +284,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     const { params } = match;
     const { taskListIdentifier } = params;
 
+    listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
     listDetailsSagaActions.getTasksGroupsList({
       taskListIdentifier,
       shouldSetRequestState: false,
@@ -293,6 +294,7 @@ const initializeListDetailsViewHooks = (match, history) => {
       refreshTab();
     }
   }, [
+    listDetailsActions,
     listDetailsSagaActions,
     match,
     refreshFilters,
@@ -328,6 +330,7 @@ const initializeListDetailsViewHooks = (match, history) => {
           setTimeout(() => {
             listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
             listDetailsSagaActions.getTasksGroupsList({
+              taskListIdentifier,
               shouldSetRequestState: false,
             });
           }, TASK_DISAPPEAR_DELAY);

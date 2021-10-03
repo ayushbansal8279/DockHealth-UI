@@ -622,6 +622,9 @@ function* doCreateTask(payload) {
         taskListIdentifier,
         shouldSetRequestState: false,
       });
+      yield put(
+        ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+      );
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
       yield put({ type: ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS });
     }
