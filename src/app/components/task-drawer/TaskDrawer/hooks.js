@@ -469,16 +469,16 @@ const initializeTaskDrawerHooks = ({
       true,
     ).tokenizedText;
 
-    if (updatedTaskDetails === '') {
+    if (selectedTask && updatedTaskDetails === '') {
       if (
-        !selectedTask.tokenizedDetails ||
-        selectedTask.tokenizedDetails === updatedTaskDetails
+        !selectedTask?.tokenizedDetails ||
+        selectedTask?.tokenizedDetails === updatedTaskDetails
       ) {
         return;
       }
       selectedTask.detailsCleared = true;
     }
-    if (selectedTask.tokenizedDetails === updatedTaskDetails) {
+    if (selectedTask?.tokenizedDetails === updatedTaskDetails) {
       return;
     }
 
