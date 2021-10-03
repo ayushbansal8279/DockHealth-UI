@@ -366,13 +366,6 @@ const ListDetailsReducer = (state = initialState, action) => {
             tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
           })),
         },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
-            ...g,
-            tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
-          })),
-        },
       };
     }
 
@@ -436,28 +429,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       );
     }
 
-    case DELETE_TEMPLATE_BUNDLE: {
-      const { bundleIdentifier } = action;
-
-      return {
-        ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
-            ...g,
-            tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),
-          })),
-        },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
-            ...g,
-            tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),
-          })),
-        },
-      };
-    }
-
+    case DELETE_TEMPLATE_BUNDLE:
     case COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
