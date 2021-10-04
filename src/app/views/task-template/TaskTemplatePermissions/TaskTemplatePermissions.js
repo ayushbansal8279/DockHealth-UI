@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback } from 'react';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import MemberGroup from 'components/user/MemberGroup/MemberGroup';
@@ -6,19 +5,16 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  getTemplateTasks,
-  updateTaskTemplateSuccess,
-} from 'actions/task-template-actions';
+import { updateTaskTemplateSuccess } from 'actions/task-template-actions';
 
 import {
   StandardTaskItemCell,
   MemberGroupContainer,
   AssignMemberIconContainer,
   PublicInfoWrapper,
-} from '../../styled';
+} from './styled';
 
-const TaskItemPermissions = ({ template }) => {
+const TaskTemplatePermissions = ({ template }) => {
   const {
     members: transformedMembers,
     taskTemplateIdentifier,
@@ -29,7 +25,6 @@ const TaskItemPermissions = ({ template }) => {
     ...user,
     memberPermission,
   }));
-  console.log('members', members);
   const openListEditModal = useCallback(() => {
     dispatch(
       openModal('ListPermissions', {
@@ -39,7 +34,6 @@ const TaskItemPermissions = ({ template }) => {
           template,
         },
         onMembersRefresh: refreshedMembers => {
-          console.log('refreshedMembers', refreshedMembers);
           dispatch(
             updateTaskTemplateSuccess(taskTemplateIdentifier, {
               members: refreshedMembers,
@@ -84,4 +78,4 @@ const TaskItemPermissions = ({ template }) => {
   );
 };
 
-export default TaskItemPermissions;
+export default TaskTemplatePermissions;

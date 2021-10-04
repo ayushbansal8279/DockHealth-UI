@@ -77,10 +77,13 @@ const OptionsMenu = ({
                       tooltipText,
                       component,
                     }) => (
-                      <Tooltip title={tooltipText} hideTooltip={!tooltipText}>
+                      <Tooltip
+                        key={name}
+                        title={tooltipText}
+                        hideTooltip={!tooltipText}
+                      >
                         <div>
                           <MenuItem
-                            key={name}
                             color={color}
                             onClick={event => {
                               openPopover(false);
