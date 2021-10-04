@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, ClickAwayListener } from '@material-ui/core';
+import { Grid, ClickAwayListener, Popper, Paper } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
 import {
   toggleListNotifications,
@@ -33,7 +33,10 @@ import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberB
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover.tsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
-import { userProfileSelector } from '../../../selectors/user-selectors';
+import { MoreVert } from '@material-ui/icons';
+import zIndex from 'styles/z-index';
+import Checkbox from 'components/common/Checkbox/Checkbox';
+import { userProfileSelector } from 'selectors/user-selectors';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
 import {
@@ -43,6 +46,9 @@ import {
   SearchWrapper,
   MemberWrapper,
   ToolbarContainer,
+  MenuText,
+  StyledIconButton,
+  LabelBox,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -101,11 +107,15 @@ const Toolbar = ({
   patientColumnVisible = true,
   tipsContent,
   isFetching,
+  moreOptions,
 }) => {
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
+  const menuReference = useRef(null);
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
+  const [menuOpen, , unsetMenuOpen, toggleMenuOpen] = useBoolean(false);
+
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
@@ -320,6 +330,54 @@ const Toolbar = ({
                 active={tipsOpened}
                 toggleTips={() => setTipsOpened(!tipsOpened)}
               />
+            </>
+          )}
+          {moreOptions && (
+            <>
+              <StyledIconButton ref={menuReference} onClick={toggleMenuOpen}>
+                <MoreVert />
+              </StyledIconButton>
+              <Popper
+                anchorEl={menuReference?.current}
+                placement="bottom-end"
+                disablePortal
+                open={menuOpen}
+                style={{
+                  zIndex: zIndex.optionsMenu,
+                }}
+              >
+                {menuOpen && (
+                  <ClickAwayListener onClickAway={unsetMenuOpen}>
+                    <Paper>
+                      {moreOptions.map(option => (
+                        <LabelBox
+                          key={option.key}
+                          display="flex"
+                          alignItems="center"
+                          p={2}
+                          py={1}
+                          onClick={() => {
+                            if (
+                              typeof option.onClick === 'function' &&
+                              !option.disabled
+                            )
+                              option.onClick(option.key);
+                          }}
+                        >
+                          <Checkbox
+                            isDisabled={option.disabled}
+                            isChecked={option.checked}
+                          />
+                          <Spacing horizontal={3} />
+                          <MenuText isDisabled={option.disabled}>
+                            {option.name}
+                          </MenuText>
+                        </LabelBox>
+                      ))}
+                    </Paper>
+                  </ClickAwayListener>
+                )}
+              </Popper>
             </>
           )}
         </ToolbarBottomGrid>

@@ -25,7 +25,10 @@ import {
   taskListMembersSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userSetupViewListSelector,
+} from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   completedTasksIsFetchingSelector,
@@ -84,6 +87,9 @@ const initializeListDetailsViewHooks = (match, history) => {
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
 
+  const viewSetup = useSelector(
+    userSetupViewListSelector(match?.params?.taskListIdentifier),
+  );
   const dispatch = useDispatch();
 
   const searchTasks = useCallback(
@@ -643,6 +649,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     taskCounters,
     taskListIdentifier,
     toggleTaskCompletedStatus,
+    viewSetup,
   };
 };
 

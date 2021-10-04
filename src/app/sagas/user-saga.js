@@ -1,10 +1,19 @@
-import { all, put, call, takeLatest, takeEvery } from 'redux-saga/effects';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  all,
+  put,
+  call,
+  takeLatest,
+  takeEvery,
+  select,
+} from 'redux-saga/effects';
 import * as UserActions from 'actions/user-actions';
 import * as OrganizationApi from 'api/organization-api';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as ActionTypes from 'actions/action-types';
 import * as UserApi from 'api/user-api';
+import { userSetupClientViewSelector } from '../selectors/user-selectors';
 
 function* getCurrentUserNotificationPreferences() {
   try {
@@ -94,7 +103,31 @@ function* getCurrentUserOrganizations() {
   }
 }
 
+function* updateUserViewSetup({ payload }) {
+  try {
+    const { setup } = payload;
+    const setupFromStore = yield select(userSetupClientViewSelector);
+    const summedSetup = { ...setupFromStore, ...setup };
+    const userSetup = Object.entries(summedSetup).reduce(
+      (accumulator, [key, value]) =>
+        value ? [...accumulator, key] : accumulator,
+      [],
+    );
+    const data = {
+      displayOptions: userSetup,
+    };
+    yield put({
+      type: ActionTypes.UPDATE_USER_VIEW_SETUP_SUCCESS,
+    });
+    UserApi.updateUserViewSetup(data);
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.UPDATE_USER_VIEW_SETUP_FAILURE });
+  }
+}
+
 export default function* watchUser() {
+  yield takeLatest(ActionTypes.UPDATE_USER_VIEW_SETUP, updateUserViewSetup);
   yield takeLatest(
     ActionTypes.GET_CURRENT_USER_NOTIFICATION_PREFERENCES,
     getCurrentUserNotificationPreferences,

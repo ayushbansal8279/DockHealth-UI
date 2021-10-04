@@ -53,6 +53,7 @@ const ListDetailsOpenedTasks = ({
   sort,
   onSortChange,
   resetSort,
+  viewSetup,
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
@@ -300,6 +301,7 @@ const ListDetailsOpenedTasks = ({
                                     />
                                   ) : (
                                     <TaskTemplateGroup
+                                      viewSetup={viewSetup}
                                       isStartedDnD={
                                         draggedId === task.identifier
                                       }
@@ -361,6 +363,7 @@ const ListDetailsOpenedTasks = ({
       showClearSortFiltersModal,
       applyTemplate,
       loadTasksForTaskGroup,
+      viewSetup,
     ],
   );
 

@@ -31,7 +31,10 @@ import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userSetupClientViewSelector,
+} from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
@@ -70,7 +73,7 @@ const PatientTasksListView = () => {
     patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
-
+  const viewSetup = useSelector(userSetupClientViewSelector);
   const sort = useSelector(patientTasksSortSelector);
   const isFetchingLists = useSelector(isFetchingPatientTaskListsSelector);
   const lists = useSelector(patientTaskListsSelector);
@@ -317,6 +320,7 @@ const PatientTasksListView = () => {
             />
           ) : (
             <TaskTemplateGroup
+              viewSetup={viewSetup}
               key={task.identifier}
               templateGroup={task}
               taskItemConfig={taskItemConfig}
@@ -330,6 +334,7 @@ const PatientTasksListView = () => {
       </>
     ),
     [
+      viewSetup,
       activeList,
       sort,
       sortPatientTasks,
@@ -366,6 +371,7 @@ const PatientTasksListView = () => {
                 >
                   <TaskListHeader
                     list={!isAllTasksView ? activeList : null}
+                    viewSetup={viewSetup}
                     refreshView={refreshPatientTasks}
                   >
                     {isAllTasksView ? (

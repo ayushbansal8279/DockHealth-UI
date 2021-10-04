@@ -120,3 +120,9 @@ export function updateCurrentUserPreferences(preferences) {
 export function acknowledgeEula() {
   return axios.put('/user/acknowledgeEULA').then(({ data }) => data);
 }
+
+export function updateUserViewSetup(setup) {
+  return axios
+    .put('user/updateUserPreferences', setup)
+    .then(({ data }) => data);
+}

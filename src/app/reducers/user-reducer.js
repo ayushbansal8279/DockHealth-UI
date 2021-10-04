@@ -1,6 +1,16 @@
 import * as ActionTypes from '../actions/action-types';
 
+const defaultViewSetup = {
+  SHOW_WORKFLOW_DETAILS: true,
+  SHOW_WORKFLOW_COMPLETED_TASKS: false,
+};
+
 const initialState = {
+  userViewSetup: {
+    customLists: {},
+    mainSetup: { ...defaultViewSetup },
+    defaultViewSetup,
+  },
   userAuth: false,
   userProfile: {},
   userNotificationPreferences: '',
@@ -23,6 +33,38 @@ export const dummyAccess = {
 
 const UserReducer = (state = initialState, action) => {
   switch (action.type) {
+    // user view setup
+    case ActionTypes.UPDATE_LIST_VIEW_SETUP: {
+      const { listIdentifier, setup } = action.payload;
+      return {
+        ...state,
+        userViewSetup: {
+          ...state.userViewSetup,
+          customLists: {
+            ...state.userViewSetup.customLists,
+            [listIdentifier]: {
+              ...defaultViewSetup,
+              ...(state.userViewSetup.customLists[listIdentifier] || {}),
+              ...setup,
+            },
+          },
+        },
+      };
+    }
+    case ActionTypes.UPDATE_USER_VIEW_SETUP: {
+      const { setup } = action.payload;
+      return {
+        ...state,
+        userViewSetup: {
+          ...state.userViewSetup,
+          mainSetup: {
+            ...defaultViewSetup,
+            ...state.userViewSetup.mainSetup,
+            ...setup,
+          },
+        },
+      };
+    }
     case ActionTypes.GET_USER_AUTH_DATA_SUCCESS: {
       const { userAuth } = action;
       return { ...state, userAuth };
@@ -74,6 +116,11 @@ const UserReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_CURRENT_USER_SUCCESS: {
       const { user } = action;
+      const { displayOptions } = user.userPreference;
+      const mainSetup = {};
+      Object.entries(state.userViewSetup.mainSetup).forEach(([key]) => {
+        mainSetup[key] = displayOptions.includes(key);
+      });
 
       return {
         ...state,
@@ -85,6 +132,7 @@ const UserReducer = (state = initialState, action) => {
           profileThumbnailPictureHash: user.profileThumbnailPictureHash,
           profilePictureHash: user.profilePictureHash,
         },
+        userViewSetup: { ...state.userViewSetup, mainSetup },
       };
     }
 

@@ -61,6 +61,7 @@ const TaskTemplateGroup = ({
   tasksDragAndDropDisabled,
   disablePatientAssignment,
   isCompletedTab = false,
+  viewSetup,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -71,6 +72,7 @@ const TaskTemplateGroup = ({
     parentTaskGroupIdentifier,
     taskListIdentifier,
   } = templateGroup;
+  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -93,6 +95,17 @@ const TaskTemplateGroup = ({
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setOpen(SHOW_WORKFLOW_DETAILS);
+    if (isCompletedTab) {
+      setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+      setShowCompletedTasks(true);
+    } else {
+      setShowIncompleteTasks(true);
+      setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+    }
+  }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
     setNameInputValue(name);

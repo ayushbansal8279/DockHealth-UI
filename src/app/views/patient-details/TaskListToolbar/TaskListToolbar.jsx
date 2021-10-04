@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -16,7 +17,14 @@ import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { completeTasksVisibilitySelector } from 'selectors/patient-details-selectors';
 import { togglePatientCompleteTasksVisible } from 'actions/patient-details-actions';
-import { ListsToolbarContainer, ListsTabsContainer, MenuText } from './styled';
+import { updateUserPageViewSetup } from 'actions/user-actions';
+import { userSetupClientViewSelector } from 'selectors/user-selectors';
+import {
+  ListsToolbarContainer,
+  ListsTabsContainer,
+  MenuText,
+  LabelBox,
+} from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 
 const TaskListToolbar = props => {
@@ -32,6 +40,7 @@ const TaskListToolbar = props => {
   );
   const dispatch = useDispatch();
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
+  const viewSetup = useSelector(userSetupClientViewSelector);
 
   const listOptions = lists?.map(
     ({ taskListIdentifier, listName, tasks = [] }) => {
@@ -82,6 +91,39 @@ const TaskListToolbar = props => {
   };
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+  const OPTIONS = [
+    {
+      name: 'Show Workflow Details',
+      onClick: () =>
+        dispatch(
+          updateUserPageViewSetup({
+            SHOW_WORKFLOW_DETAILS: !viewSetup.SHOW_WORKFLOW_DETAILS,
+          }),
+        ),
+      key: 'SHOW_WORKFLOW_DETAILS',
+      checked: viewSetup.SHOW_WORKFLOW_DETAILS,
+    },
+    {
+      disabled: !viewSetup.SHOW_WORKFLOW_DETAILS,
+      name: 'Show Workflow Completed Tasks',
+      onClick: () =>
+        dispatch(
+          updateUserPageViewSetup({
+            SHOW_WORKFLOW_COMPLETED_TASKS: !viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
+          }),
+        ),
+      key: 'SHOW_COMPLETED_OR_UNCOMPLETED_WORKFLOW_DETAILS',
+      checked: viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
+    },
+    {
+      name: 'Show completed tasks',
+      onClick: () => {
+        dispatch(togglePatientCompleteTasksVisible());
+      },
+      key: 'SHOW_COMPLETED_TASKS',
+      checked: completeTasksVisible,
+    },
+  ];
 
   return (
     <ListsToolbarContainer>
@@ -120,16 +162,30 @@ const TaskListToolbar = props => {
         {menuOpen && (
           <ClickAwayListener onClickAway={unsetMenuOpen}>
             <Paper>
-              <Box display="flex" alignItems="center" p={3}>
-                <Checkbox
-                  isChecked={completeTasksVisible}
+              {OPTIONS.map(option => (
+                <LabelBox
                   onClick={() => {
-                    dispatch(togglePatientCompleteTasksVisible());
+                    if (
+                      typeof option.onClick === 'function' &&
+                      !option.disabled
+                    )
+                      option.onClick(option.key);
                   }}
-                />
-                <Box m={0.5} />
-                <MenuText>Show completed tasks</MenuText>
-              </Box>
+                  display="flex"
+                  alignItems="center"
+                  p={2}
+                  py={1}
+                >
+                  <Checkbox
+                    isDisabled={option.disabled}
+                    isChecked={option.checked}
+                  />
+                  <Box m={0.5} />
+                  <MenuText isDisabled={option.disabled}>
+                    {option.name}
+                  </MenuText>
+                </LabelBox>
+              ))}
             </Paper>
           </ClickAwayListener>
         )}
