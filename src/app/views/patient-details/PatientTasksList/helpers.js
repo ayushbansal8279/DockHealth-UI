@@ -25,7 +25,7 @@ export function groupTasks(tasks) {
       const group = (item.itemType === TaskItemType.BUNDLE
         ? item.tasks?.[0]
         : item
-      ).taskGroups.find(({ groupType }) =>
+      )?.taskGroups?.find(({ groupType }) =>
         [TaskGroupType.TASKLIST, TaskGroupType.TASKLIST_DEFAULT].includes(
           groupType,
         ),
