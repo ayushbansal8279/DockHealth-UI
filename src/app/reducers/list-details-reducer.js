@@ -174,6 +174,7 @@ const ListDetailsReducer = (state = initialState, action) => {
                   ? taskGroup.tasks.concat(group.tasks)
                   : group.tasks,
                 hasMore: group.hasMore,
+                moreTasksIndex: group.moreTasksIndex,
               }
             : taskGroup,
         ) || [];
@@ -263,6 +264,7 @@ const ListDetailsReducer = (state = initialState, action) => {
                 ? group.tasks
                 : taskGroup.tasks.concat(group.tasks),
               hasMore: group.hasMore,
+              moreTasksIndex: group.moreTasksIndex,
               isLoadingGroup: false,
               isFetchingMoreTasks: false,
             };

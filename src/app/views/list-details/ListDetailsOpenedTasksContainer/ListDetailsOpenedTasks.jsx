@@ -199,7 +199,7 @@ const ListDetailsOpenedTasks = ({
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
                 startPosition:
-                  groupedTasks[taskGroupIdentifier]?.tasks?.length || 0,
+                  groupedTasks[taskGroupIdentifier]?.moreTasksIndex || 0,
                 refresh: false,
               });
             }}
