@@ -12,6 +12,7 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
@@ -441,11 +442,15 @@ const TaskTemplateGroup = ({
                         patientIdentifier={patient.patientIdentifier}
                         disabled={isPopoverOpen}
                       >
-                        <Placeholder>
-                          {patient?.lastName
-                            ? `${patient?.lastName}, ${patient?.firstName}`
-                            : patient?.firstName}
-                        </Placeholder>
+                        <Link
+                          to={`/core/patient/${patient?.patientIdentifier}`}
+                        >
+                          <Placeholder>
+                            {patient?.lastName
+                              ? `${patient?.lastName}, ${patient?.firstName}`
+                              : patient?.firstName}
+                          </Placeholder>
+                        </Link>
                       </PatientCard>
                     ) : (
                       <AddPlaceholder>
