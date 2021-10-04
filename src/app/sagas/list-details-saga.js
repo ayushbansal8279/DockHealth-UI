@@ -592,7 +592,7 @@ function* doCreateTask(payload) {
       if (filters && !isEmpty(filters)) {
         if (checkIfTaskMatchesFilters(createdTask, filters)) {
           yield put({
-            type: ActionTypes.ADD_TASK,
+            type: ActionTypes.ADD_TASK_SUCCESS,
             task: createdTask,
           });
         }
@@ -608,7 +608,7 @@ function* doCreateTask(payload) {
           });
         } else {
           yield put({
-            type: ActionTypes.ADD_TASK,
+            type: ActionTypes.ADD_TASK_SUCCESS,
             task: createdTask,
           });
         }

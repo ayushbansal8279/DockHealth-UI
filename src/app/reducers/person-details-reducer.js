@@ -8,7 +8,7 @@ import {
   GET_PERSON_DETAILS_SUCCESS,
   GET_PERSON_DETAILS_FAILURE,
   SORT_PERSON_TASKS,
-  ADD_TASK,
+  ADD_TASK_SUCCESS,
 } from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
@@ -114,7 +114,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ADD_TASK: {
+    case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       return {

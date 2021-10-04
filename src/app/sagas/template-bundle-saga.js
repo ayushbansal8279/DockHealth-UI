@@ -165,6 +165,30 @@ function* changePatientForTemplateBundle({ taskTemplateIdentifier, patient }) {
   }
 }
 
+function* applyTemplate({
+  taskTemplateIdentifier,
+  taskListIdentifier,
+  taskGroupIdentifier,
+  patientIdentifier,
+}) {
+  try {
+    const addedBundle = yield call(TemplateBundleApi.applyTemplate, {
+      taskTemplateIdentifier,
+      taskListIdentifier,
+      taskGroupIdentifier,
+      patientIdentifier,
+    });
+    yield put(showGlobalAlert(AlertMessages.CREATED));
+    yield put({
+      type: ActionTypes.APPLY_TEMPLATE_SUCCESS,
+      bundle: addedBundle,
+    });
+  } catch {
+    yield put({ type: ActionTypes.APPLY_TEMPLATE_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTemplateBundle() {
   yield takeEvery(ActionTypesSaga.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
   yield takeEvery(
@@ -181,4 +205,5 @@ export default function* watchTemplateBundle() {
     ActionTypesSaga.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
     changePatientForTemplateBundle,
   );
+  yield takeEvery(ActionTypes.APPLY_TEMPLATE, applyTemplate);
 }

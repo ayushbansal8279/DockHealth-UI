@@ -179,7 +179,7 @@ const BulkEditOptionsBar = ({
     tasks => {
       tasks.reverse().forEach(task =>
         dispatch({
-          type: ActionTypes.ADD_TASK,
+          type: ActionTypes.ADD_TASK_SUCCESS,
           task,
         }),
       );

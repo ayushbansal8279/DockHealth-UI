@@ -15,7 +15,7 @@ import {
   TASK_GROUP_LIST_FAILURE,
   SET_LIST_DETAILS_TASKS_SORT,
   REQUEST_ALL_LIST_DETAILS_GROUPS,
-  ADD_TASK,
+  ADD_TASK_SUCCESS,
   UPDATE_TEMPLATE_BUNDLE,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
@@ -369,7 +369,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ADD_TASK: {
+    case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const taskListIdentifier = addedTask.taskList?.taskListIdentifier;

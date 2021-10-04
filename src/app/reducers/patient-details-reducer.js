@@ -10,7 +10,7 @@ import {
   SET_PATIENT_TASK_SEARCH_VALUE,
   SORT_PATIENT_TASKS,
   UPDATE_TEMPLATE_BUNDLE,
-  ADD_TASK,
+  ADD_TASK_SUCCESS,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
   COMPLETE_TEMPLATE_BUNDLE,
@@ -196,7 +196,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ADD_TASK: {
+    case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const bundleIdentifier = addedTask.taskGroups?.find(

@@ -169,7 +169,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
       .then(task => {
         if (!task.taskList) {
           dispatch({
-            type: ActionTypes.ADD_TASK,
+            type: ActionTypes.ADD_TASK_SUCCESS,
             task: {
               ...task,
               taskList: { listName: 'Inbox', taskListIdentifier: '' },
@@ -180,7 +180,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             addingNewTask: false,
           });
         } else {
-          dispatch({ type: ActionTypes.ADD_TASK, task });
+          dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
@@ -264,7 +264,7 @@ export const moveTask = (
         });
       } else {
         dispatch({
-          type: ActionTypes.ADD_TASK,
+          type: ActionTypes.ADD_TASK_SUCCESS,
           task: updatedTask,
         });
       }
@@ -289,7 +289,7 @@ export const moveTask = (
               });
             } else {
               dispatch({
-                type: ActionTypes.ADD_TASK,
+                type: ActionTypes.ADD_TASK_SUCCESS,
                 task,
               });
             }
@@ -373,7 +373,7 @@ export function deleteTask(task) {
             response?.headers?.['x-transaction-id'],
             () => {
               dispatch({
-                type: ActionTypes.ADD_TASK,
+                type: ActionTypes.ADD_TASK_SUCCESS,
                 task,
               });
             },
@@ -409,7 +409,7 @@ export function duplicateTask(
             });
           } else {
             dispatch({
-              type: ActionTypes.ADD_TASK,
+              type: ActionTypes.ADD_TASK_SUCCESS,
               task: duplicatedTask,
             });
           }
@@ -990,5 +990,12 @@ export function changeTaskIntentType(taskIdentifier, intentType) {
     type: ActionTypes.CHANGE_TASK_INTENT_TYPE,
     taskIdentifier,
     intentType,
+  };
+}
+
+export function addTask(task) {
+  return {
+    type: ActionTypes.ADD_TASK,
+    task,
   };
 }

@@ -108,7 +108,7 @@ export function quickAddTask(newTask) {
   return dispatch => {
     return TaskApi.addTask(newTask)
       .then(task => {
-        dispatch({ type: ActionTypes.ADD_TASK, task });
+        dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
         dispatch({
           type: ActionTypes.CHANGE_ADDING_NEW_TASK,
           addingNewTask: false,
