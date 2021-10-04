@@ -27,7 +27,7 @@ import {
 } from 'selectors/task-list-selectors';
 import {
   userProfileSelector,
-  userSetupViewListSelector,
+  userSetupClientViewSelector,
 } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
@@ -87,9 +87,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
 
-  const viewSetup = useSelector(
-    userSetupViewListSelector(match?.params?.taskListIdentifier),
-  );
+  const viewSetup = useSelector(userSetupClientViewSelector);
   const dispatch = useDispatch();
 
   const searchTasks = useCallback(

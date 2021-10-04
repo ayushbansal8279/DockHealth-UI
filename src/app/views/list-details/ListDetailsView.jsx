@@ -4,7 +4,7 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { useDispatch } from 'react-redux';
-import { updateUserListViewSetup } from 'actions/user-actions';
+import { updateUserPageViewSetup } from 'actions/user-actions';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
@@ -89,7 +89,7 @@ const ListDetailsView = props => {
                 name: 'Show Workflow Details',
                 onClick: () =>
                   dispatch(
-                    updateUserListViewSetup(taskListIdentifier, {
+                    updateUserPageViewSetup({
                       SHOW_WORKFLOW_DETAILS: !viewSetup.SHOW_WORKFLOW_DETAILS,
                     }),
                   ),
@@ -104,7 +104,7 @@ const ListDetailsView = props => {
                     : 'Show Workflow Completed Tasks',
                 onClick: () =>
                   dispatch(
-                    updateUserListViewSetup(taskListIdentifier, {
+                    updateUserPageViewSetup({
                       SHOW_WORKFLOW_COMPLETED_TASKS: !viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
                     }),
                   ),
