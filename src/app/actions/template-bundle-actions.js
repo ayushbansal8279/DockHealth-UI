@@ -18,7 +18,7 @@ export function reorderSubtasksInTemplateBundle({
   incompleteTasksShown = true,
 }) {
   return {
-    type: ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
+    type: ActionTypes.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
     source,
     destination,
     bundle,

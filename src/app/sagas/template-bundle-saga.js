@@ -192,7 +192,7 @@ function* applyTemplate({
 export default function* watchTemplateBundle() {
   yield takeEvery(ActionTypesSaga.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
   yield takeEvery(
-    ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
+    ActionTypes.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
     reorderTasksInTemplateBundle,
   );
   yield takeEvery(
