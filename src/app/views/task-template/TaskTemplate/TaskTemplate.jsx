@@ -150,10 +150,12 @@ const TaskTemplate = ({ template, isFullView, children }) => {
               title: 'Delete workflow',
               description:
                 'Are you sure you want to delete this workflow? This action cannot be undone.',
-              confirm: () =>
+              confirm: () => {
                 dispatch(
                   TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),
-                ),
+                );
+                dispatch(ModalActions.closeModal());
+              },
             }),
           ),
       },

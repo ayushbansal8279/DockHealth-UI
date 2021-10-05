@@ -6,7 +6,7 @@ import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
@@ -673,6 +673,7 @@ const BulkEditOptionsBar = ({
                 refreshTasks();
               }
 
+              dispatch(closeModal());
               if (onClose && typeof onClose === 'function') {
                 onClose();
               }

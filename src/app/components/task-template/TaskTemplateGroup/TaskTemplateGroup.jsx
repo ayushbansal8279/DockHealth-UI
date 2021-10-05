@@ -243,10 +243,12 @@ const TaskTemplateGroup = ({
               title: 'Delete workflow',
               description:
                 'Are you sure you want to delete this workflow? This action cannot be undone.',
-              confirm: () =>
+              confirm: () => {
                 dispatch(
                   TemplateBundleActions.deleteTemplateBundle(identifier),
-                ),
+                );
+                dispatch(ModalActions.closeModal());
+              },
             }),
           ),
       },
