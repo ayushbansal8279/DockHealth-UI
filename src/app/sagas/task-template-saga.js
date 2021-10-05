@@ -11,6 +11,7 @@ import {
   RELOAD_OPENED_TEMPLATE_TASKS,
   GO_TO_TASK_TEMPLATE_FOLDER,
   MOVE_TASK_TEMPLATE,
+  SWITCH_TEMPLATE_PUBLIC,
 } from 'actions/action-types-saga';
 import {
   all,
@@ -235,6 +236,31 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
       dataToUpdate,
     });
     yield call(TaskTemplateApi.updateTemplate, updatedTemplate);
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      taskTemplateIdentifier,
+      dataToUpdate: template,
+    });
+  }
+}
+
+function* switchTemplatePublic({ taskTemplateIdentifier, flagPublic }) {
+  const template = yield select(taskTemplateSelector(taskTemplateIdentifier));
+
+  try {
+    yield put({
+      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      taskTemplateIdentifier,
+      dataToUpdate: { publicAccess: flagPublic },
+    });
+    yield call(
+      TaskTemplateApi.switchTemplatePublic,
+      taskTemplateIdentifier,
+      flagPublic,
+    );
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -699,4 +725,5 @@ export default function* watchTaskTemplate() {
     getCurrentTaskTemplate,
   );
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
+  yield takeEvery(SWITCH_TEMPLATE_PUBLIC, switchTemplatePublic);
 }

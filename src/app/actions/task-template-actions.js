@@ -54,6 +54,17 @@ export function addTemplateFolder(template, parentIdentifier = null) {
   };
 }
 
+export function updateTaskTemplateSuccess(
+  taskTemplateIdentifier,
+  dataToUpdate,
+) {
+  return {
+    type: ActionTypes.UPDATE_TASK_TEMPLATE,
+    taskTemplateIdentifier,
+    dataToUpdate,
+  };
+}
+
 export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
   return {
     type: ActionTypesSaga.GO_TO_TASK_TEMPLATE_FOLDER,
@@ -65,6 +76,14 @@ export function deleteTemplate(taskTemplateIdentifier) {
   return {
     type: ActionTypesSaga.DELETE_TASK_TEMPLATE,
     taskTemplateIdentifier,
+  };
+}
+
+export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
+  return {
+    type: ActionTypesSaga.SWITCH_TEMPLATE_PUBLIC,
+    taskTemplateIdentifier,
+    flagPublic,
   };
 }
 

@@ -100,6 +100,49 @@ export function updateTemplate(newTemplate) {
     });
 }
 
+export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
+  return axios
+    .patch(
+      `task/template/${taskTemplateIdentifier}/public?flagPublic=${flagPublic}`,
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function removeUserFromWorkflow(taskTemplateIdentifier, userIdentifier) {
+  return axios
+    .delete(
+      `task/template/${taskTemplateIdentifier}/member?userIdentifier=${userIdentifier}`,
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function updateUserInWorkflowPermissions(
+  taskTemplateIdentifier,
+  userIdentifier,
+  memberPermission,
+) {
+  return axios
+    .patch(
+      `task/template/${taskTemplateIdentifier}/member?userIdentifier=${userIdentifier}&memberPermission=${memberPermission}`,
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function deleteTemplate(templateIdentifier) {
   return axios
     .delete(`task/template/${templateIdentifier}`)
@@ -174,5 +217,27 @@ export function addTaskOutcome(taskIdentifier, name) {
 export function updateTaskOutcome(taskOutcomeIdentifier, dataToUpdate) {
   return axios
     .patch(`task/outcome`, { ...dataToUpdate, taskOutcomeIdentifier })
+    .then(({ data }) => data);
+}
+
+export function addUsersToPermissionList(
+  taskTemplateIdentifier,
+  invitedUsersIdentifier,
+) {
+  return axios
+    .post(`task/template/${taskTemplateIdentifier}/member`, {
+      invitedUsersIdentifier,
+    })
+    .then(({ data }) => data);
+}
+
+export function deleteSingleUserToPermissionList(
+  taskTemplateIdentifier,
+  userIdentifier,
+) {
+  return axios
+    .delete(`task/template/${taskTemplateIdentifier}/member `, {
+      userIdentifier,
+    })
     .then(({ data }) => data);
 }

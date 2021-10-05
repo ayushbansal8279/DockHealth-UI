@@ -1,13 +1,18 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
-import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontWeights, fontSizes } from 'styles/font';
+import palette from 'styles/palette';
 
-export const HeaderContainer = styled.div`
-  border-left: 1px solid ${palette.coolGrey3};
-  border-right: 1px solid ${palette.coolGrey3};
-  display: flex;
+export const PublicInfoWrapper = styled.span`
+  padding-left: ${spacing.small};
+`;
+
+export const MemberGroupContainer = styled.div`
+  margin-right: ${spacing.small};
+`;
+
+export const AssignMemberIconContainer = styled.div`
+  cursor: pointer;
 `;
 
 export const StandardTaskItemCell = styled.div`
@@ -35,10 +40,4 @@ export const StandardTaskItemCell = styled.div`
   &:last-of-type {
     border-right: 0;
   }
-`;
-
-export const CreatedText = styled.span`
-  color: ${palette.mediumGrey};
-  font-weight: ${fontWeights.light};
-  font-size: ${fontSizes.small};
 `;

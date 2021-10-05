@@ -6,6 +6,7 @@ import RemoveActiveUserModal from './components/RemoveActiveUserModal/RemoveActi
 import ArchivePersonModal from './components/ArchivePersonModal/ArchivePersonModal';
 import ClearSortFiltersModal from './components/ClearSortFiltersModal/ClearSortFiltersModal';
 import ListFormModal from './components/ListFormModal/ListFormModal';
+import ListPermissionsModal from './components/ListPermissionsModal/ListPermissionsModal';
 import VideoModal from './components/VideoModal/VideoModal';
 import LeaveListModal from './components/LeaveListModal/LeaveListModal';
 import EditOrganizationModal from './components/EditOrganizationModal/EditOrganizationModal';
@@ -62,6 +63,7 @@ const MODAL_MAP = {
   ArchivePerson: ArchivePersonModal,
   ClearSortFilters: ClearSortFiltersModal,
   ListForm: ListFormModal,
+  ListPermissions: ListPermissionsModal,
   Video: VideoModal,
   LeaveList: LeaveListModal,
   LeaveOrganization: LeaveOrganizationModal,

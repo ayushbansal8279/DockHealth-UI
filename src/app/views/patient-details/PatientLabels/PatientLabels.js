@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 import { Chip } from '@material-ui/core';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';

@@ -19,7 +19,7 @@ import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
 import CategoryOptions from './CategoryOptions';

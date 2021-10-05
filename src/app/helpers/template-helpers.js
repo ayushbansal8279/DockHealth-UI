@@ -22,7 +22,7 @@ export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
   [TaskTemplateItemColumn.NAME]: true,
   [TaskTemplateItemColumn.CREATED_BY]: true,
   [TaskTemplateItemColumn.CREATED]: true,
-  [TaskTemplateItemColumn.PERMISSIONS]: false,
+  [TaskTemplateItemColumn.PERMISSIONS]: true,
 };
 
 export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
@@ -37,6 +37,9 @@ export const TEMPLATE_TASK_ITEM_SORT_METHODS = {
   [TaskTemplateItemColumn.CREATED_BY]: sortWith([
     ascend(pipe(path(['creator', 'userName']), defaultTo('~'))),
   ]),
+  [TaskTemplateItemColumn.PERMISSIONS]: sortWith([
+    ascend(pipe(path(['members', 0, 'userName']), defaultTo(' '), toLower)),
+  ]),
 };
 
 export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
@@ -48,5 +51,8 @@ export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
   ]),
   [TaskTemplateItemColumn.CREATED_BY]: sortWith([
     descend(pipe(path(['creator', 'userName']), defaultTo('~'))),
+  ]),
+  [TaskTemplateItemColumn.PERMISSIONS]: sortWith([
+    descend(pipe(path(['members', 0, 'userName']), defaultTo(' '), toLower)),
   ]),
 };
