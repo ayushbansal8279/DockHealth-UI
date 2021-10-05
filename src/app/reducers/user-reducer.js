@@ -119,7 +119,7 @@ const UserReducer = (state = initialState, action) => {
       const { displayOptions } = user.userPreference;
       const mainSetup = {};
       Object.entries(state.userViewSetup.mainSetup).forEach(([key]) => {
-        mainSetup[key] = displayOptions.includes(key);
+        mainSetup[key] = displayOptions?.includes(key);
       });
 
       return {
