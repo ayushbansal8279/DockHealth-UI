@@ -264,10 +264,10 @@ export async function isAuthenticated() {
     };
 
     if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      return { isLoggedIn: true, userAuth: userData };
+      return { isLoggedIn: true, user: userData };
     }
 
-    return { isLoggedIn: false, userAuth: userData };
+    return { isLoggedIn: false, user: userData };
   }
 
   try {
@@ -281,9 +281,9 @@ export async function isAuthenticated() {
     console.log(error);
     if (sessionStorage.getItem('accessToken')) {
       const authUser = JSON.parse(sessionStorage.getItem('authUser'));
-      return { isLoggedIn: true, userAuth: authUser };
+      return { isLoggedIn: true, user: authUser };
     }
-    return { isLoggedIn: false, userAuth: null };
+    return { isLoggedIn: false, user: null };
   }
 }
 
