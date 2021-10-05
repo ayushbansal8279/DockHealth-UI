@@ -1,5 +1,7 @@
 import React, { cloneElement } from 'react';
-import Member from 'components/members/Member/Member';
+import { isUserGroup } from 'helpers/user-helper';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
 import DueDateRangePicker from './DueDateRangePicker';
@@ -42,7 +44,11 @@ const PeopleFilterRowComponent = ({
     onClick={taskCount !== 0 && onClick}
   >
     <MemberAvatarWrapper>
-      <Member member={reference} size={25} />
+      {isUserGroup(reference) ? (
+        <GroupAvatar group={reference} size={25} />
+      ) : (
+        <UserAvatar user={reference} size={25} />
+      )}
     </MemberAvatarWrapper>
     <MemberOptionLabel>{displayValue}</MemberOptionLabel>
     <OptionCount>{taskCount}</OptionCount>

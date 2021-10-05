@@ -15,11 +15,12 @@ export const CheckboxInput = styled.div`
       ? `1px solid ${palette.brightBlue}`
       : `1px solid ${palette.coolGrey2}`};
   transition: all 150ms;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 
   ${({ disabled }) =>
     !disabled &&

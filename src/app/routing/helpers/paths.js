@@ -13,6 +13,7 @@ export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const TASK_TEMPLATES_PATH = '/core/workflows';
+export const USERS_PATH = '/core/people';
 
 export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
@@ -34,3 +35,6 @@ export const createPatientDetailsListPath = (
 
 export const createTaskTemplateDetailsPath = taskTemplateIdentifier =>
   `${TASK_TEMPLATES_PATH}/${taskTemplateIdentifier}`;
+
+export const createUserGroupPath = groupIdentifier =>
+  USERS_PATH + (groupIdentifier ? `/${groupIdentifier}` : '');

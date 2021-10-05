@@ -171,6 +171,9 @@ const themeCommonOverrides = () => ({
     },
     MuiAutocomplete: {
       option: listItemStyles,
+      popper: {
+        zIndex: 6000,
+      },
     },
     MuiSelect: {
       select: {

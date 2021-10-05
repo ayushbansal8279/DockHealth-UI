@@ -1,20 +1,11 @@
 import { createSelector } from 'reselect';
 
 export const userStateSelector = state => state.userState;
-
-export const userSelector = createSelector(
-  userStateSelector,
-  ({ user }) => user,
-);
+export const userViewSetupSelector = state => state.userState.userViewSetup;
 
 export const userProfileSelector = createSelector(
   userStateSelector,
   ({ userProfile }) => userProfile || {},
-);
-
-export const userProfilePictureSelector = createSelector(
-  userStateSelector,
-  ({ userProfilePic }) => userProfilePic,
 );
 
 export const userOrganizationsSelector = createSelector(
@@ -31,4 +22,22 @@ export const userHasSmartFlowsSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
     organizationAvailableFeatures?.includes('SMART_FLOWS'),
+);
+
+export const userHasUserGroupsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('USER_GROUPS'),
+);
+
+export const userSetupViewListSelector = listIdentifier =>
+  createSelector(
+    userViewSetupSelector,
+    ({ customLists, defaultViewSetup }) =>
+      customLists?.[listIdentifier] || defaultViewSetup,
+  );
+
+export const userSetupClientViewSelector = createSelector(
+  userViewSetupSelector,
+  ({ mainSetup }) => mainSetup,
 );

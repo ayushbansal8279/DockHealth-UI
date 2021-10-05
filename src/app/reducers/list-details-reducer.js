@@ -15,7 +15,7 @@ import {
   TASK_GROUP_LIST_FAILURE,
   SET_LIST_DETAILS_TASKS_SORT,
   REQUEST_ALL_LIST_DETAILS_GROUPS,
-  ADD_TASK,
+  ADD_TASK_SUCCESS,
   UPDATE_TEMPLATE_BUNDLE,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
@@ -174,6 +174,7 @@ const ListDetailsReducer = (state = initialState, action) => {
                   ? taskGroup.tasks.concat(group.tasks)
                   : group.tasks,
                 hasMore: group.hasMore,
+                moreTasksIndex: group.moreTasksIndex,
               }
             : taskGroup,
         ) || [];
@@ -263,6 +264,7 @@ const ListDetailsReducer = (state = initialState, action) => {
                 ? group.tasks
                 : taskGroup.tasks.concat(group.tasks),
               hasMore: group.hasMore,
+              moreTasksIndex: group.moreTasksIndex,
               isLoadingGroup: false,
               isFetchingMoreTasks: false,
             };
@@ -366,17 +368,10 @@ const ListDetailsReducer = (state = initialState, action) => {
             tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
           })),
         },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
-            ...g,
-            tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
-          })),
-        },
       };
     }
 
-    case ADD_TASK: {
+    case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const taskListIdentifier = addedTask.taskList?.taskListIdentifier;
@@ -436,28 +431,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       );
     }
 
-    case DELETE_TEMPLATE_BUNDLE: {
-      const { bundleIdentifier } = action;
-
-      return {
-        ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
-            ...g,
-            tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),
-          })),
-        },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
-            ...g,
-            tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),
-          })),
-        },
-      };
-    }
-
+    case DELETE_TEMPLATE_BUNDLE:
     case COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 

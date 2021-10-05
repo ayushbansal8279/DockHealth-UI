@@ -34,6 +34,7 @@ export const groupTasksSelector = createSelector(
       groupedTasksMap[taskGroup.groupIdentifier] = {
         tasks: taskGroup.tasks,
         hasMore: taskGroup.hasMore,
+        moreTasksIndex: taskGroup.moreTasksIndex,
         isLoadingGroup: taskGroup.isLoadingGroup,
         isFetchingMoreTasks: taskGroup.isFetchingMoreTasks,
       };

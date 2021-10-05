@@ -3,7 +3,7 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { error } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import * as userApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 class Logout extends PureComponent {
@@ -18,8 +18,7 @@ class Logout extends PureComponent {
       presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
     }
 
-    return userApi
-      .logout(history)
+    return UserAuthApi.logout(history)
       .then(() => {
         // eslint-disable-next-line no-unused-expressions
         pusherForPresence?.unsubscribe(presenceChannelName);

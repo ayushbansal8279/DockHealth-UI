@@ -1,5 +1,12 @@
 import * as ActionTypes from 'actions/action-types';
-import { all, call, put, select, takeLatest } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  put,
+  select,
+  takeLatest,
+  takeEvery,
+} from 'redux-saga/effects';
 import * as OrganizationApi from 'api/organization-api';
 import * as OrganizationActions from 'actions/organization-actions';
 import { showGlobalErrorAlert, showGlobalAlert } from 'alert/actions';
@@ -129,6 +136,35 @@ function* doReorderOrganizationStatuses({ sourceId, destinationId }) {
   }
 }
 
+function* getOrganizationUsers() {
+  try {
+    const users = yield call(OrganizationApi.findAllUsersForOrganization);
+    yield put({ type: ActionTypes.GET_ORGANIZATION_USERS_SUCCESS, users });
+  } catch {
+    yield put({ type: ActionTypes.GET_ORGANIZATION_USERS_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* changeUserOrganizationRole({ userIdentifier, role }) {
+  try {
+    yield call(
+      OrganizationApi.changeUserOrganizationRole,
+      userIdentifier,
+      role,
+    );
+    yield put(showGlobalAlert(`User's role changed successfully`));
+    yield put({ type: ActionTypes.CHANGE_USER_ORGANIZATION_ROLE_SUCCESS });
+  } catch {
+    yield put({ type: ActionTypes.CHANGE_USER_ORGANIZATION_ROLE_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* changeUserOrganizationRoleSuccess() {
+  yield put(OrganizationActions.getOrganizationUsers());
+}
+
 export default function* watchOrganization() {
   yield takeLatest(GET_ORGANIZATION_STATUSES, doGetOrganizationStatuses);
   yield takeLatest(DELETE_ORGANIZATION_STATUS, doDeleteOrganizationStatus);
@@ -137,5 +173,14 @@ export default function* watchOrganization() {
   yield takeLatest(
     REORDER_ORGANIZATION_STATUSES,
     doReorderOrganizationStatuses,
+  );
+  yield takeLatest(ActionTypes.GET_ORGANIZATION_USERS, getOrganizationUsers);
+  yield takeEvery(
+    ActionTypes.CHANGE_USER_ORGANIZATION_ROLE,
+    changeUserOrganizationRole,
+  );
+  yield takeEvery(
+    ActionTypes.CHANGE_USER_ORGANIZATION_ROLE_SUCCESS,
+    changeUserOrganizationRoleSuccess,
   );
 }

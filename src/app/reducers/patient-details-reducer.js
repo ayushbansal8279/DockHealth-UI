@@ -1,17 +1,16 @@
 import {
-  SET_COMPLETE_TASKS_VISIBILITY,
-  REQUEST_PATIENT_TASKS,
-  REQUEST_PATIENT_TASKS_SUCCESS,
-  REQUEST_PATIENT_TASKS_FAILURE,
-  REQUEST_PATIENT_STATS_SUCCESS,
-  REQUEST_PATIENT_STATS_FAILURE,
+  GET_PATIENT_TASKS,
+  GET_PATIENT_TASKS_SUCCESS,
+  GET_PATIENT_TASKS_FAILURE,
+  GET_PATIENT_TASKS_STATS_SUCCESS,
+  GET_PATIENT_TASKS_STATS_FAILURE,
   CLEAR_PATIENT_TASKS,
   UPDATE_PATIENT_TASK,
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
   SORT_PATIENT_TASKS,
   UPDATE_TEMPLATE_BUNDLE,
-  ADD_TASK,
+  ADD_TASK_SUCCESS,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
   COMPLETE_TEMPLATE_BUNDLE,
@@ -27,6 +26,7 @@ import {
   SET_PATIENT_LABELS_FETCHING,
   SET_PATIENT_ATTACHMENTS,
   SET_PATIENT_ATTACHMENTS_FETCHING,
+  TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -101,50 +101,59 @@ export default function(state = INITIAL_STATE, action = {}) {
         isFetchingAttachments: false,
       };
     }
+
     case CLEAR_PATIENT_TASKS:
       return {
         ...INITIAL_STATE,
       };
-    case SET_COMPLETE_TASKS_VISIBILITY:
+
+    case TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE:
       return {
         ...state,
-        completeTasksVisible: payload.completeTasksVisible,
+        completeTasksVisible: !state.completeTasksVisible,
       };
+
     case INITIALIZE_PATIENT:
       return {
         ...state,
         patientIdentifier: payload?.patientIdentifier,
       };
-    case REQUEST_PATIENT_TASKS:
+
+    case GET_PATIENT_TASKS:
       return {
         ...state,
-        isFetching: true,
+        isFetching: action.withLoader,
         error: false,
       };
-    case REQUEST_PATIENT_TASKS_SUCCESS:
+
+    case GET_PATIENT_TASKS_SUCCESS:
       return {
         ...state,
-        lists: payload?.lists,
+        lists: action.lists,
         isFetching: false,
       };
-    case REQUEST_PATIENT_TASKS_FAILURE:
+
+    case GET_PATIENT_TASKS_FAILURE:
       return {
         ...state,
         isFetching: false,
         error: true,
       };
-    case REQUEST_PATIENT_STATS_SUCCESS:
+
+    case GET_PATIENT_TASKS_STATS_SUCCESS:
       return {
         ...state,
         incompleteTasksCount: payload?.incompleteTasksCount,
         completeTasksCount: payload?.completeTasksCount,
       };
-    case REQUEST_PATIENT_STATS_FAILURE:
+
+    case GET_PATIENT_TASKS_STATS_FAILURE:
       return {
         ...state,
         incompleteTasksCount: null,
         completeTasksCount: null,
       };
+
     case UPDATE_PATIENT_TASK: {
       const { newTaskData, taskIdentifier } = payload;
       return {
@@ -187,7 +196,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ADD_TASK: {
+    case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const bundleIdentifier = addedTask.taskGroups?.find(

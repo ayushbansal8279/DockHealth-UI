@@ -9,7 +9,7 @@ import {
   success,
 } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import * as userApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
@@ -33,21 +33,19 @@ const ConfirmMFACode = props => {
 
   const onSubmit = useCallback(
     form => {
-      return userApi
-        .sendMFACode({
-          username,
-          mfaCode: form.mfaCode,
-        })
+      return UserAuthApi.sendMFACode({
+        username,
+        mfaCode: form.mfaCode,
+      })
         .then(() => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             CONFIRM_MFACODE_SUCCESS: 'YES',
           });
-          userApi.rememberDevice().then(result => {
+          UserAuthApi.rememberDevice().then(result => {
             console.log(`added device to be remembered: ${result}`);
           });
           history.push('/core/home/my-tasks');
           success('Logged in.');
-          userApi.captureLocalTimezone();
         })
         .catch(error => {
           setCustomError('Invalid authentication code.');

@@ -72,3 +72,18 @@ export function completeTemplateBundle(bundleIdentifier) {
     bundleIdentifier,
   };
 }
+
+export function applyTemplate({
+  taskTemplateIdentifier,
+  taskListIdentifier,
+  taskGroupIdentifier,
+  patientIdentifier,
+}) {
+  return {
+    type: ActionTypes.APPLY_TEMPLATE,
+    taskTemplateIdentifier,
+    taskListIdentifier,
+    taskGroupIdentifier,
+    patientIdentifier,
+  };
+}

@@ -1,9 +1,11 @@
 import React from 'react';
 import OrganizationForm from 'views/onboarding/OrganizationForm/OrganizationForm';
 import { useHistory } from 'react-router-dom';
-import { createOrganization } from 'api/organization-api';
+import {
+  createOrganization,
+  selectCurrentOrganizationWithRedirection,
+} from 'api/organization-api';
 import { checkBAASignedStatus } from 'actions/organization-actions';
-import { selectCurrentOrganizationWithRedirection } from 'api/user-api';
 import { useDispatch } from 'react-redux';
 
 const onSubmit = ({ dispatch }) => async ({

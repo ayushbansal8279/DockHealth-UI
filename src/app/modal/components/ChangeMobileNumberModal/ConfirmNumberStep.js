@@ -5,7 +5,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
 import { openModal } from 'modal/actions';
-import * as UserApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -34,7 +34,7 @@ const validationSchema = object({
 const onSubmit = ({ onUpdateSuccess, setError, dispatch, newPhoneNumber }) => ({
   authorizationCode,
 }) => {
-  UserApi.verifyNewPhoneNumber(authorizationCode)
+  UserAuthApi.verifyNewPhoneNumber(authorizationCode)
     .then(() => {
       onUpdateSuccess(newPhoneNumber);
       dispatch(

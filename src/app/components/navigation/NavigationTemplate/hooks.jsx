@@ -14,7 +14,7 @@ import {
   getSubscriptionIsTrial,
   getSubscriptionPlanLabel,
 } from 'views/self-serve/subscriptions/helpers';
-import { selectCurrentOrganization } from 'api/user-api';
+import { selectCurrentOrganization } from 'api/organization-api';
 import { TrialBannerLink, useDrawerClasses } from './styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 5;

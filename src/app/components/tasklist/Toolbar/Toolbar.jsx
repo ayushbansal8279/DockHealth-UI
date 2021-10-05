@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, ClickAwayListener } from '@material-ui/core';
+import { Grid, ClickAwayListener, Popper, Paper } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
 import {
   toggleListNotifications,
@@ -19,20 +19,24 @@ import { showAlert } from 'helpers/utility-functions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
 import Spacing from 'components/common/Spacing.tsx';
-import AdditionalMembersCounterPopover from 'components/members/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
+import AdditionalMembersCounterPopover from 'components/user/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
 import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import AvatarFilterMember from 'components/members/AvatarFilterMember/AvatarFilterMember';
-import InviteMemberButton from 'components/members/InviteMemberButton/InviteMemberButton';
+import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
+import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover.tsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
-import { userProfileSelector } from '../../../selectors/user-selectors';
+import { MoreVert } from '@material-ui/icons';
+import zIndex from 'styles/z-index';
+import Checkbox from 'components/common/Checkbox/Checkbox';
+import { userProfileSelector } from 'selectors/user-selectors';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
 import {
@@ -42,6 +46,9 @@ import {
   SearchWrapper,
   MemberWrapper,
   ToolbarContainer,
+  MenuText,
+  StyledIconButton,
+  LabelBox,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -100,11 +107,15 @@ const Toolbar = ({
   patientColumnVisible = true,
   tipsContent,
   isFetching,
+  moreOptions,
 }) => {
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
+  const menuReference = useRef(null);
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
+  const [menuOpen, , unsetMenuOpen, toggleMenuOpen] = useBoolean(false);
+
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
@@ -207,11 +218,11 @@ const Toolbar = ({
               <>
                 {shownMembersWithCurrent?.map(member => {
                   const isSelected = selectedFilters?.assignedTo?.includes(
-                    member?.userIdentifier,
+                    member?.identifier,
                   );
                   return (
                     <MemberWrapper
-                      key={member?.userIdentifier}
+                      key={member?.identifier}
                       isPending={isMemberPending(member)}
                     >
                       <Spacing horizontal={2} />
@@ -319,6 +330,54 @@ const Toolbar = ({
                 active={tipsOpened}
                 toggleTips={() => setTipsOpened(!tipsOpened)}
               />
+            </>
+          )}
+          {moreOptions && (
+            <>
+              <StyledIconButton ref={menuReference} onClick={toggleMenuOpen}>
+                <MoreVert />
+              </StyledIconButton>
+              <Popper
+                anchorEl={menuReference?.current}
+                placement="bottom-end"
+                disablePortal
+                open={menuOpen}
+                style={{
+                  zIndex: zIndex.optionsMenu,
+                }}
+              >
+                {menuOpen && (
+                  <ClickAwayListener onClickAway={unsetMenuOpen}>
+                    <Paper>
+                      {moreOptions.map(option => (
+                        <LabelBox
+                          key={option.key}
+                          display="flex"
+                          alignItems="center"
+                          p={2}
+                          py={1}
+                          onClick={() => {
+                            if (
+                              typeof option.onClick === 'function' &&
+                              !option.disabled
+                            )
+                              option.onClick(option.key);
+                          }}
+                        >
+                          <Checkbox
+                            isDisabled={option.disabled}
+                            isChecked={option.checked}
+                          />
+                          <Spacing horizontal={3} />
+                          <MenuText isDisabled={option.disabled}>
+                            {option.name}
+                          </MenuText>
+                        </LabelBox>
+                      ))}
+                    </Paper>
+                  </ClickAwayListener>
+                )}
+              </Popper>
             </>
           )}
         </ToolbarBottomGrid>

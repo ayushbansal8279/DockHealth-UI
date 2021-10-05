@@ -1,4 +1,3 @@
-import { useMediaQuery } from '@material-ui/core';
 import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
@@ -181,7 +180,9 @@ export const setCurrentPageAfterLogin = currentPathname => {
   setCurrentPageInSessionStorage(currentPathname);
 };
 
-export const useSmallScreen = () => useMediaQuery('(max-width: 960px)');
+export const useSmallScreen = () => {
+  return window?.innerWidth <= 960 && window?.innerHeight <= 960;
+};
 
 export const useMobile = () =>
   navigator?.userAgent?.toLowerCase()?.includes?.('mobi') ?? false;

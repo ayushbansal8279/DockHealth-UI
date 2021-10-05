@@ -106,7 +106,10 @@ const CustomFieldsView = () => {
 
   const handleRemoveClick = id => {
     dispatch(
-      openModal('DeleteField', {
+      openModal('DeleteConfirmation', {
+        title: 'Delete field',
+        description:
+          'Are you sure you want to delete this custom patient field? This action cannot be undone.',
         confirm: () => {
           CustomFieldsApi.deletePatientCustomField(id)
             .then(() =>

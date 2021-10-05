@@ -31,6 +31,7 @@ const ListDetailsCompletedTasks = ({
   loadMoreTasksForList,
   sort,
   onSortChange,
+  viewSetup,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const renderEmptyState = () => {
@@ -129,6 +130,7 @@ const ListDetailsCompletedTasks = ({
                         />
                       ) : (
                         <TaskTemplateGroup
+                          viewSetup={viewSetup}
                           templateGroup={task}
                           groupHasMultipleAssignees={groupHasMultipleAssignees}
                           isFullView={isFullView}

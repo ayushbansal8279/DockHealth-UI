@@ -1,48 +1,33 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Grid } from '@material-ui/core';
-import React, { useMemo } from 'react';
+import palette from 'styles/palette';
+import React, { useMemo, useEffect } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import { head } from 'ramda';
-import * as userApi from 'api/user-api';
-import * as AlertActions from 'alert/actions';
+import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
 import { openModal } from 'modal/actions';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
-import UserAvatarUploader from 'views/UserProfile/UserAvatarUploader/UserAvatarUploader';
+import AvatarInput from 'components/user/AvatarInput/AvatarInput';
+import { getUserAvatarThumbnailUrl } from 'helpers/user-helper';
 import Spacing from 'components/common/Spacing';
+import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import InitialsInput from 'components/common/InitialsInput/InitialsInput';
 import validationSchema from './validation-schema';
-import { FormInfoText, InputActionButton } from './styled';
+import {
+  FormInfoText,
+  InputActionButton,
+  OuterAvatarContainer,
+  UserAvatarSupplement,
+  SectionTitle,
+  StyledForm,
+} from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
-
-// eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ dispatch }) => async data => {
-  try {
-    const requestData = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      titles: [{ name: data.title }],
-      department: data.department,
-      workPhoneNumber: data?.workPhoneNumber,
-    };
-
-    await userApi.updateUser(requestData);
-
-    dispatch(
-      AlertActions.showGlobalAlert('Profile updated successfully!', 'success'),
-    );
-
-    userApi.getUserById();
-    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
-  } catch (error) {
-    console.error(error);
-    dispatch(AlertActions.showGlobalAlert('Error updating profile', 'error'));
-  }
-};
 
 const UserProfileForm = ({ userProfile }) => {
   const dispatch = useDispatch();
-
   const defaultValues = useMemo(() => {
     return {
       firstName: userProfile.firstName,
@@ -52,6 +37,8 @@ const UserProfileForm = ({ userProfile }) => {
       email: userProfile.email,
       accountPhoneNumber: userProfile.accountPhoneNumber,
       workPhoneNumber: userProfile.workPhoneNumber,
+      initials: userProfile?.initials,
+      bubbleColor: userProfile?.bubbleColor,
     };
   }, [userProfile]);
 
@@ -65,7 +52,27 @@ const UserProfileForm = ({ userProfile }) => {
     handleSubmit,
     formState: { isSubmitting },
     setValue,
+    register,
+    unregister,
+    watch,
   } = formMethods;
+
+  useEffect(() => {
+    register('bubbleColor');
+    register('initials');
+    register('avatar');
+
+    return () => {
+      unregister('bubbleColor');
+      unregister('initials');
+      unregister('avatar');
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const avatarColorValue = watch('bubbleColor');
+  const initialsValue = watch('initials');
+  const avatarValue = watch('avatar');
 
   const openChangePasswordModal = () => {
     dispatch(openModal('ChangePassword'));
@@ -77,7 +84,7 @@ const UserProfileForm = ({ userProfile }) => {
         userProfile,
         onUpdateSuccess: updatedPhoneNumber => {
           setValue('accountPhoneNumber', updatedPhoneNumber);
-          userApi.getUserById();
+          dispatch(getCurrentUser());
         },
       }),
     );
@@ -85,8 +92,8 @@ const UserProfileForm = ({ userProfile }) => {
 
   return (
     <FormContext {...formMethods}>
-      <form
-        onSubmit={handleSubmit(onSubmit({ dispatch }))}
+      <StyledForm
+        onSubmit={handleSubmit(data => dispatch(updateCurrentUser(data)))}
         autoComplete="off"
         autoCorrect="off"
       >
@@ -102,8 +109,49 @@ const UserProfileForm = ({ userProfile }) => {
               direction="row"
               wrap="nowrap"
             >
-              <UserAvatarUploader />
+              <OuterAvatarContainer>
+                <AvatarInput
+                  name="userAvatar"
+                  pictureSrc={
+                    avatarValue !== undefined
+                      ? avatarValue
+                      : getUserAvatarThumbnailUrl(userProfile)
+                  }
+                  initials={initialsValue}
+                  color={avatarColorValue}
+                  onChange={newAvatar => {
+                    setValue('avatar', newAvatar);
+                  }}
+                />
+                {!userProfile.profileThumbnailPictureHash && (
+                  <UserAvatarSupplement>
+                    <div>Add a picture to</div>
+                    <div>personalize your avatar</div>
+                  </UserAvatarSupplement>
+                )}
+              </OuterAvatarContainer>
             </Grid>
+            <Spacing vertical={4} />
+            <SectionTitle>Select initials for your group</SectionTitle>
+            <InitialsInput
+              name="initials"
+              placeholder="ab"
+              value={initialsValue}
+              onChange={v => {
+                setValue('initials', v);
+              }}
+              maxChar={2}
+            />
+            <Spacing vertical={4} />
+            <SectionTitle>Choose a color for the group</SectionTitle>
+            <ColorPicker
+              name="bubbleColor"
+              value={avatarColorValue}
+              onChange={event => {
+                const { name, value } = event.target;
+                setValue(name, value);
+              }}
+            />
             <Spacing vertical={4} />
             <Grid container item spacing={2}>
               <Grid item xs={12} md={6}>
@@ -189,7 +237,7 @@ const UserProfileForm = ({ userProfile }) => {
             </Button>
           </Grid>
         </Grid>
-      </form>
+      </StyledForm>
     </FormContext>
   );
 };

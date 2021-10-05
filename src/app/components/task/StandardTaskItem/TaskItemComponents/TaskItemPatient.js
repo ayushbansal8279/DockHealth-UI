@@ -3,6 +3,7 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { Link } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import {
   AddPlaceholder,
@@ -89,37 +90,7 @@ const TaskItemPatient = ({
         )}
         {patient && (openPatientPopover || hasParentTaskLabel) && (
           <PatientCard patientIdentifier={patient.patientIdentifier}>
-            <PatientLabelComponent>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
-                />
-              ) : (
-                `${patientName}`
-              )}
-            </PatientLabelComponent>
-          </PatientCard>
-        )}
-        {patient && !isSubtask && !openPatientPopover && (
-          <PatientDropdown
-            selectedPatientIdentifier={
-              patient ? patient.patientIdentifier : null
-            }
-            isPopoverOpen={isPopoverOpen}
-            onChangePatient={handleUpdateRegularTaskPatient}
-            openPopover={() => openPopoverWhenNotCompleted(true)}
-            closePopover={() => setPopoverOpen(false)}
-            isSubtask={isSubtask}
-            hasSubtasks={hasSubtasks}
-          >
-            <PatientCard patientIdentifier={patient.patientIdentifier}>
+            <Link to={`/core/patient/${patient.patientIdentifier}`}>
               <PatientLabelComponent>
                 {(matchPatient || matchPatientMRN) && highlightedValue ? (
                   <Highlighter
@@ -136,8 +107,42 @@ const TaskItemPatient = ({
                   `${patientName}`
                 )}
               </PatientLabelComponent>
-            </PatientCard>
-          </PatientDropdown>
+            </Link>
+          </PatientCard>
+        )}
+        {patient && !isSubtask && !openPatientPopover && (
+          // <PatientDropdown
+          //   selectedPatientIdentifier={
+          //     patient ? patient.patientIdentifier : null
+          //   }
+          //   isPopoverOpen={isPopoverOpen}
+          //   onChangePatient={handleUpdateRegularTaskPatient}
+          //   openPopover={() => openPopoverWhenNotCompleted(true)}
+          //   closePopover={() => setPopoverOpen(false)}
+          //   isSubtask={isSubtask}
+          //   hasSubtasks={hasSubtasks}
+          // >
+          <PatientCard patientIdentifier={patient.patientIdentifier}>
+            <Link to={`/core/patient/${patient.patientIdentifier}`}>
+              <PatientLabelComponent>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
+                )}
+              </PatientLabelComponent>
+            </Link>
+          </PatientCard>
+          // </PatientDropdown>
         )}
       </ClickablePatient>
     </StandardTaskItemCell>

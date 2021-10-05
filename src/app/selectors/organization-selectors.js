@@ -32,3 +32,13 @@ export const fetchingOrganizationStatusesSelector = createSelector(
   organizationStateSelector,
   prop('isFetchingStatuses'),
 );
+
+export const organizationUsersSelector = createSelector(
+  organizationStateSelector,
+  prop('organizationUsers'),
+);
+
+export const isFetchingOrganizationUsersSelector = createSelector(
+  organizationStateSelector,
+  prop('isFetchingOrganizationUsers'),
+);

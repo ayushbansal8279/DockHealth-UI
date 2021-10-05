@@ -2,6 +2,7 @@
 import { isEmpty } from 'ramda';
 import { useEffect, useState, useCallback } from 'react';
 import { openModal, closeModal } from 'modal/actions';
+import CommentIcon from 'img/modals/comment';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -77,9 +78,13 @@ const initializeCommentSectionHooks = () => {
 
   const openDeleteCommentConfirmationModal = comment => {
     const modalProps = {
+      title: 'Delete comment',
+      description:
+        'Are you sure you want to delete this comment? This action cannot be undone.',
+      icon: CommentIcon,
       confirm: () => boundRemoveComment(comment),
     };
-    dispatch(openModal('DeleteComment', modalProps));
+    dispatch(openModal('DeleteConfirmation', modalProps));
   };
 
   return {

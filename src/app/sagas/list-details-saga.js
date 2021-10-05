@@ -592,7 +592,7 @@ function* doCreateTask(payload) {
       if (filters && !isEmpty(filters)) {
         if (checkIfTaskMatchesFilters(createdTask, filters)) {
           yield put({
-            type: ActionTypes.ADD_TASK,
+            type: ActionTypes.ADD_TASK_SUCCESS,
             task: createdTask,
           });
         }
@@ -608,7 +608,7 @@ function* doCreateTask(payload) {
           });
         } else {
           yield put({
-            type: ActionTypes.ADD_TASK,
+            type: ActionTypes.ADD_TASK_SUCCESS,
             task: createdTask,
           });
         }
@@ -622,6 +622,9 @@ function* doCreateTask(payload) {
         taskListIdentifier,
         shouldSetRequestState: false,
       });
+      yield put(
+        ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+      );
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
       yield put({ type: ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS });
     }

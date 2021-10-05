@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { sendUserOnboardingAnswers } from 'actions/user-actions';
+import { sendUserOnboardingAnswers } from 'api/user-api';
 import OnboardingQuestionsGuestStepOne from './OnboardingQuestionsGuestStepOne';
 import OnboardingQuestionsGuestStepTwo from './OnboardingQuestionsGuestStepTwo';
 

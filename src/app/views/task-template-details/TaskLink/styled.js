@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { fontWeights } from 'styles/font';
 
 export const LabelsWrapper = styled.div`
   position: relative;
@@ -31,20 +30,4 @@ export const DelayPeriodLabel = styled.div`
   border-radius: 15px;
   background-color: ${palette.brightBlue};
   color: ${palette.white};
-`;
-
-export const DelayPeriodForm = styled.form`
-  width: 320px;
-`;
-
-export const CheckboxLabel = styled.label`
-  font-family: 'Roboto', sans-serif;
-  color: ${palette.mediumGrey};
-`;
-
-export const Title = styled.p`
-  margin-bottom: 0;
-  font-weight: ${fontWeights.bold};
-  font-family: 'Roboto', sans-serif;
-  color: ${palette.mediumGrey};
 `;

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { removeUserFromOrganization } from 'actions/people-actions';
-import Member from 'components/members/Member/Member';
+import { removeUserFromOrganization } from 'api/organization-api';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { formatPhoneNumber, showAlert } from 'helpers/utility-functions';
 import ArrowLeftIcon from 'img/arrow-left';
 import Spacing from 'components/common/Spacing';
@@ -31,12 +31,10 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
     store => store.userState.userProfile.orgUserRole,
   );
 
-  const dispatch = useDispatch();
-
   const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
   const onConfirmArchive = () =>
-    removeUserFromOrganization(userIdentifier)(dispatch)
+    removeUserFromOrganization(userIdentifier)
       .then(() => {
         history.push('/people');
       })
@@ -62,10 +60,10 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
       <Spacing horizontal={3} />
       {personData ? (
         <>
-          <Member
-            member={personData}
+          <UserAvatar
+            user={personData}
             size={50}
-            showTooltip={false}
+            hideTooltip
             showOnlineIndicator={false}
           />
           <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>

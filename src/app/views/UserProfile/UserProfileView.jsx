@@ -1,11 +1,12 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
 import { setHeader } from 'actions/template-actions';
-import * as userApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
+import * as OrganizationApi from 'api/organization-api';
 import OrganizationAvatar from 'components/org/OrganizationAvatar/OrganizationAvatar';
 import {
   openModal as openModalAction,
@@ -13,9 +14,17 @@ import {
 } from 'modal/actions';
 import { showGlobalAlert as showGlobalAlertAction } from 'alert/actions';
 import AlertTypes from 'alert/AlertTypes';
+import {
+  getCurrentUserOrganizations,
+  getCurrentUserNotificationPreferences,
+} from 'actions/user-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import { getOrgRole } from 'helpers/people-helper';
+import { getOrgRole } from 'helpers/user-helper';
+import {
+  userProfileSelector,
+  userOrganizationsSelector,
+} from 'selectors/user-selectors';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
 import {
   ProfileSettingsWrapper,
@@ -39,15 +48,21 @@ const UserProfileView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { userProfile } = useSelector(store => {
-    return {
-      userProfile: store.userState.userProfile,
-    };
-  });
+  const userProfile = useSelector(userProfileSelector);
+  const userOrganizations = useSelector(userOrganizationsSelector);
+
+  const currentOrganization = useMemo(
+    () =>
+      userOrganizations?.find(
+        ({ organizationIdentifier }) =>
+          organizationIdentifier === userProfile.organizationIdentifier,
+      ),
+    [userOrganizations, userProfile],
+  );
 
   useEffect(
     () => {
-      userApi.getUserNotificationPrefs();
+      dispatch(getCurrentUserNotificationPreferences());
 
       dispatch(
         setHeader({
@@ -68,10 +83,9 @@ const UserProfileView = () => {
     dispatch(
       openModalAction('LeaveOrganization', {
         confirm: () => {
-          userApi
-            .leaveOrganization(userProfile.organizationIdentifier)
+          OrganizationApi.leaveOrganization(userProfile.organizationIdentifier)
             .then(() => {
-              userApi.logout(history);
+              UserAuthApi.logout(history);
             })
             .catch(() => {
               dispatch(closeModalAction());
@@ -107,7 +121,7 @@ const UserProfileView = () => {
               dispatch(
                 openModalAction('EditOrganization', {
                   userProfile,
-                  onSuccess: userApi.getUserById,
+                  onSuccess: () => dispatch(getCurrentUserOrganizations()),
                 }),
               )
             }
@@ -151,12 +165,14 @@ const UserProfileView = () => {
               alignItems="center"
             >
               <OrganizationAvatar
-                initials={userProfile.organizationInitials}
-                backgroundColor={userProfile.organizationProfileColor}
+                initials={currentOrganization.organizationInitials}
+                backgroundColor={currentOrganization.organizationProfileColor}
               />
               <Spacing horizontal={4} />
               <OrganizationDetails>
-                <DetailsText>{userProfile.organizationName}</DetailsText>
+                <DetailsText>
+                  {currentOrganization.organizationName}
+                </DetailsText>
                 <DetailsText>{userOrgRole}</DetailsText>
               </OrganizationDetails>
               <Spacing horizontal={5} />

@@ -2,8 +2,9 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import moment from 'moment';
 import Spacing from 'components/common/Spacing.tsx';
-import Member from 'components/members/Member/Member';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { RobotoTypography } from 'styles/theme';
+// eslint-disable-next-line import/no-named-as-default
 import useBoolean from 'hooks/useBoolean';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
@@ -100,7 +101,7 @@ const Comment = ({
     <React.Fragment key={commentIdentifier}>
       <CommentWrapper>
         <CommentMemberContainer>
-          <Member member={creator} size={34} />
+          <UserAvatar user={creator} size={34} />
         </CommentMemberContainer>
         <CommentContainer isEditing={isEditing}>
           <CommentContent>

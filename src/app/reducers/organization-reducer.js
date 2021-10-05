@@ -26,6 +26,8 @@ import {
   DELETE_ORGANIZATION_STATUS,
   ADD_ORGANIZATION_STATUS,
   UPDATE_ORGANIZATION_STATUS,
+  GET_ORGANIZATION_USERS_SUCCESS,
+  GET_ORGANIZATION_USERS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -46,6 +48,8 @@ const initialState = {
   requestErrorInvoiceDetails: null,
   newPaymentPlan: null,
   currentUsers: null,
+  isFetchingOrganizationUsers: false,
+  organizationUsers: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -257,6 +261,19 @@ const reducer = (state = initialState, action) => {
         ),
       };
     }
+
+    case GET_ORGANIZATION_USERS:
+      return {
+        ...state,
+        isFetchingOrganizationUsers: !state.organizationUsers,
+      };
+
+    case GET_ORGANIZATION_USERS_SUCCESS:
+      return {
+        ...state,
+        organizationUsers: action.users ?? state.organizationUsers,
+        isFetchingOrganizationUsers: false,
+      };
 
     default: {
       return {

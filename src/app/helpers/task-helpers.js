@@ -26,6 +26,7 @@ export const TaskItemType = {
 };
 
 export const TaskGroupType = {
+  TASKLIST_DEFAULT: 'TASKLIST_DEFAULT',
   TASKLIST: 'TASKLIST',
   BUNDLE: 'TASK_BUNDLE',
 };

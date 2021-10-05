@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import * as ActionTypes from 'actions/action-types';
 import { getTasksForTaskListByTaskGroup, addTask } from 'api/task-api';
 import { TaskItemType } from 'helpers/task-helpers';
@@ -56,7 +56,7 @@ const ParentTaskSelectStep = ({
         );
         addParentTaskReference.current.value = '';
         dispatch({
-          type: ActionTypes.ADD_TASK,
+          type: ActionTypes.ADD_TASK_SUCCESS,
           task: createdParentTask,
         });
       })

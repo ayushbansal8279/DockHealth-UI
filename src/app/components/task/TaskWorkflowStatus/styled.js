@@ -24,8 +24,10 @@ export const StatusListWrapper = styled.div`
 export const StatusList = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(7, 32px);
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: ${({ elementsInColumn }) =>
+    `repeat(${elementsInColumn}, 32px)`};
+  grid-template-columns: ${({ elementsInColumn }) =>
+    `repeat(${elementsInColumn > 7 ? 3 : 2}, 1fr)`};
   min-width: 280px;
   width: 100%;
   max-height: ${({ elementsInColumn }) => elementsInColumn * 32}px;

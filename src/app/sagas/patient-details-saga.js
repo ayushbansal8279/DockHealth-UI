@@ -1,5 +1,3 @@
-/* eslint-disable require-yield */
-/* eslint-disable no-console */
 import {
   put,
   call,
@@ -9,35 +7,20 @@ import {
   takeEvery,
   delay,
 } from 'redux-saga/effects';
+import * as ActionTypes from 'actions/action-types';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskListApi from 'api/task-list-api';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
-import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as PatientApi from 'api/patient-api';
 import * as PatientLabelApi from 'api/patient-label-api';
 import * as PatientAttachmentApi from 'api/patient-attachment-api';
 import AlertMessages from 'alert/AlertMessages';
-import {
-  REQUEST_PATIENT_STATS_SUCCESS,
-  REQUEST_PATIENT_STATS_FAILURE,
-  REQUEST_PATIENT_TASKS,
-  REQUEST_PATIENT_TASKS_SUCCESS,
-  REQUEST_PATIENT_TASKS_FAILURE,
-  UPDATE_PATIENT_TASK,
-  FETCH_MEGA_FILTERS_SUCCESS,
-  FETCH_MEGA_FILTERS_FAILURE,
-  SET_PATIENT_TASK_SEARCH_VALUE,
-  SORT_PATIENT_TASKS,
-  ADD_TASK,
-  UPDATE_PATIENT_DETAILS,
-} from 'actions/action-types';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   completeTasksVisibilitySelector,
-  patientListHasTasksSelector,
   patientTasksSortSelector,
   patientSelector,
 } from 'selectors/patient-details-selectors';
@@ -60,9 +43,6 @@ import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
-export const DO_FETCH_STATS_FOR_PATIENT_TASKS =
-  'DO_FETCH_STATS_FOR_PATIENT_TASKS';
-export const DO_FETCH_PATIENT_TASKS = 'DO_FETCH_PATIENT_TASKS';
 export const DO_REFRESH_PATIENT_TASKS = 'DO_REFRESH_PATIENT_TASKS';
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
@@ -70,7 +50,6 @@ export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_PATIENT_TASK_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
 export const DO_UPDATE_PATIENT_TASK = 'DO_UPDATE_PATIENT_TASK';
-export const DO_QUICK_ADD_PATIENT_TASK = 'DO_QUICK_ADD_PATIENT_TASK';
 export const DO_FETCH_PATIENT_FILTERS = 'DO_FETCH_PATIENT_FILTERS';
 export const DO_UPDATE_PATIENT_TASKS_FILTERS =
   'DO_UPDATE_PATIENT_TASKS_FILTERS';
@@ -84,40 +63,20 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
   'DO_CANCEL_USER_INVITE_TO_TASKLIST';
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
-export const DO_APPLY_TEMPLATE_FOR_PATIENT = 'DO_APPLY_TEMPLATE_FOR_PATIENT';
 export const DO_FETCH_PATIENT = 'DO_FETCH_PATIENT';
 export const DO_FETCH_PATIENT_LABELS = 'DO_FETCH_PATIENT_LABELS';
 export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
 export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
 export const DO_REMOVE_PATIENT_ATTACHMENT = 'DO_REMOVE_PATIENT_ATTACHMENT';
 export const DO_RELOAD_PATIENT = 'DO_RELOAD_PATIENT';
-export const DO_TOGGLE_COMPLETE_TASKS_VISIBLE =
-  'DO_TOGGLE_COMPLETE_TASKS_VISIBLE';
 export const DO_UPDATE_PATIENT_NOTE = 'DO_UPDATE_PATIENT_NOTE';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
 export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
 export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
 
-export const quickAddPatientTask = ({ description, taskListIdentifier }) => ({
-  type: DO_QUICK_ADD_PATIENT_TASK,
-  payload: {
-    description,
-    taskListIdentifier,
-  },
-});
-
-export const fetchStatsForPatientTasks = () => ({
-  type: DO_FETCH_STATS_FOR_PATIENT_TASKS,
-});
-
 export const fetchPatientFilters = patientIdentifier => ({
   type: DO_FETCH_PATIENT_FILTERS,
-  patientIdentifier,
-});
-
-export const fetchPatientTasks = patientIdentifier => ({
-  type: DO_FETCH_PATIENT_TASKS,
   patientIdentifier,
 });
 
@@ -134,7 +93,7 @@ export const togglePatientTaskStatus = task => ({
 });
 
 export const updateTaskData = (taskIdentifier, newTaskData) => ({
-  type: UPDATE_PATIENT_TASK,
+  type: ActionTypes.UPDATE_PATIENT_TASK,
   payload: {
     taskIdentifier,
     newTaskData,
@@ -225,15 +184,6 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
-export const applyTemplateForPatient = ({
-  taskListIdentifier,
-  taskTemplateIdentifier,
-}) => ({
-  type: DO_APPLY_TEMPLATE_FOR_PATIENT,
-  taskListIdentifier,
-  taskTemplateIdentifier,
-});
-
 export const fetchPatient = patientIdentifier => ({
   type: DO_FETCH_PATIENT,
   patientIdentifier,
@@ -278,10 +228,6 @@ export const reloadPatient = () => ({
   type: DO_RELOAD_PATIENT,
 });
 
-export const toggleCompleteTasksVisible = () => ({
-  type: DO_TOGGLE_COMPLETE_TASKS_VISIBLE,
-});
-
 export const updatePatientNote = note => ({
   type: DO_UPDATE_PATIENT_NOTE,
   note,
@@ -310,14 +256,11 @@ export const archivePatient = (patientIdentifier, history) => ({
 });
 
 export const PatientTasksSagaActions = {
-  fetchStatsForPatientTasks,
-  fetchPatientTasks,
   refreshPatientTasks,
   togglePatientTaskStatus,
   updateTaskData,
   updatePatientTaskDueDate,
   updatePatientTaskWorkflowStatus,
-  quickAddPatientTask,
   patientTasksFilterChange,
   initializeSavedFilters,
   setPatientTaskSearch,
@@ -328,8 +271,6 @@ export const PatientTasksSagaActions = {
   fetchPatientFilters,
   sortPatientTasks,
   updatePatientTaskInList,
-  applyTemplateForPatient,
-  toggleCompleteTasksVisible,
 };
 
 function* getPatientLists(patientIdentifier) {
@@ -359,46 +300,33 @@ function* getPatientLists(patientIdentifier) {
   return lists;
 }
 
-function* doFetchPatientTasks({ patientIdentifier }) {
+function* getPatientTasks({ patientIdentifier }) {
   try {
-    yield put({ type: REQUEST_PATIENT_TASKS });
     const lists = yield getPatientLists(patientIdentifier);
     yield put({
-      type: REQUEST_PATIENT_TASKS_SUCCESS,
-      payload: { lists },
+      type: ActionTypes.GET_PATIENT_TASKS_SUCCESS,
+      lists,
     });
   } catch (error) {
     yield put({
-      type: REQUEST_PATIENT_TASKS_FAILURE,
+      type: ActionTypes.GET_PATIENT_TASKS_FAILURE,
     });
   }
 }
 
 function* doRefreshPatientTasks({ withLoader }) {
-  try {
-    if (withLoader) {
-      yield put({ type: REQUEST_PATIENT_TASKS });
-    }
-    const { patientIdentifier } = yield select(locationParametersSelector);
-    const lists = yield getPatientLists(patientIdentifier);
-
-    yield put(fetchPatientFilters(patientIdentifier));
-    yield put({
-      type: REQUEST_PATIENT_TASKS_SUCCESS,
-      payload: { lists },
-    });
-  } catch (error) {
-    yield put({
-      type: REQUEST_PATIENT_TASKS_FAILURE,
-    });
-  }
+  const { patientIdentifier } = yield select(locationParametersSelector);
+  yield put(
+    PatientDetailsActions.getPatientTasks(patientIdentifier, withLoader),
+  );
+  yield put(fetchPatientFilters(patientIdentifier));
 }
 
-function* doFetchStatsForPatientTasks() {
+function* getPatientTasksStats() {
   try {
     const { patientIdentifier } = yield select(locationParametersSelector);
     const stats = yield call(
-      PatientTasksApi.fetchStatsForPatientTasks,
+      PatientTasksApi.getPatientTasksStats,
       patientIdentifier,
     );
     const successPayload = {};
@@ -409,9 +337,12 @@ function* doFetchStatsForPatientTasks() {
       stat => stat.metricName === 'COMPLETE_TASKS_COUNT',
     )?.metricValue;
 
-    yield put({ type: REQUEST_PATIENT_STATS_SUCCESS, payload: successPayload });
+    yield put({
+      type: ActionTypes.GET_PATIENT_TASKS_STATS_SUCCESS,
+      payload: successPayload,
+    });
   } catch (error) {
-    yield put({ type: REQUEST_PATIENT_STATS_FAILURE });
+    yield put({ type: ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE });
   }
 }
 
@@ -426,12 +357,12 @@ function* doFetchPatientFilters({ patientIdentifier }) {
       status,
     );
     yield put({
-      type: FETCH_MEGA_FILTERS_SUCCESS,
+      type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
       filters,
     });
   } catch (error) {
     yield put({
-      type: FETCH_MEGA_FILTERS_FAILURE,
+      type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE,
     });
   }
 }
@@ -463,11 +394,11 @@ function* doToggleTaskCompleteStatus({ payload }) {
     if (!task.parentTaskIdentifier) {
       yield put(refreshPatientTasks({ withLoader: false }));
     }
-    yield put(fetchStatsForPatientTasks());
+    yield put(PatientDetailsActions.getPatientTasksStats());
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   }
 }
@@ -483,12 +414,12 @@ function* doUpdateDueDate({ payload }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   }
 }
@@ -507,12 +438,12 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   }
 }
@@ -525,42 +456,21 @@ function* doUpdatePatientTaskInList({ payload }) {
     yield call(TaskApi.partialUpdateTask, taskIdentifier, dataToUpdate);
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
+      put(PatientDetailsActions.getPatientTasksStats()),
     ]);
   }
 }
 
-function* doQuickAddPatientTask({ payload }) {
-  const { description, taskListIdentifier } = payload;
+function* addTaskSuccess() {
+  const { patientIdentifier } = yield select(locationParametersSelector);
 
-  try {
-    const { patientIdentifier } = yield select(locationParametersSelector);
-
-    const isFirstTask = !(yield select(patientListHasTasksSelector));
-
-    if (isFirstTask) {
-      yield put({ type: REQUEST_PATIENT_TASKS });
-    }
-
-    const addedTask = yield call(TaskApi.addTask, {
-      description,
-      taskListIdentifier,
-      patientIdentifier,
-    });
-    yield put({ type: ADD_TASK, task: addedTask });
-    yield put(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-    yield put(fetchStatsForPatientTasks());
-  } catch (error) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
-    ]);
-  }
+  if (patientIdentifier)
+    yield put(PatientDetailsActions.getPatientTasksStats());
 }
 
 function* doUpdatePatientTasksFilters({ payload }) {
@@ -600,7 +510,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
 
 function* doSetPatientTaskSearch({ payload }) {
   try {
-    yield put({ type: SET_PATIENT_TASK_SEARCH_VALUE, payload });
+    yield put({ type: ActionTypes.SET_PATIENT_TASK_SEARCH_VALUE, payload });
   } catch (error) {
     console.log(error);
   }
@@ -672,7 +582,7 @@ function* doSortPatientTasks({ payload }) {
     onSortChanged(order ? key : null, order);
 
     yield put({
-      type: SORT_PATIENT_TASKS,
+      type: ActionTypes.SORT_PATIENT_TASKS,
       payload: {
         key: order ? key : null,
         order,
@@ -681,26 +591,6 @@ function* doSortPatientTasks({ payload }) {
     yield put(refreshPatientTasks({ withLoader: true }));
   } catch (error) {
     console.log(error);
-  }
-}
-
-function* doApplyTemplateForPatient({
-  taskTemplateIdentifier,
-  taskListIdentifier,
-}) {
-  try {
-    const { patientIdentifier } = yield select(locationParametersSelector);
-    yield call(TemplateBundleApi.applyTemplate, {
-      taskTemplateIdentifier,
-      taskListIdentifier,
-      patientIdentifier,
-    });
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(fetchStatsForPatientTasks()),
-    ]);
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
   }
 }
 
@@ -900,24 +790,28 @@ function* doChangePatientNotePin({ patientNoteIdentifier, pinned }) {
   }
 }
 
-function* doToggleCompleteTasksVisible() {
+function* doTogglePatientCompleteTasksVisible() {
   try {
-    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-    yield put(
-      PatientDetailsActions.setCompleteTasksVisibility(!completeTasksVisible),
-    );
     yield put(refreshPatientTasks({ withLoader: true }));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
   }
 }
 
+function* applyTemplateSuccess() {
+  const { patientIdentifier } = yield select(locationParametersSelector);
+
+  if (patientIdentifier) {
+    yield all([
+      put(refreshPatientTasks({ withLoader: false })),
+      put(PatientDetailsActions.getPatientTasksStats()),
+    ]);
+  }
+}
+
 export default function* watchPatientDetails() {
-  yield takeLatest(
-    DO_FETCH_STATS_FOR_PATIENT_TASKS,
-    doFetchStatsForPatientTasks,
-  );
-  yield takeLatest(DO_FETCH_PATIENT_TASKS, doFetchPatientTasks);
+  yield takeLatest(ActionTypes.GET_PATIENT_TASKS_STATS, getPatientTasksStats);
+  yield takeLatest(ActionTypes.GET_PATIENT_TASKS, getPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
   yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
   yield takeLatest(DO_UPDATE_DUE_DATE, doUpdateDueDate);
@@ -926,7 +820,6 @@ export default function* watchPatientDetails() {
     doUpdatePatientTaskWorkflowStatus,
   );
   yield takeLatest(DO_UPDATE_PATIENT_TASK, doUpdatePatientTaskInList);
-  yield takeEvery(DO_QUICK_ADD_PATIENT_TASK, doQuickAddPatientTask);
   yield takeLatest(DO_FETCH_PATIENT_FILTERS, doFetchPatientFilters);
   yield takeLatest(
     DO_UPDATE_PATIENT_TASKS_FILTERS,
@@ -945,7 +838,6 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeEvery(DO_APPLY_TEMPLATE_FOR_PATIENT, doApplyTemplateForPatient);
   yield takeLatest(DO_FETCH_PATIENT, doFetchPatient);
   yield takeLatest(DO_FETCH_PATIENT_LABELS, doFetchPatientLabels);
   yield takeLatest(DO_FETCH_PATIENT_ATTACHMENTS, doFetchPatientAttachments);
@@ -953,13 +845,15 @@ export default function* watchPatientDetails() {
   yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(DO_RELOAD_PATIENT, doReloadPatient);
   yield takeLatest(
-    DO_TOGGLE_COMPLETE_TASKS_VISIBLE,
-    doToggleCompleteTasksVisible,
+    ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
+    doTogglePatientCompleteTasksVisible,
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
-  yield takeEvery(UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
+  yield takeEvery(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
   yield takeEvery(DO_ARCHIVE_PATIENT, doArchivePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
+  yield takeEvery(ActionTypes.APPLY_TEMPLATE_SUCCESS, applyTemplateSuccess);
+  yield takeEvery(ActionTypes.ADD_TASK_SUCCESS, addTaskSuccess);
 }

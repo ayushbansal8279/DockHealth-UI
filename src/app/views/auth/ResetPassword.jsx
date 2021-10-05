@@ -6,7 +6,7 @@ import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import * as userApi from 'api/user-api';
+import * as UserAuthApi from 'api/user-auth-api';
 import ResetPasswordForm from 'components/auth/ResetPasswordForm';
 import { showAlert } from 'helpers/utility-functions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
@@ -29,12 +29,11 @@ const ResetPassword = props => {
       const uname =
         queryValues.uname ?? window.sessionStorage.getItem('username');
 
-      return userApi
-        .resetPassword({
-          username: uname,
-          verificationCode: code,
-          password: form.password,
-        })
+      return UserAuthApi.resetPassword({
+        username: uname,
+        verificationCode: code,
+        password: form.password,
+      })
         .then(() => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             RESET_PASSWORD_SUCCESS: 'YES',

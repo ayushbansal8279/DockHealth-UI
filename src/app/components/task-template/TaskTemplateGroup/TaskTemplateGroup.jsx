@@ -12,6 +12,7 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
@@ -61,6 +62,7 @@ const TaskTemplateGroup = ({
   tasksDragAndDropDisabled,
   disablePatientAssignment,
   isCompletedTab = false,
+  viewSetup,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -71,6 +73,7 @@ const TaskTemplateGroup = ({
     parentTaskGroupIdentifier,
     taskListIdentifier,
   } = templateGroup;
+  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -93,6 +96,17 @@ const TaskTemplateGroup = ({
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setOpen(SHOW_WORKFLOW_DETAILS);
+    if (isCompletedTab) {
+      setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+      setShowCompletedTasks(true);
+    } else {
+      setShowIncompleteTasks(true);
+      setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+    }
+  }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -225,11 +239,16 @@ const TaskTemplateGroup = ({
         name: 'Delete',
         onClick: () =>
           dispatch(
-            ModalActions.openModal('DeleteTemplate', {
-              confirm: () =>
+            ModalActions.openModal('DeleteConfirmation', {
+              title: 'Delete workflow',
+              description:
+                'Are you sure you want to delete this workflow? This action cannot be undone.',
+              confirm: () => {
                 dispatch(
                   TemplateBundleActions.deleteTemplateBundle(identifier),
-                ),
+                );
+                dispatch(ModalActions.closeModal());
+              },
             }),
           ),
       },
@@ -425,11 +444,15 @@ const TaskTemplateGroup = ({
                         patientIdentifier={patient.patientIdentifier}
                         disabled={isPopoverOpen}
                       >
-                        <Placeholder>
-                          {patient?.lastName
-                            ? `${patient?.lastName}, ${patient?.firstName}`
-                            : patient?.firstName}
-                        </Placeholder>
+                        <Link
+                          to={`/core/patient/${patient?.patientIdentifier}`}
+                        >
+                          <Placeholder>
+                            {patient?.lastName
+                              ? `${patient?.lastName}, ${patient?.firstName}`
+                              : patient?.firstName}
+                          </Placeholder>
+                        </Link>
                       </PatientCard>
                     ) : (
                       <AddPlaceholder>

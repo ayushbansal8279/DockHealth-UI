@@ -27,9 +27,9 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { convertToEditorState } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import MemberGroup from 'components/members/MemberGroup/MemberGroup';
+import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import AssignMemberIcon from 'components/members/AssignMemberIcon/AssingMemberIcon';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import { DueDateBasicLabel } from 'components/task/styled';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import {

@@ -251,7 +251,10 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-  margin-bottom: 10px;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
 `;
 
 export const DrawerListsItemLoader = styled.div`

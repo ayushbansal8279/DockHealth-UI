@@ -24,11 +24,11 @@ export const mapPatientsToSuggestions = patients =>
     }),
   );
 
-export const mapPeopleToSuggestions = people =>
-  people.map(person => ({
-    ...person,
-    identifier: person.userIdentifier,
-    name: person.userName,
+export const mapUsersToSuggestions = users =>
+  users.map(user => ({
+    ...user,
+    identifier: user.identifier,
+    name: user.name,
   }));
 
 const substituteNameForIdInText = (rawText, mentions) => {

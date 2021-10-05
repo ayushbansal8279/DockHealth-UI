@@ -1,15 +1,14 @@
 /* eslint-disable import/prefer-default-export */
-import * as userApi from 'api/user-api';
+import * as UserApi from 'api/user-api';
+// import * as UserAuthApi from 'api/user-auth-api';
+import * as ActionTypes from 'actions/action-types';
 
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
-import { USER_ACKNOWLEDGED_EULA } from './action-types';
+import { UPDATE_LIST_VIEW_SETUP, UPDATE_USER_VIEW_SETUP } from './action-types';
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-export const acknowledgeEula = () => dispatch =>
-  userApi.acknowledgeEula().then(() => {
-    dispatch({ type: USER_ACKNOWLEDGED_EULA });
-  });
+export const acknowledgeEula = () => UserApi.acknowledgeEula();
 
 export const approveOrDenyInvitation = ({
   requestIdentifier,
@@ -21,7 +20,7 @@ export const approveOrDenyInvitation = ({
     authBaseState: AUTH_BASE_STATES.APPROVE_DISAPPROVE,
   })(dispatch);
 
-  return userApi.approveOrDenyInvitation({
+  return UserApi.approveOrDenyInvitation({
     requestIdentifier,
     decisionType,
     userIdentifier,
@@ -29,7 +28,52 @@ export const approveOrDenyInvitation = ({
 };
 
 export const sendUserOnboardingAnswers = ({ answers }) => {
-  return userApi.sendUserOnboardingAnswers({
+  return UserApi.sendUserOnboardingAnswers({
     answers,
   });
 };
+
+export const updateUserListViewSetup = (listIdentifier, setup) => {
+  return {
+    type: UPDATE_LIST_VIEW_SETUP,
+    payload: { listIdentifier, setup },
+  };
+};
+
+export const updateUserPageViewSetup = setup => {
+  return {
+    type: UPDATE_USER_VIEW_SETUP,
+    payload: { setup },
+  };
+};
+export function getCurrentUserNotificationPreferences() {
+  return {
+    type: ActionTypes.GET_CURRENT_USER_NOTIFICATION_PREFERENCES,
+  };
+}
+
+export function updateCurrentUserPreferences(preferences) {
+  return {
+    type: ActionTypes.UPDATE_CURRENT_USER_PREFERENCES,
+    preferences,
+  };
+}
+
+export function getCurrentUser() {
+  return {
+    type: ActionTypes.GET_CURRENT_USER,
+  };
+}
+
+export function updateCurrentUser(userData) {
+  return {
+    type: ActionTypes.UPDATE_CURRENT_USER,
+    userData,
+  };
+}
+
+export function getCurrentUserOrganizations() {
+  return {
+    type: ActionTypes.GET_CURRENT_USER_ORGANIZATIONS,
+  };
+}

@@ -6,7 +6,7 @@ import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
@@ -179,7 +179,7 @@ const BulkEditOptionsBar = ({
     tasks => {
       tasks.reverse().forEach(task =>
         dispatch({
-          type: ActionTypes.ADD_TASK,
+          type: ActionTypes.ADD_TASK_SUCCESS,
           task,
         }),
       );
@@ -630,8 +630,11 @@ const BulkEditOptionsBar = ({
 
   const handleDeleteTasks = useCallback(() => {
     dispatch(
-      openModal('BulkDeleteTasks', {
-        hasIncompleteParentTasks: !allParentTasksHaveRelatedSubtasks,
+      openModal('DeleteConfirmation', {
+        title: 'Delete tasks',
+        description: allParentTasksHaveRelatedSubtasks
+          ? 'Are you sure you want to delete these tasks? This action cannot be undone.'
+          : 'Deleting these tasks will also delete related subtasks. This action cannot be undone.',
         confirm: () => {
           bulkEditDelete(allSelectedTasksIdentifiers)(dispatch);
 
@@ -670,6 +673,7 @@ const BulkEditOptionsBar = ({
                 refreshTasks();
               }
 
+              dispatch(closeModal());
               if (onClose && typeof onClose === 'function') {
                 onClose();
               }
