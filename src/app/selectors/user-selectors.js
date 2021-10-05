@@ -24,6 +24,12 @@ export const userHasSmartFlowsSelector = createSelector(
     organizationAvailableFeatures?.includes('SMART_FLOWS'),
 );
 
+export const userHasUserGroupsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('USER_GROUPS'),
+);
+
 export const userSetupViewListSelector = listIdentifier =>
   createSelector(
     userViewSetupSelector,

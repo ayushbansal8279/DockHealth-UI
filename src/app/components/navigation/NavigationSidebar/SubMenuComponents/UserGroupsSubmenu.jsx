@@ -16,7 +16,10 @@ import {
   defaultUserGroupsSelector,
   userGroupsSelector,
 } from 'selectors/user-groups-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasUserGroupsFeatureSelector,
+} from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import {
   checkIfUserIsOrganizationAdmin,
@@ -43,6 +46,7 @@ const UserGroupsSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const currentUser = useSelector(userProfileSelector);
+  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
@@ -126,7 +130,7 @@ const UserGroupsSubmenu = () => {
           </>
         )}
       </DrawerListsList>
-      {!isGuest && (
+      {!isGuest && userGroupsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>
