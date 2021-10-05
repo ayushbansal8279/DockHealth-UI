@@ -10,7 +10,6 @@ import {
 } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as UserAuthApi from 'api/user-auth-api';
-import * as UserApi from 'api/user-api';
 import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
@@ -47,7 +46,6 @@ const ConfirmMFACode = props => {
           });
           history.push('/core/home/my-tasks');
           success('Logged in.');
-          UserApi.captureLocalTimezone();
         })
         .catch(error => {
           setCustomError('Invalid authentication code.');

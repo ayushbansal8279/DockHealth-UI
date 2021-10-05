@@ -7,7 +7,6 @@ import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import { login, resendConfirmationCode } from 'api/user-auth-api';
-import { captureLocalTimezone } from 'api/user-api';
 import LoginFormPassword from 'components/auth/LoginFormPassword';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
@@ -65,7 +64,6 @@ const LoginPassword = () => {
             }
 
             success('Logged in.');
-            captureLocalTimezone();
           }
         })
         .catch(error => {
