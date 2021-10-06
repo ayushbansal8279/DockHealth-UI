@@ -41,7 +41,7 @@ const NewTaskNode = React.memo(props => {
 
     switch (key) {
       case 'Enter':
-        if (inputValue?.length > 2) {
+        if (inputValue?.length > 0) {
           addTask(inputValue);
         }
         break;

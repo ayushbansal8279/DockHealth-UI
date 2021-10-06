@@ -670,14 +670,14 @@ function* changeTaskIntentType({ taskIdentifier, intentType }) {
       currentTaskTemplateIdentifierSelector,
     );
     if (taskTemplateIdentifier && intentType === NodeType.DECISION) {
-      const { layout } = yield select(
+      const { layout, temporaryElements } = yield select(
         taskTemplateDetailsSelector(taskTemplateIdentifier),
       );
       if (layout?.length > 0) {
         const { position } =
           layout?.find(({ id }) => taskIdentifier === id) || {};
         const newTemporaryOptions = createTemporaryOptionsForDecisionTask(
-          layout,
+          temporaryElements,
           taskIdentifier,
           position,
         );

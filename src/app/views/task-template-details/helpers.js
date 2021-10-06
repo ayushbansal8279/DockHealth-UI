@@ -124,10 +124,12 @@ export function calculateNewElementPosition(layout) {
   return { x: newElementPositionX, y: newElementPositionY };
 }
 
-export function isTargetNode(node, tasks) {
-  return tasks?.some(({ taskLinks }) =>
-    taskLinks?.some(
-      ({ targetTaskIdentifier }) => targetTaskIdentifier === node.id,
-    ),
+export function isTargetOfStandardNode(node, tasks) {
+  return tasks?.some(
+    ({ intentType, taskLinks }) =>
+      intentType === NodeType.STANDARD &&
+      taskLinks?.some(
+        ({ targetTaskIdentifier }) => targetTaskIdentifier === node.id,
+      ),
   );
 }
