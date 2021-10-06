@@ -7,7 +7,6 @@ import * as TaskApi from 'api/task-api';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
-import { REFRESH_TASK_BUNDLE } from 'actions/action-types-saga';
 import { getTemplateBundle } from 'api/template-bundle-api';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
@@ -124,7 +123,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
       templateBundleIdentifier,
     );
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       bundleIdentifier: templateBundleIdentifier,
       dataToUpdate: templateBundle,
     });
@@ -191,7 +190,7 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
   yield takeEvery(ActionTypes.CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
-  yield takeEvery(REFRESH_TASK_BUNDLE, refreshTemplateBundle);
+  yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
   yield takeEvery(ActionTypes.ADD_TASK, addTask);
 }

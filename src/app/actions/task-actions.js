@@ -10,12 +10,11 @@ import { reloadDashboardTasks } from 'sagas/dashboard-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
-import * as ActionTypesSaga from './action-types-saga';
 import AlertMessages from '../alert/AlertMessages';
 
 export function refreshTaskBundle(templateBundleIdentifier) {
   return {
-    type: ActionTypesSaga.REFRESH_TASK_BUNDLE,
+    type: ActionTypes.REFRESH_TASK_BUNDLE,
     templateBundleIdentifier,
   };
 }

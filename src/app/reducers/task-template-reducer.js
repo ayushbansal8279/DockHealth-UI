@@ -73,7 +73,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
         ...state,
         breadcrumbs: [],
       };
-    case ActionTypes.ADD_TASK_TEMPLATE:
+    case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
       return {
         ...state,
         taskTemplates: [action.template, ...state.taskTemplates],
@@ -172,6 +172,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.MOVE_TASK_TEMPLATE_SUCCESS:
     case ActionTypes.DELETE_TASK_TEMPLATE: {
       const { taskTemplateIdentifier: identifierToDelete } = action;
 
@@ -188,7 +189,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.UPDATE_TASK_TEMPLATE: {
+    case ActionTypes.UPDATE_TASK_TEMPLATE_FAILURE:
+    case ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS: {
       const { taskTemplateIdentifier, dataToUpdate } = action;
 
       return {

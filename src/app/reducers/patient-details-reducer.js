@@ -9,7 +9,7 @@ import {
   INITIALIZE_PATIENT,
   SET_PATIENT_TASK_SEARCH_VALUE,
   SORT_PATIENT_TASKS,
-  UPDATE_TEMPLATE_BUNDLE,
+  UPDATE_TEMPLATE_BUNDLE_SUCCESS,
   ADD_TASK_SUCCESS,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
@@ -27,6 +27,8 @@ import {
   SET_PATIENT_ATTACHMENTS,
   SET_PATIENT_ATTACHMENTS_FETCHING,
   TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
+  MOVE_TEMPLATE_BUNDLE_SUCCESS,
+  UPDATE_TEMPLATE_BUNDLE_FAILURE,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -184,7 +186,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case UPDATE_TEMPLATE_BUNDLE: {
+    case UPDATE_TEMPLATE_BUNDLE_FAILURE:
+    case UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
       return {
@@ -250,6 +253,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case MOVE_TEMPLATE_BUNDLE_SUCCESS:
     case DELETE_TEMPLATE_BUNDLE:
     case COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;

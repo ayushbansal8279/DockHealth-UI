@@ -1,13 +1,11 @@
-/* eslint-disable import/prefer-default-export */
 import * as ActionTypes from 'actions/action-types';
-import * as ActionTypesSaga from './action-types-saga';
 
 export function moveTemplate({
   parentTaskTemplateIdentifier,
   taskTemplateIdentifier,
 }) {
   return {
-    type: ActionTypesSaga.MOVE_TASK_TEMPLATE,
+    type: ActionTypes.MOVE_TASK_TEMPLATE,
     payload: {
       parentTaskTemplateIdentifier,
       taskTemplateIdentifier,
@@ -17,7 +15,7 @@ export function moveTemplate({
 
 export function addTemplate(template) {
   return {
-    type: ActionTypesSaga.ADD_TASK_TEMPLATE,
+    type: ActionTypes.ADD_TASK_TEMPLATE,
     template: { ...template, type: 'WORKFLOW' },
   };
 }
@@ -49,7 +47,7 @@ export function cleanBreadcrumbs() {
 
 export function addTemplateFolder(template, parentIdentifier = null) {
   return {
-    type: ActionTypesSaga.ADD_TASK_TEMPLATE_FOLDER,
+    type: ActionTypes.ADD_TASK_TEMPLATE_FOLDER,
     template: { ...template, parentIdentifier, type: 'FOLDER' },
   };
 }
@@ -59,7 +57,7 @@ export function updateTaskTemplateSuccess(
   dataToUpdate,
 ) {
   return {
-    type: ActionTypes.UPDATE_TASK_TEMPLATE,
+    type: ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS,
     taskTemplateIdentifier,
     dataToUpdate,
   };
@@ -67,21 +65,21 @@ export function updateTaskTemplateSuccess(
 
 export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
   return {
-    type: ActionTypesSaga.GO_TO_TASK_TEMPLATE_FOLDER,
+    type: ActionTypes.GO_TO_TASK_TEMPLATE_FOLDER,
     payload: { taskTemplateFolderIdentifier },
   };
 }
 
 export function deleteTemplate(taskTemplateIdentifier) {
   return {
-    type: ActionTypesSaga.DELETE_TASK_TEMPLATE,
+    type: ActionTypes.DELETE_TASK_TEMPLATE,
     taskTemplateIdentifier,
   };
 }
 
 export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
   return {
-    type: ActionTypesSaga.SWITCH_TEMPLATE_PUBLIC,
+    type: ActionTypes.SWITCH_TEMPLATE_PUBLIC,
     taskTemplateIdentifier,
     flagPublic,
   };
@@ -89,7 +87,7 @@ export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
 
 export function duplicateTemplate(taskTemplateIdentifier, includeAttachments) {
   return {
-    type: ActionTypesSaga.DUPLICATE_TASK_TEMPLATE,
+    type: ActionTypes.DUPLICATE_TASK_TEMPLATE,
     taskTemplateIdentifier,
     includeAttachments,
   };
@@ -97,7 +95,7 @@ export function duplicateTemplate(taskTemplateIdentifier, includeAttachments) {
 
 export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
   return {
-    type: ActionTypesSaga.UPDATE_TASK_TEMPLATE,
+    type: ActionTypes.UPDATE_TASK_TEMPLATE,
     taskTemplateIdentifier,
     dataToUpdate,
   };
@@ -105,14 +103,14 @@ export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
 
 export function getAllTemplatesForOrganization(searchPhrase = null) {
   return {
-    type: ActionTypesSaga.GET_ALL_TASK_TEMPLATES,
+    type: ActionTypes.GET_ALL_TASK_TEMPLATES,
     searchPhrase,
   };
 }
 
 export function getTemplates(searchPhrase = null) {
   return {
-    type: ActionTypesSaga.GET_TASK_TEMPLATES,
+    type: ActionTypes.GET_TASK_TEMPLATES,
     searchPhrase,
   };
 }
@@ -127,7 +125,7 @@ export function getTemplateTasks(taskTemplateIdentifier, withLoader = true) {
 
 export function toggleTemplateOpen(taskTemplateIdentifier) {
   return {
-    type: ActionTypesSaga.TOGGLE_TASK_TEMPLATE_OPEN,
+    type: ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN,
     taskTemplateIdentifier,
   };
 }
@@ -138,7 +136,7 @@ export function reorderTasksForTemplate({
   destination,
 }) {
   return {
-    type: ActionTypesSaga.REORDER_TASKS_FOR_TEMPLATE,
+    type: ActionTypes.REORDER_TASKS_FOR_TEMPLATE,
     taskTemplateIdentifier,
     source,
     destination,
@@ -155,7 +153,7 @@ export function addTaskToTemplate(task, elementId, position) {
 }
 
 export function reloadOpenedTemplateTasks() {
-  return { type: ActionTypesSaga.RELOAD_OPENED_TEMPLATE_TASKS };
+  return { type: ActionTypes.RELOAD_OPENED_TEMPLATE_TASKS };
 }
 
 export function selectTaskTemplate(taskTemplateIdentifier) {

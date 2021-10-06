@@ -117,7 +117,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
               onAddFolderCallback: createdFolder => {
                 if (mainListId === createdFolder.parentTaskTemplateIdentifier) {
                   dispatch({
-                    type: ActionTypes.ADD_TASK_TEMPLATE,
+                    type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
                     template: createdFolder,
                   });
                 }

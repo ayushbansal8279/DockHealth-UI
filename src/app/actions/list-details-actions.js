@@ -1,9 +1,8 @@
 import * as ActionTypes from './action-types';
-import * as ActionTypesSaga from './action-types-saga';
 
 export function getListDetailsTaskCounters(taskListIdentifier) {
   return {
-    type: ActionTypesSaga.GET_LIST_DETAILS_TASK_COUNTERS,
+    type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
     payload: {
       taskListIdentifier,
     },
@@ -15,12 +14,12 @@ export const resetListDetailsTaskCounters = () => ({
 });
 
 export const getListDetailsGroupedTasks = payload => ({
-  type: ActionTypesSaga.GET_LIST_DETAILS_GROUPED_TASKS,
+  type: ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
   payload,
 });
 
 export const refreshListDetailsGroupedTasks = withLoader => ({
-  type: ActionTypesSaga.REFRESH_LIST_DETAILS_GROUPED_TASKS,
+  type: ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
   payload: {
     withLoader,
   },
@@ -28,7 +27,7 @@ export const refreshListDetailsGroupedTasks = withLoader => ({
 
 export function sortListDetailsTasks(key, order) {
   return {
-    type: ActionTypesSaga.SORT_LIST_DETAILS_TASKS,
+    type: ActionTypes.SORT_LIST_DETAILS_TASKS,
     payload: {
       key,
       order,
@@ -38,7 +37,7 @@ export function sortListDetailsTasks(key, order) {
 
 export function filterListDetailsTasks(filters) {
   return {
-    type: ActionTypesSaga.FILTER__LIST_DETAILS_TASKS,
+    type: ActionTypes.FILTER__LIST_DETAILS_TASKS,
     payload: {
       filters,
     },
@@ -67,7 +66,7 @@ export function applyTaskTemplate({
   taskGroupIdentifier,
 }) {
   return {
-    type: ActionTypesSaga.APPLY_TASK_TEMPLATE,
+    type: ActionTypes.APPLY_TASK_TEMPLATE,
     taskTemplateIdentifier,
     taskListIdentifier,
     taskGroupIdentifier,

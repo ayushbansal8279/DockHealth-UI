@@ -1,19 +1,4 @@
 import {
-  ADD_TASK_TEMPLATE,
-  ADD_TASK_TEMPLATE_FOLDER,
-  DELETE_TASK_TEMPLATE,
-  DUPLICATE_TASK_TEMPLATE,
-  GET_ALL_TASK_TEMPLATES,
-  GET_TASK_TEMPLATES,
-  TOGGLE_TASK_TEMPLATE_OPEN,
-  UPDATE_TASK_TEMPLATE,
-  REORDER_TASKS_FOR_TEMPLATE,
-  RELOAD_OPENED_TEMPLATE_TASKS,
-  GO_TO_TASK_TEMPLATE_FOLDER,
-  MOVE_TASK_TEMPLATE,
-  SWITCH_TEMPLATE_PUBLIC,
-} from 'actions/action-types-saga';
-import {
   all,
   call,
   put,
@@ -54,7 +39,7 @@ function* moveTemplates({
         taskTemplateIdentifier,
       });
       yield put({
-        type: ActionTypes.DELETE_TASK_TEMPLATE,
+        type: ActionTypes.MOVE_TASK_TEMPLATE_SUCCESS,
         taskTemplateIdentifier,
       });
     }
@@ -169,7 +154,7 @@ function* addTemplate({ template, parentIdentifier = null }) {
       parentIdentifier || parentId,
     );
     yield put({
-      type: ActionTypes.ADD_TASK_TEMPLATE,
+      type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
       template: createdTemplate,
     });
 
@@ -193,11 +178,11 @@ function* addTemplate({ template, parentIdentifier = null }) {
 
 function* deleteTemplate({ taskTemplateIdentifier }) {
   try {
+    yield call(TaskTemplateApi.deleteTemplate, taskTemplateIdentifier);
     yield put({
-      type: ActionTypes.DELETE_TASK_TEMPLATE,
+      type: ActionTypes.DELETE_TASK_TEMPLATE_SUCCESS,
       taskTemplateIdentifier,
     });
-    yield call(TaskTemplateApi.deleteTemplate, taskTemplateIdentifier);
     yield put(showGlobalAlert(AlertMessages.DELETED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -212,7 +197,7 @@ function* duplicateTemplate({ taskTemplateIdentifier, includeAttachments }) {
       taskTemplateIdentifier,
       includeAttachments,
     );
-    yield put({ type: ActionTypes.ADD_TASK_TEMPLATE, template });
+    yield put({ type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS, template });
     yield put(
       TaskTemplateActions.toggleTemplateOpen(template.taskTemplateIdentifier),
     );
@@ -231,7 +216,7 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
       ...omit(['taskTemplateIdentifier'], dataToUpdate),
     };
     yield put({
-      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      type: ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS,
       taskTemplateIdentifier,
       dataToUpdate,
     });
@@ -240,7 +225,7 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
-      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      type: ActionTypes.UPDATE_TASK_TEMPLATE_FAILURE,
       taskTemplateIdentifier,
       dataToUpdate: template,
     });
@@ -252,7 +237,7 @@ function* switchTemplatePublic({ taskTemplateIdentifier, flagPublic }) {
 
   try {
     yield put({
-      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      type: ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS,
       taskTemplateIdentifier,
       dataToUpdate: { publicAccess: flagPublic },
     });
@@ -265,7 +250,7 @@ function* switchTemplatePublic({ taskTemplateIdentifier, flagPublic }) {
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
-      type: ActionTypes.UPDATE_TASK_TEMPLATE,
+      type: ActionTypes.UPDATE_TASK_TEMPLATE_FAILURE,
       taskTemplateIdentifier,
       dataToUpdate: template,
     });
@@ -298,20 +283,13 @@ function* toggleTemplateOpen({ taskTemplateIdentifier }) {
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
 
-    yield all([
-      !templateDetails?.isOpen
-        ? put(
-            TaskTemplateActions.getTemplateTasks(
-              taskTemplateIdentifier,
-              !templateDetails?.tasks,
-            ),
-          )
-        : null,
-      put({
-        type: ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN,
-        taskTemplateIdentifier,
-      }),
-    ]);
+    if (templateDetails?.isOpen)
+      yield put(
+        TaskTemplateActions.getTemplateTasks(
+          taskTemplateIdentifier,
+          !templateDetails?.tasks,
+        ),
+      );
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -692,18 +670,30 @@ function* changeTaskIntentType({ taskIdentifier, intentType }) {
 }
 
 export default function* watchTaskTemplate() {
-  yield takeEvery(MOVE_TASK_TEMPLATE, moveTemplates);
-  yield takeEvery(GO_TO_TASK_TEMPLATE_FOLDER, getTaskTemplatesFolder);
-  yield takeEvery(ADD_TASK_TEMPLATE, addTemplate);
-  yield takeEvery(ADD_TASK_TEMPLATE_FOLDER, addTemplate);
-  yield takeEvery(DELETE_TASK_TEMPLATE, deleteTemplate);
-  yield takeLatest(GET_ALL_TASK_TEMPLATES, getAllTemplatesForOrganization);
-  yield takeLatest(GET_TASK_TEMPLATES, getTemplates);
-  yield takeEvery(TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
-  yield takeEvery(UPDATE_TASK_TEMPLATE, updateTemplate);
-  yield takeEvery(DUPLICATE_TASK_TEMPLATE, duplicateTemplate);
-  yield takeEvery(REORDER_TASKS_FOR_TEMPLATE, reorderTasksForTemplate);
-  yield takeLatest(RELOAD_OPENED_TEMPLATE_TASKS, reloadOpenedTemplateTasks);
+  yield takeEvery(ActionTypes.MOVE_TASK_TEMPLATE, moveTemplates);
+  yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE, addTemplate);
+  yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);
+  yield takeEvery(
+    ActionTypes.GO_TO_TASK_TEMPLATE_FOLDER,
+    getTaskTemplatesFolder,
+  );
+  yield takeEvery(ActionTypes.DELETE_TASK_TEMPLATE, deleteTemplate);
+  yield takeLatest(
+    ActionTypes.GET_ALL_TASK_TEMPLATES,
+    getAllTemplatesForOrganization,
+  );
+  yield takeLatest(ActionTypes.GET_TASK_TEMPLATES, getTemplates);
+  yield takeEvery(ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
+  yield takeEvery(ActionTypes.UPDATE_TASK_TEMPLATE, updateTemplate);
+  yield takeEvery(ActionTypes.DUPLICATE_TASK_TEMPLATE, duplicateTemplate);
+  yield takeEvery(
+    ActionTypes.REORDER_TASKS_FOR_TEMPLATE,
+    reorderTasksForTemplate,
+  );
+  yield takeLatest(
+    ActionTypes.RELOAD_OPENED_TEMPLATE_TASKS,
+    reloadOpenedTemplateTasks,
+  );
   yield takeEvery(ActionTypes.GET_TASK_TEMPLATE_TASKS, getTasksForTemplate);
   yield takeEvery(ActionTypes.ADD_TASK_TO_TEMPLATE, addTaskToTemplate);
   yield takeEvery(ActionTypes.GET_TASK_TEMPLATE_LAYOUT, getTaskTemplateLayout);
@@ -725,5 +715,5 @@ export default function* watchTaskTemplate() {
     getCurrentTaskTemplate,
   );
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
-  yield takeEvery(SWITCH_TEMPLATE_PUBLIC, switchTemplatePublic);
+  yield takeEvery(ActionTypes.SWITCH_TEMPLATE_PUBLIC, switchTemplatePublic);
 }
