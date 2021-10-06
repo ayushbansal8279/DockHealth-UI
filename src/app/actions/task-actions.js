@@ -32,7 +32,7 @@ export const chooseTaskDecisionOutcome = (
   task,
   templateBundleIdentifier,
 ) => ({
-  type: ActionTypesSaga.CHOOSE_DECISION_TASK_OPTION,
+  type: ActionTypes.CHOOSE_DECISION_TASK_OPTION,
   payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
 });
 
@@ -893,7 +893,7 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
 
 export function reorderSubtasks({ parentTask, source, destination }) {
   return {
-    type: ActionTypesSaga.REORDER_SUBTASKS,
+    type: ActionTypes.REORDER_SUBTASKS,
     parentTask,
     source,
     destination,
