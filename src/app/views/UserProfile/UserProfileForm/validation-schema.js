@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
-const PHONE_MASK = /^\d{10,15}$/;
+const PHONE_MASK = /^$|^\d{10,15}$/;
 const MASK_MESSAGE =
   'Phone number has incorrect format. 10 or 9 digits (for international) are required.';
 
@@ -16,8 +16,7 @@ export default object().shape({
   subspecialty: string().nullable(),
   department: string().nullable(),
   workPhoneNumber: string()
-    // eslint-disable-next-line func-names
-    .transform(function(value) {
+    .transform(value => {
       if (!value || value.length <= 3) {
         return '';
       }
