@@ -48,7 +48,7 @@ const Input = React.forwardRef(
         className: clsx({ 'Mui-readonly': readOnly }),
       }}
       InputLabelProps={{
-        shrink,
+        shrink: readOnly || shrink,
       }}
       variant={variant}
       {...restProps}
