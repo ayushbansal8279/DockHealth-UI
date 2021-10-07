@@ -116,7 +116,7 @@ const UserReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_CURRENT_USER_SUCCESS: {
       const { user } = action;
-      const { displayOptions } = user.userPreference;
+      const { displayOptions } = user.userPreference || {};
       const mainSetup = {};
       Object.entries(state.userViewSetup.mainSetup).forEach(([key]) => {
         mainSetup[key] = displayOptions?.includes(key);

@@ -159,6 +159,7 @@ const PatientTasksListView = () => {
             description,
             taskListIdentifier,
             taskGroupIdentifier,
+            patientIdentifier,
           }),
         );
       } else {
@@ -166,12 +167,18 @@ const PatientTasksListView = () => {
           openModal('ListPicker', {
             fetchMethod: getTaskListForUser,
             confirm: listId =>
-              dispatch(addTask({ description, taskListIdentifier: listId })),
+              dispatch(
+                addTask({
+                  description,
+                  taskListIdentifier: listId,
+                  patientIdentifier,
+                }),
+              ),
           }),
         );
       }
     },
-    [dispatch],
+    [dispatch, patientIdentifier],
   );
 
   const renderEmptyListView = () => {
