@@ -19,7 +19,7 @@ const BOOL_SELECT_OPTIONS = [
 const CustomField = ({ readOnly, field, initialValue }) => {
   const { identifier, name, placeholder, fieldType, options } = field;
 
-  const { setValue } = useFormContext();
+  const { setValue, watch } = useFormContext();
 
   const dropdownOptions = useMemo(
     () =>
@@ -37,6 +37,8 @@ const CustomField = ({ readOnly, field, initialValue }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const value = watch(fieldName);
+
   switch (fieldType) {
     case FieldType.TEXT:
       return (
@@ -45,6 +47,7 @@ const CustomField = ({ readOnly, field, initialValue }) => {
           label={name}
           name={fieldName}
           placeholder={placeholder}
+          multiline={readOnly && value}
         />
       );
     case FieldType.NUMBER:
