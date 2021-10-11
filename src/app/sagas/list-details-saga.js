@@ -145,6 +145,9 @@ function processTaskCountersSuccess(countersData) {
 function* doGetListDetailsCounters({ payload }) {
   try {
     const { taskListIdentifier } = payload;
+    if (!taskListIdentifier) {
+      return;
+    }
 
     const responseData = yield call(
       ListDetailsApi.getTaskStatsForList,
@@ -164,6 +167,9 @@ function* doGetTasksGroupsList(payload) {
   const { shouldSetRequestState = true } = payload;
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
+    if (!taskListIdentifier) {
+      return;
+    }
 
     if (shouldSetRequestState) {
       yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
