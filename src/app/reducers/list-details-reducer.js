@@ -26,7 +26,10 @@ import {
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
+import { pipe, prop, uniqBy } from 'ramda';
 import TaskBaseReducer from './task-base-reducer';
+
+const dedupe = pipe(uniqBy(prop('identifier')));
 
 const initialState = {
   taskListIdentifier: null,
@@ -264,7 +267,7 @@ const ListDetailsReducer = (state = initialState, action) => {
               ...taskGroup,
               tasks: refresh
                 ? group.tasks
-                : taskGroup.tasks.concat(group.tasks),
+                : dedupe(taskGroup.tasks.concat(group.tasks)),
               hasMore: group.hasMore,
               moreTasksIndex: group.moreTasksIndex,
               isLoadingGroup: false,
