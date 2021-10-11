@@ -1,5 +1,5 @@
 import { clone } from 'ramda';
-import * as types from 'actions/action-types';
+import * as ActionTypes from 'actions/action-types';
 
 const PEOPLE_FILTERS = ['assignedBy', 'assignedTo'];
 const PRIORITY_FILTERS = ['priorityOptions'];
@@ -71,18 +71,28 @@ export default function(state = INITIAL_STATE, action = {}) {
   const { type, filters, error, selectedFilters } = action;
 
   switch (type) {
-    case types.FETCH_MEGA_FILTERS_REQUEST:
+    case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:
+    case ActionTypes.FETCH_MEGA_FILTERS_REQUEST:
       return {
         ...state,
         isLoading: true,
       };
-    case types.FETCH_MEGA_FILTERS_SUCCESS:
+
+    case ActionTypes.FETCH_MEGA_FILTERS_SUCCESS:
       return {
         ...state,
         filters: assignTypesToFilters(filters),
         isLoading: false,
       };
-    case types.FETCH_MEGA_FILTERS_UPDATE_SUCCESS:
+
+    case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS:
+      return {
+        ...state,
+        filters: assignTypesToFilters(action.filterOptions),
+        isLoading: false,
+      };
+
+    case ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS:
       if (Object.keys(filters).length > 0) {
         return {
           ...state,
@@ -104,12 +114,17 @@ export default function(state = INITIAL_STATE, action = {}) {
         };
       }
       return state;
-    case types.FETCH_MEGA_FILTERS_FAILURE:
+
+    case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.FETCH_MEGA_FILTERS_FAILURE:
       return { ...state, error, isLoading: false };
-    case types.SELECT_FILTERS_FROM_MEGA_FILTER:
+
+    case ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER:
       return { ...state, selectedFilters };
-    case types.CLEAR_MEGA_FILTERS:
+
+    case ActionTypes.CLEAR_MEGA_FILTERS:
       return INITIAL_STATE;
+
     default:
       return state;
   }

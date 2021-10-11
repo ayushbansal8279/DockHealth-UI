@@ -1,572 +1,193 @@
 /* eslint-disable react/no-did-update-set-state */
-import React, { PureComponent } from 'react';
-import { isEmpty } from 'ramda';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as TemplateActions from 'actions/template-actions';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { setHeader } from 'actions/template-actions';
 import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import * as ModalActions from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  tasksIsFetchingSelector,
-  completedTasksIsFetchingSelector,
-  tasksSelector,
-  completedTasksSelector,
-  personTaskCountersSelector,
-  personDataSelector,
-  personDetailsSortSelector,
-} from 'selectors/person-details-selectors';
-import {
-  hasFiltersAppliedSelector,
-  selectedFiltersInMegaFilterSelector,
-} from 'selectors/mega-filter-selectors';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
+import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-import { noop } from 'helpers/utility-functions';
-import sessionStorageHelper from 'helpers/session-storage-helper';
-import { TaskItemColumn } from 'helpers/task-helpers';
-import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
+import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-
-import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
-
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import { TaskViewContainer } from './styled';
+import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-class PersonDetailsView extends PureComponent {
-  state = {
-    isLoadingView: true,
-    searchValue: '',
-  };
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const PersonDetailsView = () => {
+  const { userIdentifier, tabName } = useParams();
+  const [searchValue, setSearchValue] = useState('');
+  const dispatch = useDispatch();
 
-  async componentDidMount() {
-    const {
-      personDetailsActions,
-      history,
-      match,
-      templateActions,
-    } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
+  const currentUser = useSelector(userProfileSelector);
 
-    templateActions.setHeader({
-      layout: [
-        {
-          key: 'generic-header',
-          component: <GenericHeader>People</GenericHeader>,
-        },
-      ],
-    });
+  useEffect(() => {
+    dispatch(
+      setHeader({
+        layout: [
+          {
+            key: 'generic-header',
+            component: <GenericHeader>People</GenericHeader>,
+          },
+        ],
+      }),
+    );
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'PersonTaskList',
     });
 
-    let personData = {};
-
-    try {
-      personData = await personDetailsActions.getUserById(userIdentifier);
-
-      if (personData?.userIdentifier) {
-        this.initTable();
-      }
-    } catch {
-      noop();
-    }
-
-    if (personData?.firstName || personData?.lastName) {
-      this.setState({
-        isLoadingView: false,
-      });
-    } else {
-      history.push('/core/people');
-    }
-  }
-
-  UNSAFE_componentWillUpdate(nextProps) {
-    const { personDetailsActions, match } = this.props;
-    const { params } = match;
-
-    if (nextProps.match.params.userIdentifier !== params.userIdentifier) {
-      personDetailsActions.resetTaskCounters();
-      personDetailsActions.getTaskStatsForUser(
-        nextProps.match.params.userIdentifier,
-      );
-    }
-
-    if (
-      nextProps.match.params.userIdentifier === params.userIdentifier &&
-      nextProps.match.params.tabName !== params.tabName
-    ) {
-      personDetailsActions.getTaskStatsForUser(params.userIdentifier);
-
-      if (nextProps.match.params.tabName === TaskListTabName.COMPLETE) {
-        this.refreshCompleteTasks();
-      } else {
-        this.refreshIncompleteTasks();
-      }
-    }
-  }
-
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  componentDidUpdate(previousProps) {
-    const { sort } = this.props;
-
-    if (
-      previousProps.sort?.key !== sort?.key ||
-      previousProps.sort?.order !== sort?.order
-    ) {
-      this.refreshTab(true);
-    }
-  }
-
-  componentWillUnmount() {
-    const { personDetailsActions } = this.props;
-
-    personDetailsActions.sortPersonTasks(null, null);
-
-    personDetailsActions.resetTaskCounters();
-  }
-
-  getTasks(userIdentifier, status) {
-    const { personDetailsActions, sort } = this.props;
-
-    return personDetailsActions.getTasksAssignedToSpecificUser(
-      userIdentifier,
-      sort,
-      status,
-    );
-  }
-
-  getFilteredTasks = (filters, status) => {
-    const { match, personDetailsActions, sort } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    return personDetailsActions.getFilteredTasksForPeopleList(
-      userIdentifier,
-      sort,
-      filters,
-      status,
-    );
-  };
-
-  initTable = () => {
-    const { personDetailsActions, match } = this.props;
-    const { params } = match;
-    const { tabName, userIdentifier } = params;
-
-    personDetailsActions.getTaskStatsForUser(userIdentifier);
-
-    let status = 'INCOMPLETE';
-    if (tabName === TaskListTabName.COMPLETE) {
-      personDetailsActions.loadingCompletedTasks();
-      status = 'COMPLETE';
-    } else {
-      personDetailsActions.loading();
-    }
-
-    const filters = sessionStorageHelper.getItem(
-      `filter-${userIdentifier}-${status}`,
+    dispatch(
+      PersonDetailsActions.initializeUserDetailsState(
+        userIdentifier,
+        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
+      ),
     );
 
-    if (!filters) {
-      this.getTasks(userIdentifier, status);
-    } else {
-      this.getFilteredTasks(filters, status);
-    }
-  };
+    return () => {
+      dispatch(PersonDetailsActions.clearUserDetailsState());
+      dispatch(MegaFilterActions.clearFiltersForMegaFilter());
+      dispatch(closeDrawer());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  refreshTab = (withLoader = false) => {
-    const { match } = this.props;
-    const { params } = match;
-    const { tabName } = params;
-
-    this.refreshTabCounters();
-
-    if (tabName === TaskListTabName.COMPLETE) {
-      this.refreshCompleteTasks(withLoader);
-    } else {
-      this.refreshIncompleteTasks(withLoader);
-    }
-  };
-
-  refreshFilters = () => {
-    const { megaFilterActions, match } = this.props;
-    const { params } = match;
-    const { tabName, userIdentifier } = params;
-
-    const status =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-    megaFilterActions.getFiltersForPeopleListMegaFilter(userIdentifier, status);
-  };
-
-  refreshTabCounters = () => {
-    const { personDetailsActions, match } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    personDetailsActions.getTaskStatsForUser(userIdentifier);
-  };
-
-  refreshIncompleteTasks = (withLoader = true) => {
-    const { personDetailsActions, megaFilterActions, match } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    const status = 'INCOMPLETE';
-
-    megaFilterActions.getFiltersForPeopleListMegaFilter(userIdentifier, status);
-
-    const filters = sessionStorageHelper.getItem(
-      `filter-${userIdentifier}-${status}`,
+  useEffect(() => {
+    dispatch(
+      PersonDetailsActions.initializeUserDetailsState(
+        userIdentifier,
+        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
+      ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userIdentifier]);
 
-    if (withLoader) personDetailsActions.loading();
-
-    if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(filters, status);
-    }
-
-    return this.getTasks(userIdentifier, status);
-  };
-
-  refreshCompleteTasks = (withLoader = true) => {
-    const { personDetailsActions, megaFilterActions, match } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    const status = 'COMPLETE';
-
-    megaFilterActions.getFiltersForPeopleListMegaFilter(userIdentifier, status);
-
-    const filters = sessionStorageHelper.getItem(
-      `filter-${userIdentifier}-${status}`,
+  useEffect(() => {
+    dispatch(
+      PersonDetailsActions.changeCurrentTasksStatus(
+        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
+      ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabName]);
 
-    if (withLoader) personDetailsActions.loadingCompletedTasks();
-
-    if (filters && !isEmpty(filters)) {
-      return this.getFilteredTasks(filters, status);
-    }
-
-    return this.getTasks(userIdentifier, status);
+  const refreshTab = () => {
+    dispatch(PersonDetailsActions.refreshUserTasks());
   };
 
-  onSideClick = () => {
-    const { clearTask, closeTaskDrawer } = this.props;
-
-    closeTaskDrawer();
-    clearTask();
+  const refreshTabAfterTaskUpdate = () => {
+    dispatch(PersonDetailsActions.getUserTaskFilterOptions());
   };
 
-  navigateToTab = tabName => {
-    const { match, history } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    history.push(
-      `/core/assignedToPerson/${userIdentifier}${
-        tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
-      }`,
-    );
+  const handleTaskDelete = () => {
+    dispatch(PersonDetailsActions.getUserTaskFilterOptions());
+    dispatch(PersonDetailsActions.getUserTaskCounters());
   };
 
-  handleFilterChange = updatedFilters => {
-    const { match, megaFilterActions } = this.props;
-    const { params } = match;
-    const { tabName, userIdentifier } = params;
-
-    const taskStatus =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-    megaFilterActions.selectFiltersForMegaFilter(
-      updatedFilters,
-      userIdentifier,
-      taskStatus,
-    );
-
-    return this.getFilteredTasks(updatedFilters, taskStatus);
-  };
-
-  handleQuickAddTask = task => {
-    const {
-      modalActions,
-      personDetailsActions,
-      currentUser,
-      match,
-    } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    modalActions.openModal('ListPicker', {
-      fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
-      listCreationPayload: {
-        adminIdentifiers:
-          currentUser.userIdentifier !== userIdentifier ? [userIdentifier] : [],
-      },
-      confirm: taskListIdentifier => {
-        const payload = {
-          ...task,
-          taskListIdentifier,
-          assignedToIdentifier: userIdentifier,
-          taskGroupIdentifier: null,
-        };
-
-        personDetailsActions.quickAddTask(payload).then(() => {
-          personDetailsActions.getTaskStatsForUser(userIdentifier);
-        });
-      },
-    });
-  };
-
-  refreshTabAfterTaskUpdate = updatedTask => {
-    const { selectedFilters } = this.props;
-
-    if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
-      this.refreshTab();
-    } else {
-      this.refreshFilters();
-    }
-  };
-
-  handleTaskDelete = () => {
-    const { selectedFilters } = this.props;
-
-    this.refreshFilters();
-    if (selectedFilters && !isEmpty(selectedFilters)) {
-      this.refreshTab();
-    }
-  };
-
-  setSearchValue = searchValue => {
+  const handleSearchValueChange = newValue => {
     onSearchChanged();
-    this.setState({
-      searchValue,
-    });
+    setSearchValue(newValue);
   };
 
-  invokeToggleCompleteAction = task => {
-    const {
-      taskActions,
-      personDetailsActions,
-      match,
-      currentUser,
-    } = this.props;
-    const { params } = match;
-    const { userIdentifier } = params;
-
-    taskActions
-      .toggleCompleteTask(task, currentUser)
+  const invokeToggleCompleteAction = task => {
+    dispatch(TaskActions.toggleCompleteTask(task, currentUser))
       .then(() => {
         setTimeout(() => {
-          personDetailsActions.getTaskStatsForUser(userIdentifier);
+          dispatch(PersonDetailsActions.getUserTaskCounters(userIdentifier));
         }, TASK_DISAPPEAR_DELAY);
       })
-      .catch(() => this.refreshTab());
+      .catch(() => refreshTab());
   };
 
-  toggleTaskCompletedStatus = task => {
-    const { modalActions } = this.props;
-
+  const toggleTaskCompletedStatus = task => {
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
     );
     if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
       const modalProps = {
         confirm: () => {
-          modalActions.closeModal();
-          this.invokeToggleCompleteAction(task);
+          dispatch(ModalActions.closeModal());
+          invokeToggleCompleteAction(task);
         },
       };
-      modalActions.openModal('CompleteAllTasks', modalProps);
+      dispatch(ModalActions.openModal('CompleteAllTasks', modalProps));
     } else {
-      this.invokeToggleCompleteAction(task);
+      invokeToggleCompleteAction(task);
     }
   };
 
-  handleTaskUpdate = (taskIdentifier, dataToUpdate) => {
-    const { taskActions } = this.props;
-    taskActions
-      .partialUpdateTask(taskIdentifier, dataToUpdate)
-      .then(this.refreshTabAfterTaskUpdate)
-      .catch(() => this.refreshTab());
+  const handleTaskUpdate = (taskIdentifier, dataToUpdate) => {
+    dispatch(TaskActions.partialUpdateTask(taskIdentifier, dataToUpdate))
+      .then(refreshTabAfterTaskUpdate)
+      .catch(() => refreshTab());
   };
 
-  handleUpdateDueDate = (task, dueDate) => {
-    const { taskActions } = this.props;
-
-    taskActions
-      .updateDueDate(task, dueDate, true)
-      .then(this.refreshTabAfterTaskUpdate)
-      .catch(() => this.refreshTab());
+  const handleUpdateDueDate = (task, dueDate) => {
+    dispatch(TaskActions.updateDueDate(task, dueDate, true))
+      .then(refreshTabAfterTaskUpdate)
+      .catch(() => refreshTab());
   };
 
-  handleUpdateWorkflowStatus = (task, workflowStatus) => {
-    const { taskActions } = this.props;
-
-    taskActions
-      .updateWorkflowStatus(task, workflowStatus)
-      .then(this.refreshTabAfterTaskUpdate)
-      .catch(() => this.refreshTab());
+  const handleUpdateWorkflowStatus = (task, workflowStatus) => {
+    dispatch(TaskActions.updateWorkflowStatus(task, workflowStatus))
+      .then(refreshTabAfterTaskUpdate)
+      .catch(() => refreshTab());
   };
 
-  sortPersonTasks = (key, order) => {
-    const { personDetailsActions } = this.props;
-    onSortChanged(order ? key : null, order);
-    personDetailsActions.sortPersonTasks(order ? key : null, order);
-  };
+  const selectedTab = tabName || TaskListTabName.OPEN;
 
-  render() {
-    const {
-      personData,
-      match,
-      modalActions,
-      taskCounters,
-      isFetching,
-      isCompletedTasksFetching,
-      selectedTask,
-      tasks,
-      completedTasks,
-      areFiltersApplied,
-      sort,
-    } = this.props;
-    const { isLoadingView, searchValue } = this.state;
-    const { openModal } = modalActions;
-    const { params } = match;
-    const { tabName, userIdentifier } = params;
-
-    const selectedTab = tabName || TaskListTabName.OPEN;
-
-    return (
-      !isLoadingView && (
-        <>
-          <BulkEditSection
-            allTasks={tasks}
-            refreshTasks={this.refreshTab}
-            disabled={selectedTab === TaskListTabName.COMPLETE}
+  return (
+    <>
+      <div>
+        <PersonInfoPanel />
+        <TaskViewContainer>
+          <UserTasksToolbar
+            selectedTab={selectedTab}
             searchValue={searchValue}
-          >
-            <div>
-              <PersonInfoPanel
-                personData={personData}
-                archivePerson={props =>
-                  openModal('ArchivePerson', { ...props })
-                }
-              />
-              <TaskViewContainer>
-                <Toolbar
-                  showNotifications={false}
-                  members={[personData]}
-                  showMembers={false}
-                  onSelectTab={this.navigateToTab}
-                  selectedTab={selectedTab}
-                  openTasksAmount={taskCounters.incomplete}
-                  completedTasksAmount={taskCounters.complete}
-                  onSearchChange={this.setSearchValue}
-                  searchValue={searchValue}
-                  onSelectFilters={this.handleFilterChange}
-                  listNameColumnVisible
-                  pdfTitle={
-                    personData
-                      ? `${personData.firstName} ${personData.lastName}`
-                      : null
-                  }
-                  isFetching={isFetching || isCompletedTasksFetching}
-                  tasks={tasks}
-                  completedTasks={completedTasks}
-                />
-                {selectedTab === TaskListTabName.COMPLETE ? (
-                  <CompletedTasksView
-                    isFetchingTasks={isCompletedTasksFetching}
-                    tasks={completedTasks}
-                    toggleCompleteTask={this.toggleTaskCompletedStatus}
-                    summaryTasksCount={taskCounters.complete}
-                    onTaskUpdate={this.handleTaskUpdate}
-                    updateDueDate={this.handleUpdateDueDate}
-                    searchValue={searchValue}
-                    selectedTask={selectedTask}
-                    listUniqueKey={userIdentifier}
-                    areFiltersApplied={areFiltersApplied}
-                    sort={sort}
-                    onSortChange={this.sortPersonTasks}
-                    taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
-                  />
-                ) : (
-                  <OpenedTasksView
-                    isFetchingTasks={isFetching}
-                    tasks={tasks}
-                    toggleCompleteTask={this.toggleTaskCompletedStatus}
-                    quickAddTask={this.handleQuickAddTask}
-                    onTaskUpdate={this.handleTaskUpdate}
-                    updateDueDate={this.handleUpdateDueDate}
-                    updateWorkflowStatus={this.handleUpdateWorkflowStatus}
-                    searchValue={searchValue}
-                    selectedTask={selectedTask}
-                    listUniqueKey={userIdentifier}
-                    areFiltersApplied={areFiltersApplied}
-                    sort={sort}
-                    onSortChange={this.sortPersonTasks}
-                    taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
-                  />
-                )}
-              </TaskViewContainer>
-            </div>
-          </BulkEditSection>
-          <TaskDrawer
-            onTaskUpdate={this.refreshTabAfterTaskUpdate}
-            onTaskDelete={this.handleTaskDelete}
-            onTaskCreation={this.refreshTabAfterTaskUpdate}
+            onSearchChange={handleSearchValueChange}
           />
-        </>
-      )
-    );
-  }
-}
+          {selectedTab === TaskListTabName.COMPLETE ? (
+            <CompletedTasksView
+              taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+              listUniqueKey={userIdentifier}
+              searchValue={searchValue}
+              toggleCompleteTask={toggleTaskCompletedStatus}
+              onTaskUpdate={handleTaskUpdate}
+              updateDueDate={handleUpdateDueDate}
+            />
+          ) : (
+            <OpenedTasksView
+              taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+              listUniqueKey={userIdentifier}
+              searchValue={searchValue}
+              toggleCompleteTask={toggleTaskCompletedStatus}
+              onTaskUpdate={handleTaskUpdate}
+              updateDueDate={handleUpdateDueDate}
+              updateWorkflowStatus={handleUpdateWorkflowStatus}
+            />
+          )}
+        </TaskViewContainer>
+      </div>
+      <TaskDrawer
+        onTaskUpdate={refreshTabAfterTaskUpdate}
+        onTaskDelete={handleTaskDelete}
+        onTaskCreation={refreshTabAfterTaskUpdate}
+      />
+    </>
+  );
+};
 
-function mapStateToProps(state) {
-  return {
-    sort: personDetailsSortSelector(state),
-    tasks: tasksSelector(state),
-    completedTasks: completedTasksSelector(state),
-    isFetching: tasksIsFetchingSelector(state),
-    isCompletedTasksFetching: completedTasksIsFetchingSelector(state),
-    personData: personDataSelector(state),
-    megaFilter: state.megaFilter,
-    currentUser: userProfileSelector(state),
-    taskCounters: personTaskCountersSelector(state),
-    selectedTask: selectedTaskSelector(state),
-    areFiltersApplied: hasFiltersAppliedSelector(state),
-    selectedFilters: selectedFiltersInMegaFilterSelector(state),
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    taskActions: bindActionCreators(TaskActions, dispatch),
-    personDetailsActions: bindActionCreators(PersonDetailsActions, dispatch),
-    templateActions: bindActionCreators(TemplateActions, dispatch),
-    closeTaskDrawer: () => closeDrawer()(dispatch),
-    clearTask: () => TaskActions.storeAsCurrentTask(null)(dispatch),
-    megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
-    modalActions: bindActionCreators(ModalActions, dispatch),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PersonDetailsView);
+export default PersonDetailsView;

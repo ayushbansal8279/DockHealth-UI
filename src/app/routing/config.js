@@ -63,11 +63,6 @@ import {
 } from './TemplateCoreSubscriptionPlan/PatientDetails';
 
 import {
-  onEnterPersonDetails,
-  onLeavePersonDetails,
-} from './TemplateCoreSubscriptionPlan/PersonDetails';
-
-import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
@@ -143,8 +138,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/assignedToPerson/:userIdentifier/:tabName?',
     RouteComponent: PersonDetailsView,
-    onEnter: onEnterPersonDetails,
-    onLeave: onLeavePersonDetails,
   },
   {
     path: '/people/:groupIdentifier?',

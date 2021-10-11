@@ -1,6 +1,15 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { onSortChanged } from 'helpers/ga-event-helper';
 import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
+import {
+  completedTasksIsFetchingSelector,
+  completedTasksSelector,
+  taskCountersSelector,
+  sortSelector,
+} from 'selectors/person-details-selectors';
+import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
+import { sortUserTasks } from 'actions/person-details-actions';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import EmptyTaskListBear from 'img/animals/bear.svg';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -8,29 +17,27 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
-import { TaskItemType } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
-  isFetchingTasks,
-  tasks,
-  openDrawer,
   storeAsCurrentTask,
   toggleCompleteTask,
-  summaryTasksCount,
   updateDueDate,
   searchValue,
-  areFiltersApplied,
   onTaskUpdate,
-  selectedTask,
   listUniqueKey,
-  sort,
-  onSortChange,
   taskItemConfig,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
+  const tasks = useSelector(completedTasksSelector);
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
+  const taskCounters = useSelector(taskCountersSelector);
+  const sort = useSelector(sortSelector);
+  const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+
+  const dispatch = useDispatch();
 
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
@@ -60,6 +67,11 @@ const PersonDetailsCompletedTasks = ({
       0,
     ) || 0;
 
+  const handleSortChange = (key, order) => {
+    onSortChanged(order ? key : null, order);
+    dispatch(sortUserTasks(key, order));
+  };
+
   return (
     <>
       {isFetchingTasks ? (
@@ -70,12 +82,11 @@ const PersonDetailsCompletedTasks = ({
             <TaskGroupsContainer>
               <TasksGroup
                 groupName="Completed"
-                openDrawer={openDrawer}
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleCompleteTask={toggleCompleteTask}
                 tasks={filteredTasks}
                 isCompletedGroup
-                hasMoreTasks={tasksAndSubTasks < summaryTasksCount}
+                hasMoreTasks={tasksAndSubTasks < taskCounters.complete}
                 isFetchingMoreTasks={isFetchingMoreTasks}
                 updateDueDate={updateDueDate}
                 quickAddTaskVisible={false}
@@ -83,10 +94,9 @@ const PersonDetailsCompletedTasks = ({
                 onTaskUpdate={onTaskUpdate}
                 areFiltersApplied={areFiltersApplied}
                 isSearchApplied={searchValue}
-                selectedTask={selectedTask}
                 listUniqueKey={listUniqueKey}
                 sort={sort}
-                onSortChange={onSortChange}
+                onSortChange={handleSortChange}
                 taskItemConfig={taskItemConfig}
                 disableBulkEdit
               >
@@ -100,42 +110,32 @@ const PersonDetailsCompletedTasks = ({
                   highlightTasksOfTheSameParent,
                 }) => (
                   <>
-                    {tasks.map(task =>
-                      task?.itemType === TaskItemType.TASK ? (
-                        <StandardTaskItem
-                          key={task.identifier}
-                          isFullView={isFullView}
-                          task={task}
-                          isCompletedGroup={isCompletedGroup}
-                          toggleCompleteTask={toggleCompleteTask}
-                          onTaskUpdate={onTaskUpdate}
-                          updateDueDate={updateDueDate}
-                          selectedTask={selectedTask}
-                          addingNewSubtask={
-                            addingNewSubtaskParentId === task.identifier
-                          }
-                          subtasksDisabled={isListFlattened}
-                          areFiltersApplied={areFiltersApplied}
-                          isSearchApplied={searchValue}
-                          multipleAssigneesContext={groupHasMultipleAssignees}
-                          highlightedTasksParentIdentifier={
-                            highlightedTasksParentIdentifier
-                          }
-                          highlightTasksOfTheSameParent={
-                            highlightTasksOfTheSameParent
-                          }
-                          taskItemConfig={taskItemConfig}
-                          dragAndDropDisabled
-                        />
-                      ) : (
-                        <TaskTemplateGroup
-                          templateGroup={task}
-                          groupHasMultipleAssignees={groupHasMultipleAssignees}
-                          isFullView={isFullView}
-                          dragAndDropDisabled
-                        />
-                      ),
-                    )}
+                    {tasks?.map(task => (
+                      <StandardTaskItem
+                        key={task.identifier}
+                        isFullView={isFullView}
+                        task={task}
+                        isCompletedGroup={isCompletedGroup}
+                        toggleCompleteTask={toggleCompleteTask}
+                        onTaskUpdate={onTaskUpdate}
+                        updateDueDate={updateDueDate}
+                        addingNewSubtask={
+                          addingNewSubtaskParentId === task.identifier
+                        }
+                        subtasksDisabled={isListFlattened}
+                        areFiltersApplied={areFiltersApplied}
+                        isSearchApplied={searchValue}
+                        multipleAssigneesContext={groupHasMultipleAssignees}
+                        highlightedTasksParentIdentifier={
+                          highlightedTasksParentIdentifier
+                        }
+                        highlightTasksOfTheSameParent={
+                          highlightTasksOfTheSameParent
+                        }
+                        taskItemConfig={taskItemConfig}
+                        dragAndDropDisabled
+                      />
+                    ))}
                   </>
                 )}
               </TasksGroup>

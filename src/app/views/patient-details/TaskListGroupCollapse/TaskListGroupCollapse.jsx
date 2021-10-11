@@ -47,9 +47,9 @@ const TaskListGroupCollapse = props => {
           <GroupTitle>
             <GroupName>
               <span>
-                {group?.groupType === TaskGroupType.TASKLIST
-                  ? group?.groupName
-                  : 'New tasks'}
+                {group?.groupType === TaskGroupType.TASKLIST_DEFAULT
+                  ? 'New tasks'
+                  : group?.groupName}
               </span>
             </GroupName>
             {count && <GroupCount>({count})</GroupCount>}

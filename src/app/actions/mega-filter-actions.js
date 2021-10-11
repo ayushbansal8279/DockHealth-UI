@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { isEmpty } from 'ramda';
 import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
 import * as MegaFilterApi from 'api/mega-filter-api';
@@ -39,24 +38,6 @@ export function getFiltersForMegaFilter(listId, status) {
   };
 }
 
-export function getFiltersForPeopleListMegaFilter(userId, status) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
-
-    MegaFilterApi.getFiltersForPeopleListMegaFilter(userId, status)
-      .then(data => {
-        dispatch(selectFiltersFromLocalStorage(userId, status));
-        dispatch({
-          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-          filters: data,
-        });
-      })
-      .catch(error => {
-        dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
-      });
-  };
-}
-
 export function selectFiltersForMegaFilter(selectedFilters, id, status) {
   return dispatch => {
     if (isEmpty(selectedFilters)) {
@@ -70,6 +51,8 @@ export function selectFiltersForMegaFilter(selectedFilters, id, status) {
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters,
+      id,
+      status,
     });
   };
 }

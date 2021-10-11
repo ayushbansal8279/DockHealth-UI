@@ -18,7 +18,7 @@ import Switch from 'components/common/Switch/Switch';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-import { getTaskStatsForUser } from 'api/task-api';
+import { getUserTaskStats } from 'api/user-api';
 import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
@@ -215,7 +215,7 @@ const DashboardList = ({
   useEffect(() => {
     if (currentUser) {
       if (selectedTab === 'MY_TASKS') {
-        getTaskStatsForUser(currentUser.userIdentifier).then(counters => {
+        getUserTaskStats(currentUser.userIdentifier).then(counters => {
           const completeTaskCounter = counters.find(
             ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
           );

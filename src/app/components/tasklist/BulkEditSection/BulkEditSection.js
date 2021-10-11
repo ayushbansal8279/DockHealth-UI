@@ -20,7 +20,7 @@ const BulkEditSection = ({
 }) => {
   const selectedTasks = useMemo(() => {
     if (disabled || !Array.isArray(allTasks)) {
-      return [];
+      return null;
     }
 
     const extractedTasks = extractTasksAndSubtasks(allTasks);
@@ -42,8 +42,8 @@ const BulkEditSection = ({
 
   const bulkEditIsActive = useMemo(
     () =>
-      selectedTasks?.parentTasks?.length !== 0 ||
-      selectedTasks?.subtasks?.length !== 0,
+      selectedTasks?.parentTasks?.length > 0 ||
+      selectedTasks?.subtasks?.length > 0,
     [selectedTasks],
   );
 
