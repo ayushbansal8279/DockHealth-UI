@@ -49,7 +49,10 @@ export function mapLayoutToElements(layout, tasks) {
         });
       }
 
-      let { position } = layout?.find(({ id }) => id === t.identifier) || {};
+      let { position } =
+        layout && Array.isArray(layout)
+          ? layout?.find(({ id }) => id === t.identifier) || {}
+          : {};
 
       if (!position) {
         position = { x: 150, y: 150 * (itemsWithoutPositionCount + 1) };
