@@ -80,6 +80,7 @@ export function applyTemplate({
   taskGroupIdentifier,
   taskListIdentifier,
   patientIdentifier,
+  unassign = false,
 }) {
   return axios
     .post(`task/useTemplate`, {
@@ -87,6 +88,7 @@ export function applyTemplate({
       taskGroupIdentifier,
       taskListIdentifier,
       patientIdentifier,
+      overrideAssignmentMismatch: unassign,
     })
     .then(response => response.data)
     .catch(error => {

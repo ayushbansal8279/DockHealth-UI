@@ -64,11 +64,15 @@ export function applyTaskTemplate({
   taskTemplateIdentifier,
   taskListIdentifier,
   taskGroupIdentifier,
+  unassign = false,
 }) {
   return {
     type: ActionTypes.APPLY_TASK_TEMPLATE,
     taskTemplateIdentifier,
     taskListIdentifier,
     taskGroupIdentifier,
+    options: {
+      unassign,
+    },
   };
 }

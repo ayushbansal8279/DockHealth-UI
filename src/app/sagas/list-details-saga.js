@@ -45,6 +45,9 @@ import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
+import { openModal } from 'modal/actions';
+import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
+import store from '../store';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -124,6 +127,11 @@ export const ListDetailsSagaActions = {
   createTask,
   getTasksForTaskGroups,
   fetchTasksBySearchedTerm,
+};
+
+const ERROR_TYPES = {
+  ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST:
+    'TASK_TEMPLATE/ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST',
 };
 
 function processTaskCountersSuccess(countersData) {
@@ -709,24 +717,65 @@ function* doFilterListDetailsTasks({ payload }) {
   yield put(ListDetailsActions.refreshListDetailsGroupedTasks());
 }
 
+function* applyTaskTemplateFailure({
+  error,
+  errorType,
+  failureDetails: { taskCount },
+  templateDetails,
+}) {
+  if (errorType === ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST) {
+    const modalProps = {
+      taskCount,
+      confirm: () => {
+        store.dispatch(
+          applyTaskTemplateAction({ ...templateDetails, unassign: true }),
+        );
+      },
+    };
+    yield put(openModal('UnassignTaskTemplate', modalProps));
+  } else {
+    console.log(error);
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* applyTaskTemplate({
   taskTemplateIdentifier,
   taskGroupIdentifier,
   taskListIdentifier,
+  options: { unassign = false },
 }) {
   try {
-    yield call(TemplateBundleApi.applyTemplate, {
-      taskTemplateIdentifier,
-      taskGroupIdentifier,
-      taskListIdentifier,
-    });
-    yield put(
-      getTasksForTaskGroups({
+    const { statusCode, assignmentsMismatchCount } = yield call(
+      TemplateBundleApi.applyTemplate,
+      {
+        taskTemplateIdentifier,
         taskGroupIdentifier,
-        status: 'INCOMPLETE',
-        refresh: true,
-      }),
+        taskListIdentifier,
+        unassign,
+      },
     );
+    const isWarning = statusCode === 'WARNING';
+
+    if (isWarning) {
+      yield applyTaskTemplateFailure({
+        errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
+        failureDetails: { taskCount: assignmentsMismatchCount },
+        templateDetails: {
+          taskTemplateIdentifier,
+          taskGroupIdentifier,
+          taskListIdentifier,
+        },
+      });
+    } else {
+      yield put(
+        getTasksForTaskGroups({
+          taskGroupIdentifier,
+          status: 'INCOMPLETE',
+          refresh: true,
+        }),
+      );
+    }
   } catch {
     yield put(showGlobalErrorAlert());
   }

@@ -53,6 +53,7 @@ import EditUserGroupModal from './components/EditUserGroupModal/EditUserGroupMod
 import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroupModal';
 import DeleteTaskConfirmationModal from './components/DeleteTaskConfirmationModal/DeleteTaskConfirmationModal';
 import InformationModal from './components/InformationModal/InformationModal';
+import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/UnassignTaskTemplateModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -110,6 +111,7 @@ const MODAL_MAP = {
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
+  UnassignTaskTemplate: UnassignTaskTemplateModal,
 };
 
 export default MODAL_MAP;
