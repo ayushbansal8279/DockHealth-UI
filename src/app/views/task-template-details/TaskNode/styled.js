@@ -2,9 +2,20 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
-export const OptionsContainer = styled.div`
-  width: 100%;
+export const DecisionTaskIconWrapper = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: ${palette.white};
+  background-color: ${palette.brightBlue};
+`;
+
+export const OptionsContainer = styled.div`
+  display: flex;
+  flex: 1;
   justify-content: flex-end;
   opacity: 0;
   transition: opacity 0.3s linear;

@@ -5,9 +5,11 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
+import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import { NodeType } from 'helpers/task-template-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 import {
@@ -16,6 +18,7 @@ import {
   TaskDescription,
   ContentWrapper,
   SubtasksLabel,
+  DecisionTaskIconWrapper,
 } from './styled';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
@@ -62,14 +65,26 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     >
       <TaskNodeWrapper selected={selected} type={type}>
         <ContentWrapper>
-          <OptionsContainer>
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon fontSize="small" color="inherit" />
-            </IconButton>
-            <IconButton onClick={handleEdit}>
-              <EditIcon fontSize="small" color="inherit" />
-            </IconButton>
-          </OptionsContainer>
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {type === NodeType.DECISION && (
+              <DecisionTaskIconWrapper>
+                <DecisionTaskElementIcon size={16} />
+              </DecisionTaskIconWrapper>
+            )}
+            <OptionsContainer>
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon fontSize="small" color="inherit" />
+              </IconButton>
+              <IconButton onClick={handleEdit}>
+                <EditIcon fontSize="small" color="inherit" />
+              </IconButton>
+            </OptionsContainer>
+          </Box>
           <TaskInfoWrapper>
             <TaskDescription>
               {description.slice(0, 53)}
