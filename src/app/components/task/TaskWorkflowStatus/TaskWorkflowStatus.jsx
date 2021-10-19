@@ -54,11 +54,13 @@ const TaskWorkflowStatus = ({
     onClose();
   };
 
+  const numberOfElements = (statuses?.length || 0) + 1;
+
   return (
     <StatusListWrapper>
       {!isEditing ? (
         <>
-          <StatusList elementsInColumn={statuses?.length > 12 ? 10 : 7}>
+          <StatusList elementsCount={numberOfElements}>
             {!isFetching ? (
               <>
                 <WorkflowStatusItemButton
