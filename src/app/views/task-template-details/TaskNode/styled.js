@@ -32,6 +32,24 @@ export const TaskDescription = styled.p`
   color: ${palette.mediumGrey};
 `;
 
+export const TaskDescriptionInput = styled.input`
+  width: 100%;
+  border: none;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: ${fontWeights.regular};
+  color: ${palette.mediumGrey};
+  background: transparent;
+
+  &[readonly] {
+    background: transparent;
+    cursor: inherit;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 export const ContentWrapper = styled.div`
   padding: 4px;
 

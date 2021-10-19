@@ -4,7 +4,7 @@ import {
   addTaskOutcome,
   updateTaskOutcome,
 } from 'actions/task-template-actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
