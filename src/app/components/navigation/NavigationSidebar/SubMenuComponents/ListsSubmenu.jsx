@@ -25,7 +25,7 @@ import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
-import { TASK_LIST_PATH } from 'routing/helpers/paths';
+import { TASK_LIST_PATH, createTaskListPath } from 'routing/helpers/paths';
 import { locationParametersSelector } from 'location/selectors';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
@@ -303,7 +303,7 @@ const ListsSubmenu = () => {
                 onTaskListInvitationAccepted();
                 dispatch(TaskListActions.acceptInviteToTaskList(list));
               }
-              history.push(`/tasks/${list.taskListIdentifier}`);
+              history.push(createTaskListPath(list.taskListIdentifier));
             }}
           >
             {list?.listName}
