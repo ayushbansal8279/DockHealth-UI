@@ -182,7 +182,7 @@ const TaskItem = ({
     dependencyPopoverOpen,
     openDependencyPopover,
     closeDependencyPopover,
-  ] = useBooleanWithTimeout();
+  ] = useBooleanWithTimeout(false);
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 

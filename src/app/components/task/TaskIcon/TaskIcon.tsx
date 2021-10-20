@@ -3,7 +3,7 @@ import AttachmentIcon from './icons/AttachmentIcon';
 import CalendarIcon from './icons/CalendarIcon';
 import CommentIcon from './icons/CommentIcon';
 import LabelIcon from './icons/LabelIcon';
-import { ButtonWrapper, NewLabel } from './styled';
+import { Wrapper, NewLabel } from './styled';
 
 type IconType = 'comments' | 'attachments' | 'labels' | 'calendar';
 
@@ -13,7 +13,6 @@ interface TaskIconProps {
   isHovered?: boolean;
   isActive?: boolean;
   isNew?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const TaskIcon: React.FC<TaskIconProps> = ({
@@ -22,13 +21,8 @@ const TaskIcon: React.FC<TaskIconProps> = ({
   isHovered,
   isActive,
   isNew,
-  onClick,
 }) => (
-  <ButtonWrapper
-    isHovered={isHovered}
-    isActive={isActive}
-    onClick={typeof onClick === 'function' ? onClick : undefined}
-  >
+  <Wrapper isHovered={isHovered} isActive={isActive}>
     {
       {
         comments: <CommentIcon height={height || 22} />,
@@ -38,7 +32,7 @@ const TaskIcon: React.FC<TaskIconProps> = ({
       }[type]
     }
     <NewLabel isHidden={!isNew || !isActive} />
-  </ButtonWrapper>
+  </Wrapper>
 );
 
 export default TaskIcon;

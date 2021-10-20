@@ -72,7 +72,7 @@ const DashboardSettings = ({ columnsConfig, setColumnsConfig }) => {
             const optionName = ColumnOptionNames[columnKey];
             return (
               optionName && (
-                <DashboardSettingsOption>
+                <DashboardSettingsOption key={columnKey}>
                   <Checkbox
                     isChecked={columnsConfig[columnKey]}
                     onClick={() => {

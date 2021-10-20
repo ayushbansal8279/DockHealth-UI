@@ -60,7 +60,7 @@ const Select = ({
           getContentAnchorEl: null,
           style: { zIndex: zIndex.optionsMenu },
         }}
-        inputProps={{ name, shrink: true, placeholder }}
+        inputProps={{ name, shrink: 'true', placeholder }}
         variant={variant}
         value={value}
         renderValue={selectedValue =>

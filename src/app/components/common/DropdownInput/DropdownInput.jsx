@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-no-duplicate-props */
 import {
@@ -16,7 +17,7 @@ import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import InputPopover from 'components/common/InputPopover/InputPopover';
 import TextInput from 'components/common/TextInput/TextInput';
 

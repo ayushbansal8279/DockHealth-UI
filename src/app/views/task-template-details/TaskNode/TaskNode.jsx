@@ -152,26 +152,38 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
               alignItems="center"
             >
               <Box display="flex">
-                <TaskIcon
-                  type="comments"
-                  isActive={comments?.length > 0}
-                  isNew={updatedComment}
+                <button
+                  type="button"
                   onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
-                />
+                >
+                  <TaskIcon
+                    type="comments"
+                    isActive={comments?.length > 0}
+                    isNew={updatedComment}
+                  />
+                </button>
                 <Box p={1} />
-                <TaskIcon
-                  type="labels"
-                  isActive={labels?.length > 0}
-                  isNew={updatedLabel}
+                <button
+                  type="button"
                   onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
-                />
+                >
+                  <TaskIcon
+                    type="labels"
+                    isActive={labels?.length > 0}
+                    isNew={updatedLabel}
+                  />
+                </button>
                 <Box p={1} />
-                <TaskIcon
-                  type="attachments"
-                  isActive={attachments?.length > 0}
-                  isNew={updatedAttachment}
+                <button
+                  type="button"
                   onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
-                />
+                >
+                  <TaskIcon
+                    type="attachments"
+                    isActive={attachments?.length > 0}
+                    isNew={updatedAttachment}
+                  />
+                </button>
               </Box>
               {subtasks?.length > 0 && (
                 <SubtasksLabel>{subtasks.length} Subtasks</SubtasksLabel>
