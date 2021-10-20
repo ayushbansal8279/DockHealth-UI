@@ -55,8 +55,6 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     }
   }, [description, editing]);
 
-  useEffect(() => {}, [description]);
-
   const handleDelete = () => {
     const modalProps = {
       isSubtask: !!task.parentTaskIdentifier,
