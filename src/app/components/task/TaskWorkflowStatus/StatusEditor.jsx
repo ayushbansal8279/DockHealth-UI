@@ -131,6 +131,11 @@ const StatusEditor = ({ onClose }) => {
     [dispatch],
   );
 
+  const numberOfElements =
+    (statuses?.length || 0) +
+    1 +
+    (isAddingNewStatus || newStatusButtonVisible ? 1 : 0);
+
   return (
     <StatusListWrapper>
       <DndContext sensors={sensors} onDragEnd={handleDragAndDropEnd}>
@@ -138,7 +143,7 @@ const StatusEditor = ({ onClose }) => {
           items={pluck('identifier', statuses)}
           strategy={rectSortingStrategy}
         >
-          <StatusList elementsInColumn={statuses?.length > 12 ? 10 : 7}>
+          <StatusList elementsCount={numberOfElements}>
             <EditableWorkflowStatusItem
               disabled
               status={RESET_STATUS}

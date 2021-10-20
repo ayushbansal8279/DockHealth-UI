@@ -13,7 +13,6 @@ import {
 
 const TaskItemWorkflowStatus = ({
   task,
-  isCompletedGroup,
   updateWorkflowStatus,
   workflowStatus,
   matchWorkflowStatus,
@@ -38,8 +37,6 @@ const TaskItemWorkflowStatus = ({
     >
       <TaskItemPopover
         fullWidth
-        disabled={isCompletedGroup || task.status === 'COMPLETE'}
-        contentWidth={280}
         content={({ closePopover, resetPosition }) => (
           <TaskWorkflowStatus
             selectedStatusIdentifier={task.workflowStatus?.identifier}

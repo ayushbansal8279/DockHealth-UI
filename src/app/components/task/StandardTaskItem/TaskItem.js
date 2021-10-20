@@ -504,7 +504,6 @@ const TaskItem = ({
           {workflowStatusIsInConfig && (
             <TaskItemWorkflowStatus
               task={task}
-              isCompletedGroup={isCompletedGroup}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               workflowStatus={workflowStatus}
               matchWorkflowStatus={matchWorkflowStatus}
