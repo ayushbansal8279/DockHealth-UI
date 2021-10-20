@@ -53,6 +53,12 @@ const NewTaskNode = React.memo(props => {
     }
   };
 
+  const handleBlur = () => {
+    if (inputValue?.length > 0) {
+      addTask(inputValue);
+    }
+  };
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
@@ -63,9 +69,10 @@ const NewTaskNode = React.memo(props => {
         <NewTaskWrapper>
           <NewTaskInput
             value={inputValue}
+            placeholder="Add Task Description"
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Add Task Description"
+            onBlur={handleBlur}
           />
           <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
             <DeleteIcon />

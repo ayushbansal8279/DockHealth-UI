@@ -1,26 +1,37 @@
-import React from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useState, useRef, useEffect } from 'react';
+import { useBoolean } from 'hooks/useBoolean';
 import { Box, IconButton } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
-import { deleteTask, storeAsCurrentTask } from 'actions/task-actions';
+import {
+  deleteTask,
+  partialUpdateTask,
+  storeAsCurrentTask,
+} from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
+import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import { NodeType } from 'helpers/task-template-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 import {
   OptionsContainer,
   TaskInfoWrapper,
   TaskDescription,
+  TaskDescriptionInput,
   ContentWrapper,
   SubtasksLabel,
+  DecisionTaskIconWrapper,
 } from './styled';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
   const {
+    taskIdentifier,
     description,
     labels,
     updatedLabel,
@@ -30,7 +41,19 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     updatedComment,
     subtasks,
   } = task || {};
+  const descriptionInputReference = useRef(null);
+  const [inputValue, setInputValue] = useState('');
+  const [editing, setEditing, unsetEditing] = useBoolean(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (editing) {
+      setInputValue(description);
+      descriptionInputReference.current.focus();
+    } else {
+      setInputValue('');
+    }
+  }, [description, editing]);
 
   const handleDelete = () => {
     const modalProps = {
@@ -54,6 +77,30 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     dispatch(storeAsCurrentTask(task));
   };
 
+  const handleBlur = () => {
+    if (inputValue?.length > 0) {
+      dispatch(partialUpdateTask(taskIdentifier, { description: inputValue }));
+    }
+    unsetEditing();
+  };
+
+  const handleKeyDown = event => {
+    const { key } = event;
+
+    switch (key) {
+      case 'Enter':
+        if (inputValue?.length > 0) {
+          descriptionInputReference.current.blur();
+        }
+        break;
+      case 'Escape':
+        unsetEditing();
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
@@ -61,20 +108,42 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
       onTargetHandleHover={data.onTargetHandleHover}
     >
       <TaskNodeWrapper selected={selected} type={type}>
-        <ContentWrapper>
-          <OptionsContainer>
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon fontSize="small" color="inherit" />
-            </IconButton>
-            <IconButton onClick={handleEdit}>
-              <EditIcon fontSize="small" color="inherit" />
-            </IconButton>
-          </OptionsContainer>
+        <ContentWrapper onDoubleClick={setEditing}>
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {type === NodeType.DECISION && (
+              <DecisionTaskIconWrapper>
+                <DecisionTaskElementIcon size={16} />
+              </DecisionTaskIconWrapper>
+            )}
+            <OptionsContainer>
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon fontSize="small" color="inherit" />
+              </IconButton>
+              <IconButton onClick={handleEdit}>
+                <EditIcon fontSize="small" color="inherit" />
+              </IconButton>
+            </OptionsContainer>
+          </Box>
           <TaskInfoWrapper>
-            <TaskDescription>
-              {description.slice(0, 53)}
-              {description.length > 53 && '...'}
-            </TaskDescription>
+            {editing ? (
+              <TaskDescriptionInput
+                ref={descriptionInputReference}
+                value={inputValue}
+                onKeyDown={handleKeyDown}
+                onBlur={handleBlur}
+                onChange={event => setInputValue(event.target?.value || '')}
+              />
+            ) : (
+              <TaskDescription>
+                {description.slice(0, 53)}
+                {description.length > 53 && '...'}
+              </TaskDescription>
+            )}
             <Box p={1.2} />
             <Box
               display="flex"
