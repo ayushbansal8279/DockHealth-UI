@@ -37,7 +37,7 @@ const Select = ({
       name={name}
       label={label}
       readOnly={readOnly}
-      value={selectedOption?.label}
+      value={selectedOption?.label || ''}
       error={error}
       placeholder={placeholder}
       {...restProps}
@@ -62,7 +62,7 @@ const Select = ({
         }}
         inputProps={{ name, shrink: 'true', placeholder }}
         variant={variant}
-        value={value}
+        value={value || ''}
         renderValue={selectedValue =>
           options.find(option => option.value === selectedValue)?.label
         }
@@ -89,7 +89,7 @@ const Select = ({
 
 Select.propTypes = {
   onChange: func,
-  label: string.isRequired,
+  label: string,
   name: string.isRequired,
   variant: oneOf(['filled']),
   readOnly: bool,
@@ -102,6 +102,7 @@ Select.propTypes = {
 };
 
 Select.defaultProps = {
+  label: undefined,
   variant: 'filled',
   readOnly: false,
   onChange: undefined,
