@@ -30,13 +30,6 @@ export const userHasUserGroupsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('USER_GROUPS'),
 );
 
-export const userSetupViewListSelector = listIdentifier =>
-  createSelector(
-    userViewSetupSelector,
-    ({ customLists, defaultViewSetup }) =>
-      customLists?.[listIdentifier] || defaultViewSetup,
-  );
-
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

@@ -334,3 +334,19 @@ export function leaveList(taskListIdentifier) {
       return data;
     });
 }
+
+export function updateUserColumnsListViewSetup(setup, taskListIdentifier) {
+  return axios
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
+      displayColumns: setup,
+    })
+    .then(({ data }) => data);
+}
+
+export function updateUserOptionsListViewSetup(setup, taskListIdentifier) {
+  return axios
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
+      displayOptions: setup,
+    })
+    .then(({ data }) => data);
+}

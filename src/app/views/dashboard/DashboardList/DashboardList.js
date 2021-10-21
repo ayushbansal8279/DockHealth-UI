@@ -6,7 +6,8 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { connect } from 'react-redux';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { connect, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
@@ -39,7 +40,6 @@ import {
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
 import usePrevious from 'hooks/use-previous';
-
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
@@ -53,7 +53,7 @@ import {
 import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import DashboardSettings from '../DashboardSettings/DashboardSettings';
+import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -77,6 +77,8 @@ const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: false,
   [TaskItemColumn.ASSIGNED]: false,
   [TaskItemColumn.ACTIVITY]: false,
+  [TaskItemColumn.DUE_DATE]: false,
+  [TaskItemColumn.PATIENT]: false,
 };
 
 export const DashboardTab = ({
@@ -139,6 +141,7 @@ const DashboardList = ({
   tourModalIsOpen,
   openTourModal,
 }) => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const { openModal } = modalActions;
   const [selectedTab, setSelectedTab] = useState('MY_TASKS');
@@ -161,6 +164,7 @@ const DashboardList = ({
         DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
       ) || {},
   );
+
   const { filters, selectedFilters } = megaFilter;
 
   const previousSelectedFilters = useRef(selectedFilters);
@@ -364,6 +368,30 @@ const DashboardList = ({
     [columnsConfig],
   );
 
+  const onClickCheckbox = useCallback(
+    columnKey => {
+      setColumnsConfig(previousConfig => {
+        const newConfig = {
+          ...previousConfig,
+          [columnKey]: !previousConfig[columnKey],
+        };
+
+        dispatch(
+          updateCurrentUserPreferences({
+            displayColumns: Object.entries(newConfig).reduce(
+              (accumulator, [key, value]) =>
+                value ? [...accumulator, key] : accumulator,
+              [],
+            ),
+          }),
+        );
+
+        return newConfig;
+      });
+    },
+    [dispatch, setColumnsConfig],
+  );
+
   return (
     <BulkEditSection
       allTasks={allDashboardTasks}
@@ -425,9 +453,9 @@ const DashboardList = ({
               <Switch checked={tourModalIsOpen} onChange={openTourModal} />
             </div>
             <Spacing horizontal={4} />
-            <DashboardSettings
+            <ColumnDisplaySettings
               columnsConfig={columnsConfig}
-              setColumnsConfig={setColumnsConfig}
+              onClickCheckbox={onClickCheckbox}
             />
           </ActionsContainer>
         </ToolbarContainer>

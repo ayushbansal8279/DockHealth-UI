@@ -33,7 +33,6 @@ const TasksHeader = ({
     }),
     [taskItemConfig],
   );
-
   return (
     <SortHeaderRow>
       {bulkEditEnabled && (

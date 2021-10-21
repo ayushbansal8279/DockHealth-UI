@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/max-switch-cases */
+/* eslint-disable sonarjs/cognitive-complexity */
 import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
 
 import {
@@ -31,6 +33,8 @@ import {
   CANCEL_TASKLIST_INVITE_SUCCESS,
   GET_PENDING_TASKLIST_SUCCESS,
   GET_ARCHIVED_TASKLIST_SUCCESS,
+  UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
+  UPDATE_LIST_VIEW_SETUP,
 } from 'actions/action-types';
 
 const initialState = {
@@ -88,6 +92,53 @@ const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
 
 const TaskListReducer = (state = initialState, action) => {
   switch (action.type) {
+    // list view setup
+    case UPDATE_LIST_VIEW_SETUP: {
+      const {
+        setup,
+        taskListIdentifier,
+        currentUserIdentifier,
+      } = action.payload;
+      return {
+        ...state,
+        taskLists: [
+          ...state.taskLists.map(list => {
+            if (list.taskListIdentifier === taskListIdentifier) {
+              const newListUsers = list.listUsers.map(user =>
+                user.identifier === currentUserIdentifier
+                  ? { ...user, displayOptions: setup }
+                  : user,
+              );
+              return { ...list, listUsers: newListUsers };
+            }
+            return list;
+          }),
+        ],
+      };
+    }
+    case UPDATE_LIST_COLUMNS_DISPLAY_SETUP: {
+      const {
+        setup,
+        taskListIdentifier,
+        currentUserIdentifier,
+      } = action.payload;
+      return {
+        ...state,
+        taskLists: [
+          ...state.taskLists.map(list => {
+            if (list.taskListIdentifier === taskListIdentifier) {
+              const newListUsers = list.listUsers.map(user =>
+                user.identifier === currentUserIdentifier
+                  ? { ...user, displayColumns: setup }
+                  : user,
+              );
+              return { ...list, listUsers: newListUsers };
+            }
+            return list;
+          }),
+        ],
+      };
+    }
     case INVITE_USER_TO_TASKLIST_SUCCESS:
       return inviteUser(state, action);
 

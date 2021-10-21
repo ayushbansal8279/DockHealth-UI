@@ -37,6 +37,7 @@ import { MoreVert } from '@material-ui/icons';
 import zIndex from 'styles/z-index';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from 'selectors/user-selectors';
+import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
 import {
@@ -49,6 +50,7 @@ import {
   MenuText,
   StyledIconButton,
   LabelBox,
+  LeftContainer,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -108,6 +110,7 @@ const Toolbar = ({
   tipsContent,
   isFetching,
   moreOptions,
+  columnsOptions = {},
 }) => {
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
@@ -115,7 +118,7 @@ const Toolbar = ({
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
   const [menuOpen, , unsetMenuOpen, toggleMenuOpen] = useBoolean(false);
-
+  const { columnsConfig, setColumnsConfig } = columnsOptions;
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
@@ -332,54 +335,63 @@ const Toolbar = ({
               />
             </>
           )}
-          {moreOptions && (
-            <>
-              <StyledIconButton ref={menuReference} onClick={toggleMenuOpen}>
-                <MoreVert />
-              </StyledIconButton>
-              <Popper
-                anchorEl={menuReference?.current}
-                placement="bottom-end"
-                disablePortal
-                open={menuOpen}
-                style={{
-                  zIndex: zIndex.optionsMenu,
-                }}
-              >
-                {menuOpen && (
-                  <ClickAwayListener onClickAway={unsetMenuOpen}>
-                    <Paper>
-                      {moreOptions.map(option => (
-                        <LabelBox
-                          key={option.key}
-                          display="flex"
-                          alignItems="center"
-                          p={2}
-                          py={1}
-                          onClick={() => {
-                            if (
-                              typeof option.onClick === 'function' &&
-                              !option.disabled
-                            )
-                              option.onClick(option.key);
-                          }}
-                        >
-                          <Checkbox
-                            isDisabled={option.disabled}
-                            isChecked={option.checked}
-                          />
-                          <Spacing horizontal={3} />
-                          <MenuText isDisabled={option.disabled}>
-                            {option.name}
-                          </MenuText>
-                        </LabelBox>
-                      ))}
-                    </Paper>
-                  </ClickAwayListener>
-                )}
-              </Popper>
-            </>
-          )}
+          <LeftContainer>
+            {columnsConfig && (
+              <ColumnDisplaySettings
+                columnsConfig={columnsConfig}
+                onClickCheckbox={setColumnsConfig}
+              />
+            )}
+            {moreOptions && (
+              <>
+                <Spacing horizontal={3} />
+                <StyledIconButton ref={menuReference} onClick={toggleMenuOpen}>
+                  <MoreVert />
+                </StyledIconButton>
+                <Popper
+                  anchorEl={menuReference?.current}
+                  placement="bottom-end"
+                  disablePortal
+                  open={menuOpen}
+                  style={{
+                    zIndex: zIndex.optionsMenu,
+                  }}
+                >
+                  {menuOpen && (
+                    <ClickAwayListener onClickAway={unsetMenuOpen}>
+                      <Paper>
+                        {moreOptions.map(option => (
+                          <LabelBox
+                            key={option.key}
+                            display="flex"
+                            alignItems="center"
+                            p={2}
+                            py={1}
+                            onClick={() => {
+                              if (
+                                typeof option.onClick === 'function' &&
+                                !option.disabled
+                              )
+                                option.onClick(option.key);
+                            }}
+                          >
+                            <Checkbox
+                              isDisabled={option.disabled}
+                              isChecked={option.checked}
+                            />
+                            <Spacing horizontal={3} />
+                            <MenuText isDisabled={option.disabled}>
+                              {option.name}
+                            </MenuText>
+                          </LabelBox>
+                        ))}
+                      </Paper>
+                    </ClickAwayListener>
+                  )}
+                </Popper>
+              </>
+            )}
+          </LeftContainer>
         </ToolbarBottomGrid>
       )}
       {tipsContent && tipsOpened && (

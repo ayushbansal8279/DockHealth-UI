@@ -32,6 +32,7 @@ const ListDetailsCompletedTasks = ({
   sort,
   onSortChange,
   viewSetup,
+  displayColumnPreferences,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const renderEmptyState = () => {
@@ -57,6 +58,7 @@ const ListDetailsCompletedTasks = ({
           {tasks?.length > 0 ? (
             <TaskGroupsContainer>
               <TasksGroup
+                taskItemConfig={displayColumnPreferences}
                 groupName="Completed"
                 toggleCompleteTask={toggleCompleteTask}
                 tasks={tasks}
@@ -103,6 +105,7 @@ const ListDetailsCompletedTasks = ({
                     {tasks?.map(task =>
                       task?.itemType === TaskItemType.TASK ? (
                         <StandardTaskItem
+                          taskItemConfig={displayColumnPreferences}
                           key={task.identifier}
                           isFullView={isFullView}
                           task={task}

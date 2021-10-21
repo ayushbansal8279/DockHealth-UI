@@ -5,7 +5,6 @@ import * as ActionTypes from 'actions/action-types';
 
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
-import { UPDATE_LIST_VIEW_SETUP, UPDATE_USER_VIEW_SETUP } from './action-types';
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
 export const acknowledgeEula = () => UserApi.acknowledgeEula();
@@ -33,19 +32,6 @@ export const sendUserOnboardingAnswers = ({ answers }) => {
   });
 };
 
-export const updateUserListViewSetup = (listIdentifier, setup) => {
-  return {
-    type: UPDATE_LIST_VIEW_SETUP,
-    payload: { listIdentifier, setup },
-  };
-};
-
-export const updateUserPageViewSetup = setup => {
-  return {
-    type: UPDATE_USER_VIEW_SETUP,
-    payload: { setup },
-  };
-};
 export function getCurrentUserNotificationPreferences() {
   return {
     type: ActionTypes.GET_CURRENT_USER_NOTIFICATION_PREFERENCES,
