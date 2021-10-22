@@ -2,9 +2,19 @@ import { createSelector } from 'reselect';
 
 export const taskListStateSelector = state => state.taskList;
 
+export const currentTaskListIdentifierSelector = createSelector(
+  taskListStateSelector,
+  ({ currentTaskListIdentifier }) => currentTaskListIdentifier,
+);
+
+export const currentTaskListSelector = createSelector(
+  taskListStateSelector,
+  ({ currentTaskList }) => currentTaskList,
+);
+
 export const taskListsSelector = createSelector(
   taskListStateSelector,
-  ({ taskLists }) => taskLists || [],
+  ({ taskLists }) => taskLists,
 );
 export const pendingTaskListsSelector = createSelector(
   taskListStateSelector,

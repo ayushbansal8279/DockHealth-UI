@@ -5,6 +5,19 @@ import * as AlertActions from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from '../alert/AlertMessages';
 
+export function initializeTaskListState(taskListIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_TASK_LIST_STATE,
+    taskListIdentifier,
+  };
+}
+
+export function getCurrentTaskList() {
+  return {
+    type: ActionTypes.GET_CURRENT_TASK_LIST,
+  };
+}
+
 export const updateUserListViewSetup = (
   taskListIdentifier,
   setup,
@@ -66,12 +79,6 @@ export function loading() {
   };
 }
 
-export function setTaskListAsCurrentList(currentList) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.SET_CURRENT_LIST, currentList });
-  };
-}
-
 export function saveTaskList(formProps) {
   if (formProps.taskListIdentifier) {
     return dispatch =>
@@ -119,15 +126,6 @@ export function saveTaskList(formProps) {
         );
         throw error;
       });
-}
-
-export function getTaskListById(taskListIdentifier) {
-  return dispatch =>
-    TaskListApi.getTaskListById(taskListIdentifier)
-      .then(currentList => {
-        dispatch({ type: ActionTypes.SET_CURRENT_LIST, currentList });
-      })
-      .catch(noop);
 }
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
@@ -454,18 +452,6 @@ export function toggleListNotifications(
         );
         throw error;
       });
-}
-
-export function storeAsCurrentList(taskListIdentifier) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.SET_AS_CURRENT_LIST, taskListIdentifier });
-  };
-}
-
-export function isList(boolean) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.IS_LIST, boolean });
-  };
 }
 
 export function isInbox(boolean) {

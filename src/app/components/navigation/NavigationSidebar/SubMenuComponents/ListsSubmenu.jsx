@@ -44,6 +44,7 @@ import {
   ListNameText,
   UpdatesForMemberIndicator,
   DrawerMyListsLabel,
+  DrawerListsItemLoader,
 } from './styled';
 
 const MASTER_ROLES = ['ADMIN', 'OWNER'];
@@ -73,7 +74,10 @@ const ListsSubmenu = () => {
   const isGuest = orgUserRole === 'GUEST';
 
   const activeLists = useMemo(
-    () => [...(taskLists || []), ...(pendingTaskLists || [])],
+    () =>
+      taskLists && pendingTaskLists
+        ? [...taskLists, ...pendingTaskLists]
+        : null,
     [taskLists, pendingTaskLists],
   );
 
@@ -274,55 +278,59 @@ const ListsSubmenu = () => {
     ],
   );
 
-  const hasAnyPendingList = activeLists.some(
+  const hasAnyPendingList = activeLists?.some(
     ({ status }) => status === 'PENDING',
   );
 
   const renderLists = useCallback(
     (listsList, archived = true) => {
-      return listsList?.map(list => (
-        <DrawerListsItem
-          key={`listsubmenu_${list.taskListIdentifier}`}
-          data-list-id={list.taskListIdentifier}
-          className={
-            list.listType === 'INBOX'
-              ? 'drawer-menu-list-inbox'
-              : `drawer-menu-list-item`
-          }
-        >
-          {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
-          <ListNameText
-            color={archived && palette.coolGrey2}
-            isActive={activeTaskListIdentifier === list?.taskListIdentifier}
-            onMouseEnter={event => handleMouseEnter(event, list?.listName)}
-            onMouseLeave={() => setPopoverLabel(null)}
-            onClick={() => {
-              if (activeTaskListIdentifier === list?.taskListIdentifier) return;
-
-              if (list?.status === 'PENDING') {
-                onTaskListInvitationAccepted();
-                dispatch(TaskListActions.acceptInviteToTaskList(list));
+      return listsList
+        ? listsList.map(list => (
+            <DrawerListsItem
+              key={`listsubmenu_${list.taskListIdentifier}`}
+              data-list-id={list.taskListIdentifier}
+              className={
+                list.listType === 'INBOX'
+                  ? 'drawer-menu-list-inbox'
+                  : `drawer-menu-list-item`
               }
-              history.push(createTaskListPath(list.taskListIdentifier));
-            }}
-          >
-            {list?.listName}
-          </ListNameText>
-          {list?.status === 'PENDING' && (
-            <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
-          )}
-          <DrawerItemOptions>
-            <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-            {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-              <OptionsMenu disablePortal options={getMenuItems(list)}>
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            ) : (
-              <Box m={2} />
-            )}
-          </DrawerItemOptions>
-        </DrawerListsItem>
-      ));
+            >
+              {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
+              <ListNameText
+                color={archived && palette.coolGrey2}
+                isActive={activeTaskListIdentifier === list?.taskListIdentifier}
+                onMouseEnter={event => handleMouseEnter(event, list?.listName)}
+                onMouseLeave={() => setPopoverLabel(null)}
+                onClick={() => {
+                  if (activeTaskListIdentifier === list?.taskListIdentifier)
+                    return;
+
+                  if (list?.status === 'PENDING') {
+                    onTaskListInvitationAccepted();
+                    dispatch(TaskListActions.acceptInviteToTaskList(list));
+                  }
+                  history.push(createTaskListPath(list.taskListIdentifier));
+                }}
+              >
+                {list?.listName}
+              </ListNameText>
+              {list?.status === 'PENDING' && (
+                <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
+              )}
+              <DrawerItemOptions>
+                <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+                {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                  <OptionsMenu disablePortal options={getMenuItems(list)}>
+                    <MoreVert color="primary" />
+                  </OptionsMenu>
+                ) : (
+                  <Box m={2} />
+                )}
+              </DrawerItemOptions>
+            </DrawerListsItem>
+          ))
+        : // eslint-disable-next-line react/no-array-index-key
+          new Array(6).fill().map((_, i) => <DrawerListsItemLoader key={i} />);
     },
     [activeTaskListIdentifier, dispatch, getMenuItems, history],
   );

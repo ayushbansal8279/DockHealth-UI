@@ -1,8 +1,10 @@
+import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { GET_TASKLIST_SUCCESS } from 'actions/action-types';
 import { getTaskListForUser } from 'api/task-list-api';
-import { takeLatest, call, put, takeEvery } from 'redux-saga/effects';
+import { currentTaskListIdentifierSelector } from 'selectors/task-list-selectors';
 import * as TaskListApi from 'api/task-list-api';
 import * as ActionTypes from 'actions/action-types';
+import * as TaskListActions from 'actions/task-list-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
 
 const DO_FETCH_TASKLIST_FOR_USER = 'DO_FETCH_TASKLIST_FOR_USER';
@@ -10,6 +12,24 @@ const DO_FETCH_TASKLIST_FOR_USER = 'DO_FETCH_TASKLIST_FOR_USER';
 export const fetchTasklistForUser = () => ({
   type: DO_FETCH_TASKLIST_FOR_USER,
 });
+
+function* initializeTaskListState() {
+  yield put(TaskListActions.getCurrentTaskList());
+}
+
+function* getCurrentTaskList() {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const taskList = yield call(
+      TaskListApi.getTaskListById,
+      taskListIdentifier,
+    );
+    yield put({ type: ActionTypes.GET_CURRENT_TASK_LIST_SUCCESS, taskList });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.GET_CURRENT_TASK_LIST_FAILURE });
+  }
+}
 
 function* doFetchTasklistForUser() {
   try {
@@ -55,6 +75,11 @@ function* updateListViewDisplaySetup({ payload }) {
 }
 
 export default function* watchTasklist() {
+  yield takeLatest(
+    ActionTypes.INITIALIZE_TASK_LIST_STATE,
+    initializeTaskListState,
+  );
+  yield takeLatest(ActionTypes.GET_CURRENT_TASK_LIST, getCurrentTaskList);
   yield takeLatest(DO_FETCH_TASKLIST_FOR_USER, doFetchTasklistForUser);
   yield takeEvery(
     ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP,

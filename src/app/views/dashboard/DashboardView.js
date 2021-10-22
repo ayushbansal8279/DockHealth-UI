@@ -1,13 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
-import {
-  taskListsSelector,
-  pendingTaskListsSelector,
-} from 'selectors/task-list-selectors';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import * as TaskListActions from 'actions/task-list-actions';
@@ -34,8 +31,7 @@ import newUserTourHooks from './new-user-tour-hooks';
 
 const DashboardView = ({
   isTaskDrawerOpen,
-  taskLists = [],
-  pendingTaskLists = [],
+  taskLists,
   currentUser,
   openModal,
   fetchTasklistForUser,
@@ -55,19 +51,10 @@ const DashboardView = ({
 
   const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
 
-  const allLists = useMemo(() => [...taskLists, ...pendingTaskLists], [
-    taskLists,
-    pendingTaskLists,
-  ]);
-
-  const firstUserList = allLists?.find(
-    list =>
-      list.listType !== 'INBOX' &&
-      list.listType !== 'PUBLIC' &&
-      list.listType !== 'SHARED_SAMPLE',
-  );
-
-  const sampleList = allLists?.find(list => list.listType === 'SHARED_SAMPLE');
+  useEffect(() => {
+    dispatch(TaskListActions.getTaskListForUser());
+    dispatch(TaskListActions.getPendingTaskListsForUser());
+  }, [dispatch]);
 
   const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
@@ -179,8 +166,6 @@ const DashboardView = ({
                       url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
                     });
                   }}
-                  list={firstUserList}
-                  sampleList={sampleList}
                   acceptInvitation={acceptInviteToTaskList}
                 />
               </DashboardFirstVisitViewWrapper>
@@ -212,7 +197,6 @@ const DashboardView = ({
 
 const mapStateToProps = state => ({
   taskLists: taskListsSelector(state),
-  pendingTaskLists: pendingTaskListsSelector(state),
   isTaskDrawerOpen: taskDrawerOpenSelector(state),
   isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
   currentUser: userProfileSelector(state),
@@ -220,7 +204,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   openModal: openModalAction,
-  setTaskListAsCurrentList: TaskListActions.setTaskListAsCurrentList,
   fetchTasklistForUser: TaskListSagaActions.fetchTasklistForUser,
   acceptInviteToTaskList: TaskListActions.acceptInviteToTaskList,
 };

@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import OwlWithList from 'img/owl-with-list.png';
+import {
+  taskListsSelector,
+  pendingTaskListsSelector,
+} from 'selectors/task-list-selectors';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import {
@@ -15,12 +20,27 @@ import {
 const DashboardFirstVisitView = ({
   hasInvitedLists,
   onCreateList,
-  // onTakeATour,
-  list,
-  sampleList,
   acceptInvitation,
 }) => {
   const history = useHistory();
+
+  const taskLists = useSelector(taskListsSelector);
+  const pendingTaskLists = useSelector(pendingTaskListsSelector);
+
+  const allLists = useMemo(
+    () => [...(taskLists || []), ...(pendingTaskLists || [])],
+    [taskLists, pendingTaskLists],
+  );
+
+  const list = allLists?.find(
+    l =>
+      l.listType !== 'INBOX' &&
+      l.listType !== 'PUBLIC' &&
+      l.listType !== 'SHARED_SAMPLE',
+  );
+
+  const sampleList = allLists?.find(l => l.listType === 'SHARED_SAMPLE');
+
   return (
     <Wrapper>
       <TextWrapper>
