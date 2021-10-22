@@ -13,7 +13,7 @@ import { saveBillingDetails } from 'api/organization-api';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import { noop, showAlert } from 'helpers/utility-functions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import BillingsViewBillingData from '../billings/BillingData/BillingData';
 import {

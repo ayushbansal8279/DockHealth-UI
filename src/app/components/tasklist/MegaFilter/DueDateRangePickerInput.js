@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import { ClickAwayListener, Popper } from '@material-ui/core';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { DueDateInput, DueDateInputWrapper, PopperContent } from './styled';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';

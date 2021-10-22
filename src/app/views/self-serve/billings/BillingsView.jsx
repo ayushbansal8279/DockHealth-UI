@@ -11,7 +11,7 @@ import {
 import { saveBillingDetails } from 'api/organization-api';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
 import BillingData from './BillingData/BillingData';

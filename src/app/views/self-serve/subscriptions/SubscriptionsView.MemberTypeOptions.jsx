@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { openModal as openModalAction } from 'modal/actions';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 

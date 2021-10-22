@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { useSmallScreen } from 'helpers/utility-functions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import { MontserratTypography } from 'styles/theme-montserrat';

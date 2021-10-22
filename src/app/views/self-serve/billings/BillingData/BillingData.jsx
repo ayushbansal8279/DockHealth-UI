@@ -14,7 +14,7 @@ import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import CardAmexIcon from 'img/cards/american-express.png';
 import CardDiscoverIcon from 'img/cards/discover.png';
 import CardMastercardIcon from 'img/cards/mastercard.png';

@@ -20,7 +20,7 @@ import { isMemberPending } from 'helpers/list-members-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 // eslint-disable-next-line import/no-named-as-default
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
 import Spacing from 'components/common/Spacing.tsx';

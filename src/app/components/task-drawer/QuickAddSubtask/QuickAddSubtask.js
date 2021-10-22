@@ -3,7 +3,7 @@ import { Box } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addSubtask } from 'actions/task-actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';

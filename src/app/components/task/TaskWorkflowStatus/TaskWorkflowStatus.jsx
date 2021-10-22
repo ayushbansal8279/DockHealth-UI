@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 // eslint-disable-next-line import/no-named-as-default
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {

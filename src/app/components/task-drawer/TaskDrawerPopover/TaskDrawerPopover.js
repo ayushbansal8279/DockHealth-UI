@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { bool, node, oneOf } from 'prop-types';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { StyledPopover, StyledButton } from './styled';
