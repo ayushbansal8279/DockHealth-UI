@@ -17,7 +17,7 @@ import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { completeTasksVisibilitySelector } from 'selectors/patient-details-selectors';
 import { togglePatientCompleteTasksVisible } from 'actions/patient-details-actions';
-import { updateUserPageViewSetup } from 'actions/user-actions';
+import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import { userSetupClientViewSelector } from 'selectors/user-selectors';
 import {
   ListsToolbarContainer,
