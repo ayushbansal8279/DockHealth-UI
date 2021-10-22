@@ -16,6 +16,7 @@ import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
+  initializeTaskListState,
   updateUserListViewSetup,
   updateColumnOnListPreferences,
 } from 'actions/task-list-actions';
@@ -28,7 +29,7 @@ import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 
 import {
-  taskListsSelector,
+  currentTaskListSelector,
   pendingTaskListsSelector,
   taskListMembersSelector,
   archivedTaskListsSelector,
@@ -58,7 +59,9 @@ const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 const initializeListDetailsViewHooks = (match, history) => {
   const sort = useSelector(taskDetailsSortSelector);
-  const taskLists = useSelector(taskListsSelector);
+  const taskList = useSelector(currentTaskListSelector);
+  const { listName, listDescription } = taskList || {};
+
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -84,7 +87,6 @@ const initializeListDetailsViewHooks = (match, history) => {
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
   const [searchValue, setSearchValue] = useState(null);
 
-  const prevTaskLists = usePrevious(taskLists);
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
   const prevMatch = usePrevious(match);
@@ -93,6 +95,35 @@ const initializeListDetailsViewHooks = (match, history) => {
   const [channel, setChannel] = useState(null);
 
   const dispatch = useDispatch();
+
+  const {
+    params: { taskListIdentifier: taskListIdentifierParam },
+  } = match;
+
+  useEffect(() => {
+    dispatch(initializeTaskListState(taskListIdentifierParam));
+  }, [dispatch, taskListIdentifierParam]);
+
+  useEffect(() => {
+    if (listName) {
+      const headerComponent = (
+        <ListSelectHeader
+          listName={listName}
+          listDescription={listDescription}
+        />
+      );
+
+      templateActions.setHeader({
+        layout: [
+          {
+            key: 'header',
+            component: headerComponent,
+            xs: 12,
+          },
+        ],
+      });
+    }
+  }, [listName, listDescription, templateActions]);
 
   const searchTasks = useCallback(
     searchQuery => {
@@ -124,30 +155,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
     },
     [listDetailsActions, match, megaFilterActions],
-  );
-
-  const setViewHeader = useCallback(
-    (taskListIdentifier, lists) => {
-      const loadedTasklist =
-        lists?.length > 0
-          ? lists.find(t => t.taskListIdentifier === taskListIdentifier)
-          : {};
-
-      if (loadedTasklist?.listName) {
-        const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
-
-        templateActions.setHeader({
-          layout: [
-            {
-              key: 'header',
-              component: headerComponent,
-              xs: 12,
-            },
-          ],
-        });
-      }
-    },
-    [templateActions],
   );
 
   const openTourModal = useCallback(() => {
@@ -468,13 +475,6 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, [currentUser, dispatch, modalActions]);
 
   useEffect(() => {
-    const { params } = match;
-
-    setViewHeader(params.taskListIdentifier, [
-      ...taskLists,
-      ...pendingTaskLists,
-    ]);
-
     refreshAccessToken(currentUser);
     launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -488,17 +488,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       match.params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
-    }
-
-    if (
-      prevMatch?.params?.taskListIdentifier &&
-      match.params.taskListIdentifier &&
-      match.params.taskListIdentifier !== prevMatch?.params?.taskListIdentifier
-    ) {
-      setViewHeader(match.params.taskListIdentifier, [
-        ...taskLists,
-        ...pendingTaskLists,
-      ]);
     }
 
     if (
@@ -525,23 +514,12 @@ const initializeListDetailsViewHooks = (match, history) => {
     prevCurrentUser,
     prevMatch,
     prevTaskCounters,
-    prevTaskLists,
-    setViewHeader,
     taskCounters,
-    taskLists,
     tourConditionChecked,
   ]);
 
   const { params } = match;
   const { taskListIdentifier, tabName } = params;
-
-  const loadedTasklist = useMemo(
-    () =>
-      taskLists
-        ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
-        : {},
-    [taskListIdentifier, taskLists],
-  );
 
   const selectedTab = tabName || TaskListTabName.OPEN;
 
@@ -628,28 +606,28 @@ const initializeListDetailsViewHooks = (match, history) => {
   };
 
   const displayColumnPreferences = useMemo(() => {
-    const { displayColumns } = loadedTasklist?.listUsers?.find(
-      user => user.identifier === currentUserIdentifier,
-    );
+    const { displayColumns = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
     return displayColumns.reduce(
       (accumulator, value) => ({ ...accumulator, [value]: true }),
       DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
     );
-  }, [
-    DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
-    currentUserIdentifier,
-    loadedTasklist,
-  ]);
+  }, [DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG, currentUserIdentifier, taskList]);
 
   const displayListPreferences = useMemo(() => {
-    const { displayOptions } = loadedTasklist?.listUsers?.find(
-      user => user.identifier === currentUserIdentifier,
-    );
+    const { displayOptions = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
     return displayOptions.reduce(
       (accumulator, value) => ({ ...accumulator, [value]: true }),
       VIEW_LIST_OPTIONS_CONFIG,
     );
-  }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, loadedTasklist]);
+  }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
 
   const setDisplayColumnPreferences = useCallback(
     columnKey => {
@@ -665,17 +643,12 @@ const initializeListDetailsViewHooks = (match, history) => {
       dispatch(
         updateColumnOnListPreferences(
           parsedConfig,
-          loadedTasklist.taskListIdentifier,
+          taskList.taskListIdentifier,
           currentUserIdentifier,
         ),
       );
     },
-    [
-      currentUserIdentifier,
-      dispatch,
-      displayColumnPreferences,
-      loadedTasklist.taskListIdentifier,
-    ],
+    [currentUserIdentifier, dispatch, displayColumnPreferences, taskList],
   );
 
   const setDisplayListPreferences = useCallback(
@@ -716,6 +689,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   );
 
   return {
+    taskList,
     bulkEditIsDisabled,
     bulkEditTasks,
     changeGroupsOrder,
@@ -732,7 +706,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     isFetching,
     isTourOpen,
     listDetailsActions,
-    loadedTasklist,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,

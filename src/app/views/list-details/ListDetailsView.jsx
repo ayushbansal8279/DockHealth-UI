@@ -30,7 +30,7 @@ const ListDetailsView = props => {
     isFetching,
     isTourOpen,
     listDetailsActions,
-    loadedTasklist,
+    taskList,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
@@ -69,19 +69,17 @@ const ListDetailsView = props => {
               setColumnsConfig: setDisplayColumnPreferences,
             }}
             members={members}
-            showMembers={loadedTasklist?.listType !== 'PUBLIC'}
+            showMembers={taskList?.listType !== 'PUBLIC'}
             onSelectTab={navigateToTab}
             selectedTab={selectedTab}
-            taskList={loadedTasklist || undefined}
+            taskList={taskList || undefined}
             openTasksAmount={taskCounters.incomplete}
             completedTasksAmount={taskCounters.complete}
             onSearchChange={changeSearchValue}
             searchValue={searchValue}
             onSelectFilters={listDetailsActions.filterListDetailsTasks}
-            pdfTitle={loadedTasklist?.listName}
-            tipsContent={
-              loadedTasklist?.listType === 'INBOX' ? InboxHelpPanel : null
-            }
+            pdfTitle={taskList?.listName}
+            tipsContent={taskList?.listType === 'INBOX' ? InboxHelpPanel : null}
             isFetching={isFetching || isCompletedTasksFetching}
             printData={{
               completedTasks,

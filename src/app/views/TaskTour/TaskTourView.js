@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
 import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
 import { setHeader } from 'actions/template-actions';
-import {
-  taskListsSelector,
-  archivedTaskListsSelector,
-} from 'selectors/task-list-selectors';
+
+import * as TaskListApi from 'api/task-list-api';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import Button from 'components/common/Button/Button';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
@@ -22,12 +20,12 @@ import {
 } from './styled';
 
 const TaskTourView = () => {
-  const archivedTaskLists = useSelector(archivedTaskListsSelector);
-  const taskLists = useSelector(taskListsSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const { taskListIdentifier } = useParams();
+  const [taskList, setTaskList] = useState(null);
 
+  const { listName, listDescription } = taskList || {};
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -45,31 +43,29 @@ const TaskTourView = () => {
   }, []);
 
   useEffect(() => {
-    const setViewHeader = () => {
-      const allTaskLists = [...taskLists, ...archivedTaskLists];
-      const loadedTasklist =
-        allTaskLists?.length > 0
-          ? allTaskLists.find(t => t.taskListIdentifier === taskListIdentifier)
-          : {};
-      const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
+    TaskListApi.getTaskListById(taskListIdentifier).then(setTaskList);
+  }, [taskListIdentifier]);
 
-      if (loadedTasklist.listName) {
-        dispatch(
-          setHeader({
-            layout: [
-              {
-                key: 'header',
-                component: headerComponent,
-                xs: 12,
-              },
-            ],
-          }),
-        );
-      }
-    };
-
-    setViewHeader();
-  }, [taskLists, archivedTaskLists, taskListIdentifier, dispatch]);
+  useEffect(() => {
+    if (listName) {
+      dispatch(
+        setHeader({
+          layout: [
+            {
+              key: 'header',
+              component: (
+                <ListSelectHeader
+                  listName={listName}
+                  listDescription={listDescription}
+                />
+              ),
+              xs: 12,
+            },
+          ],
+        }),
+      );
+    }
+  }, [dispatch, listName, listDescription]);
 
   return (
     <TaskTourWrapper>
