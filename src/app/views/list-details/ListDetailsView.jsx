@@ -4,7 +4,6 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { useDispatch } from 'react-redux';
-import { updateUserPageViewSetup } from 'actions/user-actions';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
@@ -48,7 +47,11 @@ const ListDetailsView = props => {
     taskCounters,
     taskListIdentifier,
     toggleTaskCompletedStatus,
-    viewSetup,
+    displayListPreferences,
+    displayColumnPreferences,
+    setDisplayColumnPreferences,
+    setDisplayListPreferences,
+    mergedColumnsConfig,
   } = initializeListDetailsViewHooks(match, history);
 
   return (
@@ -61,6 +64,10 @@ const ListDetailsView = props => {
       <div>
         <TaskViewContainer>
           <Toolbar
+            columnsOptions={{
+              columnsConfig: displayColumnPreferences,
+              setColumnsConfig: setDisplayColumnPreferences,
+            }}
             members={members}
             showMembers={loadedTasklist?.listType !== 'PUBLIC'}
             onSelectTab={navigateToTab}
@@ -87,35 +94,30 @@ const ListDetailsView = props => {
             moreOptions={[
               {
                 name: 'Show Workflow Details',
-                onClick: () =>
-                  dispatch(
-                    updateUserPageViewSetup({
-                      SHOW_WORKFLOW_DETAILS: !viewSetup.SHOW_WORKFLOW_DETAILS,
-                    }),
-                  ),
+                onClick: () => {
+                  dispatch(setDisplayListPreferences('SHOW_WORKFLOW_DETAILS'));
+                },
                 key: 'SHOW_WORKFLOW_DETAILS',
-                checked: viewSetup.SHOW_WORKFLOW_DETAILS,
+                checked: displayListPreferences.SHOW_WORKFLOW_DETAILS,
               },
               {
-                disabled: !viewSetup.SHOW_WORKFLOW_DETAILS,
+                disabled: !displayListPreferences.SHOW_WORKFLOW_DETAILS,
                 name:
                   selectedTab === TaskListTabName.COMPLETE
                     ? 'Show Workflow Uncompleted Tasks'
                     : 'Show Workflow Completed Tasks',
                 onClick: () =>
                   dispatch(
-                    updateUserPageViewSetup({
-                      SHOW_WORKFLOW_COMPLETED_TASKS: !viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
-                    }),
+                    setDisplayListPreferences('SHOW_WORKFLOW_COMPLETED_TASKS'),
                   ),
                 key: 'SHOW_COMPLETED_OR_UNCOMPLETED_WORKFLOW_DETAILS',
-                checked: viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
+                checked: displayListPreferences.SHOW_WORKFLOW_COMPLETED_TASKS,
               },
             ]}
           />
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
-              viewSetup={viewSetup}
+              viewSetup={displayListPreferences}
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
               updateDueDate={handleUpdateDueDate}
@@ -124,10 +126,12 @@ const ListDetailsView = props => {
               loadMoreTasksForList={loadMoreTasksForList}
               sort={sort}
               onSortChange={listDetailsActions.sortListDetailsTasks}
+              columnsConfig={mergedColumnsConfig}
+              displayColumnPreferences={displayColumnPreferences}
             />
           ) : (
             <OpenedTasksView
-              viewSetup={viewSetup}
+              viewSetup={displayListPreferences}
               taskListIdentifier={taskListIdentifier}
               quickAddTask={quickAddTask}
               createTaskGroupList={handleCreateGroup}
@@ -145,6 +149,8 @@ const ListDetailsView = props => {
               taskCounters={taskCounters}
               loadTasksForTaskGroup={loadTasksForTaskGroup}
               resetSort={resetSort}
+              columnsConfig={mergedColumnsConfig}
+              displayColumnPreferences={displayColumnPreferences}
             />
           )}
         </TaskViewContainer>

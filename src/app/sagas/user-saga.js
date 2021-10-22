@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   all,
   put,
@@ -116,10 +115,10 @@ function* updateUserViewSetup({ payload }) {
     const data = {
       displayOptions: userSetup,
     };
+    yield call(UserApi.updateUserViewSetup, data);
     yield put({
       type: ActionTypes.UPDATE_USER_VIEW_SETUP_SUCCESS,
     });
-    UserApi.updateUserViewSetup(data);
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.UPDATE_USER_VIEW_SETUP_FAILURE });

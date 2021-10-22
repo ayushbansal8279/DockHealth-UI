@@ -33,24 +33,6 @@ export const dummyAccess = {
 
 const UserReducer = (state = initialState, action) => {
   switch (action.type) {
-    // user view setup
-    case ActionTypes.UPDATE_LIST_VIEW_SETUP: {
-      const { listIdentifier, setup } = action.payload;
-      return {
-        ...state,
-        userViewSetup: {
-          ...state.userViewSetup,
-          customLists: {
-            ...state.userViewSetup.customLists,
-            [listIdentifier]: {
-              ...defaultViewSetup,
-              ...(state.userViewSetup.customLists[listIdentifier] || {}),
-              ...setup,
-            },
-          },
-        },
-      };
-    }
     case ActionTypes.UPDATE_USER_VIEW_SETUP: {
       const { setup } = action.payload;
       return {

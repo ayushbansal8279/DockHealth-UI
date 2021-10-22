@@ -53,8 +53,11 @@ export const ToolbarBottomGrid = styled(Grid)`
   background-color: ${palette.coolGrey4};
 `;
 
-export const StyledIconButton = styled(IconButton)`
+export const StyledIconButton = styled(IconButton)``;
+export const LeftContainer = styled.div`
   margin-left: auto !important;
+  display: flex;
+  align-items: center;
 `;
 
 export const SearchWrapper = styled.div`

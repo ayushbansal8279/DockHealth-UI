@@ -5,6 +5,24 @@ import * as AlertActions from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from '../alert/AlertMessages';
 
+export const updateUserListViewSetup = (
+  taskListIdentifier,
+  setup,
+  currentUserIdentifier,
+) => {
+  return {
+    type: ActionTypes.UPDATE_LIST_VIEW_SETUP,
+    payload: { taskListIdentifier, setup, currentUserIdentifier },
+  };
+};
+
+export const updateUserPageViewSetup = setup => {
+  return {
+    type: ActionTypes.UPDATE_USER_VIEW_SETUP,
+    payload: { setup },
+  };
+};
+
 export function getTaskListForUser() {
   return dispatch => {
     return TaskListApi.getTaskListForUser()
@@ -537,3 +555,12 @@ export function rejectInviteToTaskList(taskList) {
       });
   };
 }
+
+export const updateColumnOnListPreferences = (
+  setup,
+  taskListIdentifier,
+  currentUserIdentifier,
+) => ({
+  type: ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
+  payload: { setup, taskListIdentifier, currentUserIdentifier },
+});

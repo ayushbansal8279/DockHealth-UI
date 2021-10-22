@@ -14,21 +14,26 @@ import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { TaskStatus } from 'helpers/task-helpers';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
+import {
+  updateUserListViewSetup,
+  updateColumnOnListPreferences,
+} from 'actions/task-list-actions';
+import {
+  TaskStatus,
+  TaskItemColumn,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 
-import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   taskListsSelector,
   pendingTaskListsSelector,
   taskListMembersSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
-import {
-  userProfileSelector,
-  userSetupClientViewSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   completedTasksIsFetchingSelector,
@@ -87,7 +92,6 @@ const initializeListDetailsViewHooks = (match, history) => {
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
 
-  const viewSetup = useSelector(userSetupClientViewSelector);
   const dispatch = useDispatch();
 
   const searchTasks = useCallback(
@@ -610,6 +614,107 @@ const initializeListDetailsViewHooks = (match, history) => {
     return () => {};
   }, [currentUserIdentifier]);
 
+  const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
+    [TaskItemColumn.WORKFLOW_STATUS]: false,
+    [TaskItemColumn.ASSIGNED]: false,
+    [TaskItemColumn.ACTIVITY]: false,
+    [TaskItemColumn.DUE_DATE]: false,
+    [TaskItemColumn.PATIENT]: false,
+  };
+
+  const VIEW_LIST_OPTIONS_CONFIG = {
+    SHOW_WORKFLOW_DETAILS: false,
+    SHOW_WORKFLOW_COMPLETED_TASKS: false,
+  };
+
+  const displayColumnPreferences = useMemo(() => {
+    const { displayColumns } = loadedTasklist?.listUsers?.find(
+      user => user.identifier === currentUserIdentifier,
+    );
+    return displayColumns.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
+    );
+  }, [
+    DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
+    currentUserIdentifier,
+    loadedTasklist,
+  ]);
+
+  const displayListPreferences = useMemo(() => {
+    const { displayOptions } = loadedTasklist?.listUsers?.find(
+      user => user.identifier === currentUserIdentifier,
+    );
+    return displayOptions.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      VIEW_LIST_OPTIONS_CONFIG,
+    );
+  }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, loadedTasklist]);
+
+  const setDisplayColumnPreferences = useCallback(
+    columnKey => {
+      const newConfig = {
+        ...displayColumnPreferences,
+        [columnKey]: !displayColumnPreferences[columnKey],
+      };
+      const parsedConfig = Object.entries(newConfig).reduce(
+        (accumulator, [key, value]) =>
+          value ? [...accumulator, key] : accumulator,
+        [],
+      );
+      dispatch(
+        updateColumnOnListPreferences(
+          parsedConfig,
+          loadedTasklist.taskListIdentifier,
+          currentUserIdentifier,
+        ),
+      );
+    },
+    [
+      currentUserIdentifier,
+      dispatch,
+      displayColumnPreferences,
+      loadedTasklist.taskListIdentifier,
+    ],
+  );
+
+  const setDisplayListPreferences = useCallback(
+    columnKey => {
+      const newConfig = {
+        ...displayListPreferences,
+        [columnKey]: !displayListPreferences[columnKey],
+      };
+      const parsedConfig = Object.entries(newConfig).reduce(
+        (accumulator, [key, value]) =>
+          value ? [...accumulator, key] : accumulator,
+        [],
+      );
+      dispatch(
+        updateUserListViewSetup(
+          taskListIdentifier,
+          parsedConfig,
+          currentUserIdentifier,
+        ),
+      );
+    },
+    [
+      displayListPreferences,
+      dispatch,
+      taskListIdentifier,
+      currentUserIdentifier,
+    ],
+  );
+
+  const DASHBOARD_BASE_COLUMNS_CONFIG = {
+    ...TASK_ITEM_BASE_COLUMN_CONFIG,
+    [TaskItemColumn.LIST_NAME]: true,
+  };
+
+  const mergedColumnsConfig = useMemo(
+    () => ({ ...DASHBOARD_BASE_COLUMNS_CONFIG, ...displayColumnPreferences }),
+    [DASHBOARD_BASE_COLUMNS_CONFIG, displayColumnPreferences],
+  );
+
   return {
     bulkEditIsDisabled,
     bulkEditTasks,
@@ -644,7 +749,11 @@ const initializeListDetailsViewHooks = (match, history) => {
     taskCounters,
     taskListIdentifier,
     toggleTaskCompletedStatus,
-    viewSetup,
+    displayListPreferences,
+    displayColumnPreferences,
+    setDisplayColumnPreferences,
+    setDisplayListPreferences,
+    mergedColumnsConfig,
   };
 };
 
