@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 
 export const LabelsWrapper = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   height: 100%;

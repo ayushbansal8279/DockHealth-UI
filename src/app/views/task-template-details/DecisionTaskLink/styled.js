@@ -3,7 +3,6 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 export const LabelsWrapper = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
@@ -12,7 +11,6 @@ export const LabelsWrapper = styled.div`
 `;
 
 export const EdgeLabel = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   margin: 0 auto;
