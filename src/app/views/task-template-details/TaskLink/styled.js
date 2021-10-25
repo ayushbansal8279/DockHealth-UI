@@ -19,15 +19,3 @@ export const HardDependencyLabel = styled.div`
   border-radius: 16px;
   background-color: ${palette.brightBlue};
 `;
-
-export const DelayPeriodLabel = styled.div`
-  display: flex;
-  align-items: center;
-  height: 30px;
-  margin-right: -10px;
-  padding-right: 26px;
-  padding-left: 16px;
-  border-radius: 15px;
-  background-color: ${palette.brightBlue};
-  color: ${palette.white};
-`;

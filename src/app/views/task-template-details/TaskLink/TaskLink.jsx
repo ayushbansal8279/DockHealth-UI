@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect } from 'react';
 import { isNil } from 'ramda';
 import { useBoolean } from 'hooks/useBoolean';
@@ -10,9 +9,10 @@ import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import LinkPath from '../LinkPath/LinkPath';
-import { LabelsWrapper, HardDependencyLabel, DelayPeriodLabel } from './styled';
+import { LabelsWrapper, HardDependencyLabel } from './styled';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
+import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 
 const TaskLink = props => {
   const {
@@ -134,10 +134,7 @@ const TaskLink = props => {
       >
         <LabelsWrapper ref={labelWrapperReference}>
           {delayOptionsVisible && (
-            <DelayPeriodLabel onClick={openDelayPopover}>
-              {delayPeriod} {delayPeriodUnit.toLowerCase()}
-              {delayPeriod > 1 ? 's' : ''}
-            </DelayPeriodLabel>
+            <DelayPeriodLabel link={link} onClick={openDelayPopover} />
           )}
           {isDependent && (
             <HardDependencyLabel onClick={openOptions}>
