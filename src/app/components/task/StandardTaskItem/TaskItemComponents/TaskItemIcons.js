@@ -52,15 +52,14 @@ const TaskItemIcons = ({
                 : 'Add a new comment'
             }
           >
-            <div>
+            <button type="button" onClick={onCommentClick}>
               <TaskIcon
                 type="comments"
                 isHovered={isHovered}
                 isActive={comments?.length > 0}
                 isNew={task.updatedComment}
-                onClick={onCommentClick}
               />
-            </div>
+            </button>
           </Tooltip>
         </GridImg>
         <GridImg item xs={4} matched={matchLabels}>
@@ -72,15 +71,14 @@ const TaskItemIcons = ({
                 : 'Add label'
             }
           >
-            <div>
+            <button type="button" onClick={onLabelClick}>
               <TaskIcon
                 type="labels"
                 isHovered={isHovered}
                 isActive={labels?.length > 0}
                 isNew={task.updatedLabel}
-                onClick={onLabelClick}
               />
-            </div>
+            </button>
           </Tooltip>
         </GridImg>
         <GridImg item xs={4} matched={matchAttachments}>
@@ -92,15 +90,14 @@ const TaskItemIcons = ({
                 : 'Add file'
             }
           >
-            <div>
+            <button type="button" onClick={onAttachmentsClick}>
               <TaskIcon
                 type="attachments"
-                onClick={onAttachmentsClick}
                 isHovered={isHovered}
                 isActive={attachments?.length > 0}
                 isNew={task.updatedAttachment}
               />
-            </div>
+            </button>
           </Tooltip>
         </GridImg>
       </Grid>

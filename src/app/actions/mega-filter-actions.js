@@ -15,7 +15,7 @@ export function selectFiltersFromLocalStorage(id, status) {
 
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
-      selectedFilters: initialFilters || [],
+      selectedFilters: initialFilters || {},
     });
   };
 }

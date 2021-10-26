@@ -46,6 +46,7 @@ const TaskItemDecision = ({
     <StandardTaskItemCell width="164px">
       <DecisionBox>
         <DecisionSelect
+          name="decision"
           value={value}
           onChange={handleChange}
           error={error}

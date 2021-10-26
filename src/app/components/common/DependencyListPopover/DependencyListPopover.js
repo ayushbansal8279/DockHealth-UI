@@ -1,7 +1,7 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useState, useCallback } from 'react';
 import { Popper } from '@material-ui/core';
-import { bool, shape, object, string, number } from 'prop-types';
+import { bool, instanceOf, string, number, shape } from 'prop-types';
 import { getTaskDependencies } from 'api/task-api';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import dependencyIcon from 'img/dependency-icon.svg';
@@ -18,7 +18,7 @@ import {
 } from './styled';
 
 const DependencyListPopover = ({
-  anchorElement,
+  anchorEl,
   open,
   task,
   dependencyTasksCount,
@@ -53,7 +53,7 @@ const DependencyListPopover = ({
 
   return (
     <Popper
-      anchorEl={anchorElement}
+      anchorEl={anchorEl}
       placement="bottom-start"
       open={open}
       style={{ zIndex: 100000 }}
@@ -89,11 +89,11 @@ const DependencyListPopover = ({
 };
 
 DependencyListPopover.propTypes = {
-  anchorElement: shape({
-    current: object,
-  }).isRequired,
+  anchorEl: instanceOf(Element).isRequired,
   open: bool.isRequired,
-  taskIdentifier: string.isRequired,
+  task: shape({
+    taskIdentifier: string,
+  }).isRequired,
   dependencyTasksCount: number,
 };
 

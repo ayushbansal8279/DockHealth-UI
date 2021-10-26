@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from 'styled-components';
+import React from 'react';
 
 import palette, { opacify } from 'styles/palette';
 import { Divider, InputLabel } from '@material-ui/core';
@@ -26,7 +28,9 @@ export const TaskDrawerContainer = styled.div`
   z-index: 1101;
 `;
 
-export const TextEditorInputLabel = styled(InputLabel)`
+export const TextEditorInputLabel = styled(
+  ({ richTextEnabled, hasError, ...props }) => <InputLabel {...props} />,
+)`
   margin-bottom: ${({ richTextEnabled, focused }) =>
     richTextEnabled && focused ? '20px' : '0px'};
 `;

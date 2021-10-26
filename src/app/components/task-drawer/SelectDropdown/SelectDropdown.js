@@ -183,7 +183,6 @@ const SelectDropdown = React.forwardRef(
             InputLabelProps={{
               shrink: true,
             }}
-            parentType="select"
             inputProps={{
               autoComplete: 'off',
               value: inputValue,

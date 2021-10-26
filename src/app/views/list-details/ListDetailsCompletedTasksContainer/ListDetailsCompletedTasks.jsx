@@ -133,6 +133,7 @@ const ListDetailsCompletedTasks = ({
                         />
                       ) : (
                         <TaskTemplateGroup
+                          key={task.identifier}
                           viewSetup={viewSetup}
                           templateGroup={task}
                           groupHasMultipleAssignees={groupHasMultipleAssignees}

@@ -182,7 +182,7 @@ const TaskItem = ({
     dependencyPopoverOpen,
     openDependencyPopover,
     closeDependencyPopover,
-  ] = useBooleanWithTimeout();
+  ] = useBooleanWithTimeout(false);
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -429,12 +429,14 @@ const TaskItem = ({
                   ref={dependencyIconReference}
                 >
                   <img src={dependencyIcon} alt="search" />
-                  <DependencyListPopover
-                    anchorElement={dependencyIconReference.current}
-                    open={dependencyPopoverOpen}
-                    dependencyTasksCount={dependencyTasksCount}
-                    task={task}
-                  />
+                  {dependencyIconReference.current && (
+                    <DependencyListPopover
+                      anchorEl={dependencyIconReference.current}
+                      open={dependencyPopoverOpen}
+                      dependencyTasksCount={dependencyTasksCount}
+                      task={task}
+                    />
+                  )}
                 </DependencyIconContainer>
               </>
             )}

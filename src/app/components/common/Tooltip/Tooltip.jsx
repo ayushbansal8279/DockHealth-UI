@@ -18,7 +18,6 @@ const Tooltip = ({
       placement={placement}
       arrow={arrow}
       classes={classes}
-      disablePortal
     >
       {children}
     </MuiTooltip>
