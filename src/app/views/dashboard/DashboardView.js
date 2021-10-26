@@ -7,6 +7,8 @@ import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selec
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
+import { storeAsCurrentTask } from 'actions/task-actions';
+import { closeDrawer } from 'actions/task-drawer-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserAuthApi from 'api/user-auth-api';
@@ -55,6 +57,14 @@ const DashboardView = ({
     dispatch(TaskListActions.getTaskListForUser());
     dispatch(TaskListActions.getPendingTaskListsForUser());
   }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(closeDrawer());
+      dispatch(storeAsCurrentTask());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
