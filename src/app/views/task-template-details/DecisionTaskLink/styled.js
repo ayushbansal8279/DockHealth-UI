@@ -2,16 +2,15 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
-export const ButtonsContainer = styled.div`
-  display: none;
-
-  & > button {
-    color: ${palette.white};
-  }
+export const LabelsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: fit-content;
+  margin: 0 auto;
 `;
 
 export const EdgeLabel = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   margin: 0 auto;
@@ -25,18 +24,6 @@ export const EdgeLabel = styled.div`
     hasOutcome ? palette.white : palette.mediumGrey};
   border-radius: 999px;
   transition: width 0.2s linear;
-
-  ${({ hasOutcome }) =>
-    hasOutcome &&
-    `
-    &:hover {
-      width: 100%;
-
-      & > ${ButtonsContainer} {
-        display: flex;
-      }
-    } 
-  `}
 `;
 
 export const OutcomeInput = styled.input`
@@ -50,13 +37,13 @@ export const OutcomeInput = styled.input`
   background: transparent;
   outline: none;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 
   &:read-only {
     background: transparent;
     color: inherit;
     cursor: initial;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &::placeholder {
