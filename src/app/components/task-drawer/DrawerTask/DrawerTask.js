@@ -55,7 +55,7 @@ import {
   DueDateText,
 } from './styled';
 
-const Subtask = ({ subtask, currentUser }) => {
+const DrawerTask = ({ subtask, currentUser }) => {
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -295,4 +295,4 @@ const Subtask = ({ subtask, currentUser }) => {
   );
 };
 
-export default Subtask;
+export default DrawerTask;
