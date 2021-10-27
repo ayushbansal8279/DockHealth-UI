@@ -1,8 +1,5 @@
-/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable react/jsx-no-duplicate-props */
 import React, { useMemo } from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
@@ -22,7 +19,6 @@ import TopSection from '../TopSection/TopSection';
 import HistorySection from '../HistorySection/HistorySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
-import TasksList from '../TasksList/TasksList';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
@@ -51,7 +47,8 @@ import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import CustomTextEditor from '../CustomTextEditor/CustomTextEditor';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
-import DependenciesAutocomplete from '../DependenciesAutocomplete/DependenciesAutocomplete';
+import DependenciesSection from '../DependenciesSection/DependenciesSection';
+import SubtasksSection from '../SubtasksSection/SubtasksSection';
 
 const isEmptyState = state => {
   const rawState = convertToRaw(state.getCurrentContent());
@@ -379,8 +376,7 @@ const TaskDrawer = ({
               </Grid>
               {selectedTask && !isSubtask && (
                 <Grid item xs={12}>
-                  <TasksList
-                    title="Subtasks"
+                  <SubtasksSection
                     tasks={selectedTask.subtasks}
                     tasksCount={selectedTask.subTasksCount}
                     input={
@@ -396,16 +392,7 @@ const TaskDrawer = ({
                 !isSubtask &&
                 (isTemplateTask || checkIfBundleTask(selectedTask)) && (
                   <Grid item xs={12}>
-                    <TasksList
-                      title="Dependencies"
-                      tasks={selectedTask.taskDependencies}
-                      tasksCount={selectedTask.dependencyTasksCount}
-                      input={
-                        <DependenciesAutocomplete
-                          taskIdentifier={selectedTask.identifier}
-                        />
-                      }
-                    />
+                    <DependenciesSection selectedTask={selectedTask} />
                   </Grid>
                 )}
               <Grid item xs={12} style={styleCommentRow}>

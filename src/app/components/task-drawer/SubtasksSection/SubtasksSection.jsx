@@ -1,24 +1,24 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
-import Subtask from '../Subtask/Subtask';
-import SubtasksLoader from '../SubtasksLoader/SubtasksLoader';
+import DrawerTask from '../DrawerTask/DrawerTask';
+import DrawerTaskLoader from '../DrawerTaskLoader/DrawerTaskLoader';
 import { Container, Title } from './styled';
 
-const TasksList = ({ title, tasks, tasksCount, input }) => {
+const SubtasksSection = ({ tasks, tasksCount, input }) => {
   const currentUser = useSelector(userProfileSelector);
 
   return (
     <Container>
-      <Title>{title}</Title>
+      <Title>Subtasks</Title>
       {tasksCount > 0 && (!tasks || tasks.length === 0) ? (
-        <SubtasksLoader rows={tasksCount || 4} />
+        <DrawerTaskLoader rows={tasksCount || 4} />
       ) : (
         <>
-          {tasks?.map(subtask => (
-            <Subtask
-              key={subtask.taskIdentifier}
-              subtask={subtask}
+          {tasks?.map(task => (
+            <DrawerTask
+              key={task.taskIdentifier}
+              subtask={task}
               currentUser={currentUser}
             />
           ))}
@@ -29,4 +29,4 @@ const TasksList = ({ title, tasks, tasksCount, input }) => {
   );
 };
 
-export default TasksList;
+export default SubtasksSection;
