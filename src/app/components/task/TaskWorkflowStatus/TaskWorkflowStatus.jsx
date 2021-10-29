@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +22,7 @@ const TaskWorkflowStatus = ({
   onClose,
   onWidthChange,
 }) => {
+  const wrapperReference = useRef(null);
   const [isEditing, setIsEditing, unsetIsEditing] = useBoolean(false);
   const dispatch = useDispatch();
 
@@ -34,10 +35,12 @@ const TaskWorkflowStatus = ({
   const isFetching = useSelector(fetchingOrganizationStatusesSelector);
   const error = useSelector(organizationStatusesErrorSelector);
 
+  const statusesCount = statuses?.length || 0;
+
   useEffect(() => {
     if (typeof onWidthChange === 'function') onWidthChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditing]);
+  }, [isEditing, statusesCount]);
 
   useEffect(() => {
     if (!statuses) dispatch(getOrganizationStatuses());
@@ -57,7 +60,7 @@ const TaskWorkflowStatus = ({
   const numberOfElements = (statuses?.length || 0) + 1;
 
   return (
-    <StatusListWrapper>
+    <StatusListWrapper ref={wrapperReference}>
       {!isEditing ? (
         <>
           <StatusList elementsCount={numberOfElements}>

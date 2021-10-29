@@ -52,11 +52,12 @@ const StatusSection = ({ selectedTask, setAutoSaveVisible, onTaskUpdate }) => {
 
   return (
     <TaskDrawerPopover
-      content={({ closePopover }) => (
+      content={({ closePopover, resetPosition }) => (
         <TaskWorkflowStatus
           selectedStatusIdentifier={workflowStatus?.identifier}
           updateWorkflowStatus={handleUpdateWorkflowStatus}
           onClose={closePopover}
+          onWidthChange={resetPosition}
         />
       )}
     >

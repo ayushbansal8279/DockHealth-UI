@@ -13,7 +13,7 @@ export const Divider = styled.div`
 export const StatusListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   width: auto;
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
@@ -39,7 +39,6 @@ export const StatusList = styled.div`
     }},
     1fr
   );
-  // min-width: 140px;
   width: ${({ elementsCount }) => {
     if (elementsCount < 11) {
       return 140;
