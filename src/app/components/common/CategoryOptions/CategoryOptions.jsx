@@ -4,13 +4,14 @@ import RotatableChevron from 'components/common/RotatableChevron/RotatableChevro
 import Spacing from 'components/common/Spacing';
 import { Box } from '@material-ui/core';
 import AddButton from 'components/common/AddButton/AddButton';
-import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
-import { useHistory } from 'react-router-dom';
 import { LabeledCollapseHeaderButton, LabeledCollapseItemName } from './styled';
 
-const CategoryOptions = ({ visibility, onToggle, isAdmin = false }) => {
-  const history = useHistory();
-
+const CategoryOptions = ({
+  visibility,
+  onToggle,
+  onAddButtonClick,
+  showAddButton = false,
+}) => {
   return (
     <div>
       <Spacing vertical={3} />
@@ -29,11 +30,8 @@ const CategoryOptions = ({ visibility, onToggle, isAdmin = false }) => {
             <RotatableChevron rotated={visibility} />
           </LabeledCollapseHeaderButton>
         </div>
-        {isAdmin && (
-          <AddButton
-            width="auto"
-            onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}
-          >
+        {showAddButton && typeof onAddButtonClick === 'function' && (
+          <AddButton width="auto" onClick={onAddButtonClick}>
             Add or edit fields
           </AddButton>
         )}

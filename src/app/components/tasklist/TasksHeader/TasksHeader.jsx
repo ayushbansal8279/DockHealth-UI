@@ -3,12 +3,11 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import {
-  TaskItemColumn,
-  TASK_ITEM_BASE_COLUMN_CONFIG,
-} from 'helpers/task-helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { BulkContainer } from './styled';
 
 const TasksHeader = ({
@@ -18,21 +17,21 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   groupHasMultipleAssignees,
-  taskItemConfig = {},
 }) => {
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
+  const { columnsConfig, customColumnsConfig } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   const mergedConfig = useMemo(
     () => ({
-      ...TASK_ITEM_BASE_COLUMN_CONFIG,
-      ...taskItemConfig,
+      ...columnsConfig,
     }),
-    [taskItemConfig],
+    [columnsConfig],
   );
+
   return (
     <SortHeaderRow>
       {bulkEditEnabled && (
@@ -106,6 +105,15 @@ const TasksHeader = ({
           onSortChange={onSortChange}
         />
       )}
+      {customColumnsConfig
+        .filter(f => f.isChecked)
+        .map(f => (
+          <ColumnSortHeader
+            id={f.id}
+            label={f.name}
+            width={CustomFieldWidthConfig[f.fieldType]}
+          />
+        ))}
     </SortHeaderRow>
   );
 };

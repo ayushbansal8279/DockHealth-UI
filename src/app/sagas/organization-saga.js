@@ -14,6 +14,7 @@ import AlertMessages from 'alert/AlertMessages';
 import { updateWorkflowStatusForTasks } from 'actions/task-actions';
 import { organizationStatusesSelector } from 'selectors/organization-selectors';
 import { pluck, move } from 'ramda';
+import * as CustomFieldsApi from 'api/custom-fields-api';
 
 const GET_ORGANIZATION_STATUSES = '@@saga/GET_ORGANIZATION_STATUSES';
 const DELETE_ORGANIZATION_STATUS = '@@saga/DELETE_ORGANIZATION_STATUS';
@@ -161,6 +162,21 @@ function* changeUserOrganizationRole({ userIdentifier, role }) {
   }
 }
 
+function* getOrganizationCustomFields() {
+  try {
+    const organizationCustomFields = yield call(
+      CustomFieldsApi.getAllTaskListCustomFields,
+    );
+    yield put({
+      type: ActionTypes.GET_ORGANIZATION_CUSTOM_FIELDS_SUCCESS,
+      organizationCustomFields,
+    });
+  } catch {
+    yield put({ type: ActionTypes.GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* changeUserOrganizationRoleSuccess() {
   yield put(OrganizationActions.getOrganizationUsers());
 }
@@ -192,6 +208,10 @@ export default function* watchOrganization() {
   yield takeEvery(
     ActionTypes.CHANGE_USER_ORGANIZATION_ROLE_SUCCESS,
     changeUserOrganizationRoleSuccess,
+  );
+  yield takeEvery(
+    ActionTypes.GET_ORGANIZATION_CUSTOM_FIELDS,
+    getOrganizationCustomFields,
   );
   yield takeLatest(
     ActionTypes.UPDATE_SUBSCRIPTION_PLAN,

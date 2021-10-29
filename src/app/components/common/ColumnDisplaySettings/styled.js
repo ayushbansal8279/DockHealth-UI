@@ -8,6 +8,8 @@ export const ColumnDisplayContainer = styled.div`
   padding: ${spacing.regularPlus};
   width: 230px;
   box-shadow: 0px 4px 11px grey;
+  max-height: 400px;
+  overflow: auto;
 `;
 
 export const ColumnDisplayHeader = styled.div`

@@ -62,6 +62,11 @@ export const styleTaskDrawerContainer = {
   padding: '1rem 0rem 0.5rem  0rem',
 };
 
+export const styleNoPaddingRow = {
+  padding: '0rem 0rem',
+  height: rowHeight,
+};
+
 export const styleFullRow = {
   padding: '1rem 2rem',
   height: rowHeight,

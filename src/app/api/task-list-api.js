@@ -345,3 +345,14 @@ export function updateUserOptionsListViewSetup(setup, taskListIdentifier) {
     })
     .then(({ data }) => data);
 }
+
+export function updateUserCustomFieldsOptionsListViewSetup(
+  setup,
+  taskListIdentifier,
+) {
+  return axios
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
+      customFieldDisplayColumns: setup,
+    })
+    .then(({ data }) => data);
+}

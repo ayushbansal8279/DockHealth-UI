@@ -13,16 +13,16 @@ import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
-import CustomField from 'components/patients/CustomField/CustomField';
+import CustomField from 'components/common/CustomField/CustomField';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
+import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { HideableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
-import CategoryOptions from './CategoryOptions';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -84,12 +84,16 @@ const PatientForm = forwardRef(
               readOnly={readOnly}
               field={field}
               initialValue={initialFieldValue}
+              fieldsGroupKey="patientMetaData"
             />
           </HideableContainer>
         );
       },
       [patient, readOnly],
     );
+
+    const handleAddButtonClick = () =>
+      history.push(CUSTOM_FIELDS_SETTINGS_PATH);
 
     return (
       <form
@@ -157,7 +161,8 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyPersonalVisible}
             onToggle={toggleEmptyPersonal}
-            isAdmin={isAdmin}
+            showAddButton={isAdmin}
+            onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
         <LabeledCollapse
@@ -193,7 +198,8 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyContactsVisible}
             onToggle={toggleEmptyContacts}
-            isAdmin={isAdmin}
+            showAddButton={isAdmin}
+            onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
@@ -215,16 +221,15 @@ const PatientForm = forwardRef(
             <CategoryOptions
               visibility={emptyOtherVisible}
               onToggle={toggleEmptyOther}
-              isAdmin={isAdmin}
+              showAddButton={isAdmin}
+              onAddButtonClick={handleAddButtonClick}
             />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
           <div>
             {isAdmin && (
-              <AddButton
-                onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}
-              >
+              <AddButton onClick={handleAddButtonClick}>
                 Add or edit fields
               </AddButton>
             )}

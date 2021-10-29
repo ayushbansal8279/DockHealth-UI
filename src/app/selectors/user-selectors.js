@@ -18,6 +18,11 @@ export const userProfileDashboardPrefsSelector = createSelector(
   ({ userPreference }) => userPreference?.displayColumns,
 );
 
+export const userProfileCustomFieldsSelector = createSelector(
+  userProfileSelector,
+  ({ userPreference }) => userPreference?.customFieldDisplayColumns,
+);
+
 export const userHasSmartFlowsSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>

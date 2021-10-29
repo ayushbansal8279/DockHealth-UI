@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { Fade, Grid } from '@material-ui/core';
 import React from 'react';
 import NotificationsCheck from 'img/toolbar-notifications-check';
@@ -27,6 +28,7 @@ interface MorePopoverProps extends OnPrintClickProps {
   toggleNotifications: () => void;
   isSpecialList?: boolean;
   showNotifications?: boolean;
+  onAddCustomFieldsClick: () => void | null;
 }
 
 const onPrintClick = ({
@@ -52,6 +54,7 @@ const onPrintClick = ({
 
 const MorePopover = ({
   moreButtonReference,
+  onAddCustomFieldsClick,
   closeMorePopover,
   isMorePopoverOpen,
   tasks,
@@ -153,6 +156,14 @@ const MorePopover = ({
           onClick: toggleNotifications,
         },
   ];
+
+  if (onAddCustomFieldsClick && typeof onAddCustomFieldsClick === 'function') {
+    popoverItems.push({
+      key: 'addCustomField',
+      label: <span>Custom Fields</span>,
+      onClick: onAddCustomFieldsClick,
+    });
+  }
 
   return (
     <ListPopover

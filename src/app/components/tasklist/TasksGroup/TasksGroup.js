@@ -65,7 +65,6 @@ const TasksGroup = ({
   sort,
   onSortChange,
   onTaskGroupViewModeChange,
-  taskItemConfig,
   applyTemplate,
   groupPagination,
   isFetchingMoreTasks,
@@ -283,7 +282,6 @@ const TasksGroup = ({
             bulkEditEnabled={bulkEditEnabled}
             sort={sort}
             onSortChange={onSortChange}
-            taskItemConfig={taskItemConfig}
             groupHasMultipleAssignees={groupHasMultipleAssignees}
             isGroupSelected={isGroupSelected}
             onGroupSelect={handleGroupSelect}

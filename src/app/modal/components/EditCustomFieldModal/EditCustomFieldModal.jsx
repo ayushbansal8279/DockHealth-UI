@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { partial } from 'ramda';
@@ -26,30 +26,37 @@ import {
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const validationSchema = object().shape({
-  name: string().required(REQUIRED_MESSAGE),
-  placeholder: string().nullable(),
-  fieldType: string().required(REQUIRED_MESSAGE),
-  fieldCategoryType: string().required(REQUIRED_MESSAGE),
-  options: array()
-    .of(
-      object().shape({
-        name: string().required(REQUIRED_MESSAGE),
-      }),
-    )
-    .nullable(),
-});
-
-const EditCustomPatientFieldModal = ({
+const EditCustomFieldModal = ({
   closeModal,
   customField,
   onAdded,
   onUpdated,
+  options: { type },
+  taskListIdentifier,
 }) => {
   const addOptionButtonReference = useRef(null);
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+
+  const validationSchema = useMemo(() => {
+    return object().shape({
+      name: string().required(REQUIRED_MESSAGE),
+      placeholder: string().nullable(),
+      fieldType: string().required(REQUIRED_MESSAGE),
+      options: array()
+        .of(
+          object().shape({
+            name: string().required(REQUIRED_MESSAGE),
+          }),
+        )
+        .nullable(),
+      ...(type === 'TASK'
+        ? {}
+        : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
+    });
+  }, [type]);
+
   const formMethods = useForm({
     validationSchema,
     mode: 'onSubmit',
@@ -129,7 +136,7 @@ const EditCustomPatientFieldModal = ({
   const handleEditSubmit = data => {
     setIsSaving(true);
     const updatedField = { ...customField, ...data };
-    CustomFieldsApi.updatePatientCustomField(updatedField)
+    CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
       .then(() => {
         onUpdated(updatedField);
         setIsSaving(false);
@@ -143,7 +150,7 @@ const EditCustomPatientFieldModal = ({
 
   const handleAddSubmit = data => {
     setIsSaving(true);
-    CustomFieldsApi.addPatientCustomField(data)
+    CustomFieldsApi.addCustomField(data, type, taskListIdentifier)
       .then(addedField => {
         onAdded(addedField);
         setIsSaving(false);
@@ -200,14 +207,16 @@ const EditCustomPatientFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    <Grid item xs={6}>
-                      <FormSelect
-                        required
-                        label="Category"
-                        name="fieldCategoryType"
-                        options={CATEGORY_OPTIONS}
-                      />
-                    </Grid>
+                    {type !== 'TASK' && (
+                      <Grid item xs={6}>
+                        <FormSelect
+                          required
+                          label="Category"
+                          name="fieldCategoryType"
+                          options={CATEGORY_OPTIONS}
+                        />
+                      </Grid>
+                    )}
                     {optionsValue?.length > 0 && (
                       <>
                         <Box m={2} />
@@ -271,4 +280,4 @@ const EditCustomPatientFieldModal = ({
   );
 };
 
-export default EditCustomPatientFieldModal;
+export default EditCustomFieldModal;

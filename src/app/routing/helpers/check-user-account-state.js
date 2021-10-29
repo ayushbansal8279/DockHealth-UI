@@ -1,5 +1,8 @@
 /* eslint-disable unicorn/filename-case */
-import { getConfigurationForReferral } from 'actions/organization-actions';
+import {
+  getConfigurationForReferral,
+  getOrganizationCustomFields,
+} from 'actions/organization-actions';
 import { getCurrentUserNotificationPreferences } from 'actions/user-actions';
 import { getUserByEmail } from 'api/user-auth-api';
 import { captureLocalTimezone } from 'api/user-api';
@@ -79,6 +82,7 @@ const checkUserAccountState = async ({
     }
 
     dispatch(getCurrentUserNotificationPreferences());
+    dispatch(getOrganizationCustomFields());
 
     return await handleHomeRedirection({
       data,

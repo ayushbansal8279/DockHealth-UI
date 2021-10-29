@@ -47,7 +47,7 @@ import UnassignPatientModal from './components/UnassignPatientModal/UnassignPati
 import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
 import AddPatientToListModal from './components/AddPatientToListModal/AddPatientToListModal';
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
-import EditCustomPatientFieldModal from './components/EditCustomPatientFieldModal/EditCustomPatientFieldModal';
+import EditCustomFieldModal from './components/EditCustomFieldModal/EditCustomFieldModal';
 import DeleteConfirmationModal from './components/DeleteConfirmationModal/DeleteConfirmationModal';
 import EditUserGroupModal from './components/EditUserGroupModal/EditUserGroupModal';
 import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroupModal';
@@ -105,7 +105,7 @@ const MODAL_MAP = {
   EditPatientList: EditPatientListModal,
   AddPatientToList: AddPatientToListModal,
   InterruptEdit: InterruptEditModal,
-  EditCustomPatientField: EditCustomPatientFieldModal,
+  EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   EditUserGroup: EditUserGroupModal,

@@ -16,6 +16,7 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Spacing from 'components/common/Spacing';
 import { openModal as openModalAction } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
+import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
 // import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
@@ -148,60 +149,62 @@ const DashboardView = ({
   const dashboardTab = location.slice(-1)[0];
 
   return (
-    <DashboardViewWrapper>
-      {currentUserLoaded && (
-        <DashboardContentWrapper>
-          {openConfetti && <StyledConfetti recycle={false} />}
-          <DashboardScrollableList>
-            <div>
-              <DashboardHeaderContainer>
-                <DashboardHeader
-                  isUserFirstTime={
-                    createListViewVisible || firstCreatedUserListIdentifier
-                  }
-                  currentUser={currentUser}
-                />
-              </DashboardHeaderContainer>
-              <Spacing vertical={3} />
-            </div>
-            {createListViewVisible ? (
-              <DashboardFirstVisitViewWrapper>
-                <DashboardFirstVisitView
-                  hasInvitedLists={hasOnlyInvitedLists}
-                  onCreateList={handleCreateFirstList}
-                  onTakeATour={() => {
-                    onNewUserTourEnter('Video tutorial');
-                    openModal('Video', {
-                      title: 'Emailing a Task to Dock Health',
-                      url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
-                    });
-                  }}
-                  acceptInvitation={acceptInviteToTaskList}
-                />
-              </DashboardFirstVisitViewWrapper>
-            ) : (
-              <DashboardListWrapper fullWidth={createListViewVisible}>
+    <ColumnsConfigProvider>
+      <DashboardViewWrapper>
+        {currentUserLoaded && (
+          <DashboardContentWrapper>
+            {openConfetti && <StyledConfetti recycle={false} />}
+            <DashboardScrollableList>
+              <div>
                 <DashboardHeaderContainer>
-                  {/* <DashboardStatistics
+                  <DashboardHeader
+                    isUserFirstTime={
+                      createListViewVisible || firstCreatedUserListIdentifier
+                    }
+                    currentUser={currentUser}
+                  />
+                </DashboardHeaderContainer>
+                <Spacing vertical={3} />
+              </div>
+              {createListViewVisible ? (
+                <DashboardFirstVisitViewWrapper>
+                  <DashboardFirstVisitView
+                    hasInvitedLists={hasOnlyInvitedLists}
+                    onCreateList={handleCreateFirstList}
+                    onTakeATour={() => {
+                      onNewUserTourEnter('Video tutorial');
+                      openModal('Video', {
+                        title: 'Emailing a Task to Dock Health',
+                        url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
+                      });
+                    }}
+                    acceptInvitation={acceptInviteToTaskList}
+                  />
+                </DashboardFirstVisitViewWrapper>
+              ) : (
+                <DashboardListWrapper fullWidth={createListViewVisible}>
+                  <DashboardHeaderContainer>
+                    {/* <DashboardStatistics
                     dashboardTab={dashboardTab}
                     customerTypeLabel={customerTypeLabel}
                   /> */}
-                </DashboardHeaderContainer>
-                <DashboardList
-                  currentUser={currentUser}
-                  isTaskDrawerOpen={isTaskDrawerOpen}
-                  dashboardTab={dashboardTab}
-                  tourModalIsOpen={tourModalIsOpen}
-                  openTourModal={forceOpenTourModal}
-                  customerTypeLabel={customerTypeLabel}
-                />
-              </DashboardListWrapper>
-            )}
-          </DashboardScrollableList>
-        </DashboardContentWrapper>
-      )}
-      {renderNewUserTour()}
-    </DashboardViewWrapper>
+                  </DashboardHeaderContainer>
+                  <DashboardList
+                    currentUser={currentUser}
+                    isTaskDrawerOpen={isTaskDrawerOpen}
+                    dashboardTab={dashboardTab}
+                    tourModalIsOpen={tourModalIsOpen}
+                    openTourModal={forceOpenTourModal}
+                    customerTypeLabel={customerTypeLabel}
+                  />
+                </DashboardListWrapper>
+              )}
+            </DashboardScrollableList>
+          </DashboardContentWrapper>
+        )}
+        {renderNewUserTour()}
+      </DashboardViewWrapper>
+    </ColumnsConfigProvider>
   );
 };
 

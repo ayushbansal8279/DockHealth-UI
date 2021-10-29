@@ -8,6 +8,7 @@ import watchGlobalSearch from './sagas/global-search-saga';
 import watchTasklist from './sagas/task-list-saga';
 import watchTaskTemplate from './sagas/task-template-saga';
 import watchTask from './sagas/task-saga';
+import watchTaskDrawer from './sagas/task-drawer-saga';
 import watchTemplateBundle from './sagas/template-bundle-saga';
 import watchOrganization from './sagas/organization-saga';
 import watchUserGroups from './sagas/user-groups-saga';
@@ -28,6 +29,7 @@ function* rootSaga() {
     watchOrganization(),
     watchUserGroups(),
     watchUser(),
+    watchTaskDrawer(),
     watchUserDetails(),
   ]);
 }

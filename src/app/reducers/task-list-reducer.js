@@ -124,26 +124,17 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
     case UPDATE_LIST_VIEW_SETUP: {
-      const {
-        setup,
-        taskListIdentifier,
-        currentUserIdentifier,
-      } = action.payload;
+      const { setup, currentUserIdentifier } = action.payload;
       return {
         ...state,
-        taskLists: [
-          ...state.taskLists.map(list => {
-            if (list.taskListIdentifier === taskListIdentifier) {
-              const newListUsers = list.listUsers.map(user =>
-                user.identifier === currentUserIdentifier
-                  ? { ...user, displayOptions: setup }
-                  : user,
-              );
-              return { ...list, listUsers: newListUsers };
-            }
-            return list;
-          }),
-        ],
+        currentTaskList: {
+          ...state.currentTaskList,
+          listUsers: state.currentTaskList.listUsers.map(user =>
+            user.identifier === currentUserIdentifier
+              ? { ...user, displayOptions: setup }
+              : user,
+          ),
+        },
       };
     }
     case UPDATE_LIST_COLUMNS_DISPLAY_SETUP: {

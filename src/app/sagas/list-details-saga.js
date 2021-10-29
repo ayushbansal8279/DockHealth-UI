@@ -47,6 +47,8 @@ import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
+import * as CustomFieldsApi from 'api/custom-fields-api';
+import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
@@ -781,6 +783,39 @@ function* applyTaskTemplate({
   }
 }
 
+function* getListCustomFields({ taskListIdentifier }) {
+  try {
+    const listCustomFields = yield call(
+      CustomFieldsApi.getAllTaskListCustomFields,
+      taskListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.GET_LIST_CUSTOM_FIELDS_SUCCESS,
+      listCustomFields,
+    });
+  } catch {
+    yield put({ type: ActionTypes.GET_LIST_CUSTOM_FIELDS_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* updateListCustomFieldsSetup({ setup }) {
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield call(
+      TaskListApi.updateUserCustomFieldsOptionsListViewSetup,
+      setup,
+      taskListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP_FAILURE });
+  }
+}
+
 export default function* watchTasksGroupsList() {
   yield takeEvery(ActionTypes.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
@@ -799,6 +834,7 @@ export default function* watchTasksGroupsList() {
     ActionTypes.FILTER__LIST_DETAILS_TASKS,
     doFilterListDetailsTasks,
   );
+  yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
@@ -817,5 +853,9 @@ export default function* watchTasksGroupsList() {
     500,
     DO_FETCH_TASKS_BY_SEARCHED_TERM,
     doFetchTasksBySearchedTerm,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP,
+    updateListCustomFieldsSetup,
   );
 }

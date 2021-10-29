@@ -57,3 +57,8 @@ export const isFetchingOrganizationUsersSelector = createSelector(
   organizationStateSelector,
   prop('isFetchingOrganizationUsers'),
 );
+
+export const organizationCustomFieldsSelector = createSelector(
+  organizationStateSelector,
+  prop('organizationCustomFields'),
+);

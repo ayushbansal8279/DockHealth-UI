@@ -19,7 +19,6 @@ import { showAlert } from 'helpers/utility-functions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-// eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
@@ -37,6 +36,7 @@ import { MoreVert } from '@material-ui/icons';
 import zIndex from 'styles/z-index';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
@@ -53,6 +53,7 @@ import {
   LeftContainer,
 } from './styled';
 import { TABS_CONFIG } from './config';
+import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const INBOX_FIRST_TIME_KEY = 'INBOX_FIRST_TIME_KEY';
 
@@ -110,15 +111,15 @@ const Toolbar = ({
   tipsContent,
   isFetching,
   moreOptions,
-  columnsOptions = {},
+  onColumnSetupChange,
 }) => {
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
   const menuReference = useRef(null);
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
+  const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const [menuOpen, , unsetMenuOpen, toggleMenuOpen] = useBoolean(false);
-  const { columnsConfig, setColumnsConfig } = columnsOptions;
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
@@ -170,6 +171,15 @@ const Toolbar = ({
     taskList?.listType === 'INBOX' || taskList?.listType === 'PUBLIC'
       ? false
       : showNotifications;
+
+  const handleAddCustomFieldClick = useCallback(() => {
+    setCustomFieldsModalOpened(true);
+  }, []);
+
+  const currentUser = useSelector(userProfileSelector);
+  const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+  const isListCreator =
+    taskList?.creator?.identifier === currentUser.identifier;
 
   return (
     <ToolbarContainer>
@@ -289,6 +299,11 @@ const Toolbar = ({
           listNameColumnVisible={listNameColumnVisible}
           patientColumnVisible={patientColumnVisible}
           pdfTitle={pdfTitle}
+          onAddCustomFieldsClick={
+            isOrganizationAdmin || isListCreator
+              ? handleAddCustomFieldClick
+              : null
+          }
         />
       </Grid>
       {(haveTasks ||
@@ -336,12 +351,7 @@ const Toolbar = ({
             </>
           )}
           <LeftContainer>
-            {columnsConfig && (
-              <ColumnDisplaySettings
-                columnsConfig={columnsConfig}
-                onClickCheckbox={setColumnsConfig}
-              />
-            )}
+            <ColumnDisplaySettings onChange={onColumnSetupChange} />
             {moreOptions && (
               <>
                 <Spacing horizontal={3} />
@@ -401,6 +411,13 @@ const Toolbar = ({
           </ClickAwayListener>
         </TipsPopover>
       )}
+      <TaskCustomFieldsModal
+        opened={customFieldsModalOpened}
+        handleClose={() => setCustomFieldsModalOpened(false)}
+        taskListIdentifier={taskList?.taskListIdentifier}
+        isOrganizationAdmin={isOrganizationAdmin}
+        isListCreator={isListCreator}
+      />
     </ToolbarContainer>
   );
 };

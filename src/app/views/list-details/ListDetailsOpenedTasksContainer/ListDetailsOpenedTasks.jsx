@@ -54,7 +54,6 @@ const ListDetailsOpenedTasks = ({
   onSortChange,
   resetSort,
   viewSetup,
-  displayColumnPreferences,
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
@@ -167,7 +166,6 @@ const ListDetailsOpenedTasks = ({
         )
         .map(({ groupName, taskGroupIdentifier, metricValue }, i) => (
           <TasksGroup
-            taskItemConfig={displayColumnPreferences}
             key={taskGroupIdentifier}
             isDefaultGroup={groupName === 'DEFAULT'}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
@@ -260,7 +258,6 @@ const ListDetailsOpenedTasks = ({
                                 <>
                                   {task?.itemType === TaskItemType.TASK ? (
                                     <StandardTaskItem
-                                      taskItemConfig={displayColumnPreferences}
                                       key={task.identifier}
                                       isFullView={isFullView}
                                       isDragging={isDragging}
@@ -348,7 +345,6 @@ const ListDetailsOpenedTasks = ({
       isSearchApplied,
       areFiltersApplied,
       groupedTasks,
-      displayColumnPreferences,
       editGroupName,
       quickAddTask,
       deleteGroup,

@@ -15,27 +15,16 @@ import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
 import {
   initializeTaskListState,
   updateUserListViewSetup,
   updateColumnOnListPreferences,
 } from 'actions/task-list-actions';
-import {
-  TaskStatus,
-  TaskItemColumn,
-  TASK_ITEM_BASE_COLUMN_CONFIG,
-} from 'helpers/task-helpers';
+import { updateOrganizationCustomFields } from 'actions/organization-actions';
+
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
-
-import {
-  currentTaskListSelector,
-  pendingTaskListsSelector,
-  taskListMembersSelector,
-  archivedTaskListsSelector,
-} from 'selectors/task-list-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
@@ -44,15 +33,24 @@ import {
   taskDetailsSortSelector,
   taskCountersSelector,
 } from 'selectors/list-details-selectors';
+import {
+  currentTaskListSelector,
+  pendingTaskListsSelector,
+  taskListMembersSelector,
+  archivedTaskListsSelector,
+} from 'selectors/task-list-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import * as TemplateActions from 'actions/template-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
+import { getListCustomFields } from 'actions/list-details-actions';
 import * as UserAuthApi from 'api/user-auth-api';
-
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
@@ -61,7 +59,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   const sort = useSelector(taskDetailsSortSelector);
   const taskList = useSelector(currentTaskListSelector);
   const { listName, listDescription } = taskList || {};
-
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -95,13 +93,15 @@ const initializeListDetailsViewHooks = (match, history) => {
   const [channel, setChannel] = useState(null);
 
   const dispatch = useDispatch();
-
   const {
     params: { taskListIdentifier: taskListIdentifierParam },
   } = match;
 
   useEffect(() => {
     dispatch(initializeTaskListState(taskListIdentifierParam));
+    if (taskListIdentifierParam) {
+      dispatch(getListCustomFields(taskListIdentifierParam));
+    }
   }, [dispatch, taskListIdentifierParam]);
 
   useEffect(() => {
@@ -592,30 +592,10 @@ const initializeListDetailsViewHooks = (match, history) => {
     return () => {};
   }, [currentUserIdentifier]);
 
-  const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
-    [TaskItemColumn.WORKFLOW_STATUS]: false,
-    [TaskItemColumn.ASSIGNED]: false,
-    [TaskItemColumn.ACTIVITY]: false,
-    [TaskItemColumn.DUE_DATE]: false,
-    [TaskItemColumn.PATIENT]: false,
-  };
-
   const VIEW_LIST_OPTIONS_CONFIG = {
     SHOW_WORKFLOW_DETAILS: false,
     SHOW_WORKFLOW_COMPLETED_TASKS: false,
   };
-
-  const displayColumnPreferences = useMemo(() => {
-    const { displayColumns = [] } =
-      taskList?.listUsers?.find(
-        user => user.identifier === currentUserIdentifier,
-      ) || {};
-
-    return displayColumns.reduce(
-      (accumulator, value) => ({ ...accumulator, [value]: true }),
-      DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
-    );
-  }, [DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG, currentUserIdentifier, taskList]);
 
   const displayListPreferences = useMemo(() => {
     const { displayOptions = [] } =
@@ -630,26 +610,52 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
 
   const setDisplayColumnPreferences = useCallback(
-    columnKey => {
-      const newConfig = {
-        ...displayColumnPreferences,
-        [columnKey]: !displayColumnPreferences[columnKey],
-      };
-      const parsedConfig = Object.entries(newConfig).reduce(
-        (accumulator, [key, value]) =>
-          value ? [...accumulator, key] : accumulator,
-        [],
-      );
-      dispatch(
-        updateColumnOnListPreferences(
-          parsedConfig,
-          taskList.taskListIdentifier,
-          currentUserIdentifier,
-        ),
-      );
+    (newConfig, options) => {
+      if (options?.isCustomColumn) {
+        dispatch(
+          updateOrganizationCustomFields(
+            newConfig.filter(f => f.isChecked).map(f => f.identifier),
+          ),
+        );
+      } else {
+        const parsedConfig = Object.entries(newConfig).reduce(
+          (accumulator, [key, value]) =>
+            value ? [...accumulator, key] : accumulator,
+          [],
+        );
+        dispatch(
+          updateColumnOnListPreferences(
+            parsedConfig,
+            taskList.taskListIdentifier,
+            currentUserIdentifier,
+          ),
+        );
+      }
     },
-    [currentUserIdentifier, dispatch, displayColumnPreferences, taskList],
+    [currentUserIdentifier, dispatch, taskList],
   );
+
+  const CONFIGURABLE_COLUMNS_CONFIG = {
+    [TaskItemColumn.WORKFLOW_STATUS]: false,
+    [TaskItemColumn.ASSIGNED]: false,
+    [TaskItemColumn.ACTIVITY]: false,
+    [TaskItemColumn.DUE_DATE]: false,
+    [TaskItemColumn.PATIENT]: false,
+  };
+
+  useEffect(() => {
+    const { displayColumns = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
+    const transformedColumnsPreference = displayColumns.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      { ...columnsConfig, ...CONFIGURABLE_COLUMNS_CONFIG },
+    );
+    setColumnsConfig(transformedColumnsPreference);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserIdentifier, setColumnsConfig, taskList]);
 
   const setDisplayListPreferences = useCallback(
     columnKey => {
@@ -676,16 +682,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       taskListIdentifier,
       currentUserIdentifier,
     ],
-  );
-
-  const DASHBOARD_BASE_COLUMNS_CONFIG = {
-    ...TASK_ITEM_BASE_COLUMN_CONFIG,
-    [TaskItemColumn.LIST_NAME]: true,
-  };
-
-  const mergedColumnsConfig = useMemo(
-    () => ({ ...DASHBOARD_BASE_COLUMNS_CONFIG, ...displayColumnPreferences }),
-    [DASHBOARD_BASE_COLUMNS_CONFIG, displayColumnPreferences],
   );
 
   return {
@@ -723,10 +719,8 @@ const initializeListDetailsViewHooks = (match, history) => {
     taskListIdentifier,
     toggleTaskCompletedStatus,
     displayListPreferences,
-    displayColumnPreferences,
-    setDisplayColumnPreferences,
     setDisplayListPreferences,
-    mergedColumnsConfig,
+    setDisplayColumnPreferences,
   };
 };
 

@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
@@ -19,6 +19,9 @@ import { completeTasksVisibilitySelector } from 'selectors/patient-details-selec
 import { togglePatientCompleteTasksVisible } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import { userSetupClientViewSelector } from 'selectors/user-selectors';
+import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
+import Spacing from 'components/common/Spacing';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
@@ -125,6 +128,31 @@ const TaskListToolbar = props => {
     },
   ];
 
+  const onClickCheckbox = useCallback(
+    (newConfig, options) => {
+      if (options?.isCustomColumn) {
+        dispatch(
+          updateCurrentUserPreferences({
+            customFieldDisplayColumns: newConfig
+              .filter(f => f.isChecked)
+              .map(f => f.identifier),
+          }),
+        );
+      } else {
+        dispatch(
+          updateCurrentUserPreferences({
+            displayColumns: Object.entries(newConfig).reduce(
+              (accumulator, [key, value]) =>
+                value ? [...accumulator, key] : accumulator,
+              [],
+            ),
+          }),
+        );
+      }
+    },
+    [dispatch],
+  );
+
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
@@ -147,6 +175,8 @@ const TaskListToolbar = props => {
           />
         )}
       </ListsTabsContainer>
+      <Spacing horizontal={4} />
+      <ColumnDisplaySettings onChange={onClickCheckbox} />
       <IconButton ref={menuReference} onClick={toggleMenuOpen}>
         <MoreVert />
       </IconButton>

@@ -60,6 +60,13 @@ export function requestAllListDetailsGroups() {
   };
 }
 
+export function getListCustomFields(taskListIdentifier) {
+  return {
+    type: ActionTypes.GET_LIST_CUSTOM_FIELDS,
+    taskListIdentifier,
+  };
+}
+
 export function applyTaskTemplate({
   taskTemplateIdentifier,
   taskListIdentifier,

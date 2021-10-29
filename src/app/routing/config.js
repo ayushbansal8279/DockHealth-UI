@@ -21,7 +21,7 @@ import SelfEnrolledUser from 'views/auth/SelfEnrolledUser';
 import UnEnrolledUser from 'views/auth/UnEnrolledUser';
 import ApproveDisapproveUser from 'views/auth/ApproveDisapproveUser';
 import ErrorPage from 'views/ErrorPage';
-import ListDetailsView from 'views/list-details/ListDetailsView';
+import ListDetailsView from 'views/list-details/ListDetailsViewContainer';
 import OnboardingBaaCheckView from 'views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from 'views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from 'views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';

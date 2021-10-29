@@ -12,6 +12,11 @@ export const taskIsSelectedSelector = createSelector(
   ({ selectedTask }) => !!selectedTask,
 );
 
+export const taskCustomFieldsSelector = createSelector(
+  taskDrawerSelector,
+  ({ customFields }) => customFields,
+);
+
 export const selectedTaskIdentifierSelector = createSelector(
   taskDrawerSelector,
   ({ selectedTask }) => selectedTask?.taskIdentifier,

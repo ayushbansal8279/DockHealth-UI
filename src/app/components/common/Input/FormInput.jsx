@@ -43,7 +43,7 @@ const FormInput = React.forwardRef(
       <InputComponent
         ref={reference}
         name={name}
-        value={value}
+        value={value ?? ''}
         onChange={handleChange}
         error={error}
         onKeyUp={() => clearError(name)}

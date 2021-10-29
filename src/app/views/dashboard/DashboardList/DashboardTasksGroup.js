@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable sonarjs/no-duplicated-branches */
 import React, {
   useState,
   useEffect,
@@ -69,7 +68,6 @@ const DashboardTasksGroup = ({
   showClearSortFiltersModal,
   isSortApplied,
   isAllTasksTab,
-  columnsConfig,
   updateDueDate,
   currentUser,
   onTaskUpdate,
@@ -197,7 +195,6 @@ const DashboardTasksGroup = ({
             )}
             <TasksHeader
               bulkEditEnabled
-              taskItemConfig={columnsConfig}
               isGroupSelected={isGroupSelected}
               onGroupSelect={handleGroupSelect}
               sort={currentSort}
@@ -275,7 +272,6 @@ const DashboardTasksGroup = ({
                                   currentUser={currentUser}
                                   onTaskUpdate={onTaskUpdate}
                                   updateWorkflowStatus={updateWorkflowStatus}
-                                  taskItemConfig={columnsConfig}
                                   multipleAssigneesContext={
                                     groupHasMultipleAssignees
                                   }

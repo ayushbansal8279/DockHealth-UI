@@ -30,3 +30,12 @@ export const archivedTaskListsSelector = createSelector(
   taskListStateSelector,
   ({ archivedTaskLists }) => archivedTaskLists,
 );
+
+export const currentTaskListCustomFieldsPreferencesSelector = identifier => {
+  return createSelector(
+    taskListStateSelector,
+    ({ currentTaskList }) =>
+      currentTaskList?.listUsers.find(u => u.identifier === identifier)
+        ?.customFieldDisplayColumns,
+  );
+};

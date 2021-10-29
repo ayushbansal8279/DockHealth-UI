@@ -27,6 +27,8 @@ import {
   UPDATE_ORGANIZATION_STATUS,
   GET_ORGANIZATION_USERS_SUCCESS,
   GET_ORGANIZATION_USERS,
+  GET_ORGANIZATION_CUSTOM_FIELDS_SUCCESS,
+  GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE,
   UPDATE_SUBSCRIPTION_PLAN_SUCCESS,
   UPDATE_SUBSCRIPTION_PLAN,
   UPDATE_SUBSCRIPTION_PLAN_FAILURE,
@@ -51,11 +53,25 @@ const initialState = {
   newPaymentPlan: null,
   isFetchingOrganizationUsers: false,
   organizationUsers: null,
+  organizationCustomFields: [],
+  organizationCustomFieldsSetup: [],
   isSavingNewPlan: false,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case GET_ORGANIZATION_CUSTOM_FIELDS_SUCCESS: {
+      const { organizationCustomFields } = action;
+      return {
+        ...state,
+        organizationCustomFields,
+      };
+    }
+    case GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE:
+      return {
+        ...state,
+        organizationCustomFields: [],
+      };
     case REQUEST_SAVE_BILLING_DETAILS:
     case REQUEST_GET_ORGANIZATION: {
       return {

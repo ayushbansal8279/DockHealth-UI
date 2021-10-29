@@ -8,6 +8,9 @@ import {
   TASK_READ_SUCCESS,
   SET_TASK_DRAWER_STATE,
   OPEN_TASK_DRAWER_WITH_CONTENT,
+  GET_TASK_CUSTOM_FIELDS,
+  GET_TASK_CUSTOM_FIELDS_SUCCESS,
+  GET_TASK_CUSTOM_FIELDS_FAILURE,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -23,6 +26,10 @@ const initialState = {
   addingNewTask: false,
   open: false,
   focusField: null,
+  customFields: {
+    isFetching: false,
+    templates: [],
+  },
 };
 
 const requestHistory = state => ({ ...state, isHistoryFetching: true });
@@ -113,6 +120,28 @@ const TaskReducer = (state = initialState, action) => {
         focusField,
         selectedTask: task,
         selectedTaskId: task != null ? task.taskIdentifier : null,
+      };
+    }
+    case GET_TASK_CUSTOM_FIELDS: {
+      return {
+        ...state,
+        customFields: { ...state.customFields, isFetching: true },
+      };
+    }
+    case GET_TASK_CUSTOM_FIELDS_SUCCESS: {
+      return {
+        ...state,
+        customFields: {
+          ...state.customFields,
+          isFetching: false,
+          templates: action.customFieldsList,
+        },
+      };
+    }
+    case GET_TASK_CUSTOM_FIELDS_FAILURE: {
+      return {
+        ...state,
+        customFields: { ...state.customFields, isFetching: false },
       };
     }
 

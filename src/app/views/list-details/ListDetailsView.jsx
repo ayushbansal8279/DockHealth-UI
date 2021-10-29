@@ -48,10 +48,8 @@ const ListDetailsView = props => {
     taskListIdentifier,
     toggleTaskCompletedStatus,
     displayListPreferences,
-    displayColumnPreferences,
-    setDisplayColumnPreferences,
     setDisplayListPreferences,
-    mergedColumnsConfig,
+    setDisplayColumnPreferences,
   } = initializeListDetailsViewHooks(match, history);
 
   return (
@@ -64,10 +62,7 @@ const ListDetailsView = props => {
       <div>
         <TaskViewContainer>
           <Toolbar
-            columnsOptions={{
-              columnsConfig: displayColumnPreferences,
-              setColumnsConfig: setDisplayColumnPreferences,
-            }}
+            onColumnSetupChange={setDisplayColumnPreferences}
             members={members}
             showMembers={taskList?.listType !== 'PUBLIC'}
             onSelectTab={navigateToTab}
@@ -124,8 +119,6 @@ const ListDetailsView = props => {
               loadMoreTasksForList={loadMoreTasksForList}
               sort={sort}
               onSortChange={listDetailsActions.sortListDetailsTasks}
-              columnsConfig={mergedColumnsConfig}
-              displayColumnPreferences={displayColumnPreferences}
             />
           ) : (
             <OpenedTasksView
@@ -147,8 +140,6 @@ const ListDetailsView = props => {
               taskCounters={taskCounters}
               loadTasksForTaskGroup={loadTasksForTaskGroup}
               resetSort={resetSort}
-              columnsConfig={mergedColumnsConfig}
-              displayColumnPreferences={displayColumnPreferences}
             />
           )}
         </TaskViewContainer>

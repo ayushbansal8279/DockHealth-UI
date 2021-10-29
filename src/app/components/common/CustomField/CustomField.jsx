@@ -16,10 +16,16 @@ const BOOL_SELECT_OPTIONS = [
   },
 ];
 
-const CustomField = ({ readOnly, field, initialValue }) => {
+const CustomField = ({
+  readOnly,
+  field,
+  initialValue,
+  onBlur,
+  fieldsGroupKey,
+}) => {
   const { identifier, name, placeholder, fieldType, options } = field;
 
-  const { setValue, watch } = useFormContext();
+  const { setValue } = useFormContext();
 
   const dropdownOptions = useMemo(
     () =>
@@ -30,14 +36,12 @@ const CustomField = ({ readOnly, field, initialValue }) => {
     [options],
   );
 
-  const fieldName = `patientMetaData.${identifier}`;
+  const fieldName = `${fieldsGroupKey}.${identifier}`;
 
   useEffect(() => {
     if (initialValue) setValue(fieldName, initialValue.value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const value = watch(fieldName);
 
   switch (fieldType) {
     case FieldType.TEXT:
@@ -47,7 +51,18 @@ const CustomField = ({ readOnly, field, initialValue }) => {
           label={name}
           name={fieldName}
           placeholder={placeholder}
-          multiline={readOnly && value}
+          onBlur={onBlur}
+        />
+      );
+    case FieldType.LONG_TEXT:
+      return (
+        <FormInput
+          readOnly={readOnly}
+          label={name}
+          name={fieldName}
+          placeholder={placeholder}
+          multiline
+          onBlur={onBlur}
         />
       );
     case FieldType.NUMBER:
@@ -58,6 +73,7 @@ const CustomField = ({ readOnly, field, initialValue }) => {
           label={name}
           name={fieldName}
           placeholder={placeholder}
+          onBlur={onBlur}
         />
       );
     case FieldType.BOOL:
@@ -68,6 +84,7 @@ const CustomField = ({ readOnly, field, initialValue }) => {
           options={BOOL_SELECT_OPTIONS}
           name={fieldName}
           placeholder={placeholder}
+          onBlur={onBlur}
         />
       );
     case FieldType.DATE:
@@ -78,6 +95,7 @@ const CustomField = ({ readOnly, field, initialValue }) => {
           placeholder="MM/DD/YYYY"
           inputComponent={DateInput}
           name={fieldName}
+          onBlur={onBlur}
         />
       );
     case FieldType.DROPDOWN:
@@ -87,6 +105,7 @@ const CustomField = ({ readOnly, field, initialValue }) => {
           label={name}
           options={dropdownOptions}
           name={fieldName}
+          onBlur={onBlur}
         />
       );
     default:
