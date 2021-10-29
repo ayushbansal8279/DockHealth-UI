@@ -155,7 +155,7 @@ const SubscriptionsView = () => {
       newPlan.professionalServicesIncluded = selectedProfessionalServices;
     }
 
-    if (!isPlanTrial(subscriptionDetails)) {
+    if (isPlanTrial(subscriptionDetails)) {
       dispatch(
         setPaymentNewPlan({
           newPlan,
