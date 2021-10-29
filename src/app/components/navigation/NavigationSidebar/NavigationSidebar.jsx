@@ -2,7 +2,12 @@ import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { TASK_TEMPLATES_PATH, USERS_PATH } from 'routing/helpers/paths';
+import {
+  TASK_TEMPLATES_PATH,
+  USERS_PATH,
+  SUBS_SETTINGS_PATH,
+  USERS_SETTINGS_PATH,
+} from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -211,7 +216,11 @@ const NavigationSidebar = ({
                   subMenuKey={SubmenuKey.SETTINGS}
                   icon={SettingsIcon}
                   subMenuOpen={openedSubMenuKey === SubmenuKey.SETTINGS}
-                  path={['/settings/billing', '/settings/subscriptions']}
+                  path={[
+                    '/settings/billing',
+                    SUBS_SETTINGS_PATH,
+                    USERS_SETTINGS_PATH,
+                  ]}
                   onItemClick={handleNavigationItemClick}
                 />
               </div>

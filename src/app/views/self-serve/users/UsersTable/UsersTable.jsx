@@ -1,59 +1,57 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
-import { func } from 'prop-types';
 import { filter, includes, isEmpty, reject } from 'ramda';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import Spacing from 'components/common/Spacing.tsx';
 import Search from 'components/task-view/Search/Search';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import Button from 'components/common/Button/Button';
-import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
-import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
+import { UserSubscriptionStatus } from 'helpers/subscription-helper';
+import { UserOrganizationRole, UserStatus } from 'helpers/user-helper';
+import InviteButton from '../InviteButton/InviteButton';
+import SubscriptionStatusSwitcher from '../SubscriptionStatusSwitcher/SubscriptionStatusSwitcher';
+import UserTypeOptions from '../UserTypeOptions/UserTypeOptions';
+import EmptyOrganizationMemberRow from '../EmptyOrganizationMemberRow/EmptyOrganizationMemberRow';
+import initializeMembersTableHooks from './hooks';
+import { getUserTypeLabel } from '../helpers';
 import {
-  MembersTableContainer,
-  MemberTable,
+  StyledUsersTable,
+  UsersTableContainer,
   ListLoaderContainer,
-} from './SubscriptionsView.MembersTable.Styled';
-import SubscriptionStatusSwitcher, {
-  USER_SUBSCRIPTION_STATUS,
-} from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
-import MemberTypeOptions from './SubscriptionsView.MemberTypeOptions';
-import EmptyOrganizationMemberRow from './EmptyOrganizationMemberRow/EmptyOrganizationMemberRow';
-import { getUserTypeLabel } from './SubscriptionsView.MembersTable.helpers';
-import { StyledDataGrid } from './data-grid-styles';
+  StyledDataGrid,
+} from './styled';
 
-const getFilteredOrganizationMembers = ({
-  organizationMembers,
+const getFilteredOrganizationUsers = ({
+  organizationUsers,
   selectedUsers,
   userSubscriptionStatus,
   currentSearch,
 }) => {
-  let filteredOrganizationMembers;
+  let filteredOrganizationUsers;
 
   switch (userSubscriptionStatus) {
-    case USER_SUBSCRIPTION_STATUS.SUBSCRIBED:
-      filteredOrganizationMembers = filter(
+    case UserSubscriptionStatus.SUBSCRIBED:
+      filteredOrganizationUsers = filter(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
-        organizationMembers,
+        organizationUsers,
       );
       break;
-    case USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED:
-      filteredOrganizationMembers = reject(
+    case UserSubscriptionStatus.UNSUBSCRIBED:
+      filteredOrganizationUsers = reject(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
-        organizationMembers,
+        organizationUsers,
       );
       break;
     default:
-      filteredOrganizationMembers = organizationMembers;
+      filteredOrganizationUsers = organizationUsers;
       break;
   }
 
   return currentSearch
-    ? filteredOrganizationMembers.filter(memberData => {
+    ? filteredOrganizationUsers.filter(memberData => {
         const { firstName, lastName, email } = new Proxy(memberData || {}, {
           get(target, path) {
             return target[path]?.toLowerCase() ?? '';
@@ -64,15 +62,7 @@ const getFilteredOrganizationMembers = ({
           value.includes(currentSearch.toLowerCase()),
         );
       })
-    : filteredOrganizationMembers;
-};
-
-const getTrialPlanPricePerUser = ({ planIsTrial, planPricePerUser }) => {
-  if (planIsTrial) {
-    return '';
-  }
-
-  return `${planPricePerUser}/month`;
+    : filteredOrganizationUsers;
 };
 
 const renderListNames = listNames => {
@@ -102,42 +92,26 @@ const renderColumnHeader = props => {
   );
 };
 
-const SubscriptionsViewMembersTable = ({
-  selectedUsers,
-  setSelectedUsers,
-  getAllUsers = () => {},
+const UsersTable = ({
   showJoined = true,
   showSubscription = true,
   showTableHeader = true,
-  chosenSubscriptionPlan,
-  userSubscriptionStatus = USER_SUBSCRIPTION_STATUS.ALL,
-  setUserSubscriptionStatus = () => {},
-  subscriptionPlanData,
-  plansViewVisible,
-  buyButtonDisabled,
-  onClickBuyButton,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
+    selectedUsers,
     currentBreakPoint,
-    organizationMembers,
+    organizationUsers,
     isFetching,
     toggleSelectedUser,
     isUserSelected,
     currentSearch,
     setCurrentSearch,
-  } = initializeMembersTableHooks({
-    setSelectedUsers,
-    selectedUsers,
     getAllUsers,
-  });
-
-  const { planPricePerUser, planIsTrial } = subscriptionPlanData || {};
-
-  const trialPlanPricePerUser = getTrialPlanPricePerUser({
-    planIsTrial,
-    planPricePerUser,
-  });
+  } = initializeMembersTableHooks();
+  const [userSubscriptionStatus, setUserSubscriptionStatus] = useState(
+    UserSubscriptionStatus.ALL,
+  );
 
   const columns = useMemo(
     () => [
@@ -178,15 +152,13 @@ const SubscriptionsViewMembersTable = ({
           const key = `${firstName}${lastName}${userIdentifier}${email}`;
 
           return (
-            <MemberTypeOptions
+            <UserTypeOptions
               key={key}
               toggleSelectedUser={toggleSelectedUser}
               isUserSelected={isUserSelected}
               showJoined={showJoined}
               showSubscription={showSubscription}
-              chosenSubscriptionPlan={chosenSubscriptionPlan}
-              subscriptionPlanData={subscriptionPlanData}
-              organizationMembers={organizationMembers}
+              organizationMembers={organizationUsers}
               isInvited={userStatus === 'INVITED'}
               userIdentifier={userIdentifier}
               selectedUsers={selectedUsers}
@@ -333,51 +305,48 @@ const SubscriptionsViewMembersTable = ({
           const { orgUserRole, userStatus } = row;
 
           if (
-            orgUserRole !== 'GUEST' &&
-            userStatus !== 'PENDING' &&
-            userStatus !== 'CANCELLED' &&
-            userStatus !== 'INACTIVE' &&
+            orgUserRole !== UserOrganizationRole.GUEST &&
+            userStatus !== UserStatus.PENDING &&
+            userStatus !== UserStatus.CANCELLED &&
+            userStatus !== UserStatus.INACTIVE &&
             showSubscription
           ) {
-            return <span>{trialPlanPricePerUser}</span>;
+            return <span>Subscribed</span>;
           }
 
-          return <span />;
+          return <span>Free</span>;
         },
       },
     ],
     [
-      chosenSubscriptionPlan,
       isUserSelected,
-      organizationMembers,
+      organizationUsers,
       selectedUsers,
       showJoined,
       showSubscription,
-      subscriptionPlanData,
       toggleSelectedUser,
-      trialPlanPricePerUser,
     ],
   );
 
   const isSmallScreen = currentBreakPoint === 'sm';
-  const filteredOrganizationMembers = getFilteredOrganizationMembers({
-    organizationMembers,
+  const filteredOrganizationUsers = getFilteredOrganizationUsers({
+    organizationUsers,
     selectedUsers,
     userSubscriptionStatus,
     currentSearch,
   });
 
-  const filteredOrganizationMembersWithId = useMemo(
+  const filteredOrganizationUsersWithId = useMemo(
     () =>
-      filteredOrganizationMembers.map(member => ({
+      filteredOrganizationUsers.map(member => ({
         id: member.userIdentifier,
         ...member,
       })),
-    [filteredOrganizationMembers],
+    [filteredOrganizationUsers],
   );
 
   return (
-    <MembersTableContainer>
+    <UsersTableContainer>
       {isFetching ? (
         <ListLoaderContainer>
           <ListSkeletonLoader header />
@@ -413,28 +382,16 @@ const SubscriptionsViewMembersTable = ({
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
                 />
-                {plansViewVisible && (
-                  <>
-                    <Spacing horizontal={5} />
-                    <Button
-                      width="300px"
-                      disabled={buyButtonDisabled}
-                      onClick={onClickBuyButton}
-                    >
-                      Buy this plan
-                    </Button>
-                  </>
-                )}
               </Grid>
             </Grid>
           )}
-          <MemberTable isSmallScreen={isSmallScreen}>
-            {isEmpty(filteredOrganizationMembers) ? (
+          <StyledUsersTable isSmallScreen={isSmallScreen}>
+            {isEmpty(filteredOrganizationUsers) ? (
               <EmptyOrganizationMemberRow />
             ) : (
               <StyledDataGrid
                 columns={columns}
-                rows={filteredOrganizationMembersWithId}
+                rows={filteredOrganizationUsersWithId}
                 rowHeight={35}
                 headerHeight={45}
                 hideFooterSelectedRowCount
@@ -443,15 +400,11 @@ const SubscriptionsViewMembersTable = ({
                 disableSelectionOnClick
               />
             )}
-          </MemberTable>
+          </StyledUsersTable>
         </>
       )}
-    </MembersTableContainer>
+    </UsersTableContainer>
   );
 };
 
-SubscriptionsViewMembersTable.propTypes = {
-  setSelectedUsers: func.isRequired,
-};
-
-export default SubscriptionsViewMembersTable;
+export default UsersTable;

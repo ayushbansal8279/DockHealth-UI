@@ -53,6 +53,13 @@ export const saveBillingDetails = (billingData, cardToken) => dispatch => {
     });
 };
 
+export function updateSubscriptionDetails(newPlan) {
+  return {
+    type: ActionTypes.UPDATE_SUBSCRIPTION_PLAN,
+    newPlan,
+  };
+}
+
 export const getBillingEstimate = ({
   subscriptionPlan,
   billingFrequency,
@@ -145,12 +152,6 @@ export const updateOrganization = ({
         organizationName,
       },
     });
-  });
-
-export const selectUsersForPlan = ({ users }) => dispatch =>
-  dispatch({
-    type: ActionTypes.SELECT_USERS_FOR_PLAN,
-    payload: users,
   });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping

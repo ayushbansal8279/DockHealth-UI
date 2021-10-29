@@ -1,10 +1,27 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable unicorn/filename-case */
 import styled from 'styled-components';
 import { DataGrid } from '@material-ui/data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
+
+export const UsersTableContainer = styled.div`
+  margin-top: 1rem;
+  width: 100%;
+`;
+
+export const StyledUsersTable = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+
+  & > div {
+    height: initial !important;
+    width: initial !important;
+  }
+`;
+
+export const ListLoaderContainer = styled.div`
+  margin: 38px auto 16px auto;
+`;
 
 export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
@@ -28,7 +45,7 @@ export const StyledDataGrid = styled(DataGrid)`
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
-    padding-left: ${spacing.large} !important;
+    padding-left: 24px !important;
   }
 
   .MuiDataGrid-colCell {
@@ -51,7 +68,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
     &:only-child {
       order: 1;
-      padding-left: ${spacing.large};
+      padding-left: 24px;
     }
   }
 

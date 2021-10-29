@@ -19,7 +19,6 @@ import {
   SAVE_BILLING_DETAILS_SUCCESS,
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
-  SELECT_USERS_FOR_PLAN,
   SET_FETCHING_ORGANIZATION_STATUSES,
   SET_ORGANIZATION_STATUSES,
   SET_ORGANIZATION_STATUSES_ERROR,
@@ -28,6 +27,9 @@ import {
   UPDATE_ORGANIZATION_STATUS,
   GET_ORGANIZATION_USERS_SUCCESS,
   GET_ORGANIZATION_USERS,
+  UPDATE_SUBSCRIPTION_PLAN_SUCCESS,
+  UPDATE_SUBSCRIPTION_PLAN,
+  UPDATE_SUBSCRIPTION_PLAN_FAILURE,
 } from 'actions/action-types';
 
 const initialState = {
@@ -47,9 +49,9 @@ const initialState = {
   requestErrorBillingDetails: null,
   requestErrorInvoiceDetails: null,
   newPaymentPlan: null,
-  currentUsers: null,
   isFetchingOrganizationUsers: false,
   organizationUsers: null,
+  isSavingNewPlan: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -122,6 +124,34 @@ const reducer = (state = initialState, action) => {
       };
     }
 
+    case UPDATE_SUBSCRIPTION_PLAN: {
+      return {
+        ...state,
+        isSavingNewPlan: true,
+      };
+    }
+
+    case UPDATE_SUBSCRIPTION_PLAN_FAILURE: {
+      return {
+        ...state,
+        isSavingNewPlan: false,
+      };
+    }
+
+    case UPDATE_SUBSCRIPTION_PLAN_SUCCESS: {
+      return {
+        ...state,
+        isSavingNewPlan: false,
+        billingData: {
+          ...state.billingData,
+          subscriptionDetails: {
+            ...state.billingData.subscriptionDetails,
+            ...action.newPlan,
+          },
+        },
+      };
+    }
+
     case GET_INVOICE_DETAILS_SUCCESS: {
       return {
         ...state,
@@ -179,13 +209,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         organization: mergeDeepRight(state.organization, action.payload),
-      };
-    }
-
-    case SELECT_USERS_FOR_PLAN: {
-      return {
-        ...state,
-        currentUsers: action.payload,
       };
     }
 

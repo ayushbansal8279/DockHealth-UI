@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import Button from 'components/common/Button/Button';
 import TrialExpirationCover from 'img/modals/trial-expiration-cover.png';
 import CircleCompleted from 'img/circle-completed.svg';
@@ -41,7 +42,7 @@ const TrialExpirationModal = ({ closeModal }) => {
           </ModalContentItem>
         </div>
 
-        <Link to="/settings/subscriptions">
+        <Link to={SUBS_SETTINGS_PATH}>
           <Button color="primary-red" onClick={closeModal} size="small">
             SUBSCRIBE
           </Button>

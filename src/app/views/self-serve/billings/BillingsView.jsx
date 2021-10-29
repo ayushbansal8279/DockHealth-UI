@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { setHeader } from 'actions/template-actions';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   getBillingDetails,
   getInvoiceDetails,
@@ -107,7 +108,7 @@ const BillingsView = () => {
     unsetUpdatingBilling();
 
     if (history.location === '/settings/subscription-payment') {
-      history.push('/settings/subscriptions');
+      history.push(SUBS_SETTINGS_PATH);
     }
   };
 

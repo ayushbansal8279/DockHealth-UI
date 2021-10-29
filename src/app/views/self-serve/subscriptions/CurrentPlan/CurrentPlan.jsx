@@ -1,104 +1,109 @@
-import { Grid, Typography } from '@material-ui/core';
+import moment from 'moment';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
-import React, { Fragment } from 'react';
-import Loader from 'components/common/Loader/Loader';
-import Spacing from 'components/common/Spacing';
+import React from 'react';
+import {
+  isPlanTrial,
+  isPlanFree,
+  BillingFrequency,
+  priceFormatter,
+} from 'helpers/subscription-helper';
 import {
   themeMontserrat500,
   themeMontserrat600,
   themeMontserratNormal,
 } from 'styles/theme-montserrat';
-import { PlanColumnLink, PlanContainer, SwitchBillingLink } from './styled';
+import { PlanColumnLink, PlanContainer } from './styled';
 
-const AsyncElement = ({
-  ErrorElement = Fragment,
-  error,
-  children,
-  fetching,
-}) => {
-  if (fetching) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <ErrorElement />;
-  }
-
-  return children;
-};
-
-const CurrentPlan = ({
-  organizationRequestError,
-  isOrganizationFetching,
-  subscriptionPlanData,
-  showSubscriptionPlans,
-}) => {
+const CurrentPlan = ({ currentSubscriptionPlan }) => {
   const {
-    planName,
-    planSubscriptionPeriod,
-    planNextPaymentLabel,
-    planNextPaymentDate,
-    planPricePerUser,
-    planTotalPayment,
-    planIsTrial,
-    planIsFree,
+    activeUserCount,
+    annualEstimate,
+    monthlyEstimate,
+    subscriptionDetails,
+    monthlyPerUserCost,
+    nextBillingDate,
+  } = currentSubscriptionPlan;
+
+  const {
+    subscriptionPlanName,
     billingFrequency,
-    planIsMonthly,
-    planActiveUserCount,
-  } = subscriptionPlanData || {};
+    professionalServicesIncluded,
+    trialEndDate,
+  } = subscriptionDetails || {};
 
   return (
-    <AsyncElement
-      error={organizationRequestError}
-      fetching={isOrganizationFetching || !planName}
-    >
-      <PlanContainer>
-        <Grid container direction="column">
-          <ThemeProvider theme={themeMontserrat500}>
-            <Typography variant="h4">Your plan</Typography>
-          </ThemeProvider>
-          <ThemeProvider theme={themeMontserrat600}>
-            <Typography variant="h3">
-              <span>{planName}</span>
-              {!planIsTrial && <span> - {planPricePerUser}/user</span>}
+    <PlanContainer>
+      <Grid container direction="column">
+        <ThemeProvider theme={themeMontserrat500}>
+          <Typography variant="h4">Your plan</Typography>
+        </ThemeProvider>
+        <ThemeProvider theme={themeMontserrat600}>
+          <Typography variant="h3">
+            <span>{subscriptionPlanName}</span>
+            {!isPlanTrial(subscriptionDetails) && (
+              <span> - {priceFormatter(monthlyPerUserCost)}/user</span>
+            )}
+          </Typography>
+        </ThemeProvider>
+        {billingFrequency && (
+          <ThemeProvider theme={themeMontserratNormal}>
+            <Typography variant="h4">
+              {billingFrequency === BillingFrequency.MONTHLY
+                ? 'Monthly Billing'
+                : 'Annual Billing'}
             </Typography>
           </ThemeProvider>
-          {billingFrequency && (
-            <ThemeProvider theme={themeMontserratNormal}>
-              <Typography variant="h4">
-                <span>{planSubscriptionPeriod}</span>
-                {planIsMonthly && (
-                  <>
-                    <Spacing horizontal={4} />
-                    <SwitchBillingLink onClick={showSubscriptionPlans}>
-                      Switch to annual, save 25%
-                    </SwitchBillingLink>
-                  </>
+        )}
+        {professionalServicesIncluded && (
+          <ThemeProvider theme={themeMontserratNormal}>
+            <Box m={0.2} />
+            <Typography variant="h5">Professional services included</Typography>
+          </ThemeProvider>
+        )}
+      </Grid>
+      <Grid container direction="column" justify="flex-end">
+        {!isPlanFree(subscriptionDetails) && (
+          <ThemeProvider theme={themeMontserratNormal}>
+            <Typography variant="h6">
+              {isPlanTrial(subscriptionDetails) ? (
+                <>
+                  <span>Your trial period</span>
+                  {trialEndDate && (
+                    <span> ends on {moment(trialEndDate).format('L')}</span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span>Your next payment</span>
+                  {nextBillingDate && (
+                    <span>
+                      {' '}
+                      charged on {moment(nextBillingDate).format('L')}
+                    </span>
+                  )}
+                </>
+              )}
+            </Typography>
+            <Typography variant="h6">
+              <span>
+                {priceFormatter(
+                  billingFrequency === BillingFrequency.ANNUAL
+                    ? annualEstimate
+                    : monthlyEstimate,
                 )}
-              </Typography>
-            </ThemeProvider>
-          )}
-        </Grid>
-        <Grid container direction="column" justify="flex-end">
-          {!planIsFree && (
-            <ThemeProvider theme={themeMontserratNormal}>
-              <Typography variant="h6">
-                {planNextPaymentLabel} {planNextPaymentDate}
-              </Typography>
-              <Typography variant="h6">
-                <span>{planTotalPayment} </span>
-                {Boolean(planActiveUserCount) && (
-                  <span>({planActiveUserCount} users) </span>
-                )}
-                <PlanColumnLink to="/settings/billing">
-                  View billing
-                </PlanColumnLink>
-              </Typography>
-            </ThemeProvider>
-          )}
-        </Grid>
-      </PlanContainer>
-    </AsyncElement>
+              </span>
+              {Boolean(activeUserCount) && (
+                <span>({activeUserCount} users) </span>
+              )}
+              <PlanColumnLink to="/settings/billing">
+                View billing
+              </PlanColumnLink>
+            </Typography>
+          </ThemeProvider>
+        )}
+      </Grid>
+    </PlanContainer>
   );
 };
 

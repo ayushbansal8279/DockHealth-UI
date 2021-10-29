@@ -2,6 +2,7 @@ import { AppBar, Drawer as MaterialDrawer, Grid } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
 import Intercom from 'react-intercom';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
@@ -118,7 +119,7 @@ const NavigationHeader = ({
                     trialEndLabel}
                 </span>
                 {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
-                  <TrialBannerLink to="/settings/subscriptions">
+                  <TrialBannerLink to={SUBS_SETTINGS_PATH}>
                     {hasMinimalUsagePeriodPassed
                       ? 'Subscribe Now'
                       : 'Learn more'}

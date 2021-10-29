@@ -5,29 +5,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useToggle } from 'react-use';
 import { showGlobalAlert } from 'alert/actions';
 import {
-  isFetchingOrganizationUsersSelector,
-  organizationUsersSelector,
-} from 'selectors/organization-selectors';
-import {
   reactivateUserInOrganization,
   cancelInviteToOrganization,
   removeUserFromOrganization,
 } from 'api/organization-api';
+import { getOrganizationUsers } from 'actions/organization-actions';
+import {
+  organizationUsersSelector,
+  isFetchingOrganizationUsersSelector,
+} from 'selectors/organization-selectors';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
-const initializeMembersTableHooks = ({
-  getAllUsers,
-  setSelectedUsers,
-  selectedUsers,
-}) => {
-  const organizationMembers = useSelector(organizationUsersSelector) || [];
+const initializeMembersTableHooks = () => {
+  const organizationUsers = useSelector(organizationUsersSelector) || [];
   const isFetching = useSelector(isFetchingOrganizationUsersSelector);
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
 
   const [currentSearch, setCurrentSearchRaw] = useState('');
   const [isAllUsersSelected, toggleAllUsersSelectedRaw] = useToggle(false);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const getAllUsers = useCallback(() => {
+    dispatch(getOrganizationUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getOrganizationUsers());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleAllUsersSelected = useCallback(
     event => {
@@ -35,7 +42,7 @@ const initializeMembersTableHooks = ({
 
       if (newAllUsersSelected) {
         setSelectedUsers(
-          organizationMembers.map(({ userIdentifier, email }) => ({
+          organizationUsers.map(({ userIdentifier, email }) => ({
             userIdentifier,
             email,
           })),
@@ -46,7 +53,7 @@ const initializeMembersTableHooks = ({
 
       toggleAllUsersSelectedRaw(newAllUsersSelected);
     },
-    [organizationMembers, setSelectedUsers, toggleAllUsersSelectedRaw],
+    [organizationUsers, setSelectedUsers, toggleAllUsersSelectedRaw],
   );
 
   const setCurrentSearch = useCallback(
@@ -59,13 +66,13 @@ const initializeMembersTableHooks = ({
 
   useEffect(() => {
     setSelectedUsers(
-      organizationMembers
+      organizationUsers
         .map(({ userIdentifier, email, subscription }) =>
           subscription ? { userIdentifier, email } : null,
         )
         .filter(Boolean),
     );
-  }, [organizationMembers, setSelectedUsers]);
+  }, [organizationUsers, setSelectedUsers]);
 
   const toggleSelectedUser = useCallback(
     toggledUser => event => {
@@ -105,8 +112,9 @@ const initializeMembersTableHooks = ({
   );
 
   return {
+    selectedUsers,
     currentBreakPoint,
-    organizationMembers,
+    organizationUsers,
     isFetching,
     toggleSelectedUser,
     isUserSelected,
@@ -114,6 +122,7 @@ const initializeMembersTableHooks = ({
     setCurrentSearch,
     isAllUsersSelected,
     toggleAllUsersSelected,
+    getAllUsers,
   };
 };
 

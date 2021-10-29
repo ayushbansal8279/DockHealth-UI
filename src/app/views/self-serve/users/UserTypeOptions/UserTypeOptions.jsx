@@ -1,17 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal as openModalAction } from 'modal/actions';
-import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
+import UserTypeLabel from './UserTypeLabel';
+import { getUserTypeLabel, USER_TYPES } from '../helpers';
 
-import {
-  getUserTypeLabel,
-  USER_TYPES,
-} from './SubscriptionsView.MembersTable.helpers';
-
-const MemberTypeOptions = ({
+const UserTypeOptions = ({
   firstName,
   lastName,
   email,
@@ -82,7 +77,7 @@ const MemberTypeOptions = ({
   );
 
   return (
-    <MemberTypeLabel
+    <UserTypeLabel
       email={email}
       userIdentifier={userIdentifier}
       userType={userType}
@@ -115,4 +110,4 @@ const mapDispatchToProps = {
     openModalAction('RemoveActiveUser', { ...props }),
 };
 
-export default connect(null, mapDispatchToProps)(MemberTypeOptions);
+export default connect(null, mapDispatchToProps)(UserTypeOptions);

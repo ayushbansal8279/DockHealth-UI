@@ -10,10 +10,7 @@ import {
   messageBannerBarSelector,
 } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  getSubscriptionIsTrial,
-  getSubscriptionPlanLabel,
-} from 'views/self-serve/subscriptions/helpers';
+import { isPlanTrial } from 'helpers/subscription-helper';
 import { selectCurrentOrganization } from 'api/organization-api';
 import { TrialBannerLink, useDrawerClasses } from './styled';
 
@@ -80,13 +77,9 @@ export const initializeNavigationHeaderHooks = (
 
   const subscription = organization?.subscriptionDetails;
 
-  const isTrialSubscriptionPlan = getSubscriptionIsTrial({
-    subscription,
-  });
+  const isTrialSubscriptionPlan = isPlanTrial(subscription);
 
-  const subscriptionPlanTrialLabel = getSubscriptionPlanLabel({
-    subscription,
-  });
+  const subscriptionPlanTrialLabel = subscription?.subscriptionPlanName;
 
   const trialEndMoment = moment(subscription?.trialEndDate ?? null);
 

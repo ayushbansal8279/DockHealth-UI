@@ -165,6 +165,16 @@ function* changeUserOrganizationRoleSuccess() {
   yield put(OrganizationActions.getOrganizationUsers());
 }
 
+function* updateSubscriptionPlan({ newPlan }) {
+  try {
+    yield call(OrganizationApi.updateSubscriptionPlan, newPlan);
+    yield put({ type: ActionTypes.UPDATE_SUBSCRIPTION_PLAN_SUCCESS, newPlan });
+  } catch {
+    yield put({ type: ActionTypes.UPDATE_SUBSCRIPTION_PLAN_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchOrganization() {
   yield takeLatest(GET_ORGANIZATION_STATUSES, doGetOrganizationStatuses);
   yield takeLatest(DELETE_ORGANIZATION_STATUS, doDeleteOrganizationStatus);
@@ -182,5 +192,9 @@ export default function* watchOrganization() {
   yield takeEvery(
     ActionTypes.CHANGE_USER_ORGANIZATION_ROLE_SUCCESS,
     changeUserOrganizationRoleSuccess,
+  );
+  yield takeLatest(
+    ActionTypes.UPDATE_SUBSCRIPTION_PLAN,
+    updateSubscriptionPlan,
   );
 }

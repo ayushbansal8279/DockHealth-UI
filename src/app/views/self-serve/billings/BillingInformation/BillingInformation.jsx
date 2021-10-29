@@ -14,7 +14,7 @@ import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { BILLING_FREQUENCY } from '../../subscriptions/helpers';
+import { BillingFrequency } from 'helpers/subscription-helper';
 
 const CARD_EXPIRATION_WARNING_DAYS = 15;
 
@@ -119,7 +119,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
 
   const billingEstimateLabel =
     billingData?.subscriptionDetails?.billingFrequency ===
-    BILLING_FREQUENCY.ANNUAL
+    BillingFrequency.ANNUAL
       ? `$${billingData?.annualEstimate ?? 0}/yr`
       : `$${billingData?.monthlyEstimate ?? 0}/mo`;
 

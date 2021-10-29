@@ -11,6 +11,7 @@ export const HOME_PATH = '/core/home/my-tasks';
 export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
+export const USERS_SETTINGS_PATH = '/settings/users';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const TASK_TEMPLATES_PATH = '/core/workflows';
 export const USERS_PATH = '/core/people';

@@ -2,14 +2,11 @@ import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { getOrganizationUsers } from 'actions/organization-actions';
 import Arrow from 'components/common/Arrow/Arrow';
-import {
-  MemberTypeButton,
-  CurrentUserLabel,
-} from './SubscriptionsView.MembersTable.Styled';
-import InvitationPopover from './SubscriptionUserPopover/InvitationPopover';
-import RoleSelectionPopover from './SubscriptionUserPopover/RoleSelectionPopover';
-import PendingApprovalPopover from './SubscriptionUserPopover/PendingApprovalPopover';
-import InactiveRoleSelectionPopover from './SubscriptionUserPopover/InactiveRoleSelectionPopover';
+import InvitationPopover from '../SubscriptionUserPopover/InvitationPopover';
+import RoleSelectionPopover from '../SubscriptionUserPopover/RoleSelectionPopover';
+import PendingApprovalPopover from '../SubscriptionUserPopover/PendingApprovalPopover';
+import InactiveRoleSelectionPopover from '../SubscriptionUserPopover/InactiveRoleSelectionPopover';
+import { UserTypeButton, CurrentUserLabel } from './styled';
 
 const DropdownIndicator = ({ isOpen, setOpen, label }) => (
   <Arrow
@@ -22,7 +19,7 @@ const DropdownIndicator = ({ isOpen, setOpen, label }) => (
   </Arrow>
 );
 
-const MemberTypeLabel = ({
+const UserTypeLabel = ({
   email,
   userIdentifier,
   userType: { label, changeable, invitationModifiable },
@@ -69,7 +66,7 @@ const MemberTypeLabel = ({
 
   return (
     <>
-      <MemberTypeButton
+      <UserTypeButton
         ref={labelReference}
         invited={invitationModifiable}
         clickable={!isDisabledRemovingSubscription}
@@ -95,7 +92,7 @@ const MemberTypeLabel = ({
               : label}
           </CurrentUserLabel>
         )}
-      </MemberTypeButton>
+      </UserTypeButton>
       {PopoverComponent && (
         <PopoverComponent
           {...{
@@ -123,4 +120,4 @@ const MemberTypeLabel = ({
   );
 };
 
-export default MemberTypeLabel;
+export default UserTypeLabel;

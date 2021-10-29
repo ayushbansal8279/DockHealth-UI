@@ -4,21 +4,13 @@ import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron/
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import {
-  MediumGreyLabelContainer,
-  SwitcherContainer,
-} from './SubscriptionsView.MembersTable.Styled';
-
-export const USER_SUBSCRIPTION_STATUS = {
-  ALL: Symbol('ALL'),
-  SUBSCRIBED: Symbol('SUBSCRIBED'),
-  UNSUBSCRIBED: Symbol('UNSUBSCRIBED'),
-};
+import { UserSubscriptionStatus } from 'helpers/subscription-helper';
+import { MediumGreyLabelContainer, SwitcherContainer } from './styled';
 
 const USER_SUBSCRIPTION_LABELS = {
-  [USER_SUBSCRIPTION_STATUS.ALL]: 'All',
-  [USER_SUBSCRIPTION_STATUS.SUBSCRIBED]: 'Subscribed',
-  [USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED]: 'Unsubscribed',
+  [UserSubscriptionStatus.ALL]: 'All',
+  [UserSubscriptionStatus.SUBSCRIBED]: 'Subscribed',
+  [UserSubscriptionStatus.UNSUBSCRIBED]: 'Unsubscribed',
 };
 
 const SubscriptionStatusSwitcher = ({
@@ -57,7 +49,7 @@ const SubscriptionStatusSwitcher = ({
         }}
         open={isDropdownOpen}
         onClose={closeDropdown}
-        items={Object.values(USER_SUBSCRIPTION_STATUS).map(status => ({
+        items={Object.values(UserSubscriptionStatus).map(status => ({
           key: status.toString(),
           button: true,
           onClick: () => {
