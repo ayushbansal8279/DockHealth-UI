@@ -145,7 +145,7 @@ function* getTaskTemplatesFolder({
   }
 }
 
-function* addTemplate({ template, parentIdentifier = null }) {
+function* addTemplate({ template, parentIdentifier = null, history }) {
   try {
     const parentId = yield select(parentFolderIdSelector);
     const createdTemplate = yield call(
@@ -170,6 +170,17 @@ function* addTemplate({ template, parentIdentifier = null }) {
     );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
+
+    try {
+      if (history) {
+        yield call(
+          history.push,
+          `/core/workflows/${createdTemplate.taskTemplateIdentifier}`,
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   } catch (error) {
     console.log(error);
     yield put(showGlobalErrorAlert());

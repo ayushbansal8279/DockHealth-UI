@@ -20,6 +20,13 @@ export function addTemplate(template) {
   };
 }
 
+export function addSmartFlow(template, history) {
+  return {
+    type: ActionTypes.ADD_TASK_TEMPLATE,
+    template: { ...template, type: 'SMARTFLOW' },
+    history,
+  };
+}
 export function pushToBreadcrumbs(
   taskTemplateFolder,
   taskTemplateFolderIdentifier,
