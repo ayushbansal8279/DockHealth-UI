@@ -80,6 +80,11 @@ export const Title = styled.p`
 
 export const TitleDescription = styled.span`
   font-size: ${fontSizes.regularPlus};
+  font-weight: ${fontWeights.bold};
+`;
+
+export const SubTitleDescription = styled.span`
+  font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.light};
 `;
 

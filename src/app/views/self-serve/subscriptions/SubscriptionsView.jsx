@@ -39,6 +39,7 @@ import {
   ProfessionalServicesTitle,
   Title,
   TitleDescription,
+  SubTitleDescription,
   BillingTable,
   BillingTableHeaderRow,
   BillingTableRow,
@@ -167,6 +168,9 @@ const SubscriptionsView = () => {
     }
   };
 
+  const hasExistingSubscription = !currentSubscriptionPlan?.subscriptionDetails
+    ?.trialEndDate;
+
   return (
     <SubscriptionsViewOuterContainer>
       <SubscriptionsViewContainer>
@@ -181,7 +185,7 @@ const SubscriptionsView = () => {
           alignItems="center"
         >
           <SubscriptionsTitle>
-            {currentSubscriptionPlan
+            {hasExistingSubscription
               ? 'Available plans'
               : `Select the plan that's right for you`}
           </SubscriptionsTitle>
@@ -217,6 +221,7 @@ const SubscriptionsView = () => {
                 active={subscriptionPlan === plan.subscriptionPlan}
                 selected={selectedPlan === plan.subscriptionPlan}
                 plan={plan}
+                hasExistingSubscription={hasExistingSubscription}
                 billingFrequency={selectedBillingFrequency}
                 onSelect={newPlan => {
                   if (newPlan === selectedPlan) {
@@ -264,7 +269,7 @@ const SubscriptionsView = () => {
           )}
           <Box p={1} />
           <Title>
-            Billing <TitleDescription>Est</TitleDescription>
+            Billing <SubTitleDescription>Est</SubTitleDescription>
           </Title>
           <Box p={1} />
           <BillingTable>
@@ -274,12 +279,17 @@ const SubscriptionsView = () => {
               <BillingTableHeaderCell>Cost</BillingTableHeaderCell>
             </BillingTableHeaderRow>
             <BillingTableRow>
-              <BillingTableCell>Monthly Plan</BillingTableCell>
+              <BillingTableCell>
+                {selectedBillingFrequency === BillingFrequency.ANNUAL
+                  ? 'Annual'
+                  : 'Monthly'}{' '}
+                Plan
+              </BillingTableCell>
               <BillingTableCell>{activeUserCount} users</BillingTableCell>
               <BillingTableCell>
                 {priceFormatter(
                   selectedBillingFrequency === BillingFrequency.ANNUAL
-                    ? selectedPlanDetails?.annualMonthlyPrice
+                    ? selectedPlanDetails?.annualPrice
                     : selectedPlanDetails?.monthlyPrice,
                 )}{' '}
                 /{' '}
@@ -299,7 +309,8 @@ const SubscriptionsView = () => {
             )}
             <BillingTableSummaryRow>
               <BillingTableCell>
-                Total <TitleDescription>Est</TitleDescription>
+                <TitleDescription>Total</TitleDescription>{' '}
+                <SubTitleDescription>Est</SubTitleDescription>
               </BillingTableCell>
               <BillingTableCell />
               <BillingTableCell>

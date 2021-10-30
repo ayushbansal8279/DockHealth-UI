@@ -20,7 +20,14 @@ import {
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
 const SubscriptionPlanTail = props => {
-  const { active, selected, plan, billingFrequency, onSelect } = props;
+  const {
+    active,
+    selected,
+    plan,
+    hasExistingSubscription,
+    billingFrequency,
+    onSelect,
+  } = props;
   const {
     mostPopular,
     color,
@@ -33,6 +40,8 @@ const SubscriptionPlanTail = props => {
     comingSoonFeatures,
     subscriptionPlan,
   } = plan;
+
+  const subscribeLabel = hasExistingSubscription ? 'Upgrade' : 'Subscribe';
 
   return (
     <Container color={color}>
@@ -71,7 +80,7 @@ const SubscriptionPlanTail = props => {
         >
           <Box component="span" position="relative">
             {!active && selected && <CheckIcon />}
-            {active ? 'Active' : 'Subscribe'}
+            {active ? 'Active' : subscribeLabel}
           </Box>
         </SubscribeButton>
       ) : (
