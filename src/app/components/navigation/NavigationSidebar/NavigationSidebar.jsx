@@ -197,6 +197,7 @@ const NavigationSidebar = ({
                 icon={TemplatesIcon}
                 path={TASK_TEMPLATES_PATH}
                 onItemClick={handleNavigationItemClick}
+                isNew
               />
             )}
             <IconNavigationItem
@@ -205,7 +206,6 @@ const NavigationSidebar = ({
               subMenuKey={SubmenuKey.EDUCATION_CENTER}
               subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
               onItemClick={handleNavigationItemClick}
-              isNew
             />
           </Grid>
           <Grid container direction="column">
