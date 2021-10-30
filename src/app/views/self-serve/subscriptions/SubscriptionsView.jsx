@@ -54,7 +54,7 @@ const SubscriptionsView = () => {
   const history = useHistory();
   const scrollReference = useRef(null);
   const [selectedBillingFrequency, setSelectedBillingFrequency] = useState(
-    BillingFrequency.ANNUAL,
+    BillingFrequency.MONTHLY,
   );
   const [
     selectedProfessionalServices,
