@@ -3,7 +3,6 @@ import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { useDispatch } from 'react-redux';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
@@ -11,7 +10,6 @@ import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
 
 const ListDetailsView = props => {
-  const dispatch = useDispatch();
   const { match, history } = props;
   const {
     bulkEditIsDisabled,
@@ -88,7 +86,7 @@ const ListDetailsView = props => {
               {
                 name: 'Show Workflow Details',
                 onClick: () => {
-                  dispatch(setDisplayListPreferences('SHOW_WORKFLOW_DETAILS'));
+                  setDisplayListPreferences('SHOW_WORKFLOW_DETAILS');
                 },
                 key: 'SHOW_WORKFLOW_DETAILS',
                 checked: displayListPreferences.SHOW_WORKFLOW_DETAILS,
@@ -100,9 +98,7 @@ const ListDetailsView = props => {
                     ? 'Show Workflow Uncompleted Tasks'
                     : 'Show Workflow Completed Tasks',
                 onClick: () =>
-                  dispatch(
-                    setDisplayListPreferences('SHOW_WORKFLOW_COMPLETED_TASKS'),
-                  ),
+                  setDisplayListPreferences('SHOW_WORKFLOW_COMPLETED_TASKS'),
                 key: 'SHOW_COMPLETED_OR_UNCOMPLETED_WORKFLOW_DETAILS',
                 checked: displayListPreferences.SHOW_WORKFLOW_COMPLETED_TASKS,
               },
