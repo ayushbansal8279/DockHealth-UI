@@ -22,7 +22,7 @@ export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
   [TaskTemplateItemColumn.NAME]: true,
   [TaskTemplateItemColumn.CREATED_BY]: true,
   [TaskTemplateItemColumn.CREATED]: true,
-  [TaskTemplateItemColumn.PERMISSIONS]: true,
+  [TaskTemplateItemColumn.PERMISSIONS]: false,
 };
 
 export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];

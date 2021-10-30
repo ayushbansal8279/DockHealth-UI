@@ -63,7 +63,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
     name,
     description,
     type,
-    publicAccess = false,
+    // publicAccess = false,
   } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
@@ -147,17 +147,17 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             }),
           ),
       },
-      {
-        name: publicAccess ? 'Make Private' : 'Make Public',
-        onClick: () => {
-          dispatch(
-            TaskTemplateActions.switchTemplatePublic(
-              taskTemplateIdentifier,
-              !publicAccess,
-            ),
-          );
-        },
-      },
+      // {
+      //   name: publicAccess ? 'Make Private' : 'Make Public',
+      //   onClick: () => {
+      //     dispatch(
+      //       TaskTemplateActions.switchTemplatePublic(
+      //         taskTemplateIdentifier,
+      //         !publicAccess,
+      //       ),
+      //     );
+      //   },
+      // },
       {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
@@ -183,7 +183,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
       taskTemplateIdentifier,
       dispatch,
       mainListId,
-      publicAccess,
+      // publicAccess,
     ],
   );
 
