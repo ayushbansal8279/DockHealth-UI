@@ -35,6 +35,24 @@ export const userHasUserGroupsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('USER_GROUPS'),
 );
 
+export const userHasPatientCustomListsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('PATIENT_CUSTOM_LISTS'),
+);
+
+export const userHasPatientCustomFieldsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('PATIENT_CUSTOM_FIELDS'),
+);
+
+export const userHasTaskCustomFieldsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('TASK_CUSTOM_FIELDS'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

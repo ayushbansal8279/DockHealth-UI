@@ -2,8 +2,11 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Tabs, Tab } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
-
+import {
+  userProfileSelector,
+  userHasPatientCustomFieldsFeatureSelector,
+  userHasTaskCustomFieldsFeatureSelector,
+} from 'selectors/user-selectors';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
@@ -15,6 +18,13 @@ const CustomFieldsView = () => {
   const userProfile = useSelector(userProfileSelector);
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const patientCustomFieldsAvailable = useSelector(
+    userHasPatientCustomFieldsFeatureSelector,
+  );
+  const taskCustomFieldsAvailable = useSelector(
+    userHasTaskCustomFieldsFeatureSelector,
+  );
 
   useEffect(() => {
     if (
@@ -55,8 +65,12 @@ const CustomFieldsView = () => {
         textColor="inherit"
         variant="fullWidth"
       >
-        <Tab label="Patient Custom Fields" {...applyProps(0)} />
-        <Tab label="Task Custom Fields" {...applyProps(1)} />
+        {patientCustomFieldsAvailable && (
+          <Tab label="Patient Custom Fields" {...applyProps(0)} />
+        )}
+        {taskCustomFieldsAvailable && (
+          <Tab label="Task Custom Fields" {...applyProps(1)} />
+        )}
       </Tabs>
       <Box p={1} />
       {selectedTab === 0 && <PatientCustomFieldsView />}

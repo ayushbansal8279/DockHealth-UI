@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasPatientCustomFieldsFeatureSelector,
+} from 'selectors/user-selectors';
 import { groupBy, prop, compose, sortBy } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
@@ -54,6 +57,10 @@ const PatientForm = forwardRef(
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+
+    const patientCustomFieldsAvailable = useSelector(
+      userHasPatientCustomFieldsFeatureSelector,
+    );
 
     useEffect(() => {
       CustomFieldsApi.getAllPatientCustomFields(
@@ -161,7 +168,7 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyPersonalVisible}
             onToggle={toggleEmptyPersonal}
-            showAddButton={isAdmin}
+            showAddButton={isAdmin && patientCustomFieldsAvailable}
             onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
@@ -198,7 +205,7 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyContactsVisible}
             onToggle={toggleEmptyContacts}
-            showAddButton={isAdmin}
+            showAddButton={isAdmin && patientCustomFieldsAvailable}
             onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
@@ -221,14 +228,14 @@ const PatientForm = forwardRef(
             <CategoryOptions
               visibility={emptyOtherVisible}
               onToggle={toggleEmptyOther}
-              showAddButton={isAdmin}
+              showAddButton={isAdmin && patientCustomFieldsAvailable}
               onAddButtonClick={handleAddButtonClick}
             />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
           <div>
-            {isAdmin && (
+            {isAdmin && patientCustomFieldsAvailable && (
               <AddButton onClick={handleAddButtonClick}>
                 Add or edit fields
               </AddButton>

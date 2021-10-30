@@ -15,7 +15,10 @@ import {
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
 import { isEmpty, prop, sortBy, compose, toLower } from 'ramda';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasPatientCustomListsFeatureSelector,
+} from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -57,6 +60,9 @@ const PatientsSubmenu = () => {
   }));
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+  const customListsAvailable = useSelector(
+    userHasPatientCustomListsFeatureSelector,
+  );
 
   useEffect(() => {
     PatientsActions.getPatientsLists()(dispatch);
@@ -138,7 +144,7 @@ const PatientsSubmenu = () => {
           new Array(2).fill().map((_, i) => <DrawerListsItemLoader key={i} />)
         )}
       </DrawerListsList>
-      {!isGuest && (
+      {!isGuest && customListsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>
