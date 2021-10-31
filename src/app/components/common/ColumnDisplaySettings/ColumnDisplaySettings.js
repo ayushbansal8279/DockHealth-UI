@@ -102,7 +102,7 @@ const ColumnDisplaySettings = ({ onChange }) => {
       >
         <ColumnDisplayContainer>
           <ColumnDisplayHeader>
-            Which column would you like to see?
+            Which columns would you like to see? (upto 5)
           </ColumnDisplayHeader>
           {Object.keys(columnsConfigToDisplay).map(columnKey => {
             const optionName = ColumnOptionNames[columnKey];
@@ -112,7 +112,7 @@ const ColumnDisplaySettings = ({ onChange }) => {
               optionName && (
                 <Tooltip
                   key={columnKey}
-                  title="Max 3 selected columns"
+                  title={`Max ${MAX_COLUMNS_TO_SHOW} selected columns`}
                   hideTooltip={!isDisabled}
                 >
                   <div>
