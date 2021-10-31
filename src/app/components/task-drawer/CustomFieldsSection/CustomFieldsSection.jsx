@@ -9,6 +9,8 @@ import { useFormContext } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import {
   CustomFieldsSectionContainer,
   HideableContainer,
@@ -34,6 +36,7 @@ const CustomFieldsSection = ({ task, taskCustomFields: { templates } }) => {
   const onBlur = useCallback(
     newTask => {
       dispatch(partialUpdateTask(task?.identifier, newTask));
+      dispatch(showGlobalAlert(AlertMessages.UPDATED));
     },
     [dispatch, task],
   );
