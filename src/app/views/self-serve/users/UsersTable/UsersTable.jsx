@@ -267,6 +267,7 @@ const UsersTable = ({
         field: 'taskLists',
         headerName: 'LISTS (Guests)',
         flex: 0.5,
+        renderHeader: renderColumnHeader,
         sortable: false,
         renderCell: ({ row }) => {
           const { orgUserRole, taskLists } = row;
@@ -300,6 +301,7 @@ const UsersTable = ({
         field: 'subscription',
         headerName: 'SUBSCRIPTION',
         flex: 0.5,
+        renderHeader: renderColumnHeader,
         sortable: false,
         renderCell: ({ row }) => {
           const { orgUserRole, userStatus } = row;

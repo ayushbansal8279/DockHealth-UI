@@ -3,6 +3,7 @@ import palette from 'styles/palette';
 
 export const MediumGreyLabelContainer = styled.span`
   color: ${palette.coolGrey1};
+  font-size: 16px;
 `;
 
 export const SwitcherContainer = styled.div`
