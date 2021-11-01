@@ -23,13 +23,11 @@ const Input = React.forwardRef(
       inputRef,
       required = false,
       variant = 'filled',
-      value,
       ...restProps
     },
     reference,
   ) => (
     <TextField
-      value={value ?? ''}
       ref={reference}
       inputRef={inputRef}
       id={id}
