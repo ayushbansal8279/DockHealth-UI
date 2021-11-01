@@ -24,10 +24,8 @@ const CustomFieldsSection = ({ task, taskCustomFields: { templates } }) => {
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
   useEffect(() => {
     if (task) {
-      const {
-        identifier,
-        taskList: { taskListIdentifier },
-      } = task;
+      const { identifier, taskList } = task;
+      const taskListIdentifier = taskList?.taskListIdentifier;
       dispatch(getTaskCustomFields(identifier, taskListIdentifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
