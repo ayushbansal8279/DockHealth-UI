@@ -25,7 +25,8 @@ const onSubmit = ({ dispatch }) => async ({
 
   await selectCurrentOrganizationWithRedirection(
     organizationIdentifier,
-    baaSigned ? '#/onboarding/team-setup' : '#/onboarding/eula',
+    // baaSigned ? '#/onboarding/team-setup' : '#/onboarding/eula',
+    baaSigned ? '/#/core/home/my-tasks' : '#/onboarding/eula',
   );
 };
 
