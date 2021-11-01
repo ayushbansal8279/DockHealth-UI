@@ -55,8 +55,8 @@ const ExpirationLabel = styled.span`
     props.futureExpirationWarning ? palette.oPlusRed : palette.lightGrey};
 `;
 
-const goToSubscriptions = history => {
-  history.push('/subscriptions');
+const goToUsersView = history => {
+  history.push('/users');
 };
 
 const getCardBrandIconSource = ({ cardBrand }) => {
@@ -174,7 +174,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
           <span>{billingEstimateLabel}</span>
           <span> | </span>
           <span>{billingData?.activeUserCount ?? 0} users </span>
-          <LinkContainer onClick={() => goToSubscriptions(history)}>
+          <LinkContainer onClick={() => goToUsersView(history)}>
             view users
           </LinkContainer>
         </MontserratTypography>
