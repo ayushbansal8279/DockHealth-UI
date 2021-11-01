@@ -14,7 +14,7 @@ import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
+// import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
 import {
   initializeTaskListState,
@@ -454,29 +454,29 @@ const initializeListDetailsViewHooks = (match, history) => {
     [invokeToggleCompleteAction, modalActions],
   );
 
-  const launchNewFeaturesModal = useCallback(() => {
-    const isNewUser = currentUser?.usageState?.loginCount <= 5;
+  // const launchNewFeaturesModal = useCallback(() => {
+  //   const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
-    if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-      const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
+  //   if (currentUser && !isEmpty(currentUser) && !isNewUser) {
+  //     const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
-        modalActions.openModal('MultiMentionAssignTour', {
-          onClose: () => {
-            dispatch(
-              updateCurrentUserPreferences({
-                appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
-              }),
-            );
-          },
-        });
-      }
-    }
-  }, [currentUser, dispatch, modalActions]);
+  //     if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
+  //       modalActions.openModal('MultiMentionAssignTour', {
+  //         onClose: () => {
+  //           dispatch(
+  //             updateCurrentUserPreferences({
+  //               appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
+  //             }),
+  //           );
+  //         },
+  //       });
+  //     }
+  //   }
+  // }, [currentUser, dispatch, modalActions]);
 
   useEffect(() => {
     refreshAccessToken(currentUser);
-    launchNewFeaturesModal();
+    // launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

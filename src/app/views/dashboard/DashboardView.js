@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
+// import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -113,26 +113,26 @@ const DashboardView = ({
     });
   };
 
-  useEffect(() => {
-    if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-      const { userPreference } = currentUser || {};
-      const { appFeaturesReviewed } = userPreference || {};
+  // useEffect(() => {
+  //   if (currentUser && !isEmpty(currentUser) && !isNewUser) {
+  //     const { userPreference } = currentUser || {};
+  //     const { appFeaturesReviewed } = userPreference || {};
 
-      if (!appFeaturesReviewed?.includes('PATIENT_CUSTOM_FIELD')) {
-        dispatch(
-          openModal('PatientCustomFieldTour', {
-            onClose: () => {
-              dispatch(
-                updateCurrentUserPreferences({
-                  appFeaturesReviewed: ['PATIENT_CUSTOM_FIELD'],
-                }),
-              );
-            },
-          }),
-        );
-      }
-    }
-  }, [currentUser, dispatch, isNewUser, openModal]);
+  //     if (!appFeaturesReviewed?.includes('PATIENT_CUSTOM_FIELD')) {
+  //       dispatch(
+  //         openModal('PatientCustomFieldTour', {
+  //           onClose: () => {
+  //             dispatch(
+  //               updateCurrentUserPreferences({
+  //                 appFeaturesReviewed: ['PATIENT_CUSTOM_FIELD'],
+  //               }),
+  //             );
+  //           },
+  //         }),
+  //       );
+  //     }
+  //   }
+  // }, [currentUser, dispatch, isNewUser, openModal]);
 
   const {
     tourModalIsOpen,
