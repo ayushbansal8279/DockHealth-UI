@@ -102,7 +102,7 @@ const ColumnDisplaySettings = ({ onChange }) => {
       >
         <ColumnDisplayContainer>
           <ColumnDisplayHeader>
-            Which columns would you like to see? (upto 5)
+            Which columns would you like to see? (up to 5)
           </ColumnDisplayHeader>
           {Object.keys(columnsConfigToDisplay).map(columnKey => {
             const optionName = ColumnOptionNames[columnKey];
