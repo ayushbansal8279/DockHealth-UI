@@ -87,12 +87,12 @@ const TaskTemplate = ({ template, isFullView, children }) => {
 
   const menuOptions = useMemo(
     () => [
-      smartFlowsAvailable && {
+      (smartFlowsAvailable || type === 'SMARTFLOW_SAMPLE') && {
         name: 'Open in SmartFlow Builder',
         onClick: () =>
           history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
       },
-      {
+      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Edit Workflow Name',
         onClick: () => {
           setIsEditing(true);
@@ -100,7 +100,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           nameInputReference.current?.focus();
         },
       },
-      {
+      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Move to folder',
         onClick: () =>
           dispatch(
@@ -125,7 +125,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             }),
           ),
       },
-      {
+      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Duplicate Workflow',
         onClick: () =>
           dispatch(
@@ -179,6 +179,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
     ],
     [
       smartFlowsAvailable,
+      type,
       history,
       taskTemplateIdentifier,
       dispatch,
