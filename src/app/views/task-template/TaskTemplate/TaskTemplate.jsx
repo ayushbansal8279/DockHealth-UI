@@ -306,7 +306,9 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             onClick={handleTemplateSelect}
           />
         )}
-        {type === 'SMARTFLOW' && <CheckboxPlaceholder />}
+        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
+          <CheckboxPlaceholder />
+        )}
         {type === 'WORKFLOW' && (
           <ArrowButtonContainer>
             <ArrowButton onClick={onArrowClick}>
@@ -314,7 +316,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             </ArrowButton>
           </ArrowButtonContainer>
         )}
-        {type === 'SMARTFLOW' && (
+        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
           <Tooltip placement="top" title="A SmartFlow">
             <SmartFlowIndicatorContainer>
               <SmartFlowButton onClick={onSmartFlowClick}>
@@ -332,7 +334,9 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           onKeyDown={handleNameInputKeyDown}
           onClick={
             !isEditing &&
-            (type === 'SMARTFLOW' ? onSmartFlowClick : onArrowClick)
+            (type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE'
+              ? onSmartFlowClick
+              : onArrowClick)
           }
           value={nameInputValue}
         />

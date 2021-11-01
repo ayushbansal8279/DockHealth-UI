@@ -102,14 +102,15 @@ const TaskTemplateDetailsView = () => {
   const history = useHistory();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const { name } = useSelector(currentTaskTemplateSelector) || {};
+  const { name, type: templateType } =
+    useSelector(currentTaskTemplateSelector) || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {
-    if (smartFlowsAvailable === false) {
+    if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
       history.push('/');
     }
-  }, [smartFlowsAvailable, history]);
+  }, [smartFlowsAvailable, templateType, history]);
 
   useEffect(() => {
     dispatch(selectTaskTemplate(identifier));
