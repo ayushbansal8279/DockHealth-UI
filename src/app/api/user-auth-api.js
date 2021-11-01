@@ -333,18 +333,14 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
   const email = userEmail?.toLowerCase();
 
   return new Promise((resolve, reject) => {
-    Promise.all([UserApi.getUserByEmail(email), getCurrentUserOrganizations()])
-      .then(([user, organizations]) => {
+    Promise.all([UserApi.getUserByEmail(email)])
+      .then(([user]) => {
         store.dispatch({
           type: INITIALIZE_CURRENT_USER_REQUEST,
         });
         store.dispatch({
           type: GET_CURRENT_USER_SUCCESS,
           user,
-        });
-        store.dispatch({
-          type: GET_CURRENT_USER_ORGANIZATIONS_SUCCESS,
-          organizations,
         });
         sessionStorage.setItem('userIdentifier', user?.userIdentifier);
         const currentOrgIdentifier = sessionStorage.getItem(
@@ -365,18 +361,28 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
             user?.organizationIdentifier;
         }
         onLogin();
-        const userProfile = {
-          ...user,
-          userOrganizations: organizations,
-        };
-        resolve({ ...userProfile, access: dummyAccess });
+        Promise.all([getCurrentUserOrganizations()])
+          .then(([organizations]) => {
+            store.dispatch({
+              type: GET_CURRENT_USER_ORGANIZATIONS_SUCCESS,
+              organizations,
+            });
+            const userProfile = {
+              ...user,
+              userOrganizations: organizations,
+            };
+            resolve({ ...userProfile, access: dummyAccess });
+          })
+          .catch(error => {
+            store.dispatch({
+              type: GET_CURRENT_USER_ORGANIZATIONS_FAILURE,
+            });
+            reject(error);
+          });
       })
       .catch(error => {
         store.dispatch({
           type: GET_CURRENT_USER_FAILURE,
-        });
-        store.dispatch({
-          type: GET_CURRENT_USER_ORGANIZATIONS_FAILURE,
         });
         reject(error);
       });
