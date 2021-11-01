@@ -84,7 +84,12 @@ const SubscriptionPlanTail = props => {
           </Box>
         </SubscribeButton>
       ) : (
-        <ContactUsAnchor href="tel:(857)-302-0441" color={color}>
+        <ContactUsAnchor
+          color={color}
+          onClick={() => {
+            window.Intercom('show');
+          }}
+        >
           Contact Us
         </ContactUsAnchor>
       )}
