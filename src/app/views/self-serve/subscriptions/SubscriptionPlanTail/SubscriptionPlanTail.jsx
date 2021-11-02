@@ -1,5 +1,8 @@
 import { Box } from '@material-ui/core';
-import { BillingFrequency } from 'helpers/subscription-helper';
+import {
+  BillingFrequency,
+  SubscriptionPlan,
+} from 'helpers/subscription-helper';
 import React from 'react';
 import {
   Container,
@@ -41,7 +44,9 @@ const SubscriptionPlanTail = props => {
     subscriptionPlan,
   } = plan;
 
-  const subscribeLabel = hasExistingSubscription ? 'Upgrade' : 'Subscribe';
+  const upgradeLabel =
+    plan?.subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
+  const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
 
   return (
     <Container color={color}>
