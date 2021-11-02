@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -39,11 +38,12 @@ import {
   checkIfTemplateTask,
   checkColumnIsInConfig,
   TaskItemColumn,
-  TASK_ITEM_BASE_COLUMN_CONFIG,
 } from 'helpers/task-helpers';
 import dependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
@@ -97,7 +97,6 @@ const TaskItem = ({
   subtasksDisabled,
   multipleAssigneesContext,
   highlightTasksOfTheSameParent,
-  taskItemConfig = {},
   isDashboardTask,
   openPatientPopover,
   templateBundleIdentifier,
@@ -130,6 +129,8 @@ const TaskItem = ({
     dependencyTasksCompletedCount,
     dependencyTasksCount,
   } = task;
+
+  const { columnsConfig, customColumnsConfig } = useColumnsConfig();
 
   const { listName, taskListIdentifier } = taskList || {};
   const isCompleted = task.status === 'COMPLETE';
@@ -182,7 +183,7 @@ const TaskItem = ({
     dependencyPopoverOpen,
     openDependencyPopover,
     closeDependencyPopover,
-  ] = useBooleanWithTimeout();
+  ] = useBooleanWithTimeout(false);
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -309,16 +310,7 @@ const TaskItem = ({
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
   const showPriority = task.priority === 'HIGH';
   const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
-
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
-
-  const mergedTaskItemConfig = useMemo(
-    () => ({
-      ...TASK_ITEM_BASE_COLUMN_CONFIG,
-      ...taskItemConfig,
-    }),
-    [taskItemConfig],
-  );
 
   const onClickBulkEdit = () => dispatch(selectTask(taskIdentifier, !selected));
   const onCloseContextMenu = () => {
@@ -343,42 +335,42 @@ const TaskItem = ({
     return {
       descriptionIsInCofnig: checkColumnIsInConfig(
         TaskItemColumn.DESCRIPTION,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       subtasksIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.SUBTASKS_COUNT,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       patientIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.PATIENT,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       workflowStatusIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.WORKFLOW_STATUS,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       activityIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.ACTIVITY,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       dueDateIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.DUE_DATE,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       assignedIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.ASSIGNED,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       listNameIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.LIST_NAME,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
       decisionInConfig: checkColumnIsInConfig(
         TaskItemColumn.DECISION_SELECT,
-        mergedTaskItemConfig,
+        columnsConfig,
       ),
     };
-  }, [mergedTaskItemConfig]);
+  }, [columnsConfig]);
 
   return (
     <>
@@ -429,12 +421,14 @@ const TaskItem = ({
                   ref={dependencyIconReference}
                 >
                   <img src={dependencyIcon} alt="search" />
-                  <DependencyListPopover
-                    anchorElement={dependencyIconReference.current}
-                    open={dependencyPopoverOpen}
-                    dependencyTasksCount={dependencyTasksCount}
-                    task={task}
-                  />
+                  {dependencyIconReference.current && (
+                    <DependencyListPopover
+                      anchorEl={dependencyIconReference.current}
+                      open={dependencyPopoverOpen}
+                      dependencyTasksCount={dependencyTasksCount}
+                      task={task}
+                    />
+                  )}
                 </DependencyIconContainer>
               </>
             )}
@@ -504,7 +498,6 @@ const TaskItem = ({
           {workflowStatusIsInConfig && (
             <TaskItemWorkflowStatus
               task={task}
-              isCompletedGroup={isCompletedGroup}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               workflowStatus={workflowStatus}
               matchWorkflowStatus={matchWorkflowStatus}
@@ -547,6 +540,17 @@ const TaskItem = ({
               taskStatus={task.status}
             />
           )}
+          {customColumnsConfig
+            .filter(f => f.isChecked)
+            .map(field => (
+              <TaskItemCustomField
+                field={field}
+                readOnly
+                customFieldValue={task?.taskMetaData?.find(
+                  f => f.customFieldIdentifier === field.identifier,
+                )}
+              />
+            ))}
         </StandardTaskItemContainer>
       </StandardTaskItemPanel>
       {contextMenu && (

@@ -10,8 +10,7 @@ import {
   LabelSmall,
 } from './styled';
 
-const ListSelectHeader = ({ taskList }) => {
-  const { listName, listDescription } = taskList || {};
+const ListSelectHeader = ({ listName, listDescription }) => {
   const [popoverLabel, setPopoverLabel] = useState(null);
   const hoveredItemReference = useRef(null);
   const [bigPopover, setBigPopover] = useState(false);

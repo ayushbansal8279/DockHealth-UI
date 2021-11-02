@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Box, IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import {
   getTemplates,
   getTemplatesForSpecificFolder,

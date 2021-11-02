@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { setHeader } from 'actions/template-actions';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   getBillingDetails,
   getInvoiceDetails,
@@ -11,7 +12,7 @@ import {
 import { saveBillingDetails } from 'api/organization-api';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
 import BillingData from './BillingData/BillingData';
@@ -107,7 +108,7 @@ const BillingsView = () => {
     unsetUpdatingBilling();
 
     if (history.location === '/settings/subscription-payment') {
-      history.push('/settings/subscriptions');
+      history.push(SUBS_SETTINGS_PATH);
     }
   };
 

@@ -18,6 +18,11 @@ export const userProfileDashboardPrefsSelector = createSelector(
   ({ userPreference }) => userPreference?.displayColumns,
 );
 
+export const userProfileCustomFieldsSelector = createSelector(
+  userProfileSelector,
+  ({ userPreference }) => userPreference?.customFieldDisplayColumns,
+);
+
 export const userHasSmartFlowsSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
@@ -30,12 +35,23 @@ export const userHasUserGroupsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('USER_GROUPS'),
 );
 
-export const userSetupViewListSelector = listIdentifier =>
-  createSelector(
-    userViewSetupSelector,
-    ({ customLists, defaultViewSetup }) =>
-      customLists?.[listIdentifier] || defaultViewSetup,
-  );
+export const userHasPatientCustomListsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('PATIENT_CUSTOM_LISTS'),
+);
+
+export const userHasPatientCustomFieldsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('PATIENT_CUSTOM_FIELDS'),
+);
+
+export const userHasTaskCustomFieldsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('TASK_CUSTOM_FIELDS'),
+);
 
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,

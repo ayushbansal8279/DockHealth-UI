@@ -5,7 +5,7 @@ import Input from 'components/common/Input/Input';
 import { IconButton, Popover } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import Datepicker from 'components/common/Datepicker/Datepicker';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask inputRef={inputRef} mask="99/99/9999" {...otherProps} />

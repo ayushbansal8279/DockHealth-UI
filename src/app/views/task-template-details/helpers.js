@@ -49,7 +49,10 @@ export function mapLayoutToElements(layout, tasks) {
         });
       }
 
-      let { position } = layout?.find(({ id }) => id === t.identifier) || {};
+      let { position } =
+        layout && Array.isArray(layout)
+          ? layout?.find(({ id }) => id === t.identifier) || {}
+          : {};
 
       if (!position) {
         position = { x: 150, y: 150 * (itemsWithoutPositionCount + 1) };
@@ -124,10 +127,12 @@ export function calculateNewElementPosition(layout) {
   return { x: newElementPositionX, y: newElementPositionY };
 }
 
-export function isTargetNode(node, tasks) {
-  return tasks?.some(({ taskLinks }) =>
-    taskLinks?.some(
-      ({ targetTaskIdentifier }) => targetTaskIdentifier === node.id,
-    ),
+export function isTargetOfStandardNode(node, tasks) {
+  return tasks?.some(
+    ({ intentType, taskLinks }) =>
+      intentType === NodeType.STANDARD &&
+      taskLinks?.some(
+        ({ targetTaskIdentifier }) => targetTaskIdentifier === node.id,
+      ),
   );
 }

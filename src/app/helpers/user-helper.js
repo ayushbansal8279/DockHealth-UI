@@ -30,6 +30,7 @@ export const UserStatus = {
   PENDING: 'PENDING',
   INACTIVE: 'INACTIVE',
   ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED',
 };
 
 export const ActivityStatus = {

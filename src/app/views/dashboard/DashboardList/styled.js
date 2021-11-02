@@ -24,6 +24,7 @@ export const ToolbarContainer = styled(Grid)`
 
 export const ActionsContainer = styled(Grid)`
   display: flex;
+  align-items: center;
   justify-content: flex-end;
 `;
 

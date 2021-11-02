@@ -1,11 +1,10 @@
 import axios from './axios-heydoc';
-import URLS from '../urls';
 
 export const TASKGROUP_DEFAULT_TYPE = 'TASKLIST_DEFAULT';
 
 export const getGroupsByListId = listIdentifier =>
   axios
-    .get(URLS.taskGroupList.get(listIdentifier))
+    .get(`task/stats/getTaskStatsForListTaskGroups/${listIdentifier}`)
     .then(({ data }) => data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -13,7 +12,7 @@ export const getGroupsByListId = listIdentifier =>
 
 export const createGroupAssignedToList = payload =>
   axios
-    .post(URLS.taskGroupList.add, payload)
+    .post(`task/group`, payload)
     .then(({ data }) => data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -25,7 +24,7 @@ export const editGroupName = (
   groupName,
 ) =>
   axios
-    .put(URLS.taskGroupList.edit, {
+    .put(`task/group`, {
       taskListIdentifier,
       taskGroupIdentifier,
       groupName,
@@ -37,7 +36,7 @@ export const editGroupName = (
 
 export const deleteGroup = groupId =>
   axios
-    .delete(URLS.taskGroupList.delete(groupId))
+    .delete(`task/group/${groupId}`)
     .then(({ data }) => data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -45,7 +44,7 @@ export const deleteGroup = groupId =>
 
 export const sortGroups = payload =>
   axios
-    .put(URLS.taskGroupList.sort, payload)
+    .put(`task/group/sortTaskGroups`, payload)
     .then(({ data }) => data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);

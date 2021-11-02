@@ -2,16 +2,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
-import URLS from '../urls';
-
-export function getTaskStatsForUser(userIdentifier) {
-  return axios
-    .get(`/task/stats/getTaskStatsForUser/${userIdentifier}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
 
 export function getListTasksGroupedByTaskGroup(
   taskListIdentifier,
@@ -33,21 +23,6 @@ export function getListTasksGroupedByTaskGroup(
       },
     })
     .then(response => response?.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getTasksAssignedToSpecificUser(userIdentifier, sortBy, status) {
-  return axios
-    .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
-      params: {
-        status,
-        sortBy: sortBy?.key || undefined,
-        sortDirection: sortBy?.order || undefined,
-      },
-    })
-    .then(response => response.data)
     .catch(error => {
       throw error;
     });
@@ -449,7 +424,7 @@ export const reassignTasksToAnotherGroup = (
   taskIdentifiers,
 ) =>
   axios
-    .put(URLS.tasks.reassignTasks(taskGroupIdentifier), {
+    .put(`task/group/assignTasksToTaskGroup/${taskGroupIdentifier}`, {
       taskIdentifiers,
     })
     .then(({ data }) => data)
@@ -466,30 +441,6 @@ export function getFilteredTasksForList(
   return axios
     .post(
       `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}`,
-      selectedFilters,
-      {
-        params: {
-          status,
-          sortBy: sortBy?.key || undefined,
-          sortDirection: sortBy?.order || undefined,
-        },
-      },
-    )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getFilteredTasksForPersonList(
-  userIdentifier,
-  sortBy,
-  selectedFilters,
-  status = 'INCOMPLETE',
-) {
-  return axios
-    .post(
-      `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
       selectedFilters,
       {
         params: {

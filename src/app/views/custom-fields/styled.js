@@ -23,18 +23,28 @@ export const EmptyListPlaceholder = styled.p`
   margin-bottom: 0;
   color: ${palette.coolGrey1};
 `;
+export const CenterBox = styled.div`
+  text-align: center;
+`;
 
 export const CustomFieldItem = styled.div`
   position: relative;
   width: 100%;
   height: 35px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto auto;
+  grid-template-columns: ${({ type, editable }) => {
+    if (type === 'TASK') {
+      if (!editable) return '2fr 2fr';
+      return '2fr 1fr auto auto';
+    }
+    return '2fr 1fr 1fr auto auto';
+  }};
   align-items: center;
   margin-bottom: 2px;
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
   font-size: ${fontSizes.smallPlus};
+  text-align: left;
 `;
 
 export const CustomFieldCell = styled.div`
@@ -55,6 +65,7 @@ export const CustomFieldText = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding-left: 10px;
 `;
 
 export const CustomFieldHeaderText = styled(CustomFieldText)`

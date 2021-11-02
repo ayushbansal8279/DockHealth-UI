@@ -168,15 +168,14 @@ const DrawerTask = ({ subtask, currentUser }) => {
                 : null
             }
           >
-            <div>
+            <button type="button" onClick={handleCommentIconClick}>
               <TaskIcon
                 type="comments"
-                onClick={handleCommentIconClick}
                 isActive={comments?.length > 0}
                 isNew={updatedComment}
                 isHovered={isHovered}
               />
-            </div>
+            </button>
           </Tooltip>
         </IconContainer>
         <IconContainer>
@@ -186,15 +185,14 @@ const DrawerTask = ({ subtask, currentUser }) => {
               labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : null
             }
           >
-            <div>
+            <button type="button" onClick={handleLabelIconClick}>
               <TaskIcon
                 type="labels"
-                onClick={handleLabelIconClick}
                 isActive={labels?.length > 0}
                 isNew={updatedLabel}
                 isHovered={isHovered}
               />
-            </div>
+            </button>
           </Tooltip>
         </IconContainer>
         <IconContainer>
@@ -206,15 +204,14 @@ const DrawerTask = ({ subtask, currentUser }) => {
                 : ''
             }
           >
-            <div>
+            <button type="button" onClick={handleAttachmentIconClick}>
               <TaskIcon
                 type="attachments"
-                onClick={handleAttachmentIconClick}
                 isActive={attachments?.length > 0}
                 isNew={updatedAttachment}
                 isHovered={isHovered}
               />
-            </div>
+            </button>
           </Tooltip>
         </IconContainer>
       </IconsSection>

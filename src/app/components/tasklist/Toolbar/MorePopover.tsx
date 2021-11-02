@@ -1,5 +1,7 @@
+/* eslint-disable react/require-default-props */
 import { Fade, Grid } from '@material-ui/core';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import NotificationsCheck from 'img/toolbar-notifications-check';
 import palette from 'styles/palette';
 import { onPrint } from 'helpers/ga-event-helper';
@@ -8,6 +10,7 @@ import ListPopover from 'components/common/ListPopover/ListPopover';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
+import { userHasTaskCustomFieldsFeatureSelector } from 'selectors/user-selectors';
 import { ToolbarLabel } from './styled';
 
 interface OnPrintClickProps {
@@ -27,6 +30,7 @@ interface MorePopoverProps extends OnPrintClickProps {
   toggleNotifications: () => void;
   isSpecialList?: boolean;
   showNotifications?: boolean;
+  onAddCustomFieldsClick: () => void | null;
 }
 
 const onPrintClick = ({
@@ -52,6 +56,7 @@ const onPrintClick = ({
 
 const MorePopover = ({
   moreButtonReference,
+  onAddCustomFieldsClick,
   closeMorePopover,
   isMorePopoverOpen,
   tasks,
@@ -67,6 +72,10 @@ const MorePopover = ({
 }: MorePopoverProps) => {
   const { left: filterButtonX = 0, top: filterButtonY = 0 } =
     moreButtonReference?.current?.getBoundingClientRect() || {};
+
+  const taskCustomFieldsAvailable = useSelector(
+    userHasTaskCustomFieldsFeatureSelector,
+  );
 
   const moreButtonElement = {
     key: 'filter',
@@ -153,6 +162,18 @@ const MorePopover = ({
           onClick: toggleNotifications,
         },
   ];
+
+  if (
+    onAddCustomFieldsClick &&
+    typeof onAddCustomFieldsClick === 'function' &&
+    taskCustomFieldsAvailable
+  ) {
+    popoverItems.push({
+      key: 'addCustomField',
+      label: <span>Custom Fields</span>,
+      onClick: onAddCustomFieldsClick,
+    });
+  }
 
   return (
     <ListPopover

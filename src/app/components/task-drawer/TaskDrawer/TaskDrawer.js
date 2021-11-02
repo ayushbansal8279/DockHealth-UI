@@ -42,11 +42,13 @@ import {
   DetailsContainer,
   ParentTaskDescription,
   styleFullRowThin,
+  styleNoPaddingRow,
 } from './styled';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import CustomTextEditor from '../CustomTextEditor/CustomTextEditor';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
+import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
 import DependenciesSection from '../DependenciesSection/DependenciesSection';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 
@@ -111,6 +113,7 @@ const TaskDrawer = ({
     onChangeDetailsEditor,
     onFocusDetailsEditor,
     isDetailsFocused,
+    taskCustomFields,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -404,6 +407,12 @@ const TaskDrawer = ({
                     isTemplateTask={isTemplateTask}
                   />
                 </div>
+              </Grid>
+              <Grid item xs={12} style={styleNoPaddingRow}>
+                <CustomFieldsSection
+                  task={selectedTask}
+                  taskCustomFields={taskCustomFields}
+                />
               </Grid>
               {newTaskFlag && (
                 <Grid

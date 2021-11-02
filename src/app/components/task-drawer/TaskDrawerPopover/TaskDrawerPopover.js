@@ -1,5 +1,7 @@
+import { Box } from '@material-ui/core';
 import React, { useRef } from 'react';
-import useBoolean from 'hooks/useBoolean';
+import { useUpdate } from 'react-use';
+import { useBoolean } from 'hooks/useBoolean';
 import { bool, node, oneOf } from 'prop-types';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { StyledPopover, StyledButton } from './styled';
@@ -9,6 +11,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
   const [isPopoverOpen, openPopover, closePopover, togglePopover] = useBoolean(
     false,
   );
+  const forceUpdate = useUpdate();
 
   return (
     <>
@@ -38,18 +41,21 @@ const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
           event.stopPropagation();
           closePopover();
         }}
-        width={buttonReference.current?.offsetWidth}
+        width="auto"
       >
         {isPopoverOpen && (
           <PopoverCard>
-            {typeof content === 'function'
-              ? content({
-                  isPopoverOpen,
-                  openPopover,
-                  closePopover,
-                  togglePopover,
-                })
-              : content}
+            <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
+              {typeof content === 'function'
+                ? content({
+                    isPopoverOpen,
+                    openPopover,
+                    closePopover,
+                    togglePopover,
+                    resetPosition: forceUpdate,
+                  })
+                : content}
+            </Box>
           </PopoverCard>
         )}
       </StyledPopover>

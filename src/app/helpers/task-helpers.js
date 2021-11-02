@@ -117,6 +117,8 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DECISION_SELECT]: true,
 };
 
+export const MAX_COLUMNS_TO_SHOW = 5;
+
 export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
 
 export const TASK_ITEM_SORT_METHODS = {

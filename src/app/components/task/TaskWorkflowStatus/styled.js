@@ -13,8 +13,8 @@ export const Divider = styled.div`
 export const StatusListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
+  align-items: flex-start;
+  width: auto;
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
@@ -24,13 +24,33 @@ export const StatusListWrapper = styled.div`
 export const StatusList = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: ${({ elementsInColumn }) =>
-    `repeat(${elementsInColumn}, 32px)`};
-  grid-template-columns: ${({ elementsInColumn }) =>
-    `repeat(${elementsInColumn > 7 ? 3 : 2}, 1fr)`};
-  min-width: 280px;
-  width: 100%;
-  max-height: ${({ elementsInColumn }) => elementsInColumn * 32}px;
+  grid-template-rows: repeat(10, 32px);
+  grid-template-columns: repeat(
+    ${({ elementsCount }) => {
+      if (elementsCount < 11) {
+        return '1';
+      }
+
+      if (elementsCount < 21) {
+        return '2';
+      }
+
+      return '3';
+    }},
+    1fr
+  );
+  width: ${({ elementsCount }) => {
+    if (elementsCount < 11) {
+      return 140;
+    }
+
+    if (elementsCount < 21) {
+      return 280;
+    }
+
+    return 420;
+  }}px;
+  max-height: ${10 * 32}px;
   margin: ${spacing.small} 0;
 `;
 

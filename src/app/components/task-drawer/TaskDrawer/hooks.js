@@ -41,6 +41,7 @@ import {
   taskDrawerOpenSelector,
   taskDrawerFocusFieldSelector,
   addingNewSubtaskSelector,
+  taskCustomFieldsSelector,
 } from 'selectors/task-drawer-selectors';
 import {
   onTaskDrawerSubtaskAdd,
@@ -143,6 +144,7 @@ const initializeTaskDrawerHooks = ({
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const selectedTask = useSelector(selectedTaskSelector);
+  const taskCustomFields = useSelector(taskCustomFieldsSelector);
   const addingNewSubtask = useSelector(addingNewSubtaskSelector);
 
   const [selectedParentTask, setSelectedParentTask] = useState(null);
@@ -661,6 +663,7 @@ const initializeTaskDrawerHooks = ({
     onChangeDetailsEditor,
     onFocusDetailsEditor,
     isDetailsFocused,
+    taskCustomFields,
   };
 };
 

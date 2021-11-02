@@ -1,5 +1,5 @@
 import { ClickAwayListener, Popper } from '@material-ui/core';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import moment from 'moment';
 import React, { useCallback, useRef } from 'react';
 import Datepicker from 'components/common/Datepicker/Datepicker';

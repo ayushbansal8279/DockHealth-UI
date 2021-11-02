@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { getTaskHistory } from 'actions/task-actions';
 import moment from 'moment';
 

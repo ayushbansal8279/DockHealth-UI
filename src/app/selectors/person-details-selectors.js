@@ -1,38 +1,48 @@
 import { createSelector } from 'reselect';
 
-export const personSelector = state => state.personDetails;
+const personStateSelector = state => state.personDetails;
+
+export const userIdentifierSelector = createSelector(
+  personStateSelector,
+  ({ userIdentifier }) => userIdentifier,
+);
+
+export const currentTasksStatusSelector = createSelector(
+  personStateSelector,
+  ({ currentTasksStatus }) => currentTasksStatus,
+);
 
 export const tasksIsFetchingSelector = createSelector(
-  personSelector,
+  personStateSelector,
   ({ isFetching }) => isFetching,
 );
 
 export const completedTasksIsFetchingSelector = createSelector(
-  personSelector,
+  personStateSelector,
   ({ isCompletedTasksFetching }) => isCompletedTasksFetching,
 );
 
 export const tasksSelector = createSelector(
-  personSelector,
+  personStateSelector,
   ({ tasks }) => tasks,
 );
 
 export const completedTasksSelector = createSelector(
-  personSelector,
+  personStateSelector,
   ({ completedTasks }) => completedTasks,
 );
 
-export const personTaskCountersSelector = createSelector(
-  personSelector,
+export const taskCountersSelector = createSelector(
+  personStateSelector,
   ({ taskCounters }) => taskCounters,
 );
 
-export const personDataSelector = createSelector(
-  personSelector,
-  ({ personData }) => personData,
+export const userDetailsSelector = createSelector(
+  personStateSelector,
+  ({ userDetails }) => userDetails,
 );
 
-export const personDetailsSortSelector = createSelector(
-  personSelector,
+export const sortSelector = createSelector(
+  personStateSelector,
   ({ sort }) => sort,
 );

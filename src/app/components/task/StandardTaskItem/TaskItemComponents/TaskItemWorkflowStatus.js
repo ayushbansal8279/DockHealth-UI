@@ -13,7 +13,6 @@ import {
 
 const TaskItemWorkflowStatus = ({
   task,
-  isCompletedGroup,
   updateWorkflowStatus,
   workflowStatus,
   matchWorkflowStatus,
@@ -38,8 +37,6 @@ const TaskItemWorkflowStatus = ({
     >
       <TaskItemPopover
         fullWidth
-        disabled={isCompletedGroup || task.status === 'COMPLETE'}
-        contentWidth={280}
         content={({ closePopover, resetPosition }) => (
           <TaskWorkflowStatus
             selectedStatusIdentifier={task.workflowStatus?.identifier}
@@ -49,8 +46,7 @@ const TaskItemWorkflowStatus = ({
           />
         )}
       >
-        {task.status === 'COMPLETE' && <StatusName>Completed</StatusName>}
-        {task.status !== 'COMPLETE' && workflowStatus && (
+        {workflowStatus ? (
           <StatusWrapper>
             <StatusBar color={color} />
             <Tooltip title={name} placement="top" hideTooltip={!tooltipVisible}>
@@ -68,8 +64,7 @@ const TaskItemWorkflowStatus = ({
               </StatusName>
             </Tooltip>
           </StatusWrapper>
-        )}
-        {task.status !== 'COMPLETE' && !workflowStatus && (
+        ) : (
           <AddPlaceholder>+ Add Status</AddPlaceholder>
         )}
       </TaskItemPopover>

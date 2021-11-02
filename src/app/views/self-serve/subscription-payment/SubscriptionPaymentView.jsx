@@ -10,16 +10,21 @@ import {
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
+import { currentSubscriptionPlanSelector } from 'selectors/organization-selectors';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
+import { getUserByEmail } from 'api/user-auth-api';
 import { noop, showAlert } from 'helpers/utility-functions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import BillingsViewBillingData from '../billings/BillingData/BillingData';
 import {
-  BILLING_FREQUENCY,
-  getSubscriptionPlanData,
-} from '../subscriptions/helpers';
+  BillingFrequency,
+  priceFormatter,
+  PROFESSIONAL_SERVICES_PRICE,
+  SUBSCRIPTION_PLANS,
+} from 'helpers/subscription-helper';
+import BillingsViewBillingData from '../billings/BillingData/BillingData';
 import {
   DarkBlueTextContainer,
   PricingGridContainer,
@@ -30,16 +35,17 @@ import {
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
-const finishSubscriptionPayment = history => {
+const finishSubscriptionPayment = (history, currentUser) => {
+  getUserByEmail(currentUser.email, currentUser);
   history.replace('/settings/subscription-payment-finished');
 };
 
 const cancelSubscriptionPayment = history => {
-  history.push('/settings/subscriptions');
+  history.push(SUBS_SETTINGS_PATH);
 };
 
 const goToSubscriptions = history => {
-  history.replace('/settings/subscriptions');
+  history.replace(SUBS_SETTINGS_PATH);
 };
 
 /**
@@ -48,9 +54,11 @@ const goToSubscriptions = history => {
 const onSubmit = ({
   subscriptionPlan,
   billingFrequency,
+  professionalServicesIncluded,
   setProcessingPayment,
   unsetProcessingPayment,
   history,
+  currentUser,
   // eslint-disable-next-line unicorn/consistent-function-scoping
 }) => ({ stripe }) => data => {
   setProcessingPayment();
@@ -65,6 +73,7 @@ const onSubmit = ({
       billingData.subscriptionDetails = {
         subscriptionPlan,
         billingFrequency,
+        professionalServicesIncluded,
       };
       saveBillingDetails({
         billingData,
@@ -72,7 +81,7 @@ const onSubmit = ({
       })
         .then(response => {
           if (response.statusCode === 'SUCCESS') {
-            finishSubscriptionPayment(history);
+            finishSubscriptionPayment(history, currentUser);
           } else {
             showAlert({
               status: 'error',
@@ -82,7 +91,8 @@ const onSubmit = ({
           }
           unsetProcessingPayment();
         })
-        .catch(() => {
+        .catch(error => {
+          console.log(error);
           showAlert({
             status: 'error',
             title: 'Error',
@@ -108,7 +118,9 @@ const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { newPaymentPlan, currentUsers, userProfile } = useSelector(store => ({
+  const currentSubscriptionPlan = useSelector(currentSubscriptionPlanSelector);
+  const { activeUserCount } = currentSubscriptionPlan || {};
+  const { newPaymentPlan, userProfile } = useSelector(store => ({
     ...store.organizationState,
     organizationIdentifier:
       store.userState?.userProfile?.organizationIdentifier,
@@ -143,7 +155,7 @@ const SubscriptionPaymentView = () => {
   ] = useBoolean(false);
 
   useMount(() => {
-    if (!newPaymentPlan || !currentUsers) {
+    if (!newPaymentPlan) {
       goToSubscriptions(history);
     }
 
@@ -159,36 +171,31 @@ const SubscriptionPaymentView = () => {
       }),
     );
 
-    getBillingEstimate()(dispatch);
+    dispatch(getBillingEstimate());
   });
 
-  const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
+  const { subscriptionPlan, billingFrequency, professionalServicesIncluded } =
     newPaymentPlan || {};
 
-  const totalPerUserCost = annualPayment ? annualMonthlyPrice : monthlyPrice;
-  const billingFrequency = annualPayment
-    ? BILLING_FREQUENCY.ANNUAL
-    : BILLING_FREQUENCY.MONTHLY;
+  const newPlan = SUBSCRIPTION_PLANS.find(
+    ({ subscriptionPlan: sp }) => sp === subscriptionPlan,
+  );
 
-  const currentUsersCount = currentUsers?.length ?? 0;
+  const { annualMonthlyPrice, monthlyPrice } = newPlan || {};
 
-  const { planPricePerUser, planTotalPayment } = getSubscriptionPlanData({
-    organization: {
-      subscriptionDetails: {
-        subscriptionPlan,
-        billingFrequency,
-      },
-    },
-    billingData: {
-      monthlyPerUserCost: totalPerUserCost,
-      monthlyEstimate: currentUsersCount * totalPerUserCost,
-      annualEstimate: currentUsersCount * totalPerUserCost * 12,
-      subscriptionDetails: {
-        subscriptionPlan,
-        billingFrequency,
-      },
-    },
-  });
+  const totalPerUserCost =
+    billingFrequency === BillingFrequency.ANNUAL
+      ? annualMonthlyPrice
+      : monthlyPrice;
+
+  const planTotalPayment = priceFormatter(
+    activeUserCount *
+      totalPerUserCost *
+      (billingFrequency === BillingFrequency.ANNUAL ? 12 : 1) +
+      (professionalServicesIncluded ? PROFESSIONAL_SERVICES_PRICE : 0),
+  );
+
+  const planPricePerUser = priceFormatter(totalPerUserCost);
 
   return (
     <SubscriptionPaymentViewOuterContainer>
@@ -211,12 +218,14 @@ const SubscriptionPaymentView = () => {
                   <DarkBlueTextContainer>
                     <MontserratTypography variant="h3" color="inherit">
                       <span>Pay </span>
-                      <b>{annualPayment ? 'Annually' : 'Monthly'}</b>
+                      <b>
+                        {billingFrequency === BillingFrequency.ANNUAL
+                          ? 'Annually'
+                          : 'Monthly'}
+                      </b>
                     </MontserratTypography>
                   </DarkBlueTextContainer>
-                  <StyledLink to="/settings/subscriptions">
-                    Change plans
-                  </StyledLink>
+                  <StyledLink to={SUBS_SETTINGS_PATH}>Change plans</StyledLink>
                 </Grid>
               </PricingItemVerticallyExpanded>
               <Grid container alignItems="center" justify="flex-end">
@@ -233,16 +242,32 @@ const SubscriptionPaymentView = () => {
               </Grid>
               <Grid container alignItems="center" justify="flex-end">
                 <MontserratTypography variant="h3">
-                  {currentUsersCount}
+                  {activeUserCount}
                 </MontserratTypography>
                 <Spacing vertical={4} />
               </Grid>
               <Grid container alignItems="center">
                 <MontserratTypography variant="h3" weight="300">
-                  {currentUsersCount > 1 ? 'users' : 'user'}
+                  {activeUserCount > 1 ? 'users' : 'user'}
                 </MontserratTypography>
                 <Spacing vertical={4} />
               </Grid>
+              {professionalServicesIncluded && (
+                <>
+                  <Grid container alignItems="center" justify="flex-end">
+                    <MontserratTypography variant="h3">
+                      {priceFormatter(PROFESSIONAL_SERVICES_PRICE)}
+                    </MontserratTypography>
+                    <Spacing vertical={4} />
+                  </Grid>
+                  <Grid container alignItems="center">
+                    <MontserratTypography variant="h3" weight="300">
+                      professional services
+                    </MontserratTypography>
+                    <Spacing vertical={4} />
+                  </Grid>
+                </>
+              )}
               <PricingItemDivider />
               <div />
               <Grid container alignItems="center" justify="flex-end">
@@ -277,10 +302,12 @@ const SubscriptionPaymentView = () => {
                 onSubmit={onSubmit({
                   subscriptionPlan,
                   billingFrequency,
+                  professionalServicesIncluded,
                   processingPayment,
                   setProcessingPayment,
                   unsetProcessingPayment,
                   history,
+                  currentUser: userProfile,
                 })}
                 firstTimeSaveBillingDetails
                 processingPayment={processingPayment}

@@ -126,3 +126,55 @@ export function updateUserViewSetup(setup) {
     .put('user/updateUserPreferences', setup)
     .then(({ data }) => data);
 }
+
+export function getUserTaskStats(userIdentifier) {
+  return axios
+    .get(`task/stats/getTaskStatsForUser/${userIdentifier}`)
+    .then(({ data }) => data);
+}
+
+export function getUserTasks(userIdentifier, sortBy, status) {
+  return axios
+    .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
+      params: {
+        status,
+        sortBy: sortBy?.key || undefined,
+        sortDirection: sortBy?.order || undefined,
+      },
+    })
+    .then(response => response.data);
+}
+
+export function getUserFilteredTasks(
+  userIdentifier,
+  sortBy,
+  selectedFilters,
+  status,
+) {
+  return axios
+    .post(
+      `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
+      selectedFilters,
+      {
+        params: {
+          status,
+          sortBy: sortBy?.key || undefined,
+          sortDirection: sortBy?.order || undefined,
+        },
+      },
+    )
+    .then(({ data }) => data);
+}
+
+export function getUserTaskFilterOptions(userIdentifier, status) {
+  return axios
+    .get(`task/filter/filterOptionsForAssignedToUser/${userIdentifier}`, {
+      params: {
+        status,
+      },
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

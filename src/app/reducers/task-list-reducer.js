@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/max-switch-cases */
+/* eslint-disable sonarjs/cognitive-complexity */
 import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
 
 import {
@@ -20,23 +22,30 @@ import {
   INVITE_USER_TO_TASKLIST_SUCCESS,
   INVITE_PERSON_TASKLIST_SUCCESS,
   INVITEMULUSERS_TASKLIST_SUCCESS,
-  IS_LIST,
   REMOVEUSER_TASKLIST_SUCCESS,
   REQUEST_LISTS,
   RESET_TASKLIST_STATS,
-  SET_AS_CURRENT_LIST,
-  SET_CURRENT_LIST,
   TOGGLE_LIST_NOTIFICATIONS_SUCCESS,
   UPDATE_TASKLIST_SUCCESS,
   CANCEL_TASKLIST_INVITE_SUCCESS,
   GET_PENDING_TASKLIST_SUCCESS,
   GET_ARCHIVED_TASKLIST_SUCCESS,
+  UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
+  UPDATE_LIST_VIEW_SETUP,
+  INITIALIZE_TASK_LIST_STATE,
+  GET_CURRENT_TASK_LIST_FAILURE,
+  GET_CURRENT_TASK_LIST,
+  GET_CURRENT_TASK_LIST_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
-  taskLists: [],
-  archivedTaskLists: [],
-  pendingTaskLists: [],
+  currentTaskList: null,
+  currentTaskListIdentifier: null,
+  isFetchingCurrentTaskList: false,
+
+  taskLists: null,
+  archivedTaskLists: null,
+  pendingTaskLists: null,
   tasklistmembers: [],
   allTaskListMembers: [],
   orgusersnotintasklist: [],
@@ -45,7 +54,6 @@ const initialState = {
   tasklistaudits: [],
   auditsForAllUserList: [],
   activityFeedForAllUserList: [],
-  currentList: {},
   genericLists: [],
   isFetching: false,
   isList: false,
@@ -88,6 +96,61 @@ const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
 
 const TaskListReducer = (state = initialState, action) => {
   switch (action.type) {
+    case INITIALIZE_TASK_LIST_STATE:
+      return {
+        ...state,
+        currentTaskListIdentifier: action.taskListIdentifier,
+        currentTaskList: null,
+      };
+
+    case GET_CURRENT_TASK_LIST:
+      return {
+        ...state,
+        isFetchingCurrentTaskList: true,
+      };
+
+    case GET_CURRENT_TASK_LIST_SUCCESS:
+      return {
+        ...state,
+        currentTaskList: action.taskList,
+        isFetchingCurrentTaskList: false,
+      };
+
+    case GET_CURRENT_TASK_LIST_FAILURE:
+      return {
+        ...state,
+        currentTaskList: null,
+        isFetchingCurrentTaskList: false,
+      };
+
+    case UPDATE_LIST_VIEW_SETUP: {
+      const { setup, currentUserIdentifier } = action.payload;
+      return {
+        ...state,
+        currentTaskList: {
+          ...state.currentTaskList,
+          listUsers: state.currentTaskList.listUsers.map(user =>
+            user.identifier === currentUserIdentifier
+              ? { ...user, displayOptions: setup }
+              : user,
+          ),
+        },
+      };
+    }
+    case UPDATE_LIST_COLUMNS_DISPLAY_SETUP: {
+      const { setup, currentUserIdentifier } = action.payload;
+      return {
+        ...state,
+        currentTaskList: {
+          ...state.currentTaskList,
+          listUsers: state.currentTaskList.listUsers.map(user =>
+            user.identifier === currentUserIdentifier
+              ? { ...user, displayColumns: setup }
+              : user,
+          ),
+        },
+      };
+    }
     case INVITE_USER_TO_TASKLIST_SUCCESS:
       return inviteUser(state, action);
 
@@ -103,7 +166,6 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         taskLists: [action.taskList].concat(state.taskLists),
-        currentList: action.taskList,
       };
 
     case REQUEST_LISTS:
@@ -133,12 +195,6 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         taskLists: action.taskLists,
         isFetching: false,
-      };
-
-    case SET_CURRENT_LIST:
-      return {
-        ...state,
-        currentList: action.currentList,
       };
 
     case GET_TASKLISTMEMBERS_SUCCESS: {
@@ -220,7 +276,6 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         taskLists: updateTasklist(state.taskLists),
-        currentList: { notifications: receiveNotifications },
       };
     }
 
@@ -274,20 +329,6 @@ const TaskListReducer = (state = initialState, action) => {
         archivedTaskLists: state.archivedTaskLists.filter(
           taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
         ),
-      };
-
-    case SET_AS_CURRENT_LIST:
-      return {
-        ...state,
-        currentList: state.taskLists.find(
-          taskList => taskList.taskListIdentifier === action.taskListIdentifier,
-        ),
-      };
-
-    case IS_LIST:
-      return {
-        ...state,
-        isList: action.boolean,
       };
 
     case REMOVEUSER_TASKLIST_SUCCESS:

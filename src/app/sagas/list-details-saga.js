@@ -29,7 +29,6 @@ import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ActionTypes from 'actions/action-types';
-import * as ActionTypesSaga from 'actions/action-types-saga';
 // eslint-disable-next-line import/no-cycle
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -46,6 +45,11 @@ import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
+import { openModal } from 'modal/actions';
+import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
+import * as CustomFieldsApi from 'api/custom-fields-api';
+import * as TaskListApi from 'api/task-list-api';
+import store from '../store';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -125,6 +129,11 @@ export const ListDetailsSagaActions = {
   createTask,
   getTasksForTaskGroups,
   fetchTasksBySearchedTerm,
+};
+
+const ERROR_TYPES = {
+  ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST:
+    'TASK_TEMPLATE/ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST',
 };
 
 function processTaskCountersSuccess(countersData) {
@@ -710,51 +719,123 @@ function* doFilterListDetailsTasks({ payload }) {
   yield put(ListDetailsActions.refreshListDetailsGroupedTasks());
 }
 
+function* applyTaskTemplateFailure({
+  error,
+  errorType,
+  failureDetails: { taskCount },
+  templateDetails,
+}) {
+  if (errorType === ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST) {
+    const modalProps = {
+      taskCount,
+      confirm: () => {
+        store.dispatch(
+          applyTaskTemplateAction({ ...templateDetails, unassign: true }),
+        );
+      },
+    };
+    yield put(openModal('UnassignTaskTemplate', modalProps));
+  } else {
+    console.log(error);
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* applyTaskTemplate({
   taskTemplateIdentifier,
   taskGroupIdentifier,
   taskListIdentifier,
+  options: { unassign = false },
 }) {
   try {
-    yield call(TemplateBundleApi.applyTemplate, {
-      taskTemplateIdentifier,
-      taskGroupIdentifier,
-      taskListIdentifier,
-    });
-    yield put(
-      getTasksForTaskGroups({
+    const { statusCode, assignmentsMismatchCount } = yield call(
+      TemplateBundleApi.applyTemplate,
+      {
+        taskTemplateIdentifier,
         taskGroupIdentifier,
-        status: 'INCOMPLETE',
-        refresh: true,
-      }),
+        taskListIdentifier,
+        unassign,
+      },
     );
+    const isWarning = statusCode === 'WARNING';
+
+    if (isWarning) {
+      yield applyTaskTemplateFailure({
+        errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
+        failureDetails: { taskCount: assignmentsMismatchCount },
+        templateDetails: {
+          taskTemplateIdentifier,
+          taskGroupIdentifier,
+          taskListIdentifier,
+        },
+      });
+    } else {
+      yield put(
+        getTasksForTaskGroups({
+          taskGroupIdentifier,
+          status: 'INCOMPLETE',
+          refresh: true,
+        }),
+      );
+    }
   } catch {
     yield put(showGlobalErrorAlert());
   }
 }
 
+function* getListCustomFields({ taskListIdentifier }) {
+  try {
+    const listCustomFields = yield call(
+      CustomFieldsApi.getAllTaskListCustomFields,
+      taskListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.GET_LIST_CUSTOM_FIELDS_SUCCESS,
+      listCustomFields,
+    });
+  } catch {
+    yield put({ type: ActionTypes.GET_LIST_CUSTOM_FIELDS_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* updateListCustomFieldsSetup({ setup }) {
+  try {
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    yield call(
+      TaskListApi.updateUserCustomFieldsOptionsListViewSetup,
+      setup,
+      taskListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP_FAILURE });
+  }
+}
+
 export default function* watchTasksGroupsList() {
-  yield takeEvery(ActionTypesSaga.APPLY_TASK_TEMPLATE, applyTaskTemplate);
+  yield takeEvery(ActionTypes.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
-    ActionTypesSaga.GET_LIST_DETAILS_TASK_COUNTERS,
+    ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
     doGetListDetailsCounters,
   );
   yield takeLatest(
-    ActionTypesSaga.GET_LIST_DETAILS_GROUPED_TASKS,
+    ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
     doGetGroupedTasks,
   );
   yield takeLatest(
-    ActionTypesSaga.REFRESH_LIST_DETAILS_GROUPED_TASKS,
+    ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
     doRefreshGroupedTasks,
   );
   yield takeLatest(
-    ActionTypesSaga.FILTER__LIST_DETAILS_TASKS,
+    ActionTypes.FILTER__LIST_DETAILS_TASKS,
     doFilterListDetailsTasks,
   );
-  yield takeLatest(
-    ActionTypesSaga.SORT_LIST_DETAILS_TASKS,
-    doSortListDetailsTasks,
-  );
+  yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
+  yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
@@ -772,5 +853,9 @@ export default function* watchTasksGroupsList() {
     500,
     DO_FETCH_TASKS_BY_SEARCHED_TERM,
     doFetchTasksBySearchedTerm,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP,
+    updateListCustomFieldsSetup,
   );
 }

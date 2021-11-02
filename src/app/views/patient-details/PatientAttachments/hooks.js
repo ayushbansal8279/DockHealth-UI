@@ -13,7 +13,7 @@ import {
   removePatientAttachment,
 } from 'sagas/patient-details-saga';
 import { getPatientAttachment } from 'api/patient-attachment-api';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,

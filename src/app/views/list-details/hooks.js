@@ -14,22 +14,17 @@ import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { TaskStatus } from 'helpers/task-helpers';
+// import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import {
+  initializeTaskListState,
+  updateUserListViewSetup,
+  updateColumnOnListPreferences,
+} from 'actions/task-list-actions';
+import { updateOrganizationCustomFields } from 'actions/organization-actions';
+
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
-
-import { updateCurrentUserPreferences } from 'actions/user-actions';
-import {
-  taskListsSelector,
-  pendingTaskListsSelector,
-  taskListMembersSelector,
-  archivedTaskListsSelector,
-} from 'selectors/task-list-selectors';
-import {
-  userProfileSelector,
-  userSetupClientViewSelector,
-} from 'selectors/user-selectors';
-import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
@@ -38,22 +33,33 @@ import {
   taskDetailsSortSelector,
   taskCountersSelector,
 } from 'selectors/list-details-selectors';
+import {
+  currentTaskListSelector,
+  pendingTaskListsSelector,
+  taskListMembersSelector,
+  archivedTaskListsSelector,
+} from 'selectors/task-list-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import * as TemplateActions from 'actions/template-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
+import { getListCustomFields } from 'actions/list-details-actions';
 import * as UserAuthApi from 'api/user-auth-api';
-
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 const initializeListDetailsViewHooks = (match, history) => {
   const sort = useSelector(taskDetailsSortSelector);
-  const taskLists = useSelector(taskListsSelector);
+  const taskList = useSelector(currentTaskListSelector);
+  const { listName, listDescription } = taskList || {};
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -77,9 +83,8 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
-  const [searchValue, setSearchValue] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
 
-  const prevTaskLists = usePrevious(taskLists);
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
   const prevMatch = usePrevious(match);
@@ -87,8 +92,38 @@ const initializeListDetailsViewHooks = (match, history) => {
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
 
-  const viewSetup = useSelector(userSetupClientViewSelector);
   const dispatch = useDispatch();
+  const {
+    params: { taskListIdentifier: taskListIdentifierParam },
+  } = match;
+
+  useEffect(() => {
+    dispatch(initializeTaskListState(taskListIdentifierParam));
+    if (taskListIdentifierParam) {
+      dispatch(getListCustomFields(taskListIdentifierParam));
+    }
+  }, [dispatch, taskListIdentifierParam]);
+
+  useEffect(() => {
+    if (listName) {
+      const headerComponent = (
+        <ListSelectHeader
+          listName={listName}
+          listDescription={listDescription}
+        />
+      );
+
+      templateActions.setHeader({
+        layout: [
+          {
+            key: 'header',
+            component: headerComponent,
+            xs: 12,
+          },
+        ],
+      });
+    }
+  }, [listName, listDescription, templateActions]);
 
   const searchTasks = useCallback(
     searchQuery => {
@@ -120,30 +155,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
     },
     [listDetailsActions, match, megaFilterActions],
-  );
-
-  const setViewHeader = useCallback(
-    (taskListIdentifier, lists) => {
-      const loadedTasklist =
-        lists?.length > 0
-          ? lists.find(t => t.taskListIdentifier === taskListIdentifier)
-          : {};
-
-      if (loadedTasklist?.listName) {
-        const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
-
-        templateActions.setHeader({
-          layout: [
-            {
-              key: 'header',
-              component: headerComponent,
-              xs: 12,
-            },
-          ],
-        });
-      }
-    },
-    [templateActions],
   );
 
   const openTourModal = useCallback(() => {
@@ -443,36 +454,29 @@ const initializeListDetailsViewHooks = (match, history) => {
     [invokeToggleCompleteAction, modalActions],
   );
 
-  const launchNewFeaturesModal = useCallback(() => {
-    const isNewUser = currentUser?.usageState?.loginCount <= 5;
+  // const launchNewFeaturesModal = useCallback(() => {
+  //   const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
-    if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-      const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
+  //   if (currentUser && !isEmpty(currentUser) && !isNewUser) {
+  //     const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
 
-      if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
-        modalActions.openModal('MultiMentionAssignTour', {
-          onClose: () => {
-            dispatch(
-              updateCurrentUserPreferences({
-                appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
-              }),
-            );
-          },
-        });
-      }
-    }
-  }, [currentUser, dispatch, modalActions]);
+  //     if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
+  //       modalActions.openModal('MultiMentionAssignTour', {
+  //         onClose: () => {
+  //           dispatch(
+  //             updateCurrentUserPreferences({
+  //               appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
+  //             }),
+  //           );
+  //         },
+  //       });
+  //     }
+  //   }
+  // }, [currentUser, dispatch, modalActions]);
 
   useEffect(() => {
-    const { params } = match;
-
-    setViewHeader(params.taskListIdentifier, [
-      ...taskLists,
-      ...pendingTaskLists,
-    ]);
-
     refreshAccessToken(currentUser);
-    launchNewFeaturesModal();
+    // launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -484,17 +488,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       match.params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
-    }
-
-    if (
-      prevMatch?.params?.taskListIdentifier &&
-      match.params.taskListIdentifier &&
-      match.params.taskListIdentifier !== prevMatch?.params?.taskListIdentifier
-    ) {
-      setViewHeader(match.params.taskListIdentifier, [
-        ...taskLists,
-        ...pendingTaskLists,
-      ]);
     }
 
     if (
@@ -521,23 +514,12 @@ const initializeListDetailsViewHooks = (match, history) => {
     prevCurrentUser,
     prevMatch,
     prevTaskCounters,
-    prevTaskLists,
-    setViewHeader,
     taskCounters,
-    taskLists,
     tourConditionChecked,
   ]);
 
   const { params } = match;
   const { taskListIdentifier, tabName } = params;
-
-  const loadedTasklist = useMemo(
-    () =>
-      taskLists
-        ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
-        : {},
-    [taskListIdentifier, taskLists],
-  );
 
   const selectedTab = tabName || TaskListTabName.OPEN;
 
@@ -610,7 +592,100 @@ const initializeListDetailsViewHooks = (match, history) => {
     return () => {};
   }, [currentUserIdentifier]);
 
+  const VIEW_LIST_OPTIONS_CONFIG = {
+    SHOW_WORKFLOW_DETAILS: false,
+    SHOW_WORKFLOW_COMPLETED_TASKS: false,
+  };
+
+  const displayListPreferences = useMemo(() => {
+    const { displayOptions = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
+    return displayOptions.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      VIEW_LIST_OPTIONS_CONFIG,
+    );
+  }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
+
+  const setDisplayColumnPreferences = useCallback(
+    (newConfig, options) => {
+      if (options?.isCustomColumn) {
+        dispatch(
+          updateOrganizationCustomFields(
+            newConfig.filter(f => f.isChecked).map(f => f.identifier),
+          ),
+        );
+      } else {
+        const parsedConfig = Object.entries(newConfig).reduce(
+          (accumulator, [key, value]) =>
+            value ? [...accumulator, key] : accumulator,
+          [],
+        );
+        dispatch(
+          updateColumnOnListPreferences(
+            parsedConfig,
+            taskList.taskListIdentifier,
+            currentUserIdentifier,
+          ),
+        );
+      }
+    },
+    [currentUserIdentifier, dispatch, taskList],
+  );
+
+  const CONFIGURABLE_COLUMNS_CONFIG = {
+    [TaskItemColumn.WORKFLOW_STATUS]: false,
+    [TaskItemColumn.ASSIGNED]: false,
+    [TaskItemColumn.ACTIVITY]: false,
+    [TaskItemColumn.DUE_DATE]: false,
+    [TaskItemColumn.PATIENT]: false,
+  };
+
+  useEffect(() => {
+    const { displayColumns = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
+    const transformedColumnsPreference = displayColumns.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      { ...columnsConfig, ...CONFIGURABLE_COLUMNS_CONFIG },
+    );
+    setColumnsConfig(transformedColumnsPreference);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserIdentifier, setColumnsConfig, taskList]);
+
+  const setDisplayListPreferences = useCallback(
+    columnKey => {
+      const newConfig = {
+        ...displayListPreferences,
+        [columnKey]: !displayListPreferences[columnKey],
+      };
+      const parsedConfig = Object.entries(newConfig).reduce(
+        (accumulator, [key, value]) =>
+          value ? [...accumulator, key] : accumulator,
+        [],
+      );
+      dispatch(
+        updateUserListViewSetup(
+          taskListIdentifier,
+          parsedConfig,
+          currentUserIdentifier,
+        ),
+      );
+    },
+    [
+      displayListPreferences,
+      dispatch,
+      taskListIdentifier,
+      currentUserIdentifier,
+    ],
+  );
+
   return {
+    taskList,
     bulkEditIsDisabled,
     bulkEditTasks,
     changeGroupsOrder,
@@ -627,7 +702,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     isFetching,
     isTourOpen,
     listDetailsActions,
-    loadedTasklist,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
@@ -644,7 +718,9 @@ const initializeListDetailsViewHooks = (match, history) => {
     taskCounters,
     taskListIdentifier,
     toggleTaskCompletedStatus,
-    viewSetup,
+    displayListPreferences,
+    setDisplayListPreferences,
+    setDisplayColumnPreferences,
   };
 };
 

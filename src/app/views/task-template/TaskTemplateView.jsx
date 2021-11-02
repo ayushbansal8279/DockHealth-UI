@@ -1,6 +1,7 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import * as ModalActions from 'modal/actions';
@@ -9,7 +10,10 @@ import {
   taskTemplatesSelector,
   isFetchingTaskTemplatesSelector,
 } from 'selectors/task-template-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasSmartFlowsSelector,
+} from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import Spacing from 'components/common/Spacing';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
@@ -79,6 +83,7 @@ const TaskTemplateView = ({
   const [isBannerOpen, setIsBannerOpen] = useState(
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
+  const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {
     if (userProfile?.orgUserRole === 'GUEST') {
@@ -93,6 +98,10 @@ const TaskTemplateView = ({
 
   const handleCreateTemplateFolder = useCallback(() => {
     modalActions.openModal('CreateTemplateFolder');
+  }, [modalActions]);
+
+  const handleCreateSmartFlow = useCallback(() => {
+    modalActions.openModal('CreateSmartFlow');
   }, [modalActions]);
 
   const handleSortChange = (key, order) => {
@@ -215,6 +224,11 @@ const TaskTemplateView = ({
           </SearchWrapper>
           <Grid container justify="flex-end" alignItems="center">
             <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
+            {smartFlowAvailable && (
+              <AddButton onClick={handleCreateSmartFlow}>
+                Add SmartFlow
+              </AddButton>
+            )}
             <AddButton onClick={handleCreateTemplateFolder}>
               Add Folder
             </AddButton>

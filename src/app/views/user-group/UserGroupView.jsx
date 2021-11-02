@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
-// eslint-disable-next-line import/no-named-as-default
-import useBoolean from 'hooks/useBoolean';
+import { USERS_SETTINGS_PATH } from 'routing/helpers/paths';
+import { useBoolean } from 'hooks/useBoolean';
 import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
@@ -132,7 +132,7 @@ function UserGroupView() {
                 </HeaderMessageContainer>
               </Grid>
               <Grid item xs={12} sm={12} md={4}>
-                <Link to="/settings/subscriptions">
+                <Link to={USERS_SETTINGS_PATH}>
                   <Button fullWidth>Manage Users</Button>
                 </Link>
               </Grid>

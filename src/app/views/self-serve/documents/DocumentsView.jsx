@@ -4,7 +4,7 @@ import { useMount } from 'react-use';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
-// import useBoolean from 'hooks/useBoolean';
+// import { useBoolean } from 'hooks/useBoolean';
 import PdfPage from 'img/pdf-page.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { downloadBAADocument } from 'api/organization-api';

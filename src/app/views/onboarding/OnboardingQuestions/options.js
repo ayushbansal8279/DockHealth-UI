@@ -1,3 +1,5 @@
+const NONE = 'None of the above';
+
 export const ROLE_OPTIONS = [
   'CEO/Practice owner',
   'MD/DO/DMD/PhD/PsyD',
@@ -17,6 +19,7 @@ export const ROLE_OPTIONS = [
   'Pharmacist',
   'Virtual Assistant',
   'Medical Biller',
+  NONE,
 ];
 
 export const DOMAIN_OPTIONS = [
@@ -60,6 +63,7 @@ export const DOMAIN_OPTIONS = [
   'Sports Medicine',
   'Surgery',
   'Urology',
+  NONE,
 ];
 
 export const HEALTH_RECORD_OPTIONS = [
@@ -76,6 +80,7 @@ export const HEALTH_RECORD_OPTIONS = [
   'Greenway',
   'NextGen',
   'Practice Fusion',
+  NONE,
 ];
 
 export const SOFTWARE_OPTIONS = [
@@ -84,10 +89,11 @@ export const SOFTWARE_OPTIONS = [
   'Dropbox',
   'Box',
   'Google Drive',
-  'Intake Q',
+  'IntakeQ',
   'JotForm',
   'Hubspot',
   'Salesforce',
   'Spruce',
-  'Ring Central',
+  'RingCentral',
+  NONE,
 ];

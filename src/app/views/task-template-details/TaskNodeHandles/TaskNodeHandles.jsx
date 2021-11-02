@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { Handle, Position } from 'react-flow-renderer';
 import palette from 'styles/palette';
 import {

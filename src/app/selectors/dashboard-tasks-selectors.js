@@ -23,5 +23,5 @@ export const dashboardGroupTasksCountSelector = createSelector(
 
 export const dashboardAllTaskItemsSelector = createSelector(
   dashboardTasksStateSelector,
-  ({ tasksList }) => tasksList?.flatMap(({ tasks }) => tasks) || [],
+  ({ tasksList }) => tasksList?.flatMap(l => l?.tasks || []) || [],
 );

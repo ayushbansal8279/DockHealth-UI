@@ -134,7 +134,7 @@ const newUserTourHooks = ({
       <TourPopover
         anchorEl={firstListElement}
         position="right-start"
-        open={firstListIdentifier && firstListElement}
+        open={!!(firstListIdentifier && firstListElement)}
         onClose={() => setFirstListIdentifier(null)}
       >
         <StandardTourContent
@@ -151,7 +151,7 @@ const newUserTourHooks = ({
       <TourPopover
         anchorEl={inboxListElement}
         position="right-start"
-        open={inboxPopoverOpen && inboxListElement}
+        open={!!(inboxPopoverOpen && inboxListElement)}
         onClose={closeInboxPopup}
       >
         <StandardTourContent

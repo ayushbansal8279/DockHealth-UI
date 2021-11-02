@@ -16,10 +16,14 @@ import {
   SET_LIST_DETAILS_TASKS_SORT,
   REQUEST_ALL_LIST_DETAILS_GROUPS,
   ADD_TASK_SUCCESS,
-  UPDATE_TEMPLATE_BUNDLE,
+  UPDATE_TEMPLATE_BUNDLE_SUCCESS,
   ADD_TEMPLATE_BUNDLE,
   DELETE_TEMPLATE_BUNDLE,
   COMPLETE_TEMPLATE_BUNDLE,
+  MOVE_TEMPLATE_BUNDLE_SUCCESS,
+  UPDATE_TEMPLATE_BUNDLE_FAILURE,
+  GET_LIST_CUSTOM_FIELDS_SUCCESS,
+  GET_LIST_CUSTOM_FIELDS_FAILURE,
 } from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
@@ -48,6 +52,7 @@ const initialState = {
     key: null,
     order: null,
   },
+  listCustomFields: [],
 };
 
 function updateGroupInState(updateCallback, taskGroupIdentifier, state) {
@@ -118,6 +123,18 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 const ListDetailsReducer = (state = initialState, action) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
+    case GET_LIST_CUSTOM_FIELDS_SUCCESS: {
+      const { listCustomFields } = action;
+      return {
+        ...state,
+        listCustomFields,
+      };
+    }
+    case GET_LIST_CUSTOM_FIELDS_FAILURE:
+      return {
+        ...state,
+        listCustomFields: [],
+      };
     case TASK_GROUP_LIST_REQUEST:
       return {
         ...state,
@@ -359,7 +376,8 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case UPDATE_TEMPLATE_BUNDLE: {
+    case UPDATE_TEMPLATE_BUNDLE_FAILURE:
+    case UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
       return {
@@ -434,6 +452,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       );
     }
 
+    case MOVE_TEMPLATE_BUNDLE_SUCCESS:
     case DELETE_TEMPLATE_BUNDLE:
     case COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import Input from 'components/common/Input/Input';
 import {
@@ -183,7 +183,6 @@ const SelectDropdown = React.forwardRef(
             InputLabelProps={{
               shrink: true,
             }}
-            parentType="select"
             inputProps={{
               autoComplete: 'off',
               value: inputValue,

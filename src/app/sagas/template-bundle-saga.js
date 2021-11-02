@@ -1,5 +1,4 @@
 import { pluck, move } from 'ramda';
-import * as ActionTypesSaga from 'actions/action-types-saga';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from 'alert/AlertMessages';
 import * as TemplateBundleApi from 'api/template-bundle-api';
@@ -46,7 +45,7 @@ function* reorderTasksInTemplateBundle(payload) {
     }
 
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       dataToUpdate: { tasks: reorderedTasks },
       bundleIdentifier: bundle.identifier,
     });
@@ -60,7 +59,7 @@ function* reorderTasksInTemplateBundle(payload) {
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE,
       dataToUpdate: { tasks: bundle.tasks },
       bundleIdentifier: bundle.identifier,
     });
@@ -70,7 +69,7 @@ function* reorderTasksInTemplateBundle(payload) {
 function* updateTemplateBundle({ bundle, dataToUpdate }) {
   try {
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       bundleIdentifier: bundle.identifier,
       dataToUpdate,
     });
@@ -84,7 +83,7 @@ function* updateTemplateBundle({ bundle, dataToUpdate }) {
   } catch (error) {
     console.log('error', error);
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE,
       bundleIdentifier: bundle.identifier,
       dataToUpdate: bundle,
     });
@@ -112,9 +111,16 @@ function* duplicateTemplateBundle({ bundleIdentifier, includeAttachments }) {
 function* deleteTemplateBundle({ bundleIdentifier }) {
   try {
     yield call(TemplateBundleApi.deleteTemplateBundle, bundleIdentifier);
-    yield put({ type: ActionTypes.DELETE_TEMPLATE_BUNDLE, bundleIdentifier });
+    yield put({
+      type: ActionTypes.DELETE_TEMPLATE_BUNDLE_SUCCESS,
+      bundleIdentifier,
+    });
     yield put(showGlobalAlert(AlertMessages.DELETED));
   } catch {
+    yield put({
+      type: ActionTypes.DELETE_TEMPLATE_BUNDLE_FAILURE,
+      bundleIdentifier,
+    });
     yield put(showGlobalErrorAlert());
   }
 }
@@ -131,7 +137,10 @@ function* moveTemplateBundle({
       taskListIdentifier,
       taskGroupIdentifier,
     );
-    yield put({ type: ActionTypes.DELETE_TEMPLATE_BUNDLE, bundleIdentifier });
+    yield put({
+      type: ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS,
+      bundleIdentifier,
+    });
     yield put({
       type: ActionTypes.ADD_TEMPLATE_BUNDLE,
       bundle: updatedBundle,
@@ -139,6 +148,10 @@ function* moveTemplateBundle({
     yield put(showGlobalAlert(AlertMessages.MOVED));
   } catch {
     yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.MOVE_TEMPLATE_BUNDLE_FAILURE,
+      bundleIdentifier,
+    });
   }
 }
 
@@ -153,7 +166,7 @@ function* changePatientForTemplateBundle({ taskTemplateIdentifier, patient }) {
     );
 
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       bundleIdentifier: bundle.identifier,
       dataToUpdate: !patient ? { ...bundle, patient: null } : bundle,
     });
@@ -190,19 +203,19 @@ function* applyTemplate({
 }
 
 export default function* watchTemplateBundle() {
-  yield takeEvery(ActionTypesSaga.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
+  yield takeEvery(ActionTypes.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
   yield takeEvery(
-    ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
+    ActionTypes.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
     reorderTasksInTemplateBundle,
   );
   yield takeEvery(
-    ActionTypesSaga.DUPLICATE_TEMPLATE_BUNDLE,
+    ActionTypes.DUPLICATE_TEMPLATE_BUNDLE,
     duplicateTemplateBundle,
   );
-  yield takeEvery(ActionTypesSaga.DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
-  yield takeEvery(ActionTypesSaga.MOVE_TEMPLATE_BUNDLE, moveTemplateBundle);
+  yield takeEvery(ActionTypes.DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
+  yield takeEvery(ActionTypes.MOVE_TEMPLATE_BUNDLE, moveTemplateBundle);
   yield takeEvery(
-    ActionTypesSaga.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
+    ActionTypes.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
     changePatientForTemplateBundle,
   );
   yield takeEvery(ActionTypes.APPLY_TEMPLATE, applyTemplate);

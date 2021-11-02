@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 import { Box, Grid } from '@material-ui/core';
 import { isEmpty } from 'ramda';
 import { createPatientDetailsPath } from 'routing/helpers/paths';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as PatientApi from 'api/patient-api';
 import { setHeader } from 'actions/template-actions';

@@ -48,10 +48,6 @@ export const Spacing1 = styled(Spacing)`
   height: 1rem;
 `;
 
-export const Spacing2 = styled(Spacing)`
-  height: 2rem;
-`;
-
 export const SubscriptionPaymentViewOuterContainer = styled.div`
   background-color: ${palette.white};
   display: flex;
@@ -121,7 +117,7 @@ export const PricingItemDivider = styled.div`
 
 export const PricingItemVerticallyExpanded = styled.div`
   grid-row-start: 1;
-  grid-row-end: 3;
+  grid-row-end: 4;
 `;
 
 export const Anchor = styled.a`

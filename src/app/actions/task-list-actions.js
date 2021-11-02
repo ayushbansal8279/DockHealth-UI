@@ -5,6 +5,37 @@ import * as AlertActions from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from '../alert/AlertMessages';
 
+export function initializeTaskListState(taskListIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_TASK_LIST_STATE,
+    taskListIdentifier,
+  };
+}
+
+export function getCurrentTaskList() {
+  return {
+    type: ActionTypes.GET_CURRENT_TASK_LIST,
+  };
+}
+
+export const updateUserListViewSetup = (
+  taskListIdentifier,
+  setup,
+  currentUserIdentifier,
+) => {
+  return {
+    type: ActionTypes.UPDATE_LIST_VIEW_SETUP,
+    payload: { taskListIdentifier, setup, currentUserIdentifier },
+  };
+};
+
+export const updateUserPageViewSetup = setup => {
+  return {
+    type: ActionTypes.UPDATE_USER_VIEW_SETUP,
+    payload: { setup },
+  };
+};
+
 export function getTaskListForUser() {
   return dispatch => {
     return TaskListApi.getTaskListForUser()
@@ -45,12 +76,6 @@ export function getPendingTaskListsForUser() {
 export function loading() {
   return dispatch => {
     dispatch({ type: ActionTypes.REQUEST_LISTS });
-  };
-}
-
-export function setTaskListAsCurrentList(currentList) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.SET_CURRENT_LIST, currentList });
   };
 }
 
@@ -101,15 +126,6 @@ export function saveTaskList(formProps) {
         );
         throw error;
       });
-}
-
-export function getTaskListById(taskListIdentifier) {
-  return dispatch =>
-    TaskListApi.getTaskListById(taskListIdentifier)
-      .then(currentList => {
-        dispatch({ type: ActionTypes.SET_CURRENT_LIST, currentList });
-      })
-      .catch(noop);
 }
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
@@ -438,18 +454,6 @@ export function toggleListNotifications(
       });
 }
 
-export function storeAsCurrentList(taskListIdentifier) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.SET_AS_CURRENT_LIST, taskListIdentifier });
-  };
-}
-
-export function isList(boolean) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.IS_LIST, boolean });
-  };
-}
-
 export function isInbox(boolean) {
   return dispatch => {
     dispatch({ type: ActionTypes.IS_INBOX, boolean });
@@ -537,3 +541,12 @@ export function rejectInviteToTaskList(taskList) {
       });
   };
 }
+
+export const updateColumnOnListPreferences = (
+  setup,
+  taskListIdentifier,
+  currentUserIdentifier,
+) => ({
+  type: ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
+  payload: { setup, taskListIdentifier, currentUserIdentifier },
+});

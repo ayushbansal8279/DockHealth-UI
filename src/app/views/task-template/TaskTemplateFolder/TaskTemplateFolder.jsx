@@ -24,7 +24,11 @@ import {
 } from './styled';
 
 const TaskTemplateFolder = ({ template, children, onClick }) => {
-  const { taskTemplateIdentifier, name } = template;
+  const {
+    taskTemplateIdentifier,
+    name,
+    // publicAccess = false
+  } = template;
 
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -49,6 +53,17 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
           nameInputReference.current?.focus();
         },
       },
+      // {
+      //   name: publicAccess ? 'Make Private' : 'Make Public',
+      //   onClick: () => {
+      //     dispatch(
+      //       TaskTemplateActions.switchTemplatePublic(
+      //         taskTemplateIdentifier,
+      //         !publicAccess,
+      //       ),
+      //     );
+      //   },
+      // },
       {
         name: 'Delete Folder',
         color: palette.oPlusRed,
@@ -68,7 +83,12 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
           ),
       },
     ],
-    [taskTemplateIdentifier, dispatch, nameInputReference],
+    [
+      taskTemplateIdentifier,
+      dispatch,
+      nameInputReference,
+      // publicAccess
+    ],
   );
 
   const handleNameInputKeyDown = useCallback(

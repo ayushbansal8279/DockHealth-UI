@@ -2,6 +2,7 @@
 import {
   SET_TASK_DRAWER_STATE,
   OPEN_TASK_DRAWER_WITH_CONTENT,
+  GET_TASK_CUSTOM_FIELDS,
 } from './action-types';
 
 export const setDrawerState = ({ open, focusField }) => dispatch => {
@@ -25,4 +26,10 @@ export const openTaskDrawerWithContent = (task, focusField) => ({
   open: true,
   task,
   focusField,
+});
+
+export const getTaskCustomFields = (taskIdentifier, taskListIdentifier) => ({
+  type: GET_TASK_CUSTOM_FIELDS,
+  taskIdentifier,
+  taskListIdentifier,
 });

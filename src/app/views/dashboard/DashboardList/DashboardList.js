@@ -6,7 +6,8 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { connect } from 'react-redux';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { connect, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
@@ -18,7 +19,7 @@ import Switch from 'components/common/Switch/Switch';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-import { getTaskStatsForUser } from 'api/task-api';
+import { getUserTaskStats } from 'api/user-api';
 import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
@@ -33,13 +34,11 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import Search from 'components/task-view/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
-  TASK_ITEM_BASE_COLUMN_CONFIG,
   TaskItemColumn,
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
 import usePrevious from 'hooks/use-previous';
-
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
@@ -53,7 +52,8 @@ import {
 import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import DashboardSettings from '../DashboardSettings/DashboardSettings';
+import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -69,7 +69,6 @@ import {
 import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
 
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
-  ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.LIST_NAME]: true,
 };
 
@@ -77,6 +76,8 @@ const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: false,
   [TaskItemColumn.ASSIGNED]: false,
   [TaskItemColumn.ACTIVITY]: false,
+  [TaskItemColumn.DUE_DATE]: false,
+  [TaskItemColumn.PATIENT]: false,
 };
 
 export const DashboardTab = ({
@@ -139,7 +140,10 @@ const DashboardList = ({
   tourModalIsOpen,
   openTourModal,
 }) => {
+  const dispatch = useDispatch();
   const history = useHistory();
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+
   const { openModal } = modalActions;
   const [selectedTab, setSelectedTab] = useState('MY_TASKS');
   const [highlightPosition, setHighlightPosition] = useState({
@@ -154,18 +158,26 @@ const DashboardList = ({
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-  const [columnsConfig, setColumnsConfig] = useState(
-    () =>
-      userPreferColumns?.reduce(
-        (accumulator, value) => ({ ...accumulator, [value]: true }),
-        DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
-      ) || {},
-  );
   const { filters, selectedFilters } = megaFilter;
-
   const previousSelectedFilters = useRef(selectedFilters);
   const previousSearchValue = useRef(null);
   const previousSelectedTab = useRef(null);
+
+  useEffect(() => {
+    const config =
+      userPreferColumns?.reduce(
+        (accumulator, value) => ({ ...accumulator, [value]: true }),
+        DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
+      ) || {};
+    const customizedDashboardConfig = {
+      ...columnsConfig,
+      ...config,
+      ...DASHBOARD_BASE_COLUMNS_CONFIG,
+    };
+    setColumnsConfig(customizedDashboardConfig);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setColumnsConfig, userPreferColumns]);
 
   useEffect(() => {
     previousSelectedFilters.current = selectedFilters;
@@ -215,7 +227,7 @@ const DashboardList = ({
   useEffect(() => {
     if (currentUser) {
       if (selectedTab === 'MY_TASKS') {
-        getTaskStatsForUser(currentUser.userIdentifier).then(counters => {
+        getUserTaskStats(currentUser.userIdentifier).then(counters => {
           const completeTaskCounter = counters.find(
             ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
           );
@@ -359,9 +371,29 @@ const DashboardList = ({
     reloadDashboardTasks();
   }, [reloadDashboardTasks, fetchDashboardFilters]);
 
-  const mergedColumnsConfig = useMemo(
-    () => ({ ...DASHBOARD_BASE_COLUMNS_CONFIG, ...columnsConfig }),
-    [columnsConfig],
+  const onClickCheckbox = useCallback(
+    (newConfig, options) => {
+      if (options?.isCustomColumn) {
+        dispatch(
+          updateCurrentUserPreferences({
+            customFieldDisplayColumns: newConfig
+              .filter(f => f.isChecked)
+              .map(f => f.identifier),
+          }),
+        );
+      } else {
+        dispatch(
+          updateCurrentUserPreferences({
+            displayColumns: Object.entries(newConfig).reduce(
+              (accumulator, [key, value]) =>
+                value ? [...accumulator, key] : accumulator,
+              [],
+            ),
+          }),
+        );
+      }
+    },
+    [dispatch],
   );
 
   return (
@@ -425,10 +457,7 @@ const DashboardList = ({
               <Switch checked={tourModalIsOpen} onChange={openTourModal} />
             </div>
             <Spacing horizontal={4} />
-            <DashboardSettings
-              columnsConfig={columnsConfig}
-              setColumnsConfig={setColumnsConfig}
-            />
+            <ColumnDisplaySettings onChange={onClickCheckbox} />
           </ActionsContainer>
         </ToolbarContainer>
       </StickyHeader>
@@ -454,7 +483,6 @@ const DashboardList = ({
                     currentSortMethod={currentSortMethodWithOrder}
                     currentSort={currentSort}
                     onSortChange={handleSortChange}
-                    columnsConfig={mergedColumnsConfig}
                     showClearSortFiltersModal={showClearSortFiltersModal}
                     isSortApplied={isSortApplied}
                     areFiltersApplied={areFiltersApplied}

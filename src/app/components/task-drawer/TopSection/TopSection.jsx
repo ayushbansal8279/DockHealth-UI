@@ -8,6 +8,7 @@ import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
+import { getTaskListForUser } from 'actions/task-list-actions';
 import InputPopover from 'components/common/InputPopover/InputPopover';
 import { HorizontalLabel } from '../styled';
 import {
@@ -134,8 +135,6 @@ const TopSection = ({
     selectedTask,
   });
 
-  const moreTaskListsAvailable = !!(taskLists && taskLists.length > 1);
-
   const hasAttachments = !!(
     selectedTask &&
     selectedTask.attachments &&
@@ -160,11 +159,12 @@ const TopSection = ({
               <Spacing horizontal={3} />
               <ListNameSelectContainer
                 ref={filedInInputReference}
-                onClick={
-                  moreTaskListsAvailable ? openFiledInPopover : undefined
-                }
+                onClick={() => {
+                  dispatch(getTaskListForUser());
+                  openFiledInPopover();
+                }}
               >
-                <FiledInSelect enableDropDown={moreTaskListsAvailable}>
+                <FiledInSelect>
                   {selectedTask ? (
                     <RobotoTypography condensed color="inherit">
                       {isInbox
@@ -177,12 +177,8 @@ const TopSection = ({
                     </RobotoTypography>
                   )}
                 </FiledInSelect>
-                {moreTaskListsAvailable && (
-                  <>
-                    <Spacing horizontal={3} />
-                    <SmallSwitchChevronDown color={palette.orangeJulius} />
-                  </>
-                )}
+                <Spacing horizontal={3} />
+                <SmallSwitchChevronDown color={palette.orangeJulius} />
               </ListNameSelectContainer>
               <InputPopover
                 anchorElement={filedInInputReference}
@@ -193,18 +189,22 @@ const TopSection = ({
                 }}
               >
                 <StyledList ref={taskListsContainerReference}>
-                  {(taskLists ?? []).map(
-                    renderTaskList({
-                      closePopover: closeFiledInPopover,
-                      onFiledInInputChange,
-                      setValue,
-                      reFileTask,
-                      closeTaskDrawer,
-                      selectedTaskIdentifier,
-                      selectedTaskListName: taskList?.listName,
-                      hasSubtasks,
-                      dispatch,
-                    }),
+                  {taskLists ? (
+                    taskLists.map(
+                      renderTaskList({
+                        closePopover: closeFiledInPopover,
+                        onFiledInInputChange,
+                        setValue,
+                        reFileTask,
+                        closeTaskDrawer,
+                        selectedTaskIdentifier,
+                        selectedTaskListName: taskList?.listName,
+                        hasSubtasks,
+                        dispatch,
+                      }),
+                    )
+                  ) : (
+                    <ListItem>Loading ...</ListItem>
                   )}
                 </StyledList>
               </InputPopover>
@@ -231,7 +231,6 @@ const TopSection = ({
         <Spacing horizontal={4} />
         <IconButton
           onClick={() => {
-            // storeAsCurrentTask(null);
             closeTaskDrawer();
           }}
           size="small"

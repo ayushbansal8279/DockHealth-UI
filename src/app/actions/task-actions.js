@@ -10,12 +10,11 @@ import { reloadDashboardTasks } from 'sagas/dashboard-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
-import * as ActionTypesSaga from './action-types-saga';
 import AlertMessages from '../alert/AlertMessages';
 
 export function refreshTaskBundle(templateBundleIdentifier) {
   return {
-    type: ActionTypesSaga.REFRESH_TASK_BUNDLE,
+    type: ActionTypes.REFRESH_TASK_BUNDLE,
     templateBundleIdentifier,
   };
 }
@@ -32,7 +31,7 @@ export const chooseTaskDecisionOutcome = (
   task,
   templateBundleIdentifier,
 ) => ({
-  type: ActionTypesSaga.CHOOSE_DECISION_TASK_OPTION,
+  type: ActionTypes.CHOOSE_DECISION_TASK_OPTION,
   payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
 });
 
@@ -893,7 +892,7 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
 
 export function reorderSubtasks({ parentTask, source, destination }) {
   return {
-    type: ActionTypesSaga.REORDER_SUBTASKS,
+    type: ActionTypes.REORDER_SUBTASKS,
     parentTask,
     source,
     destination,

@@ -21,7 +21,7 @@ import SelfEnrolledUser from 'views/auth/SelfEnrolledUser';
 import UnEnrolledUser from 'views/auth/UnEnrolledUser';
 import ApproveDisapproveUser from 'views/auth/ApproveDisapproveUser';
 import ErrorPage from 'views/ErrorPage';
-import ListDetailsView from 'views/list-details/ListDetailsView';
+import ListDetailsView from 'views/list-details/ListDetailsViewContainer';
 import OnboardingBaaCheckView from 'views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from 'views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from 'views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';
@@ -42,6 +42,7 @@ import DocumentsView from 'views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from 'views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
 import SubscriptionPaymentView from 'views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from 'views/self-serve/subscriptions/SubscriptionsView';
+import UsersView from 'views/self-serve/users/UsersView';
 import SupportView from 'views/Support/SupportView';
 import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
 import UserProfileView from 'views/UserProfile/UserProfileView';
@@ -61,11 +62,6 @@ import {
   onEnterPatientDetailsView,
   onLeavePatientDetailsView,
 } from './TemplateCoreSubscriptionPlan/PatientDetails';
-
-import {
-  onEnterPersonDetails,
-  onLeavePersonDetails,
-} from './TemplateCoreSubscriptionPlan/PersonDetails';
 
 import {
   onEnterListDetailsView,
@@ -89,6 +85,10 @@ export const SETTINGS_ROUTES = [
   {
     path: '/subscriptions',
     RouteComponent: SubscriptionsView,
+  },
+  {
+    path: '/users',
+    RouteComponent: UsersView,
   },
   {
     path: '/billing',
@@ -143,8 +143,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/assignedToPerson/:userIdentifier/:tabName?',
     RouteComponent: PersonDetailsView,
-    onEnter: onEnterPersonDetails,
-    onLeave: onLeavePersonDetails,
   },
   {
     path: '/people/:groupIdentifier?',

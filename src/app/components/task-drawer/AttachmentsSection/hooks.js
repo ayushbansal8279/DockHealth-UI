@@ -5,7 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { isEmpty } from 'ramda';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 
 import { getMemoTaskAttachment } from './helpers';
 

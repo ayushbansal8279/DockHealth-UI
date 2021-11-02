@@ -5,7 +5,7 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 
 const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
   const currentUser = useSelector(userProfileSelector);

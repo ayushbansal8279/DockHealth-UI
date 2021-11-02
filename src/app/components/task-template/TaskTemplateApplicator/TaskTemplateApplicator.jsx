@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useState, useCallback } from 'react';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';

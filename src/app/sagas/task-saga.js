@@ -7,11 +7,6 @@ import * as TaskApi from 'api/task-api';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
-import {
-  REORDER_SUBTASKS,
-  CHOOSE_DECISION_TASK_OPTION,
-  REFRESH_TASK_BUNDLE,
-} from 'actions/action-types-saga';
 import { getTemplateBundle } from 'api/template-bundle-api';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
@@ -53,8 +48,10 @@ function* reorderSubtasks(payload) {
       pluck('taskIdentifier', reorderedSubtasks),
     );
     yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield put({ type: ActionTypes.REORDER_SUBTASKS_SUCCESS });
   } catch {
     yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.REORDER_SUBTASKS_FAILURE });
     yield put({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: parentTask,
@@ -126,7 +123,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
       templateBundleIdentifier,
     );
     yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
+      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       bundleIdentifier: templateBundleIdentifier,
       dataToUpdate: templateBundle,
     });
@@ -188,12 +185,12 @@ function* addTask({ task }) {
 }
 
 export default function* watchTask() {
-  yield takeEvery(REORDER_SUBTASKS, reorderSubtasks);
+  yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
-  yield takeEvery(CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
-  yield takeEvery(REFRESH_TASK_BUNDLE, refreshTemplateBundle);
+  yield takeEvery(ActionTypes.CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
+  yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
   yield takeEvery(ActionTypes.ADD_TASK, addTask);
 }

@@ -6,7 +6,7 @@ import { downloadPatientImportTemplate } from 'api/patient-api';
 
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { SearchInputWrapper, Container, ImportButton } from './styled';

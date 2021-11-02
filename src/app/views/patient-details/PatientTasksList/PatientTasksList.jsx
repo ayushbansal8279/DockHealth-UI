@@ -34,6 +34,7 @@ import {
 import {
   userProfileSelector,
   userSetupClientViewSelector,
+  userProfileDashboardPrefsSelector,
 } from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -48,6 +49,7 @@ import { TaskItemColumn, TaskItemType } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
@@ -66,6 +68,14 @@ const PATIENT_VIEW_COLUMNS_CONFIG = {
 const PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
   [TaskItemColumn.LIST_NAME]: true,
+};
+
+const PATIENT_CONFIGURABLE_COLUMNS_CONFIG = {
+  [TaskItemColumn.WORKFLOW_STATUS]: false,
+  [TaskItemColumn.ASSIGNED]: false,
+  [TaskItemColumn.ACTIVITY]: false,
+  [TaskItemColumn.DUE_DATE]: false,
+  [TaskItemColumn.PATIENT]: false,
 };
 
 const PatientTasksListView = () => {
@@ -88,7 +98,8 @@ const PatientTasksListView = () => {
   );
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -101,6 +112,27 @@ const PatientTasksListView = () => {
     fetchPatientFilters,
     initializeSavedFilters,
   } = useActions(PatientTasksSagaActions);
+
+  const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
+  useEffect(() => {
+    const taskItemConfig = isAllTasksView
+      ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
+      : PATIENT_VIEW_COLUMNS_CONFIG;
+    const config =
+      userPreferColumns?.reduce(
+        (accumulator, value) => ({ ...accumulator, [value]: true }),
+        PATIENT_CONFIGURABLE_COLUMNS_CONFIG,
+      ) || {};
+    const customizedDashboardConfig = {
+      ...columnsConfig,
+      ...config,
+      ...taskItemConfig,
+    };
+    setColumnsConfig(customizedDashboardConfig);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAllTasksView, setColumnsConfig, userPreferColumns]);
 
   useEffect(() => {
     if (patientIdentifier) {
@@ -216,8 +248,6 @@ const PatientTasksListView = () => {
     },
     [dispatch, togglePatientTaskStatus],
   );
-
-  const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
   const activeList = useMemo(
     () =>

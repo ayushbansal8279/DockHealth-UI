@@ -31,6 +31,7 @@ import Search from 'components/task-view/Search/Search';
 import { setHeader } from 'actions/template-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import {
   PatientDetailsContainer,
@@ -133,58 +134,70 @@ const PatientDetailsView = () => {
 
   return (
     <div>
-      <PatientDetailsHeader />
-      <PatientDetailsTabsContainer>
-        <Grid container justify="space-between">
-          <Grid item xs={8}>
-            <Tabs value={activeTabPath} onChange={handleTabChange}>
-              {TABS_CONFIG.map(t => (
-                <MainTab key={t.mainPath} value={t.mainPath} label={t.label} />
-              ))}
-            </Tabs>
-          </Grid>
-          {activeTabPath === 'tasks' && (
-            <Grid container item xs={4} justify="flex-end" alignItems="center">
-              <MegaFilter
-                filters={filters}
-                selectedFilters={selectedFilters}
-                onSelectFilters={handleFilterChange}
-                isFetching={isFetchingLists}
-              />
-              <Spacing horizontal={5} />
-              <SearchWrapper fullWidth={isSearchFocused || searchValue}>
-                <Search
-                  fullWidth
-                  noBackground
-                  value={searchValue}
-                  onFocus={setIsSearchFocused}
-                  onBlur={unsetIsSearchFocused}
-                  onChange={handleSearchValueChange}
-                  placeholder={
-                    isSearchFocused ? 'Search Tasks and Comments' : 'Search'
-                  }
-                />
-              </SearchWrapper>
+      <ColumnsConfigProvider>
+        <PatientDetailsHeader />
+        <PatientDetailsTabsContainer>
+          <Grid container justify="space-between">
+            <Grid item xs={8}>
+              <Tabs value={activeTabPath} onChange={handleTabChange}>
+                {TABS_CONFIG.map(t => (
+                  <MainTab
+                    key={t.mainPath}
+                    value={t.mainPath}
+                    label={t.label}
+                  />
+                ))}
+              </Tabs>
             </Grid>
-          )}
-        </Grid>
-      </PatientDetailsTabsContainer>
-      <PatientDetailsContainer>
-        <Switch>
-          {TABS_CONFIG?.map(route => (
-            <RouteWrapper
-              key={route.mainPath}
-              path={`${path}/${route.mainPath}${
-                route.additionalPath ? `/${route.additionalPath}` : ''
-              }`}
-              RouteComponent={route.RouteComponent}
-              onEnter={route.onEnter}
-              exact={route.exact}
-            />
-          ))}
-          <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
-        </Switch>
-      </PatientDetailsContainer>
+            {activeTabPath === 'tasks' && (
+              <Grid
+                container
+                item
+                xs={4}
+                justify="flex-end"
+                alignItems="center"
+              >
+                <MegaFilter
+                  filters={filters}
+                  selectedFilters={selectedFilters}
+                  onSelectFilters={handleFilterChange}
+                  isFetching={isFetchingLists}
+                />
+                <Spacing horizontal={5} />
+                <SearchWrapper fullWidth={isSearchFocused || searchValue}>
+                  <Search
+                    fullWidth
+                    noBackground
+                    value={searchValue}
+                    onFocus={setIsSearchFocused}
+                    onBlur={unsetIsSearchFocused}
+                    onChange={handleSearchValueChange}
+                    placeholder={
+                      isSearchFocused ? 'Search Tasks and Comments' : 'Search'
+                    }
+                  />
+                </SearchWrapper>
+              </Grid>
+            )}
+          </Grid>
+        </PatientDetailsTabsContainer>
+        <PatientDetailsContainer>
+          <Switch>
+            {TABS_CONFIG?.map(route => (
+              <RouteWrapper
+                key={route.mainPath}
+                path={`${path}/${route.mainPath}${
+                  route.additionalPath ? `/${route.additionalPath}` : ''
+                }`}
+                RouteComponent={route.RouteComponent}
+                onEnter={route.onEnter}
+                exact={route.exact}
+              />
+            ))}
+            <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
+          </Switch>
+        </PatientDetailsContainer>
+      </ColumnsConfigProvider>
     </div>
   );
 };

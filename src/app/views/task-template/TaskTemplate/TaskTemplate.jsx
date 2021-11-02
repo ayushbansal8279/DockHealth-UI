@@ -58,7 +58,13 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = {
 };
 
 const TaskTemplate = ({ template, isFullView, children }) => {
-  const { taskTemplateIdentifier, name, description, type } = template;
+  const {
+    taskTemplateIdentifier,
+    name,
+    description,
+    type,
+    // publicAccess = false,
+  } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const [draggableId, setDraggableId] = useState(null);
@@ -81,12 +87,12 @@ const TaskTemplate = ({ template, isFullView, children }) => {
 
   const menuOptions = useMemo(
     () => [
-      smartFlowsAvailable && {
+      (smartFlowsAvailable || type === 'SMARTFLOW_SAMPLE') && {
         name: 'Open in SmartFlow Builder',
         onClick: () =>
           history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
       },
-      {
+      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Edit Workflow Name',
         onClick: () => {
           setIsEditing(true);
@@ -94,7 +100,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           nameInputReference.current?.focus();
         },
       },
-      {
+      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Move to folder',
         onClick: () =>
           dispatch(
@@ -111,7 +117,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
               onAddFolderCallback: createdFolder => {
                 if (mainListId === createdFolder.parentTaskTemplateIdentifier) {
                   dispatch({
-                    type: ActionTypes.ADD_TASK_TEMPLATE,
+                    type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
                     template: createdFolder,
                   });
                 }
@@ -119,7 +125,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             }),
           ),
       },
-      {
+      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Duplicate Workflow',
         onClick: () =>
           dispatch(
@@ -141,6 +147,17 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             }),
           ),
       },
+      // {
+      //   name: publicAccess ? 'Make Private' : 'Make Public',
+      //   onClick: () => {
+      //     dispatch(
+      //       TaskTemplateActions.switchTemplatePublic(
+      //         taskTemplateIdentifier,
+      //         !publicAccess,
+      //       ),
+      //     );
+      //   },
+      // },
       {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
@@ -162,10 +179,12 @@ const TaskTemplate = ({ template, isFullView, children }) => {
     ],
     [
       smartFlowsAvailable,
+      type,
       history,
       taskTemplateIdentifier,
       dispatch,
       mainListId,
+      // publicAccess,
     ],
   );
 
@@ -288,7 +307,9 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             onClick={handleTemplateSelect}
           />
         )}
-        {type === 'SMARTFLOW' && <CheckboxPlaceholder />}
+        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
+          <CheckboxPlaceholder />
+        )}
         {type === 'WORKFLOW' && (
           <ArrowButtonContainer>
             <ArrowButton onClick={onArrowClick}>
@@ -296,7 +317,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
             </ArrowButton>
           </ArrowButtonContainer>
         )}
-        {type === 'SMARTFLOW' && (
+        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
           <Tooltip placement="top" title="A SmartFlow">
             <SmartFlowIndicatorContainer>
               <SmartFlowButton onClick={onSmartFlowClick}>
@@ -314,7 +335,9 @@ const TaskTemplate = ({ template, isFullView, children }) => {
           onKeyDown={handleNameInputKeyDown}
           onClick={
             !isEditing &&
-            (type === 'SMARTFLOW' ? onSmartFlowClick : onArrowClick)
+            (type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE'
+              ? onSmartFlowClick
+              : onArrowClick)
           }
           value={nameInputValue}
         />

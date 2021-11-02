@@ -58,7 +58,7 @@ import {
   mapElementsToLayout,
   updateNodePosition,
   calculateNewElementPosition,
-  isTargetNode,
+  isTargetOfStandardNode,
 } from './helpers';
 import {
   ElementsSidebar,
@@ -89,7 +89,7 @@ const linkTypes = {
 const TaskTemplateDetailsView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
-  const setViewPositionReference = useRef(null);
+  const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
@@ -102,14 +102,15 @@ const TaskTemplateDetailsView = () => {
   const history = useHistory();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const { name } = useSelector(currentTaskTemplateSelector) || {};
+  const { name, type: templateType } =
+    useSelector(currentTaskTemplateSelector) || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {
-    if (smartFlowsAvailable === false) {
+    if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
       history.push('/');
     }
-  }, [smartFlowsAvailable, history]);
+  }, [smartFlowsAvailable, templateType, history]);
 
   useEffect(() => {
     dispatch(selectTaskTemplate(identifier));
@@ -129,7 +130,7 @@ const TaskTemplateDetailsView = () => {
     const { x, y } = elementPosition;
     const { offsetWidth, offsetHeight } = builderWrapperReference.current;
 
-    setViewPositionReference.current({
+    reactFlowInstance.current.setTransform({
       x: -x + offsetWidth / 2 - TASK_NODE_WIDTH / 2,
       y: -y + offsetHeight / 2,
       zoom: 1,
@@ -152,18 +153,20 @@ const TaskTemplateDetailsView = () => {
       } = node;
 
       // eslint-disable-next-line no-unused-expressions
-      tasks?.forEach(({ taskLinks }) =>
-        taskLinks.forEach(link => {
-          if (link.targetTaskIdentifier === task.identifier) {
-            dispatch(
-              updateTasksLink({
-                ...link,
-                isDependent: true,
-              }),
-            );
-          }
-        }),
-      );
+      tasks
+        ?.filter(({ intentType }) => intentType === NodeType.STANDARD)
+        .forEach(({ taskLinks }) =>
+          taskLinks.forEach(link => {
+            if (link.targetTaskIdentifier === task.identifier) {
+              dispatch(
+                updateTasksLink({
+                  ...link,
+                  isDependent: true,
+                }),
+              );
+            }
+          }),
+        );
     },
     [dispatch, tasks],
   );
@@ -174,19 +177,21 @@ const TaskTemplateDetailsView = () => {
     } = selectedElement;
 
     // eslint-disable-next-line no-unused-expressions
-    tasks?.forEach(({ taskLinks }) =>
-      taskLinks.forEach(link => {
-        if (link.targetTaskIdentifier === task.identifier) {
-          dispatch(
-            updateTasksLink({
-              ...link,
-              isDependent: true,
-              ...delayPeriodData,
-            }),
-          );
-        }
-      }),
-    );
+    tasks
+      ?.filter(({ intentType }) => intentType === NodeType.STANDARD)
+      .forEach(({ taskLinks }) =>
+        taskLinks.forEach(link => {
+          if (link.targetTaskIdentifier === task.identifier) {
+            dispatch(
+              updateTasksLink({
+                ...link,
+                isDependent: true,
+                ...delayPeriodData,
+              }),
+            );
+          }
+        }),
+      );
     closeDelayPopover();
   };
 
@@ -207,7 +212,7 @@ const TaskTemplateDetailsView = () => {
         label: 'Decision tree',
         icon: DecisionTaskElementIcon,
         onClick: () => {
-          if (selectedElement?.type === NodeType.STANDARD) {
+          if (selectedElement?.data.task) {
             if (selectedElement?.data.task.taskLinks?.length > 0) {
               dispatch(
                 openModal('Information', {
@@ -234,7 +239,7 @@ const TaskTemplateDetailsView = () => {
     if (
       selectedElement &&
       [NodeType.STANDARD, NodeType.DECISION].includes(selectedElement.type) &&
-      isTargetNode(selectedElement, tasks)
+      isTargetOfStandardNode(selectedElement, tasks)
     ) {
       actions = [
         ...actions,
@@ -327,6 +332,32 @@ const TaskTemplateDetailsView = () => {
     [hoveredTargetHandle],
   );
 
+  const handleDragOver = event => {
+    event.preventDefault();
+    // eslint-disable-next-line no-param-reassign
+    event.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = event => {
+    event.preventDefault();
+
+    const reactFlowBounds = builderWrapperReference.current.getBoundingClientRect();
+    const type = event.dataTransfer.getData('application/reactflow');
+    const position = reactFlowInstance.current.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+
+    if (type === NodeType.NEW_STANDARD) dispatch(addNewTaskElement(position));
+    else if (type === NodeType.NEW_DECISION)
+      dispatch(addNewDecisionTaskElement(position));
+  };
+
+  const handleLoad = _reactFlowInstance => {
+    reactFlowInstance.current = _reactFlowInstance;
+    setTimeout(_reactFlowInstance.fitView, 0);
+  };
+
   return (
     <>
       <ReactFlowProvider>
@@ -334,7 +365,18 @@ const TaskTemplateDetailsView = () => {
           <ElementsSidebar>
             <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
             {toolkitActions.map(({ id, label, icon: Icon, ref, onClick }) => (
-              <ElementButton key={id} type="button" ref={ref} onClick={onClick}>
+              <ElementButton
+                key={id}
+                type="button"
+                ref={ref}
+                onClick={onClick}
+                onDragStart={event => {
+                  event.dataTransfer.setData('application/reactflow', id);
+                  // eslint-disable-next-line no-param-reassign
+                  event.dataTransfer.effectAllowed = 'move';
+                }}
+                draggable
+              >
                 <ElementIconBackground>
                   <Icon />
                 </ElementIconBackground>
@@ -381,6 +423,8 @@ const TaskTemplateDetailsView = () => {
                 edgeTypes={linkTypes}
                 minZoom={0.1}
                 maxZoom={1}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
                 onElementsRemove={handleRemoveElement}
                 deleteKeyCode={46}
                 onConnectStart={(_, { nodeId }) =>
@@ -391,10 +435,7 @@ const TaskTemplateDetailsView = () => {
                   setHoveredTargetHandle(Position.Top);
                 }}
                 onNodeDragStop={handleNodeDragStop}
-                onLoad={({ fitView, setTransform }) => {
-                  setViewPositionReference.current = setTransform;
-                  setTimeout(fitView, 0);
-                }}
+                onLoad={handleLoad}
                 onSelectionChange={handleSelectionChange}
               >
                 <Controls />
