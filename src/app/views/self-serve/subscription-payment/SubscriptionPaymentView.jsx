@@ -91,7 +91,8 @@ const onSubmit = ({
           }
           unsetProcessingPayment();
         })
-        .catch(() => {
+        .catch(error => {
+          console.log(error);
           showAlert({
             status: 'error',
             title: 'Error',
@@ -306,7 +307,7 @@ const SubscriptionPaymentView = () => {
                   setProcessingPayment,
                   unsetProcessingPayment,
                   history,
-                  userProfile,
+                  currentUser: userProfile,
                 })}
                 firstTimeSaveBillingDetails
                 processingPayment={processingPayment}
