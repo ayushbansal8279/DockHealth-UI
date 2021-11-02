@@ -25,6 +25,7 @@ import {
 } from 'selectors/organization-selectors';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import { getUserByEmail } from 'api/user-auth-api';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
 import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
@@ -112,8 +113,10 @@ const SubscriptionsView = () => {
       previousSubscriptionDetails &&
       subscriptionDetails &&
       !equals(subscriptionDetails, previousSubscriptionDetails)
-    )
+    ) {
+      getUserByEmail(currentUser.email, currentUser);
       history.push('subscription-payment-finished');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionDetails]);
 

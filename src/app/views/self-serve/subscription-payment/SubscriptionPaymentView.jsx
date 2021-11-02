@@ -13,6 +13,7 @@ import { saveBillingDetails } from 'api/organization-api';
 import { currentSubscriptionPlanSelector } from 'selectors/organization-selectors';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Spacing from 'components/common/Spacing';
+import { getUserByEmail } from 'api/user-auth-api';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
@@ -34,7 +35,8 @@ import {
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
-const finishSubscriptionPayment = history => {
+const finishSubscriptionPayment = (history, currentUser) => {
+  getUserByEmail(currentUser.email, currentUser);
   history.replace('/settings/subscription-payment-finished');
 };
 
@@ -56,6 +58,7 @@ const onSubmit = ({
   setProcessingPayment,
   unsetProcessingPayment,
   history,
+  currentUser,
   // eslint-disable-next-line unicorn/consistent-function-scoping
 }) => ({ stripe }) => data => {
   setProcessingPayment();
@@ -78,7 +81,7 @@ const onSubmit = ({
       })
         .then(response => {
           if (response.statusCode === 'SUCCESS') {
-            finishSubscriptionPayment(history);
+            finishSubscriptionPayment(history, currentUser);
           } else {
             showAlert({
               status: 'error',
@@ -303,6 +306,7 @@ const SubscriptionPaymentView = () => {
                   setProcessingPayment,
                   unsetProcessingPayment,
                   history,
+                  userProfile,
                 })}
                 firstTimeSaveBillingDetails
                 processingPayment={processingPayment}
