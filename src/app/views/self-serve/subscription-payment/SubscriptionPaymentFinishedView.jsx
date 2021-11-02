@@ -54,7 +54,7 @@ const SubscriptionPaymentFinishedView = () => {
           </Grid>
           <Grid item sm={12} container justify="flex-end">
             <Box m={2} />
-            <Grid item sm={12} container justify="flex-end">
+            <Grid item sm={12} container>
               <Button
                 width={200}
                 onClick={() => history.push(SUBS_SETTINGS_PATH)}
