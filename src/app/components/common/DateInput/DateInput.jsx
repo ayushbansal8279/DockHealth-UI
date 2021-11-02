@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useCallback } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
@@ -23,6 +23,12 @@ const DateInput = ({
 }) => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const textFieldReference = useRef(null);
+  const textInputReference = useRef(null);
+
+  const handleClose = useCallback(() => {
+    unsetOpen();
+    textInputReference.current.focus();
+  }, [unsetOpen]);
 
   const momentDate = moment(value, 'MM/DD/YYYY');
 
@@ -41,6 +47,7 @@ const DateInput = ({
     <>
       <Input
         ref={textFieldReference}
+        inputRef={textInputReference}
         value={value}
         onChange={onChange}
         readOnly={readOnly}
@@ -67,7 +74,7 @@ const DateInput = ({
         }}
         anchorEl={textFieldReference.current}
         open={open}
-        onClose={unsetOpen}
+        onClose={handleClose}
       >
         <Datepicker
           selectedDate={
