@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import moment from 'moment';
 import DatePicker from 'components/task/DatePicker/DatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+// import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
 import { DateBasicLabel, StandardTaskItemCell, DateText } from './styled';
@@ -42,12 +42,10 @@ const TaskItemDate = ({ value, onChange, readOnly }) => {
         >
           {value ? (
             <DateBasicLabel>
-              <DateText>{moment(value).format('MM/DD/YYYY')}</DateText>
+              <DateText>{moment(value).format('MM/DD/YY')}</DateText>
             </DateBasicLabel>
           ) : (
-            <div>
-              <TaskIcon type="calendar" />
-            </div>
+            <div>{/* <TaskIcon type="calendar" /> */}</div>
           )}
         </Tooltip>
       </TaskItemPopover>
