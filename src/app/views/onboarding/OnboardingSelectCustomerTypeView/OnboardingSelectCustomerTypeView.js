@@ -24,8 +24,7 @@ const onSubmit = async ({ dispatch, history, type }) => {
     organizationIdentifier,
   });
 
-  // history.push('/onboarding/team-setup');
-  history.push('/core/home/my-tasks');
+  history.push('/onboarding/team-setup');
 };
 
 const OnboardingSelectCustomerTypeView = () => {

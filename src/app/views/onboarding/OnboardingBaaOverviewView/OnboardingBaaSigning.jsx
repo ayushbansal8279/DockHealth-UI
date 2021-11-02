@@ -141,8 +141,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
 
           const { updatedByUser } = await checkBAASignedStatus()(dispatch);
           if (updatedByUser) {
-            // window.location.href = '/#/onboarding/team-setup';
-            window.location.href = '/#/core/home/my-tasks';
+            window.location.href = '/#/onboarding/team-setup';
           } else {
             window.location.href = '/#/onboarding/organization-setup';
           }
