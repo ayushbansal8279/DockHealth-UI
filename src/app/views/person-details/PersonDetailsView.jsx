@@ -50,13 +50,6 @@ const PersonDetailsView = () => {
       PageName: 'PersonTaskList',
     });
 
-    dispatch(
-      PersonDetailsActions.initializeUserDetailsState(
-        userIdentifier,
-        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
-      ),
-    );
-
     return () => {
       dispatch(PersonDetailsActions.clearUserDetailsState());
       dispatch(MegaFilterActions.clearFiltersForMegaFilter());
@@ -72,17 +65,7 @@ const PersonDetailsView = () => {
         tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
       ),
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userIdentifier]);
-
-  useEffect(() => {
-    dispatch(
-      PersonDetailsActions.changeCurrentTasksStatus(
-        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabName]);
+  }, [userIdentifier, tabName, dispatch]);
 
   const refreshTab = () => {
     dispatch(PersonDetailsActions.refreshUserTasks());
