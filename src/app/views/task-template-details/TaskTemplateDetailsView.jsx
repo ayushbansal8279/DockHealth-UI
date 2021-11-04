@@ -17,6 +17,7 @@ import {
   deleteTasksLink,
   changeTaskIntentType,
   updateTasksLink,
+  deleteTask,
 } from 'actions/task-actions';
 import { openModal } from 'modal/actions';
 import {
@@ -58,7 +59,6 @@ import {
   mapElementsToLayout,
   updateNodePosition,
   calculateNewElementPosition,
-  isTargetOfStandardNode,
 } from './helpers';
 import {
   ElementsSidebar,
@@ -91,7 +91,7 @@ const TaskTemplateDetailsView = () => {
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
-  const [selectedElement, setSelectedElement] = useState(null);
+  const [selectedElements, setSelectedElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [hoveredTargetHandle, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] = useBoolean(
@@ -146,52 +146,59 @@ const TaskTemplateDetailsView = () => {
     );
   };
 
-  const makeTaskDependent = useCallback(
-    node => {
-      const {
-        data: { task },
-      } = node;
+  const handleMakeSelectionDependent = useCallback(() => {
+    if (!selectedElements) return;
 
-      // eslint-disable-next-line no-unused-expressions
-      tasks
-        ?.filter(({ intentType }) => intentType === NodeType.STANDARD)
-        .forEach(({ taskLinks }) =>
+    selectedElements
+      .filter(se => [NodeType.STANDARD, NodeType.DECISION].includes(se.type))
+      .forEach(selectedElement => {
+        const {
+          data: { task },
+        } = selectedElement;
+
+        // eslint-disable-next-line no-unused-expressions
+        tasks
+          ?.filter(se => se.intentType === NodeType.STANDARD)
+          .forEach(({ taskLinks }) =>
+            taskLinks.forEach(link => {
+              if (link.targetTaskIdentifier === task.identifier) {
+                dispatch(
+                  updateTasksLink({
+                    ...link,
+                    isDependent: true,
+                  }),
+                );
+              }
+            }),
+          );
+      });
+  }, [dispatch, selectedElements, tasks]);
+
+  const handleDelayForSubmit = delayPeriodData => {
+    if (!selectedElements) return;
+
+    selectedElements
+      .filter(se => [NodeType.STANDARD, NodeType.DECISION].includes(se.type))
+      .forEach(selectedElement => {
+        const {
+          data: { task },
+        } = selectedElement;
+
+        // eslint-disable-next-line no-unused-expressions
+        tasks.forEach(({ taskLinks }) =>
           taskLinks.forEach(link => {
             if (link.targetTaskIdentifier === task.identifier) {
               dispatch(
                 updateTasksLink({
                   ...link,
                   isDependent: true,
+                  ...delayPeriodData,
                 }),
               );
             }
           }),
         );
-    },
-    [dispatch, tasks],
-  );
-
-  const handleDelayForSubmit = delayPeriodData => {
-    const {
-      data: { task },
-    } = selectedElement;
-
-    // eslint-disable-next-line no-unused-expressions
-    tasks
-      ?.filter(({ intentType }) => intentType === NodeType.STANDARD)
-      .forEach(({ taskLinks }) =>
-        taskLinks.forEach(link => {
-          if (link.targetTaskIdentifier === task.identifier) {
-            dispatch(
-              updateTasksLink({
-                ...link,
-                isDependent: true,
-                ...delayPeriodData,
-              }),
-            );
-          }
-        }),
-      );
+      });
     closeDelayPopover();
   };
 
@@ -212,19 +219,26 @@ const TaskTemplateDetailsView = () => {
         label: 'Decision tree',
         icon: DecisionTaskElementIcon,
         onClick: () => {
-          if (selectedElement?.data.task) {
-            if (selectedElement?.data.task.taskLinks?.length > 0) {
-              dispatch(
-                openModal('Information', {
-                  text:
-                    'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
-                }),
-              );
-            } else {
-              const { taskIdentifier } = selectedElement.data.task;
-              dispatch(changeTaskIntentType(taskIdentifier, NodeType.DECISION));
-              centerViewToElement(selectedElement.position);
-            }
+          if (
+            selectedElements?.length > 0 &&
+            selectedElements.some(se => !!se.data?.task)
+          ) {
+            selectedElements.forEach(selectedElement => {
+              if (selectedElement?.data.task.taskLinks?.length > 0) {
+                dispatch(
+                  openModal('Information', {
+                    text:
+                      'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
+                  }),
+                );
+              } else {
+                const { taskIdentifier } = selectedElement.data.task;
+                dispatch(
+                  changeTaskIntentType(taskIdentifier, NodeType.DECISION),
+                );
+                centerViewToElement(selectedElement.position);
+              }
+            });
           } else {
             const position = calculateNewElementPosition(layout);
             dispatch(addNewDecisionTaskElement(position));
@@ -236,18 +250,18 @@ const TaskTemplateDetailsView = () => {
 
     let actions = [...baseActions];
 
-    if (
-      selectedElement &&
-      [NodeType.STANDARD, NodeType.DECISION].includes(selectedElement.type) &&
-      isTargetOfStandardNode(selectedElement, tasks)
-    ) {
+    const selectedTasks = selectedElements?.filter(se =>
+      [NodeType.STANDARD, NodeType.DECISION].includes(se.type),
+    );
+
+    if (selectedTasks?.length > 0) {
       actions = [
         ...actions,
         {
           id: 'DEPENDENCY',
           label: 'Dependency',
           icon: () => <HardDependencyIcon size={18} />,
-          onClick: () => makeTaskDependent(selectedElement),
+          onClick: handleMakeSelectionDependent,
         },
         {
           id: 'TIME_TILL_TASK',
@@ -263,10 +277,9 @@ const TaskTemplateDetailsView = () => {
   }, [
     dispatch,
     layout,
-    makeTaskDependent,
+    handleMakeSelectionDependent,
     openDelayPopover,
-    selectedElement,
-    tasks,
+    selectedElements,
   ]);
 
   const handleNodeDragStop = (_, node) => {
@@ -281,11 +294,6 @@ const TaskTemplateDetailsView = () => {
       const newLayout = mapElementsToLayout(updatedElements);
       dispatch(saveTaskTemplateLayout(newLayout));
     }
-  };
-
-  const handleSelectionChange = event => {
-    const element = event?.[0] ?? null;
-    setSelectedElement(element);
   };
 
   const mergedElementsWithActions = useMemo(
@@ -323,6 +331,10 @@ const TaskTemplateDetailsView = () => {
         ].includes(element.type)
       ) {
         dispatch(deleteTemporaryElement(element.id));
+      } else if (
+        [NodeType.DECISION, NodeType.STANDARD].includes(element.type)
+      ) {
+        dispatch(deleteTask(element.data.task));
       }
     });
   };
@@ -436,7 +448,7 @@ const TaskTemplateDetailsView = () => {
                 }}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                onSelectionChange={handleSelectionChange}
+                onSelectionChange={setSelectedElements}
               >
                 <Controls />
               </ReactFlow>
