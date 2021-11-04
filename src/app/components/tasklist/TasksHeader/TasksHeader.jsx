@@ -8,6 +8,7 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
+import { trunc } from 'helpers/utility-functions';
 import { BulkContainer } from './styled';
 
 const TasksHeader = ({
@@ -110,7 +111,10 @@ const TasksHeader = ({
         .map(f => (
           <ColumnSortHeader
             id={f.id}
-            label={f.name}
+            label={trunc(
+              f.name,
+              CustomFieldWidthConfig[f.fieldType] / 12 || 10,
+            )}
             width={CustomFieldWidthConfig[f.fieldType]}
           />
         ))}
