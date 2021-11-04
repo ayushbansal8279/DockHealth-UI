@@ -15,7 +15,6 @@ import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
 
 const CustomFieldsView = () => {
-  const [selectedTab, setSelectedTab] = useState(1);
   const userProfile = useSelector(userProfileSelector);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -26,6 +25,8 @@ const CustomFieldsView = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
+
+  const [selectedTab, setSelectedTab] = useState(taskCustomFieldsAvailable ? 1 : 0);
 
   useEffect(() => {
     if (
