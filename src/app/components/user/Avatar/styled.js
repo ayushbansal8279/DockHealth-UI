@@ -123,4 +123,5 @@ export const TooltipName = styled.p`
 export const MemberImage = styled.img`
   min-width: 100%;
   min-height: 100%;
+  pointer-events: none;
 `;

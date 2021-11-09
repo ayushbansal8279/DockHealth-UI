@@ -61,6 +61,8 @@ export const ContentWrapper = styled.div`
 `;
 
 export const SubtasksLabel = styled.div`
+  display: flex;
+  align-items: center;
   padding: 0 10px;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
