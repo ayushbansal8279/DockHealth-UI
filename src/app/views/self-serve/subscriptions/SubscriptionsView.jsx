@@ -99,7 +99,7 @@ const SubscriptionsView = () => {
   }, [billingFrequency]);
 
   useEffect(() => {
-    setSelectedProfessionalServices(professionalServicesIncluded);
+    setSelectedProfessionalServices(professionalServicesIncluded || false);
   }, [professionalServicesIncluded]);
 
   useEffect(() => {
