@@ -47,12 +47,7 @@ import SupportView from 'views/Support/SupportView';
 import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
 import UserProfileView from 'views/UserProfile/UserProfileView';
 import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
-import {
-  onEnterDashboard,
-  onUpdateDashboard,
-  onLeaveDashboard,
-} from './TemplateCoreSubscriptionPlan/Dashboard';
-
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import {
   onEnterGlobalSearch,
   onLeaveGlobalSearch,
@@ -114,11 +109,16 @@ export const SETTINGS_ROUTES = [
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
-    path: '/home/:tabName',
-    RouteComponent: DashboardView,
-    onEnter: onEnterDashboard,
-    onUpdate: onUpdateDashboard,
-    onLeave: onLeaveDashboard,
+    path: '/home/my-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
+    ),
+  },
+  {
+    path: '/home/all-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
+    ),
   },
   {
     path: '/search',

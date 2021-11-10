@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { updateTaskDueDate } from 'actions/task-actions';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
@@ -15,17 +17,17 @@ import {
   DateText,
 } from '../../styled';
 
-const TaskItemDueDate = ({ task, isHovered, updateDueDate }) => {
+const TaskItemDueDate = ({ task, isHovered }) => {
+  const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
 
   const handleDueDateChange = useCallback(
     newDueDate => {
-      updateDueDate(task, newDueDate, true);
-
+      dispatch(updateTaskDueDate(task, newDueDate));
       onTaskDueDateChanged();
     },
-    [task, updateDueDate],
+    [dispatch, task],
   );
 
   return (

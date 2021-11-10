@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
-// import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { dashboardTasksIsLoadingSelector } from 'selectors/dashboard-tasks-selectors';
-import { taskListsSelector } from 'selectors/task-list-selectors';
+import * as TemplateActions from 'actions/template-actions';
+import {
+  clearDashboardState,
+  initializeDashboardState,
+} from 'actions/dashboard-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
-import { storeAsCurrentTask } from 'actions/task-actions';
-import { closeDrawer } from 'actions/task-drawer-actions';
+import { clearFiltersForMegaFilter } from 'actions/mega-filter-actions';
 import * as TaskListActions from 'actions/task-list-actions';
-import * as TaskListSagaActions from 'sagas/task-list-saga';
 import * as UserAuthApi from 'api/user-auth-api';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Spacing from 'components/common/Spacing';
-import { openModal as openModalAction } from 'modal/actions';
+import { openModal } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
-// import DashboardStatistics from './DashboardStatistics/DashboardStatistics';
 import {
   DashboardViewWrapper,
   DashboardContentWrapper,
@@ -32,16 +30,9 @@ import {
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import newUserTourHooks from './new-user-tour-hooks';
 
-const DashboardView = ({
-  isTaskDrawerOpen,
-  taskLists,
-  currentUser,
-  openModal,
-  fetchTasklistForUser,
-  acceptInviteToTaskList,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+const DashboardView = ({ tabName }) => {
   const dispatch = useDispatch();
+  const currentUser = useSelector(userProfileSelector);
   const [
     firstCreatedUserListIdentifier,
     setFirstCreatedUserListIdentifier,
@@ -55,17 +46,27 @@ const DashboardView = ({
   const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
 
   useEffect(() => {
-    dispatch(TaskListActions.getTaskListForUser());
-    dispatch(TaskListActions.getPendingTaskListsForUser());
-  }, [dispatch]);
+    dispatch(initializeDashboardState(tabName));
+
+    return () => {
+      dispatch(clearFiltersForMegaFilter());
+    };
+  }, [dispatch, tabName]);
 
   useEffect(() => {
+    dispatch(TemplateActions.hideHeader());
+
     return () => {
-      dispatch(closeDrawer());
-      dispatch(storeAsCurrentTask());
+      dispatch(TemplateActions.showHeader());
+      dispatch(clearDashboardState());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    dispatch(TaskListActions.getTaskListForUser());
+    dispatch(TaskListActions.getPendingTaskListsForUser());
+  }, [dispatch]);
 
   const isNewUser = currentUser?.usageState?.loginCount <= 5;
 
@@ -97,42 +98,23 @@ const DashboardView = ({
   const handleCreateFirstList = () => {
     let firstListIdentifier;
     onNewUserTourEnter('Opened create list modal');
-    openModal('ListForm', {
-      onListCreationSuccess: taskListIdentifier => {
-        onNewUserTourEnter('Create list success');
-        firstListIdentifier = taskListIdentifier;
-      },
-      onClose: () => {
-        if (firstListIdentifier) {
-          fetchTasklistForUser();
-          UserAuthApi.getUserByEmail(currentUser.email, currentUser);
-          setFirstCreatedUserListIdentifier(firstListIdentifier);
-          setOpenConfetti(true);
-        }
-      },
-    });
+    dispatch(
+      openModal('ListForm', {
+        onListCreationSuccess: taskListIdentifier => {
+          onNewUserTourEnter('Create list success');
+          firstListIdentifier = taskListIdentifier;
+        },
+        onClose: () => {
+          if (firstListIdentifier) {
+            dispatch(TaskListActions.getTaskListForUser());
+            UserAuthApi.getUserByEmail(currentUser.email, currentUser);
+            setFirstCreatedUserListIdentifier(firstListIdentifier);
+            setOpenConfetti(true);
+          }
+        },
+      }),
+    );
   };
-
-  // useEffect(() => {
-  //   if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-  //     const { userPreference } = currentUser || {};
-  //     const { appFeaturesReviewed } = userPreference || {};
-
-  //     if (!appFeaturesReviewed?.includes('PATIENT_CUSTOM_FIELD')) {
-  //       dispatch(
-  //         openModal('PatientCustomFieldTour', {
-  //           onClose: () => {
-  //             dispatch(
-  //               updateCurrentUserPreferences({
-  //                 appFeaturesReviewed: ['PATIENT_CUSTOM_FIELD'],
-  //               }),
-  //             );
-  //           },
-  //         }),
-  //       );
-  //     }
-  //   }
-  // }, [currentUser, dispatch, isNewUser, openModal]);
 
   const {
     tourModalIsOpen,
@@ -141,12 +123,8 @@ const DashboardView = ({
   } = newUserTourHooks({
     firstCreatedUserListIdentifier,
     setFirstCreatedUserListIdentifier,
-    taskLists,
     isNewUser,
   });
-
-  const location = window.location?.hash?.split('/');
-  const dashboardTab = location.slice(-1)[0];
 
   return (
     <ColumnsConfigProvider>
@@ -173,26 +151,22 @@ const DashboardView = ({
                     onCreateList={handleCreateFirstList}
                     onTakeATour={() => {
                       onNewUserTourEnter('Video tutorial');
-                      openModal('Video', {
-                        title: 'Emailing a Task to Dock Health',
-                        url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
-                      });
+                      dispatch(
+                        openModal('Video', {
+                          title: 'Emailing a Task to Dock Health',
+                          url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
+                        }),
+                      );
                     }}
-                    acceptInvitation={acceptInviteToTaskList}
+                    acceptInvitation={() =>
+                      dispatch(TaskListActions.acceptInviteToTaskList())
+                    }
                   />
                 </DashboardFirstVisitViewWrapper>
               ) : (
                 <DashboardListWrapper fullWidth={createListViewVisible}>
-                  <DashboardHeaderContainer>
-                    {/* <DashboardStatistics
-                    dashboardTab={dashboardTab}
-                    customerTypeLabel={customerTypeLabel}
-                  /> */}
-                  </DashboardHeaderContainer>
                   <DashboardList
                     currentUser={currentUser}
-                    isTaskDrawerOpen={isTaskDrawerOpen}
-                    dashboardTab={dashboardTab}
                     tourModalIsOpen={tourModalIsOpen}
                     openTourModal={forceOpenTourModal}
                     customerTypeLabel={customerTypeLabel}
@@ -208,17 +182,4 @@ const DashboardView = ({
   );
 };
 
-const mapStateToProps = state => ({
-  taskLists: taskListsSelector(state),
-  isTaskDrawerOpen: taskDrawerOpenSelector(state),
-  isLoadingDashboard: dashboardTasksIsLoadingSelector(state),
-  currentUser: userProfileSelector(state),
-});
-
-const mapDispatchToProps = {
-  openModal: openModalAction,
-  fetchTasklistForUser: TaskListSagaActions.fetchTasklistForUser,
-  acceptInviteToTaskList: TaskListActions.acceptInviteToTaskList,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);
+export default DashboardView;

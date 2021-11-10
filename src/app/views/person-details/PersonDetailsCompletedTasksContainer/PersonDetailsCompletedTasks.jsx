@@ -23,7 +23,6 @@ import { TaskGroupsContainer } from '../styled';
 const PersonDetailsCompletedTasks = ({
   storeAsCurrentTask,
   toggleCompleteTask,
-  updateDueDate,
   searchValue,
   onTaskUpdate,
   listUniqueKey,
@@ -88,7 +87,6 @@ const PersonDetailsCompletedTasks = ({
                 isCompletedGroup
                 hasMoreTasks={tasksAndSubTasks < taskCounters.complete}
                 isFetchingMoreTasks={isFetchingMoreTasks}
-                updateDueDate={updateDueDate}
                 quickAddTaskVisible={false}
                 listNameVisible
                 onTaskUpdate={onTaskUpdate}
@@ -118,7 +116,6 @@ const PersonDetailsCompletedTasks = ({
                         isCompletedGroup={isCompletedGroup}
                         toggleCompleteTask={toggleCompleteTask}
                         onTaskUpdate={onTaskUpdate}
-                        updateDueDate={updateDueDate}
                         addingNewSubtask={
                           addingNewSubtaskParentId === task.identifier
                         }

@@ -10,6 +10,7 @@ import {
   useMemo,
 } from 'react';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
 import { EditorState } from 'draft-js';
@@ -31,7 +32,7 @@ import {
   updateTaskDetails,
   prepareSubtask,
   markTaskRead,
-  updateDueDate,
+  updateTaskDueDate,
   addSubtask,
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
@@ -140,6 +141,7 @@ const initializeTaskDrawerHooks = ({
   onTaskCreation,
   onTaskDelete,
 }) => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
@@ -198,6 +200,19 @@ const initializeTaskDrawerHooks = ({
 
   useEffect(() => {
     setValue('newTaskListId', null);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const unlisten = history.listen(() => {
+      dispatch(closeDrawer());
+      dispatch(storeAsCurrentTask());
+    });
+
+    return () => {
+      unlisten();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -505,25 +520,9 @@ const initializeTaskDrawerHooks = ({
 
   const handleDueDateSave = useCallback(
     updatedDueDateTime => {
-      updateDueDate(
-        selectedTask,
-        updatedDueDateTime,
-        false,
-      )(dispatch)
-        .then(task => {
-          setAutoSaveVisible();
-          onTaskUpdate(task);
-          return task;
-        })
-        .catch(() => {
-          dispatch(
-            AlertActions.showGlobalErrorAlert(
-              'Error updating due date, please try again later',
-            ),
-          );
-        });
+      dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
     },
-    [dispatch, onTaskUpdate, selectedTask, setAutoSaveVisible],
+    [dispatch, selectedTask],
   );
 
   const handleUpdateTask = useCallback(

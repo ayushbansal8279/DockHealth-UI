@@ -28,7 +28,6 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import { isEmpty } from 'ramda';
 import {
   toggleTaskCompletedStatus,
-  setDueDate as setDueDateHelper,
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
@@ -97,14 +96,6 @@ export const updateTaskData = (taskIdentifier, newTaskData) => ({
   payload: {
     taskIdentifier,
     newTaskData,
-  },
-});
-
-export const updatePatientTaskDueDate = (task, dueDate) => ({
-  type: DO_UPDATE_DUE_DATE,
-  payload: {
-    task,
-    dueDate,
   },
 });
 
@@ -259,7 +250,6 @@ export const PatientTasksSagaActions = {
   refreshPatientTasks,
   togglePatientTaskStatus,
   updateTaskData,
-  updatePatientTaskDueDate,
   updatePatientTaskWorkflowStatus,
   patientTasksFilterChange,
   initializeSavedFilters,
@@ -395,27 +385,6 @@ function* doToggleTaskCompleteStatus({ payload }) {
       yield put(refreshPatientTasks({ withLoader: false }));
     }
     yield put(PatientDetailsActions.getPatientTasksStats());
-  } catch (error) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
-  }
-}
-
-function* doUpdateDueDate({ payload }) {
-  const { task, dueDate } = payload;
-
-  try {
-    const updatedTask = setDueDateHelper(task, dueDate);
-    yield put(updateTaskData(task?.taskIdentifier, updatedTask));
-
-    yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
-    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
   } catch (error) {
     yield all([
       put(refreshPatientTasks({ withLoader: false })),
@@ -814,7 +783,6 @@ export default function* watchPatientDetails() {
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS, getPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
   yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
-  yield takeLatest(DO_UPDATE_DUE_DATE, doUpdateDueDate);
   yield takeLatest(
     DO_UPDATE_PATIENT_WORKFLOW_STATUS,
     doUpdatePatientTaskWorkflowStatus,

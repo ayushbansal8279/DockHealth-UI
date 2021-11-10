@@ -21,7 +21,6 @@ const ListDetailsCompletedTasks = ({
   hasMoreTasks,
   isFetchingMoreTasks,
   isFetchingData,
-  updateDueDate,
   dragAndDropDisabled,
   isSearchApplied,
   areFiltersApplied,
@@ -64,7 +63,6 @@ const ListDetailsCompletedTasks = ({
                 groupPagination
                 hasMoreTasks={hasMoreTasks}
                 isFetchingMoreTasks={isFetchingMoreTasks}
-                updateDueDate={updateDueDate}
                 quickAddTaskVisible={false}
                 onTaskUpdate={onTaskUpdate}
                 areFiltersApplied={areFiltersApplied}
@@ -109,7 +107,6 @@ const ListDetailsCompletedTasks = ({
                           isCompletedGroup={isCompletedGroup}
                           toggleCompleteTask={toggleCompleteTask}
                           onTaskUpdate={onTaskUpdate}
-                          updateDueDate={updateDueDate}
                           dragAndDropDisabled={
                             isCompletedGroup || dragAndDropDisabled
                           }

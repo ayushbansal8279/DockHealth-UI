@@ -6,13 +6,24 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { pluck } from 'ramda';
+import { compose, pluck } from 'ramda';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
+import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
+import {
+  DashboardGroup,
+  GROUPS_WITH_COMPLETED_TASKS,
+  GROUPS_WITH_QUICK_ADD_TASK_INPUT,
+} from 'helpers/dashboard-helpers';
+import {
+  getDashboardTasksForGroup,
+  loadMoreDashboardTasksForGroup,
+  reorderDashboardTasks,
+} from 'actions/dashboard-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -34,31 +45,9 @@ import {
   DashboardTaskItemContainer,
 } from './styled';
 
-const TODAY_GROUP = 'TODAY';
-const NEXT_7_DAYS_GROUP = 'NEXT_7_DAYS';
-const NO_DUE_DATE_GROUP = 'NO_DUE_DATE';
-const GROUPS_WITH_QUICK_ADD_TASK_INPUT = [
-  TODAY_GROUP,
-  NEXT_7_DAYS_GROUP,
-  NO_DUE_DATE_GROUP,
-];
-const COMPLETED_TODAY = 'COMPLETED_TODAY';
-const COMPLETED_7_DAYS = 'COMPLETED_7_DAYS';
-const ORG_COMPLETED_TODAY = 'ORG_COMPLETED_TODAY';
-const ORG_COMPLETED_7_DAYS = 'ORG_COMPLETED_7_DAYS';
-const GROUPS_WITH_COMPLETED_TASKS = [
-  COMPLETED_TODAY,
-  COMPLETED_7_DAYS,
-  ORG_COMPLETED_TODAY,
-  ORG_COMPLETED_7_DAYS,
-];
-
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
-  toggleDashboardTaskComplete,
-  redirectToParentTask,
   storeAsCurrentTask,
-  sortDashboardTasks,
   openDrawer,
   isTaskDrawerOpen,
   selectedTaskIdentifier,
@@ -68,14 +57,10 @@ const DashboardTasksGroup = ({
   showClearSortFiltersModal,
   isSortApplied,
   isAllTasksTab,
-  updateDueDate,
   currentUser,
-  onTaskUpdate,
   updateWorkflowStatus,
-  fetchImplicitGroup,
   isSearching,
   closeDrawer,
-  handleQuickAddTask,
   openModal,
 }) => {
   const {
@@ -83,10 +68,11 @@ const DashboardTasksGroup = ({
     groupType,
     metricValue,
     defaultOpen,
-    isLoadingGroup,
+    isLoading,
     isLoadingMore,
     tasks: dashboardTasks,
   } = dashboardTasksGroup;
+  const { userIdentifier } = currentUser;
 
   const [tasks, setNewTasks] = useState(dashboardTasks);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
@@ -109,13 +95,12 @@ const DashboardTasksGroup = ({
   }, [dispatch, isGroupSelected, tasks]);
 
   const onSwitchGroup = useCallback(() => {
-    if (!groupIsOpen && dashboardTasks?.length === 0 && !isSearching) {
-      fetchImplicitGroup(dashboardTasksGroup);
+    if (!groupIsOpen && !isSearching) {
+      dispatch(getDashboardTasksForGroup(groupType));
     }
     setGroupIsOpen(!groupIsOpen);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardTasksGroup, fetchImplicitGroup, groupIsOpen, isSearching]);
+  }, [dashboardTasksGroup, groupIsOpen, isSearching]);
 
   useEffect(() => {
     setNewTasks(dashboardTasks);
@@ -126,17 +111,17 @@ const DashboardTasksGroup = ({
   }, [dashboardTasks]);
 
   const groupHasMultipleAssignees = useMemo(
-    () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+    () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
     [tasks],
   );
 
   const dueDateForQuickAdd = useMemo(() => {
-    if (groupType === TODAY_GROUP)
+    if (groupType === DashboardGroup.TODAY)
       return moment()
         .startOf('day')
         .toISOString();
 
-    if (groupType === NEXT_7_DAYS_GROUP)
+    if (groupType === DashboardGroup.NEXT_7_DAYS)
       return moment()
         .add(7, 'days')
         .startOf('day')
@@ -145,7 +130,38 @@ const DashboardTasksGroup = ({
     return null;
   }, [groupType]);
 
+  const handleQuickAddTask = ({ description, patientIdentifier }) => {
+    dispatch(
+      openModal('ListPicker', {
+        fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
+        listCreationPayload: {
+          adminIdentifiers:
+            currentUser.userIdentifier !== userIdentifier
+              ? [userIdentifier]
+              : [],
+        },
+        confirm: taskListIdentifier => {
+          dispatch(
+            TaskActions.saveTask({
+              description,
+              taskListIdentifier,
+              assignedToIdentifier: userIdentifier,
+              patientIdentifier,
+              dueDate: dueDateForQuickAdd,
+            }),
+          );
+          quickAddTaskInputReference.current.focus();
+        },
+      }),
+    );
+  };
+
   const isCompletedGroup = !!GROUPS_WITH_COMPLETED_TASKS.includes(groupType);
+
+  const handleUpdateTask = useCallback(
+    compose(dispatch, TaskActions.partialUpdateTask),
+    [dispatch],
+  );
 
   return (
     <DashboardTasksGroupContainer>
@@ -165,20 +181,15 @@ const DashboardTasksGroup = ({
           </DashboardTasksGroupLabel>
         </GroupNameSectionWrapper>
       </DashboardTasksGroupHeader>
-      {isLoadingGroup && <DashboardSingleSkeletonLoader rows={4} />}
-      {!isLoadingGroup && (
+      {isLoading && !tasks ? (
+        <DashboardSingleSkeletonLoader rows={4} />
+      ) : (
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
               <QuickAddTaskInput
                 ref={quickAddTaskInputReference}
-                quickAddTask={payload =>
-                  handleQuickAddTask(
-                    quickAddTaskInputReference,
-                    payload,
-                    dueDateForQuickAdd,
-                  )
-                }
+                quickAddTask={handleQuickAddTask}
                 onFocus={() => {
                   if (isTaskDrawerOpen) {
                     closeDrawer();
@@ -222,7 +233,7 @@ const DashboardTasksGroup = ({
                     const newTasksOrder = newTasks.map(
                       ({ taskIdentifier }) => taskIdentifier,
                     );
-                    sortDashboardTasks(groupType, newTasksOrder);
+                    dispatch(reorderDashboardTasks(groupType, newTasksOrder));
                   }
                 }
               }}
@@ -250,10 +261,11 @@ const DashboardTasksGroup = ({
                                 <StandardTaskItem
                                   task={task}
                                   toggleCompleteTask={() =>
-                                    toggleDashboardTaskComplete(task)
+                                    dispatch(
+                                      TaskActions.toggleCompleteTask(task),
+                                    )
                                   }
                                   isCompletedGroup={isCompletedGroup}
-                                  redirectToParentTask={redirectToParentTask}
                                   storeAsCurrentTask={storeAsCurrentTask}
                                   isDragging={isDragging}
                                   dragHandleProps={
@@ -268,9 +280,8 @@ const DashboardTasksGroup = ({
                                     task?.taskIdentifier
                                   }
                                   showAssignedPerson={isAllTasksTab}
-                                  updateDueDate={updateDueDate}
                                   currentUser={currentUser}
-                                  onTaskUpdate={onTaskUpdate}
+                                  onTaskUpdate={handleUpdateTask}
                                   updateWorkflowStatus={updateWorkflowStatus}
                                   multipleAssigneesContext={
                                     groupHasMultipleAssignees
@@ -292,7 +303,9 @@ const DashboardTasksGroup = ({
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
               <LoadMoreSection>
                 <LoadMoreButton
-                  onClick={() => fetchImplicitGroup(dashboardTasksGroup, true)}
+                  onClick={() =>
+                    dispatch(loadMoreDashboardTasksForGroup(groupType))
+                  }
                 />
               </LoadMoreSection>
             )}

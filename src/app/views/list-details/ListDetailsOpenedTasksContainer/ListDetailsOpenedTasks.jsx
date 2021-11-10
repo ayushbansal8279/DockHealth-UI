@@ -42,7 +42,6 @@ const ListDetailsOpenedTasks = ({
   reassignTasksToAnotherGroup,
   onTaskUpdate,
   isFetchingData,
-  updateDueDate,
   updateWorkflowStatus,
   isSearchApplied,
   areFiltersApplied,
@@ -189,7 +188,6 @@ const ListDetailsOpenedTasks = ({
             onTaskUpdate={onTaskUpdate}
             draggedId={draggedId}
             toggleCompleteTask={toggleCompleteTask}
-            updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             isSearchApplied={isSearchApplied}
             listUniqueKey={listUniqueKey}
@@ -270,7 +268,6 @@ const ListDetailsOpenedTasks = ({
                                       isCompletedGroup={isCompletedGroup}
                                       toggleCompleteTask={toggleCompleteTask}
                                       onTaskUpdate={onTaskUpdate}
-                                      updateDueDate={updateDueDate}
                                       updateWorkflowStatus={
                                         updateWorkflowStatus
                                       }
@@ -352,7 +349,6 @@ const ListDetailsOpenedTasks = ({
       onTaskUpdate,
       draggedId,
       toggleCompleteTask,
-      updateDueDate,
       updateWorkflowStatus,
       listUniqueKey,
       taskListIdentifier,

@@ -21,6 +21,8 @@ import {
   ADD_SUBTASK,
   UPDATE_WORKFLOW_STATUS_FOR_TASKS,
   CHANGE_TASK_INTENT_TYPE,
+  UPDATE_TASK_DUE_DATE,
+  UPDATE_TASK_DUE_DATE_FAILURE,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -224,6 +226,21 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const updateTaskFromAction = t => {
         if (t.taskIdentifier === task.taskIdentifier) {
           return { ...t, ...task };
+        }
+
+        return updateNestedTask(task, task.taskIdentifier, t);
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case UPDATE_TASK_DUE_DATE:
+    case UPDATE_TASK_DUE_DATE_FAILURE: {
+      const { task, dueDate } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === task.taskIdentifier) {
+          return { ...t, dueDate };
         }
 
         return updateNestedTask(task, task.taskIdentifier, t);

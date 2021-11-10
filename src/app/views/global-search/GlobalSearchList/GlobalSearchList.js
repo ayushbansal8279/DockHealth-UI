@@ -24,7 +24,6 @@ const GlobalSearchList = ({
   storeAsCurrentTask,
   toggleTaskStatus,
   onTaskUpdate,
-  updateDueDate,
   updateWorkflowStatus,
   highlightedValue,
   isCompletedList,
@@ -88,7 +87,6 @@ const GlobalSearchList = ({
             isCompletedGroup={isCompletedList}
             toggleCompleteTask={toggleTaskStatus}
             onTaskUpdate={onTaskUpdate}
-            updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             dragAndDropDisabled
             selectedTask={selectedTask}

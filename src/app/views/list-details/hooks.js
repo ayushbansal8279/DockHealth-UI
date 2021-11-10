@@ -372,16 +372,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     [actions, refreshTab, refreshTabAfterTaskUpdate],
   );
 
-  const handleUpdateDueDate = useCallback(
-    (task, dueDate) => {
-      actions
-        .updateDueDate(task, dueDate, true)
-        .then(refreshTabAfterTaskUpdate)
-        .catch(() => refreshTab());
-    },
-    [actions, refreshTab, refreshTabAfterTaskUpdate],
-  );
-
   const handleUpdateWorkflowStatus = useCallback(
     (task, workflowStatus) => {
       actions
@@ -696,7 +686,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
-    handleUpdateDueDate,
     handleUpdateWorkflowStatus,
     isCompletedTasksFetching,
     isFetching,

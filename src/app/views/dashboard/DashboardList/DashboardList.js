@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
@@ -18,21 +18,30 @@ import { Grid } from '@material-ui/core';
 import Switch from 'components/common/Switch/Switch';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
-import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { getUserTaskStats } from 'api/user-api';
 import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
   dashboardAllTaskItemsSelector,
+  dashboardTabNameSelector,
 } from 'selectors/dashboard-tasks-selectors';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
-import { selectedTaskIdentifierSelector } from 'selectors/task-drawer-selectors';
-import { dashboardStatisticsIsLoadingSelector } from 'selectors/dashboard-statistics-selectors';
+import {
+  selectedTaskIdentifierSelector,
+  taskDrawerOpenSelector,
+} from 'selectors/task-drawer-selectors';
 import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import Search from 'components/task-view/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
+import {
+  getDashboardFilters,
+  getDashboardTasks,
+  initializeDashboardState,
+  searchDashboardTasks,
+} from 'actions/dashboard-actions';
 import {
   TaskItemColumn,
   TASK_ITEM_SORT_METHODS,
@@ -54,6 +63,10 @@ import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import {
+  DashboardTasksTab,
+  DashboardTasksTabUrl,
+} from 'helpers/dashboard-helpers';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -120,21 +133,6 @@ const DashboardList = ({
   isTaskDrawerOpen,
   selectedTaskIdentifier,
   userPreferColumns,
-  dashboardTab,
-  dashboardActions: {
-    redirectToParentTask,
-    toggleDashboardTaskComplete,
-    quickAddDashboardTask,
-    sortDashboardTasks,
-    reloadDashboardTasks,
-    updateDashboardTaskDueDate,
-    updateDashboardSelectedFilters,
-    updateDashboardTask,
-    fetchDashboardFilters,
-    fetchImplicitGroup,
-    fetchSearchedTermImplicitGroups,
-    initializeDashboardView,
-  },
   megaFilter,
   areFiltersApplied,
   tourModalIsOpen,
@@ -145,7 +143,7 @@ const DashboardList = ({
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
 
   const { openModal } = modalActions;
-  const [selectedTab, setSelectedTab] = useState('MY_TASKS');
+  const tabName = useSelector(dashboardTabNameSelector);
   const [highlightPosition, setHighlightPosition] = useState({
     width: 0,
     left: 0,
@@ -161,7 +159,6 @@ const DashboardList = ({
   const { filters, selectedFilters } = megaFilter;
   const previousSelectedFilters = useRef(selectedFilters);
   const previousSearchValue = useRef(null);
-  const previousSelectedTab = useRef(null);
 
   useEffect(() => {
     const config =
@@ -187,14 +184,10 @@ const DashboardList = ({
     previousSearchValue.current = searchValue;
   }, [searchValue]);
 
-  useEffect(() => {
-    previousSelectedTab.current = selectedTab;
-  }, [selectedTab]);
-
   const filteredDashboardTasks = dashboardTasks?.filter(
     taskGroupInfo => taskGroupInfo?.metricValue !== 0,
   );
-  const { userIdentifier, usageState } = currentUser;
+  const { usageState } = currentUser;
 
   const isSortApplied = !!currentSort?.key;
 
@@ -226,7 +219,7 @@ const DashboardList = ({
 
   useEffect(() => {
     if (currentUser) {
-      if (selectedTab === 'MY_TASKS') {
+      if (tabName === DashboardTasksTab.MY_TASKS) {
         getUserTaskStats(currentUser.userIdentifier).then(counters => {
           const completeTaskCounter = counters.find(
             ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
@@ -240,44 +233,28 @@ const DashboardList = ({
         setCompleteTaskCount(null);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardTasks, selectedTab]);
+  }, [currentUser, tabName]);
 
   useEffect(
     () =>
       debouncer(() => {
         if (searchValue !== previousSearchState?.searchValue && searchFocused) {
           onSearchChanged();
-          fetchSearchedTermImplicitGroups(searchValue);
+          dispatch(searchDashboardTasks(searchValue));
         }
 
         if (previousSearchState?.searchValue && !searchValue && searchFocused) {
-          initializeDashboardView();
+          dispatch(initializeDashboardState());
         }
       }),
-    [
-      searchValue,
-      searchFocused,
-      fetchSearchedTermImplicitGroups,
-      initializeDashboardView,
-      previousSearchState,
-    ],
+    [searchValue, searchFocused, previousSearchState, dispatch],
   );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (dashboardTab === 'all-tasks') {
-      setSelectedTab('ALL_TASKS');
-    } else {
-      setSelectedTab('MY_TASKS');
-    }
-  });
 
   useEffect(() => {
     setSearchValue('');
     setSearchFocused(false);
     resetSort();
-  }, [selectedTab]);
+  }, [tabName]);
 
   useEffect(() => {
     resetSort();
@@ -306,30 +283,6 @@ const DashboardList = ({
     }
   };
 
-  const handleQuickAddTask = (
-    quickAddTaskInputReference,
-    { description, patientIdentifier },
-    dueDate,
-  ) => {
-    modalActions.openModal('ListPicker', {
-      fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
-      listCreationPayload: {
-        adminIdentifiers:
-          currentUser.userIdentifier !== userIdentifier ? [userIdentifier] : [],
-      },
-      confirm: taskListIdentifier => {
-        quickAddDashboardTask({
-          description,
-          taskListIdentifier,
-          assignedToIdentifier: userIdentifier,
-          patientIdentifier,
-          dueDate,
-        });
-        quickAddTaskInputReference.current.focus();
-      },
-    });
-  };
-
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
 
@@ -337,7 +290,7 @@ const DashboardList = ({
 
     if (usageState?.loginCount < 5) return <DashboardNewUserInfo />;
 
-    if (completeTaskCount > 0 && selectedTab === 'MY_TASKS')
+    if (completeTaskCount > 0 && tabName === DashboardTasksTab.MY_TASKS)
       return (
         <EmptyListView
           title={['Way to go!', 'You’ve completed all of your tasks.']}
@@ -367,9 +320,9 @@ const DashboardList = ({
   );
 
   const handleTaskUpdate = useCallback(() => {
-    fetchDashboardFilters();
-    reloadDashboardTasks();
-  }, [reloadDashboardTasks, fetchDashboardFilters]);
+    dispatch(getDashboardFilters());
+    dispatch(getDashboardTasks());
+  }, [dispatch]);
 
   const onClickCheckbox = useCallback(
     (newConfig, options) => {
@@ -411,19 +364,25 @@ const DashboardList = ({
                 label="My Tasks"
                 setHighlightPosition={setHighlightPosition}
                 onClick={() => {
-                  setSelectedTab('MY_TASKS');
-                  history.push('/core/home/my-tasks');
+                  history.push(
+                    `/core/home/${
+                      DashboardTasksTabUrl[DashboardTasksTab.MY_TASKS]
+                    }`,
+                  );
                 }}
-                isSelected={selectedTab === 'MY_TASKS'}
+                isSelected={tabName === DashboardTasksTab.MY_TASKS}
               />
               <DashboardTab
                 label="All Tasks"
                 setHighlightPosition={setHighlightPosition}
                 onClick={() => {
-                  setSelectedTab('ALL_TASKS');
-                  history.push('/core/home/all-tasks');
+                  history.push(
+                    `/core/home/${
+                      DashboardTasksTabUrl[DashboardTasksTab.ALL_TASKS]
+                    }`,
+                  );
                 }}
-                isSelected={selectedTab === 'ALL_TASKS'}
+                isSelected={tabName === DashboardTasksTab.ALL_TASKS}
               />
               <DashboardTabHighlight {...highlightPosition} />
             </DasboardTabsContainer>
@@ -436,7 +395,15 @@ const DashboardList = ({
               }}
               filters={filters}
               selectedFilters={selectedFilters}
-              onSelectFilters={updateDashboardSelectedFilters}
+              onSelectFilters={sf =>
+                dispatch(
+                  MegaFilterActions.selectFiltersForMegaFilter(
+                    sf,
+                    'dashboard',
+                    tabName,
+                  ),
+                )
+              }
               taskStatus="INCOMPLETE"
               activeItemsAmount={activeTasksCount}
             />
@@ -473,10 +440,7 @@ const DashboardList = ({
                   <DashboardTasksGroup
                     key={item?.groupType}
                     dashboardTasksGroup={item}
-                    toggleDashboardTaskComplete={toggleDashboardTaskComplete}
-                    redirectToParentTask={redirectToParentTask}
                     storeAsCurrentTask={taskActions.storeAsCurrentTask}
-                    sortDashboardTasks={sortDashboardTasks}
                     openDrawer={taskDrawerActions.openDrawer}
                     isTaskDrawerOpen={isTaskDrawerOpen}
                     selectedTaskIdentifier={selectedTaskIdentifier}
@@ -486,18 +450,11 @@ const DashboardList = ({
                     showClearSortFiltersModal={showClearSortFiltersModal}
                     isSortApplied={isSortApplied}
                     areFiltersApplied={areFiltersApplied}
-                    isAllTasksTab={selectedTab === 'ALL_TASKS'}
-                    updateDueDate={updateDashboardTaskDueDate}
+                    isAllTasksTab={tabName === DashboardTasksTab.ALL_TASKS}
                     currentUser={currentUser}
-                    onTaskUpdate={updateDashboardTask}
                     updateWorkflowStatus={taskActions.updateWorkflowStatus}
-                    fetchImplicitGroup={fetchImplicitGroup}
-                    fetchSearchedTermImplicitGroups={
-                      fetchSearchedTermImplicitGroups
-                    }
                     isSearching={!!searchValue}
                     closeDrawer={taskDrawerActions.closeDrawer}
-                    handleQuickAddTask={handleQuickAddTask}
                     openModal={openModal}
                   />
                 ),
@@ -510,7 +467,7 @@ const DashboardList = ({
       <TaskDrawer
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
-        onTaskDelete={fetchDashboardFilters}
+        onTaskDelete={() => dispatch(getDashboardFilters())}
         assignToSelf
       />
     </BulkEditSection>
@@ -521,11 +478,11 @@ const mapStateToProps = state => ({
   allDashboardTasks: dashboardAllTaskItemsSelector(state),
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
-  dashboardStatisticsIsLoading: dashboardStatisticsIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
   userPreferColumns: userProfileDashboardPrefsSelector(state),
   megaFilter: megaFilterSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
+  isTaskDrawerOpen: taskDrawerOpenSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({

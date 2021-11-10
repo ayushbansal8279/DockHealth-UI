@@ -184,6 +184,27 @@ function* addTask({ task }) {
   }
 }
 
+function* updateTaskDueDate({ task, dueDate }) {
+  try {
+    const updatedTask = yield call(TaskApi.partialUpdateTask, task.identifier, {
+      dueDate: dueDate?.toISOString(),
+    });
+    yield put({
+      type: ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
+      task,
+      dueDate: updatedTask.dueDate,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put({
+      type: ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE,
+      task,
+      dueDate: task.dueDate,
+    });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
@@ -193,4 +214,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
   yield takeEvery(ActionTypes.ADD_TASK, addTask);
+  yield takeEvery(ActionTypes.UPDATE_TASK_DUE_DATE, updateTaskDueDate);
 }

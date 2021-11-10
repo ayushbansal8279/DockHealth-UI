@@ -22,7 +22,6 @@ const ListDetailsView = props => {
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
-    handleUpdateDueDate,
     handleUpdateWorkflowStatus,
     isCompletedTasksFetching,
     isFetching,
@@ -109,7 +108,6 @@ const ListDetailsView = props => {
               viewSetup={displayListPreferences}
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
-              updateDueDate={handleUpdateDueDate}
               searchValue={searchValue}
               listUniqueKey={taskListIdentifier}
               loadMoreTasksForList={loadMoreTasksForList}
@@ -127,7 +125,6 @@ const ListDetailsView = props => {
               deleteGroup={deleteGroup}
               changeGroupsOrder={changeGroupsOrder}
               onTaskUpdate={handleTaskUpdate}
-              updateDueDate={handleUpdateDueDate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               searchValue={searchValue}
               sort={sort}

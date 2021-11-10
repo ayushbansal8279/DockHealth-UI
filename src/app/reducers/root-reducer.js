@@ -16,7 +16,6 @@ import ListDetailsReducer from './list-details-reducer';
 import PatientDetailsReducer from './patient-details-reducer';
 import TemplateReducer from './template-reducer';
 import DashboardTasksReducer from './dashboard-tasks-reducer';
-import DashboardStatisticsReducer from './dashboard-statistics-reducer';
 import GlobalSearchReducer from './global-search-reducer';
 import ActiveUsersReducer from './active-users-reducer';
 import PersonDetailsReducer from './person-details-reducer';
@@ -40,7 +39,6 @@ const appReducer = combineReducers({
   listDetails: ListDetailsReducer,
   patientDetails: PatientDetailsReducer,
   dashboardTasks: DashboardTasksReducer,
-  dashboardStatistics: DashboardStatisticsReducer,
   globalSearch: GlobalSearchReducer,
   activeUsers: ActiveUsersReducer,
   personDetails: PersonDetailsReducer,

@@ -6,7 +6,6 @@ import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
 // eslint-disable-next-line import/no-cycle
-import { reloadDashboardTasks } from 'sagas/dashboard-saga';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
@@ -231,7 +230,6 @@ export const moveTask = (
   taskList,
   taskGroupIdentifier = null,
   parentTaskIdentifier = null,
-  isDashboardTask,
 ) => dispatch => {
   const taskToUpdate = {
     refiled: true,
@@ -266,10 +264,6 @@ export const moveTask = (
           type: ActionTypes.ADD_TASK_SUCCESS,
           task: updatedTask,
         });
-      }
-
-      if (isDashboardTask) {
-        dispatch(reloadDashboardTasks());
       }
 
       dispatch(
@@ -390,34 +384,26 @@ export function deleteTask(task) {
       });
 }
 
-export function duplicateTask(
-  task,
-  includeAttachments = false,
-  isDashboardTask,
-) {
+export function duplicateTask(task, includeAttachments = false) {
   return dispatch =>
     TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
       .then(duplicatedTask => {
-        if (isDashboardTask) {
-          dispatch(reloadDashboardTasks());
+        if (duplicatedTask.parentTaskIdentifier) {
+          dispatch({
+            type: ActionTypes.ADD_SUBTASK,
+            subtask: duplicatedTask,
+          });
         } else {
-          if (duplicatedTask.parentTaskIdentifier) {
-            dispatch({
-              type: ActionTypes.ADD_SUBTASK,
-              subtask: duplicatedTask,
-            });
-          } else {
-            dispatch({
-              type: ActionTypes.ADD_TASK_SUCCESS,
-              task: duplicatedTask,
-            });
-          }
-          dispatch(
-            getTasksGroupsList({
-              taskListIdentifier: task?.taskList?.taskListIdentifier,
-            }),
-          );
+          dispatch({
+            type: ActionTypes.ADD_TASK_SUCCESS,
+            task: duplicatedTask,
+          });
         }
+        dispatch(
+          getTasksGroupsList({
+            taskListIdentifier: task?.taskList?.taskListIdentifier,
+          }),
+        );
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
 
         return duplicatedTask;
@@ -526,29 +512,13 @@ export const updateTaskDetails = (task, details) => dispatch =>
       throw error;
     });
 
-export const updateDueDate = (
-  task,
-  dueDate,
-  showGlobalConfirmation,
-) => dispatch => {
-  dispatch({
-    type: ActionTypes.UPDATE_TASK_SUCCESS,
-    task: { ...task, dueDate: dueDate?.toISOString() },
-  });
-  return TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
-    .then(updatedTask => {
-      if (showGlobalConfirmation) {
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      }
-      return updatedTask;
-    })
-    .catch(() => {
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task,
-      });
-    });
-};
+export function updateTaskDueDate(task, dueDate) {
+  return {
+    type: ActionTypes.UPDATE_TASK_DUE_DATE,
+    task,
+    dueDate,
+  };
+}
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))

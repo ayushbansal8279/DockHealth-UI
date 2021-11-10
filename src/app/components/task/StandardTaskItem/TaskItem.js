@@ -85,7 +85,6 @@ const TaskItem = ({
   isDragging,
   isCompletedGroup,
   onTaskUpdate,
-  updateDueDate,
   updateWorkflowStatus,
   dragAndDropDisabled,
   parentHasPatient,
@@ -518,11 +517,7 @@ const TaskItem = ({
             />
           )}
           {dueDateIsInConfig && (
-            <TaskItemDueDate
-              task={task}
-              isHovered={isHovered}
-              updateDueDate={updateDueDate}
-            />
+            <TaskItemDueDate task={task} isHovered={isHovered} />
           )}
           {assignedIsInConfig && (
             <TaskItemMembers

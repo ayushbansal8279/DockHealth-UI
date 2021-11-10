@@ -105,7 +105,6 @@ const PatientTasksListView = () => {
   const {
     togglePatientTaskStatus,
     updatePatientTaskInList,
-    updatePatientTaskDueDate,
     updatePatientTaskWorkflowStatus,
     refreshPatientTasks,
     sortPatientTasks,
@@ -345,7 +344,6 @@ const PatientTasksListView = () => {
               isCompletedGroup={completeTasksVisible}
               toggleCompleteTask={handleToggleTaskStatus}
               onTaskUpdate={updatePatientTaskInList}
-              updateDueDate={updatePatientTaskDueDate}
               updateWorkflowStatus={updatePatientTaskWorkflowStatus}
               dragAndDropDisabled
               selectedTask={selectedTask}
@@ -386,7 +384,6 @@ const PatientTasksListView = () => {
       handleToggleTaskStatus,
       isListFlattened,
       selectedTask,
-      updatePatientTaskDueDate,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
     ],
