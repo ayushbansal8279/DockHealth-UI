@@ -42,6 +42,7 @@ import {
   initializeDashboardState,
   searchDashboardTasks,
 } from 'actions/dashboard-actions';
+import { HOME_ALL_TASKS_PATH, HOME_PATH } from 'routing/helpers/paths';
 import {
   TaskItemColumn,
   TASK_ITEM_SORT_METHODS,
@@ -63,10 +64,7 @@ import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import {
-  DashboardTasksTab,
-  DashboardTasksTabUrl,
-} from 'helpers/dashboard-helpers';
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -364,11 +362,7 @@ const DashboardList = ({
                 label="My Tasks"
                 setHighlightPosition={setHighlightPosition}
                 onClick={() => {
-                  history.push(
-                    `/core/home/${
-                      DashboardTasksTabUrl[DashboardTasksTab.MY_TASKS]
-                    }`,
-                  );
+                  history.push(HOME_PATH);
                 }}
                 isSelected={tabName === DashboardTasksTab.MY_TASKS}
               />
@@ -376,11 +370,7 @@ const DashboardList = ({
                 label="All Tasks"
                 setHighlightPosition={setHighlightPosition}
                 onClick={() => {
-                  history.push(
-                    `/core/home/${
-                      DashboardTasksTabUrl[DashboardTasksTab.ALL_TASKS]
-                    }`,
-                  );
+                  history.push(HOME_ALL_TASKS_PATH);
                 }}
                 isSelected={tabName === DashboardTasksTab.ALL_TASKS}
               />

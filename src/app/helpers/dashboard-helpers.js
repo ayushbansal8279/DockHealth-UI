@@ -5,11 +5,6 @@ export const DashboardTasksTab = {
   ALL_TASKS: 'AllTasks',
 };
 
-export const DashboardTasksTabUrl = {
-  [DashboardTasksTab.MY_TASKS]: 'my-tasks',
-  [DashboardTasksTab.ALL_TASKS]: 'all-tasks',
-};
-
 export const DashboardGroup = {
   TODAY: 'TODAY',
   NEXT_7_DAYS: 'NEXT_7_DAYS',
