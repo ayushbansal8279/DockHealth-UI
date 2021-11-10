@@ -1,10 +1,10 @@
 import React from 'react';
 import palette from 'styles/palette';
 
-export default ({ color = palette.coolGrey2 }) => (
+export default ({ size = 14, color = palette.coolGrey2 }) => (
   <svg
-    width="23"
-    height="14"
+    width={size * 1.65}
+    height={size}
     viewBox="0 0 23 14"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
