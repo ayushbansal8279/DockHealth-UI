@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { openModal } from 'modal/actions';
 import { IconButton, ListItem } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
+import { openTaskDrawerToAddTask } from 'actions/task-drawer-actions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
@@ -99,11 +100,9 @@ const TopSection = ({
   reFileTask,
   onDelete,
   onDuplicate,
-  onAddSubTask,
   isInbox,
   closeTaskDrawer,
   setTourTaskMenuReference,
-  assignToSelf,
 }) => {
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -160,8 +159,10 @@ const TopSection = ({
               <ListNameSelectContainer
                 ref={filedInInputReference}
                 onClick={() => {
-                  dispatch(getTaskListForUser());
-                  openFiledInPopover();
+                  if (selectedTask?.taskIdentifier) {
+                    dispatch(getTaskListForUser());
+                    openFiledInPopover();
+                  }
                 }}
               >
                 <FiledInSelect>
@@ -213,7 +214,7 @@ const TopSection = ({
       </ListNameContainer>
       <Spacing horizontal={5} />
       <ActionButtonsContainer>
-        {selectedTask && (
+        {selectedTask && selectedTask.taskIdentifier && (
           <IconButton
             ref={element => {
               taskMenuReference.current = element;
@@ -260,13 +261,16 @@ const TopSection = ({
               !selectedTask.parentTaskIdentifier && (
                 <ListItem
                   key="action_add_subtask"
-                  onClick={onAddSubTask({
-                    afterAddSubTask: () => {
-                      closeTaskMenuPopover();
-                    },
-                    selectedTask,
-                    assignToSelf,
-                  })}
+                  onClick={() => {
+                    dispatch(
+                      openTaskDrawerToAddTask({
+                        taskIdentifier: null,
+                        parentTaskIdentifier: selectedTask.identifier,
+                        parentTask: selectedTask,
+                      }),
+                    );
+                    closeTaskMenuPopover();
+                  }}
                   button
                   style={{
                     borderBottom: `1px solid ${palette.coolGrey3}`,

@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import moment from 'moment';
-import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
@@ -18,13 +17,6 @@ export function refreshTaskBundle(templateBundleIdentifier) {
   };
 }
 
-export const clearPreparedSubtask = curry(dispatch =>
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtaskParentId: null,
-    subtaskShape: {},
-  }),
-);
 export const chooseTaskDecisionOutcome = (
   taskOutcomeIdentifier,
   task,
@@ -37,9 +29,6 @@ export const chooseTaskDecisionOutcome = (
 export function storeAsCurrentTask(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
-    if ((task && task.taskIdentifier !== null) || task == null) {
-      clearPreparedSubtask(dispatch);
-    }
   };
 }
 
@@ -193,7 +182,6 @@ export function saveTask(newTask, shouldReloadGroups = false) {
         }
 
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-        clearPreparedSubtask(dispatch);
 
         return task;
       })
@@ -620,28 +608,6 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
       });
 }
 
-export const prepareSubtask = (
-  parentTaskIdentifier,
-  assignedTo,
-  parentTask,
-) => dispatch => {
-  const subtaskShape = {
-    taskIdentifier: null,
-    parentTaskIdentifier,
-    parentTask,
-    description: '',
-    subtasks: [],
-    assignedTo,
-  };
-
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtaskParentId: parentTaskIdentifier,
-    subtaskShape,
-  });
-  storeAsCurrentTask(subtaskShape)(dispatch);
-};
-
 export function getTaskHistory(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.REQUEST_HISTORY });
@@ -912,11 +878,9 @@ export function addSubtask(parentTaskIdentifier, subtask) {
           subtask: newSubtask,
         });
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-        clearPreparedSubtask(dispatch);
         return newSubtask;
       })
       .catch(error => {
-        clearPreparedSubtask(dispatch);
         dispatch(AlertActions.showGlobalErrorAlert());
         throw error;
       });

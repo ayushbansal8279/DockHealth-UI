@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { isEmpty } from 'ramda';
 import { mixed, string, object } from 'yup';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
@@ -20,6 +21,8 @@ export const GENDER_OPTIONS = [
 
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.patientMetaData;
+
+  if (!metadata || isEmpty(metadata)) return outputData;
 
   const formattedMetadata = Object.keys(metadata).map(key => {
     return {

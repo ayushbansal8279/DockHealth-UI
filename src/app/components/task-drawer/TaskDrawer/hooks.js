@@ -30,7 +30,6 @@ import {
   duplicateTask,
   updateTaskDescription,
   updateTaskDetails,
-  prepareSubtask,
   markTaskRead,
   updateTaskDueDate,
   addSubtask,
@@ -55,6 +54,7 @@ import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
 
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { formatMetaDataOutput } from '../CustomFieldsSection/helpers';
 import { getFormattedLabels } from '../LabelsSection/helpers';
 
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
@@ -80,13 +80,12 @@ const onSubmit = ({
     return;
   }
 
-  const requestData = {
+  const requestData = formatMetaDataOutput({
     ...(selectedTask ?? {}),
     ...data,
     taskListIdentifier: taskList?.taskListIdentifier,
     description: tokenizedText,
-  };
-
+  });
   const dueDate = moment(requestData.dueDate);
   const dueTime = moment(requestData.dueTime, TIME_12H_FORMAT);
 
@@ -153,7 +152,6 @@ const initializeTaskDrawerHooks = ({
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const [isDetailsFocused, setIsDetailsFocused] = useState(false);
-  const [isSaving, setSaving] = useState(false);
 
   const detailsAutosaveTimeout = useRef(null);
   const descriptionReference = useRef(null);
@@ -174,8 +172,16 @@ const initializeTaskDrawerHooks = ({
   const selectedTaskDueDate = selectedTask?.dueDate;
   const selectedTaskStatus = selectedTask?.status;
 
-  const [descriptionState, setDescriptionState] = useMentionsEditorState();
-  const [detailsState, setDetailsState] = useMentionsEditorState(
+  const [
+    descriptionState,
+    setDescriptionState,
+    resetDescriptionState,
+  ] = useMentionsEditorState();
+  const [
+    detailsState,
+    setDetailsState,
+    resetDetailsState,
+  ] = useMentionsEditorState(
     convertToEditorState({
       rawText: selectedTask?.details,
       tokenizedText: selectedTask?.tokenizedDetails,
@@ -183,6 +189,12 @@ const initializeTaskDrawerHooks = ({
       handleRichText: true,
     }),
   );
+
+  const clearFormStates = () => {
+    resetDescriptionState();
+    resetDetailsState();
+    setSelectedParentTask(null);
+  };
   const [
     parentDescriptionState,
     setParentDescriptionState,
@@ -415,33 +427,6 @@ const initializeTaskDrawerHooks = ({
     [dispatch, onTaskCreation, selectedTask],
   );
 
-  const onAddSubTask = useCallback(
-    ({ afterAddSubTask, assignToSelf }) => async event => {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      if (selectedTask && selectedTask.taskIdentifier != null) {
-        try {
-          let assignedToUsers = null;
-          if (assignToSelf && selectedTask.assignedToUsers) {
-            assignedToUsers = selectedTask.assignedToUsers;
-          }
-          await prepareSubtask(
-            selectedTask.taskIdentifier,
-            assignedToUsers,
-            selectedTask,
-          )(dispatch);
-          if (typeof afterAddSubTask === 'function') afterAddSubTask();
-        } catch {
-          noop();
-        }
-      }
-    },
-    [dispatch, selectedTask],
-  );
-
   const handleTaskDescriptionUpdate = useCallback(async () => {
     const updatedTaskDescription = convertFromEditorStateToOutput(
       descriptionState,
@@ -536,11 +521,6 @@ const initializeTaskDrawerHooks = ({
     [dispatch, onTaskUpdate, selectedTaskIdentifier, setAutoSaveVisible],
   );
 
-  const newTaskFlag = useMemo(
-    () => !(selectedTask && selectedTaskIdentifier != null),
-    [selectedTask, selectedTaskIdentifier],
-  );
-
   const isAddingSubtask = useMemo(
     () => selectedTask && selectedTaskIdentifier === null && isSubtask,
     [isSubtask, selectedTask, selectedTaskIdentifier],
@@ -571,9 +551,29 @@ const initializeTaskDrawerHooks = ({
     [],
   );
   const onBlurMentionsEditor = useCallback(() => {
-    handleTaskDescriptionUpdate();
+    if (selectedTask.taskIdentifier) {
+      handleTaskDescriptionUpdate();
+    } else {
+      const { tokenizedText } = convertFromEditorStateToOutput(
+        descriptionState,
+        false,
+      );
+
+      if (!tokenizedText) {
+        setDescriptionErrorState(true);
+      } else {
+        dispatch(
+          saveTask({
+            description: tokenizedText,
+            taskListIdentifier:
+              selectedTask.taskList?.taskListIdentifier || null,
+            ...selectedTask,
+          }),
+        );
+      }
+    }
     setIsDescriptionFocused(false);
-  }, [handleTaskDescriptionUpdate]);
+  }, [descriptionState, dispatch, handleTaskDescriptionUpdate, selectedTask]);
 
   const onBlurDetailsEditor = useCallback(() => {
     setIsDetailsFocused(false);
@@ -622,11 +622,8 @@ const initializeTaskDrawerHooks = ({
     isAddingOrEditingSubtask,
     isAddingSubtask,
     isDescriptionFocused,
-    isSaving,
     isSelectedTaskComplete,
     isTemplateTask,
-    newTaskFlag,
-    onAddSubTask,
     onBlurMentionsEditor,
     onChangeMentionsEditor,
     onClickParentTask,
@@ -637,7 +634,6 @@ const initializeTaskDrawerHooks = ({
       selectedTask,
       taskList,
       dispatch,
-      setSaving,
       setAutoSaveVisible,
       closeTaskDrawer,
       onTaskUpdate,
@@ -663,6 +659,7 @@ const initializeTaskDrawerHooks = ({
     onFocusDetailsEditor,
     isDetailsFocused,
     taskCustomFields,
+    clearFormStates,
   };
 };
 

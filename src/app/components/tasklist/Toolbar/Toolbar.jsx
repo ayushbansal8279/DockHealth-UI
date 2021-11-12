@@ -6,9 +6,11 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, ClickAwayListener, Popper, Paper } from '@material-ui/core';
 import { splitAt, isEmpty, isNil } from 'ramda';
+import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
 import {
   toggleListNotifications,
   getMembersByTaskListId,
@@ -38,6 +40,11 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
+import {
+  VIEW_TYPE_OPTIONS,
+  ViewType,
+  getViewTypeFromQueryString,
+} from 'helpers/view-type-helper';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
 import {
@@ -112,7 +119,10 @@ const Toolbar = ({
   isFetching,
   moreOptions,
   onColumnSetupChange,
+  calendarViewEnabled = false,
 }) => {
+  const { search } = useLocation();
+  const history = useHistory();
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
   const menuReference = useRef(null);
@@ -180,6 +190,20 @@ const Toolbar = ({
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
+
+  const handleChangeViewType = useCallback(
+    event => {
+      const queryParameters = new URLSearchParams(search);
+      const value = event?.target.value ?? ViewType.LIST_VIEW;
+      if (value === ViewType.LIST_VIEW) {
+        queryParameters.delete('viewType');
+      } else {
+        queryParameters.set('viewType', value.toLowerCase());
+      }
+      history.push({ search: queryParameters.toString() });
+    },
+    [search, history],
+  );
 
   return (
     <ToolbarContainer>
@@ -324,6 +348,18 @@ const Toolbar = ({
               }
               isFetching={isFetching}
             />
+            {calendarViewEnabled && (
+              <>
+                <Spacing horizontal={5} />
+                <OutlinedSelect
+                  width={170}
+                  name="viewType"
+                  value={getViewTypeFromQueryString(search)}
+                  onChange={handleChangeViewType}
+                  options={VIEW_TYPE_OPTIONS}
+                />
+              </>
+            )}
             <Spacing horizontal={5} />
             <SearchWrapper fullWidth={isSearchFocused || searchValue}>
               <Search

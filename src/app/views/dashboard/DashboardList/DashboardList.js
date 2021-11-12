@@ -458,7 +458,6 @@ const DashboardList = ({
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
         onTaskDelete={() => dispatch(getDashboardFilters())}
-        assignToSelf
       />
     </BulkEditSection>
   );

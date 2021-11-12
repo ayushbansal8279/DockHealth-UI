@@ -1,5 +1,4 @@
 import {
-  CHANGE_ADDING_NEW_SUBTASK,
   CHANGE_ADDING_NEW_TASK,
   GET_TASK_HISTORY_ERROR,
   GET_TASK_HISTORY_SUCCESS,
@@ -11,6 +10,7 @@ import {
   GET_TASK_CUSTOM_FIELDS,
   GET_TASK_CUSTOM_FIELDS_SUCCESS,
   GET_TASK_CUSTOM_FIELDS_FAILURE,
+  OPEN_TASK_DRAWER_TO_ADD_TASK,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -21,8 +21,6 @@ const initialState = {
   currentTaskHistory: null,
   selectedTask: null,
   selectedTaskId: null,
-  addingNewSubtaskParentId: null,
-  subtaskShape: {},
   addingNewTask: false,
   open: false,
   focusField: null,
@@ -78,20 +76,19 @@ const TaskReducer = (state = initialState, action) => {
         selectedTaskId: action.task != null ? action.task.taskIdentifier : null,
       };
 
+    case OPEN_TASK_DRAWER_TO_ADD_TASK:
+      return {
+        ...state,
+        selectedTask: action.initialTaskState,
+        selectedTaskId: action.initialTaskState.taskIdentifier || null,
+        open: true,
+      };
+
     case GET_TASK_HISTORY_SUCCESS:
       return requestHistorySuccess(state, action);
 
     case GET_TASK_HISTORY_ERROR:
       return requestHistoryError(state, action);
-
-    case CHANGE_ADDING_NEW_SUBTASK: {
-      const { addingNewSubtaskParentId, subtaskShape } = action;
-      return {
-        ...state,
-        addingNewSubtaskParentId,
-        subtaskShape,
-      };
-    }
 
     case CHANGE_ADDING_NEW_TASK: {
       const { addingNewTask } = action;

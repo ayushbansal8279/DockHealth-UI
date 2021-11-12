@@ -38,6 +38,8 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
 
+  const sectionDisabled = isTemplateTask || !taskIdentifier;
+
   return (
     <DueDateSectionWrapper disabled={isTemplateTask}>
       {/* <DueDateLabel>Due date</DueDateLabel> */}
@@ -46,7 +48,7 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
         shrink
         customInputComponent={() => (
           <TaskDrawerPopover
-            disabled={isTemplateTask}
+            disabled={sectionDisabled}
             content={({ closePopover }) => (
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
@@ -74,10 +76,12 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
                     )}
                   </DueDateText>
                   <DueDateText>{formatDueTime(dueDate)}</DueDateText>
-                  <AdornmentClear
-                    style={{ position: 'relative', top: '-6px' }}
-                    onClick={() => onDueDateChange(null)}
-                  />
+                  {!sectionDisabled && (
+                    <AdornmentClear
+                      style={{ position: 'relative', top: '-6px' }}
+                      onClick={() => onDueDateChange(null)}
+                    />
+                  )}
                 </DueDateContent>
               ) : (
                 <Placeholder>

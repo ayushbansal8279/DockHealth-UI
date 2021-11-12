@@ -35,12 +35,15 @@ export const isTaskSelectedSelector = (
 
 export const addingNewSubtaskSelector = createSelector(
   taskDrawerSelector,
-  ({ addingNewSubtaskParentId }) => !!addingNewSubtaskParentId,
+  ({ selectedTask }) =>
+    selectedTask &&
+    selectedTask.parentTaskIdentifier &&
+    !selectedTask.taskIdentifier,
 );
 
 export const addingNewSubtaskParentIdSelector = createSelector(
   taskDrawerSelector,
-  ({ addingNewSubtaskParentId }) => addingNewSubtaskParentId,
+  ({ selectedTask }) => selectedTask?.parentTaskIdentifier || null,
 );
 
 export const taskDrawerOpenSelector = createSelector(
