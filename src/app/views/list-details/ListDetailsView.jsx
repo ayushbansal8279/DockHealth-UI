@@ -111,6 +111,7 @@ const ListDetailsView = props => {
             <Calendar
               taskList={[...openedTasks, ...completedTasks]}
               taskListIdentifier={taskListIdentifier}
+              showInCompleteTasksOnly={selectedTab === TaskListTabName.OPEN}
             />
           )}
           {viewType === ViewType.LIST_VIEW &&

@@ -14,11 +14,20 @@ import moment from 'moment';
 import { CalendarContainer } from './styled';
 import { transformTaskToEvent } from './helpers';
 
-const Calendar = ({ taskList, taskListIdentifier }) => {
+const Calendar = ({
+  taskList,
+  taskListIdentifier,
+  showInCompleteTasksOnly,
+}) => {
   const dispatch = useDispatch();
   const { parentTasks } = extractTasksAndSubtasks(taskList);
   const tasks = parentTasks
-    .filter(({ dueDate }) => !!dueDate)
+    .filter(
+      ({ dueDate, completedDt }) =>
+        !!dueDate &&
+        ((showInCompleteTasksOnly && !completedDt) ||
+          (!showInCompleteTasksOnly && completedDt)),
+    )
     .map(transformTaskToEvent);
 
   const handleEventClick = useCallback(
