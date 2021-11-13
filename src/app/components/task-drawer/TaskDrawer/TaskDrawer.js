@@ -170,6 +170,7 @@ const TaskDrawer = ({
                   <TopSection
                     formMethods={formMethods}
                     selectedTask={selectedTask}
+                    templateBundleIdentifier={templateBundleIdentifier}
                     reFileTask={reFileTask}
                     onDelete={onDelete}
                     onDuplicate={onDuplicate}
