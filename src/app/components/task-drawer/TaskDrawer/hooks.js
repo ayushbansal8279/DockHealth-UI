@@ -286,7 +286,12 @@ const initializeTaskDrawerHooks = ({
   }, [selectedParentTask]);
 
   useLayoutEffect(() => {
-    if (taskDrawerOpen && taskList !== undefined && taskListIdentifier) {
+    if (
+      taskDrawerOpen &&
+      taskList !== undefined &&
+      taskListIdentifier &&
+      selectedTask?.taskIdentifier
+    ) {
       markTaskRead(selectedTask)(dispatch);
     }
 
