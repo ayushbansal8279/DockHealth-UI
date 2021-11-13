@@ -7,7 +7,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
 import { DateBasicLabel, StandardTaskItemCell, DateText } from './styled';
 
-const TaskItemDate = ({ value, onChange, readOnly }) => {
+const TaskItemDate = ({ value, onChange, onClick, readOnly }) => {
   const handleDateChange = useCallback(
     newDate => {
       onChange(newDate);
@@ -24,6 +24,7 @@ const TaskItemDate = ({ value, onChange, readOnly }) => {
       onContextMenu={event => {
         event.stopPropagation();
       }}
+      onClick={onClick}
     >
       <TaskItemPopover
         disabled={readOnly}

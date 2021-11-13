@@ -5,9 +5,12 @@ import { Typography } from '@material-ui/core';
 import { capitalize } from 'helpers/capitalize';
 import { DecisionBox, StandardTaskItemCell } from './styled';
 
-const TaskItemBoolean = ({ value }) => {
+const TaskItemBoolean = ({ value, onClick }) => {
   return (
-    <StandardTaskItemCell width={CustomFieldWidthConfig[FieldType.BOOL]}>
+    <StandardTaskItemCell
+      width={CustomFieldWidthConfig[FieldType.BOOL]}
+      onClick={onClick}
+    >
       <DecisionBox>
         <Typography>{value ? capitalize(value) : ''}</Typography>
       </DecisionBox>

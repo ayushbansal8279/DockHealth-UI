@@ -101,6 +101,7 @@ const TaskItem = ({
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
   isSelectedByHighlighted,
+  openDrawer,
 }) => {
   const {
     taskIdentifier,
@@ -544,6 +545,7 @@ const TaskItem = ({
                 customFieldValue={task?.taskMetaData?.find(
                   f => f.customFieldIdentifier === field.identifier,
                 )}
+                onClick={openDrawer}
               />
             ))}
         </StandardTaskItemContainer>

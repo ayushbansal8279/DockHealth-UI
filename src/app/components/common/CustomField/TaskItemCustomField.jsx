@@ -12,6 +12,7 @@ const TaskItemCustomField = ({
   field,
   customFieldValue,
   onChange,
+  onClick,
 }) => {
   const { value } = customFieldValue || {};
 
@@ -22,6 +23,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           field={field}
         />
       );
@@ -31,6 +33,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           field={field}
         />
       );
@@ -40,6 +43,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           field={field}
         />
       );
@@ -50,6 +54,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           field={field}
         />
       );
@@ -59,6 +64,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           field={field}
         />
       );
@@ -68,6 +74,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           field={field}
         />
       );

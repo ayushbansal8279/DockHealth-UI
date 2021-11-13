@@ -5,7 +5,7 @@ import { trunc } from 'helpers/utility-functions';
 import { Typography } from '@material-ui/core';
 import { StandardTaskItemCell } from './styled';
 
-const TaskItemLongText = ({ value = '' }) => {
+const TaskItemLongText = ({ value = '', onClick }) => {
   return (
     <StandardTaskItemCell
       paddingLeft="tiny"
@@ -15,6 +15,7 @@ const TaskItemLongText = ({ value = '' }) => {
       onContextMenu={event => {
         event.stopPropagation();
       }}
+      onClick={onClick}
     >
       <Tooltip placement="top" title={value}>
         <Typography>{trunc(value, 15)}</Typography>
