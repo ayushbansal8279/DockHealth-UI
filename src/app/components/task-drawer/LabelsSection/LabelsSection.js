@@ -112,7 +112,7 @@ const LabelsSection = ({
     if (currentEditableOption) {
       optionReferences?.current[currentEditableOption]?.focus();
     } else {
-      inputReference?.focus();
+      // inputReference?.focus();
     }
   }, [currentEditableOption, inputReference]);
 
