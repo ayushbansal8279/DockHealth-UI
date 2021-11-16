@@ -6,7 +6,6 @@ import { setHeader } from 'actions/template-actions';
 import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
-import { closeDrawer } from 'actions/task-drawer-actions';
 import * as ModalActions from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { mobileAnalyticsClient } from 'api/analytics-api';
@@ -53,7 +52,6 @@ const PersonDetailsView = () => {
     return () => {
       dispatch(PersonDetailsActions.clearUserDetailsState());
       dispatch(MegaFilterActions.clearFiltersForMegaFilter());
-      dispatch(closeDrawer());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -118,12 +116,6 @@ const PersonDetailsView = () => {
       .catch(() => refreshTab());
   };
 
-  const handleUpdateDueDate = (task, dueDate) => {
-    dispatch(TaskActions.updateDueDate(task, dueDate, true))
-      .then(refreshTabAfterTaskUpdate)
-      .catch(() => refreshTab());
-  };
-
   const handleUpdateWorkflowStatus = (task, workflowStatus) => {
     dispatch(TaskActions.updateWorkflowStatus(task, workflowStatus))
       .then(refreshTabAfterTaskUpdate)
@@ -149,7 +141,6 @@ const PersonDetailsView = () => {
               searchValue={searchValue}
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
-              updateDueDate={handleUpdateDueDate}
             />
           ) : (
             <OpenedTasksView
@@ -158,7 +149,6 @@ const PersonDetailsView = () => {
               searchValue={searchValue}
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
-              updateDueDate={handleUpdateDueDate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
             />
           )}

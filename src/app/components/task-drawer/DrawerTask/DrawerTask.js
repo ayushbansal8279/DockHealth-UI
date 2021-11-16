@@ -18,8 +18,8 @@ import Spacing from 'components/common/Spacing';
 import {
   storeAsCurrentTask,
   toggleCompleteTask,
-  updateDueDate,
   partialUpdateTask,
+  updateTaskDueDate,
 } from 'actions/task-actions';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -120,7 +120,7 @@ const DrawerTask = ({ subtask, currentUser }) => {
 
   const handleDueDateChange = useCallback(
     newDueDate => {
-      updateDueDate(subtask, newDueDate, true)(dispatch);
+      dispatch(updateTaskDueDate(subtask, newDueDate));
     },
     [dispatch, subtask],
   );

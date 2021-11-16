@@ -1,15 +1,20 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { IconButton, ListItem } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
+import { openTaskDrawerToAddTask } from 'actions/task-drawer-actions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
 import { getTaskListForUser } from 'actions/task-list-actions';
 import InputPopover from 'components/common/InputPopover/InputPopover';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
 import { HorizontalLabel } from '../styled';
 import {
   FiledInSelect,
@@ -18,6 +23,9 @@ import {
   ListNameContainer,
   ListNameSelectContainer,
 } from './styled';
+import {
+  CircleIcon,
+} from 'components/task/styled';
 
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
@@ -96,21 +104,40 @@ const renderTaskList = ({
 const TopSection = ({
   formMethods,
   selectedTask,
+  templateBundleIdentifier,
   reFileTask,
   onDelete,
   onDuplicate,
-  onAddSubTask,
   isInbox,
   closeTaskDrawer,
   setTourTaskMenuReference,
-  assignToSelf,
 }) => {
+  const currentUser = useSelector(userProfileSelector);
+
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskStatus = selectedTask?.status;
   const taskList = selectedTask?.taskList;
   const isCompleted = selectedTaskStatus === 'COMPLETE';
   const hasSubtasks = selectedTask?.subTasksCount !== 0;
+
+  const isTemplateTask = checkIfTemplateTask(selectedTask);
+  const parentTaskIdentifier = selectedTask?.parentTaskIdentifier
+  const isSubtask = !!parentTaskIdentifier;
+  const isDecisionTask = selectedTask?.intentType === 'DECISION';
+  const isDecisionSelected = selectedTask?.taskOutcomes?.reduce(
+    (accumulator, currentValue) => accumulator || currentValue.isSelected,
+    false,
+  );
+  const isTaskStatusTogglingDisabled =
+    isTemplateTask ||
+    (isDecisionTask && !isDecisionSelected);
+
+  const dependencyTasksCount = selectedTask?.dependencyTasksCount;
+  const dependencyTasksCompletedCount = selectedTask?.dependencyTasksCompletedCount;
+  const isDependencyEmptyOrCompleted =
+    dependencyTasksCount === dependencyTasksCompletedCount;
+
 
   const {
     filedInInputReference,
@@ -126,6 +153,7 @@ const TopSection = ({
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
+    onCompleteToggle,
     dispatch,
     taskLists,
   } = initializeTaskDrawerTopSectionHooks({
@@ -133,6 +161,10 @@ const TopSection = ({
     onDuplicate,
     closeTaskDrawer,
     selectedTask,
+    currentUser,
+    templateBundleIdentifier,
+    isTaskStatusTogglingDisabled,
+    isDependencyEmptyOrCompleted,
   });
 
   const hasAttachments = !!(
@@ -155,13 +187,26 @@ const TopSection = ({
           !checkIfTemplateTask(selectedTask) && (
             <>
               <input type="hidden" name="newTaskListId" ref={register} />
+              <HorizontalLabel>Mark Complete : </HorizontalLabel>
+              <Spacing horizontal={3} />
+              <CircleIcon
+                src={isCompleted ? CircleCompleted : Circle}
+                isClickable={
+                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                }
+                isCompleted={isCompleted}
+                onClick={onCompleteToggle}
+              />
+              <Spacing horizontal={3} />
               <HorizontalLabel>FILED IN: </HorizontalLabel>
               <Spacing horizontal={3} />
               <ListNameSelectContainer
                 ref={filedInInputReference}
                 onClick={() => {
-                  dispatch(getTaskListForUser());
-                  openFiledInPopover();
+                  if (selectedTask?.taskIdentifier) {
+                    dispatch(getTaskListForUser());
+                    openFiledInPopover();
+                  }
                 }}
               >
                 <FiledInSelect>
@@ -213,7 +258,7 @@ const TopSection = ({
       </ListNameContainer>
       <Spacing horizontal={5} />
       <ActionButtonsContainer>
-        {selectedTask && (
+        {selectedTask && selectedTask.taskIdentifier && (
           <IconButton
             ref={element => {
               taskMenuReference.current = element;
@@ -260,13 +305,16 @@ const TopSection = ({
               !selectedTask.parentTaskIdentifier && (
                 <ListItem
                   key="action_add_subtask"
-                  onClick={onAddSubTask({
-                    afterAddSubTask: () => {
-                      closeTaskMenuPopover();
-                    },
-                    selectedTask,
-                    assignToSelf,
-                  })}
+                  onClick={() => {
+                    dispatch(
+                      openTaskDrawerToAddTask({
+                        taskIdentifier: null,
+                        parentTaskIdentifier: selectedTask.identifier,
+                        parentTask: selectedTask,
+                      }),
+                    );
+                    closeTaskMenuPopover();
+                  }}
                   button
                   style={{
                     borderBottom: `1px solid ${palette.coolGrey3}`,

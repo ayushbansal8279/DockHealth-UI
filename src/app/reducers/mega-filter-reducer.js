@@ -78,6 +78,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         isLoading: true,
       };
 
+    case ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS:
     case ActionTypes.FETCH_MEGA_FILTERS_SUCCESS:
       return {
         ...state,
@@ -116,6 +117,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       return state;
 
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.GET_DASHBOARD_FILTERS_FAILURE:
     case ActionTypes.FETCH_MEGA_FILTERS_FAILURE:
       return { ...state, error, isLoading: false };
 

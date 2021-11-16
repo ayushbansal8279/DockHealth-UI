@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as TemplateActions from 'actions/template-actions';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 import { SubmenuKey } from 'components/navigation/NavigationSidebar/NavigationSidebar';
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
@@ -24,10 +25,11 @@ export const STORAGE_DASHBOARD_TOUR_INBOX_KEY =
 const newUserTourHooks = ({
   firstCreatedUserListIdentifier,
   setFirstCreatedUserListIdentifier,
-  lists,
   isNewUser,
 }) => {
   const dispatch = useDispatch();
+
+  const lists = useSelector(taskListsSelector);
 
   const [openedModalTour, setOpenendModalTour] = useState(null);
   const isModalAutoTriggered = useRef(true);

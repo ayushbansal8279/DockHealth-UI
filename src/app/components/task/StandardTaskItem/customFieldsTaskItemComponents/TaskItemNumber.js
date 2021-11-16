@@ -5,7 +5,7 @@ import { trunc } from 'helpers/utility-functions';
 import { Typography } from '@material-ui/core';
 import { StandardTaskItemCell } from './styled';
 
-const TaskItemNumber = ({ value = '' }) => {
+const TaskItemNumber = ({ value = '', onClick }) => {
   return (
     <StandardTaskItemCell
       paddingLeft="tiny"
@@ -15,6 +15,7 @@ const TaskItemNumber = ({ value = '' }) => {
       onContextMenu={event => {
         event.stopPropagation();
       }}
+      onClick={onClick}
     >
       <Tooltip placement="top" title={value}>
         <Typography>{trunc(value, 20)}</Typography>

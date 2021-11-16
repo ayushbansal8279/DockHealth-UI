@@ -52,21 +52,6 @@ const StandardTaskItemContainer = ({
     [alertActions, onTaskChanged, taskActions],
   );
 
-  const handleUpdateDueDate = useCallback(
-    (task, dueDate) => {
-      taskActions
-        .updateDueDate(task, dueDate, true)
-        .then(() => {
-          if (typeof onTaskChenged === 'function') onTaskChanged();
-          alertActions.showGlobalAlert(AlertMessages.UPDATED);
-        })
-        .catch(() => {
-          alertActions.showGlobalErrorAlert();
-        });
-    },
-    [alertActions, onTaskChanged, taskActions],
-  );
-
   const toggleCompleteTaskStatus = useCallback(
     task => {
       taskActions
@@ -113,7 +98,6 @@ const StandardTaskItemContainer = ({
   return (
     <StandardTaskItem
       updateWorkflowStatus={handleUpdateWorkflowStatus}
-      updateDueDate={handleUpdateDueDate}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
       selectedTask={selectedTask}

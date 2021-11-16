@@ -79,15 +79,6 @@ export const getDashboardAllTasksByCriteria = (
       throw error;
     });
 
-export function getDashboardStatistics(tab) {
-  return axios
-    .get(`task/stats/getTaskStatsForCurrentUser?viewName=${tab}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function getTasksAssignedToUserByImplicitGroup(
   groupType,
   startPosition = 0,

@@ -48,7 +48,6 @@ const GlobalSearchView = ({
   const { storeAsCurrentTask } = taskActions;
   const {
     toggleTaskStatus,
-    setDueDate,
     setWorkflowStatus,
     updateTask,
     getMoreTasksForTaskList,
@@ -107,7 +106,6 @@ const GlobalSearchView = ({
                       storeAsCurrentTask={storeAsCurrentTask}
                       toggleTaskStatus={toggleTaskStatus}
                       onTaskUpdate={updateTask}
-                      updateDueDate={setDueDate}
                       updateWorkflowStatus={setWorkflowStatus}
                       highlightedValue={searchValue}
                       isCompletedList={isSearchingCompletedTasks}

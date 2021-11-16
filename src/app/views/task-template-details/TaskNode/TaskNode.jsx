@@ -1,8 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useEffect } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
+import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, IconButton } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch } from 'react-redux';
+import { isUserGroup } from 'helpers/user-helper';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
 import {
@@ -11,10 +15,11 @@ import {
   storeAsCurrentTask,
 } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
-import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/AdditionalMembersCounter';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import { NodeType } from 'helpers/task-template-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
@@ -40,6 +45,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     comments,
     updatedComment,
     subtasks,
+    assignedToUsers,
   } = task || {};
   const descriptionInputReference = useRef(null);
   const [inputValue, setInputValue] = useState('');
@@ -148,8 +154,9 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
             <Box
               display="flex"
               width="100%"
+              height={35}
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="flex-end"
             >
               <Box display="flex">
                 <button
@@ -184,9 +191,26 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
                     isNew={updatedAttachment}
                   />
                 </button>
+                <Box px={1} />
+                {subtasks?.length > 0 && (
+                  <SubtasksLabel>
+                    {subtasks.length}
+                    <Box px={0.2} />
+                    <SubtaskIcon color="currentColor" size={12} />
+                  </SubtasksLabel>
+                )}
               </Box>
-              {subtasks?.length > 0 && (
-                <SubtasksLabel>{subtasks.length} Subtasks</SubtasksLabel>
+              {assignedToUsers.length === 1 &&
+                (isUserGroup(assignedToUsers[0]) ? (
+                  <GroupAvatar group={assignedToUsers[0]} size={35} />
+                ) : (
+                  <UserAvatar user={assignedToUsers[0]} size={35} />
+                ))}
+              {assignedToUsers.length > 1 && (
+                <AdditionalMembersCounter
+                  hiddenMembers={assignedToUsers}
+                  size={35}
+                />
               )}
             </Box>
           </TaskInfoWrapper>

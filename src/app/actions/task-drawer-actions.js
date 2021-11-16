@@ -1,13 +1,8 @@
-/* eslint-disable unicorn/consistent-function-scoping */
-import {
-  SET_TASK_DRAWER_STATE,
-  OPEN_TASK_DRAWER_WITH_CONTENT,
-  GET_TASK_CUSTOM_FIELDS,
-} from './action-types';
+import * as ActionTypes from './action-types';
 
 export const setDrawerState = ({ open, focusField }) => dispatch => {
   dispatch({
-    type: SET_TASK_DRAWER_STATE,
+    type: ActionTypes.SET_TASK_DRAWER_STATE,
     open,
     focusField,
   });
@@ -17,19 +12,24 @@ export const openDrawer = focusField => dispatch => {
   setDrawerState({ open: true, focusField })(dispatch);
 };
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 export const closeDrawer = () => dispatch => {
   setDrawerState({ open: false, focusField: null })(dispatch);
 };
 
 export const openTaskDrawerWithContent = (task, focusField) => ({
-  type: OPEN_TASK_DRAWER_WITH_CONTENT,
+  type: ActionTypes.OPEN_TASK_DRAWER_WITH_CONTENT,
   open: true,
   task,
   focusField,
 });
 
 export const getTaskCustomFields = (taskIdentifier, taskListIdentifier) => ({
-  type: GET_TASK_CUSTOM_FIELDS,
+  type: ActionTypes.GET_TASK_CUSTOM_FIELDS,
   taskIdentifier,
   taskListIdentifier,
 });
+
+export function openTaskDrawerToAddTask(initialTaskState) {
+  return { type: ActionTypes.OPEN_TASK_DRAWER_TO_ADD_TASK, initialTaskState };
+}

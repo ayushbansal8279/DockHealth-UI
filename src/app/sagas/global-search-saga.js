@@ -18,7 +18,6 @@ import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   toggleTaskCompletedStatus,
-  setDueDate as setDueDateHelper,
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
@@ -34,7 +33,6 @@ export const DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS =
   'DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS';
 export const DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY =
   'DO_TOGGLE_GLOBAL_SEARCH_TASK_PRIORITY';
-export const DO_SET_GLOBAL_SEARCH_DUE_DATE = 'DO_SET_GLOBAL_SEARCH_DUE_DATE';
 export const DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS =
   'DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS';
 export const DO_UPDATE_GLOBAL_SEARCH_TASK = 'DO_UPDATE_GLOBAL_SEARCH_TASK';
@@ -68,14 +66,6 @@ const toggleTaskStatus = task => ({
   },
 });
 
-const setDueDate = (task, dueDate) => ({
-  type: DO_SET_GLOBAL_SEARCH_DUE_DATE,
-  payload: {
-    task,
-    dueDate,
-  },
-});
-
 const setWorkflowStatus = (task, workflowStatus) => ({
   type: DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS,
   payload: {
@@ -103,7 +93,6 @@ export const GlobalSearchSagaActions = {
   clearSearchValue,
   setSearchCompletedTasks,
   toggleTaskStatus,
-  setDueDate,
   setWorkflowStatus,
   updateTask,
   getMoreTasksForTaskList,
@@ -250,19 +239,6 @@ function* doToggleTaskCompleteStatus({ payload }) {
   }
 }
 
-function* doSetDueDate({ payload }) {
-  const { task, dueDate } = payload;
-  try {
-    const updatedTask = setDueDateHelper(task, dueDate);
-    yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
-
-    yield call(TaskApi.updateDueDate, task?.taskIdentifier, dueDate);
-    yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
-    yield put(refreshTasks());
-  }
-}
-
 function* doSetWorkflowStatus({ payload }) {
   const { workflowStatus, task } = payload;
   try {
@@ -301,7 +277,6 @@ export default function* watchGlobalSearch() {
     DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS,
     doToggleTaskCompleteStatus,
   );
-  yield takeLatest(DO_SET_GLOBAL_SEARCH_DUE_DATE, doSetDueDate);
   yield takeLatest(DO_SET_GLOBAL_SEARCH_WORKFLOW_STATUS, doSetWorkflowStatus);
   yield takeLatest(DO_UPDATE_GLOBAL_SEARCH_TASK, doUpdateTask);
   yield takeLatest(DO_CLEAR_SEARCH_VALUE, doClearSearchValue);

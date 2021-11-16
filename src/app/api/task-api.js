@@ -193,25 +193,6 @@ export function updateTaskDetails(task, details) {
     });
 }
 
-export const updateDueDate = (taskIdentifier, dueDate) => {
-  return axios
-    .put(
-      `task/addOrUpdateDueDate/${taskIdentifier}`,
-      {},
-      {
-        params: {
-          dueDate: dueDate ? dueDate.format('MM/DD/YYYY HH:mm:ss ZZ') : null,
-        },
-      },
-    )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-};
-
 /**
  * Updates task workflow status.
  * @param {number} taskIdentifier

@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isNil, move } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
@@ -52,10 +53,13 @@ import * as ModalActions from 'modal/actions';
 import { getListCustomFields } from 'actions/list-details-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
+import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 const initializeListDetailsViewHooks = (match, history) => {
+  const { search } = useLocation();
+  const viewType = getViewTypeFromQueryString(search);
   const sort = useSelector(taskDetailsSortSelector);
   const taskList = useSelector(currentTaskListSelector);
   const { listName, listDescription } = taskList || {};
@@ -366,16 +370,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     (taskIdentifier, dataToUpdate) => {
       actions
         .partialUpdateTask(taskIdentifier, dataToUpdate)
-        .then(refreshTabAfterTaskUpdate)
-        .catch(() => refreshTab());
-    },
-    [actions, refreshTab, refreshTabAfterTaskUpdate],
-  );
-
-  const handleUpdateDueDate = useCallback(
-    (task, dueDate) => {
-      actions
-        .updateDueDate(task, dueDate, true)
         .then(refreshTabAfterTaskUpdate)
         .catch(() => refreshTab());
     },
@@ -696,7 +690,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
-    handleUpdateDueDate,
     handleUpdateWorkflowStatus,
     isCompletedTasksFetching,
     isFetching,
@@ -721,6 +714,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     displayListPreferences,
     setDisplayListPreferences,
     setDisplayColumnPreferences,
+    viewType,
   };
 };
 

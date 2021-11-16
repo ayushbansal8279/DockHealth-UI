@@ -1,10 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
-import * as ModalActions from 'modal/actions';
+import { openModal } from 'modal/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import {
   taskTemplatesSelector,
@@ -37,7 +36,7 @@ import {
   TEMPLATE_TASK_ITEM_SORT_METHODS,
   TEMPLATE_TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/template-helpers';
-import { identity } from 'ramda';
+import { compose, identity } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
 import Search from 'components/task-view/Search/Search';
@@ -64,17 +63,8 @@ const BULK_EDIT_OPTIONS_CONFIG = {
 const TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY =
   'TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY';
 
-const TaskTemplateView = ({
-  isFetchingTaskTemplates,
-  taskTemplates,
-  modalActions,
-  taskTemplateActions,
-  userProfile,
-  goToFolder,
-  getAllTemplates,
-  cleanAndPushBreadcrumbs,
-  resetBreadcrumbs,
-}) => {
+const TaskTemplateView = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
   const [sort, setSort] = useState({});
@@ -84,6 +74,9 @@ const TaskTemplateView = ({
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
   const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
+  const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
+  const taskTemplates = useSelector(taskTemplatesSelector);
+  const userProfile = useSelector(userProfileSelector);
 
   useEffect(() => {
     if (userProfile?.orgUserRole === 'GUEST') {
@@ -93,16 +86,16 @@ const TaskTemplateView = ({
   }, [userProfile]);
 
   const handleCreateTemplate = useCallback(() => {
-    modalActions.openModal('CreateTemplate');
-  }, [modalActions]);
+    dispatch(openModal('CreateTemplate'));
+  }, [dispatch]);
 
   const handleCreateTemplateFolder = useCallback(() => {
-    modalActions.openModal('CreateTemplateFolder');
-  }, [modalActions]);
+    dispatch(openModal('CreateTemplateFolder'));
+  }, [dispatch]);
 
   const handleCreateSmartFlow = useCallback(() => {
-    modalActions.openModal('CreateSmartFlow');
-  }, [modalActions]);
+    dispatch(openModal('CreateSmartFlow'));
+  }, [dispatch]);
 
   const handleSortChange = (key, order) => {
     setSort({
@@ -145,30 +138,33 @@ const TaskTemplateView = ({
   );
   const handleBreadcrumbsRootClick = useCallback(() => {
     resetSort();
-    getAllTemplates();
-  }, [getAllTemplates]);
+    dispatch(getTemplates())();
+  }, [dispatch]);
+
   const handleBreadcrumbsChildClick = useCallback(
     (listBeforeClicked, clickedBreadcrumb) => {
       resetSort();
-      cleanAndPushBreadcrumbs(listBeforeClicked);
-      goToFolder(clickedBreadcrumb.taskTemplateFolderIdentifier);
+      dispatch(cleanAndPushToBreadcrumbs(listBeforeClicked));
+      dispatch(
+        goToTaskTemplateFolder(clickedBreadcrumb.taskTemplateFolderIdentifier),
+      );
     },
-    [cleanAndPushBreadcrumbs, goToFolder],
+    [dispatch],
   );
 
   const handleGoToFolder = useCallback(
     (taskTemplateIdentifier, name) => {
-      goToFolder(taskTemplateIdentifier);
-      taskTemplateActions.pushToBreadcrumbs(name, taskTemplateIdentifier);
+      dispatch(goToTaskTemplateFolder(taskTemplateIdentifier));
+      dispatch(
+        TaskTemplateActions.pushToBreadcrumbs(name, taskTemplateIdentifier),
+      );
       resetSort();
     },
-    [taskTemplateActions, goToFolder],
+    [dispatch],
   );
 
   const debouncedGetTemplate = useCallback(
-    debounce(getAllTemplates, 500, {
-      leading: true,
-    }),
+    debounce(compose(dispatch, getTemplates), 500),
     [],
   );
 
@@ -177,14 +173,16 @@ const TaskTemplateView = ({
     setSearchPhrase(searchPhraseValue);
     if (searchPhraseValue.length !== 1) {
       debouncedGetTemplate(searchPhraseValue);
-      resetBreadcrumbs();
+      dispatch(cleanBreadcrumbs());
     }
   };
 
   return (
     <TaskTemplateBulkEditContainer
       optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
-      refreshTasks={taskTemplateActions.reloadOpenedTemplateTasks}
+      refreshTasks={() =>
+        dispatch(TaskTemplateActions.reloadOpenedTemplateTasks())
+      }
     >
       <TaskTemplateViewContainer>
         {isBannerOpen && (
@@ -284,26 +282,4 @@ const TaskTemplateView = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    isFetchingTaskTemplates: isFetchingTaskTemplatesSelector(state),
-    taskTemplates: taskTemplatesSelector(state),
-    userProfile: userProfileSelector(state),
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    modalActions: bindActionCreators(ModalActions, dispatch),
-    taskTemplateActions: bindActionCreators(TaskTemplateActions, dispatch),
-    goToFolder: bindActionCreators(goToTaskTemplateFolder, dispatch),
-    getAllTemplates: bindActionCreators(getTemplates, dispatch),
-    cleanAndPushBreadcrumbs: bindActionCreators(
-      cleanAndPushToBreadcrumbs,
-      dispatch,
-    ),
-    resetBreadcrumbs: bindActionCreators(cleanBreadcrumbs, dispatch),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TaskTemplateView);
+export default TaskTemplateView;

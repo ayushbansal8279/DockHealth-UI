@@ -25,3 +25,8 @@ export const dashboardAllTaskItemsSelector = createSelector(
   dashboardTasksStateSelector,
   ({ tasksList }) => tasksList?.flatMap(l => l?.tasks || []) || [],
 );
+
+export const dashboardTabNameSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ tabName }) => tabName,
+);

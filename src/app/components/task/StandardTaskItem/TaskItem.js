@@ -39,7 +39,7 @@ import {
   checkColumnIsInConfig,
   TaskItemColumn,
 } from 'helpers/task-helpers';
-import dependencyIcon from 'img/dependency-icon.svg';
+import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
@@ -85,7 +85,6 @@ const TaskItem = ({
   isDragging,
   isCompletedGroup,
   onTaskUpdate,
-  updateDueDate,
   updateWorkflowStatus,
   dragAndDropDisabled,
   parentHasPatient,
@@ -102,6 +101,7 @@ const TaskItem = ({
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
   isSelectedByHighlighted,
+  openDrawer,
 }) => {
   const {
     taskIdentifier,
@@ -322,7 +322,7 @@ const TaskItem = ({
   const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
 
   const {
-    descriptionIsInCofnig,
+    descriptionIsInConfig,
     subtasksIsInConfig,
     patientIsInConfig,
     workflowStatusIsInConfig,
@@ -333,7 +333,7 @@ const TaskItem = ({
     decisionInConfig,
   } = useMemo(() => {
     return {
-      descriptionIsInCofnig: checkColumnIsInConfig(
+      descriptionIsInConfig: checkColumnIsInConfig(
         TaskItemColumn.DESCRIPTION,
         columnsConfig,
       ),
@@ -413,14 +413,14 @@ const TaskItem = ({
               onClick={onCircleClick}
             />
 
-            {!isDependencyEmptyOrCompleted && !isTemplateTask && (
+            {!isDependencyEmptyOrCompleted && (
               <>
                 <DependencyIconContainer
                   onMouseEnter={openDependencyPopover}
                   onMouseLeave={closeDependencyPopover}
                   ref={dependencyIconReference}
                 >
-                  <img src={dependencyIcon} alt="search" />
+                  <img src={DependencyIcon} alt="search" />
                   {dependencyIconReference.current && (
                     <DependencyListPopover
                       anchorEl={dependencyIconReference.current}
@@ -433,7 +433,7 @@ const TaskItem = ({
               </>
             )}
 
-            {descriptionIsInCofnig && (
+            {descriptionIsInConfig && (
               <TaskItemDescription
                 isCompletedGroup={isCompletedGroup}
                 isCompleted={isCompleted}
@@ -518,11 +518,7 @@ const TaskItem = ({
             />
           )}
           {dueDateIsInConfig && (
-            <TaskItemDueDate
-              task={task}
-              isHovered={isHovered}
-              updateDueDate={updateDueDate}
-            />
+            <TaskItemDueDate task={task} isHovered={isHovered} />
           )}
           {assignedIsInConfig && (
             <TaskItemMembers
@@ -549,6 +545,7 @@ const TaskItem = ({
                 customFieldValue={task?.taskMetaData?.find(
                   f => f.customFieldIdentifier === field.identifier,
                 )}
+                onClick={openDrawer}
               />
             ))}
         </StandardTaskItemContainer>

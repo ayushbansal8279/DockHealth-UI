@@ -9,12 +9,12 @@ import {
 } from 'selectors/user-selectors';
 import { setHeader } from 'actions/template-actions';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
 
 const CustomFieldsView = () => {
-  const [selectedTab, setSelectedTab] = useState(1);
   const userProfile = useSelector(userProfileSelector);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -25,6 +25,8 @@ const CustomFieldsView = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
+
+  const [selectedTab, setSelectedTab] = useState(taskCustomFieldsAvailable ? 1 : 0);
 
   useEffect(() => {
     if (
@@ -57,25 +59,27 @@ const CustomFieldsView = () => {
   }, []);
 
   return (
-    <ViewContainer>
-      <Tabs
-        value={selectedTab}
-        onChange={(event, index) => setSelectedTab(index)}
-        indicatorColor="secondary"
-        textColor="inherit"
-        variant="fullWidth"
-      >
-        {patientCustomFieldsAvailable && (
-          <Tab label="Patient Custom Fields" {...applyProps(0)} />
-        )}
-        {taskCustomFieldsAvailable && (
-          <Tab label="Task Custom Fields" {...applyProps(1)} />
-        )}
-      </Tabs>
-      <Box p={1} />
-      {selectedTab === 0 && <PatientCustomFieldsView />}
-      {selectedTab === 1 && <TaskCustomFieldsView editable />}
-    </ViewContainer>
+    <ColumnsConfigProvider>
+      <ViewContainer>
+        <Tabs
+          value={selectedTab}
+          onChange={(event, index) => setSelectedTab(index)}
+          indicatorColor="secondary"
+          textColor="inherit"
+          variant="fullWidth"
+        >
+          {patientCustomFieldsAvailable && (
+            <Tab label="Patient Custom Fields" {...applyProps(0)} />
+          )}
+          {taskCustomFieldsAvailable && (
+            <Tab label="Task Custom Fields" {...applyProps(1)} />
+          )}
+        </Tabs>
+        <Box p={1} />
+        {selectedTab === 0 && <PatientCustomFieldsView />}
+        {selectedTab === 1 && <TaskCustomFieldsView editable />}
+      </ViewContainer>
+    </ColumnsConfigProvider>
   );
 };
 

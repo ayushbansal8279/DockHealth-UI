@@ -43,7 +43,6 @@ const PersonDetailsOpenedTasks = ({
   searchValue,
   toggleCompleteTask,
   onTaskUpdate,
-  updateDueDate,
   updateWorkflowStatus,
 }) => {
   const dispatch = useDispatch();
@@ -164,7 +163,6 @@ const PersonDetailsOpenedTasks = ({
                       isCompletedGroup={false}
                       toggleCompleteTask={toggleCompleteTask}
                       onTaskUpdate={onTaskUpdate}
-                      updateDueDate={updateDueDate}
                       updateWorkflowStatus={updateWorkflowStatus}
                       addingNewSubtask={
                         addingNewSubtaskParentId === task.identifier

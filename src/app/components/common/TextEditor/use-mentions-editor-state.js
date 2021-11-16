@@ -15,7 +15,11 @@ export const useMentionsEditorState = initialValue => {
     [state],
   );
 
-  return [state, setMentionsEditorState];
+  const resetState = useCallback(() => {
+    setState(EditorState.createEmpty());
+  }, []);
+
+  return [state, setMentionsEditorState, resetState];
 };
 
 export default useMentionsEditorState;

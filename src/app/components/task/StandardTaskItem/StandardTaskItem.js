@@ -145,6 +145,11 @@ const Task = React.memo(
       dispatch(storeAsCurrentTask(task));
     }, [dispatch, task]);
 
+    const handleDrawerOpen = useCallback(() => {
+      dispatch(openDrawer());
+      dispatch(storeAsCurrentTask(task));
+    }, [dispatch, task]);
+
     return (
       <ParentTaskContainer
         ref={parentTaskReference}
@@ -170,6 +175,7 @@ const Task = React.memo(
               (highlightedTasksParentIdentifier === task.taskIdentifier ||
                 highlightedTasksParentIdentifier === task.parentTaskIdentifier)
             }
+            openDrawer={handleDrawerOpen}
             {...restProps}
           />
         </div>
