@@ -53,6 +53,12 @@ export const userHasTaskCustomFieldsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('TASK_CUSTOM_FIELDS'),
 );
 
+export const userHasCalendarViewFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('CALENDAR_VIEW'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
