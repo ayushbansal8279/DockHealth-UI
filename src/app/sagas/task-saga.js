@@ -186,9 +186,11 @@ function* addTask({ task }) {
 
 function* updateTaskDueDate({ task, dueDate }) {
   try {
-    const updatedTask = yield call(TaskApi.partialUpdateTask, task.identifier, {
-      dueDate: dueDate?.toISOString(),
-    });
+    const updatedTask = yield call(
+      TaskApi.updateDueDate,
+      task.identifier,
+      dueDate,
+    );
     yield put({
       type: ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
       task,
