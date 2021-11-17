@@ -604,13 +604,17 @@ const initializeTaskDrawerHooks = ({
   const onChangeDetailsEditor = useCallback(
     state => {
       setDetailsState(state);
-      if (detailsAutosaveTimeout.current)
-        clearTimeout(detailsAutosaveTimeout.current);
-      detailsAutosaveTimeout.current = setTimeout(() => {
-        handleTaskDetailsUpdate();
-      }, 10 * 1000); // ten seconds of inactivity
+      // if (detailsAutosaveTimeout.current)
+      //   clearTimeout(detailsAutosaveTimeout.current);
+      // detailsAutosaveTimeout.current = setTimeout(() => {
+      //   handleTaskDetailsUpdate();
+      // }, 10 * 1000); // ten seconds of inactivity
     },
-    [detailsAutosaveTimeout, handleTaskDetailsUpdate, setDetailsState],
+    [
+      // detailsAutosaveTimeout,
+      // handleTaskDetailsUpdate,
+      setDetailsState,
+    ],
   );
 
   return {
