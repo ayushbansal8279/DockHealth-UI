@@ -57,9 +57,10 @@ const Calendar = ({
 
   const handleDropDown = useCallback(
     data => {
-      const { id, start: dueDate } = data.event;
+      const { id, start } = data.event;
       const task = parentTasks.find(({ identifier }) => identifier === id);
-      dispatch(updateTaskDueDate(task, moment(dueDate)));
+      const dueDate = moment(start).toISOString();
+      dispatch(updateTaskDueDate(task, dueDate));
     },
     [dispatch, parentTasks],
   );

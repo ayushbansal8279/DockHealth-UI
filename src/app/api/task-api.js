@@ -1,5 +1,6 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable sonarjs/no-identical-functions */
+import moment from 'moment';
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 
@@ -200,7 +201,9 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
       {},
       {
         params: {
-          dueDate: dueDate ? dueDate.format('MM/DD/YYYY HH:mm:ss ZZ') : null,
+          dueDate: dueDate
+            ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
+            : null,
         },
       },
     )
