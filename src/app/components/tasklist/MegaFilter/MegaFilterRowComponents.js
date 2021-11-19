@@ -134,7 +134,7 @@ const DateFilterRowComponent = ({
     <StyledFilterRow
       isSelected={isSelected}
       isDisabled={taskCount === 0}
-      onClick={taskCount !== 0 && onClick}
+      onClick={taskCount !== 0 ? onClick : undefined}
     >
       <OptionLabel>{displayValue}</OptionLabel>
       <OptionCount>{taskCount}</OptionCount>

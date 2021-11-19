@@ -38,7 +38,7 @@ const DueDatePicker = ({
       moment(
         `${pickedDate} ${selectedTime}`,
         `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}`,
-      ),
+      ).toISOString(),
     );
   };
 
@@ -47,7 +47,7 @@ const DueDatePicker = ({
       moment(
         `${moment(selectedDate).format(DATE_ISO_FORMAT)} ${pickedTime}`,
         `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}`,
-      ),
+      ).toISOString(),
     );
   };
 

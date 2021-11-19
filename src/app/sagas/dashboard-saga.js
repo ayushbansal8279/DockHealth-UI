@@ -98,7 +98,8 @@ function* getDashboardTasksForGroup({ groupType }) {
       groupType,
       group,
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
     });
@@ -203,7 +204,7 @@ function* getDashboardTasks() {
 
     if (!isEmpty(selectedFilters)) {
       tasksList = isAllTasks
-        ? yield all([getDashboardAllTasksByCriteria(selectedFilters)])[0]
+        ? (yield all([getDashboardAllTasksByCriteria(selectedFilters)]))[0]
         : (yield all([getDashboardMyTasksByCriteria(selectedFilters)]))[0];
 
       yield put({
@@ -225,6 +226,7 @@ function* getDashboardTasks() {
       ]);
     }
   } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FAILURE,
     });

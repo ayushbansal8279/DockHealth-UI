@@ -38,7 +38,6 @@ import Search from 'components/task-view/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   getDashboardFilters,
-  getDashboardTasks,
   initializeDashboardState,
   searchDashboardTasks,
 } from 'actions/dashboard-actions';
@@ -319,7 +318,6 @@ const DashboardList = ({
 
   const handleTaskUpdate = useCallback(() => {
     dispatch(getDashboardFilters());
-    dispatch(getDashboardTasks());
   }, [dispatch]);
 
   const onClickCheckbox = useCallback(
