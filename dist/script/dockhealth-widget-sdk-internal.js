@@ -1,8 +1,8 @@
 /* eslint-disable no-var */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable prettier/prettier */
-/******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+/** *** */ (() => { // webpackBootstrap
+/** *** */ 	var __webpack_modules__ = ({
 
 /***/ 726:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -26,68 +26,68 @@ class DockHealthWidgetSdkInternal {
         const pjson = __webpack_require__(147)
         this._version = pjson.version
 
-        console.log('SDK Version: ' + this._version)
-        console.log('Initial origin: ' + window.location)
-        console.log('Target origin: ' + this._targetOrigin)
+        console.log(`SDK Version: ${  this._version}`)
+        console.log(`Initial origin: ${  window.location}`)
+        console.log(`Target origin: ${  this._targetOrigin}`)
     }
 
-    fireStateChanged(args) {
-        this._sendMessage('onStateChanged', args)
+    fireStateChanged(arguments_) {
+        this._sendMessage('onStateChanged', arguments_)
     }
 
-    fireItemChanged(args) {
-        this._sendMessage('onItemChanged', args)
+    fireItemChanged(arguments_) {
+        this._sendMessage('onItemChanged', arguments_)
     }
 
     onNavigate(callback) {
         this._addListener('onNavigate', callback)
     }
 
-    _sendMessage(eventName, args) {
+    _sendMessage(eventName, arguments_) {
         if (!eventName) throw 'Must specify event name.'
-        if (!args) throw 'Must specify event args.'
+        if (!arguments_) throw 'Must specify event args.'
 
         // NOTE: Must be careful not to attempt to access restricted props on target (via logging, etc).
         // Specifically, can't log the target here.
-        console.log('_sendMessage: Event name: ' + eventName + '. Target origin: ' + this._targetOrigin + '. Args: ' + JSON.stringify(args))
+        console.log(`_sendMessage: Event name: ${  eventName  }. Target origin: ${  this._targetOrigin  }. Args: ${  JSON.stringify(arguments_)}`)
 
         const version = this._version
         const requestId = this._generateRequestId()
         
-        this._target.postMessage({ eventName, args, requestId, version }, this._targetOrigin)
+        this._target.postMessage({ eventName, args: arguments_, requestId, version }, this._targetOrigin)
     }
 
     _receiveMessage(event) {
         if (!event) throw 'No event received.'
 
-        console.log('_receiveMessage: Event origin: ' + event.origin + '. Event data: ' + JSON.stringify(event.data))
+        console.log(`_receiveMessage: Event origin: ${  event.origin  }. Event data: ${  JSON.stringify(event.data)}`)
 
         if (!this._isValidDomain(event.origin)) {
-            console.error('_receiveMessage: Unauthorized origin: ' + event.origin)
+            console.error(`_receiveMessage: Unauthorized origin: ${  event.origin}`)
             return
         }
 
         this._listeners.forEach((callback, eventName) => {
             try {
                 if (eventName === event.data.eventName) {
-                    console.log('Firing listener: ' + eventName)
+                    console.log(`Firing listener: ${  eventName}`)
                     callback(event.data)    
                 }
-            } catch (err) {
-                console.error('_receiveMessage: Error: ', err)
+            } catch (error) {
+                console.error('_receiveMessage: Error:', error)
             }
         })
     }
 
     _addListener(eventName, callback) {
         this._listeners.set(eventName, callback)
-        console.log('Added listener: ' + eventName)
+        console.log(`Added listener: ${  eventName}`)
     }
 
     _removeListener(eventName) {
         if (this._listeners.has(eventName)) {
             this._listeners.delete(eventName)
-            console.log('Removed listener: ' + eventName)
+            console.log(`Removed listener: ${  eventName}`)
         }
     }
 
@@ -113,8 +113,7 @@ class DockHealthWidgetSdkInternal {
 
     _generateRequestId() {
         return Math.random()
-            .toString(36)
-            .substr(2, 9)
+            .toString(36).slice(2, 11)
     }
 }
 
@@ -129,38 +128,38 @@ module.exports = init
 /***/ 147:
 /***/ ((module) => {
 
-"use strict";
+
 module.exports = JSON.parse('{"name":"dockhealth-widget-sdk","version":"1.0.0","private":false,"repository":"https://github.com/DockHealth/dockhealth-widgets","main":"dist/sdk/index.js","author":"Dock Health <info@dock.health>","license":"","files":["README.md","dist/","src/","examples"],"devDependencies":{"html-webpack-plugin":"^5.3.2","path":"^0.12.7","webpack":"^5.49.0","webpack-cli":"^4.7.2","webpack-dev-server":"^3.11.2"},"scripts":{"build":"webpack --mode=production"}}');
 
 /***/ })
 
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
+/** *** */ 	});
+/** ********************************************************************* */
+/** *** */ 	// The module cache
+/** *** */ 	var __webpack_module_cache__ = {};
+/** *** */ 	
+/** *** */ 	// The require function
+/** *** */ 	function __webpack_require__(moduleId) {
+/** *** */ 		// Check if module is in cache
+/** *** */ 		var cachedModule = __webpack_module_cache__[moduleId];
+/** *** */ 		if (cachedModule !== undefined) {
+/** *** */ 			return cachedModule.exports;
+/** *** */ 		}
+/** *** */ 		// Create a new module (and put it into the cache)
+/** *** */ 		var module = __webpack_module_cache__[moduleId] = {
+/** *** */ 			// no module.id needed
+/** *** */ 			// no module.loaded needed
+/** *** */ 			exports: {}
+/** *** */ 		};
+/** *** */ 	
+/** *** */ 		// Execute the module function
+/** *** */ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/** *** */ 	
+/** *** */ 		// Return the exports of the module
+/** *** */ 		return module.exports;
+/** *** */ 	}
+/** *** */ 	
+/** ********************************************************************* */
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
@@ -170,5 +169,5 @@ var __webpack_exports__ = {};
   
 })();
 
-/******/ })()
+/** *** */ })()
 ;
