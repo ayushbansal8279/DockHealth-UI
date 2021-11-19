@@ -42,6 +42,7 @@ import {
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
 import PatientAttachments from './PatientAttachments/PatientAttachments';
+import PatientWidget from './PatientWidget/PatientWidget';
 
 const TABS_CONFIG = [
   {
@@ -60,6 +61,11 @@ const TABS_CONFIG = [
     label: 'Files',
     mainPath: 'files',
     RouteComponent: PatientAttachments,
+  },
+  {
+    label: 'Widget',
+    mainPath: 'widget',
+    RouteComponent: PatientWidget,
   },
 ];
 
