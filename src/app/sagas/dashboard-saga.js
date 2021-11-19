@@ -203,9 +203,9 @@ function* getDashboardTasks() {
     let tasksList = [];
 
     if (!isEmpty(selectedFilters)) {
-      tasksList = isAllTasks
-        ? (yield all([getDashboardAllTasksByCriteria(selectedFilters)]))[0]
-        : (yield all([getDashboardMyTasksByCriteria(selectedFilters)]))[0];
+      tasksList = yield isAllTasks
+        ? getDashboardAllTasksByCriteria(selectedFilters)
+        : getDashboardMyTasksByCriteria(selectedFilters);
 
       yield put({
         type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,
