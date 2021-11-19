@@ -3,9 +3,8 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { patientSelector } from 'selectors/patient-details-selectors';
-import {
-  // fetchPatientWidgets,
-} from 'sagas/patient-details-saga';
+import // fetchPatientWidgets,
+'sagas/patient-details-saga';
 import { useBoolean } from 'hooks/useBoolean';
 
 const initializeWidgetSectionHooks = () => {
@@ -22,11 +21,9 @@ const initializeWidgetSectionHooks = () => {
 
   // const widgets = useSelector(patientWidgetsSelector) || [];
 
-  const [
-    widgetsLoading,
-    setWidgetsLoading,
-    unsetWidgetsLoading,
-  ] = useBoolean(false);
+  const [widgetsLoading, setWidgetsLoading, unsetWidgetsLoading] = useBoolean(
+    false,
+  );
 
   return {
     userProfile,
