@@ -245,55 +245,58 @@ const DashboardTasksGroup = ({
                       ref={providedDroppable.innerRef}
                       {...providedDroppable.droppableProps}
                     >
-                      {currentSortMethod(tasks)?.map((task, index) => (
-                        <Draggable
-                          key={task.taskIdentifier}
-                          draggableId={String(task.taskIdentifier)}
-                          index={index}
-                          isDragDisabled={isTaskDrawerOpen || tasks?.length < 2}
-                        >
-                          {(draggableProvided, { isDragging }) => (
-                            <div
-                              ref={draggableProvided.innerRef}
-                              {...draggableProvided.draggableProps}
-                            >
-                              <DashboardTaskItemContainer>
-                                <StandardTaskItem
-                                  task={task}
-                                  toggleCompleteTask={() =>
-                                    dispatch(
-                                      TaskActions.toggleCompleteTask(task),
-                                    )
-                                  }
-                                  isCompletedGroup={isCompletedGroup}
-                                  storeAsCurrentTask={storeAsCurrentTask}
-                                  isDragging={isDragging}
-                                  dragHandleProps={
-                                    draggableProvided.dragHandleProps
-                                  }
-                                  isDraggable={
-                                    !isTaskDrawerOpen && tasks?.length > 1
-                                  }
-                                  openDrawer={openDrawer}
-                                  isSelected={
-                                    selectedTaskIdentifier ===
-                                    task?.taskIdentifier
-                                  }
-                                  showAssignedPerson={isAllTasksTab}
-                                  currentUser={currentUser}
-                                  onTaskUpdate={handleUpdateTask}
-                                  updateWorkflowStatus={updateWorkflowStatus}
-                                  multipleAssigneesContext={
-                                    groupHasMultipleAssignees
-                                  }
-                                  subtasksDisabled
-                                  isDashboardTask
-                                />
-                              </DashboardTaskItemContainer>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                      {tasks &&
+                        currentSortMethod(tasks)?.map((task, index) => (
+                          <Draggable
+                            key={task.taskIdentifier}
+                            draggableId={String(task.taskIdentifier)}
+                            index={index}
+                            isDragDisabled={
+                              isTaskDrawerOpen || tasks?.length < 2
+                            }
+                          >
+                            {(draggableProvided, { isDragging }) => (
+                              <div
+                                ref={draggableProvided.innerRef}
+                                {...draggableProvided.draggableProps}
+                              >
+                                <DashboardTaskItemContainer>
+                                  <StandardTaskItem
+                                    task={task}
+                                    toggleCompleteTask={() =>
+                                      dispatch(
+                                        TaskActions.toggleCompleteTask(task),
+                                      )
+                                    }
+                                    isCompletedGroup={isCompletedGroup}
+                                    storeAsCurrentTask={storeAsCurrentTask}
+                                    isDragging={isDragging}
+                                    dragHandleProps={
+                                      draggableProvided.dragHandleProps
+                                    }
+                                    isDraggable={
+                                      !isTaskDrawerOpen && tasks?.length > 1
+                                    }
+                                    openDrawer={openDrawer}
+                                    isSelected={
+                                      selectedTaskIdentifier ===
+                                      task?.taskIdentifier
+                                    }
+                                    showAssignedPerson={isAllTasksTab}
+                                    currentUser={currentUser}
+                                    onTaskUpdate={handleUpdateTask}
+                                    updateWorkflowStatus={updateWorkflowStatus}
+                                    multipleAssigneesContext={
+                                      groupHasMultipleAssignees
+                                    }
+                                    subtasksDisabled
+                                    isDashboardTask
+                                  />
+                                </DashboardTaskItemContainer>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
                       {providedDroppable.placeholder}
                     </DroppableBox>
                   );
