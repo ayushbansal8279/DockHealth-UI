@@ -5,7 +5,7 @@ import { convertToRaw } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
-import { getPatientsByCriteria } from 'api/patient-api';
+import { getPatientsByCriteria } from 'api/patients-api';
 import { getListMembersByName } from 'api/task-list-api';
 import createToolbarPlugin, {
   Separator,

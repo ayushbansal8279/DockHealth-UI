@@ -377,10 +377,6 @@ const DashboardList = ({
           </Grid>
           <ActionsContainer item md={8}>
             <MegaFilter
-              popoverStyles={{
-                width: 'calc(100% - 420px)',
-                right: '100px',
-              }}
               filters={filters}
               selectedFilters={selectedFilters}
               onSelectFilters={sf =>

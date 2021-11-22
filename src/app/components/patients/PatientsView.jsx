@@ -1,67 +1,41 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import debounce from 'lodash.debounce';
-import { Box, Grid } from '@material-ui/core';
-import { isEmpty } from 'ramda';
-import { createPatientDetailsPath } from 'routing/helpers/paths';
+import { Grid } from '@material-ui/core';
+import { getPatientListIdentifierByUrlParameter } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
-import { showGlobalErrorAlert } from 'alert/actions';
+import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
 import { setHeader } from 'actions/template-actions';
-import { organizationSelector } from 'selectors/organization-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
-import SearchInput from 'components/common/SearchInput/SearchInput';
+import {
+  patientsListDetailsSelector,
+  patientsSelector,
+  isFetchingPatientsSelector,
+  patientsListSearchTermSelector,
+} from 'selectors/patients-selectors';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import { getPatientsList } from 'api/patients-api';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
-import CreatePatientDrawer from './CreatePatientDrawer/CreatePatientDrawer';
 import {
   PatientsViewContainer,
   PatientsListDescription,
-  InputWrapper,
-  SearchHelperText,
   PatientsListContainer,
 } from './styled';
 
-const parsePatientsListIdentifier = listIdentifier => {
-  if (listIdentifier === 'all')
-    return {
-      listIdentifier: 'ALL_PATIENTS',
-      listType: 'DEFAULT',
-    };
-
-  if (listIdentifier === 'active')
-    return {
-      listIdentifier: 'ACTIVE_PATIENTS',
-      listType: 'DEFAULT',
-    };
-
-  return {
-    listIdentifier,
-    listType: 'CUSTOM',
-  };
-};
-
 const PatientsView = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { listIdentifier: listIdentifierParameter } = useParams();
 
-  const { listIdentifier } = parsePatientsListIdentifier(
+  const listIdentifier = getPatientListIdentifierByUrlParameter(
     listIdentifierParameter,
   );
-  const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
-  const { orgUserRole } = useSelector(userProfileSelector);
-  const isGuest = orgUserRole === 'GUEST';
+  const searchValue = useSelector(patientsListSearchTermSelector);
+  const listDetails = useSelector(patientsListDetailsSelector);
+  const isFetchingPatients = useSelector(isFetchingPatientsSelector);
+  const patients = useSelector(patientsSelector);
+  const { listName, listDescription } = listDetails || {};
 
-  const patientsListContainerReference = useRef(null);
-  const [patientsListDetails, setPatientsListDetails] = useState({});
-  const [patients, setPatients] = useState(null);
-  const [isFetchingPatients, setIsFetchingPatients] = useState(true);
-  const [searchValue, setSearchValue] = useState('');
   const [patientImportDetails, setPatientImportDetails] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
   const [
@@ -69,37 +43,13 @@ const PatientsView = () => {
     setHasImportErrors,
     unsetHasImportErrors,
   ] = useBoolean(false);
-  const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] = useBoolean(
-    false,
-  );
 
-  const handleAfterPatientCreation = ({ patientIdentifier }) => {
-    history.push(createPatientDetailsPath(patientIdentifier));
-  };
-
-  const fetchPatients = useCallback(() => {
-    setIsFetchingPatients(true);
-    getPatientsList(listIdentifier)
-      .then(data => {
-        const fetchedData = { ...data };
-        setPatients(fetchedData.patients);
-        setIsFetchingPatients(false);
-        delete fetchedData.patients;
-        setPatientsListDetails(fetchedData);
-      })
-      .catch(() => {
-        setIsFetchingPatients(false);
-        dispatch(showGlobalErrorAlert());
-      });
+  useEffect(() => {
+    dispatch(PatientsActions.initializePatientsListState(listIdentifier));
   }, [dispatch, listIdentifier]);
 
   useEffect(() => {
-    setSearchValue('');
-    fetchPatients();
-  }, [fetchPatients]);
-
-  useEffect(() => {
-    if (!isEmpty(patientsListDetails)) {
+    if (listName) {
       dispatch(
         setHeader({
           layout: [
@@ -108,9 +58,9 @@ const PatientsView = () => {
               component: (
                 <>
                   <GenericHeader>
-                    {patientsListDetails?.listName}
+                    {listName}
                     <PatientsListDescription>
-                      {patientsListDetails?.listDescription}
+                      {listDescription}
                     </PatientsListDescription>
                   </GenericHeader>
                 </>
@@ -120,36 +70,11 @@ const PatientsView = () => {
         }),
       );
     }
-  }, [dispatch, patientsListDetails]);
-
-  const fetchPatientsBySearchTerm = useCallback(
-    searchTerm => {
-      PatientApi.getPatientsByCriteria(searchTerm, listIdentifier)
-        .then(fetchedPatients => {
-          setPatients(fetchedPatients);
-          setIsFetchingPatients(false);
-        })
-        .catch(() => {
-          setIsFetchingPatients(false);
-        });
-    },
-    [listIdentifier],
-  );
-
-  const searchPatientsBySearchTermWithDebounce = useCallback(
-    debounce(value => {
-      fetchPatientsBySearchTerm(value);
-    }, 500),
-    [fetchPatientsBySearchTerm],
-  );
+  }, [dispatch, listDescription, listName]);
 
   const refreshPatients = useCallback(() => {
-    if (searchValue) {
-      fetchPatientsBySearchTerm(searchValue);
-    } else {
-      fetchPatients();
-    }
-  }, [searchValue, fetchPatients, fetchPatientsBySearchTerm]);
+    dispatch(PatientsActions.getCurrentPatients());
+  }, [dispatch]);
 
   const refreshPatientList = useCallback(
     async counter => {
@@ -181,75 +106,22 @@ const PatientsView = () => {
     [refreshPatients, setHasImportErrors, unsetHasImportErrors],
   );
 
-  const hidePatientsList =
-    emrIntegrationEnabled && !searchValue && listIdentifier === 'ALL_PATIENTS';
-
-  const handleSearchChange = useCallback(
-    searchTerm => {
-      setSearchValue(searchTerm);
-      if (hidePatientsList) {
-        searchPatientsBySearchTermWithDebounce.cancel();
-        setPatients(null);
-        setIsFetchingPatients(false);
-      } else {
-        setIsFetchingPatients(true);
-        searchPatientsBySearchTermWithDebounce(searchTerm);
-      }
-    },
-    [hidePatientsList, searchPatientsBySearchTermWithDebounce],
-  );
-
   return (
     <PatientsViewContainer>
-      {listIdentifier === 'ALL_PATIENTS' && emrIntegrationEnabled ? (
-        <Box width="100%">
-          <InputWrapper hasValue={searchValue}>
-            <SearchInput
-              value={searchValue}
-              onValueChange={handleSearchChange}
-            />
-            {!searchValue && (
-              <SearchHelperText>
-                Dock is connected to your EHR. Please search by name or medical
-                record number to find a patient.
-              </SearchHelperText>
-            )}
-          </InputWrapper>
-        </Box>
-      ) : (
-        <PatientsToolbar
-          hasPatients
-          refreshPatientList={refreshPatientList}
-          patientImportDetails={patientImportDetails}
-          setImportPopoverOpen={setImportPopoverOpen}
-          isGuest={isGuest}
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          onAddPatientClick={setIsSidebarOpen}
-          hideButtons={
-            emrIntegrationEnabled || patientsListDetails?.listType !== 'DEFAULT'
-          }
-        />
-      )}
-
-      <PatientsListContainer ref={patientsListContainerReference}>
+      <PatientsToolbar
+        refreshPatientList={refreshPatientList}
+        setImportPopoverOpen={setImportPopoverOpen}
+      />
+      <PatientsListContainer>
         <Grid container>
-          {!hidePatientsList && (
-            <PatientsList
-              isFiltered={searchValue}
-              patients={patients}
-              patientImportDetails={patientImportDetails}
-              refreshPatientList={refreshPatientList}
-              importPopoverOpen={importPopoverOpen}
-              setImportPopoverOpen={setImportPopoverOpen}
-              hasImportErrors={hasImportErrors}
-              isFetching={isFetchingPatients}
-            />
-          )}
-          <CreatePatientDrawer
-            onPatientCreated={handleAfterPatientCreation}
-            onClose={unsetIsSidebarOpen}
-            isSidebarOpen={isSidebarOpen}
+          <PatientsList
+            isFiltered={searchValue}
+            patients={patients}
+            patientImportDetails={patientImportDetails}
+            importPopoverOpen={importPopoverOpen}
+            setImportPopoverOpen={setImportPopoverOpen}
+            hasImportErrors={hasImportErrors}
+            isFetching={isFetchingPatients && !patients}
           />
         </Grid>
       </PatientsListContainer>
