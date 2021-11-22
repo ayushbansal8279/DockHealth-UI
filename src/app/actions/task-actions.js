@@ -459,46 +459,21 @@ export function toggleCompleteTask(
   };
 }
 
-export const updateTaskDescription = (task, description) => dispatch =>
-  TaskApi.updateTaskDescription(shapeTask(task), description)
-    .then(
-      ({
-        description: updatedDescription,
-        tokenizedDescription,
-        taskMentions,
-      }) => {
-        const newTask = task;
-        newTask.description = updatedDescription;
-        newTask.tokenizedDescription = tokenizedDescription;
-        newTask.taskMentions = taskMentions;
+export function updateTaskDescription(task, descriptionState) {
+  return {
+    type: ActionTypes.UPDATE_TASK_DESCRIPTION,
+    task,
+    descriptionState,
+  };
+}
 
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: newTask,
-        });
-        return newTask;
-      },
-    )
-    .catch(error => {
-      throw error;
-    });
-
-export const updateTaskDetails = (task, details) => dispatch =>
-  TaskApi.updateTaskDetails(shapeTask(task), details)
-    .then(({ details: updatedDetails, tokenizedDetails, taskMentions }) => {
-      const newTask = task;
-      newTask.details = updatedDetails;
-      newTask.tokenizedDetails = tokenizedDetails;
-      newTask.taskMentions = taskMentions;
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: newTask,
-      });
-      return newTask;
-    })
-    .catch(error => {
-      throw error;
-    });
+export function updateTaskDetails(task, detailsState) {
+  return {
+    type: ActionTypes.UPDATE_TASK_DETAILS,
+    task,
+    detailsState,
+  };
+}
 
 export function updateTaskDueDate(task, dueDate) {
   return {

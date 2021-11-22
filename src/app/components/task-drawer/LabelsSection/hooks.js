@@ -57,7 +57,6 @@ const initializeLabelsSectionHooks = ({
   setAutoSaveVisible,
   setSelectedLabelsValue,
   onTaskUpdate,
-  parentFormSubmit,
 }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
@@ -199,12 +198,6 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
-  const saveTaskOnFocus = async () => {
-    if (!selectedTask || !selectedTask.taskIdentifier) {
-      parentFormSubmit();
-    }
-  };
-
   return {
     labels: availableLabels,
     isLoadingLabels,
@@ -215,7 +208,6 @@ const initializeLabelsSectionHooks = ({
     removeLabelFromTask,
     refreshLabels,
     deleteLabel,
-    saveTaskOnFocus,
   };
 };
 

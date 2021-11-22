@@ -1,13 +1,11 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
+import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import { convertToRaw } from 'draft-js';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -31,32 +29,20 @@ import {
   styleRightColumn,
   styleLastRow,
   styleCommentRow,
-  DescriptionError,
   ParentTaskButton,
   ParentTaskDescriptionPlaceholder,
-  DescriptionTextContainer,
   TaskDrawerDivider,
-  DetailsContainer,
   ParentTaskDescription,
   styleFullRowThin,
   styleNoPaddingRow,
 } from './styled';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
-import CustomTextEditor from '../CustomTextEditor/CustomTextEditor';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
 import DependenciesSection from '../DependenciesSection/DependenciesSection';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
-
-const isEmptyState = state => {
-  const rawState = convertToRaw(state.getCurrentContent());
-  const firstBlock = rawState?.blocks?.[0];
-  if (firstBlock && firstBlock.text === '') {
-    return true;
-  }
-  return false;
-};
+import TaskDetails from '../TaskDetails/TaskDetails';
 
 const TaskDrawer = ({
   isInbox,
@@ -69,25 +55,15 @@ const TaskDrawer = ({
 }) => {
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
-    descriptionErrorState,
-    descriptionReference,
-    descriptionState,
     formMethods,
     handleDueDateSave,
     handleUpdateTask,
     isSubtask,
-    isAddingOrEditingSubtask,
     isAddingSubtask,
-    isDescriptionFocused,
-    isSelectedTaskComplete,
     isTemplateTask,
-    onBlurMentionsEditor,
-    onChangeMentionsEditor,
     onClickParentTask,
     onDelete,
     onDuplicate,
-    onFocusMentionsEditor,
-    onSubmit,
     parentDescriptionState,
     reFileTask,
     selectedParentTask,
@@ -100,12 +76,6 @@ const TaskDrawer = ({
     taskDrawerReference,
     taskListIdentifier,
     templateBundleIdentifier,
-    detailsReference,
-    detailsState,
-    onBlurDetailsEditor,
-    onChangeDetailsEditor,
-    onFocusDetailsEditor,
-    isDetailsFocused,
     taskCustomFields,
     clearFormStates,
   } = initializeTaskDrawerHooks({
@@ -131,16 +101,7 @@ const TaskDrawer = ({
     taskDrawerReference,
     hideTour,
   });
-  const { handleSubmit, setValue, reset } = formMethods;
-  const parentFormSubmit = handleSubmit(onSubmit);
-
-  const isEmptyDetailsState = useMemo(() => isEmptyState(detailsState), [
-    detailsState,
-  ]);
-  const isEmptyDescriptionState = useMemo(
-    () => isEmptyState(descriptionState),
-    [descriptionState],
-  );
+  const { setValue, reset } = formMethods;
 
   const closeTaskDrawer = useCallback(() => {
     handleCloseTaskDrawer();
@@ -155,269 +116,181 @@ const TaskDrawer = ({
         onClose={closeTaskDrawer}
         ref={taskDrawerReference}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormContext {...formMethods}>
-            <Grid container style={styleTaskDrawerContainer}>
-              <Grid
-                container
-                item
-                xs={12}
-                alignItems="center"
-                justify="space-between"
-                style={styleFirstRow}
-              >
-                <TopSection
-                  formMethods={formMethods}
+        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+        <FormContext {...formMethods}>
+          <Grid container style={styleTaskDrawerContainer}>
+            <Grid
+              container
+              item
+              xs={12}
+              alignItems="center"
+              justify="space-between"
+              style={styleFirstRow}
+            >
+              <TopSection
+                formMethods={formMethods}
+                selectedTask={selectedTask}
+                templateBundleIdentifier={templateBundleIdentifier}
+                reFileTask={reFileTask}
+                onDelete={onDelete}
+                onDuplicate={onDuplicate}
+                isInbox={isInbox}
+                closeTaskDrawer={closeTaskDrawer}
+                setAutoSaveVisible={setAutoSaveVisible}
+                setTourTaskMenuReference={element => {
+                  taskMenuReference.current = element;
+                }}
+              />
+            </Grid>
+            {selectedTask && <TaskDrawerDivider />}
+            <Spacing vertical={2} />
+            {isSubtask && (
+              <Grid item xs={12} style={styleFullRowThin}>
+                <Spacing vertical={4} />
+                {selectedParentTask ? (
+                  <ParentTaskButton onClick={onClickParentTask}>
+                    <ParentTaskDescription>
+                      <TextEditor
+                        readOnly
+                        withEditedLabel={selectedParentTask.edited}
+                        state={parentDescriptionState}
+                        onChange={setParentDescriptionState}
+                        taskListIdentifier={taskListIdentifier}
+                        disableMentions={isTemplateTask}
+                      />
+                    </ParentTaskDescription>
+                  </ParentTaskButton>
+                ) : (
+                  <ParentTaskDescriptionPlaceholder />
+                )}
+              </Grid>
+            )}
+            <Grid item xs={12} style={styleFullRow}>
+              <TaskDescription selectedTask={selectedTask} />
+            </Grid>
+            {selectedTaskSourceMessage && (
+              <Grid item xs={12} style={styleEmailRow}>
+                <TaskDrawerEmailBodyContainer
+                  emailBody={selectedTask.sourceMessage}
+                  selectedTaskSourceMessage={selectedTaskSourceMessage}
+                  taskListIdentifier={taskListIdentifier}
+                />
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <TaskDetails selectedTask={selectedTask} />
+            </Grid>
+            <Grid item xs={6} style={styleLeftColumn}>
+              <PatientSection
+                selectedPatient={
+                  selectedTask?.patient || selectedParentTask?.patient || null
+                }
+                disabled={
+                  disabledFields.includes(DrawerFieldEnum.PATIENT) ||
+                  isTemplateTask
+                }
+                placeholder={
+                  isTemplateTask && 'Not available when creating a template'
+                }
+                autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
+                onSave={handleUpdateTask}
+                templateBundleIdentifier={templateBundleIdentifier}
+              />
+            </Grid>
+            <Grid item xs={6} style={styleRightColumn}>
+              <AssignedToSection
+                assignedToUsers={selectedTask?.assignedToUsers}
+                taskListIdentifier={isTemplateTask ? null : taskListIdentifier}
+                onSave={handleUpdateTask}
+              />
+            </Grid>
+            <Grid item xs={6} style={styleLeftColumn}>
+              <div ref={dueDateSectionReference}>
+                <DueDateSection
                   selectedTask={selectedTask}
-                  templateBundleIdentifier={templateBundleIdentifier}
-                  reFileTask={reFileTask}
-                  onDelete={onDelete}
-                  onDuplicate={onDuplicate}
-                  isInbox={isInbox}
-                  closeTaskDrawer={closeTaskDrawer}
-                  setAutoSaveVisible={setAutoSaveVisible}
-                  setTourTaskMenuReference={element => {
-                    taskMenuReference.current = element;
-                  }}
+                  onDueDateChange={handleDueDateSave}
                 />
-              </Grid>
-              {selectedTask && <TaskDrawerDivider />}
-              <Spacing vertical={2} />
-              {isSubtask && (
-                <Grid item xs={12} style={styleFullRowThin}>
-                  <Spacing vertical={4} />
-                  {selectedParentTask ? (
-                    <ParentTaskButton onClick={onClickParentTask}>
-                      <ParentTaskDescription>
-                        <TextEditor
-                          readOnly
-                          withEditedLabel={selectedParentTask.edited}
-                          state={parentDescriptionState}
-                          onChange={setParentDescriptionState}
-                          taskListIdentifier={taskListIdentifier}
-                          disableMentions={isTemplateTask}
-                        />
-                      </ParentTaskDescription>
-                    </ParentTaskButton>
-                  ) : (
-                    <ParentTaskDescriptionPlaceholder />
-                  )}
-                </Grid>
-              )}
-              <Grid item xs={12} style={styleFullRow}>
-                <DescriptionTextContainer isCrossed={isSelectedTaskComplete}>
-                  <CustomTextEditor
-                    hasError={descriptionErrorState}
-                    empty={isEmptyDescriptionState}
-                    focused={isDescriptionFocused}
-                    required
-                    isSelectedTaskComplete={isSelectedTaskComplete}
-                    label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
-                    selectedTask={selectedTask}
-                  >
-                    <TextEditor
-                      ref={descriptionReference}
-                      taskListIdentifier={taskListIdentifier}
-                      disableMentions={isTemplateTask}
-                      placeholder={
-                        isAddingOrEditingSubtask
-                          ? 'What is the subtask?'
-                          : 'What is the task?'
-                      }
-                      onFocus={onFocusMentionsEditor}
-                      onBlur={onBlurMentionsEditor}
-                      state={descriptionState}
-                      onChange={onChangeMentionsEditor}
-                      keyBindingFn={event => {
-                        if (event.key === 'Enter') {
-                          return 'enter-command';
-                        }
-
-                        return undefined;
-                      }}
-                      handleKeyCommand={command => {
-                        if (command === 'enter-command') {
-                          // eslint-disable-next-line no-unused-expressions
-                          descriptionReference.current?.blur();
-                          return 'handled';
-                        }
-
-                        return 'not-handled';
-                      }}
-                    />
-                  </CustomTextEditor>
-                </DescriptionTextContainer>
-                {descriptionErrorState && (
-                  <DescriptionError>
-                    Task description is required
-                  </DescriptionError>
-                )}
-              </Grid>
-              {selectedTaskSourceMessage && (
-                <Grid item xs={12} style={styleEmailRow}>
-                  <TaskDrawerEmailBodyContainer
-                    emailBody={selectedTask.sourceMessage}
-                    selectedTaskSourceMessage={selectedTaskSourceMessage}
-                    taskListIdentifier={taskListIdentifier}
-                  />
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                <DetailsContainer>
-                  <CustomTextEditor
-                    empty={isEmptyDetailsState}
-                    focused={isDetailsFocused}
-                    label="details"
-                    richTextEnabled
-                  >
-                    <TextEditor
-                      minHeight={100}
-                      ref={detailsReference}
-                      taskListIdentifier={taskListIdentifier}
-                      disableMentions={isTemplateTask}
-                      showToolbar
-                      onFocus={onFocusDetailsEditor}
-                      onBlur={onBlurDetailsEditor}
-                      state={detailsState}
-                      onChange={onChangeDetailsEditor}
-                      keyBindingFn={event => {
-                        if (
-                          event.keyCode === 13 &&
-                          !event.nativeEvent.shiftKey
-                        ) {
-                          return 'enter-command';
-                        }
-                        return undefined;
-                      }}
-                      handleKeyCommand={command => {
-                        if (command === 'enter-command') {
-                          detailsReference.current.blur();
-                          return 'handled';
-                        }
-
-                        return 'not-handled';
-                      }}
-                    />
-                  </CustomTextEditor>
-                </DetailsContainer>
-              </Grid>
-              <Grid item xs={6} style={styleLeftColumn}>
-                <PatientSection
-                  selectedPatient={
-                    selectedTask?.patient || selectedParentTask?.patient || null
-                  }
-                  disabled={
-                    disabledFields.includes(DrawerFieldEnum.PATIENT) ||
-                    isTemplateTask
-                  }
-                  placeholder={
-                    isTemplateTask && 'Not available when creating a template'
-                  }
-                  autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
-                  onSave={handleUpdateTask}
-                  templateBundleIdentifier={templateBundleIdentifier}
-                />
-              </Grid>
-              <Grid item xs={6} style={styleRightColumn}>
-                <AssignedToSection
-                  assignedToUsers={selectedTask?.assignedToUsers}
-                  taskListIdentifier={
-                    isTemplateTask ? null : taskListIdentifier
-                  }
+              </div>
+            </Grid>
+            <Grid item xs={6} style={styleRightColumn}>
+              {!isTemplateTask && (
+                <ReminderSection
+                  selectedTask={selectedTask}
+                  isDisabled={!selectedTask?.dueDate}
                   onSave={handleUpdateTask}
                 />
-              </Grid>
-              <Grid item xs={6} style={styleLeftColumn}>
-                <div ref={dueDateSectionReference}>
-                  <DueDateSection
-                    selectedTask={selectedTask}
-                    onDueDateChange={handleDueDateSave}
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={6} style={styleRightColumn}>
-                {!isTemplateTask && (
-                  <ReminderSection
-                    selectedTask={selectedTask}
-                    isDisabled={!selectedTask?.dueDate}
-                    onSave={handleUpdateTask}
-                  />
-                )}
-              </Grid>
-              <Grid item xs={6} style={styleLeftColumn}>
-                <PrioritySection
+              )}
+            </Grid>
+            <Grid item xs={6} style={styleLeftColumn}>
+              <PrioritySection
+                selectedTask={selectedTask}
+                setAutoSaveVisible={setAutoSaveVisible}
+                onTaskUpdate={onTaskUpdate}
+              />
+            </Grid>
+            <Grid item xs={6} style={styleRightColumn}>
+              <div ref={statusSectionReference}>
+                <StatusSection
                   selectedTask={selectedTask}
                   setAutoSaveVisible={setAutoSaveVisible}
                   onTaskUpdate={onTaskUpdate}
                 />
-              </Grid>
-              <Grid item xs={6} style={styleRightColumn}>
-                <div ref={statusSectionReference}>
-                  <StatusSection
-                    selectedTask={selectedTask}
-                    setAutoSaveVisible={setAutoSaveVisible}
-                    onTaskUpdate={onTaskUpdate}
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={12} style={styleFullRow}>
-                <div ref={labelsSectionReference}>
-                  <LabelsSection
-                    selectedTask={selectedTask}
-                    isInbox={isInbox}
-                    parentFormSubmit={parentFormSubmit}
-                    setAutoSaveVisible={setAutoSaveVisible}
-                    setSelectedLabelsValue={setValue}
-                    taskDrawerFocusField={taskDrawerFocusField}
-                    onTaskUpdate={onTaskUpdate}
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={12} style={styleFullRow}>
-                <AttachmentsSection selectedTask={selectedTask} />
-              </Grid>
-              {selectedTask && !isSubtask && (
-                <Grid item xs={12}>
-                  <SubtasksSection
-                    tasks={selectedTask.subtasks}
-                    tasksCount={selectedTask.subTasksCount}
-                    input={
-                      <QuickAddSubtask
-                        taskIdentifier={selectedTask?.identifier}
-                        taskListIdentifier={taskListIdentifier}
-                      />
-                    }
-                  />
-                </Grid>
-              )}
-              {selectedTask &&
-                !isSubtask &&
-                (isTemplateTask || checkIfBundleTask(selectedTask)) && (
-                  <Grid item xs={12}>
-                    <DependenciesSection selectedTask={selectedTask} />
-                  </Grid>
-                )}
-              <Grid item xs={12} style={styleCommentRow}>
-                <div ref={commentsSectionReference}>
-                  <CommentSection
-                    parentFormSubmit={parentFormSubmit}
-                    taskDrawerFocusField={taskDrawerFocusField}
-                    taskListIdentifier={taskListIdentifier}
-                    isTemplateTask={isTemplateTask}
-                  />
-                </div>
-              </Grid>
-              {taskDrawerOpen && (
-                <Grid item xs={12} style={styleNoPaddingRow}>
-                  <CustomFieldsSection
-                    task={selectedTask}
-                    taskCustomFields={taskCustomFields}
-                  />
-                </Grid>
-              )}
+              </div>
             </Grid>
-          </FormContext>
-        </form>
+            <Grid item xs={12} style={styleFullRow}>
+              <div ref={labelsSectionReference}>
+                <LabelsSection
+                  selectedTask={selectedTask}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                  setSelectedLabelsValue={setValue}
+                  taskDrawerFocusField={taskDrawerFocusField}
+                  onTaskUpdate={onTaskUpdate}
+                />
+              </div>
+            </Grid>
+            <Grid item xs={12} style={styleFullRow}>
+              <AttachmentsSection selectedTask={selectedTask} />
+            </Grid>
+            {selectedTask && !isSubtask && (
+              <Grid item xs={12}>
+                <SubtasksSection
+                  tasks={selectedTask.subtasks}
+                  tasksCount={selectedTask.subTasksCount}
+                  input={
+                    <QuickAddSubtask
+                      taskIdentifier={selectedTask?.identifier}
+                      taskListIdentifier={taskListIdentifier}
+                    />
+                  }
+                />
+              </Grid>
+            )}
+            {selectedTask &&
+              !isSubtask &&
+              (isTemplateTask || checkIfBundleTask(selectedTask)) && (
+                <Grid item xs={12}>
+                  <DependenciesSection selectedTask={selectedTask} />
+                </Grid>
+              )}
+            <Grid item xs={12} style={styleCommentRow}>
+              <div ref={commentsSectionReference}>
+                <CommentSection
+                  taskDrawerFocusField={taskDrawerFocusField}
+                  taskListIdentifier={taskListIdentifier}
+                  isTemplateTask={isTemplateTask}
+                />
+              </div>
+            </Grid>
+            {taskDrawerOpen && (
+              <Grid item xs={12} style={styleNoPaddingRow}>
+                <CustomFieldsSection
+                  task={selectedTask}
+                  taskCustomFields={taskCustomFields}
+                />
+              </Grid>
+            )}
+          </Grid>
+        </FormContext>
         <TaskDrawerDivider />
         <Grid container item xs={12} style={styleLastRow}>
           <Spacing vertical={2} />

@@ -81,7 +81,6 @@ const renderOption = ({
 
 const LabelsSection = ({
   selectedTask,
-  parentFormSubmit,
   setAutoSaveVisible,
   setSelectedLabelsValue,
   taskDrawerFocusField,
@@ -96,7 +95,6 @@ const LabelsSection = ({
     refreshLabels,
     isLoadingLabels,
   } = initializeLabelsSectionHooks({
-    parentFormSubmit,
     setAutoSaveVisible,
     setSelectedLabelsValue,
     onTaskUpdate,

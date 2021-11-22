@@ -179,21 +179,6 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export function updateTaskDetails(task, details) {
-  return axios
-    .put(`task/${task.taskIdentifier}`, {
-      ...task,
-      patientIdentifier: task?.patient?.patientIdentifier,
-      details,
-    })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
-
 export const updateDueDate = (taskIdentifier, dueDate) => {
   return axios
     .put(
