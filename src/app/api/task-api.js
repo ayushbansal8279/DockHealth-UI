@@ -1,5 +1,6 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable sonarjs/no-identical-functions */
+import moment from 'moment';
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 
@@ -178,21 +179,6 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export function updateTaskDetails(task, details) {
-  return axios
-    .put(`task/${task.taskIdentifier}`, {
-      ...task,
-      patientIdentifier: task?.patient?.patientIdentifier,
-      details,
-    })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
-
 export const updateDueDate = (taskIdentifier, dueDate) => {
   return axios
     .put(
@@ -200,7 +186,9 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
       {},
       {
         params: {
-          dueDate: dueDate ? dueDate.format('MM/DD/YYYY HH:mm:ss ZZ') : null,
+          dueDate: dueDate
+            ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
+            : null,
         },
       },
     )

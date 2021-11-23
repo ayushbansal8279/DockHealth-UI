@@ -7,7 +7,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useBoolean } from 'hooks/useBoolean';
 
-const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
+const initializeAddCommentHooks = ({ addComment }) => {
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector);
 
@@ -54,19 +54,12 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
     }
   }, [isAddingComment, onSubmit]);
 
-  const onCommentFocus = useCallback(() => {
-    if (!selectedTask || !selectedTask.taskIdentifier) {
-      parentFormSubmit();
-    }
-  }, [selectedTask, parentFormSubmit]);
-
   return {
     currentUser,
     selectedTask,
     commentState,
     onCommentChange,
     saveComment,
-    onCommentFocus,
     isAddingComment,
   };
 };

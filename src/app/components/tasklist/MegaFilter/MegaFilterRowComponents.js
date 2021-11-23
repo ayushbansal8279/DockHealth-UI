@@ -1,19 +1,13 @@
 import React, { cloneElement } from 'react';
+import { Box } from '@material-ui/core';
 import { isUserGroup } from 'helpers/user-helper';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import FilterOption from 'components/filter/FilterOption/FilterOption';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
 import DueDateRangePicker from './DueDateRangePicker';
-import {
-  MemberAvatarWrapper,
-  StyledFilterRow,
-  StyledUnassignedIcon,
-  MemberOptionLabel,
-  OptionLabel,
-  OptionCount,
-  StatusBar,
-} from './styled';
+import { StyledUnassignedIcon } from './styled';
 
 const getPriorityConfig = priority => {
   switch (priority) {
@@ -38,21 +32,19 @@ const PeopleFilterRowComponent = ({
   isSelected,
   onClick,
 }) => (
-  <StyledFilterRow
-    isSelected={isSelected}
-    isDisabled={taskCount === 0}
-    onClick={taskCount !== 0 && onClick}
-  >
-    <MemberAvatarWrapper>
-      {isUserGroup(reference) ? (
+  <FilterOption
+    label={displayValue}
+    count={taskCount}
+    selected={isSelected}
+    onClick={onClick}
+    startAdornment={
+      isUserGroup(reference) ? (
         <GroupAvatar group={reference} size={25} />
       ) : (
         <UserAvatar user={reference} size={25} />
-      )}
-    </MemberAvatarWrapper>
-    <MemberOptionLabel>{displayValue}</MemberOptionLabel>
-    <OptionCount>{taskCount}</OptionCount>
-  </StyledFilterRow>
+      )
+    }
+  />
 );
 
 const StatusFilterRowComponent = ({
@@ -64,15 +56,13 @@ const StatusFilterRowComponent = ({
   const { name, color } = workflowStatus || {};
 
   return (
-    <StyledFilterRow
-      isSelected={isSelected}
-      isDisabled={taskCount === 0}
-      onClick={taskCount !== 0 && onClick}
-    >
-      <StatusBar color={color} />
-      <OptionLabel>{name}</OptionLabel>
-      <OptionCount>{taskCount}</OptionCount>
-    </StyledFilterRow>
+    <FilterOption
+      selected={isSelected}
+      count={taskCount}
+      onClick={onClick}
+      label={name}
+      color={color}
+    />
   );
 };
 
@@ -85,15 +75,13 @@ const PriorityFilterRowComponent = ({
   const { label, icon: IconComponent } = getPriorityConfig(priority);
 
   return (
-    <StyledFilterRow
-      isSelected={isSelected}
-      isDisabled={taskCount === 0}
-      onClick={taskCount !== 0 && onClick}
-    >
-      {IconComponent && <IconComponent />}
-      <OptionLabel>{label}</OptionLabel>
-      <OptionCount>{taskCount}</OptionCount>
-    </StyledFilterRow>
+    <FilterOption
+      selected={isSelected}
+      onClick={onClick}
+      startAdornment={IconComponent ? <IconComponent /> : <Box width="12px" />}
+      label={label}
+      count={taskCount}
+    />
   );
 };
 
@@ -103,14 +91,12 @@ const StandardFilterRowComponent = ({
   isSelected,
   onClick,
 }) => (
-  <StyledFilterRow
-    isSelected={isSelected}
-    isDisabled={taskCount === 0}
-    onClick={taskCount !== 0 && onClick}
-  >
-    <OptionLabel>{displayValue}</OptionLabel>
-    <OptionCount>{taskCount}</OptionCount>
-  </StyledFilterRow>
+  <FilterOption
+    selected={isSelected}
+    onClick={onClick}
+    label={displayValue}
+    count={taskCount}
+  />
 );
 
 const DateFilterRowComponent = ({
@@ -131,14 +117,12 @@ const DateFilterRowComponent = ({
       customDueDateEnd={customDueDateEnd}
     />
   ) : (
-    <StyledFilterRow
-      isSelected={isSelected}
-      isDisabled={taskCount === 0}
-      onClick={taskCount !== 0 && onClick}
-    >
-      <OptionLabel>{displayValue}</OptionLabel>
-      <OptionCount>{taskCount}</OptionCount>
-    </StyledFilterRow>
+    <FilterOption
+      selected={isSelected}
+      onClick={onClick}
+      label={displayValue}
+      count={taskCount}
+    />
   );
 
 export const FilterRowUnassigned = ({
@@ -147,17 +131,17 @@ export const FilterRowUnassigned = ({
   taskCount,
   onClick,
 }) => (
-  <StyledFilterRow
-    isSelected={isSelected}
-    isDisabled={taskCount === 0}
-    onClick={taskCount !== 0 && onClick}
-  >
-    {hasAvatars && (
-      <StyledUnassignedIcon src={UnassignedIcon} alt="Unassigned" />
-    )}
-    <OptionLabel>Unassigned</OptionLabel>
-    <OptionCount>{taskCount}</OptionCount>
-  </StyledFilterRow>
+  <FilterOption
+    selected={isSelected}
+    onClick={onClick}
+    startAdornment={
+      hasAvatars && (
+        <StyledUnassignedIcon src={UnassignedIcon} alt="Unassigned" />
+      )
+    }
+    label="Unassigned"
+    count={taskCount}
+  />
 );
 
 export const AssignedOrUnassignedRow = ({

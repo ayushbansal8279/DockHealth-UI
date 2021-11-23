@@ -1,77 +1,25 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { Box } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { isEmpty, isNil, partition } from 'ramda';
 import { onFilterChanged } from 'helpers/ga-event-helper';
-import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import palette from 'styles/palette';
+import FilterButton from 'components/filter/FilterButton/FilterButton';
+import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
+import FilterScrollableRow from 'components/filter/FilterScrollableRow/FilterScrollableRow';
+import FilterOptionsColumn from 'components/filter/FilterOptionsColumn/FilterOptionsColumn';
+import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
+import FilterOptionsGroup from 'components/filter/FilterOptionsGroup/FilterOptionsGroup';
 import {
   getFilterRowComponent,
   AssignedOrUnassignedRow,
 } from './MegaFilterRowComponents';
-import MegaFilterSearch from './MegaFilterSearch';
-
-import {
-  MegaFilterPopover,
-  Container,
-  FilterButtonWrapper,
-  FilterButtonLabel,
-  FilterClearButtonWrapper,
-  FilterClearButtonLabel,
-  MegaFilterHeader,
-  MegaFilterSubHeader,
-  MegaFilterLabel,
-  MegaFilterNoResultsLabel,
-  MegaFilterBoldedLabel,
-  StyledFilter,
-  Filters,
-  FilterList,
-  FilterLabel,
-  FilterSelected,
-  FilterSearched,
-  ClearButton,
-  MegaFilterLeftOptions,
-  MegaFilterOptions,
-  MegaFilterButtonWrapper,
-} from './styled';
+import { MegaFilterNoResultsLabel } from './styled';
 
 const UNASSIGNED = 'UNASSIGNED';
 
 const SEARCH_EXCLUDE_KEYS = ['DUE_DATE_RANGE'];
-
-const FilterButton = ({ isOpen, openPopover, isFilterApplied }) => (
-  <FilterButtonWrapper
-    variant="text"
-    onClick={() => openPopover(!isOpen)}
-    size="small"
-    filtered={isFilterApplied ? 'true' : 'false'}
-  >
-    <FilterButtonLabel
-      variant="body1"
-      component="span"
-      filtered={isFilterApplied ? 'true' : 'false'}
-    >
-      FILTER
-    </FilterButtonLabel>
-    <RotatableChevron
-      rotated={isOpen}
-      color={isFilterApplied ? palette.white : palette.brightBlue}
-    />
-  </FilterButtonWrapper>
-);
-
-const FilterClearButton = ({ clearFilters }) => (
-  <FilterClearButtonWrapper
-    variant="text"
-    onClick={() => clearFilters()}
-    size="small"
-  >
-    <FilterClearButtonLabel variant="body1" component="span">
-      CLEAR
-    </FilterClearButtonLabel>
-  </FilterClearButtonWrapper>
-);
 
 const FilterColumn = ({
   filter: { label, list, type, hasAvatars, key },
@@ -149,50 +97,47 @@ const FilterColumn = ({
   }
 
   return (
-    <StyledFilter>
-      <FilterLabel>{colLabel}</FilterLabel>
-      <FilterList>
-        {!isEmpty(searchedFiletrs) && (
-          <FilterSearched>
-            {searchedFiletrs?.map(item => {
-              const itemKey = item.key;
-              return (
-                <AssignedOrUnassignedRow
-                  itemKey={itemKey}
-                  isUnassigned={itemKey === UNASSIGNED}
-                  hasAvatars={hasAvatars}
-                  onClick={() => onClick(itemKey)}
-                  dueDateChange={dueDateChange}
-                  {...additionalProps}
-                  {...item}
-                >
-                  <FilterRow />
-                </AssignedOrUnassignedRow>
-              );
-            })}
-          </FilterSearched>
-        )}
-        {!isEmpty(columnSelectedFilters) && !isNil(columnSelectedFilters) && (
-          <FilterSelected>
-            {columnSelectedFilters?.map(filterValue => {
-              const row = list?.find(
-                ({ key: fieldKey }) => fieldKey === filterValue,
-              );
-              return (
-                <AssignedOrUnassignedRow
-                  isSelected
-                  onClick={() => onClick(filterValue)}
-                  isUnassigned={filterValue === UNASSIGNED}
-                  hasAvatars={hasAvatars}
-                  itemKey={filterValue}
-                  {...row}
-                >
-                  <FilterRow />
-                </AssignedOrUnassignedRow>
-              );
-            })}
-          </FilterSelected>
-        )}
+    <FilterOptionsColumn label={colLabel}>
+      {!isEmpty(searchedFiletrs) && (
+        <FilterOptionsGroup>
+          {searchedFiletrs?.map(item => {
+            const itemKey = item.key;
+            return (
+              <AssignedOrUnassignedRow
+                itemKey={itemKey}
+                isUnassigned={itemKey === UNASSIGNED}
+                hasAvatars={hasAvatars}
+                onClick={() => onClick(itemKey)}
+                dueDateChange={dueDateChange}
+                {...additionalProps}
+                {...item}
+              >
+                <FilterRow />
+              </AssignedOrUnassignedRow>
+            );
+          })}
+        </FilterOptionsGroup>
+      )}
+      <FilterOptionsGroup>
+        {!isEmpty(columnSelectedFilters) &&
+          !isNil(columnSelectedFilters) &&
+          columnSelectedFilters?.map(filterValue => {
+            const row = list?.find(
+              ({ key: fieldKey }) => fieldKey === filterValue,
+            );
+            return (
+              <AssignedOrUnassignedRow
+                isSelected
+                onClick={() => onClick(filterValue)}
+                isUnassigned={filterValue === UNASSIGNED}
+                hasAvatars={hasAvatars}
+                itemKey={filterValue}
+                {...row}
+              >
+                <FilterRow />
+              </AssignedOrUnassignedRow>
+            );
+          })}
         {unsearchedFiletrs?.map(item => {
           const itemKey = item.key;
           return (
@@ -209,8 +154,8 @@ const FilterColumn = ({
             </AssignedOrUnassignedRow>
           );
         })}
-      </FilterList>
-    </StyledFilter>
+      </FilterOptionsGroup>
+    </FilterOptionsColumn>
   );
 };
 
@@ -222,11 +167,10 @@ const MegaFilter = ({
   activeItemsAmount,
   tasksAndSubTasksCount,
   isFetching,
-  popoverStyles = {},
 }) => {
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
-  const megaFilterReference = useRef(null);
+  const megaFilterButtonReference = useRef(null);
 
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
@@ -278,88 +222,58 @@ const MegaFilter = ({
   const isFilterApplied = !isEmpty(selectedFilters);
   return (
     <>
-      <MegaFilterButtonWrapper ref={megaFilterReference}>
-        {children || (
-          <FilterButton
-            isOpen={isOpen}
-            openPopover={openPopover}
-            isFilterApplied={isFilterApplied}
-            selectedFilters={selectedFilters}
-          />
-        )}
-        {isFilterApplied && <FilterClearButton clearFilters={clearFilters} />}
-      </MegaFilterButtonWrapper>
-      <MegaFilterPopover
-        customStyles={popoverStyles}
-        anchorEl={megaFilterReference?.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
+      {children || (
+        <FilterButton
+          ref={megaFilterButtonReference}
+          active={isFilterApplied}
+          onClick={() => openPopover(!isOpen)}
+          onClear={clearFilters}
+        />
+      )}
+      <FilterPopover
+        anchorEl={megaFilterButtonReference.current}
         open={isOpen}
         onClose={() => openPopover(false)}
       >
-        <Container>
-          <MegaFilterHeader>
-            <MegaFilterLeftOptions>
-              <>
-                <MegaFilterLabel>
-                  <MegaFilterBoldedLabel>
-                    FILTER ACTIVE TASKS{' '}
-                  </MegaFilterBoldedLabel>
-                  {isFilterApplied && tasksAndSubTasksCount && (
-                    <>
-                      SHOWING {tasksAndSubTasksCount} OF {activeItemsAmount}{' '}
-                      ITEMS
-                    </>
-                  )}
-                  {isFilterApplied &&
-                    !tasksAndSubTasksCount &&
-                    activeItemsAmount && <>SHOWING {activeItemsAmount} ITEMS</>}
-                </MegaFilterLabel>
-                {isFilterApplied && (
-                  <ClearButton type="button" onClick={clearFilters}>
-                    CLEAR
-                  </ClearButton>
-                )}
-              </>
-            </MegaFilterLeftOptions>
-            <MegaFilterOptions>
-              <MegaFilterSearch
-                onSearch={setSearchedFilterQuery}
-                value={searchedFilterQuery}
-              />
-            </MegaFilterOptions>
-          </MegaFilterHeader>
-          <MegaFilterSubHeader>
-            {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
-              <MegaFilterNoResultsLabel>
-                There are no results for your filter criteria.
-              </MegaFilterNoResultsLabel>
-            )}
-          </MegaFilterSubHeader>
-          <Filters>
+        <>
+          <FilterHeader
+            title="Filter active tasks"
+            filterActive={isFilterApplied}
+            filteredItemsCount={tasksAndSubTasksCount}
+            allItemsCount={activeItemsAmount}
+            searchValue={searchedFilterQuery}
+            onSearchValueChange={setSearchedFilterQuery}
+            onClear={clearFilters}
+          />
+          {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
+            <MegaFilterNoResultsLabel>
+              There are no results for your filter criteria.
+            </MegaFilterNoResultsLabel>
+          )}
+          <Box p={2} />
+          <FilterScrollableRow>
             {!isEmpty(filters) &&
               filters
                 ?.filter(filter => !isEmpty(filter.list))
-                .map(filter => (
-                  <FilterColumn
-                    key={filter.filterKey}
-                    filter={{ ...filter, key: filter.filterKey }}
-                    selectedFilters={selectedFilters}
-                    onSelectFilters={onSelectFilters}
-                    filters={filters}
-                    searchedFilterQuery={searchedFilterQuery}
-                    customerTypeLabelCapitalized={customerTypeLabelCapitalized}
-                  />
+                .map((filter, index) => (
+                  <>
+                    {index !== 0 && <Box m={1} />}
+                    <FilterColumn
+                      key={filter.filterKey}
+                      filter={{ ...filter, key: filter.filterKey }}
+                      selectedFilters={selectedFilters}
+                      onSelectFilters={onSelectFilters}
+                      filters={filters}
+                      searchedFilterQuery={searchedFilterQuery}
+                      customerTypeLabelCapitalized={
+                        customerTypeLabelCapitalized
+                      }
+                    />
+                  </>
                 ))}
-          </Filters>
-        </Container>
-      </MegaFilterPopover>
+          </FilterScrollableRow>
+        </>
+      </FilterPopover>
     </>
   );
 };

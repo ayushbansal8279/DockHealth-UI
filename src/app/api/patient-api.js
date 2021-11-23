@@ -61,24 +61,6 @@ export function getPatientsByName(searchedPatientName) {
     });
 }
 
-export function getPatientsByCriteria(
-  searchCriteria,
-  patientListIdentifier = 'ALL_PATIENTS',
-) {
-  return axios
-    .get(`patient/getPatientsByCriteria`, {
-      params: {
-        searchCriteria,
-        patientListIdentifier,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
-
 export function getPatientById(patientIdentifier) {
   return axios
     .get(`patient/${patientIdentifier}`)

@@ -6,6 +6,10 @@ import { hideSubMenu } from 'actions/template-actions';
 import * as PatientsActions from 'actions/patients-actions';
 import palette from 'styles/palette';
 import { Box } from '@material-ui/core';
+import {
+  DefaultPatientListUrl,
+  getPatientListIdentifierByUrlParameter,
+} from 'helpers/patient-list-helpers';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
@@ -14,7 +18,7 @@ import {
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
-import { isEmpty, prop, sortBy, compose, toLower } from 'ramda';
+import { prop, sortBy, compose, toLower } from 'ramda';
 import {
   userProfileSelector,
   userHasPatientCustomListsFeatureSelector,
@@ -31,17 +35,6 @@ import {
   DrawerListsItemLoader,
 } from './styled';
 
-function getDefaultPatientsListUrlParameter(patientListIdentifier) {
-  switch (patientListIdentifier) {
-    case 'ACTIVE_PATIENTS':
-      return 'active';
-
-    case 'ALL_PATIENTS':
-    default:
-      return 'all';
-  }
-}
-
 const PatientsSubmenu = () => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -53,7 +46,7 @@ const PatientsSubmenu = () => {
     locationParametersSelector,
   );
   const isGuest = orgUserRole === 'GUEST';
-  const isInitialListFetching = isFetching && isEmpty(defaultPatientsLists);
+  const isInitialListFetching = isFetching && !defaultPatientsLists;
 
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
@@ -65,7 +58,7 @@ const PatientsSubmenu = () => {
   );
 
   useEffect(() => {
-    PatientsActions.getPatientsLists()(dispatch);
+    dispatch(PatientsActions.getPatientsLists());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,8 +77,8 @@ const PatientsSubmenu = () => {
           if (list?.patientListIdentifier === listIdentifierUrlParameter) {
             history.push(`/`);
           }
-          PatientsActions.deletePatientsList(list.patientListIdentifier)(
-            dispatch,
+          dispatch(
+            PatientsActions.deletePatientsList(list.patientListIdentifier),
           );
           dispatch(closeModal());
         },
@@ -117,15 +110,14 @@ const PatientsSubmenu = () => {
                 <DrawerListsItem key={patientListIdentifier}>
                   <ListNameText
                     isActive={
-                      getDefaultPatientsListUrlParameter(
-                        patientListIdentifier,
-                      ) === listIdentifierUrlParameter
+                      patientListIdentifier ===
+                      getPatientListIdentifierByUrlParameter(
+                        listIdentifierUrlParameter,
+                      )
                     }
                     onClick={() => {
                       history.push(
-                        `/core/patients/list/${getDefaultPatientsListUrlParameter(
-                          patientListIdentifier,
-                        )}`,
+                        `/core/patients/list/${DefaultPatientListUrl[patientListIdentifier]}`,
                       );
                     }}
                   >

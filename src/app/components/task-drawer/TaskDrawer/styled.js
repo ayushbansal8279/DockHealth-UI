@@ -104,15 +104,6 @@ export const styleRightColumn = {
   height: rowHeight,
 };
 
-export const DetailsContainer = styled.div`
-  padding: 1rem 2rem;
-  height: fit-content;
-`;
-
-export const DescriptionTextContainer = styled.div`
-  ${({ isCrossed }) => isCrossed && `text-decoration: line-through;`}
-`;
-
 export const DescriptionLabel = styled.label`
   display: block;
   margin-bottom: ${spacing.small};
@@ -125,13 +116,6 @@ export const DescriptionLabel = styled.label`
   & > span {
     text-transform: none;
   }
-`;
-
-export const DescriptionError = styled.p`
-  margin-bottom: 0;
-  color: ${palette.error};
-  font-size: ${fontSizes.smallPlus};
-  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const ParentTaskButton = styled.button`
