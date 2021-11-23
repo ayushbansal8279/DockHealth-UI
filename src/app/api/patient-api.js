@@ -304,3 +304,13 @@ export function changePatientNotePinnedFlag(patientNoteIdentifier, pinnedFlag) {
     )
     .then(({ data }) => data);
 }
+
+export function getPatientWidgets() {
+  return axios
+    .get('widget/getAll/PATIENT')
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
