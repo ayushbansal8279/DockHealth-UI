@@ -131,7 +131,7 @@ const TaskDrawer = ({
     taskDrawerReference,
     hideTour,
   });
-  const { handleSubmit, setValue, reset } = formMethods;
+  const { handleSubmit, setValue } = formMethods;
   const parentFormSubmit = handleSubmit(onSubmit);
 
   const isEmptyDetailsState = useMemo(() => isEmptyState(detailsState), [
@@ -144,9 +144,8 @@ const TaskDrawer = ({
 
   const closeTaskDrawer = useCallback(() => {
     handleCloseTaskDrawer();
-    reset();
     clearFormStates();
-  }, [clearFormStates, handleCloseTaskDrawer, reset]);
+  }, [clearFormStates, handleCloseTaskDrawer]);
 
   return (
     <>
