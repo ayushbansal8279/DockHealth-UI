@@ -3,6 +3,25 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 
+export const TextEventContainer = styled.div`
+  color: black;
+  overflow: hidden;
+`;
+
+export const AddEventInputContainer = styled.div`
+  margin: 0px;
+  overflow: hidden;
+  color: #074a86;
+  input {
+    width: 100%;
+    &:active {
+      border: none;
+    }
+    &:focus-visible {
+      border: none;
+    }
+  }
+`;
 export const CalendarContainer = styled.div`
   padding: ${spacing.large};
   width: 100%;
@@ -37,7 +56,11 @@ export const CalendarContainer = styled.div`
     background-color: ${palette.white} !important;
     border-color: ${palette.darkBlue} !important;
   }
-  .fc-daygrid-block-event > .fc-event-main > .fc-event-main-frame > .fc-event-title-container > .fc-event-title {
+  .fc-daygrid-block-event
+    > .fc-event-main
+    > .fc-event-main-frame
+    > .fc-event-title-container
+    > .fc-event-title {
     color: ${palette.darkBlue} !important;
   }
 `;

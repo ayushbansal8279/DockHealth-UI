@@ -129,6 +129,7 @@ export function loadingCompletedTasks() {
   };
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>

@@ -27,7 +27,7 @@ import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   DashboardTasksTab,
-  GROUPS_WITH_QUICK_ADD_TASK_INPUT,
+  getGroupByDueDate,
 } from 'helpers/dashboard-helpers';
 import {
   dashboardGroupTasksCountSelector,
@@ -255,15 +255,15 @@ function* updateTaskDueDateSuccess() {
   }
 }
 
-function* addTaskSuccess() {
+function* addTaskSuccess({ task }) {
   const tabName = yield select(dashboardTabNameSelector);
-
   if (tabName) {
     const groups = yield select(dashboardTasksSelector);
     yield all(
       groups
-        .filter(({ groupType }) =>
-          GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType),
+        .filter(
+          ({ groupType }) =>
+            groupType === getGroupByDueDate(task.dueDate, tabName),
         )
         .map(({ groupType }) =>
           put(DashboardActions.getDashboardTasksForGroup(groupType)),
