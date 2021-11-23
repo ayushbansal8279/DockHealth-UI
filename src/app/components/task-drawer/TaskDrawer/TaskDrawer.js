@@ -101,13 +101,12 @@ const TaskDrawer = ({
     taskDrawerReference,
     hideTour,
   });
-  const { setValue, reset } = formMethods;
+  const { setValue } = formMethods;
 
   const closeTaskDrawer = useCallback(() => {
     handleCloseTaskDrawer();
-    reset();
     clearFormStates();
-  }, [clearFormStates, handleCloseTaskDrawer, reset]);
+  }, [clearFormStates, handleCloseTaskDrawer]);
 
   return (
     <>
