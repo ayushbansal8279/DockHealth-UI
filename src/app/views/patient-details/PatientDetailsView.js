@@ -32,6 +32,7 @@ import { setHeader } from 'actions/template-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { getPatientWidgets } from 'api/patient-api';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import {
   PatientDetailsContainer,
@@ -62,11 +63,6 @@ const TABS_CONFIG = [
     mainPath: 'files',
     RouteComponent: PatientAttachments,
   },
-  {
-    label: 'Widget',
-    mainPath: 'widget',
-    RouteComponent: PatientWidget,
-  },
 ];
 
 const DEFAULT_TAB = TABS_CONFIG[0];
@@ -86,6 +82,25 @@ const PatientDetailsView = () => {
   const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
   const filters = useSelector(availableFiltersInInMegaFilterSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+
+  useEffect(() => {
+    (async () => {
+      const widgets = await getPatientWidgets();
+
+      if (widgets && widgets.length > 0) {
+        TABS_CONFIG.push({
+          label: widgets[0].name,
+          mainPath: `widget/${widgets[0].identifier}`,
+          url: widgets[0].url,
+          height: widgets[0].height,
+          width: widgets[0].width,
+          type: 'widget',
+          RouteComponent: PatientWidget,
+        });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
@@ -195,7 +210,18 @@ const PatientDetailsView = () => {
                 path={`${path}/${route.mainPath}${
                   route.additionalPath ? `/${route.additionalPath}` : ''
                 }`}
-                RouteComponent={route.RouteComponent}
+                RouteComponent={
+                  route.type !== 'widget'
+                    ? route.RouteComponent
+                    : () => (
+                        <PatientWidget
+                          url={route.url}
+                          height={route.height}
+                          width={route.width}
+                          identifier={route.identifier}
+                        />
+                      )
+                }
                 onEnter={route.onEnter}
                 exact={route.exact}
               />

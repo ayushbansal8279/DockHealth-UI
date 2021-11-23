@@ -6,15 +6,18 @@ import initializeWidgetSectionHooks from './hooks';
 
 // import ImportWidgetScript from 'components/common/ImportWidgetScript/ImportWidgetScript';
 
-const PatientWidget = () => {
-  const { userProfile, patient, widgets } = initializeWidgetSectionHooks();
+const PatientWidget = ({ url, height, width }) => {
+  const { userProfile, patient } = initializeWidgetSectionHooks();
 
   // var widgetScript = ImportWidgetScript(
   //   'script/dockhealth-widget-sdk-internal.js',
   // );
 
-  const widgetDomain = 'https://c507-72-70-58-22.ngrok.io';
-  const widgetUrl = `${widgetDomain}/examples/echo/widget.html`;
+  const widgetUrl = url;
+  const widgetDomain = widgetUrl
+    ? widgetUrl.slice(0, Math.max(0, widgetUrl.indexOf('/', 8)))
+    : '';
+  console.log(`widgetDomain: ${widgetDomain}`);
 
   const frameReference = useRef(null);
 
@@ -44,7 +47,7 @@ const PatientWidget = () => {
     });
 
     sdk.current.onNavigate(handleOnNavigate);
-  }, []);
+  }, [widgetDomain]);
 
   setTimeout(() => {
     if (userProfile?.userIdentifier) {
@@ -67,8 +70,8 @@ const PatientWidget = () => {
         ref={frameReference}
         title="Widget"
         id="widgetId"
-        height="500px"
-        width="900px"
+        height={`${height}px`}
+        width={`${width}px`}
         style={{ border: 'none' }}
         src={widgetUrl}
       />
