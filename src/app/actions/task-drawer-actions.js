@@ -17,12 +17,14 @@ export const closeDrawer = () => dispatch => {
   setDrawerState({ open: false, focusField: null })(dispatch);
 };
 
-export const openTaskDrawerWithContent = (task, focusField) => ({
-  type: ActionTypes.OPEN_TASK_DRAWER_WITH_CONTENT,
-  open: true,
-  task,
-  focusField,
-});
+export const openTaskDrawerWithContent = (task, focusField) => {
+  return {
+    type: ActionTypes.OPEN_TASK_DRAWER_WITH_CONTENT,
+    open: true,
+    task,
+    focusField,
+  };
+};
 
 export const getTaskCustomFields = (taskIdentifier, taskListIdentifier) => ({
   type: ActionTypes.GET_TASK_CUSTOM_FIELDS,

@@ -13,13 +13,18 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
   CustomFieldsSectionContainer,
-  HideableContainer,
+  HidableContainer,
   Title,
   styleFullRow,
 } from './styled';
 import { formatMetaDataOutput } from './helpers';
 
-const CustomFieldsSection = ({ task, taskCustomFields: { templates } }) => {
+const CustomFieldsSection = ({
+  task,
+  taskCustomFields: { templates },
+  taskDrawerFocusField,
+  taskCustomReference,
+}) => {
   const dispatch = useDispatch();
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
   useEffect(() => {
@@ -59,26 +64,33 @@ const CustomFieldsSection = ({ task, taskCustomFields: { templates } }) => {
   }, [setValue, task, templates]);
 
   const renderCustomField = useCallback(
-    (field, i, showEmpty) => {
+    field => {
+      const isFocused = taskDrawerFocusField === field.identifier;
+      const hasValue = !!getValues()[`taskMetaData.${field.identifier}`];
+      const visible = isFocused || emptyVisible || hasValue;
       return (
-        <HideableContainer
-          key={field.identifier}
-          visibility={
-            !showEmpty && !getValues()[`taskMetaData.${field.identifier}`]
-          }
-        >
+        <HidableContainer key={field.identifier} visibility={!visible}>
           <Grid item xs={12} style={styleFullRow}>
             <CustomField
+              scrollToRef={taskCustomReference}
               readOnly={false}
               field={field}
               onBlur={handleSubmit(compose(onBlur, formatMetaDataOutput))}
               fieldsGroupKey="taskMetaData"
+              isFocused={isFocused}
             />
           </Grid>
-        </HideableContainer>
+        </HidableContainer>
       );
     },
-    [getValues, handleSubmit, onBlur],
+    [
+      emptyVisible,
+      getValues,
+      handleSubmit,
+      onBlur,
+      taskCustomReference,
+      taskDrawerFocusField,
+    ],
   );
   if (templates.length === 0) return null;
   return (
@@ -86,7 +98,7 @@ const CustomFieldsSection = ({ task, taskCustomFields: { templates } }) => {
       <>
         <Title>Custom fields</Title>
         {templates?.map((field, index) => {
-          return renderCustomField(field, index, emptyVisible);
+          return renderCustomField(field, index);
         })}
         <CategoryOptions
           visibility={emptyVisible}

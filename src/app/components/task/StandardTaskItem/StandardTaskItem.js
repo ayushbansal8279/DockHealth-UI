@@ -145,10 +145,13 @@ const Task = React.memo(
       dispatch(storeAsCurrentTask(task));
     }, [dispatch, task]);
 
-    const handleDrawerOpen = useCallback(() => {
-      dispatch(openDrawer());
-      dispatch(storeAsCurrentTask(task));
-    }, [dispatch, task]);
+    const handleDrawerOpen = useCallback(
+      field => {
+        dispatch(openDrawer(field.identifier));
+        dispatch(storeAsCurrentTask(task));
+      },
+      [dispatch, task],
+    );
 
     return (
       <ParentTaskContainer

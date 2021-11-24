@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef, useLayoutEffect } from 'react';
 import { FieldType } from 'helpers/field-type-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
@@ -22,9 +22,12 @@ const CustomField = ({
   initialValue,
   onBlur,
   fieldsGroupKey,
+  isFocused,
+  scrollToRef,
 }) => {
   const { identifier, name, placeholder, fieldType, options } = field;
-
+  const inputReference = useRef(null);
+  const componentReference = useRef(null);
   const { setValue } = useFormContext();
 
   const dropdownOptions = useMemo(
@@ -43,6 +46,19 @@ const CustomField = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useLayoutEffect(() => {
+    if (inputReference.current && isFocused) {
+      setTimeout(() => {
+        inputReference.current.focus();
+        if (scrollToRef?.current)
+          scrollToRef.current.scrollIntoView({
+            block: 'end',
+          });
+      }, 500);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused, inputReference?.current]);
+
   switch (fieldType) {
     case FieldType.TEXT:
       return (
@@ -52,6 +68,8 @@ const CustomField = ({
           name={fieldName}
           placeholder={placeholder}
           onBlur={onBlur}
+          inputRef={inputReference}
+          ref={componentReference}
         />
       );
     case FieldType.LONG_TEXT:
@@ -63,6 +81,8 @@ const CustomField = ({
           placeholder={placeholder}
           multiline
           onBlur={onBlur}
+          inputRef={inputReference}
+          ref={componentReference}
         />
       );
     case FieldType.NUMBER:
@@ -74,6 +94,8 @@ const CustomField = ({
           name={fieldName}
           placeholder={placeholder}
           onBlur={onBlur}
+          inputRef={inputReference}
+          ref={componentReference}
         />
       );
     case FieldType.BOOL:
@@ -85,6 +107,8 @@ const CustomField = ({
           name={fieldName}
           placeholder={placeholder}
           onBlur={onBlur}
+          inputRef={inputReference}
+          ref={componentReference}
         />
       );
     case FieldType.DATE:
@@ -96,6 +120,8 @@ const CustomField = ({
           inputComponent={DateInput}
           name={fieldName}
           onBlur={onBlur}
+          inputRef={inputReference}
+          ref={componentReference}
         />
       );
     case FieldType.DROPDOWN:
@@ -106,6 +132,8 @@ const CustomField = ({
           options={dropdownOptions}
           name={fieldName}
           onBlur={onBlur}
+          inputRef={inputReference}
+          ref={componentReference}
         />
       );
     default:

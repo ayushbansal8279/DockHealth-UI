@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import { checkIfBundleTask } from 'helpers/task-helpers';
@@ -102,6 +102,7 @@ const TaskDrawer = ({
     hideTour,
   });
   const { setValue } = formMethods;
+  const taskCustomReference = useRef(null);
 
   const closeTaskDrawer = useCallback(() => {
     handleCloseTaskDrawer();
@@ -283,8 +284,10 @@ const TaskDrawer = ({
             {taskDrawerOpen && (
               <Grid item xs={12} style={styleNoPaddingRow}>
                 <CustomFieldsSection
+                  taskCustomRef={taskCustomReference}
                   task={selectedTask}
                   taskCustomFields={taskCustomFields}
+                  taskDrawerFocusField={taskDrawerFocusField}
                 />
               </Grid>
             )}
