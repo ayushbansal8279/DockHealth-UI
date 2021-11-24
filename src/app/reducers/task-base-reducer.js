@@ -247,7 +247,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           return { ...t, dueDate };
         }
 
-        return updateNestedTask(task, task.taskIdentifier, t);
+        return updateNestedTask({ dueDate }, task.taskIdentifier, t);
       };
 
       return updateStateCallback(state, updateTaskFromAction);
