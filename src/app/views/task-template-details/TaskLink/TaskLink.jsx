@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { isNil } from 'ramda';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
@@ -24,7 +24,6 @@ const TaskLink = props => {
     target: targetTaskIdentifier,
     sourcePosition,
     targetPosition,
-    selected,
     data: { link },
   } = props;
   const { isDependent, delayPeriod, delayPeriodUnit } = link || {};
@@ -44,12 +43,6 @@ const TaskLink = props => {
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
   const dispatch = useDispatch();
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
-
-  useEffect(() => {
-    if (!isDependent && selected) {
-      openOptions();
-    }
-  }, [isDependent, openOptions, selected]);
 
   const toggleDependent = () => {
     dispatch(
@@ -122,7 +115,7 @@ const TaskLink = props => {
 
   return (
     <>
-      <LinkPath {...props} />
+      <LinkPath {...props} onClick={!isDependent && openOptions} />
       <foreignObject
         width={160}
         height={32}
