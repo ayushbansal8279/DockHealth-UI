@@ -50,6 +50,7 @@ import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-detai
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
+import { currentTaskListSelector } from '../selectors/task-list-selectors';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
@@ -164,10 +165,13 @@ function* doGetListDetailsCounters({ payload }) {
     );
 
     yield put({
-      type: ActionTypes.LIST_DETAILS_TASK_COUNTERS_SUCCESS,
+      type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS,
       payload: processTaskCountersSuccess(responseData),
     });
   } catch (error) {
+    yield put({
+      type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
+    });
     console.log(error);
   }
 }
@@ -641,7 +645,6 @@ function* doCreateTask(payload) {
         ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
       );
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
-      yield put({ type: ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS });
     }
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -816,6 +819,25 @@ function* updateListCustomFieldsSetup({ setup }) {
   }
 }
 
+function* taskCounterIncreaseWatcher({ task }) {
+  const { taskListIdentifier } = yield select(currentTaskListSelector);
+  if (task?.taskList?.taskListIdentifier === taskListIdentifier) {
+    if (task.status === TaskStatus.INCOMPLETE) {
+      yield put({ type: ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS });
+    } else if (task.status === TaskStatus.COMPLETE) {
+      yield put({ type: ActionTypes.INCREASE_COMPLETE_TASK_COUNTERS });
+    }
+  }
+}
+
+function* taskCounterDecreaseWatcher() {
+  const { taskListIdentifier } = yield select(currentTaskListSelector);
+  yield put({
+    type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
+    payload: { taskListIdentifier },
+  });
+}
+
 export default function* watchTasksGroupsList() {
   yield takeEvery(ActionTypes.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
@@ -834,6 +856,8 @@ export default function* watchTasksGroupsList() {
     ActionTypes.FILTER__LIST_DETAILS_TASKS,
     doFilterListDetailsTasks,
   );
+  yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], taskCounterIncreaseWatcher);
+  yield takeLatest([ActionTypes.DELETE_TASK], taskCounterDecreaseWatcher);
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
