@@ -29,6 +29,7 @@ import ViewTypeSwitch, {
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
@@ -87,6 +88,7 @@ const TasksGroup = ({
     sessionStorageKey: groupSessionStorageKey,
   });
   const highlightTimeoutReference = useRef(null);
+  // const previousisOpen = usePrevious(isOpen);
 
   const isFullView =
     viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
@@ -116,10 +118,6 @@ const TasksGroup = ({
   ]);
 
   useEffect(() => {
-    // default close if lazy loaded and open if tasks
-    if (groupTaskCounts > 0 && tasks?.length === 0) {
-      switchOpen(false);
-    }
     if (groupTaskCounts > 0 && tasks?.length > 0) {
       switchOpen(true);
     }
@@ -140,7 +138,7 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [isOpen, groupTaskCounts, tasks, onSwitchOpen, showMoreTasks]);
+  }, [tasks, isOpen, groupTaskCounts, onSwitchOpen, showMoreTasks]);
 
   const highlightTasksOfTheSameParent = useCallback(parentTaskIdentifier => {
     if (highlightTimeoutReference.current)
