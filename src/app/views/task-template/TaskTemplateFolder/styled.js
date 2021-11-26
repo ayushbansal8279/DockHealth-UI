@@ -1,12 +1,22 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+
+const LightenedTaskContainer = keyframes`
+0% { background-color: ${palette.brightBlueWithAlpha}; }
+100% { background-color: ${palette.white}; }
+`;
 
 export const TaskTemplateContainer = styled.div`
   width: 100%;
   margin-bottom: ${spacing.smallPlus};
   text-align: left;
+  animation: ${({ highlighted }) =>
+    highlighted ? LightenedTaskContainer : 'none'};
+  animation-duration: 3.5s;
+  background-color: ${palette.white};
+  animation-timing-function: ease-in-out;
 `;
 
 export const TaskTemplateHeader = styled.div`
@@ -18,7 +28,6 @@ export const TaskTemplateHeader = styled.div`
   width: 100%;
   padding: 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
-  background-color: ${palette.white};
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
 `;
