@@ -101,8 +101,6 @@ const TaskTemplateView = () => {
     )?.[0]?.taskTemplateIdentifier;
   }, [folders, previousFolders, previousTemplates, templates]);
 
-  console.log('newlyCreatedTemplateId', newlyCreatedTemplateId);
-
   useEffect(() => {
     if (userProfile?.orgUserRole === 'GUEST') {
       history.push('/');
