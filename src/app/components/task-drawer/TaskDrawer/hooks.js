@@ -24,7 +24,6 @@ import {
   deleteTask,
   duplicateTask,
   markTaskRead,
-  updateTaskDueDate,
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
@@ -68,7 +67,6 @@ const initializeTaskDrawerHooks = ({
   const taskListIdentifier = taskList?.taskListIdentifier;
   const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
-  const selectedTaskSourceMessage = selectedTask?.sourceMessage;
   const isSubtask = !!selectedTask?.parentTaskIdentifier;
   const parentTask = selectedTask?.parentTask;
   const selectedTaskDueDate = selectedTask?.dueDate;
@@ -271,13 +269,6 @@ const initializeTaskDrawerHooks = ({
     [dispatch, onTaskCreation, selectedTask],
   );
 
-  const handleDueDateSave = useCallback(
-    updatedDueDateTime => {
-      dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
-    },
-    [dispatch, selectedTask],
-  );
-
   const handleUpdateTask = useCallback(
     async updatedTaskData => {
       const updatedTask = await dispatch(
@@ -313,7 +304,6 @@ const initializeTaskDrawerHooks = ({
   return {
     closeTaskDrawer,
     formMethods,
-    handleDueDateSave,
     handleUpdateTask,
     isSubtask,
     isAddingSubtask,
@@ -326,7 +316,6 @@ const initializeTaskDrawerHooks = ({
     reFileTask,
     selectedParentTask,
     selectedTask,
-    selectedTaskSourceMessage,
     setAutoSaveVisible,
     setParentDescriptionState,
     taskDrawerFocusField,

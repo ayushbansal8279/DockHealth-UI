@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import moment from 'moment';
 import { Box } from '@material-ui/core';
 import RecurringIcon from 'img/recurring-arrows';
-import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import Spacing from 'components/common/Spacing';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Input from 'components/common/Input/Input';
+import { updateTaskDueDate } from 'actions/task-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import TaskDrawerPopover from '../TaskDrawerPopover/TaskDrawerPopover';
+import { formatDueTime } from './helpers';
+import { AdornmentClear } from '../styled';
 import {
   DueDateContentWrapper,
   DueDateContent,
@@ -15,34 +20,24 @@ import {
   Placeholder,
   DueDateText,
 } from './styled';
-import { AdornmentClear } from '../styled';
-import TaskDrawerPopover from '../TaskDrawerPopover/TaskDrawerPopover';
 
-function formatDueTime(dueDate) {
-  if (!dueDate) return null;
-
-  const dueTime = moment(dueDate).format(TIME_12H_FORMAT);
-
-  if (
-    dueTime.toLowerCase() === '12:00 am' ||
-    dueTime.toLowerCase() === '00:00 am'
-  ) {
-    return null;
-  }
-
-  return dueTime;
-}
-
-const DueDateSection = ({ selectedTask, onDueDateChange }) => {
-  const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask || {};
+const DueDateSection = () => {
+  const dispatch = useDispatch();
+  const selectedTask = useSelector(selectedTaskSelector) || {};
+  const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask;
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
-
   const sectionDisabled = isTemplateTask || !taskIdentifier;
+
+  const handleDueDateSave = useCallback(
+    updatedDueDateTime => {
+      dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
+    },
+    [dispatch, selectedTask],
+  );
 
   return (
     <DueDateSectionWrapper disabled={isTemplateTask}>
-      {/* <DueDateLabel>Due date</DueDateLabel> */}
       <Input
         label="Due date"
         shrink
@@ -53,7 +48,7 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
                 selectedDate={dueDate}
-                onDateChange={onDueDateChange}
+                onDateChange={handleDueDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
               />
@@ -79,7 +74,7 @@ const DueDateSection = ({ selectedTask, onDueDateChange }) => {
                   {!sectionDisabled && (
                     <AdornmentClear
                       style={{ position: 'relative', top: '-6px' }}
-                      onClick={() => onDueDateChange(null)}
+                      onClick={() => handleDueDateSave(null)}
                     />
                   )}
                 </DueDateContent>

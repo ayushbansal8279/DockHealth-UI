@@ -56,7 +56,6 @@ const TaskDrawer = ({
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
     formMethods,
-    handleDueDateSave,
     handleUpdateTask,
     isSubtask,
     isAddingSubtask,
@@ -68,7 +67,6 @@ const TaskDrawer = ({
     reFileTask,
     selectedParentTask,
     selectedTask,
-    selectedTaskSourceMessage,
     setAutoSaveVisible,
     setParentDescriptionState,
     taskDrawerFocusField,
@@ -168,13 +166,9 @@ const TaskDrawer = ({
             <Grid item xs={12} style={styleFullRow}>
               <TaskDescription selectedTask={selectedTask} />
             </Grid>
-            {selectedTaskSourceMessage && (
+            {selectedTask?.sourceMessage && (
               <Grid item xs={12} style={styleEmailRow}>
-                <TaskDrawerEmailBodyContainer
-                  emailBody={selectedTask.sourceMessage}
-                  selectedTaskSourceMessage={selectedTaskSourceMessage}
-                  taskListIdentifier={taskListIdentifier}
-                />
+                <TaskDrawerEmailBodyContainer />
               </Grid>
             )}
             <Grid item xs={12}>
@@ -206,10 +200,7 @@ const TaskDrawer = ({
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
               <div ref={dueDateSectionReference}>
-                <DueDateSection
-                  selectedTask={selectedTask}
-                  onDueDateChange={handleDueDateSave}
-                />
+                <DueDateSection />
               </div>
             </Grid>
             <Grid item xs={6} style={styleRightColumn}>
