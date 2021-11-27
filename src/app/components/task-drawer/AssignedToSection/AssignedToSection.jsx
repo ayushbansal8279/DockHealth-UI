@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { pluck, trim } from 'ramda';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
@@ -8,20 +8,23 @@ import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import Input from 'components/common/Input/Input';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { AdornmentClear } from '../styled';
 
 const ASSIGNED_TO_USERS_FIELD_NAME = 'assignedToUsers';
 
-const AssignedToSection = ({
-  assignedToUsers,
-  taskListIdentifier = null,
-  onSave,
-  taskListType,
-}) => {
+const AssignedToSection = ({ onSave }) => {
   const { register, unregister, setValue, watch } = useFormContext();
   const currentUser = useSelector(userProfileSelector);
-
+  const selectedTask = useSelector(selectedTaskSelector) || {};
+  const { assignedToUsers, taskList } = selectedTask;
   const assignedToUsersValue = watch(ASSIGNED_TO_USERS_FIELD_NAME);
+  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
+    selectedTask,
+  ]);
+  const currentTaskListIdentifier = taskList?.taskListIdentifier;
+  const taskListIdentifier = isTemplateTask ? null : currentTaskListIdentifier;
 
   useEffect(() => {
     register(ASSIGNED_TO_USERS_FIELD_NAME);
@@ -76,7 +79,7 @@ const AssignedToSection = ({
           selectedMembers={assignedToUsersValue}
           onSelect={handleAssignToSelection}
           enableLazyLoading={
-            taskListType === 'PUBLIC' || taskListType === 'TEMPLATE'
+            taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE'
           }
         />
       )}

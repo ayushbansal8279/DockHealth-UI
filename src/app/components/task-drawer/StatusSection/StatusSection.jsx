@@ -2,13 +2,14 @@
 import React, { useCallback } from 'react';
 import palette from 'styles/palette';
 import SmallSwitchChevron from 'img/list-switch-chevron';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
 import { onTaskDrawerTaskStatusChanged } from 'helpers/ga-event-helper';
 import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import Input from 'components/common/Input/Input';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import {
   StatusFlag,
   StatusFieldContainer,
@@ -16,8 +17,9 @@ import {
 } from './styled';
 import { EndAdornmentContainer, AdornmentClear } from '../styled';
 
-const StatusSection = ({ selectedTask, setAutoSaveVisible, onTaskUpdate }) => {
+const StatusSection = ({ setAutoSaveVisible, onTaskUpdate }) => {
   const dispatch = useDispatch();
+  const selectedTask = useSelector(selectedTaskSelector) || {};
   const { workflowStatus, taskIdentifier } = selectedTask || {};
 
   const handleUpdateWorkflowStatus = useCallback(

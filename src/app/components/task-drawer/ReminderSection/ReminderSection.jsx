@@ -8,6 +8,8 @@ import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownI
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import ArrowIcon from 'img/arrow';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
+import { useSelector } from 'react-redux';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { ReminderContainer, Description, SelectArrowImg } from './styled';
 import {
   REMINDER_TYPE_FIELD_NAME,
@@ -16,8 +18,10 @@ import {
 } from './helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
+const ReminderSection = ({ onSave }) => {
+  const selectedTask = useSelector(selectedTaskSelector) || {};
   const { reminderType, reminderTime = null, dueDate } = selectedTask || {};
+  const isDisabled = !dueDate;
 
   const reminderTypeDropdownReference = useRef(null);
   const { register, unregister, setValue, watch } = useFormContext();

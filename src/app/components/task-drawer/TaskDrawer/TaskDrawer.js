@@ -188,15 +188,10 @@ const TaskDrawer = ({
                 }
                 autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
                 onSave={handleUpdateTask}
-                templateBundleIdentifier={templateBundleIdentifier}
               />
             </Grid>
             <Grid item xs={6} style={styleRightColumn}>
-              <AssignedToSection
-                assignedToUsers={selectedTask?.assignedToUsers}
-                taskListIdentifier={isTemplateTask ? null : taskListIdentifier}
-                onSave={handleUpdateTask}
-              />
+              <AssignedToSection onSave={handleUpdateTask} />
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
               <div ref={dueDateSectionReference}>
@@ -204,17 +199,10 @@ const TaskDrawer = ({
               </div>
             </Grid>
             <Grid item xs={6} style={styleRightColumn}>
-              {!isTemplateTask && (
-                <ReminderSection
-                  selectedTask={selectedTask}
-                  isDisabled={!selectedTask?.dueDate}
-                  onSave={handleUpdateTask}
-                />
-              )}
+              {!isTemplateTask && <ReminderSection onSave={handleUpdateTask} />}
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
               <PrioritySection
-                selectedTask={selectedTask}
                 setAutoSaveVisible={setAutoSaveVisible}
                 onTaskUpdate={onTaskUpdate}
               />
@@ -222,7 +210,6 @@ const TaskDrawer = ({
             <Grid item xs={6} style={styleRightColumn}>
               <div ref={statusSectionReference}>
                 <StatusSection
-                  selectedTask={selectedTask}
                   setAutoSaveVisible={setAutoSaveVisible}
                   onTaskUpdate={onTaskUpdate}
                 />
@@ -231,7 +218,6 @@ const TaskDrawer = ({
             <Grid item xs={12} style={styleFullRow}>
               <div ref={labelsSectionReference}>
                 <LabelsSection
-                  selectedTask={selectedTask}
                   setAutoSaveVisible={setAutoSaveVisible}
                   setSelectedLabelsValue={setValue}
                   taskDrawerFocusField={taskDrawerFocusField}

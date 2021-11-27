@@ -9,6 +9,8 @@ import React, {
 import { Chip } from '@material-ui/core';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import { useSelector } from 'react-redux';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -80,7 +82,6 @@ const renderOption = ({
 );
 
 const LabelsSection = ({
-  selectedTask,
   setAutoSaveVisible,
   setSelectedLabelsValue,
   taskDrawerFocusField,
@@ -99,8 +100,9 @@ const LabelsSection = ({
     setSelectedLabelsValue,
     onTaskUpdate,
   });
+  const { labels: selectedLabels = [] } =
+    useSelector(selectedTaskSelector) || {};
 
-  const selectedLabels = selectedTask?.labels || [];
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
@@ -109,8 +111,6 @@ const LabelsSection = ({
   useEffect(() => {
     if (currentEditableOption) {
       optionReferences?.current[currentEditableOption]?.focus();
-    } else {
-      // inputReference?.focus();
     }
   }, [currentEditableOption, inputReference]);
 

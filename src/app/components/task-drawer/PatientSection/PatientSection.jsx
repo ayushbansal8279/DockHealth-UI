@@ -15,6 +15,7 @@ import { changePatientForTemplateBundle } from 'actions/template-bundle-actions'
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 
@@ -26,7 +27,6 @@ const PatientSection = ({
   disabled,
   placeholder,
   onSave,
-  templateBundleIdentifier,
   isSubtask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -35,6 +35,7 @@ const PatientSection = ({
   const [patients, setPatients] = useState([]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
+  const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
