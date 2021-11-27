@@ -29,6 +29,13 @@ const BulkEditAssignToOption = ({
     }, []);
   }, [selectedTasks]);
 
+  const containPublicListType = useMemo(() => {
+    return !!selectedTasks.find(
+      ({ taskList }) =>
+        taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE',
+    );
+  }, [selectedTasks]);
+
   return (
     <TaskItemPopover
       placement="top"
@@ -40,6 +47,7 @@ const BulkEditAssignToOption = ({
           onSelect={handleChangeAssigneTasks}
           isDisabled={isDisabled}
           onError={closePopover}
+          enableLazyLoading={containPublicListType}
         />
       )}
     >

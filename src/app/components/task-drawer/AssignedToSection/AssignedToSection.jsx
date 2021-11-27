@@ -16,6 +16,7 @@ const AssignedToSection = ({
   assignedToUsers,
   taskListIdentifier = null,
   onSave,
+  taskListType,
 }) => {
   const { register, unregister, setValue, watch } = useFormContext();
   const currentUser = useSelector(userProfileSelector);
@@ -74,6 +75,9 @@ const AssignedToSection = ({
           taskListIdentifiers={taskListIdentifier}
           selectedMembers={assignedToUsersValue}
           onSelect={handleAssignToSelection}
+          enableLazyLoading={
+            taskListType === 'PUBLIC' || taskListType === 'TEMPLATE'
+          }
         />
       )}
     >

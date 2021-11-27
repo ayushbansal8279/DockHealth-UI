@@ -178,3 +178,9 @@ export function getUserTaskFilterOptions(userIdentifier, status) {
       throw error;
     });
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function getUsersByName(name, limit = 10) {
+  // todo: add limit attribute to request after API update
+  return axios.get(`user/findUserByName?name=${name}`).then(({ data }) => data);
+}
