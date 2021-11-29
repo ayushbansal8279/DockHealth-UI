@@ -5,7 +5,7 @@ import { Grid } from '@material-ui/core';
 import { getTaskCustomFields } from 'actions/task-drawer-actions';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
-import { useFormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
@@ -37,14 +37,19 @@ const CustomFieldsSection = ({
   }, [dispatch, task?.identifier]);
 
   const onBlur = useCallback(
-    newTask => {
-      dispatch(partialUpdateTask(task?.identifier, newTask));
-      dispatch(showGlobalAlert(AlertMessages.UPDATED));
+    ({ taskMetaData }) => {
+      if (taskMetaData.length > 0) {
+        dispatch(
+          partialUpdateTask(task?.identifier, { ...task, taskMetaData }),
+        );
+        dispatch(showGlobalAlert(AlertMessages.UPDATED));
+      }
     },
     [dispatch, task],
   );
 
-  const { handleSubmit, setValue, getValues } = useFormContext();
+  const formMethods = useForm();
+  const { handleSubmit, setValue, getValues } = formMethods;
 
   useEffect(() => {
     if (task?.taskMetaData) {
@@ -69,22 +74,25 @@ const CustomFieldsSection = ({
       const hasValue = !!getValues()[`taskMetaData.${field.identifier}`];
       const visible = isFocused || emptyVisible || hasValue;
       return (
-        <HidableContainer key={field.identifier} visibility={!visible}>
-          <Grid item xs={12} style={styleFullRow}>
-            <CustomField
-              scrollToRef={taskCustomReference}
-              readOnly={false}
-              field={field}
-              onBlur={handleSubmit(compose(onBlur, formatMetaDataOutput))}
-              fieldsGroupKey="taskMetaData"
-              isFocused={isFocused}
-            />
-          </Grid>
-        </HidableContainer>
+        <FormContext {...formMethods}>
+          <HidableContainer key={field.identifier} visibility={!visible}>
+            <Grid item xs={12} style={styleFullRow}>
+              <CustomField
+                scrollToRef={taskCustomReference}
+                readOnly={false}
+                field={field}
+                onBlur={handleSubmit(compose(onBlur, formatMetaDataOutput))}
+                fieldsGroupKey="taskMetaData"
+                isFocused={isFocused}
+              />
+            </Grid>
+          </HidableContainer>
+        </FormContext>
       );
     },
     [
       emptyVisible,
+      formMethods,
       getValues,
       handleSubmit,
       onBlur,
