@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +10,7 @@ import {
   USERS_SETTINGS_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { subMenuKeySelector } from 'selectors/template-selectors';
@@ -75,7 +77,7 @@ const NavigationSidebar = ({
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
-  const isGuest = orgUserRole === 'GUEST';
+  const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
   const {
     orgMenuReference,
@@ -208,12 +210,14 @@ const NavigationSidebar = ({
               subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
               onItemClick={handleNavigationItemClick}
             />
-            <IconNavigationItem
-              name="Analytics"
-              icon={BarChartIcon}
-              path="/core/analytics"
-              onItemClick={handleNavigationItemClick}
-            />
+            {!isGuest && (
+              <IconNavigationItem
+                name="Analytics"
+                icon={BarChartIcon}
+                path="/core/analytics"
+                onItemClick={handleNavigationItemClick}
+              />
+            )}
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (

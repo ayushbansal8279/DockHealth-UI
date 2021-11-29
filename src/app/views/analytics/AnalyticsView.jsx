@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Box } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
+import { useHistory } from 'react-router-dom';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { analyticsFiltersActiveSelector } from 'selectors/analytics-selectors';
 import { setHeader, unsetHeader } from 'actions/template-actions';
 import { clearAnalyticsFilter } from 'actions/analytics-actions';
@@ -20,6 +23,8 @@ import TasksStatisticsChart from './TasksStatisticsChart/TasksStatisticsChart';
 
 const AnalyticsView = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const userProfile = useSelector(userProfileSelector);
   const analyticsFiltersActive = useSelector(analyticsFiltersActiveSelector);
   const filterButtonReference = useRef(null);
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
@@ -45,6 +50,13 @@ const AnalyticsView = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (userProfile?.orgUserRole === UserOrganizationRole.GUEST) {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile]);
 
   return (
     <>
