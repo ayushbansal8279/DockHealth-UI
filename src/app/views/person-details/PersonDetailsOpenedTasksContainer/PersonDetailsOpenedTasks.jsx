@@ -139,7 +139,7 @@ const PersonDetailsOpenedTasks = ({
                   <QuickAddTaskInput
                     ref={quickAddTaskInputReference}
                     quickAddTask={task => {
-                      quickAddTask(task);
+                      handleQuickAddTask(task);
                       setTimeout(() => {
                         quickAddTaskInputReference.current.focus();
                       }, 0);
