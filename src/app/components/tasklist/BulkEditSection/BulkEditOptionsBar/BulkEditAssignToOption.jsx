@@ -30,7 +30,10 @@ const BulkEditAssignToOption = ({
   }, [selectedTasks]);
 
   const containPublicListType = useMemo(() => {
-    return !!selectedTasks.find(
+    const { parentTasks = [], subtasks = [] } = selectedTasks || {};
+    const allSelectedTasks = [...parentTasks, ...subtasks];
+
+    return !!allSelectedTasks?.find(
       ({ taskList }) =>
         taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE',
     );
