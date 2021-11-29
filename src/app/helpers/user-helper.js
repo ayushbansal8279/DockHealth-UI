@@ -45,7 +45,7 @@ export const UserListItemType = {
 };
 
 export function isUserGroup(item) {
-  return item.itemType === UserListItemType.GROUP;
+  return item?.itemType === UserListItemType.GROUP;
 }
 
 export function getUserActivityStatus(user, activeUsers) {

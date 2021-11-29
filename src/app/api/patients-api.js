@@ -1,32 +1,5 @@
+import { mapFilterOptions } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
-
-function mapFilterOptions(filterOptions) {
-  return filterOptions.optionsOrder.map((label, orderIndex) => {
-    const options = filterOptions[label];
-    if (options) {
-      return {
-        id: label,
-        label,
-        options,
-        orderIndex,
-      };
-    }
-
-    const {
-      customField,
-      options: customFieldOptions,
-    } = filterOptions.customFields.find(
-      ({ customField: { name } }) => name === label,
-    );
-
-    return {
-      id: customField.identifier,
-      label: customField.name,
-      options: customFieldOptions,
-      orderIndex,
-    };
-  });
-}
 
 export const getPatientsLists = () =>
   axios.get('patient/list/getAll').then(response => response.data);

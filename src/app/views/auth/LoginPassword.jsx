@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import { login, resendConfirmationCode } from 'api/user-auth-api';
 import LoginFormPassword from 'components/auth/LoginFormPassword';
 import { showAlert, showToast } from 'helpers/utility-functions';
@@ -39,9 +38,6 @@ const LoginPassword = () => {
     ({ setError }) => form => {
       login(form.username, form.password)
         .then(data => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            LOGIN_SUCCESS: 'YES',
-          });
           if (data.challengeName === 'SMS_MFA') {
             if (data.challengeParam) {
               window.sessionStorage.setItem(
@@ -83,9 +79,6 @@ const LoginPassword = () => {
 
             // (error?.message!='User is not confirmed.') ?? 'Incorrect email or password. Please try again.',
           );
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            LOGIN_SUCCESS: 'NO',
-          });
         });
     },
     [history],

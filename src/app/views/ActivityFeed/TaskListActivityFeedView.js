@@ -1,14 +1,7 @@
 import React, { PureComponent } from 'react';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import TaskListActivityFeedContainer from './TaskListActivityFeedContainer';
 
 class TaskListActivityFeedView extends PureComponent {
-  componentDidMount() {
-    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-      PageName: 'ActivityFeed',
-    });
-  }
-
   render() {
     return (
       <div className="off-canvas-content" data-off-canvas-content>

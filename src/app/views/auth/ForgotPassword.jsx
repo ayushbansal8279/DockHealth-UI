@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as UserAuthApi from 'api/user-auth-api';
 import ForgotPasswordForm from 'components/auth/ForgotPasswordForm';
 import { showAlert, showToast } from 'helpers/utility-functions';
@@ -38,9 +37,6 @@ const ForgotPassword = () => {
         username: form.username,
       })
         .then(resp => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            FORGOT_PASSWORD_SUCCESS: 'YES',
-          });
           success(
             `Sent verification code to: ${resp.CodeDeliveryDetails.Destination}`,
           );
@@ -62,10 +58,6 @@ const ForgotPassword = () => {
               'Email is not confirmed. Please check your email or click below to resend.'; // User is not confirmed.
             setUnconfirmedUserFlag(true);
           }
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            FORGOT_PASSWORD_SUCCESS: 'NO',
-          });
-
           setError(
             'username',
             'invalid',

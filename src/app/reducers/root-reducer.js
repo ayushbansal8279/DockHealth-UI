@@ -21,6 +21,7 @@ import ActiveUsersReducer from './active-users-reducer';
 import PersonDetailsReducer from './person-details-reducer';
 import TaskTemplateReducer from './task-template-reducer';
 import PatientsReducer from './patients-reducer';
+import AnalyticsReducer from './analytics-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -44,6 +45,7 @@ const appReducer = combineReducers({
   personDetails: PersonDetailsReducer,
   taskTemplate: TaskTemplateReducer,
   patients: PatientsReducer,
+  analytics: AnalyticsReducer,
 });
 
 export default function rootReducer(state, action) {

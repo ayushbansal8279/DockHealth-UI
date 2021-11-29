@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { success } from 'actions/notification-actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as UserAuthApi from 'api/user-auth-api';
 import ResetPasswordForm from 'components/auth/ResetPasswordForm';
 import { showAlert } from 'helpers/utility-functions';
@@ -35,16 +34,10 @@ const ResetPassword = props => {
         password: form.password,
       })
         .then(() => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            RESET_PASSWORD_SUCCESS: 'YES',
-          });
           success('Reset password. Please login');
           history.push('resetPasswordSuccess');
         })
         .catch(error => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            RESET_PASSWORD_SUCCESS: 'NO',
-          });
           const message = error.message || 'An error occurred.';
 
           showAlert({

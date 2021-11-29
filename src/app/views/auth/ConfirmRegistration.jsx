@@ -4,7 +4,6 @@ import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { success } from 'actions/notification-actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import { useDispatch } from 'react-redux';
 import { confirmRegistration, resendConfirmationCode } from 'api/user-auth-api';
 import { StyledAnchorDiv } from 'components/auth/AuthComponents.styled';
@@ -54,19 +53,12 @@ const ConfirmRegistration = props => {
         confirmationCode: code,
       })
         .then(() => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            CONFIRM_REGISTRATION_SUCCESS: 'YES',
-          });
-
           success('Registration confirmed. Please Login');
           window.sessionStorage.setItem('confirmStatus', true);
           history.push(`login?uname=${encodeURIComponent(uname)}`);
           // window.location.href = process.env.BRANCH_IO_APP_LINK;
         })
         .catch(error => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            CONFIRM_REGISTRATION_SUCCESS: 'NO',
-          });
           const message = error.message || 'An error occurred.';
           if (
             message ===

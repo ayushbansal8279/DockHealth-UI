@@ -47,6 +47,7 @@ import SupportView from 'views/Support/SupportView';
 import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
 import UserProfileView from 'views/UserProfile/UserProfileView';
 import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
+import AnalyticsView from 'views/analytics/AnalyticsView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import {
   onEnterGlobalSearch,
@@ -172,6 +173,10 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     ),
     onEnter: onEnterTemplatesView,
     onLeave: onLeaveTemplatesView,
+  },
+  {
+    path: '/analytics',
+    RouteComponent: AnalyticsView,
   },
 ];
 

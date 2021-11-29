@@ -38,6 +38,7 @@ import {
   MainMenuContainer,
   SubMenuContainer,
   DockcoinIcon,
+  BarChartIcon,
 } from './styled';
 import IconNavigationItem from './IconNavigationItem';
 import NavigationItem from './NavigationItem';
@@ -205,6 +206,12 @@ const NavigationSidebar = ({
               icon={EducationCenterIcon}
               subMenuKey={SubmenuKey.EDUCATION_CENTER}
               subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+              onItemClick={handleNavigationItemClick}
+            />
+            <IconNavigationItem
+              name="Analytics"
+              icon={BarChartIcon}
+              path="/core/analytics"
               onItemClick={handleNavigationItemClick}
             />
           </Grid>
