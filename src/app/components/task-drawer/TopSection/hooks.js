@@ -6,9 +6,6 @@ import { openModal, closeModal } from 'modal/actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { taskListsSelector } from 'selectors/task-list-selectors';
 import { toggleCompleteTask } from 'actions/task-actions';
-import useActions from 'hooks/use-actions';
-import * as ListDetailsActions from 'actions/list-details-actions';
-import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 
 const initializeTaskDrawerTopSectionHooks = ({
   onDelete,
@@ -23,9 +20,6 @@ const initializeTaskDrawerTopSectionHooks = ({
   const filedInInputReference = useRef(null);
   const dispatch = useDispatch();
   const taskLists = useSelector(taskListsSelector);
-
-  const listDetailsSagaActions = useActions(ListDetailsSagaActions);
-  const listDetailsActions = useActions(ListDetailsActions);
 
   const [
     isFiledInPopoverOpen,
@@ -106,35 +100,43 @@ const initializeTaskDrawerTopSectionHooks = ({
     })(event);
   };
 
-
   const onCompleteToggle = useCallback(
     event => {
       if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
         const hasIncompletedSubtasks =
-        selectedTask.subtasks?.length > 0
-            ? selectedTask.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
-            : selectedTask.subTasksCount - selectedTask.subTasksCompletedCount > 0;
+          selectedTask.subtasks?.length > 0
+            ? selectedTask.subtasks.find(
+                subtask => subtask.status === 'INCOMPLETE',
+              )
+            : selectedTask.subTasksCount - selectedTask.subTasksCompletedCount >
+              0;
 
-        var isBundleTask = false;
-        if(templateBundleIdentifier != ""){
+        let isBundleTask = false;
+        if (templateBundleIdentifier !== '') {
           isBundleTask = true;
         }
 
         if (selectedTask.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
-          const taskListIdentifier = selectedTask.taskListIdentifier;
           const modalProps = {
             confirm: () => {
               dispatch(closeModal());
-              toggleCompleteTask({ ...selectedTask, templateBundleIdentifier }, currentUser, isBundleTask)(dispatch);
+              toggleCompleteTask(
+                { ...selectedTask, templateBundleIdentifier },
+                currentUser,
+                isBundleTask,
+              )(dispatch);
               setTimeout(() => {
                 closeTaskDrawer();
               }, 1000);
-              
             },
           };
           dispatch(openModal('CompleteAllTasks', modalProps));
         } else {
-          toggleCompleteTask({ ...selectedTask, templateBundleIdentifier }, currentUser, isBundleTask)(dispatch);
+          toggleCompleteTask(
+            { ...selectedTask, templateBundleIdentifier },
+            currentUser,
+            isBundleTask,
+          )(dispatch);
           setTimeout(() => {
             closeTaskDrawer();
           }, 1000);
@@ -143,14 +145,13 @@ const initializeTaskDrawerTopSectionHooks = ({
       event.stopPropagation();
     },
     [
-      currentUser,
-      templateBundleIdentifier,
-      toggleCompleteTask,
-      selectedTask,
       isTaskStatusTogglingDisabled,
       isDependencyEmptyOrCompleted,
-      openModal,
-      closeModal,
+      selectedTask,
+      templateBundleIdentifier,
+      dispatch,
+      currentUser,
+      closeTaskDrawer,
     ],
   );
 

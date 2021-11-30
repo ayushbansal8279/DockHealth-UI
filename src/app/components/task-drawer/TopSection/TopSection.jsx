@@ -15,6 +15,8 @@ import { getTaskListForUser } from 'actions/task-list-actions';
 import InputPopover from 'components/common/InputPopover/InputPopover';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
+import { useForm, FormContext } from 'react-hook-form';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { HorizontalLabel } from '../styled';
 import {
   FiledInSelect,
@@ -23,7 +25,6 @@ import {
   ListNameContainer,
   ListNameSelectContainer,
 } from './styled';
-
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 function useOutsideAction(reference, onClickOutside) {
@@ -99,9 +100,6 @@ const renderTaskList = ({
 };
 
 const TopSection = ({
-  formMethods,
-  selectedTask,
-  templateBundleIdentifier,
   reFileTask,
   onDelete,
   onDuplicate,
@@ -109,15 +107,16 @@ const TopSection = ({
   closeTaskDrawer,
   setTourTaskMenuReference,
 }) => {
+  const selectedTask = useSelector(selectedTaskSelector);
+  const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
   const currentUser = useSelector(userProfileSelector);
-
+  const formMethods = useForm();
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskStatus = selectedTask?.status;
   const taskList = selectedTask?.taskList;
   const isCompleted = selectedTaskStatus === 'COMPLETE';
   const hasSubtasks = selectedTask?.subTasksCount !== 0;
-
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const isDecisionTask = selectedTask?.intentType === 'DECISION';
   const isDecisionSelected = selectedTask?.taskOutcomes?.reduce(
@@ -126,7 +125,6 @@ const TopSection = ({
   );
   const isTaskStatusTogglingDisabled =
     isTemplateTask || (isDecisionTask && !isDecisionSelected);
-
   const dependencyTasksCount = selectedTask?.dependencyTasksCount;
   const dependencyTasksCompletedCount =
     selectedTask?.dependencyTasksCompletedCount;
@@ -174,7 +172,7 @@ const TopSection = ({
   useOutsideAction(optionsContainerReference, closeTaskMenuPopover);
 
   return (
-    <>
+    <FormContext {...formMethods}>
       <ListNameContainer>
         {selectedTask &&
           !selectedTask.parentTaskIdentifier &&
@@ -335,7 +333,7 @@ const TopSection = ({
           </StyledList>
         </InputPopover>
       </ActionButtonsContainer>
-    </>
+    </FormContext>
   );
 };
 

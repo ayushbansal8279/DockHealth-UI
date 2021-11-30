@@ -4,17 +4,16 @@ import { CommentSectionContainer, CommentsListContainer } from './styled';
 import initializeCommentSectionHooks from './hooks';
 import { renderComment } from './helpers';
 
-const CommentSection = ({
-  taskDrawerFocusField,
-  taskListIdentifier,
-  isTemplateTask,
-}) => {
+const CommentSection = () => {
   const {
     comments,
     currentUser,
     removeComment,
     updateComment,
     addComment,
+    taskListIdentifier,
+    isTemplateTask,
+    taskDrawerFocusField,
   } = initializeCommentSectionHooks();
 
   return (

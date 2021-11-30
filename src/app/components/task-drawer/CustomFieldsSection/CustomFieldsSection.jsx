@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { getTaskCustomFields } from 'actions/task-drawer-actions';
 import CustomField from 'components/common/CustomField/CustomField';
@@ -12,6 +12,11 @@ import { partialUpdateTask } from 'actions/task-actions';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import {
+  selectedTaskSelector,
+  taskCustomFieldsSelector,
+  taskDrawerFocusFieldSelector,
+} from 'selectors/task-drawer-selectors';
+import {
   CustomFieldsSectionContainer,
   HidableContainer,
   Title,
@@ -19,13 +24,11 @@ import {
 } from './styled';
 import { formatMetaDataOutput } from './helpers';
 
-const CustomFieldsSection = ({
-  task,
-  taskCustomFields: { templates },
-  taskDrawerFocusField,
-  taskCustomReference,
-}) => {
+const CustomFieldsSection = ({ taskCustomReference }) => {
   const dispatch = useDispatch();
+  const task = useSelector(selectedTaskSelector) || {};
+  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
+  const { templates } = useSelector(taskCustomFieldsSelector);
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
   useEffect(() => {
     if (task) {
@@ -102,8 +105,8 @@ const CustomFieldsSection = ({
   );
   if (templates.length === 0) return null;
   return (
-    <CustomFieldsSectionContainer>
-      <>
+    <FormContext {...formMethods}>
+      <CustomFieldsSectionContainer>
         <Title>Custom fields</Title>
         {templates?.map((field, index) => {
           return renderCustomField(field, index);
@@ -112,8 +115,8 @@ const CustomFieldsSection = ({
           visibility={emptyVisible}
           onToggle={toggleEmptyVisible}
         />
-      </>
-    </CustomFieldsSectionContainer>
+      </CustomFieldsSectionContainer>
+    </FormContext>
   );
 };
 

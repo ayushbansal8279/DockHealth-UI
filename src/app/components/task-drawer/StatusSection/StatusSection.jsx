@@ -10,6 +10,7 @@ import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowS
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import Input from 'components/common/Input/Input';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import AlertMessages from 'alert/AlertMessages';
 import {
   StatusFlag,
   StatusFieldContainer,
@@ -17,10 +18,14 @@ import {
 } from './styled';
 import { EndAdornmentContainer, AdornmentClear } from '../styled';
 
-const StatusSection = ({ setAutoSaveVisible, onTaskUpdate }) => {
+const StatusSection = ({ onTaskUpdate }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { workflowStatus, taskIdentifier } = selectedTask || {};
+
+  const setAutoSaveVisible = useCallback(() => {
+    dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
+  }, [dispatch]);
 
   const handleUpdateWorkflowStatus = useCallback(
     newWorkflowStatus => {

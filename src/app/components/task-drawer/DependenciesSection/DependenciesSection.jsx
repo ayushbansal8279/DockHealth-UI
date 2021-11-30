@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import CloseIcon from '@material-ui/icons/Close';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { updateTasksLink } from 'actions/task-actions';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import DrawerTask from '../DrawerTask/DrawerTask';
 import DrawerTaskLoader from '../DrawerTaskLoader/DrawerTaskLoader';
 import { Container, Title, TaskContainer, DeleteButton } from './styled';
 import DependenciesAutocomplete from '../DependenciesAutocomplete/DependenciesAutocomplete';
 
-const DependenciesSection = ({ selectedTask }) => {
+const DependenciesSection = () => {
+  const selectedTask = useSelector(selectedTaskSelector) || {};
   const { taskDependencies, dependencyTasksCount } = selectedTask;
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);

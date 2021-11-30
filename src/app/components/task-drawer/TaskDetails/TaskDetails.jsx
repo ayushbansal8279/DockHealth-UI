@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
@@ -20,10 +20,11 @@ import {
   convertToEditorState,
   isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DetailsContainer } from './styled';
 
-const TaskDetails = props => {
-  const { selectedTask } = props;
+const TaskDetails = () => {
+  const selectedTask = useSelector(selectedTaskSelector);
   const { taskList } = selectedTask || {};
   const { taskListIdentifier } = taskList || {};
 

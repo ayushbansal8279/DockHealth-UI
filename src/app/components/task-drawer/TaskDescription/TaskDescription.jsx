@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { EditorState } from 'draft-js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTask, updateTaskDescription } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
@@ -21,10 +21,12 @@ import {
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 
-const TaskDescription = props => {
-  const { selectedTask } = props;
+const TaskDescription = () => {
+  const selectedTask = useSelector(selectedTaskSelector);
+
   const {
     description,
     tokenizedDescription,

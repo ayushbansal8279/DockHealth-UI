@@ -9,7 +9,6 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
@@ -31,7 +30,6 @@ import {
   selectedTaskSelector,
   taskDrawerOpenSelector,
   taskDrawerFocusFieldSelector,
-  taskCustomFieldsSelector,
 } from 'selectors/task-drawer-selectors';
 import {
   onTaskDrawerTaskDeleted,
@@ -39,11 +37,9 @@ import {
 } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
-import { TIME_12H_FORMAT, DATE_ISO_FORMAT } from 'helpers/task-drawer-helpers';
-
+import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { getFormattedLabels } from '../LabelsSection/helpers';
 
 const initializeTaskDrawerHooks = ({
   onTaskUpdate,
@@ -55,7 +51,6 @@ const initializeTaskDrawerHooks = ({
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const selectedTask = useSelector(selectedTaskSelector);
-  const taskCustomFields = useSelector(taskCustomFieldsSelector);
 
   const [selectedParentTask, setSelectedParentTask] = useState(null);
 
@@ -65,7 +60,6 @@ const initializeTaskDrawerHooks = ({
   const { taskIdentifier, subTasksCount, subtasks } = selectedTask || {};
   const taskList = selectedTask?.taskList;
   const taskListIdentifier = taskList?.taskListIdentifier;
-  const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const isSubtask = !!selectedTask?.parentTaskIdentifier;
   const parentTask = selectedTask?.parentTask;
@@ -79,18 +73,6 @@ const initializeTaskDrawerHooks = ({
     parentDescriptionState,
     setParentDescriptionState,
   ] = useMentionsEditorState();
-
-  const formMethods = useForm({
-    reValidateMode: 'onSubmit',
-  });
-
-  const { setValue, clearError } = formMethods;
-
-  useEffect(() => {
-    setValue('newTaskListId', null);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -162,24 +144,8 @@ const initializeTaskDrawerHooks = ({
     ) {
       markTaskRead(selectedTask)(dispatch);
     }
-
-    clearError(); // clear any previous validation errors
-
-    const dueDateMoment = moment(selectedTask?.dueDate ?? null);
-
-    if (dueDateMoment.isValid()) {
-      setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
-    } else {
-      setValue('dueDate', null);
-    }
-
-    setValue('priority', selectedTask?.priority ?? null);
-    setValue(
-      'labels',
-      getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
+  }, [selectedTaskIdentifier, taskDrawerOpen]);
 
   const setAutoSaveVisible = useCallback(() => {
     dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
@@ -303,7 +269,6 @@ const initializeTaskDrawerHooks = ({
 
   return {
     closeTaskDrawer,
-    formMethods,
     handleUpdateTask,
     isSubtask,
     isAddingSubtask,
@@ -316,15 +281,12 @@ const initializeTaskDrawerHooks = ({
     reFileTask,
     selectedParentTask,
     selectedTask,
-    setAutoSaveVisible,
     setParentDescriptionState,
     taskDrawerFocusField,
     taskDrawerOpen,
     taskDrawerReference,
     taskDueTime,
     taskListIdentifier,
-    templateBundleIdentifier,
-    taskCustomFields,
     clearFormStates,
   };
 };

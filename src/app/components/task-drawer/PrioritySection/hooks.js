@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFormContext } from 'react-hook-form';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import palette from 'styles/palette';
 import { toggleTaskPriority } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 
 export const PRIORITIES = [
   {
@@ -21,15 +21,20 @@ export const PRIORITIES = [
 ];
 
 const initializePrioritySectionHooks = ({
-  setAutoSaveVisible,
   onTaskUpdate,
+  formMethods: { watch, setValue, clearError },
 }) => {
-  const { watch, setValue } = useFormContext();
   const currentValue = watch('priority');
   const dispatch = useDispatch();
-
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+  useLayoutEffect(() => {
+    clearError();
+    setValue('priority', selectedTask?.priority ?? null);
+  }, [clearError, selectedTask, setValue]);
+  const setAutoSaveVisible = useCallback(() => {
+    dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
+  }, [dispatch]);
 
   const saveTaskPriority = useCallback(
     ({ newTaskPriority }) => {
@@ -61,7 +66,6 @@ const initializePrioritySectionHooks = ({
       PRIORITIES.find(({ value }) => value === currentValue)?.color ||
       'transparent',
     saveTaskPriority,
-    setValue,
   };
 };
 

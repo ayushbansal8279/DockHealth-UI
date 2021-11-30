@@ -3,6 +3,7 @@ import PriorityFlag from 'img/priority-flag';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
 import FormSelect from 'components/common/Select/FormSelect';
 import { Box } from '@material-ui/core';
+import { useForm, FormContext } from 'react-hook-form';
 import initializePrioritySectionHooks, { PRIORITIES } from './hooks';
 import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
 
@@ -19,12 +20,13 @@ const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
 
 const PRIORITY_FIELD_NAME = 'priority';
 
-const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
+const PrioritySection = ({ onTaskUpdate }) => {
+  const formMethods = useForm();
+  const { setValue } = formMethods;
   const {
     currentPriorityFlagColor,
     saveTaskPriority,
-    setValue,
-  } = initializePrioritySectionHooks({ setAutoSaveVisible, onTaskUpdate });
+  } = initializePrioritySectionHooks({ onTaskUpdate, formMethods });
 
   const selectOption = value => {
     if (value === 'NONE') {
@@ -38,19 +40,21 @@ const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
   };
 
   return (
-    <PriorityFieldContainer>
-      <PriorityFlagContainer>
-        <PriorityFlag color={currentPriorityFlagColor} />
-      </PriorityFlagContainer>
-      <FormSelect
-        label="Priority"
-        options={priorityOptions}
-        name={PRIORITY_FIELD_NAME}
-        required={false}
-        onChange={selectOption}
-        // placeholder="Is there a priority?"
-      />
-    </PriorityFieldContainer>
+    <FormContext {...formMethods}>
+      <PriorityFieldContainer>
+        <PriorityFlagContainer>
+          <PriorityFlag color={currentPriorityFlagColor} />
+        </PriorityFlagContainer>
+        <FormSelect
+          label="Priority"
+          options={priorityOptions}
+          name={PRIORITY_FIELD_NAME}
+          required={false}
+          onChange={selectOption}
+          // placeholder="Is there a priority?"
+        />
+      </PriorityFieldContainer>
+    </FormContext>
   );
 };
 

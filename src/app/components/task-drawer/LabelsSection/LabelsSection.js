@@ -10,7 +10,11 @@ import { Chip } from '@material-ui/core';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useSelector } from 'react-redux';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import {
+  selectedTaskSelector,
+  taskDrawerFocusFieldSelector,
+} from 'selectors/task-drawer-selectors';
+import { useForm, FormContext } from 'react-hook-form';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -81,12 +85,8 @@ const renderOption = ({
   </OptionContainer>
 );
 
-const LabelsSection = ({
-  setAutoSaveVisible,
-  setSelectedLabelsValue,
-  taskDrawerFocusField,
-  onTaskUpdate,
-}) => {
+const LabelsSection = ({ onTaskUpdate }) => {
+  const formMethods = useForm();
   const {
     labels,
     saveAddLabel,
@@ -96,17 +96,16 @@ const LabelsSection = ({
     refreshLabels,
     isLoadingLabels,
   } = initializeLabelsSectionHooks({
-    setAutoSaveVisible,
-    setSelectedLabelsValue,
     onTaskUpdate,
+    formMethods,
   });
   const { labels: selectedLabels = [] } =
     useSelector(selectedTaskSelector) || {};
-
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
   const [inputReference, setInputReference] = useState(null);
+  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
 
   useEffect(() => {
     if (currentEditableOption) {
@@ -180,43 +179,45 @@ const LabelsSection = ({
   );
 
   return (
-    <Autocomplete
-      autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
-      options={labels}
-      label="Labels"
-      placeholder="Are there labels you'd like to add?"
-      value={selectedLabels}
-      disableCloseOnSelect={!!currentEditableOption}
-      getInputReference={getInputReference}
-      getOptionLabel={option => option?.labelName}
-      isDisabled={!!currentEditableOption}
-      renderOption={renderOptionCallback}
-      renderTags={renderTagsCallback}
-      onInputChange={setInputState}
-      InputProps={{
-        onKeyDown: event => {
-          if (event.key === 'Enter' && event?.target.value !== '') {
-            event.stopPropagation();
-            event.preventDefault();
-            event?.target?.blur();
-            saveAddLabel({ labelName: inputState });
+    <FormContext {...formMethods}>
+      <Autocomplete
+        autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
+        options={labels}
+        label="Labels"
+        placeholder="Are there labels you'd like to add?"
+        value={selectedLabels}
+        disableCloseOnSelect={!!currentEditableOption}
+        getInputReference={getInputReference}
+        getOptionLabel={option => option?.labelName}
+        isDisabled={!!currentEditableOption}
+        renderOption={renderOptionCallback}
+        renderTags={renderTagsCallback}
+        onInputChange={setInputState}
+        InputProps={{
+          onKeyDown: event => {
+            if (event.key === 'Enter' && event?.target.value !== '') {
+              event.stopPropagation();
+              event.preventDefault();
+              event?.target?.blur();
+              saveAddLabel({ labelName: inputState });
+            }
+          },
+        }}
+        noOptionsText={noOptionText}
+        onOpen={refreshLabels}
+        isLoading={isLoadingLabels}
+        onChange={values => {
+          const valuesLength = values.length;
+          const value = values[valuesLength - 1];
+          saveAddLabel(value);
+          if (currentEditableOption) {
+            setCurrentEditableOption(null);
           }
-        },
-      }}
-      noOptionsText={noOptionText}
-      onOpen={refreshLabels}
-      isLoading={isLoadingLabels}
-      onChange={values => {
-        const valuesLength = values.length;
-        const value = values[valuesLength - 1];
-        saveAddLabel(value);
-        if (currentEditableOption) {
-          setCurrentEditableOption(null);
-        }
-      }}
-      multiple
-      disableClearable
-    />
+        }}
+        multiple
+        disableClearable
+      />
+    </FormContext>
   );
 };
 
