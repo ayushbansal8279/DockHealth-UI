@@ -8,7 +8,6 @@ import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ModalActions from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
@@ -44,10 +43,6 @@ const PersonDetailsView = () => {
         ],
       }),
     );
-
-    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-      PageName: 'PersonTaskList',
-    });
 
     return () => {
       dispatch(PersonDetailsActions.clearUserDetailsState());

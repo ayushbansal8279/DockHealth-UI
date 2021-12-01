@@ -28,12 +28,10 @@ const renderHistoryItem = ({
   const userName = user?.userName ?? '';
   const createdMoment = moment(createdDateTime);
 
-  // This is where the History Event timeDate is formated.
+  // This is where the History Event timeDate is formatted.
   const formattedDate = createdMoment.isValid()
     ? createdMoment.format('MMM D, YYYY @ h:mma')
     : '';
-
-  // const bottomRowData = `${formattedDate} by ${userName}`.trim();
 
   return (
     <Grid
@@ -73,10 +71,6 @@ const renderHistoryItem = ({
         </AuditTypeLabelContainer>
       </Grid>
     </Grid>
-    // <HistoryItemContainer key={auditId}>
-    //   <HistoryLabel>{auditEventTypeDescription}</HistoryLabel>
-    //   {bottomRowData && <HistorySublabel>{bottomRowData}</HistorySublabel>}
-    // </HistoryItemContainer>
   );
 };
 
@@ -91,7 +85,7 @@ const renderHistory = history => {
   return history?.map(renderHistoryItem);
 };
 
-const HistorySection = ({ selectedTask }) => {
+const HistorySection = () => {
   const {
     currentUser,
     isHistoryShown,
@@ -99,7 +93,8 @@ const HistorySection = ({ selectedTask }) => {
     history,
     onToggleHistoryButtonClicked,
     getFormattedEventDate,
-  } = initializeTaskDrawerHistorySectionHooks({ selectedTask });
+    selectedTask,
+  } = initializeTaskDrawerHistorySectionHooks();
 
   const isNewTask = !(selectedTask && selectedTask.taskIdentifier !== null);
 
@@ -188,14 +183,11 @@ const HistorySection = ({ selectedTask }) => {
       )}
       {isHistoryShown && (
         <SectionRow>
-          {/* <SectionLabel /> */}
-          {/* <SectionButtonContainer> */}
           {isHistoryLoading ? (
             <Loader size={LoaderSizes.small} />
           ) : (
             renderHistory(history)
           )}
-          {/* </SectionButtonContainer> */}
         </SectionRow>
       )}
     </>

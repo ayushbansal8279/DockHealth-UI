@@ -61,7 +61,7 @@ const renderAttachmentButton = ({
   );
 };
 
-const AttachmentsSection = ({ selectedTask }) => {
+const AttachmentsSection = () => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -75,6 +75,7 @@ const AttachmentsSection = ({ selectedTask }) => {
     hideAttachmentPreview,
     previewedAttachment,
     dropzone: { getRootProps, getInputProps },
+    selectedTask,
   } = initializeAttachmentsSectionHooks();
 
   return (

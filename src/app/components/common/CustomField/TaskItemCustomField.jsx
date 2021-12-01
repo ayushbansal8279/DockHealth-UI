@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FieldType } from 'helpers/field-type-helpers';
 import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
@@ -16,6 +16,10 @@ const TaskItemCustomField = ({
 }) => {
   const { value } = customFieldValue || {};
 
+  const handleClick = useCallback(() => {
+    onClick(field);
+  }, [field, onClick]);
+
   switch (field.fieldType) {
     case FieldType.BOOL:
       return (
@@ -23,7 +27,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
-          onClick={onClick}
+          onClick={handleClick}
           field={field}
         />
       );
@@ -33,7 +37,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
-          onClick={onClick}
+          onClick={handleClick}
           field={field}
         />
       );
@@ -43,7 +47,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
-          onClick={onClick}
+          onClick={handleClick}
           field={field}
         />
       );
@@ -54,7 +58,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
-          onClick={onClick}
+          onClick={handleClick}
           field={field}
         />
       );
@@ -64,7 +68,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
-          onClick={onClick}
+          onClick={handleClick}
           field={field}
         />
       );
@@ -74,7 +78,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
           value={value}
           onChange={onChange}
-          onClick={onClick}
+          onClick={handleClick}
           field={field}
         />
       );

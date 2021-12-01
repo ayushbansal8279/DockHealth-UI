@@ -267,6 +267,10 @@ const DrawerTask = ({ subtask, currentUser }) => {
               selectedMembers={assignedToUsers}
               onSelect={handleReassignSubtask}
               onError={closePopover}
+              enableLazyLoading={
+                taskList?.listType === 'PUBLIC' ||
+                taskList?.listType === 'TEMPLATE'
+              }
             />
           )}
         >

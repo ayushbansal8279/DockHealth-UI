@@ -4,24 +4,25 @@ import * as TaskListApi from 'api/task-list-api';
 import Spacing from 'components/common/Spacing';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import EnvelopeIcon from 'img/envelope.svg';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { useSelector } from 'react-redux';
 import { EmailBodyContainer, EmailMessageContainer } from './styled';
 
-const EmailBody = ({
-  emailBody,
-  taskListIdentifier,
-  selectedTaskSourceMessage,
-}) => {
+const EmailBody = () => {
   const [emailBodyMembers, setEmailBodyMembers] = useState(null);
+  const { sourceMessage: emailBody, taskList } =
+    useSelector(selectedTaskSelector) || {};
+  const { taskListIdentifier } = taskList;
 
   useEffect(() => {
-    if (taskListIdentifier && selectedTaskSourceMessage) {
+    if (taskListIdentifier && emailBody) {
       TaskListApi.getMembersByTaskListId(taskListIdentifier, 'ALL').then(
         data => {
           setEmailBodyMembers(data);
         },
       );
     }
-  }, [selectedTaskSourceMessage, taskListIdentifier]);
+  }, [emailBody, taskListIdentifier]);
 
   return (
     <EmailBodyContainer>

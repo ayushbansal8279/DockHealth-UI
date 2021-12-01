@@ -24,8 +24,14 @@ export const InputBox = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  height: 264px;
+  max-height: 264px;
   overflow-y: auto;
+`;
+
+export const NoRecordsText = styled.div`
+  height: 36px;
+  color: ${palette.mediumGrey};
+  padding-left: ${spacing.smallPlus};
 `;
 
 export const ListContentSection = styled.div`

@@ -57,7 +57,12 @@ const TEMPLATES_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.DUE_DATE]: false,
 };
 
-const TaskTemplate = ({ template, isFullView, children }) => {
+const TaskTemplate = ({
+  template,
+  isFullView,
+  children,
+  highlighted = false,
+}) => {
   const {
     taskTemplateIdentifier,
     name,
@@ -73,6 +78,15 @@ const TaskTemplate = ({ template, isFullView, children }) => {
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
   const history = useHistory();
+
+  useEffect(() => {
+    if (nameInputReference?.current && highlighted) {
+      nameInputReference.current.scrollIntoView({
+        block: 'center',
+        behavior: 'smooth',
+      });
+    }
+  }, [highlighted, nameInputReference]);
 
   const dispatch = useDispatch();
   const { isOpen, isFetching, tasks } =
@@ -299,7 +313,7 @@ const TaskTemplate = ({ template, isFullView, children }) => {
 
   return (
     <TaskTemplateContainer>
-      <TaskTemplateHeader>
+      <TaskTemplateHeader highlighted={highlighted}>
         {type === 'WORKFLOW' && (
           <Checkbox
             isDisabled={!isOpen}

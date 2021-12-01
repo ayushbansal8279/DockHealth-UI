@@ -69,6 +69,9 @@ import {
   TaskElementIcon,
   BuilderHeader,
   BuilderHeaderText,
+  HotkeysElements,
+  Hotkey,
+  HotkeyDescription,
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
@@ -375,43 +378,68 @@ const TaskTemplateDetailsView = () => {
       <ReactFlowProvider>
         <Box position="relative" display="flex" height="100%" width="100%">
           <ElementsSidebar>
-            <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
-            {toolkitActions.map(({ id, label, icon: Icon, ref, onClick }) => (
-              <ElementButton
-                key={id}
-                type="button"
-                ref={ref}
-                onClick={onClick}
-                onDragStart={event => {
-                  event.dataTransfer.setData('application/reactflow', id);
-                  // eslint-disable-next-line no-param-reassign
-                  event.dataTransfer.effectAllowed = 'move';
-                }}
-                draggable
-              >
-                <ElementIconBackground>
-                  <Icon />
-                </ElementIconBackground>
-                <ElementDescription>{label}</ElementDescription>
-              </ElementButton>
-            ))}
-            {isDelayPopoverOpen && (
-              <Popper
-                anchorEl={delayPeriodOptionReference.current}
-                placement="right"
-                open
-                style={{ zIndex: 10 }}
-              >
-                <ClickAwayListener onClickAway={closeDelayPopover}>
-                  <Paper>
-                    <TaskLinkDelayForm
-                      onSubmit={handleDelayForSubmit}
-                      onClose={closeDelayPopover}
-                    />
-                  </Paper>
-                </ClickAwayListener>
-              </Popper>
-            )}
+            <Box>
+              <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
+              {toolkitActions.map(({ id, label, icon: Icon, ref, onClick }) => (
+                <ElementButton
+                  key={id}
+                  type="button"
+                  ref={ref}
+                  onClick={onClick}
+                  onDragStart={event => {
+                    event.dataTransfer.setData('application/reactflow', id);
+                    // eslint-disable-next-line no-param-reassign
+                    event.dataTransfer.effectAllowed = 'move';
+                  }}
+                  draggable
+                >
+                  <ElementIconBackground>
+                    <Icon />
+                  </ElementIconBackground>
+                  <ElementDescription>{label}</ElementDescription>
+                </ElementButton>
+              ))}
+              {isDelayPopoverOpen && (
+                <Popper
+                  anchorEl={delayPeriodOptionReference.current}
+                  placement="right"
+                  open
+                  style={{ zIndex: 10 }}
+                >
+                  <ClickAwayListener onClickAway={closeDelayPopover}>
+                    <Paper>
+                      <TaskLinkDelayForm
+                        onSubmit={handleDelayForSubmit}
+                        onClose={closeDelayPopover}
+                      />
+                    </Paper>
+                  </ClickAwayListener>
+                </Popper>
+              )}
+            </Box>
+            <Box>
+              <SidebarTitle>Hotkeys</SidebarTitle>
+              <Box p={0.5} />
+              <HotkeysElements>
+                <div>
+                  <HotkeyDescription>
+                    Remove Task
+                    <br />
+                    Or Link
+                  </HotkeyDescription>
+                </div>
+                <div>
+                  <Hotkey>Delete</Hotkey>
+                </div>
+                <div>
+                  <HotkeyDescription>Multi-Select</HotkeyDescription>
+                </div>
+                <div>
+                  <Hotkey>Shift</Hotkey>
+                  <HotkeyDescription>then Drag</HotkeyDescription>
+                </div>
+              </HotkeysElements>
+            </Box>
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>
             <BuilderHeader>

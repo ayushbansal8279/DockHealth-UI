@@ -1,42 +1,43 @@
 import React, { useState } from 'react';
 import SearchClearIcon from 'img/search-clear.svg';
-import SearchHeadsupIcon from 'img/search-headsup.svg';
+import SearchHeadsUpIcon from 'img/search-headsup.svg';
 import {
-  MegaFilterSearchContainer,
-  MegaFilterSearchInputContainer,
-  MegaFilterSearchInput,
-  MegaFilterClearIcon,
+  FilterSearchContainer,
+  FilterSearchInputContainer,
+  FilterSearchInput,
+  FilterClearIcon,
 } from './styled';
 
-const MegaFilterSearch = ({ onSearch, value }) => {
+const FilterSearch = ({ value, onValueChange }) => {
   const [isInputFocused, setInputFocus] = useState(false);
+
   return (
-    <MegaFilterSearchContainer>
-      <img src={SearchHeadsupIcon} alt="search" />
-      <MegaFilterSearchInputContainer>
-        <MegaFilterSearchInput
+    <FilterSearchContainer>
+      <img src={SearchHeadsUpIcon} alt="search" />
+      <FilterSearchInputContainer>
+        <FilterSearchInput
           onFocus={() => setInputFocus(true)}
           onBlur={() => setInputFocus(false)}
           onChange={event => {
             event.preventDefault();
             event.stopPropagation();
-            onSearch(event.target.value);
+            onValueChange(event.target.value);
           }}
           value={value}
           placeholder="SEARCH"
         />
-        <MegaFilterClearIcon
+        <FilterClearIcon
           alt="clear"
           src={SearchClearIcon}
           isInputFocused={isInputFocused}
           onClick={() => {
-            onSearch('');
+            onValueChange('');
             setInputFocus(false);
           }}
         />
-      </MegaFilterSearchInputContainer>
-    </MegaFilterSearchContainer>
+      </FilterSearchInputContainer>
+    </FilterSearchContainer>
   );
 };
 
-export default MegaFilterSearch;
+export default FilterSearch;

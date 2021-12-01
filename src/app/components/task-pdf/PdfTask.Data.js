@@ -27,13 +27,11 @@ const getPdfTaskData = props => {
     updatedDateTime,
     status,
     priority,
-    assignedTo,
     attachments,
     patient,
     dueDate,
     workflowStatus,
     parentTaskIdentifier,
-    taskListMembers,
     completedBy,
     completedDt,
     taskList,
@@ -53,11 +51,6 @@ const getPdfTaskData = props => {
 
   const { color: workflowStatusColor, name: workflowStatusLabel } =
     workflowStatus || {};
-
-  const assignedMemberColor =
-    (taskListMembers ?? []).find(
-      ({ userIdentifier }) => userIdentifier === assignedTo?.userIdentifier,
-    )?.bubbleColor ?? null;
 
   const completedName = `${completedBy?.firstName?.charAt(0)?.toUpperCase() ??
     ''}. ${completedBy?.lastName ?? ''}`
@@ -93,7 +86,6 @@ const getPdfTaskData = props => {
     isEdited,
     hasAttachments,
     mainContainerWidth,
-    assignedMemberColor,
     bottomLabel,
     patientName,
     dueDateLabel,

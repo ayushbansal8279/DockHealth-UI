@@ -19,6 +19,8 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import { getUsersByName } from 'api/user-api';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   Input,
   InputBox,
@@ -30,6 +32,7 @@ import {
   MemberRowSkeletonLoader,
   highlightStyle,
   CheckboxSpacing,
+  NoRecordsText,
 } from './styled';
 import { collectJoinedListMembers } from './helpers';
 
@@ -41,24 +44,39 @@ const MultiAssignMembersList = ({
   selectedMembers: savedSelectedMembers,
   onSelect,
   onError,
+  enableLazyLoading: enabled,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { emrIntegrationEnabled } = useSelector(organizationSelector);
   const currentUser = useSelector(userProfileSelector);
   const [membersOptions, setMembersOptions] = useState([]);
   const [selectedMembersIdentifiers, setSelectedMembersIdentifiers] = useState(
     [],
   );
-  const [isFetchingMembers, setIsFetchingMembers] = useState(true);
+  const [, setSelectedMembers] = useState([]);
+  const [isFetchingMembers, setIsFetchingMembers] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const enableLazyLoading = emrIntegrationEnabled && enabled;
+  const isValueSendable = searchValue?.trim()?.length > 2;
 
   const filteredMembers = useMemo(
     () =>
-      membersOptions?.filter(
-        ({ name, identifier }) =>
-          name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
-          identifier !== currentUser?.identifier,
+      enableLazyLoading
+        ? membersOptions
+        : membersOptions?.filter(
+            ({ name, identifier }) =>
+              name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
+              identifier !== currentUser?.identifier,
+          ),
+    [enableLazyLoading, membersOptions, currentUser, searchValue],
+  );
+
+  const filteredSelectedMembers = useMemo(
+    () =>
+      savedSelectedMembers?.filter(
+        ({ identifier }) => identifier !== currentUser?.identifier,
       ),
-    [searchValue, currentUser, membersOptions],
+    [savedSelectedMembers, currentUser],
   );
 
   const currentUserMember = useMemo(
@@ -89,70 +107,176 @@ const MultiAssignMembersList = ({
 
   useEffect(() => {
     (async () => {
-      setIsFetchingMembers(true);
-      setMembersOptions([]);
+      if (enableLazyLoading && isValueSendable) {
+        setIsFetchingMembers(true);
+        try {
+          const members = await getUsersByName(searchValue);
+          setMembersOptions(members);
+        } catch (error) {
+          if (typeof onError === 'function') onError(error);
+        }
+        setIsFetchingMembers(false);
+      } else if (enableLazyLoading && searchValue?.trim()?.length < 3) {
+        setIsFetchingMembers(false);
+      }
+    })();
+  }, [
+    enableLazyLoading,
+    onError,
+    searchValue,
+    isValueSendable,
+    taskListIdentifiers,
+  ]);
+
+  useEffect(() => {
+    (async () => {
       setSelectedMembersIdentifiers(
         savedSelectedMembers?.length > 0
           ? pluck('identifier', savedSelectedMembers)
           : [],
       );
-      const includeTaskListIdentifers = Array.isArray(taskListIdentifiers)
-        ? taskListIdentifiers
-        : [taskListIdentifiers];
-      try {
-        if (taskListIdentifiers?.length > 0) {
-          const joinedMembers = await collectJoinedListMembers(
-            includeTaskListIdentifers,
-          );
-          setMembersOptions(joinedMembers);
-        } else {
-          const organizationMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
-          setMembersOptions(organizationMembers);
-        }
-      } catch (error) {
-        if (typeof onError === 'function') onError(error);
+      if (enableLazyLoading) {
+        setSelectedMembers(
+          savedSelectedMembers?.length > 0 ? savedSelectedMembers : [],
+        );
       }
+    })();
+  }, [enableLazyLoading, savedSelectedMembers]);
 
-      setIsFetchingMembers(false);
+  useEffect(() => {
+    (async () => {
+      if (!enableLazyLoading) {
+        setIsFetchingMembers(true);
+        setMembersOptions([]);
+        try {
+          const includeTaskListIdentifers = Array.isArray(taskListIdentifiers)
+            ? taskListIdentifiers
+            : [taskListIdentifiers];
+          if (taskListIdentifiers?.length > 0) {
+            const joinedMembers = await collectJoinedListMembers(
+              includeTaskListIdentifers,
+            );
+            setMembersOptions(joinedMembers);
+          } else {
+            const organizationMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
+            setMembersOptions(organizationMembers);
+          }
+        } catch (error) {
+          if (typeof onError === 'function') onError(error);
+        }
+        setIsFetchingMembers(false);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const handleOptionClick = (event, selectedOption) => {
-    event.stopPropagation();
 
-    setSelectedMembersIdentifiers(previousSelection => {
-      let membersToReturn;
-      if (selectedOption === ASSIGN_ALL_KEY) {
-        membersToReturn = membersOptions;
-      } else if (selectedOption === UNASSIGNED_KEY) {
-        membersToReturn = [];
-      } else if (previousSelection.includes(selectedOption?.identifier)) {
-        const newlySelectedMembersIdentifiers = previousSelection.filter(
-          id => id !== selectedOption?.identifier,
-        );
-        membersToReturn = membersOptions.filter(({ identifier }) =>
-          newlySelectedMembersIdentifiers.includes(identifier),
-        );
+  const handleOptionClick = useCallback(
+    (event, selectedOption) => {
+      event.stopPropagation();
+      if (enableLazyLoading) {
+        setSelectedMembers(previousSelection => {
+          let membersToReturn;
+          if (selectedOption === UNASSIGNED_KEY) {
+            membersToReturn = [];
+          } else if (
+            previousSelection.find(
+              ({ identifier }) => selectedOption?.identifier === identifier,
+            )
+          ) {
+            membersToReturn = previousSelection.filter(
+              ({ identifier }) => identifier !== selectedOption?.identifier,
+            );
+          } else {
+            membersToReturn = [...previousSelection, selectedOption];
+          }
+          selectMembersWithDebounce(membersToReturn);
+          return membersToReturn;
+        });
       } else {
-        const newlySelectedMembersIdentifiers = [
-          ...previousSelection,
-          selectedOption?.identifier,
-        ];
-        membersToReturn = membersOptions.filter(({ identifier }) =>
-          newlySelectedMembersIdentifiers.includes(identifier),
-        );
+        setSelectedMembersIdentifiers(previousSelection => {
+          let membersToReturn;
+          if (selectedOption === ASSIGN_ALL_KEY) {
+            membersToReturn = membersOptions;
+          } else if (selectedOption === UNASSIGNED_KEY) {
+            membersToReturn = [];
+          } else if (previousSelection.includes(selectedOption?.identifier)) {
+            const newlySelectedMembersIdentifiers = previousSelection.filter(
+              id => id !== selectedOption?.identifier,
+            );
+            membersToReturn = membersOptions.filter(({ identifier }) =>
+              newlySelectedMembersIdentifiers.includes(identifier),
+            );
+          } else {
+            const newlySelectedMembersIdentifiers = [
+              ...previousSelection,
+              selectedOption?.identifier,
+            ];
+            membersToReturn = membersOptions.filter(({ identifier }) =>
+              newlySelectedMembersIdentifiers.includes(identifier),
+            );
+          }
+          selectMembersWithDebounce(membersToReturn);
+          return pluck('identifier', membersToReturn);
+        });
       }
-      selectMembersWithDebounce(membersToReturn);
-      return pluck('identifier', membersToReturn);
-    });
-  };
+    },
+    [enableLazyLoading, membersOptions, selectMembersWithDebounce],
+  );
 
   const displayUnassignedOption = 'unassigned'.includes(
     searchValue.toLowerCase(),
   );
-  const displayAssignAllOption = 'assign all'.includes(
-    searchValue.toLowerCase(),
+  const displayAssignAllOption =
+    'assign all'.includes(searchValue.toLowerCase()) && !enableLazyLoading;
+
+  const displayUsersList = useMemo(() => {
+    if (enableLazyLoading) return isValueSendable;
+    return !!filteredMembers.length || isFetchingMembers;
+  }, [
+    enableLazyLoading,
+    filteredMembers.length,
+    isFetchingMembers,
+    isValueSendable,
+  ]);
+
+  const renderSelectOption = useCallback(
+    (member, isSelected) => {
+      return (
+        <MemberRow
+          key={member?.identifier}
+          isSelected={isSelected}
+          onClick={event => handleOptionClick(event, member)}
+        >
+          <Checkbox isChecked={isSelected} />
+          <Spacing horizontal={3} />
+          {isUserGroup(member) ? (
+            <GroupAvatar group={member} hideTooltip />
+          ) : (
+            <UserAvatar user={member} hideTooltip />
+          )}
+          <Spacing horizontal={3} />
+          <MemberName>
+            <Highlighter
+              highlightStyle={highlightStyle}
+              searchWords={searchValue?.toLowerCase().split(/\s+/)}
+              autoEscape
+              textToHighlight={member?.name}
+            />
+          </MemberName>
+        </MemberRow>
+      );
+    },
+    [handleOptionClick, searchValue],
   );
+
+  const displayCurrentUser = useMemo(() => {
+    if (enableLazyLoading) {
+      return !isValueSendable;
+    }
+    return currentUserMember?.name
+      ?.toLowerCase()
+      .includes(searchValue.toLowerCase());
+  }, [currentUserMember, enableLazyLoading, isValueSendable, searchValue]);
 
   return (
     <>
@@ -219,82 +343,42 @@ const MultiAssignMembersList = ({
             )}
           </ListContentSection>
         )}
-        {currentUserMember?.name
-          ?.toLowerCase()
-          .includes(searchValue.toLowerCase()) &&
+        {displayCurrentUser &&
           (function renderCurrentUserOption() {
             const isSelected = selectedMembersIdentifiers.includes(
               currentUserMember?.identifier,
             );
-
-            return (
-              <ListContentSection>
-                <MemberRow
-                  key={currentUserMember?.identifier}
-                  isSelected={isSelected}
-                  onClick={event => handleOptionClick(event, currentUserMember)}
-                >
-                  <Checkbox isChecked={isSelected} />
-                  <Spacing horizontal={3} />
-                  {isUserGroup(currentUserMember) ? (
-                    <GroupAvatar group={currentUserMember} hideTooltip />
-                  ) : (
-                    <UserAvatar user={currentUserMember} hideTooltip />
-                  )}
-                  <Spacing horizontal={3} />
-                  <MemberName>
-                    <Highlighter
-                      highlightStyle={highlightStyle}
-                      searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                      autoEscape
-                      textToHighlight={currentUserMember?.name}
-                    />
-                  </MemberName>
-                </MemberRow>
-              </ListContentSection>
-            );
+            return renderSelectOption(currentUserMember, isSelected);
           })()}
-        <ListContentSection>
-          {!isFetchingMembers ? (
-            filteredMembers?.map(member => {
-              const isSelected = selectedMembersIdentifiers.includes(
-                member?.identifier,
-              );
-
-              return (
-                <MemberRow
-                  key={member?.identifier}
-                  isSelected={isSelected}
-                  onClick={event => handleOptionClick(event, member)}
-                >
-                  <Checkbox isChecked={isSelected} />
-                  <Spacing horizontal={3} />
-                  {isUserGroup(member) ? (
-                    <GroupAvatar group={member} hideTooltip />
-                  ) : (
-                    <UserAvatar user={member} hideTooltip />
-                  )}
-                  <Spacing horizontal={3} />
-                  <MemberName>
-                    <Highlighter
-                      highlightStyle={highlightStyle}
-                      searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                      autoEscape
-                      textToHighlight={member?.name}
-                    />
-                  </MemberName>
-                </MemberRow>
-              );
-            })
-          ) : (
-            <>
-              {new Array(4).fill().map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <MemberRowSkeletonLoader key={index} />
-              ))}
-            </>
-          )}
-        </ListContentSection>
+        {!isValueSendable && (
+          <ListContentSection>
+            {filteredSelectedMembers?.map(member => {
+              return renderSelectOption(member, true);
+            })}
+          </ListContentSection>
+        )}
+        {displayUsersList && (
+          <ListContentSection>
+            {!isFetchingMembers ? (
+              filteredMembers?.map(member => {
+                const isSelected = selectedMembersIdentifiers.includes(
+                  member?.identifier,
+                );
+                return renderSelectOption(member, isSelected);
+              })
+            ) : (
+              <>
+                {new Array(4).fill().map((_, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <MemberRowSkeletonLoader key={index} />
+                ))}
+              </>
+            )}
+          </ListContentSection>
+        )}
+        {isValueSendable && !isFetchingMembers && !filteredMembers.length && (
+          <NoRecordsText>No users found</NoRecordsText>
+        )}
       </ListContainer>
     </>
   );

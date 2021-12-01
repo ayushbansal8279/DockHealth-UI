@@ -5,19 +5,20 @@ import { useMount } from 'react-use';
 import { useBoolean } from 'hooks/useBoolean';
 import { getTaskHistory } from 'actions/task-actions';
 import moment from 'moment';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 
 const HISTORY_DATE_FORMAT = 'MM/DD/YYYY @ h:mma';
 
 export const getFormattedEventDate = dateValue =>
   moment(dateValue).format(HISTORY_DATE_FORMAT);
 
-const initializeTaskDrawerTopSectionHooks = ({ selectedTask }) => {
+const initializeTaskDrawerTopSectionHooks = () => {
   const [isHistoryShown, , hideHistory, toggleHistory] = useBoolean(false);
   const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
     false,
   );
   const [history, setHistory] = useState([]);
-
+  const selectedTask = useSelector(selectedTaskSelector);
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const currentUser = useSelector(store => store.userState.userProfile);
 
@@ -71,6 +72,7 @@ const initializeTaskDrawerTopSectionHooks = ({ selectedTask }) => {
     setHistory,
     onToggleHistoryButtonClicked,
     getFormattedEventDate,
+    selectedTask,
   };
 };
 

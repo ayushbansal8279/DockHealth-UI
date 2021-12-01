@@ -14,7 +14,6 @@ import ReactModal from 'react-modal';
 import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 import { openModal } from 'modal/actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as UserAuthApi from 'api/user-auth-api';
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
@@ -170,15 +169,8 @@ class App extends PureComponent {
     UserAuthApi.logout(history)
       .then(() => {
         sessionStorage.setItem('refreshOrgMemo', true);
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-          TIMEOUT_SUCCESS: 'YES',
-        });
       })
-      .catch(() => {
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-          TIMEOUT_SUCCESS: 'NO',
-        });
-      });
+      .catch(() => {});
 
     history.push('/auth/login');
   };

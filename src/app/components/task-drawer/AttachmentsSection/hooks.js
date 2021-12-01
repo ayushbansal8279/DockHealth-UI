@@ -189,6 +189,7 @@ const initializeAttachmentsSectionHooks = () => {
       getRootProps,
       getInputProps,
     },
+    selectedTask,
   };
 };
 

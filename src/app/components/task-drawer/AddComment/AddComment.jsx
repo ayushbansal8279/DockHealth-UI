@@ -12,7 +12,6 @@ import {
 
 const AddComment = ({
   addComment,
-  parentFormSubmit,
   taskDrawerFocusField,
   taskListIdentifier,
   isTemplateTask,
@@ -23,9 +22,8 @@ const AddComment = ({
     commentState,
     onCommentChange,
     saveComment,
-    onCommentFocus,
     isAddingComment,
-  } = initializeAddCommentHooks({ addComment, parentFormSubmit });
+  } = initializeAddCommentHooks({ addComment });
 
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
@@ -55,7 +53,6 @@ const AddComment = ({
           disableMentions={isTemplateTask}
           placeholder="Leave a comment and press enter on your keyboard to save"
           onFocus={() => {
-            onCommentFocus();
             setIsFocused(true);
           }}
           onBlur={() => {

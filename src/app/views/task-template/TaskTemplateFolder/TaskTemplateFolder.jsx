@@ -23,7 +23,12 @@ import {
   FolderIconContainer,
 } from './styled';
 
-const TaskTemplateFolder = ({ template, children, onClick }) => {
+const TaskTemplateFolder = ({
+  template,
+  children,
+  onClick,
+  highlighted = false,
+}) => {
   const {
     taskTemplateIdentifier,
     name,
@@ -42,6 +47,15 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
     // eslint-disable-next-line no-unused-expressions
     nameInputReference.current?.blur();
   }, [name]);
+
+  useEffect(() => {
+    if (nameInputReference?.current && highlighted) {
+      nameInputReference.current.scrollIntoView({
+        block: 'end',
+        behavior: 'smooth',
+      });
+    }
+  }, [highlighted, nameInputReference]);
 
   const menuOptions = useMemo(
     () => [
@@ -127,7 +141,7 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
   };
 
   return (
-    <TaskTemplateContainer>
+    <TaskTemplateContainer highlighted={highlighted}>
       <TaskTemplateHeader>
         <FolderIconContainer>
           <FolderIcon src={Folder} alt="folder icon" />

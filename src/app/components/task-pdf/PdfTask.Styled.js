@@ -116,26 +116,17 @@ export const PriorityStripContainer = styled.View`
   height: 100%;
 `;
 
-export const AvatarContainer = styled.View`
-  align-items: center;
-  display: flex;
-  border: 1pt solid ${props => props.color ?? palette.unknownGrey6};
-  border-radius: 28pt;
+export const AssignedToContainer = styled.View`
   height: 28pt;
-  justify-content: center;
   overflow: hidden;
-  margin-left: 1pt;
-  width: 28pt;
+  width: 88pt;
 `;
 
-export const Avatar = styled.View`
-  align-items: center;
-  display: flex;
-  background-color: ${props => props.color ?? palette.unknownGrey6};
-  border-radius: 23pt;
-  height: 23pt;
-  justify-content: center;
-  width: 23pt;
+export const AssignToText = styled.Text`
+  color: ${palette.unknownGrey5};
+  font-family: 'Open Sans';
+  font-size: 7pt;
+  margin-left: 2pt;
 `;
 
 export const AvatarInitials = styled.Text`
@@ -150,11 +141,6 @@ export const AvatarImage = styled.Image`
   object-fit: cover;
   height: 100%;
   width: 100%;
-`;
-
-export const StyledProfileIcon = styled.Image`
-  height: 13pt;
-  width: 14pt;
 `;
 
 export const StyledClipIcon = styled.Image`

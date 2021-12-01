@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
@@ -65,6 +65,13 @@ import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
+import Calendar from 'components/common/Calendar/Calendar';
+import {
+  ViewType,
+  getViewTypeFromQueryString,
+  VIEW_TYPE_OPTIONS,
+} from 'helpers/view-type-helper';
+import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -138,8 +145,9 @@ const DashboardList = ({
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const { search } = useLocation();
+  const viewType = getViewTypeFromQueryString(search);
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
-
   const { openModal } = modalActions;
   const tabName = useSelector(dashboardTabNameSelector);
   const [highlightPosition, setHighlightPosition] = useState({
@@ -351,6 +359,28 @@ const DashboardList = ({
     [dispatch],
   );
 
+  const handleChangeViewType = useCallback(
+    event => {
+      const queryParameters = new URLSearchParams(search);
+      const value = event?.target.value ?? ViewType.LIST_VIEW;
+      if (value === ViewType.LIST_VIEW) {
+        queryParameters.delete('viewType');
+      } else {
+        queryParameters.set('viewType', value.toLowerCase());
+      }
+      history.push({ search: queryParameters.toString() });
+    },
+    [search, history],
+  );
+
+  const tasks = useMemo(
+    () =>
+      filteredDashboardTasks.reduce((accumulator, value) => {
+        return value?.tasks ? [...accumulator, ...value.tasks] : accumulator;
+      }, []),
+    [filteredDashboardTasks],
+  );
+
   return (
     <BulkEditSection
       allTasks={allDashboardTasks}
@@ -383,10 +413,6 @@ const DashboardList = ({
           </Grid>
           <ActionsContainer item md={8}>
             <MegaFilter
-              popoverStyles={{
-                width: 'calc(100% - 420px)',
-                right: '100px',
-              }}
               filters={filters}
               selectedFilters={selectedFilters}
               onSelectFilters={sf =>
@@ -413,6 +439,14 @@ const DashboardList = ({
               />
             </SearchGrid>
             <Spacing horizontal={4} />
+            <OutlinedSelect
+              width={170}
+              name="viewType"
+              value={getViewTypeFromQueryString(search)}
+              onChange={handleChangeViewType}
+              options={VIEW_TYPE_OPTIONS}
+            />
+            <Spacing horizontal={4} />
             <div>
               <TipsSwitchLabel>Tips</TipsSwitchLabel>
               <Switch checked={tourModalIsOpen} onChange={openTourModal} />
@@ -423,38 +457,45 @@ const DashboardList = ({
         </ToolbarContainer>
       </StickyHeader>
       <Spacing vertical={1} />
-      {dashboardTasksIsLoading || completeTaskCount === undefined ? (
-        <DashboardSkeletonLoader />
-      ) : (
+      {viewType === ViewType.CALENDAR_VIEW && (
+        <Calendar taskList={tasks} showInCompleteTasksOnly />
+      )}
+      {viewType === ViewType.LIST_VIEW && (
         <>
-          {!isEmpty(filteredDashboardTasks) ? (
-            filteredDashboardTasks?.map(
-              item =>
-                item && (
-                  <DashboardTasksGroup
-                    key={item?.groupType}
-                    dashboardTasksGroup={item}
-                    storeAsCurrentTask={taskActions.storeAsCurrentTask}
-                    openDrawer={taskDrawerActions.openDrawer}
-                    isTaskDrawerOpen={isTaskDrawerOpen}
-                    selectedTaskIdentifier={selectedTaskIdentifier}
-                    currentSortMethod={currentSortMethodWithOrder}
-                    currentSort={currentSort}
-                    onSortChange={handleSortChange}
-                    showClearSortFiltersModal={showClearSortFiltersModal}
-                    isSortApplied={isSortApplied}
-                    areFiltersApplied={areFiltersApplied}
-                    isAllTasksTab={tabName === DashboardTasksTab.ALL_TASKS}
-                    currentUser={currentUser}
-                    updateWorkflowStatus={taskActions.updateWorkflowStatus}
-                    isSearching={!!searchValue}
-                    closeDrawer={taskDrawerActions.closeDrawer}
-                    openModal={openModal}
-                  />
-                ),
-            )
+          {dashboardTasksIsLoading || completeTaskCount === undefined ? (
+            <DashboardSkeletonLoader />
           ) : (
-            <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
+            <>
+              {!isEmpty(filteredDashboardTasks) ? (
+                filteredDashboardTasks?.map(
+                  item =>
+                    item && (
+                      <DashboardTasksGroup
+                        key={item?.groupType}
+                        dashboardTasksGroup={item}
+                        storeAsCurrentTask={taskActions.storeAsCurrentTask}
+                        openDrawer={taskDrawerActions.openDrawer}
+                        isTaskDrawerOpen={isTaskDrawerOpen}
+                        selectedTaskIdentifier={selectedTaskIdentifier}
+                        currentSortMethod={currentSortMethodWithOrder}
+                        currentSort={currentSort}
+                        onSortChange={handleSortChange}
+                        showClearSortFiltersModal={showClearSortFiltersModal}
+                        isSortApplied={isSortApplied}
+                        areFiltersApplied={areFiltersApplied}
+                        isAllTasksTab={tabName === DashboardTasksTab.ALL_TASKS}
+                        currentUser={currentUser}
+                        updateWorkflowStatus={taskActions.updateWorkflowStatus}
+                        isSearching={!!searchValue}
+                        closeDrawer={taskDrawerActions.closeDrawer}
+                        openModal={openModal}
+                      />
+                    ),
+                )
+              ) : (
+                <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
+              )}
+            </>
           )}
         </>
       )}

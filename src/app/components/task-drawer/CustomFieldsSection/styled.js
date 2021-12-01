@@ -9,7 +9,7 @@ export const CustomFieldsSectionContainer = styled.div`
   border-top: 1px solid ${palette.coolGrey2};
 `;
 
-export const HideableContainer = styled.div`
+export const HidableContainer = styled.div`
   visibility: ${props => (props.visibility ? 'hidden' : 'visible')};
   max-height: ${props => (props.visibility ? '0px' : '500px')};
   opacity: ${props => (props.visibility ? 0 : 1)};

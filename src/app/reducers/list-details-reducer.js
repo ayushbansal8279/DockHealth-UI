@@ -4,7 +4,7 @@ import {
   REQUEST_COMPLETED_TASKS,
   REQUEST_TASKS,
   GET_MORE_TASKS_REQUEST,
-  LIST_DETAILS_TASK_COUNTERS_SUCCESS,
+  GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS,
   RESET_LIST_DETAILS_TASK_COUNTERS,
   INCREASE_INCOMPLETE_TASK_COUNTERS,
   INCREASE_COMPLETE_TASK_COUNTERS,
@@ -24,6 +24,7 @@ import {
   UPDATE_TEMPLATE_BUNDLE_FAILURE,
   GET_LIST_CUSTOM_FIELDS_SUCCESS,
   GET_LIST_CUSTOM_FIELDS_FAILURE,
+  GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
 } from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
@@ -325,13 +326,14 @@ const ListDetailsReducer = (state = initialState, action) => {
         isCompletedTasksFetching: true,
       };
 
+    case GET_LIST_DETAILS_TASK_COUNTERS_FAILURE:
     case RESET_LIST_DETAILS_TASK_COUNTERS:
       return {
         ...state,
         taskCounters: {},
       };
 
-    case LIST_DETAILS_TASK_COUNTERS_SUCCESS:
+    case GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS:
       return {
         ...state,
         taskCounters: action.payload,

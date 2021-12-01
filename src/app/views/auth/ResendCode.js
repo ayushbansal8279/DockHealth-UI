@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { error, success } from 'actions/notification-actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as UserAuthApi from 'api/user-auth-api';
 import ResendCodeForm from 'components/auth/ResendCodeForm';
 
@@ -18,16 +17,10 @@ class ResendCode extends PureComponent {
       username: form.username,
     })
       .then(() => {
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-          RESEND_CODE_SUCCESS: 'YES',
-        });
         success('Resent verification code. Please check your email.');
         history.push('/auth/confirmRegistration');
       })
       .catch(error_ => {
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-          RESEND_CODE_SUCCESS: 'NO',
-        });
         const message = error_.message || 'An error occurred.';
         const field = false;
         if (!field) {

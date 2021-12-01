@@ -2,15 +2,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
-
-export const SearchInputWrapper = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : '300px')};
-  transition: all 0.25s ease-in-out;
-`;
-
-export const Container = styled.div`
-  padding: 16px;
-`;
+import spacing from 'styles/spacing';
 
 export const ImportButton = styled.button`
   color: ${palette.brightBlue};
@@ -21,4 +13,20 @@ export const ImportButton = styled.button`
     cursor: pointer;
     text-decoration: underline;
   }
+`;
+
+export const InputWrapper = styled.div`
+  width: 66.67%;
+  max-width: 1147px;
+  margin: 0 auto;
+  padding-top: ${({ hasValue }) => (hasValue ? 32 : 200)}px;
+  transition: padding 0.3s ease-out;
+`;
+
+export const SearchHelperText = styled.p`
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: ${spacing.huge};
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
 `;

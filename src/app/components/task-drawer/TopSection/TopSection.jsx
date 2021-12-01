@@ -2,9 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
+import { CircleIcon } from 'components/task/styled';
 import { IconButton, ListItem } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
-import { openTaskDrawerToAddTask } from 'actions/task-drawer-actions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
@@ -15,6 +15,8 @@ import { getTaskListForUser } from 'actions/task-list-actions';
 import InputPopover from 'components/common/InputPopover/InputPopover';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
+import { useForm, FormContext } from 'react-hook-form';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { HorizontalLabel } from '../styled';
 import {
   FiledInSelect,
@@ -23,10 +25,6 @@ import {
   ListNameContainer,
   ListNameSelectContainer,
 } from './styled';
-import {
-  CircleIcon,
-} from 'components/task/styled';
-
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 function useOutsideAction(reference, onClickOutside) {
@@ -102,9 +100,6 @@ const renderTaskList = ({
 };
 
 const TopSection = ({
-  formMethods,
-  selectedTask,
-  templateBundleIdentifier,
   reFileTask,
   onDelete,
   onDuplicate,
@@ -112,32 +107,29 @@ const TopSection = ({
   closeTaskDrawer,
   setTourTaskMenuReference,
 }) => {
+  const selectedTask = useSelector(selectedTaskSelector);
+  const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
   const currentUser = useSelector(userProfileSelector);
-
+  const formMethods = useForm();
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskStatus = selectedTask?.status;
   const taskList = selectedTask?.taskList;
   const isCompleted = selectedTaskStatus === 'COMPLETE';
   const hasSubtasks = selectedTask?.subTasksCount !== 0;
-
   const isTemplateTask = checkIfTemplateTask(selectedTask);
-  const parentTaskIdentifier = selectedTask?.parentTaskIdentifier
-  const isSubtask = !!parentTaskIdentifier;
   const isDecisionTask = selectedTask?.intentType === 'DECISION';
   const isDecisionSelected = selectedTask?.taskOutcomes?.reduce(
     (accumulator, currentValue) => accumulator || currentValue.isSelected,
     false,
   );
   const isTaskStatusTogglingDisabled =
-    isTemplateTask ||
-    (isDecisionTask && !isDecisionSelected);
-
+    isTemplateTask || (isDecisionTask && !isDecisionSelected);
   const dependencyTasksCount = selectedTask?.dependencyTasksCount;
-  const dependencyTasksCompletedCount = selectedTask?.dependencyTasksCompletedCount;
+  const dependencyTasksCompletedCount =
+    selectedTask?.dependencyTasksCompletedCount;
   const isDependencyEmptyOrCompleted =
     dependencyTasksCount === dependencyTasksCompletedCount;
-
 
   const {
     filedInInputReference,
@@ -180,7 +172,7 @@ const TopSection = ({
   useOutsideAction(optionsContainerReference, closeTaskMenuPopover);
 
   return (
-    <>
+    <FormContext {...formMethods}>
       <ListNameContainer>
         {selectedTask &&
           !selectedTask.parentTaskIdentifier &&
@@ -300,31 +292,6 @@ const TopSection = ({
             }}
             ref={optionsContainerReference}
           >
-            {!isCompleted &&
-              selectedTask &&
-              !selectedTask.parentTaskIdentifier && (
-                <ListItem
-                  key="action_add_subtask"
-                  onClick={() => {
-                    dispatch(
-                      openTaskDrawerToAddTask({
-                        taskIdentifier: null,
-                        parentTaskIdentifier: selectedTask.identifier,
-                        parentTask: selectedTask,
-                      }),
-                    );
-                    closeTaskMenuPopover();
-                  }}
-                  button
-                  style={{
-                    borderBottom: `1px solid ${palette.coolGrey3}`,
-                  }}
-                >
-                  <RobotoTypography condensed variant="h4">
-                    Add Subtask
-                  </RobotoTypography>
-                </ListItem>
-              )}
             <ListItem
               key="action_duplicate"
               onClick={event => {
@@ -366,7 +333,7 @@ const TopSection = ({
           </StyledList>
         </InputPopover>
       </ActionButtonsContainer>
-    </>
+    </FormContext>
   );
 };
 

@@ -24,7 +24,7 @@ import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
-import { HideableContainer } from './styled';
+import { HidableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
@@ -82,7 +82,7 @@ const PatientForm = forwardRef(
             field.identifier === customFieldIdentifier,
         );
         return (
-          <HideableContainer
+          <HidableContainer
             key={field.identifier}
             visibility={!showEmpty && !initialFieldValue?.value}
           >
@@ -93,7 +93,7 @@ const PatientForm = forwardRef(
               initialValue={initialFieldValue}
               fieldsGroupKey="patientMetaData"
             />
-          </HideableContainer>
+          </HidableContainer>
         );
       },
       [patient, readOnly],

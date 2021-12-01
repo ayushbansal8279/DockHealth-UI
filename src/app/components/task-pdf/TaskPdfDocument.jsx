@@ -69,7 +69,7 @@ const renderTask = ({
 );
 
 const getColumnWidths = (isPatientVisible, isListNameVisible) => {
-  const basicTaskWidth = 412;
+  const basicTaskWidth = 352;
   const basicPatientWidth = 90;
   const basicListNameWidth = 62;
 
@@ -107,7 +107,9 @@ export const TaskPdfDocument = ({
           <HeaderText width={55} textAlign="center">
             STATUS
           </HeaderText>
-          <HeaderText width={38} textAlign="center" />
+          <HeaderText width={98} textAlign="center">
+            ASSIGNED TO
+          </HeaderText>
           <HeaderText width={57} textAlign="center">
             DUE
           </HeaderText>

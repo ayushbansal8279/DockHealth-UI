@@ -14,6 +14,8 @@ import watchOrganization from './sagas/organization-saga';
 import watchUserGroups from './sagas/user-groups-saga';
 import watchUser from './sagas/user-saga';
 import watchUserDetails from './sagas/user-details-saga';
+import watchPatients from './sagas/patients-saga';
+import watchAnalytics from './sagas/analytics-saga';
 
 function* rootSaga() {
   yield all([
@@ -31,6 +33,8 @@ function* rootSaga() {
     watchUser(),
     watchTaskDrawer(),
     watchUserDetails(),
+    watchPatients(),
+    watchAnalytics(),
   ]);
 }
 

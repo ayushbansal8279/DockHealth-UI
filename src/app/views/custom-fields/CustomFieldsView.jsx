@@ -26,7 +26,9 @@ const CustomFieldsView = () => {
     userHasTaskCustomFieldsFeatureSelector,
   );
 
-  const [selectedTab, setSelectedTab] = useState(taskCustomFieldsAvailable ? 1 : 0);
+  const [selectedTab, setSelectedTab] = useState(
+    taskCustomFieldsAvailable ? 1 : 0,
+  );
 
   useEffect(() => {
     if (

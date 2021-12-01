@@ -157,7 +157,6 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
       type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
       template: createdTemplate,
     });
-
     yield put({
       type: ActionTypes.INITIALIZE_TASK_TEMPLATE_DETAILS,
       taskTemplateIdentifier: createdTemplate.taskTemplateIdentifier,

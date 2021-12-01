@@ -36,11 +36,12 @@ import {
   TEMPLATE_TASK_ITEM_SORT_METHODS,
   TEMPLATE_TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/template-helpers';
-import { compose, identity } from 'ramda';
+import { compose, identity, differenceWith, eqBy, prop } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
 import Search from 'components/task-view/Search/Search';
 import debounce from 'lodash.debounce';
+import usePrevious from 'hooks/use-previous';
 import {
   TaskTemplateViewContainer,
   SearchWrapper,
@@ -77,6 +78,28 @@ const TaskTemplateView = () => {
   const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
+  const folders = useMemo(
+    () => taskTemplates.filter(template => template.type === 'FOLDER'),
+    [taskTemplates],
+  );
+  const templates = useMemo(
+    () => taskTemplates.filter(template => template.type !== 'FOLDER'),
+    [taskTemplates],
+  );
+
+  const previousFolders = usePrevious(folders);
+  const previousTemplates = usePrevious(templates);
+
+  const newlyCreatedTemplateId = useMemo(() => {
+    const current = [...folders, ...templates];
+    const previous = [...(previousFolders || []), ...(previousTemplates || [])];
+    if (Math.abs(previous.length - current.length) > 1) return false;
+    return differenceWith(
+      eqBy(prop('taskTemplateIdentifier')),
+      current,
+      previous,
+    )?.[0]?.taskTemplateIdentifier;
+  }, [folders, previousFolders, previousTemplates, templates]);
 
   useEffect(() => {
     if (userProfile?.orgUserRole === 'GUEST') {
@@ -128,14 +151,6 @@ const TaskTemplateView = () => {
     });
   }
 
-  const folders = useMemo(
-    () => taskTemplates.filter(template => template.type === 'FOLDER'),
-    [taskTemplates],
-  );
-  const templates = useMemo(
-    () => taskTemplates.filter(template => template.type !== 'FOLDER'),
-    [taskTemplates],
-  );
   const handleBreadcrumbsRootClick = useCallback(() => {
     resetSort();
     dispatch(getTemplates())();
@@ -239,6 +254,9 @@ const TaskTemplateView = () => {
           <>
             {currentSortMethodWithOrder(folders).map(template => (
               <TaskTemplateFolder
+                highlighted={
+                  newlyCreatedTemplateId === template.taskTemplateIdentifier
+                }
                 key={template.taskTemplateIdentifier}
                 template={template}
                 onClick={() =>
@@ -259,6 +277,9 @@ const TaskTemplateView = () => {
             ))}
             {currentSortMethodWithOrder(templates).map(template => (
               <TaskTemplate
+                highlighted={
+                  newlyCreatedTemplateId === template.taskTemplateIdentifier
+                }
                 key={template.taskTemplateIdentifier}
                 template={template}
                 isFullView={viewType === ViewType.FULL_VIEW}

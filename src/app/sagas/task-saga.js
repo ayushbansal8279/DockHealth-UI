@@ -184,6 +184,46 @@ function* addTask({ task }) {
   }
 }
 
+function* updateTaskDescription({ task, descriptionState }) {
+  const { tokenizedDescription } = descriptionState;
+  try {
+    const updatedTask = yield call(TaskApi.partialUpdateTask, task.identifier, {
+      description: tokenizedDescription,
+    });
+    yield put({
+      type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS,
+      task: updatedTask,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put({
+      type: ActionTypes.UPDATE_TASK_DESCRIPTION_FAILURE,
+      task,
+    });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* updateTaskDetails({ task, detailsState }) {
+  const { tokenizedDetails } = detailsState;
+  try {
+    const updatedTask = yield call(TaskApi.partialUpdateTask, task.identifier, {
+      details: tokenizedDetails,
+    });
+    yield put({
+      type: ActionTypes.UPDATE_TASK_DETAILS_SUCCESS,
+      task: updatedTask,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put({
+      type: ActionTypes.UPDATE_TASK_DETAILS_FAILURE,
+      task,
+    });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* updateTaskDueDate({ task, dueDate }) {
   try {
     const updatedTask = yield call(
@@ -216,5 +256,7 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
   yield takeEvery(ActionTypes.ADD_TASK, addTask);
+  yield takeEvery(ActionTypes.UPDATE_TASK_DESCRIPTION, updateTaskDescription);
+  yield takeEvery(ActionTypes.UPDATE_TASK_DETAILS, updateTaskDetails);
   yield takeEvery(ActionTypes.UPDATE_TASK_DUE_DATE, updateTaskDueDate);
 }
