@@ -820,22 +820,28 @@ function* updateListCustomFieldsSetup({ setup }) {
 }
 
 function* taskCounterIncreaseWatcher({ task }) {
-  const { taskListIdentifier } = yield select(currentTaskListSelector);
-  if (task?.taskList?.taskListIdentifier === taskListIdentifier) {
-    if (task.status === TaskStatus.INCOMPLETE) {
-      yield put({ type: ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS });
-    } else if (task.status === TaskStatus.COMPLETE) {
-      yield put({ type: ActionTypes.INCREASE_COMPLETE_TASK_COUNTERS });
+  const currentTaskList = yield select(currentTaskListSelector);
+  if (currentTaskList) {
+    const { taskListIdentifier } = currentTaskList;
+    if (task?.taskList?.taskListIdentifier === taskListIdentifier) {
+      if (task.status === TaskStatus.INCOMPLETE) {
+        yield put({ type: ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS });
+      } else if (task.status === TaskStatus.COMPLETE) {
+        yield put({ type: ActionTypes.INCREASE_COMPLETE_TASK_COUNTERS });
+      }
     }
   }
 }
 
 function* taskCounterDecreaseWatcher() {
-  const { taskListIdentifier } = yield select(currentTaskListSelector);
-  yield put({
-    type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
-    payload: { taskListIdentifier },
-  });
+  const currentTaskList = yield select(currentTaskListSelector);
+  if (currentTaskList) {
+    const { taskListIdentifier } = currentTaskList;
+    yield put({
+      type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
+      payload: { taskListIdentifier },
+    });
+  }
 }
 
 export default function* watchTasksGroupsList() {
