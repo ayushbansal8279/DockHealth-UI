@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useMemo } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -35,13 +35,21 @@ const Calendar = ({
   const addTaskInputReference = useRef();
   const dispatch = useDispatch();
   const { parentTasks } = extractTasksAndSubtasks(taskList);
-  const tasks = parentTasks
-    .filter(
-      ({ dueDate, completedDt }) =>
-        !!dueDate &&
-        ((showInCompleteTasksOnly && !completedDt) || !showInCompleteTasksOnly),
-    )
-    .map(transformTaskToEvent);
+
+  const tasks = useMemo(
+    () =>
+      parentTasks
+        .filter(
+          ({ dueDate, completedDt }) =>
+            !!dueDate &&
+            ((showInCompleteTasksOnly && !completedDt) ||
+              !showInCompleteTasksOnly),
+        )
+        .map(transformTaskToEvent),
+    [parentTasks, showInCompleteTasksOnly],
+  );
+
+  // console.log('tasks', tasks);
 
   const handleEventClick = useCallback(
     data => {

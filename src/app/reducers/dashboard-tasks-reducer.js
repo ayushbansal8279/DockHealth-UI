@@ -26,7 +26,6 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 
 const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, error } = action;
-
   switch (type) {
     case ActionTypes.INITIALIZE_DASHBOARD_STATE:
       return {
