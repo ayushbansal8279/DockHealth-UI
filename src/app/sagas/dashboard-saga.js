@@ -101,7 +101,7 @@ function* getDashboardTasksForGroup({ groupType }) {
   } catch (error) {
     console.log(error);
     yield put({
-      type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+      type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_FAILURE,
     });
     yield put(showGlobalErrorAlert());
   }
@@ -247,11 +247,22 @@ function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   }
 }
 
-function* updateTaskDueDateSuccess() {
+function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
-
+  const task = { ...taskToChange, dueDate };
   if (tabName) {
-    yield put(DashboardActions.getDashboardTasks());
+    const groups = yield select(dashboardTasksSelector);
+    yield all(
+      groups
+        .filter(
+          ({ groupType }) =>
+            groupType === getGroupByDueDate(task.dueDate, tabName) ||
+            groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
+        )
+        .map(({ groupType }) =>
+          put(DashboardActions.getDashboardTasksForGroup(groupType)),
+        ),
+    );
   }
 }
 
