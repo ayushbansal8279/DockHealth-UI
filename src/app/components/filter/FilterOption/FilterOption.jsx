@@ -14,7 +14,7 @@ const FilterOption = props => {
       color={color}
       selected={selected}
       disabled={count === 0}
-      onClick={event => count !== 0 && onClick(id ?? event)}
+      onClick={() => count !== 0 && onClick(id)}
     >
       {startAdornment && (
         <StartAdornmentWrapper>{startAdornment}</StartAdornmentWrapper>

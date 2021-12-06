@@ -1,5 +1,8 @@
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
-import { currentTaskListIdentifierSelector } from 'selectors/task-list-selectors';
+import {
+  currentTaskListIdentifierSelector,
+  currentTaskListTasksStatusSelector,
+} from 'selectors/task-list-selectors';
 import * as TaskListApi from 'api/task-list-api';
 import * as ActionTypes from 'actions/action-types';
 import * as TaskListActions from 'actions/task-list-actions';
@@ -20,6 +23,26 @@ function* getCurrentTaskList() {
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_CURRENT_TASK_LIST_FAILURE });
+  }
+}
+
+function* getCurrentTaskListFilterOptions() {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
+    const filters = yield call(
+      TaskListApi.getTaskListFilterOptions,
+      taskListIdentifier,
+      status,
+    );
+    yield put({
+      type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
+      filters,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
+    });
   }
 }
 
@@ -70,5 +93,9 @@ export default function* watchTasklist() {
   yield takeEvery(
     ActionTypes.UPDATE_LIST_VIEW_SETUP,
     updateListViewDisplaySetup,
+  );
+  yield takeEvery(
+    ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
+    getCurrentTaskListFilterOptions,
   );
 }

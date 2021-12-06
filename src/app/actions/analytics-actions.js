@@ -7,25 +7,10 @@ export function getAnalyticsFilterOptions() {
   };
 }
 
-export function selectAnalyticsFilter(
-  optionCategoryIdentifier,
-  optionIdentifier,
-) {
+export function setAnalyticsSelectedFilters(selectedFilters) {
   return {
-    type: ActionTypes.SELECT_ANALYTICS_FILTER,
-    optionCategoryIdentifier,
-    optionIdentifier,
-  };
-}
-
-export function unselectAnalyticsFilter(
-  optionCategoryIdentifier,
-  optionIdentifier,
-) {
-  return {
-    type: ActionTypes.UNSELECT_ANALYTICS_FILTER,
-    optionCategoryIdentifier,
-    optionIdentifier,
+    type: ActionTypes.SET_ANALYTICS_SELECTED_FILTERS,
+    selectedFilters,
   };
 }
 

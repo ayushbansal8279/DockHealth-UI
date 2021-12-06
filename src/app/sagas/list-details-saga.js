@@ -19,7 +19,6 @@ import {
   addTask as createTaskApi,
   reorderTasksInGroup,
   getListTasksGroupedByTaskGroup,
-  getFilteredTasksForList,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
   getTasksForTaskListByTaskGroup,
   searchTasksByTaskList,
@@ -242,14 +241,14 @@ function* doGetGroupedTasks({ payload }) {
       );
     } else {
       groupedTasks = yield call(
-        getFilteredTasksForList,
+        TaskListApi.getFilteredTasksForList,
         taskListIdentifier,
         status,
         sort,
         selectedFilters,
       );
       yield put({
-        type: ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS,
+        type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
         filters: groupedTasks.taskFilterOptions,
       });
     }
@@ -560,9 +559,6 @@ function* doOnEnterListDetails() {
         status === TaskStatus.INCOMPLETE &&
           call(doGetTasksGroupsList, { taskListIdentifier }),
         put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
-        yield put(
-          MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
-        ),
         put(
           ListDetailsActions.getListDetailsGroupedTasks({
             taskListIdentifier,
@@ -706,11 +702,6 @@ function* doFilterListDetailsTasks({ payload }) {
     tabName?.toLowerCase() === 'complete'
       ? TaskStatus.COMPLETE
       : TaskStatus.INCOMPLETE;
-
-  if (!filters || isEmpty(filters))
-    yield put(
-      MegaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status),
-    );
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(

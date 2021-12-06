@@ -34,7 +34,6 @@ import {
   dashboardTabNameSelector,
   dashboardTasksSelector,
 } from 'selectors/dashboard-tasks-selectors';
-import { isEmpty } from 'ramda';
 import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
 import { showGlobalErrorAlert } from 'alert/actions';
 
@@ -43,10 +42,9 @@ function* initializeDashboardView() {
     const tabName = yield select(dashboardTabNameSelector);
     const filters = getFiltersFromLocalStorage('dashboard', tabName);
 
-    if (!filters || isEmpty(filters)) {
+    if (!filters) {
       yield put(MegaFilterActions.clearFiltersForMegaFilter());
       yield put(DashboardActions.getDashboardGroups());
-      yield put(DashboardActions.getDashboardFilters());
     } else {
       yield put(MegaFilterActions.selectFiltersForMegaFilter(filters));
     }
@@ -202,10 +200,13 @@ function* getDashboardTasks() {
 
     let tasksList = [];
 
-    if (!isEmpty(selectedFilters)) {
-      tasksList = yield isAllTasks
-        ? getDashboardAllTasksByCriteria(selectedFilters)
-        : getDashboardMyTasksByCriteria(selectedFilters);
+    if (selectedFilters) {
+      tasksList = yield call(
+        isAllTasks
+          ? getDashboardAllTasksByCriteria
+          : getDashboardMyTasksByCriteria,
+        selectedFilters,
+      );
 
       yield put({
         type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,

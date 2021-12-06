@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
+import ListDetailsToolbarContainer from 'views/list-details/ListDetailsToolbarContainer/ListDetailsToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
@@ -42,7 +42,6 @@ const ListDetailsView = props => {
     refreshTabAfterTaskUpdate,
     resetSort,
     searchValue,
-    selectedFilters,
     selectedTab,
     sort,
     taskCounters,
@@ -65,7 +64,7 @@ const ListDetailsView = props => {
     >
       <div>
         <TaskViewContainer>
-          <Toolbar
+          <ListDetailsToolbarContainer
             calendarViewEnabled={calendarViewAvailable}
             onColumnSetupChange={setDisplayColumnPreferences}
             members={members}
@@ -81,14 +80,8 @@ const ListDetailsView = props => {
             pdfTitle={taskList?.listName}
             tipsContent={taskList?.listType === 'INBOX' ? InboxHelpPanel : null}
             isFetching={isFetching || isCompletedTasksFetching}
-            printData={{
-              completedTasks,
-              openedTasks,
-              taskListMembers: members,
-            }}
             tasks={openedTasks}
             completedTasks={completedTasks}
-            selectedFilters={selectedFilters}
             moreOptions={[
               {
                 name: 'Show Workflow Details',

@@ -45,6 +45,10 @@ import {
   ViewType,
   getViewTypeFromQueryString,
 } from 'helpers/view-type-helper';
+import {
+  FilterOptionsCategory,
+  isOptionSelected,
+} from 'helpers/filter-options-helpers';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
 import {
@@ -120,6 +124,7 @@ const Toolbar = ({
   moreOptions,
   onColumnSetupChange,
   calendarViewEnabled = false,
+  onFilterOpen,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
@@ -254,9 +259,12 @@ const Toolbar = ({
             {showMembers && (
               <>
                 {shownMembersWithCurrent?.map(member => {
-                  const isSelected = selectedFilters?.assignedTo?.includes(
+                  const isSelected = isOptionSelected(
+                    FilterOptionsCategory.ASSIGNED_TO,
                     member?.identifier,
+                    selectedFilters,
                   );
+
                   return (
                     <MemberWrapper
                       key={member?.identifier}
@@ -347,6 +355,7 @@ const Toolbar = ({
                   : completedTasksAmount
               }
               isFetching={isFetching}
+              onOpen={onFilterOpen}
             />
             {calendarViewEnabled && (
               <>

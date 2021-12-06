@@ -1,4 +1,7 @@
-import { mapFilterOptions } from 'helpers/filter-options-helpers';
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getAnalyticsFilterOptions() {
@@ -15,7 +18,10 @@ export function getGroupedStatistics(groupType) {
 
 export function getFilteredGroupedStatistics(groupType, selectedFilters) {
   return axios
-    .post(`analytics/filterGroupedStats/${groupType}`, selectedFilters)
+    .post(
+      `analytics/filterGroupedStats/${groupType}`,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
+    )
     .then(({ data }) => data);
 }
 
@@ -27,6 +33,9 @@ export function getTrendsByDate(trendType) {
 
 export function getFilteredTrendsByDate(trendType, selectedFilters) {
   return axios
-    .post(`analytics/filterTaskTrendsByDate/${trendType}`, selectedFilters)
+    .post(
+      `analytics/filterTaskTrendsByDate/${trendType}`,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
+    )
     .then(({ data }) => data);
 }

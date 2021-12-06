@@ -85,7 +85,6 @@ function* initializePatientsListState() {
   yield all([
     put(PatientsActions.getCurrentPatientsListDetails()),
     put(PatientsActions.getCurrentPatients()),
-    put(PatientsActions.getCurrentPatientsListFilterOptions()),
   ]);
 }
 
@@ -215,8 +214,7 @@ export default function* watchPatients() {
   yield debounce(300, ActionTypes.CHANGE_PATIENTS_SEARCH_TERM, searchPatients);
   yield takeLatest(
     [
-      ActionTypes.SELECT_PATIENTS_FILTER,
-      ActionTypes.UNSELECT_PATIENTS_FILTER,
+      ActionTypes.SET_PATIENTS_SELECTED_FILTERS,
       ActionTypes.CLEAR_PATIENTS_FILTERS,
     ],
     filtersChange,

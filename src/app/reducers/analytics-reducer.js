@@ -30,45 +30,8 @@ const AnalyticsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.SELECT_ANALYTICS_FILTER: {
-      const { optionCategoryIdentifier, optionIdentifier } = action;
-
-      return {
-        ...state,
-        selectedFilters: {
-          ...(state.selectedFilters || {}),
-          [optionCategoryIdentifier]: [
-            ...(state.selectedFilters?.[optionCategoryIdentifier] || []),
-            optionIdentifier,
-          ],
-        },
-      };
-    }
-
-    case ActionTypes.UNSELECT_ANALYTICS_FILTER: {
-      const { optionCategoryIdentifier, optionIdentifier } = action;
-
-      let selectedFilters = {
-        ...(state.selectedFilters || {}),
-        [optionCategoryIdentifier]:
-          state.selectedFilters?.[optionCategoryIdentifier]?.filter(
-            id => id !== optionIdentifier,
-          ) || null,
-      };
-
-      selectedFilters = Object.entries(selectedFilters).reduce(
-        (accumulator, [optionCategoryId, optionIds]) => {
-          if (optionIds?.length > 0) {
-            return {
-              ...(accumulator || {}),
-              [optionCategoryId]: optionIds,
-            };
-          }
-
-          return accumulator;
-        },
-        null,
-      );
+    case ActionTypes.SET_ANALYTICS_SELECTED_FILTERS: {
+      const { selectedFilters } = action;
 
       return {
         ...state,

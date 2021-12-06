@@ -5,16 +5,26 @@ import * as AlertActions from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from '../alert/AlertMessages';
 
-export function initializeTaskListState(taskListIdentifier) {
+export function initializeTaskListState(
+  taskListIdentifier,
+  currentTasksStatus,
+) {
   return {
     type: ActionTypes.INITIALIZE_TASK_LIST_STATE,
     taskListIdentifier,
+    currentTasksStatus,
   };
 }
 
 export function getCurrentTaskList() {
   return {
     type: ActionTypes.GET_CURRENT_TASK_LIST,
+  };
+}
+
+export function getCurrentTaskListFilterOptions() {
+  return {
+    type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
   };
 }
 

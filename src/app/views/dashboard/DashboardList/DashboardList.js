@@ -31,7 +31,6 @@ import {
   selectedTaskIdentifierSelector,
   taskDrawerOpenSelector,
 } from 'selectors/task-drawer-selectors';
-import * as DashboardActions from 'sagas/dashboard-saga';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import Search from 'components/task-view/Search/Search';
@@ -373,6 +372,11 @@ const DashboardList = ({
     [search, history],
   );
 
+  const handleMegaFilterOpen = useCallback(() => {
+    if (!selectedFilters || isEmpty(selectedFilters))
+      dispatch(getDashboardFilters());
+  }, [dispatch, selectedFilters]);
+
   const tasks = useMemo(
     () =>
       filteredDashboardTasks.reduce((accumulator, value) => {
@@ -426,6 +430,8 @@ const DashboardList = ({
               }
               taskStatus="INCOMPLETE"
               activeItemsAmount={activeTasksCount}
+              onOpen={handleMegaFilterOpen}
+              isFetching={dashboardTasksIsLoading}
             />
             <Spacing horizontal={4} />
             <SearchGrid isFocused={searchFocused || searchValue}>
@@ -520,7 +526,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dashboardActions: bindActionCreators(DashboardActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   showNavbar: bindActionCreators(showNavbarAction, dispatch),

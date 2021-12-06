@@ -1,4 +1,7 @@
-import { mapFilterOptions } from 'helpers/filter-options-helpers';
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export const getPatientsLists = () =>
@@ -14,22 +17,10 @@ export function getPatientsByFilterCriteria(
   patientsListIdentifier,
   filterOptions,
 ) {
-  const { labels, ...restOptions } = filterOptions;
-  const selectedFilterOptions = {};
-
-  if (labels) selectedFilterOptions.labels = labels;
-
-  selectedFilterOptions.customFields = Object.entries(restOptions || {}).map(
-    ([customFieldIdentifier, selectedOptionIdentifiers]) => ({
-      customFieldIdentifier,
-      selectedOptionIdentifiers,
-    }),
-  );
-
   return axios
     .post(
       `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
-      selectedFilterOptions,
+      mapSelectedOptionsToRequestPayload(filterOptions),
     )
     .then(({ data: { patients, patientFilterOptions } }) => ({
       patients,

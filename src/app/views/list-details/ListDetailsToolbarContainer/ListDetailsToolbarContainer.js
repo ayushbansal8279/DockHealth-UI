@@ -1,9 +1,11 @@
 /* eslint-disable unicorn/no-nested-ternary */
-import { connect } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { isEmpty } from 'ramda';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-import Toolbar from './Toolbar';
+import Toolbar from 'components/tasklist/Toolbar/Toolbar';
+import { getCurrentTaskListFilterOptions } from 'actions/task-list-actions';
 
 const determineTaskCounts = ({
   selectedFilters,
@@ -21,25 +23,29 @@ const determineTaskCounts = ({
     : tasksCount;
 };
 
-const mapStateToProps = (state, ownProps) => {
+const ListDetailsToolbarContainer = props => {
   const {
     members,
+    selectedTab,
     showMembers,
     tasks: openedTasks,
     completedTasks,
     openTasksAmount,
     completedTasksAmount,
-    selectedFilters,
     isFetching,
-  } = ownProps;
+  } = props;
+
+  const dispatch = useDispatch();
+  const megaFilter = useSelector(megaFilterSelector);
+
+  const { selectedFilters } = megaFilter || {};
 
   const haveTasks =
-    (openTasksAmount > 0 && ownProps.selectedTab === TaskListTabName.OPEN) ||
-    (completedTasksAmount > 0 &&
-      ownProps.selectedTab === TaskListTabName.COMPLETE);
+    (openTasksAmount > 0 && selectedTab === TaskListTabName.OPEN) ||
+    (completedTasksAmount > 0 && selectedTab === TaskListTabName.COMPLETE);
 
   const tasksAndSubTasksCount =
-    ownProps.selectedTab === TaskListTabName.OPEN
+    selectedTab === TaskListTabName.OPEN
       ? determineTaskCounts({
           selectedFilters,
           isFetching,
@@ -55,18 +61,27 @@ const mapStateToProps = (state, ownProps) => {
           status: 'COMPLETE',
         });
 
-  return {
-    printData: {
-      openedTasks,
-      completedTasks,
-      taskListMembers: members,
-      showMembers,
-    },
-    megaFilter: megaFilterSelector(state),
-    haveTasks,
-    tasksAndSubTasksCount,
-    ...ownProps,
+  const handleFilterOpen = () => {
+    if (!selectedFilters || isEmpty(selectedFilters)) {
+      dispatch(getCurrentTaskListFilterOptions());
+    }
   };
+
+  return (
+    <Toolbar
+      printData={{
+        openedTasks,
+        completedTasks,
+        taskListMembers: members,
+        showMembers,
+      }}
+      megaFilter={megaFilter}
+      haveTasks={haveTasks}
+      tasksAndSubTasksCount={tasksAndSubTasksCount}
+      onFilterOpen={handleFilterOpen}
+      {...props}
+    />
+  );
 };
 
-export default connect(mapStateToProps)(Toolbar);
+export default ListDetailsToolbarContainer;

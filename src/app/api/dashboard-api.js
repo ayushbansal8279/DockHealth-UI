@@ -1,3 +1,7 @@
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getDashboardMyTasks(status = 'INCOMPLETE') {
@@ -36,7 +40,7 @@ export function reorderTasksInGroup({
 export function getDashboardMyTasksFilters(status = 'INCOMPLETE') {
   return axios
     .get(`task/filter/filterOptionsForCurrentUser?status=${status}`)
-    .then(({ data }) => data)
+    .then(({ data }) => mapFilterOptions(data))
     .catch(error => {
       throw error;
     });
@@ -45,7 +49,7 @@ export function getDashboardMyTasksFilters(status = 'INCOMPLETE') {
 export function getDashboardAllTasksFilters(status = 'INCOMPLETE') {
   return axios
     .get(`task/filter/filterOptionsForTasksInOrganization?status=${status}`)
-    .then(({ data }) => data)
+    .then(({ data }) => mapFilterOptions(data))
     .catch(error => {
       throw error;
     });
@@ -58,9 +62,12 @@ export const getDashboardMyTasksByCriteria = (
   axios
     .post(
       `task/filter/filterTasksByCriteriaForCurrentUser?status=${status}`,
-      selectedFilters,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
     )
-    .then(({ data }) => data)
+    .then(({ data }) => ({
+      ...data,
+      taskFilterOptions: mapFilterOptions(data.taskFilterOptions),
+    }))
     .catch(error => {
       throw error;
     });
@@ -72,9 +79,12 @@ export const getDashboardAllTasksByCriteria = (
   axios
     .post(
       `task/filter/filterTasksByCriteriaForOrganization?status=${status}`,
-      selectedFilters,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
     )
-    .then(({ data }) => data)
+    .then(({ data }) => ({
+      ...data,
+      taskFilterOptions: mapFilterOptions(data.taskFilterOptions),
+    }))
     .catch(error => {
       throw error;
     });

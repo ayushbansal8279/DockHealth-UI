@@ -7,6 +7,11 @@ export const currentTaskListIdentifierSelector = createSelector(
   ({ currentTaskListIdentifier }) => currentTaskListIdentifier,
 );
 
+export const currentTaskListTasksStatusSelector = createSelector(
+  taskListStateSelector,
+  ({ currentTasksStatus }) => currentTasksStatus,
+);
+
 export const currentTaskListSelector = createSelector(
   taskListStateSelector,
   ({ currentTaskList }) => currentTaskList,

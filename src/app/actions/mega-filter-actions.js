@@ -1,6 +1,4 @@
-import { isEmpty } from 'ramda';
 import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
-import * as MegaFilterApi from 'api/mega-filter-api';
 import * as ActionTypes from './action-types';
 
 export function clearFiltersForMegaFilter() {
@@ -20,27 +18,9 @@ export function selectFiltersFromLocalStorage(id, status) {
   };
 }
 
-export function getFiltersForMegaFilter(listId, status) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
-
-    MegaFilterApi.getFiltersForTaskListMegaFilter(listId, status)
-      .then(data => {
-        dispatch(selectFiltersFromLocalStorage(listId, status));
-        dispatch({
-          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-          filters: data,
-        });
-      })
-      .catch(error => {
-        dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
-      });
-  };
-}
-
 export function selectFiltersForMegaFilter(selectedFilters, id, status) {
   return dispatch => {
-    if (isEmpty(selectedFilters)) {
+    if (!selectedFilters) {
       sessionStorage.removeItem(`filter-${id}-${status}`);
     } else {
       sessionStorage[`filter-${id}-${status}`] = JSON.stringify(

@@ -1,3 +1,7 @@
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export const fetchPatientTasksByPatientIdentifier = (
@@ -27,7 +31,7 @@ export const fetchPatientTasksByPatientIdentifierWithFilters = (
   axios
     .post(
       `/task/filter/filterTasksByCriteriaForPatient/${patientIdentifier}`,
-      selectedFilters,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
       {
         params: {
           status: status === 'ALL' ? undefined : status,
@@ -49,14 +53,14 @@ export const getPatientTasksStats = patientIdentifier =>
       throw error;
     });
 
-export const fetchPatientFilters = (patientIdentifier, status = 'INCOMPLETE') =>
+export const getPatientFilters = (patientIdentifier, status = 'INCOMPLETE') =>
   axios
-    .get(`/task/filter/filterOptionsForPatient/${patientIdentifier}`, {
+    .get(`task/filter/filterOptionsForPatient/${patientIdentifier}`, {
       params: {
         status: status === 'ALL' ? undefined : status,
       },
     })
-    .then(({ data }) => data)
+    .then(({ data }) => mapFilterOptions(data))
     .catch(error => {
       throw error;
     });

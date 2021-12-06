@@ -1,9 +1,9 @@
 import React from 'react';
-import DateFilterOption from 'components/filter/DateFilterOption/DateFilterOption';
 import UserFilterOption from 'components/filter/UserFilterOption/UserFilterOption';
 import WorkflowStatusFilterOption from 'components/filter/WorkflowStatusFilterOption/WorkflowStatusFilterOption';
 import PriorityFilterOption from 'components/filter/PriorityFilterOption/PriorityFilterOption';
 import FilterOption from 'components/filter/FilterOption/FilterOption';
+import { FilterOptionsCategory } from 'helpers/filter-options-helpers';
 
 const FilterOptionByCategory = props => {
   const {
@@ -13,23 +13,12 @@ const FilterOptionByCategory = props => {
     displayValue,
     count,
     reference,
-    onSelect,
+    onClick,
   } = props;
 
   switch (categoryId) {
-    case 'dueDateOptions':
-      return (
-        <DateFilterOption
-          id={id}
-          selected={selected}
-          label={displayValue}
-          count={count}
-          onClick={option => onSelect(categoryId, option)}
-        />
-      );
-
-    case 'assignedTo':
-    case 'assignedBy':
+    case FilterOptionsCategory.ASSIGNED_TO:
+    case FilterOptionsCategory.ASSIGNED_BY:
       return (
         <UserFilterOption
           id={id}
@@ -37,11 +26,11 @@ const FilterOptionByCategory = props => {
           selected={selected}
           label={displayValue}
           count={count}
-          onClick={option => onSelect(categoryId, option)}
+          onClick={onClick}
         />
       );
 
-    case 'workflowStatusOptions':
+    case FilterOptionsCategory.WORKFLOW_STATUS:
       return (
         <WorkflowStatusFilterOption
           id={id}
@@ -49,18 +38,18 @@ const FilterOptionByCategory = props => {
           selected={selected}
           label={displayValue}
           count={count}
-          onClick={option => onSelect(categoryId, option)}
+          onClick={onClick}
         />
       );
 
-    case 'priorityOptions':
+    case FilterOptionsCategory.PRIORITY:
       return (
         <PriorityFilterOption
           id={id}
           selected={selected}
           label={displayValue}
           count={count}
-          onClick={option => onSelect(categoryId, option)}
+          onClick={onClick}
         />
       );
 
@@ -71,7 +60,7 @@ const FilterOptionByCategory = props => {
           selected={selected}
           label={displayValue}
           count={count}
-          onClick={option => onSelect(categoryId, option)}
+          onClick={onClick}
         />
       );
   }

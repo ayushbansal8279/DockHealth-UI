@@ -25,7 +25,6 @@ import {
   patientSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-import { isEmpty } from 'ramda';
 import {
   toggleTaskCompletedStatus,
   setWorkflowStatus as setWorkflowStatusHelper,
@@ -49,7 +48,6 @@ export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_PATIENT_TASK_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
 export const DO_UPDATE_PATIENT_TASK = 'DO_UPDATE_PATIENT_TASK';
-export const DO_FETCH_PATIENT_FILTERS = 'DO_FETCH_PATIENT_FILTERS';
 export const DO_UPDATE_PATIENT_TASKS_FILTERS =
   'DO_UPDATE_PATIENT_TASKS_FILTERS';
 export const DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT =
@@ -73,11 +71,6 @@ export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
 export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
 export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
-
-export const fetchPatientFilters = patientIdentifier => ({
-  type: DO_FETCH_PATIENT_FILTERS,
-  patientIdentifier,
-});
 
 export const refreshPatientTasks = ({ withLoader }) => ({
   type: DO_REFRESH_PATIENT_TASKS,
@@ -258,7 +251,6 @@ export const PatientTasksSagaActions = {
   removeUserFromTaskList,
   cancelUserInviteToTaskList,
   changeMemberRole,
-  fetchPatientFilters,
   sortPatientTasks,
   updatePatientTaskInList,
 };
@@ -271,7 +263,7 @@ function* getPatientLists(patientIdentifier) {
 
   let lists;
 
-  if (!selectedFilters || !isEmpty(selectedFilters)) {
+  if (selectedFilters) {
     lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
       patientIdentifier,
@@ -309,7 +301,7 @@ function* doRefreshPatientTasks({ withLoader }) {
   yield put(
     PatientDetailsActions.getPatientTasks(patientIdentifier, withLoader),
   );
-  yield put(fetchPatientFilters(patientIdentifier));
+  yield put(PatientDetailsActions.getPatientFilterOptions(patientIdentifier));
 }
 
 function* getPatientTasksStats() {
@@ -336,23 +328,23 @@ function* getPatientTasksStats() {
   }
 }
 
-function* doFetchPatientFilters({ patientIdentifier }) {
+function* getPatientFilterOptions({ patientIdentifier }) {
   const completeTasksVisible = yield select(completeTasksVisibilitySelector);
   const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
   try {
     const filters = yield call(
-      PatientTasksApi.fetchPatientFilters,
+      PatientTasksApi.getPatientFilters,
       patientIdentifier,
       status,
     );
     yield put({
-      type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
+      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
       filters,
     });
   } catch (error) {
     yield put({
-      type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE,
+      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE,
     });
   }
 }
@@ -788,7 +780,10 @@ export default function* watchPatientDetails() {
     doUpdatePatientTaskWorkflowStatus,
   );
   yield takeLatest(DO_UPDATE_PATIENT_TASK, doUpdatePatientTaskInList);
-  yield takeLatest(DO_FETCH_PATIENT_FILTERS, doFetchPatientFilters);
+  yield takeLatest(
+    ActionTypes.GET_PATIENT_FILTER_OPTIONS,
+    getPatientFilterOptions,
+  );
   yield takeLatest(
     DO_UPDATE_PATIENT_TASKS_FILTERS,
     doUpdatePatientTasksFilters,

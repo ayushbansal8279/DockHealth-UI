@@ -11,7 +11,13 @@ import {
 
 const FilterButton = React.forwardRef(
   ({ active, onClick, onClear }, reference) => (
-    <Box ref={reference} display="flex" borderRadius={4} overflow="hidden">
+    <Box
+      ref={reference}
+      display="flex"
+      width="fit-content"
+      borderRadius={4}
+      overflow="hidden"
+    >
       <FilterButtonWrapper
         variant="text"
         onClick={onClick}

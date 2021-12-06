@@ -10,6 +10,7 @@ import {
   Switch,
   useLocation,
   Redirect,
+  useParams,
 } from 'react-router-dom';
 import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
 import {
@@ -29,6 +30,7 @@ import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Search from 'components/task-view/Search/Search';
 import { setHeader } from 'actions/template-actions';
+import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
@@ -68,6 +70,7 @@ const TABS_CONFIG = [
 const DEFAULT_TAB = TABS_CONFIG[0];
 
 const PatientDetailsView = () => {
+  const { patientIdentifier } = useParams();
   const [
     isSearchFocused,
     setIsSearchFocused,
@@ -183,6 +186,9 @@ const PatientDetailsView = () => {
                   selectedFilters={selectedFilters}
                   onSelectFilters={handleFilterChange}
                   isFetching={isFetchingLists}
+                  onOpen={() =>
+                    dispatch(getPatientFilterOptions(patientIdentifier))
+                  }
                 />
                 <Spacing horizontal={5} />
                 <SearchWrapper fullWidth={isSearchFocused || searchValue}>

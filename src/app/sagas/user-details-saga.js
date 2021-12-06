@@ -18,10 +18,8 @@ import sessionStorageHelper from 'helpers/session-storage-helper';
 import { isEmpty } from 'ramda';
 
 function* initializeUserTasks(status) {
-  yield all([
-    put(PersonDetailsActions.getUserTaskCounters()),
-    put(PersonDetailsActions.getUserTaskFilterOptions()),
-  ]);
+  yield put(PersonDetailsActions.getUserTaskCounters());
+
   const userIdentifier = yield select(userIdentifierSelector);
 
   const filters = sessionStorageHelper.getItem(
@@ -183,14 +181,14 @@ function* getUserTaskFilterOptions() {
       select(userIdentifierSelector),
       select(currentTasksStatusSelector),
     ]);
-    const filterOptions = yield call(
+    const filters = yield call(
       UserApi.getUserTaskFilterOptions,
       userIdentifier,
       currentStatus,
     );
     yield put({
       type: ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS,
-      filterOptions,
+      filters,
     });
   } catch {
     yield put({ type: ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE });

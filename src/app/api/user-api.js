@@ -1,3 +1,7 @@
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getUserAvatarBuffer(userIdentifier) {
@@ -154,7 +158,7 @@ export function getUserFilteredTasks(
   return axios
     .post(
       `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
-      selectedFilters,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
       {
         params: {
           status,
@@ -173,7 +177,7 @@ export function getUserTaskFilterOptions(userIdentifier, status) {
         status,
       },
     })
-    .then(response => response.data)
+    .then(({ data }) => mapFilterOptions(data))
     .catch(error => {
       throw error;
     });

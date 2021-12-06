@@ -32,22 +32,10 @@ export function changePatientsSearchTerm(searchTerm) {
   };
 }
 
-export function selectPatientsFilter(optionGroupIdentifier, optionIdentifier) {
+export function setPatientsSelectedFilters(selectedFilters) {
   return {
-    type: ActionTypes.SELECT_PATIENTS_FILTER,
-    optionGroupIdentifier,
-    optionIdentifier,
-  };
-}
-
-export function unselectPatientsFilter(
-  optionGroupIdentifier,
-  optionIdentifier,
-) {
-  return {
-    type: ActionTypes.UNSELECT_PATIENTS_FILTER,
-    optionGroupIdentifier,
-    optionIdentifier,
+    type: ActionTypes.SET_PATIENTS_SELECTED_FILTERS,
+    selectedFilters,
   };
 }
 

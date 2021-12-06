@@ -119,56 +119,14 @@ const PatientsReducer = (state = initialState, action) => {
         },
       };
 
-    case ActionTypes.SELECT_PATIENTS_FILTER: {
-      const { optionGroupIdentifier, optionIdentifier } = action;
+    case ActionTypes.SET_PATIENTS_SELECTED_FILTERS: {
+      const { selectedFilters } = action;
 
       return {
         ...state,
         currentPatientsList: {
           ...state.currentPatientsList,
           searchTerm: '',
-          selectedFilters: {
-            ...(state.currentPatientsList.selectedFilters || {}),
-            [optionGroupIdentifier]: [
-              ...(state.currentPatientsList.selectedFilters?.[
-                optionGroupIdentifier
-              ] || []),
-              optionIdentifier,
-            ],
-          },
-        },
-      };
-    }
-
-    case ActionTypes.UNSELECT_PATIENTS_FILTER: {
-      const { optionGroupIdentifier, optionIdentifier } = action;
-
-      let selectedFilters = {
-        ...(state.currentPatientsList.selectedFilters || {}),
-        [optionGroupIdentifier]:
-          state.currentPatientsList.selectedFilters?.[
-            optionGroupIdentifier
-          ]?.filter(id => id !== optionIdentifier) || null,
-      };
-
-      selectedFilters = Object.entries(selectedFilters).reduce(
-        (accumulator, [optionGroupId, optionIds]) => {
-          if (optionIds?.length > 0) {
-            return {
-              ...(accumulator || {}),
-              [optionGroupId]: optionIds,
-            };
-          }
-
-          return accumulator;
-        },
-        null,
-      );
-
-      return {
-        ...state,
-        currentPatientsList: {
-          ...state.currentPatientsList,
           selectedFilters,
         },
       };

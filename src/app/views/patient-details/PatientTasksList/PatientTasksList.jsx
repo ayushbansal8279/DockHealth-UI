@@ -10,7 +10,10 @@ import { changeTasksSelectedState, addTask } from 'actions/task-actions';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader';
 import EmptyTaskListBird from 'img/animals/bird';
-import { getPatientTasks } from 'actions/patient-details-actions';
+import {
+  getPatientFilterOptions,
+  getPatientTasks,
+} from 'actions/patient-details-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
@@ -108,7 +111,6 @@ const PatientTasksListView = () => {
     updatePatientTaskWorkflowStatus,
     refreshPatientTasks,
     sortPatientTasks,
-    fetchPatientFilters,
     initializeSavedFilters,
   } = useActions(PatientTasksSagaActions);
 
@@ -137,7 +139,6 @@ const PatientTasksListView = () => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
       dispatch(getPatientTasks(patientIdentifier));
-      fetchPatientFilters(patientIdentifier);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);
@@ -174,12 +175,12 @@ const PatientTasksListView = () => {
 
   const handleTaskUpdate = useCallback(
     updatedTask => {
-      fetchPatientFilters();
+      dispatch(getPatientFilterOptions(patientIdentifier));
       if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
         refreshPatientTasks({ withLoader: false });
       }
     },
-    [selectedFilters, refreshPatientTasks, fetchPatientFilters],
+    [dispatch, patientIdentifier, selectedFilters, refreshPatientTasks],
   );
 
   const quickAddTask = useCallback(
@@ -440,7 +441,9 @@ const PatientTasksListView = () => {
       <TaskDrawer
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
-        onTaskDelete={fetchPatientFilters}
+        onTaskDelete={() =>
+          dispatch(getPatientFilterOptions(patientIdentifier))
+        }
         disabledFields={[DrawerFieldEnum.PATIENT]}
       />
     </>

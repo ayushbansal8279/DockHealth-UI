@@ -41,6 +41,7 @@ import {
 const initialState = {
   currentTaskList: null,
   currentTaskListIdentifier: null,
+  currentTasksStatus: null,
   isFetchingCurrentTaskList: false,
 
   taskLists: null,
@@ -101,6 +102,7 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         currentTaskListIdentifier: action.taskListIdentifier,
         currentTaskList: null,
+        currentTasksStatus: action.currentTasksStatus,
       };
 
     case GET_CURRENT_TASK_LIST:

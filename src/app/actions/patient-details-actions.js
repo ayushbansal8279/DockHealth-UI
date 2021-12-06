@@ -93,3 +93,10 @@ export function getPatientTasksStats() {
     type: ActionTypes.GET_PATIENT_TASKS_STATS,
   };
 }
+
+export function getPatientFilterOptions(patientIdentifier) {
+  return {
+    type: ActionTypes.GET_PATIENT_FILTER_OPTIONS,
+    patientIdentifier,
+  };
+}

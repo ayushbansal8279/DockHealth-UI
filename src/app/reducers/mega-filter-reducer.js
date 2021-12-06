@@ -1,124 +1,38 @@
-import { clone } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
-
-const PEOPLE_FILTERS = ['assignedBy', 'assignedTo'];
-const PRIORITY_FILTERS = ['priorityOptions'];
-const STATUS_FILTERS = ['workflowStatusOptions'];
-const DATE_FILTERS = ['dueDateOptions'];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const STANDARD_FILTERS = ['labels', 'dueDateOptions', 'patients'];
-
-const getLabel = label =>
-  label
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, string => string.toUpperCase())
-    .replace(' Options', '');
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
-  const assignedFilters = clone(filters);
-  Object.keys(filters).forEach(key => {
-    if (PEOPLE_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'PEOPLE',
-        filterKey: key,
-        hasAvatars: true,
-      };
-    } else if (PRIORITY_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'PRIORITY',
-        filterKey: key,
-      };
-    } else if (STATUS_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'STATUS',
-        filterKey: key,
-      };
-    } else if (DATE_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'DATE',
-        filterKey: key,
-      };
-    } else {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'STANDARD',
-        filterKey: key,
-      };
-    }
-  });
-
-  return optionsOrder?.map(option => assignedFilters[option]);
-};
 
 const INITIAL_STATE = {
   isLoading: false,
-  filters: {},
-  selectedFilters: {},
+  filters: null,
+  selectedFilters: null,
   error: null,
 };
 
 export default function(state = INITIAL_STATE, action = {}) {
-  const { type, filters, error, selectedFilters } = action;
+  const { type, error, selectedFilters } = action;
 
   switch (type) {
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:
-    case ActionTypes.FETCH_MEGA_FILTERS_REQUEST:
+    case ActionTypes.GET_PATIENT_FILTER_OPTIONS:
+    case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS:
       return {
         ...state,
         isLoading: true,
       };
 
     case ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS:
-    case ActionTypes.FETCH_MEGA_FILTERS_SUCCESS:
-      return {
-        ...state,
-        filters: assignTypesToFilters(filters),
-        isLoading: false,
-      };
-
+    case ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS:
+    case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS:
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS:
       return {
         ...state,
-        filters: assignTypesToFilters(action.filterOptions),
+        filters: action.filters,
         isLoading: false,
       };
 
-    case ActionTypes.FETCH_MEGA_FILTERS_UPDATE_SUCCESS:
-      if (Object.keys(filters).length > 0) {
-        return {
-          ...state,
-          filters: state.filters?.map(filterGroup => {
-            return {
-              ...filterGroup,
-              list: filterGroup.list?.map(item => {
-                const filterItem = filters[filterGroup.filterKey]?.find(
-                  f => f.key === item.key,
-                );
-                return {
-                  ...item,
-                  taskCount: filterItem ? filterItem.taskCount : '',
-                };
-              }),
-            };
-          }),
-          isLoading: false,
-        };
-      }
-      return state;
-
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE:
     case ActionTypes.GET_DASHBOARD_FILTERS_FAILURE:
-    case ActionTypes.FETCH_MEGA_FILTERS_FAILURE:
+    case ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_FAILURE:
       return { ...state, error, isLoading: false };
 
     case ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER:

@@ -1,17 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   filterOptionsSelector,
   patientsSelectedFiltersSelector,
 } from 'selectors/patients-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
-import { capitalize } from 'helpers/capitalize';
-import FilterOptionsColumn from 'components/filter/FilterOptionsColumn/FilterOptionsColumn';
-import FilterScrollableRow from 'components/filter/FilterScrollableRow/FilterScrollableRow';
-import FilterOption from 'components/filter/FilterOption/FilterOption';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
-import FilterOptionsGroup from 'components/filter/FilterOptionsGroup/FilterOptionsGroup';
 import { Box } from '@material-ui/core';
+import FilterTable from 'components/filter/FilterTable/FilterTable';
 
 const PatientsFilter = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -19,79 +15,20 @@ const PatientsFilter = () => {
   const filterOptions = useSelector(filterOptionsSelector);
   const selectedFilters = useSelector(patientsSelectedFiltersSelector);
 
-  const handleOptionClick = useCallback(
-    (groupId, optionId) => {
-      if (selectedFilters?.[groupId]?.includes(optionId)) {
-        dispatch(PatientsActions.unselectPatientsFilter(groupId, optionId));
-      } else {
-        dispatch(PatientsActions.selectPatientsFilter(groupId, optionId));
-      }
-    },
-    [dispatch, selectedFilters],
-  );
+  useEffect(() => {
+    if (!selectedFilters && !filterOptions) {
+      dispatch(PatientsActions.getCurrentPatientsListFilterOptions());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSelectedFiltersChange = newSelectedFilters => {
+    dispatch(PatientsActions.setPatientsSelectedFilters(newSelectedFilters));
+  };
 
   const handleClear = () => {
     dispatch(PatientsActions.clearPatientsFilters());
   };
-
-  const searchedFilterOptions = useMemo(() => {
-    if (!searchValue) return filterOptions;
-
-    return filterOptions?.map(f => {
-      return {
-        ...f,
-        ...f.options?.reduce(
-          (accumulator, option) => {
-            if (
-              option.displayValue
-                .toLowerCase()
-                .includes(searchValue.toLowerCase())
-            ) {
-              accumulator.searchedOptions.push(option);
-            } else {
-              accumulator.options.push(option);
-            }
-            return accumulator;
-          },
-          {
-            options: [],
-            searchedOptions: [],
-          },
-        ),
-      };
-    });
-  }, [filterOptions, searchValue]);
-
-  const renderOptionsGroup = useCallback(
-    (groupId, options) => (
-      <>
-        {options
-          ?.filter(({ key }) => selectedFilters?.[groupId]?.includes(key))
-          .map(({ key, displayValue, patientCount }) => (
-            <FilterOption
-              id={key}
-              key={key}
-              label={displayValue}
-              count={patientCount}
-              selected
-              onClick={option => handleOptionClick(groupId, option)}
-            />
-          ))}
-        {options
-          ?.filter(({ key }) => !selectedFilters?.[groupId]?.includes(key))
-          .map(({ key, displayValue, patientCount }) => (
-            <FilterOption
-              id={key}
-              key={key}
-              label={displayValue}
-              count={patientCount}
-              onClick={option => handleOptionClick(groupId, option)}
-            />
-          ))}
-      </>
-    ),
-    [handleOptionClick, selectedFilters],
-  );
 
   return (
     <>
@@ -103,22 +40,12 @@ const PatientsFilter = () => {
         onClear={handleClear}
       />
       <Box p={2} />
-      <FilterScrollableRow>
-        {searchedFilterOptions
-          ?.filter(({ options }) => options?.length > 0)
-          .map(({ id, label, options, searchedOptions }) => (
-            <FilterOptionsColumn key={id} label={capitalize(label)}>
-              {searchedOptions?.length > 0 && (
-                <FilterOptionsGroup>
-                  {renderOptionsGroup(id, searchedOptions)}
-                </FilterOptionsGroup>
-              )}
-              <FilterOptionsGroup>
-                {renderOptionsGroup(id, options)}
-              </FilterOptionsGroup>
-            </FilterOptionsColumn>
-          ))}
-      </FilterScrollableRow>
+      <FilterTable
+        searchValue={searchValue}
+        filters={filterOptions}
+        selectedFilters={selectedFilters}
+        onSelectedFiltersChange={handleSelectedFiltersChange}
+      />
     </>
   );
 };
