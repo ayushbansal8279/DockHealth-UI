@@ -56,6 +56,9 @@ const themeCommonOverrides = () => ({
     MuiIconButton: {
       size: 'small',
     },
+    MuiSkeleton: {
+      variant: 'rect',
+    },
   },
   overrides: {
     MuiListItem: {

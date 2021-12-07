@@ -1,5 +1,6 @@
+import { withStyles } from '@material-ui/core/styles';
+import { Skeleton } from '@material-ui/lab';
 import styled from 'styled-components';
-import palette from 'styles/palette';
 
 export const LoaderGroup = styled.div`
   &:not(:last-of-type) {
@@ -18,20 +19,8 @@ export const LoaderRow = styled.div`
   }
 `;
 
-export const LoaderElement = styled.div`
-  height: 19px;
-  width: ${({ width }) => (width ? `${width}px` : '100%')};
-  background-color: ${palette.coolGrey3};
-`;
-
-export const LoaderFillElement = styled(LoaderElement)`
-  flex: 1;
-  width: auto;
-`;
-
-export const CircleLoaderElement = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
-  background-color: ${palette.coolGrey3};
-`;
+export const LoaderElement = withStyles({
+  root: {
+    height: 19,
+  },
+})(Skeleton);

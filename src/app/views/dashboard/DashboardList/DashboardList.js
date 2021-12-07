@@ -71,6 +71,7 @@ import {
   VIEW_TYPE_OPTIONS,
 } from 'helpers/view-type-helper';
 import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
+import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -83,7 +84,6 @@ import {
   EmptyStateContainer,
   TipsSwitchLabel,
 } from './styled';
-import DashboardSkeletonLoader from '../DashboardSkeletonLoader/DashboardSkeletonLoader';
 
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
@@ -469,7 +469,7 @@ const DashboardList = ({
       {viewType === ViewType.LIST_VIEW && (
         <>
           {dashboardTasksIsLoading || completeTaskCount === undefined ? (
-            <DashboardSkeletonLoader />
+            <GroupedListSkeletonLoader numberOfGroups={3} />
           ) : (
             <>
               {!isEmpty(filteredDashboardTasks) ? (

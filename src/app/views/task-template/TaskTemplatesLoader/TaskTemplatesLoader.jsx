@@ -1,12 +1,15 @@
+import { Box } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import React from 'react';
-import { TaskTemplateLoader } from './styled';
 
 const TaskTemplatesLoader = () => {
   return (
     <>
-      {new Array(4).fill().map((_, index) => (
+      {new Array(8).fill().map((_, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <TaskTemplateLoader key={index} />
+        <Box key={index} mb={2}>
+          <Skeleton height={35} />
+        </Box>
       ))}
     </>
   );

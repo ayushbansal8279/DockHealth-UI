@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Popover } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
+import { Skeleton } from '@material-ui/lab';
 
 export const SubmenuDivider = styled.hr`
   width: 100%;
@@ -257,12 +259,12 @@ export const DrawerListsItem = styled.div`
   }
 `;
 
-export const DrawerListsItemLoader = styled.div`
-  width: 100%;
-  height: 24px;
-  background: ${palette.skeletonLoader};
-  margin-bottom: 10px;
-`;
+export const DrawerListsItemLoader = withStyles({
+  root: {
+    height: 24,
+    marginBottom: 10,
+  },
+})(Skeleton);
 
 export const DrawerListsItemNewLabel = styled.div`
   position: absolute;

@@ -31,9 +31,9 @@ import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -182,7 +182,9 @@ const DashboardTasksGroup = ({
         </GroupNameSectionWrapper>
       </DashboardTasksGroupHeader>
       {isLoading && !tasks ? (
-        <DashboardSingleSkeletonLoader rows={4} />
+        <DashboardTasksGroupList>
+          <TasksSkeletonLoader rows={4} />
+        </DashboardTasksGroupList>
       ) : (
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
@@ -312,7 +314,7 @@ const DashboardTasksGroup = ({
                 />
               </LoadMoreSection>
             )}
-            {isLoadingMore && <DashboardSingleSkeletonLoader rows={3} />}
+            {isLoadingMore && <TasksSkeletonLoader rows={3} />}
           </DashboardTasksGroupList>
         </Collapse>
       )}

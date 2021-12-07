@@ -111,17 +111,6 @@ const TaskItemPatient = ({
           </PatientCard>
         )}
         {patient && !isSubtask && !openPatientPopover && (
-          // <PatientDropdown
-          //   selectedPatientIdentifier={
-          //     patient ? patient.patientIdentifier : null
-          //   }
-          //   isPopoverOpen={isPopoverOpen}
-          //   onChangePatient={handleUpdateRegularTaskPatient}
-          //   openPopover={() => openPopoverWhenNotCompleted(true)}
-          //   closePopover={() => setPopoverOpen(false)}
-          //   isSubtask={isSubtask}
-          //   hasSubtasks={hasSubtasks}
-          // >
           <PatientCard patientIdentifier={patient.patientIdentifier}>
             <Link to={`/core/patient/${patient.patientIdentifier}`}>
               <PatientLabelComponent>
@@ -142,7 +131,6 @@ const TaskItemPatient = ({
               </PatientLabelComponent>
             </Link>
           </PatientCard>
-          // </PatientDropdown>
         )}
       </ClickablePatient>
     </StandardTaskItemCell>
