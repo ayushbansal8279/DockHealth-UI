@@ -15,6 +15,7 @@ import {
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
 import { useForm, FormContext } from 'react-hook-form';
+import usePrevious from 'hooks/use-previous';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -99,13 +100,30 @@ const LabelsSection = ({ onTaskUpdate }) => {
     onTaskUpdate,
     formMethods,
   });
-  const { labels: selectedLabels = [] } =
+  const { labels: selectedLabelsFromStore = [] } =
     useSelector(selectedTaskSelector) || {};
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
+  const [selectedLabels, setSelectedLabels] = useState([]);
   const optionReferences = useRef({});
   const [inputReference, setInputReference] = useState(null);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
+  const selectedLabelsFromStoreLength = selectedLabelsFromStore?.length;
+  const previousSelectedLabelsFromStoreLength = usePrevious(
+    selectedLabelsFromStoreLength,
+  );
+
+  useEffect(() => {
+    if (
+      selectedLabelsFromStoreLength !== previousSelectedLabelsFromStoreLength
+    ) {
+      setSelectedLabels(selectedLabelsFromStore);
+    }
+  }, [
+    previousSelectedLabelsFromStoreLength,
+    selectedLabelsFromStore,
+    selectedLabelsFromStoreLength,
+  ]);
 
   useEffect(() => {
     if (currentEditableOption) {
@@ -131,7 +149,9 @@ const LabelsSection = ({ onTaskUpdate }) => {
           setCurrentEditableOption(null);
         },
         onSaveEdit: value => saveEditLabel(option?.labelIdentifier, value),
-        onDelete: () => deleteLabel(option),
+        onDelete: () => {
+          deleteLabel(option);
+        },
       }),
     [deleteLabel, saveEditLabel],
   );
@@ -141,7 +161,14 @@ const LabelsSection = ({ onTaskUpdate }) => {
       selectedLabels.map(option => (
         <Chip
           key={option.labelIdentifier}
-          onDelete={() => removeLabelFromTask(option)}
+          onDelete={() => {
+            setSelectedLabels(state =>
+              state.filter(
+                label => label.labelIdentifier !== option.labelIdentifier,
+              ),
+            );
+            removeLabelFromTask(option);
+          }}
           label={option.labelName}
         />
       )),
@@ -178,6 +205,14 @@ const LabelsSection = ({ onTaskUpdate }) => {
     [inputState, saveAddLabel],
   );
 
+  const handleSave = useCallback(
+    value => {
+      setSelectedLabels(state => [...state, value]);
+      saveAddLabel(value);
+    },
+    [saveAddLabel],
+  );
+
   return (
     <FormContext {...formMethods}>
       <Autocomplete
@@ -199,7 +234,8 @@ const LabelsSection = ({ onTaskUpdate }) => {
               event.stopPropagation();
               event.preventDefault();
               event?.target?.blur();
-              saveAddLabel({ labelName: inputState });
+              handleSave({ labelName: inputState });
+              // saveAddLabel({ labelName: inputState });
             }
           },
         }}
@@ -209,7 +245,8 @@ const LabelsSection = ({ onTaskUpdate }) => {
         onChange={values => {
           const valuesLength = values.length;
           const value = values[valuesLength - 1];
-          saveAddLabel(value);
+          // saveAddLabel(value);
+          handleSave(value);
           if (currentEditableOption) {
             setCurrentEditableOption(null);
           }
