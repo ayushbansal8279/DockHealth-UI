@@ -87,7 +87,7 @@ const initializeAttachmentsSectionHooks = () => {
     [selectedTaskIdentifier, dispatch, currentTaskAttachmentsDispatch],
   );
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onAttachmentFileInputChange,
   });
 
@@ -188,6 +188,7 @@ const initializeAttachmentsSectionHooks = () => {
     dropzone: {
       getRootProps,
       getInputProps,
+      isDragActive,
     },
     selectedTask,
   };

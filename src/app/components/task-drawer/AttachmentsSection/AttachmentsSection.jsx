@@ -74,12 +74,12 @@ const AttachmentsSection = () => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
-    dropzone: { getRootProps, getInputProps },
+    dropzone: { getRootProps, getInputProps, isDragActive },
     selectedTask,
   } = initializeAttachmentsSectionHooks();
 
   return (
-    <AttachmentsContainer>
+    <AttachmentsContainer isDragActive={isDragActive}>
       <AttachmentPreview
         attachment={previewedAttachment}
         attachmentsSources={attachmentsSources}
@@ -94,10 +94,21 @@ const AttachmentsSection = () => {
       />
       <Grid container>
         <Grid item xs={12}>
+          <Spacing vertical={3} />
           <RobotoTypography condensed variant="h5" color="inherit">
             ATTACHMENTS
           </RobotoTypography>
         </Grid>
+        <RobotoTypography condensed variant="h4" color="inherit">
+          <Spacing vertical={2} />
+          {isDragActive ? (
+            <span>Drop the files here ...</span>
+          ) : (
+            <span>
+              Drag and drop files or documents here, or click + to select files
+            </span>
+          )}
+        </RobotoTypography>
         <Grid item xs={12}>
           <Spacing vertical={3} />
         </Grid>

@@ -4,8 +4,18 @@ import palette, { opacify } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 
+export const DropHereText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const AttachmentsContainer = styled.div`
   color: ${palette.coolGrey1};
+  background-color: ${props =>
+    props.isDragActive ? palette.coolGrey3 : palette.white};
+  border: ${props =>
+    props.isDragActive ? `solid 1px ${palette.coolGrey2}` : `none`};
 `;
 
 export const RemoveAttachmentButtonContainer = styled.div`
