@@ -1,12 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import Toolbar from 'components/tasklist/Toolbar/ToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
-import { userHasCalendarViewFeatureSelector } from 'selectors/user-selectors';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
@@ -54,8 +52,6 @@ const ListDetailsView = props => {
     viewType,
   } = initializeListDetailsViewHooks(match, history);
 
-  const calendarViewAvailable = useSelector(userHasCalendarViewFeatureSelector);
-
   return (
     <BulkEditSection
       allTasks={bulkEditTasks}
@@ -66,7 +62,6 @@ const ListDetailsView = props => {
       <div>
         <TaskViewContainer>
           <Toolbar
-            calendarViewEnabled={calendarViewAvailable}
             onColumnSetupChange={setDisplayColumnPreferences}
             members={members}
             showMembers={taskList?.listType !== 'PUBLIC'}

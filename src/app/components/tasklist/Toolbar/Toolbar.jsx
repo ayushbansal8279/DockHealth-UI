@@ -119,7 +119,6 @@ const Toolbar = ({
   isFetching,
   moreOptions,
   onColumnSetupChange,
-  calendarViewEnabled = false,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
@@ -348,18 +347,16 @@ const Toolbar = ({
               }
               isFetching={isFetching}
             />
-            {calendarViewEnabled && (
-              <>
-                <Spacing horizontal={5} />
-                <OutlinedSelect
-                  width={170}
-                  name="viewType"
-                  value={getViewTypeFromQueryString(search)}
-                  onChange={handleChangeViewType}
-                  options={VIEW_TYPE_OPTIONS}
-                />
-              </>
-            )}
+            <>
+              <Spacing horizontal={5} />
+              <OutlinedSelect
+                width={170}
+                name="viewType"
+                value={getViewTypeFromQueryString(search)}
+                onChange={handleChangeViewType}
+                options={VIEW_TYPE_OPTIONS}
+              />
+            </>
             <Spacing horizontal={5} />
             <SearchWrapper fullWidth={isSearchFocused || searchValue}>
               <Search
