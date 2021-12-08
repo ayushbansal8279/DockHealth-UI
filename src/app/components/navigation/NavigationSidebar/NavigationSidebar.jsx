@@ -200,7 +200,6 @@ const NavigationSidebar = ({
                 icon={TemplatesIcon}
                 path={TASK_TEMPLATES_PATH}
                 onItemClick={handleNavigationItemClick}
-                isNew
               />
             )}
             <IconNavigationItem
@@ -216,6 +215,7 @@ const NavigationSidebar = ({
                 icon={BarChartIcon}
                 path="/core/analytics"
                 onItemClick={handleNavigationItemClick}
+                isNew
               />
             )}
           </Grid>

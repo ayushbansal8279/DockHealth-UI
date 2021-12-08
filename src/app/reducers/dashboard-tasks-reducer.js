@@ -47,6 +47,21 @@ const DashboardTasksReducer = (state = initialState, action) => {
         isLoading: true,
       };
 
+    case ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS:
+      return {
+        ...state,
+        tasksList: state.tasksList?.map(g => {
+          const matchingGroup = tasksList?.filter(
+            tg => tg.groupType === g.groupType,
+          );
+          return {
+            ...g,
+            metricValue: matchingGroup ? matchingGroup[0].metricValue : 0,
+          };
+        }),
+        isLoading: false,
+      };
+
     case ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS:
     case ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS:
     case ActionTypes.GET_DASHBOARD_TASKS_SUCCESS:
