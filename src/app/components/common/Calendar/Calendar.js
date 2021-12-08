@@ -34,11 +34,12 @@ const Calendar = ({
   const [isAddingTaskEnabled, setIsAddingTaskEnabled] = useState(true);
   const addTaskInputReference = useRef();
   const dispatch = useDispatch();
-  const { parentTasks } = extractTasksAndSubtasks(taskList);
+  const { parentTasks, subtasks } = extractTasksAndSubtasks(taskList);
+  const allTasks = [...parentTasks, ...subtasks];
 
   const tasks = useMemo(
     () =>
-      parentTasks
+      allTasks
         .filter(
           ({ dueDate, completedDt }) =>
             !!dueDate &&
@@ -46,7 +47,7 @@ const Calendar = ({
               !showInCompleteTasksOnly),
         )
         .map(transformTaskToEvent),
-    [parentTasks, showInCompleteTasksOnly],
+    [allTasks, showInCompleteTasksOnly],
   );
 
   // console.log('tasks', tasks);
@@ -55,12 +56,12 @@ const Calendar = ({
     data => {
       const { id } = data.event;
       if (id !== temporaryTaskId) {
-        const task = parentTasks.find(({ identifier }) => identifier === id);
+        const task = allTasks.find(({ identifier }) => identifier === id);
         dispatch(openDrawer());
         dispatch(storeAsCurrentTask(task));
       }
     },
-    [dispatch, parentTasks],
+    [dispatch, allTasks],
   );
 
   const handleDateSelect = useCallback(
@@ -177,11 +178,11 @@ const Calendar = ({
   const handleDropDown = useCallback(
     data => {
       const { id, start } = data.event;
-      const task = parentTasks.find(({ identifier }) => identifier === id);
+      const task = allTasks.find(({ identifier }) => identifier === id);
       const dueDate = moment(start).toISOString();
       dispatch(updateTaskDueDate(task, dueDate));
     },
-    [dispatch, parentTasks],
+    [dispatch, allTasks],
   );
 
   return (
