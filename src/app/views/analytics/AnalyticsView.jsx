@@ -69,22 +69,22 @@ const AnalyticsView = () => {
         />
         <Box p={1} />
         <ChartsContainer>
-          <ChartTail name="Created and completed tasks">
+          <ChartTail name="Tasks Created and Completed">
             <TasksStatisticsChart />
           </ChartTail>
-          <ChartTail name="Created comments">
+          <ChartTail name="Comments Created">
             <CreatedCommentsChart />
           </ChartTail>
-          <ChartTail name="Workflow status">
+          <ChartTail name="Open Tasks by Status">
             <WorkflowStatusStatisticsChart />
           </ChartTail>
-          <ChartTail name="Assigned to">
+          <ChartTail name="Open Tasks by Assigned To">
             <AssignedToStatisticsChart />
           </ChartTail>
-          <ChartTail name="Task labels">
+          <ChartTail name="Open Tasks by Labels">
             <TaskLabelStatisticsChart />
           </ChartTail>
-          <ChartTail name="Patient labels">
+          <ChartTail name="Open Tasks by Patient Labels">
             <PatientLabelStatisticsChart />
           </ChartTail>
         </ChartsContainer>
