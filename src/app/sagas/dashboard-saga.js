@@ -263,6 +263,16 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
           put(DashboardActions.getDashboardTasksForGroup(groupType)),
         ),
     );
+
+    const dashboardGroups = yield call(
+      getDashboardTaskStasForImplicitGroups,
+      tabName,
+    );
+
+    yield put({
+      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
+      tasksList: dashboardGroups,
+    });
   }
 }
 
@@ -280,6 +290,16 @@ function* addTaskSuccess({ task }) {
           put(DashboardActions.getDashboardTasksForGroup(groupType)),
         ),
     );
+
+    const dashboardGroups = yield call(
+      getDashboardTaskStasForImplicitGroups,
+      tabName,
+    );
+
+    yield put({
+      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
+      tasksList: dashboardGroups,
+    });
   }
 }
 
