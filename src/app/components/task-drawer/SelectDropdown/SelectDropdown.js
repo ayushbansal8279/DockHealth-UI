@@ -56,7 +56,7 @@ const SelectDropdown = React.forwardRef(
 
     const { value } = selectedOption || {};
 
-    console.log('value', value);
+    // console.log('value', value);
 
     useEffect(() => {
       if (!isFocused) {
