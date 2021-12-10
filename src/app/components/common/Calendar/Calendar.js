@@ -9,6 +9,7 @@ import * as TaskActions from 'actions/task-actions';
 import { storeAsCurrentTask, updateTaskDueDate } from 'actions/task-actions';
 import interactionPlugin from '@fullcalendar/interaction';
 import moment from 'moment';
+import { pipe, prop, uniqBy } from 'ramda';
 import { openModal } from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -23,6 +24,8 @@ import {
 } from './styled';
 
 const temporaryTaskId = 'temporaryTaskId';
+
+const dedupe = pipe(uniqBy(prop('id')));
 
 const Calendar = ({
   taskList,
@@ -49,6 +52,8 @@ const Calendar = ({
         .map(transformTaskToEvent),
     [allTasks, showInCompleteTasksOnly],
   );
+
+  const uniqueTasks = dedupe(tasks);
 
   // console.log('tasks', tasks);
 
@@ -190,7 +195,7 @@ const Calendar = ({
       <FullCalendar
         selectable
         editable
-        events={tasks}
+        events={uniqueTasks}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
