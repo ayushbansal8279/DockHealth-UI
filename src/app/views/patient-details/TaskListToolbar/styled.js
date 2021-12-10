@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 
 export const ListsToolbarContainer = styled.div`
   display: flex;
@@ -23,3 +24,10 @@ export const MenuText = styled.p`
   color: ${palette.mediumGrey};
   opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
 `;
+
+export const ToolbarLabel = withStyles({
+  root: {
+    color: palette.coolGrey1,
+    display: 'inline-block',
+  },
+})(Typography);

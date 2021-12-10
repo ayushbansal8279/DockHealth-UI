@@ -99,7 +99,6 @@ const PatientTasksListView = () => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
@@ -396,7 +395,7 @@ const PatientTasksListView = () => {
         <>
           {filteredLists?.length > 0 ? (
             <>
-              <TaskListToolbar lists={filteredLists} />
+              <TaskListToolbar lists={filteredLists} currentList={activeList} />
               <Box py={0.5} />
               {activeList ? (
                 <BulkEditSection

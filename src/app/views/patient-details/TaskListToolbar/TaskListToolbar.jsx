@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
-import { useBoolean } from 'hooks/useBoolean';
 import {
+  Fade,
   IconButton,
   Popper,
   ClickAwayListener,
   Paper,
   Box,
 } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams, useHistory } from 'react-router-dom';
+import { useBoolean } from 'hooks/useBoolean';
+import { onPrint } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import zIndex from 'styles/z-index';
 import { MoreVert } from '@material-ui/icons';
@@ -22,16 +25,23 @@ import { userSetupClientViewSelector } from 'selectors/user-selectors';
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
+import Button from 'components/common/Button/Button';
+import palette from 'styles/palette';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
+import ListPopover from 'components/common/ListPopover/ListPopover';
+import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
   MenuText,
   LabelBox,
+  ToolbarLabel,
 } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 
 const TaskListToolbar = props => {
-  const { lists } = props;
+  const { lists, currentList } = props;
+  const { tasks: tasksToPrint = [], listUsers = [] } = currentList;
   const {
     patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
@@ -44,7 +54,13 @@ const TaskListToolbar = props => {
   const dispatch = useDispatch();
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
   const viewSetup = useSelector(userSetupClientViewSelector);
-
+  const moreButtonReference = useRef(null);
+  const [
+    isMorePopoverOpen,
+    openMorePopover,
+    closeMorePopover,
+    toggleMorePopoverOpen,
+  ] = useBoolean(false);
   const listOptions = lists?.map(
     ({ taskListIdentifier, listName, tasks = [] }) => {
       const tasksCount =
@@ -153,6 +169,37 @@ const TaskListToolbar = props => {
     [dispatch],
   );
 
+  const onPrintClick = useCallback(() => {
+    closeMorePopover();
+    onPrint();
+    const title = isAllTasksView
+      ? 'All Tasks'
+      : listOptions.find(
+          element => element.value === taskListIdentifierParameter,
+        )?.label;
+
+    return printTaskPdf({
+      title,
+      tasks: tasksToPrint,
+      taskListMembers: listUsers,
+    });
+  }, [
+    closeMorePopover,
+    isAllTasksView,
+    listOptions,
+    taskListIdentifierParameter,
+    listUsers,
+    tasksToPrint,
+  ]);
+
+  const popoverItems = [
+    {
+      key: 'print',
+      label: 'Print',
+      onClick: onPrintClick,
+    },
+  ];
+
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
@@ -175,6 +222,25 @@ const TaskListToolbar = props => {
           />
         )}
       </ListsTabsContainer>
+      <Spacing horizontal={4} />
+      <Button
+        variant="text"
+        width="200px"
+        reference={moreButtonReference}
+        onClick={toggleMorePopoverOpen}
+        endIcon={
+          <RotatableChevron
+            rotated={isMorePopoverOpen}
+            color={palette.brightBlue}
+          />
+        }
+      >
+        <div>
+          <ToolbarLabel variant="body1" component="span">
+            ACTIONS
+          </ToolbarLabel>
+        </div>
+      </Button>
       <Spacing horizontal={4} />
       <ColumnDisplaySettings onChange={onClickCheckbox} />
       <IconButton ref={menuReference} onClick={toggleMenuOpen}>
@@ -220,6 +286,17 @@ const TaskListToolbar = props => {
           </ClickAwayListener>
         )}
       </Popper>
+      <ListPopover
+        anchorEl={moreButtonReference.current}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={isMorePopoverOpen}
+        onClose={closeMorePopover}
+        TransitionComponent={Fade}
+        items={popoverItems}
+      />
     </ListsToolbarContainer>
   );
 };
