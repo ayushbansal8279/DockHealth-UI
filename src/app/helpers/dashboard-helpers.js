@@ -46,12 +46,24 @@ export const getGroupByDueDate = (dueDate, tabName) => {
     return isMyTasksTab ? DashboardGroup.TODAY : DashboardGroup.ORG_TODAY;
   if (
     date.isAfter(new Date(), 'day') &&
-    date.isBefore(moment(new Date()).add(7, 'days'), 'day')
+    date.isSameOrBefore(
+      moment(new Date())
+        .startOf('day')
+        .add(7, 'days'),
+      'day',
+    )
   )
     return isMyTasksTab
       ? DashboardGroup.NEXT_7_DAYS
       : DashboardGroup.ORG_NEXT_7_DAYS;
-  if (date.isAfter(moment(new Date()).add(7, 'days'), 'day'))
+  if (
+    date.isSameOrAfter(
+      moment(new Date())
+        .startOf('day')
+        .add(7, 'days'),
+      'day',
+    )
+  )
     return isMyTasksTab
       ? DashboardGroup.ALL_OTHER
       : DashboardGroup.ORG_ALL_OTHER;
