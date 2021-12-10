@@ -27,14 +27,14 @@ const getPriorityConfig = priority => {
 
 const PeopleFilterRowComponent = ({
   displayValue,
-  taskCount,
+  count,
   reference,
   isSelected,
   onClick,
 }) => (
   <FilterOption
     label={displayValue}
-    count={taskCount}
+    count={count}
     selected={isSelected}
     onClick={onClick}
     startAdornment={
@@ -49,7 +49,7 @@ const PeopleFilterRowComponent = ({
 
 const StatusFilterRowComponent = ({
   reference: workflowStatus,
-  taskCount,
+  count,
   isSelected,
   onClick,
 }) => {
@@ -58,7 +58,7 @@ const StatusFilterRowComponent = ({
   return (
     <FilterOption
       selected={isSelected}
-      count={taskCount}
+      count={count}
       onClick={onClick}
       label={name}
       color={color}
@@ -68,7 +68,7 @@ const StatusFilterRowComponent = ({
 
 const PriorityFilterRowComponent = ({
   itemKey: priority,
-  taskCount,
+  count,
   isSelected,
   onClick,
 }) => {
@@ -80,14 +80,14 @@ const PriorityFilterRowComponent = ({
       onClick={onClick}
       startAdornment={IconComponent ? <IconComponent /> : <Box width="12px" />}
       label={label}
-      count={taskCount}
+      count={count}
     />
   );
 };
 
 const StandardFilterRowComponent = ({
   displayValue,
-  taskCount,
+  count,
   isSelected,
   onClick,
 }) => (
@@ -95,14 +95,14 @@ const StandardFilterRowComponent = ({
     selected={isSelected}
     onClick={onClick}
     label={displayValue}
-    count={taskCount}
+    count={count}
   />
 );
 
 const DateFilterRowComponent = ({
   isSelected,
   displayValue,
-  taskCount,
+  count,
   onClick,
   itemKey,
   dueDateChange,
@@ -121,14 +121,14 @@ const DateFilterRowComponent = ({
       selected={isSelected}
       onClick={onClick}
       label={displayValue}
-      count={taskCount}
+      count={count}
     />
   );
 
 export const FilterRowUnassigned = ({
   hasAvatars,
   isSelected,
-  taskCount,
+  count,
   onClick,
 }) => (
   <FilterOption
@@ -140,7 +140,7 @@ export const FilterRowUnassigned = ({
       )
     }
     label="Unassigned"
-    count={taskCount}
+    count={count}
   />
 );
 
