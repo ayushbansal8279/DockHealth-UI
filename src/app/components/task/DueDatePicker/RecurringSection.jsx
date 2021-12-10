@@ -3,6 +3,8 @@ import { clone } from 'ramda';
 import moment from 'moment';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { Box, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import {
   getTaskRecurringSchedule,
   saveTaskRecurringSchedule,
@@ -32,6 +34,8 @@ import {
   EndsOption,
   RecurringOption,
   OPTIONS_ALLOWED_TO_DAY_SELECTION,
+  REPEAT_UNIT_OPTIONS,
+  RepeatUnitOption,
 } from './helpers';
 
 const RecurringSection = ({
@@ -55,9 +59,16 @@ const RecurringSection = ({
   const endsValue = watch(FormField.ENDS);
   const recurringOnDaysValue = watch(FormField.RECURRING_ON_DAYS);
   const numberOfOccurrencesValue = watch(FormField.NUMBER_OF_OCCURRENCES);
+  const repeatTimesValue = watch(FormField.REPEAT_TIMES);
+  const repeatTimesUnitValue = watch(FormField.REPEAT_TIMES_UNIT);
 
   const fillFormWithData = newData => {
     setValue(FormField.RECURRING_OPTION, newData[FormField.RECURRING_OPTION]);
+    setValue(
+      FormField.REPEAT_TIMES_UNIT,
+      newData[FormField.REPEAT_TIMES_UNIT] || null,
+    );
+    setValue(FormField.REPEAT_TIMES, newData[FormField.REPEAT_TIMES] || null);
 
     if (
       OPTIONS_ALLOWED_TO_DAY_SELECTION.includes(
@@ -100,54 +111,25 @@ const RecurringSection = ({
         });
     }
 
+    register(FormField.RECURRING_OPTION);
     register(FormField.RECURRING_ON_DAYS);
     register(FormField.NUMBER_OF_OCCURRENCES);
+    register(FormField.ENDS);
     register(FormField.END_DATE);
+    register(FormField.REPEAT_TIMES_UNIT);
+    register(FormField.REPEAT_TIMES);
 
     return () => {
+      unregister(FormField.RECURRING_OPTION);
       unregister(FormField.RECURRING_ON_DAYS);
       unregister(FormField.NUMBER_OF_OCCURRENCES);
+      unregister(FormField.ENDS);
       unregister(FormField.END_DATE);
+      unregister(FormField.REPEAT_TIMES_UNIT);
+      unregister(FormField.REPEAT_TIMES);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    switch (recurringOptionValue) {
-      case RecurringOption.EVERYDAY_SUN_SAT:
-        setValue(FormField.RECURRING_ON_DAYS, [
-          DayOfWeek.SATURDAY,
-          DayOfWeek.MONDAY,
-          DayOfWeek.TUESDAY,
-          DayOfWeek.WEDNESDAY,
-          DayOfWeek.THURSDAY,
-          DayOfWeek.FRIDAY,
-          DayOfWeek.SUNDAY,
-        ]);
-        break;
-      case RecurringOption.WEEKDAYS_MON_FRI:
-        setValue(FormField.RECURRING_ON_DAYS, [
-          DayOfWeek.MONDAY,
-          DayOfWeek.TUESDAY,
-          DayOfWeek.WEDNESDAY,
-          DayOfWeek.THURSDAY,
-          DayOfWeek.FRIDAY,
-        ]);
-        break;
-      case RecurringOption.MONTHLY:
-      case RecurringOption.YEARLY:
-        setValue(FormField.RECURRING_ON_DAYS, null);
-        break;
-      case RecurringOption.DO_NOT_REPEAT:
-        setValue(FormField.RECURRING_ON_DAYS, null);
-        setValue(FormField.ENDS, EndsOption.NEVER);
-        setValue(FormField.NUMBER_OF_OCCURRENCES, null);
-        setValue(FormField.END_DATE, null);
-        break;
-      default:
-        break;
-    }
-  }, [recurringOptionValue, setValue]);
 
   const recurringFormSubmit = useCallback(
     data => {
@@ -194,15 +176,61 @@ const RecurringSection = ({
   );
 
   const handleRecurringOptionSelect = newValue => {
-    if ([RecurringOption.WEEKLY, RecurringOption.BIWEEKLY].includes(newValue)) {
-      setValue(FormField.RECURRING_ON_DAYS, [
-        moment(selectedDueDate)
-          .format('dddd')
-          .toUpperCase(),
-      ]);
-    }
-
     setValue(FormField.RECURRING_OPTION, newValue);
+
+    switch (newValue) {
+      case RecurringOption.CUSTOM:
+        setValue(FormField.RECURRING_ON_DAYS, null);
+        setValue(FormField.REPEAT_TIMES_UNIT, RepeatUnitOption.WEEK);
+        setValue(FormField.REPEAT_TIMES, 1);
+        break;
+
+      case RecurringOption.EVERYDAY_SUN_SAT:
+        setValue(FormField.RECURRING_ON_DAYS, [
+          DayOfWeek.SATURDAY,
+          DayOfWeek.MONDAY,
+          DayOfWeek.TUESDAY,
+          DayOfWeek.WEDNESDAY,
+          DayOfWeek.THURSDAY,
+          DayOfWeek.FRIDAY,
+          DayOfWeek.SUNDAY,
+        ]);
+        break;
+
+      case RecurringOption.WEEKDAYS_MON_FRI:
+        setValue(FormField.RECURRING_ON_DAYS, [
+          DayOfWeek.MONDAY,
+          DayOfWeek.TUESDAY,
+          DayOfWeek.WEDNESDAY,
+          DayOfWeek.THURSDAY,
+          DayOfWeek.FRIDAY,
+        ]);
+        break;
+
+      case RecurringOption.WEEKLY:
+      case RecurringOption.BIWEEKLY:
+        setValue(FormField.RECURRING_ON_DAYS, [
+          moment(selectedDueDate)
+            .format('dddd')
+            .toUpperCase(),
+        ]);
+        break;
+
+      case RecurringOption.MONTHLY:
+      case RecurringOption.YEARLY:
+        setValue(FormField.RECURRING_ON_DAYS, null);
+        break;
+
+      case RecurringOption.DO_NOT_REPEAT:
+        setValue(FormField.RECURRING_ON_DAYS, null);
+        setValue(FormField.ENDS, EndsOption.NEVER);
+        setValue(FormField.NUMBER_OF_OCCURRENCES, null);
+        setValue(FormField.END_DATE, null);
+        break;
+
+      default:
+        break;
+    }
   };
 
   const handleRecurringOnDaysSelect = newValue => {
@@ -237,16 +265,68 @@ const RecurringSection = ({
       <FormContext {...formContext}>
         <SectionWrapper>
           <FormRow>
-            <RowLabel>Repeats every</RowLabel>
-            <div>
-              <SecondaryDropdownInput
-                name={FormField.RECURRING_OPTION}
-                placeholder="--"
-                onSelect={handleRecurringOptionSelect}
-                width={150}
-                options={RECURRING_OPTIONS}
-              />
-            </div>
+            <RowLabel>Repeats</RowLabel>
+            <Box
+              position="relative"
+              display="flex"
+              flex={1}
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              {recurringOptionValue !== RecurringOption.CUSTOM ? (
+                <SecondaryDropdownInput
+                  name={FormField.RECURRING_OPTION}
+                  placeholder="--"
+                  value={recurringOptionValue}
+                  onSelect={handleRecurringOptionSelect}
+                  width={150}
+                  options={RECURRING_OPTIONS}
+                />
+              ) : (
+                <>
+                  <SecondaryNumberInput
+                    name={FormField.REPEAT_TIMES}
+                    value={repeatTimesValue}
+                    onChange={newValue => {
+                      if (newValue === '' || Number(newValue) > 0) {
+                        setValue(
+                          FormField.REPEAT_TIMES,
+                          newValue === '' ? '' : Number(newValue),
+                        );
+                      }
+                    }}
+                    onBlur={() => {
+                      if (repeatTimesValue === '')
+                        setValue(FormField.REPEAT_TIMES, 1);
+                    }}
+                  />
+                  <Spacing horizontal={3} />
+                  <SecondaryDropdownInput
+                    name={FormField.REPEAT_TIMES_UNIT}
+                    placeholder="--"
+                    value={repeatTimesUnitValue}
+                    onSelect={v => setValue(FormField.REPEAT_TIMES_UNIT, v)}
+                    width={80}
+                    options={REPEAT_UNIT_OPTIONS}
+                  />
+                  <Spacing horizontal={3} />
+                  <IconButton
+                    type="button"
+                    onClick={() => {
+                      setValue(FormField.REPEAT_TIMES_UNIT, null);
+                      setValue(FormField.REPEAT_TIMES, null);
+                      setValue(
+                        FormField.RECURRING_OPTION,
+                        recurring[FormField.RECURRING_OPTION] ||
+                          FORM_DEFAULT_VALUES[FormField.RECURRING_OPTION],
+                      );
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </>
+              )}
+            </Box>
           </FormRow>
           <Spacing vertical={4} />
           <FormRow>
@@ -269,6 +349,7 @@ const RecurringSection = ({
                 disabled={
                   recurringOptionValue === RecurringOption.DO_NOT_REPEAT
                 }
+                value={endsValue}
                 onSelect={handleEndsOptionSelect}
                 width={150}
                 options={ENDS_OPTIONS}

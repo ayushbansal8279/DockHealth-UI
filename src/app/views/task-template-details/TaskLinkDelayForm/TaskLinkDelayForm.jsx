@@ -61,6 +61,7 @@ const TaskLinkDelayForm = props => {
             <SecondaryDropdownInput
               name="delayPeriodUnit"
               placeholder="Select unit"
+              value={watch('delayPeriodUnit')}
               onSelect={newValue => setValue('delayPeriodUnit', newValue)}
               width={207}
               options={DELAY_PERIOD_UNIT_OPTIONS}

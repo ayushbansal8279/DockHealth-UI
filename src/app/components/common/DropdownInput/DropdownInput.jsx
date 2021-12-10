@@ -13,8 +13,6 @@ import {
   string,
 } from 'prop-types';
 import React, { useMemo, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 
 import { useBoolean } from 'hooks/useBoolean';
@@ -45,6 +43,7 @@ const DropdownInput = React.forwardRef(
       textFieldClasses,
       onSelect,
       disabled,
+      value,
     },
     reference,
   ) => {
@@ -56,30 +55,14 @@ const DropdownInput = React.forwardRef(
 
     const [hoveredItem, setHoveredItem] = useState(0);
 
-    const { register, unregister, watch } = useFormContext();
-
-    useMount(() => {
-      register({
-        name,
-      });
-    });
-
-    useUnmount(() => {
-      unregister(name);
-    });
-
-    const currentValue = watch(name);
-
     const displayLabel = useMemo(
-      () =>
-        children.find(({ value }) => value === currentValue)?.displayLabel ??
-        '',
-      [children, currentValue],
+      () => children.find(({ value: v }) => v === value)?.displayLabel ?? '',
+      [children, value],
     );
 
-    const handleSelectOption = ({ value }) => {
-      if (currentValue !== value) {
-        onSelect(value);
+    const handleSelectOption = ({ value: v }) => {
+      if (value !== v) {
+        onSelect(v);
       }
     };
 

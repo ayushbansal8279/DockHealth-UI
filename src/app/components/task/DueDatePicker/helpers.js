@@ -4,10 +4,13 @@ export const FormField = {
   ENDS: 'endsOption',
   NUMBER_OF_OCCURRENCES: 'numberOfOccurrences',
   END_DATE: 'endDate',
+  REPEAT_TIMES_UNIT: 'repeatTimeUnit',
+  REPEAT_TIMES: 'repeatTimes',
 };
 
 export const RecurringOption = {
   DO_NOT_REPEAT: 'DO_NOT_REPEAT',
+  CUSTOM: 'CUSTOM',
   WEEKDAYS_MON_FRI: 'WEEKDAYS_MON_FRI',
   EVERYDAY_SUN_SAT: 'EVERYDAY_SUN_SAT',
   WEEKLY: 'WEEKLY',
@@ -18,6 +21,7 @@ export const RecurringOption = {
 
 const RecurringOptionLabel = {
   [RecurringOption.DO_NOT_REPEAT]: 'Does not repeat',
+  [RecurringOption.CUSTOM]: 'Custom',
   [RecurringOption.WEEKDAYS_MON_FRI]: 'Weekdays M-F',
   [RecurringOption.EVERYDAY_SUN_SAT]: 'Everyday Su-Sa',
   [RecurringOption.WEEKLY]: 'Weekly',
@@ -26,10 +30,31 @@ const RecurringOptionLabel = {
   [RecurringOption.YEARLY]: 'Yearly',
 };
 
+export const RepeatUnitOption = {
+  HOUR: 'HOUR',
+  DAY: 'DAY',
+  WEEK: 'WEEK',
+  MONTH: 'MONTH',
+};
+
+export const RepeatUnitOptionLabel = {
+  [RepeatUnitOption.HOUR]: 'Hour',
+  [RepeatUnitOption.DAY]: 'Day',
+  [RepeatUnitOption.WEEK]: 'Week',
+  [RepeatUnitOption.MONTH]: 'Month',
+};
+
 export const RECURRING_OPTIONS = Object.values(RecurringOption).map(value => ({
   value,
   label: RecurringOptionLabel[value],
 }));
+
+export const REPEAT_UNIT_OPTIONS = Object.values(RepeatUnitOption).map(
+  value => ({
+    value,
+    label: RepeatUnitOptionLabel[value],
+  }),
+);
 
 export const EndsOption = {
   NEVER: 'NEVER',

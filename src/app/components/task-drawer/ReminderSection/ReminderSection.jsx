@@ -139,6 +139,7 @@ const ReminderSection = ({ onSave }) => {
             <SecondaryDropdownInput
               ref={reminderTypeDropdownReference}
               name={REMINDER_TYPE_FIELD_NAME}
+              value={watch(REMINDER_TYPE_FIELD_NAME)}
               placeholder="--"
               onSelect={handleSelectReminderType}
               disabled={sectionDisabled}
