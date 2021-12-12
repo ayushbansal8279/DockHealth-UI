@@ -67,24 +67,24 @@ const PatientsFilter = () => {
       <>
         {options
           ?.filter(({ key }) => selectedFilters?.[groupId]?.includes(key))
-          .map(({ key, displayValue, patientCount }) => (
+          .map(({ key, displayValue, count }) => (
             <FilterOption
               id={key}
               key={key}
               label={displayValue}
-              count={patientCount}
+              count={count}
               selected
               onClick={option => handleOptionClick(groupId, option)}
             />
           ))}
         {options
           ?.filter(({ key }) => !selectedFilters?.[groupId]?.includes(key))
-          .map(({ key, displayValue, patientCount }) => (
+          .map(({ key, displayValue, count }) => (
             <FilterOption
               id={key}
               key={key}
               label={displayValue}
-              count={patientCount}
+              count={count}
               onClick={option => handleOptionClick(groupId, option)}
             />
           ))}
