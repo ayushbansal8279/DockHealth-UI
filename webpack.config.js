@@ -141,7 +141,7 @@ const config = (environment, options) => {
       liveReload: true,
     },
     watchOptions: {
-      poll: 1000,
+      poll: 10000,
       ignored: ['node_modules'],
     },
   };
