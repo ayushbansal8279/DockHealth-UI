@@ -41,7 +41,7 @@ const AnalyticsFilters = () => {
   return (
     <>
       <FilterHeader
-        title="Filter patients"
+        title="Filter"
         filterActive={!!selectedFilters}
         searchValue={searchValue}
         onSearchValueChange={setSearchValue}

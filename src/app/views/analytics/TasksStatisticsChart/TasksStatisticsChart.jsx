@@ -8,6 +8,7 @@ import {
   Tooltip,
   LineChart,
   Line,
+  Legend,
 } from 'recharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -72,15 +73,23 @@ const TasksStatisticsChart = () => {
             tickFormatter={value => moment(value).format('MM/DD/YY')}
           />
 
-          <YAxis />
+          <YAxis
+            allowDecimals={false}
+            label={{ value: 'Tasks', angle: -90, position: 'insideLeft' }}
+          />
           <Tooltip
             labelFormatter={value => moment(value).format('MM/DD/YYYY')}
           />
-          <Line type="monotone" dataKey="created" stroke={palette.keyLimePie} />
+          <Legend verticalAlign="bottom" />
+          <Line
+            type="monotone"
+            dataKey="created"
+            stroke={palette.midnightBlue}
+          />
           <Line
             type="monotone"
             dataKey="completed"
-            stroke={palette.midnightBlue}
+            stroke={palette.brightBlue}
           />
         </LineChart>
       </ResponsiveContainer>
