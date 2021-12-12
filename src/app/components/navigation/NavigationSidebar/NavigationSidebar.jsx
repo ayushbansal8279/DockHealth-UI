@@ -209,7 +209,7 @@ const NavigationSidebar = ({
               subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
               onItemClick={handleNavigationItemClick}
             />
-            {!isGuest && (
+            {isUserAdmin && (
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
@@ -223,7 +223,7 @@ const NavigationSidebar = ({
             {isUserAdmin && (
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
-                  name="Admin"
+                  name="Settings"
                   subMenuKey={SubmenuKey.SETTINGS}
                   icon={SettingsIcon}
                   subMenuOpen={openedSubMenuKey === SubmenuKey.SETTINGS}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Box } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
 import { useHistory } from 'react-router-dom';
-import { UserOrganizationRole } from 'helpers/user-helper';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { analyticsFiltersActiveSelector } from 'selectors/analytics-selectors';
@@ -52,7 +52,7 @@ const AnalyticsView = () => {
   }, []);
 
   useEffect(() => {
-    if (userProfile?.orgUserRole === UserOrganizationRole.GUEST) {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

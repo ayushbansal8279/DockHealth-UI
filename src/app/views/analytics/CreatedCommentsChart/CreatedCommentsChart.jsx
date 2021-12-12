@@ -8,6 +8,7 @@ import {
   Tooltip,
   LineChart,
   Line,
+  Legend,
 } from 'recharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -37,7 +38,7 @@ const CreatedCommentsChart = () => {
           setData,
           map(({ date, metricValue }) => ({
             date,
-            comments: metricValue,
+            created: metricValue,
           })),
           sortBy(({ date }) => date),
         )(responseData);
@@ -58,13 +59,17 @@ const CreatedCommentsChart = () => {
             tickFormatter={value => moment(value).format('MM/DD/YY')}
           />
 
-          <YAxis />
+          <YAxis
+            allowDecimals={false}
+            label={{ value: 'Comments', angle: -90, position: 'insideLeft' }}
+          />
           <Tooltip
             labelFormatter={value => moment(value).format('MM/DD/YYYY')}
           />
+          <Legend verticalAlign="bottom" />
           <Line
             type="monotone"
-            dataKey="comments"
+            dataKey="created"
             stroke={palette.midnightBlue}
           />
         </LineChart>
